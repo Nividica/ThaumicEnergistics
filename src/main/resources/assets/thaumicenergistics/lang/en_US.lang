@@ -1,0 +1,31 @@
+#Group names
+itemGroup.ThaumicEnergistics=Thaumic Energistics
+thaumicenergistics.group.essentia.transport=ME Essentia Import/Export Bus
+
+#Fluids
+thaumicenergistics.fluid.gaseous=Gaseous
+
+#Cable parts
+thaumicenergistics.aeparts.essentia.ImportBus.name=Essentia Import Bus
+thaumicenergistics.aeparts.essentia.ExportBus.name=Essentia Export Bus
+thaumicenergistics.aeparts.essentia.levelemitter.name=Essentia Level Emitter
+thaumicenergistics.aeparts.essentia.StorageBus.name=Essentia Storage Bus
+thaumicenergistics.aeparts.essentia.terminal.name=Essentia Terminal
+
+#Items
+thaumicenergistics.item.essentia.cell.1k.name=ME 1k Essentia Storage
+thaumicenergistics.item.essentia.cell.4k.name=ME 4k Essentia Storage
+thaumicenergistics.item.essentia.cell.16k.name=ME 16k Essentia Storage
+thaumicenergistics.item.essentia.cell.64k.name=ME 64k Essentia Storage
+thaumicenergistics.item.storage.casing.name=ME Essentia Storage Casing
+thaumicenergistics.item.storage.component.1k.name=ME 1k Essentia Storage Component
+thaumicenergistics.item.storage.component.4k.name=ME 4k Essentia Storage Component
+thaumicenergistics.item.storage.component.16k.name=ME 16k Essentia Storage Component
+thaumicenergistics.item.storage.component.64k.name=ME 64k Essentia Storage Component
+thaumicenergistics.item.essentia.cell.inventory=Essentia Cell
+
+#Tooltips
+thaumicenergistics.tooltip.amount=Amount
+thaumicenergistics.tooltip.aspect=Aspect
+thaumicenergistics.tooltip.essentia.cell.bytes=%d of %d bytes used.
+thaumicenergistics.tooltip.essentia.cell.types=%d of %d essentia types stored.
