@@ -27,7 +27,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.1.0a";
+	public static final String VERSION = "0.1.1a";
 
 	/**
 	 * Singleton instance
@@ -59,8 +59,8 @@ public class ThaumicEnergistics
 	public void load( FMLInitializationEvent event )
 	{
 		// ThaumicEnergistics.proxy.registerMovables();
-		// ThaumicEnergistics.proxy.registerRenderers();
-		// ThaumicEnergistics.proxy.registerTileEntities();
+		ThaumicEnergistics.proxy.registerRenderers();
+		ThaumicEnergistics.proxy.registerTileEntities();
 
 		ChannelHandler.registerMessages();
 	}
@@ -80,6 +80,7 @@ public class ThaumicEnergistics
 
 		ThaumicEnergistics.proxy.registerItems();
 		ThaumicEnergistics.proxy.registerFluids();
+		ThaumicEnergistics.proxy.registerBlocks();
 	}
 
 }
@@ -90,6 +91,8 @@ public class ThaumicEnergistics
  * Find magic numbers such as the openGL and keyboard and replace with meaningfull constants
  * Cache major enum.values[]
  * Packet.Write/Read aspect needs compression or a lookup table of some kind. Strings are bad.
+ * 
+ * ... I think I hate the word 'essentia' now
  */
 
 /*

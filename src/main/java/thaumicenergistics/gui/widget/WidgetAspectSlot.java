@@ -13,7 +13,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.PacketAspectSlot;
-import thaumicenergistics.render.GuiTextureManager;
+import thaumicenergistics.texture.GuiTextureManager;
 
 public class WidgetAspectSlot extends Gui
 {

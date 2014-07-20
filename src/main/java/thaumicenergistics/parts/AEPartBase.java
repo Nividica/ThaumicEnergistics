@@ -19,11 +19,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.gridblock.AEGridBlock;
+import thaumicenergistics.gridblock.AEPartGridBlock;
 import thaumicenergistics.network.GuiHandler;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.registries.ItemEnum;
-import thaumicenergistics.render.BlockTextureManager;
+import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -58,7 +58,7 @@ public abstract class AEPartBase
 	protected IGridNode node;
 	protected IPartHost host;
 	protected boolean isActive;
-	protected AEGridBlock gridBlock;
+	protected AEPartGridBlock gridBlock;
 	protected TileEntity tile;
 	protected TileEntity hostTile;
 	protected IAspectContainer facingContainer;
@@ -174,7 +174,7 @@ public abstract class AEPartBase
 		// Ignored on client side
 		if ( FMLCommonHandler.instance().getEffectiveSide().isServer() )
 		{
-			this.gridBlock = new AEGridBlock( this );
+			this.gridBlock = new AEPartGridBlock( this );
 
 			this.node = AEApi.instance().createGridNode( this.gridBlock );
 
@@ -230,7 +230,7 @@ public abstract class AEPartBase
 		return null;
 	}
 
-	public AEGridBlock getGridBlock()
+	public AEPartGridBlock getGridBlock()
 	{
 		return this.gridBlock;
 	}
@@ -339,7 +339,7 @@ public abstract class AEPartBase
 
 	@Override
 	public void onNeighborChanged()
-	{
+	{	
 		if ( this.hostTile != null )
 		{
 			// Get the world

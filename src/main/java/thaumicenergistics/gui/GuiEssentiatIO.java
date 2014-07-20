@@ -16,7 +16,7 @@ import thaumicenergistics.gui.widget.WidgetRedstoneModes;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.PacketEssentiaIOBus;
 import thaumicenergistics.parts.AEPartEssentiaIO;
-import thaumicenergistics.render.GuiTextureManager;
+import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.AEApi;

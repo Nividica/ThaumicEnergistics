@@ -13,7 +13,7 @@ import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.PacketEssentiaEmitter;
 import thaumicenergistics.network.packet.PacketAspectSlot;
 import thaumicenergistics.registries.AEPartsEnum;
-import thaumicenergistics.render.BlockTextureManager;
+import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.config.RedstoneMode;
 import appeng.api.networking.security.BaseActionSource;

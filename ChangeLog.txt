@@ -1,2 +1,14 @@
+﻿7/19/2014 0.1.1a
+    Created block for Essentia Provider.
+    Implemented Thaumcraft part of essentia provider functionality.
+    Implemented AppEng part of essentia provider functionality.
+    Removed unused tickable interface from essentia terminal.
+    BugFix: Potential issue in essentia<->fluid conversion handler when input list was null.
+    Various name refactors.
+    BugFix: All parts, trying to use the world before it existed.
+    BugFix: Storage bus did not update when phial was used to deposit essentia in empty neighboring jar.
+    BugFix: Terminal plays sound each time it is opened, if an item was left in the output slot
+    Added custom renderer and overlay texture for essentia provider.
+    
 7/18/2014 0.1.0a
     Initial github commit.

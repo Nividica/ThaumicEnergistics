@@ -95,7 +95,7 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 
 	}
 
-	protected boolean exportEssentiaFromNetwork( int amountToFill )
+	protected boolean extractEssentiaFromNetwork( int amountToFill )
 	{
 
 		for( Aspect aspect : this.filterAspects )
@@ -125,7 +125,7 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 
 	}
 
-	protected boolean importEssentaToNetwork( int amountToDrain )
+	protected boolean injectEssentaToNetwork( int amountToDrain )
 	{
 		Aspect aspectToDrain = this.facingContainer.getAspects().getAspects()[0];
 
@@ -393,8 +393,6 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 	@Override
 	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
-		TickRateModulation modulation = TickRateModulation.SLOWER;
-
 		if ( this.canDoWork() )
 		{
 			// Calculate the amount to transfer per second
@@ -415,11 +413,11 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 
 			if ( this.doWork( transferAmount ) )
 			{
-				modulation = TickRateModulation.FASTER;
+				return TickRateModulation.URGENT;
 			}
 		}
 
-		return modulation;
+		return TickRateModulation.IDLE;
 	}
 
 	@Override

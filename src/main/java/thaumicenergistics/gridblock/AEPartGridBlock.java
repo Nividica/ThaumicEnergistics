@@ -17,17 +17,17 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 
-public class AEGridBlock implements IGridBlock
+public class AEPartGridBlock implements IGridBlock
 {
 
 	protected AEColor gridColor;
 	protected IGrid grid;
 	protected int usedChannels;
-	protected AEPartBase host;
+	protected AEPartBase partHost;
 
-	public AEGridBlock(AEPartBase host)
+	public AEPartGridBlock(AEPartBase partHost)
 	{
-		this.host = host;
+		this.partHost = partHost;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class AEGridBlock implements IGridBlock
 
 	public IMEMonitor<IAEFluidStack> getFluidMonitor()
 	{
-		IGridNode node = this.host.getGridNode();
+		IGridNode node = this.partHost.getGridNode();
 
 		if ( node == null )
 		{
@@ -77,25 +77,25 @@ public class AEGridBlock implements IGridBlock
 	@Override
 	public double getIdlePowerUsage()
 	{
-		return this.host.getPowerUsage();
+		return this.partHost.getPowerUsage();
 	}
 
 	@Override
 	public DimensionalCoord getLocation()
 	{
-		return this.host.getLocation();
+		return this.partHost.getLocation();
 	}
 
 	@Override
 	public IGridHost getMachine()
 	{
-		return this.host;
+		return this.partHost;
 	}
 
 	@Override
 	public ItemStack getMachineRepresentation()
 	{
-		return this.host.getItemStack( PartItemStack.Network );
+		return this.partHost.getItemStack( PartItemStack.Network );
 	}
 
 	@Override

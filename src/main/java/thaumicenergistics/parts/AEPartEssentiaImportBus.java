@@ -6,7 +6,7 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.registries.AEPartsEnum;
-import thaumicenergistics.render.BlockTextureManager;
+import thaumicenergistics.texture.BlockTextureManager;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEColor;
@@ -53,7 +53,7 @@ public class AEPartEssentiaImportBus extends AEPartEssentiaIO
 	{
 		if ( this.facingContainer != null )
 		{
-			return this.importEssentaToNetwork( transferAmount );
+			return this.injectEssentaToNetwork( transferAmount );
 		}
 
 		return false;

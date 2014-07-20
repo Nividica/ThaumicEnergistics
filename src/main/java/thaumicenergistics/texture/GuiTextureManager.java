@@ -1,4 +1,4 @@
-package thaumicenergistics.render;
+package thaumicenergistics.texture;
 
 import thaumicenergistics.ThaumicEnergistics;
 import net.minecraft.util.ResourceLocation;

@@ -21,7 +21,7 @@ import thaumicenergistics.aspect.AspectStackComparator;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.network.GuiHandler;
 import thaumicenergistics.registries.ItemEnum;
-import thaumicenergistics.render.BlockTextureManager;
+import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;

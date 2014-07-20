@@ -16,7 +16,7 @@ import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.PacketEssentiaEmitter;
 import thaumicenergistics.parts.AEPartEssentiaLevelEmitter;
 import thaumicenergistics.registries.AEPartsEnum;
-import thaumicenergistics.render.GuiTextureManager;
+import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.RedstoneMode;

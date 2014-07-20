@@ -38,6 +38,8 @@ public abstract class ContainerCellTerminalBase
 	public ContainerCellTerminalBase( EntityPlayer player )
 	{
 		this.player = player;
+		
+		this.lastSoundPlaytime = System.currentTimeMillis();
 	}
 	
 	public void attachToMonitor()
@@ -183,6 +185,7 @@ public abstract class ContainerCellTerminalBase
 			this.guiBase.updateAspects();
 		}
 	}
+	
 	
 	@Override
 	public void onInventoryChanged()

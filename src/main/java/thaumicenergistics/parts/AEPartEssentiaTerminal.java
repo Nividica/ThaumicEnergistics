@@ -15,14 +15,10 @@ import thaumicenergistics.container.ContainerCellTerminalBase;
 import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.gui.GuiEssentiaTerminal;
 import thaumicenergistics.registries.AEPartsEnum;
-import thaumicenergistics.render.BlockTextureManager;
+import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.PrivateInventory;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEColor;
@@ -31,7 +27,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaTerminal
 	extends AEPartBase
-	implements IGridTickable
 {
 	private List<ContainerEssentiaTerminal> containers = new ArrayList<ContainerEssentiaTerminal>();
 
@@ -95,14 +90,6 @@ public class AEPartEssentiaTerminal
 	public Object getServerGuiElement( EntityPlayer player )
 	{
 		return new ContainerEssentiaTerminal( this, player );
-	}
-
-	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
-	{
-		// Let the manager know how often we would like to be ticked
-		//return new TickingRequest( 2, 15, false, false );
-		return null;
 	}
 
 	@Override
@@ -202,13 +189,6 @@ public class AEPartEssentiaTerminal
 
 		helper.setBounds( 5.0F, 5.0F, 12.0F, 11.0F, 11.0F, 13.0F );
 		this.renderStaticBusLights( x, y, z, helper, renderer );
-
-	}
-	
-	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
-	{
-		return null;
 
 	}
 	

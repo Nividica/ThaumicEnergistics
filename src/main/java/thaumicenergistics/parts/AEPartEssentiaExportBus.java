@@ -7,7 +7,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.tiles.TileJarFillable;
 import thaumicenergistics.registries.AEPartsEnum;
-import thaumicenergistics.render.BlockTextureManager;
+import thaumicenergistics.texture.BlockTextureManager;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -38,7 +38,7 @@ public class AEPartEssentiaExportBus extends AEPartEssentiaIO
 	{
 		if ( ( this.facingContainer != null ) && ( this.facingContainer instanceof TileJarFillable ) )
 		{
-			return this.exportEssentiaFromNetwork( transferAmount );
+			return this.extractEssentiaFromNetwork( transferAmount );
 		}
 
 		return false;

@@ -22,7 +22,6 @@ import appeng.tile.storage.TileChest;
 
 public class ContainerEssentiaCell extends ContainerCellTerminalBase
 {
-	//private HandlerItemEssentiaCell storageFluid;
 	private AspectStack selectedAspectStack;
 	private TileChest hostChest;
 	

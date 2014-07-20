@@ -1,13 +1,14 @@
-Features
+﻿Features
 ==================
 
 ###Essentia Transportation
     Import/export essentia in/out the AE network.
-    Use existing jars as network storage.
-    --Planned-- Respond to suction requests from jars and the thaumatorium.
+    --WIP-- Export essentia in response to suction.
+    --Planned- Export essentia in response to infusion requests.
     
 ###Storage
     Store essentia in digital format using disks.
+    Use existing jars as network storage.
     
 ###Status:
     View types and amounts of essentia stored in the network.

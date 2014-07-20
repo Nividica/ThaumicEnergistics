@@ -1,4 +1,4 @@
-package thaumicenergistics.render;
+package thaumicenergistics.texture;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

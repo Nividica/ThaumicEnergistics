@@ -97,6 +97,8 @@ public class ContainerEssentiaTerminal
 	{
 		super.detectAndSendChanges();
 		
+		// TODO: locks on terminal tile to prevent CME's
+		
 		if( this.monitor != null )
 		{	
 			if( EssentiaCellTerminalWorker.hasWork( this.inventory ) )

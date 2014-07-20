@@ -19,12 +19,16 @@ import thaumicenergistics.inventory.HandlerEssentiaStorageBus;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.PacketAspectSlot;
 import thaumicenergistics.registries.AEPartsEnum;
-import thaumicenergistics.render.BlockTextureManager;
+import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkStorageEvent;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.ICellContainer;
@@ -37,10 +41,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 //TODO: Priority Window
-public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContainer, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory
+public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContainer, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory, IGridTickable
 {
 	private int priority = 0;
-
+	private boolean containerWasEmptyLastTick = false;
 	private HandlerEssentiaStorageBus handler = new HandlerEssentiaStorageBus( this );
 	private Aspect[] filteredAspects = new Aspect[54];
 	private UpgradeInventory upgradeInventory = new UpgradeInventory( this.associatedItem, this, 1 );
@@ -131,6 +135,8 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 	@Override
 	public void onNeighborChanged()
 	{
+		super.onNeighborChanged();
+		
 		this.handler.onNeighborChange();
 
 		if ( this.node != null )
@@ -163,8 +169,6 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 		this.upgradeInventory.readFromNBT( data, "UpgradeInventory" );
 
 		this.onInventoryChanged();
-
-		this.onNeighborChanged();
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -266,6 +270,43 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 		}
 
 		this.upgradeInventory.writeToNBT( data, "UpgradeInventory" );
+	}
+
+	@Override
+	public TickingRequest getTickingRequest( IGridNode node )
+	{
+		// We would like a tick ever 20 MC ticks
+		return new TickingRequest( 20, 20, false, false );
+	}
+
+	@Override
+	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	{	
+		// Do we have a container?
+		if( this.facingContainer != null )
+		{
+			// Check the amount in the container
+			int currentAmount = this.facingContainer.getAspects().size();
+							
+			// Was the container empty last tick, and it is not now?
+			if( this.containerWasEmptyLastTick && currentAmount > 0 )
+			{
+				// Mark that it is not empty
+				this.containerWasEmptyLastTick = false;
+				
+				// Neighbor has changed
+				this.onNeighborChanged();
+			}
+			// Was the container not empty last tick, and now it is?
+			else if( !this.containerWasEmptyLastTick && currentAmount == 0 )
+			{
+				// Mark as empty
+				this.containerWasEmptyLastTick = true;
+			}
+		}
+		
+		// Keep chugging along
+		return TickRateModulation.SAME;
 	}
 
 }

@@ -1,4 +1,4 @@
-package thaumicenergistics.render;
+package thaumicenergistics.texture;
 
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
@@ -18,7 +18,8 @@ public enum BlockTextureManager
 		ESSENTIA_STORAGE_CELL_CHEST (TextureTypes.Block, new String[] { "essentia.storage.cell.chest.overlay" }),
 		ESSENTIA_TERMINAL (TextureTypes.Part, new String[] { "essentia.terminal.overlay.1",
 						"essentia.terminal.overlay.2",
-						"essentia.terminal.overlay.3" });
+						"essentia.terminal.overlay.3" }),
+		ESSENTIA_PROVIDER( TextureTypes.Block, new String[] { "essentia.provider", "essentia.provider.overlay" } );
 
 	private enum TextureTypes
 	{

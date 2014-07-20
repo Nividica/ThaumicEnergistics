@@ -1,9 +1,12 @@
-#Group names
+﻿#Group names
 itemGroup.ThaumicEnergistics=Thaumic Energistics
 thaumicenergistics.group.essentia.transport=ME Essentia Import/Export Bus
 
 #Fluids
 thaumicenergistics.fluid.gaseous=Gaseous
+
+#Blocks
+thaumicenergistics.block.essentia.provider.name=Basic Essentia Provider
 
 #Cable parts
 thaumicenergistics.aeparts.essentia.ImportBus.name=Essentia Import Bus
@@ -23,6 +26,7 @@ thaumicenergistics.item.storage.component.4k.name=ME 4k Essentia Storage Compone
 thaumicenergistics.item.storage.component.16k.name=ME 16k Essentia Storage Component
 thaumicenergistics.item.storage.component.64k.name=ME 64k Essentia Storage Component
 thaumicenergistics.item.essentia.cell.inventory=Essentia Cell
+
 
 #Tooltips
 thaumicenergistics.tooltip.amount=Amount

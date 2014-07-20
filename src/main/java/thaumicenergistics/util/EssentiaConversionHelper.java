@@ -87,18 +87,21 @@ public final class EssentiaConversionHelper
 	{
 		List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
 
-		for( IAEFluidStack fluidStack : fluidStackList )
+		if( fluidStackList != null )
 		{
-			// Convert
-			AspectStack aspectStack = EssentiaConversionHelper.convertAEFluidStackToAspectStack( fluidStack );
-
-			// Was the fluid an essentia gas?
-			if ( aspectStack != null )
+			for( IAEFluidStack fluidStack : fluidStackList )
 			{
-				// Add to the stack
-				aspectStackList.add( aspectStack );
+				// Convert
+				AspectStack aspectStack = EssentiaConversionHelper.convertAEFluidStackToAspectStack( fluidStack );
+	
+				// Was the fluid an essentia gas?
+				if ( aspectStack != null )
+				{
+					// Add to the stack
+					aspectStackList.add( aspectStack );
+				}
+	
 			}
-
 		}
 
 		return aspectStackList;

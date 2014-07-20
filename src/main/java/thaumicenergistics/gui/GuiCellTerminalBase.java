@@ -19,7 +19,7 @@ import thaumicenergistics.container.ContainerCellTerminalBase;
 import thaumicenergistics.gui.widget.AspectWidgetComparator;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.gui.widget.WidgetAspectSelector;
-import thaumicenergistics.render.GuiTextureManager;
+import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.GuiHelper;
 
 public class GuiCellTerminalBase
