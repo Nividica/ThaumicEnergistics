@@ -45,16 +45,16 @@ public class AEPartEssentiaExportBus extends AEPartEssentiaIO
 	}
 
 	@Override
-	public void getBoxes( IPartCollsionHelper bch )
+	public void getBoxes( IPartCollsionHelper helper )
 	{
 		// Large chamber and back wall
-		bch.addBox( 4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 13.5F );
+		helper.addBox( 4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 13.5F );
 		
 		// Small chamber and front wall
-		bch.addBox( 5.0F, 5.0F, 13.5F, 11.0F, 11.0F, 15.0F );
+		helper.addBox( 5.0F, 5.0F, 13.5F, 11.0F, 11.0F, 15.0F );
 		
 		// Face
-		bch.addBox( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
+		helper.addBox( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
 	}
 
 	@SideOnly(Side.CLIENT)

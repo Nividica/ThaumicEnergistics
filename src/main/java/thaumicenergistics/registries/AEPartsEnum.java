@@ -38,12 +38,12 @@ public enum AEPartsEnum
 
 	private Map<Upgrades, Integer> upgrades = new HashMap<Upgrades, Integer>();
 
-	private AEPartsEnum(String unlocalizedName, Class<? extends AEPartBase> partClass)
+	private AEPartsEnum( String unlocalizedName, Class<? extends AEPartBase> partClass )
 	{
 		this( unlocalizedName, partClass, null );
 	}
 
-	private AEPartsEnum(String unlocalizedName, Class<? extends AEPartBase> partClass, String groupName)
+	private AEPartsEnum( String unlocalizedName, Class<? extends AEPartBase> partClass, String groupName )
 	{
 		// Add the mod name and parts sub-folder to the name
 		this.unlocalizedName = ThaumicEnergistics.MODID + ".aeparts." + unlocalizedName;
@@ -55,7 +55,7 @@ public enum AEPartsEnum
 		this.groupName = groupName;
 	}
 
-	private AEPartsEnum(String unlocalizedName, Class<? extends AEPartBase> partClass, String groupName, Pair<Upgrades, Integer> ... upgrades)
+	private AEPartsEnum( String unlocalizedName, Class<? extends AEPartBase> partClass, String groupName, Pair<Upgrades, Integer> ... upgrades )
 	{
 		this( unlocalizedName, partClass, groupName );
 

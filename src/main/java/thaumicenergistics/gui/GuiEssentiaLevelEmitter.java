@@ -67,8 +67,9 @@ public class GuiEssentiaLevelEmitter extends GuiContainer implements IAspectSlot
 	protected void keyTyped( char key, int keyID )
 	{
 		super.keyTyped( key, keyID );
+		
 
-		if ( ( "0123456789".contains( String.valueOf( key ) ) ) || ( keyID == 14 ) )
+		if ( ( "0123456789".contains( String.valueOf( key ) ) ) || ( keyID == Keyboard.KEY_BACK ) )
 		{
 			this.amountField.textboxKeyTyped( key, keyID );
 
@@ -90,13 +91,13 @@ public class GuiEssentiaLevelEmitter extends GuiContainer implements IAspectSlot
 	@Override
 	public void actionPerformed( GuiButton button )
 	{
-		int ID = button.id;
+		int index = button.id;
 
-		if ( ( ID >= 0 ) && ( ID <= 5 ) )
+		if ( ( index >= 0 ) && ( index <= 5 ) )
 		{
 			new PacketEssentiaEmitter( Integer.parseInt( button.displayString ), this.part, this.player ).sendPacketToServer();
 		}
-		else if ( ID == 6 )
+		else if ( index == 6 )
 		{
 			new PacketEssentiaEmitter( true, this.part, this.player ).sendPacketToServer();
 		}

@@ -5,5 +5,5 @@ import thaumcraft.api.aspects.Aspect;
 
 public interface IAspectSlotGui
 {
-	public abstract void updateAspects( List<Aspect> aspectList );
+	public void updateAspects( List<Aspect> aspectList );
 }

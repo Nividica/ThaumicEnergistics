@@ -34,9 +34,6 @@ public class HandlerItemEssentiaCell
 	private int totalTypes;
 	private long totalBytes;
 
-	// private List<ContainerEssentiaCell> containers = new
-	// ArrayList<ContainerEssentiaCell>();
-
 	public HandlerItemEssentiaCell( ItemStack storageStack )
 	{
 		// Ensure we have a NBT tag

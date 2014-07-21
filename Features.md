@@ -3,7 +3,7 @@
 
 ###Essentia Transportation
     Import/export essentia in/out the AE network.
-    --WIP-- Export essentia in response to suction.
+    Export essentia in response to suction.
     --Planned- Export essentia in response to infusion requests.
     
 ###Storage

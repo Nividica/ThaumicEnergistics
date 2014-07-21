@@ -19,7 +19,7 @@ public enum ItemEnum
 	private final String internalName;
 	private Item item;
 
-	private ItemEnum(String internalName, Item item)
+	private ItemEnum( String internalName, Item item )
 	{
 		this.internalName = internalName;
 

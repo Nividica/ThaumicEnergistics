@@ -1,4 +1,4 @@
-package thaumicenergistics.gridblock;
+package thaumicenergistics.grid;
 
 import java.util.EnumSet;
 import net.minecraft.item.ItemStack;

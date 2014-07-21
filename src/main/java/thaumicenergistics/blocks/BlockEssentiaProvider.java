@@ -1,20 +1,20 @@
 package thaumicenergistics.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.registries.BlockEnum;
-import thaumicenergistics.registries.Renderers;
-import thaumicenergistics.texture.BlockTextureManager;
-import thaumicenergistics.tileentities.TileEssentiaProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.registries.BlockEnum;
+import thaumicenergistics.registries.Renderers;
+import thaumicenergistics.texture.BlockTextureManager;
+import thaumicenergistics.tileentities.TileEssentiaProvider;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockEssentiaProvider
 	extends BlockContainer
@@ -33,6 +33,27 @@ public class BlockEssentiaProvider
 
 		// Place in our creative tab
 		this.setCreativeTab( ThaumicEnergistics.ModTab );
+	}
+	
+	// Sets the metadata for the block based on which side of the neighbor block they clicked on.
+    @Override
+	public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metaData )
+    {
+    	// Get the opposite face and return it
+    	return ForgeDirection.OPPOSITES[side];
+    }
+
+	@Override
+	public TileEntity createNewTileEntity( World world, int metaData )
+	{
+		return new TileEssentiaProvider( metaData );
+	}
+	
+	@Override
+	public void onNeighborBlockChange( World world, int x, int y, int z, Block neighbor )
+	{
+		// Inform our tile entity a neighbor has changed
+		( (TileEssentiaProvider)world.getTileEntity( x, y, z ) ).checkGridConnectionColor();
 	}
 
 	@Override
@@ -73,12 +94,6 @@ public class BlockEssentiaProvider
 		return Renderers.PASS_ALPHA;
 	}
 
-	@Override
-	public TileEntity createNewTileEntity( World world, int metaData )
-	{
-		return new TileEssentiaProvider();
-	}
-
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon( int side, int metaData )
@@ -97,17 +112,8 @@ public class BlockEssentiaProvider
 	public void registerBlockIcons( IIconRegister register )
 	{
 		// Ignored
+		
 	}
 
-	@Override
-	public void onNeighborChange( IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ )
-	{
-		// Inform the super
-		super.onNeighborChange( world, x, y, z, tileX, tileY, tileZ );
-		
-		// Inform our tile entity
-		( (TileEssentiaProvider)world.getTileEntity( x, y, z ) ).onNeighborChange( world, x, y, z );
-		
-	}
 
 }

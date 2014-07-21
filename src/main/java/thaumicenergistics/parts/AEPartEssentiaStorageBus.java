@@ -66,16 +66,16 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 	}
 
 	@Override
-	public void getBoxes( IPartCollsionHelper bch )
+	public void getBoxes( IPartCollsionHelper helper )
 	{
 		// Face
-		bch.addBox( 1.0F, 1.0F, 15.0F, 15.0F, 15.0F, 16.0F );
+		helper.addBox( 1.0F, 1.0F, 15.0F, 15.0F, 15.0F, 16.0F );
 		
 		// Mid
-		bch.addBox( 4.0D, 4.0D, 14.0D, 12.0D, 12.0D, 15.0D );
+		helper.addBox( 4.0D, 4.0D, 14.0D, 12.0D, 12.0D, 15.0D );
 		
 		// Back
-		bch.addBox( 5.0D, 5.0D, 13.0D, 11.0D, 11.0D, 14.0D );
+		helper.addBox( 5.0D, 5.0D, 13.0D, 11.0D, 11.0D, 14.0D );
 	}
 
 	@Override

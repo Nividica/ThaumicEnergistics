@@ -141,7 +141,7 @@ public class AEPartEssentiaImportBus extends AEPartEssentiaIO
 		}
 		if ( this.isActive() )
 		{
-			ts.setBrightness( 15728880 );
+			ts.setBrightness( 0xF000F0 );
 		}
 		// Face overlay
 		helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[1], ForgeDirection.SOUTH, renderer );

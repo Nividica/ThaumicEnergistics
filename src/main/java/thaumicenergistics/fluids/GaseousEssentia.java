@@ -36,6 +36,7 @@ public class GaseousEssentia extends Fluid
 		}
 		else
 		{
+			//TODO: format string
 			FMLLog.warning( "", ThaumicEnergistics.MODID + ": Unable to register '" + aspect.getTag() + "' as fluid." );
 		}
 

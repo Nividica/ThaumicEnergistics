@@ -19,7 +19,7 @@ public enum BlockTextureManager
 		ESSENTIA_TERMINAL (TextureTypes.Part, new String[] { "essentia.terminal.overlay.1",
 						"essentia.terminal.overlay.2",
 						"essentia.terminal.overlay.3" }),
-		ESSENTIA_PROVIDER( TextureTypes.Block, new String[] { "essentia.provider", "essentia.provider.overlay" } );
+		ESSENTIA_PROVIDER( TextureTypes.Block, new String[] { "essentia.provider", "essentia.provider.overlay", "essentia.provider.overlay.nogridcolor" } );
 
 	private enum TextureTypes
 	{

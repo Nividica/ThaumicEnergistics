@@ -1,4 +1,11 @@
-﻿7/19/2014 0.1.1a
+﻿7/20/2014 0.1.2a
+    Essentia Providers now take on the color of the cable they are placed against.
+    Essentia Providers will take on the color of the first cable it finds if there are not matching cables with its color.
+    Bugfix: Incorrect lighting on essentia providers.
+    Rotated provider textures for a more seamless look.
+    Various code cleanups.
+
+7/19/2014 0.1.1a
     Created block for Essentia Provider.
     Implemented Thaumcraft part of essentia provider functionality.
     Implemented AppEng part of essentia provider functionality.

@@ -7,6 +7,6 @@ public final class TileEntities
 {
 	public static void registerTiles()
 	{
-		GameRegistry.registerTileEntity( TileEssentiaProvider.class, TileEssentiaProvider.TileID );
+		GameRegistry.registerTileEntity( TileEssentiaProvider.class, TileEssentiaProvider.TILE_ID );
 	}
 }

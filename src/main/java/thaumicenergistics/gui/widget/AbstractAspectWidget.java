@@ -61,7 +61,7 @@ public abstract class AbstractAspectWidget extends Gui
 			this.drawGradientRect( i1 - 3, j1 - 3, i1 + maxStringLength + 3, j1 + k1 + 3, l1, l1 );
 			this.drawGradientRect( i1 - 4, j1 - 3, i1 - 3, j1 + k1 + 3, l1, l1 );
 			this.drawGradientRect( i1 + maxStringLength + 3, j1 - 3, i1 + maxStringLength + 4, j1 + k1 + 3, l1, l1 );
-			int i2 = 1347420415;
+			int i2 = 0x505000FF;
 			int j2 = ( ( i2 & 0xFEFEFE ) >> 1 ) | ( i2 & 0xFF000000 );
 			this.drawGradientRect( i1 - 3, ( j1 - 3 ) + 1, ( i1 - 3 ) + 1, ( j1 + k1 + 3 ) - 1, i2, j2 );
 			this.drawGradientRect( i1 + maxStringLength + 2, ( j1 - 3 ) + 1, i1 + maxStringLength + 3, ( j1 + k1 + 3 ) - 1, i2, j2 );
