@@ -7,8 +7,11 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaEmitter;
+import thaumicenergistics.gui.widget.AbstractAspectWidget;
 import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.gui.widget.WidgetRedstoneModes;
@@ -21,177 +24,388 @@ import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.RedstoneMode;
 
-public class GuiEssentiaLevelEmitter extends GuiContainer implements IAspectSlotGui
+/**
+ * Gui for the level emitter.
+ * 
+ * @author Nividica
+ * 
+ */
+@SideOnly(Side.CLIENT)
+public class GuiEssentiaLevelEmitter
+	extends GuiContainer
+	implements IAspectSlotGui
 {
+	/**
+	 * Normal button labels
+	 */
 	private static String[] BUTTON_LABELS = { "-1", "-10", "-100", "+1", "+10", "+100" };
+
+	/**
+	 * Button labels when shift is being pressed.
+	 */
 	private static String[] BUTTON_LABELS_SHIFTED = { "-100", "-1000", "-10000", "+100", "+1000", "+10000" };
 
-	public static final int XSIZE = 176;
-	public static final int YSIZE = 184;
+	/**
+	 * Width of the gui
+	 */
+	private static final int GUI_X_SIZE = 176;
 
+	/**
+	 * Height of the gui
+	 */
+	private static final int GUI_Y_SIZE = 184;
+
+	/**
+	 * The button index of the redstone mode button.
+	 */
+	private static final int REDSTONE_MODE_BUTTON_INDEX = 6;
+
+	/**
+	 * X position of the title string.
+	 */
+	private static final int TITLE_POS_X = 10;
+
+	/**
+	 * Y position of the title string.
+	 */
+	private static final int TITLE_POS_Y = -15;
+
+	/**
+	 * X offset for the amount field.
+	 */
+	private static final int AMOUNT_OFFSET_X = 24;
+
+	/**
+	 * Y offset for the amount field.
+	 */
+	private static final int AMOUNT_OFFSET_Y = 44;
+
+	/**
+	 * Width of the amount field.
+	 */
+	private static final int AMOUNT_WIDTH = 80;
+
+	/**
+	 * Height of the amount field.
+	 */
+	private static final int AMOUNT_HEIGHT = 10;
+
+	/**
+	 * Horizontal padding between buttons.
+	 */
+	private static final int BUTTON_PADDING_HORZ = 8;
+
+	/**
+	 * Vertical padding between buttons.
+	 */
+	private static final int BUTTON_PADDING_VERT = 52;
+
+	/**
+	 * X position to start drawing buttons.
+	 */
+	private static final int BUTTON_POS_X = 19;
+
+	/**
+	 * Y position to start drawing buttons.
+	 */
+	private static final int BUTTON_POS_Y = 14;
+
+	/**
+	 * Width of the buttons.
+	 */
+	private static final int BUTTON_WIDTH = 42;
+
+	/**
+	 * Height of the buttons.
+	 */
+	private static final int BUTTON_HEIGHT = 10;
+
+	/**
+	 * Number of button rows.
+	 */
+	private static final int BUTTON_ROWS = 2;
+
+	/**
+	 * Number of button columns.
+	 */
+	private static final int BUTTON_COLUMNS = 3;
+
+	/**
+	 * X position of the redstone button.
+	 */
+	private static final int REDSTONE_BUTTON_POS_X = -18;
+
+	/**
+	 * Y position of the redstone button.
+	 */
+	private static final int REDSTONE_BUTTON_POS_Y = 2;
+
+	/**
+	 * Width and height of the redstone button.
+	 */
+	private static final int REDSTONE_BUTTON_SIZE = 16;
+
+	/**
+	 * Amount text field
+	 */
 	private DigitTextField amountField;
-	private AEPartEssentiaLevelEmitter part;
-	private EntityPlayer player;
-	private WidgetAspectSlot aspectSlot;
 
-	public GuiEssentiaLevelEmitter(AEPartEssentiaLevelEmitter part, EntityPlayer player)
+	/**
+	 * AE part associated with the gui.
+	 */
+	private AEPartEssentiaLevelEmitter part;
+
+	/**
+	 * Player viewing the gui.
+	 */
+	private EntityPlayer player;
+
+	/**
+	 * Filter slot.
+	 */
+	private WidgetAspectSlot aspectFilterSlot;
+
+	/**
+	 * Create the GUI.
+	 * 
+	 * @param part
+	 * AE part associated with the gui.
+	 * @param player
+	 * Player viewing the gui.
+	 */
+	public GuiEssentiaLevelEmitter( AEPartEssentiaLevelEmitter part, EntityPlayer player )
 	{
+		// Call super
 		super( new ContainerPartEssentiaEmitter( player ) );
 
+		// Set the player
 		this.player = player;
 
+		// Set the part
 		this.part = part;
 
-		this.aspectSlot = new WidgetAspectSlot( this.player, this.part, 123, 30 );
+		// Create the filter slot
+		this.aspectFilterSlot = new WidgetAspectSlot( this.player, this.part, 123, 30 );
 
 		new PacketEssentiaEmitter( false, this.part, this.player ).sendPacketToServer();
 	}
 
+	/**
+	 * Draw the gui background
+	 */
 	@Override
 	protected void drawGuiContainerBackgroundLayer( float f, int i, int j )
 	{
-		// this.drawDefaultBackground();
-
+		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
+		// Set the texture
 		Minecraft.getMinecraft().renderEngine.bindTexture( GuiTextureManager.ESSENTIA_LEVEL_EMITTER.getTexture() );
 
-		int posX = ( this.width - XSIZE ) / 2;
+		// Calculate the position
+		int posX = ( this.width - GUI_X_SIZE ) / 2;
+		int posY = ( this.height - GUI_Y_SIZE ) / 2;
 
-		int posY = ( this.height - YSIZE ) / 2;
-
-		this.drawTexturedModalRect( posX, posY, 0, 0, XSIZE, YSIZE );
+		// Draw the gui texture.
+		this.drawTexturedModalRect( posX, posY, 0, 0, GUI_X_SIZE, GUI_Y_SIZE );
 	}
 
+	/**
+	 * Called when the player types a key
+	 */
 	@Override
 	protected void keyTyped( char key, int keyID )
 	{
+		// Pass to super
 		super.keyTyped( key, keyID );
-		
 
+		// Ensure they was numeric, or backspace
 		if ( ( "0123456789".contains( String.valueOf( key ) ) ) || ( keyID == Keyboard.KEY_BACK ) )
 		{
+			// Pass to the amount field
 			this.amountField.textboxKeyTyped( key, keyID );
 
 			new PacketEssentiaEmitter( this.amountField.getText(), this.part, this.player ).sendPacketToServer();
 		}
 	}
 
+	/**
+	 * Called when the player clicks a mouse button
+	 */
 	@Override
 	protected void mouseClicked( int mouseX, int mouseY, int mouseBtn )
 	{
+		// Pass to super
 		super.mouseClicked( mouseX, mouseY, mouseBtn );
 
-		if ( GuiHelper.isPointInGuiRegion( this.aspectSlot.getPosX(), this.aspectSlot.getPosY(), 18, 18, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+		// Is the mouse over the widget?
+		if ( GuiHelper.isPointInGuiRegion( this.aspectFilterSlot.getPosX(), this.aspectFilterSlot.getPosY(), AbstractAspectWidget.WIDGET_SIZE,
+			AbstractAspectWidget.WIDGET_SIZE, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 		{
-			this.aspectSlot.mouseClicked( EssentiaItemContainerHelper.getAspectInContainer( this.player.inventory.getItemStack() ) );
+			// Pass to the widget
+			this.aspectFilterSlot.mouseClicked( EssentiaItemContainerHelper.getAspectInContainer( this.player.inventory.getItemStack() ) );
 		}
 	}
 
+	/**
+	 * Called when a button is clicked.
+	 */
 	@Override
 	public void actionPerformed( GuiButton button )
 	{
+		// Get the index of the button that was clicked
 		int index = button.id;
 
-		if ( ( index >= 0 ) && ( index <= 5 ) )
+		// Is the button one of the amount buttons?
+		if ( ( index >= 0 ) && ( index < GuiEssentiaLevelEmitter.BUTTON_LABELS.length ) )
 		{
 			new PacketEssentiaEmitter( Integer.parseInt( button.displayString ), this.part, this.player ).sendPacketToServer();
 		}
-		else if ( index == 6 )
+		else if ( index == GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX )
 		{
 			new PacketEssentiaEmitter( true, this.part, this.player ).sendPacketToServer();
 		}
 	}
 
+	/**
+	 * Draw the foreground
+	 */
 	@Override
 	public void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
 	{
-		this.fontRendererObj.drawString( AEPartsEnum.EssentiaLevelEmitter.getStatName(), 10, -15, 0 );
+		// Draw the title
+		this.fontRendererObj.drawString( AEPartsEnum.EssentiaLevelEmitter.getStatName(), GuiEssentiaLevelEmitter.TITLE_POS_X,
+			GuiEssentiaLevelEmitter.TITLE_POS_Y, 0 );
 
-		this.aspectSlot.drawWidget();
+		// Draw the filter widget
+		this.aspectFilterSlot.drawWidget();
 
-		GuiHelper.renderOverlay( this.zLevel, this.guiLeft, this.guiTop, this.aspectSlot, mouseX, mouseY );
+		// TODO: Do I still need this?
+		//GuiHelper.renderOverlay( this.zLevel, this.guiLeft, this.guiTop, this.aspectFilterSlot, mouseX, mouseY );
 	}
 
+	/**
+	 * Draws the screen and all the components in it.
+	 */
 	@Override
 	public void drawScreen( int x, int y, float f )
 	{
-		this.drawDefaultBackground();
+		// Get the number of buttons
+		int count = this.buttonList.size();
 
-		int count = Math.min( 6, this.buttonList.size() );
-
-		for( int i = 0; i < count; i++ )
+		// Loop over the buttons
+		for( int buttonIndex = 0; buttonIndex < count; buttonIndex++ )
 		{
-			GuiButton currentButton = (GuiButton) this.buttonList.get( i );
+			// Get the button for this index
+			GuiButton currentButton = (GuiButton)this.buttonList.get( buttonIndex );
 
+			// Is shift being held?
 			if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) )
 			{
-				currentButton.displayString = ( BUTTON_LABELS_SHIFTED[i] );
+				// Shifted label
+				currentButton.displayString = ( BUTTON_LABELS_SHIFTED[buttonIndex] );
 			}
 			else
 			{
-				currentButton.displayString = ( BUTTON_LABELS[i] );
+				// Normal label
+				currentButton.displayString = ( BUTTON_LABELS[buttonIndex] );
 			}
 		}
 
+		// Pass to super
 		super.drawScreen( x, y, f );
 
+		// Draw the text field
 		this.amountField.drawTextBox();
 	}
 
+	/**
+	 * Sets up the gui
+	 */
 	@Override
 	public void initGui()
 	{
-		int posX = ( this.width - XSIZE ) / 2;
-		int posY = ( this.height - YSIZE ) / 2;
+		// Calculate the left most X position
+		int guiLeftX = ( this.width - GUI_X_SIZE ) / 2;
 
-		this.amountField = new DigitTextField( this.fontRendererObj, posX + 24, posY + 44, 80, 10 );
+		// Calculate the top most Y position
+		int guiTopY = ( this.height - GUI_Y_SIZE ) / 2;
 
+		// Create the amount field
+		this.amountField = new DigitTextField( this.fontRendererObj, guiLeftX + GuiEssentiaLevelEmitter.AMOUNT_OFFSET_X, guiTopY +
+						GuiEssentiaLevelEmitter.AMOUNT_OFFSET_Y, GuiEssentiaLevelEmitter.AMOUNT_WIDTH, GuiEssentiaLevelEmitter.AMOUNT_HEIGHT );
+
+		// Start focused
 		this.amountField.setFocused( true );
 
+		// Draw in the forground
 		this.amountField.setEnableBackgroundDrawing( false );
 
+		// Text color white
 		this.amountField.setTextColor( 0xFFFFFF );
 
+		// Reset the button list
 		this.buttonList.clear();
 
-		this.buttonList.add( new GuiButton( 0, ( posX + 65 ) - 46, posY + 14, 42, 20, BUTTON_LABELS[0] ) );
+		for( int row = 0; row < GuiEssentiaLevelEmitter.BUTTON_ROWS; row++ )
+		{
+			// Calculate the y position of this row
+			int yPos = ( guiTopY + GuiEssentiaLevelEmitter.BUTTON_POS_Y ) +
+							( row * ( GuiEssentiaLevelEmitter.BUTTON_HEIGHT + GuiEssentiaLevelEmitter.BUTTON_PADDING_VERT ) );
 
-		this.buttonList.add( new GuiButton( 1, ( posX + 115 ) - 46, posY + 14, 42, 20, BUTTON_LABELS[1] ) );
+			for( int column = 0; column < GuiEssentiaLevelEmitter.BUTTON_COLUMNS; column++ )
+			{
+				// Calculate the button index
+				int buttonIndex = ( row * 3 ) + column;
 
-		this.buttonList.add( new GuiButton( 2, ( posX + 165 ) - 46, posY + 14, 42, 20, BUTTON_LABELS[2] ) );
+				// Calculate the x position of the button
+				int xPos = ( ( guiLeftX + GuiEssentiaLevelEmitter.BUTTON_POS_X ) + ( column * ( GuiEssentiaLevelEmitter.BUTTON_WIDTH + GuiEssentiaLevelEmitter.BUTTON_PADDING_HORZ ) ) );
 
-		this.buttonList.add( new GuiButton( 3, ( posX + 65 ) - 46, ( posY + 64 ) - 2, 42, 20, BUTTON_LABELS[3] ) );
+				this.buttonList.add( new GuiButton( buttonIndex, xPos, yPos, GuiEssentiaLevelEmitter.BUTTON_WIDTH,
+								GuiEssentiaLevelEmitter.BUTTON_HEIGHT, GuiEssentiaLevelEmitter.BUTTON_LABELS[buttonIndex] ) );
+			}
+		}
 
-		this.buttonList.add( new GuiButton( 4, ( posX + 115 ) - 46, ( posY + 64 ) - 2, 42, 20, BUTTON_LABELS[4] ) );
+		// Add the redstone mode button
+		this.buttonList.add( new WidgetRedstoneModes( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX, guiLeftX -
+						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_X, guiTopY + GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_Y,
+						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, RedstoneMode.LOW_SIGNAL, true ) );
 
-		this.buttonList.add( new GuiButton( 5, ( posX + 165 ) - 46, ( posY + 64 ) - 2, 42, 20, BUTTON_LABELS[5] ) );
-
-		this.buttonList.add( new WidgetRedstoneModes( 6, posX - 18, posY + 2, 16, 16, RedstoneMode.LOW_SIGNAL, true ) );
-
+		// Call super
 		super.initGui();
 	}
 
+	/**
+	 * Returns the amount
+	 * @param amount
+	 */
 	public void setAmountField( long amount )
 	{
 		this.amountField.setText( Long.toString( amount ) );
 	}
 
+	/**
+	 * Sets the redstone mode
+	 * @param mode
+	 */
 	public void setRedstoneMode( RedstoneMode mode )
 	{
-		( (WidgetRedstoneModes) this.buttonList.get( 6 ) ).setRedstoneMode( mode );
+		( (WidgetRedstoneModes)this.buttonList.get( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX ) ).setRedstoneMode( mode );
 	}
 
+	/**
+	 * Sets the filtered aspect
+	 */
 	@Override
 	public void updateAspects( List<Aspect> aspectList )
 	{
 		if ( ( aspectList == null ) || ( aspectList.isEmpty() ) )
 		{
-			this.aspectSlot.setAspect( null );
+			this.aspectFilterSlot.setAspect( null );
 		}
 		else
 		{
-			this.aspectSlot.setAspect( aspectList.get( 0 ) );
+			this.aspectFilterSlot.setAspect( aspectList.get( 0 ) );
 		}
 	}
 

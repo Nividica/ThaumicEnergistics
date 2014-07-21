@@ -18,6 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.ContainerCellTerminalBase;
+import thaumicenergistics.gui.widget.AbstractAspectWidget;
 import thaumicenergistics.gui.widget.AspectWidgetComparator;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.gui.widget.WidgetAspectSelector;
@@ -395,9 +396,9 @@ public class GuiCellTerminalBase
 					WidgetAspectSelector widget = this.matchingSearchWidgets.get( index );
 
 					// Is the mouse over this widget?
-					if ( GuiHelper.isPointInGuiRegion( ( x * WidgetAspectSelector.WIDGET_WIDTH ) + GuiCellTerminalBase.WIDGET_OFFSET_X,
-						( y * WidgetAspectSelector.WIDGET_WIDTH ) + GuiCellTerminalBase.WIDGET_OFFSET_Y, WidgetAspectSelector.WIDGET_HEIGHT,
-						WidgetAspectSelector.WIDGET_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+					if ( GuiHelper.isPointInGuiRegion( ( x * AbstractAspectWidget.WIDGET_SIZE ) + GuiCellTerminalBase.WIDGET_OFFSET_X,
+						( y * AbstractAspectWidget.WIDGET_SIZE ) + GuiCellTerminalBase.WIDGET_OFFSET_Y, AbstractAspectWidget.WIDGET_SIZE,
+						AbstractAspectWidget.WIDGET_SIZE, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 					{
 						// Play clicky sound
 						Minecraft.getMinecraft().getSoundHandler()
@@ -457,8 +458,8 @@ public class GuiCellTerminalBase
 
 				// Is the mouse over this widget?
 				if ( ( widgetUnderMouse == null ) &&
-								GuiHelper.isPointInGuiRegion( widgetPosX, widgetPosY, WidgetAspectSelector.WIDGET_HEIGHT,
-									WidgetAspectSelector.WIDGET_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+								GuiHelper.isPointInGuiRegion( widgetPosX, widgetPosY, AbstractAspectWidget.WIDGET_SIZE,
+									AbstractAspectWidget.WIDGET_SIZE, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 				{
 					// Set the widget and its position
 					widgetUnderMouse = this.matchingSearchWidgets.get( index );
@@ -479,12 +480,12 @@ public class GuiCellTerminalBase
 					widgetColumnPosition = 1;
 
 					// Increment y
-					widgetPosY += WidgetAspectSelector.WIDGET_HEIGHT;
+					widgetPosY += AbstractAspectWidget.WIDGET_SIZE;
 				}
 				else
 				{
 					// Increment the x position
-					widgetPosX += WidgetAspectSelector.WIDGET_WIDTH;
+					widgetPosX += AbstractAspectWidget.WIDGET_SIZE;
 				}
 			}
 

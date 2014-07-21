@@ -13,16 +13,13 @@ import thaumicenergistics.aspect.AspectStack;
 public class WidgetAspectSelector
 	extends AbstractAspectWidget
 {
-	public static int WIDGET_WIDTH = 18;
-	public static int WIDGET_HEIGHT = 18;
-
 	private long amount = 0L;
 	private int color;
 	private int borderThickness;
 
 	public WidgetAspectSelector(IAspectSelectorGui selectorGui, AspectStack stack)
 	{
-		super( selectorGui, WIDGET_HEIGHT, WIDGET_WIDTH, stack.aspect );
+		super( selectorGui, AbstractAspectWidget.WIDGET_SIZE, AbstractAspectWidget.WIDGET_SIZE, stack.aspect );
 
 		this.amount = stack.amount;
 

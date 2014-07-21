@@ -1,6 +1,7 @@
 ﻿7/21/2014 0.1.3a
     Various bug fixes.
     Code comments and cleanup
+    Bugfix: Possible CME on terminal inventory when multiple players are using it.
     
 7/20/2014 0.1.2a
     Essentia Providers now take on the color of the cable they are placed against.

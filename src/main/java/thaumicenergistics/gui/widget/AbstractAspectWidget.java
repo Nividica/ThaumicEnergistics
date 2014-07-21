@@ -10,6 +10,11 @@ import thaumicenergistics.util.GuiHelper;
 
 public abstract class AbstractAspectWidget extends Gui
 {
+	/**
+	 * The width and height of the aspect
+	 */
+	public static int WIDGET_SIZE = 18;
+	
 	protected IAspectWidgetGui selectorGui;
 	protected Aspect aspect;
 	protected int width = 0;
