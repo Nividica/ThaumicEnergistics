@@ -15,7 +15,7 @@ public enum GuiTextureManager
 	private GuiTextureManager( String textureName )
 	{
 		// Create the resource location
-		this.texture = new ResourceLocation( ThaumicEnergistics.MODID, "textures/gui/" + textureName + ".png" );
+		this.texture = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/gui/" + textureName + ".png" );
 	}
 	
 	public ResourceLocation getTexture()

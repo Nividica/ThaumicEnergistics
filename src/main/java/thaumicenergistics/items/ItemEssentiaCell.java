@@ -91,7 +91,7 @@ public class ItemEssentiaCell
 	@Override
 	public String getUnlocalizedName( ItemStack itemStack )
 	{
-		return ThaumicEnergistics.MODID + ".item.essentia.cell." + SUFFIXES[itemStack.getItemDamage()];
+		return ThaumicEnergistics.MOD_ID + ".item.essentia.cell." + SUFFIXES[itemStack.getItemDamage()];
 	}
 
 	@Override
@@ -110,11 +110,11 @@ public class ItemEssentiaCell
 		HandlerItemEssentiaCell cellHandler = (HandlerItemEssentiaCell)handler;
 
 		// Create the bytes tooltip
-		String bytesTip = String.format( StatCollector.translateToLocal( ThaumicEnergistics.MODID + ".tooltip.essentia.cell.bytes" ),
+		String bytesTip = String.format( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.essentia.cell.bytes" ),
 			new Object[] { cellHandler.usedBytes() / ItemEssentiaCell.CONVERSION_SIZE, cellHandler.totalBytes() / ItemEssentiaCell.CONVERSION_SIZE } );
 
 		// Create the types tooltip
-		String typesTip = String.format( StatCollector.translateToLocal( ThaumicEnergistics.MODID + ".tooltip.essentia.cell.types" ),
+		String typesTip = String.format( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.essentia.cell.types" ),
 			new Object[] { cellHandler.usedTypes(), cellHandler.totalTypes() } );
 
 		// Add the tooltips
@@ -311,7 +311,7 @@ public class ItemEssentiaCell
 
 		for( int i = 0; i < SUFFIXES.length; i++ )
 		{
-			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MODID + ":essentia.cell." + SUFFIXES[i] );
+			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":essentia.cell." + SUFFIXES[i] );
 		}
 	}
 

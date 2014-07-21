@@ -25,7 +25,7 @@ public enum ItemEnum
 
 		this.item = item;
 
-		this.item.setUnlocalizedName( ThaumicEnergistics.MODID + "." + this.internalName );
+		this.item.setUnlocalizedName( ThaumicEnergistics.MOD_ID + "." + this.internalName );
 
 		this.item.setCreativeTab( ThaumicEnergistics.ModTab );
 	}

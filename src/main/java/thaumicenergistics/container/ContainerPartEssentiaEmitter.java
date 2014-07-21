@@ -4,25 +4,59 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerPartEssentiaEmitter extends ContainerWithPlayerInventory
+/**
+ * Inventory container for essentia emitter.
+ * 
+ * @author Nividica
+ * 
+ */
+public class ContainerPartEssentiaEmitter
+	extends ContainerWithPlayerInventory
 {
-	public ContainerPartEssentiaEmitter(EntityPlayer player)
+	/**
+	 * X position for the player inventory
+	 */
+	private static int PLAYER_INV_POSITION_X = 93;
+
+	/**
+	 * Y position for the player inventory
+	 */
+	private static int PLAYER_INV_POSITION_Y = 151;
+
+	/**
+	 * Slot ID offset the player inventory
+	 */
+	public static int PLAYER_INV_SLOT_OFFSET = 0;
+
+	/**
+	 * Create the container.
+	 * 
+	 * @param player
+	 * The owner of this container.
+	 */
+	public ContainerPartEssentiaEmitter( EntityPlayer player )
 	{
-		this.bindPlayerInventory( player.inventory, 93, 151 );
+		// Get the players inventory and bind it to the container.
+		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaEmitter.PLAYER_INV_SLOT_OFFSET, ContainerPartEssentiaEmitter.PLAYER_INV_POSITION_X,
+			ContainerPartEssentiaEmitter.PLAYER_INV_POSITION_Y );
 	}
 
+	/**
+	 * Who can interact with the container?
+	 */
 	@Override
 	public boolean canInteractWith( EntityPlayer player )
 	{
 		return true;
 	}
 
+	// TODO: Fix this up, move to superclass
 	@Override
 	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
 	{
 		ItemStack itemStack = null;
 
-		Slot slot = (Slot) this.inventorySlots.get( slotNumber );
+		Slot slot = (Slot)this.inventorySlots.get( slotNumber );
 
 		if ( ( slot != null ) && ( slot.getHasStack() ) )
 		{
@@ -34,11 +68,11 @@ public class ContainerPartEssentiaEmitter extends ContainerWithPlayerInventory
 
 			if ( slotNumber == 0 )
 			{
-				( (Slot) this.inventorySlots.get( 0 ) ).putStack( null );
+				( (Slot)this.inventorySlots.get( 0 ) ).putStack( null );
 			}
 			else if ( ( slotNumber >= 1 ) && ( slotNumber <= 36 ) )
 			{
-				( (Slot) this.inventorySlots.get( 0 ) ).putStack( itemStack );
+				( (Slot)this.inventorySlots.get( 0 ) ).putStack( itemStack );
 			}
 		}
 

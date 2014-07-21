@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.tuple.MutablePair;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.container.ContainerCellTerminalBase;
 import thaumicenergistics.fluids.GaseousEssentia;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.MachineSource;
@@ -12,18 +13,15 @@ import appeng.api.storage.data.IAEFluidStack;
 
 public class EssentiaCellTerminalWorker
 {
-	private static int INPUT_SLOT_ID = 0;
-	private static int OUTPUT_SLOT_ID = 1;
-	
 	protected static void decreaseInputSlot( PrivateInventory inventory )
 	{
-		ItemStack slot = inventory.getStackInSlot( EssentiaCellTerminalWorker.INPUT_SLOT_ID );
+		ItemStack slot = inventory.getStackInSlot( ContainerCellTerminalBase.INPUT_SLOT_ID );
 
 		slot.stackSize -= 1;
 
 		if ( slot.stackSize <= 0 )
 		{
-			inventory.setInventorySlotContents( EssentiaCellTerminalWorker.INPUT_SLOT_ID, null );
+			inventory.setInventorySlotContents( ContainerCellTerminalBase.INPUT_SLOT_ID, null );
 			
 			inventory.markDirty();
 		}
@@ -145,11 +143,11 @@ public class EssentiaCellTerminalWorker
 			return false;
 		}
 
-		ItemStack secondSlot = inventory.getStackInSlot( EssentiaCellTerminalWorker.OUTPUT_SLOT_ID );
+		ItemStack secondSlot = inventory.getStackInSlot( ContainerCellTerminalBase.OUTPUT_SLOT_ID );
 
 		if ( secondSlot == null )
 		{
-			inventory.setInventorySlotContents( EssentiaCellTerminalWorker.OUTPUT_SLOT_ID, itemStack );
+			inventory.setInventorySlotContents( ContainerCellTerminalBase.OUTPUT_SLOT_ID, itemStack );
 			
 			inventory.markDirty();
 
@@ -161,7 +159,7 @@ public class EssentiaCellTerminalWorker
 			return false;
 		}
 
-		if( inventory.incrStackSize( EssentiaCellTerminalWorker.OUTPUT_SLOT_ID, itemStack.stackSize ) != null )
+		if( inventory.incrStackSize( ContainerCellTerminalBase.OUTPUT_SLOT_ID, itemStack.stackSize ) != null )
 		{
 			inventory.markDirty();
 			return true;
@@ -179,7 +177,7 @@ public class EssentiaCellTerminalWorker
 		}
 
 		// Get the output slot
-		ItemStack outputSlot = inventory.getStackInSlot( EssentiaCellTerminalWorker.OUTPUT_SLOT_ID );
+		ItemStack outputSlot = inventory.getStackInSlot( ContainerCellTerminalBase.OUTPUT_SLOT_ID );
 
 		// Is the output slot valid and not full?
 		if ( ( outputSlot != null ) && ( outputSlot.stackSize >= 64 ) )
@@ -188,7 +186,7 @@ public class EssentiaCellTerminalWorker
 		}
 
 		// Is the item in the input slot an essentia container?
-		if ( !EssentiaItemContainerHelper.isContainer( inventory.getStackInSlot( EssentiaCellTerminalWorker.INPUT_SLOT_ID ) ) )
+		if ( !EssentiaItemContainerHelper.isContainer( inventory.getStackInSlot( ContainerCellTerminalBase.INPUT_SLOT_ID ) ) )
 		{
 			return false;
 		}
@@ -211,7 +209,7 @@ public class EssentiaCellTerminalWorker
 		}
 
 		// Make a copy of the input slot
-		ItemStack inputSlot = inventory.getStackInSlot( EssentiaCellTerminalWorker.INPUT_SLOT_ID ).copy();
+		ItemStack inputSlot = inventory.getStackInSlot( ContainerCellTerminalBase.INPUT_SLOT_ID ).copy();
 
 		// Is the container empty?
 		if ( EssentiaItemContainerHelper.isContainerEmpty( inputSlot ) )

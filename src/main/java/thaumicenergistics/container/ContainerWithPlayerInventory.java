@@ -1,31 +1,59 @@
 package thaumicenergistics.container;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 
-public abstract class ContainerWithPlayerInventory extends Container
+public abstract class ContainerWithPlayerInventory
+	extends Container
 {
-	protected void bindPlayerInventory( IInventory playerInventory, int inventoryOffsetY, int hotbarPositionY )
+	/**
+	 * The number of rows in the player inventory
+	 */
+	private static int ROWS = 3;
+
+	/**
+	 * The number of columns in the player inventory
+	 */
+	private static int COLUMNS = 9;
+
+	/**
+	 * The width and height of the slots
+	 */
+	protected static final int SLOT_SIZE = 18;
+
+	/**
+	 * X position offset for inventory slots
+	 */
+	private static final int INVENTORY_X_OFFSET = 8;
+
+	/**
+	 * Binds the player inventory to this container.
+	 * @param playerInventory Inventory to bind
+	 * @param indexOffset The first player slot will take this id 
+	 * @param inventoryOffsetY The Y position offset for the slots
+	 * @param hotbarPositionY The Y position offset for hotbar slots
+	 */
+	protected void bindPlayerInventory( IInventory playerInventory, int indexOffset, int inventoryOffsetY, int hotbarPositionY )
 	{
+
 		// Main inventory
-		for( int i = 0; i < 3; i++ )
+		for( int row = 0; row < ContainerWithPlayerInventory.ROWS; row++ )
 		{
-			for( int j = 0; j < 9; j++ )
+			for( int column = 0; column < ContainerWithPlayerInventory.COLUMNS; column++ )
 			{
-				this.addSlotToContainer( new Slot( playerInventory, j + ( i * 9 ) + 9, 8 + ( j * 18 ), ( i * 18 ) + inventoryOffsetY ) );
+				this.addSlotToContainer( new Slot( playerInventory, indexOffset + ( column + ( row * ContainerWithPlayerInventory.COLUMNS ) ),
+								ContainerWithPlayerInventory.INVENTORY_X_OFFSET + ( column * ContainerWithPlayerInventory.SLOT_SIZE ),
+								( row * ContainerWithPlayerInventory.SLOT_SIZE ) + inventoryOffsetY ) );
 			}
 		}
 
 		// Hot-bar
-		for( int i = 0; i < 9; i++ )
+		for( int column = 0; column < ContainerWithPlayerInventory.COLUMNS; column++ )
 		{
-			this.addSlotToContainer( new Slot( playerInventory, i, 8 + ( i * 18 ), hotbarPositionY ) );
+			this.addSlotToContainer( new Slot( playerInventory, column, ContainerWithPlayerInventory.INVENTORY_X_OFFSET +
+							( column * ContainerWithPlayerInventory.SLOT_SIZE ), hotbarPositionY ) );
 		}
 	}
-
-	@Override
-	public abstract boolean canInteractWith( EntityPlayer player );
 
 }

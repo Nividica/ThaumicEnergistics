@@ -21,13 +21,13 @@ public class ItemStorageCasing
 	@Override
 	public String getUnlocalizedName( ItemStack itemStack )
 	{
-		return ThaumicEnergistics.MODID + ".item." + ItemEnum.STORAGE_CASING.getInternalName();
+		return ThaumicEnergistics.MOD_ID + ".item." + ItemEnum.STORAGE_CASING.getInternalName();
 	}
 
 	@Override
 	public void registerIcons( IIconRegister iconRegister )
 	{
-		this.itemIcon = iconRegister.registerIcon( ThaumicEnergistics.MODID + ":essentia.cell.casing" );
+		this.itemIcon = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":essentia.cell.casing" );
 	}
 
 }

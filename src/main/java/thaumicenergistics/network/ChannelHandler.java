@@ -28,7 +28,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ChannelHandler
 {
 	// private static EnumMap<Side, FMLEmbeddedChannel> channels;
-	public static SimpleNetworkWrapper wrapper = NetworkRegistry.INSTANCE.newSimpleChannel( ThaumicEnergistics.MODID );
+	public static SimpleNetworkWrapper wrapper = NetworkRegistry.INSTANCE.newSimpleChannel( ThaumicEnergistics.MOD_ID );
 
 	public static void registerMessages()
 	{

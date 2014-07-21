@@ -31,8 +31,13 @@ public class AEPartEssentiaTerminal
 	private List<ContainerEssentiaTerminal> containers = new ArrayList<ContainerEssentiaTerminal>();
 
 	private MachineSource machineSource = new MachineSource( this );
+	
+	/**
+	 * Tracks if the inventory has been locked for work.
+	 */
+	private boolean inventoryLocked = false;
 
-	private PrivateInventory inventory = new PrivateInventory( ThaumicEnergistics.MODID + ".part.aspect.terminal", 2, 64 )
+	private PrivateInventory inventory = new PrivateInventory( ThaumicEnergistics.MOD_ID + ".part.aspect.terminal", 2, 64 )
 	{
 		@Override
 		public boolean isItemValidForSlot( int slotId, ItemStack itemStack )
@@ -198,6 +203,47 @@ public class AEPartEssentiaTerminal
 	{
 		super.writeToNBT( data );
 		data.setTag( "inventory", this.inventory.writeToNBT() );
+	}
+	
+	/**
+	 * Attempts to lock the terminal's inventory so that
+	 * changes can be made.
+	 * @return True if the lock was acquired, false otherwise.
+	 */
+	public boolean lockInventoryForWork()
+	{
+		boolean gotLock = false;
+		
+		// Ensure only 1 thread can access the lock at a time
+		synchronized( this.inventory )
+		{
+			// Is the inventory not locked?
+			if( !this.inventoryLocked )
+			{
+				// Mark it is now locked
+				this.inventoryLocked = true;
+				
+				// Mark that this thread got the lock
+				gotLock = true;
+			}
+		}
+		
+		// Return if this thread got the lock or not
+		return gotLock;
+	}
+	
+	/**
+	 * Unlocks the terminal so that other threads can
+	 * perform work. This should only be called from
+	 * a thread that owns the lock.
+	 */
+	public void unlockInventory()
+	{
+		// Ensure only 1 thread can access the lock at a time
+		synchronized( this.inventory )
+		{
+			this.inventoryLocked = false;
+		}
 	}
 
 }

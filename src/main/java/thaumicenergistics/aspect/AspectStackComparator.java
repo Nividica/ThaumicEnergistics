@@ -2,9 +2,22 @@ package thaumicenergistics.aspect;
 
 import java.util.Comparator;
 
+/**
+ * Compares one aspect stack against another.
+ * @author Nividica
+ *
+ */
 public class AspectStackComparator implements Comparator<AspectStack>
 {
+	/**
+	 * Compare based on name
+	 */
 	public static final int MODE_ALPHABETIC = 0;
+	
+	/**
+	 * Compare based on amount
+	 */
+	public static final int MODE_AMOUNT = 1;
 	
 	public int mode;
 	
@@ -35,6 +48,10 @@ public class AspectStackComparator implements Comparator<AspectStack>
 			case AspectStackComparator.MODE_ALPHABETIC:
 				// Compare tags
 				return left.aspect.getTag().compareTo( right.aspect.getTag() );
+				
+			case AspectStackComparator.MODE_AMOUNT:
+				// Compare amounts
+				return (int)( left.amount - right.amount );
 		}
 		
 		return 0;

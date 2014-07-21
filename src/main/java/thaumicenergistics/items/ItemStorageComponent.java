@@ -57,7 +57,7 @@ public class ItemStorageComponent extends Item implements IStorageComponent
 	@Override
 	public String getUnlocalizedName( ItemStack itemStack )
 	{
-		return ThaumicEnergistics.MODID + ".item.storage.component." + this.suffixes[itemStack.getItemDamage()];
+		return ThaumicEnergistics.MOD_ID + ".item.storage.component." + this.suffixes[itemStack.getItemDamage()];
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class ItemStorageComponent extends Item implements IStorageComponent
 
 		for( int i = 0; i < this.suffixes.length; i++ )
 		{
-			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MODID + ":storage.component." + this.suffixes[i] );
+			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":storage.component." + this.suffixes[i] );
 		}
 	}
 

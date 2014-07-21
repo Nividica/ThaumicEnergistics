@@ -18,7 +18,7 @@ import com.google.common.base.Splitter;
 public class WidgetRedstoneModes extends GuiButton
 {
 	private static final String GUI_TEXTURE_PATH = "textures/gui/redstonemodes.png";
-	private static final ResourceLocation GUI_TEXTURE_RESOURCE = new ResourceLocation( ThaumicEnergistics.MODID, GUI_TEXTURE_PATH );
+	private static final ResourceLocation GUI_TEXTURE_RESOURCE = new ResourceLocation( ThaumicEnergistics.MOD_ID, GUI_TEXTURE_PATH );
 
 	private RedstoneMode redstoneMode;
 	private boolean emitter = false;

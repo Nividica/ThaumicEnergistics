@@ -18,7 +18,7 @@ public enum BlockEnum
 		this.block = block;
 		
 		// Set the unlocalized name
-		this.unlocalizedName = ThaumicEnergistics.MODID + ".block." + unlocalizedName;
+		this.unlocalizedName = ThaumicEnergistics.MOD_ID + ".block." + unlocalizedName;
 
 		// Set the block's name
 		block.setBlockName( this.unlocalizedName );

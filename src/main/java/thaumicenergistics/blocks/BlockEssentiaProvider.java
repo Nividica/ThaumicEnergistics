@@ -16,10 +16,15 @@ import thaumicenergistics.tileentities.TileEssentiaProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Block definition of the essentia provider.
+ * @author Nividica
+ *
+ */
 public class BlockEssentiaProvider
 	extends BlockContainer
 {
-
+	
 	public BlockEssentiaProvider()
 	{
 		// Call super with material machine (iron) 
@@ -46,6 +51,7 @@ public class BlockEssentiaProvider
 	@Override
 	public TileEntity createNewTileEntity( World world, int metaData )
 	{
+		// Create a new provider tile, passing the side to attach to
 		return new TileEssentiaProvider( metaData );
 	}
 	

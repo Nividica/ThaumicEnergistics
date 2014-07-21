@@ -6,7 +6,7 @@ thaumicenergistics.group.essentia.transport=ME Essentia Import/Export Bus
 thaumicenergistics.fluid.gaseous=Gaseous
 
 #Blocks
-thaumicenergistics.block.essentia.provider.name=Basic Essentia Provider
+thaumicenergistics.block.essentia.provider.name=Essentia Provider
 
 #Cable parts
 thaumicenergistics.aeparts.essentia.ImportBus.name=Essentia Import Bus

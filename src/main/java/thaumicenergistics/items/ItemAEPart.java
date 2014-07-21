@@ -63,7 +63,7 @@ public class ItemAEPart extends Item implements IPartItem, IItemGroup
 		catch( Throwable e )
 		{
 			// Bad stuff, log the error.
-			FMLLog.severe( ThaumicEnergistics.MODID + ": Unable to create part from item " + itemStack.getDisplayName() );
+			FMLLog.severe( ThaumicEnergistics.MOD_ID + ": Unable to create part from item " + itemStack.getDisplayName() );
 
 			// Print that stack-trace
 			e.printStackTrace();

@@ -134,7 +134,7 @@ public class GuiCellTerminalBase
 	@Override
 	protected void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
 	{
-		this.fontRendererObj.drawString( StatCollector.translateToLocal( ThaumicEnergistics.MODID + ".aeparts.essentia.terminal.name" ), 9, -12, 0 );
+		this.fontRendererObj.drawString( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".aeparts.essentia.terminal.name" ), 9, -12, 0 );
 
 		this.drawWidgets( mouseX, mouseY );
 
@@ -146,10 +146,10 @@ public class GuiCellTerminalBase
 
 			String aspectName = this.currentAspect.aspect.getName();
 
-			this.fontRendererObj.drawString( StatCollector.translateToLocal( ThaumicEnergistics.MODID + ".tooltip.amount" ) + ": " + amountToText,
+			this.fontRendererObj.drawString( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.amount" ) + ": " + amountToText,
 				45, 83, 0 );
 
-			this.fontRendererObj.drawString( StatCollector.translateToLocal( ThaumicEnergistics.MODID + ".tooltip.aspect" ) + ": " + aspectName, 45,
+			this.fontRendererObj.drawString( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.aspect" ) + ": " + aspectName, 45,
 				73, 0 );
 		}
 	}

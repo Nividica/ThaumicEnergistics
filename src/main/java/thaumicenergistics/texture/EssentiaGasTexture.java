@@ -95,7 +95,7 @@ public class EssentiaGasTexture extends TextureAtlasSprite
 
 	public EssentiaGasTexture(Aspect aspect)
 	{
-		super( ThaumicEnergistics.MODID + ":" + GAS_FILE_NAME + "_" + aspect.getName() );
+		super( ThaumicEnergistics.MOD_ID + ":" + GAS_FILE_NAME + "_" + aspect.getName() );
 
 		this.overlayColor = new Pixel( aspect.getColor() );
 	}

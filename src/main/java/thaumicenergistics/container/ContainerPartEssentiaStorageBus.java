@@ -3,63 +3,64 @@ package thaumicenergistics.container;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import thaumicenergistics.container.slot.SlotNetworkTool;
 import thaumicenergistics.container.slot.SlotRespective;
 import thaumicenergistics.gui.GuiEssentiaStorageBus;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
-import appeng.api.AEApi;
-import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.INetworkTool;
-import appeng.api.util.DimensionalCoord;
 
-public class ContainerPartEssentiaStorageBus extends ContainerWithPlayerInventory
+public class ContainerPartEssentiaStorageBus
+	extends ContainerWithNetworkTool
 {
+	/**
+	 * X position offset for upgrade slots
+	 */
+	private static final int UPGRADE_SLOT_X = 187;
+
+	/**
+	 * Y position offset for upgrade slots
+	 */
+	private static final int UPGRADE_SLOT_Y = 8;
+
+	/**
+	 * Slot ID offset the player inventory
+	 */
+	public static int PLAYER_INV_SLOT_OFFSET = 9;
 
 	private GuiEssentiaStorageBus guiBusAspectStorage;
 
-	public ContainerPartEssentiaStorageBus(AEPartEssentiaStorageBus part, EntityPlayer player)
+	public ContainerPartEssentiaStorageBus( AEPartEssentiaStorageBus part, EntityPlayer player )
 	{
-		this.addSlotToContainer( new SlotRespective( part.getUpgradeInventory(), 0, 187, 8 ) );
+		// Add the upgrade slot
+		this.addSlotToContainer( new SlotRespective( part.getUpgradeInventory(), 0, ContainerPartEssentiaStorageBus.UPGRADE_SLOT_X,
+						ContainerPartEssentiaStorageBus.UPGRADE_SLOT_Y ) );
 
-		this.bindPlayerInventory( player.inventory, 140, 198 );
+		// Bind to the player's inventory
+		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaStorageBus.PLAYER_INV_SLOT_OFFSET, 140, 198 );
 
-		for( int i = 0; i < player.inventory.getSizeInventory(); i++ )
-		{
-			ItemStack stack = player.inventory.getStackInSlot( i );
-
-			if ( ( stack != null ) && ( stack.isItemEqual( AEApi.instance().items().itemNetworkTool.stack( 1 ) ) ) )
-			{
-				DimensionalCoord coord = part.getHost().getLocation();
-
-				IGuiItem guiItem = (IGuiItem) stack.getItem();
-
-				INetworkTool networkTool = (INetworkTool) guiItem.getGuiObject( stack, coord.getWorld(), coord.x, coord.y, coord.z );
-
-				for( int j = 0; j < 3; j++ )
-				{
-					for( int k = 0; k < 3; k++ )
-					{
-						this.addSlotToContainer( new SlotNetworkTool( networkTool, j + ( k * 3 ), 187 + ( k * 18 ), ( j * 18 ) + 102 ) );
-					}
-				}
-
-				return;
-			}
-		}
+		// Bind to the network tool
+		this.bindToNetworkTool( player.inventory, part.getHost().getLocation() );
 
 	}
 
+	/**
+	 * Who can interact with the container?
+	 */
 	@Override
 	public boolean canInteractWith( EntityPlayer player )
 	{
 		return true;
 	}
 
+	/**
+	 * Set the gui associated with this container
+	 * 
+	 * @param guiBusAspectStorage
+	 */
 	public void setGui( GuiEssentiaStorageBus guiBusAspectStorage )
 	{
 		this.guiBusAspectStorage = guiBusAspectStorage;
 	}
 
+	// TODO: Fix and superclass
 	@Override
 	public ItemStack transferStackInSlot( EntityPlayer player, int slotnumber )
 	{
@@ -70,7 +71,7 @@ public class ContainerPartEssentiaStorageBus extends ContainerWithPlayerInventor
 
 		ItemStack itemstack = null;
 
-		Slot slot = (Slot) this.inventorySlots.get( slotnumber );
+		Slot slot = (Slot)this.inventorySlots.get( slotnumber );
 
 		if ( ( slot != null ) && ( slot.getHasStack() ) )
 		{

@@ -18,14 +18,14 @@ import appeng.api.config.Upgrades;
 
 public enum AEPartsEnum
 {
-		EssentiaImportBus ("essentia.ImportBus", AEPartEssentiaImportBus.class, ThaumicEnergistics.MODID + ".group.essentia.transport", new Pair[] { generatePair(
+		EssentiaImportBus ("essentia.ImportBus", AEPartEssentiaImportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport", new Pair[] { generatePair(
 			Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
 
 		EssentiaLevelEmitter ("essentia.levelemitter", AEPartEssentiaLevelEmitter.class),
 
 		EssentiaStorageBus ("essentia.StorageBus", AEPartEssentiaStorageBus.class, null, new Pair[] { generatePair( Upgrades.INVERTER, 1 ) }),
 
-		EssentiaExportBus ("essentia.ExportBus", AEPartEssentiaExportBus.class, ThaumicEnergistics.MODID + ".group.essentia.transport", new Pair[] { generatePair(
+		EssentiaExportBus ("essentia.ExportBus", AEPartEssentiaExportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport", new Pair[] { generatePair(
 			Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
 
 		EssentiaTerminal ("essentia.terminal", AEPartEssentiaTerminal.class);
@@ -46,7 +46,7 @@ public enum AEPartsEnum
 	private AEPartsEnum( String unlocalizedName, Class<? extends AEPartBase> partClass, String groupName )
 	{
 		// Add the mod name and parts sub-folder to the name
-		this.unlocalizedName = ThaumicEnergistics.MODID + ".aeparts." + unlocalizedName;
+		this.unlocalizedName = ThaumicEnergistics.MOD_ID + ".aeparts." + unlocalizedName;
 
 		// Set the class
 		this.partClass = partClass;
@@ -61,6 +61,7 @@ public enum AEPartsEnum
 
 		for( Pair<Upgrades, Integer> pair : upgrades )
 		{
+			// Add the upgrade to the map
 			this.upgrades.put( pair.getKey(), pair.getValue() );
 		}
 

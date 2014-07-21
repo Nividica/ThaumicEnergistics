@@ -1,5 +1,7 @@
 package thaumicenergistics.container;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -20,12 +22,27 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.tile.storage.TileChest;
 
+/**
+ * Inventory container for essentia cells in a ME chest.
+ * @author Nividica
+ *
+ */
 public class ContainerEssentiaCell extends ContainerCellTerminalBase
 {
+	/**
+	 * The aspect the player has selected.
+	 */
 	private AspectStack selectedAspectStack;
+	
+	/**
+	 * The ME chest the cell is stored in.
+	 */
 	private TileChest hostChest;
 	
-	private PrivateInventory privateInventory = new PrivateInventory( ThaumicEnergistics.MODID + ".item.essentia.cell.inventory", 2, 64 )
+	/**
+	 * Import and export inventory slots.
+	 */
+	private PrivateInventory privateInventory = new PrivateInventory( ThaumicEnergistics.MOD_ID + ".item.essentia.cell.inventory", 2, 64 )
 	{
 		@Override
 		public boolean isItemValidForSlot( int slotID, ItemStack itemStack )
@@ -34,6 +51,14 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 		}
 	};
 
+	/**
+	 * Creates the container.
+	 * @param player The player that owns this container.
+	 * @param world The world the ME chest is in.
+	 * @param x X position of the ME chest.
+	 * @param y Y position of the ME chest.
+	 * @param z Z position of the ME chest.
+	 */
 	public ContainerEssentiaCell( EntityPlayer player, World world, int x, int y, int z )
 	{
 		// Call the super-constructor
@@ -69,7 +94,12 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 		
 	}
 	
+	/**
+	 * Gets the current list from the AE monitor and sends
+	 * it to the client.
+	 */
 	@Override
+	@SideOnly(Side.SERVER)
 	public void forceAspectUpdate()
 	{ 
 		if ( this.monitor != null )
@@ -79,6 +109,9 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 		}
 	}
 	
+	/**
+	 * Drops any items in the import and export inventory.
+	 */
 	@Override
 	public void onContainerClosed( EntityPlayer player )
 	{
@@ -93,7 +126,11 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 		}
 	}
 	
+	/**
+	 * Updates the list of aspects, and sends that list to the client.
+	 */
 	@Override
+	@SideOnly(Side.SERVER)
 	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
 		super.postChange( monitor, change, source );
@@ -101,6 +138,9 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 		new PacketClientEssentiaCell( this.player, this.aspectStackList ).sendPacketToPlayer( this.player );
 	}
 	
+	/**
+	 * Updates the selected aspect, aspect stack and gui.
+	 */
 	@Override
 	public void receiveSelectedAspect( Aspect selectedAspect )
 	{
@@ -132,28 +172,43 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 		}
 	}
 	
+	/**
+	 * Gets the currently selected aspect.
+	 * @return
+	 */
 	public AspectStack getSelectedAspectStack()
 	{
 		return this.selectedAspectStack;
 	}
 	
+	/**
+	 * Called when the user has clicked on an aspect.
+	 * Sends that change to the server for validation.
+	 */
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void setSelectedAspect( Aspect selectedAspect )
 	{
 		new PacketServerEssentiaCell( this.player, selectedAspect ).sendPacketToServer();
 	}
 
-	
-	
+	/**
+	 * Checks if there is any work to perform.
+	 * If there is it does so.
+	 */
 	@Override
+	@SideOnly(Side.SERVER)
 	public void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();
 		
+		// Do we have a monitor?
 		if( this.monitor != null )
-		{	
+		{
+			// Is there work to do?
 			if( EssentiaCellTerminalWorker.hasWork( this.inventory ) )
 			{
+				// Do the work
 				EssentiaCellTerminalWorker.doWork( this.inventory, this.monitor, null, this.selectedAspect );
 			}
 		}

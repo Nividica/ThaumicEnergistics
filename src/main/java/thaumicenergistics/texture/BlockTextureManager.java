@@ -54,7 +54,7 @@ public enum BlockTextureManager
 	{
 		if ( textureMap.getTextureType() == 0 )
 		{
-			String header = ThaumicEnergistics.MODID + ":";
+			String header = ThaumicEnergistics.MOD_ID + ":";
 
 			if ( this.textureType == TextureTypes.Part )
 			{

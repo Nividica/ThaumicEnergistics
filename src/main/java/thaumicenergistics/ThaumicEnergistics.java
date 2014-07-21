@@ -16,29 +16,32 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = ThaumicEnergistics.MODID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:appliedenergistics2;required-after:Thaumcraft")
+@Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:appliedenergistics2;required-after:Thaumcraft")
 public class ThaumicEnergistics
 {
 	/**
 	 * String ID of the mod.
 	 */
-	public static final String MODID = "thaumicenergistics";
+	public static final String MOD_ID = "thaumicenergistics";
 
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.1.2a";
+	public static final String VERSION = "0.1.3a"; // Note: dont forget to change the mcmod.info file as well
 
 	/**
 	 * Singleton instance
 	 */
-	@Instance(value = ThaumicEnergistics.MODID)
+	@Instance(value = ThaumicEnergistics.MOD_ID)
 	public static ThaumicEnergistics instance;
 
 	// Says where the client and server 'proxy' code is loaded.
 	@SidedProxy(clientSide = "thaumicenergistics.proxy.ClientProxy", serverSide = "thaumicenergistics.proxy.CommonProxy")
 	public static CommonProxy proxy;
 
+	/**
+	 * Creative tab that displays this mods items
+	 */
 	public static CreativeTabs ModTab = new CreativeTabs( "ThaumicEnergistics" )
 	{
 
