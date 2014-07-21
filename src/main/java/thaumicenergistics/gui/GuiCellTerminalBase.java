@@ -13,6 +13,8 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.ContainerCellTerminalBase;
@@ -22,43 +24,205 @@ import thaumicenergistics.gui.widget.WidgetAspectSelector;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.GuiHelper;
 
+/**
+ * Base class for cell and terminal guis
+ * 
+ * @author Nividica
+ * 
+ */
+@SideOnly(Side.CLIENT)
 public class GuiCellTerminalBase
 	extends GuiContainer
 	implements IAspectSelectorGui
 {
 
+	/**
+	 * Number of widgets per row
+	 */
 	protected static final int WIDGETS_PER_ROW = 9;
+
+	/**
+	 * Number of rows per page
+	 */
 	protected static final int ROWS_PER_PAGE = 4;
+
+	/**
+	 * Number of widgets per page
+	 */
 	protected static final int WIDGETS_PER_PAGE = WIDGETS_PER_ROW * ROWS_PER_PAGE;
 
-	
-	protected EntityPlayer player;
-	protected int currentScroll = 0;
-	protected GuiTextField searchBar;
-	protected List<WidgetAspectSelector> aspectWidgets = new ArrayList<WidgetAspectSelector>();
-	protected List<WidgetAspectSelector> matchingSearchWidgets = new ArrayList<WidgetAspectSelector>();
-	protected String searchTerm = "";
-	public AspectStack currentAspect;
-	protected ContainerCellTerminalBase containerBase;
-	
+	/**
+	 * Width of the gui
+	 */
+	private static final int GUI_SIZE_X = 176;
 
-	public GuiCellTerminalBase( EntityPlayer player, ContainerCellTerminalBase container)
+	/**
+	 * Height of the gui
+	 */
+	private static final int GUI_SIZE_Y = 204;
+
+	/**
+	 * Offset from the top of the screen to draw the gui at.
+	 */
+	private static final int GUI_OFFSET_Y = 18;
+
+	/**
+	 * X position of the title string
+	 */
+	private static final int TITLE_POS_X = 9;
+
+	/**
+	 * Y position of the title string
+	 */
+	private static final int TITLE_POS_Y = -12;
+
+	/**
+	 * X position of the tooltips.
+	 */
+	private static final int TOOLTIPS_POS_X = 45;
+
+	/**
+	 * Y position of the name tooltip.
+	 */
+	private static final int TOOLTIP_NAME_POS_Y = 73;
+
+	/**
+	 * Y position of the amount tooltip.
+	 */
+	private static final int TOOLTIP_AMOUNT_POS_Y = 83;
+
+	/**
+	 * X offset to start drawing widgets
+	 */
+	private static final int WIDGET_OFFSET_X = 7;
+
+	/**
+	 * Y offset to start drawing widgets
+	 */
+	private static final int WIDGET_OFFSET_Y = -1;
+
+	/**
+	 * X offset to draw the scrollbar
+	 */
+	private static final int SCROLLBAR_X_OFFSET = 100;
+
+	/**
+	 * Y offset to draw the scrollbar
+	 */
+	private static final int SCROLLBAR_Y_OFFSET = -12;
+
+	/**
+	 * Width of the scrollbar
+	 */
+	private static final int SCROLLBAR_WIDTH = 69;
+
+	/**
+	 * Height of the scrollbar
+	 */
+	private static final int SCROLLBAR_HEIGHT = 10;
+	
+	/**
+	 * The maximum number of displayable characters.
+	 */
+	private static final int SCROLLBAR_MAX_CHARS = 14;
+
+	/**
+	 * Local translation of the title.
+	 */
+	private final String guiTitle;
+
+	/**
+	 * Local translation of name tooltip prefix.
+	 */
+	private final String tooltipNamePrefix;
+
+	/**
+	 * Local translation of amount tooltip prefix.
+	 */
+	private final String tooltipAmountPrefix;
+
+	/**
+	 * The player viewing this gui
+	 */
+	protected EntityPlayer player;
+
+	/**
+	 * Scroll bar position
+	 */
+	protected int currentScroll = 0;
+
+	/**
+	 * Search field
+	 */
+	protected GuiTextField searchBar;
+
+	/**
+	 * All aspects currently in the network
+	 */
+	protected List<WidgetAspectSelector> aspectWidgets = new ArrayList<WidgetAspectSelector>();
+
+	/**
+	 * Aspects matching the current search term
+	 */
+	protected List<WidgetAspectSelector> matchingSearchWidgets = new ArrayList<WidgetAspectSelector>();
+
+	/**
+	 * What the user is searching for
+	 */
+	protected String searchTerm = "";
+
+	/**
+	 * The currently selected aspect
+	 */
+	public AspectStack selectedAspectStack;
+
+	/**
+	 * The container associated with this gui
+	 */
+	protected ContainerCellTerminalBase containerBase;
+
+	/**
+	 * Creates the gui.
+	 * 
+	 * @param player
+	 * Player viewing this gui.
+	 * @param container
+	 * Container associated with the gui.
+	 */
+	public GuiCellTerminalBase( EntityPlayer player, ContainerCellTerminalBase container )
 	{
+		// Call super
 		super( container );
 
-		this.containerBase = ( (ContainerCellTerminalBase) this.inventorySlots );
+		// Set the container.
+		this.containerBase = ( (ContainerCellTerminalBase)this.inventorySlots );
 
+		// Inform the container we are the gui.
 		this.containerBase.setGui( this );
 
+		// Set the player
 		this.player = player;
 
-		this.xSize = 176;
+		// Set the X size
+		this.xSize = GuiCellTerminalBase.GUI_SIZE_X;
 
-		this.ySize = 204;
+		// Set the Y size
+		this.ySize = GuiCellTerminalBase.GUI_SIZE_Y;
 
-		
+		// Set the title
+		this.guiTitle = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".aeparts.essentia.terminal.name" );
+
+		// Set the name prefix
+		this.tooltipNamePrefix = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.aspect" ) + ": ";
+
+		// Set the amount prefix
+		this.tooltipAmountPrefix = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.amount" ) + ": ";
+
 	}
 
+	/**
+	 * Updates the scroll position based on mouse wheel movement.
+	 */
 	private void updateScrollPosition()
 	{
 		// Get the mouse wheel movement
@@ -81,7 +245,7 @@ public class GuiCellTerminalBase
 		else
 		{
 			// Get how many rows is required for the display-able widgets
-			int requiredRows = (int) Math.ceil( (float) this.matchingSearchWidgets.size() / (float) GuiCellTerminalBase.WIDGETS_PER_ROW );
+			int requiredRows = (int)Math.ceil( (double)this.matchingSearchWidgets.size() / (double)GuiCellTerminalBase.WIDGETS_PER_ROW );
 
 			// Subtract from the required rows the starting row
 			int rowsToDraw = requiredRows - this.currentScroll;
@@ -99,6 +263,9 @@ public class GuiCellTerminalBase
 		}
 	}
 
+	/**
+	 * Updates the matching widgets based on the current search term.
+	 */
 	private void updateSearch()
 	{
 		// Clear the matching widgets
@@ -119,48 +286,69 @@ public class GuiCellTerminalBase
 
 	}
 
+	/**
+	 * Draws the GUI background image.
+	 */
 	@Override
 	protected void drawGuiContainerBackgroundLayer( float alpha, int sizeX, int sizeY )
 	{
+		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
+		// Set the texture to the gui's texture
 		Minecraft.getMinecraft().renderEngine.bindTexture( GuiTextureManager.ESSENTIA_TERMINAL.getTexture() );
 
-		this.drawTexturedModalRect( this.guiLeft, this.guiTop - 18, 0, 0, this.xSize, this.ySize );
+		// Draw the gui
+		this.drawTexturedModalRect( this.guiLeft, this.guiTop - GuiCellTerminalBase.GUI_OFFSET_Y, 0, 0, this.xSize, this.ySize );
 
+		// Draw the search field.
 		this.searchBar.drawTextBox();
 	}
 
+	/**
+	 * Draw the foreground layer.
+	 */
 	@Override
 	protected void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
 	{
-		this.fontRendererObj.drawString( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".aeparts.essentia.terminal.name" ), 9, -12, 0 );
+		// Draw the title
+		this.fontRendererObj.drawString( this.guiTitle, GuiCellTerminalBase.TITLE_POS_X, GuiCellTerminalBase.TITLE_POS_Y, 0 );
 
+		// Draw the widgets
 		this.drawWidgets( mouseX, mouseY );
 
-		if ( this.currentAspect != null )
+		// Do we have a selected aspect?
+		if ( this.selectedAspectStack != null )
 		{
-			long currentFluidAmount = this.currentAspect.amount;
+			// Convert the selected amount into a string
+			String amountToText = Long.toString( this.selectedAspectStack.amount );
 
-			String amountToText = Long.toString( currentFluidAmount );
+			// Get the name of the aspect
+			String aspectName = this.selectedAspectStack.aspect.getName();
 
-			String aspectName = this.currentAspect.aspect.getName();
+			// Draw the name
+			this.fontRendererObj.drawString( this.tooltipNamePrefix + aspectName, GuiCellTerminalBase.TOOLTIPS_POS_X,
+				GuiCellTerminalBase.TOOLTIP_NAME_POS_Y, 0 );
 
-			this.fontRendererObj.drawString( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.amount" ) + ": " + amountToText,
-				45, 83, 0 );
-
-			this.fontRendererObj.drawString( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.aspect" ) + ": " + aspectName, 45,
-				73, 0 );
+			// Draw the amount
+			this.fontRendererObj.drawString( this.tooltipAmountPrefix + amountToText, GuiCellTerminalBase.TOOLTIPS_POS_X,
+				GuiCellTerminalBase.TOOLTIP_AMOUNT_POS_Y, 0 );
 		}
 	}
 
+	/**
+	 * Called when the player types a key.
+	 */
 	@Override
 	protected void keyTyped( char key, int keyID )
 	{
+		// Pass the key to the search field.
 		this.searchBar.textboxKeyTyped( key, keyID );
 
+		// Did they press the escape key?
 		if ( keyID == Keyboard.KEY_ESCAPE )
 		{
+			// Slot the screen.
 			this.mc.thePlayer.closeScreen();
 		}
 		else
@@ -174,25 +362,31 @@ public class GuiCellTerminalBase
 
 	}
 
+	/**
+	 * Called when the player clicks the mouse.
+	 */
 	@Override
 	protected void mouseClicked( int mouseX, int mouseY, int mouseBtn )
 	{
+		// Pass to super.
 		super.mouseClicked( mouseX, mouseY, mouseBtn );
 
+		// Pass to search field.
 		this.searchBar.mouseClicked( mouseX, mouseY, mouseBtn );
 
+		// Get the number of widgets that match the current search.
 		int listSize = this.matchingSearchWidgets.size();
 
 		int index = 0;
 
 		// Rows
-		for( int y = 0; y < 4; y++ )
+		for( int y = 0; y < GuiCellTerminalBase.ROWS_PER_PAGE; y++ )
 		{
 			// Columns
-			for( int x = 0; x < 9; x++ )
+			for( int x = 0; x < GuiCellTerminalBase.WIDGETS_PER_ROW; x++ )
 			{
 				// Calculate the index
-				index = ( ( y + this.currentScroll ) * 9 ) + x;
+				index = ( ( y + this.currentScroll ) * GuiCellTerminalBase.WIDGETS_PER_ROW ) + x;
 
 				// Is the index in bounds?
 				if ( index < listSize )
@@ -201,15 +395,15 @@ public class GuiCellTerminalBase
 					WidgetAspectSelector widget = this.matchingSearchWidgets.get( index );
 
 					// Is the mouse over this widget?
-					if ( GuiHelper.isPointInGuiRegion( ( x * WidgetAspectSelector.WIDGET_WIDTH ) + 7, ( y * WidgetAspectSelector.WIDGET_WIDTH ) - 1,
-						WidgetAspectSelector.WIDGET_HEIGHT, WidgetAspectSelector.WIDGET_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+					if ( GuiHelper.isPointInGuiRegion( ( x * WidgetAspectSelector.WIDGET_WIDTH ) + GuiCellTerminalBase.WIDGET_OFFSET_X,
+						( y * WidgetAspectSelector.WIDGET_WIDTH ) + GuiCellTerminalBase.WIDGET_OFFSET_Y, WidgetAspectSelector.WIDGET_HEIGHT,
+						WidgetAspectSelector.WIDGET_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 					{
 						// Play clicky sound
 						Minecraft.getMinecraft().getSoundHandler()
-										.playSound( PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F) );
-						
-						// Send the click to the widget ( args ignored for
-						// WidgetAspectSelector )
+										.playSound( PositionedSoundRecord.func_147674_a( new ResourceLocation( "gui.button.press" ), 1.0F ) );
+
+						// Send the click to the widget ( args ignored for WidgetAspectSelector )
 						widget.mouseClicked( 0, 0, 0, 0 );
 
 						// Stop searching
@@ -226,9 +420,15 @@ public class GuiCellTerminalBase
 
 	}
 
+	/**
+	 * Draw the widgets
+	 * 
+	 * @param mouseX
+	 * @param mouseY
+	 */
 	public void drawWidgets( int mouseX, int mouseY )
 	{
-
+		// Anything to draw?
 		if ( !this.matchingSearchWidgets.isEmpty() )
 		{
 			// Get the scroll position
@@ -241,8 +441,8 @@ public class GuiCellTerminalBase
 			int endingIndex = Math.min( this.matchingSearchWidgets.size(), startingIndex + WIDGETS_PER_PAGE );
 
 			// Set the starting positions
-			int widgetPosX = 7;
-			int widgetPosY = -1;
+			int widgetPosX = GuiCellTerminalBase.WIDGET_OFFSET_X;
+			int widgetPosY = GuiCellTerminalBase.WIDGET_OFFSET_Y;
 			int widgetColumnPosition = 1;
 
 			// Holder for the widget under the mouse
@@ -273,9 +473,9 @@ public class GuiCellTerminalBase
 				if ( widgetColumnPosition > GuiCellTerminalBase.WIDGETS_PER_ROW )
 				{
 					// Reset X
-					widgetPosX = 7;
+					widgetPosX = GuiCellTerminalBase.WIDGET_OFFSET_X;
 
-					// Reset column position
+					// Reset column position to 1
 					widgetColumnPosition = 1;
 
 					// Increment y
@@ -301,91 +501,112 @@ public class GuiCellTerminalBase
 		}
 	}
 
+	/**
+	 * Gets the container associated with the gui
+	 */
 	@Override
 	public IAspectSelectorContainer getContainer()
 	{
 		return this.containerBase;
 	}
 
+	/**
+	 * Gets the currently selected aspect.
+	 */
 	@Override
-	public AspectStack getCurrentAspect()
+	public AspectStack getSelectedAspect()
 	{
-		return this.currentAspect;
+		return this.selectedAspectStack;
 	}
 
+	/**
+	 * Gets the starting X position for the Gui.
+	 */
 	@Override
 	public int guiLeft()
 	{
 		return this.guiLeft;
 	}
 
+	/**
+	 * Gets the starting Y position for the Gui.
+	 */
 	@Override
 	public int guiTop()
 	{
 		return this.guiTop;
 	}
 
+	/**
+	 * Sets the gui up.
+	 */
 	@Override
 	public void initGui()
 	{
+		// Call super
 		super.initGui();
 
+		// Reset the mouse wheel state.
 		Mouse.getDWheel();
 
+		// Get the aspect list
 		this.updateAspects();
 
-		this.searchBar = new GuiTextField( this.fontRendererObj, this.guiLeft + 100, this.guiTop - 12, 69, 10 )
-		{
-			private int xPos = 0;
-			private int yPos = 0;
-			private int width = 0;
-			private int height = 0;
+		// Set up the search bar
+		this.searchBar = new GuiTextField( this.fontRendererObj, this.guiLeft + GuiCellTerminalBase.SCROLLBAR_X_OFFSET, this.guiTop +
+						GuiCellTerminalBase.SCROLLBAR_Y_OFFSET, GuiCellTerminalBase.SCROLLBAR_WIDTH, GuiCellTerminalBase.SCROLLBAR_HEIGHT );
 
-			@Override
-			public void mouseClicked( int x, int y, int mouseBtn )
-			{
-				boolean flag = GuiHelper.isPointInRegion( this.xPos, this.yPos, this.height, this.width, x, y );
-
-				if ( flag && ( mouseBtn == 3 ) )
-				{
-					this.setText( "" );
-				}
-			}
-		};
-
+		// Set the searchbar to draw in the foreground
 		this.searchBar.setEnableBackgroundDrawing( false );
 
+		// Start focused
 		this.searchBar.setFocused( true );
 
-		this.searchBar.setMaxStringLength( 15 );
+		// Set maximum length
+		this.searchBar.setMaxStringLength( GuiCellTerminalBase.SCROLLBAR_MAX_CHARS );
 
 	}
 
+	/**
+	 * Refreshes our aspect list to match that of the container.
+	 */
 	public void updateAspects()
 	{
+		// Create a new list
 		this.aspectWidgets = new ArrayList<WidgetAspectSelector>();
 
+		// Make a widget for every aspect
 		for( AspectStack aspectStack : this.containerBase.getAspectStackList() )
 		{
 			// Create the widget
 			this.aspectWidgets.add( new WidgetAspectSelector( this, aspectStack ) );
 		}
 
+		// Update the search results
 		this.updateSearch();
 
+		// Update the selected aspect
 		this.updateSelectedAspect();
 	}
 
+	/**
+	 * Refreshes our selected aspect to match that of the container.
+	 */
 	public void updateSelectedAspect()
 	{
-		this.currentAspect = null;
+		// No selection by default
+		this.selectedAspectStack = null;
 
+		// Check all aspects
 		for( AspectStack aspectStack : this.containerBase.getAspectStackList() )
 		{
+			// Does this match?
 			if ( aspectStack.aspect == this.containerBase.getSelectedAspect() )
 			{
-				this.currentAspect = aspectStack;
+				// Set our selection
+				this.selectedAspectStack = aspectStack;
 
+				// Done
 				return;
 			}
 		}

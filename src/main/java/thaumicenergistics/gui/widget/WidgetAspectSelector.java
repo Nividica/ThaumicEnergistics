@@ -76,7 +76,7 @@ public class WidgetAspectSelector
 		GL11.glBlendFunc( 770, 771 );
 		GL11.glColor3f( 1.0F, 1.0F, 1.0F );
 
-		AspectStack terminalFluid = ( (IAspectSelectorGui) this.selectorGui ).getCurrentAspect();
+		AspectStack terminalFluid = ( (IAspectSelectorGui) this.selectorGui ).getSelectedAspect();
 
 		Aspect currentAspect = terminalFluid != null ? terminalFluid.aspect : null;
 

@@ -7,6 +7,6 @@ public interface IAspectSelectorGui extends IAspectWidgetGui
 {
 	public IAspectSelectorContainer getContainer();
 
-	public AspectStack getCurrentAspect();
+	public AspectStack getSelectedAspect();
 
 }
