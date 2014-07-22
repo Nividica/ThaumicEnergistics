@@ -2,7 +2,8 @@ package thaumicenergistics.parts;
 
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -18,8 +19,9 @@ import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.PacketAspectSlot;
 import thaumicenergistics.network.packet.PacketEssentiaIOBus;
 import thaumicenergistics.registries.AEPartsEnum;
-import thaumicenergistics.util.EssentiaTileContainerHelper;
 import thaumicenergistics.util.EssentiaConversionHelper;
+import thaumicenergistics.util.EssentiaItemContainerHelper;
+import thaumicenergistics.util.EssentiaTileContainerHelper;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -37,33 +39,54 @@ import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickable, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory
+public abstract class AEPartEssentiaIO
+	extends AEPartBase
+	implements IGridTickable, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory
 {
-	// Constants
-	private final static byte baseTransferPerSecond = 4;
-	private final static byte additionalTransferPerUpgrade = 7;
-	private final static byte minimumTicksPerOpertion = 10;
-	private final static byte maximumTicksPerOpertion = 40;
-	private final static byte maximumTransferPerSecond = 64;
-	private final static byte minimumTransferPerSecond = 1;
+	private final static int BASE_TRANSFER_PER_SECOND = 4;
 
-	protected Aspect[] filterAspects = new Aspect[9];
+	private final static int ADDITIONAL_TRANSFER_PER_SECOND = 7;
+
+	private final static int MINIMUM_TICKS_PER_OPERATION = 10;
+
+	private final static int MAXIMUM_TICKS_PER_OPERATION = 40;
+
+	private final static int MAXIMUM_TRANSFER_PER_SECOND = 64;
+
+	private final static int MINIMUM_TRANSFER_PER_SECOND = 1;
+
+	private final static int MAX_FILTER_SIZE = 9;
+
+	private final static int BASE_SLOT_INDEX = 4;
+
+	private final static int[] TIER2_INDEXS = { 0, 2, 6, 8 };
+
+	private final static int[] TIER1_INDEXS = { 1, 3, 5, 7 };
+
+	protected List<Aspect> filteredAspects = new ArrayList<Aspect>( AEPartEssentiaIO.MAX_FILTER_SIZE );
 	private RedstoneMode redstoneMode = RedstoneMode.IGNORE;
 	protected byte filterSize;
 	protected byte upgradeSpeedCount = 0;
 	protected boolean redstoneControlled;
 	private boolean lastRedstone;
+	private int[] availableFilterSlots = { AEPartEssentiaIO.BASE_SLOT_INDEX };
 
 	private UpgradeInventory upgradeInventory = new UpgradeInventory( this.associatedItem, this, 4 );
 
-	public AEPartEssentiaIO(AEPartsEnum associatedPart)
+	public AEPartEssentiaIO( AEPartsEnum associatedPart )
 	{
 		super( associatedPart );
+
+		// Initialize the list
+		for( int index = 0; index < AEPartEssentiaIO.MAX_FILTER_SIZE; index++ )
+		{
+			this.filteredAspects.add( null );
+		}
 	}
 
 	private int getTransferAmountPerSecond()
 	{
-		return baseTransferPerSecond + ( this.upgradeSpeedCount * additionalTransferPerUpgrade );
+		return BASE_TRANSFER_PER_SECOND + ( this.upgradeSpeedCount * ADDITIONAL_TRANSFER_PER_SECOND );
 	}
 
 	private boolean canDoWork()
@@ -98,7 +121,7 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 	protected boolean extractEssentiaFromNetwork( int amountToFill )
 	{
 
-		for( Aspect aspect : this.filterAspects )
+		for( Aspect aspect : this.filteredAspects )
 		{
 			if ( aspect != null && ( this.aspectTransferAllowed( aspect ) ) )
 			{
@@ -110,7 +133,7 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 				if ( gasStack != null )
 				{
 					// Fill the container
-					int filledAmount = (int) EssentiaTileContainerHelper.fillContainer( this.facingContainer, gasStack, true );
+					int filledAmount = (int)EssentiaTileContainerHelper.fillContainer( this.facingContainer, gasStack, true );
 
 					// Take from the network
 					this.extractFluid( EssentiaConversionHelper.createAEFluidStackInFluidUnits( essentiaGas, filledAmount ), Actionable.MODULATE );
@@ -151,7 +174,7 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 		if ( notInjected != null )
 		{
 			// Calculate how much was injected into the network
-			int amountInjected = (int) ( toFill.getStackSize() - notInjected.getStackSize() );
+			int amountInjected = (int)( toFill.getStackSize() - notInjected.getStackSize() );
 
 			// None could be injected
 			if ( amountInjected == 0 )
@@ -160,7 +183,7 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 			}
 
 			// Convert from fluid units to essentia units
-			amountInjected = (int) EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( amountInjected );
+			amountInjected = (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( amountInjected );
 
 			// Some was unable to be injected, only take what was injected from
 			// container
@@ -211,7 +234,7 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 	@Override
 	public TickingRequest getTickingRequest( IGridNode arg0 )
 	{
-		return new TickingRequest( minimumTicksPerOpertion, maximumTicksPerOpertion, false, false );
+		return new TickingRequest( MINIMUM_TICKS_PER_OPERATION, MAXIMUM_TICKS_PER_OPERATION, false, false );
 	}
 
 	public UpgradeInventory getUpgradeInventory()
@@ -254,6 +277,8 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 	@Override
 	public void onInventoryChanged()
 	{
+		int oldFilterSize = this.filterSize;
+
 		this.filterSize = 0;
 		this.redstoneControlled = false;
 		this.upgradeSpeedCount = 0;
@@ -281,20 +306,10 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 			}
 		}
 
-		if ( this.filterSize < 2 )
+		// Did the filter size change?
+		if ( oldFilterSize != this.filterSize )
 		{
-			this.filterAspects[0] = null;
-			this.filterAspects[2] = null;
-			this.filterAspects[6] = null;
-			this.filterAspects[8] = null;
-
-			if ( this.filterSize < 1 )
-			{
-				this.filterAspects[1] = null;
-				this.filterAspects[3] = null;
-				this.filterAspects[5] = null;
-				this.filterAspects[7] = null;
-			}
+			this.resizeAvailableArray();
 		}
 
 		try
@@ -312,11 +327,49 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 		new PacketEssentiaIOBus( this.redstoneControlled ).sendPacketToAllPlayers();
 	}
 
+	private void resizeAvailableArray()
+	{
+		// Resize the available slots
+		this.availableFilterSlots = new int[1 + ( this.filterSize * 4 )];
+
+		// Add the base slot
+		this.availableFilterSlots[0] = AEPartEssentiaIO.BASE_SLOT_INDEX;
+
+		if ( this.filterSize < 2 )
+		{
+			// Reset tier 2 slots
+			for( int i = 0; i < AEPartEssentiaIO.TIER2_INDEXS.length; i++ )
+			{
+				this.filteredAspects.set( AEPartEssentiaIO.TIER2_INDEXS[i], null );
+			}
+
+			if ( this.filterSize < 1 )
+			{
+				// Reset tier 1 slots
+				for( int i = 0; i < AEPartEssentiaIO.TIER1_INDEXS.length; i++ )
+				{
+					this.filteredAspects.set( AEPartEssentiaIO.TIER1_INDEXS[i], null );
+				}
+			}
+			else
+			{
+				// Tier 1 slots
+				System.arraycopy( AEPartEssentiaIO.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
+			}
+		}
+		else
+		{
+			// Add both
+			System.arraycopy( AEPartEssentiaIO.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
+			System.arraycopy( AEPartEssentiaIO.TIER2_INDEXS, 0, this.availableFilterSlots, 5, 4 );
+		}
+	}
+
 	@Override
 	public void onNeighborChanged()
 	{
 		super.onNeighborChanged();
-		
+
 		if ( this.redstonePowered )
 		{
 			if ( !this.lastRedstone )
@@ -340,13 +393,13 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 		// Read redstone mode
 		this.redstoneMode = RedstoneMode.values()[data.getInteger( "redstoneMode" )];
 
-		for( int i = 0; i < this.filterAspects.length; i++ )
+		for( int index = 0; index < AEPartEssentiaIO.MAX_FILTER_SIZE; index++ )
 		{
-			String aspectTag = data.getString( "AspectFilter#" + i );
+			String aspectTag = data.getString( "AspectFilter#" + index );
 
 			if ( !aspectTag.equals( "" ) )
 			{
-				this.filterAspects[i] = Aspect.aspects.get( aspectTag );
+				this.filteredAspects.set( index, Aspect.aspects.get( aspectTag ) );
 			}
 		}
 
@@ -375,7 +428,7 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 
 	public void sendInformation( EntityPlayer player )
 	{
-		new PacketAspectSlot( Arrays.asList( this.filterAspects ) ).sendPacketToPlayer( player );
+		new PacketAspectSlot( this.filteredAspects ).sendPacketToPlayer( player );
 
 		new PacketEssentiaIOBus( this.redstoneMode ).sendPacketToPlayer( player );
 
@@ -385,9 +438,9 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 	@Override
 	public final void setAspect( int index, Aspect aspect, EntityPlayer player )
 	{
-		this.filterAspects[index] = aspect;
+		this.filteredAspects.set( index, aspect );
 
-		new PacketAspectSlot( Arrays.asList( this.filterAspects ) ).sendPacketToPlayer( player );
+		new PacketAspectSlot( this.filteredAspects ).sendPacketToPlayer( player );
 	}
 
 	@Override
@@ -399,16 +452,16 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 			int transferAmountPerSecond = this.getTransferAmountPerSecond();
 
 			// Calculate amount to transfer this operation
-			int transferAmount = (int) ( transferAmountPerSecond * ( ticksSinceLastCall / 20.F ) );
+			int transferAmount = (int)( transferAmountPerSecond * ( ticksSinceLastCall / 20.F ) );
 
 			// Clamp
-			if ( transferAmount < minimumTransferPerSecond )
+			if ( transferAmount < MINIMUM_TRANSFER_PER_SECOND )
 			{
-				transferAmount = minimumTransferPerSecond;
+				transferAmount = MINIMUM_TRANSFER_PER_SECOND;
 			}
-			else if ( transferAmount > maximumTransferPerSecond )
+			else if ( transferAmount > MAXIMUM_TRANSFER_PER_SECOND )
 			{
-				transferAmount = maximumTransferPerSecond;
+				transferAmount = MAXIMUM_TRANSFER_PER_SECOND;
 			}
 
 			if ( this.doWork( transferAmount ) )
@@ -428,9 +481,9 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 		// Write the redstone mode
 		data.setInteger( "redstoneMode", this.redstoneMode.ordinal() );
 
-		for( int i = 0; i < this.filterAspects.length; i++ )
+		for( int i = 0; i < AEPartEssentiaIO.MAX_FILTER_SIZE; i++ )
 		{
-			Aspect aspect = this.filterAspects[i];
+			Aspect aspect = this.filteredAspects.get( i );
 			String aspectTag = "";
 
 			if ( aspect != null )
@@ -448,6 +501,55 @@ public abstract class AEPartEssentiaIO extends AEPartBase implements IGridTickab
 	public final void writeToStream( ByteBuf stream ) throws IOException
 	{
 		super.writeToStream( stream );
+	}
+
+	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
+	{
+		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
+		
+		if ( itemAspect != null )
+		{
+			// Are we already filtering this aspect?
+			if ( this.filteredAspects.contains( itemAspect ) )
+			{
+				return true;
+			}
+
+			// Add to the first open slot
+			for( int avalibleIndex = 0; avalibleIndex < this.availableFilterSlots.length; avalibleIndex++ )
+			{
+				int filterIndex = this.availableFilterSlots[avalibleIndex];
+
+				// Is this space empty?
+				if ( this.filteredAspects.get( filterIndex ) == null )
+				{
+					// Is this server side?
+					if ( !player.worldObj.isRemote )
+					{
+						// Set the filter
+						this.setAspect( filterIndex, itemAspect, player );
+					}
+
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void receiveFilterList( List<Aspect> filteredAspects )
+	{
+		this.filteredAspects = filteredAspects;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void receiveFilterSize( byte filterSize )
+	{	
+		this.filterSize = filterSize;
+		
+		this.resizeAvailableArray();
 	}
 
 }

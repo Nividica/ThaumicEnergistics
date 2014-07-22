@@ -1,7 +1,6 @@
 package thaumicenergistics.parts;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -20,6 +19,7 @@ import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.PacketAspectSlot;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
+import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
@@ -43,15 +43,23 @@ import cpw.mods.fml.relauncher.SideOnly;
 //TODO: Priority Window
 public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContainer, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory, IGridTickable
 {
+	private static final int FILTER_SIZE = 54; 
+	
 	private int priority = 0;
 	private boolean containerWasEmptyLastTick = false;
 	private HandlerEssentiaStorageBus handler = new HandlerEssentiaStorageBus( this );
-	private Aspect[] filteredAspects = new Aspect[54];
+	private List<Aspect> filteredAspects = new ArrayList<Aspect>( AEPartEssentiaStorageBus.FILTER_SIZE );
 	private UpgradeInventory upgradeInventory = new UpgradeInventory( this.associatedItem, this, 1 );
 
 	public AEPartEssentiaStorageBus()
 	{
 		super( AEPartsEnum.EssentiaStorageBus );
+		
+		// Prefill the list
+		for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
+		{
+			this.filteredAspects.add( null );
+		}
 	}
 
 	@Override
@@ -161,9 +169,9 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 
 		this.priority = data.getInteger( "priority" );
 
-		for( int i = 0; i < this.filteredAspects.length; i++ )
+		for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
 		{
-			this.filteredAspects[i] = Aspect.aspects.get( data.getString( "FilterAspects#" + i ) );
+			this.filteredAspects.set( index, Aspect.aspects.get( data.getString( "FilterAspects#" + index ) ) );
 		}
 
 		this.upgradeInventory.readFromNBT( data, "UpgradeInventory" );
@@ -235,13 +243,13 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 
 	public void sendInformation( EntityPlayer player )
 	{
-		new PacketAspectSlot( Arrays.asList( this.filteredAspects ) ).sendPacketToPlayer( player );
+		new PacketAspectSlot( this.filteredAspects ).sendPacketToPlayer( player );
 	}
 
 	@Override
 	public void setAspect( int index, Aspect aspect, EntityPlayer player )
 	{
-		this.filteredAspects[index] = aspect;
+		this.filteredAspects.set( index, aspect );
 
 		this.handler.setPrioritizedAspects( this.filteredAspects );
 
@@ -255,17 +263,17 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 
 		data.setInteger( "priority", this.priority );
 
-		for( int i = 0; i < this.filteredAspects.length; i++ )
+		for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
 		{
-			Aspect aspect = this.filteredAspects[i];
+			Aspect aspect = this.filteredAspects.get( index );
 
 			if ( aspect != null )
 			{
-				data.setString( "FilterAspects#" + i, aspect.getTag() );
+				data.setString( "FilterAspects#" + index, aspect.getTag() );
 			}
 			else
 			{
-				data.setString( "FilterAspects#" + i, "" );
+				data.setString( "FilterAspects#" + index, "" );
 			}
 		}
 
@@ -307,6 +315,45 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 		
 		// Keep chugging along
 		return TickRateModulation.SAME;
+	}
+	
+
+
+	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
+	{
+		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
+
+		if ( itemAspect != null )
+		{
+			// Are we already filtering this aspect?
+			if ( this.filteredAspects.contains( itemAspect ) )
+			{
+				return true;
+			}
+			
+			// Add to the first open slot
+			for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
+			{
+				// Is this space empty?
+				if( this.filteredAspects.get( index ) == null )
+				{
+					// Set the filter
+					this.filteredAspects.set( index, itemAspect );
+					
+					// Is this server side?
+					if( !player.worldObj.isRemote )
+					{
+						// Update the client
+						this.sendInformation( player );
+					}
+					
+					
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 }

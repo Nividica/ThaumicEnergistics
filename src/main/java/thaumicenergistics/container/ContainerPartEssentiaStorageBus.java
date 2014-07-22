@@ -3,8 +3,6 @@ package thaumicenergistics.container;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import thaumicenergistics.container.slot.SlotRespective;
-import thaumicenergistics.gui.GuiEssentiaStorageBus;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 
 public class ContainerPartEssentiaStorageBus
@@ -21,20 +19,29 @@ public class ContainerPartEssentiaStorageBus
 	private static final int UPGRADE_SLOT_Y = 8;
 
 	/**
-	 * Slot ID offset the player inventory
+	 * X position for the player inventory
 	 */
-	public static int PLAYER_INV_SLOT_OFFSET = 9;
+	private static int PLAYER_INV_POSITION_X = 140;
 
-	private GuiEssentiaStorageBus guiBusAspectStorage;
+	/**
+	 * Y position for the player inventory
+	 */
+	private static int PLAYER_INV_POSITION_Y = 198;
+	
+	private AEPartEssentiaStorageBus part;
 
 	public ContainerPartEssentiaStorageBus( AEPartEssentiaStorageBus part, EntityPlayer player )
 	{
+		// Set the part
+		this.part = part;
+		
 		// Add the upgrade slot
-		this.addSlotToContainer( new SlotRespective( part.getUpgradeInventory(), 0, ContainerPartEssentiaStorageBus.UPGRADE_SLOT_X,
-						ContainerPartEssentiaStorageBus.UPGRADE_SLOT_Y ) );
+		this.addUpgradeSlots( part.getUpgradeInventory(), 1, ContainerPartEssentiaStorageBus.UPGRADE_SLOT_X,
+			ContainerPartEssentiaStorageBus.UPGRADE_SLOT_Y );
 
 		// Bind to the player's inventory
-		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaStorageBus.PLAYER_INV_SLOT_OFFSET, 140, 198 );
+		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaStorageBus.PLAYER_INV_POSITION_X,
+			ContainerPartEssentiaStorageBus.PLAYER_INV_POSITION_Y );
 
 		// Bind to the network tool
 		this.bindToNetworkTool( player.inventory, part.getHost().getLocation() );
@@ -50,57 +57,25 @@ public class ContainerPartEssentiaStorageBus
 		return true;
 	}
 
-	/**
-	 * Set the gui associated with this container
-	 * 
-	 * @param guiBusAspectStorage
-	 */
-	public void setGui( GuiEssentiaStorageBus guiBusAspectStorage )
-	{
-		this.guiBusAspectStorage = guiBusAspectStorage;
-	}
-
-	// TODO: Fix and superclass
 	@Override
-	public ItemStack transferStackInSlot( EntityPlayer player, int slotnumber )
-	{
-		if ( this.guiBusAspectStorage != null )
-		{
-			this.guiBusAspectStorage.shiftClick( this.getSlot( slotnumber ).getStack() );
-		}
+	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
+	{	
+		// Get the slot
+		Slot slot = this.getSlot( slotNumber );
 
-		ItemStack itemstack = null;
-
-		Slot slot = (Slot)this.inventorySlots.get( slotnumber );
-
+		// Do we have a valid slot with an item?
 		if ( ( slot != null ) && ( slot.getHasStack() ) )
 		{
-			ItemStack itemstack1 = slot.getStack();
-
-			itemstack = itemstack1.copy();
-
-			if ( slotnumber < 36 )
-			{
-				if ( !this.mergeItemStack( itemstack1, 36, this.inventorySlots.size(), true ) )
-				{
-					return null;
-				}
-			}
-			else if ( !this.mergeItemStack( itemstack1, 0, 36, false ) )
+			// Can this aspect be added to the filter list?
+			if( ( this.part != null ) && ( this.part.addFilteredAspectFromItemstack( player, slot.getStack() ) ) )
 			{
 				return null;
 			}
-			if ( itemstack1.stackSize == 0 )
-			{
-				slot.putStack( null );
-			}
-			else
-			{
-				slot.onSlotChanged();
-			}
+
+			// Pass to super
+			return super.transferStackInSlot( player, slotNumber );
 		}
 
-		return itemstack;
+		return null;
 	}
-
 }

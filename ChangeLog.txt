@@ -2,6 +2,7 @@
     Various bug fixes.
     Code comments and cleanup
     Bugfix: Possible CME on terminal inventory when multiple players are using it.
+    Major Bugfix: Shift+Click did not properly transfer items, and could dupe items.
     
 7/20/2014 0.1.2a
     Essentia Providers now take on the color of the cable they are placed against.

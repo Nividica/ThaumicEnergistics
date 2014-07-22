@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.container.slot.SlotRespective;
+import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.gui.GuiCellTerminalBase;
 import thaumicenergistics.gui.IAspectSelectorContainer;
 import thaumicenergistics.util.EssentiaConversionHelper;
@@ -21,8 +21,6 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEFluidStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base class for cell and terminal inventory containers
@@ -81,11 +79,6 @@ public abstract class ContainerCellTerminalBase
 	public static int INPUT_SLOT_ID = 0;
 
 	/**
-	 * Slot ID offset the player inventory
-	 */
-	public static int PLAYER_INV_SLOT_OFFSET = 2;
-
-	/**
 	 * AE network monitor
 	 */
 	protected IMEMonitor<IAEFluidStack> monitor;
@@ -126,6 +119,16 @@ public abstract class ContainerCellTerminalBase
 	private long lastSoundPlaytime = 0;
 
 	/**
+	 * Slot number of the input slot
+	 */
+	private int inputSlotNumber = -1;
+
+	/**
+	 * Slot number of the output slot
+	 */
+	private int outputSlotNumber = -1;
+
+	/**
 	 * Create the container and register the owner
 	 * 
 	 * @param player
@@ -144,18 +147,35 @@ public abstract class ContainerCellTerminalBase
 	 */
 	protected void bindToInventory( PrivateInventory inventory )
 	{
+		// Set the inventory
 		this.inventory = inventory;
 
+		// Register the container as an update receiver
 		this.inventory.setReceiver( this );
 
-		this.addSlotToContainer( new SlotRespective( inventory, ContainerCellTerminalBase.INPUT_SLOT_ID, ContainerCellTerminalBase.INPUT_POSITION_X,
-						ContainerCellTerminalBase.INPUT_POSITION_Y ) );
+		// Create the input slot
+		Slot workSlot = new SlotRestrictive( inventory, ContainerCellTerminalBase.INPUT_SLOT_ID, ContainerCellTerminalBase.INPUT_POSITION_X,
+						ContainerCellTerminalBase.INPUT_POSITION_Y );
 
-		this.addSlotToContainer( new SlotFurnace( this.player, inventory, ContainerCellTerminalBase.OUTPUT_SLOT_ID,
-						ContainerCellTerminalBase.OUTPUT_POSITION_X, ContainerCellTerminalBase.OUTPUT_POSITION_Y ) );
+		// Add the input slot
+		this.addSlotToContainer( workSlot );
 
-		this.bindPlayerInventory( this.player.inventory, ContainerCellTerminalBase.PLAYER_INV_SLOT_OFFSET,
-			ContainerCellTerminalBase.PLAYER_INV_POSITION_X, ContainerCellTerminalBase.PLAYER_INV_POSITION_Y );
+		// Set the input slot number
+		this.inputSlotNumber = workSlot.slotNumber;
+
+		// Create the output slot
+		workSlot = new SlotFurnace( this.player, inventory, ContainerCellTerminalBase.OUTPUT_SLOT_ID, ContainerCellTerminalBase.OUTPUT_POSITION_X,
+						ContainerCellTerminalBase.OUTPUT_POSITION_Y );
+
+		// Add the output slot
+		this.addSlotToContainer( workSlot );
+
+		// Set the output slot number
+		this.outputSlotNumber = workSlot.slotNumber;
+
+		// Bind to the player's inventory
+		this.bindPlayerInventory( this.player.inventory, ContainerCellTerminalBase.PLAYER_INV_POSITION_X,
+			ContainerCellTerminalBase.PLAYER_INV_POSITION_Y );
 
 	}
 
@@ -322,52 +342,65 @@ public abstract class ContainerCellTerminalBase
 	 * Called when the user clicks an aspect in the GUI
 	 */
 	@Override
-	@SideOnly(Side.CLIENT)
 	public abstract void setSelectedAspect( Aspect selectedAspect );
 
-	// TODO: Fix this up, move to superclass
 	@Override
-	public ItemStack transferStackInSlot( EntityPlayer player, int slotnumber )
+	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
 	{
-		ItemStack itemstack = null;
+		// Get the slot that was shift-clicked
+		Slot slot = (Slot)this.inventorySlots.get( slotNumber );
 
-		Slot slot = (Slot)this.inventorySlots.get( slotnumber );
-
+		// Is there a valid slot with and item?
 		if ( ( slot != null ) && ( slot.getHasStack() ) )
 		{
-			ItemStack itemstack1 = slot.getStack();
+			boolean didMerge = false;
 
-			itemstack = itemstack1.copy();
+			// Get the itemstack in the slot
+			ItemStack slotStack = slot.getStack();
 
-			if ( this.inventory.isItemValidForSlot( 0, itemstack1 ) )
+			// Was the slot clicked the input slot or output slot?
+			if ( ( slotNumber == this.inputSlotNumber ) || ( slotNumber == this.outputSlotNumber ) )
 			{
-				if ( ( slotnumber == 1 ) || ( slotnumber == 0 ) )
-				{
-					if ( !this.mergeItemStack( itemstack1, 2, 36, false ) )
-					{
-						return null;
-					}
-				}
-				else if ( !this.mergeItemStack( itemstack1, 0, 1, false ) )
-				{
-					return null;
-				}
-				if ( itemstack1.stackSize == 0 )
-				{
-					slot.putStack( null );
-				}
-				else
-				{
-					slot.onSlotChanged();
-				}
+				// Attempt to merge with the player inventory
+				didMerge = this.mergeSlotWithPlayerInventory( slotStack );
 			}
-			else
+			// Was the slot clicked in the player or hotbar inventory?
+			else if ( this.slotClickedWasInPlayerInventory( slotNumber ) || this.slotClickedWasInHotbarInventory( slotNumber ) )
+			{
+				// Is the item valid for the input slot?
+				if ( ( (Slot)this.inventorySlots.get( this.inputSlotNumber ) ).isItemValid( slotStack ) )
+				{
+					// Attempt to merge with the input slot
+					didMerge = this.mergeItemStack( slotStack, this.inputSlotNumber, this.inputSlotNumber + 1, false );
+				}
+				
+				// Did we merge?
+				if( !didMerge )
+				{
+					didMerge = this.swapSlotInventoryHotbar( slotNumber, slotStack );
+				}
+
+			}
+
+			// Did we merge?
+			if ( !didMerge )
 			{
 				return null;
 			}
+
+			// Did the merger drain the stack?
+			if ( slotStack.stackSize == 0 )
+			{
+				// Set the slot to have no item
+				slot.putStack( null );
+			}
+
+			// Inform the slot its stack changed;
+			slot.onSlotChanged();
+
 		}
 
-		return itemstack;
+		return null;
 	}
 
 	/**
@@ -376,7 +409,6 @@ public abstract class ContainerCellTerminalBase
 	 * 
 	 * @param aspectStackList
 	 */
-	@SideOnly(Side.CLIENT)
 	public void updateAspectList( List<AspectStack> aspectStackList )
 	{
 		this.aspectStackList = aspectStackList;

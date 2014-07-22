@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
@@ -37,28 +36,26 @@ public class GuiEssentiatIO
 	private boolean redstoneControlled;
 	private boolean hasNetworkTool;
 
-	public GuiEssentiatIO(AEPartEssentiaIO terminal, EntityPlayer player)
+	public GuiEssentiatIO( AEPartEssentiaIO terminal, EntityPlayer player )
 	{
 		super( new ContainerPartEssentiaIOBus( terminal, player ) );
-
-		( (ContainerPartEssentiaIOBus) this.inventorySlots ).setGui( this );
 
 		this.part = terminal;
 		this.player = player;
 
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 0, 61, 21, this, (byte) 2 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 1, 79, 21, this, (byte) 1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 2, 97, 21, this, (byte) 2 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 3, 61, 39, this, (byte) 1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 4, 79, 39, this, (byte) 0 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 5, 97, 39, this, (byte) 1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 6, 61, 57, this, (byte) 2 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 7, 79, 57, this, (byte) 1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 8, 97, 57, this, (byte) 2 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 0, 61, 21, this, (byte)2 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 1, 79, 21, this, (byte)1 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 2, 97, 21, this, (byte)2 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 3, 61, 39, this, (byte)1 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 4, 79, 39, this, (byte)0 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 5, 97, 39, this, (byte)1 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 6, 61, 57, this, (byte)2 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 7, 79, 57, this, (byte)1 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 8, 97, 57, this, (byte)2 ) );
 
 		new PacketEssentiaIOBus( this.player, this.part ).sendPacketToServer();
 
-		this.hasNetworkTool = ( this.inventorySlots.getInventory().size() > 40 );
+		this.hasNetworkTool = ( (ContainerPartEssentiaIOBus)this.inventorySlots ).hasNetworkTool();
 
 		this.xSize = ( this.hasNetworkTool ? 246 : 211 );
 
@@ -91,7 +88,7 @@ public class GuiEssentiatIO
 	{
 		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ )
 		{
-			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( i );
+			Slot slot = (Slot)this.inventorySlots.inventorySlots.get( i );
 
 			if ( this.isMouseOverSlot( slot, x, y ) )
 			{
@@ -105,11 +102,15 @@ public class GuiEssentiatIO
 	@Override
 	protected void mouseClicked( int mouseX, int mouseY, int mouseButton )
 	{
-		Slot slot = this.getSlotAtPosition( mouseX, mouseY );
-
-		if ( ( slot != null ) && ( slot.getStack() != null ) && ( slot.getStack().isItemEqual( AEApi.instance().items().itemNetworkTool.stack( 1 ) ) ) )
+		if ( this.hasNetworkTool )
 		{
-			return;
+			Slot slot = this.getSlotAtPosition( mouseX, mouseY );
+
+			if ( ( slot != null ) && ( slot.getStack() != null ) &&
+							( slot.getStack().isItemEqual( AEApi.instance().items().itemNetworkTool.stack( 1 ) ) ) )
+			{
+				return;
+			}
 		}
 
 		super.mouseClicked( mouseX, mouseY, mouseButton );
@@ -145,11 +146,14 @@ public class GuiEssentiatIO
 	{
 		super.actionPerformed( button );
 
-		new PacketEssentiaIOBus( this.player, (byte) button.id, this.part ).sendPacketToServer();
+		new PacketEssentiaIOBus( this.player, (byte)button.id, this.part ).sendPacketToServer();
 	}
 
 	public void changeConfig( byte filterSize )
-	{
+	{	
+		// Inform our part
+		this.part.receiveFilterSize( filterSize );
+		
 		this.filterSize = filterSize;
 
 		for( int i = 0; i < this.aspectSlotList.size(); i++ )
@@ -200,7 +204,7 @@ public class GuiEssentiatIO
 			{
 				if ( button instanceof WidgetRedstoneModes )
 				{
-					( (WidgetRedstoneModes) button ).drawTooltip( mouseX, mouseY );
+					( (WidgetRedstoneModes)button ).drawTooltip( mouseX, mouseY );
 				}
 			}
 		}
@@ -237,35 +241,12 @@ public class GuiEssentiatIO
 		this.redstoneControlled = redstoneControled;
 	}
 
-	public boolean shiftClick( ItemStack itemStack )
-	{
-		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
-
-		if ( itemAspect != null )
-		{
-			// Are we already filtering this aspect?
-			if ( this.filteredAspects.contains( itemAspect ) )
-			{
-				return false;
-			}
-
-			for( WidgetAspectSlot aspectSlot : this.aspectSlotList )
-			{
-				if ( aspectSlot.canRender() && ( ( aspectSlot.getAspect() == null ) || ( aspectSlot.getAspect() == itemAspect ) ) )
-				{
-					// Let the slot know it has received an aspect
-					aspectSlot.mouseClicked( itemAspect );
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
 	@Override
 	public void updateAspects( List<Aspect> aspectList )
 	{
+		// Inform our part
+		this.part.receiveFilterList( aspectList );
+		
 		int count = Math.min( this.aspectSlotList.size(), aspectList.size() );
 
 		for( int i = 0; i < count; i++ )
@@ -281,7 +262,7 @@ public class GuiEssentiatIO
 	{
 		if ( this.redstoneControlled && ( this.buttonList.size() > 0 ) )
 		{
-			( (WidgetRedstoneModes) this.buttonList.get( 0 ) ).setRedstoneMode( mode );
+			( (WidgetRedstoneModes)this.buttonList.get( 0 ) ).setRedstoneMode( mode );
 		}
 	}
 

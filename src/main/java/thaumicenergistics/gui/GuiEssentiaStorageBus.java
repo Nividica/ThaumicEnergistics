@@ -6,10 +6,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
+import thaumicenergistics.gui.widget.AbstractAspectWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.gui.widget.WidgetRedstoneModes;
 import thaumicenergistics.network.IAspectSlotGui;
@@ -20,38 +20,104 @@ import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.AEApi;
 
+/**
+ * Gui for the storage bus.
+ * 
+ * @author Nividica
+ * 
+ */
 public class GuiEssentiaStorageBus
 	extends GuiContainer
 	implements IAspectSlotGui
 {
+	/**
+	 * The number of columns in the gui.
+	 */
+	private static final int COLUMNS = 9;
+
+	/**
+	 * The number of rows in the gui.
+	 */
+	private static final int ROWS = 6;
+
+	/**
+	 * The starting X position of the widgets.
+	 */
+	private static final int WIDGET_X_POS = 7;
+
+	/**
+	 * The starting Y position of the widgets.
+	 */
+	private static final int WIDGET_Y_POS = 17;
+
+	/**
+	 * The width of the gui
+	 */
+	public static final int GUI_WIDTH = 246;
+
+	/**
+	 * The height of the gui
+	 */
+	public static final int GUI_HEIGHT = 222;
+
+	/**
+	 * Player viewing this gui.
+	 */
 	private EntityPlayer player;
-	private List<WidgetAspectSlot> aspectSlotList = new ArrayList<WidgetAspectSlot>();
+
+	/**
+	 * Filter widget list
+	 */
+	private List<WidgetAspectSlot> aspectWidgetList = new ArrayList<WidgetAspectSlot>();
+
+	/**
+	 * Filter aspect list
+	 */
 	private List<Aspect> filteredAspects = new ArrayList<Aspect>();
+
+	/**
+	 * Does the player have a network tool?
+	 */
 	private boolean hasNetworkTool;
 
-	public GuiEssentiaStorageBus(AEPartEssentiaStorageBus part, EntityPlayer player)
+	/**
+	 * Creates the GUI.
+	 * 
+	 * @param part
+	 * The part associated with the gui.
+	 * @param player
+	 * The player viewing the gui.
+	 * @param container
+	 * The inventory container.
+	 */
+	public GuiEssentiaStorageBus( AEPartEssentiaStorageBus part, EntityPlayer player )
 	{
+		// Call super
 		super( new ContainerPartEssentiaStorageBus( part, player ) );
 
-		( (ContainerPartEssentiaStorageBus) this.inventorySlots ).setGui( this );
-
+		// Set the player
 		this.player = player;
 
-		for( int x = 0; x < 9; x++ )
+		// Set the network tool
+		this.hasNetworkTool = ( (ContainerPartEssentiaStorageBus)this.inventorySlots ).hasNetworkTool();
+
+		// Create the widgets
+		for( int row = 0; row < GuiEssentiaStorageBus.ROWS; row++ )
 		{
-			for( int y = 0; y < 6; y++ )
+			for( int column = 0; column < GuiEssentiaStorageBus.COLUMNS; column++ )
 			{
-				this.aspectSlotList.add( new WidgetAspectSlot( this.player, part, ( x * 6 ) + y, ( 18 * x ) + 7, ( 18 * y ) + 17 ) );
+				this.aspectWidgetList.add( new WidgetAspectSlot( this.player, part, ( row * GuiEssentiaStorageBus.COLUMNS ) + column,
+								GuiEssentiaStorageBus.WIDGET_X_POS + ( AbstractAspectWidget.WIDGET_SIZE * column ),
+								GuiEssentiaStorageBus.WIDGET_Y_POS + ( AbstractAspectWidget.WIDGET_SIZE * row ) ) );
 			}
 		}
 
+		// Set the width and height
+		this.xSize = GuiEssentiaStorageBus.GUI_WIDTH;
+		this.ySize = GuiEssentiaStorageBus.GUI_HEIGHT;
+
+		// Request an update
 		new PacketEssentiaStorageBus( player, part ).sendPacketToServer();
-
-		this.hasNetworkTool = ( this.inventorySlots.getInventory().size() > 40 );
-
-		this.xSize = ( this.hasNetworkTool ? 246 : 211 );
-
-		this.ySize = 222;
 	}
 
 	private boolean isMouseOverSlot( Slot slot, int x, int y )
@@ -59,13 +125,19 @@ public class GuiEssentiaStorageBus
 		return GuiHelper.isPointInGuiRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
 	}
 
+	/**
+	 * Draws the gui background
+	 */
 	@Override
 	protected void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY )
 	{
+		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
+		// Set the texture
 		Minecraft.getMinecraft().renderEngine.bindTexture( GuiTextureManager.ESSENTIA_STORAGE_BUS.getTexture() );
 
+		
 		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, 176, 222 );
 
 		this.drawTexturedModalRect( this.guiLeft + 179, this.guiTop, 179, 0, 32, 86 );
@@ -86,11 +158,11 @@ public class GuiEssentiaStorageBus
 
 		for( int i = 0; i < 54; i++ )
 		{
-			this.aspectSlotList.get( i ).drawWidget();
+			this.aspectWidgetList.get( i ).drawWidget();
 
-			if ( ( !overlayRendered ) && ( this.aspectSlotList.get( i ).canRender() ) )
+			if ( ( !overlayRendered ) && ( this.aspectWidgetList.get( i ).canRender() ) )
 			{
-				overlayRendered = GuiHelper.renderOverlay( this.zLevel, this.guiLeft, this.guiTop, this.aspectSlotList.get( i ), mouseX, mouseY );
+				overlayRendered = GuiHelper.renderOverlay( this.zLevel, this.guiLeft, this.guiTop, this.aspectWidgetList.get( i ), mouseX, mouseY );
 			}
 		}
 
@@ -98,7 +170,7 @@ public class GuiEssentiaStorageBus
 		{
 			if ( ( button instanceof WidgetRedstoneModes ) )
 			{
-				( (WidgetRedstoneModes) button ).drawTooltip( this.guiLeft, this.guiTop );
+				( (WidgetRedstoneModes)button ).drawTooltip( this.guiLeft, this.guiTop );
 			}
 		}
 	}
@@ -107,7 +179,7 @@ public class GuiEssentiaStorageBus
 	{
 		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ )
 		{
-			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( i );
+			Slot slot = (Slot)this.inventorySlots.inventorySlots.get( i );
 
 			if ( this.isMouseOverSlot( slot, x, y ) )
 			{
@@ -130,7 +202,7 @@ public class GuiEssentiaStorageBus
 
 		super.mouseClicked( mouseX, mouseY, mouseButton );
 
-		for( WidgetAspectSlot aspectSlot : this.aspectSlotList )
+		for( WidgetAspectSlot aspectSlot : this.aspectWidgetList )
 		{
 			if ( GuiHelper.isPointInGuiRegion( aspectSlot.getPosX(), aspectSlot.getPosY(), 18, 18, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 			{
@@ -156,37 +228,14 @@ public class GuiEssentiaStorageBus
 		}
 	}
 
-	public void shiftClick( ItemStack itemStack )
-	{
-		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
-
-		if ( itemAspect != null )
-		{
-			// Are we already filtering this aspect?
-			if ( this.filteredAspects.contains( itemAspect ) )
-			{
-				return;
-			}
-
-			for( WidgetAspectSlot aspectSlot : this.aspectSlotList )
-			{
-				if ( aspectSlot.canRender() && ( aspectSlot.getAspect() == null ) )
-				{
-					aspectSlot.mouseClicked( itemAspect );
-					return;
-				}
-			}
-		}
-	}
-
 	@Override
 	public void updateAspects( List<Aspect> aspectList )
 	{
-		int count = Math.min( this.aspectSlotList.size(), aspectList.size() );
+		int count = Math.min( this.aspectWidgetList.size(), aspectList.size() );
 
 		for( int i = 0; i < count; i++ )
 		{
-			this.aspectSlotList.get( i ).setAspect( aspectList.get( i ) );
+			this.aspectWidgetList.get( i ).setAspect( aspectList.get( i ) );
 		}
 
 		this.filteredAspects = aspectList;

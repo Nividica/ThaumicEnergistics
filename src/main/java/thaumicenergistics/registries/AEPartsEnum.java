@@ -5,7 +5,7 @@ import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
-import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.parts.AEPartBase;
@@ -69,7 +69,7 @@ public enum AEPartsEnum
 
 	private static Pair<Upgrades, Integer> generatePair( Upgrades upgrade, int maximum )
 	{
-		return new MutablePair<Upgrades, Integer>( upgrade, Integer.valueOf( maximum ) );
+		return new ImmutablePair<Upgrades, Integer>( upgrade, Integer.valueOf( maximum ) );
 	}
 
 	/**

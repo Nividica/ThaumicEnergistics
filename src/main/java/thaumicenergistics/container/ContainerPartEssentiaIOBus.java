@@ -1,12 +1,8 @@
 package thaumicenergistics.container;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import thaumicenergistics.container.slot.SlotRespective;
-import thaumicenergistics.gui.GuiEssentiatIO;
 import thaumicenergistics.parts.AEPartEssentiaIO;
 
 /**
@@ -29,14 +25,9 @@ public class ContainerPartEssentiaIOBus
 	private static int UPGRADE_X_POS = 187;
 
 	/**
-	 * The starting Y position for the upgrade slots
+	 * The Y position for the upgrade slots
 	 */
-	private static int UPGRADE_Y_OFFSET = 8;
-
-	/**
-	 * How far apart each slot should be drawn
-	 */
-	private static int UPGRADE_Y_MULTIPLIER = 18;
+	private static int UPGRADE_Y_POS = 8;
 
 	/**
 	 * X position for the player inventory
@@ -49,12 +40,10 @@ public class ContainerPartEssentiaIOBus
 	private static int PLAYER_INV_POSITION_Y = 160;
 
 	/**
-	 * Slot ID offset the player inventory
+	 * The part associated with this container
 	 */
-	public static int PLAYER_INV_SLOT_OFFSET = 9;
-
-	private GuiEssentiatIO guiBusAspectIO;
-
+	private AEPartEssentiaIO part;
+	
 	/**
 	 * Creates the container.
 	 * 
@@ -65,16 +54,16 @@ public class ContainerPartEssentiaIOBus
 	 */
 	public ContainerPartEssentiaIOBus( AEPartEssentiaIO part, EntityPlayer player )
 	{
-		// Add the upgrade slots
-		for( int slotIndex = 0; slotIndex < ContainerPartEssentiaIOBus.NUMBER_OF_UPGRADE_SLOTS; slotIndex++ )
-		{
-			this.addSlotToContainer( new SlotRespective( part.getUpgradeInventory(), slotIndex, ContainerPartEssentiaIOBus.UPGRADE_X_POS,
-							ContainerPartEssentiaIOBus.UPGRADE_Y_OFFSET + ( slotIndex * ContainerPartEssentiaIOBus.UPGRADE_Y_MULTIPLIER ) ) );
-		}
-
+		// Set the part
+		this.part = part;
+		
 		// Bind to the player's inventory
-		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaIOBus.PLAYER_INV_SLOT_OFFSET,
-			ContainerPartEssentiaIOBus.PLAYER_INV_POSITION_X, ContainerPartEssentiaIOBus.PLAYER_INV_POSITION_Y );
+		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaIOBus.PLAYER_INV_POSITION_X,
+			ContainerPartEssentiaIOBus.PLAYER_INV_POSITION_Y );
+
+		// Add the upgrade slots
+		this.addUpgradeSlots( part.getUpgradeInventory(), ContainerPartEssentiaIOBus.NUMBER_OF_UPGRADE_SLOTS, ContainerPartEssentiaIOBus.UPGRADE_X_POS,
+			ContainerPartEssentiaIOBus.UPGRADE_Y_POS );
 
 		// Bind to the network tool
 		this.bindToNetworkTool( player.inventory, part.getHost().getLocation() );
@@ -96,58 +85,28 @@ public class ContainerPartEssentiaIOBus
 	}
 
 	/**
-	 * Sets the gui associated with this container
-	 * 
-	 * @param gui
+	 * Called when the player shift+clicks on a slot.
 	 */
-	@SideOnly(Side.CLIENT)
-	public void setGui( GuiEssentiatIO gui )
-	{
-		this.guiBusAspectIO = gui;
-	}
-
-	// TODO: Fix this up, move to superclass
 	@Override
-	public ItemStack transferStackInSlot( EntityPlayer player, int slotId )
-	{
-		if ( ( this.guiBusAspectIO != null ) && ( this.guiBusAspectIO.shiftClick( this.getSlot( slotId ).getStack() ) ) )
-		{
-			return ( (Slot)this.inventorySlots.get( slotId ) ).getStack();
-		}
+	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
+	{	
+		// Get the slot
+		Slot slot = this.getSlot( slotNumber );
 
-		ItemStack itemStack = null;
-
-		Slot slot = (Slot)this.inventorySlots.get( slotId );
-
+		// Do we have a valid slot with an item?
 		if ( ( slot != null ) && ( slot.getHasStack() ) )
-		{
-			ItemStack slotStack = slot.getStack();
-
-			itemStack = slotStack.copy();
-
-			if ( slotId < 36 )
+		{	
+			// Can this aspect be added to the filter list?
+			if( ( this.part != null ) && ( this.part.addFilteredAspectFromItemstack( player, slot.getStack() ) ) )
 			{
-				if ( !this.mergeItemStack( slotStack, 36, this.inventorySlots.size(), true ) )
-				{
-					return null;
-				}
-			}
-			else if ( !this.mergeItemStack( slotStack, 0, 36, false ) )
-			{
-				return slotStack;
+				return null;
 			}
 
-			if ( slotStack.stackSize == 0 )
-			{
-				slot.putStack( null );
-			}
-			else
-			{
-				slot.onSlotChanged();
-			}
+			// Pass to super
+			return super.transferStackInSlot( player, slotNumber );
 		}
 
-		return itemStack;
+		return null;
 	}
 
 }

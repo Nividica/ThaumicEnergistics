@@ -3,10 +3,11 @@ package thaumicenergistics.parts;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.container.ContainerPartEssentiaEmitter;
+import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.gui.GuiEssentiaLevelEmitter;
 import thaumicenergistics.network.IAspectSlotPart;
@@ -15,6 +16,7 @@ import thaumicenergistics.network.packet.PacketAspectSlot;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EssentiaConversionHelper;
+import thaumicenergistics.util.EssentiaItemContainerHelper;
 import appeng.api.config.RedstoneMode;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStackWatcher;
@@ -31,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatcherHost, IAspectSlotPart
 {
-	private Aspect aspect;
+	private Aspect filterAspect;
 	private RedstoneMode mode = RedstoneMode.HIGH_SIGNAL;
 	private IStackWatcher watcher;
 	private long wantedAmount;
@@ -71,10 +73,10 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 
 	private void queryNetworkForCurrentAmount()
 	{
-		if ( this.aspect != null )
+		if ( this.filterAspect != null )
 		{
 			// Get the gas for this aspect
-			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( this.aspect );
+			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( this.filterAspect );
 
 			// Ask how much is in the network
 			this.setCurrentAmount( EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( this.checkGasAmount( essentiaGas ) ) );
@@ -129,7 +131,7 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 	@Override
 	public Object getServerGuiElement( EntityPlayer player )
 	{
-		return new ContainerPartEssentiaEmitter( player );
+		return new ContainerPartEssentiaLevelEmitter( this, player );
 	}
 
 	@Override
@@ -150,7 +152,7 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 		if ( ( channel == StorageChannel.FLUIDS ) && ( diffStack != null ) )
 		{
 			// Get the gas for this aspect
-			Fluid aspectGas = GaseousEssentia.getGasFromAspect( this.aspect );
+			Fluid aspectGas = GaseousEssentia.getGasFromAspect( this.filterAspect );
 
 			// Do the fluids match?
 			if ( ( (IAEFluidStack) diffStack ).getFluid() == aspectGas )
@@ -167,7 +169,7 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 	{
 		super.readFromNBT( data );
 
-		this.aspect = Aspect.aspects.get( data.getString( "aspect" ) );
+		this.filterAspect = Aspect.aspects.get( data.getString( "aspect" ) );
 
 		this.mode = RedstoneMode.values()[data.getInteger( "mode" )];
 
@@ -212,7 +214,7 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 	@Override
 	public void setAspect( int index, Aspect aspect, EntityPlayer player )
 	{
-		this.aspect = aspect;
+		this.filterAspect = aspect;
 
 		if ( this.watcher == null )
 		{
@@ -223,7 +225,7 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 
 		this.updateWatcher( this.watcher );
 
-		new PacketAspectSlot( Lists.newArrayList( new Aspect[] { this.aspect } ) ).sendPacketToPlayer( player );
+		new PacketAspectSlot( Lists.newArrayList( new Aspect[] { this.filterAspect } ) ).sendPacketToPlayer( player );
 	}
 
 	public void setWantedAmount( long wantedAmount, EntityPlayer player )
@@ -235,6 +237,9 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 		if ( this.wantedAmount < 0L )
 		{
 			this.wantedAmount = 0L;
+		} else if( this.wantedAmount > 9999999999L )
+		{
+			this.wantedAmount = 9999999999L;
 		}
 		
 		new PacketEssentiaEmitter( this.wantedAmount, player ).sendPacketToPlayer( player );
@@ -242,13 +247,13 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 		this.notifyNeighborsOfChange();
 	}
 
-	public void syncClientGui( EntityPlayer player )
+	public void sendInformation( EntityPlayer player )
 	{
 		new PacketEssentiaEmitter( this.mode, player ).sendPacketToPlayer( player );
 
 		new PacketEssentiaEmitter( this.wantedAmount, player ).sendPacketToPlayer( player );
 
-		new PacketAspectSlot( Lists.newArrayList( new Aspect[] { this.aspect } ) ).sendPacketToPlayer( player );
+		new PacketAspectSlot( Lists.newArrayList( new Aspect[] { this.filterAspect } ) ).sendPacketToPlayer( player );
 	}
 
 	public void toggleMode( EntityPlayer player )
@@ -279,9 +284,9 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 	{
 		this.watcher = newWatcher;
 
-		if ( this.aspect != null )
+		if ( this.filterAspect != null )
 		{
-			this.watcher.add( EssentiaConversionHelper.createAEFluidStackInFluidUnits( GaseousEssentia.getGasFromAspect( this.aspect ), 1 ) );
+			this.watcher.add( EssentiaConversionHelper.createAEFluidStackInFluidUnits( GaseousEssentia.getGasFromAspect( this.filterAspect ), 1 ) );
 		}
 	}
 
@@ -290,9 +295,9 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 	{
 		super.writeToNBT( data );
 
-		if ( this.aspect != null )
+		if ( this.filterAspect != null )
 		{
-			data.setString( "aspect", this.aspect.getTag() );
+			data.setString( "aspect", this.filterAspect.getTag() );
 		}
 		else
 		{
@@ -309,5 +314,26 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 	{	
 		this.queryNetworkForCurrentAmount();
 	}
+	
+	public boolean setFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
+	{
+		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
+
+		if ( itemAspect != null )
+		{
+			this.filterAspect = itemAspect;
+			
+			if( !player.worldObj.isRemote )
+			{
+				this.sendInformation( player );
+			}
+			
+			return true;
+		}
+
+		return false;
+	}
+	
+	
 
 }

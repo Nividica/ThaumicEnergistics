@@ -1,7 +1,7 @@
 package thaumicenergistics.util;
 
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.ContainerCellTerminalBase;
@@ -56,7 +56,7 @@ public class EssentiaCellTerminalWorker
 		int proposedDrainAmount_EU = (int) EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( proposedDrainAmount_FU );
 
 		// Attempt to drain the item
-		MutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.drainContainer( container, proposedDrainAmount_EU );
+		ImmutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.drainContainer( container, proposedDrainAmount_EU );
 
 		// Was the drain successful?
 		if ( drainedContainer == null )
@@ -115,7 +115,7 @@ public class EssentiaCellTerminalWorker
 		int proposedAmount_EU = Math.min( containerCapacity_EU, resultAmount_EU );
 
 		// Create a new container filled to the proposed amount
-		MutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.fillContainer( container, new AspectStack(
+		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.fillContainer( container, new AspectStack(
 						currentAspect, proposedAmount_EU ) );
 
 		// Was the fill successful?

@@ -5,12 +5,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.container.ContainerPartEssentiaEmitter;
+import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
 import thaumicenergistics.gui.widget.AbstractAspectWidget;
 import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
@@ -98,7 +99,7 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * Vertical padding between buttons.
 	 */
-	private static final int BUTTON_PADDING_VERT = 52;
+	private static final int BUTTON_PADDING_VERT = 22;
 
 	/**
 	 * X position to start drawing buttons.
@@ -108,7 +109,7 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * Y position to start drawing buttons.
 	 */
-	private static final int BUTTON_POS_Y = 14;
+	private static final int BUTTON_POS_Y = 17;
 
 	/**
 	 * Width of the buttons.
@@ -118,7 +119,7 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * Height of the buttons.
 	 */
-	private static final int BUTTON_HEIGHT = 10;
+	private static final int BUTTON_HEIGHT = 20;
 
 	/**
 	 * Number of button rows.
@@ -144,6 +145,11 @@ public class GuiEssentiaLevelEmitter
 	 * Width and height of the redstone button.
 	 */
 	private static final int REDSTONE_BUTTON_SIZE = 16;
+
+	/**
+	 * The maximum number of characters that can be typed in the amount field.
+	 */
+	private static final int AMOUNT_MAX_CHARS = 10;	
 
 	/**
 	 * Amount text field
@@ -176,7 +182,7 @@ public class GuiEssentiaLevelEmitter
 	public GuiEssentiaLevelEmitter( AEPartEssentiaLevelEmitter part, EntityPlayer player )
 	{
 		// Call super
-		super( new ContainerPartEssentiaEmitter( player ) );
+		super( new ContainerPartEssentiaLevelEmitter( part, player ) );
 
 		// Set the player
 		this.player = player;
@@ -209,6 +215,20 @@ public class GuiEssentiaLevelEmitter
 		// Draw the gui texture.
 		this.drawTexturedModalRect( posX, posY, 0, 0, GUI_X_SIZE, GUI_Y_SIZE );
 	}
+	
+	public boolean setFilteredAspectFromItemstack( ItemStack itemStack )
+	{
+		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
+
+		if ( itemAspect != null )
+		{
+			this.aspectFilterSlot.setAspect( itemAspect );
+			
+			return true;
+		}
+		
+		return false;
+	}
 
 	/**
 	 * Called when the player types a key
@@ -219,8 +239,8 @@ public class GuiEssentiaLevelEmitter
 		// Pass to super
 		super.keyTyped( key, keyID );
 
-		// Ensure they was numeric, or backspace
-		if ( ( "0123456789".contains( String.valueOf( key ) ) ) || ( keyID == Keyboard.KEY_BACK ) )
+		// Ensure they was numeric and the string isnt too long to parse, or backspace
+		if ( ( ( "0123456789".contains( String.valueOf( key ) ) ) && ( this.amountField.getText().length() < GuiEssentiaLevelEmitter.AMOUNT_MAX_CHARS ) ) || ( keyID == Keyboard.KEY_BACK ) )
 		{
 			// Pass to the amount field
 			this.amountField.textboxKeyTyped( key, keyID );
@@ -280,8 +300,8 @@ public class GuiEssentiaLevelEmitter
 		// Draw the filter widget
 		this.aspectFilterSlot.drawWidget();
 
-		// TODO: Do I still need this?
-		//GuiHelper.renderOverlay( this.zLevel, this.guiLeft, this.guiTop, this.aspectFilterSlot, mouseX, mouseY );
+		// Draw overlay when mouse is over slot.
+		GuiHelper.renderOverlay( this.zLevel, this.guiLeft, this.guiTop, this.aspectFilterSlot, mouseX, mouseY );
 	}
 
 	/**
@@ -291,7 +311,7 @@ public class GuiEssentiaLevelEmitter
 	public void drawScreen( int x, int y, float f )
 	{
 		// Get the number of buttons
-		int count = this.buttonList.size();
+		int count = GuiEssentiaLevelEmitter.BUTTON_LABELS.length;
 
 		// Loop over the buttons
 		for( int buttonIndex = 0; buttonIndex < count; buttonIndex++ )
@@ -367,7 +387,7 @@ public class GuiEssentiaLevelEmitter
 		}
 
 		// Add the redstone mode button
-		this.buttonList.add( new WidgetRedstoneModes( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX, guiLeftX -
+		this.buttonList.add( new WidgetRedstoneModes( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX, guiLeftX +
 						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_X, guiTopY + GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_Y,
 						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, RedstoneMode.LOW_SIGNAL, true ) );
 
@@ -377,6 +397,7 @@ public class GuiEssentiaLevelEmitter
 
 	/**
 	 * Returns the amount
+	 * 
 	 * @param amount
 	 */
 	public void setAmountField( long amount )
@@ -386,6 +407,7 @@ public class GuiEssentiaLevelEmitter
 
 	/**
 	 * Sets the redstone mode
+	 * 
 	 * @param mode
 	 */
 	public void setRedstoneMode( RedstoneMode mode )

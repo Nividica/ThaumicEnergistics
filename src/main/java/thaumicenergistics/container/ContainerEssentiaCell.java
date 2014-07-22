@@ -1,7 +1,5 @@
 package thaumicenergistics.container;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -99,7 +97,6 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 	 * it to the client.
 	 */
 	@Override
-	@SideOnly(Side.SERVER)
 	public void forceAspectUpdate()
 	{ 
 		if ( this.monitor != null )
@@ -130,7 +127,6 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 	 * Updates the list of aspects, and sends that list to the client.
 	 */
 	@Override
-	@SideOnly(Side.SERVER)
 	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
 		super.postChange( monitor, change, source );
@@ -186,7 +182,6 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 	 * Sends that change to the server for validation.
 	 */
 	@Override
-	@SideOnly(Side.CLIENT)
 	public void setSelectedAspect( Aspect selectedAspect )
 	{
 		new PacketServerEssentiaCell( this.player, selectedAspect ).sendPacketToServer();
@@ -197,7 +192,6 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 	 * If there is it does so.
 	 */
 	@Override
-	@SideOnly(Side.SERVER)
 	public void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();

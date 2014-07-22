@@ -132,7 +132,8 @@ public class PrivateInventory implements IInventory
 	@Override
 	public boolean isItemValidForSlot( int slotId, ItemStack itemStack )
 	{
-		return true;
+		// Assume it is not valid
+		return false;
 	}
 
 	@Override

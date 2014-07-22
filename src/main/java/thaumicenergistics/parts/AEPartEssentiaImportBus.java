@@ -24,22 +24,12 @@ public class AEPartEssentiaImportBus extends AEPartEssentiaIO
 	@Override
 	public boolean aspectTransferAllowed( Aspect aspect )
 	{
-		boolean wasAllNull = true;
-
-		for( int i = 0; i < this.filterAspects.length; i++ )
+		if( aspect != null )
 		{
-			if ( this.filterAspects[i] != null )
-			{
-				wasAllNull = false;
-
-				if ( this.filterAspects[i] == aspect )
-				{
-					return true;
-				}
-			}
+			return this.filteredAspects.contains( aspect );
 		}
-
-		return wasAllNull;
+		
+		return false;
 	}
 
 	@Override

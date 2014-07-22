@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
  * @author Nividica
  *
  */
-public class SlotRespective extends Slot
+public class SlotRestrictive extends Slot
 {
 	/**
 	 * The inventory we belong to
@@ -23,7 +23,7 @@ public class SlotRespective extends Slot
 	 * @param x X position of the slot
 	 * @param y Y position of the slot
 	 */
-	public SlotRespective(IInventory inventory, int index, int x, int y)
+	public SlotRestrictive(IInventory inventory, int index, int x, int y)
 	{
 		// Pass to super
 		super( inventory, index, x, y );

@@ -91,7 +91,7 @@ public class PacketEssentiaEmitter extends AbstractPacket
 				}
 				else
 				{
-					this.part.syncClientGui( this.player );
+					this.part.sendInformation( this.player );
 				}
 				break;
 

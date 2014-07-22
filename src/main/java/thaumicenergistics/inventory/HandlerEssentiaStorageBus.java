@@ -1,7 +1,6 @@
 package thaumicenergistics.inventory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -13,8 +12,8 @@ import thaumcraft.common.tiles.TileJarFillable;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
-import thaumicenergistics.util.EssentiaTileContainerHelper;
 import thaumicenergistics.util.EssentiaConversionHelper;
+import thaumicenergistics.util.EssentiaTileContainerHelper;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -257,9 +256,9 @@ public class HandlerEssentiaStorageBus
 		this.inverted = isInverted;
 	}
 
-	public void setPrioritizedAspects( Aspect[] aspectList )
+	public void setPrioritizedAspects( List<Aspect> aspectList )
 	{
-		this.prioritizedAspects = Arrays.asList( aspectList );
+		this.prioritizedAspects = aspectList;
 	}
 
 }

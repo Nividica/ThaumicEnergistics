@@ -1,7 +1,5 @@
 package thaumicenergistics.container;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.network.packet.PacketClientEssentiaTerminal;
@@ -70,7 +68,6 @@ public class ContainerEssentiaTerminal
 	 * it to the client.
 	 */
 	@Override
-	@SideOnly(Side.SERVER)
 	public void forceAspectUpdate()
 	{
 		if ( this.monitor != null )
@@ -98,7 +95,6 @@ public class ContainerEssentiaTerminal
 	 * Updates the list of aspects, and sends that list to the client.
 	 */
 	@Override
-	@SideOnly(Side.SERVER)
 	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
 		super.postChange( monitor, change, source );
@@ -133,7 +129,6 @@ public class ContainerEssentiaTerminal
 	 * Sends that change to the server for validation.
 	 */
 	@Override
-	@SideOnly(Side.CLIENT)
 	public void setSelectedAspect( Aspect selectedAspect )
 	{
 		new PacketServerEssentiaTerminal( this.player, selectedAspect ).sendPacketToServer();
@@ -144,7 +139,6 @@ public class ContainerEssentiaTerminal
 	 * If there is it does so.
 	 */
 	@Override
-	@SideOnly(Side.SERVER)
 	public void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();

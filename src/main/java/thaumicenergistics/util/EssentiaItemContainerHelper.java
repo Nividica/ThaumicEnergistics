@@ -3,7 +3,7 @@ package thaumicenergistics.util;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
@@ -14,6 +14,7 @@ import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.items.ItemEssence;
 import thaumicenergistics.aspect.AspectStack;
 
+// TODO thaumcraft.common.items.ItemEssence refers to both phials and node/wisp essence. Add checks for the latter.
 public class EssentiaItemContainerHelper
 {
 
@@ -96,7 +97,7 @@ public class EssentiaItemContainerHelper
 		return ( EssentiaItemContainerHelper.getJarLabelAspect( jar ) != null );
 	}
 
-	public static MutablePair<Integer, ItemStack> drainContainer( ItemStack container, AspectStack aspectStack )
+	public static ImmutablePair<Integer, ItemStack> drainContainer( ItemStack container, AspectStack aspectStack )
 	{
 		if ( container == null )
 		{
@@ -175,7 +176,7 @@ public class EssentiaItemContainerHelper
 
 					}
 
-					return new MutablePair<Integer, ItemStack>( amountToDrain, resultStack );
+					return new ImmutablePair<Integer, ItemStack>( amountToDrain, resultStack );
 				}
 			}
 
@@ -185,7 +186,7 @@ public class EssentiaItemContainerHelper
 
 	}
 
-	public static MutablePair<Integer, ItemStack> drainContainer( ItemStack container, int drainAmount_EU )
+	public static ImmutablePair<Integer, ItemStack> drainContainer( ItemStack container, int drainAmount_EU )
 	{
 		if ( container == null )
 		{
@@ -197,7 +198,7 @@ public class EssentiaItemContainerHelper
 		return EssentiaItemContainerHelper.drainContainer( container, stack );
 	}
 
-	public static MutablePair<Integer, ItemStack> fillContainer( ItemStack container, AspectStack aspectStack )
+	public static ImmutablePair<Integer, ItemStack> fillContainer( ItemStack container, AspectStack aspectStack )
 	{
 		// Is there an item?
 		if ( container == null )
@@ -279,7 +280,7 @@ public class EssentiaItemContainerHelper
 
 				}
 
-				return new MutablePair<Integer, ItemStack>( amountToFill, resultStack );
+				return new ImmutablePair<Integer, ItemStack>( amountToFill, resultStack );
 
 			}
 
