@@ -26,6 +26,19 @@ public class TileInfusionProvider
 	 */
 	protected List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
 
+	/**
+	 * Called when our parent block is about to be destroyed.
+	 */
+	public void onBreakBlock()
+	{
+		// Do we have a monitor
+		if( this.monitor != null )
+		{
+			// Unregister
+			this.monitor.removeListener( this );
+		}
+	}
+	
 	@Override
 	protected void channelUpdated()
 	{

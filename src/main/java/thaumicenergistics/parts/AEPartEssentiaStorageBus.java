@@ -40,26 +40,68 @@ import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-//TODO: Priority Window
-public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContainer, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory, IGridTickable
+// TODO: Priority Window
+public class AEPartEssentiaStorageBus
+	extends AEPartBase
+	implements ICellContainer, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory, IGridTickable
 {
-	private static final int FILTER_SIZE = 54; 
-	
+	private static final int FILTER_SIZE = 54;
+
 	private int priority = 0;
+
 	private boolean containerWasEmptyLastTick = false;
+
 	private HandlerEssentiaStorageBus handler = new HandlerEssentiaStorageBus( this );
+
 	private List<Aspect> filteredAspects = new ArrayList<Aspect>( AEPartEssentiaStorageBus.FILTER_SIZE );
+
 	private UpgradeInventory upgradeInventory = new UpgradeInventory( this.associatedItem, this, 1 );
 
 	public AEPartEssentiaStorageBus()
 	{
 		super( AEPartsEnum.EssentiaStorageBus );
-		
+
 		// Prefill the list
 		for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
 		{
 			this.filteredAspects.add( null );
 		}
+	}
+
+	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
+	{
+		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
+
+		if ( itemAspect != null )
+		{
+			// Are we already filtering this aspect?
+			if ( this.filteredAspects.contains( itemAspect ) )
+			{
+				return true;
+			}
+
+			// Add to the first open slot
+			for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
+			{
+				// Is this space empty?
+				if ( this.filteredAspects.get( index ) == null )
+				{
+					// Set the filter
+					this.filteredAspects.set( index, itemAspect );
+
+					// Is this server side?
+					if ( !player.worldObj.isRemote )
+					{
+						// Update the client
+						this.sendInformation( player );
+					}
+
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	@Override
@@ -78,10 +120,10 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 	{
 		// Face
 		helper.addBox( 1.0F, 1.0F, 15.0F, 15.0F, 15.0F, 16.0F );
-		
+
 		// Mid
 		helper.addBox( 4.0D, 4.0D, 14.0D, 12.0D, 12.0D, 15.0D );
-		
+
 		// Back
 		helper.addBox( 5.0D, 5.0D, 13.0D, 11.0D, 11.0D, 14.0D );
 	}
@@ -123,6 +165,13 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 		return new ContainerPartEssentiaStorageBus( this, player );
 	}
 
+	@Override
+	public TickingRequest getTickingRequest( IGridNode node )
+	{
+		// We would like a tick ever 20 MC ticks
+		return new TickingRequest( 20, 20, false, false );
+	}
+
 	public UpgradeInventory getUpgradeInventory()
 	{
 		return this.upgradeInventory;
@@ -144,7 +193,7 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 	public void onNeighborChanged()
 	{
 		super.onNeighborChanged();
-		
+
 		this.handler.onNeighborChange();
 
 		if ( this.node != null )
@@ -187,7 +236,7 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 
 		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
 		helper.setTexture( side, side, side, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[0], side, side );
-		
+
 		// Face
 		helper.setBounds( 1.0F, 1.0F, 15.0F, 15.0F, 15.0F, 16.0F );
 		helper.renderInventoryBox( renderer );
@@ -195,7 +244,7 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 		// Mid
 		helper.setBounds( 4.0F, 4.0F, 14.0F, 12.0F, 12.0F, 15.0F );
 		helper.renderInventoryBox( renderer );
-		
+
 		// Color overlay
 		helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
 		helper.setInvColor( AEPartBase.inventoryOverlayColor );
@@ -215,7 +264,7 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 
 		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
 		helper.setTexture( side, side, side, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTexture(), side, side );
-		
+
 		// Front (facing jar)
 		helper.setBounds( 1.0F, 1.0F, 15.0F, 15.0F, 15.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
@@ -257,6 +306,36 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 	}
 
 	@Override
+	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	{
+		// Do we have a container?
+		if ( this.facingContainer != null )
+		{
+			// Check the amount in the container
+			int currentAmount = this.facingContainer.getAspects().size();
+
+			// Was the container empty last tick, and it is not now?
+			if ( this.containerWasEmptyLastTick && ( currentAmount > 0 ) )
+			{
+				// Mark that it is not empty
+				this.containerWasEmptyLastTick = false;
+
+				// Neighbor has changed
+				this.onNeighborChanged();
+			}
+			// Was the container not empty last tick, and now it is?
+			else if ( !this.containerWasEmptyLastTick && ( currentAmount == 0 ) )
+			{
+				// Mark as empty
+				this.containerWasEmptyLastTick = true;
+			}
+		}
+
+		// Keep chugging along
+		return TickRateModulation.SAME;
+	}
+
+	@Override
 	public void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
@@ -278,82 +357,6 @@ public class AEPartEssentiaStorageBus extends AEPartBase implements ICellContain
 		}
 
 		this.upgradeInventory.writeToNBT( data, "UpgradeInventory" );
-	}
-
-	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
-	{
-		// We would like a tick ever 20 MC ticks
-		return new TickingRequest( 20, 20, false, false );
-	}
-
-	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
-	{	
-		// Do we have a container?
-		if( this.facingContainer != null )
-		{
-			// Check the amount in the container
-			int currentAmount = this.facingContainer.getAspects().size();
-							
-			// Was the container empty last tick, and it is not now?
-			if( this.containerWasEmptyLastTick && currentAmount > 0 )
-			{
-				// Mark that it is not empty
-				this.containerWasEmptyLastTick = false;
-				
-				// Neighbor has changed
-				this.onNeighborChanged();
-			}
-			// Was the container not empty last tick, and now it is?
-			else if( !this.containerWasEmptyLastTick && currentAmount == 0 )
-			{
-				// Mark as empty
-				this.containerWasEmptyLastTick = true;
-			}
-		}
-		
-		// Keep chugging along
-		return TickRateModulation.SAME;
-	}
-	
-
-
-	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
-	{
-		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
-
-		if ( itemAspect != null )
-		{
-			// Are we already filtering this aspect?
-			if ( this.filteredAspects.contains( itemAspect ) )
-			{
-				return true;
-			}
-			
-			// Add to the first open slot
-			for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
-			{
-				// Is this space empty?
-				if( this.filteredAspects.get( index ) == null )
-				{
-					// Set the filter
-					this.filteredAspects.set( index, itemAspect );
-					
-					// Is this server side?
-					if( !player.worldObj.isRemote )
-					{
-						// Update the client
-						this.sendInformation( player );
-					}
-					
-					
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 }

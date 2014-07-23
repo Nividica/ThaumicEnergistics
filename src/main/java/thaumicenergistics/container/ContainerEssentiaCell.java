@@ -14,6 +14,7 @@ import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannel;
@@ -22,21 +23,25 @@ import appeng.tile.storage.TileChest;
 
 /**
  * Inventory container for essentia cells in a ME chest.
+ * 
  * @author Nividica
- *
+ * 
  */
-public class ContainerEssentiaCell extends ContainerCellTerminalBase
+public class ContainerEssentiaCell
+	extends ContainerCellTerminalBase
 {
 	/**
 	 * The aspect the player has selected.
 	 */
 	private AspectStack selectedAspectStack;
-	
+
 	/**
 	 * The ME chest the cell is stored in.
 	 */
 	private TileChest hostChest;
 	
+	private MachineSource machineChest;
+
 	/**
 	 * Import and export inventory slots.
 	 */
@@ -51,61 +56,72 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 
 	/**
 	 * Creates the container.
-	 * @param player The player that owns this container.
-	 * @param world The world the ME chest is in.
-	 * @param x X position of the ME chest.
-	 * @param y Y position of the ME chest.
-	 * @param z Z position of the ME chest.
+	 * 
+	 * @param player
+	 * The player that owns this container.
+	 * @param world
+	 * The world the ME chest is in.
+	 * @param x
+	 * X position of the ME chest.
+	 * @param y
+	 * Y position of the ME chest.
+	 * @param z
+	 * Z position of the ME chest.
 	 */
 	public ContainerEssentiaCell( EntityPlayer player, World world, int x, int y, int z )
 	{
 		// Call the super-constructor
 		super( player );
-		
+
 		// Is this server side?
 		if ( !this.player.worldObj.isRemote )
 		{
 			// Get the tile entity for the chest
 			this.hostChest = (TileChest)world.getTileEntity( x, y, z );
-			
-			IMEInventoryHandler<IAEFluidStack> handler = null;
-			
+
 			try
 			{
 				// Get the chest handler
-				handler = this.hostChest.getHandler( StorageChannel.FLUIDS );
-				
+				IMEInventoryHandler<IAEFluidStack> handler = this.hostChest.getHandler( StorageChannel.FLUIDS );
+
 				// Get the monitor
-				if( handler != null )
-				{
+				if ( handler != null )
+				{	
+					// Get the cell inventory monitor
 					this.monitor = (IMEMonitor<IAEFluidStack>)handler;
-					
+
 					// Attach to the monitor
 					this.attachToMonitor();
+					
+					// Set the machine source to the host chest
+					this.machineChest = new MachineSource( this.hostChest );
 				}
 			}
-			catch( Exception e ) { }
+			catch( Exception e )
+			{
+				e.printStackTrace();
+			}
 		}
-		
+
 		// Bind our inventory
 		this.bindToInventory( this.privateInventory );
-		
+
 	}
-	
+
 	/**
 	 * Gets the current list from the AE monitor and sends
 	 * it to the client.
 	 */
 	@Override
 	public void forceAspectUpdate()
-	{ 
+	{
 		if ( this.monitor != null )
 		{
 			new PacketClientEssentiaCell( this.player, EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor
 							.getStorageList() ) ).sendPacketToPlayer( this.player );
 		}
 	}
-	
+
 	/**
 	 * Drops any items in the import and export inventory.
 	 */
@@ -122,7 +138,7 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 			}
 		}
 	}
-	
+
 	/**
 	 * Updates the list of aspects, and sends that list to the client.
 	 */
@@ -130,10 +146,10 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
 		super.postChange( monitor, change, source );
-		
+
 		new PacketClientEssentiaCell( this.player, this.aspectStackList ).sendPacketToPlayer( this.player );
 	}
-	
+
 	/**
 	 * Updates the selected aspect, aspect stack and gui.
 	 */
@@ -141,15 +157,15 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 	public void receiveSelectedAspect( Aspect selectedAspect )
 	{
 		this.selectedAspect = selectedAspect;
-		
-		if( this.selectedAspect != null )
+
+		if ( this.selectedAspect != null )
 		{
 			for( AspectStack stack : this.aspectStackList )
 			{
-				if( ( stack != null ) && ( stack.aspect == this.selectedAspect ) )
+				if ( ( stack != null ) && ( stack.aspect == this.selectedAspect ) )
 				{
 					this.selectedAspectStack = stack;
-					
+
 					break;
 				}
 			}
@@ -167,16 +183,17 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 			new PacketClientEssentiaCell( this.player, this.selectedAspect ).sendPacketToPlayer( this.player );
 		}
 	}
-	
+
 	/**
 	 * Gets the currently selected aspect.
+	 * 
 	 * @return
 	 */
 	public AspectStack getSelectedAspectStack()
 	{
 		return this.selectedAspectStack;
 	}
-	
+
 	/**
 	 * Called when the user has clicked on an aspect.
 	 * Sends that change to the server for validation.
@@ -195,15 +212,15 @@ public class ContainerEssentiaCell extends ContainerCellTerminalBase
 	public void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();
-		
+
 		// Do we have a monitor?
-		if( this.monitor != null )
+		if ( this.monitor != null )
 		{
 			// Is there work to do?
-			if( EssentiaCellTerminalWorker.hasWork( this.inventory ) )
+			if ( EssentiaCellTerminalWorker.hasWork( this.inventory ) )
 			{
 				// Do the work
-				EssentiaCellTerminalWorker.doWork( this.inventory, this.monitor, null, this.selectedAspect );
+				EssentiaCellTerminalWorker.doWork( this.inventory, this.monitor, this.machineChest, this.selectedAspect );
 			}
 		}
 	}

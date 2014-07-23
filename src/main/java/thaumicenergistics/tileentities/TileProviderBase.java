@@ -75,7 +75,6 @@ public abstract class TileProviderBase
 		@Override
 		public void writeToStream( ByteBuf data ) throws IOException
 		{
-			System.out.println( "Writing: " + TileProviderBase.this.getGridColor() );
 
 			// Write the color data to the stream
 			data.writeInt( TileProviderBase.this.getGridColor().ordinal() );
@@ -87,8 +86,6 @@ public abstract class TileProviderBase
 		{
 			// Read the color from the stream
 			TileProviderBase.this.setGridColor( AEColor.values()[data.readInt()] );
-
-			System.out.println( "Reading: " + TileProviderBase.this.getGridColor() );
 
 			return true;
 		}
@@ -139,8 +136,6 @@ public abstract class TileProviderBase
 
 	public void setGridColor( AEColor gridColor )
 	{
-		System.out.println( FMLCommonHandler.instance().getEffectiveSide() + " setting color to " + gridColor );
-
 		// Set our color to match
 		this.gridProxy.myColor = gridColor;
 

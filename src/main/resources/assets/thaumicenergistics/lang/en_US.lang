@@ -17,10 +17,10 @@ thaumicenergistics.aeparts.essentia.StorageBus.name=Essentia Storage Bus
 thaumicenergistics.aeparts.essentia.terminal.name=Essentia Terminal
 
 #Items
-thaumicenergistics.item.essentia.cell.1k.name=ME 1k Essentia Storage
-thaumicenergistics.item.essentia.cell.4k.name=ME 4k Essentia Storage
-thaumicenergistics.item.essentia.cell.16k.name=ME 16k Essentia Storage
-thaumicenergistics.item.essentia.cell.64k.name=ME 64k Essentia Storage
+thaumicenergistics.item.essentia.cell.1k.name=ME 1k Essentia Storage Cell
+thaumicenergistics.item.essentia.cell.4k.name=ME 4k Essentia Storage Cell
+thaumicenergistics.item.essentia.cell.16k.name=ME 16k Essentia Storage Cell
+thaumicenergistics.item.essentia.cell.64k.name=ME 64k Essentia Storage Cell
 thaumicenergistics.item.storage.casing.name=ME Essentia Storage Casing
 thaumicenergistics.item.storage.component.1k.name=ME 1k Essentia Storage Component
 thaumicenergistics.item.storage.component.4k.name=ME 4k Essentia Storage Component

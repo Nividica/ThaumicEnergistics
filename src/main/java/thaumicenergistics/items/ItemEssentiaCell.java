@@ -184,7 +184,7 @@ public class ItemEssentiaCell
 	@Override
 	public IMEInventoryHandler getCellInventory( ItemStack essentiaCell, StorageChannel channel )
 	{
-		if ( ( channel == StorageChannel.ITEMS ) || ( essentiaCell.getItem() != this ) )
+		if ( ( channel != StorageChannel.FLUIDS ) || ( essentiaCell.getItem() != this ) )
 		{
 			return null;
 		}

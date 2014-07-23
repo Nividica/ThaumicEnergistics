@@ -27,7 +27,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.2.0a"; // Note: dont forget to change the mcmod.info file as well
+	public static final String VERSION = "0.2.1a"; // Note: don't forget to change the mcmod.info file as well
 
 	/**
 	 * Singleton instance
@@ -96,11 +96,13 @@ public class ThaumicEnergistics
  * Packet.Write/Read aspect needs compression or a lookup table of some kind. Strings are bad.
  * 
  * ... I think I hate the word 'essentia' now
+ * 
+ * Known issue: ME Chest gui does not update the network when the contents of an essentia cell is changed.
+ * Need to ask Algo how to go about fixing this, cause I've tried everything I can think of. 
  */
 
 /*
  * TODO -- Planned Features
- * IAspectSource for infusion and lamps
  * Thaumcraft crafting table with ME network connection
  * Occlude aspect names if not researched
  * Terminal sort modes, by amount, by name. Include ascending and desending order

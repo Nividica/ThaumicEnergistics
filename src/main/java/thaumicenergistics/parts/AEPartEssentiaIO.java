@@ -133,7 +133,7 @@ public abstract class AEPartEssentiaIO
 				if ( gasStack != null )
 				{
 					// Fill the container
-					int filledAmount = (int)EssentiaTileContainerHelper.fillContainer( this.facingContainer, gasStack, true );
+					int filledAmount = (int)EssentiaTileContainerHelper.injectIntoContainer( this.facingContainer, gasStack, Actionable.MODULATE );
 
 					// Take from the network
 					this.extractFluid( EssentiaConversionHelper.createAEFluidStackInFluidUnits( essentiaGas, filledAmount ), Actionable.MODULATE );
@@ -158,7 +158,7 @@ public abstract class AEPartEssentiaIO
 		}
 
 		// Simulate a drain from the container
-		FluidStack drained = EssentiaTileContainerHelper.drainContainer( this.facingContainer, amountToDrain, aspectToDrain, false );
+		FluidStack drained = EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountToDrain, aspectToDrain, Actionable.SIMULATE );
 
 		// Was any drained?
 		if ( drained == null )
@@ -187,13 +187,13 @@ public abstract class AEPartEssentiaIO
 
 			// Some was unable to be injected, only take what was injected from
 			// container
-			EssentiaTileContainerHelper.drainContainer( this.facingContainer, amountInjected, aspectToDrain, true );
+			EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountInjected, aspectToDrain, Actionable.MODULATE );
 			return true;
 		}
 
 		// All was injected, take the full drain request amount from the
 		// container
-		EssentiaTileContainerHelper.drainContainer( this.facingContainer, amountToDrain, aspectToDrain, true );
+		EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountToDrain, aspectToDrain, Actionable.MODULATE );
 
 		return true;
 	}

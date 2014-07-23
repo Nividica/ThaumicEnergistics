@@ -32,7 +32,7 @@ public class HandlerEssentiaStorageBus
 	private List<Aspect> prioritizedAspects = new ArrayList();
 	private boolean inverted;
 
-	public HandlerEssentiaStorageBus(AEPartEssentiaStorageBus node)
+	public HandlerEssentiaStorageBus( AEPartEssentiaStorageBus node )
 	{
 		this.node = node;
 	}
@@ -52,7 +52,7 @@ public class HandlerEssentiaStorageBus
 			if ( fluid instanceof GaseousEssentia )
 			{
 				// Get the aspect
-				Aspect gasAspect = ( (GaseousEssentia) fluid ).getAssociatedAspect();
+				Aspect gasAspect = ( (GaseousEssentia)fluid ).getAssociatedAspect();
 
 				// Get the essentia, if any, in the container
 				AspectStack containerAspect = EssentiaTileContainerHelper.getAspectStackFromContainer( this.aspectContainer );
@@ -90,7 +90,7 @@ public class HandlerEssentiaStorageBus
 		FluidStack toDrain = request.getFluidStack();
 
 		// Drain the container
-		FluidStack drained = EssentiaTileContainerHelper.drainContainer( this.aspectContainer, toDrain, mode == Actionable.MODULATE );
+		FluidStack drained = EssentiaTileContainerHelper.extractFromContainer( this.aspectContainer, toDrain, mode );
 
 		// Was any drained?
 		if ( ( drained == null ) || ( drained.amount == 0 ) )
@@ -121,16 +121,20 @@ public class HandlerEssentiaStorageBus
 		if ( this.aspectContainer != null )
 		{
 
-			// Get the essentia and amount in the container
-			AspectStack containerStack = EssentiaTileContainerHelper.getAspectStackFromContainer( this.aspectContainer );
-
-			if ( containerStack != null )
+			// Only report back items that are extractable
+			if ( EssentiaTileContainerHelper.canExtract( this.aspectContainer ) )
 			{
-				// Convert to fluid
-				GaseousEssentia gas = GaseousEssentia.getGasFromAspect( containerStack.aspect );
+				// Get the essentia and amount in the container
+				AspectStack containerStack = EssentiaTileContainerHelper.getAspectStackFromContainer( this.aspectContainer );
 
-				// Add to the item list
-				out.add( EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( gas, (int) containerStack.amount ) );
+				if ( containerStack != null )
+				{
+					// Convert to fluid
+					GaseousEssentia gas = GaseousEssentia.getGasFromAspect( containerStack.aspect );
+
+					// Add to the item list
+					out.add( EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( gas, (int)containerStack.amount ) );
+				}
 			}
 		}
 
@@ -167,7 +171,7 @@ public class HandlerEssentiaStorageBus
 		FluidStack toFill = input.getFluidStack();
 
 		// Fill the container
-		int filled = (int) EssentiaTileContainerHelper.fillContainer( this.aspectContainer, input, mode == Actionable.MODULATE );
+		int filled = (int)EssentiaTileContainerHelper.injectIntoContainer( this.aspectContainer, input, mode );
 
 		// Was any filled?
 		if ( filled == 0 )
@@ -200,7 +204,7 @@ public class HandlerEssentiaStorageBus
 			if ( fluid instanceof GaseousEssentia )
 			{
 				// Get the aspect
-				Aspect gasAspect = ( (GaseousEssentia) fluid ).getAssociatedAspect();
+				Aspect gasAspect = ( (GaseousEssentia)fluid ).getAssociatedAspect();
 
 				// Check the prioritized array
 				for( Aspect aspect : this.prioritizedAspects )
@@ -247,7 +251,7 @@ public class HandlerEssentiaStorageBus
 		// Are we facing an essentia container?
 		if ( tileEntity instanceof IAspectContainer )
 		{
-			this.aspectContainer = (IAspectContainer) tileEntity;
+			this.aspectContainer = (IAspectContainer)tileEntity;
 		}
 	}
 

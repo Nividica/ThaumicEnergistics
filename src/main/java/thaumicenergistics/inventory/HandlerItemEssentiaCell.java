@@ -20,7 +20,6 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
-import com.google.common.collect.Lists;
 
 public class HandlerItemEssentiaCell
 	implements IMEInventoryHandler<IAEFluidStack>
@@ -29,9 +28,13 @@ public class HandlerItemEssentiaCell
 	private static final String NBT_PREFORMATTED_FLUID_NUMBER_KEY = "PreformattedFluidName#";
 
 	private NBTTagCompound stackTag;
+	
 	private ArrayList<FluidStack> fluidStacks = new ArrayList<FluidStack>();
+	
 	private ArrayList<Fluid> prioritizedFluids = new ArrayList<Fluid>();
+	
 	private int totalTypes;
+	
 	private long totalBytes;
 
 	public HandlerItemEssentiaCell( ItemStack storageStack )
@@ -137,39 +140,58 @@ public class HandlerItemEssentiaCell
 	@Override
 	public IAEFluidStack extractItems( IAEFluidStack request, Actionable mode, BaseActionSource src )
 	{
-		if ( ( request == null ) || ( !preformattedOrContainsFluid( request.getFluid() ) ) )
+		// Is there no request, or we do not have the fluid, return.
+		if ( ( request == null ) || ( !this.preformattedOrContainsFluid( request.getFluid() ) ) )
 		{
 			return null;
 		}
 		
-		List<FluidStack> currentFluids = Lists.newArrayList( this.fluidStacks );
-		
-		for( int i = 0; i < this.fluidStacks.size(); i++ )
+		// Loop over all stored fluids
+		for( int slotNumber = 0; slotNumber < this.fluidStacks.size(); slotNumber++ )
 		{
-			FluidStack currentStack = this.fluidStacks.get( i );
+			// Get the stack
+			FluidStack currentStack = this.fluidStacks.get( slotNumber );
 			
+			// Is the stack valid and does it match the requested fluid?
 			if ( ( currentStack != null ) && ( currentStack.fluidID == request.getFluid().getID() ) )
 			{
+				// Calculate the amount left over after the extraction
 				long endAmount = currentStack.amount - request.getStackSize();
+				
 				IAEFluidStack removedStack;
+				
+				// Is there any left over?
 				if ( endAmount > 0L )
 				{
+					// Copy the request
 					removedStack = request.copy();
+					
+					// Get the fluid stack to write back into the cell
 					FluidStack toWrite = new FluidStack( currentStack.fluidID, (int)endAmount );
-					currentFluids.set( i, toWrite );
+					
+					//currentFluids.set( i, toWrite );
+					
+					// Are we modulating?
 					if ( mode == Actionable.MODULATE )
 					{
-						writeFluidToSlot( i, toWrite );
+						// Write the fluid to the slot
+						this.writeFluidToSlot( slotNumber, toWrite );
 					}
 				}
 				else
 				{
+					// None left over, returned stack will be all of the current stack
 					removedStack = AEApi.instance().storage().createFluidStack( currentStack.copy() );
+					
+					// Are we modulating?
 					if ( mode == Actionable.MODULATE )
 					{
-						writeFluidToSlot( i, null );
+						// Set the slot as empty
+						this.writeFluidToSlot( slotNumber, null );
 					}
 				}
+				
+				// Return the fluid stack we were able to remove
 				return removedStack;
 			}
 		}
@@ -207,7 +229,7 @@ public class HandlerItemEssentiaCell
 		{
 			out.add( AEApi.instance().storage().createFluidStack( fluidStack ) );
 		}
-
+		
 		return out;
 	}
 
@@ -248,25 +270,25 @@ public class HandlerItemEssentiaCell
 	@Override
 	public IAEFluidStack injectItems( IAEFluidStack input, Actionable mode, BaseActionSource src )
 	{
+		// Is the input empty, or can we not accept this fluid?
 		if ( ( input == null ) || ( !this.canAccept( input ) ) )
 		{
 			return input;
 		}
 
+		// Assume we can not add anything
 		IAEFluidStack notAdded = input.copy();
-
-		List<FluidStack> currentFluids = Lists.newArrayList( this.fluidStacks );
 
 		// Cache the free bytes amount
 		long cFreeBytes = this.freeBytes();
 		
 		int storeInSlot = -1;
 
-		// Loop over all fluid slots
-		for( int fluidSlotIndex = 0; fluidSlotIndex < currentFluids.size(); fluidSlotIndex++ )
+		// Search for: #1 a matching fluid. #2 The first empty slot.
+		for( int fluidSlotIndex = 0; fluidSlotIndex < this.fluidStacks.size(); fluidSlotIndex++ )
 		{
 			// Get this slot
-			FluidStack currentStack = currentFluids.get( fluidSlotIndex );
+			FluidStack currentStack = this.fluidStacks.get( fluidSlotIndex );
 
 			// Is the slot empty?
 			if( currentStack == null )
@@ -276,6 +298,8 @@ public class HandlerItemEssentiaCell
 				{
 					// Assign this slot to store into
 					storeInSlot = fluidSlotIndex;
+					
+					// Keep searching, there may yet be a matching fluid
 				}
 			}
 			else
@@ -292,6 +316,7 @@ public class HandlerItemEssentiaCell
 			}
 		}
 		
+		// Did we find a match or empty slot?
 		if( storeInSlot > -1 )
 		{
 			// Get the fluid we are writing

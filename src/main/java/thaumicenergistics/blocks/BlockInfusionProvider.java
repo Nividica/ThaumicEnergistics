@@ -51,6 +51,23 @@ public class BlockInfusionProvider
 		// Inform our tile entity a neighbor has changed
 		( (TileInfusionProvider)world.getTileEntity( x, y, z ) ).checkGridConnectionColor();
 	}
+	
+	@Override
+	public void breakBlock( World world, int x, int y, int z, Block block, int metadata )
+	{
+		// Get our tile entity
+		TileInfusionProvider tile = (TileInfusionProvider)world.getTileEntity( x, y, z );
+		
+		// Do we still have a tile?
+		if( tile!= null )
+		{
+			// Inform it that its going away
+			tile.onBreakBlock();
+		}
+		
+		// Pass to super
+		super.breakBlock( world, x, y, z, block, metadata );
+	}
 
 	@Override
 	public int getRenderType()

@@ -1,4 +1,9 @@
-﻿7/22/2014 0.2.0a
+﻿7/23/2014 0.2.1a
+    Fixes #2: Added IO whitelist. Tiles must be on the whitelist for extraction/injection.
+    Added "Cell" to the storage cell names.
+    Refactored EssentiaTileContainerHelper method names for clarity.
+
+7/22/2014 0.2.0a
     Created Infusion provider block.
     Added custom renderer to provider.
     Implemented AppEng part of provider.
