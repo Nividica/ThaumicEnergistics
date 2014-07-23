@@ -96,7 +96,7 @@ public final class EssentiaConversionHelper
 	
 				// Was the fluid an essentia gas?
 				if ( aspectStack != null )
-				{
+				{	
 					// Add to the stack
 					aspectStackList.add( aspectStack );
 				}

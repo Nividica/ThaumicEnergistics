@@ -4,7 +4,7 @@
 ###Essentia Transportation
     Import/export essentia in/out the AE network.
     Export essentia in response to suction.
-    --Planned- Export essentia in response to infusion requests.
+    Export essentia in response to infusion requests.
     
 ###Storage
     Store essentia in digital format using disks.

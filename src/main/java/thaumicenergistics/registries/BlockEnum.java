@@ -2,11 +2,13 @@ package thaumicenergistics.registries;
 
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.blocks.BlockEssentiaProvider;
+import thaumicenergistics.blocks.BlockInfusionProvider;
 import net.minecraft.block.Block;
 
 public enum BlockEnum
 {
-	ESSENTIA_PROVIDER( "essentia.provider", new BlockEssentiaProvider() );
+	ESSENTIA_PROVIDER( "essentia.provider", new BlockEssentiaProvider() ),
+	INFUSION_PROVIDER( "infusion.provider", new BlockInfusionProvider() );
 	
 	private Block block;
 	

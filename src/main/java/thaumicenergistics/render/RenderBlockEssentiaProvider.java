@@ -1,81 +1,25 @@
 package thaumicenergistics.render;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import org.lwjgl.opengl.GL11;
 import thaumicenergistics.registries.Renderers;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.tileentities.TileEssentiaProvider;
 import appeng.api.util.AEColor;
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class RenderBlockEssentiaProvider
-	implements ISimpleBlockRenderingHandler
+	extends RenderBlockProviderBase
 {
 
 	@Override
-	public void renderInventoryBlock( Block block, int metadata, int modelId, RenderBlocks renderer )
+	public void renderWorldBlock( IBlockAccess world, int x, int y, int z, int blockBrightness )
 	{
-		// Get the tessellator instance
-		Tessellator tessellator = Tessellator.instance;
-		// What pass is this?
-
-		IIcon texture = BlockTextureManager.ESSENTIA_PROVIDER.getTextures()[0];
-
-		GL11.glTranslatef( -0.5F, -0.5F, -0.5F );
-
-		tessellator.startDrawingQuads();
-		tessellator.setNormal( 0.0F, -1.0F, 0.0F );
-		renderer.renderFaceYNeg( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
-
-		tessellator.startDrawingQuads();
-		tessellator.setNormal( 0.0F, 1.0F, 0.0F );
-		renderer.renderFaceYPos( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
-
-		tessellator.startDrawingQuads();
-		tessellator.setNormal( 0.0F, 0.0F, -1.0F );
-		renderer.renderFaceZNeg( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
-
-		tessellator.startDrawingQuads();
-		tessellator.setNormal( 0.0F, 0.0F, 1.0F );
-		renderer.renderFaceZPos( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
-
-		tessellator.startDrawingQuads();
-		tessellator.setNormal( -1.0F, 0.0F, 0.0F );
-		renderer.renderFaceXNeg( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
-
-		tessellator.startDrawingQuads();
-		tessellator.setNormal( 1.0F, 0.0F, 0.0F );
-		renderer.renderFaceXPos( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
-
-		GL11.glTranslatef( 0.5F, 0.5F, 0.5F );
-	}
-
-	@Override
-	public boolean renderWorldBlock( IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer )
-	{
-		// Calculate the brightness based on light hitting each face
-		int blockBrightness = world.getLightBrightnessForSkyBlocks(x+1, y, z, 0 )
-						| world.getLightBrightnessForSkyBlocks(x-1, y, z, 0 )
-						| world.getLightBrightnessForSkyBlocks(x, y+1, z, 0 )
-						| world.getLightBrightnessForSkyBlocks(x, y-1, z, 0 )
-						| world.getLightBrightnessForSkyBlocks(x, y, z+1, 0 )
-						| world.getLightBrightnessForSkyBlocks(x, y, z-1, 0 );
-		
 		// What pass is this?
 		if ( Renderers.currentRenderPass == Renderers.PASS_OPAQUE )
 		{
 			// Opaque pass
-			this.renderBlock( world, x, y, z, null, blockBrightness );
+			this.renderBlock( x, y, z, null, blockBrightness );
 
 		}
 		else
@@ -84,17 +28,8 @@ public class RenderBlockEssentiaProvider
 			AEColor overlayColor = ( (TileEssentiaProvider)world.getTileEntity( x, y, z ) ).getGridColor();
 
 			// Render the overlay
-			this.renderBlock( world, x, y, z, overlayColor, blockBrightness );
+			this.renderBlock( x, y, z, overlayColor, blockBrightness );
 		}
-
-		return true;
-	}
-
-	@Override
-	public boolean shouldRender3DInInventory( int modelId )
-	{
-		// Show the 3D model in the inventory
-		return true;
 	}
 
 	@Override
@@ -104,26 +39,26 @@ public class RenderBlockEssentiaProvider
 		return Renderers.EssentiaProviderRenderID;
 	}
 
-	private void renderBlock( IBlockAccess world, double x, double y, double z, AEColor overlayColor, int blockBrightness )
+	private void renderBlock( double x, double y, double z, AEColor overlayColor, int blockBrightness )
 	{
 		// Slightly offsets the overlay so no z-fighting
 		double negativeOffset = -.0001D;
-		
+
 		// Get the tessellator instance
 		Tessellator tessellator = Tessellator.instance;
 
 		// Get the texture
 		IIcon texture;
-		
+
 		// Is this the opaque pass?
-		if( Renderers.currentRenderPass == Renderers.PASS_OPAQUE )
+		if ( Renderers.currentRenderPass == Renderers.PASS_OPAQUE )
 		{
 			// Set texture to base
 			texture = BlockTextureManager.ESSENTIA_PROVIDER.getTextures()[0];
-			
+
 			// Set the drawing color to full white
 			tessellator.setColorRGBA( 255, 255, 255, 255 );
-			
+
 			// Reset offset
 			negativeOffset = 0.0D;
 		}
@@ -140,14 +75,14 @@ public class RenderBlockEssentiaProvider
 		{
 			// Set the texture to the pre-colored version
 			texture = BlockTextureManager.ESSENTIA_PROVIDER.getTextures()[2];
-			
+
 			// Set the drawing color to full white
 			tessellator.setColorRGBA( 255, 255, 255, 255 );
 		}
-		
+
 		// Calculate the positive offset
 		double positiveOffset = 1.0D - negativeOffset;
-		
+
 		// Set the brightness
 		tessellator.setBrightness( blockBrightness );
 
@@ -204,6 +139,12 @@ public class RenderBlockEssentiaProvider
 		tessellator.addVertexWithUV( x1, yDown, z1, maxU, minV );
 		tessellator.addVertexWithUV( x, yDown, z1, minU, minV );
 
+	}
+
+	@Override
+	protected IIcon getInventoryIcon()
+	{
+		return BlockTextureManager.ESSENTIA_PROVIDER.getTextures()[0];
 	}
 
 }

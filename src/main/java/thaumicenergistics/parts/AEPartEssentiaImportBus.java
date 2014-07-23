@@ -24,9 +24,29 @@ public class AEPartEssentiaImportBus extends AEPartEssentiaIO
 	@Override
 	public boolean aspectTransferAllowed( Aspect aspect )
 	{
+		boolean noFilters = true;
+		
 		if( aspect != null )
 		{
-			return this.filteredAspects.contains( aspect );
+			for( Aspect filterAspect : this.filteredAspects )
+			{
+				// Is the aspect not null?
+				if( filterAspect != null )
+				{
+					// Does it match this aspect?
+					if( aspect == filterAspect )
+					{
+						// Found a match, return true
+						return true;
+					}
+					
+					// Mark that there are filtered aspects
+					noFilters = false;
+				}
+			}
+			
+			// Return true if no filters set
+			return noFilters;
 		}
 		
 		return false;

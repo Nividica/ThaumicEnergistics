@@ -1,4 +1,11 @@
-﻿7/21/2014 0.1.3a
+﻿7/22/2014 0.2.0a
+    Created Infusion provider block.
+    Added custom renderer to provider.
+    Implemented AppEng part of provider.
+    Implemented Thaumcraft part of provider.
+    BugFix: Import bus would not import if no filter was set.
+    
+7/21/2014 0.1.3a
     Various bug fixes.
     Code comments and cleanup
     Bugfix: Possible CME on terminal inventory when multiple players are using it.

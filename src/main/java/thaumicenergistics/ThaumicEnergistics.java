@@ -27,7 +27,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.1.3a"; // Note: dont forget to change the mcmod.info file as well
+	public static final String VERSION = "0.2.0a"; // Note: dont forget to change the mcmod.info file as well
 
 	/**
 	 * Singleton instance
@@ -106,6 +106,8 @@ public class ThaumicEnergistics
  * Terminal sort modes, by amount, by name. Include ascending and desending order
  * Add aspect tags (thaumometer) to all items
  * Additional UI's redstone mode, priority window
+ * Level emitter multi-mode
+ * Terminal should be able to do work even when noone is looking at it. (internal timeout perhaps?)
  * 
  * --Possible Features
  * Wireless terminal

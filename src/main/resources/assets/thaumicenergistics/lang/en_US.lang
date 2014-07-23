@@ -7,6 +7,7 @@ thaumicenergistics.fluid.gaseous=Gaseous
 
 #Blocks
 thaumicenergistics.block.essentia.provider.name=Essentia Provider
+thaumicenergistics.block.infusion.provider.name=Infusion Provider
 
 #Cable parts
 thaumicenergistics.aeparts.essentia.ImportBus.name=Essentia Import Bus
@@ -33,3 +34,4 @@ thaumicenergistics.tooltip.amount=Amount
 thaumicenergistics.tooltip.aspect=Aspect
 thaumicenergistics.tooltip.essentia.cell.bytes=%d of %d bytes used.
 thaumicenergistics.tooltip.essentia.cell.types=%d of %d essentia types stored.
+

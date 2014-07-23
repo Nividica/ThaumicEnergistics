@@ -9,7 +9,9 @@ public enum BlockTextureManager
 		BUS_SIDE (TextureTypes.Part, new String[] { "bus.side" }),
 		BUS_BORDER (TextureTypes.Part, new String[] { "bus.border" }),
 		BUS_COLOR (TextureTypes.Part, new String[] { "bus.color.border", "bus.color.light" }),
-		ESSENTIA_IMPORT_BUS (TextureTypes.Part, new String[] { "essentia.import.bus.face", "essentia.import.bus.overlay", "essentia.import.bus.chamber" }),
+		ESSENTIA_IMPORT_BUS (TextureTypes.Part, new String[] { "essentia.import.bus.face",
+						"essentia.import.bus.overlay",
+						"essentia.import.bus.chamber" }),
 		ESSENTIA_LEVEL_EMITTER (TextureTypes.Part, new String[] { "essentia.level.emitter.face.1",
 						"essentia.level.emitter.face.2",
 						"essentia.level.emitter.face.3" }),
@@ -19,7 +21,14 @@ public enum BlockTextureManager
 		ESSENTIA_TERMINAL (TextureTypes.Part, new String[] { "essentia.terminal.overlay.1",
 						"essentia.terminal.overlay.2",
 						"essentia.terminal.overlay.3" }),
-		ESSENTIA_PROVIDER( TextureTypes.Block, new String[] { "essentia.provider", "essentia.provider.overlay", "essentia.provider.overlay.nogridcolor" } );
+		ESSENTIA_PROVIDER (TextureTypes.Block, new String[] { "essentia.provider",
+						"essentia.provider.overlay",
+						"essentia.provider.overlay.nogridcolor" }),
+		INFUSION_PROVIDER (TextureTypes.Block, new String[] { "infusion.provider.bottom",
+						"infusion.provider.side",
+						"infusion.provider.side.overlay",
+						"infusion.provider.side.overlay.nogridcolor",
+						"infusion.provider.top" });
 
 	private enum TextureTypes
 	{
@@ -28,12 +37,12 @@ public enum BlockTextureManager
 	}
 
 	private TextureTypes textureType;
-	
+
 	private String[] textureNames;
 
 	private IIcon[] textures;
 
-	private BlockTextureManager(TextureTypes textureType, String[] textureNames)
+	private BlockTextureManager( TextureTypes textureType, String[] textureNames )
 	{
 		this.textureType = textureType;
 		this.textureNames = textureNames;
