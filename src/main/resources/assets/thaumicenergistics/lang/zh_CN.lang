@@ -7,6 +7,7 @@ thaumicenergistics.fluid.gaseous=Gaseous
 
 #Blocks
 thaumicenergistics.block.essentia.provider.name=源质供应器
+thaumicenergistics.block.infusion.provider.name=注魔供应器
 
 #Cable parts
 thaumicenergistics.aeparts.essentia.ImportBus.name=源质输入总线
