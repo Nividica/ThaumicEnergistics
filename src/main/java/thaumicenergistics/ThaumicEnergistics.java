@@ -3,8 +3,8 @@ package thaumicenergistics;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.network.ChannelHandler;
-import thaumicenergistics.network.GuiHandler;
 import thaumicenergistics.proxy.CommonProxy;
 import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
@@ -95,7 +95,6 @@ public class ThaumicEnergistics
 
 /* TODO: -- Code
  * Bugfix: Machines run without power
- * Bugfix: Shift moves items go to upgrades and network tool slots
  * Find magic numbers such as the openGL and keyboard and replace with meaningful constants
  * Cache major enum.values[]
  * Packet.Write/Read aspect needs compression or a lookup table of some kind. Strings are bad.

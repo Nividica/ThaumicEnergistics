@@ -1,11 +1,10 @@
-package thaumicenergistics.network;
+package thaumicenergistics.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerEssentiaCell;
-import thaumicenergistics.gui.GuiEssentiaCell;
 import thaumicenergistics.parts.AEPartBase;
 import appeng.api.parts.IPartHost;
 import cpw.mods.fml.common.network.IGuiHandler;

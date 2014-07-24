@@ -20,7 +20,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.grid.AEPartGridBlock;
-import thaumicenergistics.network.GuiHandler;
+import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.texture.BlockTextureManager;

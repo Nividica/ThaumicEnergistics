@@ -14,7 +14,6 @@ import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannel;
@@ -39,8 +38,6 @@ public class ContainerEssentiaCell
 	 * The ME chest the cell is stored in.
 	 */
 	private TileChest hostChest;
-	
-	private MachineSource machineChest;
 
 	/**
 	 * Import and export inventory slots.
@@ -92,9 +89,6 @@ public class ContainerEssentiaCell
 
 					// Attach to the monitor
 					this.attachToMonitor();
-					
-					// Set the machine source to the host chest
-					this.machineChest = new MachineSource( this.hostChest );
 				}
 			}
 			catch( Exception e )
@@ -220,7 +214,7 @@ public class ContainerEssentiaCell
 			if ( EssentiaCellTerminalWorker.hasWork( this.inventory ) )
 			{
 				// Do the work
-				EssentiaCellTerminalWorker.doWork( this.inventory, this.monitor, this.machineChest, this.selectedAspect );
+				EssentiaCellTerminalWorker.doWork( this.inventory, this.monitor, null, this.selectedAspect );
 			}
 		}
 	}

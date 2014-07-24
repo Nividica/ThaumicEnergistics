@@ -5,6 +5,7 @@
     Refactored EssentiaItemContainerHelper method names for clarity.
     Added whitelist registration methods to EssentiaTileContainerHelper and EssentiaItemContainerHelper.
     Bugfix: Can no longer put items that do not hold essentia into terminal input slot.
+    Several bugfixes related to jars when used in the terminal.
 
 7/22/2014 0.2.0a
     Created Infusion provider block.
