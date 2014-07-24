@@ -7,6 +7,8 @@ import thaumicenergistics.network.ChannelHandler;
 import thaumicenergistics.network.GuiHandler;
 import thaumicenergistics.proxy.CommonProxy;
 import thaumicenergistics.registries.ItemEnum;
+import thaumicenergistics.util.EssentiaItemContainerHelper;
+import thaumicenergistics.util.EssentiaTileContainerHelper;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -71,6 +73,9 @@ public class ThaumicEnergistics
 	@EventHandler
 	public void postInit( FMLPostInitializationEvent event )
 	{
+		// Register the standard thaumcraft container items and tiles
+		EssentiaTileContainerHelper.registerThaumcraftContainers();
+		EssentiaItemContainerHelper.registerThaumcraftContainers();
 	}
 
 	@EventHandler

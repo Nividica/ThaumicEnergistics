@@ -2,6 +2,9 @@
     Fixes #2: Added IO whitelist. Tiles must be on the whitelist for extraction/injection.
     Added "Cell" to the storage cell names.
     Refactored EssentiaTileContainerHelper method names for clarity.
+    Refactored EssentiaItemContainerHelper method names for clarity.
+    Added whitelist registration methods to EssentiaTileContainerHelper and EssentiaItemContainerHelper.
+    Bugfix: Can no longer put items that do not hold essentia into terminal input slot.
 
 7/22/2014 0.2.0a
     Created Infusion provider block.

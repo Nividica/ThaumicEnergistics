@@ -56,7 +56,7 @@ public class EssentiaCellTerminalWorker
 		int proposedDrainAmount_EU = (int) EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( proposedDrainAmount_FU );
 
 		// Attempt to drain the item
-		ImmutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.drainContainer( container, proposedDrainAmount_EU );
+		ImmutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.extractFromContainer( container, proposedDrainAmount_EU );
 
 		// Was the drain successful?
 		if ( drainedContainer == null )
@@ -115,7 +115,7 @@ public class EssentiaCellTerminalWorker
 		int proposedAmount_EU = Math.min( containerCapacity_EU, resultAmount_EU );
 
 		// Create a new container filled to the proposed amount
-		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.fillContainer( container, new AspectStack(
+		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.injectIntoContainer( container, new AspectStack(
 						currentAspect, proposedAmount_EU ) );
 
 		// Was the fill successful?

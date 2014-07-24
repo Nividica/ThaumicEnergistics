@@ -2,6 +2,7 @@ package thaumicenergistics.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -17,7 +18,7 @@ import appeng.api.config.Actionable;
 import appeng.api.storage.data.IAEFluidStack;
 
 /**
- * Helper class for working with Thaumcraft TileEntity aspect containers.
+ * Helper class for working with Thaumcraft TileEntity essentia containers.
  * 
  * @author Nividica
  * 
@@ -37,7 +38,7 @@ public final class EssentiaTileContainerHelper
 	/**
 	 * Setup the standard white lists
 	 */
-	static
+	public static void registerThaumcraftContainers()
 	{
 		// Alembic
 		EssentiaTileContainerHelper.addTileToExtractWhitelist( TileAlembic.class );
@@ -59,17 +60,24 @@ public final class EssentiaTileContainerHelper
 	 */
 	public static boolean addTileToExtractWhitelist( Class<? extends TileEntity> tile )
 	{
-		// Ensure it is a container
-		if ( IAspectContainer.class.isAssignableFrom( tile ) )
+		// Ensure we have a tile
+		if ( tile != null )
 		{
-			// Is it already registered?
-			if ( !EssentiaTileContainerHelper.extractWhiteList.contains( tile ) )
+			// Ensure it is a container
+			if ( IAspectContainer.class.isAssignableFrom( tile ) )
 			{
-				// Add to the list
-				EssentiaTileContainerHelper.extractWhiteList.add( tile );
-			}
+				// Is it already registered?
+				if ( !EssentiaTileContainerHelper.extractWhiteList.contains( tile ) )
+				{
+					// Add to the list
+					EssentiaTileContainerHelper.extractWhiteList.add( tile );
 
-			return true;
+					// Log the addition
+					FMLCommonHandler.instance().getFMLLogger().info( "Adding " + tile.toString() + " to extraction whitelist." );
+				}
+
+				return true;
+			}
 		}
 
 		return false;
@@ -84,17 +92,24 @@ public final class EssentiaTileContainerHelper
 	 */
 	public static boolean addTileToInjectWhitelist( Class<? extends TileEntity> tile )
 	{
-		// Ensure it is a container
-		if ( IAspectContainer.class.isAssignableFrom( tile ) )
+		// Ensure we have a tile
+		if ( tile != null )
 		{
-			// Is it already registered?
-			if ( !EssentiaTileContainerHelper.injectWhiteList.contains( tile ) )
+			// Ensure it is a container
+			if ( IAspectContainer.class.isAssignableFrom( tile ) )
 			{
-				// Add to the list
-				EssentiaTileContainerHelper.injectWhiteList.add( tile );
-			}
+				// Is it already registered?
+				if ( !EssentiaTileContainerHelper.injectWhiteList.contains( tile ) )
+				{
+					// Add to the list
+					EssentiaTileContainerHelper.injectWhiteList.add( tile );
 
-			return true;
+					// Log the addition
+					FMLCommonHandler.instance().getFMLLogger().info( "Adding " + tile.toString() + " to injection whitelist." );
+				}
+
+				return true;
+			}
 		}
 
 		return false;
