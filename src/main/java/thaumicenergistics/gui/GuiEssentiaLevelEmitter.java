@@ -3,16 +3,12 @@ package thaumicenergistics.gui;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
-import thaumicenergistics.gui.widget.AbstractAspectWidget;
 import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.gui.widget.WidgetRedstoneModes;
@@ -22,8 +18,9 @@ import thaumicenergistics.parts.AEPartEssentiaLevelEmitter;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
-import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.RedstoneMode;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Gui for the level emitter.
@@ -33,7 +30,7 @@ import appeng.api.config.RedstoneMode;
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaLevelEmitter
-	extends GuiContainer
+	extends GuiWidgetHost
 	implements IAspectSlotGui
 {
 	/**
@@ -191,7 +188,7 @@ public class GuiEssentiaLevelEmitter
 		this.part = part;
 
 		// Create the filter slot
-		this.aspectFilterSlot = new WidgetAspectSlot( this.player, this.part, 123, 30 );
+		this.aspectFilterSlot = new WidgetAspectSlot( this, this.player, this.part, 123, 30 );
 
 		new PacketEssentiaEmitter( false, this.part, this.player ).sendPacketToServer();
 	}
@@ -259,8 +256,7 @@ public class GuiEssentiaLevelEmitter
 		super.mouseClicked( mouseX, mouseY, mouseBtn );
 
 		// Is the mouse over the widget?
-		if ( GuiHelper.isPointInGuiRegion( this.aspectFilterSlot.getPosX(), this.aspectFilterSlot.getPosY(), AbstractAspectWidget.WIDGET_SIZE,
-			AbstractAspectWidget.WIDGET_SIZE, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+		if ( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
 		{
 			// Pass to the widget
 			this.aspectFilterSlot.mouseClicked( EssentiaItemContainerHelper.getAspectInContainer( this.player.inventory.getItemStack() ) );
@@ -297,11 +293,14 @@ public class GuiEssentiaLevelEmitter
 		this.fontRendererObj.drawString( AEPartsEnum.EssentiaLevelEmitter.getStatName(), GuiEssentiaLevelEmitter.TITLE_POS_X,
 			GuiEssentiaLevelEmitter.TITLE_POS_Y, 0 );
 
+		// Draw underlay when mouse is over slot.
+		if( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
+		{
+			this.aspectFilterSlot.drawMouseHoverUnderlay();
+		}
+
 		// Draw the filter widget
 		this.aspectFilterSlot.drawWidget();
-
-		// Draw overlay when mouse is over slot.
-		GuiHelper.renderOverlay( this.zLevel, this.guiLeft, this.guiTop, this.aspectFilterSlot, mouseX, mouseY );
 	}
 
 	/**

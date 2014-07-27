@@ -17,12 +17,12 @@ public class ContainerPartEssentiaLevelEmitter
 	/**
 	 * X position for the player inventory
 	 */
-	private static int PLAYER_INV_POSITION_X = 93;
+	private static int PLAYER_INV_POSITION_Y = 93;
 
 	/**
-	 * Y position for the player inventory
+	 * Y position for the hotbar inventory
 	 */
-	private static int PLAYER_INV_POSITION_Y = 151;
+	private static int HOTBAR_INV_POSITION_Y = 151;
 	
 	/**
 	 * The AE part associated with this container.
@@ -41,8 +41,8 @@ public class ContainerPartEssentiaLevelEmitter
 		this.part = part;
 		
 		// Get the players inventory and bind it to the container.
-		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaLevelEmitter.PLAYER_INV_POSITION_X,
-			ContainerPartEssentiaLevelEmitter.PLAYER_INV_POSITION_Y );
+		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaLevelEmitter.PLAYER_INV_POSITION_Y,
+			ContainerPartEssentiaLevelEmitter.HOTBAR_INV_POSITION_Y );
 	}
 
 	/**

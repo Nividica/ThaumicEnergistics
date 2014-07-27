@@ -6,24 +6,23 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.ContainerCellTerminalBase;
-import thaumicenergistics.gui.widget.AbstractAspectWidget;
+import thaumicenergistics.container.IAspectSelectorContainer;
+import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.AspectWidgetComparator;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.gui.widget.WidgetAspectSelector;
 import thaumicenergistics.texture.GuiTextureManager;
-import thaumicenergistics.util.GuiHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base class for cell and terminal guis
@@ -33,7 +32,7 @@ import thaumicenergistics.util.GuiHelper;
  */
 @SideOnly(Side.CLIENT)
 public class GuiCellTerminalBase
-	extends GuiContainer
+	extends GuiWidgetHost
 	implements IAspectSelectorGui
 {
 
@@ -393,19 +392,17 @@ public class GuiCellTerminalBase
 				if ( index < listSize )
 				{
 					// Get the widget at this index
-					WidgetAspectSelector widget = this.matchingSearchWidgets.get( index );
+					WidgetAspectSelector currentWidget = this.matchingSearchWidgets.get( index );
 
 					// Is the mouse over this widget?
-					if ( GuiHelper.isPointInGuiRegion( ( x * AbstractAspectWidget.WIDGET_SIZE ) + GuiCellTerminalBase.WIDGET_OFFSET_X,
-						( y * AbstractAspectWidget.WIDGET_SIZE ) + GuiCellTerminalBase.WIDGET_OFFSET_Y, AbstractAspectWidget.WIDGET_SIZE,
-						AbstractAspectWidget.WIDGET_SIZE, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+					if( currentWidget.isMouseOverWidget( mouseX, mouseY ) )
 					{
 						// Play clicky sound
 						Minecraft.getMinecraft().getSoundHandler()
 										.playSound( PositionedSoundRecord.func_147674_a( new ResourceLocation( "gui.button.press" ), 1.0F ) );
 
-						// Send the click to the widget ( args ignored for WidgetAspectSelector )
-						widget.mouseClicked( 0, 0, 0, 0 );
+						// Send the click to the widget
+						currentWidget.mouseClicked();
 
 						// Stop searching
 						return;
@@ -453,13 +450,17 @@ public class GuiCellTerminalBase
 
 			for( int index = startingIndex; index < endingIndex; index++ )
 			{
+				// Get the widget
+				WidgetAspectSelector currentWidget = this.matchingSearchWidgets.get( index );
+				
+				// Set the position
+				currentWidget.setPosition( widgetPosX, widgetPosY );
+				
 				// Draw the widget
-				this.matchingSearchWidgets.get( index ).drawWidget( widgetPosX, widgetPosY );
+				currentWidget.drawWidget();
 
 				// Is the mouse over this widget?
-				if ( ( widgetUnderMouse == null ) &&
-								GuiHelper.isPointInGuiRegion( widgetPosX, widgetPosY, AbstractAspectWidget.WIDGET_SIZE,
-									AbstractAspectWidget.WIDGET_SIZE, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+				if( currentWidget.isMouseOverWidget( mouseX, mouseY ) )
 				{
 					// Set the widget and its position
 					widgetUnderMouse = this.matchingSearchWidgets.get( index );
@@ -480,12 +481,12 @@ public class GuiCellTerminalBase
 					widgetColumnPosition = 1;
 
 					// Increment y
-					widgetPosY += AbstractAspectWidget.WIDGET_SIZE;
+					widgetPosY += AbstractWidget.WIDGET_SIZE;
 				}
 				else
 				{
 					// Increment the x position
-					widgetPosX += AbstractAspectWidget.WIDGET_SIZE;
+					widgetPosX += AbstractWidget.WIDGET_SIZE;
 				}
 			}
 
@@ -518,24 +519,6 @@ public class GuiCellTerminalBase
 	public AspectStack getSelectedAspect()
 	{
 		return this.selectedAspectStack;
-	}
-
-	/**
-	 * Gets the starting X position for the Gui.
-	 */
-	@Override
-	public int guiLeft()
-	{
-		return this.guiLeft;
-	}
-
-	/**
-	 * Gets the starting Y position for the Gui.
-	 */
-	@Override
-	public int guiTop()
-	{
-		return this.guiTop;
 	}
 
 	/**
@@ -580,7 +563,7 @@ public class GuiCellTerminalBase
 		for( AspectStack aspectStack : this.containerBase.getAspectStackList() )
 		{
 			// Create the widget
-			this.aspectWidgets.add( new WidgetAspectSelector( this, aspectStack ) );
+			this.aspectWidgets.add( new WidgetAspectSelector( this, aspectStack, 0, 0 ) );
 		}
 
 		// Update the search results

@@ -178,13 +178,13 @@ public class AEPartEssentiaStorageBus
 	}
 
 	@Override
-	public void onChangeInventory( IInventory arg0, int arg1, InvOperation arg2, ItemStack arg3, ItemStack arg4 )
+	public void onChangeInventory( IInventory inv, int arg1, InvOperation arg2, ItemStack arg3, ItemStack arg4 )
 	{
-		this.onInventoryChanged();
+		this.onInventoryChanged( inv );
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void onInventoryChanged( IInventory sourceInventory )
 	{
 		this.handler.setInverted( AEApi.instance().materials().materialCardInverter.sameAs( this.upgradeInventory.getStackInSlot( 0 ) ) );
 	}
@@ -225,7 +225,7 @@ public class AEPartEssentiaStorageBus
 
 		this.upgradeInventory.readFromNBT( data, "UpgradeInventory" );
 
-		this.onInventoryChanged();
+		this.onInventoryChanged( this.upgradeInventory );
 	}
 
 	@SideOnly(Side.CLIENT)

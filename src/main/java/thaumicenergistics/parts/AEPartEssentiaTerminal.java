@@ -245,5 +245,30 @@ public class AEPartEssentiaTerminal
 			this.inventoryLocked = false;
 		}
 	}
+	
+	@Override
+	public void removeFromWorld()
+	{
+		// Is this server side?
+		if ( !this.hostTile.getWorldObj().isRemote )
+		{
+			// Loop over inventory
+			for( int index = 0; index < 2; index++ )
+			{
+				// Get the stack at this index
+				ItemStack slotStack = this.inventory.getStackInSlot( index );
+				
+				// Did we get anything?
+				if( slotStack != null )
+				{
+					// Drop it on the ground
+					this.dropInventoryItemOnGround( slotStack );
+				}
+			}
+		}
+		
+		// Pass to super
+		super.removeFromWorld();
+	}
 
 }

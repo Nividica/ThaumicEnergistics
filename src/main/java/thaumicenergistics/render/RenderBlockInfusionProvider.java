@@ -31,20 +31,20 @@ public class RenderBlockInfusionProvider
 		if ( Renderers.currentRenderPass == Renderers.PASS_OPAQUE )
 		{
 			// Opaque pass
-			this.renderBlock( x, y, z, null, blockBrightness );
+			this.renderBlock( x, y, z, null, blockBrightness, false );
 
 		}
 		else
 		{
-			// Alpha pass, get the providers color
-			AEColor overlayColor = ( (TileInfusionProvider)world.getTileEntity( x, y, z ) ).getGridColor();
+			// Alpha pass
+			TileInfusionProvider provider = (TileInfusionProvider)world.getTileEntity( x, y, z );
 
 			// Render the overlay
-			this.renderBlock( x, y, z, overlayColor, blockBrightness );
+			this.renderBlock( x, y, z, provider.getGridColor(), blockBrightness, provider.isActive() );
 		}
 	}
 
-	private void renderBlock( double x, double y, double z, AEColor overlayColor, int blockBrightness )
+	private void renderBlock( double x, double y, double z, AEColor overlayColor, int blockBrightness, boolean isActive )
 	{
 		// Slightly offsets the overlay so no z-fighting
 		double negativeOffset = -.0001D;
@@ -71,6 +71,14 @@ public class RenderBlockInfusionProvider
 
 			// Reset offset
 			negativeOffset = 0.0D;
+		}
+		else if( !isActive )
+		{
+			// Set the texture to the inactive version
+			sideTexture = BlockTextureManager.INFUSION_PROVIDER.getTextures()[5];
+
+			// Set the drawing color to full white
+			tessellator.setColorRGBA( 255, 255, 255, 255 );
 		}
 		// Does the tile have a color?
 		else if ( overlayColor != AEColor.Transparent )

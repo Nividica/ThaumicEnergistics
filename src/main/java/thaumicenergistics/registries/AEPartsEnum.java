@@ -8,6 +8,7 @@ import net.minecraft.util.StatCollector;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
 import thaumicenergistics.parts.AEPartBase;
 import thaumicenergistics.parts.AEPartEssentiaExportBus;
 import thaumicenergistics.parts.AEPartEssentiaImportBus;
@@ -28,7 +29,9 @@ public enum AEPartsEnum
 		EssentiaExportBus ("essentia.ExportBus", AEPartEssentiaExportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport", new Pair[] { generatePair(
 			Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
 
-		EssentiaTerminal ("essentia.terminal", AEPartEssentiaTerminal.class);
+		EssentiaTerminal ("essentia.terminal", AEPartEssentiaTerminal.class),
+		
+		ArcaneCraftingTerminal( "arcane.crafting.terminal", AEPartArcaneCraftingTerminal.class );
 
 	private String unlocalizedName;
 

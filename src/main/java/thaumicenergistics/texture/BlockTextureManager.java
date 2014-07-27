@@ -23,12 +23,18 @@ public enum BlockTextureManager
 						"essentia.terminal.overlay.3" }),
 		ESSENTIA_PROVIDER (TextureTypes.Block, new String[] { "essentia.provider",
 						"essentia.provider.overlay",
-						"essentia.provider.overlay.nogridcolor" }),
+						"essentia.provider.overlay.nogridcolor",
+						"essentia.provider.overlay.inactive" }),
 		INFUSION_PROVIDER (TextureTypes.Block, new String[] { "infusion.provider.bottom",
 						"infusion.provider.side",
 						"infusion.provider.side.overlay",
 						"infusion.provider.side.overlay.nogridcolor",
-						"infusion.provider.top" });
+						"infusion.provider.top",
+						"infusion.provider.overlay.inactive" }),
+		ARCANE_CRAFTING_TERMINAL (TextureTypes.Part, new String[] { "arcane.crafting.overlay1",
+						"arcane.crafting.overlay2",
+						"arcane.crafting.overlay3",
+						"arcane.crafting.side" });
 
 	private enum TextureTypes
 	{

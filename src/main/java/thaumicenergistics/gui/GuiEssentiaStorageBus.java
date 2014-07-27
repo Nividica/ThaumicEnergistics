@@ -3,13 +3,12 @@ package thaumicenergistics.gui;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
-import thaumicenergistics.gui.widget.AbstractAspectWidget;
+import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.gui.widget.WidgetRedstoneModes;
 import thaumicenergistics.network.IAspectSlotGui;
@@ -27,7 +26,7 @@ import appeng.api.AEApi;
  * 
  */
 public class GuiEssentiaStorageBus
-	extends GuiContainer
+	extends GuiWidgetHost
 	implements IAspectSlotGui
 {
 	/**
@@ -106,9 +105,9 @@ public class GuiEssentiaStorageBus
 		{
 			for( int column = 0; column < GuiEssentiaStorageBus.COLUMNS; column++ )
 			{
-				this.aspectWidgetList.add( new WidgetAspectSlot( this.player, part, ( row * GuiEssentiaStorageBus.COLUMNS ) + column,
-								GuiEssentiaStorageBus.WIDGET_X_POS + ( AbstractAspectWidget.WIDGET_SIZE * column ),
-								GuiEssentiaStorageBus.WIDGET_Y_POS + ( AbstractAspectWidget.WIDGET_SIZE * row ) ) );
+				this.aspectWidgetList.add( new WidgetAspectSlot( this, this.player, part, ( row * GuiEssentiaStorageBus.COLUMNS ) + column,
+								GuiEssentiaStorageBus.WIDGET_X_POS + ( AbstractWidget.WIDGET_SIZE * column ),
+								GuiEssentiaStorageBus.WIDGET_Y_POS + ( AbstractWidget.WIDGET_SIZE * row ) ) );
 			}
 		}
 
@@ -154,16 +153,20 @@ public class GuiEssentiaStorageBus
 	{
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
 
-		boolean overlayRendered = false;
+		boolean hoverUnderlayRendered = false;
 
 		for( int i = 0; i < 54; i++ )
 		{
-			this.aspectWidgetList.get( i ).drawWidget();
+			WidgetAspectSlot currentWidget = this.aspectWidgetList.get( i );
 
-			if ( ( !overlayRendered ) && ( this.aspectWidgetList.get( i ).canRender() ) )
+			if ( ( !hoverUnderlayRendered ) && ( currentWidget.canRender() ) && ( currentWidget.isMouseOverWidget( mouseX, mouseY ) ) )
 			{
-				overlayRendered = GuiHelper.renderOverlay( this.zLevel, this.guiLeft, this.guiTop, this.aspectWidgetList.get( i ), mouseX, mouseY );
+				currentWidget.drawMouseHoverUnderlay();
+				
+				hoverUnderlayRendered = true;
 			}
+			
+			currentWidget.drawWidget();
 		}
 
 		for( Object button : this.buttonList )
@@ -204,7 +207,7 @@ public class GuiEssentiaStorageBus
 
 		for( WidgetAspectSlot aspectSlot : this.aspectWidgetList )
 		{
-			if ( GuiHelper.isPointInGuiRegion( aspectSlot.getPosX(), aspectSlot.getPosY(), 18, 18, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+			if ( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the aspect of the currently held item
 				Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( this.player.inventory.getItemStack() );

@@ -8,19 +8,23 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.network.handlers.HandlerAspectSlot;
 import thaumicenergistics.network.handlers.HandlerClientEssentiaCell;
 import thaumicenergistics.network.handlers.HandlerServerEssentiaCell;
+import thaumicenergistics.network.handlers.part.HandlerClientArcaneCraftingTerminal;
+import thaumicenergistics.network.handlers.part.HandlerClientEssentiaTerminal;
 import thaumicenergistics.network.handlers.part.HandlerEssentiaIOBus;
 import thaumicenergistics.network.handlers.part.HandlerEssentiaLevelEmitter;
 import thaumicenergistics.network.handlers.part.HandlerEssentiaStorageBus;
+import thaumicenergistics.network.handlers.part.HandlerServerArcaneCraftingTerminal;
 import thaumicenergistics.network.handlers.part.HandlerServerEssentiaTerminal;
-import thaumicenergistics.network.handlers.part.HandlerClientEssentiaTerminal;
 import thaumicenergistics.network.packet.PacketAspectSlot;
+import thaumicenergistics.network.packet.PacketClientArcaneCraftingTerminal;
 import thaumicenergistics.network.packet.PacketClientEssentiaCell;
+import thaumicenergistics.network.packet.PacketClientEssentiaTerminal;
 import thaumicenergistics.network.packet.PacketEssentiaEmitter;
 import thaumicenergistics.network.packet.PacketEssentiaIOBus;
 import thaumicenergistics.network.packet.PacketEssentiaStorageBus;
-import thaumicenergistics.network.packet.PacketServerEssentiaTerminal;
-import thaumicenergistics.network.packet.PacketClientEssentiaTerminal;
+import thaumicenergistics.network.packet.PacketServerArcaneCraftingTerminal;
 import thaumicenergistics.network.packet.PacketServerEssentiaCell;
+import thaumicenergistics.network.packet.PacketServerEssentiaTerminal;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
@@ -46,10 +50,12 @@ public class ChannelHandler
 
 		wrapper.registerMessage( HandlerClientEssentiaCell.class, PacketClientEssentiaCell.class, 4, Side.CLIENT );
 		wrapper.registerMessage( HandlerServerEssentiaCell.class, PacketServerEssentiaCell.class, 5, Side.SERVER );
-		
 
 		wrapper.registerMessage( HandlerClientEssentiaTerminal.class, PacketClientEssentiaTerminal.class, 6, Side.CLIENT );
 		wrapper.registerMessage( HandlerServerEssentiaTerminal.class, PacketServerEssentiaTerminal.class, 7, Side.SERVER );
+
+		wrapper.registerMessage( HandlerClientArcaneCraftingTerminal.class, PacketClientArcaneCraftingTerminal.class, 8, Side.CLIENT );
+		wrapper.registerMessage( HandlerServerArcaneCraftingTerminal.class, PacketServerArcaneCraftingTerminal.class, 9, Side.SERVER );
 
 	}
 

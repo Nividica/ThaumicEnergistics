@@ -14,6 +14,7 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.parts.PartItemStack;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 
@@ -104,6 +105,43 @@ public class AEPartGridBlock implements IGridBlock
 
 		// Return the storage grid's fluid monitor.
 		return storageGrid.getFluidInventory();
+	}
+
+	/**
+	 * Gets the AE item monitor for the grid.
+	 * @return Monitor if valid grid, null otherwise.
+	 */
+	public IMEMonitor<IAEItemStack> getItemMonitor()
+	{
+		// Get the grid node
+		IGridNode node = this.part.getGridNode();
+
+		// Do we have a grid node?
+		if ( node == null )
+		{
+			return null;
+		}
+
+		// Get the grid.
+		IGrid grid = node.getGrid();
+
+		// Do we have a grid?
+		if ( grid == null )
+		{
+			return null;
+		}
+
+		// Get the storage grid from the cache.
+		IStorageGrid storageGrid = (IStorageGrid) grid.getCache( IStorageGrid.class );
+
+		// Do we have a storage grid?
+		if ( storageGrid == null )
+		{
+			return null;
+		}
+
+		// Return the storage grid's item monitor.
+		return storageGrid.getItemInventory();
 	}
 
 	/**

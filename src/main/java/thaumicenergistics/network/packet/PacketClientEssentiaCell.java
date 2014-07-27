@@ -30,6 +30,8 @@ public class PacketClientEssentiaCell
 		super( player );
 
 		this.mode = PacketClientEssentiaCell.MODE_UPDATE_LIST;
+		
+		this.useCompression = true;
 
 		this.aspectStackList = list;
 	}

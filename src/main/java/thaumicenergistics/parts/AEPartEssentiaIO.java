@@ -158,7 +158,8 @@ public abstract class AEPartEssentiaIO
 		}
 
 		// Simulate a drain from the container
-		FluidStack drained = EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountToDrain, aspectToDrain, Actionable.SIMULATE );
+		FluidStack drained = EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountToDrain, aspectToDrain,
+			Actionable.SIMULATE );
 
 		// Was any drained?
 		if ( drained == null )
@@ -260,7 +261,7 @@ public abstract class AEPartEssentiaIO
 	{
 		boolean activated = super.onActivate( player, position );
 
-		this.onInventoryChanged();
+		this.onInventoryChanged( null );
 
 		return activated;
 	}
@@ -270,12 +271,12 @@ public abstract class AEPartEssentiaIO
 	{
 		if ( inv == this.upgradeInventory )
 		{
-			this.onInventoryChanged();
+			this.onInventoryChanged( inv );
 		}
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void onInventoryChanged( IInventory sourceInventory )
 	{
 		int oldFilterSize = this.filterSize;
 
@@ -405,7 +406,7 @@ public abstract class AEPartEssentiaIO
 
 		this.upgradeInventory.readFromNBT( data, "upgradeInventory" );
 
-		this.onInventoryChanged();
+		this.onInventoryChanged( this.upgradeInventory );
 	}
 
 	@Override
@@ -506,7 +507,7 @@ public abstract class AEPartEssentiaIO
 	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
 	{
 		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
-		
+
 		if ( itemAspect != null )
 		{
 			// Are we already filtering this aspect?
@@ -546,9 +547,9 @@ public abstract class AEPartEssentiaIO
 
 	@SideOnly(Side.CLIENT)
 	public void receiveFilterSize( byte filterSize )
-	{	
+	{
 		this.filterSize = filterSize;
-		
+
 		this.resizeAvailableArray();
 	}
 

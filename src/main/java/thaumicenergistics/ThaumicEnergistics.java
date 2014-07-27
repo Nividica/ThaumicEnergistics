@@ -29,7 +29,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.2.1a"; // Note: don't forget to change the mcmod.info file as well
+	public static final String VERSION = "0.3.0a"; // Note: don't forget to change the mcmod.info file as well
 
 	/**
 	 * Singleton instance
@@ -94,10 +94,11 @@ public class ThaumicEnergistics
 }
 
 /* TODO: -- Code
+ * Bugfix: Determine if terminal was destroyed or wrenched. Dont always drop items
  * Bugfix: Machines run without power
  * Find magic numbers such as the openGL and keyboard and replace with meaningful constants
- * Cache major enum.values[]
- * Packet.Write/Read aspect needs compression or a lookup table of some kind. Strings are bad.
+ * Adjust rarity values for items
+ * Rework packet structure for client vs server with superclasses and stop depending on constructors, use methods.
  * 
  * ... I think I hate the word 'essentia' now
  * 
@@ -107,13 +108,16 @@ public class ThaumicEnergistics
 
 /*
  * TODO -- Planned Features
- * Thaumcraft crafting table with ME network connection
+ * --WIP--Thaumcraft crafting table with ME network connection
  * Occlude aspect names if not researched
  * Terminal sort modes, by amount, by name. Include ascending and desending order
  * Add aspect tags (thaumometer) to all items
  * Additional UI's redstone mode, priority window
  * Level emitter multi-mode
  * Terminal should be able to do work even when noone is looking at it. (internal timeout perhaps?)
+ * Give rarity tooltip color value to providers
+ * Give Spatial IO the ability to move my Tile Entitites.
+ * Add a scrollbar to guis
  * 
  * --Possible Features
  * Wireless terminal

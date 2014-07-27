@@ -14,7 +14,9 @@ public class SlotRestrictive extends Slot
 	/**
 	 * The inventory we belong to
 	 */
-	IInventory inventory;
+	private IInventory inventory;
+	
+	private int myIndex;
 
 	/**
 	 * Create the slot.
@@ -30,6 +32,9 @@ public class SlotRestrictive extends Slot
 
 		// Set the inventory
 		this.inventory = inventory;
+		
+		// Set this index
+		this.myIndex = index;
 	}
 
 	/**
@@ -38,6 +43,6 @@ public class SlotRestrictive extends Slot
 	@Override
 	public boolean isItemValid( ItemStack itemstack )
 	{
-		return this.inventory.isItemValidForSlot( this.slotNumber, itemstack );
+		return this.inventory.isItemValidForSlot( this.myIndex, itemstack );
 	}
 }

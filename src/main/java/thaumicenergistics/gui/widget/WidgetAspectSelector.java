@@ -17,9 +17,9 @@ public class WidgetAspectSelector
 	private int color;
 	private int borderThickness;
 
-	public WidgetAspectSelector(IAspectSelectorGui selectorGui, AspectStack stack)
+	public WidgetAspectSelector( IAspectSelectorGui selectorGui, AspectStack stack, int xPos, int yPos )
 	{
-		super( selectorGui, AbstractAspectWidget.WIDGET_SIZE, AbstractAspectWidget.WIDGET_SIZE, stack.aspect );
+		super( selectorGui, stack.aspect, xPos, yPos );
 
 		this.amount = stack.amount;
 
@@ -44,7 +44,7 @@ public class WidgetAspectSelector
 	@Override
 	public boolean drawTooltip( int posX, int posY, int mouseX, int mouseY )
 	{
-		if ( ( this.aspect == null ) || ( this.amount <= 0L ) )
+		if( ( this.aspect == null ) || ( this.amount <= 0L ) )
 		{
 			return false;
 		}
@@ -57,37 +57,42 @@ public class WidgetAspectSelector
 
 		description.add( amountToText );
 
-		this.drawHoveringText( description, mouseX - this.selectorGui.guiLeft(), mouseY - this.selectorGui.guiTop(),
-			Minecraft.getMinecraft().fontRenderer );
+		this.drawHoveringText( description, mouseX - this.hostGUI.guiLeft(), mouseY - this.hostGUI.guiTop(), Minecraft.getMinecraft().fontRenderer );
 
 		return true;
 	}
 
 	@Override
-	public void drawWidget( int posX, int posY )
+	public void drawWidget()
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture( TextureMap.locationBlocksTexture );
 
-		GL11.glDisable( 2896 );
-		GL11.glEnable( 3042 );
+		GL11.glDisable( GL11.GL_LIGHTING );
+
+		GL11.glEnable( GL11.GL_BLEND );
+
 		GL11.glBlendFunc( 770, 771 );
+
 		GL11.glColor3f( 1.0F, 1.0F, 1.0F );
 
-		AspectStack terminalFluid = ( (IAspectSelectorGui) this.selectorGui ).getSelectedAspect();
-
-		Aspect currentAspect = terminalFluid != null ? terminalFluid.aspect : null;
-
-		if ( this.aspect != null )
+		if( this.aspect != null )
 		{
-			UtilsFX.drawTag( posX + 1, posY + 1, this.aspect, 0, 0, this.zLevel );
-		}
-		if ( this.aspect == currentAspect )
-		{
-			this.drawHollowRectWithCorners( posX, posY, this.height, this.width, this.color, this.borderThickness );
+			UtilsFX.drawTag( this.xPosition + 1, this.yPosition + 1, this.aspect, 0, 0, this.zLevel );
+			
+			AspectStack terminalFluid = ( (IAspectSelectorGui)this.hostGUI ).getSelectedAspect();
+
+			Aspect currentAspect = terminalFluid != null ? terminalFluid.aspect : null;
+
+			if( this.aspect == currentAspect )
+			{
+				this.drawHollowRectWithCorners( this.xPosition, this.yPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE, this.color,
+					this.borderThickness );
+			}
 		}
 
-		GL11.glEnable( 2896 );
-		GL11.glDisable( 3042 );
+		GL11.glEnable( GL11.GL_LIGHTING );
+
+		GL11.glDisable( GL11.GL_BLEND );
 	}
 
 	public long getAmount()
@@ -96,11 +101,11 @@ public class WidgetAspectSelector
 	}
 
 	@Override
-	public void mouseClicked( int posX, int posY, int mouseX, int mouseY )
+	public void mouseClicked()
 	{
-		if ( this.aspect != null )
+		if( this.aspect != null )
 		{
-			( (IAspectSelectorGui) this.selectorGui ).getContainer().setSelectedAspect( this.aspect );
+			( (IAspectSelectorGui)this.hostGUI ).getContainer().setSelectedAspect( this.aspect );
 		}
 	}
 

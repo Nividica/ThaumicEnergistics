@@ -21,8 +21,10 @@ public class PrivateInventory implements IInventory
 		this.stackLimit = stackLimit;
 	}
 	
-	public void setReceiver( IInventoryUpdateReceiver receiver )
+	public PrivateInventory( String customName, int size, int stackLimit , IInventoryUpdateReceiver receiver )
 	{
+		this( customName, size, stackLimit );
+		
 		this.receiver = receiver;
 	}
 
@@ -147,7 +149,7 @@ public class PrivateInventory implements IInventory
 	{
 		if ( this.receiver != null )
 		{
-			this.receiver.onInventoryChanged();
+			this.receiver.onInventoryChanged( this );
 		}
 	}
 
@@ -203,6 +205,12 @@ public class PrivateInventory implements IInventory
 		}
 
 		return nbtList;
+	}
+	
+	// TODO: Remove me
+	public void setReceiver( IInventoryUpdateReceiver receiver )
+	{
+		this.receiver = receiver;
 	}
 
 }

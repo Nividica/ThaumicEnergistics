@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import org.lwjgl.opengl.GL11;
@@ -25,7 +24,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiEssentiatIO
-	extends GuiContainer
+	extends GuiWidgetHost
 	implements WidgetAspectSlot.IConfigurable, IAspectSlotGui
 {
 	private AEPartEssentiaIO part;
@@ -43,15 +42,15 @@ public class GuiEssentiatIO
 		this.part = terminal;
 		this.player = player;
 
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 0, 61, 21, this, (byte)2 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 1, 79, 21, this, (byte)1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 2, 97, 21, this, (byte)2 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 3, 61, 39, this, (byte)1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 4, 79, 39, this, (byte)0 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 5, 97, 39, this, (byte)1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 6, 61, 57, this, (byte)2 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 7, 79, 57, this, (byte)1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this.player, this.part, 8, 97, 57, this, (byte)2 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 0, 61, 21, this, (byte)2 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 1, 79, 21, this, (byte)1 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 2, 97, 21, this, (byte)2 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 3, 61, 39, this, (byte)1 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 4, 79, 39, this, (byte)0 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 5, 97, 39, this, (byte)1 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 6, 61, 57, this, (byte)2 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 7, 79, 57, this, (byte)1 ) );
+		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 8, 97, 57, this, (byte)2 ) );
 
 		new PacketEssentiaIOBus( this.player, this.part ).sendPacketToServer();
 
@@ -117,7 +116,7 @@ public class GuiEssentiatIO
 
 		for( WidgetAspectSlot aspectSlot : this.aspectSlotList )
 		{
-			if ( GuiHelper.isPointInGuiRegion( aspectSlot.getPosX(), aspectSlot.getPosY(), 18, 18, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+			if ( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the aspect of the currently held item
 				Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( this.player.inventory.getItemStack() );
@@ -173,7 +172,7 @@ public class GuiEssentiatIO
 	{
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
 
-		boolean overlayRendered = false;
+		boolean hoverUnderlayRendered = false;
 
 		WidgetAspectSlot slotUnderMouse = null;
 
@@ -181,17 +180,16 @@ public class GuiEssentiatIO
 		{
 			WidgetAspectSlot slotWidget = this.aspectSlotList.get( i );
 
-			slotWidget.drawWidget();
-
-			if ( ( !overlayRendered ) && ( slotWidget.canRender() ) )
+			if ( ( !hoverUnderlayRendered ) && ( slotWidget.canRender() ) && ( slotWidget.isMouseOverWidget( mouseX, mouseY ) ) )
 			{
-				overlayRendered = this.renderOverlay( slotWidget, mouseX, mouseY );
-
-				if ( overlayRendered )
-				{
-					slotUnderMouse = slotWidget;
-				}
+				slotWidget.drawMouseHoverUnderlay();
+				
+				slotUnderMouse = slotWidget;
+				
+				hoverUnderlayRendered = true;
 			}
+
+			slotWidget.drawWidget();
 		}
 
 		if ( slotUnderMouse != null )
@@ -214,26 +212,6 @@ public class GuiEssentiatIO
 	public byte getConfigState()
 	{
 		return this.filterSize;
-	}
-
-	public boolean renderOverlay( WidgetAspectSlot aspectSlot, int mouseX, int mouseY )
-	{
-		if ( GuiHelper.isPointInGuiRegion( aspectSlot.getPosX(), aspectSlot.getPosY(), 18, 18, mouseX, mouseY, this.guiLeft, this.guiTop ) )
-		{
-			GL11.glDisable( GL11.GL_LIGHTING );
-
-			GL11.glDisable( GL11.GL_DEPTH_TEST );
-
-			this.drawGradientRect( aspectSlot.getPosX() + 1, aspectSlot.getPosY() + 1, aspectSlot.getPosX() + 17, aspectSlot.getPosY() + 17,
-				-2130706433, -2130706433 );
-
-			GL11.glEnable( GL11.GL_LIGHTING );
-
-			GL11.glEnable( GL11.GL_DEPTH_TEST );
-
-			return true;
-		}
-		return false;
 	}
 
 	public void setRedstoneControlled( boolean redstoneControled )

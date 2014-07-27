@@ -8,7 +8,8 @@ public enum GuiTextureManager
 	ESSENTIA_LEVEL_EMITTER( "essentia.level.emitter" ),
 	ESSENTIA_STORAGE_BUS( "essentia.storage.bus" ),
 	ESSENTIA_TERMINAL( "essentia.terminal" ),
-	ESSENTIA_IO_BUS( "essentia.io.bus" );
+	ESSENTIA_IO_BUS( "essentia.io.bus" ),
+	ARCANE_CRAFTING_TERMINAL( "arcane.crafting" );
 	
 	private ResourceLocation texture;
 	

@@ -36,6 +36,7 @@ public class PacketAspectSlot extends AbstractPacket
 	public PacketAspectSlot(List<Aspect> filterAspects)
 	{
 		this.mode = 1;
+		this.useCompression = true;
 		this.filterAspects = filterAspects;
 	}
 

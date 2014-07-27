@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -554,6 +555,17 @@ public abstract class AEPartBase
 		helper.renderFace( x, y, z, lightTexture, ForgeDirection.EAST, renderer );
 		helper.renderFace( x, y, z, lightTexture, ForgeDirection.SOUTH, renderer );
 		helper.renderFace( x, y, z, lightTexture, ForgeDirection.WEST, renderer );
+	}
+	
+	protected void dropInventoryItemOnGround( ItemStack item )
+	{
+		World hostWorld = this.hostTile.getWorldObj();
+		
+		// Create the entity
+		EntityItem craftItem = new EntityItem( hostWorld, this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord, item );
+		
+		// Drop it on the ground
+		hostWorld.spawnEntityInWorld( craftItem );
 	}
 
 }

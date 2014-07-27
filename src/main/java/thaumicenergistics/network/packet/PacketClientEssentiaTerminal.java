@@ -31,6 +31,8 @@ public class PacketClientEssentiaTerminal
 		
 		this.mode = PacketClientEssentiaTerminal.MODE_UPDATE_LIST;
 		
+		this.useCompression = true;
+		
 		this.aspectStackList = list;
 	}
 

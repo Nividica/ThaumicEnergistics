@@ -190,9 +190,7 @@ public final class EssentiaItemContainerHelper
 	 * @return Info if was registered, null otherwise.
 	 */
 	private static ContainerInfo getContainerInfo( Class<? extends Item> container, int metadata )
-	{
-		System.out.println( metadata );
-		
+	{	
 		// Is the item registered?
 		if ( EssentiaItemContainerHelper.itemWhitelist.containsKey( container ) )
 		{

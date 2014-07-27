@@ -30,14 +30,14 @@ public class ContainerPartEssentiaIOBus
 	private static int UPGRADE_Y_POS = 8;
 
 	/**
-	 * X position for the player inventory
-	 */
-	private static int PLAYER_INV_POSITION_X = 102;
-
-	/**
 	 * Y position for the player inventory
 	 */
-	private static int PLAYER_INV_POSITION_Y = 160;
+	private static int PLAYER_INV_POSITION_Y = 102;
+
+	/**
+	 * Y position for the hotbar inventory
+	 */
+	private static int HOTBAR_INV_POSITION_Y = 160;
 
 	/**
 	 * The part associated with this container
@@ -58,8 +58,8 @@ public class ContainerPartEssentiaIOBus
 		this.part = part;
 		
 		// Bind to the player's inventory
-		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaIOBus.PLAYER_INV_POSITION_X,
-			ContainerPartEssentiaIOBus.PLAYER_INV_POSITION_Y );
+		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaIOBus.PLAYER_INV_POSITION_Y,
+			ContainerPartEssentiaIOBus.HOTBAR_INV_POSITION_Y );
 
 		// Add the upgrade slots
 		this.addUpgradeSlots( part.getUpgradeInventory(), ContainerPartEssentiaIOBus.NUMBER_OF_UPGRADE_SLOTS, ContainerPartEssentiaIOBus.UPGRADE_X_POS,

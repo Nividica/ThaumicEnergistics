@@ -1,9 +1,9 @@
 package thaumicenergistics.gui.widget;
 
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.gui.IAspectSelectorContainer;
+import thaumicenergistics.container.IAspectSelectorContainer;
 
-public interface IAspectSelectorGui extends IAspectWidgetGui
+public interface IAspectSelectorGui extends IWidgetHost
 {
 	public IAspectSelectorContainer getContainer();
 

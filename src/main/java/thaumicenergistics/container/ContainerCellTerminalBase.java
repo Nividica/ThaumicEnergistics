@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
@@ -13,7 +14,6 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.gui.GuiCellTerminalBase;
-import thaumicenergistics.gui.IAspectSelectorContainer;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import thaumicenergistics.util.PrivateInventory;
@@ -53,14 +53,14 @@ public abstract class ContainerCellTerminalBase
 	private static int INPUT_POSITION_Y = 74;
 
 	/**
-	 * X position for the player inventory
-	 */
-	private static int PLAYER_INV_POSITION_X = 104;
-
-	/**
 	 * Y position for the player inventory
 	 */
-	private static int PLAYER_INV_POSITION_Y = 162;
+	private static int PLAYER_INV_POSITION_Y = 104;
+
+	/**
+	 * Y position for the hotbar inventory
+	 */
+	private static int HOTBAR_INV_POSITION_Y = 162;
 
 	/**
 	 * The minimum amount of time to wait before playing
@@ -174,8 +174,8 @@ public abstract class ContainerCellTerminalBase
 		this.outputSlotNumber = workSlot.slotNumber;
 
 		// Bind to the player's inventory
-		this.bindPlayerInventory( this.player.inventory, ContainerCellTerminalBase.PLAYER_INV_POSITION_X,
-			ContainerCellTerminalBase.PLAYER_INV_POSITION_Y );
+		this.bindPlayerInventory( this.player.inventory, ContainerCellTerminalBase.PLAYER_INV_POSITION_Y,
+			ContainerCellTerminalBase.HOTBAR_INV_POSITION_Y );
 
 	}
 
@@ -265,7 +265,7 @@ public abstract class ContainerCellTerminalBase
 	 * Called when the import or export has changed items.
 	 */
 	@Override
-	public void onInventoryChanged()
+	public void onInventoryChanged( IInventory sourceInventory)
 	{
 		// Is this client side?
 		if ( this.player.worldObj.isRemote )
@@ -315,6 +315,8 @@ public abstract class ContainerCellTerminalBase
 	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
 		this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( monitor.getStorageList() );
+		
+		//TODO: Seriously look at how all this is done. Should be using change, not resending the whole bloody list.
 	}
 
 	/**
@@ -373,19 +375,13 @@ public abstract class ContainerCellTerminalBase
 					// Attempt to merge with the input slot
 					didMerge = this.mergeItemStack( slotStack, this.inputSlotNumber, this.inputSlotNumber + 1, false );
 				}
-				
+
 				// Did we merge?
-				if( !didMerge )
+				if ( !didMerge )
 				{
 					didMerge = this.swapSlotInventoryHotbar( slotNumber, slotStack );
 				}
 
-			}
-
-			// Did we merge?
-			if ( !didMerge )
-			{
-				return null;
 			}
 
 			// Did the merger drain the stack?
@@ -394,9 +390,11 @@ public abstract class ContainerCellTerminalBase
 				// Set the slot to have no item
 				slot.putStack( null );
 			}
-
-			// Inform the slot its stack changed;
-			slot.onSlotChanged();
+			else
+			{
+				// Inform the slot its stack changed;
+				slot.onSlotChanged();
+			}
 
 		}
 

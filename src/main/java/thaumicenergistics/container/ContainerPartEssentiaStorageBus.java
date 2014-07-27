@@ -19,14 +19,14 @@ public class ContainerPartEssentiaStorageBus
 	private static final int UPGRADE_SLOT_Y = 8;
 
 	/**
-	 * X position for the player inventory
-	 */
-	private static int PLAYER_INV_POSITION_X = 140;
-
-	/**
 	 * Y position for the player inventory
 	 */
-	private static int PLAYER_INV_POSITION_Y = 198;
+	private static int PLAYER_INV_POSITION_Y = 140;
+
+	/**
+	 * Y position for the hotbar inventory
+	 */
+	private static int HOTBAR_INV_POSITION_Y = 198;
 	
 	private AEPartEssentiaStorageBus part;
 
@@ -40,8 +40,8 @@ public class ContainerPartEssentiaStorageBus
 			ContainerPartEssentiaStorageBus.UPGRADE_SLOT_Y );
 
 		// Bind to the player's inventory
-		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaStorageBus.PLAYER_INV_POSITION_X,
-			ContainerPartEssentiaStorageBus.PLAYER_INV_POSITION_Y );
+		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaStorageBus.PLAYER_INV_POSITION_Y,
+			ContainerPartEssentiaStorageBus.HOTBAR_INV_POSITION_Y );
 
 		// Bind to the network tool
 		this.bindToNetworkTool( player.inventory, part.getHost().getLocation() );

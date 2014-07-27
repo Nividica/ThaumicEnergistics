@@ -1,4 +1,21 @@
-﻿7/23/2014 0.2.1a
+﻿7/27/2014 0.3.0a
+    Cleaned up widget and gui code.
+    Added ME deposit support.
+
+7/26/2014 0.3.0a
+    Linked ACT to ME item network.
+
+7/25/2014 0.3.0a
+    Added vanilla crafting functionality to ACT.
+    Added Thaumcraft crafting functionality to ACT.
+    Comments and code cleanup on abstract packet.
+    Implemented packet compression for lists.
+    
+7/24/2014 0.3.0a
+    Bugfix: Terminals now drop contents when destroyed.
+    Added Arcane Crafting Terminal AppEng part.
+    
+7/23/2014 0.2.1a
     Fixes #2: Added IO whitelist. Tiles must be on the whitelist for extraction/injection.
     Added "Cell" to the storage cell names.
     Refactored EssentiaTileContainerHelper method names for clarity.
