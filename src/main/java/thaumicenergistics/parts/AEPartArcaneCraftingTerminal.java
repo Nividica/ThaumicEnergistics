@@ -339,7 +339,7 @@ public class AEPartArcaneCraftingTerminal
 
 	@Override
 	public void setInventorySlotContents( int slotIndex, ItemStack slotStack )
-	{
+	{	
 		if( this.setInventorySlotContentsWithoutNotify( slotIndex, slotStack ) )
 		{
 			// Inform the listeners

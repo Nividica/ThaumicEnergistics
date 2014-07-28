@@ -375,18 +375,10 @@ public abstract class TileProviderBase
 		return sideColors;
 	}
 	
-	// TODO: Dis is a client side hack
 	public boolean isActive()
 	{
-		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
-		{
-			if( this.worldObj.getTileEntity( this.xCoord + dir.offsetX, this.yCoord + dir.offsetY, this.zCoord + dir.offsetZ ) instanceof TileCableBus )
-			{
-				return true;
-			}
-		}
-		
-		return false;
+		// TODO: Find a way to determine this
+		return true;
 	}
 
 }

@@ -3,6 +3,7 @@ package thaumicenergistics.gui.widget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
+import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.render.AppEngRenderItem;
 
@@ -55,10 +56,12 @@ public class WidgetAEItem
 	}
 
 	@Override
-	public boolean drawTooltip( int posX, int posY, int mouseX, int mouseY )
+	public void drawTooltip( int mouseX, int mouseY )
 	{
-		// TODO No tooltips yet
-		return false;
+		if( this.aeItemStack != null )
+		{
+			( (GuiArcaneCraftingTerminal)this.hostGUI ).renderToolTip( this.aeItemStack.getItemStack(), mouseX, mouseY );
+		}
 	}
 
 	/**
@@ -68,7 +71,7 @@ public class WidgetAEItem
 	public void drawWidget()
 	{
 		if( this.aeItemStack != null )
-		{
+		{	
 			// Set the z level
 			this.zLevel = 2.0F;
 			this.aeItemRenderer.zLevel = 2.0F;
@@ -97,23 +100,13 @@ public class WidgetAEItem
 		// Unused
 	}
 	
-	public IAEItemStack getSingleItemStack()
+	/**
+	 * Returns the itemstack this widget represents.
+	 * @return IAEItemstack if the widget has one, null otherwise.
+	 */
+	public IAEItemStack getItemStack()
 	{
-		// Do we have an AE itemstack?
-		if( this.aeItemStack != null )
-		{
-			// Create a new stack
-			IAEItemStack itemStack = this.aeItemStack.copy();
-			
-			// Set size to one
-			itemStack.setStackSize( 1 );
-			
-			// Return it
-			return itemStack;
-			
-		}
-		
-		return null;
+		return this.aeItemStack;
 	}
 
 }

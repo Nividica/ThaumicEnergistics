@@ -15,4 +15,4 @@
     --WIP-- Redstone indication of how much essentia is stored in the network.
     
 ###Crafting
-    --WIP-- Thaumcraft crafting table with access to items on the network.
+    Thaumcraft crafting table with access to items on the network.

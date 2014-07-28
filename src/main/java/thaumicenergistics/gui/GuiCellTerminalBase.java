@@ -102,29 +102,29 @@ public class GuiCellTerminalBase
 	private static final int WIDGET_OFFSET_Y = -1;
 
 	/**
-	 * X offset to draw the scrollbar
+	 * X offset to draw the search field
 	 */
-	private static final int SCROLLBAR_X_OFFSET = 100;
+	private static final int SEARCH_X_OFFSET = 100;
 
 	/**
-	 * Y offset to draw the scrollbar
+	 * Y offset to draw the search field
 	 */
-	private static final int SCROLLBAR_Y_OFFSET = -12;
+	private static final int SEARCH_Y_OFFSET = -12;
 
 	/**
-	 * Width of the scrollbar
+	 * Width of the search field
 	 */
-	private static final int SCROLLBAR_WIDTH = 69;
+	private static final int SEARCH_WIDTH = 69;
 
 	/**
-	 * Height of the scrollbar
+	 * Height of the search field
 	 */
-	private static final int SCROLLBAR_HEIGHT = 10;
+	private static final int SEARCH_HEIGHT = 10;
 	
 	/**
 	 * The maximum number of displayable characters.
 	 */
-	private static final int SCROLLBAR_MAX_CHARS = 14;
+	private static final int SEARCH_MAX_CHARS = 14;
 
 	/**
 	 * Local translation of the title.
@@ -445,9 +445,7 @@ public class GuiCellTerminalBase
 
 			// Holder for the widget under the mouse
 			WidgetAspectSelector widgetUnderMouse = null;
-			int widgetUnderMousePosX = 0;
-			int widgetUnderMousePosY = 0;
-
+			
 			for( int index = startingIndex; index < endingIndex; index++ )
 			{
 				// Get the widget
@@ -462,10 +460,8 @@ public class GuiCellTerminalBase
 				// Is the mouse over this widget?
 				if( currentWidget.isMouseOverWidget( mouseX, mouseY ) )
 				{
-					// Set the widget and its position
+					// Set the widget
 					widgetUnderMouse = this.matchingSearchWidgets.get( index );
-					widgetUnderMousePosX = widgetPosX;
-					widgetUnderMousePosY = widgetPosY;
 				}
 
 				// Increment the column position
@@ -494,7 +490,7 @@ public class GuiCellTerminalBase
 			if ( widgetUnderMouse != null )
 			{
 				// Have the widget draw its tooltip
-				widgetUnderMouse.drawTooltip( widgetUnderMousePosX, widgetUnderMousePosY, mouseX, mouseY );
+				widgetUnderMouse.drawTooltip( mouseX, mouseY );
 			}
 		}
 		else
@@ -537,8 +533,8 @@ public class GuiCellTerminalBase
 		this.updateAspects();
 
 		// Set up the search bar
-		this.searchBar = new GuiTextField( this.fontRendererObj, this.guiLeft + GuiCellTerminalBase.SCROLLBAR_X_OFFSET, this.guiTop +
-						GuiCellTerminalBase.SCROLLBAR_Y_OFFSET, GuiCellTerminalBase.SCROLLBAR_WIDTH, GuiCellTerminalBase.SCROLLBAR_HEIGHT );
+		this.searchBar = new GuiTextField( this.fontRendererObj, this.guiLeft + GuiCellTerminalBase.SEARCH_X_OFFSET, this.guiTop +
+						GuiCellTerminalBase.SEARCH_Y_OFFSET, GuiCellTerminalBase.SEARCH_WIDTH, GuiCellTerminalBase.SEARCH_HEIGHT );
 
 		// Set the searchbar to draw in the foreground
 		this.searchBar.setEnableBackgroundDrawing( false );
@@ -547,7 +543,7 @@ public class GuiCellTerminalBase
 		this.searchBar.setFocused( true );
 
 		// Set maximum length
-		this.searchBar.setMaxStringLength( GuiCellTerminalBase.SCROLLBAR_MAX_CHARS );
+		this.searchBar.setMaxStringLength( GuiCellTerminalBase.SEARCH_MAX_CHARS );
 
 	}
 

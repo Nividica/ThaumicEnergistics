@@ -51,6 +51,7 @@ public class WidgetAspectSlot extends AbstractAspectWidget
 		return ( this.configurable == null ) || ( this.configurable.getConfigState() >= this.configOption );
 	}
 
+	@Override
 	public void drawTooltip( int mouseX, int mouseY )
 	{
 		if ( this.canRender() && ( this.aspect != null ) )
@@ -90,13 +91,6 @@ public class WidgetAspectSlot extends AbstractAspectWidget
 		this.aspect = withAspect;
 
 		new PacketAspectSlot( this.part, this.id, this.aspect, this.player ).sendPacketToServer();
-	}
-
-	@Override
-	public boolean drawTooltip( int posX, int posY, int mouseX, int mouseY )
-	{
-		// Ignored
-		return false;
 	}
 
 	@Override

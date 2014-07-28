@@ -99,9 +99,12 @@ public class PacketServerArcaneCraftingTerminal
 					// Request the full list
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestFullUpdate( this.player );
 					break;
+					
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_EXTRACTION:
-					//TODO
+					// Request extraction
+					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestExtract( this.player, this.itemStack, this.mouseButton );
 					break;
+					
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
 					// Request deposit
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestDeposit( this.player, this.mouseButton );

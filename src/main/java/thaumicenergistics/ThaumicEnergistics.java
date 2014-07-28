@@ -95,29 +95,23 @@ public class ThaumicEnergistics
 
 /* TODO: -- Code
  * Bugfix: Determine if terminal was destroyed or wrenched. Dont always drop items
- * Bugfix: Machines run without power
- * Find magic numbers such as the openGL and keyboard and replace with meaningful constants
+ * Bugfix: Machines run without power, and client does not know active state
  * Adjust rarity values for items
  * Rework packet structure for client vs server with superclasses and stop depending on constructors, use methods.
  * 
- * ... I think I hate the word 'essentia' now
- * 
- * Known issue: ME Chest gui does not update the network when the contents of an essentia cell is changed.
+ * NOTE Known issue: ME Chest gui does not update the network when the contents of an essentia cell is changed.
  * Need to ask Algo how to go about fixing this, cause I've tried everything I can think of. 
  */
 
 /*
  * TODO -- Planned Features
- * --WIP--Thaumcraft crafting table with ME network connection
  * Occlude aspect names if not researched
- * Terminal sort modes, by amount, by name. Include ascending and desending order
+ * Terminal sort modes, by amount, by name. Include ascending and descending order
  * Add aspect tags (thaumometer) to all items
  * Additional UI's redstone mode, priority window
  * Level emitter multi-mode
- * Terminal should be able to do work even when noone is looking at it. (internal timeout perhaps?)
  * Give rarity tooltip color value to providers
- * Give Spatial IO the ability to move my Tile Entitites.
- * Add a scrollbar to guis
+ * Give Spatial IO the ability to move my Tile Entities.
  * 
  * --Possible Features
  * Wireless terminal

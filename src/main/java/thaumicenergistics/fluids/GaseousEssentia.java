@@ -83,8 +83,8 @@ public class GaseousEssentia
 		}
 		else
 		{
-			//TODO: format string
-			FMLLog.warning( "", ThaumicEnergistics.MOD_ID + ": Unable to register '" + aspect.getTag() + "' as fluid." );
+			// Log a warning
+			FMLLog.warning( "%s: Unable to register '%s' as fluid.", ThaumicEnergistics.MOD_ID, aspect.getTag() );
 		}
 
 	}

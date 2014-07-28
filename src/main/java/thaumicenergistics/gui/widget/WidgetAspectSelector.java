@@ -42,11 +42,11 @@ public class WidgetAspectSelector
 	}
 
 	@Override
-	public boolean drawTooltip( int posX, int posY, int mouseX, int mouseY )
+	public void drawTooltip( int mouseX, int mouseY )
 	{
 		if( ( this.aspect == null ) || ( this.amount <= 0L ) )
 		{
-			return false;
+			return;
 		}
 
 		String amountToText = Long.toString( this.amount );
@@ -58,8 +58,6 @@ public class WidgetAspectSelector
 		description.add( amountToText );
 
 		this.drawHoveringText( description, mouseX - this.hostGUI.guiLeft(), mouseY - this.hostGUI.guiTop(), Minecraft.getMinecraft().fontRenderer );
-
-		return true;
 	}
 
 	@Override

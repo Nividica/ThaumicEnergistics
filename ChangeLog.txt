@@ -1,6 +1,14 @@
-﻿7/27/2014 0.3.0a
+﻿7/28/2014 0.3.0a
+    Added search to ACT.
+    Added item tooltips to ME slots in ACT.
+    Fixed build error: Was using JVM 1.7 compliance, changed to 1.6
+    
+7/27/2014 0.3.0a
     Cleaned up widget and gui code.
-    Added ME deposit support.
+    Added ME deposit support to ACT.
+    Added ME extract support to ACT.
+    Added ME linked crafting to ACT.
+    Added fuzzy match to linked ME crafting to ACT.
 
 7/26/2014 0.3.0a
     Linked ACT to ME item network.

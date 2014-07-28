@@ -108,6 +108,7 @@ public abstract class AbstractPacket
 
 	/**
 	 * Reads an AE itemstack from the stream.
+	 * 
 	 * @param stream
 	 * @return
 	 */
@@ -117,13 +118,13 @@ public abstract class AbstractPacket
 		try
 		{
 			itemStack = AEItemStack.loadItemStackFromPacket( stream );
-			
+
 			return itemStack;
 		}
 		catch( IOException e )
 		{
 		}
-		
+
 		return null;
 
 	}
@@ -216,6 +217,7 @@ public abstract class AbstractPacket
 
 	/**
 	 * Writes an AE itemstack to the stream.
+	 * 
 	 * @param itemStack
 	 * @param stream
 	 */
@@ -314,25 +316,28 @@ public abstract class AbstractPacket
 		// Create a new data stream
 		ByteBuf decompressedStream = Unpooled.buffer( AbstractPacket.COMPRESSED_BUFFER_SIZE );
 
-		// Create the decompressor
-		try( GZIPInputStream decompressor = new GZIPInputStream( new InputStream()
+		GZIPInputStream decompressor = null;
+		try
 		{
-
-			@Override
-			public int read() throws IOException
+			// Create the decompressor
+			decompressor = new GZIPInputStream( new InputStream()
 			{
-				// Is there anymore data to read from the packet stream?
-				if( packetStream.readableBytes() <= 0 )
-				{
-					// Return end marker
-					return -1;
-				}
 
-				// Return the byte
-				return packetStream.readByte() & 0xFF;
-			}
-		} ) )
-		{
+				@Override
+				public int read() throws IOException
+				{
+					// Is there anymore data to read from the packet stream?
+					if( packetStream.readableBytes() <= 0 )
+					{
+						// Return end marker
+						return -1;
+					}
+
+					// Return the byte
+					return packetStream.readByte() & 0xFF;
+				}
+			} );
+
 			// Create a temporary holding array
 			byte[] holding = new byte[512];
 
@@ -363,6 +368,16 @@ public abstract class AbstractPacket
 		catch( IOException e )
 		{
 			// Failed
+			if( decompressor != null )
+			{
+				try
+				{
+					decompressor.close();
+				}
+				catch( IOException e1 )
+				{
+				}
+			}
 		}
 	}
 
@@ -380,18 +395,21 @@ public abstract class AbstractPacket
 		// Pass to subclass
 		this.writeData( streamToCompress );
 
-		// Create the compressor
-		try( GZIPOutputStream compressor = new GZIPOutputStream( new OutputStream()
+		GZIPOutputStream compressor = null;
+		try
 		{
-
-			@Override
-			public void write( int byteToWrite ) throws IOException
+			// Create the compressor
+			compressor = new GZIPOutputStream( new OutputStream()
 			{
-				// Write the byte to the packet stream
-				packetStream.writeByte( byteToWrite & 0xFF );
-			}
-		} ); )
-		{
+
+				@Override
+				public void write( int byteToWrite ) throws IOException
+				{
+					// Write the byte to the packet stream
+					packetStream.writeByte( byteToWrite & 0xFF );
+				}
+			} );
+
 			// Compress
 			compressor.write( streamToCompress.array(), 0, streamToCompress.writerIndex() );
 
@@ -401,6 +419,17 @@ public abstract class AbstractPacket
 		catch( IOException e )
 		{
 			// Failed
+
+			if( compressor != null )
+			{
+				try
+				{
+					compressor.close();
+				}
+				catch( IOException e1 )
+				{
+				}
+			}
 		}
 	}
 

@@ -207,7 +207,6 @@ public class PrivateInventory implements IInventory
 		return nbtList;
 	}
 	
-	// TODO: Remove me
 	public void setReceiver( IInventoryUpdateReceiver receiver )
 	{
 		this.receiver = receiver;
