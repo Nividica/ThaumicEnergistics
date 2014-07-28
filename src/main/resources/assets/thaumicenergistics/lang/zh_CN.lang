@@ -15,6 +15,7 @@ thaumicenergistics.aeparts.essentia.ExportBus.name=源质输出总线
 thaumicenergistics.aeparts.essentia.levelemitter.name=源质发信器
 thaumicenergistics.aeparts.essentia.StorageBus.name=源质储存总线
 thaumicenergistics.aeparts.essentia.terminal.name=源质终端
+thaumicenergistics.aeparts.arcane.crafting.terminal.name=奥术合成终端
 
 #Items
 thaumicenergistics.item.essentia.cell.1k.name=1k-ME源质存储元件
@@ -28,9 +29,11 @@ thaumicenergistics.item.storage.component.16k.name=16k-ME源质存储组件
 thaumicenergistics.item.storage.component.64k.name=64k-ME源质存储组件
 thaumicenergistics.item.essentia.cell.inventory=源质元件
 
-
 #Tooltips
 thaumicenergistics.tooltip.amount=数量
 thaumicenergistics.tooltip.aspect=要素
 thaumicenergistics.tooltip.essentia.cell.bytes=%d / %d 字节已使用.
 thaumicenergistics.tooltip.essentia.cell.types=%d / %d 源质类型储存.
+
+#GUI
+thaumicenergistics.gui.arcane.crafting.terminal.title=奥术终端
