@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerCellTerminalBase;
@@ -28,6 +27,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class AEPartEssentiaTerminal
 	extends AEPartBase
 {
+
+	/**
+	 * How much AE power is required to keep the part active.
+	 */
+	private static final double IDLE_POWER_DRAIN = 1.2D;
+	
 	private List<ContainerEssentiaTerminal> containers = new ArrayList<ContainerEssentiaTerminal>();
 
 	private MachineSource machineSource = new MachineSource( this );
@@ -98,17 +103,6 @@ public class AEPartEssentiaTerminal
 	}
 
 	@Override
-	public boolean onActivate( EntityPlayer player, Vec3 position )
-	{
-		if ( this.isActive() )
-		{
-			return super.onActivate( player, position );
-		}
-
-		return false;
-	}
-
-	@Override
 	public void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
@@ -175,7 +169,7 @@ public class AEPartEssentiaTerminal
 
 		if ( this.isActive() )
 		{
-			Tessellator.instance.setBrightness( 0xD000D0 );
+			Tessellator.instance.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
 		}
 
 		ts.setColorOpaque_I( 0xFFFFFF );
@@ -247,28 +241,39 @@ public class AEPartEssentiaTerminal
 	}
 	
 	@Override
-	public void removeFromWorld()
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
-		// Is this server side?
-		if ( !this.hostTile.getWorldObj().isRemote )
+		// Were we wrenched?
+		if( wrenched )
 		{
-			// Loop over inventory
-			for( int index = 0; index < 2; index++ )
-			{
-				// Get the stack at this index
-				ItemStack slotStack = this.inventory.getStackInSlot( index );
-				
-				// Did we get anything?
-				if( slotStack != null )
-				{
-					// Drop it on the ground
-					this.dropInventoryItemOnGround( slotStack );
-				}
-			}
+			// Inventory is saved when wrenched
+			return;
 		}
 		
-		// Pass to super
-		super.removeFromWorld();
-	}
+		// Loop over inventory
+		for( int slotIndex = 0; slotIndex < 2; slotIndex++ )
+		{
+			// Get the stack at this index
+			ItemStack slotStack = this.inventory.getStackInSlot( slotIndex );
 
+			// Did we get anything?
+			if( slotStack != null )
+			{
+				// Add to drops
+				drops.add( slotStack );
+			}
+		}
+	}
+	
+
+
+	/**
+	 * Determines how much power the part takes for just
+	 * existing.
+	 */
+	@Override
+	public double getIdlePowerUsage()
+	{
+		return AEPartEssentiaTerminal.IDLE_POWER_DRAIN;
+	}
 }

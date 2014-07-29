@@ -341,6 +341,12 @@ public final class EssentiaTileContainerHelper
 
 	public static AspectStack getAspectStackFromContainer( IAspectContainer container )
 	{
+		// Ensure we have a container
+		if( container == null )
+		{
+			return null;
+		}
+		
 		// Get the list of aspects in the container
 		AspectList aspectList = container.getAspects();
 
@@ -364,6 +370,20 @@ public final class EssentiaTileContainerHelper
 		aspectStack.amount = aspectList.getAmount( aspectStack.aspect );
 
 		return aspectStack;
+	}
+	
+	public static Aspect getAspectInContainer( IAspectContainer container )
+	{
+		// Get the aspect list from the container
+		AspectStack containerStack = EssentiaTileContainerHelper.getAspectStackFromContainer( container );
+		
+		// Did we get a stack?
+		if( containerStack == null )
+		{
+			return null;
+		}
+		
+		return containerStack.aspect;
 	}
 
 	public static int getContainerCapacity( IAspectContainer container )

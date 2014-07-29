@@ -8,9 +8,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -53,36 +51,46 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class AEPartBase
 	implements IPart, IGridHost, IActionHost
 {
-	protected final static int inventoryOverlayColor = AEColor.Black.blackVariant;
+	protected final static int INVENTORY_OVERLAY_COLOR = AEColor.Black.blackVariant;
 	
+	protected final static int ACTIVE_BRIGHTNESS = 0xD000D0;
+
 	protected ForgeDirection cableSide;
+	
 	protected IGridNode node;
+	
 	protected IPartHost host;
+	
 	protected boolean isActive;
+	
 	protected AEPartGridBlock gridBlock;
+	
 	protected TileEntity tile;
+	
 	protected TileEntity hostTile;
+	
 	protected IAspectContainer facingContainer;
+	
 	protected boolean redstonePowered;
-	protected double powerUsage;
+	
 	public final ItemStack associatedItem;
 
-	public AEPartBase(AEPartsEnum associatedPart)
+	public AEPartBase( AEPartsEnum associatedPart )
 	{
 		// Set the associated item 
 		this.associatedItem = ItemEnum.PART_ITEM.getItemStackWithDamage( associatedPart.ordinal() );
 	}
 
 	private void updateStatus()
-	{	
+	{
 		// Do we have a node?
-		if ( this.node != null )
+		if( this.node != null )
 		{
 			// Get the active state
 			boolean currentlyActive = this.node.isActive();
 
 			// Has that state changed?
-			if ( currentlyActive != this.isActive )
+			if( currentlyActive != this.isActive )
 			{
 				// Set our active state
 				this.isActive = currentlyActive;
@@ -98,14 +106,14 @@ public abstract class AEPartBase
 
 	protected final long checkGasAmount( GaseousEssentia fluid )
 	{
-		if ( ( this.gridBlock == null ) || ( fluid == null ) )
+		if( ( this.gridBlock == null ) || ( fluid == null ) )
 		{
 			return 0;
 		}
 
 		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
 
-		if ( monitor == null )
+		if( monitor == null )
 		{
 			return 0;
 		}
@@ -114,7 +122,7 @@ public abstract class AEPartBase
 
 		IAEFluidStack result = monitor.extractItems( toCheckFor, Actionable.SIMULATE, new MachineSource( this ) );
 
-		if ( result == null )
+		if( result == null )
 		{
 			return 0;
 		}
@@ -125,14 +133,14 @@ public abstract class AEPartBase
 	protected final IAEFluidStack extractFluid( IAEFluidStack toExtract, Actionable action )
 	{
 
-		if ( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
+		if( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
 		{
 			return null;
 		}
 
 		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
 
-		if ( monitor == null )
+		if( monitor == null )
 		{
 			return null;
 		}
@@ -142,14 +150,14 @@ public abstract class AEPartBase
 
 	protected final IAEFluidStack injectFluid( IAEFluidStack toInject, Actionable action )
 	{
-		if ( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
+		if( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
 		{
 			return null;
 		}
 
 		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
 
-		if ( monitor == null )
+		if( monitor == null )
 		{
 			return null;
 		}
@@ -159,21 +167,25 @@ public abstract class AEPartBase
 
 	protected boolean isActive()
 	{
-		boolean active = this.isActive;
-
-		if ( this.node != null )
+		// Are we server side?
+		if( !this.hostTile.getWorldObj().isRemote )
 		{
-			active = this.node.isActive();
+			// Do we have a node?
+			if( this.node != null )
+			{
+				// Get it's activity
+				this.isActive = this.node.isActive();
+			}
 		}
 
-		return active;
+		return this.isActive;
 	}
 
 	@Override
 	public void addToWorld()
 	{
 		// Ignored on client side
-		if ( FMLCommonHandler.instance().getEffectiveSide().isServer() )
+		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
 		{
 			this.gridBlock = new AEPartGridBlock( this );
 
@@ -258,7 +270,7 @@ public abstract class AEPartBase
 	{
 		ItemStack itemStack = new ItemStack( ItemEnum.PART_ITEM.getItem(), 1, AEPartsEnum.getPartID( this.getClass() ) );
 
-		if ( partItemStack != PartItemStack.Break )
+		if( partItemStack != PartItemStack.Break )
 		{
 			NBTTagCompound itemNBT = new NBTTagCompound();
 			this.writeToNBT( itemNBT );
@@ -273,7 +285,7 @@ public abstract class AEPartBase
 	{
 		int level = 0;
 
-		if ( this.isActive )
+		if( this.isActive() )
 		{
 			level = 15;
 		}
@@ -286,10 +298,11 @@ public abstract class AEPartBase
 		return new DimensionalCoord( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord );
 	}
 
-	public double getPowerUsage()
-	{
-		return this.powerUsage;
-	}
+	/**
+	 * Determines how much power the part takes for just
+	 * existing.
+	 */
+	public abstract double getIdlePowerUsage();
 
 	public ForgeDirection getSide()
 	{
@@ -323,12 +336,20 @@ public abstract class AEPartBase
 	@Override
 	public boolean onActivate( EntityPlayer player, Vec3 position )
 	{
-		// Do we have a player?
-		if ( ( player != null ) && ( player instanceof EntityPlayerMP ) )
+		// Is the player sneaking?
+		if( player.isSneaking() )
 		{
-			GuiHandler.launchGui( this, player, this.hostTile.getWorldObj(), this.hostTile.xCoord, this.hostTile.yCoord,
-				this.hostTile.zCoord );
+			return false;
 		}
+
+		// Is this client side?
+		if( player.worldObj.isRemote )
+		{
+			return true;
+		}
+
+		// Launch the gui
+		GuiHandler.launchGui( this, player, this.hostTile.getWorldObj(), this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord );
 
 		return true;
 	}
@@ -340,8 +361,8 @@ public abstract class AEPartBase
 
 	@Override
 	public void onNeighborChanged()
-	{	
-		if ( this.hostTile != null )
+	{
+		if( this.hostTile != null )
 		{
 			// Get the world
 			World world = this.hostTile.getWorldObj();
@@ -358,9 +379,9 @@ public abstract class AEPartBase
 			this.facingContainer = null;
 
 			// Are we facing a container?
-			if ( tileEntity instanceof IAspectContainer )
+			if( tileEntity instanceof IAspectContainer )
 			{
-				this.facingContainer = (IAspectContainer) tileEntity;
+				this.facingContainer = (IAspectContainer)tileEntity;
 			}
 
 			// Check redstone state
@@ -400,7 +421,7 @@ public abstract class AEPartBase
 	@Override
 	public void removeFromWorld()
 	{
-		if ( this.node != null )
+		if( this.node != null )
 		{
 			this.node.destroy();
 		}
@@ -448,6 +469,8 @@ public abstract class AEPartBase
 	public final void setPower( MENetworkPowerStatusChange event )
 	{
 		this.updateStatus();
+
+		this.host.markForUpdate();
 	}
 
 	/**
@@ -457,7 +480,7 @@ public abstract class AEPartBase
 	 */
 	public void setupPartFromItem( ItemStack itemPart )
 	{
-		if ( itemPart.hasTagCompound() )
+		if( itemPart.hasTagCompound() )
 		{
 			this.readFromNBT( itemPart.getTagCompound() );
 		}
@@ -489,17 +512,17 @@ public abstract class AEPartBase
 	{
 		return null;
 	}
-	
+
 	public void renderInventoryBusLights( IPartRenderHelper helper, RenderBlocks renderer )
 	{
 		// Set color to white
 		helper.setInvColor( 0xFFFFFF );
-		
+
 		IIcon busColorTexture = BlockTextureManager.BUS_COLOR.getTextures()[0];
-		
+
 		IIcon sideTexture = BlockTextureManager.BUS_SIDE.getTexture();
-	    
-	    helper.setTexture(busColorTexture, busColorTexture, sideTexture, sideTexture, busColorTexture, busColorTexture);
+
+		helper.setTexture( busColorTexture, busColorTexture, sideTexture, sideTexture, busColorTexture, busColorTexture );
 
 		// Rend the box
 		helper.renderInventoryBox( renderer );
@@ -508,7 +531,7 @@ public abstract class AEPartBase
 		Tessellator.instance.setBrightness( 0xD000D0 );
 
 		helper.setInvColor( AEColor.Transparent.blackVariant );
-		
+
 		IIcon lightTexture = BlockTextureManager.BUS_COLOR.getTextures()[1];
 
 		// Render the lights
@@ -519,20 +542,20 @@ public abstract class AEPartBase
 		helper.renderInventoryFace( lightTexture, ForgeDirection.SOUTH, renderer );
 		helper.renderInventoryFace( lightTexture, ForgeDirection.WEST, renderer );
 	}
-	
+
 	public void renderStaticBusLights( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
 	{
 		IIcon busColorTexture = BlockTextureManager.BUS_COLOR.getTextures()[0];
-		
-	    IIcon sideTexture = BlockTextureManager.BUS_SIDE.getTexture();
-	    
-	    helper.setTexture(busColorTexture, busColorTexture, sideTexture, sideTexture, busColorTexture, busColorTexture);
-	    
+
+		IIcon sideTexture = BlockTextureManager.BUS_SIDE.getTexture();
+
+		helper.setTexture( busColorTexture, busColorTexture, sideTexture, sideTexture, busColorTexture, busColorTexture );
+
 		// Render the box
 		helper.renderBlock( x, y, z, renderer );
 
 		// Are we active?
-		if ( this.isActive )
+		if( this.isActive() )
 		{
 			// Set the brightness
 			Tessellator.instance.setBrightness( 0xD000D0 );
@@ -545,7 +568,7 @@ public abstract class AEPartBase
 			// Set the color to black
 			Tessellator.instance.setColorOpaque_I( 0 );
 		}
-		
+
 		IIcon lightTexture = BlockTextureManager.BUS_COLOR.getTextures()[1];
 
 		// Render the lights
@@ -555,17 +578,6 @@ public abstract class AEPartBase
 		helper.renderFace( x, y, z, lightTexture, ForgeDirection.EAST, renderer );
 		helper.renderFace( x, y, z, lightTexture, ForgeDirection.SOUTH, renderer );
 		helper.renderFace( x, y, z, lightTexture, ForgeDirection.WEST, renderer );
-	}
-	
-	protected void dropInventoryItemOnGround( ItemStack item )
-	{
-		World hostWorld = this.hostTile.getWorldObj();
-		
-		// Create the entity
-		EntityItem craftItem = new EntityItem( hostWorld, this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord, item );
-		
-		// Drop it on the ground
-		hostWorld.spawnEntityInWorld( craftItem );
 	}
 
 }

@@ -1,4 +1,11 @@
-﻿7/28/2014 0.3.0a
+﻿7/29/2014 0.3.1a
+    Bugfix: AE Parts now drop or save inventory contents when broken or wrenched.
+    Bugfix: AE Parts now require power to work.
+    Bugfix: Import and Export GUI slots don't indicated when they can be used.
+    Bugfix: Can't place torches, levers etc against the side of providers.
+    Bugfix: Providers give no visual indication that they are inactive or disconnected.
+
+7/28/2014 0.3.0a
     Added search to ACT.
     Added item tooltips to ME slots in ACT.
     Fixed build error: Was using JVM 1.7 compliance, changed to 1.6

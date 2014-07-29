@@ -67,6 +67,11 @@ public abstract class ContainerCellTerminalBase
 	 * sounds again. In ms.
 	 */
 	private static int MINIMUM_SOUND_WAIT = 900;
+	
+	/**
+	 * Amount of AE power required per transfer
+	 */
+	protected static double POWER_PER_TRANSFER = 0.3;
 
 	/**
 	 * Slot ID for the output

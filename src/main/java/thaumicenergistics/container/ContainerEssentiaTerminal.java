@@ -7,6 +7,9 @@ import thaumicenergistics.network.packet.PacketServerEssentiaTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.util.EssentiaCellTerminalWorker;
 import thaumicenergistics.util.EssentiaConversionHelper;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEMonitor;
@@ -14,8 +17,9 @@ import appeng.api.storage.data.IAEFluidStack;
 
 /**
  * Inventory container for the essentia terminal.
+ * 
  * @author Nividica
- *
+ * 
  */
 public class ContainerEssentiaTerminal
 	extends ContainerCellTerminalBase
@@ -24,7 +28,7 @@ public class ContainerEssentiaTerminal
 	 * The terminal this is associated with.
 	 */
 	private AEPartEssentiaTerminal terminal = null;
-	
+
 	/**
 	 * The AE machine source representation of the terminal.
 	 */
@@ -32,22 +36,25 @@ public class ContainerEssentiaTerminal
 
 	/**
 	 * Creates the container
-	 * @param terminal Parent terminal.
-	 * @param player Player that owns this container.
+	 * 
+	 * @param terminal
+	 * Parent terminal.
+	 * @param player
+	 * Player that owns this container.
 	 */
 	public ContainerEssentiaTerminal( AEPartEssentiaTerminal terminal, EntityPlayer player )
 	{
 		// Call the super
 		super( player );
-		
+
 		// Set the terminal
 		this.terminal = terminal;
-		
+
 		// Get and set the machine source
 		this.machineSource = terminal.getTerminalMachineSource();
 
 		// Is this server side?
-		if ( !player.worldObj.isRemote )
+		if( !player.worldObj.isRemote )
 		{
 			// Get the monitor
 			this.monitor = terminal.getGridBlock().getFluidMonitor();
@@ -70,7 +77,7 @@ public class ContainerEssentiaTerminal
 	@Override
 	public void forceAspectUpdate()
 	{
-		if ( this.monitor != null )
+		if( this.monitor != null )
 		{
 			new PacketClientEssentiaTerminal( this.player, EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor
 							.getStorageList() ) ).sendPacketToPlayer( this.player );
@@ -85,7 +92,7 @@ public class ContainerEssentiaTerminal
 	{
 		super.onContainerClosed( player );
 
-		if ( !player.worldObj.isRemote && ( this.terminal != null ) )
+		if( !player.worldObj.isRemote && ( this.terminal != null ) )
 		{
 			this.terminal.removeContainer( this );
 		}
@@ -107,12 +114,12 @@ public class ContainerEssentiaTerminal
 	 */
 	@Override
 	public void receiveSelectedAspect( Aspect selectedAspect )
-	{	
+	{
 		// Set the selected aspect
 		this.selectedAspect = selectedAspect;
-		
+
 		// Is this client side?
-		if ( this.player.worldObj.isRemote )
+		if( this.player.worldObj.isRemote )
 		{
 			// Update the gui
 			this.guiBase.updateSelectedAspect();
@@ -133,7 +140,7 @@ public class ContainerEssentiaTerminal
 	{
 		new PacketServerEssentiaTerminal( this.player, selectedAspect ).sendPacketToServer();
 	}
-	
+
 	/**
 	 * Checks if there is any work to perform.
 	 * If there is it does so.
@@ -142,10 +149,10 @@ public class ContainerEssentiaTerminal
 	public void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();
-		
+
 		// Do we have a monitor
 		if( this.monitor != null )
-		{	
+		{
 
 			// Can we lock the inventory?
 			if( this.terminal.lockInventoryForWork() )
@@ -156,8 +163,21 @@ public class ContainerEssentiaTerminal
 					// Do we have work to do?
 					if( EssentiaCellTerminalWorker.hasWork( this.inventory ) )
 					{
-						// Do the work.
-						EssentiaCellTerminalWorker.doWork( this.inventory, this.monitor, this.machineSource, this.selectedAspect );
+						// Get the energy grid
+						IEnergyGrid eGrid = this.terminal.getGridBlock().getEnergyGrid();
+
+						// Did we get the grid, and can we drain energy?
+						if( ( eGrid != null ) &&
+										( eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.SIMULATE,
+											PowerMultiplier.CONFIG ) >= ContainerCellTerminalBase.POWER_PER_TRANSFER ) )
+						{
+							// Do the work.
+							if( EssentiaCellTerminalWorker.doWork( this.inventory, this.monitor, this.machineSource, this.selectedAspect ) )
+							{
+								// We did work, extract power
+								eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.MODULATE, PowerMultiplier.CONFIG );
+							}
+						}
 					}
 				}
 				catch( Exception e )

@@ -29,7 +29,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.3.0a"; // Note: don't forget to change the mcmod.info file as well
+	public static final String VERSION = "0.3.1a"; // Note: don't forget to change the mcmod.info file as well
 
 	/**
 	 * Singleton instance
@@ -94,9 +94,6 @@ public class ThaumicEnergistics
 }
 
 /* TODO: -- Code
- * Bugfix: Determine if terminal was destroyed or wrenched. Dont always drop items
- * Bugfix: Machines run without power, and client does not know active state
- * Adjust rarity values for items
  * Rework packet structure for client vs server with superclasses and stop depending on constructors, use methods.
  * 
  * NOTE Known issue: ME Chest gui does not update the network when the contents of an essentia cell is changed.

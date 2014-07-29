@@ -18,6 +18,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
@@ -41,6 +42,8 @@ public abstract class TileProviderBase
 	protected int attachmentSide;
 
 	protected IMEMonitor<IAEFluidStack> monitor = null;
+	
+	protected boolean isActive;
 
 	private AETileEventHandler eventHandler = new AETileEventHandler( TileEventType.WORLD_NBT, TileEventType.NETWORK )
 	{
@@ -75,9 +78,11 @@ public abstract class TileProviderBase
 		@Override
 		public void writeToStream( ByteBuf data ) throws IOException
 		{
-
 			// Write the color data to the stream
 			data.writeInt( TileProviderBase.this.getGridColor().ordinal() );
+			
+			// Write the activity to the stream
+			data.writeBoolean( TileProviderBase.this.isActive() );
 		}
 
 		@Override
@@ -86,6 +91,9 @@ public abstract class TileProviderBase
 		{
 			// Read the color from the stream
 			TileProviderBase.this.setGridColor( AEColor.values()[data.readInt()] );
+			
+			// Read the activity
+			TileProviderBase.this.isActive = data.readBoolean();
 
 			return true;
 		}
@@ -236,6 +244,12 @@ public abstract class TileProviderBase
 	{
 		this.channelUpdated();
 	}
+	
+	@MENetworkEventSubscribe
+	public final void powerEvent( MENetworkPowerStatusChange event )
+	{
+		this.markForUpdate();
+	}
 
 	protected void channelUpdated()
 	{
@@ -377,8 +391,18 @@ public abstract class TileProviderBase
 	
 	public boolean isActive()
 	{
-		// TODO: Find a way to determine this
-		return true;
+		// Are we server side?
+		if( !this.getWorldObj().isRemote )
+		{
+			// Do we have a proxy and grid node?
+			if( ( this.gridProxy != null ) && ( this.gridProxy.getNode() != null ) )  
+			{
+				// Get the grid node activity
+				this.isActive = this.gridProxy.getNode().isActive();
+			}
+		}
+
+		return this.isActive;
 	}
 
 }

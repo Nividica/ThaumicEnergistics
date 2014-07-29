@@ -10,6 +10,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.parts.PartItemStack;
 import appeng.api.storage.IMEMonitor;
@@ -24,22 +25,7 @@ import appeng.api.util.DimensionalCoord;
  *
  */
 public class AEPartGridBlock implements IGridBlock
-{
-	/**
-	 * The color of the grid we are attached to
-	 */
-	protected AEColor gridColor;
-	
-	/**
-	 * The grid we are attached to
-	 */
-	protected IGrid grid;
-	
-	/**
-	 * The number of channels used in the grid? I think.
-	 */
-	protected int usedChannels;
-	
+{	
 	/**
 	 * The part using this gridblock.
 	 */
@@ -150,14 +136,7 @@ public class AEPartGridBlock implements IGridBlock
 	@Override
 	public AEColor getGridColor()
 	{
-		// Do we have a grid color?
-		if( this.gridColor != null )
-		{
-			// Return the grid color
-			return this.gridColor;
-		}
-		
-		// Invalid color, return transparent.
+		// Return transparent.
 		return AEColor.Transparent;
 	}
 
@@ -167,7 +146,7 @@ public class AEPartGridBlock implements IGridBlock
 	@Override
 	public double getIdlePowerUsage()
 	{
-		return this.part.getPowerUsage();
+		return this.part.getIdlePowerUsage();
 	}
 
 	/**
@@ -217,18 +196,41 @@ public class AEPartGridBlock implements IGridBlock
 	{
 		// Ignored
 	}
+	
+	private final IGrid getGrid()
+	{
+		// Get the grid node
+		IGridNode node = this.part.getGridNode();
+		
+		// Ensure we have a node
+		if( node != null )
+		{
+			// Get the grid
+			return node.getGrid();
+		}
+		
+		return null;
+	}
 
 	/**
 	 * Called to update the grid and the channels used.
 	 */
 	@Override
-	public final void setNetworkStatus( IGrid grid, int usedChannels )
+	public final void setNetworkStatus( IGrid grid, int usedChannels ){}
+	
+	public IEnergyGrid getEnergyGrid()
 	{
-		// Set the grid.
-		this.grid = grid;
+		// Get the grid
+		IGrid grid = this.getGrid();
 		
-		// Set the channels used.
-		this.usedChannels = usedChannels;
+		// Ensure we have a grid
+		if( grid == null )
+		{
+			return null;
+		}
+		
+		// Return the energy grid
+		return grid.getCache( IEnergyGrid.class );
 	}
 
 }

@@ -6,8 +6,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.registries.Renderers;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,6 +21,9 @@ public abstract class BlockBaseProvider
 	protected BlockBaseProvider( Material material )
 	{
 		super( material );
+
+		// Place in our creative tab
+		this.setCreativeTab( ThaumicEnergistics.ModTab );
 	}
 
 	@Override
@@ -83,5 +88,12 @@ public abstract class BlockBaseProvider
 		// We have a custom renderer for this block
 		return false;
 	}
+	
+	@Override
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+    {
+		// This is a solid cube
+		return true;
+    }
 
 }

@@ -1,6 +1,7 @@
 package thaumicenergistics.parts;
 
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -33,6 +34,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatcherHost, IAspectSlotPart
 {
+	/**
+	 * How much AE power is required to keep the part active.
+	 */
+	private static final double IDLE_POWER_DRAIN = 0.5D;
+	
 	private Aspect filterAspect;
 	private RedstoneMode mode = RedstoneMode.HIGH_SIGNAL;
 	private IStackWatcher watcher;
@@ -201,6 +207,12 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 		if( this.isPowering() )
 		{
 			helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[2] );
+			
+			if ( this.isActive() )
+			{
+				Tessellator.instance.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
+			}
+			
 		}
 		else
 		{
@@ -334,6 +346,16 @@ public class AEPartEssentiaLevelEmitter extends AEPartBase implements IStackWatc
 		return false;
 	}
 	
-	
+
+
+	/**
+	 * Determines how much power the part takes for just
+	 * existing.
+	 */
+	@Override
+	public double getIdlePowerUsage()
+	{
+		return AEPartEssentiaLevelEmitter.IDLE_POWER_DRAIN;
+	}
 
 }

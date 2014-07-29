@@ -9,6 +9,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.PacketAspectSlot;
+import thaumicenergistics.texture.GuiTextureManager;
 
 public class WidgetAspectSlot extends AbstractAspectWidget
 {
@@ -68,22 +69,43 @@ public class WidgetAspectSlot extends AbstractAspectWidget
 	@Override
 	public void drawWidget()
 	{
-		if ( ( this.aspect != null ) && this.canRender() )
+		// Is this slot open?
+		if( this.canRender() )
 		{
+			// Disable lighting
 			GL11.glDisable( GL11.GL_LIGHTING );
-
+			
+			// Enable blending
 			GL11.glEnable( GL11.GL_BLEND );
 			
+			// Set the blend mode
 			GL11.glBlendFunc( 770, 771 );
 			
+			// Full white
 			GL11.glColor3f( 1.0F, 1.0F, 1.0F );
-
-			UtilsFX.drawTag( this.xPosition + 1, this.yPosition + 1, this.aspect, 0, 0, this.zLevel );
 			
+			// Bind to the gui texture
+			Minecraft.getMinecraft().renderEngine.bindTexture( GuiTextureManager.ESSENTIA_IO_BUS.getTexture() );
+			
+			// Draw this slot just like the center slot of the gui
+			this.drawTexturedModalRect( this.xPosition, this.yPosition, 79, 39, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE );
+			
+			// Do we have an aspect?
+			if ( this.aspect != null )
+			{
+				// Draw the aspect
+				UtilsFX.drawTag( this.xPosition + 1, this.yPosition + 1, this.aspect, 0, 0, this.zLevel );
+			}
+			
+			// Re-enable lighting
 			GL11.glEnable( GL11.GL_LIGHTING );
 			
+			// Re-disable blending
 			GL11.glDisable( GL11.GL_BLEND );
+			
 		}
+		
+		
 	}
 
 	public void mouseClicked( Aspect withAspect )

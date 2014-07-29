@@ -13,11 +13,15 @@ import thaumicenergistics.util.EssentiaCellTerminalWorker;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.PrivateInventory;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.me.GridAccessException;
 import appeng.tile.storage.TileChest;
 
 /**
@@ -71,7 +75,7 @@ public class ContainerEssentiaCell
 		super( player );
 
 		// Is this server side?
-		if ( !this.player.worldObj.isRemote )
+		if( !this.player.worldObj.isRemote )
 		{
 			// Get the tile entity for the chest
 			this.hostChest = (TileChest)world.getTileEntity( x, y, z );
@@ -82,8 +86,8 @@ public class ContainerEssentiaCell
 				IMEInventoryHandler<IAEFluidStack> handler = this.hostChest.getHandler( StorageChannel.FLUIDS );
 
 				// Get the monitor
-				if ( handler != null )
-				{	
+				if( handler != null )
+				{
 					// Get the cell inventory monitor
 					this.monitor = (IMEMonitor<IAEFluidStack>)handler;
 
@@ -109,7 +113,7 @@ public class ContainerEssentiaCell
 	@Override
 	public void forceAspectUpdate()
 	{
-		if ( this.monitor != null )
+		if( this.monitor != null )
 		{
 			new PacketClientEssentiaCell( this.player, EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor
 							.getStorageList() ) ).sendPacketToPlayer( this.player );
@@ -124,7 +128,7 @@ public class ContainerEssentiaCell
 	{
 		super.onContainerClosed( player );
 
-		if ( !player.worldObj.isRemote )
+		if( !player.worldObj.isRemote )
 		{
 			for( int i = 0; i < 2; i++ )
 			{
@@ -152,11 +156,11 @@ public class ContainerEssentiaCell
 	{
 		this.selectedAspect = selectedAspect;
 
-		if ( this.selectedAspect != null )
+		if( this.selectedAspect != null )
 		{
 			for( AspectStack stack : this.aspectStackList )
 			{
-				if ( ( stack != null ) && ( stack.aspect == this.selectedAspect ) )
+				if( ( stack != null ) && ( stack.aspect == this.selectedAspect ) )
 				{
 					this.selectedAspectStack = stack;
 
@@ -166,7 +170,7 @@ public class ContainerEssentiaCell
 		}
 
 		// Is this the client?
-		if ( this.player.worldObj.isRemote )
+		if( this.player.worldObj.isRemote )
 		{
 			// Update the gui
 			this.guiBase.updateSelectedAspect();
@@ -208,13 +212,31 @@ public class ContainerEssentiaCell
 		super.detectAndSendChanges();
 
 		// Do we have a monitor?
-		if ( this.monitor != null )
+		if( this.monitor != null )
 		{
 			// Is there work to do?
-			if ( EssentiaCellTerminalWorker.hasWork( this.inventory ) )
+			if( EssentiaCellTerminalWorker.hasWork( this.inventory ) )
 			{
-				// Do the work
-				EssentiaCellTerminalWorker.doWork( this.inventory, this.monitor, null, this.selectedAspect );
+
+				try
+				{
+					// Get the energy grid
+					IEnergyGrid eGrid = this.hostChest.getProxy().getEnergy();
+
+					// Can we drain energy from the network?
+					if( eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.SIMULATE, PowerMultiplier.CONFIG ) >= ContainerCellTerminalBase.POWER_PER_TRANSFER )
+					{
+						// Do the work
+						if( EssentiaCellTerminalWorker.doWork( this.inventory, this.monitor, null, this.selectedAspect ) )
+						{
+							// We did work, drain power
+							eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.MODULATE, PowerMultiplier.CONFIG );
+						}
+					}
+				}
+				catch( GridAccessException e )
+				{
+				}
 			}
 		}
 	}

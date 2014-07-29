@@ -17,6 +17,8 @@ import thaumicenergistics.util.EssentiaTileContainerHelper;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
@@ -26,15 +28,21 @@ import appeng.api.storage.data.IItemList;
 public class HandlerEssentiaStorageBus
 	implements IMEInventoryHandler<IAEFluidStack>
 {
-	private AEPartEssentiaStorageBus node;
+
+	/**
+	 * The amount of power required to transfer 1 essentia.
+	 */
+	private static final double POWER_DRAIN_PER_ESSENTIA = 0.5;
+	
+	private AEPartEssentiaStorageBus part;
 	private IAspectContainer aspectContainer;
 	private AccessRestriction access;
 	private List<Aspect> prioritizedAspects = new ArrayList();
 	private boolean inverted;
 
-	public HandlerEssentiaStorageBus( AEPartEssentiaStorageBus node )
+	public HandlerEssentiaStorageBus( AEPartEssentiaStorageBus part )
 	{
-		this.node = node;
+		this.part = part;
 	}
 
 	@Override
@@ -89,13 +97,33 @@ public class HandlerEssentiaStorageBus
 		// Get the fluid stack from the request
 		FluidStack toDrain = request.getFluidStack();
 
-		// Drain the container
-		FluidStack drained = EssentiaTileContainerHelper.extractFromContainer( this.aspectContainer, toDrain, mode );
+		// Simulate draining the container
+		FluidStack drained = EssentiaTileContainerHelper.extractFromContainer( this.aspectContainer, toDrain, Actionable.SIMULATE );
 
 		// Was any drained?
 		if ( ( drained == null ) || ( drained.amount == 0 ) )
 		{
 			return null;
+		}
+		
+		// Convert the drain amount to essentia units
+		int drainedAmount_EU = (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( drained.amount );
+		
+		// Do we have the power to drain this?
+		if( !this.takePowerFromNetwork( drainedAmount_EU, Actionable.SIMULATE ) )
+		{
+			// Not enough power
+			return null;
+		}
+		
+		// Are we modulating?
+		if( mode == Actionable.MODULATE )
+		{
+			// Extract
+			EssentiaTileContainerHelper.extractFromContainer( this.aspectContainer, toDrain, Actionable.MODULATE );
+			
+			// Take power
+			this.takePowerFromNetwork( drainedAmount_EU, Actionable.MODULATE );
 		}
 
 		// Did fulfill the request fully?
@@ -150,13 +178,31 @@ public class HandlerEssentiaStorageBus
 	@Override
 	public int getPriority()
 	{
-		return this.node.getPriority();
+		return this.part.getPriority();
 	}
 
 	@Override
 	public int getSlot()
 	{
 		return 0;
+	}
+	
+	private boolean takePowerFromNetwork( int essentiaAmount, Actionable mode )
+	{
+		// Get the energy grid
+		IEnergyGrid eGrid = this.part.getGridBlock().getEnergyGrid();
+
+		// Ensure we have a grid
+		if( eGrid == null )
+		{
+			return false;
+		}
+
+		// Calculate amount of power to take
+		double powerDrain = HandlerEssentiaStorageBus.POWER_DRAIN_PER_ESSENTIA * essentiaAmount;
+
+		// Extract
+		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
 	}
 
 	@Override
@@ -170,24 +216,47 @@ public class HandlerEssentiaStorageBus
 		// Get the fluid stack from the input
 		FluidStack toFill = input.getFluidStack();
 
-		// Fill the container
-		int filled = (int)EssentiaTileContainerHelper.injectIntoContainer( this.aspectContainer, input, mode );
+		// Simulate filling the container
+		int filled_FU = (int)EssentiaTileContainerHelper.injectIntoContainer( this.aspectContainer, input, Actionable.SIMULATE );
 
 		// Was any filled?
-		if ( filled == 0 )
+		if ( filled_FU == 0 )
 		{
 			return input;
 		}
+		
+		// Get how much the filled amount is in essentia units
+		int filled_EU = (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( filled_FU );
+		
+		// Do we have the power to complete this operation?
+		if( !this.takePowerFromNetwork( filled_EU, Actionable.SIMULATE ) )
+		{
+			// Not enough power
+			return input;
+		}
+		
+		// Are we modulating?
+		if( mode == Actionable.MODULATE )
+		{
+			// Inject
+			EssentiaTileContainerHelper.injectIntoContainer( this.aspectContainer, input, Actionable.MODULATE );
+			
+			// Take power
+			this.takePowerFromNetwork( filled_EU, Actionable.MODULATE );
+		}
+		
+		// Calculate how much was left over
+		int remaining_FU = toFill.amount - filled_FU;
 
 		// Did we completely drain the input stack?
-		if ( filled == toFill.amount )
+		if ( remaining_FU == 0 )
 		{
 			// Nothing left over
 			return null;
 		}
 
-		// Calculate how much was left over and return it
-		return AEApi.instance().storage().createFluidStack( new FluidStack( toFill.getFluid(), toFill.amount - filled ) );
+		//  Return what was left over
+		return AEApi.instance().storage().createFluidStack( new FluidStack( toFill.getFluid(), remaining_FU ) );
 	}
 
 	@Override
@@ -227,7 +296,7 @@ public class HandlerEssentiaStorageBus
 		this.aspectContainer = null;
 
 		// Get the host
-		TileEntity hostTile = this.node.getHostTile();
+		TileEntity hostTile = this.part.getHostTile();
 
 		// Is there a host?
 		if ( hostTile == null )
@@ -242,7 +311,7 @@ public class HandlerEssentiaStorageBus
 		}
 
 		// Get what direction we are facing.
-		ForgeDirection orientation = this.node.getSide();
+		ForgeDirection orientation = this.part.getSide();
 
 		// Get the tile entity we are facing
 		TileEntity tileEntity = hostTile.getWorldObj().getTileEntity( hostTile.xCoord + orientation.offsetX, hostTile.yCoord + orientation.offsetY,

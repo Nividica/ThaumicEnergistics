@@ -46,6 +46,11 @@ public class AEPartEssentiaStorageBus
 	implements ICellContainer, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory, IGridTickable
 {
 	private static final int FILTER_SIZE = 54;
+	
+	/**
+	 * How much AE power is required to keep the part active.
+	 */
+	private static final double IDLE_POWER_DRAIN = 1.0D;
 
 	private int priority = 0;
 
@@ -247,7 +252,7 @@ public class AEPartEssentiaStorageBus
 
 		// Color overlay
 		helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
-		helper.setInvColor( AEPartBase.inventoryOverlayColor );
+		helper.setInvColor( AEPartBase.INVENTORY_OVERLAY_COLOR );
 		ts.setBrightness( 0xF000F0 );
 		helper.renderInventoryFace( BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[1], ForgeDirection.SOUTH, renderer );
 
@@ -270,10 +275,12 @@ public class AEPartEssentiaStorageBus
 		helper.renderBlock( x, y, z, renderer );
 
 		ts.setColorOpaque_I( this.host.getColor().blackVariant );
+		
 		if ( this.isActive() )
 		{
-			ts.setBrightness( 15728880 );
+			Tessellator.instance.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
 		}
+		
 		// Mid
 		helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[1], ForgeDirection.SOUTH, renderer );
 		helper.setBounds( 4.0F, 4.0F, 14.0F, 12.0F, 12.0F, 15.0F );
@@ -357,6 +364,39 @@ public class AEPartEssentiaStorageBus
 		}
 
 		this.upgradeInventory.writeToNBT( data, "UpgradeInventory" );
+	}
+	
+	@Override
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	{
+		// Were we wrenched?
+		if( wrenched )
+		{
+			// No drops
+			return;
+		}
+		
+		// Get the upgrade card
+		ItemStack slotStack = this.upgradeInventory.getStackInSlot( 0 );
+
+		// Is it not null?
+		if( ( slotStack != null ) && ( slotStack.stackSize > 0 ) )
+		{
+			// Add to the drops
+			drops.add( slotStack );
+		}
+	}
+	
+
+
+	/**
+	 * Determines how much power the part takes for just
+	 * existing.
+	 */
+	@Override
+	public double getIdlePowerUsage()
+	{
+		return AEPartEssentiaStorageBus.IDLE_POWER_DRAIN;
 	}
 
 }

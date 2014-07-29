@@ -5,7 +5,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.registries.Renderers;
 import thaumicenergistics.texture.BlockTextureManager;
@@ -33,9 +32,6 @@ public class BlockEssentiaProvider
 
 		// Sound of metal
 		this.setStepSound( Block.soundTypeMetal );
-
-		// Place in our creative tab
-		this.setCreativeTab( ThaumicEnergistics.ModTab );
 	}
 
 	@Override

@@ -26,43 +26,73 @@ public class AEPartArcaneCraftingTerminal
 	extends AEPartBase
 	implements IInventory
 {
+	/**
+	 * Number of slots in the internal inventory
+	 */
 	private static final int MY_INVENTORY_SIZE = 11;
 
+	/**
+	 * Index of the wand slot
+	 */
 	public static final int WAND_SLOT_INDEX = 9;
 
+	/**
+	 * Index of the result slot
+	 */
 	public static final int RESULT_SLOT_INDEX = 10;
 
+	/**
+	 * Inventory name
+	 */
 	private static final String INVENTORY_NBT_KEY = "TEACT_Inventory";
 
+	/**
+	 * Key used for reading/writing inventory slots to NBT
+	 */
 	private static final String SLOT_NBT_KEY = "Slot#";
+	
+	/**
+	 * How much AE power is required to keep the part active.
+	 */
+	private static final double IDLE_POWER_DRAIN = 1.2D;
 
+	/**
+	 * Inventory slots
+	 */
 	private final ItemStack[] slots = new ItemStack[AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE];
 
+	/**
+	 * Containers wishing to be notified on inventory changes
+	 */
 	private List<ContainerPartArcaneCraftingTerminal> listeners = new ArrayList<ContainerPartArcaneCraftingTerminal>();
 
+	/**
+	 * Creates the terminal
+	 */
 	public AEPartArcaneCraftingTerminal()
 	{
 		// Call super
 		super( AEPartsEnum.ArcaneCraftingTerminal );
 	}
 
-	public void registerListener( ContainerPartArcaneCraftingTerminal container )
+	/**
+	 * Validates that a slot is inbounds of the inventory.
+	 * 
+	 * @param slotIndex
+	 * @return
+	 */
+	private boolean isSlotInRange( int slotIndex )
 	{
-		// Is this already registered?
-		if( !this.listeners.contains( container ) )
-		{
-			// Add to the list
-			this.listeners.add( container );
-		}
-		
+		// Is the slot in range?
+		return( ( slotIndex >= 0 ) && ( slotIndex < AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE ) );
 	}
 
-	public void removeListener( ContainerPartArcaneCraftingTerminal container )
-	{
-		// Remove the container from the listeners
-		this.listeners.remove( container );
-	}
-
+	/**
+	 * Notifies all listeners that our inventory contents
+	 * have changed.
+	 * 
+	 * @param slotIndex
+	 */
 	private void notifyListeners( int slotIndex )
 	{
 		// Loop over all listeners
@@ -77,24 +107,74 @@ public class AEPartArcaneCraftingTerminal
 		}
 	}
 
-	@Override
-	public Object getClientGuiElement( EntityPlayer player )
-	{
-		return new GuiArcaneCraftingTerminal( this, player );
-	}
-
-	@Override
-	public Object getServerGuiElement( EntityPlayer player )
-	{
-		return new ContainerPartArcaneCraftingTerminal( this, player );
-	}
-
+	/**
+	 * Distance cable should extend to meet this block
+	 */
 	@Override
 	public int cableConnectionRenderTo()
 	{
 		return 3;
 	}
 
+	@Override
+	public void closeInventory()
+	{
+		// Ignored
+	}
+
+	/**
+	 * Decreases the size of the itemstack in the specified
+	 * slot by the specified amount, and returns the itemstack.
+	 * Can be null.
+	 */
+	@Override
+	public ItemStack decrStackSize( int slotIndex, int amount )
+	{
+		ItemStack returnStack = null;
+
+		// Is the slot in range?
+		if( this.isSlotInRange( slotIndex ) )
+		{
+			// Get the stack
+			ItemStack slotStack = this.slots[slotIndex];
+
+			// Is the slot not null?
+			if( slotStack != null )
+			{
+
+				// Is the amount for more than or all of the slot?
+				if( amount >= slotStack.stackSize )
+				{
+					// Set the return to a copy of the stack
+					returnStack = slotStack.copy();
+
+					// Set stack size to 0
+					this.slots[slotIndex].stackSize = 0;
+				}
+				else
+				{
+					// Split the slot stack
+					returnStack = slotStack.splitStack( amount );
+				}
+
+				// Is the size now 0?
+				if( this.slots[slotIndex].stackSize == 0 )
+				{
+					// Null it out
+					this.slots[slotIndex] = null;
+				}
+
+				// Notify the worker
+				this.notifyListeners( slotIndex );
+			}
+		}
+
+		return returnStack;
+	}
+
+	/**
+	 * Collision boxes
+	 */
 	@Override
 	public void getBoxes( IPartCollsionHelper helper )
 	{
@@ -103,54 +183,197 @@ public class AEPartArcaneCraftingTerminal
 		helper.addBox( 5.0D, 5.0D, 13.0D, 11.0D, 11.0D, 14.0D );
 	}
 
+	/**
+	 * Gets the GUI associated with this part
+	 */
 	@Override
-	public void renderInventory( IPartRenderHelper helper, RenderBlocks renderer )
+	public Object getClientGuiElement( EntityPlayer player )
 	{
-		Tessellator ts = Tessellator.instance;
-
-		IIcon side = BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[3];
-
-		helper.setTexture( side, side, side, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0], side, side );
-		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
-		helper.renderInventoryBox( renderer );
-
-		helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
-		ts.setColorOpaque_I( AEPartBase.inventoryOverlayColor );
-		helper.renderInventoryFace( BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer );
-
-		ts.setColorOpaque_I( AEColor.Black.mediumVariant );
-		helper.renderInventoryFace( BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[1], ForgeDirection.SOUTH, renderer );
-
-		helper.setBounds( 5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F );
-		this.renderInventoryBusLights( helper, renderer );
+		return new GuiArcaneCraftingTerminal( this, player );
 	}
 
+	/**
+	 * Determines if items should be dropped on the ground when
+	 * the part has been removed.
+	 */
 	@Override
-	public void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
-		Tessellator ts = Tessellator.instance;
-
-		IIcon side = BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[3];
-
-		helper.setTexture( side, side, side, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0], side, side );
-		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
-		helper.renderBlock( x, y, z, renderer );
-
-		if( this.isActive() )
+		// Were we wrenched?
+		if( wrenched )
 		{
-
-			helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
-			ts.setColorOpaque_I( this.host.getColor().blackVariant );
-			helper.renderFace( x, y, z, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer );
-
-			ts.setColorOpaque_I( this.host.getColor().mediumVariant );
-			helper.renderFace( x, y, z, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[1], ForgeDirection.SOUTH, renderer );
+			// Inventory is saved when wrenched
+			return;
 		}
 
-		helper.setBounds( 5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F );
-		this.renderStaticBusLights( x, y, z, helper, renderer );
+		// Loop over inventory
+		for( int slotIndex = 0; slotIndex < AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE; slotIndex++ )
+		{
+			// Skip if this is the output slot
+			if( slotIndex == AEPartArcaneCraftingTerminal.RESULT_SLOT_INDEX )
+			{
+				continue;
+			}
+
+			// Get the stack at this index
+			ItemStack slotStack = this.slots[slotIndex];
+
+			// Did we get anything?
+			if( slotStack != null )
+			{
+				// Add to drops
+				drops.add( slotStack );
+			}
+		}
 	}
 
+	/**
+	 * Gets the inventory name.
+	 */
+	@Override
+	public String getInventoryName()
+	{
+		return ThaumicEnergistics.MOD_ID + ".arcane.crafting.terminal.inventory";
+	}
+
+	/**
+	 * Maximum number of allowed items per stack.
+	 */
+	@Override
+	public int getInventoryStackLimit()
+	{
+		return 64;
+	}
+
+	/**
+	 * Gets the container associated with this part.
+	 */
+	@Override
+	public Object getServerGuiElement( EntityPlayer player )
+	{
+		return new ContainerPartArcaneCraftingTerminal( this, player );
+	}
+
+	/**
+	 * Returns the internal inventory size.
+	 */
+	@Override
+	public int getSizeInventory()
+	{
+		return AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE;
+	}
+
+	/**
+	 * Gets the itemstack in the specified slot index.
+	 * Can be null.
+	 */
+	@Override
+	public ItemStack getStackInSlot( int slotIndex )
+	{
+		// Is the slot in range?
+		if( this.isSlotInRange( slotIndex ) )
+		{
+			// Return the contents of the slot
+			return this.slots[slotIndex];
+		}
+
+		// Return null
+		return null;
+	}
+
+	/**
+	 * Returns the itemstack in the specified slot, can be null.
+	 */
+	@Override
+	public ItemStack getStackInSlotOnClosing( int slotIndex )
+	{
+		// Is the slot in range?
+		if( this.isSlotInRange( slotIndex ) )
+		{
+			return this.slots[slotIndex];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets the world this inventory is in.
+	 * 
+	 * @return
+	 */
+	public World getWorldObj()
+	{
+		return this.hostTile.getWorldObj();
+	}
+
+	/**
+	 * Returns true.
+	 */
+	@Override
+	public boolean hasCustomInventoryName()
+	{
+		return true;
+	}
+
+	/**
+	 * Determines if the specified itemstack is valid for the slot index.
+	 */
+	@Override
+	public boolean isItemValidForSlot( int slotIndex, ItemStack proposedStack )
+	{
+		// Is the slot in range?
+		if( this.isSlotInRange( slotIndex ) )
+		{
+			// Is this the wand slot?
+			if( slotIndex == AEPartArcaneCraftingTerminal.WAND_SLOT_INDEX )
+			{
+				// Is the item a wand?
+				if( proposedStack.getItem() instanceof ItemWandCasting )
+				{
+					// Valid wand
+					return true;
+				}
+
+				// Invalid wand
+				return false;
+			}
+
+			// Unrestricted slot
+			return true;
+		}
+
+		// Out of range
+		return false;
+	}
+
+	/**
+	 * Who can use this?
+	 */
+	@Override
+	public boolean isUseableByPlayer( EntityPlayer player )
+	{
+		return true;
+	}
+
+	/**
+	 * Ensures the inventory is saved.
+	 */
+	@Override
+	public void markDirty()
+	{
+		// Mark the host tile
+		this.hostTile.markDirty();
+	}
+
+	@Override
+	public void openInventory()
+	{
+		// Ignored
+	}
+
+	/**
+	 * Loads part data from NBT tag
+	 */
 	@Override
 	public void readFromNBT( NBTTagCompound data )
 	{
@@ -178,6 +401,131 @@ public class AEPartArcaneCraftingTerminal
 		}
 	}
 
+	/**
+	 * Adds a listener to the list if not already added.
+	 * 
+	 * @param container
+	 */
+	public void registerListener( ContainerPartArcaneCraftingTerminal container )
+	{
+		// Is this already registered?
+		if( !this.listeners.contains( container ) )
+		{
+			// Add to the list
+			this.listeners.add( container );
+		}
+
+	}
+
+	/**
+	 * Removes a listener from the list.
+	 * 
+	 * @param container
+	 */
+	public void removeListener( ContainerPartArcaneCraftingTerminal container )
+	{
+		// Remove the container from the listeners
+		this.listeners.remove( container );
+	}
+
+	/**
+	 * Renders the part while in the inventory
+	 */
+	@Override
+	public void renderInventory( IPartRenderHelper helper, RenderBlocks renderer )
+	{
+		Tessellator ts = Tessellator.instance;
+
+		IIcon side = BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[3];
+
+		helper.setTexture( side, side, side, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0], side, side );
+		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
+		helper.renderInventoryBox( renderer );
+
+		helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
+		ts.setColorOpaque_I( AEPartBase.INVENTORY_OVERLAY_COLOR );
+		helper.renderInventoryFace( BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer );
+
+		ts.setColorOpaque_I( AEColor.Black.mediumVariant );
+		helper.renderInventoryFace( BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[1], ForgeDirection.SOUTH, renderer );
+
+		helper.setBounds( 5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F );
+		this.renderInventoryBusLights( helper, renderer );
+	}
+
+	/**
+	 * Renders the part in the world.
+	 */
+	@Override
+	public void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
+	{
+		Tessellator tessellator = Tessellator.instance;
+
+		IIcon side = BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[3];
+
+		helper.setTexture( side, side, side, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0], side, side );
+		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
+		helper.renderBlock( x, y, z, renderer );
+		
+		if( this.isActive() )
+		{
+			tessellator.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
+
+			helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
+			tessellator.setColorOpaque_I( this.host.getColor().blackVariant );
+			helper.renderFace( x, y, z, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer );
+
+			tessellator.setColorOpaque_I( this.host.getColor().mediumVariant );
+			helper.renderFace( x, y, z, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[1], ForgeDirection.SOUTH, renderer );
+		}
+
+		helper.setBounds( 5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F );
+		this.renderStaticBusLights( x, y, z, helper, renderer );
+	}
+
+	/**
+	 * Sets the contents of the specified inventory slot and
+	 * updates the listeners.
+	 * 
+	 * @param slotIndex
+	 * @param slotStack
+	 * @return
+	 */
+	@Override
+	public void setInventorySlotContents( int slotIndex, ItemStack slotStack )
+	{
+		if( this.setInventorySlotContentsWithoutNotify( slotIndex, slotStack ) )
+		{
+			// Inform the listeners
+			this.notifyListeners( slotIndex );
+		}
+	}
+
+	/**
+	 * Sets the contents of the specified inventory slot without
+	 * updating listeners.
+	 * 
+	 * @param slotIndex
+	 * @param slotStack
+	 * @return
+	 */
+	public boolean setInventorySlotContentsWithoutNotify( int slotIndex, ItemStack slotStack )
+	{
+		// Is the slot in range?
+		if( this.isSlotInRange( slotIndex ) )
+		{
+			// Set the slot
+			this.slots[slotIndex] = slotStack;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Saves part data to NBT tag
+	 */
 	@Override
 	public void writeToNBT( NBTTagCompound data )
 	{
@@ -208,219 +556,14 @@ public class AEPartArcaneCraftingTerminal
 		data.setTag( AEPartArcaneCraftingTerminal.INVENTORY_NBT_KEY, nbtList );
 	}
 
+	/**
+	 * Determines how much power the part takes for just
+	 * existing.
+	 */
 	@Override
-	public void removeFromWorld()
+	public double getIdlePowerUsage()
 	{
-
-		// Is this server side?
-		if( !this.hostTile.getWorldObj().isRemote )
-		{
-			// Loop over inventory
-			for( int slotIndex = 0; slotIndex < AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE; slotIndex++ )
-			{
-				// Skip if this is the output slot
-				if( slotIndex == AEPartArcaneCraftingTerminal.RESULT_SLOT_INDEX )
-				{
-					continue;
-				}
-
-				// Get the stack at this index
-				ItemStack slotStack = this.slots[slotIndex];
-
-				// Did we get anything?
-				if( slotStack != null )
-				{
-					// Drop it on the ground
-					this.dropInventoryItemOnGround( slotStack );
-				}
-			}
-		}
-
-		// Pass to super
-		super.removeFromWorld();
-	}
-
-	private boolean isSlotInRange( int slotIndex )
-	{
-		// Is the slot in range?
-		return( ( slotIndex >= 0 ) && ( slotIndex < AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE ) );
-	}
-
-	@Override
-	public int getSizeInventory()
-	{
-		return AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE;
-	}
-
-	@Override
-	public ItemStack getStackInSlot( int slotIndex )
-	{
-		// Is the slot in range?
-		if( this.isSlotInRange( slotIndex ) )
-		{
-			// Return the contents of the slot
-			return this.slots[slotIndex];
-		}
-
-		// Return null
-		return null;
-	}
-
-	@Override
-	public ItemStack decrStackSize( int slotIndex, int amount )
-	{
-		ItemStack returnStack = null;
-
-		// Is the slot in range?
-		if( this.isSlotInRange( slotIndex ) )
-		{
-			// Get the stack
-			ItemStack slotStack = this.slots[slotIndex];
-
-			// Is the slot not null?
-			if( slotStack != null )
-			{
-
-				// Is the amount for more than or all of the slot?
-				if( amount >= slotStack.stackSize )
-				{
-					// Set the return to a copy of the stack
-					returnStack = slotStack.copy();
-					
-					// Set stack size to 0
-					this.slots[slotIndex].stackSize = 0;
-				}
-				else
-				{
-					// Split the slot stack
-					returnStack = slotStack.splitStack( amount );
-				}
-				
-				// Is the size now 0?
-				if( this.slots[slotIndex].stackSize == 0 )
-				{
-					// Null it out
-					this.slots[slotIndex] = null;
-				}
-
-				// Notify the worker
-				this.notifyListeners( slotIndex );
-			}
-		}
-
-		return returnStack;
-	}
-
-	@Override
-	public ItemStack getStackInSlotOnClosing( int slotIndex )
-	{
-		// Is the slot in range?
-		if( this.isSlotInRange( slotIndex ) )
-		{
-			return this.slots[slotIndex];
-		}
-
-		return null;
-	}
-
-	public boolean setInventorySlotContentsWithoutNotify( int slotIndex, ItemStack slotStack )
-	{
-		// Is the slot in range?
-		if( this.isSlotInRange( slotIndex ) )
-		{
-			// Set the slot
-			this.slots[slotIndex] = slotStack;
-
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public void setInventorySlotContents( int slotIndex, ItemStack slotStack )
-	{	
-		if( this.setInventorySlotContentsWithoutNotify( slotIndex, slotStack ) )
-		{
-			// Inform the listeners
-			this.notifyListeners( slotIndex );
-		}
-	}
-
-	@Override
-	public String getInventoryName()
-	{
-		return ThaumicEnergistics.MOD_ID + ".arcane.crafting.terminal.inventory";
-	}
-
-	@Override
-	public boolean hasCustomInventoryName()
-	{
-		return true;
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 64;
-	}
-
-	@Override
-	public void markDirty()
-	{
-		// Mark the host tile
-		this.hostTile.markDirty();
-	}
-
-	@Override
-	public boolean isUseableByPlayer( EntityPlayer player )
-	{
-		return true;
-	}
-
-	@Override
-	public void openInventory()
-	{
-		// Ignored
-	}
-
-	@Override
-	public void closeInventory()
-	{
-		// Ignored
-	}
-
-	@Override
-	public boolean isItemValidForSlot( int slotIndex, ItemStack proposedStack )
-	{
-		// Is the slot in range?
-		if( this.isSlotInRange( slotIndex ) )
-		{
-			// Is this the wand slot?
-			if( slotIndex == AEPartArcaneCraftingTerminal.WAND_SLOT_INDEX )
-			{
-				// Is the item a wand?
-				if( proposedStack.getItem() instanceof ItemWandCasting )
-				{
-					// Valid wand
-					return true;
-				}
-
-				// Invalid wand
-				return false;
-			}
-
-			// Unrestricted slot
-			return true;
-		}
-
-		// Out of range
-		return false;
-	}
-
-	public World getWorldObj()
-	{
-		return this.hostTile.getWorldObj();
+		return AEPartArcaneCraftingTerminal.IDLE_POWER_DRAIN;
 	}
 
 }

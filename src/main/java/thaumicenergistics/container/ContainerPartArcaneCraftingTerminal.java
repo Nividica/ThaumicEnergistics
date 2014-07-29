@@ -555,7 +555,7 @@ public class ContainerPartArcaneCraftingTerminal
 		// Make a copy of it
 		ItemStack slotStackOriginal = resultStack.copy();
 		
-		for( autoCraftCounter = slotStackOriginal.stackSize; autoCraftCounter < 64; autoCraftCounter += slotStackOriginal.stackSize )
+		for( autoCraftCounter = slotStackOriginal.stackSize; autoCraftCounter <= 64; autoCraftCounter += slotStackOriginal.stackSize )
 		{
 			// Attempt to merge with the player inventory
 			didMerge = ( this.mergeSlotWithPlayerInventory( resultStack ) || this.mergeSlotWithHotbarInventory( resultStack ) );
@@ -946,9 +946,17 @@ public class ContainerPartArcaneCraftingTerminal
 	@SuppressWarnings("deprecation")
 	private boolean doStacksMatch( IAEItemStack keyStack, IAEItemStack potentialMatch )
 	{
+		// NOTE: Check this again later
+		
 		// Get the ore dictionary Id's
 		int keyID = OreDictionary.getOreID( keyStack.getItemStack() );
 		int matchID = OreDictionary.getOreID( potentialMatch.getItemStack() );
+		
+		// Is either item not registered?
+		if( ( keyID == -1 ) || ( matchID == -1 ) )
+		{
+			return false;
+		}
 		
 		// Do the keys match?
 		return keyID == matchID;

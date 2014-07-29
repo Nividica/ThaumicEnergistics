@@ -25,9 +25,11 @@ import thaumicenergistics.util.EssentiaTileContainerHelper;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
 import appeng.api.definitions.Materials;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -63,6 +65,18 @@ public abstract class AEPartEssentiaIO
 
 	private final static int[] TIER1_INDEXS = { 1, 3, 5, 7 };
 
+	private final static int UPGRADE_INVENTORY_SIZE = 4;
+
+	/**
+	 * How much AE power is required to keep the part active.
+	 */
+	private static final double IDLE_POWER_DRAIN = 0.7;
+
+	/**
+	 * The amount of power required to transfer 1 essentia.
+	 */
+	private static final double POWER_DRAIN_PER_ESSENTIA = 0.5;
+
 	protected List<Aspect> filteredAspects = new ArrayList<Aspect>( AEPartEssentiaIO.MAX_FILTER_SIZE );
 	private RedstoneMode redstoneMode = RedstoneMode.IGNORE;
 	protected byte filterSize;
@@ -71,7 +85,7 @@ public abstract class AEPartEssentiaIO
 	private boolean lastRedstone;
 	private int[] availableFilterSlots = { AEPartEssentiaIO.BASE_SLOT_INDEX };
 
-	private UpgradeInventory upgradeInventory = new UpgradeInventory( this.associatedItem, this, 4 );
+	private UpgradeInventory upgradeInventory = new UpgradeInventory( this.associatedItem, this, AEPartEssentiaIO.UPGRADE_INVENTORY_SIZE );
 
 	public AEPartEssentiaIO( AEPartsEnum associatedPart )
 	{
@@ -93,7 +107,7 @@ public abstract class AEPartEssentiaIO
 	{
 		boolean canWork = true;
 
-		if ( this.redstoneControlled )
+		if( this.redstoneControlled )
 		{
 			switch ( this.getRedstoneMode() )
 			{
@@ -118,29 +132,89 @@ public abstract class AEPartEssentiaIO
 
 	}
 
-	protected boolean extractEssentiaFromNetwork( int amountToFill )
+	private boolean takePowerFromNetwork( int essentiaAmount, Actionable mode )
 	{
+		// Get the energy grid
+		IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
 
-		for( Aspect aspect : this.filteredAspects )
+		// Ensure we have a grid
+		if( eGrid == null )
 		{
-			if ( aspect != null && ( this.aspectTransferAllowed( aspect ) ) )
+			return false;
+		}
+
+		// Calculate amount of power to take
+		double powerDrain = AEPartEssentiaIO.POWER_DRAIN_PER_ESSENTIA * essentiaAmount;
+
+		// Extract
+		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
+	}
+
+	protected boolean extractEssentiaFromNetwork( int amountToFillContainer )
+	{
+		// Get the aspect in the container
+		Aspect aspectToMatch = EssentiaTileContainerHelper.getAspectInContainer( this.facingContainer );
+		
+		// Do we have the power to transfer this amount?
+		if( !this.takePowerFromNetwork( amountToFillContainer, Actionable.SIMULATE ) )
+		{
+			// Not enough power
+			return false;
+		}
+		
+		// Loop over all aspect filters
+		for( Aspect filterAspect : this.filteredAspects )
+		{
+			// Can we transfer?
+			if( ( filterAspect == null ) || ( !this.aspectTransferAllowed( filterAspect ) ) )
 			{
-				GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( aspect );
+				// Invalid or not allowed
+				continue;
+			}
+			
+			// Are we searching for a match?
+			if( ( aspectToMatch != null ) && ( filterAspect != aspectToMatch ) )
+			{
+				// Not a match
+				continue;
+			}
+			
+			// Can we inject any of this into the container
+			if( EssentiaTileContainerHelper.injectIntoContainer( this.facingContainer, 1, filterAspect, Actionable.SIMULATE ) < 1 )
+			{
+				// Container will not accept any of this
+				continue;
+			}
+			
+			// Get the gas form of the essentia
+			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( filterAspect );
 
-				IAEFluidStack gasStack = this.extractFluid( EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( essentiaGas, amountToFill ),
-					Actionable.SIMULATE );
+			// Create the fluid stack
+			IAEFluidStack toExtract = EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( essentiaGas, amountToFillContainer );
+			
+			// Simulate a network extraction
+			IAEFluidStack extractedStack = this.extractFluid( toExtract, Actionable.SIMULATE );
 
-				if ( gasStack != null )
+			// Were we able to extract any?
+			if( ( extractedStack != null ) && ( extractedStack.getStackSize() > 0 ) )
+			{
+				// Fill the container
+				int filledAmount = (int)EssentiaTileContainerHelper.injectIntoContainer( this.facingContainer, extractedStack, Actionable.MODULATE );
+				
+				// Were we able to fill the container?
+				if( filledAmount == 0 )
 				{
-					// Fill the container
-					int filledAmount = (int)EssentiaTileContainerHelper.injectIntoContainer( this.facingContainer, gasStack, Actionable.MODULATE );
-
-					// Take from the network
-					this.extractFluid( EssentiaConversionHelper.createAEFluidStackInFluidUnits( essentiaGas, filledAmount ), Actionable.MODULATE );
-
-					// Done
-					return true;
+					continue;
 				}
+				
+				// Take the power required for the filled amount
+				this.takePowerFromNetwork( (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( filledAmount ), Actionable.MODULATE );
+
+				// Take from the network
+				this.extractFluid( EssentiaConversionHelper.createAEFluidStackInFluidUnits( essentiaGas, filledAmount ), Actionable.MODULATE );
+
+				// Done
+				return true;
 			}
 		}
 
@@ -148,37 +222,40 @@ public abstract class AEPartEssentiaIO
 
 	}
 
-	protected boolean injectEssentaToNetwork( int amountToDrain )
+	protected boolean injectEssentaToNetwork( int amountToDrainFromContainer )
 	{
-		Aspect aspectToDrain = this.facingContainer.getAspects().getAspects()[0];
+		// Get the aspect in the container
+		Aspect aspectToDrain = EssentiaTileContainerHelper.getAspectInContainer( this.facingContainer );
 
-		if ( ( aspectToDrain == null ) || ( !this.aspectTransferAllowed( aspectToDrain ) ) )
+		if( ( aspectToDrain == null ) || ( !this.aspectTransferAllowed( aspectToDrain ) ) )
 		{
 			return false;
 		}
 
 		// Simulate a drain from the container
-		FluidStack drained = EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountToDrain, aspectToDrain,
+		FluidStack drained = EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain,
 			Actionable.SIMULATE );
 
 		// Was any drained?
-		if ( drained == null )
+		if( drained == null )
 		{
 			return false;
 		}
 
-		// Inject into the network
+		// Create the fluid stack
 		IAEFluidStack toFill = AEApi.instance().storage().createFluidStack( drained );
-		IAEFluidStack notInjected = this.injectFluid( toFill, Actionable.MODULATE );
+
+		// Simulate inject into the network
+		IAEFluidStack notInjected = this.injectFluid( toFill, Actionable.SIMULATE );
 
 		// Was any not injected?
-		if ( notInjected != null )
+		if( notInjected != null )
 		{
 			// Calculate how much was injected into the network
 			int amountInjected = (int)( toFill.getStackSize() - notInjected.getStackSize() );
 
 			// None could be injected
-			if ( amountInjected == 0 )
+			if( amountInjected == 0 )
 			{
 				return false;
 			}
@@ -186,15 +263,26 @@ public abstract class AEPartEssentiaIO
 			// Convert from fluid units to essentia units
 			amountInjected = (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( amountInjected );
 
-			// Some was unable to be injected, only take what was injected from
-			// container
-			EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountInjected, aspectToDrain, Actionable.MODULATE );
-			return true;
+			// Some was unable to be injected, adjust the drain amounts
+			amountToDrainFromContainer = amountInjected;
+			toFill.setStackSize( amountInjected );
 		}
 
-		// All was injected, take the full drain request amount from the
-		// container
-		EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountToDrain, aspectToDrain, Actionable.MODULATE );
+		// Do we have the power to inject?
+		if( !this.takePowerFromNetwork( amountToDrainFromContainer, Actionable.SIMULATE ) )
+		{
+			// Not enough power
+			return false;
+		}
+
+		// Take power
+		this.takePowerFromNetwork( amountToDrainFromContainer, Actionable.MODULATE );
+
+		// Inject
+		this.injectFluid( toFill, Actionable.MODULATE );
+
+		// Drain
+		EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain, Actionable.MODULATE );
 
 		return true;
 	}
@@ -245,7 +333,7 @@ public abstract class AEPartEssentiaIO
 
 	public void loopRedstoneMode( EntityPlayer player )
 	{
-		if ( ( this.redstoneMode.ordinal() + 1 ) < RedstoneMode.values().length )
+		if( ( this.redstoneMode.ordinal() + 1 ) < RedstoneMode.values().length )
 		{
 			this.redstoneMode = RedstoneMode.values()[this.redstoneMode.ordinal() + 1];
 		}
@@ -269,7 +357,7 @@ public abstract class AEPartEssentiaIO
 	@Override
 	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
-		if ( inv == this.upgradeInventory )
+		if( inv == this.upgradeInventory )
 		{
 			this.onInventoryChanged( inv );
 		}
@@ -290,17 +378,17 @@ public abstract class AEPartEssentiaIO
 		{
 			ItemStack slotStack = this.upgradeInventory.getStackInSlot( i );
 
-			if ( slotStack != null )
+			if( slotStack != null )
 			{
-				if ( aeMaterals.materialCardCapacity.sameAs( slotStack ) )
+				if( aeMaterals.materialCardCapacity.sameAs( slotStack ) )
 				{
 					this.filterSize++ ;
 				}
-				else if ( aeMaterals.materialCardRedstone.sameAs( slotStack ) )
+				else if( aeMaterals.materialCardRedstone.sameAs( slotStack ) )
 				{
 					this.redstoneControlled = true;
 				}
-				else if ( aeMaterals.materialCardSpeed.sameAs( slotStack ) )
+				else if( aeMaterals.materialCardSpeed.sameAs( slotStack ) )
 				{
 					this.upgradeSpeedCount++ ;
 				}
@@ -308,14 +396,14 @@ public abstract class AEPartEssentiaIO
 		}
 
 		// Did the filter size change?
-		if ( oldFilterSize != this.filterSize )
+		if( oldFilterSize != this.filterSize )
 		{
 			this.resizeAvailableArray();
 		}
 
 		try
 		{
-			if ( this.host.getLocation().getWorld().isRemote )
+			if( this.host.getLocation().getWorld().isRemote )
 			{
 				return;
 			}
@@ -336,7 +424,7 @@ public abstract class AEPartEssentiaIO
 		// Add the base slot
 		this.availableFilterSlots[0] = AEPartEssentiaIO.BASE_SLOT_INDEX;
 
-		if ( this.filterSize < 2 )
+		if( this.filterSize < 2 )
 		{
 			// Reset tier 2 slots
 			for( int i = 0; i < AEPartEssentiaIO.TIER2_INDEXS.length; i++ )
@@ -344,7 +432,7 @@ public abstract class AEPartEssentiaIO
 				this.filteredAspects.set( AEPartEssentiaIO.TIER2_INDEXS[i], null );
 			}
 
-			if ( this.filterSize < 1 )
+			if( this.filterSize < 1 )
 			{
 				// Reset tier 1 slots
 				for( int i = 0; i < AEPartEssentiaIO.TIER1_INDEXS.length; i++ )
@@ -371,9 +459,9 @@ public abstract class AEPartEssentiaIO
 	{
 		super.onNeighborChanged();
 
-		if ( this.redstonePowered )
+		if( this.redstonePowered )
 		{
-			if ( !this.lastRedstone )
+			if( !this.lastRedstone )
 			{
 				/*
 				 * NOTE: Known Issue: More than 1 redstone pulse per second will cause this to
@@ -398,7 +486,7 @@ public abstract class AEPartEssentiaIO
 		{
 			String aspectTag = data.getString( "AspectFilter#" + index );
 
-			if ( !aspectTag.equals( "" ) )
+			if( !aspectTag.equals( "" ) )
 			{
 				this.filteredAspects.set( index, Aspect.aspects.get( aspectTag ) );
 			}
@@ -447,7 +535,7 @@ public abstract class AEPartEssentiaIO
 	@Override
 	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
-		if ( this.canDoWork() )
+		if( this.canDoWork() )
 		{
 			// Calculate the amount to transfer per second
 			int transferAmountPerSecond = this.getTransferAmountPerSecond();
@@ -456,16 +544,16 @@ public abstract class AEPartEssentiaIO
 			int transferAmount = (int)( transferAmountPerSecond * ( ticksSinceLastCall / 20.F ) );
 
 			// Clamp
-			if ( transferAmount < MINIMUM_TRANSFER_PER_SECOND )
+			if( transferAmount < MINIMUM_TRANSFER_PER_SECOND )
 			{
 				transferAmount = MINIMUM_TRANSFER_PER_SECOND;
 			}
-			else if ( transferAmount > MAXIMUM_TRANSFER_PER_SECOND )
+			else if( transferAmount > MAXIMUM_TRANSFER_PER_SECOND )
 			{
 				transferAmount = MAXIMUM_TRANSFER_PER_SECOND;
 			}
 
-			if ( this.doWork( transferAmount ) )
+			if( this.doWork( transferAmount ) )
 			{
 				return TickRateModulation.URGENT;
 			}
@@ -487,7 +575,7 @@ public abstract class AEPartEssentiaIO
 			Aspect aspect = this.filteredAspects.get( i );
 			String aspectTag = "";
 
-			if ( aspect != null )
+			if( aspect != null )
 			{
 				aspectTag = aspect.getTag();
 			}
@@ -508,10 +596,10 @@ public abstract class AEPartEssentiaIO
 	{
 		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
 
-		if ( itemAspect != null )
+		if( itemAspect != null )
 		{
 			// Are we already filtering this aspect?
-			if ( this.filteredAspects.contains( itemAspect ) )
+			if( this.filteredAspects.contains( itemAspect ) )
 			{
 				return true;
 			}
@@ -522,10 +610,10 @@ public abstract class AEPartEssentiaIO
 				int filterIndex = this.availableFilterSlots[avalibleIndex];
 
 				// Is this space empty?
-				if ( this.filteredAspects.get( filterIndex ) == null )
+				if( this.filteredAspects.get( filterIndex ) == null )
 				{
 					// Is this server side?
-					if ( !player.worldObj.isRemote )
+					if( !player.worldObj.isRemote )
 					{
 						// Set the filter
 						this.setAspect( filterIndex, itemAspect, player );
@@ -551,6 +639,41 @@ public abstract class AEPartEssentiaIO
 		this.filterSize = filterSize;
 
 		this.resizeAvailableArray();
+	}
+
+	@Override
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	{
+		// Were we wrenched?
+		if( wrenched )
+		{
+			// No drops
+			return;
+		}
+
+		// Add upgrades to drops
+		for( int slotIndex = 0; slotIndex < AEPartEssentiaIO.UPGRADE_INVENTORY_SIZE; slotIndex++ )
+		{
+			// Get the upgrade card in this slot
+			ItemStack slotStack = this.upgradeInventory.getStackInSlot( slotIndex );
+
+			// Is it not null?
+			if( ( slotStack != null ) && ( slotStack.stackSize > 0 ) )
+			{
+				// Add to the drops
+				drops.add( slotStack );
+			}
+		}
+	}
+
+	/**
+	 * Determines how much power the part takes for just
+	 * existing.
+	 */
+	@Override
+	public double getIdlePowerUsage()
+	{
+		return AEPartEssentiaIO.IDLE_POWER_DRAIN;
 	}
 
 }
