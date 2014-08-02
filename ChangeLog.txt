@@ -9,87 +9,87 @@
 	Added storage research.
 
 7/31/2014 0.4.0a
-		Made Thaumonomicon tab.
-		Got textures from CyanideX!
-		Bugfix: Providers do not use a channel on load.
-		Bugfix: Providers can not determine network color when placed to another provider who's cable is full(8 devices).
-		Essentia Terminal now always drops any items in the input and output slots when broken or wrenched.
+	Made Thaumonomicon tab.
+	Got textures from CyanideX!
+	Bugfix: Providers do not use a channel on load.
+	Bugfix: Providers can not determine network color when placed to another provider who's cable is full(8 devices).
+	Essentia Terminal now always drops any items in the input and output slots when broken or wrenched.
 
 7/30/2014 0.4.0a
-		Adding regular recipes.
-		
+	Adding regular recipes.
+
 7/29/2014 0.3.1a
-    Bugfix: AE Parts now drop or save inventory contents when broken or wrenched.
-    Bugfix: AE Parts now require power to work.
-    Bugfix: Import and Export GUI slots don't indicate when they can be used.
-    Bugfix: Can't place torches, levers etc against the side of providers.
-    Bugfix: Providers give no visual indication that they are inactive or disconnected.
+	Bugfix: AE Parts now drop or save inventory contents when broken or wrenched.
+	Bugfix: AE Parts now require power to work.
+	Bugfix: Import and Export GUI slots don't indicate when they can be used.
+	Bugfix: Can't place torches, levers etc against the side of providers.
+	Bugfix: Providers give no visual indication that they are inactive or disconnected.
 
 7/28/2014 0.3.0a
-    Added search to ACT.
-    Added item tooltips to ME slots in ACT.
-    Fixed build error: Was using JVM 1.7 compliance, changed to 1.6
+	Added search to ACT.
+	Added item tooltips to ME slots in ACT.
+	Fixed build error: Was using JVM 1.7 compliance, changed to 1.6
     
 7/27/2014 0.3.0a
-    Cleaned up widget and gui code.
-    Added ME deposit support to ACT.
-    Added ME extract support to ACT.
-    Added ME linked crafting to ACT.
-    Added fuzzy match to linked ME crafting to ACT.
+	Cleaned up widget and gui code.
+	Added ME deposit support to ACT.
+	Added ME extract support to ACT.
+	Added ME linked crafting to ACT.
+	Added fuzzy match to linked ME crafting to ACT.
 
 7/26/2014 0.3.0a
-    Linked ACT to ME item network.
+	Linked ACT to ME item network.
 
 7/25/2014 0.3.0a
-    Added vanilla crafting functionality to ACT.
-    Added Thaumcraft crafting functionality to ACT.
-    Comments and code cleanup on abstract packet.
-    Implemented packet compression for lists.
-    
+	Added vanilla crafting functionality to ACT.
+	Added Thaumcraft crafting functionality to ACT.
+	Comments and code cleanup on abstract packet.
+	Implemented packet compression for lists.
+
 7/24/2014 0.3.0a
-    Bugfix: Terminals now drop contents when destroyed.
-    Added Arcane Crafting Terminal AppEng part.
-    
+	Bugfix: Terminals now drop contents when destroyed.
+	Added Arcane Crafting Terminal AppEng part.
+
 7/23/2014 0.2.1a
-    Fixes #2: Added IO whitelist. Tiles must be on the whitelist for extraction/injection.
-    Added "Cell" to the storage cell names.
-    Refactored EssentiaTileContainerHelper method names for clarity.
-    Refactored EssentiaItemContainerHelper method names for clarity.
-    Added whitelist registration methods to EssentiaTileContainerHelper and EssentiaItemContainerHelper.
-    Bugfix: Can no longer put items that do not hold essentia into terminal input slot.
-    Several bugfixes related to jars when used in the terminal.
+	Fixes #2: Added IO whitelist. Tiles must be on the whitelist for extraction/injection.
+	Added "Cell" to the storage cell names.
+	Refactored EssentiaTileContainerHelper method names for clarity.
+	Refactored EssentiaItemContainerHelper method names for clarity.
+	Added whitelist registration methods to EssentiaTileContainerHelper and EssentiaItemContainerHelper.
+	Bugfix: Can no longer put items that do not hold essentia into terminal input slot.
+	Several bugfixes related to jars when used in the terminal.
 
 7/22/2014 0.2.0a
-    Created Infusion provider block.
-    Added custom renderer to provider.
-    Implemented AppEng part of provider.
-    Implemented Thaumcraft part of provider.
-    BugFix: Import bus would not import if no filter was set.
-    
+	Created Infusion provider block.
+	Added custom renderer to provider.
+	Implemented AppEng part of provider.
+	Implemented Thaumcraft part of provider.
+	BugFix: Import bus would not import if no filter was set.
+
 7/21/2014 0.1.3a
-    Various bug fixes.
-    Code comments and cleanup
-    Bugfix: Possible CME on terminal inventory when multiple players are using it.
-    Major Bugfix: Shift+Click did not properly transfer items, and could dupe items.
-    
+	Various bug fixes.
+	Code comments and cleanup
+	Bugfix: Possible CME on terminal inventory when multiple players are using it.
+	Major Bugfix: Shift+Click did not properly transfer items, and could dupe items.
+
 7/20/2014 0.1.2a
-    Essentia Providers now take on the color of the cable they are placed against.
-    Essentia Providers will take on the color of the first cable it finds if there are not matching cables with its color.
-    Bugfix: Incorrect lighting on essentia providers.
-    Rotated provider textures for a more seamless look.
-    Various code cleanups.
+	Essentia Providers now take on the color of the cable they are placed against.
+	Essentia Providers will take on the color of the first cable it finds if there are not matching cables with its color.
+	Bugfix: Incorrect lighting on essentia providers.
+	Rotated provider textures for a more seamless look.
+	Various code cleanups.
 
 7/19/2014 0.1.1a
-    Created block for Essentia Provider.
-    Implemented Thaumcraft part of essentia provider functionality.
-    Implemented AppEng part of essentia provider functionality.
-    Removed unused tickable interface from essentia terminal.
-    BugFix: Potential issue in essentia<->fluid conversion handler when input list was null.
-    Various name refactors.
-    BugFix: All parts, trying to use the world before it existed.
-    BugFix: Storage bus did not update when phial was used to deposit essentia in empty neighboring jar.
-    BugFix: Terminal plays sound each time it is opened, if an item was left in the output slot
-    Added custom renderer and overlay texture for essentia provider.
-    
+	Created block for Essentia Provider.
+	Implemented Thaumcraft part of essentia provider functionality.
+	Implemented AppEng part of essentia provider functionality.
+	Removed unused tickable interface from essentia terminal.
+	BugFix: Potential issue in essentia<->fluid conversion handler when input list was null.
+	Various name refactors.
+	BugFix: All parts, trying to use the world before it existed.
+	BugFix: Storage bus did not update when phial was used to deposit essentia in empty neighboring jar.
+	BugFix: Terminal plays sound each time it is opened, if an item was left in the output slot
+	Added custom renderer and overlay texture for essentia provider.
+
 7/18/2014 0.1.0a
-    Initial github commit.
+	Initial github commit.
