@@ -3,6 +3,8 @@ package thaumicenergistics.proxy;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.registries.ItemEnum;
+import thaumicenergistics.registries.RecipeRegistry;
+import thaumicenergistics.registries.ResearchRegistry;
 import thaumicenergistics.registries.TileEntities;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -31,8 +33,14 @@ public class CommonProxy
 
 	}
 
-	public void registerMovables()
+	public void registerRecipes()
 	{
+		RecipeRegistry.registerRecipies();
+	}
+	
+	public void registerResearch()
+	{
+		ResearchRegistry.registerResearch();
 	}
 
 	public void registerRenderers()

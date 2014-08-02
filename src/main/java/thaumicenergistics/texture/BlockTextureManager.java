@@ -21,16 +21,8 @@ public enum BlockTextureManager
 		ESSENTIA_TERMINAL (TextureTypes.Part, new String[] { "essentia.terminal.overlay.1",
 						"essentia.terminal.overlay.2",
 						"essentia.terminal.overlay.3" }),
-		ESSENTIA_PROVIDER (TextureTypes.Block, new String[] { "essentia.provider",
-						"essentia.provider.overlay",
-						"essentia.provider.overlay.nogridcolor",
-						"essentia.provider.overlay.inactive" }),
-		INFUSION_PROVIDER (TextureTypes.Block, new String[] { "infusion.provider.bottom",
-						"infusion.provider.side",
-						"infusion.provider.side.overlay",
-						"infusion.provider.side.overlay.nogridcolor",
-						"infusion.provider.top",
-						"infusion.provider.overlay.inactive" }),
+		ESSENTIA_PROVIDER (TextureTypes.Block, new String[] { "essentia.provider", "essentia.provider.overlay" }),
+		INFUSION_PROVIDER (TextureTypes.Block, new String[] { "infusion.provider", "infusion.provider.overlay" }),
 		ARCANE_CRAFTING_TERMINAL (TextureTypes.Part, new String[] { "arcane.crafting.overlay1",
 						"arcane.crafting.overlay2",
 						"arcane.crafting.overlay3",
@@ -67,11 +59,11 @@ public enum BlockTextureManager
 
 	public void registerTexture( TextureMap textureMap )
 	{
-		if ( textureMap.getTextureType() == 0 )
+		if( textureMap.getTextureType() == 0 )
 		{
 			String header = ThaumicEnergistics.MOD_ID + ":";
 
-			if ( this.textureType == TextureTypes.Part )
+			if( this.textureType == TextureTypes.Part )
 			{
 				header += "parts/";
 			}

@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
@@ -102,13 +101,6 @@ public class AEPartEssentiaTerminal
 		return new ContainerEssentiaTerminal( this, player );
 	}
 
-	@Override
-	public void readFromNBT( NBTTagCompound data )
-	{
-		super.readFromNBT( data );
-		this.inventory.readFromNBT( data.getTagList( "inventory", 10 ) );
-	}
-
 	public void removeContainer( ContainerEssentiaTerminal containerAspectTerminal )
 	{
 		this.containers.remove( containerAspectTerminal );
@@ -191,14 +183,6 @@ public class AEPartEssentiaTerminal
 
 	}
 	
-
-	@Override
-	public void writeToNBT( NBTTagCompound data )
-	{
-		super.writeToNBT( data );
-		data.setTag( "inventory", this.inventory.writeToNBT() );
-	}
-	
 	/**
 	 * Attempts to lock the terminal's inventory so that
 	 * changes can be made.
@@ -242,14 +226,7 @@ public class AEPartEssentiaTerminal
 	
 	@Override
 	public void getDrops( List<ItemStack> drops, boolean wrenched )
-	{
-		// Were we wrenched?
-		if( wrenched )
-		{
-			// Inventory is saved when wrenched
-			return;
-		}
-		
+	{	
 		// Loop over inventory
 		for( int slotIndex = 0; slotIndex < 2; slotIndex++ )
 		{

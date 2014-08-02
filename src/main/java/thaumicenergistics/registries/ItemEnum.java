@@ -6,6 +6,7 @@ import net.minecraft.util.StatCollector;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.items.ItemAEPart;
 import thaumicenergistics.items.ItemEssentiaCell;
+import thaumicenergistics.items.ItemMaterial;
 import thaumicenergistics.items.ItemStorageCasing;
 import thaumicenergistics.items.ItemStorageComponent;
 
@@ -14,7 +15,8 @@ public enum ItemEnum
 		PART_ITEM ("part.base", new ItemAEPart()),
 		ESSENTIA_CELL ("storage.essentia", new ItemEssentiaCell()),
 		STORAGE_COMPONENT ("storage.component", new ItemStorageComponent()),
-		STORAGE_CASING ("storage.casing", new ItemStorageCasing());
+		STORAGE_CASING ("storage.casing", new ItemStorageCasing()),
+		MATERIAL("material", new ItemMaterial());
 
 	private final String internalName;
 	private Item item;

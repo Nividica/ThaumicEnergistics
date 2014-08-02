@@ -12,13 +12,9 @@ import thaumicenergistics.ThaumicEnergistics;
 import appeng.api.implementations.items.IStorageComponent;
 
 public class ItemStorageComponent
-	extends Item
+	extends ItemStorageBase
 	implements IStorageComponent
 {
-	private static final String[] SUFFIXES = { "1k", "4k", "16k", "64k" };
-
-	private static final int[] SIZES = { 1024, 4096, 16384, 65536 };
-
 	private static final EnumRarity[] RARITIES = { EnumRarity.uncommon, EnumRarity.uncommon, EnumRarity.rare, EnumRarity.epic };
 
 	private IIcon[] icons;
@@ -33,13 +29,13 @@ public class ItemStorageComponent
 	@Override
 	public int getBytes( ItemStack itemStack )
 	{
-		return ItemStorageComponent.SIZES[itemStack.getItemDamage()];
+		return ItemStorageBase.SIZES[itemStack.getItemDamage()];
 	}
 
 	@Override
 	public IIcon getIconFromDamage( int damage )
 	{
-		int index = MathHelper.clamp_int( damage, 0, ItemStorageComponent.SUFFIXES.length );
+		int index = MathHelper.clamp_int( damage, 0, ItemStorageBase.SUFFIXES.length );
 
 		return this.icons[index];
 	}
@@ -57,7 +53,7 @@ public class ItemStorageComponent
 	@Override
 	public void getSubItems( Item item, CreativeTabs creativeTab, List itemList )
 	{
-		for( int i = 0; i < ItemStorageComponent.SUFFIXES.length; i++ )
+		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
 		{
 			itemList.add( new ItemStack( item, 1, i ) );
 		}
@@ -66,7 +62,7 @@ public class ItemStorageComponent
 	@Override
 	public String getUnlocalizedName( ItemStack itemStack )
 	{
-		return ThaumicEnergistics.MOD_ID + ".item.storage.component." + ItemStorageComponent.SUFFIXES[itemStack.getItemDamage()];
+		return ThaumicEnergistics.MOD_ID + ".item.storage.component." + ItemStorageBase.SUFFIXES[itemStack.getItemDamage()];
 	}
 
 	@Override
@@ -78,11 +74,11 @@ public class ItemStorageComponent
 	@Override
 	public void registerIcons( IIconRegister iconRegister )
 	{
-		this.icons = new IIcon[ItemStorageComponent.SUFFIXES.length];
+		this.icons = new IIcon[ItemStorageBase.SUFFIXES.length];
 
-		for( int i = 0; i < ItemStorageComponent.SUFFIXES.length; i++ )
+		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
 		{
-			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":storage.component." + ItemStorageComponent.SUFFIXES[i] );
+			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":storage.component." + ItemStorageBase.SUFFIXES[i] );
 		}
 	}
 

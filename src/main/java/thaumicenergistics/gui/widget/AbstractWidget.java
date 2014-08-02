@@ -1,11 +1,10 @@
 package thaumicenergistics.gui.widget;
 
 import java.util.List;
-import org.lwjgl.opengl.GL11;
-import thaumicenergistics.util.GuiHelper;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.RenderHelper;
+import org.lwjgl.opengl.GL11;
+import thaumicenergistics.util.GuiHelper;
 
 public abstract class AbstractWidget
 	extends Gui
@@ -44,8 +43,6 @@ public abstract class AbstractWidget
 		if( !descriptionLines.isEmpty() )
 		{
 			GL11.glDisable( GL_RESCALE_NORMAL );
-
-			RenderHelper.disableStandardItemLighting();
 
 			GL11.glDisable( GL11.GL_LIGHTING );
 
@@ -110,8 +107,6 @@ public abstract class AbstractWidget
 			GL11.glEnable( GL11.GL_LIGHTING );
 
 			GL11.glEnable( GL11.GL_DEPTH_TEST );
-
-			RenderHelper.enableStandardItemLighting();
 
 			GL11.glEnable( GL_RESCALE_NORMAL );
 		}

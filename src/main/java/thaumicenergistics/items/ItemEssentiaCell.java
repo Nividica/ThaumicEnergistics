@@ -37,13 +37,9 @@ import appeng.api.storage.data.IAEFluidStack;
 
 // TODO: ICellWorkbenchItem
 public class ItemEssentiaCell
-	extends Item
+	extends ItemStorageBase
 	implements ICellHandler
 {
-	private static final String[] SUFFIXES = { "1k", "4k", "16k", "64k" };
-
-	private static final int[] SIZES = { 1024, 4096, 16348, 65536 };
-
 	private static final EnumRarity[] RARITIES = { EnumRarity.uncommon, EnumRarity.uncommon, EnumRarity.rare, EnumRarity.epic };
 
 	private static final double[] IDLE_DRAIN_AMOUNTS = { 0.5D, 1.0D, 1.5D, 2.0D };
@@ -76,7 +72,7 @@ public class ItemEssentiaCell
 	@Override
 	public IIcon getIconFromDamage( int dmg )
 	{
-		int index = MathHelper.clamp_int( dmg, 0, ItemEssentiaCell.SUFFIXES.length );
+		int index = MathHelper.clamp_int( dmg, 0, ItemStorageBase.SUFFIXES.length );
 
 		return this.icons[index];
 	}
@@ -84,7 +80,7 @@ public class ItemEssentiaCell
 	@Override
 	public void getSubItems( Item item, CreativeTabs creativeTab, List listSubItems )
 	{
-		for( int i = 0; i < ItemEssentiaCell.SUFFIXES.length; i++ )
+		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
 		{
 			listSubItems.add( new ItemStack( item, 1, i ) );
 
@@ -94,7 +90,7 @@ public class ItemEssentiaCell
 	@Override
 	public String getUnlocalizedName( ItemStack itemStack )
 	{
-		return ThaumicEnergistics.MOD_ID + ".item.essentia.cell." + ItemEssentiaCell.SUFFIXES[itemStack.getItemDamage()];
+		return ThaumicEnergistics.MOD_ID + ".item.essentia.cell." + ItemStorageBase.SUFFIXES[itemStack.getItemDamage()];
 	}
 
 	@Override
@@ -241,7 +237,7 @@ public class ItemEssentiaCell
 
 	public int maxStorage( ItemStack essentiaCell )
 	{
-		return ItemEssentiaCell.SIZES[Math.max( 0, essentiaCell.getItemDamage() )];
+		return ItemStorageBase.SIZES[Math.max( 0, essentiaCell.getItemDamage() )];
 	}
 
 	public int maxTypes( ItemStack itemStack )
@@ -314,11 +310,11 @@ public class ItemEssentiaCell
 	@Override
 	public void registerIcons( IIconRegister iconRegister )
 	{
-		this.icons = new IIcon[ItemEssentiaCell.SUFFIXES.length];
+		this.icons = new IIcon[ItemStorageBase.SUFFIXES.length];
 
-		for( int i = 0; i < ItemEssentiaCell.SUFFIXES.length; i++ )
+		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
 		{
-			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":essentia.cell." + ItemEssentiaCell.SUFFIXES[i] );
+			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":essentia.cell." + ItemStorageBase.SUFFIXES[i] );
 		}
 	}
 

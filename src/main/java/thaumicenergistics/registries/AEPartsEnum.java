@@ -169,4 +169,9 @@ public enum AEPartsEnum
 	{
 		return this.upgrades;
 	}
+	
+	public ItemStack getStack()
+	{
+		return ItemEnum.PART_ITEM.getItemStackWithDamage( this.ordinal() );
+	}
 }

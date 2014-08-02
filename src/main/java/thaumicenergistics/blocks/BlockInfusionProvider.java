@@ -35,7 +35,7 @@ public class BlockInfusionProvider
 		TileInfusionProvider tile = new TileInfusionProvider();
 		
 		// Setup the infusion provider
-		tile.setupProvider( metaData );
+		tile.setupProvider( metaData  );
 		
 		// Return the tile
 		return tile;

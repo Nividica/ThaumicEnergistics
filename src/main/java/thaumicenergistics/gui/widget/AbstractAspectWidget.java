@@ -21,14 +21,6 @@ public abstract class AbstractAspectWidget
 	}
 	
 
-	/*
-	public void setAspect( String aspectTag )
-	{
-		this.aspect = Aspect.aspects.get( aspectTag );
-	}
-	*/
-	
-
 	public void setAspect( Aspect aspect )
 	{
 		this.aspect = aspect;

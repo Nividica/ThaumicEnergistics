@@ -265,7 +265,7 @@ public class AEPartEssentiaStorageBus
 	@Override
 	public void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
 	{
-		Tessellator ts = Tessellator.instance;
+		Tessellator tessellator = Tessellator.instance;
 
 		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
 		helper.setTexture( side, side, side, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTexture(), side, side );
@@ -274,11 +274,11 @@ public class AEPartEssentiaStorageBus
 		helper.setBounds( 1.0F, 1.0F, 15.0F, 15.0F, 15.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
 
-		ts.setColorOpaque_I( this.host.getColor().blackVariant );
+		tessellator.setColorOpaque_I( this.host.getColor().blackVariant );
 		
 		if ( this.isActive() )
 		{
-			Tessellator.instance.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
+			tessellator.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
 		}
 		
 		// Mid

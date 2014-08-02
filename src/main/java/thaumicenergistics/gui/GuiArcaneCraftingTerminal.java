@@ -220,6 +220,12 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private void updateWidgetItems()
 	{
+		// Do we have any network items?
+		if( this.networkItems == null )
+		{
+			return;
+		}
+		
 		// Create an iterator
 		Iterator<IAEItemStack> networkItemIterator = this.networkItems.iterator();
 
