@@ -1,20 +1,20 @@
 ﻿#Group names
 itemGroup.ThaumicEnergistics=Thaumic Energistics
-thaumicenergistics.group.essentia.transport=ME Essentia Import/Export Bus
+thaumicenergistics.group.essentia.transport=ME Digi-sentia Import/Export Bus
 
 #Fluids
 thaumicenergistics.fluid.gaseous=Gaseous
 
 #Blocks
-thaumicenergistics.block.essentia.provider.name=Essentia Provider
+thaumicenergistics.block.essentia.provider.name=Digi-sentia Provider
 thaumicenergistics.block.infusion.provider.name=Infusion Provider
 
 #Cable parts
-thaumicenergistics.aeparts.essentia.ImportBus.name=Essentia Import Bus
-thaumicenergistics.aeparts.essentia.ExportBus.name=Essentia Export Bus
-thaumicenergistics.aeparts.essentia.levelemitter.name=Essentia Level Emitter
-thaumicenergistics.aeparts.essentia.StorageBus.name=Essentia Storage Bus
-thaumicenergistics.aeparts.essentia.terminal.name=Essentia Terminal
+thaumicenergistics.aeparts.essentia.ImportBus.name=Digi-sentia Import Bus
+thaumicenergistics.aeparts.essentia.ExportBus.name=Digi-sentia Export Bus
+thaumicenergistics.aeparts.essentia.levelemitter.name=Digi-sentia Level Emitter
+thaumicenergistics.aeparts.essentia.StorageBus.name=Digi-sentia Storage Bus
+thaumicenergistics.aeparts.essentia.terminal.name=Digi-sentia Terminal
 thaumicenergistics.aeparts.arcane.crafting.terminal.name=Arcane Crafting Terminal
 
 #Items
@@ -44,33 +44,33 @@ tc.research_category.thaumicenergistics=Energistics
 
 # Research basics
 tc.research_name.thaumicenergistics.TERESEARCH=Thaumic Energistics
-tc.research_text.thaumicenergistics.TERESEARCH=Because the digital age could use some magic.
-thaumicenergistics.research_page.TERESEARCH.1=As both scientist and arcane scholar, you have postulated that there must be a way to combine technology and magic in a stable and productive way.<BR>You will need to study the principals of matter-energy conversion in detail. It is likely there is are aspects of Thaumaturgy that can accomplish this, as well as technology capable of doing the same.<BR>It will require extensive study, but you are sure this will be a worthwhile investment of your time.
+tc.research_text.thaumicenergistics.TERESEARCH=Thaumaturgy Enters the Digital Age
+thaumicenergistics.research_page.TERESEARCH.1=As both a scientist and an arcane scholar, you have postulated that it must be possible to combine technology and magic in a stable and productive way.<BR>You will need to study the principals of matter-energy conversion in detail to accomplish this. It is likely there are aspects of Thaumaturgy that can accomplish this, as well as technology capable of doing the same.<BR>This will require extensive study, but you are sure that it will be a worthwhile investment of your time.
 
 # Research conversion cores
-tc.research_name.thaumicenergistics.TECORES=Digital Essentia
-tc.research_text.thaumicenergistics.TECORES=A slurry of digits.
-thaumicenergistics.research_page.TECORES.1=Having discovered how to distil essentia it occurs to you that you may be able store the essentia digitally.<BR>Examining the §lFormation Core§r and §lAnnihilation Core§r you realize with just minor modifications it could serve as a means to convert essentia to and from a digital format.<BR>Due to the corrosive nature of certain types of essentia, a layer of quicksilver around the circuitry is required to prevent decay.
-thaumicenergistics.research_page.TECORES.2=§lDiffusion Core§r<BR>The relatively high volatility and immense energy in essentia slurry requires that it first be diffused then digitized. A buffer chamber of some kind will likely be required to hold the diffused essentia.<LINE>§lCoalescence Core§r<BR>Compresses and binds re-materialized essentia diffusion back into its raw slurry. A buffer chamber will also likely be needed here.
+tc.research_name.thaumicenergistics.TECORES=Digi-sentia
+tc.research_text.thaumicenergistics.TECORES=A string of digits.
+thaumicenergistics.research_page.TECORES.1=Having discovered how to distill essentia, it occurs to you that you may be able store it digitally.<BR>Examining the §lFormation Core§r and §lAnnihilation Core§r you realize that with some minor modifications they could serve as a means to convert essentia to and from a digital format.<BR>However, due to the corrosive nature of certain types of essentia, a layer of quicksilver around the circuitry is required to prevent decay.
+thaumicenergistics.research_page.TECORES.2=§lDiffusion Core§r<BR>The relatively high volatility and immense energy in distilled essentia requires that it first be diffused then digitized. A buffer chamber of some kind will likely be required to hold the diffused essentia.<LINE>§lCoalescence Core§r<BR>Compresses and binds re-materialized essentia diffusion back into its raw form. A buffer chamber will also likely be needed.
 
 # Research storage
-tc.research_name.thaumicenergistics.TESTORAGE=Storage
+tc.research_name.thaumicenergistics.TESTORAGE=Digi-sentia Storage
 tc.research_text.thaumicenergistics.TESTORAGE=Can this thing really store essentia?
-thaumicenergistics.research_page.TESTORAGE.1=Upon inspecting existing digital storage mediums you have concluded that you can in-fact store digitized essentia.<BR>By infusing §lCertus Quartz§r with concentrated essence, it will gain the ability to store the essentia, which remains remarkably active even in digital form.<BR>You conclude that the higher the concentration of essence, the more it should be able to store. Although there are inherit limits as to how much the quartz itself can store.
-thaumicenergistics.research_page.TESTORAGE.2=§lComponents§r<BR>Stores the essentia in its digital format. Non-operational alone, they require a cell casing to interface with a digital network.<LINE>§lCell Casing§r<BR>Provides an interface and protection for a storage component. Non magical in nature and can be crafted without the aid of Vis.
+thaumicenergistics.research_page.TESTORAGE.1=Upon inspecting existing digital storage mediums you have concluded that you can in-fact store digitized essentia.<BR>By infusing §lCertus Quartz§r with concentrated essence, it will gain the ability to store the essentia, which remains remarkably active even in digital form.<BR>You conclude that the higher the concentration of essence, the more it should be able to store, although there are inherit limits as to how much the quartz itself can store.
+thaumicenergistics.research_page.TESTORAGE.2=§lComponents§r<BR>Stores the essentia in its digital format. Non-operational unless a cell casing is used to interface with a digital network.<LINE>§lCell Casing§r<BR>Provides an interface and protects a storage component. Non magical in nature which is why it can be crafted without the aid of Vis.
 
 # Research IO
-tc.research_name.thaumicenergistics.TEIO=Transportation
-tc.research_text.thaumicenergistics.TEIO=Moving essentia with current.
-thaumicenergistics.research_page.TEIO.1=Now that you know how to digitize essentia, it's time to put that knowledge to work for you.<LINE>§lImport & Export§r<BR>By combining the appropriate core to an essentia tube and chamber, you are able to move essentia in and out of the storage network. The use of a filter tube allows you to specify what aspects are allowed to be transferred.
-thaumicenergistics.research_page.TEIO.2=§lStorage Bus§r<BR>Combines the import and export buses into a single device, and allows you to use external essentia containers as network storage. Due to lack of a chamber it's unlikely to work with anything but warded jars.
+tc.research_name.thaumicenergistics.TEIO=Digi-sentia Transportation
+tc.research_text.thaumicenergistics.TEIO=Moving Essentia Digitally!
+thaumicenergistics.research_page.TEIO.1=Now that you know how to digitize essentia, it's time to put that knowledge to work.<LINE>§lImport & Export§r<BR>By binding the appropriate core to an essentia tube and chamber, you are able to move essentia in and out of the storage network. The use of a filter tube allows you to specify what aspects are allowed to be transferred.
+thaumicenergistics.research_page.TEIO.2=§lStorage Bus§r<BR>Combining the import and export buses into a single device allows you to use external essentia containers as network storage. Due to the lack of a chamber, it's unlikely to work with anything but warded jars.
 
 # Research Arcane crafting terminal
 tc.research_name.thaumicenergistics.TEARCANETERM=Arcane Crafting Terminal
 tc.research_text.thaumicenergistics.TEARCANETERM=Crafting with magic §oand technology.§r
-thaumicenergistics.research_page.TEARCANETERM.1=You have discovered that by using the primal aspects to bind a §lTerminal§r and §lArcane Worktable§r, you can imbue the terminal with the worktable's ability to craft arcane items.
+thaumicenergistics.research_page.TEARCANETERM.1=You have discovered that using primal aspects to bind a §lTerminal§r to an §lArcane Worktable§r allows you to imbue the terminal with the worktable's ability to craft arcane items.
 
 # Research Essentia terminal
-tc.research_name.thaumicenergistics.TEESSTERM=Essentia Terminal
-tc.research_text.thaumicenergistics.TEESSTERM=Knowing how much you have.
-thaumicenergistics.research_page.TEESSTERM.1=The Essentia Terminal allows you to monitor how much essentia is stored within the network, and provides a means to fill and drain essentia containers from within the terminal.
+tc.research_name.thaumicenergistics.TEESSTERM=Digi-sentia Terminal
+tc.research_text.thaumicenergistics.TEESSTERM=Counting the Digi-sentia
+thaumicenergistics.research_page.TEESSTERM.1=The Essentia Terminal allows you to monitor how much essentia is stored within the network, and provides a way to fill and drain essentia containers within the terminal.
