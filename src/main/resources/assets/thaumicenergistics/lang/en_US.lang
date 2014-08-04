@@ -1,20 +1,20 @@
 ﻿#Group names
 itemGroup.ThaumicEnergistics=Thaumic Energistics
-thaumicenergistics.group.essentia.transport=ME Digi-sentia Import/Export Bus
+thaumicenergistics.group.essentia.transport=ME Essentia Import/Export Bus
 
 #Fluids
 thaumicenergistics.fluid.gaseous=Gaseous
 
 #Blocks
-thaumicenergistics.block.essentia.provider.name=Digi-sentia Provider
+thaumicenergistics.block.essentia.provider.name=Essentia Provider
 thaumicenergistics.block.infusion.provider.name=Infusion Provider
 
 #Cable parts
-thaumicenergistics.aeparts.essentia.ImportBus.name=Digi-sentia Import Bus
-thaumicenergistics.aeparts.essentia.ExportBus.name=Digi-sentia Export Bus
-thaumicenergistics.aeparts.essentia.levelemitter.name=Digi-sentia Level Emitter
-thaumicenergistics.aeparts.essentia.StorageBus.name=Digi-sentia Storage Bus
-thaumicenergistics.aeparts.essentia.terminal.name=Digi-sentia Terminal
+thaumicenergistics.aeparts.essentia.ImportBus.name=Essentia Import Bus
+thaumicenergistics.aeparts.essentia.ExportBus.name=Essentia Export Bus
+thaumicenergistics.aeparts.essentia.levelemitter.name=Essentia Level Emitter
+thaumicenergistics.aeparts.essentia.StorageBus.name=Essentia Storage Bus
+thaumicenergistics.aeparts.essentia.terminal.name=Essentia Terminal
 thaumicenergistics.aeparts.arcane.crafting.terminal.name=Arcane Crafting Terminal
 
 #Items
@@ -44,12 +44,12 @@ tc.research_category.thaumicenergistics=Energistics
 
 # Research basics
 tc.research_name.thaumicenergistics.TERESEARCH=Thaumic Energistics
-tc.research_text.thaumicenergistics.TERESEARCH=Thaumaturgy Enters the Digital Age
+tc.research_text.thaumicenergistics.TERESEARCH=Thaumaturgy Enters the Digital Age.
 thaumicenergistics.research_page.TERESEARCH.1=As both a scientist and an arcane scholar, you have postulated that it must be possible to combine technology and magic in a stable and productive way.<BR>You will need to study the principals of matter-energy conversion in detail to accomplish this. It is likely there are aspects of Thaumaturgy that can accomplish this, as well as technology capable of doing the same.<BR>This will require extensive study, but you are sure that it will be a worthwhile investment of your time.
 
 # Research conversion cores
 tc.research_name.thaumicenergistics.TECORES=Digi-sentia
-tc.research_text.thaumicenergistics.TECORES=A string of digits.
+tc.research_text.thaumicenergistics.TECORES=Digital Essentia.
 thaumicenergistics.research_page.TECORES.1=Having discovered how to distill essentia, it occurs to you that you may be able store it digitally.<BR>Examining the §lFormation Core§r and §lAnnihilation Core§r you realize that with some minor modifications they could serve as a means to convert essentia to and from a digital format.<BR>However, due to the corrosive nature of certain types of essentia, a layer of quicksilver around the circuitry is required to prevent decay.
 thaumicenergistics.research_page.TECORES.2=§lDiffusion Core§r<BR>The relatively high volatility and immense energy in distilled essentia requires that it first be diffused then digitized. A buffer chamber of some kind will likely be required to hold the diffused essentia.<LINE>§lCoalescence Core§r<BR>Compresses and binds re-materialized essentia diffusion back into its raw form. A buffer chamber will also likely be needed.
 
@@ -71,6 +71,6 @@ tc.research_text.thaumicenergistics.TEARCANETERM=Crafting with magic §oand tech
 thaumicenergistics.research_page.TEARCANETERM.1=You have discovered that using primal aspects to bind a §lTerminal§r to an §lArcane Worktable§r allows you to imbue the terminal with the worktable's ability to craft arcane items.
 
 # Research Essentia terminal
-tc.research_name.thaumicenergistics.TEESSTERM=Digi-sentia Terminal
-tc.research_text.thaumicenergistics.TEESSTERM=Counting the Digi-sentia
+tc.research_name.thaumicenergistics.TEESSTERM=Essentia Terminal
+tc.research_text.thaumicenergistics.TEESSTERM=Knowing how much you have.
 thaumicenergistics.research_page.TEESSTERM.1=The Essentia Terminal allows you to monitor how much essentia is stored within the network, and provides a way to fill and drain essentia containers within the terminal.
