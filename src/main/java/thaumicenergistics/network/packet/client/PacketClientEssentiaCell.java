@@ -1,4 +1,4 @@
-package thaumicenergistics.network.packet;
+package thaumicenergistics.network.packet.client;
 
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
@@ -10,39 +10,47 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.ContainerEssentiaCell;
 import thaumicenergistics.gui.GuiEssentiaCell;
-import thaumicenergistics.network.AbstractPacket;
+import thaumicenergistics.network.packet.AbstractClientPacket;
+import thaumicenergistics.network.packet.AbstractPacket;
 
 public class PacketClientEssentiaCell
-	extends AbstractPacket
+	extends AbstractClientPacket
 {
 	private static final int MODE_UPDATE_LIST = 0;
 	private static final int MODE_SELECTED_ASPECT = 1;
 	
 	protected List<AspectStack> aspectStackList;
-	protected Aspect currentAspect;
+	protected Aspect selectedAspect;
 
-	public PacketClientEssentiaCell()
+	public PacketClientEssentiaCell createListUpdate( EntityPlayer player, List<AspectStack> list )
 	{
-	}
+		// Set the player
+		this.player = player;
 
-	public PacketClientEssentiaCell( EntityPlayer player, List<AspectStack> list )
-	{
-		super( player );
-
+		// Set the mode
 		this.mode = PacketClientEssentiaCell.MODE_UPDATE_LIST;
 		
+		// Mark to use compression
 		this.useCompression = true;
 
+		// Set the list
 		this.aspectStackList = list;
+		
+		return this;
 	}
 
-	public PacketClientEssentiaCell( EntityPlayer player, Aspect currentAspect )
+	public PacketClientEssentiaCell createSelectedAspectUpdate( EntityPlayer player, Aspect selectedAspect )
 	{
-		super( player );
+		// Set the player
+		this.player = player;
 
+		// Set the mode
 		this.mode = PacketClientEssentiaCell.MODE_SELECTED_ASPECT;
 
-		this.currentAspect = currentAspect;
+		// Set the aspect
+		this.selectedAspect = selectedAspect;
+		
+		return this;
 	}
 
 	@Override
@@ -83,7 +91,7 @@ public class PacketClientEssentiaCell
 						ContainerEssentiaCell container = (ContainerEssentiaCell)( ( (GuiEssentiaCell)gui ).inventorySlots );
 
 						// Set the selected aspect
-						container.receiveSelectedAspect( this.currentAspect );
+						container.receiveSelectedAspect( this.selectedAspect );
 					}
 				}
 				break;
@@ -109,7 +117,7 @@ public class PacketClientEssentiaCell
 
 			case PacketClientEssentiaCell.MODE_SELECTED_ASPECT:
 				// Read the aspect from the stream
-				this.currentAspect = AbstractPacket.readAspect( stream );
+				this.selectedAspect = AbstractPacket.readAspect( stream );
 				break;
 		}
 	}
@@ -131,7 +139,7 @@ public class PacketClientEssentiaCell
 
 			case PacketClientEssentiaCell.MODE_SELECTED_ASPECT:
 				// Write the aspect to the stream
-				AbstractPacket.writeAspect( this.currentAspect, stream );
+				AbstractPacket.writeAspect( this.selectedAspect, stream );
 				break;
 		}
 	}

@@ -20,12 +20,14 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 
 /**
- * AE Gridblock used for all my AE parts. 
+ * AE Gridblock used for all my AE parts.
+ * 
  * @author Nividica
- *
+ * 
  */
-public class AEPartGridBlock implements IGridBlock
-{	
+public class AEPartGridBlock
+	implements IGridBlock
+{
 	/**
 	 * The part using this gridblock.
 	 */
@@ -33,9 +35,10 @@ public class AEPartGridBlock implements IGridBlock
 
 	/**
 	 * Create the gridblock for the specified part.
+	 * 
 	 * @param part
 	 */
-	public AEPartGridBlock(AEPartBase part)
+	public AEPartGridBlock( AEPartBase part )
 	{
 		this.part = part;
 	}
@@ -57,16 +60,16 @@ public class AEPartGridBlock implements IGridBlock
 	}
 
 	/**
-	 * Gets the AE fluid monitor for the grid.
-	 * @return Monitor if valid grid, null otherwise.
+	 * Gets the storage grid.
+	 * @return
 	 */
-	public IMEMonitor<IAEFluidStack> getFluidMonitor()
+	public IStorageGrid getStorageGrid()
 	{
 		// Get the grid node
 		IGridNode node = this.part.getGridNode();
 
 		// Do we have a grid node?
-		if ( node == null )
+		if( node == null )
 		{
 			return null;
 		}
@@ -75,16 +78,27 @@ public class AEPartGridBlock implements IGridBlock
 		IGrid grid = node.getGrid();
 
 		// Do we have a grid?
-		if ( grid == null )
+		if( grid == null )
 		{
 			return null;
 		}
 
 		// Get the storage grid from the cache.
-		IStorageGrid storageGrid = (IStorageGrid) grid.getCache( IStorageGrid.class );
+		return (IStorageGrid)grid.getCache( IStorageGrid.class );
+	}
 
+	/**
+	 * Gets the AE fluid monitor for the grid.
+	 * 
+	 * @return Monitor if valid grid, null otherwise.
+	 */
+	public IMEMonitor<IAEFluidStack> getFluidMonitor()
+	{
+		// Set the storage grid
+		IStorageGrid storageGrid = this.getStorageGrid();
+		
 		// Do we have a storage grid?
-		if ( storageGrid == null )
+		if( storageGrid == null )
 		{
 			return null;
 		}
@@ -95,33 +109,16 @@ public class AEPartGridBlock implements IGridBlock
 
 	/**
 	 * Gets the AE item monitor for the grid.
+	 * 
 	 * @return Monitor if valid grid, null otherwise.
 	 */
 	public IMEMonitor<IAEItemStack> getItemMonitor()
 	{
-		// Get the grid node
-		IGridNode node = this.part.getGridNode();
-
-		// Do we have a grid node?
-		if ( node == null )
-		{
-			return null;
-		}
-
-		// Get the grid.
-		IGrid grid = node.getGrid();
-
-		// Do we have a grid?
-		if ( grid == null )
-		{
-			return null;
-		}
-
-		// Get the storage grid from the cache.
-		IStorageGrid storageGrid = (IStorageGrid) grid.getCache( IStorageGrid.class );
+		// Get the storage grid
+		IStorageGrid storageGrid = this.getStorageGrid();
 
 		// Do we have a storage grid?
-		if ( storageGrid == null )
+		if( storageGrid == null )
 		{
 			return null;
 		}
@@ -196,19 +193,19 @@ public class AEPartGridBlock implements IGridBlock
 	{
 		// Ignored
 	}
-	
-	private final IGrid getGrid()
+
+	public final IGrid getGrid()
 	{
 		// Get the grid node
 		IGridNode node = this.part.getGridNode();
-		
+
 		// Ensure we have a node
 		if( node != null )
 		{
 			// Get the grid
 			return node.getGrid();
 		}
-		
+
 		return null;
 	}
 
@@ -216,19 +213,21 @@ public class AEPartGridBlock implements IGridBlock
 	 * Called to update the grid and the channels used.
 	 */
 	@Override
-	public final void setNetworkStatus( IGrid grid, int usedChannels ){}
-	
+	public final void setNetworkStatus( IGrid grid, int usedChannels )
+	{
+	}
+
 	public IEnergyGrid getEnergyGrid()
 	{
 		// Get the grid
 		IGrid grid = this.getGrid();
-		
+
 		// Ensure we have a grid
 		if( grid == null )
 		{
 			return null;
 		}
-		
+
 		// Return the energy grid
 		return grid.getCache( IEnergyGrid.class );
 	}

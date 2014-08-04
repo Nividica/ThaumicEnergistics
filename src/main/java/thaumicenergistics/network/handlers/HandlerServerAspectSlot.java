@@ -1,15 +1,16 @@
 package thaumicenergistics.network.handlers;
 
-import thaumicenergistics.network.packet.client.PacketClientEssentiaCell;
+import thaumicenergistics.network.packet.server.PacketServerAspectSlot;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class HandlerClientEssentiaCell implements IMessageHandler<PacketClientEssentiaCell, IMessage>
+public class HandlerServerAspectSlot
+	implements IMessageHandler<PacketServerAspectSlot, IMessage>
 {
 
 	@Override
-	public IMessage onMessage( PacketClientEssentiaCell message, MessageContext ctx )
+	public IMessage onMessage( PacketServerAspectSlot message, MessageContext ctx )
 	{
 		message.execute();
 		return null;

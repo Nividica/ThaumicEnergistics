@@ -29,7 +29,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.4.0a"; // Note: don't forget to change the mcmod.info file as well
+	public static final String VERSION = "0.4.1a"; // Note: don't forget to change the mcmod.info file as well
 
 	/**
 	 * Singleton instance
@@ -94,9 +94,7 @@ public class ThaumicEnergistics
 
 }
 
-/* TODO: -- Code
- * Rework packet structure for client vs server with superclasses and stop depending on constructors, use methods.
- * 
+/*
  * NOTE Known issue: ME Chest gui does not update the network when the contents of an essentia cell is changed.
  * Need to ask Algo how to go about fixing this, cause I've tried everything I can think of. 
  */
@@ -108,7 +106,6 @@ public class ThaumicEnergistics
  * Add aspect tags (thaumometer) to all items
  * Additional UI's redstone mode, priority window
  * Level emitter multi-mode
- * Give rarity tooltip color value to providers
  * Give Spatial IO the ability to move my Tile Entities.
  * 
  * --Possible Features

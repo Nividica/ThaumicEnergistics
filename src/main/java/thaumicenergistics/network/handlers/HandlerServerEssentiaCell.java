@@ -1,6 +1,6 @@
 package thaumicenergistics.network.handlers;
 
-import thaumicenergistics.network.packet.PacketServerEssentiaCell;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaCell;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;

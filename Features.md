@@ -12,7 +12,7 @@
     
 ###Status:
     View types and amounts of essentia stored in the network.
-    --WIP-- Redstone indication of how much essentia is stored in the network.
+    Redstone indication of how much essentia is stored in the network.
     
 ###Crafting
     Thaumcraft crafting table with access to items on the network.

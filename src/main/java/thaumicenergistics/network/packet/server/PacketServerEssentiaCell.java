@@ -1,36 +1,43 @@
-package thaumicenergistics.network.packet;
+package thaumicenergistics.network.packet.server;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerEssentiaCell;
-import thaumicenergistics.network.AbstractPacket;
+import thaumicenergistics.network.packet.AbstractPacket;
+import thaumicenergistics.network.packet.AbstractServerPacket;
 
 public class PacketServerEssentiaCell
-	extends AbstractPacket
+	extends AbstractServerPacket
 {
 	private static final int MODE_SELECTED_ASPECT = 0;
-	private static final int MODE_FORCE_UPDATE = 1;
-	protected Aspect currentAspect;
+	private static final int MODE_FULL_UPDATE = 1;
+	
+	protected Aspect selectedAspect;
 
-	public PacketServerEssentiaCell()
+	public PacketServerEssentiaCell createFullUpdateRequest( EntityPlayer player )
 	{
+		// Set the player
+		this.player = player;
+		
+		// Set the mode
+		this.mode = PacketServerEssentiaCell.MODE_FULL_UPDATE;
+		
+		return this;
 	}
 
-	public PacketServerEssentiaCell( EntityPlayer player, Aspect currentAspect )
+	public PacketServerEssentiaCell createUpdateSelectedAspect( EntityPlayer player, Aspect selectedAspect )
 	{
-		super( player );
+		// Set the player
+		this.player = player;
 
+		// Set the mode
 		this.mode = PacketServerEssentiaCell.MODE_SELECTED_ASPECT;
 
-		this.currentAspect = currentAspect;
-	}
-
-	public PacketServerEssentiaCell( EntityPlayer player )
-	{
-		super( player );
-
-		this.mode = PacketServerEssentiaCell.MODE_FORCE_UPDATE;
+		// Set the selected aspect
+		this.selectedAspect = selectedAspect;
+		
+		return this;
 	}
 
 	@Override
@@ -43,11 +50,11 @@ public class PacketServerEssentiaCell
 				if ( ( this.player != null ) && ( this.player.openContainer instanceof ContainerEssentiaCell ) )
 				{
 					// Inform the cell container of the selected aspect
-					( (ContainerEssentiaCell)this.player.openContainer ).receiveSelectedAspect( this.currentAspect );
+					( (ContainerEssentiaCell)this.player.openContainer ).receiveSelectedAspect( this.selectedAspect );
 				}
 				break;
 
-			case PacketServerEssentiaCell.MODE_FORCE_UPDATE:
+			case PacketServerEssentiaCell.MODE_FULL_UPDATE:
 				// If the player is not null, and they have the cell container open
 				if ( ( this.player != null ) && ( this.player.openContainer instanceof ContainerEssentiaCell ) )
 				{
@@ -66,7 +73,7 @@ public class PacketServerEssentiaCell
 		{
 			case PacketServerEssentiaCell.MODE_SELECTED_ASPECT:
 				// Read in the aspect from the stream
-				this.currentAspect = AbstractPacket.readAspect( stream );
+				this.selectedAspect = AbstractPacket.readAspect( stream );
 		}
 	}
 
@@ -76,7 +83,7 @@ public class PacketServerEssentiaCell
 		switch ( this.mode )
 		{
 			case PacketServerEssentiaCell.MODE_SELECTED_ASPECT:
-				AbstractPacket.writeAspect( this.currentAspect, stream );
+				AbstractPacket.writeAspect( this.selectedAspect, stream );
 				break;
 		}
 	}

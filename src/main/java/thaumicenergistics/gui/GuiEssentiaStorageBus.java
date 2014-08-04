@@ -10,9 +10,9 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
-import thaumicenergistics.gui.widget.WidgetRedstoneModes;
+import thaumicenergistics.gui.widget.ButtonRedstoneModes;
 import thaumicenergistics.network.IAspectSlotGui;
-import thaumicenergistics.network.packet.PacketEssentiaStorageBus;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
@@ -116,7 +116,7 @@ public class GuiEssentiaStorageBus
 		this.ySize = GuiEssentiaStorageBus.GUI_HEIGHT;
 
 		// Request an update
-		new PacketEssentiaStorageBus( player, part ).sendPacketToServer();
+		new PacketServerEssentiaStorageBus().createRequestFullUpdate( player, part ).sendPacketToServer();
 	}
 
 	private boolean isMouseOverSlot( Slot slot, int x, int y )
@@ -171,9 +171,9 @@ public class GuiEssentiaStorageBus
 
 		for( Object button : this.buttonList )
 		{
-			if ( ( button instanceof WidgetRedstoneModes ) )
+			if ( ( button instanceof ButtonRedstoneModes ) )
 			{
-				( (WidgetRedstoneModes)button ).drawTooltip( this.guiLeft, this.guiTop );
+				( (ButtonRedstoneModes)button ).drawTooltip( this.guiLeft, this.guiTop );
 			}
 		}
 	}

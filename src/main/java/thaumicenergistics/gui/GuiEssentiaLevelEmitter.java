@@ -9,15 +9,16 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
+import thaumicenergistics.gui.widget.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
-import thaumicenergistics.gui.widget.WidgetRedstoneModes;
 import thaumicenergistics.network.IAspectSlotGui;
-import thaumicenergistics.network.packet.PacketEssentiaEmitter;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaEmitter;
 import thaumicenergistics.parts.AEPartEssentiaLevelEmitter;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
+import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -61,22 +62,22 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * X position of the title string.
 	 */
-	private static final int TITLE_POS_X = 10;
+	private static final int TITLE_POS_X = 8;
 
 	/**
 	 * Y position of the title string.
 	 */
-	private static final int TITLE_POS_Y = -15;
+	private static final int TITLE_POS_Y = -4;
 
 	/**
 	 * X offset for the amount field.
 	 */
-	private static final int AMOUNT_OFFSET_X = 24;
+	private static final int AMOUNT_OFFSET_X = 25;
 
 	/**
 	 * Y offset for the amount field.
 	 */
-	private static final int AMOUNT_OFFSET_Y = 44;
+	private static final int AMOUNT_OFFSET_Y = 35;
 
 	/**
 	 * Width of the amount field.
@@ -146,7 +147,7 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * The maximum number of characters that can be typed in the amount field.
 	 */
-	private static final int AMOUNT_MAX_CHARS = 10;	
+	private static final int AMOUNT_MAX_CHARS = 10;
 
 	/**
 	 * Amount text field
@@ -190,7 +191,8 @@ public class GuiEssentiaLevelEmitter
 		// Create the filter slot
 		this.aspectFilterSlot = new WidgetAspectSlot( this, this.player, this.part, 123, 30 );
 
-		new PacketEssentiaEmitter( false, this.part, this.player ).sendPacketToServer();
+		// Request an update
+		new PacketServerEssentiaEmitter().createUpdateRequest( this.part, this.player ).sendPacketToServer();
 	}
 
 	/**
@@ -212,18 +214,18 @@ public class GuiEssentiaLevelEmitter
 		// Draw the gui texture.
 		this.drawTexturedModalRect( posX, posY, 0, 0, GUI_X_SIZE, GUI_Y_SIZE );
 	}
-	
+
 	public boolean setFilteredAspectFromItemstack( ItemStack itemStack )
 	{
 		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
 
-		if ( itemAspect != null )
+		if( itemAspect != null )
 		{
 			this.aspectFilterSlot.setAspect( itemAspect );
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -237,12 +239,24 @@ public class GuiEssentiaLevelEmitter
 		super.keyTyped( key, keyID );
 
 		// Ensure they was numeric and the string isnt too long to parse, or backspace
-		if ( ( ( "0123456789".contains( String.valueOf( key ) ) ) && ( this.amountField.getText().length() < GuiEssentiaLevelEmitter.AMOUNT_MAX_CHARS ) ) || ( keyID == Keyboard.KEY_BACK ) )
+		if( ( Character.isDigit( key ) && ( this.amountField.getText().length() < GuiEssentiaLevelEmitter.AMOUNT_MAX_CHARS ) ) ||
+						( keyID == Keyboard.KEY_BACK ) )
 		{
 			// Pass to the amount field
 			this.amountField.textboxKeyTyped( key, keyID );
 
-			new PacketEssentiaEmitter( this.amountField.getText(), this.part, this.player ).sendPacketToServer();
+			// Convert the text field into a long
+			long wantedAmount = 0;
+			try
+			{
+				wantedAmount = Long.parseLong( this.amountField.getText() );
+			}
+			catch( NumberFormatException _ )
+			{
+			}
+
+			// Update the server
+			new PacketServerEssentiaEmitter().createWantedAmountUpdate( wantedAmount, this.part, this.player ).sendPacketToServer();
 		}
 	}
 
@@ -256,7 +270,7 @@ public class GuiEssentiaLevelEmitter
 		super.mouseClicked( mouseX, mouseY, mouseBtn );
 
 		// Is the mouse over the widget?
-		if ( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
+		if( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
 		{
 			// Pass to the widget
 			this.aspectFilterSlot.mouseClicked( EssentiaItemContainerHelper.getAspectInContainer( this.player.inventory.getItemStack() ) );
@@ -272,14 +286,26 @@ public class GuiEssentiaLevelEmitter
 		// Get the index of the button that was clicked
 		int index = button.id;
 
-		// Is the button one of the amount buttons?
-		if ( ( index >= 0 ) && ( index < GuiEssentiaLevelEmitter.BUTTON_LABELS.length ) )
+		// Was one of the amount buttons pressed?
+		if( ( index >= 0 ) && ( index < GuiEssentiaLevelEmitter.BUTTON_LABELS.length ) )
 		{
-			new PacketEssentiaEmitter( Integer.parseInt( button.displayString ), this.part, this.player ).sendPacketToServer();
+			try
+			{
+				// Read the adjustment
+				int adjustment = Integer.parseInt( button.displayString );
+
+				// Update the server
+				new PacketServerEssentiaEmitter().createWantedAmountAdjustment( adjustment, this.part, this.player ).sendPacketToServer();
+			}
+			catch( NumberFormatException _ )
+			{
+			}
 		}
-		else if ( index == GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX )
+		// Was the redstone mode button pressed?
+		else if( index == GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX )
 		{
-			new PacketEssentiaEmitter( true, this.part, this.player ).sendPacketToServer();
+			// Update the server
+			new PacketServerEssentiaEmitter().createRedstoneModeToggle( this.part, this.player ).sendPacketToServer();
 		}
 	}
 
@@ -301,6 +327,30 @@ public class GuiEssentiaLevelEmitter
 
 		// Draw the filter widget
 		this.aspectFilterSlot.drawWidget();
+
+		// Draw the text field
+		this.amountField.drawTextBox();
+
+		// Is the mouse over any buttons?
+		for( Object obj : this.buttonList )
+		{
+			// Cast to button
+			GuiButton currentButton = (GuiButton)obj;
+
+			// Is the mouse over it?
+			if( GuiHelper.isPointInRegion( currentButton.xPosition, currentButton.yPosition, currentButton.width, currentButton.height, mouseX,
+				mouseY ) )
+			{
+				// Is it the redstone button?
+				if( currentButton instanceof ButtonRedstoneModes )
+				{
+					( (ButtonRedstoneModes)currentButton ).drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+				}
+				
+				// Stop searching
+				break;
+			}
+		}
 	}
 
 	/**
@@ -309,6 +359,9 @@ public class GuiEssentiaLevelEmitter
 	@Override
 	public void drawScreen( int x, int y, float f )
 	{
+		// Call super
+		super.drawScreen( x, y, f );
+
 		// Get the number of buttons
 		int count = GuiEssentiaLevelEmitter.BUTTON_LABELS.length;
 
@@ -319,7 +372,7 @@ public class GuiEssentiaLevelEmitter
 			GuiButton currentButton = (GuiButton)this.buttonList.get( buttonIndex );
 
 			// Is shift being held?
-			if ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) )
+			if( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) )
 			{
 				// Shifted label
 				currentButton.displayString = ( BUTTON_LABELS_SHIFTED[buttonIndex] );
@@ -330,12 +383,6 @@ public class GuiEssentiaLevelEmitter
 				currentButton.displayString = ( BUTTON_LABELS[buttonIndex] );
 			}
 		}
-
-		// Pass to super
-		super.drawScreen( x, y, f );
-
-		// Draw the text field
-		this.amountField.drawTextBox();
 	}
 
 	/**
@@ -344,6 +391,9 @@ public class GuiEssentiaLevelEmitter
 	@Override
 	public void initGui()
 	{
+		// Enable repeat keys
+		Keyboard.enableRepeatEvents( true );
+
 		// Calculate the left most X position
 		int guiLeftX = ( this.width - GUI_X_SIZE ) / 2;
 
@@ -351,7 +401,7 @@ public class GuiEssentiaLevelEmitter
 		int guiTopY = ( this.height - GUI_Y_SIZE ) / 2;
 
 		// Create the amount field
-		this.amountField = new DigitTextField( this.fontRendererObj, guiLeftX + GuiEssentiaLevelEmitter.AMOUNT_OFFSET_X, guiTopY +
+		this.amountField = new DigitTextField( this.fontRendererObj, GuiEssentiaLevelEmitter.AMOUNT_OFFSET_X,
 						GuiEssentiaLevelEmitter.AMOUNT_OFFSET_Y, GuiEssentiaLevelEmitter.AMOUNT_WIDTH, GuiEssentiaLevelEmitter.AMOUNT_HEIGHT );
 
 		// Start focused
@@ -386,7 +436,7 @@ public class GuiEssentiaLevelEmitter
 		}
 
 		// Add the redstone mode button
-		this.buttonList.add( new WidgetRedstoneModes( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX, guiLeftX +
+		this.buttonList.add( new ButtonRedstoneModes( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX, guiLeftX +
 						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_X, guiTopY + GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_Y,
 						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, RedstoneMode.LOW_SIGNAL, true ) );
 
@@ -395,11 +445,21 @@ public class GuiEssentiaLevelEmitter
 	}
 
 	/**
+	 * Called when the gui is closing.
+	 */
+	@Override
+	public void onGuiClosed()
+	{
+		// Disable repeat keys
+		Keyboard.enableRepeatEvents( false );
+	}
+
+	/**
 	 * Returns the amount
 	 * 
 	 * @param amount
 	 */
-	public void setAmountField( long amount )
+	public void onServerUpdateWantedAmount( long amount )
 	{
 		this.amountField.setText( Long.toString( amount ) );
 	}
@@ -409,9 +469,9 @@ public class GuiEssentiaLevelEmitter
 	 * 
 	 * @param mode
 	 */
-	public void setRedstoneMode( RedstoneMode mode )
+	public void onServerUpdateRedstoneMode( RedstoneMode mode )
 	{
-		( (WidgetRedstoneModes)this.buttonList.get( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX ) ).setRedstoneMode( mode );
+		( (ButtonRedstoneModes)this.buttonList.get( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX ) ).setRedstoneMode( mode );
 	}
 
 	/**
@@ -420,7 +480,7 @@ public class GuiEssentiaLevelEmitter
 	@Override
 	public void updateAspects( List<Aspect> aspectList )
 	{
-		if ( ( aspectList == null ) || ( aspectList.isEmpty() ) )
+		if( ( aspectList == null ) || ( aspectList.isEmpty() ) )
 		{
 			this.aspectFilterSlot.setAspect( null );
 		}

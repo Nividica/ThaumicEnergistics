@@ -1,4 +1,4 @@
-package thaumicenergistics.network;
+package thaumicenergistics.network.packet;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -53,18 +53,6 @@ public abstract class AbstractPacket
 	public AbstractPacket()
 	{
 		this.player = null;
-		this.mode = -1;
-		this.useCompression = false;
-	}
-
-	/**
-	 * Creates the packet with the specified player.
-	 * 
-	 * @param player
-	 */
-	public AbstractPacket( EntityPlayer player )
-	{
-		this.player = player;
 		this.mode = -1;
 		this.useCompression = false;
 	}
@@ -466,32 +454,6 @@ public abstract class AbstractPacket
 	 * @param stream
 	 */
 	public abstract void readData( ByteBuf stream );
-
-	/**
-	 * Send this packet to all players.
-	 */
-	public void sendPacketToAllPlayers()
-	{
-		ChannelHandler.sendPacketToAllPlayers( this );
-	}
-
-	/**
-	 * Send this packet to the specified player.
-	 * 
-	 * @param player
-	 */
-	public void sendPacketToPlayer( EntityPlayer player )
-	{
-		ChannelHandler.sendPacketToPlayer( this, player );
-	}
-
-	/**
-	 * Send this packet to the server.
-	 */
-	public void sendPacketToServer()
-	{
-		ChannelHandler.sendPacketToServer( this );
-	}
 
 	/**
 	 * Writes data into the packet stream.

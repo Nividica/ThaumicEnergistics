@@ -1,11 +1,11 @@
 package thaumicenergistics.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import thaumicenergistics.container.ContainerEssentiaCell;
-import thaumicenergistics.network.packet.PacketServerEssentiaCell;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaCell;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Gui for a cell in ME chest.
@@ -27,7 +27,7 @@ public class GuiEssentiaCell extends GuiCellTerminalBase
 	{
 		super( player, new ContainerEssentiaCell( player, world, x, y, z ) );
 		
-		new PacketServerEssentiaCell( this.player ).sendPacketToServer();
+		new PacketServerEssentiaCell().createFullUpdateRequest( player ).sendPacketToServer();
 	}
 	
 }

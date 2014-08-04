@@ -1,4 +1,19 @@
-﻿8/2/2014 0.4.0a
+﻿8/4/2014 0.4.1a
+	Tweaks to provider power usage.
+
+8/3/2014 0.4.1a
+	Corrected emitter inventory orientation.
+	Added redstone particle effects to emitter.
+	Linked redstone mode button tooltips.
+	Bugfix: IO gui doesn't show updated filters on shift click.
+
+8/2/2014 0.4.1a
+	Massive network code cleanup.
+	Rewrite of the essentia emitter.
+	Corrected slot size on emitter gui.
+	Corrected emitter title placement.
+	
+8/2/2014 0.4.0a
 	Added IO research.
 	Added A.C.T research.
 	Added Essentia Terminal research.

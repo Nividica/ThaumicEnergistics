@@ -3,7 +3,7 @@ package thaumicenergistics.gui;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
-import thaumicenergistics.network.packet.PacketServerEssentiaTerminal;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 
 public class GuiEssentiaTerminal
@@ -21,7 +21,7 @@ public class GuiEssentiaTerminal
 		this.terminal = terminal;
 		
 		// Ask for a list update
-		new PacketServerEssentiaTerminal( this.player ).sendPacketToServer();
+		new PacketServerEssentiaTerminal().createFullUpdateRequest( this.player ).sendPacketToServer();
 	}
 	
 }

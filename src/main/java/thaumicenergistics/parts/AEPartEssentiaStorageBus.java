@@ -16,7 +16,7 @@ import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
 import thaumicenergistics.gui.GuiEssentiaStorageBus;
 import thaumicenergistics.inventory.HandlerEssentiaStorageBus;
 import thaumicenergistics.network.IAspectSlotPart;
-import thaumicenergistics.network.packet.PacketAspectSlot;
+import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
@@ -98,7 +98,7 @@ public class AEPartEssentiaStorageBus
 					if ( !player.worldObj.isRemote )
 					{
 						// Update the client
-						this.sendInformation( player );
+						this.onClientRequestFullUpdate( player );
 					}
 
 					return true;
@@ -297,9 +297,14 @@ public class AEPartEssentiaStorageBus
 		this.host.markForSave();
 	}
 
-	public void sendInformation( EntityPlayer player )
+	/**
+	 * Called when a client is requesting a full update
+	 * @param player
+	 */
+	public void onClientRequestFullUpdate( EntityPlayer player )
 	{
-		new PacketAspectSlot( this.filteredAspects ).sendPacketToPlayer( player );
+		// Send the update
+		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
 	}
 
 	@Override
@@ -309,7 +314,10 @@ public class AEPartEssentiaStorageBus
 
 		this.handler.setPrioritizedAspects( this.filteredAspects );
 
-		this.sendInformation( player );
+		// TODO: Update all clients
+		
+		// Update the client
+		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
 	}
 
 	@Override

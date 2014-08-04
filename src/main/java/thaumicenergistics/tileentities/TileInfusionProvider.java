@@ -169,4 +169,13 @@ public class TileInfusionProvider
 		return false;
 	}
 
+	/**
+	 * How much power does this require just to be active?
+	 */
+	@Override
+	protected double getIdlePowerusage()
+	{
+		return 5.0;
+	}
+
 }

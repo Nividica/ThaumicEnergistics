@@ -1,13 +1,14 @@
-package thaumicenergistics.network.packet;
+package thaumicenergistics.network.packet.server;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
-import thaumicenergistics.network.AbstractPacket;
+import thaumicenergistics.network.packet.AbstractPacket;
+import thaumicenergistics.network.packet.AbstractServerPacket;
 import appeng.api.storage.data.IAEItemStack;
 
 public class PacketServerArcaneCraftingTerminal
-	extends AbstractPacket
+	extends AbstractServerPacket
 {
 
 	private static final byte MODE_REQUEST_FULL_LIST = 1;
@@ -17,10 +18,6 @@ public class PacketServerArcaneCraftingTerminal
 	private IAEItemStack itemStack;
 
 	private int mouseButton;
-
-	public PacketServerArcaneCraftingTerminal()
-	{
-	}
 
 	/**
 	 * Create a packet in full list mode.
@@ -152,22 +149,6 @@ public class PacketServerArcaneCraftingTerminal
 				stream.writeInt( this.mouseButton );
 				break;
 		}
-	}
-
-	/**
-	 * Invalid, this packet is to be send to the server.
-	 */
-	@Override
-	public void sendPacketToAllPlayers()
-	{
-	}
-
-	/**
-	 * Invalid, this packet is to be send to the server.
-	 */
-	@Override
-	public void sendPacketToPlayer( EntityPlayer player )
-	{
 	}
 
 }

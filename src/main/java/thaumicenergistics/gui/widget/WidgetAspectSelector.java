@@ -57,7 +57,7 @@ public class WidgetAspectSelector
 
 		description.add( amountToText );
 
-		this.drawHoveringText( description, mouseX - this.hostGUI.guiLeft(), mouseY - this.hostGUI.guiTop(), Minecraft.getMinecraft().fontRenderer );
+		this.drawTooltip( description, mouseX - this.hostGUI.guiLeft(), mouseY - this.hostGUI.guiTop(), Minecraft.getMinecraft().fontRenderer );
 	}
 
 	@Override

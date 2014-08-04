@@ -18,7 +18,7 @@ import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumcraft.common.tiles.TileMagicWorkbench;
 import thaumicenergistics.container.slot.SlotArcaneCraftingResult;
 import thaumicenergistics.container.slot.SlotRestrictive;
-import thaumicenergistics.network.packet.PacketClientArcaneCraftingTerminal;
+import thaumicenergistics.network.packet.client.PacketClientArcaneCraftingTerminal;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.AEApi;
@@ -696,7 +696,7 @@ public class ContainerPartArcaneCraftingTerminal
 	public void postChange( IMEMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource actionSource )
 	{
 		// Send the change to the client
-		new PacketClientArcaneCraftingTerminal().createChangeUpdate( this.player, change ).sendPacketToPlayer( this.player );
+		new PacketClientArcaneCraftingTerminal().createChangeUpdate( this.player, change ).sendPacketToPlayer();
 	}
 
 	/**
@@ -716,7 +716,7 @@ public class ContainerPartArcaneCraftingTerminal
 			if( ( fullList != null ) && ( !fullList.isEmpty() ) )
 			{
 				// Send to the client
-				new PacketClientArcaneCraftingTerminal().createFullListUpdate( player, fullList ).sendPacketToPlayer( player );
+				new PacketClientArcaneCraftingTerminal().createFullListUpdate( player, fullList ).sendPacketToPlayer();
 			}
 		}
 	}
@@ -814,7 +814,7 @@ public class ContainerPartArcaneCraftingTerminal
 			player.inventory.setItemStack( extractedStack.getItemStack() );
 
 			// Send the update to the client
-			new PacketClientArcaneCraftingTerminal().createPlayerHoldingUpdate( player, extractedStack ).sendPacketToPlayer( player );
+			new PacketClientArcaneCraftingTerminal().createPlayerHoldingUpdate( player, extractedStack ).sendPacketToPlayer();
 		}
 
 	}
@@ -886,7 +886,7 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 
 		// Send the update to the client
-		new PacketClientArcaneCraftingTerminal().createPlayerHoldingUpdate( player, leftOverStack ).sendPacketToPlayer( player );
+		new PacketClientArcaneCraftingTerminal().createPlayerHoldingUpdate( player, leftOverStack ).sendPacketToPlayer();
 	}
 
 	/**

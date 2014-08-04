@@ -7,8 +7,8 @@ import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.network.packet.PacketClientEssentiaCell;
-import thaumicenergistics.network.packet.PacketServerEssentiaCell;
+import thaumicenergistics.network.packet.client.PacketClientEssentiaCell;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaCell;
 import thaumicenergistics.util.EssentiaCellTerminalWorker;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
@@ -115,8 +115,8 @@ public class ContainerEssentiaCell
 	{
 		if( this.monitor != null )
 		{
-			new PacketClientEssentiaCell( this.player, EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor
-							.getStorageList() ) ).sendPacketToPlayer( this.player );
+			new PacketClientEssentiaCell().createListUpdate( this.player,
+				EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() ) ).sendPacketToPlayer();
 		}
 	}
 
@@ -145,7 +145,7 @@ public class ContainerEssentiaCell
 	{
 		super.postChange( monitor, change, source );
 
-		new PacketClientEssentiaCell( this.player, this.aspectStackList ).sendPacketToPlayer( this.player );
+		new PacketClientEssentiaCell().createListUpdate( this.player, this.aspectStackList ).sendPacketToPlayer();
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class ContainerEssentiaCell
 		else
 		{
 			// Update the client
-			new PacketClientEssentiaCell( this.player, this.selectedAspect ).sendPacketToPlayer( this.player );
+			new PacketClientEssentiaCell().createSelectedAspectUpdate( this.player, this.selectedAspect ).sendPacketToPlayer();
 		}
 	}
 
@@ -199,7 +199,7 @@ public class ContainerEssentiaCell
 	@Override
 	public void setSelectedAspect( Aspect selectedAspect )
 	{
-		new PacketServerEssentiaCell( this.player, selectedAspect ).sendPacketToServer();
+		new PacketServerEssentiaCell().createUpdateSelectedAspect( this.player, selectedAspect ).sendPacketToServer();
 	}
 
 	/**

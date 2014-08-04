@@ -1,4 +1,4 @@
-package thaumicenergistics.network.packet;
+package thaumicenergistics.network.packet.client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,39 +10,47 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.gui.GuiEssentiaTerminal;
-import thaumicenergistics.network.AbstractPacket;
+import thaumicenergistics.network.packet.AbstractClientPacket;
+import thaumicenergistics.network.packet.AbstractPacket;
 
 public class PacketClientEssentiaTerminal
-	extends AbstractPacket
+	extends AbstractClientPacket
 {
 	public static final int MODE_UPDATE_LIST = 0;
 	public static final int MODE_SET_CURRENT = 1;
 	
 	private List<AspectStack> aspectStackList;
-	private Aspect currentAspect;
+	private Aspect selectedAspect;
 
-	public PacketClientEssentiaTerminal()
+	public PacketClientEssentiaTerminal createListUpdate(EntityPlayer player, List<AspectStack> list)
 	{
-	}
-
-	public PacketClientEssentiaTerminal(EntityPlayer player, List<AspectStack> list)
-	{
-		super( player);
+		// Set the player
+		this.player = player;
 		
+		// Set the mode
 		this.mode = PacketClientEssentiaTerminal.MODE_UPDATE_LIST;
 		
+		// Mark to use compression
 		this.useCompression = true;
 		
+		// Set the list
 		this.aspectStackList = list;
+		
+		return this;
 	}
 
-	public PacketClientEssentiaTerminal(EntityPlayer player, Aspect currentAspect)
+	public PacketClientEssentiaTerminal createSelectedAspectUpdate(EntityPlayer player, Aspect selectedAspect)
 	{
-		super( player );
+		// Set the player
+		this.player = player;
 		
+		// Set the mode
 		this.mode = PacketClientEssentiaTerminal.MODE_SET_CURRENT;
 		
-		this.currentAspect = currentAspect;
+		// Set the selected aspect
+		this.selectedAspect = selectedAspect;
+		
+		return this;
 	}
 
 	@Override
@@ -69,7 +77,7 @@ public class PacketClientEssentiaTerminal
 				{
 					GuiEssentiaTerminal gui = (GuiEssentiaTerminal) Minecraft.getMinecraft().currentScreen;
 					
-					( (ContainerEssentiaTerminal)gui.getContainer() ).receiveSelectedAspect( this.currentAspect );
+					( (ContainerEssentiaTerminal)gui.getContainer() ).receiveSelectedAspect( this.selectedAspect );
 				}
 				
 				break;
@@ -93,7 +101,7 @@ public class PacketClientEssentiaTerminal
 				break;
 				
 			case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
-				this.currentAspect = AbstractPacket.readAspect( stream );
+				this.selectedAspect = AbstractPacket.readAspect( stream );
 				break;
 		}
 	}
@@ -114,7 +122,7 @@ public class PacketClientEssentiaTerminal
 				break;
 				
 			case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
-				AbstractPacket.writeAspect( this.currentAspect, stream );
+				AbstractPacket.writeAspect( this.selectedAspect, stream );
 				break;
 		}
 	}

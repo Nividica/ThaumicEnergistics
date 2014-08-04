@@ -16,8 +16,8 @@ import thaumicenergistics.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.gui.GuiEssentiatIO;
 import thaumicenergistics.network.IAspectSlotPart;
-import thaumicenergistics.network.packet.PacketAspectSlot;
-import thaumicenergistics.network.packet.PacketEssentiaIOBus;
+import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
+import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
@@ -77,15 +77,25 @@ public abstract class AEPartEssentiaIO
 	 */
 	private static final double POWER_DRAIN_PER_ESSENTIA = 0.5;
 
+	private static final RedstoneMode[] REDSTONE_MODES = RedstoneMode.values();
+
 	protected List<Aspect> filteredAspects = new ArrayList<Aspect>( AEPartEssentiaIO.MAX_FILTER_SIZE );
+
 	private RedstoneMode redstoneMode = RedstoneMode.IGNORE;
+
 	protected byte filterSize;
+
 	protected byte upgradeSpeedCount = 0;
+
 	protected boolean redstoneControlled;
+
 	private boolean lastRedstone;
+
 	private int[] availableFilterSlots = { AEPartEssentiaIO.BASE_SLOT_INDEX };
 
 	private UpgradeInventory upgradeInventory = new UpgradeInventory( this.associatedItem, this, AEPartEssentiaIO.UPGRADE_INVENTORY_SIZE );
+
+	private List<ContainerPartEssentiaIOBus> listeners = new ArrayList<ContainerPartEssentiaIOBus>();
 
 	public AEPartEssentiaIO( AEPartsEnum associatedPart )
 	{
@@ -96,6 +106,19 @@ public abstract class AEPartEssentiaIO
 		{
 			this.filteredAspects.add( null );
 		}
+	}
+
+	public void addListener( ContainerPartEssentiaIOBus container )
+	{
+		if( !this.listeners.contains( container ) )
+		{
+			this.listeners.add( container );
+		}
+	}
+
+	public void removeListener( ContainerPartEssentiaIOBus container )
+	{
+		this.listeners.remove( container );
 	}
 
 	private int getTransferAmountPerSecond()
@@ -154,14 +177,14 @@ public abstract class AEPartEssentiaIO
 	{
 		// Get the aspect in the container
 		Aspect aspectToMatch = EssentiaTileContainerHelper.getAspectInContainer( this.facingContainer );
-		
+
 		// Do we have the power to transfer this amount?
 		if( !this.takePowerFromNetwork( amountToFillContainer, Actionable.SIMULATE ) )
 		{
 			// Not enough power
 			return false;
 		}
-		
+
 		// Loop over all aspect filters
 		for( Aspect filterAspect : this.filteredAspects )
 		{
@@ -171,27 +194,27 @@ public abstract class AEPartEssentiaIO
 				// Invalid or not allowed
 				continue;
 			}
-			
+
 			// Are we searching for a match?
 			if( ( aspectToMatch != null ) && ( filterAspect != aspectToMatch ) )
 			{
 				// Not a match
 				continue;
 			}
-			
+
 			// Can we inject any of this into the container
 			if( EssentiaTileContainerHelper.injectIntoContainer( this.facingContainer, 1, filterAspect, Actionable.SIMULATE ) < 1 )
 			{
 				// Container will not accept any of this
 				continue;
 			}
-			
+
 			// Get the gas form of the essentia
 			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( filterAspect );
 
 			// Create the fluid stack
 			IAEFluidStack toExtract = EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( essentiaGas, amountToFillContainer );
-			
+
 			// Simulate a network extraction
 			IAEFluidStack extractedStack = this.extractFluid( toExtract, Actionable.SIMULATE );
 
@@ -200,13 +223,13 @@ public abstract class AEPartEssentiaIO
 			{
 				// Fill the container
 				int filledAmount = (int)EssentiaTileContainerHelper.injectIntoContainer( this.facingContainer, extractedStack, Actionable.MODULATE );
-				
+
 				// Were we able to fill the container?
 				if( filledAmount == 0 )
 				{
 					continue;
 				}
-				
+
 				// Take the power required for the filled amount
 				this.takePowerFromNetwork( (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( filledAmount ), Actionable.MODULATE );
 
@@ -331,19 +354,6 @@ public abstract class AEPartEssentiaIO
 		return this.upgradeInventory;
 	}
 
-	public void loopRedstoneMode( EntityPlayer player )
-	{
-		if( ( this.redstoneMode.ordinal() + 1 ) < RedstoneMode.values().length )
-		{
-			this.redstoneMode = RedstoneMode.values()[this.redstoneMode.ordinal() + 1];
-		}
-		else
-		{
-			this.redstoneMode = RedstoneMode.values()[0];
-		}
-		new PacketEssentiaIOBus( this.redstoneControlled ).sendPacketToPlayer( player );
-	}
-
 	@Override
 	public boolean onActivate( EntityPlayer player, Vec3 position )
 	{
@@ -412,8 +422,34 @@ public abstract class AEPartEssentiaIO
 		{
 		}
 
-		new PacketEssentiaIOBus( this.filterSize ).sendPacketToAllPlayers();
-		new PacketEssentiaIOBus( this.redstoneControlled ).sendPacketToAllPlayers();
+		this.notifyListenersOfFilterSizeChange();
+
+		this.notifyListenersOfRedstoneControlledChange();
+	}
+
+	private void notifyListenersOfRedstoneControlledChange()
+	{
+		for( ContainerPartEssentiaIOBus listener : this.listeners )
+		{
+			listener.setRedstoneControlled( this.redstoneControlled );
+		}
+	}
+
+	private void notifyListenersOfFilterSizeChange()
+	{
+		for( ContainerPartEssentiaIOBus listener : this.listeners )
+		{
+			listener.setFilterSize( this.filterSize );
+		}
+	}
+
+	private void notifyListenersOfRedstoneModeChange()
+	{
+		for( ContainerPartEssentiaIOBus listener : this.listeners )
+		{
+			listener.setRedstoneMode( this.redstoneMode );
+		}
+
 	}
 
 	private void resizeAvailableArray()
@@ -512,24 +548,57 @@ public abstract class AEPartEssentiaIO
 	@Override
 	public void saveChanges()
 	{
+		// TODO: Eh? This seems redundant
 		this.host.markForSave();
 	}
 
-	public void sendInformation( EntityPlayer player )
+	/**
+	 * Called when a player has clicked the redstone button in the gui.
+	 * 
+	 * @param player
+	 */
+	public void onClientRequestChangeRedstoneMode( EntityPlayer player )
 	{
-		new PacketAspectSlot( this.filteredAspects ).sendPacketToPlayer( player );
+		// Get the current ordinal, and increment it
+		int nextOrdinal = this.redstoneMode.ordinal() + 1;
 
-		new PacketEssentiaIOBus( this.redstoneMode ).sendPacketToPlayer( player );
+		// Bounds check
+		if( nextOrdinal >= AEPartEssentiaIO.REDSTONE_MODES.length )
+		{
+			nextOrdinal = 0;
+		}
 
-		new PacketEssentiaIOBus( this.filterSize ).sendPacketToPlayer( player );
+		// Set the mode
+		this.redstoneMode = AEPartEssentiaIO.REDSTONE_MODES[nextOrdinal];
+
+		// Notify listeners
+		this.notifyListenersOfRedstoneModeChange();
+	}
+
+	/**
+	 * Called when a client gui is requesting a full update.
+	 * 
+	 * @param player
+	 */
+	public void onClientRequestFullUpdate( EntityPlayer player )
+	{
+		// Set the filter list
+		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
+
+		// Set the state of the bus
+		new PacketClientEssentiaIOBus().createFullUpdate( player, this.redstoneMode, this.filterSize, this.redstoneControlled ).sendPacketToPlayer();
 	}
 
 	@Override
 	public final void setAspect( int index, Aspect aspect, EntityPlayer player )
 	{
+		// Set the filter
 		this.filteredAspects.set( index, aspect );
 
-		new PacketAspectSlot( this.filteredAspects ).sendPacketToPlayer( player );
+		// TODO: Should really let all clients know about this
+		
+		// Update the client
+		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
 	}
 
 	@Override
@@ -627,12 +696,14 @@ public abstract class AEPartEssentiaIO
 		return false;
 	}
 
+	// TODO: Why are these here?
 	@SideOnly(Side.CLIENT)
 	public void receiveFilterList( List<Aspect> filteredAspects )
 	{
 		this.filteredAspects = filteredAspects;
 	}
 
+	// TODO: Why are these here?
 	@SideOnly(Side.CLIENT)
 	public void receiveFilterSize( byte filterSize )
 	{

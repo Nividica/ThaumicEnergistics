@@ -110,6 +110,11 @@ public abstract class TileProviderBase
 		this.addNewHandler( this.eventHandler );
 	}
 
+	/**
+	 * Configures the provider based on the specified
+	 * attachment side.
+	 * @param attachmentSide
+	 */
 	public void setupProvider( int attachmentSide )
 	{
 		// Ignored on client side
@@ -122,7 +127,7 @@ public abstract class TileProviderBase
 			this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 
 			// Set the idle power usage
-			this.gridProxy.setIdlePowerUsage( 2.0 );
+			this.gridProxy.setIdlePowerUsage( this.getIdlePowerusage() );
 		}
 	}
 
@@ -135,6 +140,8 @@ public abstract class TileProviderBase
 
 	@Override
 	protected abstract ItemStack getItemFromTile( Object obj );
+	
+	protected abstract double getIdlePowerusage();
 
 	@Override
 	public AECableType getCableConnectionType( ForgeDirection direction )

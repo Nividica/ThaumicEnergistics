@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
-import thaumicenergistics.network.packet.PacketServerArcaneCraftingTerminal;
+import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.GuiHelper;

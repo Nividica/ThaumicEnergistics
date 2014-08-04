@@ -155,6 +155,15 @@ public class TileEssentiaProvider
 
 	}
 
+	/**
+	 * How much power does this require just to be active?
+	 */
+	@Override
+	protected double getIdlePowerusage()
+	{
+		return 3.0;
+	}
+
 	
 
 }

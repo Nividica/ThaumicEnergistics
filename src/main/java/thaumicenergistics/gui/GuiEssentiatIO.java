@@ -10,9 +10,9 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
-import thaumicenergistics.gui.widget.WidgetRedstoneModes;
+import thaumicenergistics.gui.widget.ButtonRedstoneModes;
 import thaumicenergistics.network.IAspectSlotGui;
-import thaumicenergistics.network.packet.PacketEssentiaIOBus;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
 import thaumicenergistics.parts.AEPartEssentiaIO;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
@@ -22,6 +22,7 @@ import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+// TODO: make redstone button -.-
 @SideOnly(Side.CLIENT)
 public class GuiEssentiatIO
 	extends GuiWidgetHost
@@ -52,7 +53,8 @@ public class GuiEssentiatIO
 		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 7, 79, 57, this, (byte)1 ) );
 		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 8, 97, 57, this, (byte)2 ) );
 
-		new PacketEssentiaIOBus( this.player, this.part ).sendPacketToServer();
+		// Request a full update
+		new PacketServerEssentiaIOBus().createRequestFullUpdate( this.player, this.part ).sendPacketToServer();
 
 		this.hasNetworkTool = ( (ContainerPartEssentiaIOBus)this.inventorySlots ).hasNetworkTool();
 
@@ -143,28 +145,11 @@ public class GuiEssentiatIO
 	@Override
 	public void actionPerformed( GuiButton button )
 	{
+		// Call super
 		super.actionPerformed( button );
 
-		new PacketEssentiaIOBus( this.player, (byte)button.id, this.part ).sendPacketToServer();
-	}
-
-	public void changeConfig( byte filterSize )
-	{	
-		// Inform our part
-		this.part.receiveFilterSize( filterSize );
-		
-		this.filterSize = filterSize;
-
-		for( int i = 0; i < this.aspectSlotList.size(); i++ )
-		{
-			WidgetAspectSlot slot = this.aspectSlotList.get( i );
-
-			if ( !slot.canRender() )
-			{
-				slot.setAspect( null );
-			}
-
-		}
+		// TODO: Check button ID == redstone button
+		// new PacketServerEssentiaIO().createRequestChangeRedstoneMode( this.player, this.part );
 	}
 
 	@Override
@@ -200,9 +185,9 @@ public class GuiEssentiatIO
 		{
 			for( Object button : this.buttonList )
 			{
-				if ( button instanceof WidgetRedstoneModes )
+				if ( button instanceof ButtonRedstoneModes )
 				{
-					( (WidgetRedstoneModes)button ).drawTooltip( mouseX, mouseY );
+					( (ButtonRedstoneModes)button ).drawTooltip( mouseX, mouseY );
 				}
 			}
 		}
@@ -214,9 +199,46 @@ public class GuiEssentiatIO
 		return this.filterSize;
 	}
 
-	public void setRedstoneControlled( boolean redstoneControled )
+	/**
+	 * Called when the server sends if the bus is redstone controlled.
+	 * @param redstoneControled
+	 */
+	public void onReceiveRedstoneControlled( boolean redstoneControled )
 	{
+		// Set redstone controlled
 		this.redstoneControlled = redstoneControled;
+	}
+
+	/**
+	 * Called when the server sends a filter size update.
+	 * @param filterSize
+	 */
+	public void onReceiveFilterSize( byte filterSize )
+	{	
+		// Inform our part
+		this.part.receiveFilterSize( filterSize );
+		
+		this.filterSize = filterSize;
+	
+		for( int i = 0; i < this.aspectSlotList.size(); i++ )
+		{
+			WidgetAspectSlot slot = this.aspectSlotList.get( i );
+	
+			if ( !slot.canRender() )
+			{
+				slot.setAspect( null );
+			}
+	
+		}
+	}
+
+	public void onReceiveRedstoneMode( RedstoneMode redstoneMode )
+	{
+		// TODO: Fix this once a redstone button has been made
+		if ( this.redstoneControlled && ( this.buttonList.size() > 0 ) )
+		{
+			( (ButtonRedstoneModes)this.buttonList.get( 0 ) ).setRedstoneMode( redstoneMode );
+		}
 	}
 
 	@Override
@@ -234,14 +256,6 @@ public class GuiEssentiatIO
 
 		this.filteredAspects = aspectList;
 
-	}
-
-	public void updateRedstoneMode( RedstoneMode mode )
-	{
-		if ( this.redstoneControlled && ( this.buttonList.size() > 0 ) )
-		{
-			( (WidgetRedstoneModes)this.buttonList.get( 0 ) ).setRedstoneMode( mode );
-		}
 	}
 
 }

@@ -2,8 +2,8 @@ package thaumicenergistics.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.network.packet.PacketClientEssentiaTerminal;
-import thaumicenergistics.network.packet.PacketServerEssentiaTerminal;
+import thaumicenergistics.network.packet.client.PacketClientEssentiaTerminal;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.util.EssentiaCellTerminalWorker;
 import thaumicenergistics.util.EssentiaConversionHelper;
@@ -79,8 +79,8 @@ public class ContainerEssentiaTerminal
 	{
 		if( this.monitor != null )
 		{
-			new PacketClientEssentiaTerminal( this.player, EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor
-							.getStorageList() ) ).sendPacketToPlayer( this.player );
+			new PacketClientEssentiaTerminal().createListUpdate( this.player,
+				EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() ) ).sendPacketToPlayer();
 		}
 	}
 
@@ -106,7 +106,7 @@ public class ContainerEssentiaTerminal
 	{
 		super.postChange( monitor, change, source );
 
-		new PacketClientEssentiaTerminal( this.player, this.aspectStackList ).sendPacketToPlayer( this.player );
+		new PacketClientEssentiaTerminal().createListUpdate( this.player, this.aspectStackList ).sendPacketToPlayer();
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class ContainerEssentiaTerminal
 		else
 		{
 			// Send the change back to the client
-			new PacketClientEssentiaTerminal( this.player, this.selectedAspect ).sendPacketToPlayer( this.player );
+			new PacketClientEssentiaTerminal().createSelectedAspectUpdate( this.player, this.selectedAspect ).sendPacketToPlayer();
 		}
 	}
 
@@ -138,7 +138,7 @@ public class ContainerEssentiaTerminal
 	@Override
 	public void setSelectedAspect( Aspect selectedAspect )
 	{
-		new PacketServerEssentiaTerminal( this.player, selectedAspect ).sendPacketToServer();
+		new PacketServerEssentiaTerminal().createUpdateSelectedAspect( this.player, selectedAspect ).sendPacketToServer();
 	}
 
 	/**

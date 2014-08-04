@@ -1,8 +1,10 @@
 package thaumicenergistics.container;
 
+import appeng.api.config.RedstoneMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
 import thaumicenergistics.parts.AEPartEssentiaIO;
 
 /**
@@ -45,6 +47,11 @@ public class ContainerPartEssentiaIOBus
 	private AEPartEssentiaIO part;
 	
 	/**
+	 * Player associated with the container
+	 */
+	private EntityPlayer player;
+	
+	/**
 	 * Creates the container.
 	 * 
 	 * @param part
@@ -57,6 +64,9 @@ public class ContainerPartEssentiaIOBus
 		// Set the part
 		this.part = part;
 		
+		// Set the player
+		this.player = player;
+		
 		// Bind to the player's inventory
 		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaIOBus.PLAYER_INV_POSITION_Y,
 			ContainerPartEssentiaIOBus.HOTBAR_INV_POSITION_Y );
@@ -67,6 +77,9 @@ public class ContainerPartEssentiaIOBus
 
 		// Bind to the network tool
 		this.bindToNetworkTool( player.inventory, part.getHost().getLocation() );
+		
+		// Register as a listener on the part
+		this.part.addListener( this );
 	}
 
 	@Override
@@ -107,6 +120,30 @@ public class ContainerPartEssentiaIOBus
 		}
 
 		return null;
+	}
+	
+	@Override
+	public void onContainerClosed(EntityPlayer player)
+	{
+		if( this.part != null )
+		{
+			this.part.removeListener( this );
+		}
+	}
+	
+	public void setRedstoneControlled( boolean isRedstoneControlled )
+	{
+		new PacketClientEssentiaIOBus().createSetRedstoneControlled( this.player, isRedstoneControlled ).sendPacketToPlayer();
+	}
+	
+	public void setFilterSize( byte filterSize )
+	{
+		new PacketClientEssentiaIOBus().createSetFilterSize( this.player, filterSize ).sendPacketToPlayer();
+	}
+	
+	public void setRedstoneMode( RedstoneMode redstoneMode )
+	{
+		new PacketClientEssentiaIOBus().createSetRedstoneMode( this.player, redstoneMode ).sendPacketToPlayer();
 	}
 
 }

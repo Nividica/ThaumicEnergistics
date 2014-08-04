@@ -17,13 +17,11 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.IAspectContainer;
-import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.grid.AEPartGridBlock;
 import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.texture.BlockTextureManager;
-import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridHost;
@@ -102,32 +100,6 @@ public abstract class AEPartBase
 				this.host.markForUpdate();
 			}
 		}
-	}
-
-	protected final long checkGasAmount( GaseousEssentia fluid )
-	{
-		if( ( this.gridBlock == null ) || ( fluid == null ) )
-		{
-			return 0;
-		}
-
-		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
-
-		if( monitor == null )
-		{
-			return 0;
-		}
-
-		IAEFluidStack toCheckFor = EssentiaConversionHelper.createAEFluidStackInFluidUnits( fluid, Integer.MAX_VALUE );
-
-		IAEFluidStack result = monitor.extractItems( toCheckFor, Actionable.SIMULATE, new MachineSource( this ) );
-
-		if( result == null )
-		{
-			return 0;
-		}
-
-		return result.getStackSize();
 	}
 
 	protected final IAEFluidStack extractFluid( IAEFluidStack toExtract, Actionable action )
