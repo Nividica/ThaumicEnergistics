@@ -48,19 +48,19 @@ tc.research_text.thaumicenergistics.TERESEARCH=数字化时代也是可以用些
 thaumicenergistics.research_page.TERESEARCH.1=同时作为科学家和奥术学者,你设想有方法能将科技与魔法稳定有效地结合起来.<BR>你需要先细致研究物质与能量相互转换的法则.似乎神秘学中有要素可以做到,科技中也有方法做到同样的事.<BR>这可能需要大量的研究,但你确信这样投入时间是值得的.
 
 # Research conversion cores
-tc.research_name.thaumicenergistics.TECORES=源质数字化
+tc.research_name.thaumicenergistics.TECORES=源质数位化
 tc.research_text.thaumicenergistics.TECORES=几位大小的源质液体
 thaumicenergistics.research_page.TECORES.1=完成要素蒸馏的研究后你突然想到可以数字化储存要素源质.<BR>测试了§l成型核心§r和§l破坏核心§r后你意识到仅需小改动就能做到在源质与数位格式之间转化.<BR>由于某些源质天生具有腐蚀性,就需要在电路表面覆上一层水银来预防侵蚀.
 thaumicenergistics.research_page.TECORES.2=§l扩散核心§r<BR>源质液体相对较高的波动性和所含的能量使得需先将其扩散稀释再数字化.这时候就需要某种缓冲器来容纳这些扩散的源质.<LINE>§l聚集核心§r<BR>压缩并将分散的源质重塑凝为原先的液态就需要这样一个缓冲器.
 
 # Research storage
-tc.research_name.thaumicenergistics.TESTORAGE=存储
+tc.research_name.thaumicenergistics.TESTORAGE=数位化源质存储
 tc.research_text.thaumicenergistics.TESTORAGE=这货真的能储存源质?
 thaumicenergistics.research_page.TESTORAGE.1=检查了现有的数字化存储媒介后你总结出确实可以储存这些数字化的源质.<BR>§l赛特斯石英§r通过注入浓缩的物质,就会获得存储源质的能力,在数字化的格式下也是十分有效的.<BR>你总结了注入的物质越浓缩储存空间就越大的结论.但这不会大于石英本身所能承受的储存大小.
 thaumicenergistics.research_page.TESTORAGE.2=§l组件§r<BR>存储组件以数位格式存储源质.单独是无法操作的,它们需要元件外壳才能与数字网络进行交互.<LINE>§l元件外壳§r<BR>为存储组件提供了接口以及保护.组件与外壳的合成不需要使用魔法或消耗要素.
 
 # Research IO
-tc.research_name.thaumicenergistics.TEIO=运输
+tc.research_name.thaumicenergistics.TEIO=数位化源质运输
 tc.research_text.thaumicenergistics.TEIO=即时运输源质.
 thaumicenergistics.research_page.TEIO.1=现在你已经知道了如何数字化源质,是时候投入实际使用了.<LINE>§l输入&输出§r<BR>通过组合恰当的核心,源质管道与要素罐子你就能输入或输出网络内的源质储存.源质过滤管道的使用让你能设置可输送的要素源质类型.
 thaumicenergistics.research_page.TEIO.2=§l储存总线§r<BR>将输入和输出总线并入一个设备中,让你像使用网络储存一样使用外部的源质容器.由于缺少空间它只能在要素罐子上起效.
