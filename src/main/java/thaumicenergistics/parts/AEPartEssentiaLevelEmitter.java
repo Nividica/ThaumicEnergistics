@@ -266,8 +266,6 @@ public class AEPartEssentiaLevelEmitter
 	@Override
 	public void renderInventory( IPartRenderHelper helper, RenderBlocks renderer )
 	{
-		// TODO: Fix crazy orientation
-
 		// Set the base texture
 		helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[0] );
 		helper.setBounds( 9.0F, 4.0F, 14.0F, 11.0F, 11.0F, 16.0F );

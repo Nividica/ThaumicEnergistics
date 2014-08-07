@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -14,10 +15,12 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.ContainerCellTerminalBase;
 import thaumicenergistics.container.IAspectSelectorContainer;
+import thaumicenergistics.gui.buttons.ButtonSortingMode;
 import thaumicenergistics.gui.widget.AbstractWidget;
-import thaumicenergistics.gui.widget.AspectWidgetComparator;
+import thaumicenergistics.gui.widget.WidgetAspectSelectorComparator;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.gui.widget.WidgetAspectSelector;
 import thaumicenergistics.texture.GuiTextureManager;
@@ -120,11 +123,31 @@ public class GuiCellTerminalBase
 	 * Height of the search field
 	 */
 	private static final int SEARCH_HEIGHT = 10;
-	
+
 	/**
 	 * The maximum number of displayable characters.
 	 */
 	private static final int SEARCH_MAX_CHARS = 14;
+
+	/**
+	 * X position of the sorting mode button.
+	 */
+	private static final int SORT_MODE_BUTTON_POS_X = -18;
+
+	/**
+	 * Y position of the sorting mode button.
+	 */
+	private static final int SORT_MODE_BUTTON_POS_Y = -15;
+
+	/**
+	 * Width and height of the sorting mode button.
+	 */
+	private static final int SORT_MODE_BUTTON_SIZE = 16;
+
+	/**
+	 * ID of the sort mode button.
+	 */
+	private static final int SORT_MODE_BUTTON_ID = 0;
 
 	/**
 	 * Local translation of the title.
@@ -182,6 +205,11 @@ public class GuiCellTerminalBase
 	protected ContainerCellTerminalBase containerBase;
 
 	/**
+	 * Mode used to sort the aspects
+	 */
+	protected ComparatorMode sortMode = ComparatorMode.MODE_ALPHABETIC;
+
+	/**
 	 * Creates the gui.
 	 * 
 	 * @param player
@@ -228,17 +256,17 @@ public class GuiCellTerminalBase
 		// Get the mouse wheel movement
 		int deltaMouseWheel = Mouse.getDWheel();
 
-		if ( deltaMouseWheel < 0 )
+		if( deltaMouseWheel < 0 )
 		{
 			this.currentScroll++ ;
 		}
-		else if ( deltaMouseWheel > 0 )
+		else if( deltaMouseWheel > 0 )
 		{
 			this.currentScroll-- ;
 		}
 
 		// Lower Bounds check the scrolling
-		if ( this.currentScroll < 0 )
+		if( this.currentScroll < 0 )
 		{
 			this.currentScroll = 0;
 		}
@@ -254,7 +282,7 @@ public class GuiCellTerminalBase
 			int blankRows = GuiCellTerminalBase.ROWS_PER_PAGE - rowsToDraw;
 
 			// Would that scroll leave any blank rows?
-			if ( blankRows > 0 )
+			if( blankRows > 0 )
 			{
 				// Subtract the blank rows from the scroll, bounding to 0
 				this.currentScroll = Math.max( 0, this.currentScroll - blankRows );
@@ -275,15 +303,25 @@ public class GuiCellTerminalBase
 		for( WidgetAspectSelector currentWidget : this.aspectWidgets )
 		{
 			// Is the search term in this aspects tag?
-			if ( ( this.searchTerm == "" ) || ( currentWidget.getAspect().getTag().contains( this.searchTerm ) ) )
+			if( ( this.searchTerm == "" ) || ( currentWidget.getAspect().getTag().contains( this.searchTerm ) ) )
 			{
 				this.matchingSearchWidgets.add( currentWidget );
 			}
 		}
+		
+		// Sort
+		this.sortMatchingList();
 
+	}
+	
+	/**
+	 * Sorts the list of matching widgets based on the current
+	 * sorting mode.
+	 */
+	private void sortMatchingList()
+	{
 		// Sort the results
-		Collections.sort( this.matchingSearchWidgets, new AspectWidgetComparator() );
-
+		Collections.sort( this.matchingSearchWidgets, new WidgetAspectSelectorComparator( this.sortMode ) );
 	}
 
 	/**
@@ -318,7 +356,7 @@ public class GuiCellTerminalBase
 		this.drawWidgets( mouseX, mouseY );
 
 		// Do we have a selected aspect?
-		if ( this.selectedAspectStack != null )
+		if( this.selectedAspectStack != null )
 		{
 			// Convert the selected amount into a string
 			String amountToText = Long.toString( this.selectedAspectStack.amount );
@@ -346,7 +384,7 @@ public class GuiCellTerminalBase
 		this.searchBar.textboxKeyTyped( key, keyID );
 
 		// Did they press the escape key?
-		if ( keyID == Keyboard.KEY_ESCAPE )
+		if( keyID == Keyboard.KEY_ESCAPE )
 		{
 			// Slot the screen.
 			this.mc.thePlayer.closeScreen();
@@ -389,7 +427,7 @@ public class GuiCellTerminalBase
 				index = ( ( y + this.currentScroll ) * GuiCellTerminalBase.WIDGETS_PER_ROW ) + x;
 
 				// Is the index in bounds?
-				if ( index < listSize )
+				if( index < listSize )
 				{
 					// Get the widget at this index
 					WidgetAspectSelector currentWidget = this.matchingSearchWidgets.get( index );
@@ -427,7 +465,7 @@ public class GuiCellTerminalBase
 	public void drawWidgets( int mouseX, int mouseY )
 	{
 		// Anything to draw?
-		if ( !this.matchingSearchWidgets.isEmpty() )
+		if( !this.matchingSearchWidgets.isEmpty() )
 		{
 			// Get the scroll position
 			this.updateScrollPosition();
@@ -445,15 +483,15 @@ public class GuiCellTerminalBase
 
 			// Holder for the widget under the mouse
 			WidgetAspectSelector widgetUnderMouse = null;
-			
+
 			for( int index = startingIndex; index < endingIndex; index++ )
 			{
 				// Get the widget
 				WidgetAspectSelector currentWidget = this.matchingSearchWidgets.get( index );
-				
+
 				// Set the position
 				currentWidget.setPosition( widgetPosX, widgetPosY );
-				
+
 				// Draw the widget
 				currentWidget.drawWidget();
 
@@ -468,7 +506,7 @@ public class GuiCellTerminalBase
 				widgetColumnPosition++ ;
 
 				// Are we done with this row?
-				if ( widgetColumnPosition > GuiCellTerminalBase.WIDGETS_PER_ROW )
+				if( widgetColumnPosition > GuiCellTerminalBase.WIDGETS_PER_ROW )
 				{
 					// Reset X
 					widgetPosX = GuiCellTerminalBase.WIDGET_OFFSET_X;
@@ -487,7 +525,7 @@ public class GuiCellTerminalBase
 			}
 
 			// Was the mouse over a widget?
-			if ( widgetUnderMouse != null )
+			if( widgetUnderMouse != null )
 			{
 				// Have the widget draw its tooltip
 				widgetUnderMouse.drawTooltip( mouseX, mouseY );
@@ -536,7 +574,7 @@ public class GuiCellTerminalBase
 		this.searchBar = new GuiTextField( this.fontRendererObj, this.guiLeft + GuiCellTerminalBase.SEARCH_X_OFFSET, this.guiTop +
 						GuiCellTerminalBase.SEARCH_Y_OFFSET, GuiCellTerminalBase.SEARCH_WIDTH, GuiCellTerminalBase.SEARCH_HEIGHT );
 
-		// Set the searchbar to draw in the foreground
+		// Set the search bar to draw in the foreground
 		this.searchBar.setEnableBackgroundDrawing( false );
 
 		// Start focused
@@ -545,6 +583,33 @@ public class GuiCellTerminalBase
 		// Set maximum length
 		this.searchBar.setMaxStringLength( GuiCellTerminalBase.SEARCH_MAX_CHARS );
 
+		// Clear any existing buttons
+		this.buttonList.clear();
+
+		// Add the sort mode button
+		this.buttonList.add( new ButtonSortingMode( GuiCellTerminalBase.SORT_MODE_BUTTON_ID, this.guiLeft +
+						GuiCellTerminalBase.SORT_MODE_BUTTON_POS_X, this.guiTop + GuiCellTerminalBase.SORT_MODE_BUTTON_POS_Y,
+						GuiCellTerminalBase.SORT_MODE_BUTTON_SIZE, GuiCellTerminalBase.SORT_MODE_BUTTON_SIZE ) );
+	}
+
+	/**
+	 * Called when a button is clicked.
+	 */
+	@Override
+	public void actionPerformed( GuiButton button )
+	{
+		// Is the button the sort mode button?
+		if( button.id == GuiCellTerminalBase.SORT_MODE_BUTTON_ID )
+		{
+			// Switch sort modes
+			this.sortMode = ( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC );
+			
+			// Set the button mode
+			( (ButtonSortingMode)button ).setCompareMode( this.sortMode );
+			
+			// Resort the list
+			this.sortMatchingList();
+		}
 	}
 
 	/**
@@ -581,7 +646,7 @@ public class GuiCellTerminalBase
 		for( AspectStack aspectStack : this.containerBase.getAspectStackList() )
 		{
 			// Does this match?
-			if ( aspectStack.aspect == this.containerBase.getSelectedAspect() )
+			if( aspectStack.aspect == this.containerBase.getSelectedAspect() )
 			{
 				// Set our selection
 				this.selectedAspectStack = aspectStack;

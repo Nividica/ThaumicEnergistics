@@ -9,8 +9,8 @@ import net.minecraft.inventory.Slot;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
+import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
-import thaumicenergistics.gui.widget.ButtonRedstoneModes;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
 import thaumicenergistics.parts.AEPartEssentiaIO;
@@ -70,7 +70,7 @@ public class GuiEssentiatIO
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY )
-	{
+	{	
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		Minecraft.getMinecraft().renderEngine.bindTexture( GuiTextureManager.ESSENTIA_IO_BUS.getTexture() );
@@ -79,10 +79,15 @@ public class GuiEssentiatIO
 
 		this.drawTexturedModalRect( this.guiLeft + 179, this.guiTop, 179, 0, 32, 86 );
 
+		// Does the user have a network tool?
 		if ( this.hasNetworkTool )
 		{
+			// Draw the tool gui
 			this.drawTexturedModalRect( this.guiLeft + 179, this.guiTop + 93, 178, 93, 68, 68 );
 		}
+		
+		// Call super
+		super.drawGuiContainerBackgroundLayer( alpha, mouseX, mouseY );
 	}
 
 	protected Slot getSlotAtPosition( int x, int y )

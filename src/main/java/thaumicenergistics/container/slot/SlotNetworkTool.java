@@ -34,6 +34,7 @@ public class SlotNetworkTool
 
 		// Set the inventory
 		this.inventory = inventory;
+		
 	}
 
 	/**

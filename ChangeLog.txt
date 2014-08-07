@@ -1,4 +1,16 @@
-﻿8/4/2014 0.4.1a
+﻿8/7/2014 0.4.2a
+	Bugfix: SMP server crash when placing parts.
+	Bugfix: SMP server crash when Essentia Terminal or ME Chest with essentia cell, is opened.
+	Bugfix: SMP server crash while generating client packets.
+
+8/4/2014 0.4.2a
+	Linked to AppEng2 state texture sheet.
+	Upgrades slots now show appropriate background texture.
+	Bugfix: A.C.T. Does not receive network updates if network contained no items when A.C.T was opened.
+	Added clear crafting grid button to A.C.T.
+	Added sort mode to Essentia Terminal.
+	
+8/4/2014 0.4.1a
 	Tweaks to provider power usage.
 
 8/3/2014 0.4.1a

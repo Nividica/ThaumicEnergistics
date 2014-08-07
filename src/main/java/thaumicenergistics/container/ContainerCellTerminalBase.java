@@ -2,6 +2,8 @@ package thaumicenergistics.container;
 
 import java.util.ArrayList;
 import java.util.List;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,7 +69,7 @@ public abstract class ContainerCellTerminalBase
 	 * sounds again. In ms.
 	 */
 	private static int MINIMUM_SOUND_WAIT = 900;
-	
+
 	/**
 	 * Amount of AE power required per transfer
 	 */
@@ -189,7 +191,7 @@ public abstract class ContainerCellTerminalBase
 	 */
 	public void attachToMonitor()
 	{
-		if ( ( !this.player.worldObj.isRemote ) && ( this.monitor != null ) )
+		if( ( !this.player.worldObj.isRemote ) && ( this.monitor != null ) )
 		{
 			this.monitor.addListener( this, null );
 		}
@@ -257,12 +259,46 @@ public abstract class ContainerCellTerminalBase
 	{
 		super.onContainerClosed( player );
 
-		if ( !player.worldObj.isRemote )
+		if( !player.worldObj.isRemote )
 		{
-			if ( this.monitor != null )
+			if( this.monitor != null )
 			{
 				this.monitor.removeListener( this );
 			}
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void playTransferAudio()
+	{
+		// Get the itemstack in the output slot
+		ItemStack itemStack = this.inventory.getStackInSlot( ContainerCellTerminalBase.OUTPUT_SLOT_ID );
+
+		// Is there anything in the second slot?
+		if( itemStack != null )
+		{
+			// Has the count changed?
+			if( this.lastInventorySecondSlotCount != itemStack.stackSize )
+			{
+				// Has enough time passed to play the sound again?
+				if( ( System.currentTimeMillis() - this.lastSoundPlaytime ) > ContainerCellTerminalBase.MINIMUM_SOUND_WAIT )
+				{
+					// Play swimy sound
+					Minecraft.getMinecraft().getSoundHandler()
+									.playSound( PositionedSoundRecord.func_147674_a( new ResourceLocation( "game.neutral.swim" ), 1.0F ) );
+
+					// Set the playtime
+					this.lastSoundPlaytime = System.currentTimeMillis();
+				}
+
+				// Set the count
+				this.lastInventorySecondSlotCount = itemStack.stackSize;
+			}
+		}
+		else
+		{
+			// Reset the count
+			this.lastInventorySecondSlotCount = 0;
 		}
 	}
 
@@ -270,40 +306,12 @@ public abstract class ContainerCellTerminalBase
 	 * Called when the import or export has changed items.
 	 */
 	@Override
-	public void onInventoryChanged( IInventory sourceInventory)
+	public void onInventoryChanged( IInventory sourceInventory )
 	{
 		// Is this client side?
-		if ( this.player.worldObj.isRemote )
+		if( this.player.worldObj.isRemote )
 		{
-			// Get the itemstack in the output slot
-			ItemStack itemStack = this.inventory.getStackInSlot( ContainerCellTerminalBase.OUTPUT_SLOT_ID );
-
-			// Is there anything in the second slot?
-			if ( itemStack != null )
-			{
-				// Has the count changed?
-				if ( this.lastInventorySecondSlotCount != itemStack.stackSize )
-				{
-					// Has enough time passed to play the sound again?
-					if ( ( System.currentTimeMillis() - this.lastSoundPlaytime ) > ContainerCellTerminalBase.MINIMUM_SOUND_WAIT )
-					{
-						// Play swimy sound
-						Minecraft.getMinecraft().getSoundHandler()
-										.playSound( PositionedSoundRecord.func_147674_a( new ResourceLocation( "game.neutral.swim" ), 1.0F ) );
-
-						// Set the playtime
-						this.lastSoundPlaytime = System.currentTimeMillis();
-					}
-
-					// Set the count
-					this.lastInventorySecondSlotCount = itemStack.stackSize;
-				}
-			}
-			else
-			{
-				// Reset the count
-				this.lastInventorySecondSlotCount = 0;
-			}
+			this.playTransferAudio();
 		}
 	}
 
@@ -320,7 +328,7 @@ public abstract class ContainerCellTerminalBase
 	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
 		this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( monitor.getStorageList() );
-		
+
 		//TODO: Seriously look at how all this is done. Should be using change, not resending the whole bloody list.
 	}
 
@@ -339,7 +347,7 @@ public abstract class ContainerCellTerminalBase
 	 */
 	public void setGui( GuiCellTerminalBase guiBase )
 	{
-		if ( guiBase != null )
+		if( guiBase != null )
 		{
 			this.guiBase = guiBase;
 		}
@@ -358,7 +366,7 @@ public abstract class ContainerCellTerminalBase
 		Slot slot = (Slot)this.inventorySlots.get( slotNumber );
 
 		// Is there a valid slot with and item?
-		if ( ( slot != null ) && ( slot.getHasStack() ) )
+		if( ( slot != null ) && ( slot.getHasStack() ) )
 		{
 			boolean didMerge = false;
 
@@ -366,23 +374,23 @@ public abstract class ContainerCellTerminalBase
 			ItemStack slotStack = slot.getStack();
 
 			// Was the slot clicked the input slot or output slot?
-			if ( ( slotNumber == this.inputSlotNumber ) || ( slotNumber == this.outputSlotNumber ) )
+			if( ( slotNumber == this.inputSlotNumber ) || ( slotNumber == this.outputSlotNumber ) )
 			{
 				// Attempt to merge with the player inventory
 				didMerge = this.mergeSlotWithPlayerInventory( slotStack );
 			}
 			// Was the slot clicked in the player or hotbar inventory?
-			else if ( this.slotClickedWasInPlayerInventory( slotNumber ) || this.slotClickedWasInHotbarInventory( slotNumber ) )
+			else if( this.slotClickedWasInPlayerInventory( slotNumber ) || this.slotClickedWasInHotbarInventory( slotNumber ) )
 			{
 				// Is the item valid for the input slot?
-				if ( ( (Slot)this.inventorySlots.get( this.inputSlotNumber ) ).isItemValid( slotStack ) )
+				if( ( (Slot)this.inventorySlots.get( this.inputSlotNumber ) ).isItemValid( slotStack ) )
 				{
 					// Attempt to merge with the input slot
 					didMerge = this.mergeItemStack( slotStack, this.inputSlotNumber, this.inputSlotNumber + 1, false );
 				}
 
 				// Did we merge?
-				if ( !didMerge )
+				if( !didMerge )
 				{
 					didMerge = this.swapSlotInventoryHotbar( slotNumber, slotStack );
 				}
@@ -390,7 +398,7 @@ public abstract class ContainerCellTerminalBase
 			}
 
 			// Did the merger drain the stack?
-			if ( slotStack.stackSize == 0 )
+			if( slotStack.stackSize == 0 )
 			{
 				// Set the slot to have no item
 				slot.putStack( null );
@@ -416,7 +424,7 @@ public abstract class ContainerCellTerminalBase
 	{
 		this.aspectStackList = aspectStackList;
 
-		if ( this.guiBase != null )
+		if( this.guiBase != null )
 		{
 			this.guiBase.updateAspects();
 		}

@@ -2,6 +2,8 @@ package thaumicenergistics.network.packet.client;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Iterator;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -102,6 +104,16 @@ public class PacketClientArcaneCraftingTerminal
 			return;
 		}
 		
+		// Ensure this is client side
+		if( this.player.worldObj.isRemote )
+		{
+			this.wrappedExecute();
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private void wrappedExecute()
+	{
 		// Get the current screen being displayed to the user
 		Gui gui = Minecraft.getMinecraft().currentScreen;
 
@@ -196,6 +208,14 @@ public class PacketClientArcaneCraftingTerminal
 		switch ( this.mode )
 		{
 			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST:
+				// Is the list null?
+				if( this.fullList == null )
+				{
+					// No items
+					stream.writeInt( 0 );
+					return;
+				}
+				
 				// Write how many items there are
 				stream.writeInt( this.fullList.size() );
 

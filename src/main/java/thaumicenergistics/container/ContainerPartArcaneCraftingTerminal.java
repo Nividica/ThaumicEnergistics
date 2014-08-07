@@ -503,7 +503,7 @@ public class ContainerPartArcaneCraftingTerminal
 			{
 				// Start the autocrafting loop
 				this.doShiftAutoCrafting( player );
-				
+
 				return null;
 			}
 
@@ -532,43 +532,44 @@ public class ContainerPartArcaneCraftingTerminal
 		// All taken care of!
 		return null;
 	}
-	
+
 	/**
 	 * Handles automatically crafting items when the crafting
 	 * output slot is shift+clicked
+	 * 
 	 * @param player
 	 */
 	private void doShiftAutoCrafting( EntityPlayer player )
 	{
 		// Tracks if a crafting result could be placed in the players inventory
 		boolean didMerge;
-		
+
 		// Tracks how many items we have made
 		int autoCraftCounter = 0;
-		
+
 		// Get the result slot
 		SlotArcaneCraftingResult resultSlot = (SlotArcaneCraftingResult)this.getSlot( this.resultSlotNumber );
-		
+
 		// Get the current crafting result.
 		ItemStack resultStack = resultSlot.getStack();
-		
+
 		// Make a copy of it
 		ItemStack slotStackOriginal = resultStack.copy();
-		
+
 		for( autoCraftCounter = slotStackOriginal.stackSize; autoCraftCounter <= 64; autoCraftCounter += slotStackOriginal.stackSize )
 		{
 			// Attempt to merge with the player inventory
 			didMerge = ( this.mergeSlotWithPlayerInventory( resultStack ) || this.mergeSlotWithHotbarInventory( resultStack ) );
-			
+
 			// Were we able to merge?
 			if( didMerge )
-			{	
+			{
 				// Let the result slot know it was picked up
 				resultSlot.onPickupFromSlotViaTransfer( player, resultStack );
-				
+
 				// Get the stack in the result slot now.
 				resultStack = resultSlot.getStack();
-				
+
 				// Is it empty?
 				if( ( resultStack == null ) || ( resultStack.stackSize == 0 ) )
 				{
@@ -587,18 +588,70 @@ public class ContainerPartArcaneCraftingTerminal
 				// Unable to merge results, break the loop
 				break;
 			}
-			
+
 		}
-		
+
 		// Did we do any crafting?
 		if( autoCraftCounter > 0 )
 		{
 			// Mark the result slot as dirty
 			resultSlot.onSlotChanged();
-			
+
 			// Send changes
 			this.detectAndSendChanges();
 		}
+	}
+
+	/**
+	 * Attempts to clear the crafting grid by placing the items
+	 * back in the ME network
+	 */
+	public void onClientRequestClearCraftingGrid( EntityPlayer player )
+	{
+		// Ignored client side
+		if( player.worldObj.isRemote )
+		{
+			return;
+		}
+
+		for( int index = this.firstCraftingSlotNumber; index <= this.lastCraftingSlotNumber; index++ )
+		{
+			// Get the slot
+			Slot slot = (Slot)this.inventorySlots.get( index );
+
+			// Ensure the slot is not null and has a stack
+			if( ( slot == null ) || ( !slot.getHasStack() ) )
+			{
+				continue;
+			}
+
+			// Set the stack
+			ItemStack slotStack = slot.getStack();
+
+			// Inject into the ME network
+			boolean didMerge = this.mergeWithMENetwork( slotStack );
+
+			// Did any merge?
+			if( !didMerge )
+			{
+				continue;
+			}
+
+			// Did the merger drain the stack?
+			if( ( slotStack == null ) || ( slotStack.stackSize == 0 ) )
+			{
+				// Set the slot to have no item
+				slot.putStack( null );
+			}
+			else
+			{
+				// Inform the slot its stack changed;
+				slot.onSlotChanged();
+			}
+		}
+
+		// Update
+		this.detectAndSendChanges();
 	}
 
 	/**
@@ -712,12 +765,8 @@ public class ContainerPartArcaneCraftingTerminal
 			// Get the full list
 			IItemList<IAEItemStack> fullList = this.monitor.getStorageList();
 
-			// Is it valid?
-			if( ( fullList != null ) && ( !fullList.isEmpty() ) )
-			{
-				// Send to the client
-				new PacketClientArcaneCraftingTerminal().createFullListUpdate( player, fullList ).sendPacketToPlayer();
-			}
+			// Send to the client
+			new PacketClientArcaneCraftingTerminal().createFullListUpdate( player, fullList ).sendPacketToPlayer();
 		}
 	}
 
@@ -892,6 +941,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * Attempts to extract an item from the network.
 	 * Used when crafting to replenish the crafting grid.
+	 * 
 	 * @param itemStack
 	 * @return
 	 */
@@ -899,7 +949,7 @@ public class ContainerPartArcaneCraftingTerminal
 	{
 		// Create the request
 		IAEItemStack request = AEApi.instance().storage().createItemStack( itemStack );
-		
+
 		// Set the request amount to one
 		request.setStackSize( 1 );
 
@@ -911,10 +961,10 @@ public class ContainerPartArcaneCraftingTerminal
 		{
 			return replenishment.getItemStack();
 		}
-		
+
 		// Get a list of all items in the ME network
 		IItemList<IAEItemStack> networkItems = this.monitor.getStorageList();
-		
+
 		// Search all items
 		for( IAEItemStack potentialMatch : networkItems )
 		{
@@ -923,7 +973,7 @@ public class ContainerPartArcaneCraftingTerminal
 			{
 				// Found a match
 				request = potentialMatch.copy();
-				
+
 				// Set the request amount to one
 				request.setStackSize( 1 );
 
@@ -936,28 +986,34 @@ public class ContainerPartArcaneCraftingTerminal
 					return replenishment.getItemStack();
 				}
 			}
-			
+
 		}
-		
+
 		// No matches at all :(
 		return null;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private boolean doStacksMatch( IAEItemStack keyStack, IAEItemStack potentialMatch )
 	{
-		// NOTE: Check this again later
+		// Do the stacks directly match?
+		if( keyStack.getItemStack().isItemEqual( potentialMatch.getItemStack() ) )
+		{
+			return true;
+		}
 		
+		// No direct match, see if they match via the ore dictionary
+
 		// Get the ore dictionary Id's
 		int keyID = OreDictionary.getOreID( keyStack.getItemStack() );
 		int matchID = OreDictionary.getOreID( potentialMatch.getItemStack() );
-		
+
 		// Is either item not registered?
 		if( ( keyID == -1 ) || ( matchID == -1 ) )
 		{
 			return false;
 		}
-		
+
 		// Do the keys match?
 		return keyID == matchID;
 	}

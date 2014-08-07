@@ -3,6 +3,8 @@ package thaumicenergistics.network.packet.client;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +20,7 @@ public class PacketClientEssentiaCell
 {
 	private static final int MODE_UPDATE_LIST = 0;
 	private static final int MODE_SELECTED_ASPECT = 1;
-	
+
 	protected List<AspectStack> aspectStackList;
 	protected Aspect selectedAspect;
 
@@ -29,13 +31,13 @@ public class PacketClientEssentiaCell
 
 		// Set the mode
 		this.mode = PacketClientEssentiaCell.MODE_UPDATE_LIST;
-		
+
 		// Mark to use compression
 		this.useCompression = true;
 
 		// Set the list
 		this.aspectStackList = list;
-		
+
 		return this;
 	}
 
@@ -49,54 +51,54 @@ public class PacketClientEssentiaCell
 
 		// Set the aspect
 		this.selectedAspect = selectedAspect;
-		
+
 		return this;
 	}
 
 	@Override
 	public void execute()
 	{
-		switch ( this.mode )
+		// Ensure we have a player
+		if( this.player == null )
 		{
-			case PacketClientEssentiaCell.MODE_UPDATE_LIST:
-				// Ensure we have a player
-				if ( ( this.player != null ) )
-				{
-					// Get the current screen being displayed to the user
-					Gui gui = Minecraft.getMinecraft().currentScreen;
-					
-					// Is that screen the gui for the cell?
-					if ( gui instanceof GuiEssentiaCell )
-					{	
-						// Get the gui's container
-						ContainerEssentiaCell container = (ContainerEssentiaCell)( ( (GuiEssentiaCell)gui ).inventorySlots );
-
-						// Update the aspect list
-						container.updateAspectList( this.aspectStackList );
-					}
-				}
-				break;
-
-			case PacketClientEssentiaCell.MODE_SELECTED_ASPECT:
-				// Ensure we have a player
-				if ( ( this.player != null ) )
-				{
-					// Get the current screen being displayed to the user
-					Gui gui = Minecraft.getMinecraft().currentScreen;
-					
-					// Is that screen the gui for the cell?
-					if ( gui instanceof GuiEssentiaCell )
-					{	
-						// Get the gui's container
-						ContainerEssentiaCell container = (ContainerEssentiaCell)( ( (GuiEssentiaCell)gui ).inventorySlots );
-
-						// Set the selected aspect
-						container.receiveSelectedAspect( this.selectedAspect );
-					}
-				}
-				break;
+			return;
 		}
 
+		// Ensure this is client side
+		if( this.player.worldObj.isRemote )
+		{
+			this.wrappedExecute();
+		}
+
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void wrappedExecute()
+	{
+		// Get the current screen being displayed to the user
+		Gui gui = Minecraft.getMinecraft().currentScreen;
+
+		// Is that screen the gui for the cell?
+		if( gui instanceof GuiEssentiaCell )
+		{
+			// Get the gui's container
+			ContainerEssentiaCell container = (ContainerEssentiaCell)( ( (GuiEssentiaCell)gui ).inventorySlots );
+
+			switch ( this.mode )
+			{
+				case PacketClientEssentiaCell.MODE_UPDATE_LIST:
+
+					// Update the aspect list
+					container.updateAspectList( this.aspectStackList );
+					break;
+
+				case PacketClientEssentiaCell.MODE_SELECTED_ASPECT:
+
+					// Set the selected aspect
+					container.receiveSelectedAspect( this.selectedAspect );
+					break;
+			}
+		}
 	}
 
 	@Override
@@ -109,7 +111,7 @@ public class PacketClientEssentiaCell
 				this.aspectStackList = new ArrayList<AspectStack>();
 
 				// Read in the aspect list from the stream
-				while ( stream.readableBytes() > 0 )
+				while( stream.readableBytes() > 0 )
 				{
 					this.aspectStackList.add( new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() ) );
 				}

@@ -14,6 +14,7 @@ public class PacketServerArcaneCraftingTerminal
 	private static final byte MODE_REQUEST_FULL_LIST = 1;
 	private static final byte MODE_REQUEST_EXTRACTION = 2;
 	private static final byte MODE_REQUEST_DEPOSIT = 3;
+	private static final byte MODE_REQUEST_CLEAR_GRID = 4;
 
 	private IAEItemStack itemStack;
 
@@ -26,7 +27,7 @@ public class PacketServerArcaneCraftingTerminal
 	 * 
 	 * @param player
 	 */
-	public PacketServerArcaneCraftingTerminal createFullListRequest( EntityPlayer player )
+	public PacketServerArcaneCraftingTerminal createRequestFullList( EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -46,7 +47,7 @@ public class PacketServerArcaneCraftingTerminal
 	 * @param mouseButton
 	 * @return
 	 */
-	public PacketServerArcaneCraftingTerminal createExtractRequest( EntityPlayer player, IAEItemStack itemStack, int mouseButton )
+	public PacketServerArcaneCraftingTerminal createRequestExtract( EntityPlayer player, IAEItemStack itemStack, int mouseButton )
 	{
 		// Set player
 		this.player = player;
@@ -70,7 +71,7 @@ public class PacketServerArcaneCraftingTerminal
 	 * @param player
 	 * @return
 	 */
-	public PacketServerArcaneCraftingTerminal createDepositRequest( EntityPlayer player, int mouseButton )
+	public PacketServerArcaneCraftingTerminal createRequestDeposit( EntityPlayer player, int mouseButton )
 	{
 		// Set the player
 		this.player = player;
@@ -80,6 +81,23 @@ public class PacketServerArcaneCraftingTerminal
 		
 		// Set the button
 		this.mouseButton = mouseButton;
+
+		return this;
+	}
+
+	/**
+	 * Create a packet to request that the crafting grid be cleared.
+	 * the ME network. Use only when needed.
+	 * 
+	 * @param player
+	 */
+	public PacketServerArcaneCraftingTerminal createRequestClearGrid( EntityPlayer player )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_CLEAR_GRID;
 
 		return this;
 	}
@@ -105,6 +123,11 @@ public class PacketServerArcaneCraftingTerminal
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
 					// Request deposit
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestDeposit( this.player, this.mouseButton );
+					break;
+					
+				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_CLEAR_GRID:
+					// Request clear grid
+					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestClearCraftingGrid( this.player );
 					break;
 			}
 		}

@@ -4,18 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.texture.TextureMap;
 import org.lwjgl.opengl.GL11;
-import thaumcraft.api.aspects.Aspect;
 import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.aspect.AspectStack;
 
 public class WidgetAspectSelector
 	extends AbstractAspectWidget
 {
-	private long amount = 0L;
-	private int color;
-	private int borderThickness;
+	/**
+	 * Thickness of the selector outline.
+	 */
+	private static final int borderThickness = 1;
+	
+	/**
+	 * The essentia amount for our aspect.
+	 */
+	private long amount = 0;
+	
+	/**
+	 * Color of the outline when we are selected
+	 */
+	private int selectorOulineColor;
 
 	public WidgetAspectSelector( IAspectSelectorGui selectorGui, AspectStack stack, int xPos, int yPos )
 	{
@@ -23,11 +32,19 @@ public class WidgetAspectSelector
 
 		this.amount = stack.amount;
 
-		this.color = -16711681;
-
-		this.borderThickness = 1;
+		// Set selector color to cyan
+		this.selectorOulineColor = 0xFF00FFFF;
 	}
 
+	/**
+	 * Draws the selector outline.
+	 * @param posX
+	 * @param posY
+	 * @param heigth
+	 * @param width
+	 * @param color
+	 * @param thickness
+	 */
 	private void drawHollowRectWithCorners( int posX, int posY, int heigth, int width, int color, int thickness )
 	{
 		Gui.drawRect( posX, posY, posX + heigth, posY + thickness, color );
@@ -41,6 +58,9 @@ public class WidgetAspectSelector
 		Gui.drawRect( posX, posY + width, posX + thickness + 1, ( posY + width ) - thickness - 1, color );
 	}
 
+	/**
+	 * Draws the aspect name and amount
+	 */
 	@Override
 	public void drawTooltip( int mouseX, int mouseY )
 	{
@@ -49,55 +69,77 @@ public class WidgetAspectSelector
 			return;
 		}
 
-		String amountToText = Long.toString( this.amount );
+		// Create the description lines
+		List<String> descriptionLines = new ArrayList<String>( 2 );
 
-		List<String> description = new ArrayList<String>();
+		// Add the name
+		descriptionLines.add( this.aspect.getName() );
 
-		description.add( this.aspect.getName() );
+		// Add the amount
+		descriptionLines.add( Long.toString( this.amount ) );
 
-		description.add( amountToText );
-
-		this.drawTooltip( description, mouseX - this.hostGUI.guiLeft(), mouseY - this.hostGUI.guiTop(), Minecraft.getMinecraft().fontRenderer );
+		// Draw the tooltip
+		this.drawTooltip( descriptionLines, mouseX - this.hostGUI.guiLeft(), mouseY - this.hostGUI.guiTop(), Minecraft.getMinecraft().fontRenderer );
 	}
 
+	/**
+	 * Draws the aspect icon and selector border if it is selected.
+	 */
 	@Override
 	public void drawWidget()
 	{
-		Minecraft.getMinecraft().renderEngine.bindTexture( TextureMap.locationBlocksTexture );
+		// Bind the block master texture
+		//Minecraft.getMinecraft().renderEngine.bindTexture( TextureMap.locationBlocksTexture );
 
+		// Ensure we have an aspect
+		if( this.aspect == null )
+		{
+			return;
+		}
+		// Disable lighting
 		GL11.glDisable( GL11.GL_LIGHTING );
 
+		// Enable blending
 		GL11.glEnable( GL11.GL_BLEND );
 
-		GL11.glBlendFunc( 770, 771 );
+		// Set the blending mode to blend alpha
+		GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
 
+		// Full white
 		GL11.glColor3f( 1.0F, 1.0F, 1.0F );
 
-		if( this.aspect != null )
+		// Draw the aspect
+		UtilsFX.drawTag( this.xPosition + 1, this.yPosition + 1, this.aspect, 0, 0, this.zLevel );
+
+		// Get the selected aspect
+		AspectStack selectedStack = ( (IAspectSelectorGui)this.hostGUI ).getSelectedAspect();
+
+		// Is there a selectedStack, and does it match ours?
+		if( ( selectedStack != null ) && ( selectedStack.aspect == this.aspect  ) )
 		{
-			UtilsFX.drawTag( this.xPosition + 1, this.yPosition + 1, this.aspect, 0, 0, this.zLevel );
-			
-			AspectStack terminalFluid = ( (IAspectSelectorGui)this.hostGUI ).getSelectedAspect();
-
-			Aspect currentAspect = terminalFluid != null ? terminalFluid.aspect : null;
-
-			if( this.aspect == currentAspect )
-			{
-				this.drawHollowRectWithCorners( this.xPosition, this.yPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE, this.color,
-					this.borderThickness );
-			}
+			this.drawHollowRectWithCorners( this.xPosition, this.yPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE, this.selectorOulineColor,
+				WidgetAspectSelector.borderThickness );
 		}
 
+		// Enable lighting
 		GL11.glEnable( GL11.GL_LIGHTING );
 
+		// Disable blending
 		GL11.glDisable( GL11.GL_BLEND );
 	}
 
+	/**
+	 * Gets the essentia amount for our aspect.
+	 * @return
+	 */
 	public long getAmount()
 	{
 		return this.amount;
 	}
 
+	/**
+	 * Called when we are clicked
+	 */
 	@Override
 	public void mouseClicked()
 	{
@@ -107,9 +149,21 @@ public class WidgetAspectSelector
 		}
 	}
 
+	/**
+	 * Sets the essentia amount for our aspect. 
+	 * @param amount
+	 */
 	public void setAmount( long amount )
 	{
 		this.amount = amount;
+	}
+	
+	/**
+	 * Gets an aspect stack matching our aspect and amount
+	 */
+	public AspectStack getAspectStackRepresentation()
+	{
+		return new AspectStack( this.aspect, this.amount );
 	}
 
 }

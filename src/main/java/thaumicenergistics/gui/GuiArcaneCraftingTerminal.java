@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,6 +13,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
+import thaumicenergistics.gui.buttons.ButtonClearCraftingGrid;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
 import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
@@ -22,7 +24,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.render.AppEngRenderItem;
 
-// TODO: Add clear crafting grid button
 public class GuiArcaneCraftingTerminal
 	extends GuiWidgetHost
 {
@@ -57,47 +58,47 @@ public class GuiArcaneCraftingTerminal
 	private static final int ME_COLUMNS = 9;
 
 	/**
-	 * Total number of item widgets
+	 * Total number of item widgets.
 	 */
 	private static final int ME_WIDGET_COUNT = ME_ROWS * ME_COLUMNS;
 
 	/**
-	 * Starting X position of the items
+	 * Starting X position of the items.
 	 */
 	private static final int ME_ITEM_POS_X = 7;
 
 	/**
-	 * Starting Y position of the items
+	 * Starting Y position of the items.
 	 */
 	private static final int ME_ITEM_POS_Y = 17;
 
 	/**
-	 * Total width of the ME item grid
+	 * Total width of the ME item grid.
 	 */
 	private static final int ME_GRID_WIDTH = 161;
 
 	/**
-	 * Total height of the ME item grid
+	 * Total height of the ME item grid.
 	 */
 	private static final int ME_GRID_HEIGHT = 53;
 
 	/**
-	 * X offset to draw the search field
+	 * X offset to draw the search field.
 	 */
 	private static final int SEARCH_X_OFFSET = 98;
 
 	/**
-	 * Y offset to draw the search field
+	 * Y offset to draw the search field.
 	 */
 	private static final int SEARCH_Y_OFFSET = 6;
 
 	/**
-	 * Width of the search field
+	 * Width of the search field.
 	 */
 	private static final int SEARCH_WIDTH = 65;
 
 	/**
-	 * Height of the search field
+	 * Height of the search field.
 	 */
 	private static final int SEARCH_HEIGHT = 10;
 
@@ -105,6 +106,21 @@ public class GuiArcaneCraftingTerminal
 	 * The maximum number of characters that can be typed in.
 	 */
 	private static final int SEARCH_MAX_CHARS = 15;
+
+	/**
+	 * X offset to draw the clear grid button.
+	 */
+	private static final int CLEAR_GRID_POS_X = 98;
+
+	/**
+	 * Y offset to draw the clear grid button.
+	 */
+	private static final int CLEAR_GRID_POS_Y = 89;
+
+	/**
+	 * ID of the clear grid button
+	 */
+	private static final int CLEAR_GRID_ID = 0;
 
 	/**
 	 * Holds the list of all items in the ME network
@@ -181,10 +197,11 @@ public class GuiArcaneCraftingTerminal
 		}
 
 	}
-	
+
 	/**
 	 * If the user has clicked on an item widget this will inform the server
 	 * so that the item can be extracted from the AE network.
+	 * 
 	 * @param mouseX
 	 * @param mouseY
 	 * @param mouseButton
@@ -206,7 +223,7 @@ public class GuiArcaneCraftingTerminal
 				if( widgetStack != null )
 				{
 					// Let the server know the user is requesting an itemstack.
-					new PacketServerArcaneCraftingTerminal().createExtractRequest( this.player, widgetStack, mouseButton ).sendPacketToServer();
+					new PacketServerArcaneCraftingTerminal().createRequestExtract( this.player, widgetStack, mouseButton ).sendPacketToServer();
 				}
 
 				// Stop searching
@@ -225,7 +242,7 @@ public class GuiArcaneCraftingTerminal
 		{
 			return;
 		}
-		
+
 		// Create an iterator
 		Iterator<IAEItemStack> networkItemIterator = this.networkItems.iterator();
 
@@ -414,7 +431,7 @@ public class GuiArcaneCraftingTerminal
 			if( this.player.inventory.getItemStack() != null )
 			{
 				// Inform the server the user would like to deposit the currently held item into the ME network.
-				new PacketServerArcaneCraftingTerminal().createDepositRequest( this.player, mouseButton ).sendPacketToServer();
+				new PacketServerArcaneCraftingTerminal().createRequestDeposit( this.player, mouseButton ).sendPacketToServer();
 			}
 			else
 			{
@@ -448,7 +465,7 @@ public class GuiArcaneCraftingTerminal
 		Keyboard.enableRepeatEvents( true );
 
 		// Request a full update from the server
-		new PacketServerArcaneCraftingTerminal().createFullListRequest( this.player ).sendPacketToServer();
+		new PacketServerArcaneCraftingTerminal().createRequestFullList( this.player ).sendPacketToServer();
 		this.hasRequested = true;
 
 		// Set up the search bar
@@ -464,6 +481,27 @@ public class GuiArcaneCraftingTerminal
 		// Set maximum length
 		this.searchBar.setMaxStringLength( GuiArcaneCraftingTerminal.SEARCH_MAX_CHARS );
 
+		// Clear any existing buttons
+		this.buttonList.clear();
+
+		// Create the clear grid button
+		this.buttonList.add( new ButtonClearCraftingGrid( GuiArcaneCraftingTerminal.CLEAR_GRID_ID, this.guiLeft +
+						GuiArcaneCraftingTerminal.CLEAR_GRID_POS_X, this.guiTop + GuiArcaneCraftingTerminal.CLEAR_GRID_POS_Y, 8, 8 ) );
+
+	}
+
+	/**
+	 * Called when a button is clicked.
+	 */
+	@Override
+	public void actionPerformed( GuiButton button )
+	{
+		// Was it the clear grid button?
+		if( button.id == GuiArcaneCraftingTerminal.CLEAR_GRID_ID )
+		{
+			// Attempt to clear the grid
+			new PacketServerArcaneCraftingTerminal().createRequestClearGrid( this.player ).sendPacketToServer();
+		}
 	}
 
 	/**
@@ -497,6 +535,7 @@ public class GuiArcaneCraftingTerminal
 
 	/**
 	 * Called to update the amount of an item in the ME network.
+	 * 
 	 * @param change
 	 */
 	public void onReceiveChange( IAEItemStack change )
@@ -545,6 +584,8 @@ public class GuiArcaneCraftingTerminal
 	{
 		// Set the list
 		this.networkItems = itemList;
+		
+		System.out.println( itemList );
 
 		// Check pending changes
 		if( ( this.networkItems != null ) && ( !this.pendingChanges.isEmpty() ) )

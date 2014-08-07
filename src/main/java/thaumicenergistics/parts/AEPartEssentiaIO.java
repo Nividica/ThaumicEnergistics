@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -33,7 +32,6 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -539,12 +537,6 @@ public abstract class AEPartEssentiaIO
 		return super.readFromStream( stream );
 	}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public final void renderDynamic( double x, double y, double z, IPartRenderHelper helper, RenderBlocks renderer )
-	{
-	}
-
 	@Override
 	public void saveChanges()
 	{
@@ -696,14 +688,24 @@ public abstract class AEPartEssentiaIO
 		return false;
 	}
 
-	// TODO: Why are these here?
+	/**
+	 * Called client-side to keep the client-side part in sync
+	 * with the server-side part. This aids in keeping the
+	 * gui in sync even in high network lag enviroments. 
+	 * @param filteredAspects
+	 */
 	@SideOnly(Side.CLIENT)
 	public void receiveFilterList( List<Aspect> filteredAspects )
 	{
 		this.filteredAspects = filteredAspects;
 	}
 
-	// TODO: Why are these here?
+	/**
+	 * Called client-side to keep the client-side part in sync
+	 * with the server-side part. This aids in keeping the
+	 * gui in sync even in high network lag enviroments. 
+	 * @param filterSize
+	 */
 	@SideOnly(Side.CLIENT)
 	public void receiveFilterSize( byte filterSize )
 	{

@@ -8,9 +8,9 @@ import net.minecraft.inventory.Slot;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
+import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
-import thaumicenergistics.gui.widget.ButtonRedstoneModes;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
@@ -145,6 +145,9 @@ public class GuiEssentiaStorageBus
 		{
 			this.drawTexturedModalRect( this.guiLeft + 179, this.guiTop + 93, 178, 93, 68, 68 );
 		}
+		
+		// Call super
+		super.drawGuiContainerBackgroundLayer( alpha, mouseX, mouseY );
 
 	}
 

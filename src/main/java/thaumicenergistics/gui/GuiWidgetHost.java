@@ -1,11 +1,10 @@
 package thaumicenergistics.gui;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import thaumicenergistics.gui.widget.IWidgetHost;
 
 public abstract class GuiWidgetHost
-	extends GuiContainer
+	extends GuiWithUpgradeSlots
 	implements IWidgetHost
 {
 

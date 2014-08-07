@@ -4,38 +4,32 @@ import java.util.Comparator;
 
 /**
  * Compares one aspect stack against another.
+ * 
  * @author Nividica
- *
+ * 
  */
-public class AspectStackComparator implements Comparator<AspectStack>
+public class AspectStackComparator
+	implements Comparator<AspectStack>
 {
-	/**
-	 * Compare based on name
-	 */
-	public static final int MODE_ALPHABETIC = 0;
-	
-	/**
-	 * Compare based on amount
-	 */
-	public static final int MODE_AMOUNT = 1;
-	
-	public int mode;
-	
+
+	private ComparatorMode mode;
+
 	/**
 	 * Creates the comparator with sorting mode alphabetic.
 	 */
 	public AspectStackComparator()
 	{
-		this.mode = AspectStackComparator.MODE_ALPHABETIC;
+		this( ComparatorMode.MODE_ALPHABETIC );
 	}
 
 	/**
 	 * Creates the comparator with specified sorting mode.
 	 * If the mode is unrecognized, the list will not be sorted.
 	 * 
-	 * @param mode Mode to sort by.
+	 * @param mode
+	 * Mode to sort by.
 	 */
-	public AspectStackComparator( int mode )
+	public AspectStackComparator( ComparatorMode mode )
 	{
 		this.mode = mode;
 	}
@@ -43,18 +37,50 @@ public class AspectStackComparator implements Comparator<AspectStack>
 	@Override
 	public int compare( AspectStack left, AspectStack right )
 	{
-		switch( this.mode )
+		switch ( this.mode )
 		{
-			case AspectStackComparator.MODE_ALPHABETIC:
+			case MODE_ALPHABETIC:
 				// Compare tags
-				return left.aspect.getTag().compareTo( right.aspect.getTag() );
-				
-			case AspectStackComparator.MODE_AMOUNT:
+				return this.compareByTag( left, right );
+
+			case MODE_AMOUNT:
 				// Compare amounts
-				return (int)( left.amount - right.amount );
+				int comp = this.compareByAmount( left, right );
+				
+				// Are the amounts equal?
+				if( comp == 0 )
+				{
+					// Compare tags
+					comp = this.compareByTag( left, right );
+				}
+				
+				return comp;
 		}
-		
+
 		return 0;
+	}
+	
+	private int compareByTag( AspectStack left, AspectStack right )
+	{
+		return left.aspect.getTag().compareTo( right.aspect.getTag() );
+	}
+	
+	private int compareByAmount( AspectStack left, AspectStack right )
+	{
+		return (int)( right.amount - left.amount );
+	}
+
+	public enum ComparatorMode
+	{
+			/**
+			 * Compare based on name
+			 */
+			MODE_ALPHABETIC,
+
+			/**
+			 * Compare based on amount
+			 */
+			MODE_AMOUNT;
 	}
 
 }

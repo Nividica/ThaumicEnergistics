@@ -1,26 +1,18 @@
-package thaumicenergistics.gui.widget;
+package thaumicenergistics.gui.buttons;
 
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-import org.lwjgl.opengl.GL11;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.texture.AEStateIcons;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.RedstoneMode;
 import com.google.common.base.Splitter;
 
 public class ButtonRedstoneModes
-	extends GuiButton
+	extends AbstractAEButton
 {
-	/**
-	 * Location of the redstone modes texture
-	 */
-	private static final ResourceLocation TEXTURE_REDSTONE_MODES = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/gui/redstonemodes.png" );
-
 	/**
 	 * Localization header string for tooltips
 	 */
@@ -32,7 +24,7 @@ public class ButtonRedstoneModes
 	private RedstoneMode redstoneMode;
 
 	/**
-	 * True when this button is attacted to a level emitter
+	 * True when this button is attached to a level emitter
 	 */
 	private boolean emitter = false;
 
@@ -64,43 +56,14 @@ public class ButtonRedstoneModes
 	 */
 	public ButtonRedstoneModes( int ID, int xPos, int yPos, int width, int height, RedstoneMode mode, boolean emitter )
 	{
-		super( ID, xPos, yPos, width, height, "Display String" );
+		// Call super
+		super( ID, xPos, yPos, width, height, null );
 
+		// Set the if we are attached to an emitter
 		this.emitter = emitter;
 
-		this.redstoneMode = mode;
-	}
-
-	/**
-	 * Draws the button
-	 */
-	@Override
-	public void drawButton( Minecraft minecraftInstance, int x, int y )
-	{
-		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-
-		minecraftInstance.getTextureManager().bindTexture( TEXTURE_REDSTONE_MODES );
-
-		this.drawTexturedModalRect( this.xPosition, this.yPosition, 0, 16, 16, 16 );
-
-		switch ( this.redstoneMode )
-		{
-			case HIGH_SIGNAL:
-				this.drawTexturedModalRect( this.xPosition, this.yPosition, 16, 0, 16, 16 );
-				break;
-
-			case IGNORE:
-				this.drawTexturedModalRect( this.xPosition, this.yPosition, 48, 0, 16, 16 );
-				break;
-
-			case LOW_SIGNAL:
-				this.drawTexturedModalRect( this.xPosition, this.yPosition, 0, 0, 16, 16 );
-				break;
-
-			case SIGNAL_PULSE:
-				this.drawTexturedModalRect( this.xPosition, this.yPosition, 32, 0, 16, 16 );
-				break;
-		}
+		// Set the redstone mode
+		this.setRedstoneMode( mode );
 	}
 
 	/**
@@ -158,6 +121,27 @@ public class ButtonRedstoneModes
 	 */
 	public void setRedstoneMode( RedstoneMode mode )
 	{
+		// Set the mode
 		this.redstoneMode = mode;
+
+		// Set the icon
+		switch ( this.redstoneMode )
+		{
+			case HIGH_SIGNAL:
+				this.icon = AEStateIcons.REDSTONE_HIGH;
+				break;
+
+			case IGNORE:
+				this.icon = AEStateIcons.REDSTONE_IGNORE;
+				break;
+
+			case LOW_SIGNAL:
+				this.icon = AEStateIcons.REDSTONE_LOW;
+				break;
+
+			case SIGNAL_PULSE:
+				this.icon = AEStateIcons.REDSTONE_PULSE;
+				break;
+		}
 	}
 }

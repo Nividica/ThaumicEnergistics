@@ -2,6 +2,8 @@ package thaumicenergistics.network.packet.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -18,88 +20,94 @@ public class PacketClientEssentiaTerminal
 {
 	public static final int MODE_UPDATE_LIST = 0;
 	public static final int MODE_SET_CURRENT = 1;
-	
+
 	private List<AspectStack> aspectStackList;
 	private Aspect selectedAspect;
 
-	public PacketClientEssentiaTerminal createListUpdate(EntityPlayer player, List<AspectStack> list)
+	public PacketClientEssentiaTerminal createListUpdate( EntityPlayer player, List<AspectStack> list )
 	{
 		// Set the player
 		this.player = player;
-		
+
 		// Set the mode
 		this.mode = PacketClientEssentiaTerminal.MODE_UPDATE_LIST;
-		
+
 		// Mark to use compression
 		this.useCompression = true;
-		
+
 		// Set the list
 		this.aspectStackList = list;
-		
+
 		return this;
 	}
 
-	public PacketClientEssentiaTerminal createSelectedAspectUpdate(EntityPlayer player, Aspect selectedAspect)
+	public PacketClientEssentiaTerminal createSelectedAspectUpdate( EntityPlayer player, Aspect selectedAspect )
 	{
 		// Set the player
 		this.player = player;
-		
+
 		// Set the mode
 		this.mode = PacketClientEssentiaTerminal.MODE_SET_CURRENT;
-		
+
 		// Set the selected aspect
 		this.selectedAspect = selectedAspect;
-		
+
 		return this;
 	}
 
 	@Override
 	public void execute()
-	{	
-		switch ( this.mode )
+	{
+		// Ensure we have a player
+		if( this.player == null )
 		{
-			case PacketClientEssentiaTerminal.MODE_UPDATE_LIST:
-				if( this.player != null )
-				{
-					Gui gui = Minecraft.getMinecraft().currentScreen;
-					
-					if( gui instanceof GuiEssentiaTerminal )
-					{
-						ContainerEssentiaTerminal container = (ContainerEssentiaTerminal)( (GuiEssentiaTerminal) gui ).inventorySlots;
-						
-						container.updateAspectList( this.aspectStackList );
-					}
-				}
-				break;
-				
-			case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
-				if( ( this.player != null ) && ( Minecraft.getMinecraft().currentScreen instanceof GuiEssentiaTerminal ) )
-				{
-					GuiEssentiaTerminal gui = (GuiEssentiaTerminal) Minecraft.getMinecraft().currentScreen;
-					
-					( (ContainerEssentiaTerminal)gui.getContainer() ).receiveSelectedAspect( this.selectedAspect );
-				}
-				
-				break;
+			return;
 		}
 
+		// Ensure this is client side
+		if( this.player.worldObj.isRemote )
+		{
+			this.wrappedExecute();
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void wrappedExecute()
+	{
+		Gui gui = Minecraft.getMinecraft().currentScreen;
+
+		if( gui instanceof GuiEssentiaTerminal )
+		{
+			ContainerEssentiaTerminal container = (ContainerEssentiaTerminal)( (GuiEssentiaTerminal)gui ).inventorySlots;
+			
+			switch ( this.mode )
+			{
+				case PacketClientEssentiaTerminal.MODE_UPDATE_LIST:
+					container.updateAspectList( this.aspectStackList );
+					break;
+
+				case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
+					container.receiveSelectedAspect( this.selectedAspect );
+					break;
+			}
+		}
 	}
 
 	@Override
 	public void readData( ByteBuf stream )
 	{
-		
+
 		switch ( this.mode )
 		{
 			case PacketClientEssentiaTerminal.MODE_UPDATE_LIST:
 				this.aspectStackList = new ArrayList<AspectStack>();
 
-				while ( stream.readableBytes() > 0 )
+				while( stream.readableBytes() > 0 )
 				{
 					this.aspectStackList.add( new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() ) );
 				}
 				break;
-				
+
 			case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
 				this.selectedAspect = AbstractPacket.readAspect( stream );
 				break;
@@ -109,7 +117,7 @@ public class PacketClientEssentiaTerminal
 	@Override
 	public void writeData( ByteBuf stream )
 	{
-		
+
 		switch ( this.mode )
 		{
 			case PacketClientEssentiaTerminal.MODE_UPDATE_LIST:
@@ -120,7 +128,7 @@ public class PacketClientEssentiaTerminal
 					stream.writeLong( stack.amount );
 				}
 				break;
-				
+
 			case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
 				AbstractPacket.writeAspect( this.selectedAspect, stream );
 				break;

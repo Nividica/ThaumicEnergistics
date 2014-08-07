@@ -403,6 +403,7 @@ public abstract class AEPartBase
 	@Override
 	public void renderDynamic( double x, double y, double z, IPartRenderHelper helper, RenderBlocks renderer )
 	{
+		// Ignored
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -485,6 +486,7 @@ public abstract class AEPartBase
 		return null;
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void renderInventoryBusLights( IPartRenderHelper helper, RenderBlocks renderer )
 	{
 		// Set color to white
@@ -515,6 +517,7 @@ public abstract class AEPartBase
 		helper.renderInventoryFace( lightTexture, ForgeDirection.WEST, renderer );
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void renderStaticBusLights( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
 	{
 		IIcon busColorTexture = BlockTextureManager.BUS_COLOR.getTextures()[0];

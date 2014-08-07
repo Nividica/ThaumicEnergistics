@@ -9,7 +9,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
-import thaumicenergistics.gui.widget.ButtonRedstoneModes;
+import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.network.IAspectSlotGui;

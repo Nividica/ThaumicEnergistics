@@ -1,5 +1,7 @@
 package thaumicenergistics.network.packet.client;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -117,6 +119,16 @@ public class PacketClientEssentiaIOBus
 			return;
 		}
 
+		// Ensure this is client side
+		if( this.player.worldObj.isRemote )
+		{
+			this.wrappedExecute();
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void wrappedExecute()
+	{
 		// Get the gui
 		Gui gui = Minecraft.getMinecraft().currentScreen;
 
@@ -142,14 +154,14 @@ public class PacketClientEssentiaIOBus
 				// Set filter size
 				( (GuiEssentiatIO)gui ).onReceiveFilterSize( this.filterSize );
 				break;
-				
+
 			case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
 				// Set redstone controlled
 				( (GuiEssentiatIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
-				
+
 				// Set redstone mode
 				( (GuiEssentiatIO)gui ).onReceiveRedstoneMode( this.redstoneMode );
-				
+
 				// Set filter size
 				( (GuiEssentiatIO)gui ).onReceiveFilterSize( this.filterSize );
 				break;
@@ -163,7 +175,7 @@ public class PacketClientEssentiaIOBus
 		{
 			case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_CONTROLLED:
 				// Read redstone controlled
-				this.redstoneControlled = stream.readBoolean();				
+				this.redstoneControlled = stream.readBoolean();
 				break;
 
 			case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_MODE:
@@ -175,14 +187,14 @@ public class PacketClientEssentiaIOBus
 				// Read the filter size
 				this.filterSize = stream.readByte();
 				break;
-				
+
 			case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
 				// Read redstone controlled
 				this.redstoneControlled = stream.readBoolean();
-				
+
 				// Read the redstone mode ordinal
 				this.redstoneMode = PacketClientEssentiaIOBus.REDSTONE_MODES[stream.readByte()];
-				
+
 				// Read the filter size
 				this.filterSize = stream.readByte();
 				break;
@@ -208,18 +220,18 @@ public class PacketClientEssentiaIOBus
 				// Write the filter size
 				stream.writeByte( this.filterSize );
 				break;
-				
+
 			case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
 				// Write redstone controlled
 				stream.writeBoolean( this.redstoneControlled );
-				
+
 				// Write the redstone mode ordinal
 				stream.writeByte( (byte)this.redstoneMode.ordinal() );
-				
+
 				// Write the filter size
 				stream.writeByte( this.filterSize );
 				break;
-				
+
 		}
 	}
 

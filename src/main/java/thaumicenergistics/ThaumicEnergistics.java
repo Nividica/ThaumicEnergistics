@@ -29,7 +29,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.4.1a"; // Note: don't forget to change the mcmod.info file as well
+	public static final String VERSION = "0.4.2a"; // Note: don't forget to change the mcmod.info file as well
 
 	/**
 	 * Singleton instance
