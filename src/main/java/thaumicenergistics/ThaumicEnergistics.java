@@ -29,7 +29,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.4.2a"; // Note: don't forget to change the mcmod.info file as well
+	public static final String VERSION = "0.4.3a"; // Note: don't forget to change the mcmod.info file as well
 
 	/**
 	 * Singleton instance
@@ -102,14 +102,13 @@ public class ThaumicEnergistics
 /*
  * TODO -- Planned Features
  * Occlude aspect names if not researched
- * Terminal sort modes, by amount, by name. Include ascending and descending order
- * Add aspect tags (thaumometer) to all items
+ * Terminal sort mode ascending and descending order
  * Additional UI's redstone mode, priority window
- * Level emitter multi-mode
  * Give Spatial IO the ability to move my Tile Entities.
  * 
  * --Possible Features
  * Wireless terminal
+ * Level emitter multi-mode
  * 
  */
 

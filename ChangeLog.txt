@@ -1,4 +1,7 @@
-﻿8/7/2014 0.4.2a
+﻿8/8/2014 0.4.3a
+	Bugfix: SSP packets not getting executed.
+
+8/7/2014 0.4.2a
 	Bugfix: SMP server crash when placing parts.
 	Bugfix: SMP server crash when Essentia Terminal or ME Chest with essentia cell, is opened.
 	Bugfix: SMP server crash while generating client packets.

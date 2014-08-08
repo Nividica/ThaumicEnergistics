@@ -1,5 +1,7 @@
 package thaumicenergistics.network.packet.client;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -83,41 +85,35 @@ public class PacketClientEssentiaEmitter
 		return this;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void execute()
+	protected void wrappedExecute()
 	{
-		// Ensure we have a player
-		if( this.player == null )
-		{
-			return;
-		}
-
 		// Get the current screen being displayed to the user
 		Gui gui = Minecraft.getMinecraft().currentScreen;
 
 		// Ensure it is a GuiEssentiaLevelEmitter
-		if( !( gui instanceof GuiEssentiaLevelEmitter ) )
+		if( gui instanceof GuiEssentiaLevelEmitter )
 		{
-			return;
-		}
-		
-		switch ( this.mode )
-		{
-			case PacketClientEssentiaEmitter.MODE_FULL_UPDATE:
-				// Full update
-				( (GuiEssentiaLevelEmitter)gui ).onServerUpdateWantedAmount( this.wantedAmount );
-				( (GuiEssentiaLevelEmitter)gui ).onServerUpdateRedstoneMode( this.redstoneMode );
-				break;
 
-			case PacketClientEssentiaEmitter.MODE_UPDATE_WANTED:
-				// Update wanted amount
-				( (GuiEssentiaLevelEmitter)gui ).onServerUpdateWantedAmount( this.wantedAmount );
-				break;
+			switch ( this.mode )
+			{
+				case PacketClientEssentiaEmitter.MODE_FULL_UPDATE:
+					// Full update
+					( (GuiEssentiaLevelEmitter)gui ).onServerUpdateWantedAmount( this.wantedAmount );
+					( (GuiEssentiaLevelEmitter)gui ).onServerUpdateRedstoneMode( this.redstoneMode );
+					break;
 
-			case PacketClientEssentiaEmitter.MODE_UPDATE_REDSTONE:
-				// Update redstone mode
-				( (GuiEssentiaLevelEmitter)gui ).onServerUpdateRedstoneMode( this.redstoneMode );
-				break;
+				case PacketClientEssentiaEmitter.MODE_UPDATE_WANTED:
+					// Update wanted amount
+					( (GuiEssentiaLevelEmitter)gui ).onServerUpdateWantedAmount( this.wantedAmount );
+					break;
+
+				case PacketClientEssentiaEmitter.MODE_UPDATE_REDSTONE:
+					// Update redstone mode
+					( (GuiEssentiaLevelEmitter)gui ).onServerUpdateRedstoneMode( this.redstoneMode );
+					break;
+			}
 		}
 	}
 

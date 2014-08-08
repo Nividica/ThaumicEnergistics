@@ -537,10 +537,12 @@ public abstract class AEPartEssentiaIO
 		return super.readFromStream( stream );
 	}
 
+	/**
+	 * Called when the internal inventory changes.
+	 */
 	@Override
 	public void saveChanges()
 	{
-		// TODO: Eh? This seems redundant
 		this.host.markForSave();
 	}
 

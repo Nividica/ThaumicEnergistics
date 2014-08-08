@@ -1,10 +1,8 @@
 package thaumicenergistics.network.packet.client;
 
+import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +12,8 @@ import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.gui.GuiEssentiaTerminal;
 import thaumicenergistics.network.packet.AbstractClientPacket;
 import thaumicenergistics.network.packet.AbstractPacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketClientEssentiaTerminal
 	extends AbstractClientPacket
@@ -55,24 +55,9 @@ public class PacketClientEssentiaTerminal
 		return this;
 	}
 
-	@Override
-	public void execute()
-	{
-		// Ensure we have a player
-		if( this.player == null )
-		{
-			return;
-		}
-
-		// Ensure this is client side
-		if( this.player.worldObj.isRemote )
-		{
-			this.wrappedExecute();
-		}
-	}
-
 	@SideOnly(Side.CLIENT)
-	private void wrappedExecute()
+	@Override
+	protected void wrappedExecute()
 	{
 		Gui gui = Minecraft.getMinecraft().currentScreen;
 

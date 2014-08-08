@@ -1,5 +1,8 @@
 package thaumicenergistics.network.packet;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import thaumicenergistics.network.ChannelHandler;
 
 /**
@@ -10,6 +13,24 @@ import thaumicenergistics.network.ChannelHandler;
 public abstract class AbstractClientPacket
 	extends AbstractPacket
 {
+	@Override
+	public final void execute()
+	{
+		// Ensure we have a player
+		if( this.player == null )
+		{
+			return;
+		}
+
+		// Ensure this is client side
+		if( FMLCommonHandler.instance().getEffectiveSide().isClient() )
+		{
+			this.wrappedExecute();
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	protected abstract void wrappedExecute();
 
 	/**
 	 * Send this packet to all players.

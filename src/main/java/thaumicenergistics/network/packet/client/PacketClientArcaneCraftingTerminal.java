@@ -95,24 +95,9 @@ public class PacketClientArcaneCraftingTerminal
 		return this;
 	}
 
-	@Override
-	public void execute()
-	{
-		// Ensure we have a player
-		if( this.player == null )
-		{
-			return;
-		}
-		
-		// Ensure this is client side
-		if( this.player.worldObj.isRemote )
-		{
-			this.wrappedExecute();
-		}
-	}
-	
 	@SideOnly(Side.CLIENT)
-	private void wrappedExecute()
+	@Override
+	protected void wrappedExecute()
 	{
 		// Get the current screen being displayed to the user
 		Gui gui = Minecraft.getMinecraft().currentScreen;
