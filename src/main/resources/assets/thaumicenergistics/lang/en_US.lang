@@ -38,6 +38,7 @@ thaumicenergistics.tooltip.essentia.cell.types=%d of %d essentia types stored.
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=Arcane Terminal
+thaumicenergistics.gui.essentia.cell.title=Essentia Cell
 
 #Research Tab
 tc.research_category.thaumicenergistics=Energistics

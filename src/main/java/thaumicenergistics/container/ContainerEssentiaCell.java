@@ -9,6 +9,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCell;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCell;
+import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.EssentiaCellTerminalWorker;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
@@ -75,7 +76,7 @@ public class ContainerEssentiaCell
 		super( player );
 
 		// Is this server side?
-		if( !this.player.worldObj.isRemote )
+		if( EffectiveSide.isServerSide() )
 		{
 			// Get the tile entity for the chest
 			this.hostChest = (TileChest)world.getTileEntity( x, y, z );
@@ -111,7 +112,7 @@ public class ContainerEssentiaCell
 	 * it to the client.
 	 */
 	@Override
-	public void forceAspectUpdate()
+	public void onClientRequestFullUpdate()
 	{
 		if( this.monitor != null )
 		{
@@ -128,7 +129,7 @@ public class ContainerEssentiaCell
 	{
 		super.onContainerClosed( player );
 
-		if( !player.worldObj.isRemote )
+		if( EffectiveSide.isServerSide() )
 		{
 			for( int i = 0; i < 2; i++ )
 			{
@@ -170,7 +171,7 @@ public class ContainerEssentiaCell
 		}
 
 		// Is this the client?
-		if( this.player.worldObj.isRemote )
+		if( EffectiveSide.isClientSide() )
 		{
 			// Update the gui
 			this.guiBase.updateSelectedAspect();

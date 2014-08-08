@@ -6,9 +6,11 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.ContainerCellTerminalBase;
 import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.gui.GuiEssentiaTerminal;
@@ -32,14 +34,30 @@ public class AEPartEssentiaTerminal
 	 */
 	private static final double IDLE_POWER_DRAIN = 1.2D;
 	
-	private List<ContainerEssentiaTerminal> containers = new ArrayList<ContainerEssentiaTerminal>();
+	/**
+	 * Key used to read and write sorting mode from/to NBT.
+	 */
+	private static final String SORT_MODE_NBT_KEY = "sortMode";
+	
+	/**
+	 * List of currently opened containers.
+	 */
+	private List<ContainerEssentiaTerminal> listeners = new ArrayList<ContainerEssentiaTerminal>();
 
+	/**
+	 * Machine representation of this part.
+	 */
 	private MachineSource machineSource = new MachineSource( this );
 	
 	/**
 	 * Tracks if the inventory has been locked for work.
 	 */
 	private boolean inventoryLocked = false;
+	
+	/**
+	 * The sorting mode used to display aspects.
+	 */
+	private ComparatorMode sortMode = ComparatorMode.MODE_ALPHABETIC;
 
 	private PrivateInventory inventory = new PrivateInventory( ThaumicEnergistics.MOD_ID + ".part.aspect.terminal", 2, 64 )
 	{
@@ -64,7 +82,7 @@ public class AEPartEssentiaTerminal
 	{
 		if ( container instanceof ContainerEssentiaTerminal )
 		{
-			this.containers.add( (ContainerEssentiaTerminal) container );
+			this.listeners.add( (ContainerEssentiaTerminal) container );
 		}
 	}
 
@@ -103,7 +121,7 @@ public class AEPartEssentiaTerminal
 
 	public void removeContainer( ContainerEssentiaTerminal containerAspectTerminal )
 	{
-		this.containers.remove( containerAspectTerminal );
+		this.listeners.remove( containerAspectTerminal );
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -241,8 +259,6 @@ public class AEPartEssentiaTerminal
 			}
 		}
 	}
-	
-
 
 	/**
 	 * Determines how much power the part takes for just
@@ -253,4 +269,72 @@ public class AEPartEssentiaTerminal
 	{
 		return AEPartEssentiaTerminal.IDLE_POWER_DRAIN;
 	}
+	
+	/**
+	 * Called when a player has changed sorting modes.
+	 * @param sortMode
+	 */
+	public void onClientRequestSortingModeChange( ComparatorMode sortMode )
+	{
+		// Set the sort mode
+		this.sortMode = sortMode;
+		
+		// Update clients
+		this.notifyListenersSortingModeChanged();
+		
+		// Mark that we need saving
+		this.host.markForSave();
+		
+	}
+	
+	/**
+	 * Informs all open containers to update their respective clients
+	 * that the sorting mode has changed.
+	 */
+	public void notifyListenersSortingModeChanged()
+	{
+		for( ContainerEssentiaTerminal listener : this.listeners )
+		{
+			listener.onSortingModeChanged( this.sortMode );
+		}
+	}
+	
+	/**
+	 * Gets the current sorting mode
+	 * @return
+	 */
+	public ComparatorMode getSortingMode()
+	{
+		return this.sortMode;
+	}
+	
+	/**
+	 * Called to save our state
+	 */
+	@Override
+	public void writeToNBT( NBTTagCompound data )
+	{
+		// Call super
+		super.writeToNBT( data );
+		
+		// Write the sorting mode
+		data.setInteger( SORT_MODE_NBT_KEY, this.sortMode.ordinal() );
+	}
+	
+	/**
+	 * Called to read our saved state
+	 */
+	@Override
+	public void readFromNBT( NBTTagCompound data )
+	{
+		// Call super
+		super.readFromNBT( data );
+		
+		// Read the sorting mode
+		if( data.hasKey( SORT_MODE_NBT_KEY ) )
+		{
+			this.sortMode = ComparatorMode.values()[data.getInteger( SORT_MODE_NBT_KEY )];
+		}
+	}
+	
 }

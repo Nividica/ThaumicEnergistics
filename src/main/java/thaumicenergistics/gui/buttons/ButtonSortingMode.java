@@ -17,7 +17,7 @@ public class ButtonSortingMode
 	 * 
 	 * @param mode
 	 */
-	public void setCompareMode( ComparatorMode mode )
+	public void setSortMode( ComparatorMode mode )
 	{
 		switch ( mode )
 		{

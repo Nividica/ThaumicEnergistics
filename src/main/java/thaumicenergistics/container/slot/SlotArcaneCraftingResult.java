@@ -9,6 +9,7 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
+import thaumicenergistics.util.EffectiveSide;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class SlotArcaneCraftingResult
@@ -81,7 +82,7 @@ public class SlotArcaneCraftingResult
 		}
 
 		// From here on the server will handle the rest
-		if( player.worldObj.isRemote )
+		if( EffectiveSide.isClientSide() )
 		{
 			return;
 		}
@@ -182,7 +183,7 @@ public class SlotArcaneCraftingResult
 		this.onPickupFromSlotViaTransfer( player, itemStack );
 		
 		// Is this server side?
-		if( !player.worldObj.isRemote )
+		if( EffectiveSide.isServerSide() )
 		{
 			// Send any changes to the client
 			this.hostContianer.detectAndSendChanges();

@@ -97,6 +97,9 @@ public class PacketClientEssentiaIOBus
 	{
 		// Set the player
 		this.player = player;
+		
+		// Set the mode
+		this.mode = PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE;
 
 		// Set the redstone mode
 		this.redstoneMode = redstoneMode;
@@ -141,11 +144,11 @@ public class PacketClientEssentiaIOBus
 				break;
 
 			case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
-				// Set redstone controlled
-				( (GuiEssentiatIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
-
 				// Set redstone mode
 				( (GuiEssentiatIO)gui ).onReceiveRedstoneMode( this.redstoneMode );
+				
+				// Set redstone controlled
+				( (GuiEssentiatIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
 
 				// Set filter size
 				( (GuiEssentiatIO)gui ).onReceiveFilterSize( this.filterSize );

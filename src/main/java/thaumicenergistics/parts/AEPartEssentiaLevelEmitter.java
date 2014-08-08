@@ -21,6 +21,7 @@ import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaEmitter;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
+import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import appeng.api.config.RedstoneMode;
@@ -339,7 +340,7 @@ public class AEPartEssentiaLevelEmitter
 		this.filterAspect = aspect;
 
 		// Are we client side?
-		if( player.worldObj.isRemote )
+		if( EffectiveSide.isClientSide() )
 		{
 			return;
 		}

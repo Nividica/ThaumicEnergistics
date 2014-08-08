@@ -1,6 +1,7 @@
 package thaumicenergistics.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
+import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaTerminal;
@@ -22,6 +23,13 @@ public class GuiEssentiaTerminal
 		
 		// Ask for a list update
 		new PacketServerEssentiaTerminal().createFullUpdateRequest( this.player ).sendPacketToServer();
+	}
+
+	@Override
+	protected void sortModeButtonClicked( ComparatorMode modeRequested )
+	{
+		// Request update from server
+		new PacketServerEssentiaTerminal().createRequestChangeSortMode( this.player, this.terminal, modeRequested ).sendPacketToServer();
 	}
 	
 }

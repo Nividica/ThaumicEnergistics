@@ -2,6 +2,7 @@ package thaumicenergistics.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.ContainerEssentiaCell;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCell;
 import cpw.mods.fml.relauncher.Side;
@@ -28,6 +29,13 @@ public class GuiEssentiaCell extends GuiCellTerminalBase
 		super( player, new ContainerEssentiaCell( player, world, x, y, z ) );
 		
 		new PacketServerEssentiaCell().createFullUpdateRequest( player ).sendPacketToServer();
+	}
+
+	@Override
+	protected void sortModeButtonClicked( ComparatorMode modeRequested )
+	{
+		// TODO: Store sort mode on cell, somehow, maybe?
+		this.onSortModeChanged( modeRequested );
 	}
 	
 }

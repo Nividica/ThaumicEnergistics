@@ -2,9 +2,11 @@ package thaumicenergistics.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaTerminal;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
+import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.EssentiaCellTerminalWorker;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.config.Actionable;
@@ -33,6 +35,11 @@ public class ContainerEssentiaTerminal
 	 * The AE machine source representation of the terminal.
 	 */
 	private MachineSource machineSource = null;
+	
+	/**
+	 * The player associated with this open container
+	 */
+	private EntityPlayer player;
 
 	/**
 	 * Creates the container
@@ -46,6 +53,9 @@ public class ContainerEssentiaTerminal
 	{
 		// Call the super
 		super( player );
+		
+		// Set the player
+		this.player = player;
 
 		// Set the terminal
 		this.terminal = terminal;
@@ -54,7 +64,7 @@ public class ContainerEssentiaTerminal
 		this.machineSource = terminal.getTerminalMachineSource();
 
 		// Is this server side?
-		if( !player.worldObj.isRemote )
+		if( EffectiveSide.isServerSide() )
 		{
 			// Get the monitor
 			this.monitor = terminal.getGridBlock().getFluidMonitor();
@@ -71,12 +81,16 @@ public class ContainerEssentiaTerminal
 	}
 
 	/**
-	 * Gets the current list from the AE monitor and sends
-	 * it to the client.
+	 * Gets the current list from the AE monitor, as well as the current
+	 * sorting mode, and sends it to the client.
 	 */
 	@Override
-	public void forceAspectUpdate()
+	public void onClientRequestFullUpdate()
 	{
+		// Send the sorting mode
+		this.onSortingModeChanged( this.terminal.getSortingMode() );
+		
+		// Send the aspect list
 		if( this.monitor != null )
 		{
 			new PacketClientEssentiaTerminal().createListUpdate( this.player,
@@ -92,7 +106,7 @@ public class ContainerEssentiaTerminal
 	{
 		super.onContainerClosed( player );
 
-		if( !player.worldObj.isRemote && ( this.terminal != null ) )
+		if( EffectiveSide.isServerSide() && ( this.terminal != null ) )
 		{
 			this.terminal.removeContainer( this );
 		}
@@ -119,7 +133,7 @@ public class ContainerEssentiaTerminal
 		this.selectedAspect = selectedAspect;
 
 		// Is this client side?
-		if( this.player.worldObj.isRemote )
+		if( EffectiveSide.isClientSide() )
 		{
 			// Update the gui
 			this.guiBase.updateSelectedAspect();
@@ -190,6 +204,15 @@ public class ContainerEssentiaTerminal
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Called from the AE part when it's sorting mode has changed
+	 */
+	public void onSortingModeChanged( ComparatorMode sortingMode )
+	{
+		// Inform the client
+		new PacketClientEssentiaTerminal().createSortModeUpdate( this.player, sortingMode ).sendPacketToPlayer();
 	}
 
 }

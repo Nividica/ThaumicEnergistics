@@ -19,6 +19,7 @@ import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
+import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
@@ -95,7 +96,7 @@ public class AEPartEssentiaStorageBus
 					this.filteredAspects.set( index, itemAspect );
 
 					// Is this server side?
-					if ( !player.worldObj.isRemote )
+					if ( EffectiveSide.isServerSide() )
 					{
 						// Update the client
 						this.onClientRequestFullUpdate( player );

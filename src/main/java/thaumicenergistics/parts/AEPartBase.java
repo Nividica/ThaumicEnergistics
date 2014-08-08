@@ -22,6 +22,7 @@ import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.texture.BlockTextureManager;
+import thaumicenergistics.util.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridHost;
@@ -50,27 +51,27 @@ public abstract class AEPartBase
 	implements IPart, IGridHost, IActionHost
 {
 	protected final static int INVENTORY_OVERLAY_COLOR = AEColor.Black.blackVariant;
-	
+
 	protected final static int ACTIVE_BRIGHTNESS = 0xD000D0;
 
 	protected ForgeDirection cableSide;
-	
+
 	protected IGridNode node;
-	
+
 	protected IPartHost host;
-	
+
 	protected boolean isActive;
-	
+
 	protected AEPartGridBlock gridBlock;
-	
+
 	protected TileEntity tile;
-	
+
 	protected TileEntity hostTile;
-	
+
 	protected IAspectContainer facingContainer;
-	
+
 	protected boolean redstonePowered;
-	
+
 	public final ItemStack associatedItem;
 
 	public AEPartBase( AEPartsEnum associatedPart )
@@ -140,7 +141,7 @@ public abstract class AEPartBase
 	protected boolean isActive()
 	{
 		// Are we server side?
-		if( !this.hostTile.getWorldObj().isRemote )
+		if( EffectiveSide.isServerSide() )
 		{
 			// Do we have a node?
 			if( this.node != null )
@@ -314,14 +315,12 @@ public abstract class AEPartBase
 			return false;
 		}
 
-		// Is this client side?
-		if( player.worldObj.isRemote )
+		// Is this server side?
+		if( EffectiveSide.isServerSide() )
 		{
-			return true;
+			// Launch the gui
+			GuiHandler.launchGui( this, player, this.hostTile.getWorldObj(), this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord );
 		}
-
-		// Launch the gui
-		GuiHandler.launchGui( this, player, this.hostTile.getWorldObj(), this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord );
 
 		return true;
 	}

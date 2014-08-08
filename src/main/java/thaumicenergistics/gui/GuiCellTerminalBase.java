@@ -17,6 +17,8 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.ContainerCellTerminalBase;
+import thaumicenergistics.container.ContainerEssentiaCell;
+import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.container.IAspectSelectorContainer;
 import thaumicenergistics.gui.buttons.ButtonSortingMode;
 import thaumicenergistics.gui.widget.AbstractWidget;
@@ -34,7 +36,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 
  */
 @SideOnly(Side.CLIENT)
-public class GuiCellTerminalBase
+public abstract class GuiCellTerminalBase
 	extends GuiWidgetHost
 	implements IAspectSelectorGui
 {
@@ -72,7 +74,7 @@ public class GuiCellTerminalBase
 	/**
 	 * X position of the title string
 	 */
-	private static final int TITLE_POS_X = 9;
+	private static final int TITLE_POS_X = 7;
 
 	/**
 	 * Y position of the title string
@@ -238,7 +240,20 @@ public class GuiCellTerminalBase
 		this.ySize = GuiCellTerminalBase.GUI_SIZE_Y;
 
 		// Set the title
-		this.guiTitle = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".aeparts.essentia.terminal.name" );
+		if( container instanceof ContainerEssentiaTerminal )
+		{
+			// Essentia terminal
+			this.guiTitle = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".aeparts.essentia.terminal.name" );
+		}
+		else if( container instanceof ContainerEssentiaCell )
+		{
+			// Essentia cell
+			this.guiTitle = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.essentia.cell.title" );
+		}
+		else
+		{
+			this.guiTitle = "";
+		}
 
 		// Set the name prefix
 		this.tooltipNamePrefix = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.aspect" ) + ": ";
@@ -308,12 +323,12 @@ public class GuiCellTerminalBase
 				this.matchingSearchWidgets.add( currentWidget );
 			}
 		}
-		
+
 		// Sort
 		this.sortMatchingList();
 
 	}
-	
+
 	/**
 	 * Sorts the list of matching widgets based on the current
 	 * sorting mode.
@@ -601,15 +616,23 @@ public class GuiCellTerminalBase
 		// Is the button the sort mode button?
 		if( button.id == GuiCellTerminalBase.SORT_MODE_BUTTON_ID )
 		{
-			// Switch sort modes
-			this.sortMode = ( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC );
-			
-			// Set the button mode
-			( (ButtonSortingMode)button ).setCompareMode( this.sortMode );
-			
-			// Resort the list
-			this.sortMatchingList();
+			// Pass to subclass
+			this.sortModeButtonClicked( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC );
 		}
+	}
+
+	protected abstract void sortModeButtonClicked( ComparatorMode modeRequested );
+
+	public void onSortModeChanged( ComparatorMode sortMode )
+	{
+		// Set the sort mode
+		this.sortMode = sortMode;
+
+		// Update the sort button
+		( (ButtonSortingMode)this.buttonList.get( GuiCellTerminalBase.SORT_MODE_BUTTON_ID ) ).setSortMode( sortMode );
+
+		// Resort the list
+		this.sortMatchingList();
 	}
 
 	/**

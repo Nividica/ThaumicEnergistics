@@ -1,4 +1,10 @@
-﻿8/8/2014 0.4.3a
+﻿8/8/2014 0.4.4a
+	Added deeper client vs server checking.
+	Added background pulse to selected aspect in essentia terminal.
+	Essentia terminal now retains selected sorting mode.
+	Corrected gui title for Essentia Cell in a ME chest.
+
+8/8/2014 0.4.3a
 	Bugfix: SSP packets not getting executed.
 
 8/7/2014 0.4.2a

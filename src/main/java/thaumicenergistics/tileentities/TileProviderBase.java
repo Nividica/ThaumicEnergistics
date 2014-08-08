@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
@@ -395,20 +396,6 @@ public abstract class TileProviderBase
 				sideColors[side.ordinal()] = ( (TileCableBus)tileEntity ).getColor();
 			}
 
-			// Causes more problems than its worth
-			/*
-			if( tileEntity instanceof AENetworkTile )
-			{
-				try
-				{
-					sideColors[side.ordinal()] = ( (AENetworkTile)tileEntity ).getGridNode( ForgeDirection.UNKNOWN ).getGridBlock().getGridColor();
-				}
-				catch( Throwable _ )
-				{
-				}
-			}
-			*/
-
 		}
 
 		return sideColors;
@@ -417,7 +404,7 @@ public abstract class TileProviderBase
 	public boolean isActive()
 	{
 		// Are we server side?
-		if( !this.getWorldObj().isRemote )
+		if( EffectiveSide.isServerSide() )
 		{
 			// Do we have a proxy and grid node?
 			if( ( this.gridProxy != null ) && ( this.gridProxy.getNode() != null ) )

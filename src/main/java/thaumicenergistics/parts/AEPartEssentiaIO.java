@@ -18,6 +18,7 @@ import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
 import thaumicenergistics.registries.AEPartsEnum;
+import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.EssentiaTileContainerHelper;
@@ -408,16 +409,11 @@ public abstract class AEPartEssentiaIO
 		{
 			this.resizeAvailableArray();
 		}
-
-		try
+		
+		// Is this client side?
+		if( EffectiveSide.isClientSide() )
 		{
-			if( this.host.getLocation().getWorld().isRemote )
-			{
-				return;
-			}
-		}
-		catch( Throwable ignored )
-		{
+			return;
 		}
 
 		this.notifyListenersOfFilterSizeChange();
@@ -590,7 +586,7 @@ public abstract class AEPartEssentiaIO
 		this.filteredAspects.set( index, aspect );
 
 		// TODO: Should really let all clients know about this
-		
+
 		// Update the client
 		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
 	}
@@ -676,7 +672,7 @@ public abstract class AEPartEssentiaIO
 				if( this.filteredAspects.get( filterIndex ) == null )
 				{
 					// Is this server side?
-					if( !player.worldObj.isRemote )
+					if( EffectiveSide.isServerSide() )
 					{
 						// Set the filter
 						this.setAspect( filterIndex, itemAspect, player );
@@ -693,7 +689,8 @@ public abstract class AEPartEssentiaIO
 	/**
 	 * Called client-side to keep the client-side part in sync
 	 * with the server-side part. This aids in keeping the
-	 * gui in sync even in high network lag enviroments. 
+	 * gui in sync even in high network lag enviroments.
+	 * 
 	 * @param filteredAspects
 	 */
 	@SideOnly(Side.CLIENT)
@@ -705,7 +702,8 @@ public abstract class AEPartEssentiaIO
 	/**
 	 * Called client-side to keep the client-side part in sync
 	 * with the server-side part. This aids in keeping the
-	 * gui in sync even in high network lag enviroments. 
+	 * gui in sync even in high network lag enviroments.
+	 * 
 	 * @param filterSize
 	 */
 	@SideOnly(Side.CLIENT)

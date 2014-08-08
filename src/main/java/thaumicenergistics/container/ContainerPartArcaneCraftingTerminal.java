@@ -20,6 +20,7 @@ import thaumicenergistics.container.slot.SlotArcaneCraftingResult;
 import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.network.packet.client.PacketClientArcaneCraftingTerminal;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
+import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -221,7 +222,7 @@ public class ContainerPartArcaneCraftingTerminal
 		terminal.registerListener( this );
 
 		// Is this server side?
-		if( !player.worldObj.isRemote )
+		if( EffectiveSide.isServerSide() )
 		{
 			// Get the AE monitor
 			this.monitor = terminal.getGridBlock().getItemMonitor();
@@ -436,7 +437,7 @@ public class ContainerPartArcaneCraftingTerminal
 	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
 	{
 		// Is this client side?
-		if( this.player.worldObj.isRemote )
+		if( EffectiveSide.isClientSide() )
 		{
 			// Do nothing.
 			return null;
@@ -609,7 +610,7 @@ public class ContainerPartArcaneCraftingTerminal
 	public void onClientRequestClearCraftingGrid( EntityPlayer player )
 	{
 		// Ignored client side
-		if( player.worldObj.isRemote )
+		if( EffectiveSide.isClientSide() )
 		{
 			return;
 		}
@@ -717,7 +718,8 @@ public class ContainerPartArcaneCraftingTerminal
 			this.terminal.removeListener( this );
 		}
 
-		if( !player.worldObj.isRemote )
+		// Is this server side?
+		if( EffectiveSide.isServerSide() )
 		{
 			if( this.monitor != null )
 			{

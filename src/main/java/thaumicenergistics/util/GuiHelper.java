@@ -9,19 +9,55 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiHelper
 {
+	/**
+	 * Maps int -> mouse button
+	 */
 	public static final int MOUSE_BUTTON_LEFT = 0;
 	public static final int MOUSE_BUTTON_RIGHT = 1;
 	public static final int MOUSE_BUTTON_WHEEL = 2;
 
+	/**
+	 * Character MC uses to denote the next character is a formating character
+	 */
 	public static final String CHAT_COLOR_HEADER = "§";
 
+	/**
+	 * GL capability code for rescaling.
+	 */
 	private static int GL_RESCALE_NORMAL = 0x803A;
+	
+	private static final int COLOR_ARRAY_SIZE = 4;
 
+	/**
+	 * Checks if the specified point is within or on the bounds of a rectangle.
+	 * This version localizes the rectangle to the confounds of the current gui.
+	 * 
+	 * @param top
+	 * @param left
+	 * @param height
+	 * @param width
+	 * @param pointX
+	 * @param pointY
+	 * @param guiLeft
+	 * @param guiTop
+	 * @return
+	 */
 	public static boolean isPointInGuiRegion( int top, int left, int height, int width, int pointX, int pointY, int guiLeft, int guiTop )
 	{
 		return isPointInRegion( top, left, height, width, pointX - guiLeft, pointY - guiTop );
 	}
 
+	/**
+	 * Checks if the specified point is within or on the bounds of a rectangle
+	 * 
+	 * @param top
+	 * @param left
+	 * @param height
+	 * @param width
+	 * @param pointX
+	 * @param pointY
+	 * @return
+	 */
 	public static boolean isPointInRegion( int top, int left, int height, int width, int pointX, int pointY )
 	{
 		return ( pointX >= top ) && ( pointX <= ( top + width ) ) && ( pointY >= left ) && ( pointY <= ( left + height ) );
@@ -40,15 +76,15 @@ public class GuiHelper
 
 			// Disable depth testing
 			GL11.glDisable( GL11.GL_DEPTH_TEST );
-			
+
 			try
 			{
 				// Use reflection to access the methods and feilds we need
 				Field zLevel = Gui.class.getDeclaredField( "zLevel" );
 				zLevel.setAccessible( true );
 
-				Method drawGradientRect = Gui.class.getDeclaredMethod( "drawGradientRect", int.class, int.class, int.class,
-					int.class, int.class, int.class );
+				Method drawGradientRect = Gui.class.getDeclaredMethod( "drawGradientRect", int.class, int.class, int.class, int.class, int.class,
+					int.class );
 				drawGradientRect.setAccessible( true );
 
 				int maxStringLength = 0;
@@ -121,7 +157,6 @@ public class GuiHelper
 			{
 				// Something went wrong, ignore this for now
 			}
-			
 
 			// Reenable lighting
 			GL11.glEnable( GL11.GL_LIGHTING );
@@ -132,5 +167,74 @@ public class GuiHelper
 			// Reenable scaling
 			GL11.glEnable( GL_RESCALE_NORMAL );
 		}
+	}
+
+	public static int[] createColorGradient( int fromColor, int toColor, int iterations )
+	{
+		// Is there enough iterations to create a gradient?
+		if( iterations < 3 )
+		{
+			return new int[] { fromColor, toColor };
+		}
+
+		// Holds the A,R,G,B bytes of each color
+		int[] fromColorBytes = new int[COLOR_ARRAY_SIZE];
+		int[] toColorBytes = new int[COLOR_ARRAY_SIZE];
+
+		// Holds how much to change the color amount by for each iteration
+		float[] stepAmount = new float[COLOR_ARRAY_SIZE];
+		
+		// Holds the color 'bytes' as they change
+		float[] currentColor = new float[COLOR_ARRAY_SIZE];
+		
+		// Holds the final list of colors
+		int[] gradient = new int[iterations];
+		
+		// Bitshift amounts based on byte position
+		int[] shiftAmount = new int[]{0,8,16,24};
+
+		// Extract bytes
+		for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
+		{
+			// Get fromColor byte
+			fromColorBytes[i] = ( fromColor >> shiftAmount[i] ) & 0xFF;
+			
+			// Get toColor byte
+			toColorBytes[i] = ( ( toColor >> shiftAmount[i] ) & 0xFF );
+			
+			// Calculate step amount
+			stepAmount[i] = ( toColorBytes[i] - fromColorBytes[i] ) / (float)iterations;
+			
+			// Init the current color
+			currentColor[i] = fromColorBytes[i];
+		}
+		
+		// Set the first color
+		gradient[0] = fromColor;
+
+		for( int iteration = 1; iteration < iterations; iteration++ )
+		{
+			int result = 0;
+			
+			// Add the step amounts to the current color and incorporate into the result color
+			for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
+			{
+				// Add the step amount
+				currentColor[i] += stepAmount[i];
+				
+				// Add to result color
+				result += ( ( Math.round( currentColor[i] ) & 0xFF ) <<	shiftAmount[i] );
+				
+			}
+			
+			// Set gradient
+			gradient[iteration] = result;
+			
+		}
+		
+		// Set the last color
+		gradient[iterations-1] = toColor;
+
+		return gradient;
 	}
 }

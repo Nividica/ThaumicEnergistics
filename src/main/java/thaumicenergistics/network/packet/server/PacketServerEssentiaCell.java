@@ -59,7 +59,7 @@ public class PacketServerEssentiaCell
 				if ( ( this.player != null ) && ( this.player.openContainer instanceof ContainerEssentiaCell ) )
 				{
 					// Force the cell container to send the aspect list to the client
-					( (ContainerEssentiaCell)this.player.openContainer ).forceAspectUpdate();
+					( (ContainerEssentiaCell)this.player.openContainer ).onClientRequestFullUpdate();
 				}
 				break;
 		}

@@ -5,11 +5,11 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
+import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
@@ -17,7 +17,6 @@ import thaumicenergistics.parts.AEPartEssentiaIO;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.GuiHelper;
-import appeng.api.AEApi;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -28,111 +27,201 @@ public class GuiEssentiatIO
 	extends GuiWidgetHost
 	implements WidgetAspectSlot.IConfigurable, IAspectSlotGui
 {
+
+	/**
+	 * Number of rows and columns in the filter grid.
+	 */
+	private static final int FILTER_GRID_SIZE = 3;
+
+	/**
+	 * Controls if the widget is drawn.
+	 * if filterSize >= this, the widget can be drawn.
+	 */
+	private static final byte[] WIDGET_CONFIG_BYTES = new byte[] { 2, 1, 2, 1, 0, 1, 2, 1, 2 };
+
+	/**
+	 * Starting X position for widgets.
+	 */
+	private static final int WIDGET_X_POSITION = 61;
+
+	/**
+	 * Starting Y position for widgets.
+	 */
+	private static final int WIDGET_Y_POSITION = 21;
+
+	/**
+	 * Height of the gui
+	 */
+	private static final int GUI_HEIGHT = 184;
+
+	/**
+	 * Width of the gui when the player does not have a network tool.
+	 */
+	private static final int GUI_WIDTH_NO_TOOL = 211;
+
+	/**
+	 * Width of the gui when the player has a network tool.
+	 */
+	private static final int GUI_WIDTH_WITH_TOOL = 246;
+
+	/**
+	 * Width of the main body of the gui.
+	 * Ignores upgrade and network tool areas.
+	 */
+	private static final int GUI_MAIN_WIDTH = 176;
+
+	/**
+	 * Width of the upgrade area of the gui.
+	 */
+	private static final int GUI_UPGRADES_WIDTH = 35;
+
+	/**
+	 * Height of the upgrade area of the gui.
+	 */
+	private static final int GUI_UPGRADES_HEIGHT = 86;
+
+	/**
+	 * X position of the redstone control button.
+	 */
+	private static final int REDSTONE_CONTROL_BUTTON_POS_X = -18;
+
+	/**
+	 * Y position of the redstone control button.
+	 */
+	private static final int REDSTONE_CONTROL_BUTTON_POS_Y = 2;
+
+	/**
+	 * Width and height of the redstone control button.
+	 */
+	private static final int REDSTONE_CONTROL_BUTTON_SIZE = 16;
+
+	/**
+	 * ID of the redstone control button.
+	 */
+	private static final int REDSTONE_CONTROL_BUTTON_ID = 0;
+
+	/**
+	 * The part associated with this gui.
+	 */
 	private AEPartEssentiaIO part;
+
+	/**
+	 * The player viewing this bus gui.
+	 */
 	private EntityPlayer player;
+
+	/**
+	 * The size of the buses filter (0-2).
+	 */
 	private byte filterSize;
+
+	/**
+	 * Filter widgets.
+	 */
 	private List<WidgetAspectSlot> aspectSlotList = new ArrayList<WidgetAspectSlot>();
+
+	/**
+	 * Filter aspects.
+	 */
 	private List<Aspect> filteredAspects = new ArrayList<Aspect>();
+
+	/**
+	 * True if this is redstone controlled
+	 */
 	private boolean redstoneControlled;
+
+	/**
+	 * True if the player has a network tool in their inventory.
+	 */
 	private boolean hasNetworkTool;
 
-	public GuiEssentiatIO( AEPartEssentiaIO terminal, EntityPlayer player )
-	{
-		super( new ContainerPartEssentiaIOBus( terminal, player ) );
+	/**
+	 * Tracks the redstone mode of the bus.
+	 */
+	private RedstoneMode redstoneMode = RedstoneMode.HIGH_SIGNAL;
 
-		this.part = terminal;
+	/**
+	 * Creates the gui
+	 * 
+	 * @param partBus
+	 * @param player
+	 */
+	public GuiEssentiatIO( AEPartEssentiaIO partBus, EntityPlayer player )
+	{
+		// Call super
+		super( new ContainerPartEssentiaIOBus( partBus, player ) );
+
+		// Set the bus
+		this.part = partBus;
+
+		// Set the player
 		this.player = player;
 
-		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 0, 61, 21, this, (byte)2 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 1, 79, 21, this, (byte)1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 2, 97, 21, this, (byte)2 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 3, 61, 39, this, (byte)1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 4, 79, 39, this, (byte)0 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 5, 97, 39, this, (byte)1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 6, 61, 57, this, (byte)2 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 7, 79, 57, this, (byte)1 ) );
-		this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, 8, 97, 57, this, (byte)2 ) );
-
-		// Request a full update
-		new PacketServerEssentiaIOBus().createRequestFullUpdate( this.player, this.part ).sendPacketToServer();
-
+		// Check if the player has a network tool
 		this.hasNetworkTool = ( (ContainerPartEssentiaIOBus)this.inventorySlots ).hasNetworkTool();
 
-		this.xSize = ( this.hasNetworkTool ? 246 : 211 );
+		// Set the width
+		this.xSize = ( this.hasNetworkTool ? GuiEssentiatIO.GUI_WIDTH_WITH_TOOL : GuiEssentiatIO.GUI_WIDTH_NO_TOOL );
 
-		this.ySize = 184;
+		// Set the height
+		this.ySize = GuiEssentiatIO.GUI_HEIGHT;
 	}
 
-	private boolean isMouseOverSlot( Slot slot, int x, int y )
-	{
-		return GuiHelper.isPointInGuiRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
-	}
-
+	/**
+	 * Draws the GUI background layer
+	 */
 	@Override
 	protected void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY )
-	{	
+	{
+		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
+		// Get the GUI texture
 		Minecraft.getMinecraft().renderEngine.bindTexture( GuiTextureManager.ESSENTIA_IO_BUS.getTexture() );
 
-		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, 176, 184 );
-
-		this.drawTexturedModalRect( this.guiLeft + 179, this.guiTop, 179, 0, 32, 86 );
-
 		// Does the user have a network tool?
-		if ( this.hasNetworkTool )
+		if( this.hasNetworkTool )
 		{
-			// Draw the tool gui
-			this.drawTexturedModalRect( this.guiLeft + 179, this.guiTop + 93, 178, 93, 68, 68 );
+			// Draw the full gui
+			this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, GuiEssentiatIO.GUI_WIDTH_WITH_TOOL, GuiEssentiatIO.GUI_HEIGHT );
 		}
-		
+		else
+		{
+			// Draw main gui
+			this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, GuiEssentiatIO.GUI_MAIN_WIDTH, GuiEssentiatIO.GUI_HEIGHT );
+
+			// Draw upgrade slots
+			this.drawTexturedModalRect( this.guiLeft + GuiEssentiatIO.GUI_MAIN_WIDTH, this.guiTop, GuiEssentiatIO.GUI_MAIN_WIDTH, 0,
+				GuiEssentiatIO.GUI_UPGRADES_WIDTH, GuiEssentiatIO.GUI_UPGRADES_HEIGHT );
+		}
+
 		// Call super
 		super.drawGuiContainerBackgroundLayer( alpha, mouseX, mouseY );
 	}
 
-	protected Slot getSlotAtPosition( int x, int y )
-	{
-		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ )
-		{
-			Slot slot = (Slot)this.inventorySlots.inventorySlots.get( i );
-
-			if ( this.isMouseOverSlot( slot, x, y ) )
-			{
-				return slot;
-			}
-		}
-
-		return null;
-	}
-
+	/**
+	 * Called when the mouse is clicked.
+	 */
 	@Override
 	protected void mouseClicked( int mouseX, int mouseY, int mouseButton )
 	{
-		if ( this.hasNetworkTool )
-		{
-			Slot slot = this.getSlotAtPosition( mouseX, mouseY );
-
-			if ( ( slot != null ) && ( slot.getStack() != null ) &&
-							( slot.getStack().isItemEqual( AEApi.instance().items().itemNetworkTool.stack( 1 ) ) ) )
-			{
-				return;
-			}
-		}
-
+		// Call super
 		super.mouseClicked( mouseX, mouseY, mouseButton );
 
+		// Loop over all widgets
 		for( WidgetAspectSlot aspectSlot : this.aspectSlotList )
 		{
-			if ( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
+			// Is the mouse over this widget?
+			if( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the aspect of the currently held item
 				Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( this.player.inventory.getItemStack() );
 
 				// Is there an aspect?
-				if ( itemAspect != null )
+				if( itemAspect != null )
 				{
 					// Are we already filtering for this aspect?
-					if ( this.filteredAspects.contains( itemAspect ) )
+					if( this.filteredAspects.contains( itemAspect ) )
 					{
 						// Ignore
 						return;
@@ -140,27 +229,67 @@ public class GuiEssentiatIO
 
 				}
 
+				// Inform the slot it was clicked
 				aspectSlot.mouseClicked( itemAspect );
 
+				// Stop searching
 				break;
 			}
 		}
 	}
 
+	/**
+	 * Called when a button is pressed
+	 */
 	@Override
 	public void actionPerformed( GuiButton button )
 	{
 		// Call super
 		super.actionPerformed( button );
 
-		// TODO: Check button ID == redstone button
-		// new PacketServerEssentiaIO().createRequestChangeRedstoneMode( this.player, this.part );
+		// Was the clicked button the redstone mode button?
+		if( button.id == GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_ID )
+		{
+			new PacketServerEssentiaIOBus().createRequestChangeRedstoneMode( this.player, this.part ).sendPacketToServer();
+		}
+	}
+
+	/**
+	 * Sets the gui up.
+	 */
+	@Override
+	public void initGui()
+	{
+		// Call super
+		super.initGui();
+
+		// Add the slots
+		for( int row = 0; row < GuiEssentiatIO.FILTER_GRID_SIZE; row++ )
+		{
+			for( int column = 0; column < GuiEssentiatIO.FILTER_GRID_SIZE; column++ )
+			{
+				// Calculate the index
+				int index = ( row * GuiEssentiatIO.FILTER_GRID_SIZE ) + column;
+
+				// Calculate the x position
+				int xPos = GuiEssentiatIO.WIDGET_X_POSITION + ( column * AbstractWidget.WIDGET_SIZE );
+
+				// Calculate the y position
+				int yPos = GuiEssentiatIO.WIDGET_Y_POSITION + ( row * AbstractWidget.WIDGET_SIZE );
+
+				this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, index, xPos, yPos, this,
+								GuiEssentiatIO.WIDGET_CONFIG_BYTES[index] ) );
+			}
+		}
+
+		// Request a full update from the server
+		new PacketServerEssentiaIOBus().createRequestFullUpdate( this.player, this.part ).sendPacketToServer();
+
 	}
 
 	@Override
 	public void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
 	{
-		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
 
 		boolean hoverUnderlayRendered = false;
 
@@ -170,32 +299,48 @@ public class GuiEssentiatIO
 		{
 			WidgetAspectSlot slotWidget = this.aspectSlotList.get( i );
 
-			if ( ( !hoverUnderlayRendered ) && ( slotWidget.canRender() ) && ( slotWidget.isMouseOverWidget( mouseX, mouseY ) ) )
+			if( ( !hoverUnderlayRendered ) && ( slotWidget.canRender() ) && ( slotWidget.isMouseOverWidget( mouseX, mouseY ) ) )
 			{
 				slotWidget.drawMouseHoverUnderlay();
-				
+
 				slotUnderMouse = slotWidget;
-				
+
 				hoverUnderlayRendered = true;
 			}
 
 			slotWidget.drawWidget();
 		}
 
-		if ( slotUnderMouse != null )
+		if( slotUnderMouse != null )
 		{
 			slotUnderMouse.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
 		}
 		else
 		{
-			for( Object button : this.buttonList )
+			// Is the mouse over any buttons?
+			for( Object obj : this.buttonList )
 			{
-				if ( button instanceof ButtonRedstoneModes )
+				// Cast to button
+				GuiButton currentButton = (GuiButton)obj;
+
+				// Is the mouse over it?
+				if( GuiHelper.isPointInRegion( currentButton.xPosition, currentButton.yPosition, currentButton.width, currentButton.height, mouseX,
+					mouseY ) )
 				{
-					( (ButtonRedstoneModes)button ).drawTooltip( mouseX, mouseY );
+					// Is it the redstone button?
+					if( currentButton instanceof ButtonRedstoneModes )
+					{
+						( (ButtonRedstoneModes)currentButton ).drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+					}
+
+					// Stop searching
+					break;
 				}
 			}
 		}
+		
+		// Call super
+		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
 	}
 
 	@Override
@@ -206,44 +351,67 @@ public class GuiEssentiatIO
 
 	/**
 	 * Called when the server sends if the bus is redstone controlled.
-	 * @param redstoneControled
+	 * 
+	 * @param newRedstoneControled
 	 */
-	public void onReceiveRedstoneControlled( boolean redstoneControled )
+	public void onReceiveRedstoneControlled( boolean newRedstoneControled )
 	{
-		// Set redstone controlled
-		this.redstoneControlled = redstoneControled;
+		// Do we differ?
+		if( this.redstoneControlled != newRedstoneControled )
+		{
+			// Were we previously controlled?
+			if( this.redstoneControlled )
+			{
+				// Clear the button list
+				this.buttonList.clear();
+			}
+			else
+			{
+				// Create the redstone button
+				this.buttonList.add( new ButtonRedstoneModes( GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_ID, this.guiLeft +
+								GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_POS_X, this.guiTop + GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_POS_Y,
+								GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_SIZE, GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_SIZE, this.redstoneMode, false ) );
+			}
+
+			// Set redstone controlled
+			this.redstoneControlled = newRedstoneControled;
+		}
 	}
 
 	/**
 	 * Called when the server sends a filter size update.
+	 * 
 	 * @param filterSize
 	 */
 	public void onReceiveFilterSize( byte filterSize )
-	{	
+	{
 		// Inform our part
 		this.part.receiveFilterSize( filterSize );
-		
+
 		this.filterSize = filterSize;
-	
+
 		for( int i = 0; i < this.aspectSlotList.size(); i++ )
 		{
 			WidgetAspectSlot slot = this.aspectSlotList.get( i );
-	
-			if ( !slot.canRender() )
+
+			if( !slot.canRender() )
 			{
 				slot.setAspect( null );
 			}
-	
+
 		}
 	}
 
 	public void onReceiveRedstoneMode( RedstoneMode redstoneMode )
 	{
-		// TODO: Fix this once a redstone button has been made
-		if ( this.redstoneControlled && ( this.buttonList.size() > 0 ) )
+		// Are we redstone controlled, and have the redstone mod button
+		if( this.redstoneControlled && ( this.buttonList.size() > 0 ) )
 		{
-			( (ButtonRedstoneModes)this.buttonList.get( 0 ) ).setRedstoneMode( redstoneMode );
+			( (ButtonRedstoneModes)this.buttonList.get( GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_ID ) ).setRedstoneMode( redstoneMode );
 		}
+
+		// Mark the mode
+		this.redstoneMode = redstoneMode;
 	}
 
 	@Override
@@ -251,7 +419,7 @@ public class GuiEssentiatIO
 	{
 		// Inform our part
 		this.part.receiveFilterList( aspectList );
-		
+
 		int count = Math.min( this.aspectSlotList.size(), aspectList.size() );
 
 		for( int i = 0; i < count; i++ )

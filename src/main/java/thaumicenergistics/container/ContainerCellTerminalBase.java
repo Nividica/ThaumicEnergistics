@@ -2,8 +2,6 @@ package thaumicenergistics.container;
 
 import java.util.ArrayList;
 import java.util.List;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +14,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.gui.GuiCellTerminalBase;
+import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import thaumicenergistics.util.PrivateInventory;
@@ -23,6 +22,8 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEFluidStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base class for cell and terminal inventory containers
@@ -191,7 +192,7 @@ public abstract class ContainerCellTerminalBase
 	 */
 	public void attachToMonitor()
 	{
-		if( ( !this.player.worldObj.isRemote ) && ( this.monitor != null ) )
+		if( ( EffectiveSide.isServerSide() ) && ( this.monitor != null ) )
 		{
 			this.monitor.addListener( this, null );
 		}
@@ -207,9 +208,9 @@ public abstract class ContainerCellTerminalBase
 	}
 
 	/**
-	 * Called when the GUI's aspect list needs refreshing.
+	 * Called when a client requests the state of the container.
 	 */
-	public abstract void forceAspectUpdate();
+	public abstract void onClientRequestFullUpdate();
 
 	/**
 	 * Gets the list of aspect stacks in the container.
@@ -259,7 +260,7 @@ public abstract class ContainerCellTerminalBase
 	{
 		super.onContainerClosed( player );
 
-		if( !player.worldObj.isRemote )
+		if( EffectiveSide.isServerSide() )
 		{
 			if( this.monitor != null )
 			{
@@ -309,7 +310,7 @@ public abstract class ContainerCellTerminalBase
 	public void onInventoryChanged( IInventory sourceInventory )
 	{
 		// Is this client side?
-		if( this.player.worldObj.isRemote )
+		if( EffectiveSide.isClientSide() )
 		{
 			this.playTransferAudio();
 		}
