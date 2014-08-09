@@ -35,7 +35,7 @@ public class ContainerEssentiaTerminal
 	 * The AE machine source representation of the terminal.
 	 */
 	private MachineSource machineSource = null;
-	
+
 	/**
 	 * The player associated with this open container
 	 */
@@ -53,7 +53,7 @@ public class ContainerEssentiaTerminal
 	{
 		// Call the super
 		super( player );
-		
+
 		// Set the player
 		this.player = player;
 
@@ -75,6 +75,12 @@ public class ContainerEssentiaTerminal
 			// Add this container to the terminal's list
 			terminal.addContainer( this );
 		}
+		else
+		{
+			// Ask for a list update
+			new PacketServerEssentiaTerminal().createFullUpdateRequest( this.player ).sendPacketToServer();
+			this.hasRequested = true;
+		}
 
 		// Bind our inventory
 		this.bindToInventory( terminal.getInventory() );
@@ -89,11 +95,11 @@ public class ContainerEssentiaTerminal
 	{
 		// Send the sorting mode
 		this.onSortingModeChanged( this.terminal.getSortingMode() );
-		
+
 		// Send the aspect list
 		if( this.monitor != null )
 		{
-			new PacketClientEssentiaTerminal().createListUpdate( this.player,
+			new PacketClientEssentiaTerminal().createUpdateFullList( this.player,
 				EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() ) ).sendPacketToPlayer();
 		}
 	}
@@ -118,16 +124,20 @@ public class ContainerEssentiaTerminal
 	@Override
 	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
+		// Call super
 		super.postChange( monitor, change, source );
 
-		new PacketClientEssentiaTerminal().createListUpdate( this.player, this.aspectStackList ).sendPacketToPlayer();
+		// Send the change
+		new PacketClientEssentiaTerminal().createListChanged( this.player, EssentiaConversionHelper.convertAEFluidStackToAspectStack( change ) )
+						.sendPacketToPlayer();
+
 	}
 
 	/**
 	 * Updates the selected aspect and gui.
 	 */
 	@Override
-	public void receiveSelectedAspect( Aspect selectedAspect )
+	public void onReceiveSelectedAspect( Aspect selectedAspect )
 	{
 		// Set the selected aspect
 		this.selectedAspect = selectedAspect;
@@ -205,7 +215,7 @@ public class ContainerEssentiaTerminal
 			}
 		}
 	}
-	
+
 	/**
 	 * Called from the AE part when it's sorting mode has changed
 	 */

@@ -20,9 +20,6 @@ public class GuiEssentiaTerminal
 		super( player, new ContainerEssentiaTerminal( terminal, player ) );
 		
 		this.terminal = terminal;
-		
-		// Ask for a list update
-		new PacketServerEssentiaTerminal().createFullUpdateRequest( this.player ).sendPacketToServer();
 	}
 
 	@Override

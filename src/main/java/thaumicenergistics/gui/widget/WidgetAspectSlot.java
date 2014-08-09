@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
-import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.server.PacketServerAspectSlot;
 import thaumicenergistics.texture.GuiTextureManager;
@@ -39,7 +38,7 @@ public class WidgetAspectSlot
 	public WidgetAspectSlot( IWidgetHost hostGui, EntityPlayer player, IAspectSlotPart part, int id, int posX, int posY, IConfigurable configurable,
 								byte configOption )
 	{
-		super( hostGui, null, posX, posY );
+		super( hostGui, null, posX, posY, player );
 		this.player = player;
 		this.part = part;
 		this.id = id;
@@ -59,7 +58,7 @@ public class WidgetAspectSlot
 		{
 			List<String> toolTips = new ArrayList<String>();
 
-			toolTips.add( this.aspect.getName() );
+			toolTips.add( this.aspectName );
 
 			this.drawTooltip( toolTips, mouseX, mouseY, Minecraft.getMinecraft().fontRenderer );
 
@@ -94,7 +93,7 @@ public class WidgetAspectSlot
 			if( this.aspect != null )
 			{
 				// Draw the aspect
-				UtilsFX.drawTag( this.xPosition + 1, this.yPosition + 1, this.aspect, 0, 0, this.zLevel );
+				this.drawAspect();
 			}
 
 			// Re-enable lighting

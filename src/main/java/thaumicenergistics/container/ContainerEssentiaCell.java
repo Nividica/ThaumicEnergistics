@@ -101,6 +101,12 @@ public class ContainerEssentiaCell
 				e.printStackTrace();
 			}
 		}
+		else
+		{
+			// Request a full update from the server
+			new PacketServerEssentiaCell().createFullUpdateRequest( player ).sendPacketToServer();
+			this.hasRequested = true;
+		}
 
 		// Bind our inventory
 		this.bindToInventory( this.privateInventory );
@@ -116,7 +122,7 @@ public class ContainerEssentiaCell
 	{
 		if( this.monitor != null )
 		{
-			new PacketClientEssentiaCell().createListUpdate( this.player,
+			new PacketClientEssentiaCell().createUpdateFullList( this.player,
 				EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() ) ).sendPacketToPlayer();
 		}
 	}
@@ -144,16 +150,19 @@ public class ContainerEssentiaCell
 	@Override
 	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
+		// Call super
 		super.postChange( monitor, change, source );
 
-		new PacketClientEssentiaCell().createListUpdate( this.player, this.aspectStackList ).sendPacketToPlayer();
+		// Send the change
+		new PacketClientEssentiaCell().createListChanged( this.player, EssentiaConversionHelper.convertAEFluidStackToAspectStack( change ) )
+						.sendPacketToPlayer();
 	}
 
 	/**
 	 * Updates the selected aspect, aspect stack and gui.
 	 */
 	@Override
-	public void receiveSelectedAspect( Aspect selectedAspect )
+	public void onReceiveSelectedAspect( Aspect selectedAspect )
 	{
 		this.selectedAspect = selectedAspect;
 

@@ -584,8 +584,6 @@ public class GuiArcaneCraftingTerminal
 	{
 		// Set the list
 		this.networkItems = itemList;
-		
-		System.out.println( itemList );
 
 		// Check pending changes
 		if( ( this.networkItems != null ) && ( !this.pendingChanges.isEmpty() ) )

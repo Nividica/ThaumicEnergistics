@@ -101,7 +101,6 @@ public class ThaumicEnergistics
 
 /*
  * TODO -- Planned Features
- * Occlude aspect names if not researched
  * Terminal sort mode ascending and descending order
  * Additional UI's redstone mode, priority window
  * Give Spatial IO the ability to move my Tile Entities.

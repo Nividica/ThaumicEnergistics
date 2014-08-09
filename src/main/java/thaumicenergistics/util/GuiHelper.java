@@ -25,8 +25,11 @@ public class GuiHelper
 	 * GL capability code for rescaling.
 	 */
 	private static int GL_RESCALE_NORMAL = 0x803A;
-	
+
 	private static final int COLOR_ARRAY_SIZE = 4;
+
+	// Bitshift amounts based on byte position
+	private static final int[] COLOR_SHIFT_AMOUNT = new int[] { 0, 8, 16, 24 };
 
 	/**
 	 * Checks if the specified point is within or on the bounds of a rectangle.
@@ -169,6 +172,20 @@ public class GuiHelper
 		}
 	}
 
+	public static byte[] convertPackedColorToARGB( int color )
+	{
+		byte[] colorBytes = new byte[COLOR_ARRAY_SIZE];
+
+		// Extract bytes
+		for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
+		{
+			// Get byte
+			colorBytes[COLOR_ARRAY_SIZE - 1 - i] = (byte)( ( color >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF );
+		}
+
+		return colorBytes;
+	}
+
 	public static int[] createColorGradient( int fromColor, int toColor, int iterations )
 	{
 		// Is there enough iterations to create a gradient?
@@ -183,57 +200,54 @@ public class GuiHelper
 
 		// Holds how much to change the color amount by for each iteration
 		float[] stepAmount = new float[COLOR_ARRAY_SIZE];
-		
+
 		// Holds the color 'bytes' as they change
 		float[] currentColor = new float[COLOR_ARRAY_SIZE];
-		
+
 		// Holds the final list of colors
 		int[] gradient = new int[iterations];
-		
-		// Bitshift amounts based on byte position
-		int[] shiftAmount = new int[]{0,8,16,24};
 
 		// Extract bytes
 		for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
 		{
 			// Get fromColor byte
-			fromColorBytes[i] = ( fromColor >> shiftAmount[i] ) & 0xFF;
-			
+			fromColorBytes[i] = ( fromColor >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF;
+
 			// Get toColor byte
-			toColorBytes[i] = ( ( toColor >> shiftAmount[i] ) & 0xFF );
-			
+			toColorBytes[i] = ( ( toColor >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF );
+
 			// Calculate step amount
 			stepAmount[i] = ( toColorBytes[i] - fromColorBytes[i] ) / (float)iterations;
-			
+
 			// Init the current color
 			currentColor[i] = fromColorBytes[i];
 		}
-		
+
 		// Set the first color
 		gradient[0] = fromColor;
 
 		for( int iteration = 1; iteration < iterations; iteration++ )
 		{
 			int result = 0;
-			
+
 			// Add the step amounts to the current color and incorporate into the result color
 			for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
 			{
 				// Add the step amount
 				currentColor[i] += stepAmount[i];
-				
+
 				// Add to result color
-				result += ( ( Math.round( currentColor[i] ) & 0xFF ) <<	shiftAmount[i] );
-				
+				result += ( ( Math.round( currentColor[i] ) & 0xFF ) << COLOR_SHIFT_AMOUNT[i] );
+
 			}
-			
+
 			// Set gradient
 			gradient[iteration] = result;
-			
+
 		}
-		
+
 		// Set the last color
-		gradient[iterations-1] = toColor;
+		gradient[iterations - 1] = toColor;
 
 		return gradient;
 	}

@@ -1,8 +1,11 @@
 package thaumicenergistics.container;
 
+import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 
 public class ContainerPartEssentiaStorageBus
@@ -29,9 +32,14 @@ public class ContainerPartEssentiaStorageBus
 	private static int HOTBAR_INV_POSITION_Y = 198;
 	
 	private AEPartEssentiaStorageBus part;
+	
+	private EntityPlayer player;
 
 	public ContainerPartEssentiaStorageBus( AEPartEssentiaStorageBus part, EntityPlayer player )
 	{
+		// Set the player
+		this.player = player;
+		
 		// Set the part
 		this.part = part;
 		
@@ -45,7 +53,19 @@ public class ContainerPartEssentiaStorageBus
 
 		// Bind to the network tool
 		this.bindToNetworkTool( player.inventory, part.getHost().getLocation() );
+		
+		// Register as a listener
+		this.part.addListener( this );
 
+	}
+	
+	@Override
+	public void onContainerClosed(EntityPlayer player)
+	{
+		if( this.part != null )
+		{
+			this.part.removeListener( this );
+		}
 	}
 
 	/**
@@ -77,5 +97,10 @@ public class ContainerPartEssentiaStorageBus
 		}
 
 		return null;
+	}
+	
+	public void setFilteredAspects( List<Aspect> filteredAspects )
+	{
+		new PacketClientAspectSlot().createFilterListUpdate( filteredAspects, this.player ).sendPacketToPlayer();
 	}
 }

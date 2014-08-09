@@ -18,19 +18,21 @@ import thaumicenergistics.network.packet.AbstractPacket;
 public class PacketClientEssentiaCell
 	extends AbstractClientPacket
 {
-	private static final int MODE_UPDATE_LIST = 0;
+	private static final int MODE_FULL_LIST = 0;
 	private static final int MODE_SELECTED_ASPECT = 1;
+	private static final int MODE_LIST_CHANGED = 2;
 
-	protected List<AspectStack> aspectStackList;
-	protected Aspect selectedAspect;
+	private List<AspectStack> aspectStackList;
+	private Aspect selectedAspect;
+	private AspectStack change;
 
-	public PacketClientEssentiaCell createListUpdate( EntityPlayer player, List<AspectStack> list )
+	public PacketClientEssentiaCell createUpdateFullList( EntityPlayer player, List<AspectStack> list )
 	{
 		// Set the player
 		this.player = player;
 
 		// Set the mode
-		this.mode = PacketClientEssentiaCell.MODE_UPDATE_LIST;
+		this.mode = PacketClientEssentiaCell.MODE_FULL_LIST;
 
 		// Mark to use compression
 		this.useCompression = true;
@@ -54,6 +56,20 @@ public class PacketClientEssentiaCell
 
 		return this;
 	}
+	
+	public PacketClientEssentiaCell createListChanged( EntityPlayer player, AspectStack change )
+	{
+		// Set the player
+		this.player = player;
+		
+		// Set the mode
+		this.mode = PacketClientEssentiaCell.MODE_LIST_CHANGED;
+		
+		// Set the change
+		this.change = change;
+		
+		return this;
+	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -70,16 +86,21 @@ public class PacketClientEssentiaCell
 
 			switch ( this.mode )
 			{
-				case PacketClientEssentiaCell.MODE_UPDATE_LIST:
+				case PacketClientEssentiaCell.MODE_FULL_LIST:
 
 					// Update the aspect list
-					container.updateAspectList( this.aspectStackList );
+					container.onReceiveAspectList( this.aspectStackList );
 					break;
 
 				case PacketClientEssentiaCell.MODE_SELECTED_ASPECT:
 
 					// Set the selected aspect
-					container.receiveSelectedAspect( this.selectedAspect );
+					container.onReceiveSelectedAspect( this.selectedAspect );
+					break;
+					
+				case PacketClientEssentiaCell.MODE_LIST_CHANGED:
+					// Update the list
+					container.onReceiveAspectListChange( this.change );
 					break;
 			}
 		}
@@ -90,7 +111,7 @@ public class PacketClientEssentiaCell
 	{
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaCell.MODE_UPDATE_LIST:
+			case PacketClientEssentiaCell.MODE_FULL_LIST:
 				// Create a new list
 				this.aspectStackList = new ArrayList<AspectStack>();
 
@@ -105,6 +126,10 @@ public class PacketClientEssentiaCell
 				// Read the aspect from the stream
 				this.selectedAspect = AbstractPacket.readAspect( stream );
 				break;
+				
+			case PacketClientEssentiaCell.MODE_LIST_CHANGED:
+				// Read the stack
+				this.change = new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() );
 		}
 	}
 
@@ -113,7 +138,7 @@ public class PacketClientEssentiaCell
 	{
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaCell.MODE_UPDATE_LIST:
+			case PacketClientEssentiaCell.MODE_FULL_LIST:
 				// Write the aspect list to the stream
 				for( AspectStack stack : this.aspectStackList )
 				{
@@ -127,6 +152,13 @@ public class PacketClientEssentiaCell
 				// Write the aspect to the stream
 				AbstractPacket.writeAspect( this.selectedAspect, stream );
 				break;
+				
+			case PacketClientEssentiaCell.MODE_LIST_CHANGED:
+				// Write the aspect
+				AbstractPacket.writeAspect( this.change.aspect, stream );
+				
+				// Write the amount
+				stream.writeLong( this.change.amount );
 		}
 	}
 

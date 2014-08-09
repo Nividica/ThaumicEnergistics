@@ -131,12 +131,12 @@ public class ItemEssentiaCell
 		if( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || ( Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) )
 		{
 			// Add information about the essentia types in the cell
-			this.addContentsToCellDescription( cellHandler, displayList );
+			this.addContentsToCellDescription( cellHandler, displayList, player );
 		}
 
 	}
 
-	private void addContentsToCellDescription( HandlerItemEssentiaCell cellHandler, List displayList )
+	private void addContentsToCellDescription( HandlerItemEssentiaCell cellHandler, List displayList, EntityPlayer player )
 	{
 		// Get the list of stored aspects
 		List<AspectStack> cellAspects = cellHandler.getAvailableAspects();
@@ -164,7 +164,7 @@ public class ItemEssentiaCell
 				}
 
 				// Build the display string
-				String aspectInfo = String.format( "%s%s%s x %d", aspectChatColor, currentStack.getName(), EnumChatFormatting.GRAY.toString(),
+				String aspectInfo = String.format( "%s%s%s x %d", aspectChatColor, currentStack.getAspectName( player ), EnumChatFormatting.GRAY.toString(),
 					currentStack.amount );
 
 				// Add to the list

@@ -1,9 +1,12 @@
 package thaumicenergistics.container;
 
+import java.util.List;
 import appeng.api.config.RedstoneMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
 import thaumicenergistics.parts.AEPartEssentiaIO;
 
@@ -144,6 +147,11 @@ public class ContainerPartEssentiaIOBus
 	public void setRedstoneMode( RedstoneMode redstoneMode )
 	{
 		new PacketClientEssentiaIOBus().createSetRedstoneMode( this.player, redstoneMode ).sendPacketToPlayer();
+	}
+	
+	public void setFilteredAspect( List<Aspect> filteredAspects )
+	{
+		new PacketClientAspectSlot().createFilterListUpdate( filteredAspects, this.player ).sendPacketToPlayer();
 	}
 
 }

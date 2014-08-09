@@ -19,23 +19,25 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PacketClientEssentiaTerminal
 	extends AbstractClientPacket
 {
-	public static final int MODE_UPDATE_LIST = 0;
+	public static final int MODE_FULL_LIST = 0;
 	public static final int MODE_SET_CURRENT = 1;
 	public static final int MODE_SORT_MODE_CHANGED = 2;
+	private static final int MODE_LIST_CHANGED = 3;
 	
 	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();
 
 	private List<AspectStack> aspectStackList;
 	private Aspect selectedAspect;
 	private ComparatorMode sortMode;
+	private AspectStack change;
 
-	public PacketClientEssentiaTerminal createListUpdate( EntityPlayer player, List<AspectStack> list )
+	public PacketClientEssentiaTerminal createUpdateFullList( EntityPlayer player, List<AspectStack> list )
 	{
 		// Set the player
 		this.player = player;
 
 		// Set the mode
-		this.mode = PacketClientEssentiaTerminal.MODE_UPDATE_LIST;
+		this.mode = PacketClientEssentiaTerminal.MODE_FULL_LIST;
 
 		// Mark to use compression
 		this.useCompression = true;
@@ -73,6 +75,20 @@ public class PacketClientEssentiaTerminal
 
 		return this;
 	}
+	
+	public PacketClientEssentiaTerminal createListChanged( EntityPlayer player, AspectStack change )
+	{
+		// Set the player
+		this.player = player;
+		
+		// Set the mode
+		this.mode = PacketClientEssentiaTerminal.MODE_LIST_CHANGED;
+		
+		// Set the change
+		this.change = change;
+		
+		return this;
+	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -86,17 +102,22 @@ public class PacketClientEssentiaTerminal
 			
 			switch ( this.mode )
 			{
-				case PacketClientEssentiaTerminal.MODE_UPDATE_LIST:
-					container.updateAspectList( this.aspectStackList );
+				case PacketClientEssentiaTerminal.MODE_FULL_LIST:
+					container.onReceiveAspectList( this.aspectStackList );
 					break;
 
 				case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
-					container.receiveSelectedAspect( this.selectedAspect );
+					container.onReceiveSelectedAspect( this.selectedAspect );
 					break;
 					
 				case PacketClientEssentiaTerminal.MODE_SORT_MODE_CHANGED:
 					// Update the sorting mode
 					( (GuiEssentiaTerminal)gui ).onSortModeChanged( this.sortMode );
+					break;
+					
+				case PacketClientEssentiaTerminal.MODE_LIST_CHANGED:
+					// Update the list
+					container.onReceiveAspectListChange( this.change );
 					break;
 			}
 		}
@@ -108,7 +129,7 @@ public class PacketClientEssentiaTerminal
 
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaTerminal.MODE_UPDATE_LIST:
+			case PacketClientEssentiaTerminal.MODE_FULL_LIST:
 				this.aspectStackList = new ArrayList<AspectStack>();
 
 				while( stream.readableBytes() > 0 )
@@ -125,6 +146,10 @@ public class PacketClientEssentiaTerminal
 				// Read the mode ordinal
 				this.sortMode = SORT_MODES[stream.readInt()];
 				break;
+				
+			case PacketClientEssentiaTerminal.MODE_LIST_CHANGED:
+				// Read the stack
+				this.change = new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() );
 		}
 	}
 
@@ -134,7 +159,7 @@ public class PacketClientEssentiaTerminal
 
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaTerminal.MODE_UPDATE_LIST:
+			case PacketClientEssentiaTerminal.MODE_FULL_LIST:
 				for( AspectStack stack : this.aspectStackList )
 				{
 					AbstractPacket.writeAspect( stack.aspect, stream );
@@ -151,6 +176,13 @@ public class PacketClientEssentiaTerminal
 				// Write the mode ordinal
 				stream.writeInt( this.sortMode.ordinal() );
 				break;
+				
+			case PacketClientEssentiaTerminal.MODE_LIST_CHANGED:
+				// Write the aspect
+				AbstractPacket.writeAspect( this.change.aspect, stream );
+				
+				// Write the amount
+				stream.writeLong( this.change.amount );
 		}
 	}
 }

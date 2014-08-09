@@ -137,6 +137,17 @@ public abstract class ContainerCellTerminalBase
 	private int outputSlotNumber = -1;
 
 	/**
+	 * Holds a list of changes sent to the gui before the
+	 * full list is sent.
+	 */
+	private List<AspectStack> pendingChanges = new ArrayList<AspectStack>();
+
+	/**
+	 * Set to true once a full list request is sent to the server.
+	 */
+	protected boolean hasRequested = false;
+
+	/**
 	 * Create the container and register the owner
 	 * 
 	 * @param player
@@ -329,8 +340,6 @@ public abstract class ContainerCellTerminalBase
 	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
 		this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( monitor.getStorageList() );
-
-		//TODO: Seriously look at how all this is done. Should be using change, not resending the whole bloody list.
 	}
 
 	/**
@@ -339,7 +348,7 @@ public abstract class ContainerCellTerminalBase
 	 * 
 	 * @param selectedAspect
 	 */
-	public abstract void receiveSelectedAspect( Aspect selectedAspect );
+	public abstract void onReceiveSelectedAspect( Aspect selectedAspect );
 
 	/**
 	 * Sets the gui associated with this container
@@ -416,16 +425,112 @@ public abstract class ContainerCellTerminalBase
 	}
 
 	/**
-	 * Called when the aspect list has changed and that
-	 * change has been sent via packet
+	 * Called when the server sends a full list of network aspects.
 	 * 
 	 * @param aspectStackList
 	 */
-	public void updateAspectList( List<AspectStack> aspectStackList )
+	public void onReceiveAspectList( List<AspectStack> aspectStackList )
 	{
+		// Set the aspect list
 		this.aspectStackList = aspectStackList;
+		
+		// Check pending changes
+		if( ( this.aspectStackList != null ) && ( !this.pendingChanges.isEmpty() ) )
+		{
+			// Update list with pending changes
+			for( int index = 0; index < this.pendingChanges.size(); index++ )
+			{
+				this.onReceiveAspectListChange( this.pendingChanges.get( index ) );
+			}
 
+			// Clear pending
+			this.pendingChanges.clear();
+		}
+
+		// Update the gui
 		if( this.guiBase != null )
+		{
+			this.guiBase.updateAspects();
+		}
+	}
+	
+	/**
+	 * Called when an aspect in the list changes amount.
+	 * @param change
+	 */
+	public void onReceiveAspectListChange( AspectStack change )
+	{
+		// Ensure the change is not null
+		if( change == null )
+		{
+			return;
+		}
+		
+		// Have we requested the full list yet?
+		if( !this.hasRequested )
+		{
+			return;
+		}
+		
+		// Do we have a list?
+		if( this.aspectStackList == null )
+		{
+			// Not yet received full list, add to pending
+			this.pendingChanges.add( change );
+			return;
+		}
+		
+		int matchingIndex = -1;
+		AspectStack matchingStack = null;
+		
+		for( int index = 0; index < this.aspectStackList.size(); index++ )
+		{
+			// Tenativly set the matching stack
+			matchingStack = this.aspectStackList.get( index );
+			
+			// Check if it is a match
+			if( change.aspect == matchingStack.aspect )
+			{
+				// Set this index as the matching
+				matchingIndex = index;
+				
+				// Stop searching
+				break;
+			}
+		}
+		
+		// Was there a match?
+		if( matchingIndex != -1 )
+		{
+			// Something went wrong, abort.
+			if( matchingStack == null )
+			{
+				return;
+			}
+			
+			// Update the amount
+			matchingStack.amount += change.amount;
+			
+			// Was the stack drained?
+			if( matchingStack.amount <= 0 )
+			{
+				// Remove from list
+				this.aspectStackList.remove( matchingIndex );
+			}
+		}
+		// Is this a new addition?
+		else if( change.amount > 0 )
+		{
+			// Add to the list
+			this.aspectStackList.add( change );
+		}
+		else
+		{
+			return;
+		}
+
+		// Update the gui
+		if( ( this.guiBase != null ) && this.pendingChanges.isEmpty() )
 		{
 			this.guiBase.updateAspects();
 		}

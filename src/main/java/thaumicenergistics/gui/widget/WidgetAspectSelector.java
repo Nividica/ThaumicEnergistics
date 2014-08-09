@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
-import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.util.GuiHelper;
 
@@ -37,13 +37,14 @@ public class WidgetAspectSelector
 	 */
 	private long amount = 0;
 
-	public WidgetAspectSelector( IAspectSelectorGui selectorGui, AspectStack stack, int xPos, int yPos )
+	public WidgetAspectSelector( IAspectSelectorGui selectorGui, AspectStack stack, int xPos, int yPos, EntityPlayer player )
 	{
 		// Call super
-		super( selectorGui, stack.aspect, xPos, yPos );
+		super( selectorGui, stack.aspect, xPos, yPos, player );
 
 		// Get the amount
 		this.amount = stack.amount;
+		
 		// Get the aspect color
 		int aspectColor = stack.aspect.getColor();
 
@@ -147,7 +148,7 @@ public class WidgetAspectSelector
 		List<String> descriptionLines = new ArrayList<String>( 2 );
 
 		// Add the name
-		descriptionLines.add( this.aspect.getName() );
+		descriptionLines.add( this.aspectName );
 
 		// Add the amount
 		descriptionLines.add( Long.toString( this.amount ) );
@@ -193,7 +194,7 @@ public class WidgetAspectSelector
 		}
 
 		// Draw the aspect
-		UtilsFX.drawTag( this.xPosition + 1, this.yPosition + 1, this.aspect, 0, 0, this.zLevel );
+		this.drawAspect();
 
 		// Enable lighting
 		GL11.glEnable( GL11.GL_LIGHTING );

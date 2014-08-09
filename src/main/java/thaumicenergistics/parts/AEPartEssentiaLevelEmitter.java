@@ -49,6 +49,26 @@ public class AEPartEssentiaLevelEmitter
 	private static final double IDLE_POWER_DRAIN = 0.5D;
 
 	/**
+	 * NBT key for the aspect filter.
+	 */
+	private static final String ASPECT_FILTER_NBT_KEY = "aspect";
+
+	/**
+	 * NBT key for the redstone mode.
+	 */
+	private static final String REDSTONE_MODE_NBT_KEY = "mode";
+
+	/**
+	 * NBT key for the wanted amount.
+	 */
+	private static final String WANTED_AMOUNT_NBT_KEY = "wantedAmount";
+
+	/**
+	 * NBT key for if we are emitting.
+	 */
+	private static final String IS_EMITTING_NBT_KEY = "emitting";
+
+	/**
 	 * Aspect we are watching.
 	 */
 	private Aspect filterAspect;
@@ -144,7 +164,8 @@ public class AEPartEssentiaLevelEmitter
 
 	/**
 	 * Sets the current amount in the network, of the aspect
-	 * we are watching/filtering. 
+	 * we are watching/filtering.
+	 * 
 	 * @param amount
 	 */
 	private void setCurrentAmount( long amount )
@@ -248,16 +269,26 @@ public class AEPartEssentiaLevelEmitter
 		}
 	}
 
+	/**
+	 * Reads the state of the emitter from an NBT tag
+	 */
 	@Override
 	public void readFromNBT( NBTTagCompound data )
 	{
+		// Call super
 		super.readFromNBT( data );
 
-		this.filterAspect = Aspect.aspects.get( data.getString( "aspect" ) );
+		// Read the filter
+		this.filterAspect = Aspect.aspects.get( data.getString( AEPartEssentiaLevelEmitter.ASPECT_FILTER_NBT_KEY ) );
 
-		this.redstoneMode = RedstoneMode.values()[data.getInteger( "mode" )];
+		// Read the redstone mode
+		this.redstoneMode = RedstoneMode.values()[data.getInteger( AEPartEssentiaLevelEmitter.REDSTONE_MODE_NBT_KEY )];
 
-		this.wantedAmount = data.getLong( "wantedAmount" );
+		// Read the wanted amount
+		this.wantedAmount = data.getLong( AEPartEssentiaLevelEmitter.WANTED_AMOUNT_NBT_KEY );
+
+		// Read if we are emitting
+		this.isEmitting = data.getBoolean( AEPartEssentiaLevelEmitter.IS_EMITTING_NBT_KEY );
 	}
 
 	/**
@@ -447,6 +478,7 @@ public class AEPartEssentiaLevelEmitter
 
 	/**
 	 * Called when a AE power event occurs
+	 * 
 	 * @param powerEvent
 	 */
 	@MENetworkEventSubscribe
@@ -459,6 +491,7 @@ public class AEPartEssentiaLevelEmitter
 
 	/**
 	 * Called when we change channels/grids
+	 * 
 	 * @param channelEvent
 	 */
 	@MENetworkEventSubscribe
@@ -510,19 +543,22 @@ public class AEPartEssentiaLevelEmitter
 		if( this.filterAspect != null )
 		{
 			// Write the name of the aspect
-			data.setString( "aspect", this.filterAspect.getTag() );
+			data.setString( AEPartEssentiaLevelEmitter.ASPECT_FILTER_NBT_KEY, this.filterAspect.getTag() );
 		}
 		else
 		{
 			// Write an empty string
-			data.setString( "aspect", "" );
+			data.setString( AEPartEssentiaLevelEmitter.ASPECT_FILTER_NBT_KEY, "" );
 		}
 
 		// Write the redstone mode ordinal
-		data.setInteger( "mode", this.redstoneMode.ordinal() );
+		data.setInteger( AEPartEssentiaLevelEmitter.REDSTONE_MODE_NBT_KEY, this.redstoneMode.ordinal() );
 
 		// Write the threshold amount
-		data.setLong( "wantedAmount", this.wantedAmount );
+		data.setLong( AEPartEssentiaLevelEmitter.WANTED_AMOUNT_NBT_KEY, this.wantedAmount );
+
+		// Write if we are emitting
+		data.setBoolean( AEPartEssentiaLevelEmitter.IS_EMITTING_NBT_KEY, this.isEmitting );
 	}
 
 	/**

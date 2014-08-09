@@ -84,8 +84,7 @@ public abstract class GuiWithUpgradeSlots
 		// Point was not within any slot
 		return null;
 	}
-
-	// TODO: Check subclasses for same check and remove
+	
 	/**
 	 * Called when the mouse is clicked.
 	 */

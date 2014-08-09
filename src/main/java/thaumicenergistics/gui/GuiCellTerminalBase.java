@@ -377,7 +377,7 @@ public abstract class GuiCellTerminalBase
 			String amountToText = Long.toString( this.selectedAspectStack.amount );
 
 			// Get the name of the aspect
-			String aspectName = this.selectedAspectStack.aspect.getName();
+			String aspectName = this.selectedAspectStack.getAspectName( this.player );
 
 			// Draw the name
 			this.fontRendererObj.drawString( this.tooltipNamePrefix + aspectName, GuiCellTerminalBase.TOOLTIPS_POS_X,
@@ -421,7 +421,7 @@ public abstract class GuiCellTerminalBase
 	@Override
 	protected void mouseClicked( int mouseX, int mouseY, int mouseBtn )
 	{
-		// Pass to super.
+		// Call super
 		super.mouseClicked( mouseX, mouseY, mouseBtn );
 
 		// Pass to search field.
@@ -647,7 +647,7 @@ public abstract class GuiCellTerminalBase
 		for( AspectStack aspectStack : this.containerBase.getAspectStackList() )
 		{
 			// Create the widget
-			this.aspectWidgets.add( new WidgetAspectSelector( this, aspectStack, 0, 0 ) );
+			this.aspectWidgets.add( new WidgetAspectSelector( this, aspectStack, 0, 0, this.player ) );
 		}
 
 		// Update the search results

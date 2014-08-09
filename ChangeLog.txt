@@ -1,4 +1,11 @@
-﻿8/8/2014 0.4.4a
+﻿8/9/2014 0.4.4a
+	Import/Export/Storage bus now reports filter changes to all clients viewing the GUI.
+	Network tool is now properly protected from being moved while in GUI's
+	Reworked Essentia terminal and cell for less network traffic.
+	Level emitters now remember their emitting state when saved/loaded.
+	Aspect names are now occluded if player has not discovered them.
+	
+8/8/2014 0.4.4a
 	Added deeper client vs server checking.
 	Added background pulse to selected aspect in essentia terminal.
 	Essentia terminal now retains selected sorting mode.

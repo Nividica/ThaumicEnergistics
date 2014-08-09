@@ -74,7 +74,7 @@ public class PacketServerEssentiaTerminal
 				{
 					ContainerEssentiaTerminal container = (ContainerEssentiaTerminal)this.player.openContainer;
 
-					container.receiveSelectedAspect( this.currentAspect );
+					container.onReceiveSelectedAspect( this.currentAspect );
 				}
 				break;
 

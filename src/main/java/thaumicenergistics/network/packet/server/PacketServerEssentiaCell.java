@@ -50,7 +50,7 @@ public class PacketServerEssentiaCell
 				if ( ( this.player != null ) && ( this.player.openContainer instanceof ContainerEssentiaCell ) )
 				{
 					// Inform the cell container of the selected aspect
-					( (ContainerEssentiaCell)this.player.openContainer ).receiveSelectedAspect( this.selectedAspect );
+					( (ContainerEssentiaCell)this.player.openContainer ).onReceiveSelectedAspect( this.selectedAspect );
 				}
 				break;
 

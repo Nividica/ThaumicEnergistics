@@ -62,6 +62,8 @@ public class AEPartEssentiaStorageBus
 	private List<Aspect> filteredAspects = new ArrayList<Aspect>( AEPartEssentiaStorageBus.FILTER_SIZE );
 
 	private UpgradeInventory upgradeInventory = new UpgradeInventory( this.associatedItem, this, 1 );
+	
+	private List<ContainerPartEssentiaStorageBus> listeners = new ArrayList<ContainerPartEssentiaStorageBus>();
 
 	public AEPartEssentiaStorageBus()
 	{
@@ -72,6 +74,19 @@ public class AEPartEssentiaStorageBus
 		{
 			this.filteredAspects.add( null );
 		}
+	}
+	
+	public void addListener( ContainerPartEssentiaStorageBus listener )
+	{
+		if( !this.listeners.contains( listener ) )
+		{
+			this.listeners.add( listener );
+		}
+	}
+	
+	public void removeListener( ContainerPartEssentiaStorageBus listener )
+	{
+		this.listeners.remove( listener );
 	}
 
 	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
@@ -314,11 +329,17 @@ public class AEPartEssentiaStorageBus
 		this.filteredAspects.set( index, aspect );
 
 		this.handler.setPrioritizedAspects( this.filteredAspects );
-
-		// TODO: Update all clients
 		
-		// Update the client
-		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
+		// Update the clients
+		this.notifyListenersOfFilteredAspectsChange();
+	}
+	
+	private void notifyListenersOfFilteredAspectsChange()
+	{
+		for( ContainerPartEssentiaStorageBus listner : this.listeners )
+		{
+			listner.setFilteredAspects( this.filteredAspects );
+		}
 	}
 
 	@Override

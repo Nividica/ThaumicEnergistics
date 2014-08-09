@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
@@ -16,8 +15,6 @@ import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
-import thaumicenergistics.util.GuiHelper;
-import appeng.api.AEApi;
 
 /**
  * Gui for the storage bus.
@@ -119,11 +116,6 @@ public class GuiEssentiaStorageBus
 		new PacketServerEssentiaStorageBus().createRequestFullUpdate( player, part ).sendPacketToServer();
 	}
 
-	private boolean isMouseOverSlot( Slot slot, int x, int y )
-	{
-		return GuiHelper.isPointInGuiRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
-	}
-
 	/**
 	 * Draws the gui background
 	 */
@@ -181,31 +173,10 @@ public class GuiEssentiaStorageBus
 		}
 	}
 
-	protected Slot getSlotAtPosition( int x, int y )
-	{
-		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ )
-		{
-			Slot slot = (Slot)this.inventorySlots.inventorySlots.get( i );
-
-			if ( this.isMouseOverSlot( slot, x, y ) )
-			{
-				return slot;
-			}
-		}
-
-		return null;
-	}
-
 	@Override
 	protected void mouseClicked( int mouseX, int mouseY, int mouseButton )
 	{
-		Slot slot = this.getSlotAtPosition( mouseX, mouseY );
-
-		if ( ( slot != null ) && ( slot.getStack() != null ) && ( slot.getStack().isItemEqual( AEApi.instance().items().itemNetworkTool.stack( 1 ) ) ) )
-		{
-			return;
-		}
-
+		// Call super
 		super.mouseClicked( mouseX, mouseY, mouseButton );
 
 		for( WidgetAspectSlot aspectSlot : this.aspectWidgetList )

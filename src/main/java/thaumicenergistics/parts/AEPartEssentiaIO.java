@@ -445,6 +445,14 @@ public abstract class AEPartEssentiaIO
 		}
 
 	}
+	
+	private void notifyListenersOfFilterAspectChange()
+	{
+		for( ContainerPartEssentiaIOBus listener : this.listeners )
+		{
+			listener.setFilteredAspect( this.filteredAspects );
+		}
+	}
 
 	private void resizeAvailableArray()
 	{
@@ -496,6 +504,7 @@ public abstract class AEPartEssentiaIO
 				/*
 				 * NOTE: Known Issue: More than 1 redstone pulse per second will cause this to
 				 * operate too fast.
+				 * Update 8/9/2014: Lowest priority issues. Will likely leave as-is.
 				 */
 				this.doWork( this.getTransferAmountPerSecond() );
 			}
@@ -584,11 +593,9 @@ public abstract class AEPartEssentiaIO
 	{
 		// Set the filter
 		this.filteredAspects.set( index, aspect );
-
-		// TODO: Should really let all clients know about this
-
-		// Update the client
-		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
+		
+		// Update the listeners
+		this.notifyListenersOfFilterAspectChange();
 	}
 
 	@Override

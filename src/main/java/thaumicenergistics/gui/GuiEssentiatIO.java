@@ -21,7 +21,6 @@ import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// TODO: make redstone button -.-
 @SideOnly(Side.CLIENT)
 public class GuiEssentiatIO
 	extends GuiWidgetHost
