@@ -1,0 +1,77 @@
+#Group names
+itemGroup.ThaumicEnergistics=사우믹 에너지틱스
+thaumicenergistics.group.essentia.transport=ME 에센스 입/출력 버스
+
+#Fluids
+thaumicenergistics.fluid.gaseous=Gaseous
+
+#Blocks
+thaumicenergistics.block.essentia.provider.name=Essentia Provider
+thaumicenergistics.block.infusion.provider.name=Infusion Provider
+
+#Cable parts
+thaumicenergistics.aeparts.essentia.ImportBus.name=에센시아 입력 버스
+thaumicenergistics.aeparts.essentia.ExportBus.name=에센시아 출력 버스
+thaumicenergistics.aeparts.essentia.levelemitter.name=에센시아 레벨 이미터
+thaumicenergistics.aeparts.essentia.StorageBus.name=에센시아 스토리지 버스
+thaumicenergistics.aeparts.essentia.terminal.name=에센시아 터미널
+thaumicenergistics.aeparts.arcane.crafting.terminal.name=아케인 크래프팅 터미널
+
+#Items
+thaumicenergistics.item.essentia.cell.1k.name=ME 1k 에센시아 저장소
+thaumicenergistics.item.essentia.cell.4k.name=ME 4k 에센시아 저장소
+thaumicenergistics.item.essentia.cell.16k.name=ME 16k 에센시아 저장소
+thaumicenergistics.item.essentia.cell.64k.name=ME 64k 에센시아 저장소
+thaumicenergistics.item.storage.casing.name=ME 에센시아 저장소 케이싱
+thaumicenergistics.item.storage.component.1k.name=ME 1k 에센시아 저장소 컴포넌트
+thaumicenergistics.item.storage.component.4k.name=ME 4k 에센시아 저장소 컴포넌트
+thaumicenergistics.item.storage.component.16k.name=ME 16k 에센시아 저장소 컴포넌트
+thaumicenergistics.item.storage.component.64k.name=ME 64k 에센시아 저장소 컴포넌트
+thaumicenergistics.item.material.diffusion.core.name=디퓨전 코어
+thaumicenergistics.item.material.coalescence.core.name=콜센스 코어
+
+#Tooltips
+thaumicenergistics.tooltip.amount=양
+thaumicenergistics.tooltip.aspect=위상
+thaumicenergistics.tooltip.essentia.cell.bytes=%d 중 %d 바이트가 사용됨
+thaumicenergistics.tooltip.essentia.cell.types=%d 중 %d 개의 에센시아 종류가 저장됨
+
+#GUI
+thaumicenergistics.gui.arcane.crafting.terminal.title=아케인 터미널
+thaumicenergistics.gui.essentia.cell.title=에센시아 셀
+
+#Research Tab
+tc.research_category.thaumicenergistics=에너지틱스
+
+# Research basics
+tc.research_name.thaumicenergistics.TERESEARCH=사우믹 에너지틱스
+tc.research_text.thaumicenergistics.TERESEARCH=연금술에도 정보화는 여전히 필요하기 때문이다.
+thaumicenergistics.research_page.TERESEARCH.1=과학자든, 연금술사든, 여러분은 정보화 시대의 흐름에 따라가야 합니다.<BR>You will need to study the principals of matter-energy conversion in detail to accomplish this. It is likely there are aspects of Thaumaturgy that can accomplish this, as well as technology capable of doing the same.<BR>This will require extensive study, but you are sure that it will be a worthwhile investment of your time.
+
+# Research conversion cores
+tc.research_name.thaumicenergistics.TECORES=디지-센시아
+tc.research_text.thaumicenergistics.TECORES=디지털 에센시아
+thaumicenergistics.research_page.TECORES.1=Having discovered how to distill essentia, it occurs to you that you may be able store it digitally.<BR>Examining the §lFormation Core§r and §lAnnihilation Core§r you realize that with some minor modifications they could serve as a means to convert essentia to and from a digital format.<BR>However, due to the corrosive nature of certain types of essentia, a layer of quicksilver around the circuitry is required to prevent decay.
+thaumicenergistics.research_page.TECORES.2=§lDiffusion Core§r<BR>The relatively high volatility and immense energy in distilled essentia requires that it first be diffused then digitized. A buffer chamber of some kind will likely be required to hold the diffused essentia.<LINE>§lCoalescence Core§r<BR>Compresses and binds re-materialized essentia diffusion back into its raw form. A buffer chamber will also likely be needed.
+
+# Research storage
+tc.research_name.thaumicenergistics.TESTORAGE=디지-센시아 저장소
+tc.research_text.thaumicenergistics.TESTORAGE=이것들이 진짜로 저장소야?
+thaumicenergistics.research_page.TESTORAGE.1=Upon inspecting existing digital storage mediums you have concluded that you can in-fact store digitized essentia.<BR>By infusing §lCertus Quartz§r with concentrated essence, it will gain the ability to store the essentia, which remains remarkably active even in digital form.<BR>You conclude that the higher the concentration of essence, the more it should be able to store, although there are inherit limits as to how much the quartz itself can store.
+thaumicenergistics.research_page.TESTORAGE.2=§lComponents§r<BR>Stores the essentia in its digital format. Non-operational unless a cell casing is used to interface with a digital network.<LINE>§lCell Casing§r<BR>Provides an interface and protects a storage component. Non magical in nature which is why it can be crafted without the aid of Vis.
+
+# Research IO
+tc.research_name.thaumicenergistics.TEIO=디지-센시아 이동
+tc.research_text.thaumicenergistics.TEIO=정보화로 에센시아를 이동시켜!
+thaumicenergistics.research_page.TEIO.1=Now that you know how to digitize essentia, it's time to put that knowledge to work.<LINE>§lImport & Export§r<BR>By binding the appropriate core to an essentia tube and chamber, you are able to move essentia in and out of the storage network. The use of a filter tube allows you to specify what aspects are allowed to be transferred.
+thaumicenergistics.research_page.TEIO.2=§lStorage Bus§r<BR>Combining the import and export buses into a single device allows you to use external essentia containers as network storage. Due to the lack of a chamber, it's unlikely to work with anything but warded jars.
+
+# Research Arcane crafting terminal
+tc.research_name.thaumicenergistics.TEARCANETERM=아케인 크래프팅 터미널
+tc.research_text.thaumicenergistics.TEARCANETERM=마법과§o기술을 이용한 조합§r
+thaumicenergistics.research_page.TEARCANETERM.1=You have discovered that using primal aspects to bind a §lTerminal§r to an §lArcane Worktable§r allows you to imbue the terminal with the worktable's ability to craft arcane items.
+
+# Research Essentia terminal
+tc.research_name.thaumicenergistics.TEESSTERM=에센시아 터미널
+tc.research_text.thaumicenergistics.TEESSTERM=당신이 얼마나 가지고 있는지?
+thaumicenergistics.research_page.TEESSTERM.1=The Essentia Terminal allows you to monitor how much essentia is stored within the network, and provides a way to fill and drain essentia containers within the terminal.
