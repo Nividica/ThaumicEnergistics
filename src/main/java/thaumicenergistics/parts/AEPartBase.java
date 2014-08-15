@@ -82,6 +82,12 @@ public abstract class AEPartBase
 
 	private void updateStatus()
 	{
+		// Ignored client side
+		if( EffectiveSide.isClientSide() )
+		{
+			return;
+		}
+		
 		// Do we have a node?
 		if( this.node != null )
 		{
@@ -103,6 +109,12 @@ public abstract class AEPartBase
 		}
 	}
 
+	/**
+	 * Extracts fluid from the ME network.
+	 * @param toExtract
+	 * @param action
+	 * @return
+	 */
 	protected final IAEFluidStack extractFluid( IAEFluidStack toExtract, Actionable action )
 	{
 
@@ -121,6 +133,12 @@ public abstract class AEPartBase
 		return monitor.extractItems( toExtract, action, new MachineSource( this ) );
 	}
 
+	/**
+	 * Injects fluid into the ME network.
+	 * @param toInject
+	 * @param action
+	 * @return
+	 */
 	protected final IAEFluidStack injectFluid( IAEFluidStack toInject, Actionable action )
 	{
 		if( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
@@ -138,6 +156,10 @@ public abstract class AEPartBase
 		return monitor.injectItems( toInject, action, new MachineSource( this ) );
 	}
 
+	/**
+	 * Checks if the part is active and powered.
+	 * @return
+	 */
 	protected boolean isActive()
 	{
 		// Are we server side?
@@ -154,6 +176,9 @@ public abstract class AEPartBase
 		return this.isActive;
 	}
 
+	/**
+	 * Called when the part is added to the world.
+	 */
 	@Override
 	public void addToWorld()
 	{
@@ -277,6 +302,10 @@ public abstract class AEPartBase
 	 */
 	public abstract double getIdlePowerUsage();
 
+	/**
+	 * Gets the side of the host that this part is attached to.
+	 * @return
+	 */
 	public ForgeDirection getSide()
 	{
 		return this.cableSide;
@@ -552,6 +581,15 @@ public abstract class AEPartBase
 		helper.renderFace( x, y, z, lightTexture, ForgeDirection.EAST, renderer );
 		helper.renderFace( x, y, z, lightTexture, ForgeDirection.SOUTH, renderer );
 		helper.renderFace( x, y, z, lightTexture, ForgeDirection.WEST, renderer );
+	}
+
+	/**
+	 * Get the host tile of this part.
+	 * @return
+	 */
+	public final TileEntity getHostTile()
+	{
+		return this.hostTile;
 	}
 
 }

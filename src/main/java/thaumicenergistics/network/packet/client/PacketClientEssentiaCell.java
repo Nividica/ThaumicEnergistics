@@ -3,17 +3,18 @@ package thaumicenergistics.network.packet.client;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.ContainerEssentiaCell;
 import thaumicenergistics.gui.GuiEssentiaCell;
 import thaumicenergistics.network.packet.AbstractClientPacket;
 import thaumicenergistics.network.packet.AbstractPacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketClientEssentiaCell
 	extends AbstractClientPacket
@@ -21,10 +22,14 @@ public class PacketClientEssentiaCell
 	private static final int MODE_FULL_LIST = 0;
 	private static final int MODE_SELECTED_ASPECT = 1;
 	private static final int MODE_LIST_CHANGED = 2;
+	private static final int MODE_SORT_MODE_CHANGED = 3;
+	
+	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();
 
 	private List<AspectStack> aspectStackList;
 	private Aspect selectedAspect;
 	private AspectStack change;
+	private ComparatorMode sortMode;
 
 	public PacketClientEssentiaCell createUpdateFullList( EntityPlayer player, List<AspectStack> list )
 	{
@@ -71,6 +76,20 @@ public class PacketClientEssentiaCell
 		return this;
 	}
 
+	public PacketClientEssentiaCell createSortModeUpdate( EntityPlayer player, ComparatorMode sortMode )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientEssentiaCell.MODE_SORT_MODE_CHANGED;
+
+		// Set the sort mode
+		this.sortMode = sortMode;
+
+		return this;
+	}
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	protected void wrappedExecute()
@@ -102,6 +121,11 @@ public class PacketClientEssentiaCell
 					// Update the list
 					container.onReceiveAspectListChange( this.change );
 					break;
+					
+				case PacketClientEssentiaCell.MODE_SORT_MODE_CHANGED:
+					// Update the sorting mode
+					( (GuiEssentiaCell)gui ).onSortModeChanged( this.sortMode );
+					break;
 			}
 		}
 	}
@@ -130,6 +154,12 @@ public class PacketClientEssentiaCell
 			case PacketClientEssentiaCell.MODE_LIST_CHANGED:
 				// Read the stack
 				this.change = new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() );
+				break;
+				
+			case PacketClientEssentiaCell.MODE_SORT_MODE_CHANGED:
+				// Read the mode ordinal
+				this.sortMode = SORT_MODES[stream.readInt()];
+				break;
 		}
 	}
 
@@ -159,6 +189,12 @@ public class PacketClientEssentiaCell
 				
 				// Write the amount
 				stream.writeLong( this.change.amount );
+				break;
+				
+			case PacketClientEssentiaCell.MODE_SORT_MODE_CHANGED:
+				// Write the mode ordinal
+				stream.writeInt( this.sortMode.ordinal() );
+				break;
 		}
 	}
 

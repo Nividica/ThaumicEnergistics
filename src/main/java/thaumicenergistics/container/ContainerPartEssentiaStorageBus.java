@@ -8,6 +8,8 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 
+// TODO: Priority Window
+// TODO: Title
 public class ContainerPartEssentiaStorageBus
 	extends ContainerWithNetworkTool
 {
@@ -24,12 +26,12 @@ public class ContainerPartEssentiaStorageBus
 	/**
 	 * Y position for the player inventory
 	 */
-	private static int PLAYER_INV_POSITION_Y = 140;
+	private static int PLAYER_INV_POSITION_Y = 102;
 
 	/**
 	 * Y position for the hotbar inventory
 	 */
-	private static int HOTBAR_INV_POSITION_Y = 198;
+	private static int HOTBAR_INV_POSITION_Y = 160;
 	
 	private AEPartEssentiaStorageBus part;
 	

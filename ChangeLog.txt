@@ -1,9 +1,25 @@
-﻿8/9/2014 0.4.4a
+﻿8/15/2014 0.5.0a
+	Added Storage bus priority gui.
+	Added Essentia Level Emitter recipe and Thaumonomicon entry.
+
+8/13/2014 0.5.0a
+	Reworked essentia terminal more responsive to essentia amount changes.
+
+8/12/2014 0.5.0a
+	More robust filter support for storage bus.
+	Bugfix: Storage bus filter not updated on load.
+	Known issue: Storage bus does not always register jar on world load.
+	Added Essentia and Infusion provider recipes and Thaumonomicon entries courtesy of MKoanga.
+
+8/9/2014 0.4.4a
 	Import/Export/Storage bus now reports filter changes to all clients viewing the GUI.
 	Network tool is now properly protected from being moved while in GUI's
 	Reworked Essentia terminal and cell for less network traffic.
-	Level emitters now remember their emitting state when saved/loaded.
+	Level emitters now retain their emitting state when saved/loaded.
 	Aspect names are now occluded if player has not discovered them.
+	Essentia cells now retain sorting order.
+	Storage bus filter size reduced.
+	Added priority mode button to storage bus.
 	
 8/8/2014 0.4.4a
 	Added deeper client vs server checking.

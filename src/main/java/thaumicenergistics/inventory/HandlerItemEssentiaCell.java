@@ -8,6 +8,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.items.ItemEssentiaCell;
 import thaumicenergistics.registries.ItemEnum;
@@ -26,21 +27,24 @@ public class HandlerItemEssentiaCell
 {
 	private static final String NBT_FLUID_NUMBER_KEY = "Fluid#";
 	private static final String NBT_PREFORMATTED_FLUID_NUMBER_KEY = "PreformattedFluidName#";
+	private static final String NBT_SORT_KEY = "SortMode";
 
 	private NBTTagCompound stackTag;
-	
+
 	private ArrayList<FluidStack> fluidStacks = new ArrayList<FluidStack>();
-	
+
 	private ArrayList<Fluid> prioritizedFluids = new ArrayList<Fluid>();
-	
+
 	private int totalTypes;
-	
+
 	private long totalBytes;
+
+	private ComparatorMode sortMode;
 
 	public HandlerItemEssentiaCell( ItemStack storageStack )
 	{
 		// Ensure we have a NBT tag
-		if ( !storageStack.hasTagCompound() )
+		if( !storageStack.hasTagCompound() )
 		{
 			storageStack.setTagCompound( new NBTTagCompound() );
 		}
@@ -67,11 +71,21 @@ public class HandlerItemEssentiaCell
 			Fluid priorityFluid = FluidRegistry.getFluid( this.stackTag.getString( HandlerItemEssentiaCell.NBT_PREFORMATTED_FLUID_NUMBER_KEY + i ) );
 
 			// Ensure it is not null
-			if ( priorityFluid != null )
+			if( priorityFluid != null )
 			{
 				// Add to the priority list
 				this.prioritizedFluids.add( priorityFluid );
 			}
+		}
+
+		// Load the sort mode
+		if( this.stackTag.hasKey( HandlerItemEssentiaCell.NBT_SORT_KEY ) )
+		{
+			this.sortMode = ComparatorMode.values()[this.stackTag.getInteger( HandlerItemEssentiaCell.NBT_SORT_KEY )];
+		}
+		else
+		{
+			this.sortMode = ComparatorMode.MODE_ALPHABETIC;
 		}
 	}
 
@@ -80,7 +94,7 @@ public class HandlerItemEssentiaCell
 		// Are there any prioritized fluids?
 		for( Fluid currentFluid : this.prioritizedFluids )
 		{
-			if ( currentFluid != null )
+			if( currentFluid != null )
 			{
 				return this.prioritizedFluids.contains( currentFluid );
 			}
@@ -93,7 +107,7 @@ public class HandlerItemEssentiaCell
 	{
 		NBTTagCompound fluidNBT = new NBTTagCompound();
 
-		if ( ( fluidStack != null ) && ( fluidStack.getFluid() != null ) && ( fluidStack.amount > 0 ) )
+		if( ( fluidStack != null ) && ( fluidStack.getFluid() != null ) && ( fluidStack.amount > 0 ) )
 		{
 			fluidStack.writeToNBT( fluidNBT );
 
@@ -111,7 +125,7 @@ public class HandlerItemEssentiaCell
 	public boolean canAccept( IAEFluidStack input )
 	{
 		// Ensure there is an input
-		if ( input == null )
+		if( input == null )
 		{
 			return false;
 		}
@@ -120,7 +134,7 @@ public class HandlerItemEssentiaCell
 		Fluid inputFluid = input.getFluid();
 
 		// Is the fluid an essentia gas?
-		if ( !( inputFluid instanceof GaseousEssentia ) )
+		if( !( inputFluid instanceof GaseousEssentia ) )
 		{
 			return false;
 		}
@@ -128,7 +142,7 @@ public class HandlerItemEssentiaCell
 		// Search for empty slots or matches
 		for( FluidStack fluidStack : this.fluidStacks )
 		{
-			if ( ( fluidStack == null ) || ( inputFluid.getID() == fluidStack.getFluid().getID() ) )
+			if( ( fluidStack == null ) || ( inputFluid.getID() == fluidStack.getFluid().getID() ) )
 			{
 				return this.preformattedOrContainsFluid( inputFluid );
 			}
@@ -141,38 +155,38 @@ public class HandlerItemEssentiaCell
 	public IAEFluidStack extractItems( IAEFluidStack request, Actionable mode, BaseActionSource src )
 	{
 		// Is there no request, or we do not have the fluid, return.
-		if ( ( request == null ) || ( !this.preformattedOrContainsFluid( request.getFluid() ) ) )
+		if( ( request == null ) || ( !this.preformattedOrContainsFluid( request.getFluid() ) ) )
 		{
 			return null;
 		}
-		
+
 		// Loop over all stored fluids
 		for( int slotNumber = 0; slotNumber < this.fluidStacks.size(); slotNumber++ )
 		{
 			// Get the stack
 			FluidStack currentStack = this.fluidStacks.get( slotNumber );
-			
+
 			// Is the stack valid and does it match the requested fluid?
-			if ( ( currentStack != null ) && ( currentStack.fluidID == request.getFluid().getID() ) )
+			if( ( currentStack != null ) && ( currentStack.fluidID == request.getFluid().getID() ) )
 			{
 				// Calculate the amount left over after the extraction
 				long endAmount = currentStack.amount - request.getStackSize();
-				
+
 				IAEFluidStack removedStack;
-				
+
 				// Is there any left over?
-				if ( endAmount > 0L )
+				if( endAmount > 0L )
 				{
 					// Copy the request
 					removedStack = request.copy();
-					
+
 					// Get the fluid stack to write back into the cell
 					FluidStack toWrite = new FluidStack( currentStack.fluidID, (int)endAmount );
-					
+
 					//currentFluids.set( i, toWrite );
-					
+
 					// Are we modulating?
-					if ( mode == Actionable.MODULATE )
+					if( mode == Actionable.MODULATE )
 					{
 						// Write the fluid to the slot
 						this.writeFluidToSlot( slotNumber, toWrite );
@@ -182,20 +196,20 @@ public class HandlerItemEssentiaCell
 				{
 					// None left over, returned stack will be all of the current stack
 					removedStack = AEApi.instance().storage().createFluidStack( currentStack.copy() );
-					
+
 					// Are we modulating?
-					if ( mode == Actionable.MODULATE )
+					if( mode == Actionable.MODULATE )
 					{
 						// Set the slot as empty
 						this.writeFluidToSlot( slotNumber, null );
 					}
 				}
-				
+
 				// Return the fluid stack we were able to remove
 				return removedStack;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -207,7 +221,7 @@ public class HandlerItemEssentiaCell
 		// Get how many mb of fluid we have stored
 		for( FluidStack stack : this.fluidStacks )
 		{
-			if ( stack != null )
+			if( stack != null )
 			{
 				storedFluidAmount_FU += stack.amount;
 			}
@@ -229,7 +243,7 @@ public class HandlerItemEssentiaCell
 		{
 			out.add( AEApi.instance().storage().createFluidStack( fluidStack ) );
 		}
-		
+
 		return out;
 	}
 
@@ -239,7 +253,7 @@ public class HandlerItemEssentiaCell
 
 		for( FluidStack fluidStack : this.fluidStacks )
 		{
-			if ( fluidStack != null )
+			if( fluidStack != null )
 			{
 				aspectList.add( new AspectStack( ( (GaseousEssentia)fluidStack.getFluid() ).getAssociatedAspect(), EssentiaConversionHelper
 								.convertFluidAmountToEssentiaAmount( fluidStack.amount ) ) );
@@ -271,7 +285,7 @@ public class HandlerItemEssentiaCell
 	public IAEFluidStack injectItems( IAEFluidStack input, Actionable mode, BaseActionSource src )
 	{
 		// Is the input empty, or can we not accept this fluid?
-		if ( ( input == null ) || ( !this.canAccept( input ) ) )
+		if( ( input == null ) || ( !this.canAccept( input ) ) )
 		{
 			return input;
 		}
@@ -281,7 +295,7 @@ public class HandlerItemEssentiaCell
 
 		// Cache the free bytes amount
 		long cFreeBytes = this.freeBytes();
-		
+
 		int storeInSlot = -1;
 
 		// Search for: #1 a matching fluid. #2 The first empty slot.
@@ -298,7 +312,7 @@ public class HandlerItemEssentiaCell
 				{
 					// Assign this slot to store into
 					storeInSlot = fluidSlotIndex;
-					
+
 					// Keep searching, there may yet be a matching fluid
 				}
 			}
@@ -309,28 +323,28 @@ public class HandlerItemEssentiaCell
 				{
 					// Store in this slot
 					storeInSlot = fluidSlotIndex;
-					
+
 					// Stop searching
 					break;
 				}
 			}
 		}
-		
+
 		// Did we find a match or empty slot?
 		if( storeInSlot > -1 )
 		{
 			// Get the fluid we are writing
 			Fluid fluidToWrite = input.getFluid();
-	
+
 			// Get the amount to add to the slot
 			long amountToAdd = notAdded.getStackSize();
-	
+
 			// Does the amount to add exceed the free space?
-			if ( amountToAdd > cFreeBytes )
+			if( amountToAdd > cFreeBytes )
 			{
 				// Adjust the amount not added
 				notAdded.setStackSize( amountToAdd - cFreeBytes );
-	
+
 				// Adjust the amount to add
 				amountToAdd = cFreeBytes;
 			}
@@ -339,20 +353,20 @@ public class HandlerItemEssentiaCell
 				// We can write the full amount
 				notAdded = null;
 			}
-	
+
 			// Are we not simulating?
-			if ( mode == Actionable.MODULATE )
+			if( mode == Actionable.MODULATE )
 			{
 				// Set how much this slot will now hold
 				long newStoredAmount = amountToAdd;
-				
+
 				// Is there some already stored?
 				if( this.fluidStacks.get( storeInSlot ) != null )
 				{
 					// Add in the existing amount
-					newStoredAmount+= this.fluidStacks.get( storeInSlot ).amount;
+					newStoredAmount += this.fluidStacks.get( storeInSlot ).amount;
 				}
-		
+
 				// Write to the slot
 				this.writeFluidToSlot( storeInSlot, new FluidStack( fluidToWrite, (int)newStoredAmount ) );
 			}
@@ -365,7 +379,7 @@ public class HandlerItemEssentiaCell
 	{
 		for( Fluid currentFluid : this.prioritizedFluids )
 		{
-			if ( currentFluid != null )
+			if( currentFluid != null )
 			{
 				return true;
 			}
@@ -401,13 +415,35 @@ public class HandlerItemEssentiaCell
 
 		for( FluidStack stack : this.fluidStacks )
 		{
-			if ( stack != null )
+			if( stack != null )
 			{
 				typeCount++ ;
 			}
 		}
 
 		return typeCount;
+	}
+
+	/**
+	 * Gets the stored sorting mode.
+	 * @return
+	 */
+	public ComparatorMode getSortingMode()
+	{
+		return this.sortMode;
+	}
+	
+	/**
+	 * Sets the stored sorting mode.
+	 * @param sortMode
+	 */
+	public void setSortingMode( ComparatorMode sortMode )
+	{
+		// Store the mode
+		this.stackTag.setInteger( HandlerItemEssentiaCell.NBT_SORT_KEY, sortMode.ordinal() );
+		
+		// Set the mode
+		this.sortMode = sortMode;
 	}
 
 }

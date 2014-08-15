@@ -7,7 +7,8 @@ The aim of this mod is to serve as a bridge between Thaumcraft and Applied Energ
 
 Thanks go out to AlgorithmX2 for Applied Energistics, Azanor for Thaumcraft, M3gaFr3ak for ExtraCells, and the Forge team.
 
-Localization's thanks to Mrkwtkr.
+Localization's thanks to Mrkwtkr, alvin137.
 Texture thanks to CyanideX.
+Special thanks to MKoanga.
 
 Built for MC 1.7.2

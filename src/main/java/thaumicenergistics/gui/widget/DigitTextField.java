@@ -12,11 +12,6 @@ public class DigitTextField extends GuiTextField
 		super( fontRenderer, x, y, length, height );
 	}
 
-	private boolean isWhiteListed( char key )
-	{
-		return "0123456789".contains( String.valueOf( key ) );
-	}
-
 	@Override
 	public boolean textboxKeyTyped( char keyChar, int keyID )
 	{
@@ -140,7 +135,7 @@ public class DigitTextField extends GuiTextField
 					return true;
 			}
 
-			if ( this.isWhiteListed( keyChar ) )
+			if ( Character.isDigit( keyChar ) )
 			{
 				this.writeText( Character.toString( keyChar ) );
 

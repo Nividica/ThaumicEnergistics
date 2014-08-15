@@ -139,7 +139,7 @@ public class WidgetAspectSelector
 	@Override
 	public void drawTooltip( int mouseX, int mouseY )
 	{
-		if( ( this.aspect == null ) || ( this.amount <= 0L ) )
+		if( ( this.getAspect() == null ) || ( this.amount <= 0L ) )
 		{
 			return;
 		}
@@ -167,7 +167,7 @@ public class WidgetAspectSelector
 		//Minecraft.getMinecraft().renderEngine.bindTexture( TextureMap.locationBlocksTexture );
 
 		// Ensure we have an aspect
-		if( this.aspect == null )
+		if( this.getAspect() == null )
 		{
 			return;
 		}
@@ -187,7 +187,7 @@ public class WidgetAspectSelector
 		AspectStack selectedStack = ( (IAspectSelectorGui)this.hostGUI ).getSelectedAspect();
 
 		// Is there a selectedStack, and does it match ours?
-		if( ( selectedStack != null ) && ( selectedStack.aspect == this.aspect ) )
+		if( ( selectedStack != null ) && ( selectedStack.aspect == this.getAspect() ) )
 		{
 			this.drawHollowRectWithCorners( this.xPosition, this.yPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE,
 				this.getBackgroundColor(), WidgetAspectSelector.borderThickness );
@@ -218,7 +218,7 @@ public class WidgetAspectSelector
 	 */
 	public AspectStack getAspectStackRepresentation()
 	{
-		return new AspectStack( this.aspect, this.amount );
+		return new AspectStack( this.getAspect(), this.amount );
 	}
 
 	/**
@@ -227,9 +227,9 @@ public class WidgetAspectSelector
 	@Override
 	public void mouseClicked()
 	{
-		if( this.aspect != null )
+		if( this.getAspect() != null )
 		{
-			( (IAspectSelectorGui)this.hostGUI ).getContainer().setSelectedAspect( this.aspect );
+			( (IAspectSelectorGui)this.hostGUI ).getContainer().setSelectedAspect( this.getAspect() );
 		}
 	}
 

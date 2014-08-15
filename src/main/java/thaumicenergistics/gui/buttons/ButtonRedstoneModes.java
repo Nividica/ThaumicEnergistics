@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import thaumicenergistics.texture.AEStateIcons;
+import thaumicenergistics.texture.EnumAEStateIcons;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.RedstoneMode;
 import com.google.common.base.Splitter;
@@ -128,19 +128,19 @@ public class ButtonRedstoneModes
 		switch ( this.redstoneMode )
 		{
 			case HIGH_SIGNAL:
-				this.icon = AEStateIcons.REDSTONE_HIGH;
+				this.icon = EnumAEStateIcons.REDSTONE_HIGH;
 				break;
 
 			case IGNORE:
-				this.icon = AEStateIcons.REDSTONE_IGNORE;
+				this.icon = EnumAEStateIcons.REDSTONE_IGNORE;
 				break;
 
 			case LOW_SIGNAL:
-				this.icon = AEStateIcons.REDSTONE_LOW;
+				this.icon = EnumAEStateIcons.REDSTONE_LOW;
 				break;
 
 			case SIGNAL_PULSE:
-				this.icon = AEStateIcons.REDSTONE_PULSE;
+				this.icon = EnumAEStateIcons.REDSTONE_PULSE;
 				break;
 		}
 	}

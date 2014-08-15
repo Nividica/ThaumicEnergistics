@@ -4,7 +4,7 @@ import appeng.api.AEApi;
 import appeng.parts.automation.UpgradeInventory;
 import thaumicenergistics.container.ContainerWithNetworkTool;
 import thaumicenergistics.container.slot.SlotNetworkTool;
-import thaumicenergistics.texture.AEStateIcons;
+import thaumicenergistics.texture.EnumAEStateIcons;
 import thaumicenergistics.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -15,9 +15,13 @@ public abstract class GuiWithUpgradeSlots
 	extends GuiContainer
 {
 
-	private static int upgradeU = AEStateIcons.UPGRADE_SLOT.getU();
+	private static int upgradeU = EnumAEStateIcons.UPGRADE_SLOT.getU();
 
-	private static int upgradeV = AEStateIcons.UPGRADE_SLOT.getV();
+	private static int upgradeV = EnumAEStateIcons.UPGRADE_SLOT.getV();
+
+	private static int upgradeWidth = EnumAEStateIcons.UPGRADE_SLOT.getWidth();
+
+	private static int upgradeHeight = EnumAEStateIcons.UPGRADE_SLOT.getHeight();
 
 	public GuiWithUpgradeSlots( Container container )
 	{
@@ -27,7 +31,7 @@ public abstract class GuiWithUpgradeSlots
 	@Override
 	protected void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY )
 	{
-		Minecraft.getMinecraft().renderEngine.bindTexture( AEStateIcons.AE_STATES_TEXTURE );
+		Minecraft.getMinecraft().renderEngine.bindTexture( EnumAEStateIcons.AE_STATES_TEXTURE );
 
 		// Locate any upgrade or network slots
 		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ )
@@ -40,11 +44,10 @@ public abstract class GuiWithUpgradeSlots
 			{
 				// Draw background
 				this.drawTexturedModalRect( this.guiLeft + slot.xDisplayPosition, this.guiTop + slot.yDisplayPosition, GuiWithUpgradeSlots.upgradeU,
-					GuiWithUpgradeSlots.upgradeV, AEStateIcons.ICON_SIZE, AEStateIcons.ICON_SIZE );
+					GuiWithUpgradeSlots.upgradeV, GuiWithUpgradeSlots.upgradeWidth, GuiWithUpgradeSlots.upgradeHeight );
 			}
 		}
 	}
-	
 
 	/**
 	 * Checks if the specified point is within the bounds of the specified slot.
@@ -58,9 +61,10 @@ public abstract class GuiWithUpgradeSlots
 	{
 		return GuiHelper.isPointInGuiRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
 	}
-	
+
 	/**
 	 * Gets the slot who contains the specified point.
+	 * 
 	 * @param x
 	 * @param y
 	 * @return Slot the point is within, null if point is within no slots.
@@ -84,7 +88,7 @@ public abstract class GuiWithUpgradeSlots
 		// Point was not within any slot
 		return null;
 	}
-	
+
 	/**
 	 * Called when the mouse is clicked.
 	 */
@@ -109,7 +113,7 @@ public abstract class GuiWithUpgradeSlots
 				}
 			}
 		}
-		
+
 		// Call super
 		super.mouseClicked( mouseX, mouseY, mouseButton );
 	}

@@ -1,6 +1,6 @@
 package thaumicenergistics.gui.buttons;
 
-import thaumicenergistics.texture.AEStateIcons;
+import thaumicenergistics.texture.EnumAEStateIcons;
 
 public class ButtonClearCraftingGrid
 	extends AbstractAEButton
@@ -8,7 +8,7 @@ public class ButtonClearCraftingGrid
 	/**
 	 * Clear grid icon
 	 */
-	private static final AEStateIcons CLEAR_ICON = AEStateIcons.CLEAR_GRID;
+	private static final EnumAEStateIcons CLEAR_ICON = EnumAEStateIcons.CLEAR_GRID;
 
 	/**
 	 * Creates the button

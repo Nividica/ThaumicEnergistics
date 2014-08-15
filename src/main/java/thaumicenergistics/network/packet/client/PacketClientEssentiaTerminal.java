@@ -19,9 +19,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PacketClientEssentiaTerminal
 	extends AbstractClientPacket
 {
-	public static final int MODE_FULL_LIST = 0;
-	public static final int MODE_SET_CURRENT = 1;
-	public static final int MODE_SORT_MODE_CHANGED = 2;
+	private static final int MODE_FULL_LIST = 0;
+	private static final int MODE_SET_CURRENT = 1;
+	private static final int MODE_SORT_MODE_CHANGED = 2;
 	private static final int MODE_LIST_CHANGED = 3;
 	
 	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();

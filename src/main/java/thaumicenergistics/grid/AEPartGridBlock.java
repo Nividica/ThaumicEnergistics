@@ -18,6 +18,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+import appeng.me.cache.NetworkMonitor;
 
 /**
  * AE Gridblock used for all my AE parts.
@@ -92,7 +93,7 @@ public class AEPartGridBlock
 	 * 
 	 * @return Monitor if valid grid, null otherwise.
 	 */
-	public IMEMonitor<IAEFluidStack> getFluidMonitor()
+	public NetworkMonitor<IAEFluidStack> getFluidMonitor()
 	{
 		// Set the storage grid
 		IStorageGrid storageGrid = this.getStorageGrid();
@@ -104,7 +105,7 @@ public class AEPartGridBlock
 		}
 
 		// Return the storage grid's fluid monitor.
-		return storageGrid.getFluidInventory();
+		return (NetworkMonitor<IAEFluidStack>)storageGrid.getFluidInventory();
 	}
 
 	/**

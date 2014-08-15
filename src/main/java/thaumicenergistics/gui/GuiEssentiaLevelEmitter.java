@@ -37,12 +37,12 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * Normal button labels
 	 */
-	private static String[] BUTTON_LABELS = { "-1", "-10", "-100", "+1", "+10", "+100" };
+	private static final String[] BUTTON_LABELS = { "-1", "-10", "-100", "+1", "+10", "+100" };
 
 	/**
 	 * Button labels when shift is being pressed.
 	 */
-	private static String[] BUTTON_LABELS_SHIFTED = { "-100", "-1000", "-10000", "+100", "+1000", "+10000" };
+	private static final String[] BUTTON_LABELS_SHIFTED = { "-100", "-1000", "-10000", "+100", "+1000", "+10000" };
 
 	/**
 	 * Width of the gui
@@ -199,7 +199,7 @@ public class GuiEssentiaLevelEmitter
 	 * Draw the gui background
 	 */
 	@Override
-	protected void drawGuiContainerBackgroundLayer( float f, int i, int j )
+	protected void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY )
 	{
 		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -211,6 +211,7 @@ public class GuiEssentiaLevelEmitter
 		int posX = ( this.width - GUI_X_SIZE ) / 2;
 		int posY = ( this.height - GUI_Y_SIZE ) / 2;
 
+		//TODO: WTF am I doing here?
 		// Draw the gui texture.
 		this.drawTexturedModalRect( posX, posY, 0, 0, GUI_X_SIZE, GUI_Y_SIZE );
 	}
@@ -411,7 +412,7 @@ public class GuiEssentiaLevelEmitter
 		this.amountField.setEnableBackgroundDrawing( false );
 
 		// Text color white
-		this.amountField.setTextColor( 0xFFFFFF );
+		this.amountField.setTextColor( 0xFFFFFFFF );
 
 		// Reset the button list
 		this.buttonList.clear();

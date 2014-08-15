@@ -7,17 +7,18 @@ import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.inventory.HandlerItemEssentiaCell;
+import thaumicenergistics.items.ItemEssentiaCell;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCell;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCell;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.EssentiaCellTerminalWorker;
-import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannel;
@@ -120,10 +121,23 @@ public class ContainerEssentiaCell
 	@Override
 	public void onClientRequestFullUpdate()
 	{
+		// Call super
+		super.onClientRequestFullUpdate();
+		
+		// Get the handler
+		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
+
+		// Did we get the handler?
+		if( cellHandler != null )
+		{
+			// Send the sorting mode
+			new PacketClientEssentiaCell().createSortModeUpdate( this.player, cellHandler.getSortingMode() ).sendPacketToPlayer();
+		}
+
+		// Send the list
 		if( this.monitor != null )
 		{
-			new PacketClientEssentiaCell().createUpdateFullList( this.player,
-				EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() ) ).sendPacketToPlayer();
+			new PacketClientEssentiaCell().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
 		}
 	}
 
@@ -145,17 +159,13 @@ public class ContainerEssentiaCell
 	}
 
 	/**
-	 * Updates the list of aspects, and sends that list to the client.
+	 * Forwards the change to the client.
 	 */
 	@Override
-	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
+	public void postAspectStackChange( AspectStack change )
 	{
-		// Call super
-		super.postChange( monitor, change, source );
-
 		// Send the change
-		new PacketClientEssentiaCell().createListChanged( this.player, EssentiaConversionHelper.convertAEFluidStackToAspectStack( change ) )
-						.sendPacketToPlayer();
+		new PacketClientEssentiaCell().createListChanged( this.player, change ).sendPacketToPlayer();
 	}
 
 	/**
@@ -249,5 +259,58 @@ public class ContainerEssentiaCell
 				}
 			}
 		}
+	}
+
+	/**
+	 * Called when the player has clicked the sorting mode button.
+	 * 
+	 * @param sortingMode
+	 */
+	public void sendSortModeChangeRequest( ComparatorMode sortingMode )
+	{
+		new PacketServerEssentiaCell().createRequestChangeSortMode( this.player, sortingMode ).sendPacketToServer();
+	}
+
+	/**
+	 * Called when a client sends a sorting mode request.
+	 * 
+	 * @param sortingMode
+	 */
+	public void onClientRequestSortModeChange( ComparatorMode sortingMode, EntityPlayer player )
+	{
+		// Get the handler
+		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
+
+		// Inform the handler of the change
+		cellHandler.setSortingMode( sortingMode );
+
+		// Send confirmation back to client
+		new PacketClientEssentiaCell().createSortModeUpdate( player, sortingMode ).sendPacketToPlayer();
+	}
+
+	/**
+	 * Gets a handler for the essentia cell.
+	 * 
+	 * @return
+	 */
+	private HandlerItemEssentiaCell getCellHandler()
+	{
+		// Ensure we have a host
+		if( this.hostChest == null )
+		{
+			return null;
+		}
+
+		// Get the cell
+		ItemStack essentiaCell = this.hostChest.getStackInSlot( 1 );
+
+		// Ensure we have the cell
+		if( ( essentiaCell == null ) || !( essentiaCell.getItem() instanceof ItemEssentiaCell ) )
+		{
+			return null;
+		}
+
+		// Get the handler
+		return new HandlerItemEssentiaCell( essentiaCell );
 	}
 }

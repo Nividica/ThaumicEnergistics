@@ -1,7 +1,9 @@
 package thaumicenergistics.container;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
@@ -156,7 +158,14 @@ public abstract class ContainerCellTerminalBase
 	{
 		this.player = player;
 
-		this.lastSoundPlaytime = System.currentTimeMillis();
+		if( EffectiveSide.isClientSide() )
+		{
+			this.lastSoundPlaytime = System.currentTimeMillis();
+		}
+		else
+		{
+			this.hasRequested = true;
+		}
 	}
 
 	/**
@@ -206,6 +215,9 @@ public abstract class ContainerCellTerminalBase
 		if( ( EffectiveSide.isServerSide() ) && ( this.monitor != null ) )
 		{
 			this.monitor.addListener( this, null );
+
+			// Update our cached list of aspects
+			this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
 		}
 	}
 
@@ -220,8 +232,13 @@ public abstract class ContainerCellTerminalBase
 
 	/**
 	 * Called when a client requests the state of the container.
+	 * Updates our cached list of aspects
 	 */
-	public abstract void onClientRequestFullUpdate();
+	public void onClientRequestFullUpdate()
+	{
+		// Update our cached list of aspects
+		//this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+	}
 
 	/**
 	 * Gets the list of aspect stacks in the container.
@@ -315,7 +332,7 @@ public abstract class ContainerCellTerminalBase
 	}
 
 	/**
-	 * Called when the import or export has changed items.
+	 * Called when the list of fluids on the ME network changes.
 	 */
 	@Override
 	public void onInventoryChanged( IInventory sourceInventory )
@@ -330,16 +347,189 @@ public abstract class ContainerCellTerminalBase
 	@Override
 	public void onListUpdate()
 	{
+		// Ignored client side
+		if( EffectiveSide.isClientSide() )
+		{
+			return;
+		}
+
+		// Get the monitor list
+		List<AspectStack> monitorList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+
+		// Get the iterator
+		Iterator<AspectStack> cachedIterator = this.aspectStackList.iterator();
+
+		// Compare to the current list
+		while( cachedIterator.hasNext() )
+		{
+			// Get the next item
+			AspectStack cachedStack = cachedIterator.next();
+
+			// Get the details about this potential change
+			ImmutablePair<Integer, AspectStack> changeDetails = this.isChange( cachedStack, monitorList );
+
+			// Get the montiorlist index
+			int monitorListIndex = changeDetails.getLeft();
+
+			// Was there a match?
+			if( monitorListIndex != -1 )
+			{
+				// Remove from the list
+				monitorList.remove( monitorListIndex );
+			}
+
+			// Get the changed amount
+			long changedAmount = -changeDetails.getRight().amount;
+
+			// Did anything change?
+			if( changedAmount == 0 )
+			{
+				continue;
+			}
+
+			// Was the item removed?
+			if( monitorListIndex == -1 )
+			{
+				// Remove from the cache
+				cachedIterator.remove();
+			}
+
+			// Update the current stack
+			cachedStack.amount += changedAmount;
+
+			// Inform the subclass
+			this.postAspectStackChange( new AspectStack( cachedStack.aspect, changedAmount ) );
+		}
+
+		// Any remaining items in the monitor list must be new
+		for( AspectStack newStack : monitorList )
+		{
+			// Add the stack to our cache
+			this.aspectStackList.add( newStack );
+
+			// Inform the subclass
+			this.postAspectStackChange( newStack );
+		}
+	}
+
+	/**
+	 * Called by the AE monitor when the network changes.
+	 */
+	@Override
+	public final void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
+	{
 		// Ignored
 	}
 
 	/**
-	 * Called by the AE montior when the network changes.
+	 * Informs the subclass of a change in the ME network.
+	 * 
+	 * @param change
 	 */
-	@Override
-	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
+	public abstract void postAspectStackChange( AspectStack change );
+
+	/**
+	 * Determines if the specified aspect stack is a different from an existing
+	 * stack in the specified list.
+	 * 
+	 * @param potentialChange
+	 * @return
+	 * If a match is found: Pair <ExistingIndex, ChangedStack>
+	 * If the item is new: Pair <-1, potentialChange>
+	 * 
+	 */
+	private ImmutablePair<Integer, AspectStack> isChange( AspectStack potentialChange, List<AspectStack> comparedAgainst )
 	{
-		this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( monitor.getStorageList() );
+		AspectStack matchingStack = null;
+
+		for( int index = 0; index < comparedAgainst.size(); index++ )
+		{
+			// Tenativly set the matching stack
+			matchingStack = comparedAgainst.get( index );
+
+			// Check if it is a match
+			if( potentialChange.aspect == matchingStack.aspect )
+			{
+				// Found a match, determine how much it has changed
+				long changeAmount = potentialChange.amount - matchingStack.amount;
+
+				// Create the changed stack
+				AspectStack changedStack = new AspectStack( matchingStack.aspect, changeAmount );
+
+				return new ImmutablePair<Integer, AspectStack>( index, changedStack );
+			}
+		}
+
+		// No match change is new item
+		return new ImmutablePair<Integer, AspectStack>( -1, potentialChange );
+	}
+
+	/**
+	 * Merges a change with the cached aspect list
+	 * 
+	 * @param changeDetails
+	 * @return
+	 */
+	private boolean mergeChange( ImmutablePair<Integer, AspectStack> changeDetails )
+	{
+		// Get the index that changed
+		int changedIndex = changeDetails.getLeft();
+
+		// Get the stack that changed
+		AspectStack changedStack = changeDetails.getRight();
+
+		// Did anything change?
+		if( changedStack.amount == 0 )
+		{
+			// Nothing changed
+			return false;
+		}
+
+		// Was there a match?
+		if( changedIndex != -1 )
+		{
+			// Get the new amount
+			long newAmount = this.aspectStackList.get( changedIndex ).amount + changedStack.amount;
+
+			// Was the stack drained?
+			if( newAmount <= 0 )
+			{
+				// Remove from list
+				this.aspectStackList.remove( changedIndex );
+			}
+			else
+			{
+				// Update the list
+				this.aspectStackList.get( changedIndex ).amount = newAmount;
+			}
+		}
+		// New addition
+		else
+		{
+			this.aspectStackList.add( changedStack );
+		}
+
+		// List updated.
+		return true;
+	}
+
+	/**
+	 * Merges a change with the cached aspect list
+	 * 
+	 * @param change
+	 * @return
+	 */
+	public boolean mergeChange( AspectStack change )
+	{
+		// Get the index of the change
+		int index = this.isChange( change, this.aspectStackList ).getLeft();
+
+		// Create the change
+		ImmutablePair<Integer, AspectStack> changeDetails = new ImmutablePair<Integer, AspectStack>( index, change );
+
+		// Attempt the merger
+		return this.mergeChange( changeDetails );
+
 	}
 
 	/**
@@ -433,7 +623,7 @@ public abstract class ContainerCellTerminalBase
 	{
 		// Set the aspect list
 		this.aspectStackList = aspectStackList;
-		
+
 		// Check pending changes
 		if( ( this.aspectStackList != null ) && ( !this.pendingChanges.isEmpty() ) )
 		{
@@ -453,25 +643,32 @@ public abstract class ContainerCellTerminalBase
 			this.guiBase.updateAspects();
 		}
 	}
-	
+
 	/**
 	 * Called when an aspect in the list changes amount.
+	 * 
 	 * @param change
 	 */
 	public void onReceiveAspectListChange( AspectStack change )
 	{
+		// Ignored server side
+		if( EffectiveSide.isServerSide() )
+		{
+			return;
+		}
+
 		// Ensure the change is not null
 		if( change == null )
 		{
 			return;
 		}
-		
+
 		// Have we requested the full list yet?
 		if( !this.hasRequested )
 		{
 			return;
 		}
-		
+
 		// Do we have a list?
 		if( this.aspectStackList == null )
 		{
@@ -479,61 +676,15 @@ public abstract class ContainerCellTerminalBase
 			this.pendingChanges.add( change );
 			return;
 		}
-		
-		int matchingIndex = -1;
-		AspectStack matchingStack = null;
-		
-		for( int index = 0; index < this.aspectStackList.size(); index++ )
-		{
-			// Tenativly set the matching stack
-			matchingStack = this.aspectStackList.get( index );
-			
-			// Check if it is a match
-			if( change.aspect == matchingStack.aspect )
-			{
-				// Set this index as the matching
-				matchingIndex = index;
-				
-				// Stop searching
-				break;
-			}
-		}
-		
-		// Was there a match?
-		if( matchingIndex != -1 )
-		{
-			// Something went wrong, abort.
-			if( matchingStack == null )
-			{
-				return;
-			}
-			
-			// Update the amount
-			matchingStack.amount += change.amount;
-			
-			// Was the stack drained?
-			if( matchingStack.amount <= 0 )
-			{
-				// Remove from list
-				this.aspectStackList.remove( matchingIndex );
-			}
-		}
-		// Is this a new addition?
-		else if( change.amount > 0 )
-		{
-			// Add to the list
-			this.aspectStackList.add( change );
-		}
-		else
-		{
-			return;
-		}
 
-		// Update the gui
-		if( ( this.guiBase != null ) && this.pendingChanges.isEmpty() )
+		// Can we merge this change with the list?
+		if( this.mergeChange( change ) )
 		{
-			this.guiBase.updateAspects();
+			// Update the gui
+			if( ( this.guiBase != null ) && this.pendingChanges.isEmpty() )
+			{
+				this.guiBase.updateAspects();
+			}
 		}
 	}
-
 }

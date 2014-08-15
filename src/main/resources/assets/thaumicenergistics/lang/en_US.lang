@@ -72,6 +72,18 @@ tc.research_text.thaumicenergistics.TEARCANETERM=Crafting with magic §oand tech
 thaumicenergistics.research_page.TEARCANETERM.1=You have discovered that using primal aspects to bind a §lTerminal§r to an §lArcane Worktable§r allows you to imbue the terminal with the worktable's ability to craft arcane items.
 
 # Research Essentia terminal
-tc.research_name.thaumicenergistics.TEESSTERM=Essentia Terminal
+tc.research_name.thaumicenergistics.TEESSTERM=Essentia Monitoring
 tc.research_text.thaumicenergistics.TEESSTERM=Knowing how much you have.
-thaumicenergistics.research_page.TEESSTERM.1=The Essentia Terminal allows you to monitor how much essentia is stored within the network, and provides a way to fill and drain essentia containers within the terminal.
+thaumicenergistics.research_page.TEESSTERM.1=The §lEssentia Terminal§r allows you to monitor how much essentia is stored within the network, and provides a way to fill and drain essentia containers within the terminal.
+thaumicenergistics.research_page.TEESSTERM.2=The §lEssentia Level Emitter§r will continuously monitor the levels of essentia on the network, and provides a redstone signal when the appropriate conditions are met.
+
+# Research Essentia Provider
+tc.research_name.thaumicenergistics.TEESSPROV=Essentia Provider
+tc.research_text.thaumicenergistics.TEESSPROV=Ask and you shall receive.
+thaumicenergistics.research_page.TEESSPROV.1=While import and export buses are useful for an array of jobs, they lack the flexibility to interface with complex alchemical constructs. To overcome this limitation you have created a device that will allow these constructs to request essentia directly from the network.<BR>Using the §lEssentia Provider§r should prove to be a simple task. Simply connect it to both the network and construct, all it will do the rest.
+
+
+# Research Infusion Provider
+tc.research_name.thaumicenergistics.TEINFPROV=Infusion Provider
+tc.research_text.thaumicenergistics.TEINFPROV=Infusion made easier.
+thaumicenergistics.research_page.TEINFPROV.1=By researching the process of essentia infusion, you have discovered a method for instantaneous conversion between digi-sentia and essentia that can be used for infusion.<BR>By placing the §lInfusion Provider§r near a thaumic device, the device can draw essentia directly from the network. This could prove to be very useful for infusion alter.

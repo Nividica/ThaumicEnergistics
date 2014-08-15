@@ -40,12 +40,12 @@ public abstract class AbstractPacket
 	/**
 	 * Used by subclasses to distinguish what's in the stream.
 	 */
-	public byte mode;
+	protected byte mode;
 
 	/**
 	 * If true will compress subclass data streams.
 	 */
-	public boolean useCompression;
+	protected boolean useCompression;
 
 	/**
 	 * Creates an empty packet (called from the netty core)
@@ -63,7 +63,7 @@ public abstract class AbstractPacket
 	 * @return
 	 */
 	@SideOnly(Side.CLIENT)
-	public static World getClientWorld()
+	private static World getClientWorld()
 	{
 		return Minecraft.getMinecraft().theWorld;
 	}
@@ -74,7 +74,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	public static Aspect readAspect( ByteBuf stream )
+	protected static Aspect readAspect( ByteBuf stream )
 	{
 		return Aspect.aspects.get( readString( stream ) );
 	}
@@ -85,7 +85,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	public static AEPartBase readPart( ByteBuf stream )
+	protected static AEPartBase readPart( ByteBuf stream )
 	{
 		ForgeDirection side = ForgeDirection.getOrientation( stream.readInt() );
 
@@ -100,7 +100,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	public static IAEItemStack readAEItemStack( ByteBuf stream )
+	protected static IAEItemStack readAEItemStack( ByteBuf stream )
 	{
 		IAEItemStack itemStack;
 		try
@@ -123,7 +123,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	public static EntityPlayer readPlayer( ByteBuf stream )
+	protected static EntityPlayer readPlayer( ByteBuf stream )
 	{
 		EntityPlayer player = null;
 
@@ -142,7 +142,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	public static String readString( ByteBuf stream )
+	protected static String readString( ByteBuf stream )
 	{
 		byte[] stringBytes = new byte[stream.readInt()];
 
@@ -157,7 +157,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	public static TileEntity readTileEntity( ByteBuf stream )
+	protected static TileEntity readTileEntity( ByteBuf stream )
 	{
 		World world = AbstractPacket.readWorld( stream );
 
@@ -170,7 +170,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	public static World readWorld( ByteBuf stream )
+	protected static World readWorld( ByteBuf stream )
 	{
 		World world = DimensionManager.getWorld( stream.readInt() );
 
@@ -191,7 +191,7 @@ public abstract class AbstractPacket
 	 * @param aspect
 	 * @param stream
 	 */
-	public static void writeAspect( Aspect aspect, ByteBuf stream )
+	protected static void writeAspect( Aspect aspect, ByteBuf stream )
 	{
 		String aspectName = "";
 
@@ -209,7 +209,7 @@ public abstract class AbstractPacket
 	 * @param itemStack
 	 * @param stream
 	 */
-	public static void writeAEItemStack( IAEItemStack itemStack, ByteBuf stream )
+	protected static void writeAEItemStack( IAEItemStack itemStack, ByteBuf stream )
 	{
 		// Do we have a valid stack?
 		if( itemStack != null )
@@ -232,7 +232,7 @@ public abstract class AbstractPacket
 	 * @param part
 	 * @param stream
 	 */
-	public static void writePart( AEPartBase part, ByteBuf stream )
+	protected static void writePart( AEPartBase part, ByteBuf stream )
 	{
 		stream.writeInt( part.getSide().ordinal() );
 
@@ -246,7 +246,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 */
 	@SuppressWarnings("null")
-	public static void writePlayer( EntityPlayer player, ByteBuf stream )
+	protected static void writePlayer( EntityPlayer player, ByteBuf stream )
 	{
 		boolean validPlayer = ( player != null );
 
@@ -265,7 +265,7 @@ public abstract class AbstractPacket
 	 * @param string
 	 * @param stream
 	 */
-	public static void writeString( String string, ByteBuf stream )
+	protected static void writeString( String string, ByteBuf stream )
 	{
 		byte[] stringBytes = string.getBytes( Charsets.UTF_8 );
 
@@ -280,7 +280,7 @@ public abstract class AbstractPacket
 	 * @param entity
 	 * @param stream
 	 */
-	public static void writeTileEntity( TileEntity entity, ByteBuf stream )
+	protected static void writeTileEntity( TileEntity entity, ByteBuf stream )
 	{
 		writeWorld( entity.getWorldObj(), stream );
 		stream.writeInt( entity.xCoord );
@@ -294,7 +294,7 @@ public abstract class AbstractPacket
 	 * @param world
 	 * @param stream
 	 */
-	public static void writeWorld( World world, ByteBuf stream )
+	protected static void writeWorld( World world, ByteBuf stream )
 	{
 		stream.writeInt( world.provider.dimensionId );
 	}
@@ -453,7 +453,7 @@ public abstract class AbstractPacket
 	 * 
 	 * @param stream
 	 */
-	public abstract void readData( ByteBuf stream );
+	protected abstract void readData( ByteBuf stream );
 
 	/**
 	 * Writes data into the packet stream.
@@ -487,6 +487,6 @@ public abstract class AbstractPacket
 	 * 
 	 * @param stream
 	 */
-	public abstract void writeData( ByteBuf stream );
+	protected abstract void writeData( ByteBuf stream );
 
 }

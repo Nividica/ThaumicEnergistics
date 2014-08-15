@@ -2,7 +2,6 @@ package thaumicenergistics.items;
 
 import java.util.Collections;
 import java.util.List;
-import org.lwjgl.input.Keyboard;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +15,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.input.Keyboard;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator;
@@ -35,7 +35,7 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 
-// TODO: ICellWorkbenchItem
+// TODO: Partition support, ICellWorkbenchItem does not work.
 public class ItemEssentiaCell
 	extends ItemStorageBase
 	implements ICellHandler

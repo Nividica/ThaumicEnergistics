@@ -25,6 +25,7 @@ import appeng.api.util.AEColor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+// TODO: Save inventory to NBT 
 public class AEPartEssentiaTerminal
 	extends AEPartBase
 {

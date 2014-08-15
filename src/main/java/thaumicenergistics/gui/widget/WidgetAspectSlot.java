@@ -54,7 +54,7 @@ public class WidgetAspectSlot
 	@Override
 	public void drawTooltip( int mouseX, int mouseY )
 	{
-		if( this.canRender() && ( this.aspect != null ) )
+		if( this.canRender() && ( this.getAspect() != null ) )
 		{
 			List<String> toolTips = new ArrayList<String>();
 
@@ -90,7 +90,7 @@ public class WidgetAspectSlot
 			this.drawTexturedModalRect( this.xPosition, this.yPosition, 79, 39, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE );
 
 			// Do we have an aspect?
-			if( this.aspect != null )
+			if( this.getAspect() != null )
 			{
 				// Draw the aspect
 				this.drawAspect();
@@ -108,9 +108,9 @@ public class WidgetAspectSlot
 
 	public void mouseClicked( Aspect withAspect )
 	{
-		this.aspect = withAspect;
+		this.setAspect( withAspect );
 
-		new PacketServerAspectSlot().createUpdatePartAspect( this.part, this.id, this.aspect, this.player ).sendPacketToServer();
+		new PacketServerAspectSlot().createUpdatePartAspect( this.part, this.id, this.getAspect(), this.player ).sendPacketToServer();
 	}
 
 	@Override

@@ -7,8 +7,11 @@ import net.minecraft.world.World;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.network.handlers.HandlerClientAspectSlot;
 import thaumicenergistics.network.handlers.HandlerClientEssentiaCell;
+import thaumicenergistics.network.handlers.HandlerClientPriority;
 import thaumicenergistics.network.handlers.HandlerServerAspectSlot;
+import thaumicenergistics.network.handlers.HandlerServerChangeGui;
 import thaumicenergistics.network.handlers.HandlerServerEssentiaCell;
+import thaumicenergistics.network.handlers.HandlerServerPriority;
 import thaumicenergistics.network.handlers.part.HandlerClientArcaneCraftingTerminal;
 import thaumicenergistics.network.handlers.part.HandlerClientEssentiaIOBus;
 import thaumicenergistics.network.handlers.part.HandlerClientEssentiaLevelEmitter;
@@ -25,13 +28,16 @@ import thaumicenergistics.network.packet.client.PacketClientEssentiaCell;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaEmitter;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaTerminal;
+import thaumicenergistics.network.packet.client.PacketClientPriority;
 import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
 import thaumicenergistics.network.packet.server.PacketServerAspectSlot;
+import thaumicenergistics.network.packet.server.PacketServerChangeGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCell;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaEmitter;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaTerminal;
+import thaumicenergistics.network.packet.server.PacketServerPriority;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
@@ -65,6 +71,11 @@ public class ChannelHandler
 
 		wrapper.registerMessage( HandlerClientArcaneCraftingTerminal.class, PacketClientArcaneCraftingTerminal.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerArcaneCraftingTerminal.class, PacketServerArcaneCraftingTerminal.class, discriminator++ , Side.SERVER );
+		
+		wrapper.registerMessage( HandlerServerChangeGui.class, PacketServerChangeGui.class, discriminator++, Side.SERVER );
+		
+		wrapper.registerMessage( HandlerClientPriority.class, PacketClientPriority.class, discriminator++, Side.CLIENT );
+		wrapper.registerMessage( HandlerServerPriority.class, PacketServerPriority.class, discriminator++, Side.SERVER );
 
 	}
 

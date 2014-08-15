@@ -14,7 +14,7 @@ public abstract class AbstractAspectWidget
 {
 	private static final ResourceLocation UNKNOWN_TEXTURE = new ResourceLocation( "thaumcraft", "textures/aspects/_unknown.png" );
 
-	protected Aspect aspect;
+	private Aspect aspect;
 
 	private boolean hasDiscovered = false;
 	
@@ -46,6 +46,12 @@ public abstract class AbstractAspectWidget
 		// Set the aspect
 		this.aspect = aspect;
 
+		// Ensure there is an aspect
+		if( aspect == null )
+		{
+			return;
+		}
+		
 		// Convert to stack
 		AspectStack stack = new AspectStack( aspect, 1 );
 		

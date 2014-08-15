@@ -9,7 +9,8 @@ public enum GuiTextureManager
 	ESSENTIA_STORAGE_BUS( "essentia.storage.bus" ),
 	ESSENTIA_TERMINAL( "essentia.terminal" ),
 	ESSENTIA_IO_BUS( "essentia.io.bus" ),
-	ARCANE_CRAFTING_TERMINAL( "arcane.crafting" );
+	ARCANE_CRAFTING_TERMINAL( "arcane.crafting" ),
+	PRIORITY("priority");
 	
 	private ResourceLocation texture;
 	

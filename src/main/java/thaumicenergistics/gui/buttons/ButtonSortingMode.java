@@ -1,7 +1,7 @@
 package thaumicenergistics.gui.buttons;
 
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
-import thaumicenergistics.texture.AEStateIcons;
+import thaumicenergistics.texture.EnumAEStateIcons;
 
 public class ButtonSortingMode
 	extends AbstractAEButton
@@ -9,7 +9,7 @@ public class ButtonSortingMode
 
 	public ButtonSortingMode( int ID, int xPosition, int yPosition, int width, int height )
 	{
-		super( ID, xPosition, yPosition, width, height, AEStateIcons.SORT_ALPHABETIC );
+		super( ID, xPosition, yPosition, width, height, EnumAEStateIcons.SORT_ALPHABETIC );
 	}
 
 	/**
@@ -22,11 +22,11 @@ public class ButtonSortingMode
 		switch ( mode )
 		{
 			case MODE_ALPHABETIC:
-				this.icon = AEStateIcons.SORT_ALPHABETIC;
+				this.icon = EnumAEStateIcons.SORT_ALPHABETIC;
 				break;
 
 			case MODE_AMOUNT:
-				this.icon = AEStateIcons.SORT_AMOUNT;
+				this.icon = EnumAEStateIcons.SORT_AMOUNT;
 				break;
 
 		}

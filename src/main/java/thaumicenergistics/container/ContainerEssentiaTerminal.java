@@ -2,20 +2,17 @@ package thaumicenergistics.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaTerminal;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.EssentiaCellTerminalWorker;
-import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
 
 /**
  * Inventory container for the essentia terminal.
@@ -93,14 +90,16 @@ public class ContainerEssentiaTerminal
 	@Override
 	public void onClientRequestFullUpdate()
 	{
+		// Call super
+		super.onClientRequestFullUpdate();
+		
 		// Send the sorting mode
 		this.onSortingModeChanged( this.terminal.getSortingMode() );
 
 		// Send the aspect list
 		if( this.monitor != null )
 		{
-			new PacketClientEssentiaTerminal().createUpdateFullList( this.player,
-				EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() ) ).sendPacketToPlayer();
+			new PacketClientEssentiaTerminal().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
 		}
 	}
 
@@ -117,20 +116,15 @@ public class ContainerEssentiaTerminal
 			this.terminal.removeContainer( this );
 		}
 	}
-
+	
 	/**
-	 * Updates the list of aspects, and sends that list to the client.
+	 * Forwards the change to the client.
 	 */
 	@Override
-	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
+	public void postAspectStackChange( AspectStack change )
 	{
-		// Call super
-		super.postChange( monitor, change, source );
-
 		// Send the change
-		new PacketClientEssentiaTerminal().createListChanged( this.player, EssentiaConversionHelper.convertAEFluidStackToAspectStack( change ) )
-						.sendPacketToPlayer();
-
+		new PacketClientEssentiaTerminal().createListChanged( this.player, change ).sendPacketToPlayer();
 	}
 
 	/**

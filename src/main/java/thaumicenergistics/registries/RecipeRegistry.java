@@ -10,8 +10,10 @@ import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
+import thaumcraft.api.crafting.InfusionRecipe;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
 import thaumcraft.api.crafting.ShapelessArcaneRecipe;
+import thaumcraft.common.config.Config;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
 import thaumicenergistics.items.ItemMaterial;
@@ -45,6 +47,9 @@ public class RecipeRegistry
 	public static IArcaneRecipe PART_STORAGE_BUS;
 	public static IArcaneRecipe PART_ESSENTIA_TERMINAL;
 	public static IArcaneRecipe PART_ARCANE_TERMINAL;
+	public static IArcaneRecipe PART_ESSENTIA_LEVEL_EMITTER;
+	public static InfusionRecipe INFUSION_PROVIDER;
+	public static InfusionRecipe ESSENTIA_PROVIDER;
 
 	/**
 	 * Register my recipes
@@ -68,6 +73,9 @@ public class RecipeRegistry
 
 		// Register AE parts
 		RecipeRegistry.registerParts( aeParts, aeMaterials );
+
+		// Register the providers
+		RecipeRegistry.registerProviders( aeBlocks );
 	}
 
 	private static void registerComponents( Materials aeMaterials, Blocks aeBlocks )
@@ -243,6 +251,8 @@ public class RecipeRegistry
 	{
 		// Minecraft items
 		String IronIngot = "ingotIron";
+		
+		ItemStack RedstoneTorch = new ItemStack( net.minecraft.init.Blocks.redstone_torch );
 
 		// AppEng items
 		ItemStack DarkIlluminatedPanel = aeParts.partDarkMonitor.stack( 1 );
@@ -265,8 +275,10 @@ public class RecipeRegistry
 		ItemStack WardedGlass = new ItemStack( ConfigBlocks.blockCosmeticOpaque, 1, 2 );
 
 		ItemStack ArcaneWorkTable = new ItemStack( ConfigBlocks.blockTable, 1, 15 );
-		
+
 		ItemStack AspectFilter = new ItemStack( ConfigItems.itemResource, 1, 8 );
+		
+		ItemStack SalisMundus = new ItemStack( ConfigItems.itemResource, 1, 14 );
 
 		// My items
 		ItemStack DiffusionCore = RecipeRegistry.MATERIAL_DIFFUSION_CORE.getRecipeOutput();
@@ -282,6 +294,8 @@ public class RecipeRegistry
 		ItemStack EssentiaTerminal = AEPartsEnum.EssentiaTerminal.getStack();
 
 		ItemStack ArcaneCraftingTerminal = AEPartsEnum.ArcaneCraftingTerminal.getStack();
+		
+		ItemStack EssentiaLevelEmitter = AEPartsEnum.EssentiaLevelEmitter.getStack();
 
 		// Item Groups		
 		ArrayList<ItemStack> GroupPanel = new ArrayList<ItemStack>( 3 );
@@ -330,6 +344,68 @@ public class RecipeRegistry
 		actAspectList.add( Aspect.WATER, 10 );
 		RecipeRegistry.PART_ARCANE_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.ARCANETERMINAL.getKey(),
 			ArcaneCraftingTerminal, actAspectList, METerminal, ArcaneWorkTable, CalculationProcessor );
+		
+		// Essentia level emitter
+		AspectList emitterAspectList = new AspectList();
+		emitterAspectList.add( Aspect.FIRE, 4 );
+		EssentiaLevelEmitter.stackSize = 4;
+		RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.ESSENTIATERMINAL.getKey(),
+			EssentiaLevelEmitter, emitterAspectList, CalculationProcessor, RedstoneTorch, SalisMundus );
+	}
+
+	private static void registerProviders( Blocks aeBlocks )
+	{
+		// Thaumcraft items
+		ItemStack FilteredPipe = new ItemStack( ConfigBlocks.blockTube, 1, 3 );
+
+		ItemStack EssentiaMirrorOrJar = ( Config.allowMirrors ? new ItemStack( ConfigBlocks.blockMirror, 1, 6 ) : new ItemStack( ConfigBlocks.blockJar, 1, 0 ) );
+
+		ItemStack SalisMundus = new ItemStack( ConfigItems.itemResource, 1, 14 );
+
+		ItemStack WaterShard = new ItemStack( ConfigItems.itemShard, 1, 2 );
+
+		ItemStack AerShard = new ItemStack( ConfigItems.itemShard, 1, 0 );
+
+		// AE Items
+		ItemStack MEInterface = aeBlocks.blockInterface.stack( 1 );
+
+		// My Items
+		ItemStack CoalescenceCore = ItemMaterial.MaterialTypes.COALESCENCE_CORE.getItemStack();
+
+		ItemStack InfusionProvider = new ItemStack( BlockEnum.INFUSION_PROVIDER.getBlock(), 1 );
+
+		ItemStack EssentiaProvider = new ItemStack( BlockEnum.ESSENTIA_PROVIDER.getBlock(), 1 );
+
+		// Set required aspects for infusion
+		AspectList infusionProviderList = new AspectList();
+		infusionProviderList.add( Aspect.MECHANISM, 64 );
+		infusionProviderList.add( Aspect.MAGIC, 32 );
+		infusionProviderList.add( Aspect.ORDER, 32 );
+		infusionProviderList.add( Aspect.EXCHANGE, 16 );
+
+		// Infusion provider recipe items
+		ItemStack[] infusionProviderRecipeItems = { EssentiaMirrorOrJar, SalisMundus, CoalescenceCore, AerShard, EssentiaMirrorOrJar, SalisMundus,
+						CoalescenceCore, AerShard };
+
+		// Create the infusion provider recipe
+		RecipeRegistry.INFUSION_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.INFUSIONPROVIDER.getKey(),
+			InfusionProvider, 4, infusionProviderList, MEInterface, infusionProviderRecipeItems );
+
+		// Set required aspects for infusion
+		AspectList essentiaProviderList = new AspectList();
+		essentiaProviderList.add( Aspect.MECHANISM, 64 );
+		essentiaProviderList.add( Aspect.MAGIC, 32 );
+		essentiaProviderList.add( Aspect.ORDER, 32 );
+		essentiaProviderList.add( Aspect.EXCHANGE, 16 );
+
+		// Essentia provider recipe items
+		ItemStack[] essentiaProviderRecipeItems = { FilteredPipe, SalisMundus, CoalescenceCore, WaterShard, FilteredPipe, SalisMundus, CoalescenceCore,
+						WaterShard };
+
+		// Create the essentia provider recipe
+		RecipeRegistry.ESSENTIA_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ESSENTIAPROVIDER.getKey(),
+			EssentiaProvider, 3, essentiaProviderList, MEInterface, essentiaProviderRecipeItems );
+
 	}
 
 	private static void replaceRecipeIngredientWithGroup( ShapedArcaneRecipe recipe, ItemStack ingredient, ArrayList<ItemStack> group )

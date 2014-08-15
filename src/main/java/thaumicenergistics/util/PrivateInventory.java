@@ -6,7 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-public class PrivateInventory implements IInventory
+public class PrivateInventory
+	implements IInventory
 {
 
 	public ItemStack[] slots;
@@ -14,17 +15,17 @@ public class PrivateInventory implements IInventory
 	private int stackLimit;
 	private IInventoryUpdateReceiver receiver = null;
 
-	public PrivateInventory(String customName, int size, int stackLimit )
+	public PrivateInventory( String customName, int size, int stackLimit )
 	{
 		this.slots = new ItemStack[size];
 		this.customName = customName;
 		this.stackLimit = stackLimit;
 	}
-	
-	public PrivateInventory( String customName, int size, int stackLimit , IInventoryUpdateReceiver receiver )
+
+	public PrivateInventory( String customName, int size, int stackLimit, IInventoryUpdateReceiver receiver )
 	{
 		this( customName, size, stackLimit );
-		
+
 		this.receiver = receiver;
 	}
 
@@ -38,9 +39,9 @@ public class PrivateInventory implements IInventory
 	{
 		ItemStack slotStack = null;
 
-		if ( this.slots[slotId] != null )
+		if( this.slots[slotId] != null )
 		{
-			if ( this.slots[slotId].stackSize <= amount )
+			if( this.slots[slotId].stackSize <= amount )
 			{
 				slotStack = this.slots[slotId];
 
@@ -54,7 +55,7 @@ public class PrivateInventory implements IInventory
 
 				this.slots[slotId] = tmp;
 
-				if ( this.slots[slotId].stackSize == 0 )
+				if( this.slots[slotId].stackSize == 0 )
 				{
 					this.slots[slotId] = null;
 				}
@@ -107,23 +108,23 @@ public class PrivateInventory implements IInventory
 		ItemStack slotStack = this.slots[slotId];
 		ItemStack added = null;
 
-		if ( slotStack != null )
+		if( slotStack != null )
 		{
 			int stackLimit = this.getInventoryStackLimit();
 
-			if ( stackLimit > slotStack.getMaxStackSize() )
+			if( stackLimit > slotStack.getMaxStackSize() )
 			{
 				stackLimit = slotStack.getMaxStackSize();
 			}
 
 			int addedAmount = ( slotStack.stackSize + amount );
 
-			if ( addedAmount <= stackLimit )
+			if( addedAmount <= stackLimit )
 			{
 				added = slotStack.copy();
-				
+
 				added.stackSize = amount;
-	
+
 				slotStack.stackSize += added.stackSize;
 			}
 		}
@@ -147,7 +148,7 @@ public class PrivateInventory implements IInventory
 	@Override
 	public void markDirty()
 	{
-		if ( this.receiver != null )
+		if( this.receiver != null )
 		{
 			this.receiver.onInventoryChanged( this );
 		}
@@ -158,17 +159,37 @@ public class PrivateInventory implements IInventory
 	{
 	}
 
-	public void readFromNBT( NBTTagList nbtList )
+	public final void loadFromNBT( NBTTagCompound data, String tagName )
 	{
-		for( int i = 0; i < nbtList.tagCount(); i++ )
+		// Ensure there is a data tag
+		if( data == null )
 		{
-			NBTTagCompound nbtCompound = nbtList.getCompoundTagAt( i );
+			return;
+		}
 
-			int slotId = nbtCompound.getByte( "Slot" ) & 0xFF;
+		// Ensure the data has our inventory
+		if( !data.hasKey( tagName ) )
+		{
+			return;
+		}
 
-			if ( ( slotId >= 0 ) && ( slotId < this.slots.length ) )
+		// Load the list
+		NBTTagList invList = data.getTagList( tagName, (byte)10 );
+
+		// Load the inventory from the list
+		for( int index = 0; index < invList.tagCount(); index++ )
+		{
+			// Get the compound
+			NBTTagCompound nbtCompound = invList.getCompoundTagAt( index );
+
+			// Get the slot number
+			int slotIndex = nbtCompound.getByte( "Slot" ) & 0xFF;
+
+			// Validate the slot number
+			if( ( slotIndex >= 0 ) && ( slotIndex < this.slots.length ) )
 			{
-				this.slots[slotId] = ItemStack.loadItemStackFromNBT( nbtCompound );
+				// Load the itemstack
+				this.slots[slotIndex] = ItemStack.loadItemStackFromNBT( nbtCompound );
 			}
 		}
 	}
@@ -176,7 +197,8 @@ public class PrivateInventory implements IInventory
 	@Override
 	public void setInventorySlotContents( int slotId, ItemStack itemStack )
 	{
-		if ( ( itemStack != null ) && ( itemStack.stackSize > this.getInventoryStackLimit() ) )
+		// Is the stack size to large?
+		if( ( itemStack != null ) && ( itemStack.stackSize > this.getInventoryStackLimit() ) )
 		{
 			itemStack.stackSize = this.getInventoryStackLimit();
 		}
@@ -186,27 +208,44 @@ public class PrivateInventory implements IInventory
 		this.markDirty();
 	}
 
-	public NBTTagList writeToNBT()
+	public final void saveToNBT( NBTTagCompound data, String tagName )
 	{
-		NBTTagList nbtList = new NBTTagList();
-
-		for( int slotId = 0; slotId < this.slots.length; slotId++ )
+		// Ensure there is a data tag
+		if( data == null )
 		{
-			if ( this.slots[slotId] != null )
+			return;
+		}
+
+		// Create the list
+		NBTTagList invList = new NBTTagList();
+
+		// Write each slot into the list
+		for( int slotIndex = 0; slotIndex < this.slots.length; slotIndex++ )
+		{
+			// Ensure the slot has something to write
+			if( this.slots[slotIndex] != null )
 			{
+				// Create the compound
 				NBTTagCompound nbtCompound = new NBTTagCompound();
 
-				nbtCompound.setByte( "Slot", (byte) slotId );
+				// Set the slot number
+				nbtCompound.setByte( "Slot", (byte)slotIndex );
 
-				this.slots[slotId].writeToNBT( nbtCompound );
+				// Save the inventory
+				this.slots[slotIndex].writeToNBT( nbtCompound );
+				
+				System.out.printf( "%d : %s%n", slotIndex, this.slots[slotIndex].getDisplayName() );
+				
 
-				nbtList.appendTag( nbtCompound );
+				// Add to the list
+				invList.appendTag( nbtCompound );
 			}
 		}
 
-		return nbtList;
+		// Write the list into the data
+		data.setTag( tagName, invList );
 	}
-	
+
 	public void setReceiver( IInventoryUpdateReceiver receiver )
 	{
 		this.receiver = receiver;

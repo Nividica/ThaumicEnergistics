@@ -9,6 +9,7 @@ import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.api.research.ResearchPage;
+import thaumcraft.common.config.Config;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.items.ItemMaterial;
 import thaumicenergistics.items.ItemStorageBase;
@@ -32,7 +33,9 @@ public class ResearchRegistry
 			STORAGE ("STORAGE"),
 			IO ("IO"),
 			ARCANETERMINAL ("ARCANETERM"),
-			ESSENTIATERMINAL( "ESSTERM" );
+			ESSENTIATERMINAL ("ESSTERM"),
+			ESSENTIAPROVIDER ("ESSPROV"),
+			INFUSIONPROVIDER ("INFPROV");
 
 		private String internalName;
 
@@ -89,8 +92,12 @@ public class ResearchRegistry
 		ResearchRegistry.registerStorage();
 
 		ResearchRegistry.registerIO();
-		
+
 		ResearchRegistry.registerEssentiaTerminal();
+
+		ResearchRegistry.registerInfusionProvider();
+
+		ResearchRegistry.registerEssentiaProvider();
 	}
 
 	private static void registerBasic()
@@ -217,6 +224,7 @@ public class ResearchRegistry
 		// Set the research aspects
 		AspectList etAspectList = new AspectList();
 		etAspectList.add( Aspect.EXCHANGE, 5 );
+		etAspectList.add( Aspect.SENSES, 5 );
 		etAspectList.add( Aspect.ENERGY, 3 );
 		etAspectList.add( Aspect.WATER, 3 );
 
@@ -225,7 +233,9 @@ public class ResearchRegistry
 
 		// Set the pages
 		ResearchPage[] etPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 1 ) ),
-						new ResearchPage( RecipeRegistry.PART_ESSENTIA_TERMINAL ) };
+						new ResearchPage( RecipeRegistry.PART_ESSENTIA_TERMINAL ),
+						new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 2 ) ),
+						new ResearchPage( RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER ) };
 
 		// Create the IO research
 		ResearchTypes.ESSENTIATERMINAL.createResearchItem( etAspectList, -2, -4, COMPLEXITY_SMALL, etIcon, etPages );
@@ -234,5 +244,55 @@ public class ResearchRegistry
 		ResearchTypes.ESSENTIATERMINAL.researchItem.setSecondary();
 		ResearchTypes.ESSENTIATERMINAL.researchItem.registerResearchItem();
 
+	}
+
+	private static void registerInfusionProvider()
+	{
+		// Set the research aspects
+		AspectList infusionProviderList = new AspectList();
+		infusionProviderList.add( Aspect.MECHANISM, 3 );
+		infusionProviderList.add( Aspect.MAGIC, 3 );
+		infusionProviderList.add( Aspect.EXCHANGE, 7 );
+		infusionProviderList.add( Aspect.MOTION, 7 );
+		infusionProviderList.add( Aspect.SENSES, 5 );
+
+		// Set the icon
+		ItemStack infusionProviderIcon = new ItemStack( BlockEnum.INFUSION_PROVIDER.getBlock(), 1 );
+
+		// Set the pages
+		ResearchPage[] infusionProviderPages = new ResearchPage[] { new ResearchPage( ResearchTypes.INFUSIONPROVIDER.getPageName( 1 ) ),
+						new ResearchPage( RecipeRegistry.INFUSION_PROVIDER ) };
+
+		// Are mirrors allowed?
+		String researchKeyMirrorOrJar = ( Config.allowMirrors ? "MIRROR" : "JARLABEL" );
+
+		// Create the infusion provider research
+		ResearchTypes.INFUSIONPROVIDER.createResearchItem( infusionProviderList, -6, -4, COMPLEXITY_LARGE, infusionProviderIcon,
+			infusionProviderPages );
+		ResearchTypes.INFUSIONPROVIDER.researchItem.setParents( ResearchTypes.IO.getKey() );
+		ResearchTypes.INFUSIONPROVIDER.researchItem.setParentsHidden( researchKeyMirrorOrJar, "INFUSION" );
+		ResearchTypes.INFUSIONPROVIDER.researchItem.setConcealed();
+		ResearchTypes.INFUSIONPROVIDER.researchItem.registerResearchItem();
+	}
+
+	private static void registerEssentiaProvider()
+	{
+		AspectList essentiaProviderList = new AspectList();
+		essentiaProviderList.add( Aspect.MECHANISM, 3 );
+		essentiaProviderList.add( Aspect.MAGIC, 5 );
+		essentiaProviderList.add( Aspect.ORDER, 3 );
+		essentiaProviderList.add( Aspect.SENSES, 7 );
+
+		ItemStack essentiaProviderIcon = new ItemStack( BlockEnum.ESSENTIA_PROVIDER.getBlock(), 1 );
+
+		ResearchPage[] essentiaProviderPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ESSENTIAPROVIDER.getPageName( 1 ) ),
+						new ResearchPage( RecipeRegistry.ESSENTIA_PROVIDER ) };
+
+		ResearchTypes.ESSENTIAPROVIDER
+						.createResearchItem( essentiaProviderList, -6, 0, COMPLEXITY_LARGE, essentiaProviderIcon, essentiaProviderPages );
+		ResearchTypes.ESSENTIAPROVIDER.researchItem.setParents( ResearchTypes.IO.getKey() );
+		ResearchTypes.ESSENTIAPROVIDER.researchItem.setParentsHidden( "INFUSION", "TUBEFILTER" );
+		ResearchTypes.ESSENTIAPROVIDER.researchItem.setConcealed();
+		ResearchTypes.ESSENTIAPROVIDER.researchItem.registerResearchItem();
 	}
 }

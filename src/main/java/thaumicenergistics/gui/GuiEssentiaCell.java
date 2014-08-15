@@ -31,8 +31,8 @@ public class GuiEssentiaCell extends GuiCellTerminalBase
 	@Override
 	protected void sortModeButtonClicked( ComparatorMode modeRequested )
 	{
-		// TODO: Store sort mode on cell, somehow, maybe?
-		this.onSortModeChanged( modeRequested );
+		// Pass to the container
+		((ContainerEssentiaCell)this.inventorySlots).sendSortModeChangeRequest( modeRequested );
 	}
 	
 }

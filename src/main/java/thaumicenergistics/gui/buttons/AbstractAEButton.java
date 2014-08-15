@@ -4,22 +4,97 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
-import thaumicenergistics.texture.AEStateIcons;
+import thaumicenergistics.texture.EnumAEStateIcons;
 
 public class AbstractAEButton
 	extends GuiButton
 {
-	private static final AEStateIcons BACKGROUND = AEStateIcons.BLANK_BUTTON;
+	/**
+	 * Button background
+	 */
+	private EnumAEStateIcons background = EnumAEStateIcons.REGULAR_BUTTON;
 
-	protected AEStateIcons icon;
+	/**
+	 * Icon to draw on the button
+	 */
+	protected EnumAEStateIcons icon;
 
-	public AbstractAEButton( int ID, int xPosition, int yPosition, int width, int height, AEStateIcons icon )
+	/**
+	 * X position of the icon
+	 */
+	private int iconXPosition;
+	
+	/**
+	 * Y position of the icon
+	 */
+	private int iconYPosition;
+	
+	/**
+	 * Width of the icon
+	 */
+	private int iconWidth;
+	
+	/**
+	 * Height of the icon
+	 */
+	private int iconHeight;
+	
+	/**
+	 * Creates the button 
+	 * @param ID
+	 * @param xPosition
+	 * @param yPosition
+	 * @param width
+	 * @param height
+	 * @param icon
+	 * @param iconXPosition Relative to the buttons position.
+	 * @param iconYPosition Relative to the buttons position.
+	 * @param iconWidth
+	 * @param iconHeight
+	 * @param isTab
+	 */
+	public AbstractAEButton( int ID, int xPosition, int yPosition, int width, int height, EnumAEStateIcons icon, int iconXPosition,
+								int iconYPosition, int iconWidth, int iconHeight, boolean isTab )
 	{
 		// Call super
 		super( ID, xPosition, yPosition, width, height, "" );
 
 		// Set the icon
 		this.icon = icon;
+		
+		// Set icon x position
+		this.iconXPosition = xPosition + iconXPosition;
+		
+		// Set icon y position
+		this.iconYPosition = yPosition + iconYPosition;
+		
+		// Set icon width
+		this.iconWidth = iconWidth;
+		
+		// Set icon height
+		this.iconHeight = iconHeight;
+		
+		// Set tab background
+		if( isTab )
+		{
+			this.background = EnumAEStateIcons.TAB_BUTTON;
+		}
+
+	}
+
+	/**
+	 * Convenience constructor for regular buttons.
+	 * 
+	 * @param ID
+	 * @param xPosition
+	 * @param yPosition
+	 * @param width
+	 * @param height
+	 * @param icon
+	 */
+	public AbstractAEButton( int ID, int xPosition, int yPosition, int width, int height, EnumAEStateIcons icon )
+	{
+		this( ID, xPosition, yPosition, width, height, icon, 0, 0, width, height, false );
 	}
 
 	@Override
@@ -29,15 +104,15 @@ public class AbstractAEButton
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		// Bind the AE states texture
-		minecraftInstance.getTextureManager().bindTexture( AEStateIcons.AE_STATES_TEXTURE );
+		minecraftInstance.getTextureManager().bindTexture( EnumAEStateIcons.AE_STATES_TEXTURE );
 
 		// Draw the background button image
-		this.drawIcon( AbstractAEButton.BACKGROUND );
+		this.drawIcon( this.background, this.xPosition, this.yPosition, this.width, this.height );
 
 		if( this.icon != null )
 		{
 			// Draw the overlay icon
-			this.drawIcon( this.icon );
+			this.drawIcon( this.icon, this.iconXPosition, this.iconYPosition, this.iconWidth, this.iconHeight );
 		}
 
 	}
@@ -47,10 +122,10 @@ public class AbstractAEButton
 	 * 
 	 * @param icon
 	 */
-	private void drawIcon( AEStateIcons icon )
+	private void drawIcon( EnumAEStateIcons icon, int xPosition, int yPosition, int width, int height )
 	{
-		this.drawScaledTexturedModalRect( this.xPosition, this.yPosition, icon.getU(), icon.getV(), this.width, this.height, AEStateIcons.ICON_SIZE,
-			AEStateIcons.ICON_SIZE );
+		this.drawScaledTexturedModalRect( xPosition, yPosition, icon.getU(), icon.getV(), width, height,
+			icon.getWidth(), icon.getHeight() );
 	}
 
 	/**
@@ -68,8 +143,10 @@ public class AbstractAEButton
 		float minV = v * magic_number;
 		float maxV = ( v + textureHeight ) * magic_number;
 
+		// Get the tessellator
 		Tessellator tessellator = Tessellator.instance;
 
+		// Start drawing
 		tessellator.startDrawingQuads();
 
 		// Top left corner
@@ -84,6 +161,7 @@ public class AbstractAEButton
 		// Bottom left corner
 		tessellator.addVertexWithUV( xPosition, yPosition, this.zLevel, minU, minV );
 
+		// Draw
 		tessellator.draw();
 	}
 
