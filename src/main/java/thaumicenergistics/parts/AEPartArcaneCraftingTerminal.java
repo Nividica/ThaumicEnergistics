@@ -2,6 +2,8 @@ package thaumicenergistics.parts;
 
 import java.util.ArrayList;
 import java.util.List;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -432,6 +434,7 @@ public class AEPartArcaneCraftingTerminal
 	 * Renders the part while in the inventory
 	 */
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory( IPartRenderHelper helper, RenderBlocks renderer )
 	{
 		Tessellator ts = Tessellator.instance;
@@ -457,6 +460,7 @@ public class AEPartArcaneCraftingTerminal
 	 * Renders the part in the world.
 	 */
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
 	{
 		Tessellator tessellator = Tessellator.instance;

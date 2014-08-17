@@ -12,7 +12,7 @@ import thaumicenergistics.network.packet.AbstractClientPacket;
 public class PacketClientPriority
 	extends AbstractClientPacket
 {
-	private static final int MODE_SEND = 0;
+	private static final byte MODE_SEND = 0;
 	
 	private int priority;
 	

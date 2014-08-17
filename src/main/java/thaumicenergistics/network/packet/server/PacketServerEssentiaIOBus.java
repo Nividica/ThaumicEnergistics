@@ -9,9 +9,9 @@ import thaumicenergistics.parts.AEPartEssentiaIO;
 public class PacketServerEssentiaIOBus
 	extends AbstractServerPacket
 {
-	private static final int MODE_REQUEST_FULL_UPDATE = 0;
+	private static final byte MODE_REQUEST_FULL_UPDATE = 0;
 	
-	private static final int MODE_REQUEST_CHANGE_REDSTONE_MODE = 1;
+	private static final byte MODE_REQUEST_CHANGE_REDSTONE_MODE = 1;
 	
 	private AEPartEssentiaIO part;
 

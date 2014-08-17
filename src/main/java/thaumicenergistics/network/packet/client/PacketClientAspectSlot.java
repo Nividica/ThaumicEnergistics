@@ -16,7 +16,7 @@ import thaumicenergistics.network.packet.AbstractPacket;
 public class PacketClientAspectSlot
 	extends AbstractClientPacket
 {
-	private static final int MODE_LIST_UPDATE = 0;
+	private static final byte MODE_LIST_UPDATE = 0;
 
 	private List<Aspect> filterAspects;
 

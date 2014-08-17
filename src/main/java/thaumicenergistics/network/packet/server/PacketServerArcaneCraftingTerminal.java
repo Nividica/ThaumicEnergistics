@@ -17,8 +17,8 @@ public class PacketServerArcaneCraftingTerminal
 	private static final byte MODE_REQUEST_CLEAR_GRID = 4;
 
 	private IAEItemStack itemStack;
-
 	private int mouseButton;
+	private boolean isShiftHeld;
 
 	/**
 	 * Create a packet in full list mode.
@@ -47,7 +47,7 @@ public class PacketServerArcaneCraftingTerminal
 	 * @param mouseButton
 	 * @return
 	 */
-	public PacketServerArcaneCraftingTerminal createRequestExtract( EntityPlayer player, IAEItemStack itemStack, int mouseButton )
+	public PacketServerArcaneCraftingTerminal createRequestExtract( EntityPlayer player, IAEItemStack itemStack, int mouseButton, boolean isShiftHeld )
 	{
 		// Set player
 		this.player = player;
@@ -60,6 +60,9 @@ public class PacketServerArcaneCraftingTerminal
 
 		// Set mouse button
 		this.mouseButton = mouseButton;
+
+		// Set shift
+		this.isShiftHeld = isShiftHeld;
 
 		return this;
 	}
@@ -78,7 +81,7 @@ public class PacketServerArcaneCraftingTerminal
 
 		// Set the mode
 		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT;
-		
+
 		// Set the button
 		this.mouseButton = mouseButton;
 
@@ -114,17 +117,18 @@ public class PacketServerArcaneCraftingTerminal
 					// Request the full list
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestFullUpdate( this.player );
 					break;
-					
+
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_EXTRACTION:
 					// Request extraction
-					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestExtract( this.player, this.itemStack, this.mouseButton );
+					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestExtract( this.player, this.itemStack,
+						this.mouseButton, this.isShiftHeld );
 					break;
-					
+
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
 					// Request deposit
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestDeposit( this.player, this.mouseButton );
 					break;
-					
+
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_CLEAR_GRID:
 					// Request clear grid
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestClearCraftingGrid( this.player );
@@ -144,8 +148,11 @@ public class PacketServerArcaneCraftingTerminal
 
 				// Read the mouse button
 				this.mouseButton = stream.readInt();
-				break;
 				
+				// Read the shift status
+				this.isShiftHeld = stream.readBoolean();
+				break;
+
 			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
 				// Read the mouse button
 				this.mouseButton = stream.readInt();
@@ -165,8 +172,11 @@ public class PacketServerArcaneCraftingTerminal
 
 				// Write the mouse button
 				stream.writeInt( this.mouseButton );
-				break;
 				
+				// Write the shift status
+				stream.writeBoolean( this.isShiftHeld );
+				break;
+
 			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
 				// Write the mouse button
 				stream.writeInt( this.mouseButton );

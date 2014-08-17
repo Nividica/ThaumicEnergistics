@@ -29,7 +29,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.5.0a"; // Note: don't forget to change the mcmod.info file as well
+	public static final String VERSION = "0.5.1a"; // Note: don't forget to change the mcmod.info file as well
 
 	/**
 	 * Singleton instance
@@ -102,7 +102,7 @@ public class ThaumicEnergistics
 /*
  * TODO -- Planned Features
  * Terminal sort mode ascending and descending order
- * Additional UI's redstone mode, priority window
+ * Additional UI's redstone mode
  * Give Spatial IO the ability to move my Tile Entities.
  * 
  * --Possible Features

@@ -222,8 +222,11 @@ public class GuiArcaneCraftingTerminal
 				// Did we get an item?
 				if( widgetStack != null )
 				{
+					// Get the state of the shift keys
+					boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
+					
 					// Let the server know the user is requesting an itemstack.
-					new PacketServerArcaneCraftingTerminal().createRequestExtract( this.player, widgetStack, mouseButton ).sendPacketToServer();
+					new PacketServerArcaneCraftingTerminal().createRequestExtract( this.player, widgetStack, mouseButton, isShiftHeld ).sendPacketToServer();
 				}
 
 				// Stop searching

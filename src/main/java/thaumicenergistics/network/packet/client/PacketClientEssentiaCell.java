@@ -19,10 +19,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PacketClientEssentiaCell
 	extends AbstractClientPacket
 {
-	private static final int MODE_FULL_LIST = 0;
-	private static final int MODE_SELECTED_ASPECT = 1;
-	private static final int MODE_LIST_CHANGED = 2;
-	private static final int MODE_SORT_MODE_CHANGED = 3;
+	private static final byte MODE_FULL_LIST = 0;
+	private static final byte MODE_SELECTED_ASPECT = 1;
+	private static final byte MODE_LIST_CHANGED = 2;
+	private static final byte MODE_SORT_MODE_CHANGED = 3;
 	
 	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();
 

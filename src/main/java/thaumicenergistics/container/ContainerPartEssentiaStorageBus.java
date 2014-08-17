@@ -8,7 +8,6 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 
-// TODO: Priority Window
 // TODO: Title
 public class ContainerPartEssentiaStorageBus
 	extends ContainerWithNetworkTool

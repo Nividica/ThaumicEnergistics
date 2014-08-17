@@ -1,4 +1,8 @@
-﻿8/15/2014 0.5.0a
+﻿8/16/2014 0.5.1a
+  Bugfix: A.C.T. SMP crash on placement.
+  Bugfix: A.C.T. SMP crash when player attempts to take item from ME network.
+
+8/15/2014 0.5.0a
 	Added Storage bus priority gui.
 	Added Essentia Level Emitter recipe and Thaumonomicon entry.
 

@@ -9,7 +9,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.OreDictionary;
-import org.lwjgl.input.Keyboard;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -780,7 +779,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * @param requestedStack
 	 * @param mouseButton
 	 */
-	public void onClientRequestExtract( EntityPlayer player, IAEItemStack requestedStack, int mouseButton )
+	public void onClientRequestExtract( EntityPlayer player, IAEItemStack requestedStack, int mouseButton, boolean isShiftHeld )
 	{
 		// Ensure there is a player
 		if( player == null )
@@ -802,9 +801,6 @@ public class ContainerPartArcaneCraftingTerminal
 		{
 			return;
 		}
-
-		// Get the state of the shift keys
-		boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
 
 		// Determine the amount to extract
 		int amountToExtract = 0;

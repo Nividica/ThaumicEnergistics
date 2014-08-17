@@ -11,7 +11,7 @@ import thaumicenergistics.parts.AEPartBase;
 public class PacketServerAspectSlot
 	extends AbstractServerPacket
 {
-	private static final int MODE_SET_ASPECT = 0;
+	private static final byte MODE_SET_ASPECT = 0;
 
 	private int index;
 

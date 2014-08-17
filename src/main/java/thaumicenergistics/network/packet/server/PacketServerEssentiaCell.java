@@ -11,9 +11,9 @@ import thaumicenergistics.network.packet.AbstractServerPacket;
 public class PacketServerEssentiaCell
 	extends AbstractServerPacket
 {
-	private static final int MODE_SELECTED_ASPECT = 0;
-	private static final int MODE_FULL_UPDATE = 1;
-	private static final int MODE_SORT_CHANGE = 2;
+	private static final byte MODE_SELECTED_ASPECT = 0;
+	private static final byte MODE_FULL_UPDATE = 1;
+	private static final byte MODE_SORT_CHANGE = 2;
 
 	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();
 
