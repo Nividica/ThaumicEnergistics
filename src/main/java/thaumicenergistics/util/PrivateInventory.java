@@ -234,8 +234,6 @@ public class PrivateInventory
 				// Save the inventory
 				this.slots[slotIndex].writeToNBT( nbtCompound );
 				
-				System.out.printf( "%d : %s%n", slotIndex, this.slots[slotIndex].getDisplayName() );
-				
 
 				// Add to the list
 				invList.appendTag( nbtCompound );

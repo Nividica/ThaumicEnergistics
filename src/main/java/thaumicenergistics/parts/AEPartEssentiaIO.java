@@ -501,11 +501,6 @@ public abstract class AEPartEssentiaIO
 		{
 			if( !this.lastRedstone )
 			{
-				/*
-				 * NOTE: Known Issue: More than 1 redstone pulse per second will cause this to
-				 * operate too fast.
-				 * Update 8/9/2014: Lowest priority issues. Will likely leave as-is.
-				 */
 				this.doWork( this.getTransferAmountPerSecond() );
 			}
 		}

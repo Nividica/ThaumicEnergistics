@@ -25,7 +25,6 @@ import appeng.api.util.AEColor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// TODO: Save inventory to NBT 
 public class AEPartEssentiaTerminal
 	extends AEPartBase
 {
@@ -34,12 +33,17 @@ public class AEPartEssentiaTerminal
 	 * How much AE power is required to keep the part active.
 	 */
 	private static final double IDLE_POWER_DRAIN = 1.2D;
-	
+
 	/**
 	 * Key used to read and write sorting mode from/to NBT.
 	 */
 	private static final String SORT_MODE_NBT_KEY = "sortMode";
-	
+
+	/**
+	 * Key used to read and write inventory from/to NBT.
+	 */
+	private static final String INVENTORY_NBT_KEY = "slots";
+
 	/**
 	 * List of currently opened containers.
 	 */
@@ -49,12 +53,12 @@ public class AEPartEssentiaTerminal
 	 * Machine representation of this part.
 	 */
 	private MachineSource machineSource = new MachineSource( this );
-	
+
 	/**
 	 * Tracks if the inventory has been locked for work.
 	 */
 	private boolean inventoryLocked = false;
-	
+
 	/**
 	 * The sorting mode used to display aspects.
 	 */
@@ -73,7 +77,7 @@ public class AEPartEssentiaTerminal
 	{
 		super( AEPartsEnum.EssentiaTerminal );
 	}
-	
+
 	public MachineSource getTerminalMachineSource()
 	{
 		return this.machineSource;
@@ -81,9 +85,9 @@ public class AEPartEssentiaTerminal
 
 	public void addContainer( ContainerCellTerminalBase container )
 	{
-		if ( container instanceof ContainerEssentiaTerminal )
+		if( container instanceof ContainerEssentiaTerminal )
 		{
-			this.listeners.add( (ContainerEssentiaTerminal) container );
+			this.listeners.add( (ContainerEssentiaTerminal)container );
 		}
 	}
 
@@ -178,7 +182,7 @@ public class AEPartEssentiaTerminal
 		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
 
-		if ( this.isActive() )
+		if( this.isActive() )
 		{
 			Tessellator.instance.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
 		}
@@ -201,16 +205,17 @@ public class AEPartEssentiaTerminal
 		this.renderStaticBusLights( x, y, z, helper, renderer );
 
 	}
-	
+
 	/**
 	 * Attempts to lock the terminal's inventory so that
 	 * changes can be made.
+	 * 
 	 * @return True if the lock was acquired, false otherwise.
 	 */
 	public boolean lockInventoryForWork()
 	{
 		boolean gotLock = false;
-		
+
 		// Ensure only 1 thread can access the lock at a time
 		synchronized( this.inventory )
 		{
@@ -219,16 +224,16 @@ public class AEPartEssentiaTerminal
 			{
 				// Mark it is now locked
 				this.inventoryLocked = true;
-				
+
 				// Mark that this thread got the lock
 				gotLock = true;
 			}
 		}
-		
+
 		// Return if this thread got the lock or not
 		return gotLock;
 	}
-	
+
 	/**
 	 * Unlocks the terminal so that other threads can
 	 * perform work. This should only be called from
@@ -242,10 +247,10 @@ public class AEPartEssentiaTerminal
 			this.inventoryLocked = false;
 		}
 	}
-	
+
 	@Override
 	public void getDrops( List<ItemStack> drops, boolean wrenched )
-	{	
+	{
 		// Loop over inventory
 		for( int slotIndex = 0; slotIndex < 2; slotIndex++ )
 		{
@@ -270,24 +275,25 @@ public class AEPartEssentiaTerminal
 	{
 		return AEPartEssentiaTerminal.IDLE_POWER_DRAIN;
 	}
-	
+
 	/**
 	 * Called when a player has changed sorting modes.
+	 * 
 	 * @param sortMode
 	 */
 	public void onClientRequestSortingModeChange( ComparatorMode sortMode )
 	{
 		// Set the sort mode
 		this.sortMode = sortMode;
-		
+
 		// Update clients
 		this.notifyListenersSortingModeChanged();
-		
+
 		// Mark that we need saving
 		this.host.markForSave();
-		
+
 	}
-	
+
 	/**
 	 * Informs all open containers to update their respective clients
 	 * that the sorting mode has changed.
@@ -299,16 +305,17 @@ public class AEPartEssentiaTerminal
 			listener.onSortingModeChanged( this.sortMode );
 		}
 	}
-	
+
 	/**
 	 * Gets the current sorting mode
+	 * 
 	 * @return
 	 */
 	public ComparatorMode getSortingMode()
 	{
 		return this.sortMode;
 	}
-	
+
 	/**
 	 * Called to save our state
 	 */
@@ -317,11 +324,14 @@ public class AEPartEssentiaTerminal
 	{
 		// Call super
 		super.writeToNBT( data );
-		
+
 		// Write the sorting mode
 		data.setInteger( SORT_MODE_NBT_KEY, this.sortMode.ordinal() );
+
+		// Write inventory
+		this.inventory.saveToNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
 	}
-	
+
 	/**
 	 * Called to read our saved state
 	 */
@@ -330,12 +340,18 @@ public class AEPartEssentiaTerminal
 	{
 		// Call super
 		super.readFromNBT( data );
-		
+
 		// Read the sorting mode
 		if( data.hasKey( SORT_MODE_NBT_KEY ) )
 		{
 			this.sortMode = ComparatorMode.values()[data.getInteger( SORT_MODE_NBT_KEY )];
 		}
+
+		// Read inventory
+		if( data.hasKey( AEPartEssentiaTerminal.INVENTORY_NBT_KEY ) )
+		{
+			this.inventory.loadFromNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
+		}
 	}
-	
+
 }

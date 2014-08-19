@@ -1,4 +1,12 @@
-﻿8/16/2014 0.5.1a
+﻿8/19/2014 0.5.2a
+  Bugfix: Reverted essentia terminal update method due to no-update lock.
+  Known Issue: This will cause it to occasionally not automatically update essentia amounts with storage buses, you need to close are reopen the GUI.
+  Added GUI titles for Import/Export/Storage buses.
+  Providers can now be moved with AppEng2 spatial IO.
+  Critical bugfix: Providers will crash client if not connected to a colored cable and given power.
+  
+
+8/16/2014 0.5.1a
   Bugfix: A.C.T. SMP crash on placement.
   Bugfix: A.C.T. SMP crash when player attempts to take item from ME network.
 

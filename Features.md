@@ -15,4 +15,4 @@
     Redstone indication of how much essentia is stored in the network.
     
 ###Crafting
-    Thaumcraft crafting table with access to items on the network.
+    Thaumcraft crafting terminal with access to items on the network.

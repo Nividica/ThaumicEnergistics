@@ -13,7 +13,10 @@ import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
+import thaumicenergistics.parts.AEPartEssentiaExportBus;
 import thaumicenergistics.parts.AEPartEssentiaIO;
+import thaumicenergistics.parts.AEPartEssentiaImportBus;
+import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.GuiHelper;
@@ -100,6 +103,16 @@ public class GuiEssentiatIO
 	private static final int REDSTONE_CONTROL_BUTTON_ID = 0;
 
 	/**
+	 * X position of the title string.
+	 */
+	private static final int TITLE_POS_X = 6;
+
+	/**
+	 * Y position of the title string.
+	 */
+	private static final int TITLE_POS_Y = 5;
+
+	/**
 	 * The part associated with this gui.
 	 */
 	private AEPartEssentiaIO part;
@@ -138,6 +151,11 @@ public class GuiEssentiatIO
 	 * Tracks the redstone mode of the bus.
 	 */
 	private RedstoneMode redstoneMode = RedstoneMode.HIGH_SIGNAL;
+	
+	/**
+	 * Title of the gui
+	 */
+	private final String guiTitle;
 
 	/**
 	 * Creates the gui
@@ -164,6 +182,22 @@ public class GuiEssentiatIO
 
 		// Set the height
 		this.ySize = GuiEssentiatIO.GUI_HEIGHT;
+		
+		// Set the title
+		if( partBus instanceof AEPartEssentiaImportBus )
+		{
+			// Import
+			this.guiTitle = AEPartsEnum.EssentiaImportBus.getStatName();
+		}
+		else if( partBus instanceof AEPartEssentiaExportBus )
+		{
+			// Export
+			this.guiTitle = AEPartsEnum.EssentiaExportBus.getStatName();
+		}
+		else
+		{
+			this.guiTitle = "";
+		}
 	}
 
 	/**
@@ -289,6 +323,8 @@ public class GuiEssentiatIO
 	@Override
 	public void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
 	{
+		// Draw the title
+		this.fontRendererObj.drawString( this.guiTitle, GuiEssentiatIO.TITLE_POS_X, GuiEssentiatIO.TITLE_POS_Y, 0x000000 );
 
 		boolean hoverUnderlayRendered = false;
 

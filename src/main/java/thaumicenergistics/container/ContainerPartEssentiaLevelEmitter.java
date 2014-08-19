@@ -17,12 +17,12 @@ public class ContainerPartEssentiaLevelEmitter
 	/**
 	 * X position for the player inventory
 	 */
-	private static int PLAYER_INV_POSITION_Y = 93;
+	private static int PLAYER_INV_POSITION_Y = 102;
 
 	/**
 	 * Y position for the hotbar inventory
 	 */
-	private static int HOTBAR_INV_POSITION_Y = 151;
+	private static int HOTBAR_INV_POSITION_Y = 160;
 	
 	/**
 	 * The AE part associated with this container.

@@ -18,6 +18,7 @@ import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.server.PacketServerChangeGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
+import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.EnumAEStateIcons;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
@@ -73,6 +74,16 @@ public class GuiEssentiaStorageBus
 	private static final int PRIORITY_BUTTON_X_POSITION = 154;
 
 	/**
+	 * X position of the title string.
+	 */
+	private static final int TITLE_POS_X = 6;
+
+	/**
+	 * Y position of the title string.
+	 */
+	private static final int TITLE_POS_Y = 5;
+
+	/**
 	 * Player viewing this gui.
 	 */
 	private EntityPlayer player;
@@ -92,7 +103,15 @@ public class GuiEssentiaStorageBus
 	 */
 	private boolean hasNetworkTool;
 
+	/**
+	 * Storage bus associated with this gui
+	 */
 	private AEPartEssentiaStorageBus storageBus;
+	
+	/**
+	 * Title of the gui
+	 */
+	private final String guiTitle = AEPartsEnum.EssentiaStorageBus.getStatName();
 
 	/**
 	 * Creates the GUI.
@@ -203,6 +222,9 @@ public class GuiEssentiaStorageBus
 	protected void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
 	{
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
+		
+		// Draw the title
+		this.fontRendererObj.drawString( this.guiTitle, GuiEssentiaStorageBus.TITLE_POS_X, GuiEssentiaStorageBus.TITLE_POS_Y, 0x000000 );
 
 		boolean hoverUnderlayRendered = false;
 

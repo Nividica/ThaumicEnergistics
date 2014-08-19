@@ -86,14 +86,12 @@ public abstract class RenderBlockProviderBase
 			// Get the active state
 			isActive = provider.isActive();
 		}
-
-		this.renderPass( x, y, z, overlayColor, blockBrightness, isActive );
-
-		// Return 
-		return true;
+		
+		// Render and return 
+		return this.renderPass( x, y, z, overlayColor, blockBrightness, isActive );
 	}
 
-	private void renderPass( double x, double y, double z, AEColor overlayColor, int blockBrightness, boolean isActive )
+	private boolean renderPass( double x, double y, double z, AEColor overlayColor, int blockBrightness, boolean isActive )
 	{
 		// Get the tessellator instance
 		Tessellator tessellator = Tessellator.instance;
@@ -121,7 +119,7 @@ public abstract class RenderBlockProviderBase
 				if( overlayColor == AEColor.Transparent )
 				{
 					// Nothing additional to render
-					return;
+					return false;
 				}
 				
 				// Set the drawing color
@@ -188,6 +186,9 @@ public abstract class RenderBlockProviderBase
 		tessellator.addVertexWithUV( xEast, yDown, zSouth, maxU, maxV );
 		tessellator.addVertexWithUV( xEast, yDown, zNorth, maxU, minV );
 		tessellator.addVertexWithUV( xWest, yDown, zNorth, minU, minV );
+		
+		// We did some drawing
+		return true;
 	}
 
 	@Override

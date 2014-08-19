@@ -29,7 +29,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.5.1a"; // Note: don't forget to change the mcmod.info file as well
+	public static final String VERSION = "0.5.2a"; // Note: don't forget to change the mcmod.info file as well
 
 	/**
 	 * Singleton instance
@@ -75,6 +75,9 @@ public class ThaumicEnergistics
 		// Register the standard thaumcraft container items and tiles
 		EssentiaTileContainerHelper.registerThaumcraftContainers();
 		EssentiaItemContainerHelper.registerThaumcraftContainers();
+		
+		// Register my tiles with SpatialIO
+		ThaumicEnergistics.proxy.registerSpatialIOMovables();
 	}
 
 	@EventHandler
@@ -100,10 +103,14 @@ public class ThaumicEnergistics
  */
 
 /*
+ * NOTE: Known Issue: More than 1 redstone pulse per second will cause IO buses to operate too fast.
+ * Update 8/9/2014: Lowest priority issues. Will likely leave as-is.
+ */
+
+/*
  * TODO -- Planned Features
  * Terminal sort mode ascending and descending order
  * Additional UI's redstone mode
- * Give Spatial IO the ability to move my Tile Entities.
  * 
  * --Possible Features
  * Wireless terminal

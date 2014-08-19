@@ -1,9 +1,7 @@
 package thaumicenergistics.container;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +10,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.slot.SlotRestrictive;
@@ -347,6 +346,7 @@ public abstract class ContainerCellTerminalBase
 	@Override
 	public void onListUpdate()
 	{
+		/* TODO: Re-visit this or figure out how to make storage bus send updates
 		// Ignored client side
 		if( EffectiveSide.isClientSide() )
 		{
@@ -410,6 +410,7 @@ public abstract class ContainerCellTerminalBase
 			// Inform the subclass
 			this.postAspectStackChange( newStack );
 		}
+		*/
 	}
 
 	/**
@@ -418,7 +419,8 @@ public abstract class ContainerCellTerminalBase
 	@Override
 	public final void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
-		// Ignored
+		// Update the client
+		this.postAspectStackChange( EssentiaConversionHelper.convertAEFluidStackToAspectStack( change ) );
 	}
 
 	/**

@@ -47,12 +47,12 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * Width of the gui
 	 */
-	private static final int GUI_X_SIZE = 176;
+	private static final int GUI_WIDTH = 176;
 
 	/**
 	 * Height of the gui
 	 */
-	private static final int GUI_Y_SIZE = 184;
+	private static final int GUI_HEIGHT = 184;
 
 	/**
 	 * The button index of the redstone mode button.
@@ -67,7 +67,7 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * Y position of the title string.
 	 */
-	private static final int TITLE_POS_Y = -4;
+	private static final int TITLE_POS_Y = 5;
 
 	/**
 	 * X offset for the amount field.
@@ -77,7 +77,7 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * Y offset for the amount field.
 	 */
-	private static final int AMOUNT_OFFSET_Y = 35;
+	private static final int AMOUNT_OFFSET_Y = 44;
 
 	/**
 	 * Width of the amount field.
@@ -102,7 +102,7 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * X position to start drawing buttons.
 	 */
-	private static final int BUTTON_POS_X = 19;
+	private static final int BUTTON_POS_X = 170;
 
 	/**
 	 * Y position to start drawing buttons.
@@ -143,6 +143,16 @@ public class GuiEssentiaLevelEmitter
 	 * Width and height of the redstone button.
 	 */
 	private static final int REDSTONE_BUTTON_SIZE = 16;
+
+	/**
+	 * X position of the filter widget.
+	 */
+	private static final int FILTER_WIDGET_POS_X = 123;
+
+	/**
+	 * Y position of the filter widget.
+	 */
+	private static final int FILTER_WIDGET_POS_Y = 39;
 
 	/**
 	 * The maximum number of characters that can be typed in the amount field.
@@ -187,12 +197,14 @@ public class GuiEssentiaLevelEmitter
 
 		// Set the part
 		this.part = part;
-
+		
 		// Create the filter slot
-		this.aspectFilterSlot = new WidgetAspectSlot( this, this.player, this.part, 123, 30 );
+		this.aspectFilterSlot = new WidgetAspectSlot( this, this.player, this.part, GuiEssentiaLevelEmitter.FILTER_WIDGET_POS_X,
+						GuiEssentiaLevelEmitter.FILTER_WIDGET_POS_Y );
 
-		// Request an update
-		new PacketServerEssentiaEmitter().createUpdateRequest( this.part, this.player ).sendPacketToServer();
+		// Set the width and height
+		this.xSize = GuiEssentiaLevelEmitter.GUI_WIDTH;
+		this.ySize = GuiEssentiaLevelEmitter.GUI_HEIGHT;
 	}
 
 	/**
@@ -207,13 +219,8 @@ public class GuiEssentiaLevelEmitter
 		// Set the texture
 		Minecraft.getMinecraft().renderEngine.bindTexture( GuiTextureManager.ESSENTIA_LEVEL_EMITTER.getTexture() );
 
-		// Calculate the position
-		int posX = ( this.width - GUI_X_SIZE ) / 2;
-		int posY = ( this.height - GUI_Y_SIZE ) / 2;
-
-		//TODO: WTF am I doing here?
 		// Draw the gui texture.
-		this.drawTexturedModalRect( posX, posY, 0, 0, GUI_X_SIZE, GUI_Y_SIZE );
+		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, GuiEssentiaLevelEmitter.GUI_WIDTH, GuiEssentiaLevelEmitter.GUI_HEIGHT );
 	}
 
 	public boolean setFilteredAspectFromItemstack( ItemStack itemStack )
@@ -347,7 +354,7 @@ public class GuiEssentiaLevelEmitter
 				{
 					( (ButtonRedstoneModes)currentButton ).drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
 				}
-				
+
 				// Stop searching
 				break;
 			}
@@ -392,14 +399,11 @@ public class GuiEssentiaLevelEmitter
 	@Override
 	public void initGui()
 	{
+		// Call super
+		super.initGui();
+
 		// Enable repeat keys
 		Keyboard.enableRepeatEvents( true );
-
-		// Calculate the left most X position
-		int guiLeftX = ( this.width - GUI_X_SIZE ) / 2;
-
-		// Calculate the top most Y position
-		int guiTopY = ( this.height - GUI_Y_SIZE ) / 2;
 
 		// Create the amount field
 		this.amountField = new DigitTextField( this.fontRendererObj, GuiEssentiaLevelEmitter.AMOUNT_OFFSET_X,
@@ -420,7 +424,7 @@ public class GuiEssentiaLevelEmitter
 		for( int row = 0; row < GuiEssentiaLevelEmitter.BUTTON_ROWS; row++ )
 		{
 			// Calculate the y position of this row
-			int yPos = ( guiTopY + GuiEssentiaLevelEmitter.BUTTON_POS_Y ) +
+			int yPos = ( this.guiTop + GuiEssentiaLevelEmitter.BUTTON_POS_Y ) +
 							( row * ( GuiEssentiaLevelEmitter.BUTTON_HEIGHT + GuiEssentiaLevelEmitter.BUTTON_PADDING_VERT ) );
 
 			for( int column = 0; column < GuiEssentiaLevelEmitter.BUTTON_COLUMNS; column++ )
@@ -429,7 +433,7 @@ public class GuiEssentiaLevelEmitter
 				int buttonIndex = ( row * 3 ) + column;
 
 				// Calculate the x position of the button
-				int xPos = ( ( guiLeftX + GuiEssentiaLevelEmitter.BUTTON_POS_X ) + ( column * ( GuiEssentiaLevelEmitter.BUTTON_WIDTH + GuiEssentiaLevelEmitter.BUTTON_PADDING_HORZ ) ) );
+				int xPos = ( ( this.guiTop + GuiEssentiaLevelEmitter.BUTTON_POS_X ) + ( column * ( GuiEssentiaLevelEmitter.BUTTON_WIDTH + GuiEssentiaLevelEmitter.BUTTON_PADDING_HORZ ) ) );
 
 				this.buttonList.add( new GuiButton( buttonIndex, xPos, yPos, GuiEssentiaLevelEmitter.BUTTON_WIDTH,
 								GuiEssentiaLevelEmitter.BUTTON_HEIGHT, GuiEssentiaLevelEmitter.BUTTON_LABELS[buttonIndex] ) );
@@ -437,12 +441,12 @@ public class GuiEssentiaLevelEmitter
 		}
 
 		// Add the redstone mode button
-		this.buttonList.add( new ButtonRedstoneModes( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX, guiLeftX +
-						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_X, guiTopY + GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_Y,
+		this.buttonList.add( new ButtonRedstoneModes( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX, this.guiLeft +
+						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_X, this.guiTop + GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_Y,
 						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, RedstoneMode.LOW_SIGNAL, true ) );
 
-		// Call super
-		super.initGui();
+		// Request an update from the server
+		new PacketServerEssentiaEmitter().createUpdateRequest( this.part, this.player ).sendPacketToServer();
 	}
 
 	/**
