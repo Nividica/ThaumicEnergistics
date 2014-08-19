@@ -74,3 +74,14 @@ thaumicenergistics.research_page.TEARCANETERM.1=你已发现将初始要素注�
 tc.research_name.thaumicenergistics.TEESSTERM=源质终端
 tc.research_text.thaumicenergistics.TEESSTERM=已知你有多少源质.
 thaumicenergistics.research_page.TEESSTERM.1=源质终端让你能看到网络中储存了多少源质,并提供了用源质容器向终端输入源质或从中抽取源质的方法.
+
+# Research Essentia Provider
+tc.research_name.thaumicenergistics.TEESSPROV=源质供应器
+tc.research_text.thaumicenergistics.TEESSPROV=应汝所呼.
+thaumicenergistics.research_page.TEESSPROV.1=尽管输入和输出总线适用于许多工作,它们还缺乏与复杂炼金设备相接的灵活性.为了突破这个限制你做出了一个使得这些设备能直接的从网络中获取源质的装置.<BR>使用§l源质供应器§r时就成了项轻松的工作.只要将它连接网络和设备,它就会完成剩下所有的事.
+
+
+# Research Infusion Provider
+tc.research_name.thaumicenergistics.TEINFPROV=注魔供应器
+tc.research_text.thaumicenergistics.TEINFPROV=注魔更易.
+thaumicenergistics.research_page.TEINFPROV.1=通过研究源质注魔的过程,你发现了能用于注魔的源质瞬间数字化与数字瞬间源质化的方法.<BR>将注魔供应器邻近神秘装置放置,装置就能直接从网络中抽取源质.对注魔祭坛来说这十分实用.
