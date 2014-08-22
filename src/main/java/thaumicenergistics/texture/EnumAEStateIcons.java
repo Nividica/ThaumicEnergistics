@@ -35,12 +35,12 @@ public enum EnumAEStateIcons
 	 * Y position in the texture this icon is located at.
 	 */
 	private int minV;
-	
+
 	/**
 	 * Width of the icon
 	 */
 	private int width;
-	
+
 	/**
 	 * Height of the icon
 	 */
@@ -48,6 +48,7 @@ public enum EnumAEStateIcons
 
 	/**
 	 * Standard icon constructor
+	 * 
 	 * @param u
 	 * @param v
 	 */
@@ -55,9 +56,10 @@ public enum EnumAEStateIcons
 	{
 		this( u, v, STANDARD_ICON_SIZE, STANDARD_ICON_SIZE );
 	}
-	
+
 	/**
 	 * Icon constructor
+	 * 
 	 * @param u
 	 * @param v
 	 * @param width
@@ -70,13 +72,18 @@ public enum EnumAEStateIcons
 
 		// Set the v
 		this.minV = v;
-		
+
 		// Set width
 		this.width = width;
-		
+
 		// Set height
 		this.height = height;
-		
+
+	}
+
+	public int getHeight()
+	{
+		return this.height;
 	}
 
 	public int getU()
@@ -88,15 +95,10 @@ public enum EnumAEStateIcons
 	{
 		return this.minV;
 	}
-	
+
 	public int getWidth()
 	{
 		return this.width;
-	}
-	
-	public int getHeight()
-	{
-		return this.height;
 	}
 
 }

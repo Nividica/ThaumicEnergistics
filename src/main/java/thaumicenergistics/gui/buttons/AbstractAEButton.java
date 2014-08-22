@@ -23,64 +23,21 @@ public class AbstractAEButton
 	 * X position of the icon
 	 */
 	private int iconXPosition;
-	
+
 	/**
 	 * Y position of the icon
 	 */
 	private int iconYPosition;
-	
+
 	/**
 	 * Width of the icon
 	 */
 	private int iconWidth;
-	
+
 	/**
 	 * Height of the icon
 	 */
 	private int iconHeight;
-	
-	/**
-	 * Creates the button 
-	 * @param ID
-	 * @param xPosition
-	 * @param yPosition
-	 * @param width
-	 * @param height
-	 * @param icon
-	 * @param iconXPosition Relative to the buttons position.
-	 * @param iconYPosition Relative to the buttons position.
-	 * @param iconWidth
-	 * @param iconHeight
-	 * @param isTab
-	 */
-	public AbstractAEButton( int ID, int xPosition, int yPosition, int width, int height, EnumAEStateIcons icon, int iconXPosition,
-								int iconYPosition, int iconWidth, int iconHeight, boolean isTab )
-	{
-		// Call super
-		super( ID, xPosition, yPosition, width, height, "" );
-
-		// Set the icon
-		this.icon = icon;
-		
-		// Set icon x position
-		this.iconXPosition = xPosition + iconXPosition;
-		
-		// Set icon y position
-		this.iconYPosition = yPosition + iconYPosition;
-		
-		// Set icon width
-		this.iconWidth = iconWidth;
-		
-		// Set icon height
-		this.iconHeight = iconHeight;
-		
-		// Set tab background
-		if( isTab )
-		{
-			this.background = EnumAEStateIcons.TAB_BUTTON;
-		}
-
-	}
 
 	/**
 	 * Convenience constructor for regular buttons.
@@ -95,6 +52,62 @@ public class AbstractAEButton
 	public AbstractAEButton( int ID, int xPosition, int yPosition, int width, int height, EnumAEStateIcons icon )
 	{
 		this( ID, xPosition, yPosition, width, height, icon, 0, 0, width, height, false );
+	}
+
+	/**
+	 * Creates the button
+	 * 
+	 * @param ID
+	 * @param xPosition
+	 * @param yPosition
+	 * @param width
+	 * @param height
+	 * @param icon
+	 * @param iconXPosition
+	 * Relative to the buttons position.
+	 * @param iconYPosition
+	 * Relative to the buttons position.
+	 * @param iconWidth
+	 * @param iconHeight
+	 * @param isTab
+	 */
+	public AbstractAEButton( int ID, int xPosition, int yPosition, int width, int height, EnumAEStateIcons icon, int iconXPosition,
+								int iconYPosition, int iconWidth, int iconHeight, boolean isTab )
+	{
+		// Call super
+		super( ID, xPosition, yPosition, width, height, "" );
+
+		// Set the icon
+		this.icon = icon;
+
+		// Set icon x position
+		this.iconXPosition = xPosition + iconXPosition;
+
+		// Set icon y position
+		this.iconYPosition = yPosition + iconYPosition;
+
+		// Set icon width
+		this.iconWidth = iconWidth;
+
+		// Set icon height
+		this.iconHeight = iconHeight;
+
+		// Set tab background
+		if( isTab )
+		{
+			this.background = EnumAEStateIcons.TAB_BUTTON;
+		}
+
+	}
+
+	/**
+	 * Helper function to draw an AE state icon.
+	 * 
+	 * @param icon
+	 */
+	private void drawIcon( EnumAEStateIcons icon, int xPosition, int yPosition, int width, int height )
+	{
+		this.drawScaledTexturedModalRect( xPosition, yPosition, icon.getU(), icon.getV(), width, height, icon.getWidth(), icon.getHeight() );
 	}
 
 	@Override
@@ -115,17 +128,6 @@ public class AbstractAEButton
 			this.drawIcon( this.icon, this.iconXPosition, this.iconYPosition, this.iconWidth, this.iconHeight );
 		}
 
-	}
-
-	/**
-	 * Helper function to draw an AE state icon.
-	 * 
-	 * @param icon
-	 */
-	private void drawIcon( EnumAEStateIcons icon, int xPosition, int yPosition, int width, int height )
-	{
-		this.drawScaledTexturedModalRect( xPosition, yPosition, icon.getU(), icon.getV(), width, height,
-			icon.getWidth(), icon.getHeight() );
 	}
 
 	/**

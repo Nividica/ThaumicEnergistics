@@ -12,6 +12,19 @@ public class AspectStackComparator
 	implements Comparator<AspectStack>
 {
 
+	public enum ComparatorMode
+	{
+			/**
+			 * Compare based on name
+			 */
+			MODE_ALPHABETIC,
+
+			/**
+			 * Compare based on amount
+			 */
+			MODE_AMOUNT;
+	}
+
 	private ComparatorMode mode;
 
 	/**
@@ -34,6 +47,16 @@ public class AspectStackComparator
 		this.mode = mode;
 	}
 
+	private int compareByAmount( AspectStack left, AspectStack right )
+	{
+		return (int)( right.amount - left.amount );
+	}
+
+	private int compareByTag( AspectStack left, AspectStack right )
+	{
+		return left.aspect.getTag().compareTo( right.aspect.getTag() );
+	}
+
 	@Override
 	public int compare( AspectStack left, AspectStack right )
 	{
@@ -46,41 +69,18 @@ public class AspectStackComparator
 			case MODE_AMOUNT:
 				// Compare amounts
 				int comp = this.compareByAmount( left, right );
-				
+
 				// Are the amounts equal?
 				if( comp == 0 )
 				{
 					// Compare tags
 					comp = this.compareByTag( left, right );
 				}
-				
+
 				return comp;
 		}
 
 		return 0;
-	}
-	
-	private int compareByTag( AspectStack left, AspectStack right )
-	{
-		return left.aspect.getTag().compareTo( right.aspect.getTag() );
-	}
-	
-	private int compareByAmount( AspectStack left, AspectStack right )
-	{
-		return (int)( right.amount - left.amount );
-	}
-
-	public enum ComparatorMode
-	{
-			/**
-			 * Compare based on name
-			 */
-			MODE_ALPHABETIC,
-
-			/**
-			 * Compare based on amount
-			 */
-			MODE_AMOUNT;
 	}
 
 }

@@ -19,19 +19,19 @@ import appeng.api.config.Upgrades;
 
 public enum AEPartsEnum
 {
-		EssentiaImportBus ("essentia.ImportBus", AEPartEssentiaImportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport", new Pair[] { generatePair(
-			Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
+		EssentiaImportBus ("essentia.ImportBus", AEPartEssentiaImportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport", new Pair[] {
+						generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
 
 		EssentiaLevelEmitter ("essentia.levelemitter", AEPartEssentiaLevelEmitter.class),
 
 		EssentiaStorageBus ("essentia.StorageBus", AEPartEssentiaStorageBus.class, null, new Pair[] { generatePair( Upgrades.INVERTER, 1 ) }),
 
-		EssentiaExportBus ("essentia.ExportBus", AEPartEssentiaExportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport", new Pair[] { generatePair(
-			Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
+		EssentiaExportBus ("essentia.ExportBus", AEPartEssentiaExportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport", new Pair[] {
+						generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
 
 		EssentiaTerminal ("essentia.terminal", AEPartEssentiaTerminal.class),
-		
-		ArcaneCraftingTerminal( "arcane.crafting.terminal", AEPartArcaneCraftingTerminal.class );
+
+		ArcaneCraftingTerminal ("arcane.crafting.terminal", AEPartArcaneCraftingTerminal.class);
 
 	private String unlocalizedName;
 
@@ -104,7 +104,7 @@ public enum AEPartsEnum
 		for( int i = 0; i < values.length; i++ )
 		{
 			// Is it the same as the specified part?
-			if ( values[i].getPartClass().equals( partClass ) )
+			if( values[i].getPartClass().equals( partClass ) )
 			{
 				// Found the id, set and stop searching
 				id = i;
@@ -150,6 +150,11 @@ public enum AEPartsEnum
 		return this.partClass;
 	}
 
+	public ItemStack getStack()
+	{
+		return ItemEnum.PART_ITEM.getItemStackWithDamage( this.ordinal() );
+	}
+
 	public String getStatName()
 	{
 		return StatCollector.translateToLocal( this.unlocalizedName + ".name" );
@@ -168,10 +173,5 @@ public enum AEPartsEnum
 	public Map<Upgrades, Integer> getUpgrades()
 	{
 		return this.upgrades;
-	}
-	
-	public ItemStack getStack()
-	{
-		return ItemEnum.PART_ITEM.getItemStackWithDamage( this.ordinal() );
 	}
 }

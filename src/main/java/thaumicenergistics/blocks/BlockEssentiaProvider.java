@@ -39,26 +39,12 @@ public class BlockEssentiaProvider
 	{
 		// Create a new provider tile, passing the side to attach to
 		TileEssentiaProvider tile = new TileEssentiaProvider();
-		
+
 		// Setup the essentia provider
 		tile.setupProvider( metaData );
-		
+
 		// Return the tile
 		return tile;
-	}
-
-	@Override
-	public void onNeighborBlockChange( World world, int x, int y, int z, Block neighbor )
-	{
-		// Inform our tile entity a neighbor has changed
-		( (TileEssentiaProvider)world.getTileEntity( x, y, z ) ).checkGridConnectionColor();
-	}
-
-	@Override
-	public int getRenderType()
-	{
-		// Provide our custom ID
-		return Renderers.EssentiaProviderRenderID;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -69,9 +55,23 @@ public class BlockEssentiaProvider
 	}
 
 	@Override
+	public int getRenderType()
+	{
+		// Provide our custom ID
+		return Renderers.EssentiaProviderRenderID;
+	}
+
+	@Override
 	public String getUnlocalizedName()
 	{
 		return BlockEnum.ESSENTIA_PROVIDER.getUnlocalizedName();
+	}
+
+	@Override
+	public void onNeighborBlockChange( World world, int x, int y, int z, Block neighbor )
+	{
+		// Inform our tile entity a neighbor has changed
+		( (TileEssentiaProvider)world.getTileEntity( x, y, z ) ).checkGridConnectionColor();
 	}
 
 }

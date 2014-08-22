@@ -1,15 +1,15 @@
 package thaumicenergistics.gui;
 
-import appeng.api.AEApi;
-import appeng.parts.automation.UpgradeInventory;
-import thaumicenergistics.container.ContainerWithNetworkTool;
-import thaumicenergistics.container.slot.SlotNetworkTool;
-import thaumicenergistics.texture.EnumAEStateIcons;
-import thaumicenergistics.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import thaumicenergistics.container.ContainerWithNetworkTool;
+import thaumicenergistics.container.slot.SlotNetworkTool;
+import thaumicenergistics.texture.EnumAEStateIcons;
+import thaumicenergistics.util.GuiHelper;
+import appeng.api.AEApi;
+import appeng.parts.automation.UpgradeInventory;
 
 public abstract class GuiWithUpgradeSlots
 	extends GuiContainer
@@ -50,19 +50,6 @@ public abstract class GuiWithUpgradeSlots
 	}
 
 	/**
-	 * Checks if the specified point is within the bounds of the specified slot.
-	 * 
-	 * @param slot
-	 * @param x
-	 * @param y
-	 * @return True if the point is within the slot, false otherwise.
-	 */
-	protected boolean isPointWithinSlot( Slot slot, int x, int y )
-	{
-		return GuiHelper.isPointInGuiRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
-	}
-
-	/**
 	 * Gets the slot who contains the specified point.
 	 * 
 	 * @param x
@@ -87,6 +74,19 @@ public abstract class GuiWithUpgradeSlots
 
 		// Point was not within any slot
 		return null;
+	}
+
+	/**
+	 * Checks if the specified point is within the bounds of the specified slot.
+	 * 
+	 * @param slot
+	 * @param x
+	 * @param y
+	 * @return True if the point is within the slot, false otherwise.
+	 */
+	protected boolean isPointWithinSlot( Slot slot, int x, int y )
+	{
+		return GuiHelper.isPointInGuiRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
 	}
 
 	/**

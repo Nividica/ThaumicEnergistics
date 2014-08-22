@@ -1,7 +1,7 @@
 package thaumicenergistics.network.packet.server;
 
-import net.minecraft.entity.player.EntityPlayer;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.container.ContainerPriority;
 import thaumicenergistics.network.packet.AbstractServerPacket;
 
@@ -14,25 +14,31 @@ public class PacketServerPriority
 
 	private int priority;
 
-	/**
-	 * Asks the server to set the priority to the specified value.
-	 * 
-	 * @param priority
-	 * @param player
-	 * @return
-	 */
-	public PacketServerPriority createRequestSetPriority( int priority, EntityPlayer player )
+	@Override
+	protected void readData( ByteBuf stream )
 	{
-		// Set the player
-		this.player = player;
+		switch ( this.mode )
+		{
+			case PacketServerPriority.MODE_SET:
+			case PacketServerPriority.MODE_ADJUST:
+				// Read the priority
+				this.priority = stream.readInt();
+				break;
+		}
+	}
 
-		// Set the mode
-		this.mode = PacketServerPriority.MODE_SET;
+	@Override
+	protected void writeData( ByteBuf stream )
+	{
+		switch ( this.mode )
+		{
+			case PacketServerPriority.MODE_SET:
+			case PacketServerPriority.MODE_ADJUST:
+				// Write the priority
+				stream.writeInt( this.priority );
+				break;
+		}
 
-		// Set the priority
-		this.priority = priority;
-
-		return this;
 	}
 
 	/**
@@ -67,6 +73,27 @@ public class PacketServerPriority
 		return this;
 	}
 
+	/**
+	 * Asks the server to set the priority to the specified value.
+	 * 
+	 * @param priority
+	 * @param player
+	 * @return
+	 */
+	public PacketServerPriority createRequestSetPriority( int priority, EntityPlayer player )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerPriority.MODE_SET;
+
+		// Set the priority
+		this.priority = priority;
+
+		return this;
+	}
+
 	@Override
 	public void execute()
 	{
@@ -93,39 +120,12 @@ public class PacketServerPriority
 				// Adjust the priority
 				( (ContainerPriority)this.player.openContainer ).onClientRequestAdjustPriority( this.priority );
 				break;
-				
+
 			case PacketServerPriority.MODE_REQUEST:
 				// Request the priority
 				( (ContainerPriority)this.player.openContainer ).onClientRequestPriority();
 				break;
 		}
-	}
-
-	@Override
-	protected void readData( ByteBuf stream )
-	{
-		switch ( this.mode )
-		{
-			case PacketServerPriority.MODE_SET:
-			case PacketServerPriority.MODE_ADJUST:
-				// Read the priority
-				this.priority = stream.readInt();
-				break;
-		}
-	}
-
-	@Override
-	protected void writeData( ByteBuf stream )
-	{
-		switch ( this.mode )
-		{
-			case PacketServerPriority.MODE_SET:
-			case PacketServerPriority.MODE_ADJUST:
-				// Write the priority
-				stream.writeInt( this.priority );
-				break;
-		}
-
 	}
 
 }

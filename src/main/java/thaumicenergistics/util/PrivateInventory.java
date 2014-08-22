@@ -145,20 +145,6 @@ public class PrivateInventory
 		return true;
 	}
 
-	@Override
-	public void markDirty()
-	{
-		if( this.receiver != null )
-		{
-			this.receiver.onInventoryChanged( this );
-		}
-	}
-
-	@Override
-	public void openInventory()
-	{
-	}
-
 	public final void loadFromNBT( NBTTagCompound data, String tagName )
 	{
 		// Ensure there is a data tag
@@ -195,17 +181,17 @@ public class PrivateInventory
 	}
 
 	@Override
-	public void setInventorySlotContents( int slotId, ItemStack itemStack )
+	public void markDirty()
 	{
-		// Is the stack size to large?
-		if( ( itemStack != null ) && ( itemStack.stackSize > this.getInventoryStackLimit() ) )
+		if( this.receiver != null )
 		{
-			itemStack.stackSize = this.getInventoryStackLimit();
+			this.receiver.onInventoryChanged( this );
 		}
+	}
 
-		this.slots[slotId] = itemStack;
-
-		this.markDirty();
+	@Override
+	public void openInventory()
+	{
 	}
 
 	public final void saveToNBT( NBTTagCompound data, String tagName )
@@ -233,7 +219,6 @@ public class PrivateInventory
 
 				// Save the inventory
 				this.slots[slotIndex].writeToNBT( nbtCompound );
-				
 
 				// Add to the list
 				invList.appendTag( nbtCompound );
@@ -242,6 +227,20 @@ public class PrivateInventory
 
 		// Write the list into the data
 		data.setTag( tagName, invList );
+	}
+
+	@Override
+	public void setInventorySlotContents( int slotId, ItemStack itemStack )
+	{
+		// Is the stack size to large?
+		if( ( itemStack != null ) && ( itemStack.stackSize > this.getInventoryStackLimit() ) )
+		{
+			itemStack.stackSize = this.getInventoryStackLimit();
+		}
+
+		this.slots[slotId] = itemStack;
+
+		this.markDirty();
 	}
 
 	public void setReceiver( IInventoryUpdateReceiver receiver )

@@ -2,8 +2,6 @@ package thaumicenergistics.parts;
 
 import java.util.ArrayList;
 import java.util.List;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +21,8 @@ import thaumicenergistics.texture.BlockTextureManager;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEColor;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartArcaneCraftingTerminal
 	extends AEPartBase
@@ -52,7 +52,7 @@ public class AEPartArcaneCraftingTerminal
 	 * Key used for reading/writing inventory slots to NBT
 	 */
 	private static final String SLOT_NBT_KEY = "Slot#";
-	
+
 	/**
 	 * How much AE power is required to keep the part active.
 	 */
@@ -227,6 +227,16 @@ public class AEPartArcaneCraftingTerminal
 				drops.add( slotStack );
 			}
 		}
+	}
+
+	/**
+	 * Determines how much power the part takes for just
+	 * existing.
+	 */
+	@Override
+	public double getIdlePowerUsage()
+	{
+		return AEPartArcaneCraftingTerminal.IDLE_POWER_DRAIN;
 	}
 
 	/**
@@ -470,7 +480,7 @@ public class AEPartArcaneCraftingTerminal
 		helper.setTexture( side, side, side, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0], side, side );
 		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
-		
+
 		if( this.isActive() )
 		{
 			tessellator.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
@@ -558,16 +568,6 @@ public class AEPartArcaneCraftingTerminal
 
 		// Append the list to the data tag
 		data.setTag( AEPartArcaneCraftingTerminal.INVENTORY_NBT_KEY, nbtList );
-	}
-
-	/**
-	 * Determines how much power the part takes for just
-	 * existing.
-	 */
-	@Override
-	public double getIdlePowerUsage()
-	{
-		return AEPartArcaneCraftingTerminal.IDLE_POWER_DRAIN;
 	}
 
 }

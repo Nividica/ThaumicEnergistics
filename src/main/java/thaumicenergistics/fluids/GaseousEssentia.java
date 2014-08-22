@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
 import cpw.mods.fml.common.FMLLog;
@@ -30,8 +31,11 @@ public class GaseousEssentia
 
 	/**
 	 * Creates the gas.
-	 * @param gasName Name of the gas displayed to the user
-	 * @param aspect The aspect the gas is based off of.
+	 * 
+	 * @param gasName
+	 * Name of the gas displayed to the user
+	 * @param aspect
+	 * The aspect the gas is based off of.
 	 */
 	private GaseousEssentia( String gasName, Aspect aspect )
 	{
@@ -63,7 +67,7 @@ public class GaseousEssentia
 	private static void create( Aspect aspect )
 	{
 		// Ensure this has not already been register
-		if ( gasList.containsKey( aspect ) )
+		if( gasList.containsKey( aspect ) )
 		{
 			// Return the existing fluid
 			return;
@@ -76,7 +80,7 @@ public class GaseousEssentia
 		GaseousEssentia newGas = new GaseousEssentia( gasName, aspect );
 
 		// Register the fluid
-		if ( FluidRegistry.registerFluid( newGas ) )
+		if( FluidRegistry.registerFluid( newGas ) )
 		{
 			// Add to the list
 			gasList.put( aspect, newGas );
@@ -119,6 +123,7 @@ public class GaseousEssentia
 
 	/**
 	 * Get the aspect this gas is based off of.
+	 * 
 	 * @return
 	 */
 	public Aspect getAssociatedAspect()
@@ -132,7 +137,7 @@ public class GaseousEssentia
 	@Override
 	public int getColor()
 	{
-		if ( this.associatedAspect != null )
+		if( this.associatedAspect != null )
 		{
 			return this.associatedAspect.getColor();
 		}
@@ -144,7 +149,7 @@ public class GaseousEssentia
 	 * Gets the localized version of the gasses name.
 	 */
 	@Override
-	public String getLocalizedName()
+	public String getLocalizedName( FluidStack stack )
 	{
 		return StatCollector.translateToLocal( "thaumicenergistics.fluid.gaseous" ) + " " + this.associatedAspect.getName();
 	}

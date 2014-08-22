@@ -12,7 +12,8 @@ import thaumicenergistics.texture.EssentiaGasTexture;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class ClientProxy extends CommonProxy
+public class ClientProxy
+	extends CommonProxy
 {
 	public ClientProxy()
 	{
@@ -38,6 +39,13 @@ public class ClientProxy extends CommonProxy
 
 	}
 
+	@Override
+	public void registerRenderers()
+	{
+		// Register the custom block renderers
+		Renderers.registerRenderers();
+	}
+
 	@SubscribeEvent
 	public void registerTextures( TextureStitchEvent.Pre event )
 	{
@@ -58,12 +66,12 @@ public class ClientProxy extends CommonProxy
 			Field mipmapField = TextureMap.class.getDeclaredField( "mipmapLevels" );
 			mapField.setAccessible( true );
 			mipmapField.setAccessible( true );
-			
+
 			// Access the maps internal map of textures
-			Map internalMap = (Map) mapField.get( map );
-			
+			Map internalMap = (Map)mapField.get( map );
+
 			// Access the maps internal mipmap value
-			int mipmap = (Integer) mipmapField.get( map );
+			int mipmap = (Integer)mipmapField.get( map );
 
 			// Create and inject textures
 			this.injectGeneratedTextures( internalMap, mipmap );
@@ -74,12 +82,5 @@ public class ClientProxy extends CommonProxy
 			e.printStackTrace();
 		}
 
-	}
-	
-	@Override
-	public void registerRenderers()
-	{
-		// Register the custom block renderers
-		Renderers.registerRenderers();
 	}
 }

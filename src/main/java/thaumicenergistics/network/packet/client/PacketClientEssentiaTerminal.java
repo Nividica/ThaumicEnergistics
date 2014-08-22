@@ -23,7 +23,7 @@ public class PacketClientEssentiaTerminal
 	private static final byte MODE_SET_CURRENT = 1;
 	private static final byte MODE_SORT_MODE_CHANGED = 2;
 	private static final byte MODE_LIST_CHANGED = 3;
-	
+
 	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();
 
 	private List<AspectStack> aspectStackList;
@@ -31,19 +31,49 @@ public class PacketClientEssentiaTerminal
 	private ComparatorMode sortMode;
 	private AspectStack change;
 
-	public PacketClientEssentiaTerminal createUpdateFullList( EntityPlayer player, List<AspectStack> list )
+	@SideOnly(Side.CLIENT)
+	@Override
+	protected void wrappedExecute()
+	{
+		Gui gui = Minecraft.getMinecraft().currentScreen;
+
+		if( gui instanceof GuiEssentiaTerminal )
+		{
+			ContainerEssentiaTerminal container = (ContainerEssentiaTerminal)( (GuiEssentiaTerminal)gui ).inventorySlots;
+
+			switch ( this.mode )
+			{
+				case PacketClientEssentiaTerminal.MODE_FULL_LIST:
+					container.onReceiveAspectList( this.aspectStackList );
+					break;
+
+				case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
+					container.onReceiveSelectedAspect( this.selectedAspect );
+					break;
+
+				case PacketClientEssentiaTerminal.MODE_SORT_MODE_CHANGED:
+					// Update the sorting mode
+					( (GuiEssentiaTerminal)gui ).onSortModeChanged( this.sortMode );
+					break;
+
+				case PacketClientEssentiaTerminal.MODE_LIST_CHANGED:
+					// Update the list
+					container.onReceiveAspectListChange( this.change );
+					break;
+			}
+		}
+	}
+
+	public PacketClientEssentiaTerminal createListChanged( EntityPlayer player, AspectStack change )
 	{
 		// Set the player
 		this.player = player;
 
 		// Set the mode
-		this.mode = PacketClientEssentiaTerminal.MODE_FULL_LIST;
+		this.mode = PacketClientEssentiaTerminal.MODE_LIST_CHANGED;
 
-		// Mark to use compression
-		this.useCompression = true;
-
-		// Set the list
-		this.aspectStackList = list;
+		// Set the change
+		this.change = change;
 
 		return this;
 	}
@@ -75,52 +105,22 @@ public class PacketClientEssentiaTerminal
 
 		return this;
 	}
-	
-	public PacketClientEssentiaTerminal createListChanged( EntityPlayer player, AspectStack change )
+
+	public PacketClientEssentiaTerminal createUpdateFullList( EntityPlayer player, List<AspectStack> list )
 	{
 		// Set the player
 		this.player = player;
-		
+
 		// Set the mode
-		this.mode = PacketClientEssentiaTerminal.MODE_LIST_CHANGED;
-		
-		// Set the change
-		this.change = change;
-		
+		this.mode = PacketClientEssentiaTerminal.MODE_FULL_LIST;
+
+		// Mark to use compression
+		this.useCompression = true;
+
+		// Set the list
+		this.aspectStackList = list;
+
 		return this;
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	protected void wrappedExecute()
-	{
-		Gui gui = Minecraft.getMinecraft().currentScreen;
-
-		if( gui instanceof GuiEssentiaTerminal )
-		{
-			ContainerEssentiaTerminal container = (ContainerEssentiaTerminal)( (GuiEssentiaTerminal)gui ).inventorySlots;
-			
-			switch ( this.mode )
-			{
-				case PacketClientEssentiaTerminal.MODE_FULL_LIST:
-					container.onReceiveAspectList( this.aspectStackList );
-					break;
-
-				case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
-					container.onReceiveSelectedAspect( this.selectedAspect );
-					break;
-					
-				case PacketClientEssentiaTerminal.MODE_SORT_MODE_CHANGED:
-					// Update the sorting mode
-					( (GuiEssentiaTerminal)gui ).onSortModeChanged( this.sortMode );
-					break;
-					
-				case PacketClientEssentiaTerminal.MODE_LIST_CHANGED:
-					// Update the list
-					container.onReceiveAspectListChange( this.change );
-					break;
-			}
-		}
 	}
 
 	@Override
@@ -141,12 +141,12 @@ public class PacketClientEssentiaTerminal
 			case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
 				this.selectedAspect = AbstractPacket.readAspect( stream );
 				break;
-				
+
 			case PacketClientEssentiaTerminal.MODE_SORT_MODE_CHANGED:
 				// Read the mode ordinal
 				this.sortMode = SORT_MODES[stream.readInt()];
 				break;
-				
+
 			case PacketClientEssentiaTerminal.MODE_LIST_CHANGED:
 				// Read the stack
 				this.change = new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() );
@@ -171,16 +171,16 @@ public class PacketClientEssentiaTerminal
 			case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
 				AbstractPacket.writeAspect( this.selectedAspect, stream );
 				break;
-				
+
 			case PacketClientEssentiaTerminal.MODE_SORT_MODE_CHANGED:
 				// Write the mode ordinal
 				stream.writeInt( this.sortMode.ordinal() );
 				break;
-				
+
 			case PacketClientEssentiaTerminal.MODE_LIST_CHANGED:
 				// Write the aspect
 				AbstractPacket.writeAspect( this.change.aspect, stream );
-				
+
 				// Write the amount
 				stream.writeLong( this.change.amount );
 		}

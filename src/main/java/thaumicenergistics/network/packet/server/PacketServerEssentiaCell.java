@@ -31,20 +31,6 @@ public class PacketServerEssentiaCell
 		return this;
 	}
 
-	public PacketServerEssentiaCell createUpdateSelectedAspect( EntityPlayer player, Aspect selectedAspect )
-	{
-		// Set the player
-		this.player = player;
-
-		// Set the mode
-		this.mode = PacketServerEssentiaCell.MODE_SELECTED_ASPECT;
-
-		// Set the selected aspect
-		this.selectedAspect = selectedAspect;
-
-		return this;
-	}
-
 	public PacketServerEssentiaCell createRequestChangeSortMode( EntityPlayer player, ComparatorMode sortMode )
 	{
 		// Set the player
@@ -55,6 +41,20 @@ public class PacketServerEssentiaCell
 
 		// Set the sort mode
 		this.sortMode = sortMode;
+
+		return this;
+	}
+
+	public PacketServerEssentiaCell createUpdateSelectedAspect( EntityPlayer player, Aspect selectedAspect )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerEssentiaCell.MODE_SELECTED_ASPECT;
+
+		// Set the selected aspect
+		this.selectedAspect = selectedAspect;
 
 		return this;
 	}
@@ -73,7 +73,7 @@ public class PacketServerEssentiaCell
 		{
 			return;
 		}
-		
+
 		// Get the container
 		ContainerEssentiaCell container = ( (ContainerEssentiaCell)this.player.openContainer );
 

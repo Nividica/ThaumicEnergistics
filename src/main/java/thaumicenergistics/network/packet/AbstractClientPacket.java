@@ -1,18 +1,22 @@
 package thaumicenergistics.network.packet;
 
+import thaumicenergistics.network.ChannelHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import thaumicenergistics.network.ChannelHandler;
 
 /**
  * Packet to be sent to the client.
+ * 
  * @author Nividica
- *
+ * 
  */
 public abstract class AbstractClientPacket
 	extends AbstractPacket
 {
+	@SideOnly(Side.CLIENT)
+	protected abstract void wrappedExecute();
+
 	@Override
 	public final void execute()
 	{
@@ -28,9 +32,6 @@ public abstract class AbstractClientPacket
 			this.wrappedExecute();
 		}
 	}
-	
-	@SideOnly(Side.CLIENT)
-	protected abstract void wrappedExecute();
 
 	/**
 	 * Send this packet to all players.

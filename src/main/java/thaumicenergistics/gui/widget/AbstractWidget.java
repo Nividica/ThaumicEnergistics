@@ -29,24 +29,18 @@ public abstract class AbstractWidget
 		this.yPosition = yPos;
 	}
 
-	public void setPosition( int xPos, int yPos )
-	{
-		this.xPosition = xPos;
-		this.yPosition = yPos;
-	}
-	
 	protected void drawTooltip( List<String> descriptionLines, int posX, int posY, FontRenderer fontrenderer )
 	{
 		// Draw the tooltip
 		GuiHelper.drawTooltip( this, descriptionLines, posX, posY, fontrenderer );
 	}
-	
+
 	public void drawMouseHoverUnderlay()
 	{
 		GL11.glDisable( GL11.GL_LIGHTING );
 
 		GL11.glDisable( GL11.GL_DEPTH_TEST );
-		
+
 		this.drawGradientRect( this.xPosition + 1, this.yPosition + 1, this.xPosition + 17, this.yPosition + 17, 0x80FFFFFF, 0x80FFFFFF );
 
 		GL11.glEnable( GL11.GL_LIGHTING );
@@ -54,16 +48,22 @@ public abstract class AbstractWidget
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 	}
 
+	public abstract void drawTooltip( int mouseX, int mouseY );
+
+	public abstract void drawWidget();
+
 	public boolean isMouseOverWidget( int mouseX, int mouseY )
 	{
 		return GuiHelper.isPointInGuiRegion( this.xPosition, this.yPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE, mouseX, mouseY,
 			this.hostGUI.guiLeft(), this.hostGUI.guiTop() );
 	}
 
-	public abstract void drawTooltip( int mouseX, int mouseY );
-
-	public abstract void drawWidget();
-
 	public abstract void mouseClicked();
+
+	public void setPosition( int xPos, int yPos )
+	{
+		this.xPosition = xPos;
+		this.yPosition = yPos;
+	}
 
 }

@@ -92,6 +92,17 @@ public class GuiHandler
 	}
 
 	/**
+	 * Helper function to properly generate a priority gui ID
+	 * 
+	 * @param side
+	 * @return
+	 */
+	public static int generatePriorityID( ForgeDirection side )
+	{
+		return GuiHandler.PRIORITY_ID + side.ordinal();
+	}
+
+	/**
 	 * Launches an AE part gui
 	 * 
 	 * @param part
@@ -212,17 +223,6 @@ public class GuiHandler
 
 		// No matching GUI element found
 		return null;
-	}
-
-	/**
-	 * Helper function to properly generate a priority gui ID
-	 * 
-	 * @param side
-	 * @return
-	 */
-	public static int generatePriorityID( ForgeDirection side )
-	{
-		return GuiHandler.PRIORITY_ID + side.ordinal();
 	}
 
 }

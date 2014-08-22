@@ -21,19 +21,39 @@ public class PacketServerArcaneCraftingTerminal
 	private boolean isShiftHeld;
 
 	/**
-	 * Create a packet in full list mode.
-	 * This will request a full list of all items in
+	 * Create a packet to request that the crafting grid be cleared.
 	 * the ME network. Use only when needed.
 	 * 
 	 * @param player
 	 */
-	public PacketServerArcaneCraftingTerminal createRequestFullList( EntityPlayer player )
+	public PacketServerArcaneCraftingTerminal createRequestClearGrid( EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
 
 		// Set the mode
-		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_FULL_LIST;
+		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_CLEAR_GRID;
+
+		return this;
+	}
+
+	/**
+	 * Creates a packet letting the server know the user would like to
+	 * deposition whatever they are holding into the ME network.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public PacketServerArcaneCraftingTerminal createRequestDeposit( EntityPlayer player, int mouseButton )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT;
+
+		// Set the button
+		this.mouseButton = mouseButton;
 
 		return this;
 	}
@@ -68,39 +88,19 @@ public class PacketServerArcaneCraftingTerminal
 	}
 
 	/**
-	 * Creates a packet letting the server know the user would like to
-	 * deposition whatever they are holding into the ME network.
-	 * 
-	 * @param player
-	 * @return
-	 */
-	public PacketServerArcaneCraftingTerminal createRequestDeposit( EntityPlayer player, int mouseButton )
-	{
-		// Set the player
-		this.player = player;
-
-		// Set the mode
-		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT;
-
-		// Set the button
-		this.mouseButton = mouseButton;
-
-		return this;
-	}
-
-	/**
-	 * Create a packet to request that the crafting grid be cleared.
+	 * Create a packet in full list mode.
+	 * This will request a full list of all items in
 	 * the ME network. Use only when needed.
 	 * 
 	 * @param player
 	 */
-	public PacketServerArcaneCraftingTerminal createRequestClearGrid( EntityPlayer player )
+	public PacketServerArcaneCraftingTerminal createRequestFullList( EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
 
 		// Set the mode
-		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_CLEAR_GRID;
+		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_FULL_LIST;
 
 		return this;
 	}
@@ -148,7 +148,7 @@ public class PacketServerArcaneCraftingTerminal
 
 				// Read the mouse button
 				this.mouseButton = stream.readInt();
-				
+
 				// Read the shift status
 				this.isShiftHeld = stream.readBoolean();
 				break;
@@ -172,7 +172,7 @@ public class PacketServerArcaneCraftingTerminal
 
 				// Write the mouse button
 				stream.writeInt( this.mouseButton );
-				
+
 				// Write the shift status
 				stream.writeBoolean( this.isShiftHeld );
 				break;

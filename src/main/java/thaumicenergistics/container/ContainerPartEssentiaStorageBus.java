@@ -30,19 +30,19 @@ public class ContainerPartEssentiaStorageBus
 	 * Y position for the hotbar inventory
 	 */
 	private static int HOTBAR_INV_POSITION_Y = 160;
-	
+
 	private AEPartEssentiaStorageBus part;
-	
+
 	private EntityPlayer player;
 
 	public ContainerPartEssentiaStorageBus( AEPartEssentiaStorageBus part, EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
-		
+
 		// Set the part
 		this.part = part;
-		
+
 		// Add the upgrade slot
 		this.addUpgradeSlots( part.getUpgradeInventory(), 1, ContainerPartEssentiaStorageBus.UPGRADE_SLOT_X,
 			ContainerPartEssentiaStorageBus.UPGRADE_SLOT_Y );
@@ -53,19 +53,10 @@ public class ContainerPartEssentiaStorageBus
 
 		// Bind to the network tool
 		this.bindToNetworkTool( player.inventory, part.getHost().getLocation() );
-		
+
 		// Register as a listener
 		this.part.addListener( this );
 
-	}
-	
-	@Override
-	public void onContainerClosed(EntityPlayer player)
-	{
-		if( this.part != null )
-		{
-			this.part.removeListener( this );
-		}
 	}
 
 	/**
@@ -78,13 +69,27 @@ public class ContainerPartEssentiaStorageBus
 	}
 
 	@Override
+	public void onContainerClosed( EntityPlayer player )
+	{
+		if( this.part != null )
+		{
+			this.part.removeListener( this );
+		}
+	}
+
+	public void setFilteredAspects( List<Aspect> filteredAspects )
+	{
+		new PacketClientAspectSlot().createFilterListUpdate( filteredAspects, this.player ).sendPacketToPlayer();
+	}
+
+	@Override
 	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
-	{	
+	{
 		// Get the slot
 		Slot slot = this.getSlot( slotNumber );
 
 		// Do we have a valid slot with an item?
-		if ( ( slot != null ) && ( slot.getHasStack() ) )
+		if( ( slot != null ) && ( slot.getHasStack() ) )
 		{
 			// Can this aspect be added to the filter list?
 			if( ( this.part != null ) && ( this.part.addFilteredAspectFromItemstack( player, slot.getStack() ) ) )
@@ -97,10 +102,5 @@ public class ContainerPartEssentiaStorageBus
 		}
 
 		return null;
-	}
-	
-	public void setFilteredAspects( List<Aspect> filteredAspects )
-	{
-		new PacketClientAspectSlot().createFilterListUpdate( filteredAspects, this.player ).sendPacketToPlayer();
 	}
 }

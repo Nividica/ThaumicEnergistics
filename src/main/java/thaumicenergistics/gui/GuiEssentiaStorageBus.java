@@ -107,7 +107,7 @@ public class GuiEssentiaStorageBus
 	 * Storage bus associated with this gui
 	 */
 	private AEPartEssentiaStorageBus storageBus;
-	
+
 	/**
 	 * Title of the gui
 	 */
@@ -142,54 +142,6 @@ public class GuiEssentiaStorageBus
 		this.ySize = GuiEssentiaStorageBus.GUI_HEIGHT;
 	}
 
-	@Override
-	public void initGui()
-	{
-		super.initGui();
-
-		// Create the widgets
-		for( int row = 0; row < GuiEssentiaStorageBus.ROWS; row++ )
-		{
-			for( int column = 0; column < GuiEssentiaStorageBus.COLUMNS; column++ )
-			{
-				this.aspectWidgetList.add( new WidgetAspectSlot( this, this.player, this.storageBus,
-								( row * GuiEssentiaStorageBus.COLUMNS ) + column, GuiEssentiaStorageBus.WIDGET_X_POS +
-												( AbstractWidget.WIDGET_SIZE * column ), GuiEssentiaStorageBus.WIDGET_Y_POS +
-												( AbstractWidget.WIDGET_SIZE * row ) ) );
-			}
-		}
-
-		// Create the priority tab button
-		this.buttonList.add( new ButtonAETab( GuiEssentiaStorageBus.PRIORITY_BUTTON_ID, this.guiLeft +
-						GuiEssentiaStorageBus.PRIORITY_BUTTON_X_POSITION, this.guiTop, EnumAEStateIcons.WRENCH ) );
-
-		// Request an update
-		new PacketServerEssentiaStorageBus().createRequestFullUpdate( this.player, this.storageBus ).sendPacketToServer();
-	}
-
-	/**
-	 * Called when a button is clicked.
-	 */
-	@Override
-	public void actionPerformed( GuiButton button )
-	{
-		// Was the priority button clicked?
-		if( button.id == GuiEssentiaStorageBus.PRIORITY_BUTTON_ID )
-		{
-			// Get the storage buses host 
-			TileEntity host = this.storageBus.getHostTile();
-
-			// Get the side the storage bus is attached to
-			ForgeDirection side = this.storageBus.getSide();
-
-			// Ask the server to change to the priority gui
-			new PacketServerChangeGui().createChangeGuiRequest( GuiHandler.generatePriorityID( side ), this.player, host.getWorldObj(), host.xCoord,
-				host.yCoord, host.zCoord ).sendPacketToServer();
-
-		}
-
-	}
-
 	/**
 	 * Draws the gui background
 	 */
@@ -222,7 +174,7 @@ public class GuiEssentiaStorageBus
 	protected void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
 	{
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
-		
+
 		// Draw the title
 		this.fontRendererObj.drawString( this.guiTitle, GuiEssentiaStorageBus.TITLE_POS_X, GuiEssentiaStorageBus.TITLE_POS_Y, 0x000000 );
 
@@ -281,6 +233,54 @@ public class GuiEssentiaStorageBus
 				break;
 			}
 		}
+	}
+
+	/**
+	 * Called when a button is clicked.
+	 */
+	@Override
+	public void actionPerformed( GuiButton button )
+	{
+		// Was the priority button clicked?
+		if( button.id == GuiEssentiaStorageBus.PRIORITY_BUTTON_ID )
+		{
+			// Get the storage buses host 
+			TileEntity host = this.storageBus.getHostTile();
+
+			// Get the side the storage bus is attached to
+			ForgeDirection side = this.storageBus.getSide();
+
+			// Ask the server to change to the priority gui
+			new PacketServerChangeGui().createChangeGuiRequest( GuiHandler.generatePriorityID( side ), this.player, host.getWorldObj(), host.xCoord,
+				host.yCoord, host.zCoord ).sendPacketToServer();
+
+		}
+
+	}
+
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+
+		// Create the widgets
+		for( int row = 0; row < GuiEssentiaStorageBus.ROWS; row++ )
+		{
+			for( int column = 0; column < GuiEssentiaStorageBus.COLUMNS; column++ )
+			{
+				this.aspectWidgetList.add( new WidgetAspectSlot( this, this.player, this.storageBus,
+								( row * GuiEssentiaStorageBus.COLUMNS ) + column, GuiEssentiaStorageBus.WIDGET_X_POS +
+												( AbstractWidget.WIDGET_SIZE * column ), GuiEssentiaStorageBus.WIDGET_Y_POS +
+												( AbstractWidget.WIDGET_SIZE * row ) ) );
+			}
+		}
+
+		// Create the priority tab button
+		this.buttonList.add( new ButtonAETab( GuiEssentiaStorageBus.PRIORITY_BUTTON_ID, this.guiLeft +
+						GuiEssentiaStorageBus.PRIORITY_BUTTON_X_POSITION, this.guiTop, EnumAEStateIcons.WRENCH ) );
+
+		// Request an update
+		new PacketServerEssentiaStorageBus().createRequestFullUpdate( this.player, this.storageBus ).sendPacketToServer();
 	}
 
 	@Override

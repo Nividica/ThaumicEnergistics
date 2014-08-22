@@ -107,24 +107,6 @@ public abstract class AEPartEssentiaIO
 		}
 	}
 
-	public void addListener( ContainerPartEssentiaIOBus container )
-	{
-		if( !this.listeners.contains( container ) )
-		{
-			this.listeners.add( container );
-		}
-	}
-
-	public void removeListener( ContainerPartEssentiaIOBus container )
-	{
-		this.listeners.remove( container );
-	}
-
-	private int getTransferAmountPerSecond()
-	{
-		return BASE_TRANSFER_PER_SECOND + ( this.upgradeSpeedCount * ADDITIONAL_TRANSFER_PER_SECOND );
-	}
-
 	private boolean canDoWork()
 	{
 		boolean canWork = true;
@@ -152,6 +134,82 @@ public abstract class AEPartEssentiaIO
 
 		return canWork;
 
+	}
+
+	private int getTransferAmountPerSecond()
+	{
+		return BASE_TRANSFER_PER_SECOND + ( this.upgradeSpeedCount * ADDITIONAL_TRANSFER_PER_SECOND );
+	}
+
+	private void notifyListenersOfFilterAspectChange()
+	{
+		for( ContainerPartEssentiaIOBus listener : this.listeners )
+		{
+			listener.setFilteredAspect( this.filteredAspects );
+		}
+	}
+
+	private void notifyListenersOfFilterSizeChange()
+	{
+		for( ContainerPartEssentiaIOBus listener : this.listeners )
+		{
+			listener.setFilterSize( this.filterSize );
+		}
+	}
+
+	private void notifyListenersOfRedstoneControlledChange()
+	{
+		for( ContainerPartEssentiaIOBus listener : this.listeners )
+		{
+			listener.setRedstoneControlled( this.redstoneControlled );
+		}
+	}
+
+	private void notifyListenersOfRedstoneModeChange()
+	{
+		for( ContainerPartEssentiaIOBus listener : this.listeners )
+		{
+			listener.setRedstoneMode( this.redstoneMode );
+		}
+
+	}
+
+	private void resizeAvailableArray()
+	{
+		// Resize the available slots
+		this.availableFilterSlots = new int[1 + ( this.filterSize * 4 )];
+
+		// Add the base slot
+		this.availableFilterSlots[0] = AEPartEssentiaIO.BASE_SLOT_INDEX;
+
+		if( this.filterSize < 2 )
+		{
+			// Reset tier 2 slots
+			for( int i = 0; i < AEPartEssentiaIO.TIER2_INDEXS.length; i++ )
+			{
+				this.filteredAspects.set( AEPartEssentiaIO.TIER2_INDEXS[i], null );
+			}
+
+			if( this.filterSize < 1 )
+			{
+				// Reset tier 1 slots
+				for( int i = 0; i < AEPartEssentiaIO.TIER1_INDEXS.length; i++ )
+				{
+					this.filteredAspects.set( AEPartEssentiaIO.TIER1_INDEXS[i], null );
+				}
+			}
+			else
+			{
+				// Tier 1 slots
+				System.arraycopy( AEPartEssentiaIO.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
+			}
+		}
+		else
+		{
+			// Add both
+			System.arraycopy( AEPartEssentiaIO.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
+			System.arraycopy( AEPartEssentiaIO.TIER2_INDEXS, 0, this.availableFilterSlots, 5, 4 );
+		}
 	}
 
 	private boolean takePowerFromNetwork( int essentiaAmount, Actionable mode )
@@ -309,6 +367,49 @@ public abstract class AEPartEssentiaIO
 		return true;
 	}
 
+	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
+	{
+		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
+
+		if( itemAspect != null )
+		{
+			// Are we already filtering this aspect?
+			if( this.filteredAspects.contains( itemAspect ) )
+			{
+				return true;
+			}
+
+			// Add to the first open slot
+			for( int avalibleIndex = 0; avalibleIndex < this.availableFilterSlots.length; avalibleIndex++ )
+			{
+				int filterIndex = this.availableFilterSlots[avalibleIndex];
+
+				// Is this space empty?
+				if( this.filteredAspects.get( filterIndex ) == null )
+				{
+					// Is this server side?
+					if( EffectiveSide.isServerSide() )
+					{
+						// Set the filter
+						this.setAspect( filterIndex, itemAspect, player );
+					}
+
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public void addListener( ContainerPartEssentiaIOBus container )
+	{
+		if( !this.listeners.contains( container ) )
+		{
+			this.listeners.add( container );
+		}
+	}
+
 	public abstract boolean aspectTransferAllowed( Aspect aspect );
 
 	@Override
@@ -323,6 +424,41 @@ public abstract class AEPartEssentiaIO
 	public Object getClientGuiElement( EntityPlayer player )
 	{
 		return new GuiEssentiatIO( this, player );
+	}
+
+	@Override
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	{
+		// Were we wrenched?
+		if( wrenched )
+		{
+			// No drops
+			return;
+		}
+
+		// Add upgrades to drops
+		for( int slotIndex = 0; slotIndex < AEPartEssentiaIO.UPGRADE_INVENTORY_SIZE; slotIndex++ )
+		{
+			// Get the upgrade card in this slot
+			ItemStack slotStack = this.upgradeInventory.getStackInSlot( slotIndex );
+
+			// Is it not null?
+			if( ( slotStack != null ) && ( slotStack.stackSize > 0 ) )
+			{
+				// Add to the drops
+				drops.add( slotStack );
+			}
+		}
+	}
+
+	/**
+	 * Determines how much power the part takes for just
+	 * existing.
+	 */
+	@Override
+	public double getIdlePowerUsage()
+	{
+		return AEPartEssentiaIO.IDLE_POWER_DRAIN;
 	}
 
 	@Override
@@ -372,6 +508,43 @@ public abstract class AEPartEssentiaIO
 		}
 	}
 
+	/**
+	 * Called when a player has clicked the redstone button in the gui.
+	 * 
+	 * @param player
+	 */
+	public void onClientRequestChangeRedstoneMode( EntityPlayer player )
+	{
+		// Get the current ordinal, and increment it
+		int nextOrdinal = this.redstoneMode.ordinal() + 1;
+
+		// Bounds check
+		if( nextOrdinal >= AEPartEssentiaIO.REDSTONE_MODES.length )
+		{
+			nextOrdinal = 0;
+		}
+
+		// Set the mode
+		this.redstoneMode = AEPartEssentiaIO.REDSTONE_MODES[nextOrdinal];
+
+		// Notify listeners
+		this.notifyListenersOfRedstoneModeChange();
+	}
+
+	/**
+	 * Called when a client gui is requesting a full update.
+	 * 
+	 * @param player
+	 */
+	public void onClientRequestFullUpdate( EntityPlayer player )
+	{
+		// Set the filter list
+		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
+
+		// Set the state of the bus
+		new PacketClientEssentiaIOBus().createFullUpdate( player, this.redstoneMode, this.filterSize, this.redstoneControlled ).sendPacketToPlayer();
+	}
+
 	@Override
 	public void onInventoryChanged( IInventory sourceInventory )
 	{
@@ -389,15 +562,15 @@ public abstract class AEPartEssentiaIO
 
 			if( slotStack != null )
 			{
-				if( aeMaterals.materialCardCapacity.sameAs( slotStack ) )
+				if( aeMaterals.materialCardCapacity.sameAsStack( slotStack ) )
 				{
 					this.filterSize++ ;
 				}
-				else if( aeMaterals.materialCardRedstone.sameAs( slotStack ) )
+				else if( aeMaterals.materialCardRedstone.sameAsStack( slotStack ) )
 				{
 					this.redstoneControlled = true;
 				}
-				else if( aeMaterals.materialCardSpeed.sameAs( slotStack ) )
+				else if( aeMaterals.materialCardSpeed.sameAsStack( slotStack ) )
 				{
 					this.upgradeSpeedCount++ ;
 				}
@@ -409,7 +582,7 @@ public abstract class AEPartEssentiaIO
 		{
 			this.resizeAvailableArray();
 		}
-		
+
 		// Is this client side?
 		if( EffectiveSide.isClientSide() )
 		{
@@ -419,77 +592,6 @@ public abstract class AEPartEssentiaIO
 		this.notifyListenersOfFilterSizeChange();
 
 		this.notifyListenersOfRedstoneControlledChange();
-	}
-
-	private void notifyListenersOfRedstoneControlledChange()
-	{
-		for( ContainerPartEssentiaIOBus listener : this.listeners )
-		{
-			listener.setRedstoneControlled( this.redstoneControlled );
-		}
-	}
-
-	private void notifyListenersOfFilterSizeChange()
-	{
-		for( ContainerPartEssentiaIOBus listener : this.listeners )
-		{
-			listener.setFilterSize( this.filterSize );
-		}
-	}
-
-	private void notifyListenersOfRedstoneModeChange()
-	{
-		for( ContainerPartEssentiaIOBus listener : this.listeners )
-		{
-			listener.setRedstoneMode( this.redstoneMode );
-		}
-
-	}
-	
-	private void notifyListenersOfFilterAspectChange()
-	{
-		for( ContainerPartEssentiaIOBus listener : this.listeners )
-		{
-			listener.setFilteredAspect( this.filteredAspects );
-		}
-	}
-
-	private void resizeAvailableArray()
-	{
-		// Resize the available slots
-		this.availableFilterSlots = new int[1 + ( this.filterSize * 4 )];
-
-		// Add the base slot
-		this.availableFilterSlots[0] = AEPartEssentiaIO.BASE_SLOT_INDEX;
-
-		if( this.filterSize < 2 )
-		{
-			// Reset tier 2 slots
-			for( int i = 0; i < AEPartEssentiaIO.TIER2_INDEXS.length; i++ )
-			{
-				this.filteredAspects.set( AEPartEssentiaIO.TIER2_INDEXS[i], null );
-			}
-
-			if( this.filterSize < 1 )
-			{
-				// Reset tier 1 slots
-				for( int i = 0; i < AEPartEssentiaIO.TIER1_INDEXS.length; i++ )
-				{
-					this.filteredAspects.set( AEPartEssentiaIO.TIER1_INDEXS[i], null );
-				}
-			}
-			else
-			{
-				// Tier 1 slots
-				System.arraycopy( AEPartEssentiaIO.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
-			}
-		}
-		else
-		{
-			// Add both
-			System.arraycopy( AEPartEssentiaIO.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
-			System.arraycopy( AEPartEssentiaIO.TIER2_INDEXS, 0, this.availableFilterSlots, 5, 4 );
-		}
 	}
 
 	@Override
@@ -538,6 +640,39 @@ public abstract class AEPartEssentiaIO
 	}
 
 	/**
+	 * Called client-side to keep the client-side part in sync
+	 * with the server-side part. This aids in keeping the
+	 * gui in sync even in high network lag enviroments.
+	 * 
+	 * @param filteredAspects
+	 */
+	@SideOnly(Side.CLIENT)
+	public void receiveFilterList( List<Aspect> filteredAspects )
+	{
+		this.filteredAspects = filteredAspects;
+	}
+
+	/**
+	 * Called client-side to keep the client-side part in sync
+	 * with the server-side part. This aids in keeping the
+	 * gui in sync even in high network lag enviroments.
+	 * 
+	 * @param filterSize
+	 */
+	@SideOnly(Side.CLIENT)
+	public void receiveFilterSize( byte filterSize )
+	{
+		this.filterSize = filterSize;
+
+		this.resizeAvailableArray();
+	}
+
+	public void removeListener( ContainerPartEssentiaIOBus container )
+	{
+		this.listeners.remove( container );
+	}
+
+	/**
 	 * Called when the internal inventory changes.
 	 */
 	@Override
@@ -546,49 +681,12 @@ public abstract class AEPartEssentiaIO
 		this.host.markForSave();
 	}
 
-	/**
-	 * Called when a player has clicked the redstone button in the gui.
-	 * 
-	 * @param player
-	 */
-	public void onClientRequestChangeRedstoneMode( EntityPlayer player )
-	{
-		// Get the current ordinal, and increment it
-		int nextOrdinal = this.redstoneMode.ordinal() + 1;
-
-		// Bounds check
-		if( nextOrdinal >= AEPartEssentiaIO.REDSTONE_MODES.length )
-		{
-			nextOrdinal = 0;
-		}
-
-		// Set the mode
-		this.redstoneMode = AEPartEssentiaIO.REDSTONE_MODES[nextOrdinal];
-
-		// Notify listeners
-		this.notifyListenersOfRedstoneModeChange();
-	}
-
-	/**
-	 * Called when a client gui is requesting a full update.
-	 * 
-	 * @param player
-	 */
-	public void onClientRequestFullUpdate( EntityPlayer player )
-	{
-		// Set the filter list
-		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
-
-		// Set the state of the bus
-		new PacketClientEssentiaIOBus().createFullUpdate( player, this.redstoneMode, this.filterSize, this.redstoneControlled ).sendPacketToPlayer();
-	}
-
 	@Override
 	public final void setAspect( int index, Aspect aspect, EntityPlayer player )
 	{
 		// Set the filter
 		this.filteredAspects.set( index, aspect );
-		
+
 		// Update the listeners
 		this.notifyListenersOfFilterAspectChange();
 	}
@@ -651,104 +749,6 @@ public abstract class AEPartEssentiaIO
 	public final void writeToStream( ByteBuf stream ) throws IOException
 	{
 		super.writeToStream( stream );
-	}
-
-	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
-	{
-		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
-
-		if( itemAspect != null )
-		{
-			// Are we already filtering this aspect?
-			if( this.filteredAspects.contains( itemAspect ) )
-			{
-				return true;
-			}
-
-			// Add to the first open slot
-			for( int avalibleIndex = 0; avalibleIndex < this.availableFilterSlots.length; avalibleIndex++ )
-			{
-				int filterIndex = this.availableFilterSlots[avalibleIndex];
-
-				// Is this space empty?
-				if( this.filteredAspects.get( filterIndex ) == null )
-				{
-					// Is this server side?
-					if( EffectiveSide.isServerSide() )
-					{
-						// Set the filter
-						this.setAspect( filterIndex, itemAspect, player );
-					}
-
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Called client-side to keep the client-side part in sync
-	 * with the server-side part. This aids in keeping the
-	 * gui in sync even in high network lag enviroments.
-	 * 
-	 * @param filteredAspects
-	 */
-	@SideOnly(Side.CLIENT)
-	public void receiveFilterList( List<Aspect> filteredAspects )
-	{
-		this.filteredAspects = filteredAspects;
-	}
-
-	/**
-	 * Called client-side to keep the client-side part in sync
-	 * with the server-side part. This aids in keeping the
-	 * gui in sync even in high network lag enviroments.
-	 * 
-	 * @param filterSize
-	 */
-	@SideOnly(Side.CLIENT)
-	public void receiveFilterSize( byte filterSize )
-	{
-		this.filterSize = filterSize;
-
-		this.resizeAvailableArray();
-	}
-
-	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
-	{
-		// Were we wrenched?
-		if( wrenched )
-		{
-			// No drops
-			return;
-		}
-
-		// Add upgrades to drops
-		for( int slotIndex = 0; slotIndex < AEPartEssentiaIO.UPGRADE_INVENTORY_SIZE; slotIndex++ )
-		{
-			// Get the upgrade card in this slot
-			ItemStack slotStack = this.upgradeInventory.getStackInSlot( slotIndex );
-
-			// Is it not null?
-			if( ( slotStack != null ) && ( slotStack.stackSize > 0 ) )
-			{
-				// Add to the drops
-				drops.add( slotStack );
-			}
-		}
-	}
-
-	/**
-	 * Determines how much power the part takes for just
-	 * existing.
-	 */
-	@Override
-	public double getIdlePowerUsage()
-	{
-		return AEPartEssentiaIO.IDLE_POWER_DRAIN;
 	}
 
 }

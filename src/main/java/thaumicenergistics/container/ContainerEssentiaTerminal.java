@@ -84,82 +84,6 @@ public class ContainerEssentiaTerminal
 	}
 
 	/**
-	 * Gets the current list from the AE monitor, as well as the current
-	 * sorting mode, and sends it to the client.
-	 */
-	@Override
-	public void onClientRequestFullUpdate()
-	{
-		// Call super
-		super.onClientRequestFullUpdate();
-		
-		// Send the sorting mode
-		this.onSortingModeChanged( this.terminal.getSortingMode() );
-
-		// Send the aspect list
-		if( this.monitor != null )
-		{
-			new PacketClientEssentiaTerminal().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
-		}
-	}
-
-	/**
-	 * Removes this container from the terminal.
-	 */
-	@Override
-	public void onContainerClosed( EntityPlayer player )
-	{
-		super.onContainerClosed( player );
-
-		if( EffectiveSide.isServerSide() && ( this.terminal != null ) )
-		{
-			this.terminal.removeContainer( this );
-		}
-	}
-	
-	/**
-	 * Forwards the change to the client.
-	 */
-	@Override
-	public void postAspectStackChange( AspectStack change )
-	{
-		// Send the change
-		new PacketClientEssentiaTerminal().createListChanged( this.player, change ).sendPacketToPlayer();
-	}
-
-	/**
-	 * Updates the selected aspect and gui.
-	 */
-	@Override
-	public void onReceiveSelectedAspect( Aspect selectedAspect )
-	{
-		// Set the selected aspect
-		this.selectedAspect = selectedAspect;
-
-		// Is this client side?
-		if( EffectiveSide.isClientSide() )
-		{
-			// Update the gui
-			this.guiBase.updateSelectedAspect();
-		}
-		else
-		{
-			// Send the change back to the client
-			new PacketClientEssentiaTerminal().createSelectedAspectUpdate( this.player, this.selectedAspect ).sendPacketToPlayer();
-		}
-	}
-
-	/**
-	 * Called when the user has clicked on an aspect.
-	 * Sends that change to the server for validation.
-	 */
-	@Override
-	public void setSelectedAspect( Aspect selectedAspect )
-	{
-		new PacketServerEssentiaTerminal().createUpdateSelectedAspect( this.player, selectedAspect ).sendPacketToServer();
-	}
-
-	/**
 	 * Checks if there is any work to perform.
 	 * If there is it does so.
 	 */
@@ -211,12 +135,88 @@ public class ContainerEssentiaTerminal
 	}
 
 	/**
+	 * Gets the current list from the AE monitor, as well as the current
+	 * sorting mode, and sends it to the client.
+	 */
+	@Override
+	public void onClientRequestFullUpdate()
+	{
+		// Call super
+		super.onClientRequestFullUpdate();
+
+		// Send the sorting mode
+		this.onSortingModeChanged( this.terminal.getSortingMode() );
+
+		// Send the aspect list
+		if( this.monitor != null )
+		{
+			new PacketClientEssentiaTerminal().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
+		}
+	}
+
+	/**
+	 * Removes this container from the terminal.
+	 */
+	@Override
+	public void onContainerClosed( EntityPlayer player )
+	{
+		super.onContainerClosed( player );
+
+		if( EffectiveSide.isServerSide() && ( this.terminal != null ) )
+		{
+			this.terminal.removeContainer( this );
+		}
+	}
+
+	/**
+	 * Updates the selected aspect and gui.
+	 */
+	@Override
+	public void onReceiveSelectedAspect( Aspect selectedAspect )
+	{
+		// Set the selected aspect
+		this.selectedAspect = selectedAspect;
+
+		// Is this client side?
+		if( EffectiveSide.isClientSide() )
+		{
+			// Update the gui
+			this.guiBase.updateSelectedAspect();
+		}
+		else
+		{
+			// Send the change back to the client
+			new PacketClientEssentiaTerminal().createSelectedAspectUpdate( this.player, this.selectedAspect ).sendPacketToPlayer();
+		}
+	}
+
+	/**
 	 * Called from the AE part when it's sorting mode has changed
 	 */
 	public void onSortingModeChanged( ComparatorMode sortingMode )
 	{
 		// Inform the client
 		new PacketClientEssentiaTerminal().createSortModeUpdate( this.player, sortingMode ).sendPacketToPlayer();
+	}
+
+	/**
+	 * Forwards the change to the client.
+	 */
+	@Override
+	public void postAspectStackChange( AspectStack change )
+	{
+		// Send the change
+		new PacketClientEssentiaTerminal().createListChanged( this.player, change ).sendPacketToPlayer();
+	}
+
+	/**
+	 * Called when the user has clicked on an aspect.
+	 * Sends that change to the server for validation.
+	 */
+	@Override
+	public void setSelectedAspect( Aspect selectedAspect )
+	{
+		new PacketServerEssentiaTerminal().createUpdateSelectedAspect( this.player, selectedAspect ).sendPacketToServer();
 	}
 
 }

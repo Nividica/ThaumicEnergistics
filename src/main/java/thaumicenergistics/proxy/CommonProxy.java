@@ -1,7 +1,5 @@
 package thaumicenergistics.proxy;
 
-import appeng.api.AEApi;
-import appeng.api.movable.IMovableRegistry;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.registries.ItemEnum;
@@ -10,6 +8,8 @@ import thaumicenergistics.registries.ResearchRegistry;
 import thaumicenergistics.registries.TileEntities;
 import thaumicenergistics.tileentities.TileEssentiaProvider;
 import thaumicenergistics.tileentities.TileInfusionProvider;
+import appeng.api.AEApi;
+import appeng.api.movable.IMovableRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy
@@ -32,20 +32,6 @@ public class CommonProxy
 	{
 		GaseousEssentia.registerGases();
 	}
-	
-	/**
-	 * Adds this mods tile entities to the AppEng2 SpatialIO whitelist 
-	 */
-	public void registerSpatialIOMovables()
-	{
-		IMovableRegistry movableRegistry = AEApi.instance().registries().moveable();
-
-		// Add essentia provider
-		movableRegistry.whiteListTileEntity( TileEssentiaProvider.class );
-		
-		// Add infusion provider
-		movableRegistry.whiteListTileEntity( TileInfusionProvider.class );
-	}
 
 	/**
 	 * Registers this mods items with the game.
@@ -67,7 +53,14 @@ public class CommonProxy
 	{
 		RecipeRegistry.registerRecipies();
 	}
-	
+
+	/**
+	 * Used my client proxy
+	 */
+	public void registerRenderers()
+	{
+	}
+
 	/**
 	 * Registers this mods research with Thaumcraft.
 	 */
@@ -77,10 +70,17 @@ public class CommonProxy
 	}
 
 	/**
-	 * Used my client proxy
+	 * Adds this mods tile entities to the AppEng2 SpatialIO whitelist
 	 */
-	public void registerRenderers()
+	public void registerSpatialIOMovables()
 	{
+		IMovableRegistry movableRegistry = AEApi.instance().registries().moveable();
+
+		// Add essentia provider
+		movableRegistry.whiteListTileEntity( TileEssentiaProvider.class );
+
+		// Add infusion provider
+		movableRegistry.whiteListTileEntity( TileInfusionProvider.class );
 	}
 
 	/**

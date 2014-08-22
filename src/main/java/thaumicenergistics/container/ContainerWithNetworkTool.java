@@ -96,14 +96,14 @@ public abstract class ContainerWithNetworkTool
 			this.addSlotToContainer( upgradeSlot );
 
 			// Check first
-			if ( slotIndex == 0 )
+			if( slotIndex == 0 )
 			{
 				this.firstUpgradeSlot = upgradeSlot.slotNumber;
 			}
 		}
 
 		// Set last
-		if ( upgradeSlot != null )
+		if( upgradeSlot != null )
 		{
 			this.lastUpgradeSlot = upgradeSlot.slotNumber;
 		}
@@ -118,7 +118,7 @@ public abstract class ContainerWithNetworkTool
 			ItemStack stack = playerInventory.getStackInSlot( slotIndex );
 
 			// Is it the network tool?
-			if ( ( stack != null ) && ( stack.isItemEqual( AEApi.instance().items().itemNetworkTool.stack( 1 ) ) ) )
+			if( ( stack != null ) && ( stack.isItemEqual( AEApi.instance().items().itemNetworkTool.stack( 1 ) ) ) )
 			{
 				// Get the gui item for the tool
 				IGuiItem guiItem = (IGuiItem)stack.getItem();
@@ -146,7 +146,7 @@ public abstract class ContainerWithNetworkTool
 						this.addSlotToContainer( toolSlot );
 
 						// Check first
-						if ( slotToolIndex == 0 )
+						if( slotToolIndex == 0 )
 						{
 							this.firstToolSlotNumber = toolSlot.slotNumber;
 						}
@@ -154,7 +154,7 @@ public abstract class ContainerWithNetworkTool
 				}
 
 				// Set last
-				if ( toolSlot != null )
+				if( toolSlot != null )
 				{
 					this.lastToolSlotNumber = toolSlot.slotNumber;
 				}
@@ -176,15 +176,15 @@ public abstract class ContainerWithNetworkTool
 	 */
 	protected boolean mergeSlotWithNetworkTool( ItemStack slotStack )
 	{
-		if ( this.hasNetworkTool )
+		if( this.hasNetworkTool )
 		{
 			// Is the item an upgrade card?
-			if ( !( slotStack.getItem() instanceof IUpgradeModule ) )
+			if( !( slotStack.getItem() instanceof IUpgradeModule ) )
 			{
 				// Not an upgrade module
 				return false;
 			}
-			
+
 			return this.mergeItemStack( slotStack, this.firstToolSlotNumber, this.lastToolSlotNumber + 1, false );
 		}
 
@@ -200,7 +200,7 @@ public abstract class ContainerWithNetworkTool
 	protected boolean mergeSlotWithUpgrades( ItemStack slotStack )
 	{
 		// Is the item an upgrade card?
-		if ( !( slotStack.getItem() instanceof IUpgradeModule ) )
+		if( !( slotStack.getItem() instanceof IUpgradeModule ) )
 		{
 			// Not an upgrade module
 			return false;
@@ -215,10 +215,10 @@ public abstract class ContainerWithNetworkTool
 			Slot upgradeSlot = (Slot)this.inventorySlots.get( index );
 
 			// Is the slot empty?
-			if ( ( upgradeSlot != null ) && ( !upgradeSlot.getHasStack() ) )
+			if( ( upgradeSlot != null ) && ( !upgradeSlot.getHasStack() ) )
 			{
 				// Can the slot accept this item?
-				if ( upgradeSlot.isItemValid( slotStack ) )
+				if( upgradeSlot.isItemValid( slotStack ) )
 				{
 					// Create an itemstack of size 1
 					ItemStack upgradeStack = slotStack.copy();
@@ -234,7 +234,7 @@ public abstract class ContainerWithNetworkTool
 					didMerge = true;
 
 					// Is the slot stack at zero?
-					if ( slotStack.stackSize == 0 )
+					if( slotStack.stackSize == 0 )
 					{
 						// Break the loop
 						break;
@@ -262,6 +262,11 @@ public abstract class ContainerWithNetworkTool
 		return ( slotNumber >= this.firstUpgradeSlot ) && ( slotNumber <= this.lastUpgradeSlot );
 	}
 
+	public boolean hasNetworkTool()
+	{
+		return this.hasNetworkTool;
+	}
+
 	// Note: mergeItemStack args: ItemStack stack, int slotStart, int slotEnd(exclusive), boolean reverse
 	@Override
 	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
@@ -273,24 +278,24 @@ public abstract class ContainerWithNetworkTool
 		boolean didMerge = false;
 
 		// Did we get a slot, and does it have a valid item?
-		if ( ( slot != null ) && ( slot.getHasStack() ) )
+		if( ( slot != null ) && ( slot.getHasStack() ) )
 		{
 			// Get the slots item stack
 			ItemStack slotStack = slot.getStack();
 
 			// Was the slot clicked in the player or hotbar inventory?
-			if ( this.slotClickedWasInPlayerInventory( slotNumber ) || this.slotClickedWasInHotbarInventory( slotNumber ) )
+			if( this.slotClickedWasInPlayerInventory( slotNumber ) || this.slotClickedWasInHotbarInventory( slotNumber ) )
 			{
 				// Attempt to merge with the upgrade inventory
 				didMerge = this.mergeSlotWithUpgrades( slotStack );
 
 				// Did we merge?
-				if ( !didMerge )
+				if( !didMerge )
 				{
 					// Attempt to merge with the network tool
 					didMerge = this.mergeSlotWithNetworkTool( slotStack );
 				}
-				
+
 				// Did we merge?
 				if( !didMerge )
 				{
@@ -299,26 +304,26 @@ public abstract class ContainerWithNetworkTool
 				}
 			}
 			// Was the slot clicked in the upgrades?
-			else if ( this.slotClickedWasInUpgrades( slotNumber ) )
+			else if( this.slotClickedWasInUpgrades( slotNumber ) )
 			{
 				// Attempt to merge with the network tool
 				didMerge = this.mergeSlotWithNetworkTool( slotStack );
 
 				// Did we merge with the network tool?
-				if ( !didMerge )
+				if( !didMerge )
 				{
 					// Attempt to merge with the player inventory
 					didMerge = this.mergeSlotWithPlayerInventory( slotStack );
 				}
 			}
 			// Was the slot clicked in the network tool?
-			else if ( this.hasNetworkTool && this.slotClickedWasInNetworkTool( slotNumber ) )
+			else if( this.hasNetworkTool && this.slotClickedWasInNetworkTool( slotNumber ) )
 			{
 				// Attempt to merge with the upgrade inventory
 				didMerge = this.mergeSlotWithUpgrades( slotStack );
 
 				// Did we merge with the upgrades?
-				if ( !didMerge )
+				if( !didMerge )
 				{
 					// Attempt to merge with the player inventory
 					didMerge = this.mergeSlotWithPlayerInventory( slotStack );
@@ -326,13 +331,13 @@ public abstract class ContainerWithNetworkTool
 			}
 
 			// Were we able to merge?
-			if ( !didMerge )
+			if( !didMerge )
 			{
 				return null;
 			}
 
 			// Did the merger drain the stack?
-			if ( slotStack.stackSize == 0 )
+			if( slotStack.stackSize == 0 )
 			{
 				// Set the slot to have no item
 				slot.putStack( null );
@@ -344,10 +349,5 @@ public abstract class ContainerWithNetworkTool
 
 		// Done ( returning null prevents retrySlotClick from being called )
 		return null;
-	}
-	
-	public boolean hasNetworkTool()
-	{
-		return this.hasNetworkTool;
 	}
 }

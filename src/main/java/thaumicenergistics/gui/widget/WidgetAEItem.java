@@ -45,16 +45,6 @@ public class WidgetAEItem
 		this.aeItemRenderer = aeItemRenderer;
 	}
 
-	/**
-	 * Set the itemstack this widget represents
-	 * 
-	 * @param itemStack
-	 */
-	public void setItemStack( IAEItemStack itemStack )
-	{
-		this.aeItemStack = itemStack;
-	}
-
 	@Override
 	public void drawTooltip( int mouseX, int mouseY )
 	{
@@ -71,7 +61,7 @@ public class WidgetAEItem
 	public void drawWidget()
 	{
 		if( this.aeItemStack != null )
-		{	
+		{
 			// Set the z level
 			this.zLevel = 2.0F;
 			this.aeItemRenderer.zLevel = 2.0F;
@@ -80,8 +70,8 @@ public class WidgetAEItem
 			this.aeItemRenderer.aestack = this.aeItemStack;
 
 			// Draw the item
-			this.aeItemRenderer.renderItemAndEffectIntoGUI( WidgetAEItem.FONT_RENDERER, WidgetAEItem.TEXTURE_MANAGER, this.aeItemStack.getItemStack(),
-				this.xPosition + 1, this.yPosition + 1 );
+			this.aeItemRenderer.renderItemAndEffectIntoGUI( WidgetAEItem.FONT_RENDERER, WidgetAEItem.TEXTURE_MANAGER,
+				this.aeItemStack.getItemStack(), this.xPosition + 1, this.yPosition + 1 );
 
 			// Draw the amount
 			this.aeItemRenderer.renderItemOverlayIntoGUI( WidgetAEItem.FONT_RENDERER, WidgetAEItem.TEXTURE_MANAGER, this.aeItemStack.getItemStack(),
@@ -94,19 +84,30 @@ public class WidgetAEItem
 
 	}
 
-	@Override
-	public void mouseClicked()
-	{
-		// Unused
-	}
-	
 	/**
 	 * Returns the itemstack this widget represents.
+	 * 
 	 * @return IAEItemstack if the widget has one, null otherwise.
 	 */
 	public IAEItemStack getItemStack()
 	{
 		return this.aeItemStack;
+	}
+
+	@Override
+	public void mouseClicked()
+	{
+		// Unused
+	}
+
+	/**
+	 * Set the itemstack this widget represents
+	 * 
+	 * @param itemStack
+	 */
+	public void setItemStack( IAEItemStack itemStack )
+	{
+		this.aeItemStack = itemStack;
 	}
 
 }

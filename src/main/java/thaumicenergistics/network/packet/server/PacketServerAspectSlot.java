@@ -1,7 +1,7 @@
 package thaumicenergistics.network.packet.server;
 
-import net.minecraft.entity.player.EntityPlayer;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.AbstractPacket;
@@ -58,7 +58,7 @@ public class PacketServerAspectSlot
 		{
 			case PacketServerAspectSlot.MODE_SET_ASPECT:
 				// Read the part
-				this.part = ( (IAspectSlotPart) AbstractPacket.readPart( stream ) );
+				this.part = ( (IAspectSlotPart)AbstractPacket.readPart( stream ) );
 
 				// Read the index
 				this.index = stream.readInt();
@@ -76,7 +76,7 @@ public class PacketServerAspectSlot
 		{
 			case PacketServerAspectSlot.MODE_SET_ASPECT:
 				// Write the part
-				AbstractPacket.writePart( (AEPartBase) this.part, stream );
+				AbstractPacket.writePart( (AEPartBase)this.part, stream );
 
 				// Write the index
 				stream.writeInt( this.index );

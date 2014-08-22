@@ -12,6 +12,7 @@ public class ButtonClearCraftingGrid
 
 	/**
 	 * Creates the button
+	 * 
 	 * @param ID
 	 * @param xPosition
 	 * @param yPosition

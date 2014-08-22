@@ -51,33 +51,6 @@ public class RecipeRegistry
 	public static InfusionRecipe INFUSION_PROVIDER;
 	public static InfusionRecipe ESSENTIA_PROVIDER;
 
-	/**
-	 * Register my recipes
-	 */
-	public static void registerRecipies()
-	{
-
-		// Cache the AE item collections
-		Materials aeMaterials = AEApi.instance().materials();
-		Blocks aeBlocks = AEApi.instance().blocks();
-		Parts aeParts = AEApi.instance().parts();
-
-		// Register materials
-		RecipeRegistry.registerMaterials( aeMaterials );
-
-		// Register ME cell components
-		RecipeRegistry.registerComponents( aeMaterials, aeBlocks );
-
-		// Register ME cells
-		RecipeRegistry.registerMECells();
-
-		// Register AE parts
-		RecipeRegistry.registerParts( aeParts, aeMaterials );
-
-		// Register the providers
-		RecipeRegistry.registerProviders( aeBlocks );
-	}
-
 	private static void registerComponents( Materials aeMaterials, Blocks aeBlocks )
 	{
 		// Thaumcraft items
@@ -148,6 +121,40 @@ public class RecipeRegistry
 							'G', QuartzGlass } );
 	}
 
+	private static void registerMaterials( Materials aeMaterials )
+	{
+		// Thaumcraft items
+		ItemStack EntropyShard = new ItemStack( ConfigItems.itemShard, 1, 5 );
+
+		ItemStack OrderShard = new ItemStack( ConfigItems.itemShard, 1, 4 );
+
+		ItemStack QuickSilver = new ItemStack( ConfigItems.itemResource, 1, 3 );
+
+		// AppEng items
+		ItemStack FormationCore = aeMaterials.materialFormationCore.stack( 1 );
+
+		ItemStack AnnihilationCore = aeMaterials.materialAnnihilationCore.stack( 1 );
+
+		// My items
+		ItemStack DiffusionCore = ItemMaterial.MaterialTypes.DIFFUSION_CORE.getItemStack();
+
+		ItemStack CoalescenceCore = ItemMaterial.MaterialTypes.COALESCENCE_CORE.getItemStack();
+
+		// Coalescence Core
+		AspectList coalescenceAspects = new AspectList();
+		coalescenceAspects.add( Aspect.WATER, 2 );
+		coalescenceAspects.add( Aspect.ORDER, 2 );
+		RecipeRegistry.MATERIAL_COALESCENCE_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
+			CoalescenceCore, coalescenceAspects, QuickSilver, OrderShard, FormationCore );
+
+		// Diffusion Core
+		AspectList diffusionAspects = new AspectList();
+		diffusionAspects.add( Aspect.WATER, 2 );
+		diffusionAspects.add( Aspect.ENTROPY, 2 );
+		RecipeRegistry.MATERIAL_DIFFUSION_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
+			DiffusionCore, diffusionAspects, QuickSilver, EntropyShard, AnnihilationCore );
+	}
+
 	private static void registerMECells()
 	{
 		// Minecraft items
@@ -213,45 +220,11 @@ public class RecipeRegistry
 		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_64K_SHAPELESS );
 	}
 
-	private static void registerMaterials( Materials aeMaterials )
-	{
-		// Thaumcraft items
-		ItemStack EntropyShard = new ItemStack( ConfigItems.itemShard, 1, 5 );
-
-		ItemStack OrderShard = new ItemStack( ConfigItems.itemShard, 1, 4 );
-
-		ItemStack QuickSilver = new ItemStack( ConfigItems.itemResource, 1, 3 );
-
-		// AppEng items
-		ItemStack FormationCore = aeMaterials.materialFormationCore.stack( 1 );
-
-		ItemStack AnnihilationCore = aeMaterials.materialAnnihilationCore.stack( 1 );
-
-		// My items
-		ItemStack DiffusionCore = ItemMaterial.MaterialTypes.DIFFUSION_CORE.getItemStack();
-
-		ItemStack CoalescenceCore = ItemMaterial.MaterialTypes.COALESCENCE_CORE.getItemStack();
-
-		// Coalescence Core
-		AspectList coalescenceAspects = new AspectList();
-		coalescenceAspects.add( Aspect.WATER, 2 );
-		coalescenceAspects.add( Aspect.ORDER, 2 );
-		RecipeRegistry.MATERIAL_COALESCENCE_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
-			CoalescenceCore, coalescenceAspects, QuickSilver, OrderShard, FormationCore );
-
-		// Diffusion Core
-		AspectList diffusionAspects = new AspectList();
-		diffusionAspects.add( Aspect.WATER, 2 );
-		diffusionAspects.add( Aspect.ENTROPY, 2 );
-		RecipeRegistry.MATERIAL_DIFFUSION_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
-			DiffusionCore, diffusionAspects, QuickSilver, EntropyShard, AnnihilationCore );
-	}
-
 	private static void registerParts( Parts aeParts, Materials aeMaterials )
 	{
 		// Minecraft items
 		String IronIngot = "ingotIron";
-		
+
 		ItemStack RedstoneTorch = new ItemStack( net.minecraft.init.Blocks.redstone_torch );
 
 		// AppEng items
@@ -277,7 +250,7 @@ public class RecipeRegistry
 		ItemStack ArcaneWorkTable = new ItemStack( ConfigBlocks.blockTable, 1, 15 );
 
 		ItemStack AspectFilter = new ItemStack( ConfigItems.itemResource, 1, 8 );
-		
+
 		ItemStack SalisMundus = new ItemStack( ConfigItems.itemResource, 1, 14 );
 
 		// My items
@@ -294,7 +267,7 @@ public class RecipeRegistry
 		ItemStack EssentiaTerminal = AEPartsEnum.EssentiaTerminal.getStack();
 
 		ItemStack ArcaneCraftingTerminal = AEPartsEnum.ArcaneCraftingTerminal.getStack();
-		
+
 		ItemStack EssentiaLevelEmitter = AEPartsEnum.EssentiaLevelEmitter.getStack();
 
 		// Item Groups		
@@ -344,13 +317,14 @@ public class RecipeRegistry
 		actAspectList.add( Aspect.WATER, 10 );
 		RecipeRegistry.PART_ARCANE_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.ARCANETERMINAL.getKey(),
 			ArcaneCraftingTerminal, actAspectList, METerminal, ArcaneWorkTable, CalculationProcessor );
-		
+
 		// Essentia level emitter
 		AspectList emitterAspectList = new AspectList();
 		emitterAspectList.add( Aspect.FIRE, 4 );
 		EssentiaLevelEmitter.stackSize = 4;
-		RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.ESSENTIATERMINAL.getKey(),
-			EssentiaLevelEmitter, emitterAspectList, CalculationProcessor, RedstoneTorch, SalisMundus );
+		RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
+			ResearchRegistry.ResearchTypes.ESSENTIATERMINAL.getKey(), EssentiaLevelEmitter, emitterAspectList, CalculationProcessor, RedstoneTorch,
+			SalisMundus );
 	}
 
 	private static void registerProviders( Blocks aeBlocks )
@@ -358,7 +332,8 @@ public class RecipeRegistry
 		// Thaumcraft items
 		ItemStack FilteredPipe = new ItemStack( ConfigBlocks.blockTube, 1, 3 );
 
-		ItemStack EssentiaMirrorOrJar = ( Config.allowMirrors ? new ItemStack( ConfigBlocks.blockMirror, 1, 6 ) : new ItemStack( ConfigBlocks.blockJar, 1, 0 ) );
+		ItemStack EssentiaMirrorOrJar = ( Config.allowMirrors ? new ItemStack( ConfigBlocks.blockMirror, 1, 6 ) : new ItemStack(
+						ConfigBlocks.blockJar, 1, 0 ) );
 
 		ItemStack SalisMundus = new ItemStack( ConfigItems.itemResource, 1, 14 );
 
@@ -399,8 +374,8 @@ public class RecipeRegistry
 		essentiaProviderList.add( Aspect.EXCHANGE, 16 );
 
 		// Essentia provider recipe items
-		ItemStack[] essentiaProviderRecipeItems = { FilteredPipe, SalisMundus, CoalescenceCore, WaterShard, FilteredPipe, SalisMundus, CoalescenceCore,
-						WaterShard };
+		ItemStack[] essentiaProviderRecipeItems = { FilteredPipe, SalisMundus, CoalescenceCore, WaterShard, FilteredPipe, SalisMundus,
+						CoalescenceCore, WaterShard };
 
 		// Create the essentia provider recipe
 		RecipeRegistry.ESSENTIA_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ESSENTIAPROVIDER.getKey(),
@@ -452,6 +427,33 @@ public class RecipeRegistry
 				}
 			}
 		}
+	}
+
+	/**
+	 * Register my recipes
+	 */
+	public static void registerRecipies()
+	{
+
+		// Cache the AE item collections
+		Materials aeMaterials = AEApi.instance().materials();
+		Blocks aeBlocks = AEApi.instance().blocks();
+		Parts aeParts = AEApi.instance().parts();
+
+		// Register materials
+		RecipeRegistry.registerMaterials( aeMaterials );
+
+		// Register ME cell components
+		RecipeRegistry.registerComponents( aeMaterials, aeBlocks );
+
+		// Register ME cells
+		RecipeRegistry.registerMECells();
+
+		// Register AE parts
+		RecipeRegistry.registerParts( aeParts, aeMaterials );
+
+		// Register the providers
+		RecipeRegistry.registerProviders( aeBlocks );
 	}
 
 }

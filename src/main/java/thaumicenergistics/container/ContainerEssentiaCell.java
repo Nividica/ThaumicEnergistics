@@ -115,111 +115,29 @@ public class ContainerEssentiaCell
 	}
 
 	/**
-	 * Gets the current list from the AE monitor and sends
-	 * it to the client.
-	 */
-	@Override
-	public void onClientRequestFullUpdate()
-	{
-		// Call super
-		super.onClientRequestFullUpdate();
-		
-		// Get the handler
-		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
-
-		// Did we get the handler?
-		if( cellHandler != null )
-		{
-			// Send the sorting mode
-			new PacketClientEssentiaCell().createSortModeUpdate( this.player, cellHandler.getSortingMode() ).sendPacketToPlayer();
-		}
-
-		// Send the list
-		if( this.monitor != null )
-		{
-			new PacketClientEssentiaCell().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
-		}
-	}
-
-	/**
-	 * Drops any items in the import and export inventory.
-	 */
-	@Override
-	public void onContainerClosed( EntityPlayer player )
-	{
-		super.onContainerClosed( player );
-
-		if( EffectiveSide.isServerSide() )
-		{
-			for( int i = 0; i < 2; i++ )
-			{
-				this.player.dropPlayerItemWithRandomChoice( ( (Slot)this.inventorySlots.get( i ) ).getStack(), false );
-			}
-		}
-	}
-
-	/**
-	 * Forwards the change to the client.
-	 */
-	@Override
-	public void postAspectStackChange( AspectStack change )
-	{
-		// Send the change
-		new PacketClientEssentiaCell().createListChanged( this.player, change ).sendPacketToPlayer();
-	}
-
-	/**
-	 * Updates the selected aspect, aspect stack and gui.
-	 */
-	@Override
-	public void onReceiveSelectedAspect( Aspect selectedAspect )
-	{
-		this.selectedAspect = selectedAspect;
-
-		if( this.selectedAspect != null )
-		{
-			for( AspectStack stack : this.aspectStackList )
-			{
-				if( ( stack != null ) && ( stack.aspect == this.selectedAspect ) )
-				{
-					this.selectedAspectStack = stack;
-
-					break;
-				}
-			}
-		}
-
-		// Is this the client?
-		if( EffectiveSide.isClientSide() )
-		{
-			// Update the gui
-			this.guiBase.updateSelectedAspect();
-		}
-		else
-		{
-			// Update the client
-			new PacketClientEssentiaCell().createSelectedAspectUpdate( this.player, this.selectedAspect ).sendPacketToPlayer();
-		}
-	}
-
-	/**
-	 * Gets the currently selected aspect.
+	 * Gets a handler for the essentia cell.
 	 * 
 	 * @return
 	 */
-	public AspectStack getSelectedAspectStack()
+	private HandlerItemEssentiaCell getCellHandler()
 	{
-		return this.selectedAspectStack;
-	}
+		// Ensure we have a host
+		if( this.hostChest == null )
+		{
+			return null;
+		}
 
-	/**
-	 * Called when the user has clicked on an aspect.
-	 * Sends that change to the server for validation.
-	 */
-	@Override
-	public void setSelectedAspect( Aspect selectedAspect )
-	{
-		new PacketServerEssentiaCell().createUpdateSelectedAspect( this.player, selectedAspect ).sendPacketToServer();
+		// Get the cell
+		ItemStack essentiaCell = this.hostChest.getStackInSlot( 1 );
+
+		// Ensure we have the cell
+		if( ( essentiaCell == null ) || !( essentiaCell.getItem() instanceof ItemEssentiaCell ) )
+		{
+			return null;
+		}
+
+		// Get the handler
+		return new HandlerItemEssentiaCell( essentiaCell );
 	}
 
 	/**
@@ -262,13 +180,40 @@ public class ContainerEssentiaCell
 	}
 
 	/**
-	 * Called when the player has clicked the sorting mode button.
+	 * Gets the currently selected aspect.
 	 * 
-	 * @param sortingMode
+	 * @return
 	 */
-	public void sendSortModeChangeRequest( ComparatorMode sortingMode )
+	public AspectStack getSelectedAspectStack()
 	{
-		new PacketServerEssentiaCell().createRequestChangeSortMode( this.player, sortingMode ).sendPacketToServer();
+		return this.selectedAspectStack;
+	}
+
+	/**
+	 * Gets the current list from the AE monitor and sends
+	 * it to the client.
+	 */
+	@Override
+	public void onClientRequestFullUpdate()
+	{
+		// Call super
+		super.onClientRequestFullUpdate();
+
+		// Get the handler
+		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
+
+		// Did we get the handler?
+		if( cellHandler != null )
+		{
+			// Send the sorting mode
+			new PacketClientEssentiaCell().createSortModeUpdate( this.player, cellHandler.getSortingMode() ).sendPacketToPlayer();
+		}
+
+		// Send the list
+		if( this.monitor != null )
+		{
+			new PacketClientEssentiaCell().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
+		}
 	}
 
 	/**
@@ -289,28 +234,83 @@ public class ContainerEssentiaCell
 	}
 
 	/**
-	 * Gets a handler for the essentia cell.
-	 * 
-	 * @return
+	 * Drops any items in the import and export inventory.
 	 */
-	private HandlerItemEssentiaCell getCellHandler()
+	@Override
+	public void onContainerClosed( EntityPlayer player )
 	{
-		// Ensure we have a host
-		if( this.hostChest == null )
+		super.onContainerClosed( player );
+
+		if( EffectiveSide.isServerSide() )
 		{
-			return null;
+			for( int i = 0; i < 2; i++ )
+			{
+				this.player.dropPlayerItemWithRandomChoice( ( (Slot)this.inventorySlots.get( i ) ).getStack(), false );
+			}
+		}
+	}
+
+	/**
+	 * Updates the selected aspect, aspect stack and gui.
+	 */
+	@Override
+	public void onReceiveSelectedAspect( Aspect selectedAspect )
+	{
+		this.selectedAspect = selectedAspect;
+
+		if( this.selectedAspect != null )
+		{
+			for( AspectStack stack : this.aspectStackList )
+			{
+				if( ( stack != null ) && ( stack.aspect == this.selectedAspect ) )
+				{
+					this.selectedAspectStack = stack;
+
+					break;
+				}
+			}
 		}
 
-		// Get the cell
-		ItemStack essentiaCell = this.hostChest.getStackInSlot( 1 );
-
-		// Ensure we have the cell
-		if( ( essentiaCell == null ) || !( essentiaCell.getItem() instanceof ItemEssentiaCell ) )
+		// Is this the client?
+		if( EffectiveSide.isClientSide() )
 		{
-			return null;
+			// Update the gui
+			this.guiBase.updateSelectedAspect();
 		}
+		else
+		{
+			// Update the client
+			new PacketClientEssentiaCell().createSelectedAspectUpdate( this.player, this.selectedAspect ).sendPacketToPlayer();
+		}
+	}
 
-		// Get the handler
-		return new HandlerItemEssentiaCell( essentiaCell );
+	/**
+	 * Forwards the change to the client.
+	 */
+	@Override
+	public void postAspectStackChange( AspectStack change )
+	{
+		// Send the change
+		new PacketClientEssentiaCell().createListChanged( this.player, change ).sendPacketToPlayer();
+	}
+
+	/**
+	 * Called when the player has clicked the sorting mode button.
+	 * 
+	 * @param sortingMode
+	 */
+	public void sendSortModeChangeRequest( ComparatorMode sortingMode )
+	{
+		new PacketServerEssentiaCell().createRequestChangeSortMode( this.player, sortingMode ).sendPacketToServer();
+	}
+
+	/**
+	 * Called when the user has clicked on an aspect.
+	 * Sends that change to the server for validation.
+	 */
+	@Override
+	public void setSelectedAspect( Aspect selectedAspect )
+	{
+		new PacketServerEssentiaCell().createUpdateSelectedAspect( this.player, selectedAspect ).sendPacketToServer();
 	}
 }

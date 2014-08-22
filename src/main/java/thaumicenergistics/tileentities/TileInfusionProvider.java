@@ -10,6 +10,7 @@ import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEFluidStack;
@@ -26,35 +27,22 @@ public class TileInfusionProvider
 	 */
 	protected List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
 
-	/**
-	 * Called when our parent block is about to be destroyed.
-	 */
-	public void onBreakBlock()
-	{
-		// Do we have a monitor
-		if( this.monitor != null )
-		{
-			// Unregister
-			this.monitor.removeListener( this );
-		}
-	}
-	
 	@Override
 	protected void channelUpdated()
 	{
 		super.channelUpdated();
 
 		// Is this server side?
-		if ( FMLCommonHandler.instance().getEffectiveSide().isServer() )
+		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
 		{
 			// Remove ourself from any prior listener
-			if ( this.monitor != null )
+			if( this.monitor != null )
 			{
 				this.monitor.removeListener( this );
 			}
 
 			// Get the new monitor
-			if ( this.getFluidMonitor() )
+			if( this.getFluidMonitor() )
 			{
 				// Register this tile as a network monitor
 				this.monitor.addListener( this, null );
@@ -66,6 +54,15 @@ public class TileInfusionProvider
 				this.markForUpdate();
 			}
 		}
+	}
+
+	/**
+	 * How much power does this require just to be active?
+	 */
+	@Override
+	protected double getIdlePowerusage()
+	{
+		return 5.0;
 	}
 
 	@Override
@@ -125,6 +122,19 @@ public class TileInfusionProvider
 		return true;
 	}
 
+	/**
+	 * Called when our parent block is about to be destroyed.
+	 */
+	public void onBreakBlock()
+	{
+		// Do we have a monitor
+		if( this.monitor != null )
+		{
+			// Unregister
+			this.monitor.removeListener( this );
+		}
+	}
+
 	@Override
 	public void onListUpdate()
 	{
@@ -135,9 +145,10 @@ public class TileInfusionProvider
 	 * Called by the AE monitor when the network changes.
 	 */
 	@Override
-	public void postChange( IMEMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
+	public void postChange( IBaseMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
-		this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( monitor.getStorageList() );
+		this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( ( (IMEMonitor<IAEFluidStack>)monitor )
+						.getStorageList() );
 
 		// Mark that we need to update the client
 		this.markForUpdate();
@@ -153,7 +164,7 @@ public class TileInfusionProvider
 	public boolean takeFromContainer( Aspect tag, int amount )
 	{
 		// Can we extract the essentia from the network?
-		if ( this.extractEssentiaFromNetwork( tag, amount, true ) == amount )
+		if( this.extractEssentiaFromNetwork( tag, amount, true ) == amount )
 		{
 			return true;
 		}
@@ -167,15 +178,6 @@ public class TileInfusionProvider
 	{
 		// Ignored
 		return false;
-	}
-
-	/**
-	 * How much power does this require just to be active?
-	 */
-	@Override
-	protected double getIdlePowerusage()
-	{
-		return 5.0;
 	}
 
 }

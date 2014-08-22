@@ -9,19 +9,27 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Gui for a cell in ME chest.
+ * 
  * @author Nividica
- *
+ * 
  */
 @SideOnly(Side.CLIENT)
-public class GuiEssentiaCell extends GuiCellTerminalBase
+public class GuiEssentiaCell
+	extends GuiCellTerminalBase
 {
 	/**
 	 * Create the gui.
-	 * @param player Player viewing the gui.
-	 * @param world World the chest is in.
-	 * @param x X position of the chest.
-	 * @param y Y position of the chest.
-	 * @param z Z position of the chest.
+	 * 
+	 * @param player
+	 * Player viewing the gui.
+	 * @param world
+	 * World the chest is in.
+	 * @param x
+	 * X position of the chest.
+	 * @param y
+	 * Y position of the chest.
+	 * @param z
+	 * Z position of the chest.
 	 */
 	public GuiEssentiaCell( EntityPlayer player, World world, int x, int y, int z )
 	{
@@ -32,7 +40,7 @@ public class GuiEssentiaCell extends GuiCellTerminalBase
 	protected void sortModeButtonClicked( ComparatorMode modeRequested )
 	{
 		// Pass to the container
-		((ContainerEssentiaCell)this.inventorySlots).sendSortModeChangeRequest( modeRequested );
+		( (ContainerEssentiaCell)this.inventorySlots ).sendSortModeChangeRequest( modeRequested );
 	}
-	
+
 }

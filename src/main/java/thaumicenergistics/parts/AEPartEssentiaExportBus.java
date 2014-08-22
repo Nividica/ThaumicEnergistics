@@ -13,7 +13,8 @@ import appeng.api.parts.IPartRenderHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class AEPartEssentiaExportBus extends AEPartEssentiaIO
+public class AEPartEssentiaExportBus
+	extends AEPartEssentiaIO
 {
 
 	public AEPartEssentiaExportBus()
@@ -36,7 +37,7 @@ public class AEPartEssentiaExportBus extends AEPartEssentiaIO
 	@Override
 	public boolean doWork( int transferAmount )
 	{
-		if ( ( this.facingContainer != null ) && ( this.facingContainer instanceof TileJarFillable ) )
+		if( ( this.facingContainer != null ) && ( this.facingContainer instanceof TileJarFillable ) )
 		{
 			return this.extractEssentiaFromNetwork( transferAmount );
 		}
@@ -49,10 +50,10 @@ public class AEPartEssentiaExportBus extends AEPartEssentiaIO
 	{
 		// Large chamber and back wall
 		helper.addBox( 4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 13.5F );
-		
+
 		// Small chamber and front wall
 		helper.addBox( 5.0F, 5.0F, 13.5F, 11.0F, 11.0F, 15.0F );
-		
+
 		// Face
 		helper.addBox( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
 	}
@@ -62,16 +63,16 @@ public class AEPartEssentiaExportBus extends AEPartEssentiaIO
 	public void renderInventory( IPartRenderHelper helper, RenderBlocks renderer )
 	{
 		Tessellator ts = Tessellator.instance;
-		
-		IIcon busSideTexture = BlockTextureManager.BUS_SIDE.getTexture();	
-		
+
+		IIcon busSideTexture = BlockTextureManager.BUS_SIDE.getTexture();
+
 		// Set the texture to the side texture
 		helper.setTexture( busSideTexture );
-		
+
 		//Large Chamber back wall
 		helper.setBounds( 4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 12.5F );
 		helper.renderInventoryBox( renderer );
-		
+
 		// Set the texture to the chamber
 		helper.setTexture( BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[2] );
 
@@ -82,17 +83,18 @@ public class AEPartEssentiaExportBus extends AEPartEssentiaIO
 		// Small chamber
 		helper.setBounds( 5.0F, 5.0F, 13.5F, 11.0F, 11.0F, 14.5F );
 		helper.renderInventoryBox( renderer );
-		
+
 		// Set the texture back to the side texture
 		helper.setTexture( busSideTexture );
-		
+
 		// Small chamber front wall
 		helper.setBounds( 5.0F, 5.0F, 14.5F, 11.0F, 11.0F, 15.0F );
 		helper.renderInventoryBox( renderer );
 
 		// Setup the face texture
-		helper.setTexture( busSideTexture, busSideTexture, busSideTexture, BlockTextureManager.ESSENTIA_EXPORT_BUS.getTexture(), busSideTexture, busSideTexture );
-		
+		helper.setTexture( busSideTexture, busSideTexture, busSideTexture, BlockTextureManager.ESSENTIA_EXPORT_BUS.getTexture(), busSideTexture,
+			busSideTexture );
+
 		// Face
 		helper.setBounds( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
 		helper.renderInventoryBox( renderer );
@@ -116,55 +118,56 @@ public class AEPartEssentiaExportBus extends AEPartEssentiaIO
 	public void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
 	{
 		Tessellator ts = Tessellator.instance;
-		
-		IIcon busSideTexture = BlockTextureManager.BUS_SIDE.getTexture();	
-		
+
+		IIcon busSideTexture = BlockTextureManager.BUS_SIDE.getTexture();
+
 		// Set the texture to the side texture
 		helper.setTexture( busSideTexture );
-		
+
 		//Large Chamber back wall
 		helper.setBounds( 4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 12.5F );
 		helper.renderBlock( x, y, z, renderer );
-		
+
 		// Set to alpha pass
 		helper.renderForPass( 1 );
 
 		// Set the texture to the chamber
 		helper.setTexture( BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[2] );
-		
+
 		// Large chamber
 		helper.setBounds( 4.0F, 4.0F, 12.5F, 12.0F, 12.0F, 13.5F );
 		helper.renderBlock( x, y, z, renderer );
-		
+
 		// Small chamber
 		helper.setBounds( 5.0F, 5.0F, 13.5F, 11.0F, 11.0F, 14.5F );
 		helper.renderBlock( x, y, z, renderer );
-		
+
 		// Set back to opaque pass
 		helper.renderForPass( 0 );
-		
+
 		// Set the texture back to the side texture
 		helper.setTexture( busSideTexture );
-		
+
 		// Small chamber front wall
 		helper.setBounds( 5.0F, 5.0F, 14.5F, 11.0F, 11.0F, 15.0F );
 		helper.renderBlock( x, y, z, renderer );
-		
+
 		// Setup the face texture	
-		helper.setTexture( busSideTexture, busSideTexture, busSideTexture, BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[0], busSideTexture, busSideTexture );
-		
+		helper.setTexture( busSideTexture, busSideTexture, busSideTexture, BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[0], busSideTexture,
+			busSideTexture );
+
 		// Face
 		helper.setBounds( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
 
 		// Face overlay
 		ts.setColorOpaque_I( this.host.getColor().blackVariant );
-		
-		if ( this.isActive() )
+
+		if( this.isActive() )
 		{
 			Tessellator.instance.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
 		}
-		
+
 		IIcon faceOverlayTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[1];
 		helper.renderFace( x, y, z, faceOverlayTexture, ForgeDirection.UP, renderer );
 		helper.renderFace( x, y, z, faceOverlayTexture, ForgeDirection.DOWN, renderer );

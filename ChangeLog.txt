@@ -1,4 +1,12 @@
-﻿8/19/2014 0.5.2a
+﻿8/20/2014 0.6.0a
+  Dependency Changed: Thaumcraft 4.2.0.0
+  Dependency Changed: Applied Energistics 2 rv1 beta 10
+  Dependency Changed: forge-1.7.10-10.13.0.1208
+  Dependency Changed: Mincraft 1.7.10
+  Initial port to 1.7.10
+  Project wide code cleanup and auto-formatting.
+
+8/19/2014 0.5.2a
   Bugfix: Reverted essentia terminal update method due to no-update lock.
   Known Issue: This will cause it to occasionally not automatically update essentia amounts with storage buses, you need to close are reopen the GUI.
   Added GUI titles for Import/Export/Storage buses.

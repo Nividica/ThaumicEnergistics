@@ -87,7 +87,7 @@ public abstract class AEPartBase
 		{
 			return;
 		}
-		
+
 		// Do we have a node?
 		if( this.node != null )
 		{
@@ -111,6 +111,7 @@ public abstract class AEPartBase
 
 	/**
 	 * Extracts fluid from the ME network.
+	 * 
 	 * @param toExtract
 	 * @param action
 	 * @return
@@ -135,6 +136,7 @@ public abstract class AEPartBase
 
 	/**
 	 * Injects fluid into the ME network.
+	 * 
 	 * @param toInject
 	 * @param action
 	 * @return
@@ -158,6 +160,7 @@ public abstract class AEPartBase
 
 	/**
 	 * Checks if the part is active and powered.
+	 * 
 	 * @return
 	 */
 	protected boolean isActive()
@@ -230,6 +233,11 @@ public abstract class AEPartBase
 		return AECableType.SMART;
 	}
 
+	public Object getClientGuiElement( EntityPlayer player )
+	{
+		return null;
+	}
+
 	@Override
 	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
@@ -262,6 +270,22 @@ public abstract class AEPartBase
 	{
 		return this.host;
 	}
+
+	/**
+	 * Get the host tile of this part.
+	 * 
+	 * @return
+	 */
+	public final TileEntity getHostTile()
+	{
+		return this.hostTile;
+	}
+
+	/**
+	 * Determines how much power the part takes for just
+	 * existing.
+	 */
+	public abstract double getIdlePowerUsage();
 
 	@Override
 	public ItemStack getItemStack( PartItemStack partItemStack )
@@ -296,14 +320,14 @@ public abstract class AEPartBase
 		return new DimensionalCoord( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord );
 	}
 
-	/**
-	 * Determines how much power the part takes for just
-	 * existing.
-	 */
-	public abstract double getIdlePowerUsage();
+	public Object getServerGuiElement( EntityPlayer player )
+	{
+		return null;
+	}
 
 	/**
 	 * Gets the side of the host that this part is attached to.
+	 * 
 	 * @return
 	 */
 	public ForgeDirection getSide()
@@ -439,8 +463,77 @@ public abstract class AEPartBase
 	public abstract void renderInventory( IPartRenderHelper helper, RenderBlocks renderer );
 
 	@SideOnly(Side.CLIENT)
+	public void renderInventoryBusLights( IPartRenderHelper helper, RenderBlocks renderer )
+	{
+		// Set color to white
+		helper.setInvColor( 0xFFFFFF );
+
+		IIcon busColorTexture = BlockTextureManager.BUS_COLOR.getTextures()[0];
+
+		IIcon sideTexture = BlockTextureManager.BUS_SIDE.getTexture();
+
+		helper.setTexture( busColorTexture, busColorTexture, sideTexture, sideTexture, busColorTexture, busColorTexture );
+
+		// Rend the box
+		helper.renderInventoryBox( renderer );
+
+		// Set the brightness
+		Tessellator.instance.setBrightness( 0xD000D0 );
+
+		helper.setInvColor( AEColor.Transparent.blackVariant );
+
+		IIcon lightTexture = BlockTextureManager.BUS_COLOR.getTextures()[1];
+
+		// Render the lights
+		helper.renderInventoryFace( lightTexture, ForgeDirection.UP, renderer );
+		helper.renderInventoryFace( lightTexture, ForgeDirection.DOWN, renderer );
+		helper.renderInventoryFace( lightTexture, ForgeDirection.NORTH, renderer );
+		helper.renderInventoryFace( lightTexture, ForgeDirection.EAST, renderer );
+		helper.renderInventoryFace( lightTexture, ForgeDirection.SOUTH, renderer );
+		helper.renderInventoryFace( lightTexture, ForgeDirection.WEST, renderer );
+	}
+
+	@SideOnly(Side.CLIENT)
 	@Override
 	public abstract void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer );
+
+	@SideOnly(Side.CLIENT)
+	public void renderStaticBusLights( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
+	{
+		IIcon busColorTexture = BlockTextureManager.BUS_COLOR.getTextures()[0];
+
+		IIcon sideTexture = BlockTextureManager.BUS_SIDE.getTexture();
+
+		helper.setTexture( busColorTexture, busColorTexture, sideTexture, sideTexture, busColorTexture, busColorTexture );
+
+		// Render the box
+		helper.renderBlock( x, y, z, renderer );
+
+		// Are we active?
+		if( this.isActive() )
+		{
+			// Set the brightness
+			Tessellator.instance.setBrightness( 0xD000D0 );
+
+			// Set the color to match the cable
+			Tessellator.instance.setColorOpaque_I( this.host.getColor().blackVariant );
+		}
+		else
+		{
+			// Set the color to black
+			Tessellator.instance.setColorOpaque_I( 0 );
+		}
+
+		IIcon lightTexture = BlockTextureManager.BUS_COLOR.getTextures()[1];
+
+		// Render the lights
+		helper.renderFace( x, y, z, lightTexture, ForgeDirection.UP, renderer );
+		helper.renderFace( x, y, z, lightTexture, ForgeDirection.DOWN, renderer );
+		helper.renderFace( x, y, z, lightTexture, ForgeDirection.NORTH, renderer );
+		helper.renderFace( x, y, z, lightTexture, ForgeDirection.EAST, renderer );
+		helper.renderFace( x, y, z, lightTexture, ForgeDirection.SOUTH, renderer );
+		helper.renderFace( x, y, z, lightTexture, ForgeDirection.WEST, renderer );
+	}
 
 	@Override
 	public boolean requireDynamicRender()
@@ -502,94 +595,6 @@ public abstract class AEPartBase
 	public void writeToStream( ByteBuf data ) throws IOException
 	{
 		data.writeBoolean( ( this.node != null ) && ( this.node.isActive() ) );
-	}
-
-	public Object getClientGuiElement( EntityPlayer player )
-	{
-		return null;
-	}
-
-	public Object getServerGuiElement( EntityPlayer player )
-	{
-		return null;
-	}
-
-	@SideOnly(Side.CLIENT)
-	public void renderInventoryBusLights( IPartRenderHelper helper, RenderBlocks renderer )
-	{
-		// Set color to white
-		helper.setInvColor( 0xFFFFFF );
-
-		IIcon busColorTexture = BlockTextureManager.BUS_COLOR.getTextures()[0];
-
-		IIcon sideTexture = BlockTextureManager.BUS_SIDE.getTexture();
-
-		helper.setTexture( busColorTexture, busColorTexture, sideTexture, sideTexture, busColorTexture, busColorTexture );
-
-		// Rend the box
-		helper.renderInventoryBox( renderer );
-
-		// Set the brightness
-		Tessellator.instance.setBrightness( 0xD000D0 );
-
-		helper.setInvColor( AEColor.Transparent.blackVariant );
-
-		IIcon lightTexture = BlockTextureManager.BUS_COLOR.getTextures()[1];
-
-		// Render the lights
-		helper.renderInventoryFace( lightTexture, ForgeDirection.UP, renderer );
-		helper.renderInventoryFace( lightTexture, ForgeDirection.DOWN, renderer );
-		helper.renderInventoryFace( lightTexture, ForgeDirection.NORTH, renderer );
-		helper.renderInventoryFace( lightTexture, ForgeDirection.EAST, renderer );
-		helper.renderInventoryFace( lightTexture, ForgeDirection.SOUTH, renderer );
-		helper.renderInventoryFace( lightTexture, ForgeDirection.WEST, renderer );
-	}
-
-	@SideOnly(Side.CLIENT)
-	public void renderStaticBusLights( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
-	{
-		IIcon busColorTexture = BlockTextureManager.BUS_COLOR.getTextures()[0];
-
-		IIcon sideTexture = BlockTextureManager.BUS_SIDE.getTexture();
-
-		helper.setTexture( busColorTexture, busColorTexture, sideTexture, sideTexture, busColorTexture, busColorTexture );
-
-		// Render the box
-		helper.renderBlock( x, y, z, renderer );
-
-		// Are we active?
-		if( this.isActive() )
-		{
-			// Set the brightness
-			Tessellator.instance.setBrightness( 0xD000D0 );
-
-			// Set the color to match the cable
-			Tessellator.instance.setColorOpaque_I( this.host.getColor().blackVariant );
-		}
-		else
-		{
-			// Set the color to black
-			Tessellator.instance.setColorOpaque_I( 0 );
-		}
-
-		IIcon lightTexture = BlockTextureManager.BUS_COLOR.getTextures()[1];
-
-		// Render the lights
-		helper.renderFace( x, y, z, lightTexture, ForgeDirection.UP, renderer );
-		helper.renderFace( x, y, z, lightTexture, ForgeDirection.DOWN, renderer );
-		helper.renderFace( x, y, z, lightTexture, ForgeDirection.NORTH, renderer );
-		helper.renderFace( x, y, z, lightTexture, ForgeDirection.EAST, renderer );
-		helper.renderFace( x, y, z, lightTexture, ForgeDirection.SOUTH, renderer );
-		helper.renderFace( x, y, z, lightTexture, ForgeDirection.WEST, renderer );
-	}
-
-	/**
-	 * Get the host tile of this part.
-	 * @return
-	 */
-	public final TileEntity getHostTile()
-	{
-		return this.hostTile;
 	}
 
 }

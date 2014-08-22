@@ -63,6 +63,13 @@ public abstract class BlockBaseProvider
 		return true;
 	}
 
+	@Override
+	public boolean isSideSolid( IBlockAccess world, int x, int y, int z, ForgeDirection side )
+	{
+		// This is a solid cube
+		return true;
+	}
+
 	// Sets the metadata for the block based on which side of the neighbor block they clicked on.
 	@Override
 	public final int onBlockPlaced( World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metaData )
@@ -88,12 +95,5 @@ public abstract class BlockBaseProvider
 		// We have a custom renderer for this block
 		return false;
 	}
-	
-	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
-    {
-		// This is a solid cube
-		return true;
-    }
 
 }

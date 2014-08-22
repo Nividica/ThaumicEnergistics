@@ -9,8 +9,9 @@ import appeng.api.implementations.items.IUpgradeModule;
 
 /**
  * Represents a slot in the network tool
+ * 
  * @author Nividica
- *
+ * 
  */
 public class SlotNetworkTool
 	extends Slot
@@ -22,10 +23,15 @@ public class SlotNetworkTool
 
 	/**
 	 * Creates the slot.
-	 * @param inventory The inventory of the network tool.
-	 * @param slotIndex Index of the slot
-	 * @param xDisplayPosition X position of the slot
-	 * @param yDisplayPosition Y position of the slot
+	 * 
+	 * @param inventory
+	 * The inventory of the network tool.
+	 * @param slotIndex
+	 * Index of the slot
+	 * @param xDisplayPosition
+	 * X position of the slot
+	 * @param yDisplayPosition
+	 * Y position of the slot
 	 */
 	public SlotNetworkTool( INetworkTool inventory, int slotIndex, int xDisplayPosition, int yDisplayPosition )
 	{
@@ -34,7 +40,7 @@ public class SlotNetworkTool
 
 		// Set the inventory
 		this.inventory = inventory;
-		
+
 	}
 
 	/**
@@ -44,13 +50,13 @@ public class SlotNetworkTool
 	public boolean isItemValid( ItemStack itemStack )
 	{
 		// Is the itemstack valid?
-		if ( itemStack != null )
+		if( itemStack != null )
 		{
 			// Get the item
 			Item item = itemStack.getItem();
 
 			// Is the item an upgrade card?
-			if ( item instanceof IUpgradeModule )
+			if( item instanceof IUpgradeModule )
 			{
 				// True if a valid upgrade
 				return ( (IUpgradeModule)item ).getType( itemStack ) != null;

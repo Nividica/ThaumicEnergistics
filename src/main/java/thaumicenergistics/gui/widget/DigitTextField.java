@@ -4,10 +4,11 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 
-public class DigitTextField extends GuiTextField
+public class DigitTextField
+	extends GuiTextField
 {
 
-	public DigitTextField(FontRenderer fontRenderer, int x, int y, int length, int height)
+	public DigitTextField( FontRenderer fontRenderer, int x, int y, int length, int height )
 	{
 		super( fontRenderer, x, y, length, height );
 	}
@@ -15,7 +16,7 @@ public class DigitTextField extends GuiTextField
 	@Override
 	public boolean textboxKeyTyped( char keyChar, int keyID )
 	{
-		if ( this.isFocused() )
+		if( this.isFocused() )
 		{
 			switch ( keyChar )
 			{
@@ -45,7 +46,7 @@ public class DigitTextField extends GuiTextField
 					return true;
 
 				case 14:
-					if ( GuiScreen.isCtrlKeyDown() )
+					if( GuiScreen.isCtrlKeyDown() )
 					{
 						this.deleteWords( -1 );
 					}
@@ -56,7 +57,7 @@ public class DigitTextField extends GuiTextField
 					return true;
 
 				case 199:
-					if ( GuiScreen.isShiftKeyDown() )
+					if( GuiScreen.isShiftKeyDown() )
 					{
 						this.setSelectionPos( 0 );
 					}
@@ -67,9 +68,9 @@ public class DigitTextField extends GuiTextField
 					return true;
 
 				case 203:
-					if ( GuiScreen.isShiftKeyDown() )
+					if( GuiScreen.isShiftKeyDown() )
 					{
-						if ( GuiScreen.isCtrlKeyDown() )
+						if( GuiScreen.isCtrlKeyDown() )
 						{
 							this.setSelectionPos( this.getNthWordFromPos( -1, this.getSelectionEnd() ) );
 						}
@@ -78,7 +79,7 @@ public class DigitTextField extends GuiTextField
 							this.setSelectionPos( this.getSelectionEnd() - 1 );
 						}
 					}
-					else if ( GuiScreen.isCtrlKeyDown() )
+					else if( GuiScreen.isCtrlKeyDown() )
 					{
 						this.setCursorPosition( this.getNthWordFromCursor( -1 ) );
 					}
@@ -89,9 +90,9 @@ public class DigitTextField extends GuiTextField
 					return true;
 
 				case 205:
-					if ( GuiScreen.isShiftKeyDown() )
+					if( GuiScreen.isShiftKeyDown() )
 					{
-						if ( GuiScreen.isCtrlKeyDown() )
+						if( GuiScreen.isCtrlKeyDown() )
 						{
 							this.setSelectionPos( this.getNthWordFromPos( 1, this.getSelectionEnd() ) );
 						}
@@ -100,7 +101,7 @@ public class DigitTextField extends GuiTextField
 							this.setSelectionPos( this.getSelectionEnd() + 1 );
 						}
 					}
-					else if ( GuiScreen.isCtrlKeyDown() )
+					else if( GuiScreen.isCtrlKeyDown() )
 					{
 						this.setCursorPosition( this.getNthWordFromCursor( 1 ) );
 					}
@@ -112,7 +113,7 @@ public class DigitTextField extends GuiTextField
 					return true;
 
 				case 207:
-					if ( GuiScreen.isShiftKeyDown() )
+					if( GuiScreen.isShiftKeyDown() )
 					{
 						this.setSelectionPos( this.getText().length() );
 					}
@@ -123,7 +124,7 @@ public class DigitTextField extends GuiTextField
 					return true;
 
 				case 211:
-					if ( GuiScreen.isCtrlKeyDown() )
+					if( GuiScreen.isCtrlKeyDown() )
 					{
 						this.deleteWords( 1 );
 					}
@@ -135,14 +136,14 @@ public class DigitTextField extends GuiTextField
 					return true;
 			}
 
-			if ( Character.isDigit( keyChar ) )
+			if( Character.isDigit( keyChar ) )
 			{
 				this.writeText( Character.toString( keyChar ) );
 
 				return true;
 			}
 
-			if ( ( keyChar == '-' ) && ( this.getText().isEmpty() ) )
+			if( ( keyChar == '-' ) && ( this.getText().isEmpty() ) )
 			{
 				this.writeText( Character.toString( keyChar ) );
 

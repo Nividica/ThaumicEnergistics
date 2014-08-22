@@ -23,72 +23,13 @@ public class PacketClientEssentiaCell
 	private static final byte MODE_SELECTED_ASPECT = 1;
 	private static final byte MODE_LIST_CHANGED = 2;
 	private static final byte MODE_SORT_MODE_CHANGED = 3;
-	
+
 	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();
 
 	private List<AspectStack> aspectStackList;
 	private Aspect selectedAspect;
 	private AspectStack change;
 	private ComparatorMode sortMode;
-
-	public PacketClientEssentiaCell createUpdateFullList( EntityPlayer player, List<AspectStack> list )
-	{
-		// Set the player
-		this.player = player;
-
-		// Set the mode
-		this.mode = PacketClientEssentiaCell.MODE_FULL_LIST;
-
-		// Mark to use compression
-		this.useCompression = true;
-
-		// Set the list
-		this.aspectStackList = list;
-
-		return this;
-	}
-
-	public PacketClientEssentiaCell createSelectedAspectUpdate( EntityPlayer player, Aspect selectedAspect )
-	{
-		// Set the player
-		this.player = player;
-
-		// Set the mode
-		this.mode = PacketClientEssentiaCell.MODE_SELECTED_ASPECT;
-
-		// Set the aspect
-		this.selectedAspect = selectedAspect;
-
-		return this;
-	}
-	
-	public PacketClientEssentiaCell createListChanged( EntityPlayer player, AspectStack change )
-	{
-		// Set the player
-		this.player = player;
-		
-		// Set the mode
-		this.mode = PacketClientEssentiaCell.MODE_LIST_CHANGED;
-		
-		// Set the change
-		this.change = change;
-		
-		return this;
-	}
-
-	public PacketClientEssentiaCell createSortModeUpdate( EntityPlayer player, ComparatorMode sortMode )
-	{
-		// Set the player
-		this.player = player;
-
-		// Set the mode
-		this.mode = PacketClientEssentiaCell.MODE_SORT_MODE_CHANGED;
-
-		// Set the sort mode
-		this.sortMode = sortMode;
-
-		return this;
-	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -116,18 +57,77 @@ public class PacketClientEssentiaCell
 					// Set the selected aspect
 					container.onReceiveSelectedAspect( this.selectedAspect );
 					break;
-					
+
 				case PacketClientEssentiaCell.MODE_LIST_CHANGED:
 					// Update the list
 					container.onReceiveAspectListChange( this.change );
 					break;
-					
+
 				case PacketClientEssentiaCell.MODE_SORT_MODE_CHANGED:
 					// Update the sorting mode
 					( (GuiEssentiaCell)gui ).onSortModeChanged( this.sortMode );
 					break;
 			}
 		}
+	}
+
+	public PacketClientEssentiaCell createListChanged( EntityPlayer player, AspectStack change )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientEssentiaCell.MODE_LIST_CHANGED;
+
+		// Set the change
+		this.change = change;
+
+		return this;
+	}
+
+	public PacketClientEssentiaCell createSelectedAspectUpdate( EntityPlayer player, Aspect selectedAspect )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientEssentiaCell.MODE_SELECTED_ASPECT;
+
+		// Set the aspect
+		this.selectedAspect = selectedAspect;
+
+		return this;
+	}
+
+	public PacketClientEssentiaCell createSortModeUpdate( EntityPlayer player, ComparatorMode sortMode )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientEssentiaCell.MODE_SORT_MODE_CHANGED;
+
+		// Set the sort mode
+		this.sortMode = sortMode;
+
+		return this;
+	}
+
+	public PacketClientEssentiaCell createUpdateFullList( EntityPlayer player, List<AspectStack> list )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientEssentiaCell.MODE_FULL_LIST;
+
+		// Mark to use compression
+		this.useCompression = true;
+
+		// Set the list
+		this.aspectStackList = list;
+
+		return this;
 	}
 
 	@Override
@@ -150,12 +150,12 @@ public class PacketClientEssentiaCell
 				// Read the aspect from the stream
 				this.selectedAspect = AbstractPacket.readAspect( stream );
 				break;
-				
+
 			case PacketClientEssentiaCell.MODE_LIST_CHANGED:
 				// Read the stack
 				this.change = new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() );
 				break;
-				
+
 			case PacketClientEssentiaCell.MODE_SORT_MODE_CHANGED:
 				// Read the mode ordinal
 				this.sortMode = SORT_MODES[stream.readInt()];
@@ -182,15 +182,15 @@ public class PacketClientEssentiaCell
 				// Write the aspect to the stream
 				AbstractPacket.writeAspect( this.selectedAspect, stream );
 				break;
-				
+
 			case PacketClientEssentiaCell.MODE_LIST_CHANGED:
 				// Write the aspect
 				AbstractPacket.writeAspect( this.change.aspect, stream );
-				
+
 				// Write the amount
 				stream.writeLong( this.change.amount );
 				break;
-				
+
 			case PacketClientEssentiaCell.MODE_SORT_MODE_CHANGED:
 				// Write the mode ordinal
 				stream.writeInt( this.sortMode.ordinal() );

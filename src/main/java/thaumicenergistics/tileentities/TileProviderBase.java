@@ -49,16 +49,6 @@ public abstract class TileProviderBase
 	private AETileEventHandler eventHandler = new AETileEventHandler( TileEventType.WORLD_NBT, TileEventType.NETWORK )
 	{
 		@Override
-		public void writeToNBT( NBTTagCompound data )
-		{
-			// Write our color to the tag
-			data.setInteger( TileProviderBase.NBTKEY_COLOR, TileProviderBase.this.getGridColor().ordinal() );
-
-			// Write the attachment side to the tag
-			data.setInteger( TileProviderBase.NBTKEY_ATTACHMENT, TileProviderBase.this.attachmentSide );
-		}
-
-		@Override
 		public void readFromNBT( NBTTagCompound data )
 		{
 			int attachmentSideFromNBT = ForgeDirection.UNKNOWN.ordinal();
@@ -82,16 +72,6 @@ public abstract class TileProviderBase
 		}
 
 		@Override
-		public void writeToStream( ByteBuf data ) throws IOException
-		{
-			// Write the color data to the stream
-			data.writeInt( TileProviderBase.this.getGridColor().ordinal() );
-
-			// Write the activity to the stream
-			data.writeBoolean( TileProviderBase.this.isActive() );
-		}
-
-		@Override
 		@SideOnly(Side.CLIENT)
 		public boolean readFromStream( ByteBuf data ) throws IOException
 		{
@@ -103,6 +83,26 @@ public abstract class TileProviderBase
 
 			return true;
 		}
+
+		@Override
+		public void writeToNBT( NBTTagCompound data )
+		{
+			// Write our color to the tag
+			data.setInteger( TileProviderBase.NBTKEY_COLOR, TileProviderBase.this.getGridColor().ordinal() );
+
+			// Write the attachment side to the tag
+			data.setInteger( TileProviderBase.NBTKEY_ATTACHMENT, TileProviderBase.this.attachmentSide );
+		}
+
+		@Override
+		public void writeToStream( ByteBuf data ) throws IOException
+		{
+			// Write the color data to the stream
+			data.writeInt( TileProviderBase.this.getGridColor().ordinal() );
+
+			// Write the activity to the stream
+			data.writeBoolean( TileProviderBase.this.isActive() );
+		}
 	};
 
 	public TileProviderBase()
@@ -111,72 +111,152 @@ public abstract class TileProviderBase
 		this.addNewHandler( this.eventHandler );
 	}
 
-	/**
-	 * Configures the provider based on the specified
-	 * attachment side.
-	 * @param attachmentSide
-	 */
-	public void setupProvider( int attachmentSide )
+	private static AEColor[] getNeighborCableColors( IBlockAccess world, int x, int y, int z )
 	{
-		// Ignored on client side
-		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
+		AEColor[] sideColors = new AEColor[6];
+
+		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 		{
-			// Set which side we are attached to
-			this.attachmentSide = attachmentSide;
+			// Get the tile entity on the current side
+			TileEntity tileEntity = world.getTileEntity( x + side.offsetX, y + side.offsetY, z + side.offsetZ );
 
-			// Set that we require a channel
-			this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+			// Did we get an entity?
+			if( tileEntity == null )
+			{
+				continue;
+			}
 
-			// Set the idle power usage
-			this.gridProxy.setIdlePowerUsage( this.getIdlePowerusage() );
+			// Is that entity a cable?
+			if( tileEntity instanceof TileCableBus )
+			{
+				// Set the color
+				sideColors[side.ordinal()] = ( (TileCableBus)tileEntity ).getColor();
+			}
+
 		}
+
+		return sideColors;
 	}
 
-	@Override
-	public void onReady()
+	protected void channelUpdated()
 	{
-		super.onReady();
+		// Check that our color is still valid
 		this.checkGridConnectionColor();
 	}
 
-	@Override
-	protected abstract ItemStack getItemFromTile( Object obj );
-	
+	// Returns how much was extracted
+	protected int extractEssentiaFromNetwork( Aspect wantedAspect, int wantedAmount, boolean mustMatch )
+	{
+		// Ensure we have a monitor
+		if( this.getFluidMonitor() )
+		{
+			// Get the gas version of the aspect
+			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( wantedAspect );
+
+			IAEFluidStack request = EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( essentiaGas, wantedAmount );
+
+			// Simulate the extraction
+			IAEFluidStack fluidStack = this.monitor.extractItems( request, Actionable.SIMULATE, new MachineSource( this ) );
+
+			// Were we able to extract any?
+			if( fluidStack == null )
+			{
+				return 0;
+			}
+			// Are we in match mode?
+			else if( mustMatch )
+			{
+				// Does the amount match how much we want?
+				if( fluidStack.getStackSize() != EssentiaConversionHelper.convertEssentiaAmountToFluidAmount( wantedAmount ) )
+				{
+					// Could not provide enough essentia
+					return 0;
+				}
+			}
+
+			// Take from the network
+			this.monitor.extractItems( request, Actionable.MODULATE, new MachineSource( this ) );
+
+			// Return how much was extracted
+			return (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+		}
+
+		return 0;
+
+	}
+
+	protected AspectStack getAspectStackFromNetwork( Aspect searchAspect )
+	{
+		// Get the list from the network
+		List<AspectStack> aspectStackList = this.getNetworkAspects();
+
+		// Ensure we have a list, and that it is not empty
+		if( ( aspectStackList != null ) && ( !aspectStackList.isEmpty() ) )
+		{
+			// Search all aspects in the list
+			for( AspectStack currentStack : aspectStackList )
+			{
+				// Do the current match the search?
+				if( currentStack.aspect == searchAspect )
+				{
+					// Found it
+					return currentStack;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	protected boolean getFluidMonitor()
+	{
+		// Get the grid node
+		IGridNode node = this.gridProxy.getNode();
+
+		// Ensure we have the node
+		if( node == null )
+		{
+			return false;
+		}
+
+		// Get the grid that node is connected to
+		IGrid grid = node.getGrid();
+
+		// Is there a grid?
+		if( grid == null )
+		{
+			return false;
+		}
+
+		// Access the storage grid
+		IStorageGrid storageGrid = (IStorageGrid)grid.getCache( IStorageGrid.class );
+
+		// Set our monitor
+		this.monitor = storageGrid.getFluidInventory();
+
+		return( this.monitor != null );
+	}
+
 	protected abstract double getIdlePowerusage();
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection direction )
-	{
-		return AECableType.SMART;
-	}
+	protected abstract ItemStack getItemFromTile( Object obj );
 
-	public AEColor getGridColor()
+	protected List<AspectStack> getNetworkAspects()
 	{
-		return this.gridProxy.getGridColor();
-	}
-
-	public void setGridColor( AEColor gridColor )
-	{
-		// Set our color to match
-		this.gridProxy.myColor = gridColor;
-
-		// Are we server side?
-		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
+		// Ensure we have a monitor
+		if( this.getFluidMonitor() )
 		{
-			// Get the grid node
-			IGridNode gridNode = this.gridProxy.getNode();
-
-			// Do we have a grid node?
-			if( gridNode != null )
-			{
-				// Update the grid node
-				this.gridProxy.getNode().updateState();
-			}
-
-			// Mark the tile as needing updates and to be saved
-			this.markForUpdate();
-			this.saveChanges();
+			return EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
 		}
+
+		return null;
+	}
+
+	@MENetworkEventSubscribe
+	public void channelEvent( MENetworkChannelsChanged event )
+	{
+		this.channelUpdated();
 	}
 
 	public void checkGridConnectionColor()
@@ -252,153 +332,15 @@ public abstract class TileProviderBase
 
 	}
 
-	@MENetworkEventSubscribe
-	public void channelEvent( MENetworkChannelsChanged event )
+	@Override
+	public AECableType getCableConnectionType( ForgeDirection direction )
 	{
-		this.channelUpdated();
+		return AECableType.SMART;
 	}
 
-	@MENetworkEventSubscribe
-	public final void powerEvent( MENetworkPowerStatusChange event )
+	public AEColor getGridColor()
 	{
-		this.markForUpdate();
-	}
-
-	protected void channelUpdated()
-	{
-		// Check that our color is still valid
-		this.checkGridConnectionColor();
-	}
-
-	// Returns how much was extracted
-	protected int extractEssentiaFromNetwork( Aspect wantedAspect, int wantedAmount, boolean mustMatch )
-	{
-		// Ensure we have a monitor
-		if( this.getFluidMonitor() )
-		{
-			// Get the gas version of the aspect
-			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( wantedAspect );
-
-			IAEFluidStack request = EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( essentiaGas, wantedAmount );
-
-			// Simulate the extraction
-			IAEFluidStack fluidStack = this.monitor.extractItems( request, Actionable.SIMULATE, new MachineSource( this ) );
-
-			// Were we able to extract any?
-			if( fluidStack == null )
-			{
-				return 0;
-			}
-			// Are we in match mode?
-			else if( mustMatch )
-			{
-				// Does the amount match how much we want?
-				if( fluidStack.getStackSize() != EssentiaConversionHelper.convertEssentiaAmountToFluidAmount( wantedAmount ) )
-				{
-					// Could not provide enough essentia
-					return 0;
-				}
-			}
-
-			// Take from the network
-			this.monitor.extractItems( request, Actionable.MODULATE, new MachineSource( this ) );
-
-			// Return how much was extracted
-			return (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
-		}
-
-		return 0;
-
-	}
-
-	protected AspectStack getAspectStackFromNetwork( Aspect searchAspect )
-	{
-		// Get the list from the network
-		List<AspectStack> aspectStackList = this.getNetworkAspects();
-
-		// Ensure we have a list, and that it is not empty
-		if( ( aspectStackList != null ) && ( !aspectStackList.isEmpty() ) )
-		{
-			// Search all aspects in the list
-			for( AspectStack currentStack : aspectStackList )
-			{
-				// Do the current match the search?
-				if( currentStack.aspect == searchAspect )
-				{
-					// Found it
-					return currentStack;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	protected List<AspectStack> getNetworkAspects()
-	{
-		// Ensure we have a monitor
-		if( this.getFluidMonitor() )
-		{
-			return EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
-		}
-
-		return null;
-	}
-
-	protected boolean getFluidMonitor()
-	{
-		// Get the grid node
-		IGridNode node = this.gridProxy.getNode();
-
-		// Ensure we have the node
-		if( node == null )
-		{
-			return false;
-		}
-
-		// Get the grid that node is connected to
-		IGrid grid = node.getGrid();
-
-		// Is there a grid?
-		if( grid == null )
-		{
-			return false;
-		}
-
-		// Access the storage grid
-		IStorageGrid storageGrid = (IStorageGrid)grid.getCache( IStorageGrid.class );
-
-		// Set our monitor
-		this.monitor = storageGrid.getFluidInventory();
-
-		return( this.monitor != null );
-	}
-
-	private static AEColor[] getNeighborCableColors( IBlockAccess world, int x, int y, int z )
-	{
-		AEColor[] sideColors = new AEColor[6];
-
-		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
-		{
-			// Get the tile entity on the current side
-			TileEntity tileEntity = world.getTileEntity( x + side.offsetX, y + side.offsetY, z + side.offsetZ );
-
-			// Did we get an entity?
-			if( tileEntity == null )
-			{
-				continue;
-			}
-
-			// Is that entity a cable?
-			if( tileEntity instanceof TileCableBus )
-			{
-				// Set the color
-				sideColors[side.ordinal()] = ( (TileCableBus)tileEntity ).getColor();
-			}
-
-		}
-
-		return sideColors;
+		return this.gridProxy.getGridColor();
 	}
 
 	public boolean isActive()
@@ -415,6 +357,65 @@ public abstract class TileProviderBase
 		}
 
 		return this.isActive;
+	}
+
+	@Override
+	public void onReady()
+	{
+		super.onReady();
+		this.checkGridConnectionColor();
+	}
+
+	@MENetworkEventSubscribe
+	public final void powerEvent( MENetworkPowerStatusChange event )
+	{
+		this.markForUpdate();
+	}
+
+	public void setGridColor( AEColor gridColor )
+	{
+		// Set our color to match
+		this.gridProxy.myColor = gridColor;
+
+		// Are we server side?
+		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
+		{
+			// Get the grid node
+			IGridNode gridNode = this.gridProxy.getNode();
+
+			// Do we have a grid node?
+			if( gridNode != null )
+			{
+				// Update the grid node
+				this.gridProxy.getNode().updateState();
+			}
+
+			// Mark the tile as needing updates and to be saved
+			this.markForUpdate();
+			this.saveChanges();
+		}
+	}
+
+	/**
+	 * Configures the provider based on the specified
+	 * attachment side.
+	 * 
+	 * @param attachmentSide
+	 */
+	public void setupProvider( int attachmentSide )
+	{
+		// Ignored on client side
+		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
+		{
+			// Set which side we are attached to
+			this.attachmentSide = attachmentSide;
+
+			// Set that we require a channel
+			this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+
+			// Set the idle power usage
+			this.gridProxy.setIdlePowerUsage( this.getIdlePowerusage() );
+		}
 	}
 
 }

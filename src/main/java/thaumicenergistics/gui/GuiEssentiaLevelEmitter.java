@@ -197,7 +197,7 @@ public class GuiEssentiaLevelEmitter
 
 		// Set the part
 		this.part = part;
-		
+
 		// Create the filter slot
 		this.aspectFilterSlot = new WidgetAspectSlot( this, this.player, this.part, GuiEssentiaLevelEmitter.FILTER_WIDGET_POS_X,
 						GuiEssentiaLevelEmitter.FILTER_WIDGET_POS_Y );
@@ -221,20 +221,6 @@ public class GuiEssentiaLevelEmitter
 
 		// Draw the gui texture.
 		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, GuiEssentiaLevelEmitter.GUI_WIDTH, GuiEssentiaLevelEmitter.GUI_HEIGHT );
-	}
-
-	public boolean setFilteredAspectFromItemstack( ItemStack itemStack )
-	{
-		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
-
-		if( itemAspect != null )
-		{
-			this.aspectFilterSlot.setAspect( itemAspect );
-
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -460,6 +446,16 @@ public class GuiEssentiaLevelEmitter
 	}
 
 	/**
+	 * Sets the redstone mode
+	 * 
+	 * @param mode
+	 */
+	public void onServerUpdateRedstoneMode( RedstoneMode mode )
+	{
+		( (ButtonRedstoneModes)this.buttonList.get( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX ) ).setRedstoneMode( mode );
+	}
+
+	/**
 	 * Returns the amount
 	 * 
 	 * @param amount
@@ -469,14 +465,18 @@ public class GuiEssentiaLevelEmitter
 		this.amountField.setText( Long.toString( amount ) );
 	}
 
-	/**
-	 * Sets the redstone mode
-	 * 
-	 * @param mode
-	 */
-	public void onServerUpdateRedstoneMode( RedstoneMode mode )
+	public boolean setFilteredAspectFromItemstack( ItemStack itemStack )
 	{
-		( (ButtonRedstoneModes)this.buttonList.get( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX ) ).setRedstoneMode( mode );
+		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
+
+		if( itemAspect != null )
+		{
+			this.aspectFilterSlot.setAspect( itemAspect );
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

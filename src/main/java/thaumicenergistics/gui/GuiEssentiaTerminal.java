@@ -12,13 +12,13 @@ public class GuiEssentiaTerminal
 	implements IAspectSelectorGui
 {
 	protected AEPartEssentiaTerminal terminal;
-	
+
 	protected ContainerEssentiaTerminal containerAspectTerminal;
 
-	public GuiEssentiaTerminal(AEPartEssentiaTerminal terminal, EntityPlayer player)
+	public GuiEssentiaTerminal( AEPartEssentiaTerminal terminal, EntityPlayer player )
 	{
 		super( player, new ContainerEssentiaTerminal( terminal, player ) );
-		
+
 		this.terminal = terminal;
 	}
 
@@ -28,5 +28,5 @@ public class GuiEssentiaTerminal
 		// Request update from server
 		new PacketServerEssentiaTerminal().createRequestChangeSortMode( this.player, this.terminal, modeRequested ).sendPacketToServer();
 	}
-	
+
 }

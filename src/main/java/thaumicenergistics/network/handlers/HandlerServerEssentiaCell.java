@@ -5,7 +5,8 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class HandlerServerEssentiaCell implements IMessageHandler<PacketServerEssentiaCell, IMessage>
+public class HandlerServerEssentiaCell
+	implements IMessageHandler<PacketServerEssentiaCell, IMessage>
 {
 
 	@Override

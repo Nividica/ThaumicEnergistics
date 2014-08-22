@@ -16,7 +16,7 @@ public enum ItemEnum
 		ESSENTIA_CELL ("storage.essentia", new ItemEssentiaCell()),
 		STORAGE_COMPONENT ("storage.component", new ItemStorageComponent()),
 		STORAGE_CASING ("storage.casing", new ItemStorageCasing()),
-		MATERIAL("material", new ItemMaterial());
+		MATERIAL ("material", new ItemMaterial());
 
 	private final String internalName;
 	private Item item;

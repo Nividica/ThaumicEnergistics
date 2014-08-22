@@ -1,14 +1,14 @@
 package thaumicenergistics.network.packet.client;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
-import appeng.api.config.RedstoneMode;
-import io.netty.buffer.ByteBuf;
 import thaumicenergistics.gui.GuiEssentiatIO;
 import thaumicenergistics.network.packet.AbstractClientPacket;
+import appeng.api.config.RedstoneMode;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketClientEssentiaIOBus
 	extends AbstractClientPacket
@@ -28,90 +28,6 @@ public class PacketClientEssentiaIOBus
 	private byte filterSize;
 
 	private boolean redstoneControlled;
-
-	/**
-	 * Create a packet to update the client whether the bus is controlled
-	 * by redstone or not.
-	 * 
-	 * @param player
-	 * @param redstoneControlled
-	 * @return
-	 */
-	public PacketClientEssentiaIOBus createSetRedstoneControlled( EntityPlayer player, boolean redstoneControlled )
-	{
-		// Set the player 
-		this.player = player;
-
-		// Set the mode
-		this.mode = PacketClientEssentiaIOBus.MODE_SET_REDSTONE_CONTROLLED;
-
-		// Set controlled
-		this.redstoneControlled = redstoneControlled;
-
-		return this;
-	}
-
-	/**
-	 * Create a packet to update the clients filter size.
-	 * 
-	 * @param player
-	 * @param filterSize
-	 * @return
-	 */
-	public PacketClientEssentiaIOBus createSetFilterSize( EntityPlayer player, byte filterSize )
-	{
-		// Set the player
-		this.player = player;
-
-		// Set the mode
-		this.mode = PacketClientEssentiaIOBus.MODE_SET_FILTER_SIZE;
-
-		// Set the filter size
-		this.filterSize = filterSize;
-
-		return this;
-	}
-
-	/**
-	 * Create a packet to update the clients redstone mode.
-	 * 
-	 * @param player
-	 * @param redstoneMode
-	 * @return
-	 */
-	public PacketClientEssentiaIOBus createSetRedstoneMode( EntityPlayer player, RedstoneMode redstoneMode )
-	{
-		// Set the player
-		this.player = player;
-
-		// Set the mode
-		this.mode = PacketClientEssentiaIOBus.MODE_SET_REDSTONE_MODE;
-
-		// Set the redstone mode
-		this.redstoneMode = redstoneMode;
-
-		return this;
-	}
-
-	public PacketClientEssentiaIOBus createFullUpdate( EntityPlayer player, RedstoneMode redstoneMode, byte filterSize, boolean redstoneControlled )
-	{
-		// Set the player
-		this.player = player;
-		
-		// Set the mode
-		this.mode = PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE;
-
-		// Set the redstone mode
-		this.redstoneMode = redstoneMode;
-
-		// Set the filter size
-		this.filterSize = filterSize;
-
-		// Set controlled
-		this.redstoneControlled = redstoneControlled;
-
-		return this;
-	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -146,7 +62,7 @@ public class PacketClientEssentiaIOBus
 			case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
 				// Set redstone mode
 				( (GuiEssentiatIO)gui ).onReceiveRedstoneMode( this.redstoneMode );
-				
+
 				// Set redstone controlled
 				( (GuiEssentiatIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
 
@@ -154,6 +70,90 @@ public class PacketClientEssentiaIOBus
 				( (GuiEssentiatIO)gui ).onReceiveFilterSize( this.filterSize );
 				break;
 		}
+	}
+
+	public PacketClientEssentiaIOBus createFullUpdate( EntityPlayer player, RedstoneMode redstoneMode, byte filterSize, boolean redstoneControlled )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE;
+
+		// Set the redstone mode
+		this.redstoneMode = redstoneMode;
+
+		// Set the filter size
+		this.filterSize = filterSize;
+
+		// Set controlled
+		this.redstoneControlled = redstoneControlled;
+
+		return this;
+	}
+
+	/**
+	 * Create a packet to update the clients filter size.
+	 * 
+	 * @param player
+	 * @param filterSize
+	 * @return
+	 */
+	public PacketClientEssentiaIOBus createSetFilterSize( EntityPlayer player, byte filterSize )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientEssentiaIOBus.MODE_SET_FILTER_SIZE;
+
+		// Set the filter size
+		this.filterSize = filterSize;
+
+		return this;
+	}
+
+	/**
+	 * Create a packet to update the client whether the bus is controlled
+	 * by redstone or not.
+	 * 
+	 * @param player
+	 * @param redstoneControlled
+	 * @return
+	 */
+	public PacketClientEssentiaIOBus createSetRedstoneControlled( EntityPlayer player, boolean redstoneControlled )
+	{
+		// Set the player 
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientEssentiaIOBus.MODE_SET_REDSTONE_CONTROLLED;
+
+		// Set controlled
+		this.redstoneControlled = redstoneControlled;
+
+		return this;
+	}
+
+	/**
+	 * Create a packet to update the clients redstone mode.
+	 * 
+	 * @param player
+	 * @param redstoneMode
+	 * @return
+	 */
+	public PacketClientEssentiaIOBus createSetRedstoneMode( EntityPlayer player, RedstoneMode redstoneMode )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientEssentiaIOBus.MODE_SET_REDSTONE_MODE;
+
+		// Set the redstone mode
+		this.redstoneMode = redstoneMode;
+
+		return this;
 	}
 
 	@Override

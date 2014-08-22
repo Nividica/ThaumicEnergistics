@@ -106,16 +106,16 @@ public class WidgetAspectSlot
 
 	}
 
+	@Override
+	public void mouseClicked()
+	{
+		// Ignored
+	}
+
 	public void mouseClicked( Aspect withAspect )
 	{
 		this.setAspect( withAspect );
 
 		new PacketServerAspectSlot().createUpdatePartAspect( this.part, this.id, this.getAspect(), this.player ).sendPacketToServer();
-	}
-
-	@Override
-	public void mouseClicked()
-	{
-		// Ignored
 	}
 }

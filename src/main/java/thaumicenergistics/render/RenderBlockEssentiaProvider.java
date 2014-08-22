@@ -9,22 +9,22 @@ public class RenderBlockEssentiaProvider
 {
 
 	@Override
-	public int getRenderId()
-	{
-		// Return the ID of the essentia provider
-		return Renderers.EssentiaProviderRenderID;
-	}
-
-	@Override
 	protected IIcon getBaseTexture()
 	{
 		return BlockTextureManager.ESSENTIA_PROVIDER.getTextures()[0];
 	}
-	
+
 	@Override
 	protected IIcon getOverlayTexture()
 	{
 		return BlockTextureManager.ESSENTIA_PROVIDER.getTextures()[1];
+	}
+
+	@Override
+	public int getRenderId()
+	{
+		// Return the ID of the essentia provider
+		return Renderers.EssentiaProviderRenderID;
 	}
 
 }

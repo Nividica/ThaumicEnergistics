@@ -73,11 +73,11 @@ public class EssentiaCellTerminalWorker
 			monitor.injectItems( containerFluid, Actionable.MODULATE, machineSource );
 
 			EssentiaCellTerminalWorker.decreaseInputSlot( inventory );
-			
+
 			// Work was done
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -138,11 +138,11 @@ public class EssentiaCellTerminalWorker
 
 			// Decrease the stack in the first slot
 			EssentiaCellTerminalWorker.decreaseInputSlot( inventory );
-			
+
 			// Work was done
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -178,6 +178,33 @@ public class EssentiaCellTerminalWorker
 		return false;
 	}
 
+	public static boolean doWork( PrivateInventory inventory, IMEMonitor<IAEFluidStack> monitor, MachineSource machineSource, Aspect currentAspect )
+	{
+		// Ensure we have a valid monitor?
+		if( monitor == null )
+		{
+			return false;
+		}
+
+		// Make a copy of the input slot
+		ItemStack inputSlot = inventory.getStackInSlot( ContainerCellTerminalBase.INPUT_SLOT_ID ).copy();
+
+		// Is the container empty?
+		if( EssentiaItemContainerHelper.isContainerEmpty( inputSlot ) )
+		{
+			// Attempt to fill the container.
+			return EssentiaCellTerminalWorker.fillContainer( inventory, monitor, inputSlot, machineSource, currentAspect );
+		}
+		// Is the container not empty?
+		else if( EssentiaItemContainerHelper.isContainerFilled( inputSlot ) )
+		{
+			// Attempt to drain it.
+			return EssentiaCellTerminalWorker.drainContainer( inventory, monitor, inputSlot, machineSource );
+		}
+
+		return false;
+	}
+
 	public static boolean hasWork( PrivateInventory inventory )
 	{
 		// Is the inventory valid?
@@ -202,33 +229,6 @@ public class EssentiaCellTerminalWorker
 		}
 
 		return true;
-	}
-
-	public static boolean doWork( PrivateInventory inventory, IMEMonitor<IAEFluidStack> monitor, MachineSource machineSource, Aspect currentAspect )
-	{
-		// Ensure we have a valid monitor?
-		if( monitor == null )
-		{
-			return false;
-		}
-
-		// Make a copy of the input slot
-		ItemStack inputSlot = inventory.getStackInSlot( ContainerCellTerminalBase.INPUT_SLOT_ID ).copy();
-
-		// Is the container empty?
-		if( EssentiaItemContainerHelper.isContainerEmpty( inputSlot ) )
-		{
-			// Attempt to fill the container.
-			return EssentiaCellTerminalWorker.fillContainer( inventory, monitor, inputSlot, machineSource, currentAspect );
-		}
-		// Is the container not empty?
-		else if( EssentiaItemContainerHelper.isContainerFilled( inputSlot ) )
-		{
-			// Attempt to drain it.
-			return EssentiaCellTerminalWorker.drainContainer( inventory, monitor, inputSlot, machineSource );
-		}
-		
-		return false;
 	}
 
 }

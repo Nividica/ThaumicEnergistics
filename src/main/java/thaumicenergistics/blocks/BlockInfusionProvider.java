@@ -29,47 +29,33 @@ public class BlockInfusionProvider
 	}
 
 	@Override
-	public TileEntity createNewTileEntity( World world, int metaData )
-	{
-		// Create a new provider tile, passing the side to attach to
-		TileInfusionProvider tile = new TileInfusionProvider();
-		
-		// Setup the infusion provider
-		tile.setupProvider( metaData  );
-		
-		// Return the tile
-		return tile;
-	}
-	
-	@Override
-	public void onNeighborBlockChange( World world, int x, int y, int z, Block neighbor )
-	{
-		// Inform our tile entity a neighbor has changed
-		( (TileInfusionProvider)world.getTileEntity( x, y, z ) ).checkGridConnectionColor();
-	}
-	
-	@Override
 	public void breakBlock( World world, int x, int y, int z, Block block, int metadata )
 	{
 		// Get our tile entity
 		TileInfusionProvider tile = (TileInfusionProvider)world.getTileEntity( x, y, z );
-		
+
 		// Do we still have a tile?
-		if( tile!= null )
+		if( tile != null )
 		{
 			// Inform it that its going away
 			tile.onBreakBlock();
 		}
-		
+
 		// Pass to super
 		super.breakBlock( world, x, y, z, block, metadata );
 	}
 
 	@Override
-	public int getRenderType()
+	public TileEntity createNewTileEntity( World world, int metaData )
 	{
-		// Provide our custom ID
-		return Renderers.InfusionProviderRenderID;
+		// Create a new provider tile, passing the side to attach to
+		TileInfusionProvider tile = new TileInfusionProvider();
+
+		// Setup the infusion provider
+		tile.setupProvider( metaData );
+
+		// Return the tile
+		return tile;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -80,9 +66,23 @@ public class BlockInfusionProvider
 	}
 
 	@Override
+	public int getRenderType()
+	{
+		// Provide our custom ID
+		return Renderers.InfusionProviderRenderID;
+	}
+
+	@Override
 	public String getUnlocalizedName()
 	{
 		return BlockEnum.INFUSION_PROVIDER.getUnlocalizedName();
+	}
+
+	@Override
+	public void onNeighborBlockChange( World world, int x, int y, int z, Block neighbor )
+	{
+		// Inform our tile entity a neighbor has changed
+		( (TileInfusionProvider)world.getTileEntity( x, y, z ) ).checkGridConnectionColor();
 	}
 
 }

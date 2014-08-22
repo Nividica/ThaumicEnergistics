@@ -15,6 +15,106 @@ public abstract class RenderBlockProviderBase
 	implements ISimpleBlockRenderingHandler
 {
 
+	private boolean renderPass( double x, double y, double z, AEColor overlayColor, int blockBrightness, boolean isActive )
+	{
+		// Get the tessellator instance
+		Tessellator tessellator = Tessellator.instance;
+
+		IIcon texture;
+
+		// Is this the opaque pass?
+		if( Renderers.currentRenderPass == Renderers.PASS_OPAQUE )
+		{
+			// Set texture to base
+			texture = this.getBaseTexture();
+
+			// Set the drawing color to full white
+			tessellator.setColorRGBA( 255, 255, 255, 255 );
+		}
+		else
+		{
+			// Set the texture to overlay
+			texture = this.getOverlayTexture();
+
+			// Are we active?
+			if( isActive )
+			{
+				// Active, do we have a color?
+				if( overlayColor == AEColor.Transparent )
+				{
+					// Nothing additional to render
+					return false;
+				}
+
+				// Set the drawing color
+				tessellator.setColorOpaque_I( overlayColor.mediumVariant );
+
+			}
+			else
+			{
+				// Inactive, set the drawing color to black
+				tessellator.setColorRGBA( 0, 0, 0, 255 );
+
+			}
+		}
+
+		// Set the brightness
+		tessellator.setBrightness( blockBrightness );
+
+		// Get the texture coords
+		double minU = texture.getMinU();
+		double maxU = texture.getMaxU();
+		double minV = texture.getMinV();
+		double maxV = texture.getMaxV();
+
+		// Calculate positions
+		double zNorth = z + 1.0D;
+		double zSouth = z;
+		double xEast = x + 1.0D;
+		double xWest = x;
+		double yUp = y + 1.0D;
+		double yDown = y;
+
+		// North face
+		tessellator.addVertexWithUV( xWest, yDown, zNorth, minU, maxV );
+		tessellator.addVertexWithUV( xEast, yDown, zNorth, maxU, maxV );
+		tessellator.addVertexWithUV( xEast, yUp, zNorth, maxU, minV );
+		tessellator.addVertexWithUV( xWest, yUp, zNorth, minU, minV );
+
+		// South face
+		tessellator.addVertexWithUV( xWest, yUp, zSouth, maxU, minV );
+		tessellator.addVertexWithUV( xEast, yUp, zSouth, minU, minV );
+		tessellator.addVertexWithUV( xEast, yDown, zSouth, minU, maxV );
+		tessellator.addVertexWithUV( xWest, yDown, zSouth, maxU, maxV );
+
+		// East face
+		tessellator.addVertexWithUV( xEast, yDown, zSouth, maxU, maxV );
+		tessellator.addVertexWithUV( xEast, yUp, zSouth, maxU, minV );
+		tessellator.addVertexWithUV( xEast, yUp, zNorth, minU, minV );
+		tessellator.addVertexWithUV( xEast, yDown, zNorth, minU, maxV );
+
+		// West face
+		tessellator.addVertexWithUV( xWest, yDown, zNorth, maxU, maxV );
+		tessellator.addVertexWithUV( xWest, yUp, zNorth, maxU, minV );
+		tessellator.addVertexWithUV( xWest, yUp, zSouth, minU, minV );
+		tessellator.addVertexWithUV( xWest, yDown, zSouth, minU, maxV );
+
+		// Up face
+		tessellator.addVertexWithUV( xWest, yUp, zNorth, maxU, minV );
+		tessellator.addVertexWithUV( xEast, yUp, zNorth, minU, minV );
+		tessellator.addVertexWithUV( xEast, yUp, zSouth, minU, maxV );
+		tessellator.addVertexWithUV( xWest, yUp, zSouth, maxU, maxV );
+
+		// Down face
+		tessellator.addVertexWithUV( xWest, yDown, zSouth, minU, maxV );
+		tessellator.addVertexWithUV( xEast, yDown, zSouth, maxU, maxV );
+		tessellator.addVertexWithUV( xEast, yDown, zNorth, maxU, minV );
+		tessellator.addVertexWithUV( xWest, yDown, zNorth, minU, minV );
+
+		// We did some drawing
+		return true;
+	}
+
 	protected abstract IIcon getBaseTexture();
 
 	protected abstract IIcon getOverlayTexture();
@@ -86,109 +186,9 @@ public abstract class RenderBlockProviderBase
 			// Get the active state
 			isActive = provider.isActive();
 		}
-		
+
 		// Render and return 
 		return this.renderPass( x, y, z, overlayColor, blockBrightness, isActive );
-	}
-
-	private boolean renderPass( double x, double y, double z, AEColor overlayColor, int blockBrightness, boolean isActive )
-	{
-		// Get the tessellator instance
-		Tessellator tessellator = Tessellator.instance;
-
-		IIcon texture;
-
-		// Is this the opaque pass?
-		if( Renderers.currentRenderPass == Renderers.PASS_OPAQUE )
-		{
-			// Set texture to base
-			texture = this.getBaseTexture();
-
-			// Set the drawing color to full white
-			tessellator.setColorRGBA( 255, 255, 255, 255 );
-		}
-		else
-		{
-			// Set the texture to overlay
-			texture = this.getOverlayTexture();
-			
-			// Are we active?
-			if( isActive )
-			{
-				// Active, do we have a color?
-				if( overlayColor == AEColor.Transparent )
-				{
-					// Nothing additional to render
-					return false;
-				}
-				
-				// Set the drawing color
-				tessellator.setColorOpaque_I( overlayColor.mediumVariant );
-				
-			}
-			else
-			{
-				// Inactive, set the drawing color to black
-				tessellator.setColorRGBA( 0, 0, 0, 255 );
-				
-			}
-		}
-		
-		// Set the brightness
-		tessellator.setBrightness( blockBrightness );
-		
-		// Get the texture coords
-		double minU = texture.getMinU();
-		double maxU = texture.getMaxU();
-		double minV = texture.getMinV();
-		double maxV = texture.getMaxV();
-
-		// Calculate positions
-		double zNorth = z + 1.0D;
-		double zSouth = z;
-		double xEast = x + 1.0D;
-		double xWest = x;
-		double yUp = y + 1.0D;
-		double yDown = y;
-
-		// North face
-		tessellator.addVertexWithUV( xWest, yDown, zNorth, minU, maxV );
-		tessellator.addVertexWithUV( xEast, yDown, zNorth, maxU, maxV );
-		tessellator.addVertexWithUV( xEast, yUp, zNorth, maxU, minV );
-		tessellator.addVertexWithUV( xWest, yUp, zNorth, minU, minV );
-
-		// South face
-		tessellator.addVertexWithUV( xWest, yUp, zSouth, maxU, minV );
-		tessellator.addVertexWithUV( xEast, yUp, zSouth, minU, minV );
-		tessellator.addVertexWithUV( xEast, yDown, zSouth, minU, maxV );
-		tessellator.addVertexWithUV( xWest, yDown, zSouth, maxU, maxV );
-
-		// East face
-		tessellator.addVertexWithUV( xEast, yDown, zSouth, maxU, maxV );
-		tessellator.addVertexWithUV( xEast, yUp, zSouth, maxU, minV );
-		tessellator.addVertexWithUV( xEast, yUp, zNorth, minU, minV );
-		tessellator.addVertexWithUV( xEast, yDown, zNorth, minU, maxV );
-
-		// West face
-		tessellator.addVertexWithUV( xWest, yDown, zNorth, maxU, maxV );
-		tessellator.addVertexWithUV( xWest, yUp, zNorth, maxU, minV );
-		tessellator.addVertexWithUV( xWest, yUp, zSouth, minU, minV );
-		tessellator.addVertexWithUV( xWest, yDown, zSouth, minU, maxV );
-
-		// Up face
-		tessellator.addVertexWithUV( xWest, yUp, zNorth, maxU, minV );
-		tessellator.addVertexWithUV( xEast, yUp, zNorth, minU, minV );
-		tessellator.addVertexWithUV( xEast, yUp, zSouth, minU, maxV );
-		tessellator.addVertexWithUV( xWest, yUp, zSouth, maxU, maxV );
-
-		// Down face
-		tessellator.addVertexWithUV( xWest, yDown, zSouth, minU, maxV );
-		tessellator.addVertexWithUV( xEast, yDown, zSouth, maxU, maxV );
-		tessellator.addVertexWithUV( xEast, yDown, zNorth, maxU, minV );
-		tessellator.addVertexWithUV( xWest, yDown, zNorth, minU, minV );
-		
-		// We did some drawing
-		return true;
 	}
 
 	@Override

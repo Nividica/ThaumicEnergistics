@@ -33,6 +33,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.ICellContainer;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.helpers.IPriorityHost;
@@ -341,7 +342,7 @@ public class AEPartEssentiaStorageBus
 	@Override
 	public void onInventoryChanged( IInventory sourceInventory )
 	{
-		this.handler.setInverted( AEApi.instance().materials().materialCardInverter.sameAs( this.upgradeInventory.getStackInSlot( 0 ) ) );
+		this.handler.setInverted( AEApi.instance().materials().materialCardInverter.sameAsStack( this.upgradeInventory.getStackInSlot( 0 ) ) );
 	}
 
 	/**
@@ -477,13 +478,19 @@ public class AEPartEssentiaStorageBus
 		this.renderStaticBusLights( x, y, z, helper, renderer );
 	}
 
-	/**
-	 * Ensures the storage bus gets saved.
-	 */
 	@Override
 	public void saveChanges()
 	{
 		this.host.markForSave();
+	}
+
+	/**
+	 * Ensures the storage bus gets saved.
+	 */
+	@Override
+	public void saveChanges( IMEInventory inventory )
+	{
+		this.saveChanges();
 	}
 
 	/**

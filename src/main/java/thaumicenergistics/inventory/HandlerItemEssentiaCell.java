@@ -236,17 +236,6 @@ public class HandlerItemEssentiaCell
 		return AccessRestriction.READ_WRITE;
 	}
 
-	@Override
-	public IItemList<IAEFluidStack> getAvailableItems( IItemList<IAEFluidStack> out )
-	{
-		for( FluidStack fluidStack : this.fluidStacks )
-		{
-			out.add( AEApi.instance().storage().createFluidStack( fluidStack ) );
-		}
-
-		return out;
-	}
-
 	public List<AspectStack> getAvailableAspects()
 	{
 		List<AspectStack> aspectList = new ArrayList<AspectStack>( this.fluidStacks.size() );
@@ -261,6 +250,17 @@ public class HandlerItemEssentiaCell
 		}
 
 		return aspectList;
+	}
+
+	@Override
+	public IItemList<IAEFluidStack> getAvailableItems( IItemList<IAEFluidStack> out )
+	{
+		for( FluidStack fluidStack : this.fluidStacks )
+		{
+			out.add( AEApi.instance().storage().createFluidStack( fluidStack ) );
+		}
+
+		return out;
 	}
 
 	@Override
@@ -279,6 +279,16 @@ public class HandlerItemEssentiaCell
 	public int getSlot()
 	{
 		return 0;
+	}
+
+	/**
+	 * Gets the stored sorting mode.
+	 * 
+	 * @return
+	 */
+	public ComparatorMode getSortingMode()
+	{
+		return this.sortMode;
 	}
 
 	@Override
@@ -394,6 +404,20 @@ public class HandlerItemEssentiaCell
 		return ( input != null ) && ( this.prioritizedFluids.contains( input.getFluid() ) );
 	}
 
+	/**
+	 * Sets the stored sorting mode.
+	 * 
+	 * @param sortMode
+	 */
+	public void setSortingMode( ComparatorMode sortMode )
+	{
+		// Store the mode
+		this.stackTag.setInteger( HandlerItemEssentiaCell.NBT_SORT_KEY, sortMode.ordinal() );
+
+		// Set the mode
+		this.sortMode = sortMode;
+	}
+
 	public long totalBytes()
 	{
 		return this.totalBytes;
@@ -424,26 +448,10 @@ public class HandlerItemEssentiaCell
 		return typeCount;
 	}
 
-	/**
-	 * Gets the stored sorting mode.
-	 * @return
-	 */
-	public ComparatorMode getSortingMode()
+	@Override
+	public boolean validForPass( int pass )
 	{
-		return this.sortMode;
-	}
-	
-	/**
-	 * Sets the stored sorting mode.
-	 * @param sortMode
-	 */
-	public void setSortingMode( ComparatorMode sortMode )
-	{
-		// Store the mode
-		this.stackTag.setInteger( HandlerItemEssentiaCell.NBT_SORT_KEY, sortMode.ordinal() );
-		
-		// Set the mode
-		this.sortMode = sortMode;
+		return true;
 	}
 
 }

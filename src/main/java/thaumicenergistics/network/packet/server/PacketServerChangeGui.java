@@ -1,8 +1,8 @@
 package thaumicenergistics.network.packet.server;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import io.netty.buffer.ByteBuf;
 import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.network.packet.AbstractPacket;
 import thaumicenergistics.network.packet.AbstractServerPacket;
@@ -13,7 +13,7 @@ public class PacketServerChangeGui
 {
 	private static final byte MODE_REGULAR = 0;
 	private static final byte MODE_PART = 1;
-	
+
 	private int guiID;
 	private AEPartBase part;
 	private World world;
@@ -21,16 +21,16 @@ public class PacketServerChangeGui
 	private int y;
 	private int z;
 
-	public PacketServerChangeGui createChangeGuiRequest( int guiID, EntityPlayer player, World world, int x, int y, int z )
+	public PacketServerChangeGui createChangeGuiRequest( AEPartBase part, EntityPlayer player, World world, int x, int y, int z )
 	{
 		// Set the player
 		this.player = player;
 
 		// Set the mode
-		this.mode = PacketServerChangeGui.MODE_REGULAR;
+		this.mode = PacketServerChangeGui.MODE_PART;
 
-		// Set the guiID
-		this.guiID = guiID;
+		// Set the part
+		this.part = part;
 
 		// Set the world
 		this.world = world;
@@ -43,17 +43,17 @@ public class PacketServerChangeGui
 		return this;
 	}
 
-	public PacketServerChangeGui createChangeGuiRequest( AEPartBase part, EntityPlayer player, World world, int x, int y, int z )
+	public PacketServerChangeGui createChangeGuiRequest( int guiID, EntityPlayer player, World world, int x, int y, int z )
 	{
 		// Set the player
 		this.player = player;
 
 		// Set the mode
-		this.mode = PacketServerChangeGui.MODE_PART;
+		this.mode = PacketServerChangeGui.MODE_REGULAR;
 
-		// Set the part
-		this.part = part;
-		
+		// Set the guiID
+		this.guiID = guiID;
+
 		// Set the world
 		this.world = world;
 
@@ -78,7 +78,7 @@ public class PacketServerChangeGui
 			// Launch part
 			GuiHandler.launchGui( this.part, this.player, this.world, this.x, this.y, this.z );
 		}
-		
+
 	}
 
 	@Override

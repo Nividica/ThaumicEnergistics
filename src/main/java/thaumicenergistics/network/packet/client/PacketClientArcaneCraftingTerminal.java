@@ -2,8 +2,6 @@ package thaumicenergistics.network.packet.client;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Iterator;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +11,8 @@ import thaumicenergistics.network.packet.AbstractPacket;
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketClientArcaneCraftingTerminal
 	extends AbstractClientPacket
@@ -26,6 +26,35 @@ public class PacketClientArcaneCraftingTerminal
 	private IItemList<IAEItemStack> fullList;
 
 	private boolean isHeldEmpty;
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	protected void wrappedExecute()
+	{
+		// Get the current screen being displayed to the user
+		Gui gui = Minecraft.getMinecraft().currentScreen;
+
+		// Is that screen the gui for the ACT?
+		if( gui instanceof GuiArcaneCraftingTerminal )
+		{
+			switch ( this.mode )
+			{
+				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST:
+					// Set the item list
+					( (GuiArcaneCraftingTerminal)gui ).onReceiveFullList( this.fullList );
+					break;
+
+				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_CHANGE:
+					// Update the item list
+					( (GuiArcaneCraftingTerminal)gui ).onReceiveChange( this.changedStack );
+					break;
+
+				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
+					// Set the held item
+					( (GuiArcaneCraftingTerminal)gui ).onPlayerHeldReceived( this.changedStack );
+			}
+		}
+	}
 
 	/**
 	 * Creates a packet with a changed network stack amount
@@ -93,35 +122,6 @@ public class PacketClientArcaneCraftingTerminal
 		this.isHeldEmpty = ( heldItem == null );
 
 		return this;
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	protected void wrappedExecute()
-	{
-		// Get the current screen being displayed to the user
-		Gui gui = Minecraft.getMinecraft().currentScreen;
-
-		// Is that screen the gui for the ACT?
-		if( gui instanceof GuiArcaneCraftingTerminal )
-		{
-			switch ( this.mode )
-			{
-				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST:
-					// Set the item list
-					( (GuiArcaneCraftingTerminal)gui ).onReceiveFullList( this.fullList );
-					break;
-
-				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_CHANGE:
-					// Update the item list
-					( (GuiArcaneCraftingTerminal)gui ).onReceiveChange( this.changedStack );
-					break;
-
-				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
-					// Set the held item
-					( (GuiArcaneCraftingTerminal)gui ).onPlayerHeldReceived( this.changedStack );
-			}
-		}
 	}
 
 	@Override
@@ -200,7 +200,7 @@ public class PacketClientArcaneCraftingTerminal
 					stream.writeInt( 0 );
 					return;
 				}
-				
+
 				// Write how many items there are
 				stream.writeInt( this.fullList.size() );
 

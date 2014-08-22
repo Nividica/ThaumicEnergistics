@@ -23,12 +23,12 @@ public class ContainerPartEssentiaLevelEmitter
 	 * Y position for the hotbar inventory
 	 */
 	private static int HOTBAR_INV_POSITION_Y = 160;
-	
+
 	/**
 	 * The AE part associated with this container.
 	 */
 	private AEPartEssentiaLevelEmitter part;
-	
+
 	/**
 	 * Create the container.
 	 * 
@@ -39,7 +39,7 @@ public class ContainerPartEssentiaLevelEmitter
 	{
 		// Set the part
 		this.part = part;
-		
+
 		// Get the players inventory and bind it to the container.
 		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaLevelEmitter.PLAYER_INV_POSITION_Y,
 			ContainerPartEssentiaLevelEmitter.HOTBAR_INV_POSITION_Y );
@@ -63,16 +63,16 @@ public class ContainerPartEssentiaLevelEmitter
 		if( ( slot != null ) && ( slot.getHasStack() ) )
 		{
 			// Can we set the filter based on this item?
-			if ( ( this.part != null ) && this.part.setFilteredAspectFromItemstack( player, slot.getStack() ) )
+			if( ( this.part != null ) && this.part.setFilteredAspectFromItemstack( player, slot.getStack() ) )
 			{
 				return null;
 			}
-			
+
 			// Attempt to swap
 			if( this.swapSlotInventoryHotbar( slotNumber, slot.getStack() ) )
 			{
 				// Did the merger drain the stack?
-				if ( slot.getStack().stackSize == 0 )
+				if( slot.getStack().stackSize == 0 )
 				{
 					// Set the slot to have no item
 					slot.putStack( null );
@@ -82,9 +82,9 @@ public class ContainerPartEssentiaLevelEmitter
 				slot.onSlotChanged();
 			}
 		}
-		
+
 		return null;
-		
+
 	}
 
 }

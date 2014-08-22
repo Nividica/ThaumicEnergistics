@@ -10,24 +10,10 @@ public class PacketServerEssentiaIOBus
 	extends AbstractServerPacket
 {
 	private static final byte MODE_REQUEST_FULL_UPDATE = 0;
-	
+
 	private static final byte MODE_REQUEST_CHANGE_REDSTONE_MODE = 1;
-	
+
 	private AEPartEssentiaIO part;
-
-	public PacketServerEssentiaIOBus createRequestFullUpdate( EntityPlayer player, AEPartEssentiaIO part )
-	{
-		// Set the player
-		this.player = player;
-		
-		// Set the mode
-		this.mode = PacketServerEssentiaIOBus.MODE_REQUEST_FULL_UPDATE;
-
-		// Set the part
-		this.part = part;
-		
-		return this;
-	}
 
 	public PacketServerEssentiaIOBus createRequestChangeRedstoneMode( EntityPlayer player, AEPartEssentiaIO part )
 	{
@@ -39,20 +25,34 @@ public class PacketServerEssentiaIOBus
 
 		// Set the part
 		this.part = part;
-		
+
+		return this;
+	}
+
+	public PacketServerEssentiaIOBus createRequestFullUpdate( EntityPlayer player, AEPartEssentiaIO part )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerEssentiaIOBus.MODE_REQUEST_FULL_UPDATE;
+
+		// Set the part
+		this.part = part;
+
 		return this;
 	}
 
 	@Override
 	public void execute()
 	{
-		switch( this.mode )
+		switch ( this.mode )
 		{
 			case PacketServerEssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
 				// Request a full update
 				this.part.onClientRequestFullUpdate( this.player );
 				break;
-				
+
 			case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
 				// Request a redstone mode change
 				this.part.onClientRequestChangeRedstoneMode( this.player );
@@ -63,7 +63,7 @@ public class PacketServerEssentiaIOBus
 	@Override
 	public void readData( ByteBuf stream )
 	{
-		switch( this.mode )
+		switch ( this.mode )
 		{
 			case PacketServerEssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
 			case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
@@ -76,7 +76,7 @@ public class PacketServerEssentiaIOBus
 	@Override
 	public void writeData( ByteBuf stream )
 	{
-		switch( this.mode )
+		switch ( this.mode )
 		{
 			case PacketServerEssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
 			case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:

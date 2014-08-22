@@ -9,24 +9,19 @@ public enum BlockTextureManager
 		BUS_SIDE (TextureTypes.Part, new String[] { "bus.side" }),
 		BUS_BORDER (TextureTypes.Part, new String[] { "bus.border" }),
 		BUS_COLOR (TextureTypes.Part, new String[] { "bus.color.border", "bus.color.light" }),
-		ESSENTIA_IMPORT_BUS (TextureTypes.Part, new String[] { "essentia.import.bus.face",
-						"essentia.import.bus.overlay",
+		ESSENTIA_IMPORT_BUS (TextureTypes.Part, new String[] { "essentia.import.bus.face", "essentia.import.bus.overlay",
 						"essentia.import.bus.chamber" }),
-		ESSENTIA_LEVEL_EMITTER (TextureTypes.Part, new String[] { "essentia.level.emitter.base",
-						"essentia.level.emitter.active",
+		ESSENTIA_LEVEL_EMITTER (TextureTypes.Part, new String[] { "essentia.level.emitter.base", "essentia.level.emitter.active",
 						"essentia.level.emitter.inactive" }),
 		ESSENTIA_STORAGE_BUS (TextureTypes.Part, new String[] { "essentia.storage.bus.face", "essentia.storage.bus.overlay" }),
 		ESSENTIA_EXPORT_BUS (TextureTypes.Part, new String[] { "essentia.export.bus.face", "essentia.export.bus.overlay" }),
 		ESSENTIA_STORAGE_CELL_CHEST (TextureTypes.Block, new String[] { "essentia.storage.cell.chest.overlay" }),
-		ESSENTIA_TERMINAL (TextureTypes.Part, new String[] { "essentia.terminal.overlay.1",
-						"essentia.terminal.overlay.2",
+		ESSENTIA_TERMINAL (TextureTypes.Part, new String[] { "essentia.terminal.overlay.1", "essentia.terminal.overlay.2",
 						"essentia.terminal.overlay.3" }),
 		ESSENTIA_PROVIDER (TextureTypes.Block, new String[] { "essentia.provider", "essentia.provider.overlay" }),
 		INFUSION_PROVIDER (TextureTypes.Block, new String[] { "infusion.provider", "infusion.provider.overlay" }),
-		ARCANE_CRAFTING_TERMINAL (TextureTypes.Part, new String[] { "arcane.crafting.overlay1",
-						"arcane.crafting.overlay2",
-						"arcane.crafting.overlay3",
-						"arcane.crafting.side" });
+		ARCANE_CRAFTING_TERMINAL (TextureTypes.Part, new String[] { "arcane.crafting.overlay1", "arcane.crafting.overlay2",
+						"arcane.crafting.overlay3", "arcane.crafting.side" });
 
 	private enum TextureTypes
 	{

@@ -44,7 +44,7 @@ public class WidgetAspectSelector
 
 		// Get the amount
 		this.amount = stack.amount;
-		
+
 		// Get the aspect color
 		int aspectColor = stack.aspect.getColor();
 

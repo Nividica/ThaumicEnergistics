@@ -15,31 +15,6 @@ import thaumcraft.common.Thaumcraft;
 public class AspectStack
 {
 	/**
-	 * Creates an aspect stack from a NBT compound tag.
-	 * 
-	 * @param nbt
-	 * Tag to load from
-	 * @return Created stack, or null.
-	 */
-	public static AspectStack loadAspectStackFromNBT( NBTTagCompound nbt )
-	{
-		// Attempt to get the aspect
-		Aspect aspect = Aspect.aspects.get( nbt.getString( "AspectTag" ) );
-
-		// Did we get an aspect?
-		if( aspect == null )
-		{
-			return null;
-		}
-
-		// Load the amount
-		long amount = nbt.getLong( "Amount" );
-
-		// Return a newly created stack.
-		return new AspectStack( aspect, amount );
-	}
-
-	/**
 	 * The aspect this stack contains.
 	 */
 	public Aspect aspect;
@@ -86,6 +61,31 @@ public class AspectStack
 	}
 
 	/**
+	 * Creates an aspect stack from a NBT compound tag.
+	 * 
+	 * @param nbt
+	 * Tag to load from
+	 * @return Created stack, or null.
+	 */
+	public static AspectStack loadAspectStackFromNBT( NBTTagCompound nbt )
+	{
+		// Attempt to get the aspect
+		Aspect aspect = Aspect.aspects.get( nbt.getString( "AspectTag" ) );
+
+		// Did we get an aspect?
+		if( aspect == null )
+		{
+			return null;
+		}
+
+		// Load the amount
+		long amount = nbt.getLong( "Amount" );
+
+		// Return a newly created stack.
+		return new AspectStack( aspect, amount );
+	}
+
+	/**
 	 * Creates a copy of this stack and returns it.
 	 * 
 	 * @return Copy of the stack.
@@ -93,6 +93,28 @@ public class AspectStack
 	public AspectStack copy()
 	{
 		return new AspectStack( this );
+	}
+
+	/**
+	 * Gets the display name for the aspect.
+	 * 
+	 * @return Aspect name, or empty string if no aspect.
+	 */
+	public String getAspectName( EntityPlayer player )
+	{
+		// Do we have an aspect?
+		if( this.aspect == null )
+		{
+			return "";
+		}
+
+		// Have we researched the aspect?
+		if( !this.hasPlayerDiscovered( player ) )
+		{
+			return StatCollector.translateToLocal( "tc.aspect.unknown" );
+		}
+
+		return this.aspect.getName();
 	}
 
 	/**
@@ -125,28 +147,6 @@ public class AspectStack
 		}
 
 		return "";
-	}
-
-	/**
-	 * Gets the display name for the aspect.
-	 * 
-	 * @return Aspect name, or empty string if no aspect.
-	 */
-	public String getAspectName( EntityPlayer player )
-	{
-		// Do we have an aspect?
-		if( this.aspect == null )
-		{
-			return "";
-		}
-
-		// Have we researched the aspect?
-		if( !this.hasPlayerDiscovered( player ) )
-		{
-			return StatCollector.translateToLocal( "tc.aspect.unknown" );
-		}
-
-		return this.aspect.getName();
 	}
 
 	public boolean hasPlayerDiscovered( EntityPlayer player )

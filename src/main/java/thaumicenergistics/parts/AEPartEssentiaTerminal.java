@@ -78,11 +78,6 @@ public class AEPartEssentiaTerminal
 		super( AEPartsEnum.EssentiaTerminal );
 	}
 
-	public MachineSource getTerminalMachineSource()
-	{
-		return this.machineSource;
-	}
-
 	public void addContainer( ContainerCellTerminalBase container )
 	{
 		if( container instanceof ContainerEssentiaTerminal )
@@ -113,6 +108,34 @@ public class AEPartEssentiaTerminal
 		return new GuiEssentiaTerminal( this, player );
 	}
 
+	@Override
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	{
+		// Loop over inventory
+		for( int slotIndex = 0; slotIndex < 2; slotIndex++ )
+		{
+			// Get the stack at this index
+			ItemStack slotStack = this.inventory.getStackInSlot( slotIndex );
+
+			// Did we get anything?
+			if( slotStack != null )
+			{
+				// Add to drops
+				drops.add( slotStack );
+			}
+		}
+	}
+
+	/**
+	 * Determines how much power the part takes for just
+	 * existing.
+	 */
+	@Override
+	public double getIdlePowerUsage()
+	{
+		return AEPartEssentiaTerminal.IDLE_POWER_DRAIN;
+	}
+
 	public PrivateInventory getInventory()
 	{
 		return this.inventory;
@@ -122,6 +145,101 @@ public class AEPartEssentiaTerminal
 	public Object getServerGuiElement( EntityPlayer player )
 	{
 		return new ContainerEssentiaTerminal( this, player );
+	}
+
+	/**
+	 * Gets the current sorting mode
+	 * 
+	 * @return
+	 */
+	public ComparatorMode getSortingMode()
+	{
+		return this.sortMode;
+	}
+
+	public MachineSource getTerminalMachineSource()
+	{
+		return this.machineSource;
+	}
+
+	/**
+	 * Attempts to lock the terminal's inventory so that
+	 * changes can be made.
+	 * 
+	 * @return True if the lock was acquired, false otherwise.
+	 */
+	public boolean lockInventoryForWork()
+	{
+		boolean gotLock = false;
+
+		// Ensure only 1 thread can access the lock at a time
+		synchronized( this.inventory )
+		{
+			// Is the inventory not locked?
+			if( !this.inventoryLocked )
+			{
+				// Mark it is now locked
+				this.inventoryLocked = true;
+
+				// Mark that this thread got the lock
+				gotLock = true;
+			}
+		}
+
+		// Return if this thread got the lock or not
+		return gotLock;
+	}
+
+	/**
+	 * Informs all open containers to update their respective clients
+	 * that the sorting mode has changed.
+	 */
+	public void notifyListenersSortingModeChanged()
+	{
+		for( ContainerEssentiaTerminal listener : this.listeners )
+		{
+			listener.onSortingModeChanged( this.sortMode );
+		}
+	}
+
+	/**
+	 * Called when a player has changed sorting modes.
+	 * 
+	 * @param sortMode
+	 */
+	public void onClientRequestSortingModeChange( ComparatorMode sortMode )
+	{
+		// Set the sort mode
+		this.sortMode = sortMode;
+
+		// Update clients
+		this.notifyListenersSortingModeChanged();
+
+		// Mark that we need saving
+		this.host.markForSave();
+
+	}
+
+	/**
+	 * Called to read our saved state
+	 */
+	@Override
+	public void readFromNBT( NBTTagCompound data )
+	{
+		// Call super
+		super.readFromNBT( data );
+
+		// Read the sorting mode
+		if( data.hasKey( SORT_MODE_NBT_KEY ) )
+		{
+			this.sortMode = ComparatorMode.values()[data.getInteger( SORT_MODE_NBT_KEY )];
+		}
+
+		// Read inventory
+		if( data.hasKey( AEPartEssentiaTerminal.INVENTORY_NBT_KEY ) )
+		{
+			this.inventory.loadFromNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
+		}
 	}
 
 	public void removeContainer( ContainerEssentiaTerminal containerAspectTerminal )
@@ -207,34 +325,6 @@ public class AEPartEssentiaTerminal
 	}
 
 	/**
-	 * Attempts to lock the terminal's inventory so that
-	 * changes can be made.
-	 * 
-	 * @return True if the lock was acquired, false otherwise.
-	 */
-	public boolean lockInventoryForWork()
-	{
-		boolean gotLock = false;
-
-		// Ensure only 1 thread can access the lock at a time
-		synchronized( this.inventory )
-		{
-			// Is the inventory not locked?
-			if( !this.inventoryLocked )
-			{
-				// Mark it is now locked
-				this.inventoryLocked = true;
-
-				// Mark that this thread got the lock
-				gotLock = true;
-			}
-		}
-
-		// Return if this thread got the lock or not
-		return gotLock;
-	}
-
-	/**
 	 * Unlocks the terminal so that other threads can
 	 * perform work. This should only be called from
 	 * a thread that owns the lock.
@@ -246,74 +336,6 @@ public class AEPartEssentiaTerminal
 		{
 			this.inventoryLocked = false;
 		}
-	}
-
-	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
-	{
-		// Loop over inventory
-		for( int slotIndex = 0; slotIndex < 2; slotIndex++ )
-		{
-			// Get the stack at this index
-			ItemStack slotStack = this.inventory.getStackInSlot( slotIndex );
-
-			// Did we get anything?
-			if( slotStack != null )
-			{
-				// Add to drops
-				drops.add( slotStack );
-			}
-		}
-	}
-
-	/**
-	 * Determines how much power the part takes for just
-	 * existing.
-	 */
-	@Override
-	public double getIdlePowerUsage()
-	{
-		return AEPartEssentiaTerminal.IDLE_POWER_DRAIN;
-	}
-
-	/**
-	 * Called when a player has changed sorting modes.
-	 * 
-	 * @param sortMode
-	 */
-	public void onClientRequestSortingModeChange( ComparatorMode sortMode )
-	{
-		// Set the sort mode
-		this.sortMode = sortMode;
-
-		// Update clients
-		this.notifyListenersSortingModeChanged();
-
-		// Mark that we need saving
-		this.host.markForSave();
-
-	}
-
-	/**
-	 * Informs all open containers to update their respective clients
-	 * that the sorting mode has changed.
-	 */
-	public void notifyListenersSortingModeChanged()
-	{
-		for( ContainerEssentiaTerminal listener : this.listeners )
-		{
-			listener.onSortingModeChanged( this.sortMode );
-		}
-	}
-
-	/**
-	 * Gets the current sorting mode
-	 * 
-	 * @return
-	 */
-	public ComparatorMode getSortingMode()
-	{
-		return this.sortMode;
 	}
 
 	/**
@@ -330,28 +352,6 @@ public class AEPartEssentiaTerminal
 
 		// Write inventory
 		this.inventory.saveToNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
-	}
-
-	/**
-	 * Called to read our saved state
-	 */
-	@Override
-	public void readFromNBT( NBTTagCompound data )
-	{
-		// Call super
-		super.readFromNBT( data );
-
-		// Read the sorting mode
-		if( data.hasKey( SORT_MODE_NBT_KEY ) )
-		{
-			this.sortMode = ComparatorMode.values()[data.getInteger( SORT_MODE_NBT_KEY )];
-		}
-
-		// Read inventory
-		if( data.hasKey( AEPartEssentiaTerminal.INVENTORY_NBT_KEY ) )
-		{
-			this.inventory.loadFromNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
-		}
 	}
 
 }

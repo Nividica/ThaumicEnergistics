@@ -21,6 +21,75 @@ import appeng.helpers.IPriorityHost;
 public class GuiPriority
 	extends GuiContainer
 {
+	private static class AdjustmentButtonDef
+	{
+		enum EnumButtonWidth
+		{
+				Small (25),
+				Medium (35),
+				Large (45);
+
+			public final int width;
+
+			private EnumButtonWidth( int width )
+			{
+				this.width = width;
+			}
+		}
+
+		/**
+		 * Height of all buttons
+		 */
+		private static final int BUTTON_HEIGHT = 20;
+
+		/**
+		 * Width of the button
+		 */
+		public final int width;
+
+		/**
+		 * Caption of the button
+		 */
+		public final String caption;
+
+		/**
+		 * Amount the button represents
+		 */
+		public final int amount;
+
+		/**
+		 * Creates the button definition
+		 * 
+		 * @param buttonWidth
+		 * @param amount
+		 */
+		public AdjustmentButtonDef( EnumButtonWidth buttonWidth, int amount )
+		{
+			// Set the width
+			this.width = buttonWidth.width;
+
+			// Set the caption
+			this.caption = ( amount > 0 ? "+" : "" ) + Integer.toString( amount );
+
+			// Set the amount
+			this.amount = amount;
+		}
+
+		/**
+		 * Creates a GUI button based of this definition
+		 * 
+		 * @param ID
+		 * @param xPosition
+		 * @param yPosition
+		 * @return
+		 */
+		public GuiButton makeButton( int ID, int xPosition, int yPosition )
+		{
+			return new GuiButton( ID, xPosition, yPosition, this.width, AdjustmentButtonDef.BUTTON_HEIGHT, this.caption );
+		}
+
+	}
+
 	private static final AdjustmentButtonDef[] ADJUSTMENT_BUTTONS = new AdjustmentButtonDef[] {
 					new AdjustmentButtonDef( AdjustmentButtonDef.EnumButtonWidth.Small, 1 ),
 					new AdjustmentButtonDef( AdjustmentButtonDef.EnumButtonWidth.Medium, 10 ),
@@ -113,7 +182,7 @@ public class GuiPriority
 	 * The player viewing the gui.
 	 */
 	private final EntityPlayer player;
-	
+
 	/**
 	 * Title of the window
 	 */
@@ -144,7 +213,7 @@ public class GuiPriority
 		// Set the width and height
 		this.xSize = GuiPriority.GUI_WIDTH;
 		this.ySize = GuiPriority.GUI_HEIGHT;
-		
+
 		// Set the title
 		this.title = StatCollector.translateToLocal( "gui.appliedenergistics2.Priority" );
 	}
@@ -163,19 +232,6 @@ public class GuiPriority
 	}
 
 	/**
-	 * Draw the foreground
-	 */
-	@Override
-	public void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
-	{
-		// Draw the title
-	this.fontRendererObj.drawString( this.title, GuiPriority.TITLE_POS_X, GuiPriority.TITLE_POS_Y, 0 );
-
-		// Draw the text field
-		this.amountField.drawTextBox();
-	}
-	
-	/**
 	 * Called when the player types a key
 	 */
 	@Override
@@ -185,8 +241,7 @@ public class GuiPriority
 		super.keyTyped( key, keyID );
 
 		// Ensure the key was numeric and the string isn't too long to parse, or backspace
-		if( ( Character.isDigit( key ) && ( this.amountField.getText().length() < GuiPriority.AMOUNT_MAX_CHARS ) ) ||
-						( keyID == Keyboard.KEY_BACK ) )
+		if( ( Character.isDigit( key ) && ( this.amountField.getText().length() < GuiPriority.AMOUNT_MAX_CHARS ) ) || ( keyID == Keyboard.KEY_BACK ) )
 		{
 			// Pass to the amount field
 			this.amountField.textboxKeyTyped( key, keyID );
@@ -205,15 +260,53 @@ public class GuiPriority
 			new PacketServerPriority().createRequestSetPriority( newPriority, this.player ).sendPacketToServer();
 		}
 	}
-	
+
 	/**
-	 * Called when the server sends the priority.
-	 * @param priority
+	 * Called when a button is clicked.
 	 */
-	public void onServerSendPriority( int priority )
+	@Override
+	public void actionPerformed( GuiButton button )
 	{
-		// Set the textbox text
-		this.amountField.setText( Integer.toString( priority ) );
+		// Was the priority button clicked?
+		if( button.id == GuiPriority.PART_SWITCH_BUTTON_ID )
+		{
+			// Get the storage buses host 
+			TileEntity host = this.part.getHostTile();
+
+			// Ask the server to change to the priority gui
+			new PacketServerChangeGui().createChangeGuiRequest( this.part, this.player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord )
+							.sendPacketToServer();
+			return;
+
+		}
+
+		// Assume it was an adjustment button
+		try
+		{
+			// Get the definition
+			AdjustmentButtonDef abDef = GuiPriority.ADJUSTMENT_BUTTONS[button.id - GuiPriority.ADJUSTMENT_BUTTONS_ID];
+
+			// Send the adjustment to the server
+			new PacketServerPriority().createRequestAdjustPriority( abDef.amount, this.player ).sendPacketToServer();
+		}
+		catch( IndexOutOfBoundsException _ )
+		{
+			return;
+		}
+
+	}
+
+	/**
+	 * Draw the foreground
+	 */
+	@Override
+	public void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
+	{
+		// Draw the title
+		this.fontRendererObj.drawString( this.title, GuiPriority.TITLE_POS_X, GuiPriority.TITLE_POS_Y, 0 );
+
+		// Draw the text field
+		this.amountField.drawTextBox();
 	}
 
 	@Override
@@ -221,7 +314,7 @@ public class GuiPriority
 	{
 		// Call super
 		super.initGui();
-		
+
 		// Enable repeat keys
 		Keyboard.enableRepeatEvents( true );
 
@@ -268,11 +361,11 @@ public class GuiPriority
 
 		// Text color white
 		this.amountField.setTextColor( 0xFFFFFFFF );
-		
+
 		// Ask for the priority from the server
 		new PacketServerPriority().createRequestPriority( this.player ).sendPacketToServer();
 	}
-	
+
 	/**
 	 * Called when the gui is closing.
 	 */
@@ -284,107 +377,14 @@ public class GuiPriority
 	}
 
 	/**
-	 * Called when a button is clicked.
+	 * Called when the server sends the priority.
+	 * 
+	 * @param priority
 	 */
-	@Override
-	public void actionPerformed( GuiButton button )
+	public void onServerSendPriority( int priority )
 	{
-		// Was the priority button clicked?
-		if( button.id == GuiPriority.PART_SWITCH_BUTTON_ID )
-		{
-			// Get the storage buses host 
-			TileEntity host = this.part.getHostTile();
-
-			// Ask the server to change to the priority gui
-			new PacketServerChangeGui().createChangeGuiRequest( this.part, this.player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord )
-							.sendPacketToServer();
-			return;
-
-		}
-
-		// Assume it was an adjustment button
-		try
-		{
-			// Get the definition
-			AdjustmentButtonDef abDef = GuiPriority.ADJUSTMENT_BUTTONS[button.id - GuiPriority.ADJUSTMENT_BUTTONS_ID];
-
-			// Send the adjustment to the server
-			new PacketServerPriority().createRequestAdjustPriority( abDef.amount, this.player ).sendPacketToServer();
-		}
-		catch( IndexOutOfBoundsException _ )
-		{
-			return;
-		}
-
-	}
-
-	private static class AdjustmentButtonDef
-	{
-		/**
-		 * Height of all buttons
-		 */
-		private static final int BUTTON_HEIGHT = 20;
-
-		/**
-		 * Width of the button
-		 */
-		public final int width;
-
-		/**
-		 * Caption of the button
-		 */
-		public final String caption;
-
-		/**
-		 * Amount the button represents
-		 */
-		public final int amount;
-
-		/**
-		 * Creates the button definition
-		 * 
-		 * @param buttonWidth
-		 * @param amount
-		 */
-		public AdjustmentButtonDef( EnumButtonWidth buttonWidth, int amount )
-		{
-			// Set the width
-			this.width = buttonWidth.width;
-
-			// Set the caption
-			this.caption = ( amount > 0 ? "+" : "" ) + Integer.toString( amount );
-
-			// Set the amount
-			this.amount = amount;
-		}
-
-		/**
-		 * Creates a GUI button based of this definition
-		 * 
-		 * @param ID
-		 * @param xPosition
-		 * @param yPosition
-		 * @return
-		 */
-		public GuiButton makeButton( int ID, int xPosition, int yPosition )
-		{
-			return new GuiButton( ID, xPosition, yPosition, this.width, AdjustmentButtonDef.BUTTON_HEIGHT, this.caption );
-		}
-
-		enum EnumButtonWidth
-		{
-				Small (25),
-				Medium (35),
-				Large (45);
-
-			public final int width;
-
-			private EnumButtonWidth( int width )
-			{
-				this.width = width;
-			}
-		}
-
+		// Set the textbox text
+		this.amountField.setText( Integer.toString( priority ) );
 	}
 
 }

@@ -1,33 +1,29 @@
 package thaumicenergistics.network.packet.client;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
-import io.netty.buffer.ByteBuf;
 import thaumicenergistics.gui.GuiPriority;
 import thaumicenergistics.network.packet.AbstractClientPacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketClientPriority
 	extends AbstractClientPacket
 {
 	private static final byte MODE_SEND = 0;
-	
+
 	private int priority;
-	
-	public PacketClientPriority createSendPriority( int priority, EntityPlayer player )
+
+	@Override
+	protected void readData( ByteBuf stream )
 	{
-		// Set the player
-		this.player = player;
-		
-		// Set the mode
-		this.mode = PacketClientPriority.MODE_SEND;
-		
-		// Set the priority
-		this.priority = priority;
-		
-		return this;
+		if( this.mode == PacketClientPriority.MODE_SEND )
+		{
+			// Read the priority
+			this.priority = stream.readInt();
+		}
 	}
 
 	@Override
@@ -39,10 +35,10 @@ public class PacketClientPriority
 		{
 			return;
 		}
-		
+
 		// Get the gui
 		Gui gui = Minecraft.getMinecraft().currentScreen;
-		
+
 		// Ensure they are looking at the priority gui
 		if( !( gui instanceof GuiPriority ) )
 		{
@@ -57,16 +53,6 @@ public class PacketClientPriority
 	}
 
 	@Override
-	protected void readData( ByteBuf stream )
-	{
-		if( this.mode == PacketClientPriority.MODE_SEND )
-		{
-			// Read the priority
-			this.priority = stream.readInt();
-		}
-	}
-
-	@Override
 	protected void writeData( ByteBuf stream )
 	{
 		if( this.mode == PacketClientPriority.MODE_SEND )
@@ -74,6 +60,20 @@ public class PacketClientPriority
 			// Write the priority
 			stream.writeInt( this.priority );
 		}
+	}
+
+	public PacketClientPriority createSendPriority( int priority, EntityPlayer player )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientPriority.MODE_SEND;
+
+		// Set the priority
+		this.priority = priority;
+
+		return this;
 	}
 
 }

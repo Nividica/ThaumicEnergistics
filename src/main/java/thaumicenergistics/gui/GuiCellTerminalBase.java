@@ -22,9 +22,9 @@ import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.container.IAspectSelectorContainer;
 import thaumicenergistics.gui.buttons.ButtonSortingMode;
 import thaumicenergistics.gui.widget.AbstractWidget;
-import thaumicenergistics.gui.widget.WidgetAspectSelectorComparator;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.gui.widget.WidgetAspectSelector;
+import thaumicenergistics.gui.widget.WidgetAspectSelectorComparator;
 import thaumicenergistics.texture.GuiTextureManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -264,6 +264,16 @@ public abstract class GuiCellTerminalBase
 	}
 
 	/**
+	 * Sorts the list of matching widgets based on the current
+	 * sorting mode.
+	 */
+	private void sortMatchingList()
+	{
+		// Sort the results
+		Collections.sort( this.matchingSearchWidgets, new WidgetAspectSelectorComparator( this.sortMode ) );
+	}
+
+	/**
 	 * Updates the scroll position based on mouse wheel movement.
 	 */
 	private void updateScrollPosition()
@@ -327,16 +337,6 @@ public abstract class GuiCellTerminalBase
 		// Sort
 		this.sortMatchingList();
 
-	}
-
-	/**
-	 * Sorts the list of matching widgets based on the current
-	 * sorting mode.
-	 */
-	private void sortMatchingList()
-	{
-		// Sort the results
-		Collections.sort( this.matchingSearchWidgets, new WidgetAspectSelectorComparator( this.sortMode ) );
 	}
 
 	/**
@@ -469,6 +469,22 @@ public abstract class GuiCellTerminalBase
 			}
 		}
 
+	}
+
+	protected abstract void sortModeButtonClicked( ComparatorMode modeRequested );
+
+	/**
+	 * Called when a button is clicked.
+	 */
+	@Override
+	public void actionPerformed( GuiButton button )
+	{
+		// Is the button the sort mode button?
+		if( button.id == GuiCellTerminalBase.SORT_MODE_BUTTON_ID )
+		{
+			// Pass to subclass
+			this.sortModeButtonClicked( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC );
+		}
 	}
 
 	/**
@@ -606,22 +622,6 @@ public abstract class GuiCellTerminalBase
 						GuiCellTerminalBase.SORT_MODE_BUTTON_POS_X, this.guiTop + GuiCellTerminalBase.SORT_MODE_BUTTON_POS_Y,
 						GuiCellTerminalBase.SORT_MODE_BUTTON_SIZE, GuiCellTerminalBase.SORT_MODE_BUTTON_SIZE ) );
 	}
-
-	/**
-	 * Called when a button is clicked.
-	 */
-	@Override
-	public void actionPerformed( GuiButton button )
-	{
-		// Is the button the sort mode button?
-		if( button.id == GuiCellTerminalBase.SORT_MODE_BUTTON_ID )
-		{
-			// Pass to subclass
-			this.sortModeButtonClicked( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC );
-		}
-	}
-
-	protected abstract void sortModeButtonClicked( ComparatorMode modeRequested );
 
 	public void onSortModeChanged( ComparatorMode sortMode )
 	{

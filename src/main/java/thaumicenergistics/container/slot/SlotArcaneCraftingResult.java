@@ -49,19 +49,24 @@ public class SlotArcaneCraftingResult
 		this.hostContianer = hostContianer;
 	}
 
-	public void setResultAspects( AspectList aspectList )
+	@Override
+	public void onPickupFromSlot( EntityPlayer player, ItemStack itemStack )
 	{
-		this.craftingAspects = aspectList;
-	}
+		// Call the transfer
+		this.onPickupFromSlotViaTransfer( player, itemStack );
 
-	public void setWand( ItemStack wand )
-	{
-		this.wand = wand;
+		// Is this server side?
+		if( EffectiveSide.isServerSide() )
+		{
+			// Send any changes to the client
+			this.hostContianer.detectAndSendChanges();
+		}
 	}
 
 	/**
 	 * Similar to the onPickupFromSlot, with the key difference being
 	 * that this function call will not update the client.
+	 * 
 	 * @param player
 	 * @param itemStack
 	 */
@@ -176,18 +181,14 @@ public class SlotArcaneCraftingResult
 		}
 	}
 
-	@Override
-	public void onPickupFromSlot( EntityPlayer player, ItemStack itemStack )
+	public void setResultAspects( AspectList aspectList )
 	{
-		// Call the transfer
-		this.onPickupFromSlotViaTransfer( player, itemStack );
-		
-		// Is this server side?
-		if( EffectiveSide.isServerSide() )
-		{
-			// Send any changes to the client
-			this.hostContianer.detectAndSendChanges();
-		}
+		this.craftingAspects = aspectList;
+	}
+
+	public void setWand( ItemStack wand )
+	{
+		this.wand = wand;
 	}
 
 }

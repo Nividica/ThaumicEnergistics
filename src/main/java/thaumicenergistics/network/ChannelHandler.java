@@ -71,11 +71,11 @@ public class ChannelHandler
 
 		wrapper.registerMessage( HandlerClientArcaneCraftingTerminal.class, PacketClientArcaneCraftingTerminal.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerArcaneCraftingTerminal.class, PacketServerArcaneCraftingTerminal.class, discriminator++ , Side.SERVER );
-		
-		wrapper.registerMessage( HandlerServerChangeGui.class, PacketServerChangeGui.class, discriminator++, Side.SERVER );
-		
-		wrapper.registerMessage( HandlerClientPriority.class, PacketClientPriority.class, discriminator++, Side.CLIENT );
-		wrapper.registerMessage( HandlerServerPriority.class, PacketServerPriority.class, discriminator++, Side.SERVER );
+
+		wrapper.registerMessage( HandlerServerChangeGui.class, PacketServerChangeGui.class, discriminator++ , Side.SERVER );
+
+		wrapper.registerMessage( HandlerClientPriority.class, PacketClientPriority.class, discriminator++ , Side.CLIENT );
+		wrapper.registerMessage( HandlerServerPriority.class, PacketServerPriority.class, discriminator++ , Side.SERVER );
 
 	}
 

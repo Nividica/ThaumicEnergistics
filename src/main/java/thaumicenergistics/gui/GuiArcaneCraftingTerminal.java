@@ -224,9 +224,10 @@ public class GuiArcaneCraftingTerminal
 				{
 					// Get the state of the shift keys
 					boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
-					
+
 					// Let the server know the user is requesting an itemstack.
-					new PacketServerArcaneCraftingTerminal().createRequestExtract( this.player, widgetStack, mouseButton, isShiftHeld ).sendPacketToServer();
+					new PacketServerArcaneCraftingTerminal().createRequestExtract( this.player, widgetStack, mouseButton, isShiftHeld )
+									.sendPacketToServer();
 				}
 
 				// Stop searching
@@ -453,6 +454,20 @@ public class GuiArcaneCraftingTerminal
 	}
 
 	/**
+	 * Called when a button is clicked.
+	 */
+	@Override
+	public void actionPerformed( GuiButton button )
+	{
+		// Was it the clear grid button?
+		if( button.id == GuiArcaneCraftingTerminal.CLEAR_GRID_ID )
+		{
+			// Attempt to clear the grid
+			new PacketServerArcaneCraftingTerminal().createRequestClearGrid( this.player ).sendPacketToServer();
+		}
+	}
+
+	/**
 	 * Sets the gui up.
 	 */
 	@Override
@@ -491,20 +506,6 @@ public class GuiArcaneCraftingTerminal
 		this.buttonList.add( new ButtonClearCraftingGrid( GuiArcaneCraftingTerminal.CLEAR_GRID_ID, this.guiLeft +
 						GuiArcaneCraftingTerminal.CLEAR_GRID_POS_X, this.guiTop + GuiArcaneCraftingTerminal.CLEAR_GRID_POS_Y, 8, 8 ) );
 
-	}
-
-	/**
-	 * Called when a button is clicked.
-	 */
-	@Override
-	public void actionPerformed( GuiButton button )
-	{
-		// Was it the clear grid button?
-		if( button.id == GuiArcaneCraftingTerminal.CLEAR_GRID_ID )
-		{
-			// Attempt to clear the grid
-			new PacketServerArcaneCraftingTerminal().createRequestClearGrid( this.player ).sendPacketToServer();
-		}
 	}
 
 	/**

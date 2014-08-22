@@ -151,7 +151,7 @@ public class GuiEssentiatIO
 	 * Tracks the redstone mode of the bus.
 	 */
 	private RedstoneMode redstoneMode = RedstoneMode.HIGH_SIGNAL;
-	
+
 	/**
 	 * Title of the gui
 	 */
@@ -182,7 +182,7 @@ public class GuiEssentiatIO
 
 		// Set the height
 		this.ySize = GuiEssentiatIO.GUI_HEIGHT;
-		
+
 		// Set the title
 		if( partBus instanceof AEPartEssentiaImportBus )
 		{
@@ -287,39 +287,6 @@ public class GuiEssentiatIO
 		}
 	}
 
-	/**
-	 * Sets the gui up.
-	 */
-	@Override
-	public void initGui()
-	{
-		// Call super
-		super.initGui();
-
-		// Add the slots
-		for( int row = 0; row < GuiEssentiatIO.FILTER_GRID_SIZE; row++ )
-		{
-			for( int column = 0; column < GuiEssentiatIO.FILTER_GRID_SIZE; column++ )
-			{
-				// Calculate the index
-				int index = ( row * GuiEssentiatIO.FILTER_GRID_SIZE ) + column;
-
-				// Calculate the x position
-				int xPos = GuiEssentiatIO.WIDGET_X_POSITION + ( column * AbstractWidget.WIDGET_SIZE );
-
-				// Calculate the y position
-				int yPos = GuiEssentiatIO.WIDGET_Y_POSITION + ( row * AbstractWidget.WIDGET_SIZE );
-
-				this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, index, xPos, yPos, this,
-								GuiEssentiatIO.WIDGET_CONFIG_BYTES[index] ) );
-			}
-		}
-
-		// Request a full update from the server
-		new PacketServerEssentiaIOBus().createRequestFullUpdate( this.player, this.part ).sendPacketToServer();
-
-	}
-
 	@Override
 	public void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
 	{
@@ -373,7 +340,7 @@ public class GuiEssentiatIO
 				}
 			}
 		}
-		
+
 		// Call super
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
 	}
@@ -382,6 +349,63 @@ public class GuiEssentiatIO
 	public byte getConfigState()
 	{
 		return this.filterSize;
+	}
+
+	/**
+	 * Sets the gui up.
+	 */
+	@Override
+	public void initGui()
+	{
+		// Call super
+		super.initGui();
+
+		// Add the slots
+		for( int row = 0; row < GuiEssentiatIO.FILTER_GRID_SIZE; row++ )
+		{
+			for( int column = 0; column < GuiEssentiatIO.FILTER_GRID_SIZE; column++ )
+			{
+				// Calculate the index
+				int index = ( row * GuiEssentiatIO.FILTER_GRID_SIZE ) + column;
+
+				// Calculate the x position
+				int xPos = GuiEssentiatIO.WIDGET_X_POSITION + ( column * AbstractWidget.WIDGET_SIZE );
+
+				// Calculate the y position
+				int yPos = GuiEssentiatIO.WIDGET_Y_POSITION + ( row * AbstractWidget.WIDGET_SIZE );
+
+				this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, index, xPos, yPos, this,
+								GuiEssentiatIO.WIDGET_CONFIG_BYTES[index] ) );
+			}
+		}
+
+		// Request a full update from the server
+		new PacketServerEssentiaIOBus().createRequestFullUpdate( this.player, this.part ).sendPacketToServer();
+
+	}
+
+	/**
+	 * Called when the server sends a filter size update.
+	 * 
+	 * @param filterSize
+	 */
+	public void onReceiveFilterSize( byte filterSize )
+	{
+		// Inform our part
+		this.part.receiveFilterSize( filterSize );
+
+		this.filterSize = filterSize;
+
+		for( int i = 0; i < this.aspectSlotList.size(); i++ )
+		{
+			WidgetAspectSlot slot = this.aspectSlotList.get( i );
+
+			if( !slot.canRender() )
+			{
+				slot.setAspect( null );
+			}
+
+		}
 	}
 
 	/**
@@ -410,30 +434,6 @@ public class GuiEssentiatIO
 
 			// Set redstone controlled
 			this.redstoneControlled = newRedstoneControled;
-		}
-	}
-
-	/**
-	 * Called when the server sends a filter size update.
-	 * 
-	 * @param filterSize
-	 */
-	public void onReceiveFilterSize( byte filterSize )
-	{
-		// Inform our part
-		this.part.receiveFilterSize( filterSize );
-
-		this.filterSize = filterSize;
-
-		for( int i = 0; i < this.aspectSlotList.size(); i++ )
-		{
-			WidgetAspectSlot slot = this.aspectSlotList.get( i );
-
-			if( !slot.canRender() )
-			{
-				slot.setAspect( null );
-			}
-
 		}
 	}
 

@@ -31,39 +31,84 @@ public class GuiHelper
 	// Bitshift amounts based on byte position
 	private static final int[] COLOR_SHIFT_AMOUNT = new int[] { 0, 8, 16, 24 };
 
-	/**
-	 * Checks if the specified point is within or on the bounds of a rectangle.
-	 * This version localizes the rectangle to the confounds of the current gui.
-	 * 
-	 * @param top
-	 * @param left
-	 * @param height
-	 * @param width
-	 * @param pointX
-	 * @param pointY
-	 * @param guiLeft
-	 * @param guiTop
-	 * @return
-	 */
-	public static boolean isPointInGuiRegion( int top, int left, int height, int width, int pointX, int pointY, int guiLeft, int guiTop )
+	public static byte[] convertPackedColorToARGB( int color )
 	{
-		return isPointInRegion( top, left, height, width, pointX - guiLeft, pointY - guiTop );
+		byte[] colorBytes = new byte[COLOR_ARRAY_SIZE];
+
+		// Extract bytes
+		for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
+		{
+			// Get byte
+			colorBytes[COLOR_ARRAY_SIZE - 1 - i] = (byte)( ( color >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF );
+		}
+
+		return colorBytes;
 	}
 
-	/**
-	 * Checks if the specified point is within or on the bounds of a rectangle
-	 * 
-	 * @param top
-	 * @param left
-	 * @param height
-	 * @param width
-	 * @param pointX
-	 * @param pointY
-	 * @return
-	 */
-	public static boolean isPointInRegion( int top, int left, int height, int width, int pointX, int pointY )
+	public static int[] createColorGradient( int fromColor, int toColor, int iterations )
 	{
-		return ( pointX >= top ) && ( pointX <= ( top + width ) ) && ( pointY >= left ) && ( pointY <= ( left + height ) );
+		// Is there enough iterations to create a gradient?
+		if( iterations < 3 )
+		{
+			return new int[] { fromColor, toColor };
+		}
+
+		// Holds the A,R,G,B bytes of each color
+		int[] fromColorBytes = new int[COLOR_ARRAY_SIZE];
+		int[] toColorBytes = new int[COLOR_ARRAY_SIZE];
+
+		// Holds how much to change the color amount by for each iteration
+		float[] stepAmount = new float[COLOR_ARRAY_SIZE];
+
+		// Holds the color 'bytes' as they change
+		float[] currentColor = new float[COLOR_ARRAY_SIZE];
+
+		// Holds the final list of colors
+		int[] gradient = new int[iterations];
+
+		// Extract bytes
+		for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
+		{
+			// Get fromColor byte
+			fromColorBytes[i] = ( fromColor >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF;
+
+			// Get toColor byte
+			toColorBytes[i] = ( ( toColor >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF );
+
+			// Calculate step amount
+			stepAmount[i] = ( toColorBytes[i] - fromColorBytes[i] ) / (float)iterations;
+
+			// Init the current color
+			currentColor[i] = fromColorBytes[i];
+		}
+
+		// Set the first color
+		gradient[0] = fromColor;
+
+		for( int iteration = 1; iteration < iterations; iteration++ )
+		{
+			int result = 0;
+
+			// Add the step amounts to the current color and incorporate into the result color
+			for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
+			{
+				// Add the step amount
+				currentColor[i] += stepAmount[i];
+
+				// Add to result color
+				result += ( ( Math.round( currentColor[i] ) & 0xFF ) << COLOR_SHIFT_AMOUNT[i] );
+
+			}
+
+			// Set gradient
+			gradient[iteration] = result;
+
+		}
+
+		// Set the last color
+		gradient[iterations - 1] = toColor;
+
+		return gradient;
 	}
 
 	// This is a huge mess...
@@ -172,83 +217,38 @@ public class GuiHelper
 		}
 	}
 
-	public static byte[] convertPackedColorToARGB( int color )
+	/**
+	 * Checks if the specified point is within or on the bounds of a rectangle.
+	 * This version localizes the rectangle to the confounds of the current gui.
+	 * 
+	 * @param top
+	 * @param left
+	 * @param height
+	 * @param width
+	 * @param pointX
+	 * @param pointY
+	 * @param guiLeft
+	 * @param guiTop
+	 * @return
+	 */
+	public static boolean isPointInGuiRegion( int top, int left, int height, int width, int pointX, int pointY, int guiLeft, int guiTop )
 	{
-		byte[] colorBytes = new byte[COLOR_ARRAY_SIZE];
-
-		// Extract bytes
-		for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
-		{
-			// Get byte
-			colorBytes[COLOR_ARRAY_SIZE - 1 - i] = (byte)( ( color >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF );
-		}
-
-		return colorBytes;
+		return isPointInRegion( top, left, height, width, pointX - guiLeft, pointY - guiTop );
 	}
 
-	public static int[] createColorGradient( int fromColor, int toColor, int iterations )
+	/**
+	 * Checks if the specified point is within or on the bounds of a rectangle
+	 * 
+	 * @param top
+	 * @param left
+	 * @param height
+	 * @param width
+	 * @param pointX
+	 * @param pointY
+	 * @return
+	 */
+	public static boolean isPointInRegion( int top, int left, int height, int width, int pointX, int pointY )
 	{
-		// Is there enough iterations to create a gradient?
-		if( iterations < 3 )
-		{
-			return new int[] { fromColor, toColor };
-		}
-
-		// Holds the A,R,G,B bytes of each color
-		int[] fromColorBytes = new int[COLOR_ARRAY_SIZE];
-		int[] toColorBytes = new int[COLOR_ARRAY_SIZE];
-
-		// Holds how much to change the color amount by for each iteration
-		float[] stepAmount = new float[COLOR_ARRAY_SIZE];
-
-		// Holds the color 'bytes' as they change
-		float[] currentColor = new float[COLOR_ARRAY_SIZE];
-
-		// Holds the final list of colors
-		int[] gradient = new int[iterations];
-
-		// Extract bytes
-		for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
-		{
-			// Get fromColor byte
-			fromColorBytes[i] = ( fromColor >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF;
-
-			// Get toColor byte
-			toColorBytes[i] = ( ( toColor >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF );
-
-			// Calculate step amount
-			stepAmount[i] = ( toColorBytes[i] - fromColorBytes[i] ) / (float)iterations;
-
-			// Init the current color
-			currentColor[i] = fromColorBytes[i];
-		}
-
-		// Set the first color
-		gradient[0] = fromColor;
-
-		for( int iteration = 1; iteration < iterations; iteration++ )
-		{
-			int result = 0;
-
-			// Add the step amounts to the current color and incorporate into the result color
-			for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
-			{
-				// Add the step amount
-				currentColor[i] += stepAmount[i];
-
-				// Add to result color
-				result += ( ( Math.round( currentColor[i] ) & 0xFF ) << COLOR_SHIFT_AMOUNT[i] );
-
-			}
-
-			// Set gradient
-			gradient[iteration] = result;
-
-		}
-
-		// Set the last color
-		gradient[iterations - 1] = toColor;
-
-		return gradient;
+		return ( pointX >= top ) && ( pointX <= ( top + width ) ) && ( pointY >= left ) && ( pointY <= ( left + height ) );
 	}
 }

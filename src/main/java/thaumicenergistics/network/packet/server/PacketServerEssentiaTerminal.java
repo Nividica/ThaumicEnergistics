@@ -15,7 +15,7 @@ public class PacketServerEssentiaTerminal
 	private static final byte MODE_SELECTED_ASPECT = 0;
 	private static final byte MODE_FULL_UPDATE = 1;
 	private static final byte MODE_SORT_CHANGE = 2;
-	
+
 	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();
 
 	private Aspect currentAspect;
@@ -33,34 +33,34 @@ public class PacketServerEssentiaTerminal
 		return this;
 	}
 
-	public PacketServerEssentiaTerminal createUpdateSelectedAspect( EntityPlayer player, Aspect currentAspect )
-	{
-		// Set the player
-		this.player = player;
-		
-		// Set the mode
-		this.mode = PacketServerEssentiaTerminal.MODE_SELECTED_ASPECT;
-
-		// Set the current aspect
-		this.currentAspect = currentAspect;
-		
-		return this;
-	}
-
 	public PacketServerEssentiaTerminal createRequestChangeSortMode( EntityPlayer player, AEPartEssentiaTerminal terminal, ComparatorMode sortMode )
 	{
 		// Set the player
 		this.player = player;
-		
+
 		// Set the mode
 		this.mode = PacketServerEssentiaTerminal.MODE_SORT_CHANGE;
 
 		// Set the terminal
 		this.terminal = terminal;
-		
+
 		// Set the sort mode
 		this.sortMode = sortMode;
-		
+
+		return this;
+	}
+
+	public PacketServerEssentiaTerminal createUpdateSelectedAspect( EntityPlayer player, Aspect currentAspect )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerEssentiaTerminal.MODE_SELECTED_ASPECT;
+
+		// Set the current aspect
+		this.currentAspect = currentAspect;
+
 		return this;
 	}
 
@@ -86,7 +86,7 @@ public class PacketServerEssentiaTerminal
 					container.onClientRequestFullUpdate();
 				}
 				break;
-				
+
 			case PacketServerEssentiaTerminal.MODE_SORT_CHANGE:
 				// Inform the part about the request
 				this.terminal.onClientRequestSortingModeChange( this.sortMode );
@@ -104,11 +104,11 @@ public class PacketServerEssentiaTerminal
 			case PacketServerEssentiaTerminal.MODE_SELECTED_ASPECT:
 				this.currentAspect = AbstractPacket.readAspect( stream );
 				break;
-				
+
 			case PacketServerEssentiaTerminal.MODE_SORT_CHANGE:
 				// Read the part
 				this.terminal = (AEPartEssentiaTerminal)AbstractPacket.readPart( stream );
-				
+
 				// Read the mode ordinal
 				this.sortMode = SORT_MODES[stream.readInt()];
 				break;
@@ -125,11 +125,11 @@ public class PacketServerEssentiaTerminal
 			case PacketServerEssentiaTerminal.MODE_SELECTED_ASPECT:
 				AbstractPacket.writeAspect( this.currentAspect, stream );
 				break;
-				
+
 			case PacketServerEssentiaTerminal.MODE_SORT_CHANGE:
 				// Write the part
 				AbstractPacket.writePart( this.terminal, stream );
-				
+
 				// Write the mode ordinal
 				stream.writeInt( this.sortMode.ordinal() );
 				break;

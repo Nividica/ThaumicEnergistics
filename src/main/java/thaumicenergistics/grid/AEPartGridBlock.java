@@ -50,6 +50,21 @@ public class AEPartGridBlock
 		return null;
 	}
 
+	public IEnergyGrid getEnergyGrid()
+	{
+		// Get the grid
+		IGrid grid = this.getGrid();
+
+		// Ensure we have a grid
+		if( grid == null )
+		{
+			return null;
+		}
+
+		// Return the energy grid
+		return grid.getCache( IEnergyGrid.class );
+	}
+
 	/**
 	 * Return that we require a channel to function.
 	 */
@@ -57,34 +72,6 @@ public class AEPartGridBlock
 	public EnumSet<GridFlags> getFlags()
 	{
 		return EnumSet.of( GridFlags.REQUIRE_CHANNEL );
-	}
-
-	/**
-	 * Gets the storage grid.
-	 * @return
-	 */
-	public IStorageGrid getStorageGrid()
-	{
-		// Get the grid node
-		IGridNode node = this.part.getGridNode();
-
-		// Do we have a grid node?
-		if( node == null )
-		{
-			return null;
-		}
-
-		// Get the grid.
-		IGrid grid = node.getGrid();
-
-		// Do we have a grid?
-		if( grid == null )
-		{
-			return null;
-		}
-
-		// Get the storage grid from the cache.
-		return (IStorageGrid)grid.getCache( IStorageGrid.class );
 	}
 
 	/**
@@ -96,7 +83,7 @@ public class AEPartGridBlock
 	{
 		// Set the storage grid
 		IStorageGrid storageGrid = this.getStorageGrid();
-		
+
 		// Do we have a storage grid?
 		if( storageGrid == null )
 		{
@@ -105,6 +92,40 @@ public class AEPartGridBlock
 
 		// Return the storage grid's fluid monitor.
 		return storageGrid.getFluidInventory();
+	}
+
+	public final IGrid getGrid()
+	{
+		// Get the grid node
+		IGridNode node = this.part.getGridNode();
+
+		// Ensure we have a node
+		if( node != null )
+		{
+			// Get the grid
+			return node.getGrid();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the color of the grid.
+	 */
+	@Override
+	public AEColor getGridColor()
+	{
+		// Return transparent.
+		return AEColor.Transparent;
+	}
+
+	/**
+	 * Gets how much power the part is using.
+	 */
+	@Override
+	public double getIdlePowerUsage()
+	{
+		return this.part.getIdlePowerUsage();
 	}
 
 	/**
@@ -125,25 +146,6 @@ public class AEPartGridBlock
 
 		// Return the storage grid's item monitor.
 		return storageGrid.getItemInventory();
-	}
-
-	/**
-	 * Returns the color of the grid.
-	 */
-	@Override
-	public AEColor getGridColor()
-	{
-		// Return transparent.
-		return AEColor.Transparent;
-	}
-
-	/**
-	 * Gets how much power the part is using.
-	 */
-	@Override
-	public double getIdlePowerUsage()
-	{
-		return this.part.getIdlePowerUsage();
 	}
 
 	/**
@@ -173,6 +175,35 @@ public class AEPartGridBlock
 		return this.part.getItemStack( PartItemStack.Network );
 	}
 
+	/**
+	 * Gets the storage grid.
+	 * 
+	 * @return
+	 */
+	public IStorageGrid getStorageGrid()
+	{
+		// Get the grid node
+		IGridNode node = this.part.getGridNode();
+
+		// Do we have a grid node?
+		if( node == null )
+		{
+			return null;
+		}
+
+		// Get the grid.
+		IGrid grid = node.getGrid();
+
+		// Do we have a grid?
+		if( grid == null )
+		{
+			return null;
+		}
+
+		// Get the storage grid from the cache.
+		return (IStorageGrid)grid.getCache( IStorageGrid.class );
+	}
+
 	@Override
 	public void gridChanged()
 	{
@@ -194,42 +225,12 @@ public class AEPartGridBlock
 		// Ignored
 	}
 
-	public final IGrid getGrid()
-	{
-		// Get the grid node
-		IGridNode node = this.part.getGridNode();
-
-		// Ensure we have a node
-		if( node != null )
-		{
-			// Get the grid
-			return node.getGrid();
-		}
-
-		return null;
-	}
-
 	/**
 	 * Called to update the grid and the channels used.
 	 */
 	@Override
 	public final void setNetworkStatus( IGrid grid, int usedChannels )
 	{
-	}
-
-	public IEnergyGrid getEnergyGrid()
-	{
-		// Get the grid
-		IGrid grid = this.getGrid();
-
-		// Ensure we have a grid
-		if( grid == null )
-		{
-			return null;
-		}
-
-		// Return the energy grid
-		return grid.getCache( IEnergyGrid.class );
 	}
 
 }

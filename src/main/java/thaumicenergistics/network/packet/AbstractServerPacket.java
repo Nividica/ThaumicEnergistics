@@ -4,8 +4,9 @@ import thaumicenergistics.network.ChannelHandler;
 
 /**
  * Packet to be sent to the server.
+ * 
  * @author Nividica
- *
+ * 
  */
 public abstract class AbstractServerPacket
 	extends AbstractPacket

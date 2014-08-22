@@ -1,17 +1,17 @@
 package thaumicenergistics.network.packet.client;
 
+import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
-import io.netty.buffer.ByteBuf;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.AbstractClientPacket;
 import thaumicenergistics.network.packet.AbstractPacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketClientAspectSlot
 	extends AbstractClientPacket
@@ -19,23 +19,6 @@ public class PacketClientAspectSlot
 	private static final byte MODE_LIST_UPDATE = 0;
 
 	private List<Aspect> filterAspects;
-
-	public PacketClientAspectSlot createFilterListUpdate( List<Aspect> filterAspects, EntityPlayer player )
-	{
-		// Set the player
-		this.player = player;
-
-		// Set the mode
-		this.mode = PacketClientAspectSlot.MODE_LIST_UPDATE;
-
-		// Mark to use compression
-		this.useCompression = true;
-
-		// Set the list
-		this.filterAspects = filterAspects;
-
-		return this;
-	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -56,7 +39,24 @@ public class PacketClientAspectSlot
 				( (IAspectSlotGui)gui ).updateAspects( this.filterAspects );
 				break;
 		}
-		
+
+	}
+
+	public PacketClientAspectSlot createFilterListUpdate( List<Aspect> filterAspects, EntityPlayer player )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientAspectSlot.MODE_LIST_UPDATE;
+
+		// Mark to use compression
+		this.useCompression = true;
+
+		// Set the list
+		this.filterAspects = filterAspects;
+
+		return this;
 	}
 
 	@Override

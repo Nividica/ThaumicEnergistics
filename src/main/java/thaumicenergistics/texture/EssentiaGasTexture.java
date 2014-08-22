@@ -17,7 +17,8 @@ import org.apache.logging.log4j.Logger;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
 
-public class EssentiaGasTexture extends TextureAtlasSprite
+public class EssentiaGasTexture
+	extends TextureAtlasSprite
 {
 	private class Pixel
 	{
@@ -28,7 +29,7 @@ public class EssentiaGasTexture extends TextureAtlasSprite
 
 		private int[] data;
 
-		public Pixel(int color)
+		public Pixel( int color )
 		{
 			this.data = new int[4];
 			this.setFromColor( color );
@@ -38,11 +39,11 @@ public class EssentiaGasTexture extends TextureAtlasSprite
 		{
 			for( int i = 0; i < this.data.length; i++ )
 			{
-				if ( this.data[i] > 255 )
+				if( this.data[i] > 255 )
 				{
 					this.data[i] = 255;
 				}
-				else if ( this.data[i] < 0 )
+				else if( this.data[i] < 0 )
 				{
 					this.data[i] = 0;
 				}
@@ -51,12 +52,12 @@ public class EssentiaGasTexture extends TextureAtlasSprite
 
 		public int getColor()
 		{
-			return ( ( this.data[ALPHA] << 24 ) | ( this.data[RED] << 16 ) | ( this.data[GREEN] << 8 ) | this.data[BLUE] );
+			return( ( this.data[ALPHA] << 24 ) | ( this.data[RED] << 16 ) | ( this.data[GREEN] << 8 ) | this.data[BLUE] );
 		}
 
 		public void multiplyWith( Pixel otherPixel, boolean preserveAlpha )
 		{
-			if ( !preserveAlpha )
+			if( !preserveAlpha )
 			{
 				this.data[ALPHA] = ( this.data[ALPHA] * otherPixel.data[ALPHA] ) / 255;
 			}
@@ -67,7 +68,7 @@ public class EssentiaGasTexture extends TextureAtlasSprite
 
 			this.clamp();
 		}
-		
+
 		public void setFromColor( int color )
 		{
 			this.data[ALPHA] = ( ( color & 0xFF000000 ) >>> 24 );
@@ -93,7 +94,7 @@ public class EssentiaGasTexture extends TextureAtlasSprite
 
 	private Pixel overlayColor;
 
-	public EssentiaGasTexture(Aspect aspect)
+	public EssentiaGasTexture( Aspect aspect )
 	{
 		super( ThaumicEnergistics.MOD_ID + ":" + GAS_FILE_NAME + "_" + aspect.getName() );
 
@@ -102,15 +103,15 @@ public class EssentiaGasTexture extends TextureAtlasSprite
 
 	private ResourceLocation completeResourceLocation( ResourceLocation location, int p_147634_2_ )
 	{
-		return p_147634_2_ == 0 ? new ResourceLocation( location.getResourceDomain(), String.format( "%s/%s%s",
-			new Object[] { EssentiaGasTexture.BASE_PATH, GAS_FILE_NAME, ".png" } ) ) : new ResourceLocation( location.getResourceDomain(),
+		return p_147634_2_ == 0 ? new ResourceLocation( location.getResourceDomain(), String.format( "%s/%s%s", new Object[] {
+						EssentiaGasTexture.BASE_PATH, GAS_FILE_NAME, ".png" } ) ) : new ResourceLocation( location.getResourceDomain(),
 						String.format( "%s/mipmaps/%s.%d%s",
 							new Object[] { EssentiaGasTexture.BASE_PATH, GAS_FILE_NAME, Integer.valueOf( p_147634_2_ ), ".png" } ) );
 	}
 
 	protected void drawOverlay( BufferedImage image )
 	{
-		if ( image == null )
+		if( image == null )
 		{
 			return;
 		}
@@ -154,19 +155,19 @@ public class EssentiaGasTexture extends TextureAtlasSprite
 			IResource iresource = par1ResourceManager.getResource( resourcelocation1 );
 			BufferedImage[] abufferedimage = new BufferedImage[1 + EssentiaGasTexture.mipmapLevels];
 			abufferedimage[0] = ImageIO.read( iresource.getInputStream() );
-			TextureMetadataSection texturemetadatasection = (TextureMetadataSection) iresource.getMetadata( "texture" );
+			TextureMetadataSection texturemetadatasection = (TextureMetadataSection)iresource.getMetadata( "texture" );
 
-			if ( texturemetadatasection != null )
+			if( texturemetadatasection != null )
 			{
 				List list = texturemetadatasection.getListMipmaps();
 				int l;
 
-				if ( !list.isEmpty() )
+				if( !list.isEmpty() )
 				{
 					int k = abufferedimage[0].getWidth();
 					l = abufferedimage[0].getHeight();
 
-					if ( ( MathHelper.roundUpToPowerOfTwo( k ) != k ) || ( MathHelper.roundUpToPowerOfTwo( l ) != l ) )
+					if( ( MathHelper.roundUpToPowerOfTwo( k ) != k ) || ( MathHelper.roundUpToPowerOfTwo( l ) != l ) )
 					{
 						throw new RuntimeException( "Unable to load extra miplevels, source-texture is not power of two" );
 					}
@@ -174,11 +175,11 @@ public class EssentiaGasTexture extends TextureAtlasSprite
 
 				Iterator iterator3 = list.iterator();
 
-				while ( iterator3.hasNext() )
+				while( iterator3.hasNext() )
 				{
-					l = ( (Integer) iterator3.next() ).intValue();
+					l = ( (Integer)iterator3.next() ).intValue();
 
-					if ( ( l > 0 ) && ( l < ( abufferedimage.length - 1 ) ) && ( abufferedimage[l] == null ) )
+					if( ( l > 0 ) && ( l < ( abufferedimage.length - 1 ) ) && ( abufferedimage[l] == null ) )
 					{
 						ResourceLocation resourcelocation2 = this.completeResourceLocation( resourcelocation, l );
 
@@ -200,7 +201,7 @@ public class EssentiaGasTexture extends TextureAtlasSprite
 				this.drawOverlay( abufferedimage[i] );
 			}
 
-			AnimationMetadataSection animationmetadatasection = (AnimationMetadataSection) iresource.getMetadata( "animation" );
+			AnimationMetadataSection animationmetadatasection = (AnimationMetadataSection)iresource.getMetadata( "animation" );
 
 			this.loadSprite( abufferedimage, animationmetadatasection, false );
 		}

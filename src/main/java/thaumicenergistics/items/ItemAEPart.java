@@ -2,6 +2,7 @@ package thaumicenergistics.items;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +21,9 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemAEPart extends Item implements IPartItem, IItemGroup
+public class ItemAEPart
+	extends Item
+	implements IPartItem, IItemGroup
 {
 	/**
 	 * Constructor
@@ -102,7 +105,7 @@ public class ItemAEPart extends Item implements IPartItem, IItemGroup
 	}
 
 	@Override
-	public String getUnlocalizedGroupName( ItemStack itemStack )
+	public String getUnlocalizedGroupName( Set<ItemStack> arg0, ItemStack itemStack )
 	{
 		return AEPartsEnum.getPartFromDamageValue( itemStack ).getGroupName();
 	}
@@ -119,10 +122,10 @@ public class ItemAEPart extends Item implements IPartItem, IItemGroup
 		// Can we place the item on the bus?
 		return AEApi.instance().partHelper().placeBus( itemStack, x, y, z, side, player, world );
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	@Override
-    public void registerIcons(IIconRegister par1IconRegister)
-    {
-    }
+	public void registerIcons( IIconRegister par1IconRegister )
+	{
+	}
 }

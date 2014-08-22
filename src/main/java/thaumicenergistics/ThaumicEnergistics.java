@@ -29,7 +29,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.5.2a"; // Note: don't forget to change the mcmod.info file as well
+	public static final String VERSION = "0.6.0a"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -75,7 +75,7 @@ public class ThaumicEnergistics
 		// Register the standard thaumcraft container items and tiles
 		EssentiaTileContainerHelper.registerThaumcraftContainers();
 		EssentiaItemContainerHelper.registerThaumcraftContainers();
-		
+
 		// Register my tiles with SpatialIO
 		ThaumicEnergistics.proxy.registerSpatialIOMovables();
 	}
@@ -99,7 +99,7 @@ public class ThaumicEnergistics
 
 /*
  * NOTE Known issue: ME Chest gui does not update the network when the contents of an essentia cell is changed.
- * Need to ask Algo how to go about fixing this, cause I've tried everything I can think of. 
+ * Need to ask Algo how to go about fixing this, cause I've tried everything I can think of.
  */
 
 /*

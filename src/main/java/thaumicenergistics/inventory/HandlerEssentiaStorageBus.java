@@ -73,9 +73,90 @@ public class HandlerEssentiaStorageBus
 	}
 
 	/**
-	 * Is the specified fluid allowed to be placed in the container?
-	 * This does not take into consideration the amount currently in the
-	 * container.
+	 * Verifies that the requested fluidstack to insert/extract is both an
+	 * Essentia Gas and white-listed, or not black-listed.
+	 * 
+	 * @param fluidRequest
+	 * @return True if the bus is allowed to transfer the fluid, false if it can
+	 * not.
+	 */
+	private boolean canTransferFluid( FluidStack fluidRequest )
+	{
+		// Ensure the request is not null
+		if( fluidRequest == null )
+		{
+			return false;
+		}
+
+		// Ensure the fluid an essentia gas
+		if( !( fluidRequest.getFluid() instanceof GaseousEssentia ) )
+		{
+			return false;
+		}
+
+		// Get the gas form of the request
+		GaseousEssentia gasRequest = (GaseousEssentia)fluidRequest.getFluid();
+
+		// Get the aspect of the request
+		Aspect requestAspect = gasRequest.getAssociatedAspect();
+
+		/*
+		 * Validate based on if the aspect is filtered and the storage bus is
+		 * inverted. See explanation below.
+		 */
+		return( this.filteredAspects.contains( requestAspect ) == !this.inverted );
+
+		/*
+		 * Truth 'table' ---- Conditions: * isFiltered = true * inverted = false
+		 * Expected outcome: * valid = true Sequence * valid = ( isFiltered ==
+		 * !inverted ); * valid = ( true == !false ) * valid = ( true == true )
+		 * * valid = true
+		 * 
+		 * ---- Conditions: * isFiltered = false * inverted = false Expected
+		 * outcome: * valid = false Sequence * valid = ( isFiltered == !inverted
+		 * ); * valid = ( false == !false ) * valid = ( false == true ) * valid
+		 * = false
+		 * 
+		 * ---- Conditions: * isFiltered = true * inverted = true Expected
+		 * outcome: * valid = false Sequence * valid = ( isFiltered == !inverted
+		 * ); * valid = ( true == !true ) * valid = ( true == false ) * valid =
+		 * false ----
+		 * 
+		 * Conditions: * isFiltered = false * inverted = true Expected outcome:
+		 * * valid = true Sequence * valid = ( isFiltered == !inverted ); *
+		 * valid = ( false == !true ) * valid = ( false == false ) * valid =
+		 * true ----
+		 */
+	}
+
+	/**
+	 * Takes power from the AE network.
+	 * 
+	 * @param essentiaAmount
+	 * @param mode
+	 * @return True if power can/was taken. False otherwise.
+	 */
+	private boolean takePowerFromNetwork( int essentiaAmount, Actionable mode )
+	{
+		// Get the energy grid
+		IEnergyGrid eGrid = this.partStorageBus.getGridBlock().getEnergyGrid();
+
+		// Ensure we have a grid
+		if( eGrid == null )
+		{
+			return false;
+		}
+
+		// Calculate amount of power to take
+		double powerDrain = HandlerEssentiaStorageBus.POWER_DRAIN_PER_ESSENTIA * essentiaAmount;
+
+		// Extract
+		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
+	}
+
+	/**
+	 * Is the specified fluid allowed to be placed in the container? This does
+	 * not take into consideration the amount currently in the container.
 	 */
 	@Override
 	public boolean canAccept( IAEFluidStack fluidStack )
@@ -104,10 +185,8 @@ public class HandlerEssentiaStorageBus
 		// Ensure we are allowed to transfer this fluid
 		if( !this.canTransferFluid( fluidStack.getFluidStack() ) )
 		{
-			/* Either:
-			 * Not an essentia gas
-			 * Not on whitelist
-			 * Is on blacklist
+			/*
+			 * Either: Not an essentia gas Not on whitelist Is on blacklist
 			 */
 			return false;
 		}
@@ -127,107 +206,6 @@ public class HandlerEssentiaStorageBus
 
 		// Does the aspect in the container match the gas aspect?
 		return gasAspect == containerStack.aspect;
-	}
-
-	/**
-	 * Verifies that the requested fluidstack to insert/extract is both an
-	 * Essentia Gas and white-listed, or not black-listed.
-	 * 
-	 * @param fluidRequest
-	 * @return True if the bus is allowed to transfer the fluid, false if it can
-	 * not.
-	 */
-	private boolean canTransferFluid( FluidStack fluidRequest )
-	{
-		// Ensure the request is not null
-		if( fluidRequest == null )
-		{
-			return false;
-		}
-
-		// Ensure the fluid an essentia gas
-		if( !( fluidRequest.getFluid() instanceof GaseousEssentia ) )
-		{
-			return false;
-		}
-
-		// Get the gas form of the request
-		GaseousEssentia gasRequest = (GaseousEssentia)fluidRequest.getFluid();
-
-		// Get the aspect of the request
-		Aspect requestAspect = gasRequest.getAssociatedAspect();
-
-		/* Validate based on if the aspect is filtered and the storage bus is inverted.
-		 * See explanation below.
-		 */
-		return( this.filteredAspects.contains( requestAspect ) == !this.inverted );
-
-		/* Truth 'table'
-		 * ----
-		 * Conditions:
-		 * * isFiltered = true
-		 * * inverted = false
-		 * Expected outcome:
-		 * * valid = true
-		 * Sequence
-		 * * valid = ( isFiltered == !inverted );
-		 * * valid = ( true == !false )
-		 * * valid = ( true == true )
-		 * * valid = true
-		 * 
-		 * ----
-		 * Conditions:
-		 * * isFiltered = false
-		 * * inverted = false
-		 * Expected outcome:
-		 * * valid = false
-		 * Sequence
-		 * * valid = ( isFiltered == !inverted );
-		 * * valid = ( false == !false )
-		 * * valid = ( false == true )
-		 * * valid = false
-		 * 
-		 * ----
-		 * Conditions:
-		 * * isFiltered = true
-		 * * inverted = true
-		 * Expected outcome:
-		 * * valid = false
-		 * Sequence
-		 * * valid = ( isFiltered == !inverted );
-		 * * valid = ( true == !true )
-		 * * valid = ( true == false )
-		 * * valid = false
-		 * ----
-		 * 
-		 * Conditions:
-		 * * isFiltered = false
-		 * * inverted = true
-		 * Expected outcome:
-		 * * valid = true
-		 * Sequence
-		 * * valid = ( isFiltered == !inverted );
-		 * * valid = ( false == !true )
-		 * * valid = ( false == false )
-		 * * valid = true
-		 * ----
-		 */
-	}
-
-	/**
-	 * Checks if the specified fluid is allowed to be transfered.
-	 */
-	@Override
-	public boolean isPrioritized( IAEFluidStack fluidStack )
-	{
-		// Ensure the fluid stack is not null
-		if( fluidStack == null )
-		{
-			return false;
-		}
-
-		// Validate
-		return this.canTransferFluid( fluidStack.getFluidStack() );
 	}
 
 	/**
@@ -279,7 +257,7 @@ public class HandlerEssentiaStorageBus
 			// Take power
 			this.takePowerFromNetwork( drainedAmount_EU, Actionable.MODULATE );
 		}
-		
+
 		// Inform the storage bus
 		this.partStorageBus.onEssentiaTransfered( -drainedAmount_EU );
 
@@ -365,30 +343,6 @@ public class HandlerEssentiaStorageBus
 	}
 
 	/**
-	 * Takes power from the AE network.
-	 * @param essentiaAmount
-	 * @param mode
-	 * @return True if power can/was taken. False otherwise.
-	 */
-	private boolean takePowerFromNetwork( int essentiaAmount, Actionable mode )
-	{
-		// Get the energy grid
-		IEnergyGrid eGrid = this.partStorageBus.getGridBlock().getEnergyGrid();
-
-		// Ensure we have a grid
-		if( eGrid == null )
-		{
-			return false;
-		}
-
-		// Calculate amount of power to take
-		double powerDrain = HandlerEssentiaStorageBus.POWER_DRAIN_PER_ESSENTIA * essentiaAmount;
-
-		// Extract
-		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
-	}
-
-	/**
 	 * Inserts essentia into the container.
 	 */
 	@Override
@@ -436,7 +390,7 @@ public class HandlerEssentiaStorageBus
 			// Take power
 			this.takePowerFromNetwork( filled_EU, Actionable.MODULATE );
 		}
-		
+
 		// Inform the storage bus
 		this.partStorageBus.onEssentiaTransfered( filled_EU );
 
@@ -450,8 +404,24 @@ public class HandlerEssentiaStorageBus
 			return null;
 		}
 
-		//  Return what was left over
+		// Return what was left over
 		return AEApi.instance().storage().createFluidStack( new FluidStack( toFill.getFluid(), remaining_FU ) );
+	}
+
+	/**
+	 * Checks if the specified fluid is allowed to be transfered.
+	 */
+	@Override
+	public boolean isPrioritized( IAEFluidStack fluidStack )
+	{
+		// Ensure the fluid stack is not null
+		if( fluidStack == null )
+		{
+			return false;
+		}
+
+		// Validate
+		return this.canTransferFluid( fluidStack.getFluidStack() );
 	}
 
 	/**
@@ -492,7 +462,9 @@ public class HandlerEssentiaStorageBus
 
 	/**
 	 * Sets if we are inverted or not.
-	 * @param isInverted True = Blacklist, False = Whitelist.
+	 * 
+	 * @param isInverted
+	 * True = Blacklist, False = Whitelist.
 	 */
 	public void setInverted( boolean isInverted )
 	{
@@ -501,11 +473,18 @@ public class HandlerEssentiaStorageBus
 
 	/**
 	 * Set's the list of filtered aspects.
+	 * 
 	 * @param aspectList
 	 */
 	public void setPrioritizedAspects( List<Aspect> aspectList )
 	{
 		this.filteredAspects = aspectList;
+	}
+
+	@Override
+	public boolean validForPass( int pass )
+	{
+		return true;
 	}
 
 }

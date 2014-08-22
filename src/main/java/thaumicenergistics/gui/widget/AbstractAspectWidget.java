@@ -17,7 +17,7 @@ public abstract class AbstractAspectWidget
 	private Aspect aspect;
 
 	private boolean hasDiscovered = false;
-	
+
 	protected String aspectName = "";
 
 	private EntityPlayer player;
@@ -34,38 +34,6 @@ public abstract class AbstractAspectWidget
 
 		// Set the aspect
 		this.setAspect( aspect );
-	}
-
-	public Aspect getAspect()
-	{
-		return this.aspect;
-	}
-
-	public void setAspect( Aspect aspect )
-	{
-		// Set the aspect
-		this.aspect = aspect;
-
-		// Ensure there is an aspect
-		if( aspect == null )
-		{
-			return;
-		}
-		
-		// Convert to stack
-		AspectStack stack = new AspectStack( aspect, 1 );
-		
-		// Get the aspect name
-		this.aspectName = stack.getAspectName( this.player );
-		
-		// Get if the player has discovered this aspect
-		this.hasDiscovered = stack.hasPlayerDiscovered( this.player );
-
-		// Get the color bytes
-		this.aspectColorBytes = GuiHelper.convertPackedColorToARGB( aspect.getColor() );
-
-		// Set full alpha
-		this.aspectColorBytes[0] = (byte)255;
 	}
 
 	/**
@@ -106,5 +74,37 @@ public abstract class AbstractAspectWidget
 			// Disable blending
 			GL11.glDisable( GL11.GL_BLEND );
 		}
+	}
+
+	public Aspect getAspect()
+	{
+		return this.aspect;
+	}
+
+	public void setAspect( Aspect aspect )
+	{
+		// Set the aspect
+		this.aspect = aspect;
+
+		// Ensure there is an aspect
+		if( aspect == null )
+		{
+			return;
+		}
+
+		// Convert to stack
+		AspectStack stack = new AspectStack( aspect, 1 );
+
+		// Get the aspect name
+		this.aspectName = stack.getAspectName( this.player );
+
+		// Get if the player has discovered this aspect
+		this.hasDiscovered = stack.hasPlayerDiscovered( this.player );
+
+		// Get the color bytes
+		this.aspectColorBytes = GuiHelper.convertPackedColorToARGB( aspect.getColor() );
+
+		// Set full alpha
+		this.aspectColorBytes[0] = (byte)255;
 	}
 }

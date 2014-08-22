@@ -3,8 +3,8 @@
         "modid": "thaumicenergistics",
         "name": "Thaumic Energistics",
         "description": "The digital age could use some magic",
-        "version": "0.5.2a",
-        "mcversion": "1.7.2",
+        "version": "${version}",
+        "mcversion": "${mcversion}",
         "url": "",
         "updateUrl": "",
         "authors": [

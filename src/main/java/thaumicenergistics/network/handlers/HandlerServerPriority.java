@@ -6,7 +6,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class HandlerServerPriority
-implements IMessageHandler<PacketServerPriority, IMessage>
+	implements IMessageHandler<PacketServerPriority, IMessage>
 {
 
 	@Override
@@ -15,6 +15,5 @@ implements IMessageHandler<PacketServerPriority, IMessage>
 		message.execute();
 		return null;
 	}
-	
 
 }

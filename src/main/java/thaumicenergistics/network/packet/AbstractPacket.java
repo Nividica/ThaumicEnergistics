@@ -69,6 +69,29 @@ public abstract class AbstractPacket
 	}
 
 	/**
+	 * Reads an AE itemstack from the stream.
+	 * 
+	 * @param stream
+	 * @return
+	 */
+	protected static IAEItemStack readAEItemStack( ByteBuf stream )
+	{
+		IAEItemStack itemStack;
+		try
+		{
+			itemStack = AEItemStack.loadItemStackFromPacket( stream );
+
+			return itemStack;
+		}
+		catch( IOException e )
+		{
+		}
+
+		return null;
+
+	}
+
+	/**
 	 * Reads a Thaumcraft aspect from the stream.
 	 * 
 	 * @param stream
@@ -92,29 +115,6 @@ public abstract class AbstractPacket
 		IPartHost host = (IPartHost)AbstractPacket.readTileEntity( stream );
 
 		return (AEPartBase)host.getPart( side );
-	}
-
-	/**
-	 * Reads an AE itemstack from the stream.
-	 * 
-	 * @param stream
-	 * @return
-	 */
-	protected static IAEItemStack readAEItemStack( ByteBuf stream )
-	{
-		IAEItemStack itemStack;
-		try
-		{
-			itemStack = AEItemStack.loadItemStackFromPacket( stream );
-
-			return itemStack;
-		}
-		catch( IOException e )
-		{
-		}
-
-		return null;
-
 	}
 
 	/**
@@ -186,24 +186,6 @@ public abstract class AbstractPacket
 	}
 
 	/**
-	 * Writes a Thaumcraft aspect to the stream.
-	 * 
-	 * @param aspect
-	 * @param stream
-	 */
-	protected static void writeAspect( Aspect aspect, ByteBuf stream )
-	{
-		String aspectName = "";
-
-		if( aspect != null )
-		{
-			aspectName = aspect.getTag();
-		}
-
-		writeString( aspectName, stream );
-	}
-
-	/**
 	 * Writes an AE itemstack to the stream.
 	 * 
 	 * @param itemStack
@@ -224,6 +206,24 @@ public abstract class AbstractPacket
 			}
 		}
 
+	}
+
+	/**
+	 * Writes a Thaumcraft aspect to the stream.
+	 * 
+	 * @param aspect
+	 * @param stream
+	 */
+	protected static void writeAspect( Aspect aspect, ByteBuf stream )
+	{
+		String aspectName = "";
+
+		if( aspect != null )
+		{
+			aspectName = aspect.getTag();
+		}
+
+		writeString( aspectName, stream );
 	}
 
 	/**
@@ -422,6 +422,20 @@ public abstract class AbstractPacket
 	}
 
 	/**
+	 * Allows subclasses to read data from the specified stream.
+	 * 
+	 * @param stream
+	 */
+	protected abstract void readData( ByteBuf stream );
+
+	/**
+	 * Allows subclasses to write data into the specified stream.
+	 * 
+	 * @param stream
+	 */
+	protected abstract void writeData( ByteBuf stream );
+
+	/**
 	 * Packet has been read and action can now take place.
 	 */
 	public abstract void execute();
@@ -449,13 +463,6 @@ public abstract class AbstractPacket
 	}
 
 	/**
-	 * Allows subclasses to read data from the specified stream.
-	 * 
-	 * @param stream
-	 */
-	protected abstract void readData( ByteBuf stream );
-
-	/**
 	 * Writes data into the packet stream.
 	 */
 	@Override
@@ -481,12 +488,5 @@ public abstract class AbstractPacket
 			this.writeData( stream );
 		}
 	}
-
-	/**
-	 * Allows subclasses to write data into the specified stream.
-	 * 
-	 * @param stream
-	 */
-	protected abstract void writeData( ByteBuf stream );
 
 }
