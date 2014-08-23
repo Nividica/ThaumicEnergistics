@@ -38,6 +38,7 @@ thaumicenergistics.tooltip.essentia.cell.types=%d / %d 源质类型储存.
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=奥术终端
+thaumicenergistics.gui.essentia.cell.title=源质元件
 
 #Research Tab
 tc.research_category.thaumicenergistics=神秘能源
@@ -73,7 +74,8 @@ thaumicenergistics.research_page.TEARCANETERM.1=你已发现将初始要素注�
 # Research Essentia terminal
 tc.research_name.thaumicenergistics.TEESSTERM=源质终端
 tc.research_text.thaumicenergistics.TEESSTERM=已知你有多少源质.
-thaumicenergistics.research_page.TEESSTERM.1=源质终端让你能看到网络中储存了多少源质,并提供了用源质容器向终端输入源质或从中抽取源质的方法.
+thaumicenergistics.research_page.TEESSTERM.1=§l源质终端§r让你能看到网络中储存了多少源质,并提供了用源质容器向终端输入源质或从中抽取源质的方法.
+thaumicenergistics.research_page.TEESSTERM.2=§l源质发信器§r会持续监测网络中的源质等级,并在条件符合时发出红石信号.
 
 # Research Essentia Provider
 tc.research_name.thaumicenergistics.TEESSPROV=源质供应器
