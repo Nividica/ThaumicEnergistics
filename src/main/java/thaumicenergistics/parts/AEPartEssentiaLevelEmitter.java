@@ -465,6 +465,18 @@ public class AEPartEssentiaLevelEmitter
 			return;
 		}
 
+		// Ensure there was a change
+		if( change == null )
+		{
+			return;
+		}
+
+		// Ensure the fluid is an essentia gas
+		if( !( change.getFluid() instanceof GaseousEssentia ) )
+		{
+			return;
+		}
+
 		this.onMonitorUpdate( (IMEMonitor<IAEFluidStack>)monitor );
 	}
 

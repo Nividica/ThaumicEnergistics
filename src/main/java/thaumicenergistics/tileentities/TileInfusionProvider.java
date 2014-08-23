@@ -7,6 +7,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectSource;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.networking.security.BaseActionSource;
@@ -147,6 +148,18 @@ public class TileInfusionProvider
 	@Override
 	public void postChange( IBaseMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
+		// Ensure there was a change
+		if( change == null )
+		{
+			return;
+		}
+
+		// Ensure the fluid is an essentia gas
+		if( !( change.getFluid() instanceof GaseousEssentia ) )
+		{
+			return;
+		}
+
 		this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( ( (IMEMonitor<IAEFluidStack>)monitor )
 						.getStorageList() );
 

@@ -1,4 +1,8 @@
-﻿8/20/2014 0.6.0a
+﻿8/23/2014 0.6.1a
+  Fixes #12: Can use a staff in the A.C.T. for crafting.
+  Fixes #13: Fluid changes in the ME network cause that are not essentia gas cause unnecessary updates to propagate.
+
+8/22/2014 0.6.0a
   Dependency Changed: Thaumcraft 4.2.0.0
   Dependency Changed: Applied Energistics 2 rv1 beta 10
   Dependency Changed: forge-1.7.10-10.13.0.1208

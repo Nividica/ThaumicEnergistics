@@ -402,19 +402,21 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	private void getWand()
 	{
+		// Set the wand to null
+		this.wand = null;
+
 		// Get the wand slot
 		Slot wandSlot = this.getSlot( this.wandSlotNumber );
 
-		// Is the slot not null and does it contain a wand?
-		if( ( wandSlot != null ) && ( wandSlot.getHasStack() ) && ( wandSlot.getStack().getItem() instanceof ItemWandCasting ) )
+		// Ensure the slot is not null nor empty
+		if( ( wandSlot != null ) && ( wandSlot.getHasStack() ) )
 		{
-			// Set the wand
-			this.wand = wandSlot.getStack();
-		}
-		else
-		{
-			// Set the wand to null
-			this.wand = null;
+			// Is the item a valid crafting wand?
+			if( AEPartArcaneCraftingTerminal.isItemValidCraftingWand( wandSlot.getStack() ) )
+			{
+				// Set the wand
+				this.wand = wandSlot.getStack();
+			}
 		}
 	}
 

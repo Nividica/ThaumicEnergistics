@@ -11,4 +11,4 @@ Localization's thanks to Mrkwtkr, alvin137.
 Texture thanks to CyanideX.
 Special thanks to MKoanga.
 
-Built for MC 1.7.2
+Built for MC 1.7.10

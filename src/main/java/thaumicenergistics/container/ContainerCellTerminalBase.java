@@ -14,6 +14,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.slot.SlotRestrictive;
+import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.gui.GuiCellTerminalBase;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.EssentiaConversionHelper;
@@ -614,6 +615,18 @@ public abstract class ContainerCellTerminalBase
 	@Override
 	public final void postChange( IBaseMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
 	{
+		// Ensure there was a change
+		if( change == null )
+		{
+			return;
+		}
+		
+		// Ensure the fluid is an essentia gas
+		if( !( change.getFluid() instanceof GaseousEssentia ) )
+		{
+			return;
+		}
+		
 		// Update the client
 		this.postAspectStackChange( EssentiaConversionHelper.convertAEFluidStackToAspectStack( change ) );
 	}

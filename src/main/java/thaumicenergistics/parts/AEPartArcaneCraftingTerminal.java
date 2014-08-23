@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -327,6 +328,39 @@ public class AEPartArcaneCraftingTerminal
 		return true;
 	}
 
+	public static boolean isItemValidCraftingWand( ItemStack stack )
+	{
+		// Ensure it is not null
+		if( stack == null )
+		{
+			return false;
+		}
+
+		// Get the item
+		Item item = stack.getItem();
+
+		// Ensure the item is not null
+		if( item == null )
+		{
+			return false;
+		}
+
+		// Ensure it is a casting wand
+		if( !( item instanceof ItemWandCasting ) )
+		{
+			return false;
+		}
+
+		// Ensure it is not a staff
+		if( ( (ItemWandCasting)item ).isStaff( stack ) )
+		{
+			return false;
+		}
+
+		// Valid wand
+		return true;
+	}
+
 	/**
 	 * Determines if the specified itemstack is valid for the slot index.
 	 */
@@ -340,14 +374,7 @@ public class AEPartArcaneCraftingTerminal
 			if( slotIndex == AEPartArcaneCraftingTerminal.WAND_SLOT_INDEX )
 			{
 				// Is the item a wand?
-				if( proposedStack.getItem() instanceof ItemWandCasting )
-				{
-					// Valid wand
-					return true;
-				}
-
-				// Invalid wand
-				return false;
+				return AEPartArcaneCraftingTerminal.isItemValidCraftingWand( proposedStack );
 			}
 
 			// Unrestricted slot
