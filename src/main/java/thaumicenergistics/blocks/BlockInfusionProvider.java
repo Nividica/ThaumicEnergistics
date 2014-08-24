@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockInfusionProvider
-	extends BlockBaseProvider
+	extends BlockProviderBase
 {
 
 	public BlockInfusionProvider()

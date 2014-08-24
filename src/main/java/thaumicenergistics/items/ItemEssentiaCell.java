@@ -229,19 +229,19 @@ public class ItemEssentiaCell
 	@Override
 	public IIcon getTopTexture_Dark()
 	{
-		return BlockTextureManager.ESSENTIA_STORAGE_CELL_CHEST.getTexture();
+		return BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0];
 	}
 
 	@Override
 	public IIcon getTopTexture_Light()
 	{
-		return BlockTextureManager.ESSENTIA_STORAGE_CELL_CHEST.getTexture();
+		return BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[1];
 	}
 
 	@Override
 	public IIcon getTopTexture_Medium()
 	{
-		return BlockTextureManager.ESSENTIA_STORAGE_CELL_CHEST.getTexture();
+		return BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[2];
 	}
 
 	@Override

@@ -11,14 +11,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.registries.Renderers;
+import thaumicenergistics.tileentities.TileProviderBase;
+import appeng.api.util.AEColor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class BlockBaseProvider
+public abstract class BlockProviderBase
 	extends BlockContainer
 {
 
-	protected BlockBaseProvider( Material material )
+	protected BlockProviderBase( Material material )
 	{
 		super( material );
 
@@ -94,6 +96,13 @@ public abstract class BlockBaseProvider
 	{
 		// We have a custom renderer for this block
 		return false;
+	}
+
+	@Override
+	public boolean recolourBlock( World world, int x, int y, int z, ForgeDirection side, int color )
+	{
+		return ( (TileProviderBase)world.getTileEntity( x, y, z ) ).recolourBlock( side, AEColor.values()[color], null );
+
 	}
 
 }

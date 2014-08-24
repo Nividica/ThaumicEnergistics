@@ -3,6 +3,7 @@ package thaumicenergistics.tileentities;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.List;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -14,6 +15,7 @@ import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.config.Actionable;
+import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -36,15 +38,33 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class TileProviderBase
 	extends AENetworkTile
+	implements IColorableTile
 {
-	protected static final String NBTKEY_COLOR = "TEColor";
-	protected static final String NBTKEY_ATTACHMENT = "TEAttachSide";
+	protected static final String NBT_KEY_COLOR = "TEColor";
 
+	protected static final String NBT_KEY_ATTACHMENT = "TEAttachSide";
+
+	protected static final String NBT_KEY_ISCOLORFORCED = "ColorForced";
+
+	/**
+	 * ForgeDirection ordinal of our attachment side.
+	 */
 	protected int attachmentSide;
 
+	/**
+	 * ME monitor that watches for changes in fluids.
+	 */
 	protected IMEMonitor<IAEFluidStack> monitor = null;
 
+	/**
+	 * True if the provider is connected and powered.
+	 */
 	protected boolean isActive;
+
+	/**
+	 * True when the color applicator has been used on the provider.
+	 */
+	protected boolean isColorForced = false;
 
 	private AETileEventHandler eventHandler = new AETileEventHandler( TileEventType.WORLD_NBT, TileEventType.NETWORK )
 	{
@@ -53,18 +73,24 @@ public abstract class TileProviderBase
 		{
 			int attachmentSideFromNBT = ForgeDirection.UNKNOWN.ordinal();
 
+			// Do we have the forced key?
+			if( data.hasKey( TileProviderBase.NBT_KEY_ISCOLORFORCED ) )
+			{
+				TileProviderBase.this.isColorForced = data.getBoolean( TileProviderBase.NBT_KEY_ISCOLORFORCED );
+			}
+
 			// Do we have the color key?
-			if( data.hasKey( TileProviderBase.NBTKEY_COLOR ) )
+			if( data.hasKey( TileProviderBase.NBT_KEY_COLOR ) )
 			{
 				// Read the color from the tag
-				TileProviderBase.this.setGridColor( AEColor.values()[data.getInteger( TileProviderBase.NBTKEY_COLOR )] );
+				TileProviderBase.this.setProviderColor( AEColor.values()[data.getInteger( TileProviderBase.NBT_KEY_COLOR )] );
 			}
 
 			// Do we have the attachment key?
-			if( data.hasKey( TileProviderBase.NBTKEY_ATTACHMENT ) )
+			if( data.hasKey( TileProviderBase.NBT_KEY_ATTACHMENT ) )
 			{
 				// Read the attachment side
-				attachmentSideFromNBT = data.getInteger( TileProviderBase.NBTKEY_ATTACHMENT );
+				attachmentSideFromNBT = data.getInteger( TileProviderBase.NBT_KEY_ATTACHMENT );
 			}
 
 			// Setup the tile
@@ -76,7 +102,7 @@ public abstract class TileProviderBase
 		public boolean readFromStream( ByteBuf data ) throws IOException
 		{
 			// Read the color from the stream
-			TileProviderBase.this.setGridColor( AEColor.values()[data.readInt()] );
+			TileProviderBase.this.setProviderColor( AEColor.values()[data.readInt()] );
 
 			// Read the activity
 			TileProviderBase.this.isActive = data.readBoolean();
@@ -88,10 +114,13 @@ public abstract class TileProviderBase
 		public void writeToNBT( NBTTagCompound data )
 		{
 			// Write our color to the tag
-			data.setInteger( TileProviderBase.NBTKEY_COLOR, TileProviderBase.this.getGridColor().ordinal() );
+			data.setInteger( TileProviderBase.NBT_KEY_COLOR, TileProviderBase.this.getGridColor().ordinal() );
 
 			// Write the attachment side to the tag
-			data.setInteger( TileProviderBase.NBTKEY_ATTACHMENT, TileProviderBase.this.attachmentSide );
+			data.setInteger( TileProviderBase.NBT_KEY_ATTACHMENT, TileProviderBase.this.attachmentSide );
+
+			// Write the forced color flag
+			data.setBoolean( TileProviderBase.NBT_KEY_ISCOLORFORCED, TileProviderBase.this.isColorForced );
 		}
 
 		@Override
@@ -136,12 +165,6 @@ public abstract class TileProviderBase
 		}
 
 		return sideColors;
-	}
-
-	protected void channelUpdated()
-	{
-		// Check that our color is still valid
-		this.checkGridConnectionColor();
 	}
 
 	// Returns how much was extracted
@@ -253,10 +276,52 @@ public abstract class TileProviderBase
 		return null;
 	}
 
-	@MENetworkEventSubscribe
-	public void channelEvent( MENetworkChannelsChanged event )
+	/**
+	 * Called when our channel updates.
+	 */
+	protected abstract void onChannelUpdate();
+
+	/**
+	 * Sets the color of the provider.
+	 * This does not set the isColorForced flag to true.
+	 * 
+	 * @param gridColor
+	 */
+	protected void setProviderColor( AEColor gridColor )
 	{
-		this.channelUpdated();
+		// Set our color to match
+		this.gridProxy.myColor = gridColor;
+
+		// Are we server side?
+		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
+		{
+			// Get the grid node
+			IGridNode gridNode = this.gridProxy.getNode();
+
+			// Do we have a grid node?
+			if( gridNode != null )
+			{
+				// Update the grid node
+				this.gridProxy.getNode().updateState();
+			}
+
+			// Mark the tile as needing updates and to be saved
+			this.markForUpdate();
+			this.saveChanges();
+		}
+	}
+
+	@MENetworkEventSubscribe
+	public final void channelEvent( MENetworkChannelsChanged event )
+	{
+		// Check that our color is still valid
+		this.checkGridConnectionColor();
+
+		// Call subclass
+		this.onChannelUpdate();
+
+		// Mark for update
+		this.markForUpdate();
 	}
 
 	public void checkGridConnectionColor()
@@ -267,13 +332,20 @@ public abstract class TileProviderBase
 			// Nothing to do
 			return;
 		}
-
+	
+		// Is our color forced?
+		if( this.isColorForced )
+		{
+			// Do not change colors.
+			return;
+		}
+	
 		// Get the colors of our neighbors
 		AEColor[] sideColors = TileProviderBase.getNeighborCableColors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
-
+	
 		// Get our current color
 		AEColor currentColor = this.gridProxy.myColor;
-
+	
 		// Are we attached to a side?
 		if( this.attachmentSide != ForgeDirection.UNKNOWN.ordinal() )
 		{
@@ -286,14 +358,14 @@ public abstract class TileProviderBase
 					// Nothing to change
 					return;
 				}
-
+	
 				// Set our color to match
-				this.setGridColor( sideColors[this.attachmentSide] );
-
+				this.setProviderColor( sideColors[this.attachmentSide] );
+	
 				return;
 			}
 		}
-
+	
 		// Are any of the other sides the same color?
 		for( int index = 0; index < 6; index++ )
 		{
@@ -304,10 +376,10 @@ public abstract class TileProviderBase
 				{
 					// Found another cable with the same color, lets attach to it
 					this.attachmentSide = index;
-
+	
 					// Mark for a save
 					this.saveChanges();
-
+	
 					return;
 				}
 				// Are we transparent?
@@ -315,27 +387,36 @@ public abstract class TileProviderBase
 				{
 					// Attach to this cable
 					this.attachmentSide = index;
-
+	
 					// Take on its color
-					this.setGridColor( sideColors[index] );
-
+					this.setProviderColor( sideColors[index] );
+	
 					return;
 				}
 			}
 		}
-
+	
 		// No cables match our color, set attachment to unknown
 		this.attachmentSide = ForgeDirection.UNKNOWN.ordinal();
-
+	
 		// Set color to transparent
-		this.setGridColor( AEColor.Transparent );
-
+		this.setProviderColor( AEColor.Transparent );
+	
 	}
 
 	@Override
 	public AECableType getCableConnectionType( ForgeDirection direction )
 	{
 		return AECableType.SMART;
+	}
+
+	/**
+	 * Get's the color of the provider
+	 */
+	@Override
+	public AEColor getColor()
+	{
+		return this.gridProxy.myColor;
 	}
 
 	public AEColor getGridColor()
@@ -363,6 +444,7 @@ public abstract class TileProviderBase
 	public void onReady()
 	{
 		super.onReady();
+
 		this.checkGridConnectionColor();
 	}
 
@@ -372,28 +454,20 @@ public abstract class TileProviderBase
 		this.markForUpdate();
 	}
 
-	public void setGridColor( AEColor gridColor )
+	/**
+	 * Forces a color change for the provider.
+	 * Called when the provider's color is changed via the ColorApplicator item.
+	 */
+	@Override
+	public boolean recolourBlock( ForgeDirection side, AEColor color, EntityPlayer player )
 	{
-		// Set our color to match
-		this.gridProxy.myColor = gridColor;
+		// Mark our color as forced
+		this.isColorForced = true;
 
-		// Are we server side?
-		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
-		{
-			// Get the grid node
-			IGridNode gridNode = this.gridProxy.getNode();
+		// Set our color
+		this.setProviderColor( color );
 
-			// Do we have a grid node?
-			if( gridNode != null )
-			{
-				// Update the grid node
-				this.gridProxy.getNode().updateState();
-			}
-
-			// Mark the tile as needing updates and to be saved
-			this.markForUpdate();
-			this.saveChanges();
-		}
+		return true;
 	}
 
 	/**

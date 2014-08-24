@@ -4,6 +4,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.gui.GuiHandler;
+import thaumicenergistics.integration.IntegrationCore;
 import thaumicenergistics.network.ChannelHandler;
 import thaumicenergistics.proxy.CommonProxy;
 import thaumicenergistics.registries.ItemEnum;
@@ -18,7 +19,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:appliedenergistics2;required-after:Thaumcraft")
+@Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:appliedenergistics2;required-after:Thaumcraft;after:Waila")
 public class ThaumicEnergistics
 {
 	/**
@@ -29,7 +30,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.6.1a"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.6.2a"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -63,10 +64,17 @@ public class ThaumicEnergistics
 	@EventHandler
 	public void load( FMLInitializationEvent event )
 	{
+		// Register block renderers
 		ThaumicEnergistics.proxy.registerRenderers();
+		
+		// Register tile entities
 		ThaumicEnergistics.proxy.registerTileEntities();
 
+		// Register network messages
 		ChannelHandler.registerMessages();
+		
+		// Register integration
+		IntegrationCore.init();
 	}
 
 	@EventHandler

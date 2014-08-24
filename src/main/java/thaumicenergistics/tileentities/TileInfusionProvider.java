@@ -10,11 +10,13 @@ import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.util.EssentiaConversionHelper;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.me.GridAccessException;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TileInfusionProvider
@@ -29,10 +31,8 @@ public class TileInfusionProvider
 	protected List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
 
 	@Override
-	protected void channelUpdated()
+	protected void onChannelUpdate()
 	{
-		super.channelUpdated();
-
 		// Is this server side?
 		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
 		{
@@ -42,11 +42,23 @@ public class TileInfusionProvider
 				this.monitor.removeListener( this );
 			}
 
+			IGrid grid;
+			try
+			{
+				// Get the grid
+				grid = this.gridProxy.getGrid();
+			}
+			catch( GridAccessException e )
+			{
+				// No grid
+				return;
+			}
+
 			// Get the new monitor
 			if( this.getFluidMonitor() )
 			{
 				// Register this tile as a network monitor
-				this.monitor.addListener( this, null );
+				this.monitor.addListener( this, grid );
 
 				// Get the list of essentia on the network
 				this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
@@ -118,9 +130,22 @@ public class TileInfusionProvider
 	}
 
 	@Override
-	public boolean isValid( Object verificationToken )
+	public boolean isValid( Object prevGrid )
 	{
-		return true;
+		IGrid grid;
+		try
+		{
+			// Get the grid
+			grid = this.gridProxy.getGrid();
+		}
+		catch( GridAccessException e )
+		{
+			// No grid
+			return false;
+		}
+		
+		// We are valid if our grid has not changed
+		return ( prevGrid == grid );
 	}
 
 	/**

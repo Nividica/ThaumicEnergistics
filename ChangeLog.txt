@@ -1,4 +1,8 @@
-﻿8/23/2014 0.6.1a
+﻿8/23/2014 0.6.2a
+  Fixes #14: The Essentia Provider does not always update its active/powered status if the network changes
+  Fixes #15: NEI lighting bug during A.C.T. Tooltips
+
+8/23/2014 0.6.1a
   Fixes #12: Can use a staff in the A.C.T. for crafting.
   Fixes #13: Fluid changes in the ME network cause that are not essentia gas cause unnecessary updates to propagate.
 

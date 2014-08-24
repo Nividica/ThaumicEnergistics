@@ -163,4 +163,10 @@ public class TileEssentiaProvider
 		return this.extractEssentiaFromNetwork( aspect, amount, false );
 	}
 
+	@Override
+	protected void onChannelUpdate()
+	{
+		// Ignored
+	}
+
 }

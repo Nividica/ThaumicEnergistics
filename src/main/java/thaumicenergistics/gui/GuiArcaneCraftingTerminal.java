@@ -355,7 +355,6 @@ public class GuiArcaneCraftingTerminal
 		this.fontRendererObj.drawString( this.guiTitle, GuiArcaneCraftingTerminal.TITLE_POS_X, GuiArcaneCraftingTerminal.TITLE_POS_Y, 0x000000 );
 
 		GL11.glEnable( GL11.GL_LIGHTING );
-		GL11.glEnable( GL11.GL_DEPTH_TEST );
 
 		// Draw the item widgets
 		for( int index = 0; index < GuiArcaneCraftingTerminal.ME_WIDGET_COUNT; index++ )
@@ -604,15 +603,6 @@ public class GuiArcaneCraftingTerminal
 
 		// Update the widgets
 		this.updateWidgetItems();
-	}
-
-	/**
-	 * Expose the render tooltip function as public
-	 */
-	@Override
-	public void renderToolTip( ItemStack itemStack, int xPosition, int yPosition )
-	{
-		super.renderToolTip( itemStack, xPosition, yPosition );
 	}
 
 }

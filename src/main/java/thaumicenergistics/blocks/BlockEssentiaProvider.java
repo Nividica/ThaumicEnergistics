@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 
  */
 public class BlockEssentiaProvider
-	extends BlockBaseProvider
+	extends BlockProviderBase
 {
 
 	public BlockEssentiaProvider()

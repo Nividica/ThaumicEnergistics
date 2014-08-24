@@ -6,14 +6,67 @@ import java.util.List;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 public class GuiHelper
 {
 	/**
+	 * Pixel area represented by the top-left and bottom-right corners of a
+	 * rectangle.
+	 * 
+	 * @author Nividica
+	 * 
+	 */
+	private static class Bounds
+	{
+		/**
+		 * Top Y position.
+		 */
+		public int T;
+
+		/**
+		 * Left X position.
+		 */
+		public int L;
+
+		/**
+		 * Bottom Y position.
+		 */
+		public int B;
+
+		/**
+		 * Right X position.
+		 */
+		public int R;
+
+		/**
+		 * Creates the boundary
+		 * 
+		 * @param t
+		 * Top Y position.
+		 * @param l
+		 * Left X position.
+		 * @param b
+		 * Bottom Y position.
+		 * @param r
+		 * Right X position.
+		 */
+		public Bounds( final int t, final int l, final int b, final int r )
+		{
+			this.T = t;
+			this.L = l;
+			this.B = b;
+			this.R = r;
+		}
+	}
+
+	/**
 	 * Maps int -> mouse button
 	 */
 	public static final int MOUSE_BUTTON_LEFT = 0;
+
 	public static final int MOUSE_BUTTON_RIGHT = 1;
+
 	public static final int MOUSE_BUTTON_WHEEL = 2;
 
 	/**
@@ -22,16 +75,115 @@ public class GuiHelper
 	public static final String CHAT_COLOR_HEADER = "§";
 
 	/**
-	 * GL capability code for rescaling.
+	 * Length of color arrays.
 	 */
-	private static int GL_RESCALE_NORMAL = 0x803A;
-
 	private static final int COLOR_ARRAY_SIZE = 4;
 
-	// Bitshift amounts based on byte position
+	/**
+	 * Tooltip offset from the mouse.
+	 */
+	private static final int TOOLTIP_OFFSET = 12;
+
+	/**
+	 * Height of a tooltip with no text.
+	 */
+	private static final int TOOLTIP_EMPTY_HEIGHT = 8;
+
+	/**
+	 * (Top) Margin from the borders to start drawing text.
+	 */
+	private static final int TOOLTIP_HEIGHT_MARGIN = 2;
+
+	/**
+	 * Height of each line of text.
+	 */
+	private static final int TOOLTIP_LINE_HEIGHT = 10;
+
+	/**
+	 * Color of the tooltip's outer borders.
+	 */
+	private static final int TOOLTIP_COLOR_OUTER = 0xFF000000;
+
+	/**
+	 * Color of the tooltip background.
+	 */
+	private static final int TOOLTIP_COLOR_BACKGROUND = 0xF0100010;
+
+	/**
+	 * Starting color of the tooltip's inner borders. 
+	 */
+	private static final int TOOLTIP_COLOR_INNER_BEGIN = 0xC05000FF;
+
+	/**
+	 * Ending color of the tooltip's inner borders. 
+	 */
+	private static final int TOOLTIP_COLOR_INNER_END = 0xC05000FF;
+
+	/**
+	 * Thickness of the tooltip's borders.
+	 */
+	private static final int TOOLTIP_BORDER_SIZE = 3;
+
+	/**
+	 * Bitshift amounts based on byte position
+	 */
 	private static final int[] COLOR_SHIFT_AMOUNT = new int[] { 0, 8, 16, 24 };
 
-	public static byte[] convertPackedColorToARGB( int color )
+	/**
+	 * Draws the background, outer borders, and inner borders for a tooltip.
+	 * 
+	 * @param guiObject
+	 * @param drawGradientRect
+	 * @param bounds
+	 * @throws Exception
+	 */
+	private static final void drawTooltipBackground( final Gui guiObject, final Method drawGradientRect, final Bounds bounds ) throws Exception
+	{
+		// Background
+		drawGradientRect.invoke( guiObject, bounds.L, bounds.T, bounds.R, bounds.B, GuiHelper.TOOLTIP_COLOR_BACKGROUND,
+			GuiHelper.TOOLTIP_COLOR_BACKGROUND );
+
+		// Draw outer borders
+		GuiHelper.drawTooltipBorders( guiObject, drawGradientRect, bounds, GuiHelper.TOOLTIP_COLOR_OUTER, GuiHelper.TOOLTIP_COLOR_OUTER, 0 );
+
+		// Adjust bounds for inner borders
+		bounds.T++ ;
+		bounds.L++ ;
+		bounds.B-- ;
+		bounds.R-- ;
+
+		// Draw innder borders
+		GuiHelper.drawTooltipBorders( guiObject, drawGradientRect, bounds, GuiHelper.TOOLTIP_COLOR_INNER_BEGIN, GuiHelper.TOOLTIP_COLOR_INNER_END, 1 );
+	}
+
+	/**
+	 * Draws the vertical and horizontal borders for a tooltip
+	 * 
+	 * @param guiObject
+	 * @param drawGradientRect
+	 * @param bounds
+	 * @param colorStart
+	 * @param colorEnd
+	 * @param cornerExpansion 1 to connect corners, 0 to leave notches.
+	 * @throws Exception
+	 */
+	private static final void drawTooltipBorders( final Gui guiObject, final Method drawGradientRect, final Bounds bounds, final int colorStart,
+													final int colorEnd, final int cornerExpansion ) throws Exception
+	{
+		// Left
+		drawGradientRect.invoke( guiObject, bounds.L - 1, bounds.T - cornerExpansion, bounds.L, bounds.B + cornerExpansion, colorStart, colorEnd );
+
+		// Top
+		drawGradientRect.invoke( guiObject, bounds.L, bounds.T - 1, bounds.R, bounds.T, colorStart, colorEnd );
+
+		// Right
+		drawGradientRect.invoke( guiObject, bounds.R, bounds.T - cornerExpansion, bounds.R + 1, bounds.B + cornerExpansion, colorStart, colorEnd );
+
+		// Bottom
+		drawGradientRect.invoke( guiObject, bounds.L, bounds.B, bounds.R, bounds.B + 1, colorStart, colorEnd );
+	}
+
+	public static final byte[] convertPackedColorToARGB( final int color )
 	{
 		byte[] colorBytes = new byte[COLOR_ARRAY_SIZE];
 
@@ -45,7 +197,7 @@ public class GuiHelper
 		return colorBytes;
 	}
 
-	public static int[] createColorGradient( int fromColor, int toColor, int iterations )
+	public static final int[] createColorGradient( final int fromColor, final int toColor, final int iterations )
 	{
 		// Is there enough iterations to create a gradient?
 		if( iterations < 3 )
@@ -111,13 +263,20 @@ public class GuiHelper
 		return gradient;
 	}
 
-	// This is a huge mess...
-	public static void drawTooltip( Gui guiObject, List<String> descriptionLines, int posX, int posY, FontRenderer fontrenderer )
+	/**
+	 * Draws an on-screen tooltip.
+	 * @param guiObject The parent of this tooltip.
+	 * @param descriptionLines Lines shown in the tooltip. Can be empty, can not be null.
+	 * @param posX X anchor position to draw the tooltip. Generally the mouse's X position.
+	 * @param posY Y anchor position to draw the tooltip. Generally the mouse's Y position.
+	 * @param fontrenderer The renderer used to draw the text with.
+	 */
+	public static final void drawTooltip( final Gui guiObject, final List<String> descriptionLines, int posX, int posY, final FontRenderer fontrenderer )
 	{
 		if( !descriptionLines.isEmpty() )
 		{
 			// Disable rescaling
-			GL11.glDisable( GL_RESCALE_NORMAL );
+			GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 
 			// Disable lighting
 			GL11.glDisable( GL11.GL_LIGHTING );
@@ -127,36 +286,49 @@ public class GuiHelper
 
 			try
 			{
-				// Use reflection to access the methods and feilds we need
+				// Use reflection to access zLevel
 				Field zLevel = Gui.class.getDeclaredField( "zLevel" );
-				zLevel.setAccessible( true );
 
+				// Use reflection to access drawGradientRect
 				Method drawGradientRect = Gui.class.getDeclaredMethod( "drawGradientRect", int.class, int.class, int.class, int.class, int.class,
 					int.class );
+
+				// Set reflected fields to public
+				zLevel.setAccessible( true );
 				drawGradientRect.setAccessible( true );
 
-				int maxStringLength = 0;
+				// Assume string length is zero
+				int maxStringLength_px = 0;
 
+				// Get max string length from lines in the list
 				for( String string : descriptionLines )
 				{
-
+					// Get the length of the string
 					int stringLen = fontrenderer.getStringWidth( string );
 
-					if( stringLen > maxStringLength )
+					// Is it larger than the previous length?
+					if( stringLen > maxStringLength_px )
 					{
-						maxStringLength = stringLen;
+						// Set it to maximum
+						maxStringLength_px = stringLen;
 					}
 				}
 
-				int offsetX = posX + 12;
+				// Offset the tooltip slightly
+				posX = posX + GuiHelper.TOOLTIP_OFFSET;
+				posY = posY - GuiHelper.TOOLTIP_OFFSET;
 
-				int offsetY = posY - 12;
+				// Base height of 8
+				int tooltipHeight = GuiHelper.TOOLTIP_EMPTY_HEIGHT;
 
-				int tooltipHeight = 8;
-
+				// Adjust height based on the number of lines
 				if( descriptionLines.size() > 1 )
 				{
-					tooltipHeight += 2 + ( ( descriptionLines.size() - 1 ) * 10 );
+					// Calculate the line height
+					int lineHeight = ( descriptionLines.size() - 1 ) * GuiHelper.TOOLTIP_LINE_HEIGHT;
+
+					// Adjust the height
+					tooltipHeight += ( GuiHelper.TOOLTIP_HEIGHT_MARGIN + lineHeight );
 				}
 
 				// Get the current z level
@@ -165,37 +337,31 @@ public class GuiHelper
 				// Set the new level to some high number
 				zLevel.set( guiObject, 300.0F );
 
-				int drawColor = 0xF0100010;
+				// Tooltip boundary
+				Bounds bounds = new Bounds( posY - GuiHelper.TOOLTIP_BORDER_SIZE, posX - GuiHelper.TOOLTIP_BORDER_SIZE, posY + tooltipHeight +
+								GuiHelper.TOOLTIP_BORDER_SIZE, posX + maxStringLength_px + GuiHelper.TOOLTIP_BORDER_SIZE );
 
-				drawGradientRect.invoke( guiObject, offsetX - 3, offsetY - 4, offsetX + maxStringLength + 3, offsetY - 3, drawColor, drawColor );
-				drawGradientRect.invoke( guiObject, offsetX - 3, offsetY + tooltipHeight + 3, offsetX + maxStringLength + 3, offsetY + tooltipHeight +
-								4, drawColor, drawColor );
-				drawGradientRect.invoke( guiObject, offsetX - 3, offsetY - 3, offsetX + maxStringLength + 3, offsetY + tooltipHeight + 3, drawColor,
-					drawColor );
-				drawGradientRect.invoke( guiObject, offsetX - 4, offsetY - 3, offsetX - 3, offsetY + tooltipHeight + 3, drawColor, drawColor );
-				drawGradientRect.invoke( guiObject, offsetX + maxStringLength + 3, offsetY - 3, offsetX + maxStringLength + 4, offsetY +
-								tooltipHeight + 3, drawColor, drawColor );
+				// Draw the background and borders
+				GuiHelper.drawTooltipBackground( guiObject, drawGradientRect, bounds );
 
-				drawColor = 0x505000FF;
-				int fadeColor = ( ( drawColor & 0xFEFEFE ) >> 1 ) | ( drawColor & 0xFF000000 );
-				drawGradientRect.invoke( guiObject, offsetX - 3, ( offsetY - 3 ) + 1, ( offsetX - 3 ) + 1, ( offsetY + tooltipHeight + 3 ) - 1,
-					drawColor, fadeColor );
-				drawGradientRect.invoke( guiObject, offsetX + maxStringLength + 2, ( offsetY - 3 ) + 1, offsetX + maxStringLength + 3, ( offsetY +
-								tooltipHeight + 3 ) - 1, drawColor, fadeColor );
-				drawGradientRect.invoke( guiObject, offsetX - 3, offsetY - 3, offsetX + maxStringLength + 3, ( offsetY - 3 ) + 1, drawColor,
-					drawColor );
-				drawGradientRect.invoke( guiObject, offsetX - 3, offsetY + tooltipHeight + 2, offsetX + maxStringLength + 3, offsetY + tooltipHeight +
-								3, fadeColor, fadeColor );
-
-				for( int descriptionIndex = 0; descriptionIndex < descriptionLines.size(); descriptionIndex++ )
+				// Draw each line
+				for( int index = 0; index < descriptionLines.size(); index++ )
 				{
-					String s1 = descriptionLines.get( descriptionIndex );
-					fontrenderer.drawStringWithShadow( s1, offsetX, offsetY, -1 );
-					if( descriptionIndex == 0 )
+					// Get the line
+					String line = descriptionLines.get( index );
+
+					// Draw the line
+					fontrenderer.drawStringWithShadow( line, posX, posY, -1 );
+
+					// Is this the first line?
+					if( index == 0 )
 					{
-						offsetY += 2;
+						// Add the margin
+						posY += GuiHelper.TOOLTIP_HEIGHT_MARGIN;
 					}
-					offsetY += 10;
+
+					// Add the line height
+					posY += GuiHelper.TOOLTIP_LINE_HEIGHT;
 				}
 
 				// Return the z level to what it was before
@@ -203,7 +369,7 @@ public class GuiHelper
 			}
 			catch( Throwable e )
 			{
-				// Something went wrong, ignore this for now
+				// Something went wrong, abort.
 			}
 
 			// Reenable lighting
@@ -213,7 +379,7 @@ public class GuiHelper
 			GL11.glEnable( GL11.GL_DEPTH_TEST );
 
 			// Reenable scaling
-			GL11.glEnable( GL_RESCALE_NORMAL );
+			GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		}
 	}
 
@@ -231,7 +397,8 @@ public class GuiHelper
 	 * @param guiTop
 	 * @return
 	 */
-	public static boolean isPointInGuiRegion( int top, int left, int height, int width, int pointX, int pointY, int guiLeft, int guiTop )
+	public static final boolean isPointInGuiRegion( final int top, final int left, final int height, final int width, final int pointX,
+													final int pointY, final int guiLeft, final int guiTop )
 	{
 		return isPointInRegion( top, left, height, width, pointX - guiLeft, pointY - guiTop );
 	}
@@ -247,7 +414,7 @@ public class GuiHelper
 	 * @param pointY
 	 * @return
 	 */
-	public static boolean isPointInRegion( int top, int left, int height, int width, int pointX, int pointY )
+	public static final boolean isPointInRegion( final int top, final int left, final int height, final int width, final int pointX, final int pointY )
 	{
 		return ( pointX >= top ) && ( pointX <= ( top + width ) ) && ( pointY >= left ) && ( pointY <= ( left + height ) );
 	}

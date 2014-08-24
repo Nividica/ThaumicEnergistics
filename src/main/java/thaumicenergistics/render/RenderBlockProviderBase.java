@@ -15,7 +15,7 @@ public abstract class RenderBlockProviderBase
 	implements ISimpleBlockRenderingHandler
 {
 
-	private boolean renderPass( double x, double y, double z, AEColor overlayColor, int blockBrightness, boolean isActive )
+	private boolean renderWorldPass( double x, double y, double z, AEColor overlayColor, int blockBrightness, boolean isActive )
 	{
 		// Get the tessellator instance
 		Tessellator tessellator = Tessellator.instance;
@@ -33,29 +33,35 @@ public abstract class RenderBlockProviderBase
 		}
 		else
 		{
-			// Set the texture to overlay
-			texture = this.getOverlayTexture();
-
-			// Are we active?
-			if( isActive )
+			// Are we transparent?
+			if( overlayColor == AEColor.Transparent )
 			{
-				// Active, do we have a color?
-				if( overlayColor == AEColor.Transparent )
+				// Are we active?
+				if( isActive )
 				{
 					// Nothing additional to render
 					return false;
 				}
-
-				// Set the drawing color
-				tessellator.setColorOpaque_I( overlayColor.mediumVariant );
-
+				
+				// Inactive, set the drawing color to black
+				tessellator.setColorRGBA( 0, 0, 0, 255 );
 			}
 			else
 			{
-				// Inactive, set the drawing color to black
-				tessellator.setColorRGBA( 0, 0, 0, 255 );
+				// Set the drawing color
+				tessellator.setColorOpaque_I( overlayColor.mediumVariant );
+				
+				// Are we active?
+				if( !isActive )
+				{
+					// Adjust brightness
+					blockBrightness = 0x300030;
+				}
 
 			}
+
+			// Set the texture to overlay
+			texture = this.getOverlayTexture();
 		}
 
 		// Set the brightness
@@ -180,15 +186,15 @@ public abstract class RenderBlockProviderBase
 			// Get the provider
 			TileProviderBase provider = (TileProviderBase)world.getTileEntity( x, y, z );
 
-			// Get the grid color
-			overlayColor = provider.getGridColor();
+			// Get the color of the provider
+			overlayColor = provider.getColor();
 
 			// Get the active state
 			isActive = provider.isActive();
 		}
 
 		// Render and return 
-		return this.renderPass( x, y, z, overlayColor, blockBrightness, isActive );
+		return this.renderWorldPass( x, y, z, overlayColor, blockBrightness, isActive );
 	}
 
 	@Override
