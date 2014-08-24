@@ -1,5 +1,6 @@
 package thaumicenergistics;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,6 +11,7 @@ import thaumicenergistics.proxy.CommonProxy;
 import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.EssentiaTileContainerHelper;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -64,6 +66,8 @@ public class ThaumicEnergistics
 	@EventHandler
 	public void load( FMLInitializationEvent event )
 	{
+		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "load" );
+		
 		// Register block renderers
 		ThaumicEnergistics.proxy.registerRenderers();
 		
@@ -75,32 +79,70 @@ public class ThaumicEnergistics
 		
 		// Register integration
 		IntegrationCore.init();
+		
+		this.endLoadStageTracking( t );
 	}
 
 	@EventHandler
 	public void postInit( FMLPostInitializationEvent event )
 	{
+		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "postInit" );
+		
 		// Register the standard thaumcraft container items and tiles
 		EssentiaTileContainerHelper.registerThaumcraftContainers();
 		EssentiaItemContainerHelper.registerThaumcraftContainers();
 
 		// Register my tiles with SpatialIO
 		ThaumicEnergistics.proxy.registerSpatialIOMovables();
+		
+		this.endLoadStageTracking( t );
 	}
 
 	@EventHandler
 	public void preInit( FMLPreInitializationEvent event )
 	{
+		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "preInit" );
+		
 		// Set the instance
 		ThaumicEnergistics.instance = this;
 
+		// Register the gui handler
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, new GuiHandler() );
 
+		// Register items
 		ThaumicEnergistics.proxy.registerItems();
+		
+		// Register fluids
 		ThaumicEnergistics.proxy.registerFluids();
+		
+		// Register blocks
 		ThaumicEnergistics.proxy.registerBlocks();
+		
+		// Register recipes
 		ThaumicEnergistics.proxy.registerRecipes();
+		
+		// Register TC research
 		ThaumicEnergistics.proxy.registerResearch();
+		
+		this.endLoadStageTracking( t );
+	}
+	
+	private ImmutablePair<Long, String> beginLoadStageTracking( String stageName )
+	{
+		// Print begin
+		FMLLog.info( "%s: Begining %s()", ThaumicEnergistics.MOD_ID, stageName );
+		
+		// Return the current time
+		return new ImmutablePair<Long, String>( System.currentTimeMillis(), stageName );
+	}
+	
+	private void endLoadStageTracking( ImmutablePair<Long, String> beginInfo )
+	{
+		// Calculate time
+		long time = System.currentTimeMillis() - beginInfo.left;
+		
+		// Print end
+		FMLLog.info( "%s: Finished %s(), Took: %dms", ThaumicEnergistics.MOD_ID, beginInfo.right, time );
 	}
 
 }

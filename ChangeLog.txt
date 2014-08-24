@@ -1,4 +1,9 @@
-﻿8/23/2014 0.6.2a
+﻿8/24/2014 0.6.2a
+  Fixed incorrect ME chest overlay textures.
+  Additional logging during mod load.
+  Restored essentia gas names.
+  
+8/23/2014 0.6.2a
   Fixes #14: The Essentia Provider does not always update its active/powered status if the network changes
   Fixes #16: NEI lighting bug during A.C.T. Tooltips
   Dependency Changed: Applied Energistics 2 rv1 beta 12

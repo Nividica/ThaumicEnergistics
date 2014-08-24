@@ -84,6 +84,9 @@ public class GaseousEssentia
 		{
 			// Add to the list
 			gasList.put( aspect, newGas );
+			
+			// Log info
+			FMLLog.info( "%s: Created fluid for aspect %s.", ThaumicEnergistics.MOD_ID, aspect.getTag() );
 		}
 		else
 		{
@@ -152,6 +155,19 @@ public class GaseousEssentia
 	public String getLocalizedName( FluidStack stack )
 	{
 		return StatCollector.translateToLocal( "thaumicenergistics.fluid.gaseous" ) + " " + this.associatedAspect.getName();
+	}
+
+	/**
+	 * Gets the localized version of the gasses name.
+	 * 
+	 * @deprecated
+	 */
+
+	@Deprecated
+	@Override
+	public String getLocalizedName()
+	{
+		return this.getLocalizedName( null );
 	}
 
 }

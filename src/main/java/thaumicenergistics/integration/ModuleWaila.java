@@ -67,6 +67,9 @@ public class ModuleWaila
 				// Get activity string from AppEng2
 				currenttip.add( WailaText.DeviceOffline.getLocal() );
 			}
+
+			// Add the color
+			currenttip.add( "Color: " + ( (TileProviderBase)tileProvider ).getColor().toString() );
 		}
 
 		return currenttip;
