@@ -1,6 +1,9 @@
 ﻿8/23/2014 0.6.2a
   Fixes #14: The Essentia Provider does not always update its active/powered status if the network changes
-  Fixes #15: NEI lighting bug during A.C.T. Tooltips
+  Fixes #16: NEI lighting bug during A.C.T. Tooltips
+  Dependency Changed: Applied Energistics 2 rv1 beta 12
+  Optional Dependency Changed: Waila 1.5.3
+  Updated ME chest overlay texture.
 
 8/23/2014 0.6.1a
   Fixes #12: Can use a staff in the A.C.T. for crafting.
