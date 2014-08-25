@@ -32,7 +32,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.6.2a"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.6.3a"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -158,13 +158,16 @@ public class ThaumicEnergistics
  */
 
 /*
- * TODO -- Planned Features
- * Terminal sort mode ascending and descending order
- * Additional UI's redstone mode
+ * TODO
+ * Gas textures / EC2
+ * NEI for A.C.T.
+ * Additional terminal sorting modes.
+ * Scroll bars for terminals.
  * 
  * --Possible Features
  * Wireless terminal
  * Level emitter multi-mode
+ * Additional UI's redstone mode
  * 
  */
 

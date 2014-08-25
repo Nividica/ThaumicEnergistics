@@ -12,7 +12,9 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
+import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
 import thaumicenergistics.gui.buttons.ButtonClearCraftingGrid;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
@@ -123,6 +125,36 @@ public class GuiArcaneCraftingTerminal
 	private static final int CLEAR_GRID_ID = 0;
 
 	/**
+	 * Starting X position for craft aspects
+	 */
+	private static final int ASPECT_COST_POS_X = 136;
+
+	/**
+	 * Starting Y position for craft aspects
+	 */
+	private static final int ASPECT_COST_POS_Y = 90;
+
+	/**
+	 * Distance between aspect icons
+	 */
+	private static final int ASPECT_COST_SPACING = 18;
+
+	/**
+	 * Rate at which to blink the aspect if there is not enough in the wand.
+	 */
+	private static final double ASPECT_COST_BLINK_SPEED = 0.5D;
+
+	/**
+	 * Minimum transparency of the aspect if there is not enough in the wand.
+	 */
+	private static final float ASPECT_COST_MIN_ALPHA = 0.25F;
+
+	/**
+	 * Minimum transparency of the aspect if there is not enough in the wand.
+	 */
+	private static final float ASPECT_COST_MAX_ALPHA = 0.75F;
+
+	/**
 	 * Holds the list of all items in the ME network
 	 */
 	private IItemList<IAEItemStack> networkItems = null;
@@ -168,7 +200,7 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private String searchQuery = "";
 
-	public GuiArcaneCraftingTerminal( AEPartArcaneCraftingTerminal part, EntityPlayer player )
+	public GuiArcaneCraftingTerminal( final AEPartArcaneCraftingTerminal part, final EntityPlayer player )
 	{
 		// Call super
 		super( new ContainerPartArcaneCraftingTerminal( part, player ) );
@@ -199,6 +231,87 @@ public class GuiArcaneCraftingTerminal
 	}
 
 	/**
+	 * Draws the crafting aspect's and their costs.
+	 * 
+	 * @param craftingCost
+	 */
+	private void drawCraftingAspects( final List<ArcaneCrafingCost> craftingCost )
+	{
+		int posY = GuiArcaneCraftingTerminal.ASPECT_COST_POS_Y;
+		int column = 0;
+
+		// Draw each primal
+		for( ArcaneCrafingCost cost : craftingCost )
+		{
+			// Set the alpha to full
+			float alpha = 1.0F;
+
+			// Do we have enough vis for this aspect?
+			if( !cost.hasEnoughVis )
+			{
+				// Ping-pong the alpha
+				alpha = GuiHelper.pingPongFromTime( GuiArcaneCraftingTerminal.ASPECT_COST_BLINK_SPEED,
+					GuiArcaneCraftingTerminal.ASPECT_COST_MIN_ALPHA, GuiArcaneCraftingTerminal.ASPECT_COST_MAX_ALPHA );
+			}
+
+			// Calculate X position
+			int posX = GuiArcaneCraftingTerminal.ASPECT_COST_POS_X + ( column * GuiArcaneCraftingTerminal.ASPECT_COST_SPACING );
+
+			// Draw the aspect icon
+			UtilsFX.drawTag( posX, posY, cost.primal, cost.visCost, 0, this.zLevel, GL11.GL_ONE_MINUS_SRC_ALPHA, alpha, false );
+
+			// Should we move to the next row?
+			if( ++column == 2 )
+			{
+				// Reset column
+				column = 0;
+
+				// Increment Y
+				posY += GuiArcaneCraftingTerminal.ASPECT_COST_SPACING;
+			}
+		}
+	}
+
+	/**
+	 * Draws the AE item widgets.
+	 * 
+	 * @param mouseX
+	 * @param mouseY
+	 * @return
+	 */
+	private WidgetAEItem drawItemWidgets( final int mouseX, final int mouseY )
+	{
+		boolean hasNoOverlay = true;
+
+		WidgetAEItem widgetUnderMouse = null;
+
+		// Draw the item widgets
+		for( int index = 0; index < GuiArcaneCraftingTerminal.ME_WIDGET_COUNT; index++ )
+		{
+			// Get the widget
+			WidgetAEItem currentWidget = this.itemWidgets[index];
+
+			// Draw the widget
+			currentWidget.drawWidget();
+
+			// Is the mouse over this widget?
+			if( hasNoOverlay && currentWidget.isMouseOverWidget( mouseX, mouseY ) )
+			{
+				// Draw the overlay
+				currentWidget.drawMouseHoverUnderlay();
+
+				// Set that we have an overlay
+				hasNoOverlay = false;
+
+				// Set this widget as the widget under the mouse
+				widgetUnderMouse = currentWidget;
+			}
+		}
+
+		return widgetUnderMouse;
+	}
+
+	/**
 	 * If the user has clicked on an item widget this will inform the server
 	 * so that the item can be extracted from the AE network.
 	 * 
@@ -206,7 +319,7 @@ public class GuiArcaneCraftingTerminal
 	 * @param mouseY
 	 * @param mouseButton
 	 */
-	private void sendItemWidgetClicked( int mouseX, int mouseY, int mouseButton )
+	private void sendItemWidgetClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
 		for( int index = 0; index < GuiArcaneCraftingTerminal.ME_WIDGET_COUNT; index++ )
 		{
@@ -282,7 +395,7 @@ public class GuiArcaneCraftingTerminal
 	 * 
 	 * @param networkItemIterator
 	 */
-	private void updateWithSearch( Iterator<IAEItemStack> networkItemIterator )
+	private void updateWithSearch( final Iterator<IAEItemStack> networkItemIterator )
 	{
 		int widgetIndex = 0;
 
@@ -314,7 +427,7 @@ public class GuiArcaneCraftingTerminal
 			}
 		}
 
-		// Fill any remaining slots with nul
+		// Fill any remaining slots with null
 		for( ; widgetIndex < GuiArcaneCraftingTerminal.ME_WIDGET_COUNT; widgetIndex++ )
 		{
 			this.itemWidgets[widgetIndex].setItemStack( null );
@@ -325,7 +438,7 @@ public class GuiArcaneCraftingTerminal
 	 * Draws the gui texture
 	 */
 	@Override
-	protected void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY )
+	protected void drawGuiContainerBackgroundLayer( final float alpha, final int mouseX, final int mouseY )
 	{
 		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -345,38 +458,25 @@ public class GuiArcaneCraftingTerminal
 	 * Draw the foreground layer.
 	 */
 	@Override
-	protected void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
+	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
-		boolean noOverlay = true;
-
-		WidgetAEItem widgetUnderMouse = null;
-
 		// Draw the title
 		this.fontRendererObj.drawString( this.guiTitle, GuiArcaneCraftingTerminal.TITLE_POS_X, GuiArcaneCraftingTerminal.TITLE_POS_Y, 0x000000 );
 
+		// Enable lighting
 		GL11.glEnable( GL11.GL_LIGHTING );
 
-		// Draw the item widgets
-		for( int index = 0; index < GuiArcaneCraftingTerminal.ME_WIDGET_COUNT; index++ )
+		// Draw the widgets and get which one the mouse is over
+		WidgetAEItem widgetUnderMouse = this.drawItemWidgets( mouseX, mouseY );
+
+		// Get the cost
+		List<ArcaneCrafingCost> craftingCost = ( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).getCraftingCost();
+
+		// Does the current recipe have costs?
+		if( craftingCost != null )
 		{
-			// Get the widget
-			WidgetAEItem currentWidget = this.itemWidgets[index];
-
-			// Draw the widget
-			currentWidget.drawWidget();
-
-			// Is the mouse over this widget?
-			if( noOverlay && currentWidget.isMouseOverWidget( mouseX, mouseY ) )
-			{
-				// Draw the overlay
-				currentWidget.drawMouseHoverUnderlay();
-
-				// Set that we have an overlay
-				noOverlay = false;
-
-				// Set this widget as the widget under the mouse
-				widgetUnderMouse = currentWidget;
-			}
+			// Draw the costs
+			this.drawCraftingAspects( craftingCost );
 		}
 
 		// Do we have a widget under the mouse?
@@ -392,19 +492,19 @@ public class GuiArcaneCraftingTerminal
 	 * Called when the player types a key.
 	 */
 	@Override
-	protected void keyTyped( char key, int keyID )
+	protected void keyTyped( final char key, final int keyID )
 	{
-		// Pass the key to the search field.
-		this.searchBar.textboxKeyTyped( key, keyID );
-
 		// Did they press the escape key?
 		if( keyID == Keyboard.KEY_ESCAPE )
 		{
 			// Slot the screen.
 			this.mc.thePlayer.closeScreen();
 		}
-		else
+		else if( this.searchBar.isFocused() )
 		{
+			// Pass the key to the search field.
+			this.searchBar.textboxKeyTyped( key, keyID );
+			
 			String oldQuery = this.searchQuery;
 
 			// Get the search query
@@ -417,6 +517,10 @@ public class GuiArcaneCraftingTerminal
 				this.updateWidgetItems();
 			}
 		}
+		else
+		{
+			super.keyTyped( key, keyID );
+		}
 
 	}
 
@@ -424,7 +528,7 @@ public class GuiArcaneCraftingTerminal
 	 * Called when the mouse is clicked while the gui is open
 	 */
 	@Override
-	protected void mouseClicked( int mouseX, int mouseY, int mouseButton )
+	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
 		// Was the click inside the ME grid?
 		if( GuiHelper.isPointInGuiRegion( GuiArcaneCraftingTerminal.ME_ITEM_POS_X, GuiArcaneCraftingTerminal.ME_ITEM_POS_Y,
@@ -456,7 +560,7 @@ public class GuiArcaneCraftingTerminal
 	 * Called when a button is clicked.
 	 */
 	@Override
-	public void actionPerformed( GuiButton button )
+	public void actionPerformed( final GuiButton button )
 	{
 		// Was it the clear grid button?
 		if( button.id == GuiArcaneCraftingTerminal.CLEAR_GRID_ID )
@@ -522,7 +626,7 @@ public class GuiArcaneCraftingTerminal
 	 * 
 	 * @param heldItemstack
 	 */
-	public void onPlayerHeldReceived( IAEItemStack heldItemstack )
+	public void onPlayerHeldReceived( final IAEItemStack heldItemstack )
 	{
 		ItemStack itemStack = null;
 
@@ -541,7 +645,7 @@ public class GuiArcaneCraftingTerminal
 	 * 
 	 * @param change
 	 */
-	public void onReceiveChange( IAEItemStack change )
+	public void onReceiveChange( final IAEItemStack change )
 	{
 		// Is the change not null?
 		if( change != null )
@@ -583,7 +687,7 @@ public class GuiArcaneCraftingTerminal
 	 * 
 	 * @param itemList
 	 */
-	public void onReceiveFullList( IItemList<IAEItemStack> itemList )
+	public void onReceiveFullList( final IItemList<IAEItemStack> itemList )
 	{
 		// Set the list
 		this.networkItems = itemList;

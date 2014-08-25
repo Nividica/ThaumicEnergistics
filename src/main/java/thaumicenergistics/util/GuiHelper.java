@@ -110,12 +110,12 @@ public class GuiHelper
 	private static final int TOOLTIP_COLOR_BACKGROUND = 0xF0100010;
 
 	/**
-	 * Starting color of the tooltip's inner borders. 
+	 * Starting color of the tooltip's inner borders.
 	 */
 	private static final int TOOLTIP_COLOR_INNER_BEGIN = 0xC05000FF;
 
 	/**
-	 * Ending color of the tooltip's inner borders. 
+	 * Ending color of the tooltip's inner borders.
 	 */
 	private static final int TOOLTIP_COLOR_INNER_END = 0xC05000FF;
 
@@ -164,7 +164,8 @@ public class GuiHelper
 	 * @param bounds
 	 * @param colorStart
 	 * @param colorEnd
-	 * @param cornerExpansion 1 to connect corners, 0 to leave notches.
+	 * @param cornerExpansion
+	 * 1 to connect corners, 0 to leave notches.
 	 * @throws Exception
 	 */
 	private static final void drawTooltipBorders( final Gui guiObject, final Method drawGradientRect, final Bounds bounds, final int colorStart,
@@ -265,13 +266,20 @@ public class GuiHelper
 
 	/**
 	 * Draws an on-screen tooltip.
-	 * @param guiObject The parent of this tooltip.
-	 * @param descriptionLines Lines shown in the tooltip. Can be empty, can not be null.
-	 * @param posX X anchor position to draw the tooltip. Generally the mouse's X position.
-	 * @param posY Y anchor position to draw the tooltip. Generally the mouse's Y position.
-	 * @param fontrenderer The renderer used to draw the text with.
+	 * 
+	 * @param guiObject
+	 * The parent of this tooltip.
+	 * @param descriptionLines
+	 * Lines shown in the tooltip. Can be empty, can not be null.
+	 * @param posX
+	 * X anchor position to draw the tooltip. Generally the mouse's X position.
+	 * @param posY
+	 * Y anchor position to draw the tooltip. Generally the mouse's Y position.
+	 * @param fontrenderer
+	 * The renderer used to draw the text with.
 	 */
-	public static final void drawTooltip( final Gui guiObject, final List<String> descriptionLines, int posX, int posY, final FontRenderer fontrenderer )
+	public static final void drawTooltip( final Gui guiObject, final List<String> descriptionLines, int posX, int posY,
+											final FontRenderer fontrenderer )
 	{
 		if( !descriptionLines.isEmpty() )
 		{
@@ -417,5 +425,50 @@ public class GuiHelper
 	public static final boolean isPointInRegion( final int top, final int left, final int height, final int width, final int pointX, final int pointY )
 	{
 		return ( pointX >= top ) && ( pointX <= ( top + width ) ) && ( pointY >= left ) && ( pointY <= ( left + height ) );
+	}
+
+	/**
+	 * Ping pongs a value back and forth from min -> max -> min.
+	 * The base speed of this effect is 1 second per transition, 2 seconds
+	 * total.
+	 * 
+	 * @param speedReduction
+	 * The higher this value, the slower the effect. The smaller this value, the
+	 * faster the effect.
+	 * PingPong time (1) = 2 Seconds; (0.5) = 1 Second; (2) = 4 Seconds;
+	 * @param minValue
+	 * @param maxValue
+	 * @return
+	 */
+	public static final float pingPongFromTime( double speedReduction, final float minValue, final float maxValue )
+	{
+		// NOTE: If I make a math helper class, move this there
+
+		// Sanity check for situations like pingPongFromTime( ?, 1.0F, 1.0F )
+		if( minValue == maxValue )
+		{
+			return minValue;
+		}
+
+		// Bounds check speed reduction
+		if( speedReduction <= 0 )
+		{
+			speedReduction = Float.MAX_VALUE;
+		}
+
+		// Get the time modulated to 2000, then reduced
+		float time = (float)( ( System.currentTimeMillis() / speedReduction ) % 2000.F );
+
+		// Offset by -1000 and take the abs
+		time = Math.abs( time - 1000.0F );
+
+		// Convert time to a percentage
+		float timePercentage = time / 1000.0F;
+
+		// Get the position in the range we are now at
+		float rangePercentage = ( maxValue - minValue ) * timePercentage;
+
+		// Add the range position back to min
+		return minValue + rangePercentage;
 	}
 }

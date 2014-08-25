@@ -1,6 +1,7 @@
 package thaumicenergistics.container;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -35,6 +36,39 @@ public class ContainerPartArcaneCraftingTerminal
 	extends ContainerWithPlayerInventory
 	implements IMEMonitorHandlerReceiver<IAEItemStack>
 {
+	/**
+	 * Holds a single aspect cost for the current recipe.  
+	 * @author Nividica
+	 *
+	 */
+	public class ArcaneCrafingCost
+	{
+		/**
+		 * How much vis does the recipe require?
+		 */
+		public final float visCost;
+
+		/**
+		 * Which aspect?
+		 */
+		public final Aspect primal;
+
+		/**
+		 * Do we have enough of this aspect in the wand to perform the craft?
+		 */
+		public final boolean hasEnoughVis;
+
+		public ArcaneCrafingCost( final float visCost, final Aspect primal, final boolean hasEnough )
+		{
+			// Round to 1 decimal place
+			this.visCost = Math.round( visCost * 10.0F ) / 10.0F;
+
+			this.primal = primal;
+
+			this.hasEnoughVis = hasEnough;
+		}
+	}
+
 	/**
 	 * Y position for the player inventory.
 	 */
@@ -133,7 +167,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * The aspects the wand does not have enough of for the current recipe.
 	 */
-	private List<Aspect> missingAspects = new ArrayList<Aspect>();
+	private List<ArcaneCrafingCost> craftingCost = new ArrayList<ArcaneCrafingCost>();
 
 	/**
 	 * The AE network item monitor we are attached to.
@@ -151,7 +185,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * @param terminal
 	 * @param player
 	 */
-	public ContainerPartArcaneCraftingTerminal( AEPartArcaneCraftingTerminal terminal, EntityPlayer player )
+	public ContainerPartArcaneCraftingTerminal( final AEPartArcaneCraftingTerminal terminal, final EntityPlayer player )
 	{
 		// Set the part
 		this.terminal = terminal;
@@ -243,7 +277,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * 
 	 * @param player
 	 */
-	private void doShiftAutoCrafting( EntityPlayer player )
+	private void doShiftAutoCrafting( final EntityPlayer player )
 	{
 		// Tracks if a crafting result could be placed in the players inventory
 		boolean didMerge;
@@ -307,7 +341,7 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	@SuppressWarnings("deprecation")
-	private boolean doStacksMatch( IAEItemStack keyStack, IAEItemStack potentialMatch )
+	private boolean doStacksMatch( final IAEItemStack keyStack, final IAEItemStack potentialMatch )
 	{
 		// Do the stacks directly match?
 		if( keyStack.getItemStack().isItemEqual( potentialMatch.getItemStack() ) )
@@ -428,7 +462,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * @param itemStack
 	 * @return True if any amount was merged, False otherwise.
 	 */
-	private boolean mergeWithMENetwork( ItemStack itemStack )
+	private boolean mergeWithMENetwork( final ItemStack itemStack )
 	{
 		// Attempt to place in the ME system
 		IAEItemStack toInject = AEApi.instance().storage().createItemStack( itemStack );
@@ -466,7 +500,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * @param workbenchTile
 	 * @return ItemStack of the result if wand has enough vis, null otherwise.
 	 */
-	private ItemStack validateWandVisAmount( IArcaneRecipe forRecipe, TileMagicWorkbench workbenchTile )
+	private ItemStack validateWandVisAmount( final IArcaneRecipe forRecipe, final TileMagicWorkbench workbenchTile )
 	{
 		// Do we have a want?
 		if( this.wand != null )
@@ -498,14 +532,15 @@ public class ContainerPartArcaneCraftingTerminal
 				int hasVis = wandAspectList.getAmount( currentAspect );
 
 				// Does the wand not have enough of vis of this aspect?
-				if( hasVis < requiredVis )
+				boolean hasEnough = ( hasVis >= requiredVis );
+				if( !hasEnough )
 				{
-					// Add to the missing list
-					this.missingAspects.add( currentAspect );
-
 					// Mark that we do not have enough vis to complete crafting
 					hasAll = false;
 				}
+
+				// Add to the cost list
+				this.craftingCost.add( new ArcaneCrafingCost( requiredVis / 100.0F, currentAspect, hasEnough ) );
 			}
 
 			// Did we have all the vis required?
@@ -526,7 +561,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * @param slotNumber
 	 * @return
 	 */
-	protected boolean slotClickedWasInCraftingInventory( int slotNumber )
+	protected boolean slotClickedWasInCraftingInventory( final int slotNumber )
 	{
 		return ( slotNumber >= this.firstCraftingSlotNumber ) && ( slotNumber <= this.lastCraftingSlotNumber );
 	}
@@ -535,16 +570,33 @@ public class ContainerPartArcaneCraftingTerminal
 	 * Who can interact with this?
 	 */
 	@Override
-	public boolean canInteractWith( EntityPlayer player )
+	public boolean canInteractWith( final EntityPlayer player )
 	{
 		return true;
+	}
+
+	/**
+	 * Gets the aspect cost and how much is missing for the current recipe.
+	 * 
+	 * @return Null if not an arcane recipe, cost otherwise.
+	 */
+	public List<ArcaneCrafingCost> getCraftingCost()
+	{
+		// Does this recipe have costs?
+		if( this.craftingCost.isEmpty() )
+		{
+			return null;
+		}
+
+		// Return required and missing
+		return Collections.unmodifiableList( this.craftingCost );
 	}
 
 	/**
 	 * Called by the monitor to ensure we still want updates
 	 */
 	@Override
-	public boolean isValid( Object authToken )
+	public boolean isValid( final Object authToken )
 	{
 		return true;
 	}
@@ -553,7 +605,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * Attempts to clear the crafting grid by placing the items
 	 * back in the ME network
 	 */
-	public void onClientRequestClearCraftingGrid( EntityPlayer player )
+	public void onClientRequestClearCraftingGrid( final EntityPlayer player )
 	{
 		// Ignored client side
 		if( EffectiveSide.isClientSide() )
@@ -605,7 +657,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * A client player is requesting to deposit their held item
 	 * into the ME network.
 	 */
-	public void onClientRequestDeposit( EntityPlayer player, int mouseButton )
+	public void onClientRequestDeposit( final EntityPlayer player, final int mouseButton )
 	{
 		// Ensure there is a player
 		if( player == null )
@@ -679,7 +731,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * @param requestedStack
 	 * @param mouseButton
 	 */
-	public void onClientRequestExtract( EntityPlayer player, IAEItemStack requestedStack, int mouseButton, boolean isShiftHeld )
+	public void onClientRequestExtract( final EntityPlayer player, final IAEItemStack requestedStack, final int mouseButton, final boolean isShiftHeld )
 	{
 		// Ensure there is a player
 		if( player == null )
@@ -771,7 +823,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * 
 	 * @param player
 	 */
-	public void onClientRequestFullUpdate( EntityPlayer player )
+	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
 		// Ensure we have a monitor
 		if( this.monitor != null )
@@ -788,7 +840,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * Unregister this container
 	 */
 	@Override
-	public void onContainerClosed( EntityPlayer player )
+	public void onContainerClosed( final EntityPlayer player )
 	{
 		// Pass to super
 		super.onContainerClosed( player );
@@ -812,11 +864,11 @@ public class ContainerPartArcaneCraftingTerminal
 	 * Called when crafting inputs are changed.
 	 */
 	@Override
-	public void onCraftMatrixChanged( IInventory inventory )
+	public void onCraftMatrixChanged( final IInventory inventory )
 	{
 		// Reset crafting aspects
 		this.requiredAspects = null;
-		this.missingAspects.clear();
+		this.craftingCost.clear();
 
 		// Reset wand
 		this.getWand();
@@ -854,7 +906,7 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	@Override
-	public void postChange( IBaseMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource actionSource )
+	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final IAEItemStack change, final BaseActionSource actionSource )
 	{
 		// Send the change to the client
 		new PacketClientArcaneCraftingTerminal().createChangeUpdate( this.player, change ).sendPacketToPlayer();
@@ -867,7 +919,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * @param itemStack
 	 * @return
 	 */
-	public ItemStack requestCraftingReplenishment( ItemStack itemStack )
+	public ItemStack requestCraftingReplenishment( final ItemStack itemStack )
 	{
 		// Create the request
 		IAEItemStack request = AEApi.instance().storage().createItemStack( itemStack );
@@ -919,7 +971,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * Called when the player shift+clicks on a slot
 	 */
 	@Override
-	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
+	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
 		// Is this client side?
 		if( EffectiveSide.isClientSide() )

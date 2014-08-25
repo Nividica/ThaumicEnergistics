@@ -1,4 +1,8 @@
-﻿8/24/2014 0.6.2a
+﻿8/24/2014 0.6.3a
+  Added aspect cost gui to A.C.T.
+  Bugfix: Key-presses are swallowed by the A.C.T. This also fixes the issue where you could not view NEI recipes while the ACT was open.
+
+8/24/2014 0.6.2a
   Fixed incorrect ME chest overlay textures.
   Additional logging during mod load.
   Restored essentia gas names.
