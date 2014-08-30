@@ -6,11 +6,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.integration.IntegrationCore;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.network.ChannelHandler;
 import thaumicenergistics.proxy.CommonProxy;
 import thaumicenergistics.registries.ItemEnum;
-import thaumicenergistics.util.EssentiaItemContainerHelper;
-import thaumicenergistics.util.EssentiaTileContainerHelper;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -32,7 +32,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.6.3a"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.6.3b"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -89,8 +89,8 @@ public class ThaumicEnergistics
 		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "postInit" );
 		
 		// Register the standard thaumcraft container items and tiles
-		EssentiaTileContainerHelper.registerThaumcraftContainers();
-		EssentiaItemContainerHelper.registerThaumcraftContainers();
+		EssentiaTileContainerHelper.instance.registerThaumcraftContainers();
+		EssentiaItemContainerHelper.instance.registerThaumcraftContainers();
 
 		// Register my tiles with SpatialIO
 		ThaumicEnergistics.proxy.registerSpatialIOMovables();
@@ -159,10 +159,11 @@ public class ThaumicEnergistics
 
 /*
  * TODO
- * Gas textures / EC2
  * NEI for A.C.T.
  * Additional terminal sorting modes.
  * Scroll bars for terminals.
+ * Space-Click move whole inventory
+ * E-Cell Workbench
  * 
  * --Possible Features
  * Wireless terminal

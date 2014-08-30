@@ -12,104 +12,188 @@ import net.minecraft.client.resources.data.AnimationMetadataSection;
 import net.minecraft.client.resources.data.TextureMetadataSection;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
+import cpw.mods.fml.common.FMLLog;
 
 public class EssentiaGasTexture
 	extends TextureAtlasSprite
 {
-	private class Pixel
+	private class PixelColor
 	{
+		/**
+		 * Array index of alpha.
+		 */
 		private static final int ALPHA = 0;
+
+		/**
+		 * Array index of red.
+		 */
 		private static final int RED = 1;
+
+		/**
+		 * Array index of green.
+		 */
 		private static final int GREEN = 2;
+
+		/**
+		 * Array index of blue.
+		 */
 		private static final int BLUE = 3;
 
-		private int[] data;
+		/**
+		 * Array of 'bytes', where each byte is a color
+		 */
+		private int[] colorBytes;
 
-		public Pixel( int color )
+		public PixelColor()
 		{
-			this.data = new int[4];
+			/**
+			 * Create the array
+			 */
+			this.colorBytes = new int[4];
+		}
+
+		public PixelColor( final int color )
+		{
+			// Call the default constructor
+			this();
+
+			/**
+			 * Set the color
+			 */
 			this.setFromColor( color );
 		}
 
+		/**
+		 * Clamps all bytes to the range of 0 to 155
+		 */
 		private void clamp()
 		{
-			for( int i = 0; i < this.data.length; i++ )
+			for( int i = 0; i < this.colorBytes.length; i++ )
 			{
-				if( this.data[i] > 255 )
+				if( this.colorBytes[i] > 255 )
 				{
-					this.data[i] = 255;
+					this.colorBytes[i] = 255;
 				}
-				else if( this.data[i] < 0 )
+				else if( this.colorBytes[i] < 0 )
 				{
-					this.data[i] = 0;
+					this.colorBytes[i] = 0;
 				}
 			}
 		}
 
+		/**
+		 * Gets the ARGB packed integer color.
+		 * 
+		 * @return
+		 */
 		public int getColor()
 		{
-			return( ( this.data[ALPHA] << 24 ) | ( this.data[RED] << 16 ) | ( this.data[GREEN] << 8 ) | this.data[BLUE] );
+			return( ( this.colorBytes[ALPHA] << 24 ) | ( this.colorBytes[RED] << 16 ) | ( this.colorBytes[GREEN] << 8 ) | this.colorBytes[BLUE] );
 		}
 
-		public void multiplyWith( Pixel otherPixel, boolean preserveAlpha )
+		/**
+		 * Applies screen blending to this pixel.
+		 * 
+		 * @param otherPixel
+		 */
+		public void screen( final PixelColor otherPixel )
 		{
-			if( !preserveAlpha )
-			{
-				this.data[ALPHA] = ( this.data[ALPHA] * otherPixel.data[ALPHA] ) / 255;
-			}
 
-			this.data[RED] = ( this.data[RED] * otherPixel.data[RED] ) / 255;
-			this.data[GREEN] = ( this.data[GREEN] * otherPixel.data[GREEN] ) / 255;
-			this.data[BLUE] = ( this.data[BLUE] * otherPixel.data[BLUE] ) / 255;
+			// Calculated the inverted & multiplied values
+			int redInverted = ( ( 255 - this.colorBytes[RED] ) * ( 255 - otherPixel.colorBytes[RED] ) ) / 255;
+			int greenInverted = ( ( 255 - this.colorBytes[GREEN] ) * ( 255 - otherPixel.colorBytes[GREEN] ) ) / 255;
+			int blueInverted = ( ( 255 - this.colorBytes[BLUE] ) * ( 255 - otherPixel.colorBytes[BLUE] ) ) / 255;
+
+			// Calculate the new color by inverting the colors
+			this.colorBytes[RED] = 255 - redInverted;
+			this.colorBytes[GREEN] = 255 - greenInverted;
+			this.colorBytes[BLUE] = 255 - blueInverted;
+
+			// Clamp to valid color ranges.
+			this.clamp();
+		}
+
+		/**
+		 * Set's the stored color
+		 * 
+		 * @param color
+		 */
+		public void setFromColor( final int color )
+		{
+			this.colorBytes[ALPHA] = ( ( color & 0xFF000000 ) >>> 24 );
+			this.colorBytes[RED] = ( ( color & 0x00FF0000 ) >>> 16 );
+			this.colorBytes[GREEN] = ( ( color & 0x0000FF00 ) >>> 8 );
+			this.colorBytes[BLUE] = ( color & 0x000000FF );
 
 			this.clamp();
 		}
 
-		public void setFromColor( int color )
-		{
-			this.data[ALPHA] = ( ( color & 0xFF000000 ) >>> 24 );
-			this.data[RED] = ( ( color & 0x00FF0000 ) >>> 16 );
-			this.data[GREEN] = ( ( color & 0x0000FF00 ) >>> 8 );
-			this.data[BLUE] = ( color & 0x000000FF );
-
-			this.clamp();
-		}
-
+		/*
 		@Override
 		public String toString()
 		{
-			return "Pixel Values: [" + this.data[ALPHA] + ", " + this.data[RED] + ", " + this.data[GREEN] + ", " + this.data[BLUE] + "]";
+			return "Pixel Values: [" + this.colorBytes[ALPHA] + ", " + this.colorBytes[RED] + ", " + this.colorBytes[GREEN] + ", " +
+							this.colorBytes[BLUE] + "]";
 		}
+		*/
 	}
 
-	private static final Logger LOGGER = LogManager.getLogger();
-	public static final String GAS_FILE_NAME = "essentia.gas";
-	public static final String BASE_PATH = "textures/blocks";
+	/**
+	 * Thaumcraft identifier.
+	 */
+	private static final String TC_LOC = "thaumcraft";
+
+	/**
+	 * Path to the texture.
+	 */
+	private static final String BASE_PATH = "textures/blocks";
+
+	/**
+	 * Name of the texture file.
+	 */
+	private static final String GAS_FILE_NAME = "animatedglow";
 
 	public static int mipmapLevels;
 
-	private Pixel overlayColor;
+	/**
+	 * The color we want to apply to the texture
+	 */
+	private PixelColor screenColor;
 
-	public EssentiaGasTexture( Aspect aspect )
+	public EssentiaGasTexture( final Aspect aspect )
 	{
 		super( ThaumicEnergistics.MOD_ID + ":" + GAS_FILE_NAME + "_" + aspect.getName() );
 
-		this.overlayColor = new Pixel( aspect.getColor() );
+		this.screenColor = new PixelColor( aspect.getColor() );
 	}
 
-	private ResourceLocation completeResourceLocation( ResourceLocation location, int p_147634_2_ )
+	/**
+	 * Builds a completed resource path for the specified mipmap level.
+	 * 
+	 * @param location
+	 * @param mipLevel
+	 * @return
+	 */
+	private ResourceLocation completeResourceLocation( final ResourceLocation location, final int mipLevel )
 	{
-		return p_147634_2_ == 0 ? new ResourceLocation( location.getResourceDomain(), String.format( "%s/%s%s", new Object[] {
-						EssentiaGasTexture.BASE_PATH, GAS_FILE_NAME, ".png" } ) ) : new ResourceLocation( location.getResourceDomain(),
-						String.format( "%s/mipmaps/%s.%d%s",
-							new Object[] { EssentiaGasTexture.BASE_PATH, GAS_FILE_NAME, Integer.valueOf( p_147634_2_ ), ".png" } ) );
+		if( mipLevel == 0 )
+		{
+			return new ResourceLocation( EssentiaGasTexture.TC_LOC, String.format( "%s/%s%s", new Object[] { EssentiaGasTexture.BASE_PATH,
+							GAS_FILE_NAME, ".png" } ) );
+		}
+
+		return new ResourceLocation( EssentiaGasTexture.TC_LOC, String.format( "%s/mipmaps/%s.%d%s", new Object[] { EssentiaGasTexture.BASE_PATH,
+						EssentiaGasTexture.GAS_FILE_NAME, Integer.valueOf( mipLevel ), ".png" } ) );
 	}
 
-	protected void drawOverlay( BufferedImage image )
+	/**
+	 * Screens our color onto the image.
+	 * 
+	 * @param image
+	 */
+	private void applyScreen( final BufferedImage image )
 	{
 		if( image == null )
 		{
@@ -121,7 +205,7 @@ public class EssentiaGasTexture
 
 		// Create an array to hold the pixels
 		int[] pixels = image.getRGB( 0, 0, width, height, null, 0, width );
-		Pixel pixel = new Pixel( 0 );
+		PixelColor pixel = new PixelColor();
 
 		for( int i = 0; i < pixels.length; i++ )
 		{
@@ -129,7 +213,7 @@ public class EssentiaGasTexture
 			pixel.setFromColor( pixels[i] );
 
 			// Multiply
-			pixel.multiplyWith( this.overlayColor, true );
+			pixel.screen( this.screenColor );
 
 			// Set to pixel to our color
 			pixels[i] = pixel.getColor();
@@ -140,13 +224,14 @@ public class EssentiaGasTexture
 	}
 
 	@Override
-	public final boolean hasCustomLoader( IResourceManager manager, ResourceLocation location )
+	public final boolean hasCustomLoader( final IResourceManager manager, final ResourceLocation location )
 	{
 		return true;
 	}
 
+	// TODO This is a mess.
 	@Override
-	public boolean load( IResourceManager par1ResourceManager, ResourceLocation resourcelocation )
+	public boolean load( final IResourceManager par1ResourceManager, final ResourceLocation resourcelocation )
 	{
 		ResourceLocation resourcelocation1 = this.completeResourceLocation( resourcelocation, 0 );
 
@@ -189,8 +274,7 @@ public class EssentiaGasTexture
 						}
 						catch( IOException ioexception )
 						{
-							LOGGER.error( "Unable to load miplevel {} from: {}",
-								new Object[] { Integer.valueOf( l ), resourcelocation2, ioexception } );
+							FMLLog.warning( "Unable to load miplevel %d from: %s", l, resourcelocation2.toString() );
 						}
 					}
 				}
@@ -198,7 +282,7 @@ public class EssentiaGasTexture
 
 			for( int i = 0; i < abufferedimage.length; i++ )
 			{
-				this.drawOverlay( abufferedimage[i] );
+				this.applyScreen( abufferedimage[i] );
 			}
 
 			AnimationMetadataSection animationmetadatasection = (AnimationMetadataSection)iresource.getMetadata( "animation" );
@@ -207,11 +291,11 @@ public class EssentiaGasTexture
 		}
 		catch( RuntimeException runtimeexception )
 		{
-			LOGGER.error( "Unable to parse metadata from " + resourcelocation1, runtimeexception );
+			FMLLog.warning( "Unable to parse metadata from %s", resourcelocation1.toString() );
 		}
 		catch( IOException ioexception1 )
 		{
-			LOGGER.error( "Using missing texture, unable to load " + resourcelocation1, ioexception1 );
+			FMLLog.warning( "Using missing texture, unable to load %s", resourcelocation1.toString() );
 		}
 
 		return false;

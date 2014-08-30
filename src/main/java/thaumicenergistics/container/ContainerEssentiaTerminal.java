@@ -4,11 +4,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.integration.tc.EssentiaCellTerminalWorker;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaTerminal;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.util.EffectiveSide;
-import thaumicenergistics.util.EssentiaCellTerminalWorker;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -103,7 +103,7 @@ public class ContainerEssentiaTerminal
 				try
 				{
 					// Do we have work to do?
-					if( EssentiaCellTerminalWorker.hasWork( this.inventory ) )
+					if( EssentiaCellTerminalWorker.instance.hasWork( this.inventory ) )
 					{
 						// Get the energy grid
 						IEnergyGrid eGrid = this.terminal.getGridBlock().getEnergyGrid();
@@ -114,7 +114,7 @@ public class ContainerEssentiaTerminal
 											PowerMultiplier.CONFIG ) >= ContainerCellTerminalBase.POWER_PER_TRANSFER ) )
 						{
 							// Do the work.
-							if( EssentiaCellTerminalWorker.doWork( this.inventory, this.monitor, this.machineSource, this.selectedAspect ) )
+							if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, this.machineSource, this.selectedAspect ) )
 							{
 								// We did work, extract power
 								eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.MODULATE, PowerMultiplier.CONFIG );

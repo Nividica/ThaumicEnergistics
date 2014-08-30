@@ -3,7 +3,7 @@ itemGroup.ThaumicEnergistics=Thaumic Energistics
 thaumicenergistics.group.essentia.transport=ME Essentia Import/Export Bus
 
 #Fluids
-thaumicenergistics.fluid.gaseous=Gaseous
+thaumicenergistics.fluid.gaseous=Gas
 
 #Blocks
 thaumicenergistics.block.essentia.provider.name=Essentia Provider

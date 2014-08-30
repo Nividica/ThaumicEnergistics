@@ -10,9 +10,9 @@ import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.common.tiles.TileJarFillable;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
-import thaumicenergistics.util.EssentiaConversionHelper;
-import thaumicenergistics.util.EssentiaTileContainerHelper;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -192,7 +192,7 @@ public class HandlerEssentiaStorageBus
 		}
 
 		// Get the essentia, if any, in the container
-		AspectStack containerStack = EssentiaTileContainerHelper.getAspectStackFromContainer( this.aspectContainer );
+		AspectStack containerStack = EssentiaTileContainerHelper.instance.getAspectStackFromContainer( this.aspectContainer );
 
 		// Is the container empty?
 		if( containerStack == null )
@@ -230,7 +230,7 @@ public class HandlerEssentiaStorageBus
 		}
 
 		// Simulate draining the container
-		FluidStack drained = EssentiaTileContainerHelper.extractFromContainer( this.aspectContainer, toDrain, Actionable.SIMULATE );
+		FluidStack drained = EssentiaTileContainerHelper.instance.extractFromContainer( this.aspectContainer, toDrain, Actionable.SIMULATE );
 
 		// Was any drained?
 		if( ( drained == null ) || ( drained.amount == 0 ) )
@@ -239,7 +239,7 @@ public class HandlerEssentiaStorageBus
 		}
 
 		// Convert the drain amount to essentia units
-		int drainedAmount_EU = (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( drained.amount );
+		int drainedAmount_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( drained.amount );
 
 		// Do we have the power to drain this?
 		if( !this.takePowerFromNetwork( drainedAmount_EU, Actionable.SIMULATE ) )
@@ -252,7 +252,7 @@ public class HandlerEssentiaStorageBus
 		if( mode == Actionable.MODULATE )
 		{
 			// Extract
-			EssentiaTileContainerHelper.extractFromContainer( this.aspectContainer, toDrain, Actionable.MODULATE );
+			EssentiaTileContainerHelper.instance.extractFromContainer( this.aspectContainer, toDrain, Actionable.MODULATE );
 
 			// Take power
 			this.takePowerFromNetwork( drainedAmount_EU, Actionable.MODULATE );
@@ -291,10 +291,10 @@ public class HandlerEssentiaStorageBus
 		{
 
 			// Only report back items that are extractable
-			if( EssentiaTileContainerHelper.canExtract( this.aspectContainer ) )
+			if( EssentiaTileContainerHelper.instance.canExtract( this.aspectContainer ) )
 			{
 				// Get the essentia and amount in the container
-				AspectStack containerStack = EssentiaTileContainerHelper.getAspectStackFromContainer( this.aspectContainer );
+				AspectStack containerStack = EssentiaTileContainerHelper.instance.getAspectStackFromContainer( this.aspectContainer );
 
 				// Is there an aspect?
 				if( containerStack != null )
@@ -306,7 +306,7 @@ public class HandlerEssentiaStorageBus
 						GaseousEssentia gas = GaseousEssentia.getGasFromAspect( containerStack.aspect );
 
 						// Add to the item list
-						out.add( EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( gas, (int)containerStack.amount ) );
+						out.add( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( gas, (int)containerStack.amount ) );
 					}
 				}
 			}
@@ -363,7 +363,7 @@ public class HandlerEssentiaStorageBus
 		}
 
 		// Simulate filling the container
-		int filled_FU = (int)EssentiaTileContainerHelper.injectIntoContainer( this.aspectContainer, input, Actionable.SIMULATE );
+		int filled_FU = (int)EssentiaTileContainerHelper.instance.injectIntoContainer( this.aspectContainer, input, Actionable.SIMULATE );
 
 		// Was any filled?
 		if( filled_FU == 0 )
@@ -372,7 +372,7 @@ public class HandlerEssentiaStorageBus
 		}
 
 		// Get how much the filled amount is in essentia units
-		int filled_EU = (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( filled_FU );
+		int filled_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( filled_FU );
 
 		// Do we have the power to complete this operation?
 		if( !this.takePowerFromNetwork( filled_EU, Actionable.SIMULATE ) )
@@ -385,7 +385,7 @@ public class HandlerEssentiaStorageBus
 		if( mode == Actionable.MODULATE )
 		{
 			// Inject
-			EssentiaTileContainerHelper.injectIntoContainer( this.aspectContainer, input, Actionable.MODULATE );
+			EssentiaTileContainerHelper.instance.injectIntoContainer( this.aspectContainer, input, Actionable.MODULATE );
 
 			// Take power
 			this.takePowerFromNetwork( filled_EU, Actionable.MODULATE );

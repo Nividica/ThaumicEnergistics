@@ -13,14 +13,14 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
 import thaumicenergistics.gui.GuiEssentiaStorageBus;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.inventory.HandlerEssentiaStorageBus;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
-import thaumicenergistics.util.EssentiaItemContainerHelper;
-import thaumicenergistics.util.EssentiaTileContainerHelper;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
@@ -123,7 +123,7 @@ public class AEPartEssentiaStorageBus
 	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
 	{
 		// Get the aspect of the item
-		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
+		Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( itemStack );
 
 		// Is there an aspect?
 		if( itemAspect != null )
@@ -528,7 +528,7 @@ public class AEPartEssentiaStorageBus
 		if( this.facingContainer != null )
 		{
 			// Check the amount in the container
-			int currentAmount = EssentiaTileContainerHelper.getContainerStoredAmount( this.facingContainer );
+			int currentAmount = EssentiaTileContainerHelper.instance.getContainerStoredAmount( this.facingContainer );
 			// Has the amount changed?
 			if( currentAmount != this.lastAmountInContainer )
 			{

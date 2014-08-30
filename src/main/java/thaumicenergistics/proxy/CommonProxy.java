@@ -55,7 +55,7 @@ public class CommonProxy
 	}
 
 	/**
-	 * Used my client proxy
+	 * Used by client proxy
 	 */
 	public void registerRenderers()
 	{

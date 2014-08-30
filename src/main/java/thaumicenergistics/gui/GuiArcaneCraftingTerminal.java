@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
@@ -250,7 +251,7 @@ public class GuiArcaneCraftingTerminal
 			if( !cost.hasEnoughVis )
 			{
 				// Ping-pong the alpha
-				alpha = GuiHelper.pingPongFromTime( GuiArcaneCraftingTerminal.ASPECT_COST_BLINK_SPEED,
+				alpha = GuiHelper.instance.pingPongFromTime( GuiArcaneCraftingTerminal.ASPECT_COST_BLINK_SPEED,
 					GuiArcaneCraftingTerminal.ASPECT_COST_MIN_ALPHA, GuiArcaneCraftingTerminal.ASPECT_COST_MAX_ALPHA );
 			}
 
@@ -531,7 +532,7 @@ public class GuiArcaneCraftingTerminal
 	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
 		// Was the click inside the ME grid?
-		if( GuiHelper.isPointInGuiRegion( GuiArcaneCraftingTerminal.ME_ITEM_POS_X, GuiArcaneCraftingTerminal.ME_ITEM_POS_Y,
+		if( GuiHelper.instance.isPointInGuiRegion( GuiArcaneCraftingTerminal.ME_ITEM_POS_X, GuiArcaneCraftingTerminal.ME_ITEM_POS_Y,
 			GuiArcaneCraftingTerminal.ME_GRID_HEIGHT, GuiArcaneCraftingTerminal.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 		{
 			// Is the player holding anything?
@@ -545,15 +546,33 @@ public class GuiArcaneCraftingTerminal
 				// Search for the widget the mouse is over, and send extract request.
 				this.sendItemWidgetClicked( mouseX, mouseY, mouseButton );
 			}
+			
+			// Do not pass to super
+			return;
 		}
-		else
+		
+		// Is the user holding the space key?
+		if( Keyboard.isKeyDown( Keyboard.KEY_SPACE ) )
 		{
-			// Pass to search field.
-			this.searchBar.mouseClicked( mouseX, mouseY, mouseButton );
-
-			// Pass to super
-			super.mouseClicked( mouseX, mouseY, mouseButton );
+			// Get the slot the mouse is over
+			Slot slotClicked = this.getSlotAtPosition( mouseX, mouseY );
+			
+			// Was there a slot under the mouse?
+			if( slotClicked != null )
+			{
+				// Ask the server to move the inventory
+				new PacketServerArcaneCraftingTerminal().createRequestDepositRegion( this.player, slotClicked.slotNumber ).sendPacketToServer();
+				
+				// Do not pass to super
+				return;
+			}
 		}
+		
+		// Pass to search field.
+		this.searchBar.mouseClicked( mouseX, mouseY, mouseButton );
+
+		// Pass to super
+		super.mouseClicked( mouseX, mouseY, mouseButton );
 	}
 
 	/**

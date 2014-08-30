@@ -12,12 +12,12 @@ import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
 import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaEmitter;
 import thaumicenergistics.parts.AEPartEssentiaLevelEmitter;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
-import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
@@ -267,7 +267,7 @@ public class GuiEssentiaLevelEmitter
 		if( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
 		{
 			// Pass to the widget
-			this.aspectFilterSlot.mouseClicked( EssentiaItemContainerHelper.getAspectInContainer( this.player.inventory.getItemStack() ) );
+			this.aspectFilterSlot.mouseClicked( EssentiaItemContainerHelper.instance.getAspectInContainer( this.player.inventory.getItemStack() ) );
 		}
 	}
 
@@ -332,7 +332,7 @@ public class GuiEssentiaLevelEmitter
 			GuiButton currentButton = (GuiButton)obj;
 
 			// Is the mouse over it?
-			if( GuiHelper.isPointInRegion( currentButton.xPosition, currentButton.yPosition, currentButton.width, currentButton.height, mouseX,
+			if( GuiHelper.instance.isPointInRegion( currentButton.xPosition, currentButton.yPosition, currentButton.width, currentButton.height, mouseX,
 				mouseY ) )
 			{
 				// Is it the redstone button?
@@ -467,7 +467,7 @@ public class GuiEssentiaLevelEmitter
 
 	public boolean setFilteredAspectFromItemstack( ItemStack itemStack )
 	{
-		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
+		Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( itemStack );
 
 		if( itemAspect != null )
 		{

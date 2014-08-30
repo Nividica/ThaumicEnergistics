@@ -1,5 +1,17 @@
-﻿8/24/2014 0.6.3a
-  Added aspect cost gui to A.C.T.
+﻿8/30/2014 0.6.3b
+  Adds #19: Space+Click to deposit inventory or hotbar
+  
+8/26/2014 0.6.3b
+  Terminal's idle power set to 0.5 ae/t
+  Level emitter idle power set to 0.3 ae/t
+
+8/25/2014 0.6.3b
+  Refactored several classes into singletons to reduce permgen size.
+  Fixes #18: Essentia fluid texture generation.
+  ExtraCells2 2.1.9 compatibility test passed.
+
+8/24/2014 0.6.3b
+  Adds #17: aspect cost gui to A.C.T.
   Bugfix: Key-presses are swallowed by the A.C.T. This also fixes the issue where you could not view NEI recipes while the ACT was open.
 
 8/24/2014 0.6.2a

@@ -57,7 +57,7 @@ public class AEPartArcaneCraftingTerminal
 	/**
 	 * How much AE power is required to keep the part active.
 	 */
-	private static final double IDLE_POWER_DRAIN = 1.2D;
+	private static final double IDLE_POWER_DRAIN = 0.5D;
 
 	/**
 	 * Inventory slots

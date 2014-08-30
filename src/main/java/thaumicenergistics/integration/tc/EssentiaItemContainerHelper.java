@@ -1,4 +1,4 @@
-package thaumicenergistics.util;
+package thaumicenergistics.integration.tc;
 
 import java.util.HashMap;
 import net.minecraft.item.Item;
@@ -44,7 +44,7 @@ public final class EssentiaItemContainerHelper
 		 * @param canHoldPartialAmount
 		 * @param metadata
 		 */
-		public ContainerItemInfoCollection( int capacity, boolean canHoldPartialAmount, int metadata )
+		public ContainerItemInfoCollection( final int capacity, final boolean canHoldPartialAmount, final int metadata )
 		{
 			this.addContainerInfo( capacity, canHoldPartialAmount, metadata );
 		}
@@ -57,7 +57,7 @@ public final class EssentiaItemContainerHelper
 		 * @param metadata
 		 * @return
 		 */
-		public ContainerItemInfoCollection addContainerInfo( int capacity, boolean canHoldPartialAmount, int metadata )
+		public ContainerItemInfoCollection addContainerInfo( final int capacity, final boolean canHoldPartialAmount, final int metadata )
 		{
 			// Create the container info
 			ContainerInfo info = new ContainerInfo( capacity, canHoldPartialAmount );
@@ -74,7 +74,7 @@ public final class EssentiaItemContainerHelper
 		 * @param metadata
 		 * @return {@link ContainerInfo} if a match is found, null otherwise.
 		 */
-		public ContainerInfo getInfo( int metadata )
+		public ContainerInfo getInfo( final int metadata )
 		{
 			return this.containers.get( metadata );
 		}
@@ -98,12 +98,17 @@ public final class EssentiaItemContainerHelper
 		 */
 		public boolean canHoldPartialAmount;
 
-		public ContainerInfo( int capacity, boolean canHoldPartialAmount )
+		public ContainerInfo( final int capacity, final boolean canHoldPartialAmount )
 		{
 			this.capacity = capacity;
 			this.canHoldPartialAmount = canHoldPartialAmount;
 		}
 	}
+
+	/**
+	 * Singleton
+	 */
+	public static final EssentiaItemContainerHelper instance = new EssentiaItemContainerHelper();
 
 	/**
 	 * Standard Thaumcraft jar capacity
@@ -124,7 +129,15 @@ public final class EssentiaItemContainerHelper
 	 * Holds a list of items we are allowed to interact with, and their
 	 * capacity.
 	 */
-	private static final HashMap<Class<? extends IEssentiaContainerItem>, ContainerItemInfoCollection> itemWhitelist = new HashMap<Class<? extends IEssentiaContainerItem>, ContainerItemInfoCollection>();
+	private final HashMap<Class<? extends IEssentiaContainerItem>, ContainerItemInfoCollection> itemWhitelist = new HashMap<Class<? extends IEssentiaContainerItem>, ContainerItemInfoCollection>();
+
+	/**
+	 * Private constructor
+	 */
+	private EssentiaItemContainerHelper()
+	{
+
+	}
 
 	/**
 	 * Adds an item to the whitelist.
@@ -134,21 +147,22 @@ public final class EssentiaItemContainerHelper
 	 * @param canHoldPartialAmount
 	 * @param metadata
 	 */
-	private static void addItemToWhitelist( Class<? extends IEssentiaContainerItem> item, int capacity, boolean canHoldPartialAmount, int metadata )
+	private void addItemToWhitelist( final Class<? extends IEssentiaContainerItem> item, final int capacity, final boolean canHoldPartialAmount,
+										final int metadata )
 	{
 		// Do we have an item?
 		if( item != null )
 		{
 			// Is it already registered?
-			if( EssentiaItemContainerHelper.itemWhitelist.containsKey( item ) )
+			if( this.itemWhitelist.containsKey( item ) )
 			{
 				// Add to the existing registry
-				EssentiaItemContainerHelper.itemWhitelist.get( item ).addContainerInfo( capacity, canHoldPartialAmount, metadata );
+				this.itemWhitelist.get( item ).addContainerInfo( capacity, canHoldPartialAmount, metadata );
 			}
 			else
 			{
 				// Create a new registry
-				EssentiaItemContainerHelper.itemWhitelist.put( item, new ContainerItemInfoCollection( capacity, canHoldPartialAmount, metadata ) );
+				this.itemWhitelist.put( item, new ContainerItemInfoCollection( capacity, canHoldPartialAmount, metadata ) );
 			}
 
 			// Log the addition
@@ -164,20 +178,20 @@ public final class EssentiaItemContainerHelper
 	 * @param metadata
 	 * @return Info if was registered, null otherwise.
 	 */
-	private static ContainerInfo getContainerInfo( Class<? extends Item> container, int metadata )
+	private ContainerInfo getContainerInfo( final Class<? extends Item> container, final int metadata )
 	{
 		// Is the item registered?
-		if( EssentiaItemContainerHelper.itemWhitelist.containsKey( container ) )
+		if( this.itemWhitelist.containsKey( container ) )
 		{
 			// Return the info
-			return EssentiaItemContainerHelper.itemWhitelist.get( container ).getInfo( metadata );
+			return this.itemWhitelist.get( container ).getInfo( metadata );
 		}
 
 		// Special check for empty jars
 		if( container == BlockJarItem.class )
 		{
 			// Return the info for filled jars
-			return EssentiaItemContainerHelper.itemWhitelist.get( ItemJarFilled.class ).getInfo( metadata );
+			return this.itemWhitelist.get( ItemJarFilled.class ).getInfo( metadata );
 		}
 
 		// Not registered return null
@@ -193,9 +207,10 @@ public final class EssentiaItemContainerHelper
 	 * @param metadata
 	 * @param canHoldPartialAmount
 	 */
-	public static void addItemToWhitelist( Class<? extends IEssentiaContainerItem> item, int capacity, int metadata, boolean canHoldPartialAmount )
+	public void addItemToWhitelist( final Class<? extends IEssentiaContainerItem> item, final int capacity, final int metadata,
+									final boolean canHoldPartialAmount )
 	{
-		EssentiaItemContainerHelper.addItemToWhitelist( item, capacity, canHoldPartialAmount, metadata );
+		this.addItemToWhitelist( item, capacity, canHoldPartialAmount, metadata );
 	}
 
 	/**
@@ -204,7 +219,7 @@ public final class EssentiaItemContainerHelper
 	 * @param metadata
 	 * @return
 	 */
-	public static ItemStack createEmptyJar( int metadata )
+	public ItemStack createEmptyJar( final int metadata )
 	{
 		// Create and return the jar
 		return new ItemStack( ConfigBlocks.blockJar, 1, metadata );
@@ -215,7 +230,7 @@ public final class EssentiaItemContainerHelper
 	 * 
 	 * @return
 	 */
-	public static ItemStack createEmptyPhial()
+	public ItemStack createEmptyPhial()
 	{
 		// Create and return the phial
 		return new ItemStack( ConfigItems.itemEssence, 1, 0 );
@@ -230,7 +245,7 @@ public final class EssentiaItemContainerHelper
 	 * @param withLabel
 	 * @return
 	 */
-	public static ItemStack createFilledJar( Aspect aspect, int amount, int metadata, boolean withLabel )
+	public ItemStack createFilledJar( final Aspect aspect, int amount, final int metadata, final boolean withLabel )
 	{
 
 		ItemStack jar;
@@ -239,7 +254,7 @@ public final class EssentiaItemContainerHelper
 		if( ( aspect == null ) || ( ( amount <= 0 ) && !withLabel ) )
 		{
 			// Create an empty jar
-			jar = EssentiaItemContainerHelper.createEmptyJar( metadata );
+			jar = this.createEmptyJar( metadata );
 		}
 		else
 		{
@@ -263,7 +278,7 @@ public final class EssentiaItemContainerHelper
 			// Are we putting a label on it?
 			if( withLabel )
 			{
-				EssentiaItemContainerHelper.setJarLabel( jar, aspect );
+				this.setJarLabel( jar, aspect );
 			}
 		}
 
@@ -277,11 +292,11 @@ public final class EssentiaItemContainerHelper
 	 * @param aspect
 	 * @return
 	 */
-	public static ItemStack createFilledPhial( Aspect aspect )
+	public ItemStack createFilledPhial( final Aspect aspect )
 	{
 		if( aspect == null )
 		{
-			return EssentiaItemContainerHelper.createEmptyPhial();
+			return this.createEmptyPhial();
 		}
 
 		// Create the phial
@@ -299,10 +314,10 @@ public final class EssentiaItemContainerHelper
 	 * @param jar
 	 * @return
 	 */
-	public static boolean doesJarHaveLabel( ItemStack jar )
+	public boolean doesJarHaveLabel( final ItemStack jar )
 	{
 		// If the jar's label aspect is not null, there is a label
-		return( EssentiaItemContainerHelper.getJarLabelAspect( jar ) != null );
+		return( this.getJarLabelAspect( jar ) != null );
 	}
 
 	/**
@@ -313,7 +328,7 @@ public final class EssentiaItemContainerHelper
 	 * @param aspectStack
 	 * @return
 	 */
-	public static ImmutablePair<Integer, ItemStack> extractFromContainer( ItemStack container, AspectStack aspectStack )
+	public ImmutablePair<Integer, ItemStack> extractFromContainer( final ItemStack container, final AspectStack aspectStack )
 	{
 		// Ensure we have a valid container
 		if( container == null )
@@ -322,7 +337,7 @@ public final class EssentiaItemContainerHelper
 		}
 
 		// Ensure it is a container
-		if( !EssentiaItemContainerHelper.isContainer( container ) )
+		if( !this.isContainer( container ) )
 		{
 			return null;
 		}
@@ -331,7 +346,7 @@ public final class EssentiaItemContainerHelper
 		Item containerItem = container.getItem();
 
 		// Get the info about the container
-		ContainerInfo info = EssentiaItemContainerHelper.getContainerInfo( containerItem, container.getItemDamage() );
+		ContainerInfo info = this.getContainerInfo( containerItem, container.getItemDamage() );
 
 		// Ensure we got info
 		if( info == null )
@@ -394,20 +409,20 @@ public final class EssentiaItemContainerHelper
 			if( containerItem instanceof ItemEssence )
 			{
 				// Create an empty phial for the output
-				resultStack = EssentiaItemContainerHelper.createEmptyPhial();
+				resultStack = this.createEmptyPhial();
 			}
 			else if( containerItem instanceof ItemJarFilled )
 			{
 				// Was the jar labeled?
-				if( EssentiaItemContainerHelper.doesJarHaveLabel( container ) )
+				if( this.doesJarHaveLabel( container ) )
 				{
 					// Create an empty labeled jar
-					resultStack = EssentiaItemContainerHelper.createFilledJar( aspectStack.aspect, 0, container.getItemDamage(), true );
+					resultStack = this.createFilledJar( aspectStack.aspect, 0, container.getItemDamage(), true );
 				}
 				else
 				{
 					// Create an empty jar for the output
-					resultStack = EssentiaItemContainerHelper.createEmptyJar( container.getItemDamage() );
+					resultStack = this.createEmptyJar( container.getItemDamage() );
 				}
 			}
 
@@ -438,7 +453,7 @@ public final class EssentiaItemContainerHelper
 	 * @param drainAmount_EU
 	 * @return
 	 */
-	public static ImmutablePair<Integer, ItemStack> extractFromContainer( ItemStack container, int drainAmount_EU )
+	public ImmutablePair<Integer, ItemStack> extractFromContainer( final ItemStack container, final int drainAmount_EU )
 	{
 		// Ensure the container is valid
 		if( container == null )
@@ -447,10 +462,10 @@ public final class EssentiaItemContainerHelper
 		}
 
 		// Create an aspect stack based on whats in the container
-		AspectStack stack = new AspectStack( EssentiaItemContainerHelper.getAspectInContainer( container ), drainAmount_EU );
+		AspectStack stack = new AspectStack( this.getAspectInContainer( container ), drainAmount_EU );
 
 		// Extract
-		return EssentiaItemContainerHelper.extractFromContainer( container, stack );
+		return this.extractFromContainer( container, stack );
 	}
 
 	/**
@@ -459,13 +474,13 @@ public final class EssentiaItemContainerHelper
 	 * @param container
 	 * @return Aspect if container has one, null otherwise.
 	 */
-	public static Aspect getAspectInContainer( ItemStack container )
+	public Aspect getAspectInContainer( final ItemStack container )
 	{
 		// Is the container valid?
 		if( ( container != null ) && ( container.getItem() instanceof IEssentiaContainerItem ) )
 		{
 			// Is the container whitelisted?
-			if( EssentiaItemContainerHelper.isContainerWhitelisted( container ) )
+			if( this.isContainerWhitelisted( container ) )
 			{
 				// Get the list of aspects from the container
 				AspectList aspectList = ( (IEssentiaContainerItem)container.getItem() ).getAspects( container );
@@ -489,10 +504,10 @@ public final class EssentiaItemContainerHelper
 	 * @param container
 	 * @return AspectStack can read container, null otherwise.
 	 */
-	public static AspectStack getAspectStackFromContainer( ItemStack container )
+	public AspectStack getAspectStackFromContainer( final ItemStack container )
 	{
 		// Get the aspect of the essentia in the container
-		Aspect aspect = EssentiaItemContainerHelper.getAspectInContainer( container );
+		Aspect aspect = this.getAspectInContainer( container );
 
 		// Did we get an aspect?
 		if( aspect == null )
@@ -501,7 +516,7 @@ public final class EssentiaItemContainerHelper
 		}
 
 		// get the amount stored in the container
-		int stored = EssentiaItemContainerHelper.getContainerStoredAmount( container );
+		int stored = this.getContainerStoredAmount( container );
 
 		return new AspectStack( aspect, stored );
 	}
@@ -512,7 +527,7 @@ public final class EssentiaItemContainerHelper
 	 * @param container
 	 * @return
 	 */
-	public static int getContainerCapacity( ItemStack container )
+	public int getContainerCapacity( final ItemStack container )
 	{
 		// Is the container not null?
 		if( container != null )
@@ -521,7 +536,7 @@ public final class EssentiaItemContainerHelper
 			Item containerItem = container.getItem();
 
 			// Get the info about the container
-			ContainerInfo info = EssentiaItemContainerHelper.getContainerInfo( containerItem, container.getItemDamage() );
+			ContainerInfo info = this.getContainerInfo( containerItem, container.getItemDamage() );
 
 			// Did we get any info?
 			if( info != null )
@@ -541,12 +556,12 @@ public final class EssentiaItemContainerHelper
 	 * @param metadata
 	 * @return
 	 */
-	public static ContainerInfo getContainerInfo( Item item, int metadata )
+	public ContainerInfo getContainerInfo( final Item item, final int metadata )
 	{
 		// Is the item not null?
 		if( item != null )
 		{
-			return EssentiaItemContainerHelper.getContainerInfo( item.getClass(), metadata );
+			return this.getContainerInfo( item.getClass(), metadata );
 		}
 
 		return null;
@@ -559,12 +574,12 @@ public final class EssentiaItemContainerHelper
 	 * @param itemstack
 	 * @return
 	 */
-	public static ContainerInfo getContainerInfo( ItemStack itemStack )
+	public ContainerInfo getContainerInfo( final ItemStack itemStack )
 	{
 		// Is the itemstack not null?
 		if( itemStack != null )
 		{
-			return EssentiaItemContainerHelper.getContainerInfo( itemStack.getItem().getClass(), itemStack.getItemDamage() );
+			return this.getContainerInfo( itemStack.getItem().getClass(), itemStack.getItemDamage() );
 		}
 
 		return null;
@@ -576,13 +591,13 @@ public final class EssentiaItemContainerHelper
 	 * @param container
 	 * @return
 	 */
-	public static int getContainerStoredAmount( ItemStack container )
+	public int getContainerStoredAmount( final ItemStack container )
 	{
 		// Is the container valid?
 		if( ( container != null ) && ( container.getItem() instanceof IEssentiaContainerItem ) )
 		{
 			// Is the container whitelisted?
-			if( EssentiaItemContainerHelper.isContainerWhitelisted( container ) )
+			if( this.isContainerWhitelisted( container ) )
 			{
 				// Get the aspect list from the container
 				AspectList storedList = ( (IEssentiaContainerItem)container.getItem() ).getAspects( container );
@@ -606,7 +621,7 @@ public final class EssentiaItemContainerHelper
 	 * @param jar
 	 * @return
 	 */
-	public static Aspect getJarLabelAspect( ItemStack jar )
+	public Aspect getJarLabelAspect( final ItemStack jar )
 	{
 		Aspect labelAspect = null;
 
@@ -636,7 +651,7 @@ public final class EssentiaItemContainerHelper
 	 * @param aspectStack
 	 * @return
 	 */
-	public static ImmutablePair<Integer, ItemStack> injectIntoContainer( ItemStack container, AspectStack aspectStack )
+	public ImmutablePair<Integer, ItemStack> injectIntoContainer( final ItemStack container, final AspectStack aspectStack )
 	{
 		// Is there an item?
 		if( container == null )
@@ -645,17 +660,17 @@ public final class EssentiaItemContainerHelper
 		}
 
 		// Is the item an essentia container?
-		if( !EssentiaItemContainerHelper.isContainer( container ) )
+		if( !this.isContainer( container ) )
 		{
 			return null;
 		}
 
 		// Is the container a labeled jar?
-		if( EssentiaItemContainerHelper.doesJarHaveLabel( container ) )
+		if( this.doesJarHaveLabel( container ) )
 		{
 			// Does the label match the aspect we are going to fill
 			// with?
-			if( aspectStack.aspect != EssentiaItemContainerHelper.getJarLabelAspect( container ) )
+			if( aspectStack.aspect != this.getJarLabelAspect( container ) )
 			{
 				// Aspect does not match the jar's label
 				return null;
@@ -666,7 +681,7 @@ public final class EssentiaItemContainerHelper
 		Item containerItem = container.getItem();
 
 		// Get the info about the container
-		ContainerInfo info = EssentiaItemContainerHelper.getContainerInfo( containerItem, container.getItemDamage() );
+		ContainerInfo info = this.getContainerInfo( containerItem, container.getItemDamage() );
 
 		// Ensure we got the info
 		if( info == null )
@@ -674,7 +689,7 @@ public final class EssentiaItemContainerHelper
 			return null;
 		}
 		// Get how much essentia is in the container
-		int containerAmountStored = EssentiaItemContainerHelper.getContainerStoredAmount( container );
+		int containerAmountStored = this.getContainerStoredAmount( container );
 
 		// Calculate how much remaining storage is in the container
 		int remainaingStorage = info.capacity - containerAmountStored;
@@ -719,13 +734,13 @@ public final class EssentiaItemContainerHelper
 		if( containerItem instanceof ItemEssence )
 		{
 			// Create a new phial
-			resultStack = EssentiaItemContainerHelper.createFilledPhial( aspectStack.aspect );
+			resultStack = this.createFilledPhial( aspectStack.aspect );
 		}
 		// Is it an empty jar?
 		else if( containerItem instanceof BlockJarItem )
 		{
 			// Create a fillable jar
-			resultStack = EssentiaItemContainerHelper.createFilledJar( aspectStack.aspect, amountToFill, container.getItemDamage(), false );
+			resultStack = this.createFilledJar( aspectStack.aspect, amountToFill, container.getItemDamage(), false );
 		}
 
 		// Have we already set the result?
@@ -759,13 +774,13 @@ public final class EssentiaItemContainerHelper
 	 * @param container
 	 * @return
 	 */
-	public static boolean isContainer( ItemStack container )
+	public boolean isContainer( final ItemStack container )
 	{
 		// Is the container not null?
 		if( container != null )
 		{
 			// Return if the container whitelisted or not.
-			return EssentiaItemContainerHelper.isContainerWhitelisted( container );
+			return this.isContainerWhitelisted( container );
 		}
 
 		return false;
@@ -777,9 +792,9 @@ public final class EssentiaItemContainerHelper
 	 * @param container
 	 * @return
 	 */
-	public static boolean isContainerEmpty( ItemStack container )
+	public boolean isContainerEmpty( final ItemStack container )
 	{
-		return( EssentiaItemContainerHelper.getContainerStoredAmount( container ) == 0 );
+		return( this.getContainerStoredAmount( container ) == 0 );
 	}
 
 	/**
@@ -788,10 +803,10 @@ public final class EssentiaItemContainerHelper
 	 * @param container
 	 * @return
 	 */
-	public static boolean isContainerFilled( ItemStack container )
+	public boolean isContainerFilled( final ItemStack container )
 	{
 
-		return( EssentiaItemContainerHelper.getContainerStoredAmount( container ) > 0 );
+		return( this.getContainerStoredAmount( container ) > 0 );
 	}
 
 	/**
@@ -801,9 +816,9 @@ public final class EssentiaItemContainerHelper
 	 * @param metadata
 	 * @return
 	 */
-	public static boolean isContainerWhitelisted( Item container, int metadata )
+	public boolean isContainerWhitelisted( final Item container, final int metadata )
 	{
-		return EssentiaItemContainerHelper.getContainerInfo( container, metadata ) != null;
+		return this.getContainerInfo( container, metadata ) != null;
 	}
 
 	/**
@@ -812,25 +827,25 @@ public final class EssentiaItemContainerHelper
 	 * @param item
 	 * @return
 	 */
-	public static boolean isContainerWhitelisted( ItemStack container )
+	public boolean isContainerWhitelisted( final ItemStack container )
 	{
-		return EssentiaItemContainerHelper.getContainerInfo( container ) != null;
+		return this.getContainerInfo( container ) != null;
 	}
 
 	/**
 	 * Setup the standard white list
 	 */
-	public static void registerThaumcraftContainers()
+	public void registerThaumcraftContainers()
 	{
 		// Phials
-		EssentiaItemContainerHelper.addItemToWhitelist( ItemEssence.class, PHIAL_CAPACITY, 0, false );
-		EssentiaItemContainerHelper.addItemToWhitelist( ItemEssence.class, PHIAL_CAPACITY, 1, false );
+		this.addItemToWhitelist( ItemEssence.class, PHIAL_CAPACITY, 0, false );
+		this.addItemToWhitelist( ItemEssence.class, PHIAL_CAPACITY, 1, false );
 
 		// Filled jar
-		EssentiaItemContainerHelper.addItemToWhitelist( ItemJarFilled.class, JAR_CAPACITY, 0, true );
+		this.addItemToWhitelist( ItemJarFilled.class, JAR_CAPACITY, 0, true );
 
 		// Void jar
-		EssentiaItemContainerHelper.addItemToWhitelist( ItemJarFilled.class, JAR_CAPACITY, 3, true );
+		this.addItemToWhitelist( ItemJarFilled.class, JAR_CAPACITY, 3, true );
 	}
 
 	/**
@@ -842,7 +857,7 @@ public final class EssentiaItemContainerHelper
 	 * label.
 	 * @return The specified itemstack.
 	 */
-	public static ItemStack setJarLabel( ItemStack jar, Aspect OverrideAspect )
+	public ItemStack setJarLabel( final ItemStack jar, final Aspect OverrideAspect )
 	{
 		// Ensure it is a jar
 		if( jar.getItem() instanceof ItemJarFilled )
@@ -856,7 +871,7 @@ public final class EssentiaItemContainerHelper
 			}
 			else
 			{
-				labelAspect = EssentiaItemContainerHelper.getAspectInContainer( jar );
+				labelAspect = this.getAspectInContainer( jar );
 			}
 
 			// Ensure we have an aspect to set

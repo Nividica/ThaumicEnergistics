@@ -1,4 +1,4 @@
-package thaumicenergistics.util;
+package thaumicenergistics.integration.tc;
 
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -6,14 +6,28 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.ContainerCellTerminalBase;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 
-public class EssentiaCellTerminalWorker
+public final class EssentiaCellTerminalWorker
 {
-	private static void decreaseInputSlot( PrivateInventory inventory )
+	/**
+	 * Singleton
+	 */
+	public static final EssentiaCellTerminalWorker instance = new EssentiaCellTerminalWorker();
+	
+	/**
+	 * Private constructor
+	 */
+	private EssentiaCellTerminalWorker()
+	{
+		
+	}
+	
+	private final void decreaseInputSlot( final PrivateInventory inventory )
 	{
 		ItemStack slot = inventory.getStackInSlot( ContainerCellTerminalBase.INPUT_SLOT_ID );
 
@@ -27,11 +41,11 @@ public class EssentiaCellTerminalWorker
 		}
 	}
 
-	private static boolean drainContainer( PrivateInventory inventory, IMEMonitor<IAEFluidStack> monitor, ItemStack container,
-											MachineSource machineSource )
+	private final boolean drainContainer( final PrivateInventory inventory, final IMEMonitor<IAEFluidStack> monitor, final ItemStack container,
+											final MachineSource machineSource )
 	{
 		// Get the fluid stack from the item
-		IAEFluidStack containerFluid = EssentiaConversionHelper.createAEFluidStackFromItemEssentiaContainer( container );
+		IAEFluidStack containerFluid = EssentiaConversionHelper.instance.createAEFluidStackFromItemEssentiaContainer( container );
 
 		int proposedDrainAmount_FU = (int)containerFluid.getStackSize();
 
@@ -53,10 +67,10 @@ public class EssentiaCellTerminalWorker
 		}
 
 		// Convert to Essentia units
-		int proposedDrainAmount_EU = (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( proposedDrainAmount_FU );
+		int proposedDrainAmount_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( proposedDrainAmount_FU );
 
 		// Attempt to drain the item
-		ImmutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.extractFromContainer( container, proposedDrainAmount_EU );
+		ImmutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.instance.extractFromContainer( container, proposedDrainAmount_EU );
 
 		// Was the drain successful?
 		if( drainedContainer == null )
@@ -64,15 +78,15 @@ public class EssentiaCellTerminalWorker
 			return false;
 		}
 
-		if( EssentiaCellTerminalWorker.fillOutputSlot( inventory, drainedContainer.getRight() ) )
+		if( this.fillOutputSlot( inventory, drainedContainer.getRight() ) )
 		{
 			// Adjust the fill amount
-			containerFluid.setStackSize( EssentiaConversionHelper.convertEssentiaAmountToFluidAmount( drainedContainer.getLeft() ) );
+			containerFluid.setStackSize( EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( drainedContainer.getLeft() ) );
 
 			// Fill to network
 			monitor.injectItems( containerFluid, Actionable.MODULATE, machineSource );
 
-			EssentiaCellTerminalWorker.decreaseInputSlot( inventory );
+			this.decreaseInputSlot( inventory );
 
 			// Work was done
 			return true;
@@ -81,8 +95,8 @@ public class EssentiaCellTerminalWorker
 		return false;
 	}
 
-	private static boolean fillContainer( PrivateInventory inventory, IMEMonitor<IAEFluidStack> monitor, ItemStack container,
-											MachineSource machineSource, Aspect currentAspect )
+	private final boolean fillContainer( final PrivateInventory inventory, final IMEMonitor<IAEFluidStack> monitor, final ItemStack container,
+											final MachineSource machineSource, final Aspect currentAspect )
 	{
 		// Is there an aspect selected?
 		if( currentAspect == null )
@@ -91,7 +105,7 @@ public class EssentiaCellTerminalWorker
 		}
 
 		// Get the available capacity of the container, in Essentia Units
-		int containerCapacity_EU = EssentiaItemContainerHelper.getContainerCapacity( container );
+		int containerCapacity_EU = EssentiaItemContainerHelper.instance.getContainerCapacity( container );
 
 		// Is there any room for more essentia?
 		if( containerCapacity_EU == 0 )
@@ -103,7 +117,7 @@ public class EssentiaCellTerminalWorker
 		GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( currentAspect );
 
 		// Simulate an extraction from the network
-		IAEFluidStack result = monitor.extractItems( EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( essentiaGas, containerCapacity_EU ),
+		IAEFluidStack result = monitor.extractItems( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, containerCapacity_EU ),
 			Actionable.SIMULATE, machineSource );
 
 		// Is there anything to extract?
@@ -113,14 +127,14 @@ public class EssentiaCellTerminalWorker
 		}
 
 		// Get how much can be taken from the network, in Essentia Units
-		int resultAmount_EU = (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( result.getStackSize() );
+		int resultAmount_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( result.getStackSize() );
 
 		// Calculate the proposed amount, based on how much we need and how much
 		// is available
 		int proposedAmount_EU = Math.min( containerCapacity_EU, resultAmount_EU );
 
 		// Create a new container filled to the proposed amount
-		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.injectIntoContainer( container, new AspectStack(
+		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.instance.injectIntoContainer( container, new AspectStack(
 						currentAspect, proposedAmount_EU ) );
 
 		// Was the fill successful?
@@ -130,14 +144,14 @@ public class EssentiaCellTerminalWorker
 		}
 
 		// Can we move the container from the first to the second slot?
-		if( EssentiaCellTerminalWorker.fillOutputSlot( inventory, filledContainer.getRight() ) )
+		if( this.fillOutputSlot( inventory, filledContainer.getRight() ) )
 		{
 			// Drain the essentia from the network
-			monitor.extractItems( EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( essentiaGas, filledContainer.getLeft() ),
+			monitor.extractItems( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, filledContainer.getLeft() ),
 				Actionable.MODULATE, machineSource );
 
 			// Decrease the stack in the first slot
-			EssentiaCellTerminalWorker.decreaseInputSlot( inventory );
+			this.decreaseInputSlot( inventory );
 
 			// Work was done
 			return true;
@@ -146,7 +160,7 @@ public class EssentiaCellTerminalWorker
 		return false;
 	}
 
-	private static boolean fillOutputSlot( PrivateInventory inventory, ItemStack itemStack )
+	private final boolean fillOutputSlot( final PrivateInventory inventory, final ItemStack itemStack )
 	{
 		if( itemStack == null )
 		{
@@ -178,7 +192,8 @@ public class EssentiaCellTerminalWorker
 		return false;
 	}
 
-	public static boolean doWork( PrivateInventory inventory, IMEMonitor<IAEFluidStack> monitor, MachineSource machineSource, Aspect currentAspect )
+	public final boolean doWork( final PrivateInventory inventory, final IMEMonitor<IAEFluidStack> monitor, final MachineSource machineSource,
+									final Aspect currentAspect )
 	{
 		// Ensure we have a valid monitor?
 		if( monitor == null )
@@ -190,22 +205,22 @@ public class EssentiaCellTerminalWorker
 		ItemStack inputSlot = inventory.getStackInSlot( ContainerCellTerminalBase.INPUT_SLOT_ID ).copy();
 
 		// Is the container empty?
-		if( EssentiaItemContainerHelper.isContainerEmpty( inputSlot ) )
+		if( EssentiaItemContainerHelper.instance.isContainerEmpty( inputSlot ) )
 		{
 			// Attempt to fill the container.
-			return EssentiaCellTerminalWorker.fillContainer( inventory, monitor, inputSlot, machineSource, currentAspect );
+			return this.fillContainer( inventory, monitor, inputSlot, machineSource, currentAspect );
 		}
 		// Is the container not empty?
-		else if( EssentiaItemContainerHelper.isContainerFilled( inputSlot ) )
+		else if( EssentiaItemContainerHelper.instance.isContainerFilled( inputSlot ) )
 		{
 			// Attempt to drain it.
-			return EssentiaCellTerminalWorker.drainContainer( inventory, monitor, inputSlot, machineSource );
+			return this.drainContainer( inventory, monitor, inputSlot, machineSource );
 		}
 
 		return false;
 	}
 
-	public static boolean hasWork( PrivateInventory inventory )
+	public final boolean hasWork( final PrivateInventory inventory )
 	{
 		// Is the inventory valid?
 		if( inventory == null )
@@ -223,7 +238,7 @@ public class EssentiaCellTerminalWorker
 		}
 
 		// Is the item in the input slot an essentia container?
-		if( !EssentiaItemContainerHelper.isContainer( inventory.getStackInSlot( ContainerCellTerminalBase.INPUT_SLOT_ID ) ) )
+		if( !EssentiaItemContainerHelper.instance.isContainer( inventory.getStackInSlot( ContainerCellTerminalBase.INPUT_SLOT_ID ) ) )
 		{
 			return false;
 		}

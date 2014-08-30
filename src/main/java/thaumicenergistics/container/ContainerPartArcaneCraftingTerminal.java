@@ -165,7 +165,7 @@ public class ContainerPartArcaneCraftingTerminal
 	private AspectList requiredAspects;
 
 	/**
-	 * The aspects the wand does not have enough of for the current recipe.
+	 * The required aspects, costs, and missing for the current recipe. 
 	 */
 	private List<ArcaneCrafingCost> craftingCost = new ArrayList<ArcaneCrafingCost>();
 
@@ -833,6 +833,69 @@ public class ContainerPartArcaneCraftingTerminal
 
 			// Send to the client
 			new PacketClientArcaneCraftingTerminal().createFullListUpdate( player, fullList ).sendPacketToPlayer();
+		}
+	}
+	
+	/**
+	 * A client has requested that a region(inventory) be deposited into the ME network.
+	 * @param player
+	 * @param slotNumber
+	 */
+	public void onClientRequestDepositRegion( final EntityPlayer player, final int slotNumber )
+	{
+		List<Slot> slotsToDeposit = null;
+		
+		// Was the slot part of the player inventory?
+		if( this.slotClickedWasInPlayerInventory( slotNumber ) )
+		{
+			// Get the items in the player inventory
+			slotsToDeposit = this.getNonEmptySlotsFromPlayerInventory();
+		}
+		// Was the slot part of the hotbar?
+		else if( this.slotClickedWasInHotbarInventory( slotNumber ) )
+		{
+			// Get the items in the hotbar
+			slotsToDeposit = this.getNonEmptySlotsFromHotbar();
+		}
+		
+		// Do we have any slots to transfer?
+		if( slotsToDeposit != null )
+		{
+			for( Slot slot : slotsToDeposit )
+			{
+				// Ensure the slot is not null and has a stack
+				if( ( slot == null ) || ( !slot.getHasStack() ) )
+				{
+					continue;
+				}
+
+				// Set the stack
+				ItemStack slotStack = slot.getStack();
+
+				// Inject into the ME network
+				boolean didMerge = this.mergeWithMENetwork( slotStack );
+
+				// Did any merge?
+				if( !didMerge )
+				{
+					continue;
+				}
+
+				// Did the merger drain the stack?
+				if( ( slotStack == null ) || ( slotStack.stackSize == 0 ) )
+				{
+					// Set the slot to have no item
+					slot.putStack( null );
+				}
+				else
+				{
+					// Inform the slot its stack changed;
+					slot.onSlotChanged();
+				}
+			}
+
+			// Update
+			this.detectAndSendChanges();
 		}
 	}
 

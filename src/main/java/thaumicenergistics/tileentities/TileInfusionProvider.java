@@ -8,8 +8,8 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectSource;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.registries.BlockEnum;
-import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -61,7 +61,7 @@ public class TileInfusionProvider
 				this.monitor.addListener( this, grid );
 
 				// Get the list of essentia on the network
-				this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+				this.aspectStackList = EssentiaConversionHelper.instance.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
 
 				// Mark that we need to update the client
 				this.markForUpdate();
@@ -185,7 +185,7 @@ public class TileInfusionProvider
 			return;
 		}
 
-		this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( ( (IMEMonitor<IAEFluidStack>)monitor )
+		this.aspectStackList = EssentiaConversionHelper.instance.convertIIAEFluidStackListToAspectStackList( ( (IMEMonitor<IAEFluidStack>)monitor )
 						.getStorageList() );
 
 		// Mark that we need to update the client

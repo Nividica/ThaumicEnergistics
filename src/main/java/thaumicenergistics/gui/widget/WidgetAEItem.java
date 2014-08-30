@@ -78,7 +78,7 @@ public class WidgetAEItem
 			}
 
 			// Draw the tooltip
-			GuiHelper.drawTooltip( (Gui)this.hostGUI, tooltip, mouseX, mouseY, WidgetAEItem.MC.fontRenderer );
+			GuiHelper.instance.drawTooltip( (Gui)this.hostGUI, tooltip, mouseX, mouseY, WidgetAEItem.MC.fontRenderer );
 		}
 	}
 

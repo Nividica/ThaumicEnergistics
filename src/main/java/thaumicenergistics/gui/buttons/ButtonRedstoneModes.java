@@ -111,7 +111,7 @@ public class ButtonRedstoneModes
 		}
 
 		// Draw the tooltip
-		GuiHelper.drawTooltip( this, tooltip, mouseX, mouseY, Minecraft.getMinecraft().fontRenderer );
+		GuiHelper.instance.drawTooltip( this, tooltip, mouseX, mouseY, Minecraft.getMinecraft().fontRenderer );
 	}
 
 	/**

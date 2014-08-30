@@ -14,6 +14,7 @@ import thaumicenergistics.gui.buttons.ButtonAETab;
 import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.server.PacketServerChangeGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
@@ -21,7 +22,6 @@ import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.EnumAEStateIcons;
 import thaumicenergistics.texture.GuiTextureManager;
-import thaumicenergistics.util.EssentiaItemContainerHelper;
 
 /**
  * Gui for the storage bus.
@@ -214,7 +214,7 @@ public class GuiEssentiaStorageBus
 			if( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the aspect of the currently held item
-				Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( this.player.inventory.getItemStack() );
+				Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( this.player.inventory.getItemStack() );
 
 				// Is there an aspect?
 				if( itemAspect != null )

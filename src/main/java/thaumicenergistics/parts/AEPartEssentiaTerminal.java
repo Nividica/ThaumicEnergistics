@@ -14,9 +14,9 @@ import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.ContainerCellTerminalBase;
 import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.gui.GuiEssentiaTerminal;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
-import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.parts.IPartCollsionHelper;
@@ -32,7 +32,7 @@ public class AEPartEssentiaTerminal
 	/**
 	 * How much AE power is required to keep the part active.
 	 */
-	private static final double IDLE_POWER_DRAIN = 1.2D;
+	private static final double IDLE_POWER_DRAIN = 0.5D;
 
 	/**
 	 * Key used to read and write sorting mode from/to NBT.
@@ -69,7 +69,7 @@ public class AEPartEssentiaTerminal
 		@Override
 		public boolean isItemValidForSlot( int slotId, ItemStack itemStack )
 		{
-			return EssentiaItemContainerHelper.isContainer( itemStack );
+			return EssentiaItemContainerHelper.instance.isContainer( itemStack );
 		}
 	};
 

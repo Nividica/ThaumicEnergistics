@@ -32,7 +32,7 @@ public abstract class AbstractWidget
 	protected void drawTooltip( List<String> descriptionLines, int posX, int posY, FontRenderer fontrenderer )
 	{
 		// Draw the tooltip
-		GuiHelper.drawTooltip( this, descriptionLines, posX, posY, fontrenderer );
+		GuiHelper.instance.drawTooltip( this, descriptionLines, posX, posY, fontrenderer );
 	}
 
 	public void drawMouseHoverUnderlay()
@@ -54,7 +54,7 @@ public abstract class AbstractWidget
 
 	public boolean isMouseOverWidget( int mouseX, int mouseY )
 	{
-		return GuiHelper.isPointInGuiRegion( this.xPosition, this.yPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE, mouseX, mouseY,
+		return GuiHelper.instance.isPointInGuiRegion( this.xPosition, this.yPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE, mouseX, mouseY,
 			this.hostGUI.guiLeft(), this.hostGUI.guiTop() );
 	}
 

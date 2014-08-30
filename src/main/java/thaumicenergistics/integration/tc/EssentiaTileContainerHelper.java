@@ -1,4 +1,4 @@
-package thaumicenergistics.util;
+package thaumicenergistics.integration.tc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +26,19 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public final class EssentiaTileContainerHelper
 {
 	/**
+	 * Singleton
+	 */
+	public static final EssentiaTileContainerHelper instance = new EssentiaTileContainerHelper();
+
+	/**
 	 * Holds a list of tiles that we are allowed to extract from.
 	 */
-	private static final List<Class<? extends TileEntity>> extractWhiteList = new ArrayList<Class<? extends TileEntity>>();
+	private final List<Class<? extends TileEntity>> extractWhiteList = new ArrayList<Class<? extends TileEntity>>();
 
 	/**
 	 * Holds a list of tiles that we are allowed to inject into.
 	 */
-	private static final List<Class<? extends TileEntity>> injectWhiteList = new ArrayList<Class<? extends TileEntity>>();
+	private final List<Class<? extends TileEntity>> injectWhiteList = new ArrayList<Class<? extends TileEntity>>();
 
 	/**
 	 * Adds a tile entity to the extract whitelist.
@@ -42,7 +47,7 @@ public final class EssentiaTileContainerHelper
 	 * @param tile
 	 * @return True if added to the list, False if not.
 	 */
-	public static boolean addTileToExtractWhitelist( Class<? extends TileEntity> tile )
+	public boolean addTileToExtractWhitelist( final Class<? extends TileEntity> tile )
 	{
 		// Ensure we have a tile
 		if( tile != null )
@@ -51,10 +56,10 @@ public final class EssentiaTileContainerHelper
 			if( IAspectContainer.class.isAssignableFrom( tile ) )
 			{
 				// Is it already registered?
-				if( !EssentiaTileContainerHelper.extractWhiteList.contains( tile ) )
+				if( !this.extractWhiteList.contains( tile ) )
 				{
 					// Add to the list
-					EssentiaTileContainerHelper.extractWhiteList.add( tile );
+					this.extractWhiteList.add( tile );
 
 					// Log the addition
 					FMLCommonHandler.instance().getFMLLogger().info( "Adding " + tile.toString() + " to extraction whitelist." );
@@ -74,7 +79,7 @@ public final class EssentiaTileContainerHelper
 	 * @param tile
 	 * @return True if added to the list, False if not.
 	 */
-	public static boolean addTileToInjectWhitelist( Class<? extends TileEntity> tile )
+	public boolean addTileToInjectWhitelist( final Class<? extends TileEntity> tile )
 	{
 		// Ensure we have a tile
 		if( tile != null )
@@ -83,10 +88,10 @@ public final class EssentiaTileContainerHelper
 			if( IAspectContainer.class.isAssignableFrom( tile ) )
 			{
 				// Is it already registered?
-				if( !EssentiaTileContainerHelper.injectWhiteList.contains( tile ) )
+				if( !this.injectWhiteList.contains( tile ) )
 				{
 					// Add to the list
-					EssentiaTileContainerHelper.injectWhiteList.add( tile );
+					this.injectWhiteList.add( tile );
 
 					// Log the addition
 					FMLCommonHandler.instance().getFMLLogger().info( "Adding " + tile.toString() + " to injection whitelist." );
@@ -105,10 +110,10 @@ public final class EssentiaTileContainerHelper
 	 * @param container
 	 * @return
 	 */
-	public static boolean canExtract( IAspectContainer container )
+	public boolean canExtract( final IAspectContainer container )
 	{
 		// Loop over blacklist
-		for( Class<? extends TileEntity> whiteClass : EssentiaTileContainerHelper.extractWhiteList )
+		for( Class<? extends TileEntity> whiteClass : this.extractWhiteList )
 		{
 			// Is the container an instance of this whitelisted class?
 			if( whiteClass.isInstance( container ) )
@@ -128,10 +133,10 @@ public final class EssentiaTileContainerHelper
 	 * @param container
 	 * @return
 	 */
-	public static boolean canInject( IAspectContainer container )
+	public boolean canInject( final IAspectContainer container )
 	{
 		// Loop over blacklist
-		for( Class<? extends TileEntity> whiteClass : EssentiaTileContainerHelper.injectWhiteList )
+		for( Class<? extends TileEntity> whiteClass : this.injectWhiteList )
 		{
 			// Is the container an instance of this whitelisted class?
 			if( whiteClass.isInstance( container ) )
@@ -154,10 +159,10 @@ public final class EssentiaTileContainerHelper
 	 * @param mode
 	 * @return
 	 */
-	public static FluidStack extractFromContainer( IAspectContainer container, FluidStack fluidStack, Actionable mode )
+	public FluidStack extractFromContainer( final IAspectContainer container, final FluidStack fluidStack, final Actionable mode )
 	{
 		// Can we extract?
-		if( !EssentiaTileContainerHelper.canExtract( container ) )
+		if( !this.canExtract( container ) )
 		{
 			return null;
 		}
@@ -176,9 +181,9 @@ public final class EssentiaTileContainerHelper
 			{
 				Aspect gasAspect = ( (GaseousEssentia)fluid ).getAssociatedAspect();
 
-				long amountToDrain_EU = EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( fluidStack.amount );
+				long amountToDrain_EU = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.amount );
 
-				return EssentiaTileContainerHelper.extractFromContainer( container, (int)amountToDrain_EU, gasAspect, mode );
+				return this.extractFromContainer( container, (int)amountToDrain_EU, gasAspect, mode );
 			}
 		}
 
@@ -195,16 +200,16 @@ public final class EssentiaTileContainerHelper
 	 * @param mode
 	 * @return
 	 */
-	public static FluidStack extractFromContainer( IAspectContainer container, int amountToDrain_EU, Aspect aspectToDrain, Actionable mode )
+	public FluidStack extractFromContainer( final IAspectContainer container, int amountToDrain_EU, final Aspect aspectToDrain, final Actionable mode )
 	{
 		// Can we extract?
-		if( !EssentiaTileContainerHelper.canExtract( container ) )
+		if( !this.canExtract( container ) )
 		{
 			return null;
 		}
 
 		// Get what aspect and how much the container is holding
-		AspectStack containerStack = EssentiaTileContainerHelper.getAspectStackFromContainer( container );
+		AspectStack containerStack = this.getAspectStackFromContainer( container );
 
 		// Is the container holding the correct aspect?
 		if( ( containerStack == null ) || ( aspectToDrain != containerStack.aspect ) )
@@ -239,14 +244,14 @@ public final class EssentiaTileContainerHelper
 
 		// Return the amount drained with conversion
 		return new FluidStack( GaseousEssentia.getGasFromAspect( aspectToDrain ),
-						(int)EssentiaConversionHelper.convertEssentiaAmountToFluidAmount( amountToDrain_EU ) );
+						(int)EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( amountToDrain_EU ) );
 
 	}
 
-	public static Aspect getAspectInContainer( IAspectContainer container )
+	public Aspect getAspectInContainer( final IAspectContainer container )
 	{
 		// Get the aspect list from the container
-		AspectStack containerStack = EssentiaTileContainerHelper.getAspectStackFromContainer( container );
+		AspectStack containerStack = this.getAspectStackFromContainer( container );
 
 		// Did we get a stack?
 		if( containerStack == null )
@@ -257,7 +262,7 @@ public final class EssentiaTileContainerHelper
 		return containerStack.aspect;
 	}
 
-	public static AspectStack getAspectStackFromContainer( IAspectContainer container )
+	public AspectStack getAspectStackFromContainer( final IAspectContainer container )
 	{
 		// Ensure we have a container
 		if( container == null )
@@ -290,7 +295,7 @@ public final class EssentiaTileContainerHelper
 		return aspectStack;
 	}
 
-	public static int getContainerCapacity( IAspectContainer container )
+	public int getContainerCapacity( final IAspectContainer container )
 	{
 		if( container instanceof TileJarFillable )
 		{
@@ -304,7 +309,7 @@ public final class EssentiaTileContainerHelper
 		return 0;
 	}
 
-	public static int getContainerStoredAmount( IAspectContainer container )
+	public int getContainerStoredAmount( final IAspectContainer container )
 	{
 		if( container instanceof TileJarFillable )
 		{
@@ -318,10 +323,10 @@ public final class EssentiaTileContainerHelper
 		return 0;
 	}
 
-	public static long injectIntoContainer( IAspectContainer container, IAEFluidStack fluidStack, Actionable mode )
+	public long injectIntoContainer( final IAspectContainer container, final IAEFluidStack fluidStack, final Actionable mode )
 	{
 		// Can we inject?
-		if( !EssentiaTileContainerHelper.canInject( container ) )
+		if( !this.canInject( container ) )
 		{
 			return 0;
 		}
@@ -338,18 +343,19 @@ public final class EssentiaTileContainerHelper
 
 			Aspect gasAspect = ( (GaseousEssentia)fluid ).getAssociatedAspect();
 
-			long amountToFill = EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+			long amountToFill = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
 
-			return EssentiaTileContainerHelper.injectIntoContainer( container, (int)amountToFill, gasAspect, mode );
+			return this.injectIntoContainer( container, (int)amountToFill, gasAspect, mode );
 		}
 
 		return 0;
 	}
 
-	public static long injectIntoContainer( IAspectContainer container, int amountToFillInEssentiaUnits, Aspect aspectToFill, Actionable mode )
+	public long injectIntoContainer( final IAspectContainer container, int amountToFillInEssentiaUnits, final Aspect aspectToFill,
+										final Actionable mode )
 	{
 		// Can we inject?
-		if( !EssentiaTileContainerHelper.canInject( container ) )
+		if( !this.canInject( container ) )
 		{
 			return 0;
 		}
@@ -357,7 +363,7 @@ public final class EssentiaTileContainerHelper
 		int containerAmount = 0;
 
 		// Get what aspect and how much the container is holding
-		AspectStack containerStack = EssentiaTileContainerHelper.getAspectStackFromContainer( container );
+		AspectStack containerStack = this.getAspectStackFromContainer( container );
 
 		// Is there anything in the container?
 		if( containerStack != null )
@@ -380,7 +386,7 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Get how much the container can hold
-		int containerCurrentCapacity = EssentiaTileContainerHelper.getContainerCapacity( container ) - containerAmount;
+		int containerCurrentCapacity = this.getContainerCapacity( container ) - containerAmount;
 
 		// Is there more to fill than the container will hold?
 		if( amountToFillInEssentiaUnits > containerCurrentCapacity )
@@ -395,23 +401,23 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Convert to fluid units
-		return EssentiaConversionHelper.convertEssentiaAmountToFluidAmount( amountToFillInEssentiaUnits );
+		return EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( amountToFillInEssentiaUnits );
 	}
 
 	/**
 	 * Setup the standard white lists
 	 */
-	public static void registerThaumcraftContainers()
+	public void registerThaumcraftContainers()
 	{
 		// Alembic
-		EssentiaTileContainerHelper.addTileToExtractWhitelist( TileAlembic.class );
+		this.addTileToExtractWhitelist( TileAlembic.class );
 
 		// Centrifuge
-		EssentiaTileContainerHelper.addTileToExtractWhitelist( TileCentrifuge.class );
+		this.addTileToExtractWhitelist( TileCentrifuge.class );
 
 		// Jars
-		EssentiaTileContainerHelper.addTileToExtractWhitelist( TileJarFillable.class );
-		EssentiaTileContainerHelper.addTileToInjectWhitelist( TileJarFillable.class );
+		this.addTileToExtractWhitelist( TileJarFillable.class );
+		this.addTileToInjectWhitelist( TileJarFillable.class );
 	}
 
 }

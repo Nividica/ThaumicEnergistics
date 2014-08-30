@@ -8,13 +8,13 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.integration.tc.EssentiaCellTerminalWorker;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.items.ItemEssentiaCell;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCell;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCell;
 import thaumicenergistics.util.EffectiveSide;
-import thaumicenergistics.util.EssentiaCellTerminalWorker;
-import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -53,7 +53,7 @@ public class ContainerEssentiaCell
 		@Override
 		public boolean isItemValidForSlot( int slotID, ItemStack itemStack )
 		{
-			return EssentiaItemContainerHelper.isContainer( itemStack );
+			return EssentiaItemContainerHelper.instance.isContainer( itemStack );
 		}
 	};
 
@@ -153,7 +153,7 @@ public class ContainerEssentiaCell
 		if( this.monitor != null )
 		{
 			// Is there work to do?
-			if( EssentiaCellTerminalWorker.hasWork( this.inventory ) )
+			if( EssentiaCellTerminalWorker.instance.hasWork( this.inventory ) )
 			{
 
 				try
@@ -165,7 +165,7 @@ public class ContainerEssentiaCell
 					if( eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.SIMULATE, PowerMultiplier.CONFIG ) >= ContainerCellTerminalBase.POWER_PER_TRANSFER )
 					{
 						// Do the work
-						if( EssentiaCellTerminalWorker.doWork( this.inventory, this.monitor, null, this.selectedAspect ) )
+						if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, null, this.selectedAspect ) )
 						{
 							// We did work, drain power
 							eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.MODULATE, PowerMultiplier.CONFIG );

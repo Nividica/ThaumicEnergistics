@@ -10,9 +10,9 @@ import net.minecraftforge.fluids.FluidStack;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.items.ItemEssentiaCell;
 import thaumicenergistics.registries.ItemEnum;
-import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -244,7 +244,7 @@ public class HandlerItemEssentiaCell
 		{
 			if( fluidStack != null )
 			{
-				aspectList.add( new AspectStack( ( (GaseousEssentia)fluidStack.getFluid() ).getAssociatedAspect(), EssentiaConversionHelper
+				aspectList.add( new AspectStack( ( (GaseousEssentia)fluidStack.getFluid() ).getAssociatedAspect(), EssentiaConversionHelper.instance
 								.convertFluidAmountToEssentiaAmount( fluidStack.amount ) ) );
 			}
 		}

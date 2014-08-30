@@ -16,8 +16,8 @@ import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.gui.GuiCellTerminalBase;
+import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.util.EffectiveSide;
-import thaumicenergistics.util.EssentiaConversionHelper;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.networking.security.BaseActionSource;
@@ -337,7 +337,7 @@ public abstract class ContainerCellTerminalBase
 			this.monitor.addListener( this, null );
 
 			// Update our cached list of aspects
-			this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+			this.aspectStackList = EssentiaConversionHelper.instance.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
 		}
 	}
 
@@ -628,7 +628,7 @@ public abstract class ContainerCellTerminalBase
 		}
 		
 		// Update the client
-		this.postAspectStackChange( EssentiaConversionHelper.convertAEFluidStackToAspectStack( change ) );
+		this.postAspectStackChange( EssentiaConversionHelper.instance.convertAEFluidStackToAspectStack( change ) );
 	}
 
 	/**

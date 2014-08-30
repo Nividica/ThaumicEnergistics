@@ -11,6 +11,7 @@ import thaumicenergistics.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
 import thaumicenergistics.parts.AEPartEssentiaExportBus;
@@ -18,7 +19,6 @@ import thaumicenergistics.parts.AEPartEssentiaIO;
 import thaumicenergistics.parts.AEPartEssentiaImportBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
-import thaumicenergistics.util.EssentiaItemContainerHelper;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
@@ -248,7 +248,7 @@ public class GuiEssentiatIO
 			if( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the aspect of the currently held item
-				Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( this.player.inventory.getItemStack() );
+				Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( this.player.inventory.getItemStack() );
 
 				// Is there an aspect?
 				if( itemAspect != null )
@@ -326,7 +326,7 @@ public class GuiEssentiatIO
 				GuiButton currentButton = (GuiButton)obj;
 
 				// Is the mouse over it?
-				if( GuiHelper.isPointInRegion( currentButton.xPosition, currentButton.yPosition, currentButton.width, currentButton.height, mouseX,
+				if( GuiHelper.instance.isPointInRegion( currentButton.xPosition, currentButton.yPosition, currentButton.width, currentButton.height, mouseX,
 					mouseY ) )
 				{
 					// Is it the redstone button?

@@ -7,13 +7,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.util.EffectiveSide;
-import thaumicenergistics.util.EssentiaConversionHelper;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.networking.GridFlags;
@@ -140,14 +139,14 @@ public abstract class TileProviderBase
 		this.addNewHandler( this.eventHandler );
 	}
 
-	private static AEColor[] getNeighborCableColors( IBlockAccess world, int x, int y, int z )
+	private AEColor[] getNeighborCableColors()
 	{
 		AEColor[] sideColors = new AEColor[6];
 
 		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 		{
 			// Get the tile entity on the current side
-			TileEntity tileEntity = world.getTileEntity( x + side.offsetX, y + side.offsetY, z + side.offsetZ );
+			TileEntity tileEntity = this.worldObj.getTileEntity( this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ );
 
 			// Did we get an entity?
 			if( tileEntity == null )
@@ -176,7 +175,7 @@ public abstract class TileProviderBase
 			// Get the gas version of the aspect
 			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( wantedAspect );
 
-			IAEFluidStack request = EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( essentiaGas, wantedAmount );
+			IAEFluidStack request = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, wantedAmount );
 
 			// Simulate the extraction
 			IAEFluidStack fluidStack = this.monitor.extractItems( request, Actionable.SIMULATE, new MachineSource( this ) );
@@ -190,7 +189,7 @@ public abstract class TileProviderBase
 			else if( mustMatch )
 			{
 				// Does the amount match how much we want?
-				if( fluidStack.getStackSize() != EssentiaConversionHelper.convertEssentiaAmountToFluidAmount( wantedAmount ) )
+				if( fluidStack.getStackSize() != EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( wantedAmount ) )
 				{
 					// Could not provide enough essentia
 					return 0;
@@ -201,7 +200,7 @@ public abstract class TileProviderBase
 			this.monitor.extractItems( request, Actionable.MODULATE, new MachineSource( this ) );
 
 			// Return how much was extracted
-			return (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+			return (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
 		}
 
 		return 0;
@@ -270,7 +269,7 @@ public abstract class TileProviderBase
 		// Ensure we have a monitor
 		if( this.getFluidMonitor() )
 		{
-			return EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+			return EssentiaConversionHelper.instance.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
 		}
 
 		return null;
@@ -341,7 +340,7 @@ public abstract class TileProviderBase
 		}
 	
 		// Get the colors of our neighbors
-		AEColor[] sideColors = TileProviderBase.getNeighborCableColors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
+		AEColor[] sideColors = this.getNeighborCableColors();
 	
 		// Get our current color
 		AEColor currentColor = this.gridProxy.myColor;

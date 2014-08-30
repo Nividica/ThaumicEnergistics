@@ -16,14 +16,14 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.gui.GuiEssentiaLevelEmitter;
+import thaumicenergistics.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaEmitter;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
-import thaumicenergistics.util.EssentiaConversionHelper;
-import thaumicenergistics.util.EssentiaItemContainerHelper;
 import appeng.api.config.RedstoneMode;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -47,7 +47,7 @@ public class AEPartEssentiaLevelEmitter
 	/**
 	 * How much AE power is required to keep the part active.
 	 */
-	private static final double IDLE_POWER_DRAIN = 0.5D;
+	private static final double IDLE_POWER_DRAIN = 0.3D;
 
 	/**
 	 * NBT key for the aspect filter.
@@ -204,7 +204,7 @@ public class AEPartEssentiaLevelEmitter
 		GaseousEssentia aspectGas = GaseousEssentia.getGasFromAspect( this.filterAspect );
 
 		// Convert to AE fluid stack
-		IAEFluidStack asGasStack = EssentiaConversionHelper.createAEFluidStackInFluidUnits( aspectGas, 1 );
+		IAEFluidStack asGasStack = EssentiaConversionHelper.instance.createAEFluidStackInFluidUnits( aspectGas, 1 );
 
 		// Get how much is in the system
 		IAEFluidStack fluidStack = monitor.getStorageList().findPrecise( asGasStack );
@@ -218,7 +218,7 @@ public class AEPartEssentiaLevelEmitter
 		else
 		{
 			// Set the current amount
-			this.setCurrentAmount( EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() ) );
+			this.setCurrentAmount( EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() ) );
 		}
 	}
 
@@ -639,7 +639,7 @@ public class AEPartEssentiaLevelEmitter
 	public boolean setFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
 	{
 		// Get the aspect
-		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
+		Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( itemStack );
 
 		// Ensure we got an aspect
 		if( itemAspect == null )

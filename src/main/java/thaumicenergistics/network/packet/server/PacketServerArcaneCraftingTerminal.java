@@ -15,10 +15,12 @@ public class PacketServerArcaneCraftingTerminal
 	private static final byte MODE_REQUEST_EXTRACTION = 2;
 	private static final byte MODE_REQUEST_DEPOSIT = 3;
 	private static final byte MODE_REQUEST_CLEAR_GRID = 4;
+	private static final byte MODE_REQUEST_DEPOSIT_REGION = 5;
 
 	private IAEItemStack itemStack;
 	private int mouseButton;
 	private boolean isShiftHeld;
+	private int slotNumber;
 
 	/**
 	 * Create a packet to request that the crafting grid be cleared.
@@ -104,6 +106,21 @@ public class PacketServerArcaneCraftingTerminal
 
 		return this;
 	}
+	
+
+	public PacketServerArcaneCraftingTerminal createRequestDepositRegion( EntityPlayer player, int slotNumber )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION;
+
+		// Set the slot number
+		this.slotNumber = slotNumber;
+
+		return this;
+	}
 
 	@Override
 	public void execute()
@@ -133,6 +150,10 @@ public class PacketServerArcaneCraftingTerminal
 					// Request clear grid
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestClearCraftingGrid( this.player );
 					break;
+					
+				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
+					// Request deposit region
+					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestDepositRegion( this.player, this.slotNumber );
 			}
 		}
 	}
@@ -157,6 +178,11 @@ public class PacketServerArcaneCraftingTerminal
 				// Read the mouse button
 				this.mouseButton = stream.readInt();
 				break;
+				
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
+				// Read the slot number
+				this.slotNumber = stream.readInt();
+				break;
 		}
 
 	}
@@ -180,6 +206,11 @@ public class PacketServerArcaneCraftingTerminal
 			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
 				// Write the mouse button
 				stream.writeInt( this.mouseButton );
+				break;
+				
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
+				// Write the slot number to the stream
+				stream.writeInt( this.slotNumber );
 				break;
 		}
 	}

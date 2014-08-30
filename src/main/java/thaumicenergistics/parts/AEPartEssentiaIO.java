@@ -14,14 +14,14 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.gui.GuiEssentiatIO;
+import thaumicenergistics.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.util.EffectiveSide;
-import thaumicenergistics.util.EssentiaConversionHelper;
-import thaumicenergistics.util.EssentiaItemContainerHelper;
-import thaumicenergistics.util.EssentiaTileContainerHelper;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -233,7 +233,7 @@ public abstract class AEPartEssentiaIO
 	protected boolean extractEssentiaFromNetwork( int amountToFillContainer )
 	{
 		// Get the aspect in the container
-		Aspect aspectToMatch = EssentiaTileContainerHelper.getAspectInContainer( this.facingContainer );
+		Aspect aspectToMatch = EssentiaTileContainerHelper.instance.getAspectInContainer( this.facingContainer );
 
 		// Do we have the power to transfer this amount?
 		if( !this.takePowerFromNetwork( amountToFillContainer, Actionable.SIMULATE ) )
@@ -260,7 +260,7 @@ public abstract class AEPartEssentiaIO
 			}
 
 			// Can we inject any of this into the container
-			if( EssentiaTileContainerHelper.injectIntoContainer( this.facingContainer, 1, filterAspect, Actionable.SIMULATE ) < 1 )
+			if( EssentiaTileContainerHelper.instance.injectIntoContainer( this.facingContainer, 1, filterAspect, Actionable.SIMULATE ) < 1 )
 			{
 				// Container will not accept any of this
 				continue;
@@ -270,7 +270,7 @@ public abstract class AEPartEssentiaIO
 			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( filterAspect );
 
 			// Create the fluid stack
-			IAEFluidStack toExtract = EssentiaConversionHelper.createAEFluidStackInEssentiaUnits( essentiaGas, amountToFillContainer );
+			IAEFluidStack toExtract = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, amountToFillContainer );
 
 			// Simulate a network extraction
 			IAEFluidStack extractedStack = this.extractFluid( toExtract, Actionable.SIMULATE );
@@ -279,7 +279,7 @@ public abstract class AEPartEssentiaIO
 			if( ( extractedStack != null ) && ( extractedStack.getStackSize() > 0 ) )
 			{
 				// Fill the container
-				int filledAmount = (int)EssentiaTileContainerHelper.injectIntoContainer( this.facingContainer, extractedStack, Actionable.MODULATE );
+				int filledAmount = (int)EssentiaTileContainerHelper.instance.injectIntoContainer( this.facingContainer, extractedStack, Actionable.MODULATE );
 
 				// Were we able to fill the container?
 				if( filledAmount == 0 )
@@ -288,10 +288,10 @@ public abstract class AEPartEssentiaIO
 				}
 
 				// Take the power required for the filled amount
-				this.takePowerFromNetwork( (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( filledAmount ), Actionable.MODULATE );
+				this.takePowerFromNetwork( (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( filledAmount ), Actionable.MODULATE );
 
 				// Take from the network
-				this.extractFluid( EssentiaConversionHelper.createAEFluidStackInFluidUnits( essentiaGas, filledAmount ), Actionable.MODULATE );
+				this.extractFluid( EssentiaConversionHelper.instance.createAEFluidStackInFluidUnits( essentiaGas, filledAmount ), Actionable.MODULATE );
 
 				// Done
 				return true;
@@ -305,7 +305,7 @@ public abstract class AEPartEssentiaIO
 	protected boolean injectEssentaToNetwork( int amountToDrainFromContainer )
 	{
 		// Get the aspect in the container
-		Aspect aspectToDrain = EssentiaTileContainerHelper.getAspectInContainer( this.facingContainer );
+		Aspect aspectToDrain = EssentiaTileContainerHelper.instance.getAspectInContainer( this.facingContainer );
 
 		if( ( aspectToDrain == null ) || ( !this.aspectTransferAllowed( aspectToDrain ) ) )
 		{
@@ -313,7 +313,7 @@ public abstract class AEPartEssentiaIO
 		}
 
 		// Simulate a drain from the container
-		FluidStack drained = EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain,
+		FluidStack drained = EssentiaTileContainerHelper.instance.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain,
 			Actionable.SIMULATE );
 
 		// Was any drained?
@@ -341,7 +341,7 @@ public abstract class AEPartEssentiaIO
 			}
 
 			// Convert from fluid units to essentia units
-			amountInjected = (int)EssentiaConversionHelper.convertFluidAmountToEssentiaAmount( amountInjected );
+			amountInjected = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( amountInjected );
 
 			// Some was unable to be injected, adjust the drain amounts
 			amountToDrainFromContainer = amountInjected;
@@ -362,14 +362,14 @@ public abstract class AEPartEssentiaIO
 		this.injectFluid( toFill, Actionable.MODULATE );
 
 		// Drain
-		EssentiaTileContainerHelper.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain, Actionable.MODULATE );
+		EssentiaTileContainerHelper.instance.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain, Actionable.MODULATE );
 
 		return true;
 	}
 
 	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
 	{
-		Aspect itemAspect = EssentiaItemContainerHelper.getAspectInContainer( itemStack );
+		Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( itemStack );
 
 		if( itemAspect != null )
 		{

@@ -86,7 +86,7 @@ public abstract class GuiWithUpgradeSlots
 	 */
 	protected boolean isPointWithinSlot( Slot slot, int x, int y )
 	{
-		return GuiHelper.isPointInGuiRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
+		return GuiHelper.instance.isPointInGuiRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
 	}
 
 	/**

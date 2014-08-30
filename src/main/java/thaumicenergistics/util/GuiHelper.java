@@ -8,7 +8,7 @@ import net.minecraft.client.gui.Gui;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-public class GuiHelper
+public final class GuiHelper
 {
 	/**
 	 * Pixel area represented by the top-left and bottom-right corners of a
@@ -17,7 +17,7 @@ public class GuiHelper
 	 * @author Nividica
 	 * 
 	 */
-	private static class Bounds
+	private class Bounds
 	{
 		/**
 		 * Top Y position.
@@ -59,6 +59,11 @@ public class GuiHelper
 			this.R = r;
 		}
 	}
+	
+	/**
+	 * Singleton
+	 */
+	public static final GuiHelper instance = new GuiHelper();
 
 	/**
 	 * Maps int -> mouse button
@@ -127,7 +132,15 @@ public class GuiHelper
 	/**
 	 * Bitshift amounts based on byte position
 	 */
-	private static final int[] COLOR_SHIFT_AMOUNT = new int[] { 0, 8, 16, 24 };
+	private final int[] COLOR_SHIFT_AMOUNT = new int[] { 0, 8, 16, 24 };
+	
+	/**
+	 * Private constructor.
+	 */
+	private GuiHelper()
+	{
+		
+	}
 
 	/**
 	 * Draws the background, outer borders, and inner borders for a tooltip.
@@ -137,14 +150,14 @@ public class GuiHelper
 	 * @param bounds
 	 * @throws Exception
 	 */
-	private static final void drawTooltipBackground( final Gui guiObject, final Method drawGradientRect, final Bounds bounds ) throws Exception
+	private final void drawTooltipBackground( final Gui guiObject, final Method drawGradientRect, final Bounds bounds ) throws Exception
 	{
 		// Background
 		drawGradientRect.invoke( guiObject, bounds.L, bounds.T, bounds.R, bounds.B, GuiHelper.TOOLTIP_COLOR_BACKGROUND,
 			GuiHelper.TOOLTIP_COLOR_BACKGROUND );
 
 		// Draw outer borders
-		GuiHelper.drawTooltipBorders( guiObject, drawGradientRect, bounds, GuiHelper.TOOLTIP_COLOR_OUTER, GuiHelper.TOOLTIP_COLOR_OUTER, 0 );
+		this.drawTooltipBorders( guiObject, drawGradientRect, bounds, GuiHelper.TOOLTIP_COLOR_OUTER, GuiHelper.TOOLTIP_COLOR_OUTER, 0 );
 
 		// Adjust bounds for inner borders
 		bounds.T++ ;
@@ -153,7 +166,7 @@ public class GuiHelper
 		bounds.R-- ;
 
 		// Draw innder borders
-		GuiHelper.drawTooltipBorders( guiObject, drawGradientRect, bounds, GuiHelper.TOOLTIP_COLOR_INNER_BEGIN, GuiHelper.TOOLTIP_COLOR_INNER_END, 1 );
+		this.drawTooltipBorders( guiObject, drawGradientRect, bounds, GuiHelper.TOOLTIP_COLOR_INNER_BEGIN, GuiHelper.TOOLTIP_COLOR_INNER_END, 1 );
 	}
 
 	/**
@@ -168,7 +181,7 @@ public class GuiHelper
 	 * 1 to connect corners, 0 to leave notches.
 	 * @throws Exception
 	 */
-	private static final void drawTooltipBorders( final Gui guiObject, final Method drawGradientRect, final Bounds bounds, final int colorStart,
+	private final void drawTooltipBorders( final Gui guiObject, final Method drawGradientRect, final Bounds bounds, final int colorStart,
 													final int colorEnd, final int cornerExpansion ) throws Exception
 	{
 		// Left
@@ -184,7 +197,7 @@ public class GuiHelper
 		drawGradientRect.invoke( guiObject, bounds.L, bounds.B, bounds.R, bounds.B + 1, colorStart, colorEnd );
 	}
 
-	public static final byte[] convertPackedColorToARGB( final int color )
+	public final byte[] convertPackedColorToARGB( final int color )
 	{
 		byte[] colorBytes = new byte[COLOR_ARRAY_SIZE];
 
@@ -192,13 +205,13 @@ public class GuiHelper
 		for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
 		{
 			// Get byte
-			colorBytes[COLOR_ARRAY_SIZE - 1 - i] = (byte)( ( color >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF );
+			colorBytes[COLOR_ARRAY_SIZE - 1 - i] = (byte)( ( color >> this.COLOR_SHIFT_AMOUNT[i] ) & 0xFF );
 		}
 
 		return colorBytes;
 	}
 
-	public static final int[] createColorGradient( final int fromColor, final int toColor, final int iterations )
+	public final int[] createColorGradient( final int fromColor, final int toColor, final int iterations )
 	{
 		// Is there enough iterations to create a gradient?
 		if( iterations < 3 )
@@ -223,10 +236,10 @@ public class GuiHelper
 		for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
 		{
 			// Get fromColor byte
-			fromColorBytes[i] = ( fromColor >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF;
+			fromColorBytes[i] = ( fromColor >> this.COLOR_SHIFT_AMOUNT[i] ) & 0xFF;
 
 			// Get toColor byte
-			toColorBytes[i] = ( ( toColor >> COLOR_SHIFT_AMOUNT[i] ) & 0xFF );
+			toColorBytes[i] = ( ( toColor >> this.COLOR_SHIFT_AMOUNT[i] ) & 0xFF );
 
 			// Calculate step amount
 			stepAmount[i] = ( toColorBytes[i] - fromColorBytes[i] ) / (float)iterations;
@@ -249,7 +262,7 @@ public class GuiHelper
 				currentColor[i] += stepAmount[i];
 
 				// Add to result color
-				result += ( ( Math.round( currentColor[i] ) & 0xFF ) << COLOR_SHIFT_AMOUNT[i] );
+				result += ( ( Math.round( currentColor[i] ) & 0xFF ) << this.COLOR_SHIFT_AMOUNT[i] );
 
 			}
 
@@ -278,7 +291,7 @@ public class GuiHelper
 	 * @param fontrenderer
 	 * The renderer used to draw the text with.
 	 */
-	public static final void drawTooltip( final Gui guiObject, final List<String> descriptionLines, int posX, int posY,
+	public final void drawTooltip( final Gui guiObject, final List<String> descriptionLines, int posX, int posY,
 											final FontRenderer fontrenderer )
 	{
 		if( !descriptionLines.isEmpty() )
@@ -350,7 +363,7 @@ public class GuiHelper
 								GuiHelper.TOOLTIP_BORDER_SIZE, posX + maxStringLength_px + GuiHelper.TOOLTIP_BORDER_SIZE );
 
 				// Draw the background and borders
-				GuiHelper.drawTooltipBackground( guiObject, drawGradientRect, bounds );
+				this.drawTooltipBackground( guiObject, drawGradientRect, bounds );
 
 				// Draw each line
 				for( int index = 0; index < descriptionLines.size(); index++ )
@@ -405,7 +418,7 @@ public class GuiHelper
 	 * @param guiTop
 	 * @return
 	 */
-	public static final boolean isPointInGuiRegion( final int top, final int left, final int height, final int width, final int pointX,
+	public final boolean isPointInGuiRegion( final int top, final int left, final int height, final int width, final int pointX,
 													final int pointY, final int guiLeft, final int guiTop )
 	{
 		return isPointInRegion( top, left, height, width, pointX - guiLeft, pointY - guiTop );
@@ -422,7 +435,7 @@ public class GuiHelper
 	 * @param pointY
 	 * @return
 	 */
-	public static final boolean isPointInRegion( final int top, final int left, final int height, final int width, final int pointX, final int pointY )
+	public final boolean isPointInRegion( final int top, final int left, final int height, final int width, final int pointX, final int pointY )
 	{
 		return ( pointX >= top ) && ( pointX <= ( top + width ) ) && ( pointY >= left ) && ( pointY <= ( left + height ) );
 	}
@@ -440,7 +453,7 @@ public class GuiHelper
 	 * @param maxValue
 	 * @return
 	 */
-	public static final float pingPongFromTime( double speedReduction, final float minValue, final float maxValue )
+	public final float pingPongFromTime( double speedReduction, final float minValue, final float maxValue )
 	{
 		// NOTE: If I make a math helper class, move this there
 
@@ -453,7 +466,7 @@ public class GuiHelper
 		// Bounds check speed reduction
 		if( speedReduction <= 0 )
 		{
-			speedReduction = Float.MAX_VALUE;
+			speedReduction = Float.MIN_VALUE;
 		}
 
 		// Get the time modulated to 2000, then reduced

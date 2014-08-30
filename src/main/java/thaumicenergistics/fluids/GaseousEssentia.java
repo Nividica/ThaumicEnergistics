@@ -37,7 +37,7 @@ public class GaseousEssentia
 	 * @param aspect
 	 * The aspect the gas is based off of.
 	 */
-	private GaseousEssentia( String gasName, Aspect aspect )
+	private GaseousEssentia( final String gasName, final Aspect aspect )
 	{
 		// Pass to super
 		super( gasName );
@@ -64,7 +64,7 @@ public class GaseousEssentia
 	 * 
 	 * @param aspect
 	 */
-	private static void create( Aspect aspect )
+	private static void create( final Aspect aspect )
 	{
 		// Ensure this has not already been register
 		if( gasList.containsKey( aspect ) )
@@ -84,7 +84,7 @@ public class GaseousEssentia
 		{
 			// Add to the list
 			gasList.put( aspect, newGas );
-			
+
 			// Log info
 			FMLLog.info( "%s: Created fluid for aspect %s.", ThaumicEnergistics.MOD_ID, aspect.getTag() );
 		}
@@ -102,7 +102,7 @@ public class GaseousEssentia
 	 * @param aspect
 	 * @return
 	 */
-	public static GaseousEssentia getGasFromAspect( Aspect aspect )
+	public static GaseousEssentia getGasFromAspect( final Aspect aspect )
 	{
 		return GaseousEssentia.gasList.get( aspect );
 	}
@@ -150,24 +150,23 @@ public class GaseousEssentia
 
 	/**
 	 * Gets the localized version of the gasses name.
-	 */
-	@Override
-	public String getLocalizedName( FluidStack stack )
-	{
-		return StatCollector.translateToLocal( "thaumicenergistics.fluid.gaseous" ) + " " + this.associatedAspect.getName();
-	}
-
-	/**
-	 * Gets the localized version of the gasses name.
 	 * 
 	 * @deprecated
 	 */
-
 	@Deprecated
 	@Override
 	public String getLocalizedName()
 	{
 		return this.getLocalizedName( null );
+	}
+
+	/**
+	 * Gets the localized version of the gasses name.
+	 */
+	@Override
+	public String getLocalizedName( final FluidStack stack )
+	{
+		return this.associatedAspect.getName() + " " + StatCollector.translateToLocal( "thaumicenergistics.fluid.gaseous" );
 	}
 
 }
