@@ -9,6 +9,8 @@ import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.network.packet.AbstractClientPacket;
 import thaumicenergistics.network.packet.AbstractPacket;
 import appeng.api.AEApi;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import cpw.mods.fml.relauncher.Side;
@@ -20,12 +22,13 @@ public class PacketClientArcaneCraftingTerminal
 	private static final byte MODE_RECEIVE_CHANGE = 0;
 	private static final byte MODE_RECEIVE_FULL_LIST = 1;
 	private static final byte MODE_RECEIVE_PLAYER_HOLDING = 2;
+	private static final byte MODE_RECEIVE_SORTS = 3;
 
 	private IAEItemStack changedStack;
-
 	private IItemList<IAEItemStack> fullList;
-
 	private boolean isHeldEmpty;
+	private SortOrder sortingOrder;
+	private SortDir sortingDirection;
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -52,6 +55,11 @@ public class PacketClientArcaneCraftingTerminal
 				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
 					// Set the held item
 					( (GuiArcaneCraftingTerminal)gui ).onPlayerHeldReceived( this.changedStack );
+					break;
+
+				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
+					( (GuiArcaneCraftingTerminal)gui ).onReceiveSorting( this.sortingOrder, this.sortingDirection );
+					break;
 			}
 		}
 	}
@@ -124,6 +132,28 @@ public class PacketClientArcaneCraftingTerminal
 		return this;
 	}
 
+	/**
+	 * Creates a packet with an update to the sorting order and direction.
+	 * @param player
+	 * @param order
+	 * @param direction
+	 * @return
+	 */
+	public PacketClientArcaneCraftingTerminal createSortingUpdate( EntityPlayer player, SortOrder order, SortDir direction )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS;
+
+		// Set the sorts
+		this.sortingDirection = direction;
+		this.sortingOrder = order;
+
+		return this;
+	}
+
 	@Override
 	public void readData( ByteBuf stream )
 	{
@@ -183,6 +213,12 @@ public class PacketClientArcaneCraftingTerminal
 					this.changedStack = null;
 				}
 				break;
+
+			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
+				// Read sorts
+				this.sortingDirection = SortDir.values()[stream.readInt()];
+				this.sortingOrder = SortOrder.values()[stream.readInt()];
+				break;
 		}
 	}
 
@@ -233,6 +269,12 @@ public class PacketClientArcaneCraftingTerminal
 					AbstractPacket.writeAEItemStack( this.changedStack, stream );
 				}
 
+				break;
+
+			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
+				// Write the sorts
+				stream.writeInt( this.sortingDirection.ordinal() );
+				stream.writeInt( this.sortingOrder.ordinal() );
 				break;
 		}
 

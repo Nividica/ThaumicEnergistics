@@ -157,18 +157,3 @@ public class ThaumicEnergistics
  * Update 8/9/2014: Lowest priority issues. Will likely leave as-is.
  */
 
-/*
- * TODO
- * NEI for A.C.T.
- * Additional terminal sorting modes.
- * Scroll bars for terminals.
- * Space-Click move whole inventory
- * E-Cell Workbench
- * 
- * --Possible Features
- * Wireless terminal
- * Level emitter multi-mode
- * Additional UI's redstone mode
- * 
- */
-

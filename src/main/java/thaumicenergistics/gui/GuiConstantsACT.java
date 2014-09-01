@@ -59,7 +59,7 @@ public abstract class GuiConstantsACT
 
 	protected static final int BUTTON_SORT_ORDER_ID = 1;
 
-	protected static final int BUTTON_SORT_ORDER_POS_X = -20;
+	protected static final int BUTTON_SORT_ORDER_POS_X = -18;
 	
 	protected static final int BUTTON_SORT_ORDER_POS_Y = 8;
 
@@ -67,7 +67,9 @@ public abstract class GuiConstantsACT
 
 	protected static final int BUTTON_SORT_DIR_POS_X = BUTTON_SORT_ORDER_POS_X;
 	
-	protected static final int BUTTON_SORT_DIR_POS_Y = BUTTON_SORT_ORDER_POS_Y + 22;
+	protected static final int BUTTON_SORT_DIR_POS_Y = BUTTON_SORT_ORDER_POS_Y + 20;
+	
+	protected static final int BUTTON_SORT_SIZE = 16;
 
 	/**
 	 * The width of the gui

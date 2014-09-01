@@ -12,7 +12,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.client.lib.UtilsFX;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
 import thaumicenergistics.gui.buttons.ButtonClearCraftingGrid;
@@ -283,10 +282,30 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private void updateScrollMaximum()
 	{
+		// Calculate the scroll max
 		int max = Math.max( 0, ( this.repo.size() / GuiConstantsACT.ME_COLUMNS ) - 2 );
 
 		// Update the scroll bar
 		this.scrollBar.setRange( 0, max, 2 );
+	}
+
+	/**
+	 * Updates the sorting modes and refreshes the gui.
+	 */
+	private void updateSorting()
+	{
+		// Set the direction icon
+		( (ButtonSortingDirection)this.buttonList.get( GuiConstantsACT.BUTTON_SORT_DIR_ID ) ).setSortingDirection( this.sortingDirection );
+	
+		// Set the order icon
+		( (ButtonSortingMode)this.buttonList.get( GuiConstantsACT.BUTTON_SORT_ORDER_ID ) ).setSortMode( this.sortingOrder );
+	
+		// Update the repo
+		this.repo.updateView();
+	
+		// Update the widgets
+		this.updateMEWidgets();
+		
 	}
 
 	/**
@@ -491,7 +510,7 @@ public class GuiArcaneCraftingTerminal
 	@Override
 	public void actionPerformed( final GuiButton button )
 	{
-		boolean shouldUpdate = false;
+		boolean sortingChanged = false;
 
 		switch ( button.id )
 		{
@@ -518,42 +537,35 @@ public class GuiArcaneCraftingTerminal
 						this.sortingOrder = SortOrder.AMOUNT;
 						break;
 				}
-
-				// Update the button
-				( (ButtonSortingMode)button ).setSortMode( this.sortingOrder );
-
-				shouldUpdate = true;
+				sortingChanged = true;
 				break;
-				
+
 			case GuiConstantsACT.BUTTON_SORT_DIR_ID:
-				switch( this.sortingDirection )
+				switch ( this.sortingDirection )
 				{
 					case ASCENDING:
 						this.sortingDirection = SortDir.DESCENDING;
 						break;
-						
+
 					case DESCENDING:
 						this.sortingDirection = SortDir.ASCENDING;
 						break;
-					
+
 				}
+				sortingChanged = true;
 
-				// Update the button
-				( (ButtonSortingDirection)button ).setSortingDirection( this.sortingDirection );
-
-				shouldUpdate = true;
-				
 				break;
 		}
 
 		// Should we update?
-		if( shouldUpdate )
+		if( sortingChanged )
 		{
-			// Update the repo
-			this.repo.updateView();
+			// Update the sorting
+			this.updateSorting();
 
-			// Update the widgets
-			this.updateMEWidgets();
+			// Send to server
+			new PacketServerArcaneCraftingTerminal().createRequestSetSort( this.player, this.sortingOrder, this.sortingDirection )
+							.sendPacketToServer();
 		}
 	}
 
@@ -617,22 +629,31 @@ public class GuiArcaneCraftingTerminal
 		}
 	}
 
+	/**
+	 * Gets the sorting order.
+	 */
 	@Override
 	public Enum getSortBy()
 	{
 		return this.sortingOrder;
 	}
 
+	/**
+	 * Gets the sorting direction.
+	 */
 	@Override
 	public Enum getSortDir()
 	{
 		return this.sortingDirection;
 	}
 
+	/**
+	 * Gets what items (stored vs crafting) to show.
+	 */
 	@Override
 	public Enum getSortDisplay()
 	{
-		return ViewItems.ALL;
+		return ViewItems.STORED;
 	}
 
 	/**
@@ -741,11 +762,11 @@ public class GuiArcaneCraftingTerminal
 
 		// Add sort order button
 		this.buttonList.add( new ButtonSortingMode( GuiConstantsACT.BUTTON_SORT_ORDER_ID, this.guiLeft + GuiConstantsACT.BUTTON_SORT_ORDER_POS_X,
-						this.guiTop + GuiConstantsACT.BUTTON_SORT_ORDER_POS_Y, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE ) );
+						this.guiTop + GuiConstantsACT.BUTTON_SORT_ORDER_POS_Y, GuiConstantsACT.BUTTON_SORT_SIZE, GuiConstantsACT.BUTTON_SORT_SIZE ) );
 
 		// Add sort direction button
 		this.buttonList.add( new ButtonSortingDirection( GuiConstantsACT.BUTTON_SORT_DIR_ID, this.guiLeft + GuiConstantsACT.BUTTON_SORT_DIR_POS_X,
-						this.guiTop + GuiConstantsACT.BUTTON_SORT_DIR_POS_Y, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE ) );
+						this.guiTop + GuiConstantsACT.BUTTON_SORT_DIR_POS_Y, GuiConstantsACT.BUTTON_SORT_SIZE, GuiConstantsACT.BUTTON_SORT_SIZE ) );
 
 	}
 
@@ -816,6 +837,23 @@ public class GuiArcaneCraftingTerminal
 
 		// Update the widgets
 		this.updateMEWidgets();
+	}
+
+	/**
+	 * Called when the server sends the sorting order and direction.
+	 * @param order
+	 * @param direction
+	 */
+	public void onReceiveSorting( SortOrder order, SortDir direction )
+	{
+		// Set the direction
+		this.sortingDirection = direction;
+
+		// Set the order
+		this.sortingOrder = order;
+		
+		// Update
+		this.updateSorting();
 	}
 
 }

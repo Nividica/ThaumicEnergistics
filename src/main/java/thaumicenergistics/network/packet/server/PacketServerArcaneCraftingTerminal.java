@@ -5,6 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.network.packet.AbstractPacket;
 import thaumicenergistics.network.packet.AbstractServerPacket;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
 import appeng.api.storage.data.IAEItemStack;
 
 public class PacketServerArcaneCraftingTerminal
@@ -16,11 +18,14 @@ public class PacketServerArcaneCraftingTerminal
 	private static final byte MODE_REQUEST_DEPOSIT = 3;
 	private static final byte MODE_REQUEST_CLEAR_GRID = 4;
 	private static final byte MODE_REQUEST_DEPOSIT_REGION = 5;
+	private static final byte MODE_REQUEST_SET_SORT = 6;
 
 	private IAEItemStack itemStack;
 	private int mouseButton;
 	private boolean isShiftHeld;
 	private int slotNumber;
+	private SortOrder sortingOrder;
+	private SortDir sortingDirection;
 
 	/**
 	 * Create a packet to request that the crafting grid be cleared.
@@ -106,8 +111,13 @@ public class PacketServerArcaneCraftingTerminal
 
 		return this;
 	}
-	
 
+	/**
+	 * Create a packet requesting that a region(inventory) be deposited into the ME network.
+	 * @param player
+	 * @param slotNumber
+	 * @return
+	 */
 	public PacketServerArcaneCraftingTerminal createRequestDepositRegion( EntityPlayer player, int slotNumber )
 	{
 		// Set the player
@@ -118,6 +128,28 @@ public class PacketServerArcaneCraftingTerminal
 
 		// Set the slot number
 		this.slotNumber = slotNumber;
+
+		return this;
+	}
+
+	/**
+	 * Create a packet to request the sorting order and direction.
+	 * @param player
+	 * @param order
+	 * @param direction
+	 * @return
+	 */
+	public PacketServerArcaneCraftingTerminal createRequestSetSort( EntityPlayer player, SortOrder order, SortDir direction )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT;
+
+		// Set the sorts
+		this.sortingDirection = direction;
+		this.sortingOrder = order;
 
 		return this;
 	}
@@ -154,6 +186,12 @@ public class PacketServerArcaneCraftingTerminal
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
 					// Request deposit region
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestDepositRegion( this.player, this.slotNumber );
+					break;
+					
+				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
+					// Reqeust set sort
+					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestSetSort( this.sortingOrder, this.sortingDirection );
+					break;
 			}
 		}
 	}
@@ -183,6 +221,12 @@ public class PacketServerArcaneCraftingTerminal
 				// Read the slot number
 				this.slotNumber = stream.readInt();
 				break;
+				
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
+				// Read sorts
+				this.sortingDirection = SortDir.values()[stream.readInt()];
+				this.sortingOrder = SortOrder.values()[stream.readInt()];
+				break;
 		}
 
 	}
@@ -211,6 +255,12 @@ public class PacketServerArcaneCraftingTerminal
 			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
 				// Write the slot number to the stream
 				stream.writeInt( this.slotNumber );
+				break;
+				
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
+				// Write the sorts
+				stream.writeInt( this.sortingDirection.ordinal() );
+				stream.writeInt( this.sortingOrder.ordinal() );
 				break;
 		}
 	}

@@ -19,6 +19,8 @@ import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEColor;
@@ -53,6 +55,16 @@ public class AEPartArcaneCraftingTerminal
 	 * Key used for reading/writing inventory slots to NBT
 	 */
 	private static final String SLOT_NBT_KEY = "Slot#";
+	
+	/**
+	 * Key used for reading/writing the sorting order.
+	 */
+	private static final String SORT_ORDER_NBT_KEY = "SortOrder";
+	
+	/**
+	 * Key used for reading/writing the sorting direction.
+	 */
+	private static final String SORT_DIRECTION_NBT_KEY = "SortDirection";
 
 	/**
 	 * How much AE power is required to keep the part active.
@@ -68,6 +80,16 @@ public class AEPartArcaneCraftingTerminal
 	 * Containers wishing to be notified on inventory changes
 	 */
 	private List<ContainerPartArcaneCraftingTerminal> listeners = new ArrayList<ContainerPartArcaneCraftingTerminal>();
+
+	/**
+	 * How the items are sorted.
+	 */
+	private SortOrder sortingOrder = SortOrder.NAME;
+
+	/**
+	 * What direction are the items sorted.
+	 */
+	private SortDir sortingDirection = SortDir.ASCENDING;
 
 	/**
 	 * Creates the terminal
@@ -275,6 +297,24 @@ public class AEPartArcaneCraftingTerminal
 	{
 		return AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE;
 	}
+	
+	/**
+	 * Returns the stored sorting direction.
+	 * @return
+	 */
+	public SortDir getSortingDirection()
+	{
+		return this.sortingDirection;
+	}
+	
+	/**
+	 * Returns the stored sorting order.
+	 * @return
+	 */
+	public SortOrder getSortingOrder()
+	{
+		return this.sortingOrder;
+	}
 
 	/**
 	 * Gets the itemstack in the specified slot index.
@@ -438,6 +478,18 @@ public class AEPartArcaneCraftingTerminal
 				}
 			}
 		}
+		
+		// Sort order
+		if( data.hasKey( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY ) )
+		{
+			this.sortingOrder = SortOrder.values()[ data.getInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY  )];
+		}
+		
+		// Sort direction
+		if( data.hasKey( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY ) )
+		{
+			this.sortingDirection = SortDir.values()[ data.getInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY  )];
+		}
 	}
 
 	/**
@@ -563,6 +615,20 @@ public class AEPartArcaneCraftingTerminal
 
 		return false;
 	}
+	
+	/**
+	 * Sets the sorting order and direction
+	 * @param order
+	 * @param dir
+	 */
+	public void setSorts( SortOrder order, SortDir dir )
+	{	
+		this.sortingDirection = dir;
+		
+		this.sortingOrder = order;
+		
+		this.markDirty();
+	}
 
 	/**
 	 * Saves part data to NBT tag
@@ -595,6 +661,12 @@ public class AEPartArcaneCraftingTerminal
 
 		// Append the list to the data tag
 		data.setTag( AEPartArcaneCraftingTerminal.INVENTORY_NBT_KEY, nbtList );
+		
+		// Write direction
+		data.setInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY, this.sortingDirection.ordinal() );
+		
+		// Write order
+		data.setInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY, this.sortingOrder.ordinal() );
 	}
 
 }

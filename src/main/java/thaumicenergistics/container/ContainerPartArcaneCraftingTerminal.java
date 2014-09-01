@@ -24,6 +24,8 @@ import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -305,7 +307,7 @@ public class ContainerPartArcaneCraftingTerminal
 			{
 				// Let the result slot know it was picked up
 				resultSlot.onPickupFromSlotViaTransfer( player, resultStack );
-				
+
 				// Update the matrix
 				this.onCraftMatrixChanged( null );
 
@@ -344,6 +346,12 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 	}
 
+	/**
+	 * Checks if two stacks match. Either directly, or by ore dictionary.
+	 * @param keyStack
+	 * @param potentialMatch
+	 * @return
+	 */
 	@SuppressWarnings("deprecation")
 	private boolean doStacksMatch( final IAEItemStack keyStack, final IAEItemStack potentialMatch )
 	{
@@ -515,53 +523,63 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	private ItemStack validateWandVisAmount( final IArcaneRecipe forRecipe, final TileMagicWorkbench workbenchTile )
 	{
+		boolean hasAll = true;
+		AspectList wandAspectList = null;
+		ItemWandCasting wandItem = null;
+
+		// Get a copy the aspects of the recipe.
+		this.requiredAspects = forRecipe.getAspects( workbenchTile ).copy();
+
+		// Cache the recipes aspects
+		Aspect[] recipeAspects = this.requiredAspects.getAspects();
+		
 		// Do we have a wand?
 		if( this.wand != null )
 		{
-			boolean hasAll = true;
-
-			// Get a copy the aspects of the recipe.
-			this.requiredAspects = forRecipe.getAspects( workbenchTile ).copy();
-
-			// Cache the recipes aspects
-			Aspect[] recipeAspects = this.requiredAspects.getAspects();
-
 			// Get the wand item
-			ItemWandCasting wandItem = ( (ItemWandCasting)this.wand.getItem() );
+			wandItem = ( (ItemWandCasting)this.wand.getItem() );
 
 			// Cache the wand's aspect list
-			AspectList wandAspectList = wandItem.getAllVis( this.wand );
+			wandAspectList = wandItem.getAllVis( this.wand );
+		}
 
-			// Check the wand amounts vs recipe aspects
-			for( Aspect currentAspect : recipeAspects )
+		// Check the wand amounts vs recipe aspects
+		for( Aspect currentAspect : recipeAspects )
+		{
+			// Get the base required vis
+			int baseVis = this.requiredAspects.getAmount( currentAspect );
+
+			// Get the adjusted amount
+			int requiredVis = baseVis * 100;
+			
+			// Assume we do not have enough
+			boolean hasEnough = false;
+			
+			// Do we have a wand?
+			if( ( wandItem != null ) && ( wandAspectList != null ) )
 			{
-				// Get the base required vis
-				int baseVis = this.requiredAspects.getAmount( currentAspect );
-
-				// Get the adjusted amount
-				int requiredVis = (int)( baseVis * 100 * wandItem.getConsumptionModifier( this.wand, this.player, currentAspect, true ) );
-
-				// Get the amount of vis in the wand
-				int hasVis = wandAspectList.getAmount( currentAspect );
+				// Adjust the required amount by the wand modifier
+				requiredVis = (int)( requiredVis * wandItem.getConsumptionModifier( this.wand, this.player, currentAspect, true ) );
 
 				// Does the wand not have enough of vis of this aspect?
-				boolean hasEnough = ( hasVis >= requiredVis );
-				if( !hasEnough )
-				{
-					// Mark that we do not have enough vis to complete crafting
-					hasAll = false;
-				}
-
-				// Add to the cost list
-				this.craftingCost.add( new ArcaneCrafingCost( requiredVis / 100.0F, currentAspect, hasEnough ) );
+				hasEnough = ( wandAspectList.getAmount( currentAspect ) >= requiredVis );
 			}
-
-			// Did we have all the vis required?
-			if( hasAll )
+			
+			if( !hasEnough )
 			{
-				// Get the result of the recipe.
-				return forRecipe.getCraftingResult( workbenchTile );
+				// Mark that we do not have enough vis to complete crafting
+				hasAll = false;
 			}
+
+			// Add to the cost list
+			this.craftingCost.add( new ArcaneCrafingCost( requiredVis / 100.0F, currentAspect, hasEnough ) );
+		}
+
+		// Did we have all the vis required?
+		if( hasAll )
+		{
+			// Get the result of the recipe.
+			return forRecipe.getCraftingResult( workbenchTile );
 		}
 
 		return null;
@@ -838,6 +856,10 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
+		// Send the sorting info
+		new PacketClientArcaneCraftingTerminal().createSortingUpdate( player, this.terminal.getSortingOrder(), this.terminal.getSortingDirection() )
+						.sendPacketToPlayer();
+
 		// Ensure we have a monitor
 		if( this.monitor != null )
 		{
@@ -915,6 +937,17 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	/**
+	 * A client has request that the stored sorting order be changed.
+	 * @param order
+	 * @param dir
+	 */
+	public void onClientRequestSetSort( SortOrder order, SortDir dir )
+	{
+		// Inform the terminal
+		this.terminal.setSorts( order, dir );
+	}
+
+	/**
 	 * Unregister this container
 	 */
 	@Override
@@ -954,8 +987,8 @@ public class ContainerPartArcaneCraftingTerminal
 		// Get the matching regular crafting recipe.
 		ItemStack craftResult = this.findMatchingRegularResult();
 
-		// Was there not a regular match and do we have a wand?
-		if( ( craftResult == null ) && ( this.wand != null ) )
+		// Was there not a regular match?
+		if( ( craftResult == null ) )
 		{
 			// Get the matching arcane crafting recipe.
 			craftResult = this.findMatchingArcaneResult();
@@ -983,22 +1016,25 @@ public class ContainerPartArcaneCraftingTerminal
 		// Ignored
 	}
 
+	/**
+	 * Called when the amount of an item on the network changes.
+	 */
 	@Override
 	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final IAEItemStack change, final BaseActionSource actionSource )
 	{
 		// Get the total amount of the item in the network
 		IAEItemStack newAmount = this.monitor.getStorageList().findPrecise( change );
-		
+
 		// Is there no more?
 		if( newAmount == null )
 		{
 			// Copy the item type from the change
 			newAmount = change.copy();
-			
+
 			// Set amount to 0
 			newAmount.setStackSize( 0 );
 		}
-		
+
 		// Send the change to the client
 		new PacketClientArcaneCraftingTerminal().createChangeUpdate( this.player, newAmount ).sendPacketToPlayer();
 	}
