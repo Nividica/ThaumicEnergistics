@@ -20,10 +20,24 @@ public class SlotArcaneCraftingResult
 	 */
 	private IInventory terminalInventory;
 
+	/**
+	 * Aspects required for this craft.
+	 */
 	private AspectList craftingAspects = null;
 
+	/**
+	 * Itemstack that represents the wand.
+	 */
 	private ItemStack wand;
+	
+	/**
+	 * The wand item.
+	 */
+	private ItemWandCasting wandItem;
 
+	/**
+	 * The container that hosts this slot.
+	 */
 	private ContainerPartArcaneCraftingTerminal hostContianer;
 
 	/**
@@ -82,7 +96,7 @@ public class SlotArcaneCraftingResult
 		if( this.craftingAspects != null )
 		{
 			// Consume wand vis
-			( (ItemWandCasting)this.wand.getItem() ).consumeAllVisCrafting( this.wand, player, this.craftingAspects, true );
+			this.wandItem.consumeAllVisCrafting( this.wand, player, this.craftingAspects, true );
 
 		}
 
@@ -104,9 +118,6 @@ public class SlotArcaneCraftingResult
 				// Next
 				continue;
 			}
-
-			// Make a copy
-			ItemStack slotStackCopy = slotStack.copy();
 
 			// Checked at the end to see if we need to decrement the slot
 			boolean shouldDecrement = true;
@@ -155,16 +166,20 @@ public class SlotArcaneCraftingResult
 			if( shouldDecrement )
 			{
 				// Would decrementing it result in it being empty?
-				if( slotStackCopy.stackSize == 1 )
+				if( slotStack.stackSize == 1 )
 				{
 					// First check if we can replenish it from the ME network
-					ItemStack replenishment = this.hostContianer.requestCraftingReplenishment( slotStackCopy );
+					ItemStack replenishment = this.hostContianer.requestCraftingReplenishment( slotStack );
 
 					// Did we get a replenishment?
 					if( replenishment != null )
 					{
-						// Set the slot contents to the replenishment
-						this.terminalInventory.setInventorySlotContents( slotIndex, replenishment );
+						// Did the item change?
+						if( !ItemStack.areItemStacksEqual( replenishment, slotStack ) )
+						{
+							// Set the slot contents to the replenishment
+							this.terminalInventory.setInventorySlotContents( slotIndex, replenishment );
+						}
 
 						// And mark not to decrement
 						shouldDecrement = false;
@@ -187,8 +202,17 @@ public class SlotArcaneCraftingResult
 	}
 
 	public void setWand( ItemStack wand )
-	{
-		this.wand = wand;
+	{	
+		if( wand != null )
+		{
+			this.wand = wand;
+			this.wandItem = (ItemWandCasting)wand.getItem();
+		}
+		else
+		{
+			this.wand = null;
+			this.wandItem = null;
+		}
 	}
 
 }

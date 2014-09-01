@@ -1,4 +1,20 @@
-﻿8/30/2014 0.6.3b
+﻿8/31/2014 0.6.4b
+  Fixes #23: Scroll and Sort added to A.C.T.
+  Move ACT constants to separate file, they were getting out of hand.
+  ACT item handler now uses AE2's item handler.
+  Added scroll bar widget to A.C.T(non-functional)
+  Updated A.C.T texture to include scroll bar area, and aspect area.
+  Linked scroll bar to item handler(functional).
+  Added mouse tracking to scroll bar.
+  Added key->scroll mapping for Home, End, Up Arrow, and Down Arrow.
+  Added Sort Order, and Sort Direction buttons to A.C.T.
+
+8/30/2014 0.6.4b
+  Dependency Changed: Thaumcraft 4.2.0.1
+  Dependency Changed: Applied Energistics 2 rv1 beta 19
+  Greatly reduced the overhead of shift-autocrafting in the A.C.T.
+
+8/30/2014 0.6.3b
   Adds #19: Space+Click to deposit inventory or hotbar
   
 8/26/2014 0.6.3b

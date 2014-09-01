@@ -37,9 +37,10 @@ public class ContainerPartArcaneCraftingTerminal
 	implements IMEMonitorHandlerReceiver<IAEItemStack>
 {
 	/**
-	 * Holds a single aspect cost for the current recipe.  
+	 * Holds a single aspect cost for the current recipe.
+	 * 
 	 * @author Nividica
-	 *
+	 * 
 	 */
 	public class ArcaneCrafingCost
 	{
@@ -165,7 +166,7 @@ public class ContainerPartArcaneCraftingTerminal
 	private AspectList requiredAspects;
 
 	/**
-	 * The required aspects, costs, and missing for the current recipe. 
+	 * The required aspects, costs, and missing for the current recipe.
 	 */
 	private List<ArcaneCrafingCost> craftingCost = new ArrayList<ArcaneCrafingCost>();
 
@@ -304,6 +305,9 @@ public class ContainerPartArcaneCraftingTerminal
 			{
 				// Let the result slot know it was picked up
 				resultSlot.onPickupFromSlotViaTransfer( player, resultStack );
+				
+				// Update the matrix
+				this.onCraftMatrixChanged( null );
 
 				// Get the stack in the result slot now.
 				resultStack = resultSlot.getStack();
@@ -436,22 +440,31 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	private void getWand()
 	{
-		// Set the wand to null
-		this.wand = null;
-
 		// Get the wand slot
 		Slot wandSlot = this.getSlot( this.wandSlotNumber );
 
-		// Ensure the slot is not null nor empty
-		if( ( wandSlot != null ) && ( wandSlot.getHasStack() ) )
+		// Ensure the slot is not null
+		if( wandSlot != null )
 		{
+			// Is this the same wand that we have cached?
+			if( this.wand == wandSlot.getStack() )
+			{
+				// Nothing has changed
+				return;
+			}
+
 			// Is the item a valid crafting wand?
 			if( AEPartArcaneCraftingTerminal.isItemValidCraftingWand( wandSlot.getStack() ) )
 			{
 				// Set the wand
 				this.wand = wandSlot.getStack();
+
+				return;
 			}
 		}
+
+		// Set the wand to null
+		this.wand = null;
 	}
 
 	/**
@@ -502,7 +515,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	private ItemStack validateWandVisAmount( final IArcaneRecipe forRecipe, final TileMagicWorkbench workbenchTile )
 	{
-		// Do we have a want?
+		// Do we have a wand?
 		if( this.wand != null )
 		{
 			boolean hasAll = true;
@@ -835,16 +848,18 @@ public class ContainerPartArcaneCraftingTerminal
 			new PacketClientArcaneCraftingTerminal().createFullListUpdate( player, fullList ).sendPacketToPlayer();
 		}
 	}
-	
+
 	/**
-	 * A client has requested that a region(inventory) be deposited into the ME network.
+	 * A client has requested that a region(inventory) be deposited into the ME
+	 * network.
+	 * 
 	 * @param player
 	 * @param slotNumber
 	 */
 	public void onClientRequestDepositRegion( final EntityPlayer player, final int slotNumber )
 	{
 		List<Slot> slotsToDeposit = null;
-		
+
 		// Was the slot part of the player inventory?
 		if( this.slotClickedWasInPlayerInventory( slotNumber ) )
 		{
@@ -857,7 +872,7 @@ public class ContainerPartArcaneCraftingTerminal
 			// Get the items in the hotbar
 			slotsToDeposit = this.getNonEmptySlotsFromHotbar();
 		}
-		
+
 		// Do we have any slots to transfer?
 		if( slotsToDeposit != null )
 		{
@@ -933,7 +948,7 @@ public class ContainerPartArcaneCraftingTerminal
 		this.requiredAspects = null;
 		this.craftingCost.clear();
 
-		// Reset wand
+		// Ensure wand
 		this.getWand();
 
 		// Get the matching regular crafting recipe.
@@ -971,8 +986,21 @@ public class ContainerPartArcaneCraftingTerminal
 	@Override
 	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final IAEItemStack change, final BaseActionSource actionSource )
 	{
+		// Get the total amount of the item in the network
+		IAEItemStack newAmount = this.monitor.getStorageList().findPrecise( change );
+		
+		// Is there no more?
+		if( newAmount == null )
+		{
+			// Copy the item type from the change
+			newAmount = change.copy();
+			
+			// Set amount to 0
+			newAmount.setStackSize( 0 );
+		}
+		
 		// Send the change to the client
-		new PacketClientArcaneCraftingTerminal().createChangeUpdate( this.player, change ).sendPacketToPlayer();
+		new PacketClientArcaneCraftingTerminal().createChangeUpdate( this.player, newAmount ).sendPacketToPlayer();
 	}
 
 	/**
@@ -984,20 +1012,22 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	public ItemStack requestCraftingReplenishment( final ItemStack itemStack )
 	{
-		// Create the request
-		IAEItemStack request = AEApi.instance().storage().createItemStack( itemStack );
+		// Create the request stack
+		IAEItemStack requestStack = AEApi.instance().storage().createItemStack( itemStack );
 
 		// Set the request amount to one
-		request.setStackSize( 1 );
+		requestStack.setStackSize( 1 );
 
 		// Attempt an extraction
-		IAEItemStack replenishment = this.monitor.extractItems( request, Actionable.MODULATE, this.machineSource );
+		IAEItemStack replenishment = this.monitor.extractItems( requestStack, Actionable.MODULATE, this.machineSource );
 
 		// Did we get a replenishment?
-		if( ( replenishment != null ) && ( replenishment.getStackSize() > 0 ) )
+		if( replenishment != null )
 		{
 			return replenishment.getItemStack();
 		}
+
+		// Did not get a replenishment, search for items that match. 
 
 		// Get a list of all items in the ME network
 		IItemList<IAEItemStack> networkItems = this.monitor.getStorageList();
@@ -1006,16 +1036,16 @@ public class ContainerPartArcaneCraftingTerminal
 		for( IAEItemStack potentialMatch : networkItems )
 		{
 			// Does the request match?
-			if( this.doStacksMatch( request, potentialMatch ) )
+			if( this.doStacksMatch( requestStack, potentialMatch ) )
 			{
 				// Found a match
-				request = potentialMatch.copy();
+				requestStack = potentialMatch.copy();
 
 				// Set the request amount to one
-				request.setStackSize( 1 );
+				requestStack.setStackSize( 1 );
 
 				// Attempt an extraction
-				replenishment = this.monitor.extractItems( request, Actionable.MODULATE, this.machineSource );
+				replenishment = this.monitor.extractItems( requestStack, Actionable.MODULATE, this.machineSource );
 
 				// Did we get a replenishment?
 				if( ( replenishment != null ) && ( replenishment.getStackSize() > 0 ) )
