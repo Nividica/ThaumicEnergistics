@@ -1,12 +1,9 @@
 package thaumicenergistics.gui.buttons;
 
-import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import thaumicenergistics.texture.EnumAEStateIcons;
-import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.RedstoneMode;
 import com.google.common.base.Splitter;
 
@@ -66,17 +63,8 @@ public class ButtonRedstoneModes
 		this.setRedstoneMode( mode );
 	}
 
-	/**
-	 * Draws this buttons tooltip.
-	 * 
-	 * @param mouseX
-	 * @param mouseY
-	 */
-	public void drawTooltip( int mouseX, int mouseY )
+	public List<String> getTooltip( final List<String> tooltip )
 	{
-		// Create the tooltip array
-		List<String> tooltip = new ArrayList<String>();
-
 		// Add header
 		tooltip.add( StatCollector.translateToLocal( TOOLTIP_LOC_HEADER + "RedstoneMode" ) );
 
@@ -109,9 +97,8 @@ public class ButtonRedstoneModes
 		{
 			tooltip.add( EnumChatFormatting.GRAY + current );
 		}
-
-		// Draw the tooltip
-		GuiHelper.instance.drawTooltip( this, tooltip, mouseX, mouseY, Minecraft.getMinecraft().fontRenderer );
+		
+		return tooltip;
 	}
 
 	/**

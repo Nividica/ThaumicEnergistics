@@ -31,14 +31,14 @@ thaumicenergistics.item.material.diffusion.core.name=Diffusion Core
 thaumicenergistics.item.material.coalescence.core.name=Coalescence Core
 
 #Tooltips
-thaumicenergistics.tooltip.amount=Amount
-thaumicenergistics.tooltip.aspect=Aspect
 thaumicenergistics.tooltip.essentia.cell.bytes=%d of %d bytes used.
 thaumicenergistics.tooltip.essentia.cell.types=%d of %d essentia types stored.
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=Arcane Terminal
 thaumicenergistics.gui.essentia.cell.title=Essentia Cell
+thaumicenergistics.gui.selected.amount=Amount
+thaumicenergistics.gui.selected.aspect=Aspect
 
 #Research Tab
 tc.research_category.thaumicenergistics=Energistics

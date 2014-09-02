@@ -1,7 +1,6 @@
 package thaumicenergistics.gui.widget;
 
 import java.util.List;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.util.GuiHelper;
@@ -29,12 +28,6 @@ public abstract class AbstractWidget
 		this.yPosition = yPos;
 	}
 
-	protected void drawTooltip( List<String> descriptionLines, int posX, int posY, FontRenderer fontrenderer )
-	{
-		// Draw the tooltip
-		GuiHelper.instance.drawTooltip( this, descriptionLines, posX, posY, fontrenderer );
-	}
-
 	public void drawMouseHoverUnderlay()
 	{
 		GL11.glDisable( GL11.GL_LIGHTING );
@@ -48,7 +41,7 @@ public abstract class AbstractWidget
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 	}
 
-	public abstract void drawTooltip( int mouseX, int mouseY );
+	public abstract List<String> getTooltip( final List<String> tooltip );
 
 	public abstract void drawWidget();
 

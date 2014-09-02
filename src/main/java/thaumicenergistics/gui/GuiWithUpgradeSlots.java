@@ -1,7 +1,6 @@
 package thaumicenergistics.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import thaumicenergistics.container.ContainerWithNetworkTool;
@@ -12,7 +11,7 @@ import appeng.api.AEApi;
 import appeng.parts.automation.UpgradeInventory;
 
 public abstract class GuiWithUpgradeSlots
-	extends GuiContainer
+	extends BaseGui
 {
 
 	private static int upgradeU = EnumAEStateIcons.UPGRADE_SLOT.getU();

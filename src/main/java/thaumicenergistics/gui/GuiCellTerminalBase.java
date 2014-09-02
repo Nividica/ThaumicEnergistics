@@ -82,19 +82,19 @@ public abstract class GuiCellTerminalBase
 	private static final int TITLE_POS_Y = -12;
 
 	/**
-	 * X position of the tooltips.
+	 * X position of the selected aspect info.
 	 */
-	private static final int TOOLTIPS_POS_X = 45;
+	private static final int SELECTED_INFO_POS_X = 45;
 
 	/**
-	 * Y position of the name tooltip.
+	 * Y position of the name selected aspect info.
 	 */
-	private static final int TOOLTIP_NAME_POS_Y = 73;
+	private static final int SELECTED_INFO_NAME_POS_Y = 73;
 
 	/**
-	 * Y position of the amount tooltip.
+	 * Y position of the amount selected aspect info.
 	 */
-	private static final int TOOLTIP_AMOUNT_POS_Y = 83;
+	private static final int SELECTED_INFO_AMOUNT_POS_Y = 83;
 
 	/**
 	 * X offset to start drawing widgets
@@ -157,14 +157,14 @@ public abstract class GuiCellTerminalBase
 	private final String guiTitle;
 
 	/**
-	 * Local translation of name tooltip prefix.
+	 * Local translation of name prefix for selected aspect info.
 	 */
-	private final String tooltipNamePrefix;
+	private final String selectedInfoNamePrefix;
 
 	/**
-	 * Local translation of amount tooltip prefix.
+	 * Local translation of amount prefix for selected aspect info.
 	 */
-	private final String tooltipAmountPrefix;
+	private final String selectedInfoAmountPrefix;
 
 	/**
 	 * The player viewing this gui
@@ -256,10 +256,10 @@ public abstract class GuiCellTerminalBase
 		}
 
 		// Set the name prefix
-		this.tooltipNamePrefix = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.aspect" ) + ": ";
+		this.selectedInfoNamePrefix = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.selected.aspect" ) + ": ";
 
 		// Set the amount prefix
-		this.tooltipAmountPrefix = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.amount" ) + ": ";
+		this.selectedInfoAmountPrefix = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.selected.amount" ) + ": ";
 
 	}
 
@@ -380,12 +380,12 @@ public abstract class GuiCellTerminalBase
 			String aspectName = this.selectedAspectStack.getAspectName( this.player );
 
 			// Draw the name
-			this.fontRendererObj.drawString( this.tooltipNamePrefix + aspectName, GuiCellTerminalBase.TOOLTIPS_POS_X,
-				GuiCellTerminalBase.TOOLTIP_NAME_POS_Y, 0 );
+			this.fontRendererObj.drawString( this.selectedInfoNamePrefix + aspectName, GuiCellTerminalBase.SELECTED_INFO_POS_X,
+				GuiCellTerminalBase.SELECTED_INFO_NAME_POS_Y, 0 );
 
 			// Draw the amount
-			this.fontRendererObj.drawString( this.tooltipAmountPrefix + amountToText, GuiCellTerminalBase.TOOLTIPS_POS_X,
-				GuiCellTerminalBase.TOOLTIP_AMOUNT_POS_Y, 0 );
+			this.fontRendererObj.drawString( this.selectedInfoAmountPrefix + amountToText, GuiCellTerminalBase.SELECTED_INFO_POS_X,
+				GuiCellTerminalBase.SELECTED_INFO_AMOUNT_POS_Y, 0 );
 		}
 	}
 
@@ -558,8 +558,14 @@ public abstract class GuiCellTerminalBase
 			// Was the mouse over a widget?
 			if( widgetUnderMouse != null )
 			{
-				// Have the widget draw its tooltip
-				widgetUnderMouse.drawTooltip( mouseX, mouseY );
+				// Get the tooltip
+				List<String> tooltip = widgetUnderMouse.getTooltip( new ArrayList<String>() );
+
+				if( !tooltip.isEmpty() )
+				{
+					// Draw the tooltip
+					this.drawTooltip( tooltip, mouseX - this.guiLeft, mouseY - this.guiTop );
+				}
 			}
 		}
 		else

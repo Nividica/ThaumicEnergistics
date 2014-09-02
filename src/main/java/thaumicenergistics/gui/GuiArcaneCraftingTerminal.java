@@ -1,5 +1,6 @@
 package thaumicenergistics.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -358,8 +359,14 @@ public class GuiArcaneCraftingTerminal
 		// Do we have a widget under the mouse?
 		if( widgetUnderMouse != null )
 		{
-			// Ask it to draw it's tooltip
-			widgetUnderMouse.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+			// Get the tooltip
+			List<String> tooltip = widgetUnderMouse.getTooltip( new ArrayList<String>() );
+			
+			if( !tooltip.isEmpty() )
+			{
+				// Draw the tooltip
+				this.drawTooltip( tooltip, mouseX - this.guiLeft, mouseY - this.guiTop );
+			}
 		}
 
 	}

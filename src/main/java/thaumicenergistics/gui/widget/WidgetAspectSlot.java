@@ -1,6 +1,5 @@
 package thaumicenergistics.gui.widget;
 
-import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,17 +51,14 @@ public class WidgetAspectSlot
 	}
 
 	@Override
-	public void drawTooltip( int mouseX, int mouseY )
+	public List<String> getTooltip( List<String> tooltip )
 	{
 		if( this.canRender() && ( this.getAspect() != null ) )
 		{
-			List<String> toolTips = new ArrayList<String>();
-
-			toolTips.add( this.aspectName );
-
-			this.drawTooltip( toolTips, mouseX, mouseY, Minecraft.getMinecraft().fontRenderer );
-
+			tooltip.add( this.aspectName );
 		}
+		
+		return tooltip;
 	}
 
 	@Override

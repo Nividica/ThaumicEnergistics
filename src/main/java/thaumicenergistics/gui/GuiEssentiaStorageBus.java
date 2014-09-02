@@ -22,6 +22,7 @@ import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.EnumAEStateIcons;
 import thaumicenergistics.texture.GuiTextureManager;
+import thaumicenergistics.util.GuiHelper;
 
 /**
  * Gui for the storage bus.
@@ -194,11 +195,31 @@ public class GuiEssentiaStorageBus
 			currentWidget.drawWidget();
 		}
 
-		for( Object button : this.buttonList )
+		// Is the mouse over any buttons?
+		for( Object obj : this.buttonList )
 		{
-			if( ( button instanceof ButtonRedstoneModes ) )
+			// Cast to button
+			GuiButton currentButton = (GuiButton)obj;
+
+			// Is the mouse over it?
+			if( GuiHelper.instance.isPointInRegion( currentButton.xPosition, currentButton.yPosition, currentButton.width, currentButton.height,
+				mouseX, mouseY ) )
 			{
-				( (ButtonRedstoneModes)button ).drawTooltip( this.guiLeft, this.guiTop );
+				// Is it the redstone button?
+				if( currentButton instanceof ButtonRedstoneModes )
+				{
+					// Get the tooltip
+					List<String> tooltip = ( (ButtonRedstoneModes)currentButton ).getTooltip( new ArrayList<String>() );
+
+					if( !tooltip.isEmpty() )
+					{
+						// Draw the tooltip
+						this.drawTooltip( tooltip, mouseX - this.guiLeft, mouseY - this.guiTop );
+					}
+				}
+
+				// Stop searching
+				break;
 			}
 		}
 	}

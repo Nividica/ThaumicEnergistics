@@ -31,14 +31,14 @@ thaumicenergistics.item.material.diffusion.core.name=扩散核心
 thaumicenergistics.item.material.coalescence.core.name=聚集核心
 
 #Tooltips
-thaumicenergistics.tooltip.amount=数量
-thaumicenergistics.tooltip.aspect=要素
 thaumicenergistics.tooltip.essentia.cell.bytes=%d / %d 字节已使用.
 thaumicenergistics.tooltip.essentia.cell.types=%d / %d 源质类型储存.
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=奥术终端
 thaumicenergistics.gui.essentia.cell.title=源质元件
+thaumicenergistics.gui.selected.amount=数量
+thaumicenergistics.gui.selected.aspect=要素
 
 #Research Tab
 tc.research_category.thaumicenergistics=神秘能源

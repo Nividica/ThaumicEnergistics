@@ -31,14 +31,14 @@ thaumicenergistics.item.material.diffusion.core.name=디퓨전 코어
 thaumicenergistics.item.material.coalescence.core.name=콜센스 코어
 
 #Tooltips
-thaumicenergistics.tooltip.amount=양
-thaumicenergistics.tooltip.aspect=위상
 thaumicenergistics.tooltip.essentia.cell.bytes=%d 바이트가 %d 중에서 사용됨
 thaumicenergistics.tooltip.essentia.cell.types=%d 개의 에센스 저장소가 %d 개중에서 사용됨
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=아케인 터미널
 thaumicenergistics.gui.essentia.cell.title=에센시아 셀
+thaumicenergistics.gui.selected.amount=양
+thaumicenergistics.gui.selected.aspect=위상
 
 #Research Tab
 tc.research_category.thaumicenergistics=[TE]Thaumic Energytics

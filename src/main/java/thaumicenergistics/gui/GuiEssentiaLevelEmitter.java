@@ -1,5 +1,6 @@
 package thaumicenergistics.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -338,7 +339,14 @@ public class GuiEssentiaLevelEmitter
 				// Is it the redstone button?
 				if( currentButton instanceof ButtonRedstoneModes )
 				{
-					( (ButtonRedstoneModes)currentButton ).drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+					// Get the tooltip
+					List<String> tooltip = ( (ButtonRedstoneModes)currentButton ).getTooltip( new ArrayList<String>() );
+					
+					if( !tooltip.isEmpty() )
+					{
+						// Draw the tooltip
+						this.drawTooltip( tooltip, mouseX - this.guiLeft, mouseY - this.guiTop );
+					}
 				}
 
 				// Stop searching

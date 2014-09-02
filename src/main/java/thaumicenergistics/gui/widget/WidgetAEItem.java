@@ -2,13 +2,12 @@ package thaumicenergistics.gui.widget;
 
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import thaumicenergistics.util.GuiHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.render.AppEngRenderItem;
+import appeng.util.item.AEItemStack;
 
 public class WidgetAEItem
 	extends AbstractWidget
@@ -48,11 +47,8 @@ public class WidgetAEItem
 		this.aeItemRenderer = aeItemRenderer;
 	}
 
-	/**
-	 * Draw's the tooltip for the widgets itemstack.
-	 */
 	@Override
-	public void drawTooltip( int mouseX, int mouseY )
+	public List<String> getTooltip( final List<String> tooltip )
 	{
 		if( this.aeItemStack != null )
 		{
@@ -60,26 +56,33 @@ public class WidgetAEItem
 			ItemStack stack = this.aeItemStack.getItemStack();
 
 			// Get the tooltip list
-			List<String> tooltip = stack.getTooltip( WidgetAEItem.MC.thePlayer, WidgetAEItem.MC.gameSettings.advancedItemTooltips );
+			List<String> stackTooltip = stack.getTooltip( WidgetAEItem.MC.thePlayer, WidgetAEItem.MC.gameSettings.advancedItemTooltips );
 
-			// Set colors
-			for( int index = 0; index < tooltip.size(); index++ )
+			// Set colors and add
+			for( int index = 0; index < stackTooltip.size(); index++ )
 			{
 				if( index == 0 )
 				{
 					// Item name based on rarity
-					tooltip.set( index, stack.getRarity().rarityColor + tooltip.get( index ) );
+					stackTooltip.set( index, stack.getRarity().rarityColor + stackTooltip.get( index ) );
 				}
 				else
 				{
 					// The rest grey
-					tooltip.set( index, EnumChatFormatting.GRAY + tooltip.get( index ) );
+					stackTooltip.set( index, EnumChatFormatting.GRAY + stackTooltip.get( index ) );
 				}
+
+				tooltip.add( stackTooltip.get( index ) );
 			}
 
-			// Draw the tooltip
-			GuiHelper.instance.drawTooltip( (Gui)this.hostGUI, tooltip, mouseX, mouseY, WidgetAEItem.MC.fontRenderer );
+			// Get the mod name
+			String modName = ( (AEItemStack)this.aeItemStack ).getModID();
+			modName = modName.substring( 0, 1 ).toUpperCase() + modName.substring( 1 );
+			
+			tooltip.add( EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + modName );
 		}
+
+		return tooltip;
 	}
 
 	/**

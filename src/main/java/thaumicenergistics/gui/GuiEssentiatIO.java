@@ -312,10 +312,13 @@ public class GuiEssentiatIO
 
 			slotWidget.drawWidget();
 		}
-
+		
+		List<String> tooltip = null;
+		
 		if( slotUnderMouse != null )
 		{
-			slotUnderMouse.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+			// Get the tooltip
+			tooltip = slotUnderMouse.getTooltip( new ArrayList<String>() );
 		}
 		else
 		{
@@ -332,13 +335,21 @@ public class GuiEssentiatIO
 					// Is it the redstone button?
 					if( currentButton instanceof ButtonRedstoneModes )
 					{
-						( (ButtonRedstoneModes)currentButton ).drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+						// Get the tooltip
+						tooltip = ( (ButtonRedstoneModes)currentButton ).getTooltip( tooltip );
 					}
 
 					// Stop searching
 					break;
 				}
 			}
+		}
+
+		
+		if( ( tooltip != null ) && ( !tooltip.isEmpty() ) )
+		{
+			// Draw the tooltip
+			this.drawTooltip( tooltip, mouseX - this.guiLeft, mouseY - this.guiTop );
 		}
 
 		// Call super

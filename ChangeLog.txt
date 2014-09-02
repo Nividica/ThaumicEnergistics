@@ -1,4 +1,8 @@
-﻿9/1/2014 0.6.4b
+﻿9/2/2014 0.6.5b
+  Fixed tooltips.
+  Added MOD name to item tooltips.
+
+9/1/2014 0.6.4b
   A.C.T Now remembers it's sorting modes.
   A.C.T Now shows Arcane recipe cost without needing a wand.
 

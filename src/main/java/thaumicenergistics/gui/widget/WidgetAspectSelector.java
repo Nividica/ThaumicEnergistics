@@ -1,8 +1,6 @@
 package thaumicenergistics.gui.widget;
 
-import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
@@ -49,7 +47,8 @@ public class WidgetAspectSelector
 		int aspectColor = stack.aspect.getColor();
 
 		// Create the gradient using the aspect color, varying between opacities
-		this.backgroundPulseGradient = GuiHelper.instance.createColorGradient( 0x70000000 | aspectColor, 0x20000000 | aspectColor, GRADIENT_COUNT + 1 );
+		this.backgroundPulseGradient = GuiHelper.instance
+						.createColorGradient( 0x70000000 | aspectColor, 0x20000000 | aspectColor, GRADIENT_COUNT + 1 );
 	}
 
 	/**
@@ -137,24 +136,19 @@ public class WidgetAspectSelector
 	 * Draws the aspect name and amount
 	 */
 	@Override
-	public void drawTooltip( int mouseX, int mouseY )
+	public List<String> getTooltip( List<String> tooltip )
 	{
-		if( ( this.getAspect() == null ) || ( this.amount <= 0L ) )
+		if( ( this.getAspect() != null ) && ( this.amount > 0L ) )
 		{
-			return;
+
+			// Add the name
+			tooltip.add( this.aspectName );
+
+			// Add the amount
+			tooltip.add( Long.toString( this.amount ) );
 		}
 
-		// Create the description lines
-		List<String> descriptionLines = new ArrayList<String>( 2 );
-
-		// Add the name
-		descriptionLines.add( this.aspectName );
-
-		// Add the amount
-		descriptionLines.add( Long.toString( this.amount ) );
-
-		// Draw the tooltip
-		this.drawTooltip( descriptionLines, mouseX - this.hostGUI.guiLeft(), mouseY - this.hostGUI.guiTop(), Minecraft.getMinecraft().fontRenderer );
+		return tooltip;
 	}
 
 	/**
