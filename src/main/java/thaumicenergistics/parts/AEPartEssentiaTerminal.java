@@ -26,7 +26,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaTerminal
-	extends AEPartBase
+	extends AbstractAEPartBase
 {
 
 	/**
@@ -302,7 +302,7 @@ public class AEPartEssentiaTerminal
 
 		if( this.isActive() )
 		{
-			Tessellator.instance.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
+			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_BRIGHTNESS );
 		}
 
 		ts.setColorOpaque_I( 0xFFFFFF );

@@ -24,22 +24,18 @@ import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.AEApi;
-import appeng.api.config.Actionable;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.MachineSource;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -47,7 +43,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class AEPartBase
+public abstract class AbstractAEPartBase
 	implements IPart, IGridHost, IActionHost
 {
 	protected final static int INVENTORY_OVERLAY_COLOR = AEColor.Black.blackVariant;
@@ -74,7 +70,7 @@ public abstract class AEPartBase
 
 	public final ItemStack associatedItem;
 
-	public AEPartBase( AEPartsEnum associatedPart )
+	public AbstractAEPartBase( AEPartsEnum associatedPart )
 	{
 		// Set the associated item 
 		this.associatedItem = ItemEnum.PART_ITEM.getItemStackWithDamage( associatedPart.ordinal() );
@@ -107,55 +103,6 @@ public abstract class AEPartBase
 				this.host.markForUpdate();
 			}
 		}
-	}
-
-	/**
-	 * Extracts fluid from the ME network.
-	 * 
-	 * @param toExtract
-	 * @param action
-	 * @return
-	 */
-	protected final IAEFluidStack extractFluid( IAEFluidStack toExtract, Actionable action )
-	{
-
-		if( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
-		{
-			return null;
-		}
-
-		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
-
-		if( monitor == null )
-		{
-			return null;
-		}
-
-		return monitor.extractItems( toExtract, action, new MachineSource( this ) );
-	}
-
-	/**
-	 * Injects fluid into the ME network.
-	 * 
-	 * @param toInject
-	 * @param action
-	 * @return
-	 */
-	protected final IAEFluidStack injectFluid( IAEFluidStack toInject, Actionable action )
-	{
-		if( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
-		{
-			return null;
-		}
-
-		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
-
-		if( monitor == null )
-		{
-			return null;
-		}
-
-		return monitor.injectItems( toInject, action, new MachineSource( this ) );
 	}
 
 	/**
@@ -287,9 +234,13 @@ public abstract class AEPartBase
 	 */
 	public abstract double getIdlePowerUsage();
 
+	/**
+	 * Gets an itemstack that represents the specified part.
+	 */
 	@Override
 	public ItemStack getItemStack( PartItemStack partItemStack )
 	{
+		// Get the itemstack
 		ItemStack itemStack = new ItemStack( ItemEnum.PART_ITEM.getItem(), 1, AEPartsEnum.getPartID( this.getClass() ) );
 
 		if( partItemStack != PartItemStack.Break )
@@ -302,19 +253,18 @@ public abstract class AEPartBase
 		return itemStack;
 	}
 
+	/**
+	 * Gets the block light level for this part.
+	 */
 	@Override
 	public int getLightLevel()
 	{
-		int level = 0;
+		return ( this.isActive() ? 15 : 0 );	}
 
-		if( this.isActive() )
-		{
-			level = 15;
-		}
-
-		return level;
-	}
-
+	/**
+	 * Gets the location of this part.
+	 * @return
+	 */
 	public final DimensionalCoord getLocation()
 	{
 		return new DimensionalCoord( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord );
@@ -333,6 +283,15 @@ public abstract class AEPartBase
 	public ForgeDirection getSide()
 	{
 		return this.cableSide;
+	}
+	
+	/**
+	 * Gets the unlocalized name of this part.
+	 * @return
+	 */
+	public String getUnlocalizedName()
+	{
+		return this.associatedItem.getUnlocalizedName() + ".name";
 	}
 
 	@Override

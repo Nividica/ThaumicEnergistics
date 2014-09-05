@@ -10,10 +10,12 @@ public class PacketServerEssentiaStorageBus
 	extends AbstractServerPacket
 {
 	private static final byte MODE_REQUEST_FULL_UPDATE = 0;
+	private static final byte MODE_REQUEST_SET_VOID = 1;
 
-	AEPartEssentiaStorageBus part;
+	private AEPartEssentiaStorageBus part;
+	private boolean isVoidAllowed;
 
-	public PacketServerEssentiaStorageBus createRequestFullUpdate( EntityPlayer player, AEPartEssentiaStorageBus part )
+	public PacketServerEssentiaStorageBus createRequestFullUpdate( final EntityPlayer player, final AEPartEssentiaStorageBus part )
 	{
 		// Set the player
 		this.player = player;
@@ -27,6 +29,24 @@ public class PacketServerEssentiaStorageBus
 		return this;
 	}
 
+	public PacketServerEssentiaStorageBus createRequestSetVoidAllowed( final EntityPlayer player, final AEPartEssentiaStorageBus part,
+																		final boolean isVoidAllowed )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerEssentiaStorageBus.MODE_REQUEST_SET_VOID;
+
+		// Set the part
+		this.part = part;
+
+		// Set if void is allowed
+		this.isVoidAllowed = isVoidAllowed;
+
+		return this;
+	}
+
 	@Override
 	public void execute()
 	{
@@ -36,11 +56,16 @@ public class PacketServerEssentiaStorageBus
 				// Request a full update
 				this.part.onClientRequestFullUpdate( this.player );
 				break;
+
+			case PacketServerEssentiaStorageBus.MODE_REQUEST_SET_VOID:
+				// Request set void
+				this.part.onClientRequestSetVoidMode( this.player, this.isVoidAllowed );
+				break;
 		}
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -48,17 +73,31 @@ public class PacketServerEssentiaStorageBus
 				// Read the part
 				this.part = ( (AEPartEssentiaStorageBus)AbstractPacket.readPart( stream ) );
 				break;
+
+			case PacketServerEssentiaStorageBus.MODE_REQUEST_SET_VOID:
+				// Read the part
+				this.part = ( (AEPartEssentiaStorageBus)AbstractPacket.readPart( stream ) );
+				// Read void
+				this.isVoidAllowed = stream.readBoolean();
+				break;
 		}
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
 			case PacketServerEssentiaStorageBus.MODE_REQUEST_FULL_UPDATE:
 				// Write the part
 				AbstractPacket.writePart( this.part, stream );
+				break;
+
+			case PacketServerEssentiaStorageBus.MODE_REQUEST_SET_VOID:
+				// Write the part
+				AbstractPacket.writePart( this.part, stream );
+				// Write void
+				stream.writeBoolean( this.isVoidAllowed );
 				break;
 		}
 	}

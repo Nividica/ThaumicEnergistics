@@ -1,4 +1,4 @@
-package thaumicenergistics.gui;
+package thaumicenergistics.gui.abstraction;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,8 +36,8 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 
  */
 @SideOnly(Side.CLIENT)
-public abstract class GuiCellTerminalBase
-	extends GuiWidgetHost
+public abstract class AbstractGuiCellTerminalBase
+	extends AbstractGuiWidgetHost
 	implements IAspectSelectorGui
 {
 
@@ -219,7 +219,7 @@ public abstract class GuiCellTerminalBase
 	 * @param container
 	 * Container associated with the gui.
 	 */
-	public GuiCellTerminalBase( EntityPlayer player, ContainerCellTerminalBase container )
+	public AbstractGuiCellTerminalBase( EntityPlayer player, ContainerCellTerminalBase container )
 	{
 		// Call super
 		super( container );
@@ -234,10 +234,10 @@ public abstract class GuiCellTerminalBase
 		this.player = player;
 
 		// Set the X size
-		this.xSize = GuiCellTerminalBase.GUI_SIZE_X;
+		this.xSize = AbstractGuiCellTerminalBase.GUI_SIZE_X;
 
 		// Set the Y size
-		this.ySize = GuiCellTerminalBase.GUI_SIZE_Y;
+		this.ySize = AbstractGuiCellTerminalBase.GUI_SIZE_Y;
 
 		// Set the title
 		if( container instanceof ContainerEssentiaTerminal )
@@ -298,13 +298,13 @@ public abstract class GuiCellTerminalBase
 		else
 		{
 			// Get how many rows is required for the display-able widgets
-			int requiredRows = (int)Math.ceil( (double)this.matchingSearchWidgets.size() / (double)GuiCellTerminalBase.WIDGETS_PER_ROW );
+			int requiredRows = (int)Math.ceil( (double)this.matchingSearchWidgets.size() / (double)AbstractGuiCellTerminalBase.WIDGETS_PER_ROW );
 
 			// Subtract from the required rows the starting row
 			int rowsToDraw = requiredRows - this.currentScroll;
 
 			// Calculate how many blank rows that would leave
-			int blankRows = GuiCellTerminalBase.ROWS_PER_PAGE - rowsToDraw;
+			int blankRows = AbstractGuiCellTerminalBase.ROWS_PER_PAGE - rowsToDraw;
 
 			// Would that scroll leave any blank rows?
 			if( blankRows > 0 )
@@ -352,7 +352,7 @@ public abstract class GuiCellTerminalBase
 		Minecraft.getMinecraft().renderEngine.bindTexture( GuiTextureManager.ESSENTIA_TERMINAL.getTexture() );
 
 		// Draw the gui
-		this.drawTexturedModalRect( this.guiLeft, this.guiTop - GuiCellTerminalBase.GUI_OFFSET_Y, 0, 0, this.xSize, this.ySize );
+		this.drawTexturedModalRect( this.guiLeft, this.guiTop - AbstractGuiCellTerminalBase.GUI_OFFSET_Y, 0, 0, this.xSize, this.ySize );
 
 		// Draw the search field.
 		this.searchBar.drawTextBox();
@@ -365,7 +365,7 @@ public abstract class GuiCellTerminalBase
 	protected void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
 	{
 		// Draw the title
-		this.fontRendererObj.drawString( this.guiTitle, GuiCellTerminalBase.TITLE_POS_X, GuiCellTerminalBase.TITLE_POS_Y, 0 );
+		this.fontRendererObj.drawString( this.guiTitle, AbstractGuiCellTerminalBase.TITLE_POS_X, AbstractGuiCellTerminalBase.TITLE_POS_Y, 0 );
 
 		// Draw the widgets
 		this.drawWidgets( mouseX, mouseY );
@@ -380,13 +380,22 @@ public abstract class GuiCellTerminalBase
 			String aspectName = this.selectedAspectStack.getAspectName( this.player );
 
 			// Draw the name
-			this.fontRendererObj.drawString( this.selectedInfoNamePrefix + aspectName, GuiCellTerminalBase.SELECTED_INFO_POS_X,
-				GuiCellTerminalBase.SELECTED_INFO_NAME_POS_Y, 0 );
+			this.fontRendererObj.drawString( this.selectedInfoNamePrefix + aspectName, AbstractGuiCellTerminalBase.SELECTED_INFO_POS_X,
+				AbstractGuiCellTerminalBase.SELECTED_INFO_NAME_POS_Y, 0 );
 
 			// Draw the amount
-			this.fontRendererObj.drawString( this.selectedInfoAmountPrefix + amountToText, GuiCellTerminalBase.SELECTED_INFO_POS_X,
-				GuiCellTerminalBase.SELECTED_INFO_AMOUNT_POS_Y, 0 );
+			this.fontRendererObj.drawString( this.selectedInfoAmountPrefix + amountToText, AbstractGuiCellTerminalBase.SELECTED_INFO_POS_X,
+				AbstractGuiCellTerminalBase.SELECTED_INFO_AMOUNT_POS_Y, 0 );
 		}
+
+		// Get the tooltip from the buttons
+		if( this.tooltip.isEmpty() )
+		{
+			this.addTooltipFromButtons( mouseX, mouseY );
+		}
+		
+		// Draw the tooltip
+		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
 	}
 
 	/**
@@ -433,13 +442,13 @@ public abstract class GuiCellTerminalBase
 		int index = 0;
 
 		// Rows
-		for( int y = 0; y < GuiCellTerminalBase.ROWS_PER_PAGE; y++ )
+		for( int y = 0; y < AbstractGuiCellTerminalBase.ROWS_PER_PAGE; y++ )
 		{
 			// Columns
-			for( int x = 0; x < GuiCellTerminalBase.WIDGETS_PER_ROW; x++ )
+			for( int x = 0; x < AbstractGuiCellTerminalBase.WIDGETS_PER_ROW; x++ )
 			{
 				// Calculate the index
-				index = ( ( y + this.currentScroll ) * GuiCellTerminalBase.WIDGETS_PER_ROW ) + x;
+				index = ( ( y + this.currentScroll ) * AbstractGuiCellTerminalBase.WIDGETS_PER_ROW ) + x;
 
 				// Is the index in bounds?
 				if( index < listSize )
@@ -480,7 +489,7 @@ public abstract class GuiCellTerminalBase
 	public void actionPerformed( GuiButton button )
 	{
 		// Is the button the sort mode button?
-		if( button.id == GuiCellTerminalBase.SORT_MODE_BUTTON_ID )
+		if( button.id == AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_ID )
 		{
 			// Pass to subclass
 			this.sortModeButtonClicked( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC );
@@ -502,14 +511,14 @@ public abstract class GuiCellTerminalBase
 			this.updateScrollPosition();
 
 			// Calculate the starting index
-			int startingIndex = this.currentScroll * GuiCellTerminalBase.WIDGETS_PER_ROW;
+			int startingIndex = this.currentScroll * AbstractGuiCellTerminalBase.WIDGETS_PER_ROW;
 
 			// Calculate the ending index
 			int endingIndex = Math.min( this.matchingSearchWidgets.size(), startingIndex + WIDGETS_PER_PAGE );
 
 			// Set the starting positions
-			int widgetPosX = GuiCellTerminalBase.WIDGET_OFFSET_X;
-			int widgetPosY = GuiCellTerminalBase.WIDGET_OFFSET_Y;
+			int widgetPosX = AbstractGuiCellTerminalBase.WIDGET_OFFSET_X;
+			int widgetPosY = AbstractGuiCellTerminalBase.WIDGET_OFFSET_Y;
 			int widgetColumnPosition = 1;
 
 			// Holder for the widget under the mouse
@@ -537,10 +546,10 @@ public abstract class GuiCellTerminalBase
 				widgetColumnPosition++ ;
 
 				// Are we done with this row?
-				if( widgetColumnPosition > GuiCellTerminalBase.WIDGETS_PER_ROW )
+				if( widgetColumnPosition > AbstractGuiCellTerminalBase.WIDGETS_PER_ROW )
 				{
 					// Reset X
-					widgetPosX = GuiCellTerminalBase.WIDGET_OFFSET_X;
+					widgetPosX = AbstractGuiCellTerminalBase.WIDGET_OFFSET_X;
 
 					// Reset column position to 1
 					widgetColumnPosition = 1;
@@ -557,15 +566,9 @@ public abstract class GuiCellTerminalBase
 
 			// Was the mouse over a widget?
 			if( widgetUnderMouse != null )
-			{
-				// Get the tooltip
-				List<String> tooltip = widgetUnderMouse.getTooltip( new ArrayList<String>() );
-
-				if( !tooltip.isEmpty() )
-				{
-					// Draw the tooltip
-					this.drawTooltip( tooltip, mouseX - this.guiLeft, mouseY - this.guiTop );
-				}
+			{	
+				// Get the tooltip from the widget
+				widgetUnderMouse.getTooltip( this.tooltip );
 			}
 		}
 		else
@@ -608,8 +611,9 @@ public abstract class GuiCellTerminalBase
 		this.updateAspects();
 
 		// Set up the search bar
-		this.searchBar = new GuiTextField( this.fontRendererObj, this.guiLeft + GuiCellTerminalBase.SEARCH_X_OFFSET, this.guiTop +
-						GuiCellTerminalBase.SEARCH_Y_OFFSET, GuiCellTerminalBase.SEARCH_WIDTH, GuiCellTerminalBase.SEARCH_HEIGHT );
+		this.searchBar = new GuiTextField( this.fontRendererObj, this.guiLeft + AbstractGuiCellTerminalBase.SEARCH_X_OFFSET, this.guiTop +
+						AbstractGuiCellTerminalBase.SEARCH_Y_OFFSET, AbstractGuiCellTerminalBase.SEARCH_WIDTH,
+						AbstractGuiCellTerminalBase.SEARCH_HEIGHT );
 
 		// Set the search bar to draw in the foreground
 		this.searchBar.setEnableBackgroundDrawing( false );
@@ -618,15 +622,15 @@ public abstract class GuiCellTerminalBase
 		this.searchBar.setFocused( true );
 
 		// Set maximum length
-		this.searchBar.setMaxStringLength( GuiCellTerminalBase.SEARCH_MAX_CHARS );
+		this.searchBar.setMaxStringLength( AbstractGuiCellTerminalBase.SEARCH_MAX_CHARS );
 
 		// Clear any existing buttons
 		this.buttonList.clear();
 
 		// Add the sort mode button
-		this.buttonList.add( new ButtonSortingMode( GuiCellTerminalBase.SORT_MODE_BUTTON_ID, this.guiLeft +
-						GuiCellTerminalBase.SORT_MODE_BUTTON_POS_X, this.guiTop + GuiCellTerminalBase.SORT_MODE_BUTTON_POS_Y,
-						GuiCellTerminalBase.SORT_MODE_BUTTON_SIZE, GuiCellTerminalBase.SORT_MODE_BUTTON_SIZE ) );
+		this.buttonList.add( new ButtonSortingMode( AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_ID, this.guiLeft +
+						AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_POS_X, this.guiTop + AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_POS_Y,
+						AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_SIZE, AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_SIZE ) );
 	}
 
 	public void onSortModeChanged( ComparatorMode sortMode )
@@ -635,7 +639,7 @@ public abstract class GuiCellTerminalBase
 		this.sortMode = sortMode;
 
 		// Update the sort button
-		( (ButtonSortingMode)this.buttonList.get( GuiCellTerminalBase.SORT_MODE_BUTTON_ID ) ).setSortMode( sortMode );
+		( (ButtonSortingMode)this.buttonList.get( AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_ID ) ).setSortMode( sortMode );
 
 		// Resort the list
 		this.sortMatchingList();

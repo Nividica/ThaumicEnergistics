@@ -6,7 +6,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerEssentiaCell;
 import thaumicenergistics.container.ContainerPriority;
-import thaumicenergistics.parts.AEPartBase;
+import thaumicenergistics.parts.AbstractAEPartBase;
 import appeng.api.parts.IPartHost;
 import appeng.helpers.IPriorityHost;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -42,7 +42,7 @@ public class GuiHandler
 	 * @param z
 	 * @return
 	 */
-	private static AEPartBase getPart( ForgeDirection tileSide, World world, int x, int y, int z )
+	private static AbstractAEPartBase getPart( ForgeDirection tileSide, World world, int x, int y, int z )
 	{
 		// Get the host at the specified position
 		IPartHost partHost = (IPartHost)( world.getTileEntity( x, y, z ) );
@@ -54,7 +54,7 @@ public class GuiHandler
 		}
 
 		// Get the part from the host
-		return (AEPartBase)( partHost.getPart( tileSide ) );
+		return (AbstractAEPartBase)( partHost.getPart( tileSide ) );
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class GuiHandler
 	private static Object getPartGuiElement( ForgeDirection tileSide, EntityPlayer player, World world, int x, int y, int z, boolean isServerSide )
 	{
 		// Get the part
-		AEPartBase part = GuiHandler.getPart( tileSide, world, x, y, z );
+		AbstractAEPartBase part = GuiHandler.getPart( tileSide, world, x, y, z );
 
 		// Ensure we got the part
 		if( part == null )
@@ -112,7 +112,7 @@ public class GuiHandler
 	 * @param y
 	 * @param z
 	 */
-	public static void launchGui( AEPartBase part, EntityPlayer player, World world, int x, int y, int z )
+	public static void launchGui( AbstractAEPartBase part, EntityPlayer player, World world, int x, int y, int z )
 	{
 		player.openGui( ThaumicEnergistics.instance, part.getSide().ordinal(), world, x, y, z );
 	}
@@ -161,7 +161,7 @@ public class GuiHandler
 			side = ForgeDirection.getOrientation( ID - GuiHandler.PRIORITY_ID );
 
 			// Get the part
-			AEPartBase part = GuiHandler.getPart( side, world, x, y, z );
+			AbstractAEPartBase part = GuiHandler.getPart( side, world, x, y, z );
 
 			// Ensure we got the part, and that it implements IPriortyHost
 			if( ( part == null ) || !( part instanceof IPriorityHost ) )
@@ -208,7 +208,7 @@ public class GuiHandler
 			side = ForgeDirection.getOrientation( ID - GuiHandler.PRIORITY_ID );
 
 			// Get the part
-			AEPartBase part = GuiHandler.getPart( side, world, x, y, z );
+			AbstractAEPartBase part = GuiHandler.getPart( side, world, x, y, z );
 
 			// Ensure we got the part, and that it implements IPriortyHost
 			if( ( part == null ) || !( part instanceof IPriorityHost ) )

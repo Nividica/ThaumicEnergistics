@@ -1,13 +1,12 @@
 package thaumicenergistics.gui.buttons;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.texture.EnumAEStateIcons;
 
-public class AbstractAEButton
-	extends GuiButton
+public abstract class AbstractAEButton
+	extends AbstractButtonBase
 {
 	/**
 	 * Button background

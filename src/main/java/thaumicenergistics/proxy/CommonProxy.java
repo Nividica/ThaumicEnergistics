@@ -59,6 +59,7 @@ public class CommonProxy
 	 */
 	public void registerRenderers()
 	{
+		// Ignored server side.
 	}
 
 	/**

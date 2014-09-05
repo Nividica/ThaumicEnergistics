@@ -41,7 +41,7 @@ public abstract class AbstractWidget
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 	}
 
-	public abstract List<String> getTooltip( final List<String> tooltip );
+	public abstract void getTooltip( List<String> tooltip );
 
 	public abstract void drawWidget();
 

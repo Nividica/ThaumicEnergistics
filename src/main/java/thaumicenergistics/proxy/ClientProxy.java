@@ -1,7 +1,6 @@
 package thaumicenergistics.proxy;
 
-import java.lang.reflect.Field;
-import java.util.Map;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -20,25 +19,6 @@ public class ClientProxy
 		MinecraftForge.EVENT_BUS.register( this );
 	}
 
-	private void injectGeneratedTextures( Map textureMap, int mipmapLevel )
-	{
-		// Set the mipmap levels
-		EssentiaGasTexture.mipmapLevels = mipmapLevel;
-
-		for( GaseousEssentia gas : GaseousEssentia.gasList.values() )
-		{
-			// Create the texture
-			EssentiaGasTexture gasTexture = new EssentiaGasTexture( gas.getAssociatedAspect() );
-
-			// Add to the texturemap
-			textureMap.put( gasTexture.getIconName(), gasTexture );
-
-			// Set the texture
-			gas.setIcons( gasTexture );
-		}
-
-	}
-
 	@Override
 	public void registerRenderers()
 	{
@@ -47,7 +27,7 @@ public class ClientProxy
 	}
 
 	@SubscribeEvent
-	public void registerTextures( TextureStitchEvent.Pre event )
+	public void registerTextures( final TextureStitchEvent.Pre event )
 	{
 		// Cache the map
 		TextureMap map = event.map;
@@ -58,28 +38,23 @@ public class ClientProxy
 			texture.registerTexture( map );
 		}
 
-		// Attempt to generate gas textures
-		try
+		// Set the mipmap levels
+		EssentiaGasTexture.mipmapLevels = Minecraft.getMinecraft().gameSettings.mipmapLevels;
+
+		// Add each gas texture
+		for( GaseousEssentia gas : GaseousEssentia.gasList.values() )
 		{
-			// Using reflection, allow these fields to become accessible
-			Field mapField = TextureMap.class.getDeclaredField( "mapRegisteredSprites" );
-			Field mipmapField = TextureMap.class.getDeclaredField( "mipmapLevels" );
-			mapField.setAccessible( true );
-			mipmapField.setAccessible( true );
+			// Create the texture
+			EssentiaGasTexture gasTexture = new EssentiaGasTexture( gas.getAssociatedAspect() );
 
-			// Access the maps internal map of textures
-			Map internalMap = (Map)mapField.get( map );
+			// Add to the texture map
+			if( !map.setTextureEntry( gasTexture.getIconName(), gasTexture ) )
+			{
+				FMLLog.warning( "Unable to register texture for %s", gasTexture.getIconName() );
+			}
 
-			// Access the maps internal mipmap value
-			int mipmap = (Integer)mipmapField.get( map );
-
-			// Create and inject textures
-			this.injectGeneratedTextures( internalMap, mipmap );
-		}
-		catch( Throwable e )
-		{
-			FMLLog.severe( "Unable to generate essentia gas textures.", new Object[0] );
-			e.printStackTrace();
+			// Set the texture
+			gas.setIcons( gasTexture );
 		}
 
 	}

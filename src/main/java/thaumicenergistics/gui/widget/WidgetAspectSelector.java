@@ -136,7 +136,7 @@ public class WidgetAspectSelector
 	 * Draws the aspect name and amount
 	 */
 	@Override
-	public List<String> getTooltip( List<String> tooltip )
+	public void getTooltip( List<String> tooltip )
 	{
 		if( ( this.getAspect() != null ) && ( this.amount > 0L ) )
 		{
@@ -147,8 +147,6 @@ public class WidgetAspectSelector
 			// Add the amount
 			tooltip.add( Long.toString( this.amount ) );
 		}
-
-		return tooltip;
 	}
 
 	/**

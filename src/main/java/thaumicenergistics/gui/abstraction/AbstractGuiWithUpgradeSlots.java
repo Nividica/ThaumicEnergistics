@@ -1,4 +1,4 @@
-package thaumicenergistics.gui;
+package thaumicenergistics.gui.abstraction;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
@@ -10,8 +10,8 @@ import thaumicenergistics.util.GuiHelper;
 import appeng.api.AEApi;
 import appeng.parts.automation.UpgradeInventory;
 
-public abstract class GuiWithUpgradeSlots
-	extends BaseGui
+public abstract class AbstractGuiWithUpgradeSlots
+	extends AbstractGuiBase
 {
 
 	private static int upgradeU = EnumAEStateIcons.UPGRADE_SLOT.getU();
@@ -22,7 +22,7 @@ public abstract class GuiWithUpgradeSlots
 
 	private static int upgradeHeight = EnumAEStateIcons.UPGRADE_SLOT.getHeight();
 
-	public GuiWithUpgradeSlots( Container container )
+	public AbstractGuiWithUpgradeSlots( Container container )
 	{
 		super( container );
 	}
@@ -42,8 +42,8 @@ public abstract class GuiWithUpgradeSlots
 			if( ( slot instanceof SlotNetworkTool ) || ( slot.inventory instanceof UpgradeInventory ) )
 			{
 				// Draw background
-				this.drawTexturedModalRect( this.guiLeft + slot.xDisplayPosition, this.guiTop + slot.yDisplayPosition, GuiWithUpgradeSlots.upgradeU,
-					GuiWithUpgradeSlots.upgradeV, GuiWithUpgradeSlots.upgradeWidth, GuiWithUpgradeSlots.upgradeHeight );
+				this.drawTexturedModalRect( this.guiLeft + slot.xDisplayPosition, this.guiTop + slot.yDisplayPosition, AbstractGuiWithUpgradeSlots.upgradeU,
+					AbstractGuiWithUpgradeSlots.upgradeV, AbstractGuiWithUpgradeSlots.upgradeWidth, AbstractGuiWithUpgradeSlots.upgradeHeight );
 			}
 		}
 	}

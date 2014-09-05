@@ -30,9 +30,11 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.definitions.Materials;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -41,11 +43,17 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class AEPartEssentiaIO
-	extends AEPartBase
+	extends AbstractAEPartBase
 	implements IGridTickable, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory
 {
+	/**
+	 * How much essentia can be transfered per second.
+	 */
 	private final static int BASE_TRANSFER_PER_SECOND = 4;
 
+	/**
+	 * How much additional essentia can be transfered per upgrade.
+	 */
 	private final static int ADDITIONAL_TRANSFER_PER_SECOND = 7;
 
 	private final static int MINIMUM_TICKS_PER_OPERATION = 10;
@@ -56,6 +64,9 @@ public abstract class AEPartEssentiaIO
 
 	private final static int MINIMUM_TRANSFER_PER_SECOND = 1;
 
+	/**
+	 * Maximum number of filter slots.
+	 */
 	private final static int MAX_FILTER_SIZE = 9;
 
 	private final static int BASE_SLOT_INDEX = 4;
@@ -96,7 +107,7 @@ public abstract class AEPartEssentiaIO
 
 	private List<ContainerPartEssentiaIOBus> listeners = new ArrayList<ContainerPartEssentiaIOBus>();
 
-	public AEPartEssentiaIO( AEPartsEnum associatedPart )
+	public AEPartEssentiaIO( final AEPartsEnum associatedPart )
 	{
 		super( associatedPart );
 
@@ -212,7 +223,7 @@ public abstract class AEPartEssentiaIO
 		}
 	}
 
-	private boolean takePowerFromNetwork( int essentiaAmount, Actionable mode )
+	private boolean takePowerFromNetwork( final int essentiaAmount, final Actionable mode )
 	{
 		// Get the energy grid
 		IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
@@ -230,7 +241,7 @@ public abstract class AEPartEssentiaIO
 		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
 	}
 
-	protected boolean extractEssentiaFromNetwork( int amountToFillContainer )
+	protected boolean extractEssentiaFromNetwork( final int amountToFillContainer )
 	{
 		// Get the aspect in the container
 		Aspect aspectToMatch = EssentiaTileContainerHelper.instance.getAspectInContainer( this.facingContainer );
@@ -279,7 +290,8 @@ public abstract class AEPartEssentiaIO
 			if( ( extractedStack != null ) && ( extractedStack.getStackSize() > 0 ) )
 			{
 				// Fill the container
-				int filledAmount = (int)EssentiaTileContainerHelper.instance.injectIntoContainer( this.facingContainer, extractedStack, Actionable.MODULATE );
+				int filledAmount = (int)EssentiaTileContainerHelper.instance.injectIntoContainer( this.facingContainer, extractedStack,
+					Actionable.MODULATE );
 
 				// Were we able to fill the container?
 				if( filledAmount == 0 )
@@ -288,7 +300,8 @@ public abstract class AEPartEssentiaIO
 				}
 
 				// Take the power required for the filled amount
-				this.takePowerFromNetwork( (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( filledAmount ), Actionable.MODULATE );
+				this.takePowerFromNetwork( (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( filledAmount ),
+					Actionable.MODULATE );
 
 				// Take from the network
 				this.extractFluid( EssentiaConversionHelper.instance.createAEFluidStackInFluidUnits( essentiaGas, filledAmount ), Actionable.MODULATE );
@@ -302,6 +315,31 @@ public abstract class AEPartEssentiaIO
 
 	}
 
+	/**
+	 * Extracts fluid from the ME network.
+	 * 
+	 * @param toExtract
+	 * @param action
+	 * @return
+	 */
+	protected final IAEFluidStack extractFluid( final IAEFluidStack toExtract, final Actionable action )
+	{
+
+		if( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
+		{
+			return null;
+		}
+
+		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
+
+		if( monitor == null )
+		{
+			return null;
+		}
+
+		return monitor.extractItems( toExtract, action, new MachineSource( this ) );
+	}
+
 	protected boolean injectEssentaToNetwork( int amountToDrainFromContainer )
 	{
 		// Get the aspect in the container
@@ -313,8 +351,8 @@ public abstract class AEPartEssentiaIO
 		}
 
 		// Simulate a drain from the container
-		FluidStack drained = EssentiaTileContainerHelper.instance.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain,
-			Actionable.SIMULATE );
+		FluidStack drained = EssentiaTileContainerHelper.instance.extractFromContainer( this.facingContainer, amountToDrainFromContainer,
+			aspectToDrain, Actionable.SIMULATE );
 
 		// Was any drained?
 		if( drained == null )
@@ -362,12 +400,37 @@ public abstract class AEPartEssentiaIO
 		this.injectFluid( toFill, Actionable.MODULATE );
 
 		// Drain
-		EssentiaTileContainerHelper.instance.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain, Actionable.MODULATE );
+		EssentiaTileContainerHelper.instance.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain,
+			Actionable.MODULATE );
 
 		return true;
 	}
 
-	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
+	/**
+	 * Injects fluid into the ME network.
+	 * 
+	 * @param toInject
+	 * @param action
+	 * @return
+	 */
+	protected final IAEFluidStack injectFluid( final IAEFluidStack toInject, final Actionable action )
+	{
+		if( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
+		{
+			return null;
+		}
+
+		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
+
+		if( monitor == null )
+		{
+			return null;
+		}
+
+		return monitor.injectItems( toInject, action, new MachineSource( this ) );
+	}
+
+	public boolean addFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
 	{
 		Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( itemStack );
 
@@ -402,7 +465,7 @@ public abstract class AEPartEssentiaIO
 		return false;
 	}
 
-	public void addListener( ContainerPartEssentiaIOBus container )
+	public void addListener( final ContainerPartEssentiaIOBus container )
 	{
 		if( !this.listeners.contains( container ) )
 		{
@@ -421,13 +484,13 @@ public abstract class AEPartEssentiaIO
 	public abstract boolean doWork( int transferAmount );
 
 	@Override
-	public Object getClientGuiElement( EntityPlayer player )
+	public Object getClientGuiElement( final EntityPlayer player )
 	{
 		return new GuiEssentiatIO( this, player );
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 		// Were we wrenched?
 		if( wrenched )
@@ -473,13 +536,13 @@ public abstract class AEPartEssentiaIO
 	}
 
 	@Override
-	public Object getServerGuiElement( EntityPlayer player )
+	public Object getServerGuiElement( final EntityPlayer player )
 	{
 		return new ContainerPartEssentiaIOBus( this, player );
 	}
 
 	@Override
-	public TickingRequest getTickingRequest( IGridNode arg0 )
+	public TickingRequest getTickingRequest( final IGridNode arg0 )
 	{
 		return new TickingRequest( MINIMUM_TICKS_PER_OPERATION, MAXIMUM_TICKS_PER_OPERATION, false, false );
 	}
@@ -490,7 +553,7 @@ public abstract class AEPartEssentiaIO
 	}
 
 	@Override
-	public boolean onActivate( EntityPlayer player, Vec3 position )
+	public boolean onActivate( final EntityPlayer player, final Vec3 position )
 	{
 		boolean activated = super.onActivate( player, position );
 
@@ -500,7 +563,7 @@ public abstract class AEPartEssentiaIO
 	}
 
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		if( inv == this.upgradeInventory )
 		{
@@ -513,7 +576,7 @@ public abstract class AEPartEssentiaIO
 	 * 
 	 * @param player
 	 */
-	public void onClientRequestChangeRedstoneMode( EntityPlayer player )
+	public void onClientRequestChangeRedstoneMode( final EntityPlayer player )
 	{
 		// Get the current ordinal, and increment it
 		int nextOrdinal = this.redstoneMode.ordinal() + 1;
@@ -536,7 +599,7 @@ public abstract class AEPartEssentiaIO
 	 * 
 	 * @param player
 	 */
-	public void onClientRequestFullUpdate( EntityPlayer player )
+	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
 		// Set the filter list
 		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
@@ -546,7 +609,7 @@ public abstract class AEPartEssentiaIO
 	}
 
 	@Override
-	public void onInventoryChanged( IInventory sourceInventory )
+	public void onInventoryChanged( final IInventory sourceInventory )
 	{
 		int oldFilterSize = this.filterSize;
 
@@ -611,7 +674,7 @@ public abstract class AEPartEssentiaIO
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 
@@ -634,7 +697,7 @@ public abstract class AEPartEssentiaIO
 	}
 
 	@Override
-	public final boolean readFromStream( ByteBuf stream ) throws IOException
+	public final boolean readFromStream( final ByteBuf stream ) throws IOException
 	{
 		return super.readFromStream( stream );
 	}
@@ -647,7 +710,7 @@ public abstract class AEPartEssentiaIO
 	 * @param filteredAspects
 	 */
 	@SideOnly(Side.CLIENT)
-	public void receiveFilterList( List<Aspect> filteredAspects )
+	public void receiveFilterList( final List<Aspect> filteredAspects )
 	{
 		this.filteredAspects = filteredAspects;
 	}
@@ -660,14 +723,14 @@ public abstract class AEPartEssentiaIO
 	 * @param filterSize
 	 */
 	@SideOnly(Side.CLIENT)
-	public void receiveFilterSize( byte filterSize )
+	public void receiveFilterSize( final byte filterSize )
 	{
 		this.filterSize = filterSize;
 
 		this.resizeAvailableArray();
 	}
 
-	public void removeListener( ContainerPartEssentiaIOBus container )
+	public void removeListener( final ContainerPartEssentiaIOBus container )
 	{
 		this.listeners.remove( container );
 	}
@@ -682,7 +745,7 @@ public abstract class AEPartEssentiaIO
 	}
 
 	@Override
-	public final void setAspect( int index, Aspect aspect, EntityPlayer player )
+	public final void setAspect( final int index, final Aspect aspect, final EntityPlayer player )
 	{
 		// Set the filter
 		this.filteredAspects.set( index, aspect );
@@ -692,7 +755,7 @@ public abstract class AEPartEssentiaIO
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		if( this.canDoWork() )
 		{
@@ -722,7 +785,7 @@ public abstract class AEPartEssentiaIO
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 
@@ -746,7 +809,7 @@ public abstract class AEPartEssentiaIO
 	}
 
 	@Override
-	public final void writeToStream( ByteBuf stream ) throws IOException
+	public final void writeToStream( final ByteBuf stream ) throws IOException
 	{
 		super.writeToStream( stream );
 	}

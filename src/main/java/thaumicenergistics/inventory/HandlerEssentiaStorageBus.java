@@ -8,6 +8,7 @@ import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.common.tiles.TileJarFillable;
+import thaumcraft.common.tiles.TileJarFillableVoid;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
@@ -59,11 +60,17 @@ public class HandlerEssentiaStorageBus
 	private boolean inverted;
 
 	/**
+	 * When true excess essentia will be destroyed IF we are attached to a void
+	 * jar.
+	 */
+	public boolean isVoidAllowed = false;
+
+	/**
 	 * Creates the handler.
 	 * 
 	 * @param part
 	 */
-	public HandlerEssentiaStorageBus( AEPartEssentiaStorageBus part )
+	public HandlerEssentiaStorageBus( final AEPartEssentiaStorageBus part )
 	{
 		// Set the part
 		this.partStorageBus = part;
@@ -80,7 +87,7 @@ public class HandlerEssentiaStorageBus
 	 * @return True if the bus is allowed to transfer the fluid, false if it can
 	 * not.
 	 */
-	private boolean canTransferFluid( FluidStack fluidRequest )
+	private boolean canTransferFluid( final FluidStack fluidRequest )
 	{
 		// Ensure the request is not null
 		if( fluidRequest == null )
@@ -136,7 +143,7 @@ public class HandlerEssentiaStorageBus
 	 * @param mode
 	 * @return True if power can/was taken. False otherwise.
 	 */
-	private boolean takePowerFromNetwork( int essentiaAmount, Actionable mode )
+	private boolean takePowerFromNetwork( final int essentiaAmount, final Actionable mode )
 	{
 		// Get the energy grid
 		IEnergyGrid eGrid = this.partStorageBus.getGridBlock().getEnergyGrid();
@@ -159,7 +166,7 @@ public class HandlerEssentiaStorageBus
 	 * not take into consideration the amount currently in the container.
 	 */
 	@Override
-	public boolean canAccept( IAEFluidStack fluidStack )
+	public boolean canAccept( final IAEFluidStack fluidStack )
 	{
 		// Ensure we have an aspect container
 		if( this.aspectContainer == null )
@@ -212,7 +219,7 @@ public class HandlerEssentiaStorageBus
 	 * Extracts essentia from the container.
 	 */
 	@Override
-	public IAEFluidStack extractItems( IAEFluidStack request, Actionable mode, BaseActionSource source )
+	public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable mode, final BaseActionSource source )
 	{
 		if( ( this.aspectContainer == null ) || ( request == null ) )
 		{
@@ -285,7 +292,7 @@ public class HandlerEssentiaStorageBus
 	 * Gets the list of 'fluids' that can be extracted from this storage bus.
 	 */
 	@Override
-	public IItemList<IAEFluidStack> getAvailableItems( IItemList<IAEFluidStack> out )
+	public IItemList<IAEFluidStack> getAvailableItems( final IItemList<IAEFluidStack> out )
 	{
 		if( this.aspectContainer != null )
 		{
@@ -346,8 +353,9 @@ public class HandlerEssentiaStorageBus
 	 * Inserts essentia into the container.
 	 */
 	@Override
-	public IAEFluidStack injectItems( IAEFluidStack input, Actionable mode, BaseActionSource source )
+	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final BaseActionSource source )
 	{
+		// Ensure input and output
 		if( ( this.aspectContainer == null ) || ( input == null ) || ( !this.canAccept( input ) ) )
 		{
 			return input;
@@ -362,13 +370,28 @@ public class HandlerEssentiaStorageBus
 			return null;
 		}
 
-		// Simulate filling the container
-		int filled_FU = (int)EssentiaTileContainerHelper.instance.injectIntoContainer( this.aspectContainer, input, Actionable.SIMULATE );
+		// Is void allowed, and we are attached to a void jar?
+		boolean canVoid = this.isVoidAllowed && ( this.aspectContainer instanceof TileJarFillableVoid );
 
-		// Was any filled?
-		if( filled_FU == 0 )
+		// How much can be filled, in fluid units
+		int filled_FU;
+
+		// Can we void any leftovers?
+		if( canVoid )
 		{
-			return input;
+			// Say that we can take it all
+			filled_FU = (int)input.getStackSize();
+		}
+		else
+		{
+			// Simulate filling the container
+			filled_FU = (int)EssentiaTileContainerHelper.instance.injectIntoContainer( this.aspectContainer, input, Actionable.SIMULATE );
+
+			// Was any filled?
+			if( filled_FU == 0 )
+			{
+				return input;
+			}
 		}
 
 		// Get how much the filled amount is in essentia units
@@ -384,21 +407,27 @@ public class HandlerEssentiaStorageBus
 		// Are we modulating?
 		if( mode == Actionable.MODULATE )
 		{
-			// Inject
-			EssentiaTileContainerHelper.instance.injectIntoContainer( this.aspectContainer, input, Actionable.MODULATE );
+			// Inject, and set the actual amount injected
+			filled_FU = (int)EssentiaTileContainerHelper.instance.injectIntoContainer( this.aspectContainer, input, Actionable.MODULATE );
 
-			// Take power
+			// Take power for as much as we claimed we could take.
 			this.takePowerFromNetwork( filled_EU, Actionable.MODULATE );
+
+			// Convert the actual amount injected into Essentia units.
+			filled_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( filled_FU );
 		}
 
 		// Inform the storage bus
-		this.partStorageBus.onEssentiaTransfered( filled_EU );
+		if( filled_EU > 0 )
+		{
+			this.partStorageBus.onEssentiaTransfered( filled_EU );
+		}
 
 		// Calculate how much was left over
 		int remaining_FU = toFill.amount - filled_FU;
 
-		// Did we completely drain the input stack?
-		if( remaining_FU == 0 )
+		// Did we completely drain the input stack, or can we void the remainder?
+		if( remaining_FU == 0 || canVoid )
 		{
 			// Nothing left over
 			return null;
@@ -412,7 +441,7 @@ public class HandlerEssentiaStorageBus
 	 * Checks if the specified fluid is allowed to be transfered.
 	 */
 	@Override
-	public boolean isPrioritized( IAEFluidStack fluidStack )
+	public boolean isPrioritized( final IAEFluidStack fluidStack )
 	{
 		// Ensure the fluid stack is not null
 		if( fluidStack == null )
@@ -466,7 +495,7 @@ public class HandlerEssentiaStorageBus
 	 * @param isInverted
 	 * True = Blacklist, False = Whitelist.
 	 */
-	public void setInverted( boolean isInverted )
+	public void setInverted( final boolean isInverted )
 	{
 		this.inverted = isInverted;
 	}
@@ -476,13 +505,13 @@ public class HandlerEssentiaStorageBus
 	 * 
 	 * @param aspectList
 	 */
-	public void setPrioritizedAspects( List<Aspect> aspectList )
+	public void setPrioritizedAspects( final List<Aspect> aspectList )
 	{
 		this.filteredAspects = aspectList;
 	}
 
 	@Override
-	public boolean validForPass( int pass )
+	public boolean validForPass( final int pass )
 	{
 		return true;
 	}

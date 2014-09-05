@@ -28,7 +28,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartArcaneCraftingTerminal
-	extends AEPartBase
+	extends AbstractAEPartBase
 	implements IInventory
 {
 	/**
@@ -535,7 +535,7 @@ public class AEPartArcaneCraftingTerminal
 		helper.renderInventoryBox( renderer );
 
 		helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
-		ts.setColorOpaque_I( AEPartBase.INVENTORY_OVERLAY_COLOR );
+		ts.setColorOpaque_I( AbstractAEPartBase.INVENTORY_OVERLAY_COLOR );
 		helper.renderInventoryFace( BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer );
 
 		ts.setColorOpaque_I( AEColor.Black.mediumVariant );
@@ -562,7 +562,7 @@ public class AEPartArcaneCraftingTerminal
 
 		if( this.isActive() )
 		{
-			tessellator.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
+			tessellator.setBrightness( AbstractAEPartBase.ACTIVE_BRIGHTNESS );
 
 			helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
 			tessellator.setColorOpaque_I( this.host.getColor().blackVariant );

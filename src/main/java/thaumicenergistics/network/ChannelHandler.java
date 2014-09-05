@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.network.handlers.HandlerClientAspectSlot;
 import thaumicenergistics.network.handlers.HandlerClientEssentiaCell;
+import thaumicenergistics.network.handlers.HandlerClientEssentiaStorageBus;
 import thaumicenergistics.network.handlers.HandlerClientPriority;
 import thaumicenergistics.network.handlers.HandlerServerAspectSlot;
 import thaumicenergistics.network.handlers.HandlerServerChangeGui;
@@ -27,6 +28,7 @@ import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCell;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaEmitter;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
+import thaumicenergistics.network.packet.client.PacketClientEssentiaStorageBus;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaTerminal;
 import thaumicenergistics.network.packet.client.PacketClientPriority;
 import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
@@ -57,7 +59,7 @@ public class ChannelHandler
 		wrapper.registerMessage( HandlerClientEssentiaIOBus.class, PacketClientEssentiaIOBus.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerEssentiaIOBus.class, PacketServerEssentiaIOBus.class, discriminator++ , Side.SERVER );
 
-		//wrapper.registerMessage( HandlerClientEssentiaStorageBus.class, PacketClientEssentiaStorageBus.class, discriminator++ , Side.CLIENT );
+		wrapper.registerMessage( HandlerClientEssentiaStorageBus.class, PacketClientEssentiaStorageBus.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerEssentiaStorageBus.class, PacketServerEssentiaStorageBus.class, discriminator++ , Side.SERVER );
 
 		wrapper.registerMessage( HandlerClientEssentiaLevelEmitter.class, PacketClientEssentiaEmitter.class, discriminator++ , Side.CLIENT );

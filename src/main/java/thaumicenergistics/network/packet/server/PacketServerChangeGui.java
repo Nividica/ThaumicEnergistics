@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.network.packet.AbstractPacket;
 import thaumicenergistics.network.packet.AbstractServerPacket;
-import thaumicenergistics.parts.AEPartBase;
+import thaumicenergistics.parts.AbstractAEPartBase;
 
 public class PacketServerChangeGui
 	extends AbstractServerPacket
@@ -15,13 +15,13 @@ public class PacketServerChangeGui
 	private static final byte MODE_PART = 1;
 
 	private int guiID;
-	private AEPartBase part;
+	private AbstractAEPartBase part;
 	private World world;
 	private int x;
 	private int y;
 	private int z;
 
-	public PacketServerChangeGui createChangeGuiRequest( AEPartBase part, EntityPlayer player, World world, int x, int y, int z )
+	public PacketServerChangeGui createChangeGuiRequest( AbstractAEPartBase part, EntityPlayer player, World world, int x, int y, int z )
 	{
 		// Set the player
 		this.player = player;

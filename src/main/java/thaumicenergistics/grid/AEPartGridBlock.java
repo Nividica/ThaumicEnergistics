@@ -3,7 +3,7 @@ package thaumicenergistics.grid;
 import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
-import thaumicenergistics.parts.AEPartBase;
+import thaumicenergistics.parts.AbstractAEPartBase;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
@@ -31,14 +31,14 @@ public class AEPartGridBlock
 	/**
 	 * The part using this gridblock.
 	 */
-	protected AEPartBase part;
+	protected AbstractAEPartBase part;
 
 	/**
 	 * Create the gridblock for the specified part.
 	 * 
 	 * @param part
 	 */
-	public AEPartGridBlock( AEPartBase part )
+	public AEPartGridBlock( AbstractAEPartBase part )
 	{
 		this.part = part;
 	}

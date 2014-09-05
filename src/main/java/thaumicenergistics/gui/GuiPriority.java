@@ -2,24 +2,24 @@ package thaumicenergistics.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.container.ContainerPriority;
+import thaumicenergistics.gui.abstraction.AbstractGuiBase;
 import thaumicenergistics.gui.buttons.ButtonAETab;
 import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.network.packet.server.PacketServerChangeGui;
 import thaumicenergistics.network.packet.server.PacketServerPriority;
-import thaumicenergistics.parts.AEPartBase;
+import thaumicenergistics.parts.AbstractAEPartBase;
 import thaumicenergistics.texture.EnumAEStateIcons;
 import thaumicenergistics.texture.GuiTextureManager;
 import appeng.helpers.IPriorityHost;
 
 public class GuiPriority
-	extends GuiContainer
+	extends AbstractGuiBase
 {
 	private static class AdjustmentButtonDef
 	{
@@ -176,7 +176,7 @@ public class GuiPriority
 	/**
 	 * The part we are adjusting the priority of
 	 */
-	private final AEPartBase part;
+	private final AbstractAEPartBase part;
 
 	/**
 	 * The player viewing the gui.
@@ -205,7 +205,7 @@ public class GuiPriority
 		super( new ContainerPriority( host, player ) );
 
 		// Get the part
-		this.part = (AEPartBase)host;
+		this.part = (AbstractAEPartBase)host;
 
 		// Set the player
 		this.player = player;
@@ -240,11 +240,17 @@ public class GuiPriority
 		// Pass to super
 		super.keyTyped( key, keyID );
 
-		// Ensure the key was numeric and the string isn't too long to parse, or backspace
-		if( ( Character.isDigit( key ) && ( this.amountField.getText().length() < GuiPriority.AMOUNT_MAX_CHARS ) ) || ( keyID == Keyboard.KEY_BACK ) )
+		// Ensure the string isn't too long to parse
+		if( this.amountField.getText().length() < GuiPriority.AMOUNT_MAX_CHARS )
 		{
 			// Pass to the amount field
 			this.amountField.textboxKeyTyped( key, keyID );
+
+			// Check if they are intending to type a negative number
+			if( this.amountField.getText().equals( "-" ) )
+			{
+				return;
+			}
 
 			// Convert the text field into a long
 			int newPriority = 0;
@@ -307,6 +313,13 @@ public class GuiPriority
 
 		// Draw the text field
 		this.amountField.drawTextBox();
+
+		// Get the tooltip from the buttons
+		if( this.addTooltipFromButtons( mouseX, mouseY ) )
+		{
+			// Draw the tooltip
+			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+		}
 	}
 
 	@Override
@@ -320,7 +333,7 @@ public class GuiPriority
 
 		// Create the part switch button
 		this.buttonList.add( new ButtonAETab( GuiPriority.PART_SWITCH_BUTTON_ID, this.guiLeft + GuiPriority.PART_SWITCH_BUTTON_X_POSITION,
-						this.guiTop, EnumAEStateIcons.WRENCH ) );
+						this.guiTop, EnumAEStateIcons.WRENCH, this.part.getUnlocalizedName() ) );
 
 		// Create the adjustment buttons
 		int buttonXPosition = GuiPriority.ADJUSTMENT_BUTTONS_X_POSITION;

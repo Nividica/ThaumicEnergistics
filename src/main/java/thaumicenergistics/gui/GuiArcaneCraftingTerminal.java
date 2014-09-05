@@ -1,6 +1,5 @@
 package thaumicenergistics.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -15,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
+import thaumicenergistics.gui.abstraction.AbstractGuiConstantsACT;
 import thaumicenergistics.gui.buttons.ButtonClearCraftingGrid;
 import thaumicenergistics.gui.buttons.ButtonSortingDirection;
 import thaumicenergistics.gui.buttons.ButtonSortingMode;
@@ -36,7 +36,7 @@ import appeng.client.me.ItemRepo;
 import appeng.client.render.AppEngRenderItem;
 
 public class GuiArcaneCraftingTerminal
-	extends GuiConstantsACT
+	extends AbstractGuiConstantsACT
 	implements ISortSource
 {
 	/**
@@ -52,7 +52,7 @@ public class GuiArcaneCraftingTerminal
 	/**
 	 * Widget 'slots'.
 	 */
-	private WidgetAEItem[] itemWidgets = new WidgetAEItem[GuiConstantsACT.ME_WIDGET_COUNT];
+	private WidgetAEItem[] itemWidgets = new WidgetAEItem[AbstractGuiConstantsACT.ME_WIDGET_COUNT];
 
 	/**
 	 * Player viewing the gui.
@@ -108,22 +108,22 @@ public class GuiArcaneCraftingTerminal
 		this.player = player;
 
 		// Set the width and height
-		this.xSize = GuiConstantsACT.GUI_WIDTH;
-		this.ySize = GuiConstantsACT.GUI_HEIGHT;
+		this.xSize = AbstractGuiConstantsACT.GUI_WIDTH;
+		this.ySize = AbstractGuiConstantsACT.GUI_HEIGHT;
 
 		// Set the title
 		this.guiTitle = StatCollector.translateToLocal( "thaumicenergistics.gui.arcane.crafting.terminal.title" );
 
 		// Create the widgets
-		for( int row = 0; row < GuiConstantsACT.ME_ROWS; row++ )
+		for( int row = 0; row < AbstractGuiConstantsACT.ME_ROWS; row++ )
 		{
-			for( int column = 0; column < GuiConstantsACT.ME_COLUMNS; column++ )
+			for( int column = 0; column < AbstractGuiConstantsACT.ME_COLUMNS; column++ )
 			{
 				// Calculate the index
-				int index = ( row * GuiConstantsACT.ME_COLUMNS ) + column;
+				int index = ( row * AbstractGuiConstantsACT.ME_COLUMNS ) + column;
 
-				this.itemWidgets[index] = new WidgetAEItem( this, GuiConstantsACT.ME_ITEM_POS_X + ( column * AbstractWidget.WIDGET_SIZE ),
-								GuiConstantsACT.ME_ITEM_POS_Y + ( row * AbstractWidget.WIDGET_SIZE ), this.aeItemRenderer );
+				this.itemWidgets[index] = new WidgetAEItem( this, AbstractGuiConstantsACT.ME_ITEM_POS_X + ( column * AbstractWidget.WIDGET_SIZE ),
+								AbstractGuiConstantsACT.ME_ITEM_POS_Y + ( row * AbstractWidget.WIDGET_SIZE ), this.aeItemRenderer );
 			}
 		}
 
@@ -142,7 +142,7 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private void drawCraftingAspects( final List<ArcaneCrafingCost> craftingCost )
 	{
-		int posY = GuiConstantsACT.ASPECT_COST_POS_Y;
+		int posY = AbstractGuiConstantsACT.ASPECT_COST_POS_Y;
 		int column = 0;
 
 		// Draw each primal
@@ -155,12 +155,12 @@ public class GuiArcaneCraftingTerminal
 			if( !cost.hasEnoughVis )
 			{
 				// Ping-pong the alpha
-				alpha = GuiHelper.instance.pingPongFromTime( GuiConstantsACT.ASPECT_COST_BLINK_SPEED, GuiConstantsACT.ASPECT_COST_MIN_ALPHA,
-					GuiConstantsACT.ASPECT_COST_MAX_ALPHA );
+				alpha = GuiHelper.instance.pingPongFromTime( AbstractGuiConstantsACT.ASPECT_COST_BLINK_SPEED,
+					AbstractGuiConstantsACT.ASPECT_COST_MIN_ALPHA, AbstractGuiConstantsACT.ASPECT_COST_MAX_ALPHA );
 			}
 
 			// Calculate X position
-			int posX = GuiConstantsACT.ASPECT_COST_POS_X + ( column * GuiConstantsACT.ASPECT_COST_SPACING );
+			int posX = AbstractGuiConstantsACT.ASPECT_COST_POS_X + ( column * AbstractGuiConstantsACT.ASPECT_COST_SPACING );
 
 			// Draw the aspect icon
 			UtilsFX.drawTag( posX, posY, cost.primal, cost.visCost, 0, this.zLevel, GL11.GL_ONE_MINUS_SRC_ALPHA, alpha, false );
@@ -172,7 +172,7 @@ public class GuiArcaneCraftingTerminal
 				column = 0;
 
 				// Increment Y
-				posY += GuiConstantsACT.ASPECT_COST_SPACING;
+				posY += AbstractGuiConstantsACT.ASPECT_COST_SPACING;
 			}
 		}
 	}
@@ -191,7 +191,7 @@ public class GuiArcaneCraftingTerminal
 		WidgetAEItem widgetUnderMouse = null;
 
 		// Draw the item widgets
-		for( int index = 0; index < GuiConstantsACT.ME_WIDGET_COUNT; index++ )
+		for( int index = 0; index < AbstractGuiConstantsACT.ME_WIDGET_COUNT; index++ )
 		{
 			// Get the widget
 			WidgetAEItem currentWidget = this.itemWidgets[index];
@@ -226,7 +226,7 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private void sendItemWidgetClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
-		for( int index = 0; index < GuiConstantsACT.ME_WIDGET_COUNT; index++ )
+		for( int index = 0; index < AbstractGuiConstantsACT.ME_WIDGET_COUNT; index++ )
 		{
 			// Get the widget
 			WidgetAEItem currentWidget = this.itemWidgets[index];
@@ -260,7 +260,7 @@ public class GuiArcaneCraftingTerminal
 	private void updateMEWidgets()
 	{
 		// List all items
-		for( int index = 0; index < GuiConstantsACT.ME_WIDGET_COUNT; index++ )
+		for( int index = 0; index < AbstractGuiConstantsACT.ME_WIDGET_COUNT; index++ )
 		{
 			IAEItemStack stack = this.repo.getRefrenceItem( index );
 
@@ -284,7 +284,7 @@ public class GuiArcaneCraftingTerminal
 	private void updateScrollMaximum()
 	{
 		// Calculate the scroll max
-		int max = Math.max( 0, ( this.repo.size() / GuiConstantsACT.ME_COLUMNS ) - 2 );
+		int max = Math.max( 0, ( this.repo.size() / AbstractGuiConstantsACT.ME_COLUMNS ) - 2 );
 
 		// Update the scroll bar
 		this.scrollBar.setRange( 0, max, 2 );
@@ -296,17 +296,17 @@ public class GuiArcaneCraftingTerminal
 	private void updateSorting()
 	{
 		// Set the direction icon
-		( (ButtonSortingDirection)this.buttonList.get( GuiConstantsACT.BUTTON_SORT_DIR_ID ) ).setSortingDirection( this.sortingDirection );
-	
+		( (ButtonSortingDirection)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID ) ).setSortingDirection( this.sortingDirection );
+
 		// Set the order icon
-		( (ButtonSortingMode)this.buttonList.get( GuiConstantsACT.BUTTON_SORT_ORDER_ID ) ).setSortMode( this.sortingOrder );
-	
+		( (ButtonSortingMode)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID ) ).setSortMode( this.sortingOrder );
+
 		// Update the repo
 		this.repo.updateView();
-	
+
 		// Update the widgets
 		this.updateMEWidgets();
-		
+
 	}
 
 	/**
@@ -322,7 +322,7 @@ public class GuiArcaneCraftingTerminal
 		this.mc.renderEngine.bindTexture( GuiTextureManager.ARCANE_CRAFTING_TERMINAL.getTexture() );
 
 		// Draw the gui image
-		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, GuiConstantsACT.GUI_WIDTH, GuiConstantsACT.GUI_HEIGHT );
+		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, AbstractGuiConstantsACT.GUI_WIDTH, AbstractGuiConstantsACT.GUI_HEIGHT );
 	}
 
 	/**
@@ -332,7 +332,7 @@ public class GuiArcaneCraftingTerminal
 	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
 		// Draw the title
-		this.fontRendererObj.drawString( this.guiTitle, GuiConstantsACT.TITLE_POS_X, GuiConstantsACT.TITLE_POS_Y, 0x000000 );
+		this.fontRendererObj.drawString( this.guiTitle, AbstractGuiConstantsACT.TITLE_POS_X, AbstractGuiConstantsACT.TITLE_POS_Y, 0x000000 );
 
 		// Draw the search field.
 		this.searchField.drawTextBox();
@@ -359,15 +359,19 @@ public class GuiArcaneCraftingTerminal
 		// Do we have a widget under the mouse?
 		if( widgetUnderMouse != null )
 		{
-			// Get the tooltip
-			List<String> tooltip = widgetUnderMouse.getTooltip( new ArrayList<String>() );
-			
-			if( !tooltip.isEmpty() )
-			{
-				// Draw the tooltip
-				this.drawTooltip( tooltip, mouseX - this.guiLeft, mouseY - this.guiTop );
-			}
+			// Get the tooltip from the widget
+			widgetUnderMouse.getTooltip( this.tooltip );
 		}
+		else
+		{
+			// Get the tooltip from the buttons
+			this.addTooltipFromButtons( mouseX, mouseY );
+		}
+		
+
+
+		// Draw the tooltip
+		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
 
 	}
 
@@ -411,7 +415,7 @@ public class GuiArcaneCraftingTerminal
 		else if( keyID == Keyboard.KEY_HOME )
 		{
 			// Move the scroll all the way to home
-			this.scrollBar.click( this.aeGuiBridge, GuiConstantsACT.SCROLLBAR_POS_X + 1, GuiConstantsACT.SCROLLBAR_POS_Y + 1 );
+			this.scrollBar.click( this.aeGuiBridge, AbstractGuiConstantsACT.SCROLLBAR_POS_X + 1, AbstractGuiConstantsACT.SCROLLBAR_POS_Y + 1 );
 			this.scrollBar.wheel( 1 );
 			this.updateMEWidgets();
 		}
@@ -419,7 +423,7 @@ public class GuiArcaneCraftingTerminal
 		else if( keyID == Keyboard.KEY_END )
 		{
 			// Move the scroll all the way to end
-			this.scrollBar.click( this.aeGuiBridge, GuiConstantsACT.SCROLLBAR_POS_X + 1, GuiConstantsACT.SCROLLBAR_VERTICAL_BOUND );
+			this.scrollBar.click( this.aeGuiBridge, AbstractGuiConstantsACT.SCROLLBAR_POS_X + 1, AbstractGuiConstantsACT.SCROLLBAR_VERTICAL_BOUND );
 			this.updateMEWidgets();
 
 		}
@@ -449,8 +453,8 @@ public class GuiArcaneCraftingTerminal
 	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
 		// Was the click inside the ME grid?
-		if( GuiHelper.instance.isPointInGuiRegion( GuiConstantsACT.ME_ITEM_POS_Y, GuiConstantsACT.ME_ITEM_POS_X, GuiConstantsACT.ME_GRID_HEIGHT,
-			GuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+		if( GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.ME_ITEM_POS_Y, AbstractGuiConstantsACT.ME_ITEM_POS_X,
+			AbstractGuiConstantsACT.ME_GRID_HEIGHT, AbstractGuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 		{
 			// Is the player holding anything?
 			if( this.player.inventory.getItemStack() != null )
@@ -486,8 +490,8 @@ public class GuiArcaneCraftingTerminal
 		}
 
 		// Is the mouse over the scroll bar area?
-		if( GuiHelper.instance.isPointInGuiRegion( GuiConstantsACT.SCROLLBAR_POS_Y, GuiConstantsACT.SCROLLBAR_POS_X,
-			GuiConstantsACT.SCROLLBAR_HEIGHT, this.scrollBar.getWidth(), mouseX, mouseY, this.guiLeft, this.guiTop ) )
+		if( GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.SCROLLBAR_POS_Y, AbstractGuiConstantsACT.SCROLLBAR_POS_X,
+			AbstractGuiConstantsACT.SCROLLBAR_HEIGHT, this.scrollBar.getWidth(), mouseX, mouseY, this.guiLeft, this.guiTop ) )
 		{
 			// The scroll bar now has mouse focus
 			this.isScrollBarHeld = true;
@@ -521,12 +525,12 @@ public class GuiArcaneCraftingTerminal
 
 		switch ( button.id )
 		{
-			case GuiConstantsACT.BUTTON_CLEAR_GRID_ID:
+			case AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_ID:
 				// Attempt to clear the grid
 				new PacketServerArcaneCraftingTerminal().createRequestClearGrid( this.player ).sendPacketToServer();
 				break;
 
-			case GuiConstantsACT.BUTTON_SORT_ORDER_ID:
+			case AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID:
 				switch ( this.sortingOrder )
 				{
 					case AMOUNT:
@@ -547,7 +551,7 @@ public class GuiArcaneCraftingTerminal
 				sortingChanged = true;
 				break;
 
-			case GuiConstantsACT.BUTTON_SORT_DIR_ID:
+			case AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID:
 				switch ( this.sortingDirection )
 				{
 					case ASCENDING:
@@ -603,21 +607,21 @@ public class GuiArcaneCraftingTerminal
 				int repY = mouseY - this.guiTop;
 
 				// Has the mouse exceeded the 'upper' bound?
-				if( repY > GuiConstantsACT.SCROLLBAR_VERTICAL_BOUND )
+				if( repY > AbstractGuiConstantsACT.SCROLLBAR_VERTICAL_BOUND )
 				{
-					repY = GuiConstantsACT.SCROLLBAR_VERTICAL_BOUND;
+					repY = AbstractGuiConstantsACT.SCROLLBAR_VERTICAL_BOUND;
 				}
 				// Has the mouse exceeded the 'lower' bound?
-				else if( repY <= GuiConstantsACT.SCROLLBAR_POS_Y )
+				else if( repY <= AbstractGuiConstantsACT.SCROLLBAR_POS_Y )
 				{
-					repY = GuiConstantsACT.SCROLLBAR_POS_Y;
+					repY = AbstractGuiConstantsACT.SCROLLBAR_POS_Y;
 
 					// We will have to correct for zero
 					correctForZero = true;
 				}
 
 				// Update the scroll bar
-				this.scrollBar.click( this.aeGuiBridge, GuiConstantsACT.SCROLLBAR_POS_X + 1, repY );
+				this.scrollBar.click( this.aeGuiBridge, AbstractGuiConstantsACT.SCROLLBAR_POS_X + 1, repY );
 
 				// Should we correct for zero?
 				if( correctForZero )
@@ -705,8 +709,8 @@ public class GuiArcaneCraftingTerminal
 		new PacketServerArcaneCraftingTerminal().createRequestFullList( this.player ).sendPacketToServer();
 
 		// Set up the search bar
-		this.searchField = new GuiTextField( this.fontRendererObj, GuiConstantsACT.SEARCH_POS_X, GuiConstantsACT.SEARCH_POS_Y,
-						GuiConstantsACT.SEARCH_WIDTH, GuiConstantsACT.SEARCH_HEIGHT );
+		this.searchField = new GuiTextField( this.fontRendererObj, AbstractGuiConstantsACT.SEARCH_POS_X, AbstractGuiConstantsACT.SEARCH_POS_Y,
+						AbstractGuiConstantsACT.SEARCH_WIDTH, AbstractGuiConstantsACT.SEARCH_HEIGHT );
 
 		// Set the search field to draw in the foreground
 		this.searchField.setEnableBackgroundDrawing( false );
@@ -715,14 +719,14 @@ public class GuiArcaneCraftingTerminal
 		this.searchField.setFocused( true );
 
 		// Set maximum length
-		this.searchField.setMaxStringLength( GuiConstantsACT.SEARCH_MAX_CHARS );
+		this.searchField.setMaxStringLength( AbstractGuiConstantsACT.SEARCH_MAX_CHARS );
 
 		// Clear any existing buttons
 		this.buttonList.clear();
 
 		// Create the clear grid button
-		this.buttonList.add( new ButtonClearCraftingGrid( GuiConstantsACT.BUTTON_CLEAR_GRID_ID, this.guiLeft +
-						GuiConstantsACT.BUTTON_CLEAR_GRID_POS_X, this.guiTop + GuiConstantsACT.BUTTON_CLEAR_GRID_POS_Y, 8, 8 ) );
+		this.buttonList.add( new ButtonClearCraftingGrid( AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_ID, this.guiLeft +
+						AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_POS_Y, 8, 8 ) );
 
 		// Create the AE bridge
 		this.aeGuiBridge = new AEBaseGui( this.inventorySlots )
@@ -761,19 +765,21 @@ public class GuiArcaneCraftingTerminal
 		};
 
 		// Setup the scroll bar
-		this.scrollBar.setLeft( GuiConstantsACT.SCROLLBAR_POS_X ).setTop( GuiConstantsACT.SCROLLBAR_POS_Y )
-						.setHeight( GuiConstantsACT.SCROLLBAR_HEIGHT );
+		this.scrollBar.setLeft( AbstractGuiConstantsACT.SCROLLBAR_POS_X ).setTop( AbstractGuiConstantsACT.SCROLLBAR_POS_Y )
+						.setHeight( AbstractGuiConstantsACT.SCROLLBAR_HEIGHT );
 
 		// No scrolling until we get items
 		this.scrollBar.setRange( 0, 0, 1 );
 
 		// Add sort order button
-		this.buttonList.add( new ButtonSortingMode( GuiConstantsACT.BUTTON_SORT_ORDER_ID, this.guiLeft + GuiConstantsACT.BUTTON_SORT_ORDER_POS_X,
-						this.guiTop + GuiConstantsACT.BUTTON_SORT_ORDER_POS_Y, GuiConstantsACT.BUTTON_SORT_SIZE, GuiConstantsACT.BUTTON_SORT_SIZE ) );
+		this.buttonList.add( new ButtonSortingMode( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID, this.guiLeft +
+						AbstractGuiConstantsACT.BUTTON_SORT_ORDER_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SORT_ORDER_POS_Y,
+						AbstractGuiConstantsACT.BUTTON_SORT_SIZE, AbstractGuiConstantsACT.BUTTON_SORT_SIZE ) );
 
 		// Add sort direction button
-		this.buttonList.add( new ButtonSortingDirection( GuiConstantsACT.BUTTON_SORT_DIR_ID, this.guiLeft + GuiConstantsACT.BUTTON_SORT_DIR_POS_X,
-						this.guiTop + GuiConstantsACT.BUTTON_SORT_DIR_POS_Y, GuiConstantsACT.BUTTON_SORT_SIZE, GuiConstantsACT.BUTTON_SORT_SIZE ) );
+		this.buttonList.add( new ButtonSortingDirection( AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID, this.guiLeft +
+						AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_Y,
+						AbstractGuiConstantsACT.BUTTON_SORT_SIZE, AbstractGuiConstantsACT.BUTTON_SORT_SIZE ) );
 
 	}
 
@@ -848,6 +854,7 @@ public class GuiArcaneCraftingTerminal
 
 	/**
 	 * Called when the server sends the sorting order and direction.
+	 * 
 	 * @param order
 	 * @param direction
 	 */
@@ -858,7 +865,7 @@ public class GuiArcaneCraftingTerminal
 
 		// Set the order
 		this.sortingOrder = order;
-		
+
 		// Update
 		this.updateSorting();
 	}

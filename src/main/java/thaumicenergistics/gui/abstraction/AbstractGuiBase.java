@@ -1,5 +1,6 @@
-package thaumicenergistics.gui;
+package thaumicenergistics.gui.abstraction;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -7,8 +8,9 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import thaumicenergistics.gui.buttons.AbstractButtonBase;
 
-public abstract class BaseGui
+public abstract class AbstractGuiBase
 	extends GuiContainer
 {
 	/**
@@ -112,8 +114,14 @@ public abstract class BaseGui
 	 * Thickness of the tooltip's borders.
 	 */
 	private static final int TOOLTIP_BORDER_SIZE = 3;
+	
 
-	public BaseGui( final Container container )
+	/**
+	 * Lines to draw when drawTooltip is called.
+	 */
+	protected final List<String> tooltip = new ArrayList<String>();
+
+	public AbstractGuiBase( final Container container )
 	{
 		super( container );
 	}
@@ -129,10 +137,11 @@ public abstract class BaseGui
 	private final void drawTooltipBackground( final Bounds bounds )
 	{
 		// Background
-		this.drawGradientRect( bounds.L, bounds.T, bounds.R, bounds.B, BaseGui.TOOLTIP_COLOR_BACKGROUND, BaseGui.TOOLTIP_COLOR_BACKGROUND );
+		this.drawGradientRect( bounds.L, bounds.T, bounds.R, bounds.B, AbstractGuiBase.TOOLTIP_COLOR_BACKGROUND,
+			AbstractGuiBase.TOOLTIP_COLOR_BACKGROUND );
 
 		// Draw outer borders
-		this.drawTooltipBorders( bounds, BaseGui.TOOLTIP_COLOR_OUTER, BaseGui.TOOLTIP_COLOR_OUTER, 0 );
+		this.drawTooltipBorders( bounds, AbstractGuiBase.TOOLTIP_COLOR_OUTER, AbstractGuiBase.TOOLTIP_COLOR_OUTER, 0 );
 
 		// Adjust bounds for inner borders
 		bounds.T++ ;
@@ -141,7 +150,7 @@ public abstract class BaseGui
 		bounds.R-- ;
 
 		// Draw inner borders
-		this.drawTooltipBorders( bounds, BaseGui.TOOLTIP_COLOR_INNER_BEGIN, BaseGui.TOOLTIP_COLOR_INNER_END, 1 );
+		this.drawTooltipBorders( bounds, AbstractGuiBase.TOOLTIP_COLOR_INNER_BEGIN, AbstractGuiBase.TOOLTIP_COLOR_INNER_END, 1 );
 	}
 
 	/**
@@ -171,22 +180,53 @@ public abstract class BaseGui
 		this.drawGradientRect( bounds.L, bounds.B, bounds.R, bounds.B + 1, colorStart, colorEnd );
 	}
 
+	/**
+	 * Adds to the tooltip based on which button the mouse is over.
+	 * @param mouseX
+	 * @param mouseY
+	 * @return True when a tooltip was added, false otherwise.
+	 */
+	protected boolean addTooltipFromButtons( int mouseX, int mouseY )
+	{
+		// Is the mouse over any buttons?
+		for( Object obj : this.buttonList )
+		{
+			// Is it a base button?
+			if( obj instanceof AbstractButtonBase )
+			{
+				// Cast
+				AbstractButtonBase currentButton = (AbstractButtonBase)obj;
+
+				// Is the mouse over it?
+				if( currentButton.isMouseOverButton( mouseX, mouseY ) )
+				{
+					// Get the tooltip
+					currentButton.getTooltip( this.tooltip );
+
+					// And stop searching
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
 	@Override
 	protected abstract void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY );
 
 	/**
-	 * Draws an on-screen tooltip.
+	 * Draws an on-screen tooltip box based on the string in this.tooltip.
+	 * The tooltip is cleared after being drawn.
 	 * 
-	 * @param tooltip
-	 * Lines shown in the tooltip. Can be empty, can not be null.
 	 * @param posX
 	 * X anchor position to draw the tooltip. Generally the mouse's X position.
 	 * @param posY
 	 * Y anchor position to draw the tooltip. Generally the mouse's Y position.
 	 */
-	protected final void drawTooltip( final List<String> tooltip, int posX, int posY )
+	protected final void drawTooltip( int posX, int posY )
 	{
-		if( !tooltip.isEmpty() )
+		if( !this.tooltip.isEmpty() )
 		{
 			// Disable rescaling
 			GL11.glDisable( GL12.GL_RESCALE_NORMAL );
@@ -196,15 +236,22 @@ public abstract class BaseGui
 
 			// Disable depth testing
 			GL11.glDisable( GL11.GL_DEPTH_TEST );
+			
+			// Bounds check the position
+			if( posY < 0 )
+			{
+				posY = 0;
+			}
+			
 
 			// Assume string length is zero
 			int maxStringLength_px = 0;
 
 			// Get max string length from lines in the list
-			for( String string : tooltip )
+			for( String string : this.tooltip )
 			{
 				// Get the length of the string
-				int stringLen = BaseGui.FONT_RENDERER.getStringWidth( string );
+				int stringLen = AbstractGuiBase.FONT_RENDERER.getStringWidth( string );
 
 				// Is it larger than the previous length?
 				if( stringLen > maxStringLength_px )
@@ -215,20 +262,20 @@ public abstract class BaseGui
 			}
 
 			// Offset the tooltip slightly
-			posX = posX + BaseGui.TOOLTIP_OFFSET;
-			posY = posY - BaseGui.TOOLTIP_OFFSET;
+			posX = posX + AbstractGuiBase.TOOLTIP_OFFSET;
+			posY = posY - AbstractGuiBase.TOOLTIP_OFFSET;
 
 			// Base height of 8
-			int tooltipHeight = BaseGui.TOOLTIP_EMPTY_HEIGHT;
+			int tooltipHeight = AbstractGuiBase.TOOLTIP_EMPTY_HEIGHT;
 
 			// Adjust height based on the number of lines
-			if( tooltip.size() > 1 )
+			if( this.tooltip.size() > 1 )
 			{
 				// Calculate the line height
-				int lineHeight = ( tooltip.size() - 1 ) * BaseGui.TOOLTIP_LINE_HEIGHT;
+				int lineHeight = ( this.tooltip.size() - 1 ) * AbstractGuiBase.TOOLTIP_LINE_HEIGHT;
 
 				// Adjust the height
-				tooltipHeight += ( BaseGui.TOOLTIP_HEIGHT_MARGIN + lineHeight );
+				tooltipHeight += ( AbstractGuiBase.TOOLTIP_HEIGHT_MARGIN + lineHeight );
 			}
 
 			// Get the current z level
@@ -238,17 +285,17 @@ public abstract class BaseGui
 			this.zLevel = 300;
 
 			// Tooltip boundary
-			Bounds bounds = new Bounds( posY - BaseGui.TOOLTIP_BORDER_SIZE, posX - BaseGui.TOOLTIP_BORDER_SIZE, posY + tooltipHeight +
-							BaseGui.TOOLTIP_BORDER_SIZE, posX + maxStringLength_px + BaseGui.TOOLTIP_BORDER_SIZE );
+			Bounds bounds = new Bounds( posY - AbstractGuiBase.TOOLTIP_BORDER_SIZE, posX - AbstractGuiBase.TOOLTIP_BORDER_SIZE, posY + tooltipHeight +
+							AbstractGuiBase.TOOLTIP_BORDER_SIZE, posX + maxStringLength_px + AbstractGuiBase.TOOLTIP_BORDER_SIZE );
 
 			// Draw the background and borders
 			this.drawTooltipBackground( bounds );
 
 			// Draw each line
-			for( int index = 0; index < tooltip.size(); index++ )
+			for( int index = 0; index < this.tooltip.size(); index++ )
 			{
 				// Get the line
-				String line = tooltip.get( index );
+				String line = this.tooltip.get( index );
 
 				// Draw the line
 				FONT_RENDERER.drawStringWithShadow( line, posX, posY, -1 );
@@ -257,11 +304,11 @@ public abstract class BaseGui
 				if( index == 0 )
 				{
 					// Add the margin
-					posY += BaseGui.TOOLTIP_HEIGHT_MARGIN;
+					posY += AbstractGuiBase.TOOLTIP_HEIGHT_MARGIN;
 				}
 
 				// Add the line height
-				posY += BaseGui.TOOLTIP_LINE_HEIGHT;
+				posY += AbstractGuiBase.TOOLTIP_LINE_HEIGHT;
 			}
 
 			// Return the z level to what it was before
@@ -275,6 +322,9 @@ public abstract class BaseGui
 
 			// Reenable scaling
 			GL11.glEnable( GL12.GL_RESCALE_NORMAL );
+			
+			// Clear the tooltip
+			this.tooltip.clear();
 		}
 	}
 

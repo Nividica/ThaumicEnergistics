@@ -41,7 +41,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaLevelEmitter
-	extends AEPartBase
+	extends AbstractAEPartBase
 	implements IAspectSlotPart, IMEMonitorHandlerReceiver<IAEFluidStack>
 {
 	/**
@@ -589,7 +589,7 @@ public class AEPartEssentiaLevelEmitter
 			helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[1] );
 
 			// Set the brightness
-			Tessellator.instance.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
+			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_BRIGHTNESS );
 
 		}
 		else

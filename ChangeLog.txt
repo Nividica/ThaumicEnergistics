@@ -1,4 +1,17 @@
-﻿9/2/2014 0.6.5b
+﻿9/4/2014 0.6.6b
+  Fixed Storage bus Gui width.
+  Fixes #30: Add tooltips to buttons.
+  Cleaned up storage bus NBT code.
+  Fixes #29: Added void mode to Essentia Storage Bus, with known issue #31
+
+9/2/2014 0.6.6b
+  Fixes #27: Removed all reflection calls.
+  Texture generation now works outside of dev environment.
+  Package cleanup.
+  Can now type in negative number in priority window.
+  Fixes #28: Corrected level emitter button placement.
+
+9/2/2014 0.6.5b
   Fixed tooltips.
   Added MOD name to item tooltips.
 

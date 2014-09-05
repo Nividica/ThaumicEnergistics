@@ -63,7 +63,8 @@ public class ButtonRedstoneModes
 		this.setRedstoneMode( mode );
 	}
 
-	public List<String> getTooltip( final List<String> tooltip )
+	@Override
+	public void getTooltip( final List<String> tooltip )
 	{
 		// Add header
 		tooltip.add( StatCollector.translateToLocal( TOOLTIP_LOC_HEADER + "RedstoneMode" ) );
@@ -97,8 +98,6 @@ public class ButtonRedstoneModes
 		{
 			tooltip.add( EnumChatFormatting.GRAY + current );
 		}
-		
-		return tooltip;
 	}
 
 	/**

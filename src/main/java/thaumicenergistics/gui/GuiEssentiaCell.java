@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.ContainerEssentiaCell;
+import thaumicenergistics.gui.abstraction.AbstractGuiCellTerminalBase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -15,7 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaCell
-	extends GuiCellTerminalBase
+	extends AbstractGuiCellTerminalBase
 {
 	/**
 	 * Create the gui.

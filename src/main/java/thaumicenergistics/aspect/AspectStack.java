@@ -41,7 +41,7 @@ public class AspectStack
 	 * @param amount
 	 * How much this stack will have.
 	 */
-	public AspectStack( Aspect aspect, long amount )
+	public AspectStack( final Aspect aspect, final long amount )
 	{
 		this.aspect = aspect;
 
@@ -53,7 +53,7 @@ public class AspectStack
 	 * 
 	 * @param source
 	 */
-	public AspectStack( AspectStack source )
+	public AspectStack( final AspectStack source )
 	{
 		this.aspect = source.aspect;
 
@@ -67,7 +67,7 @@ public class AspectStack
 	 * Tag to load from
 	 * @return Created stack, or null.
 	 */
-	public static AspectStack loadAspectStackFromNBT( NBTTagCompound nbt )
+	public static AspectStack loadAspectStackFromNBT( final NBTTagCompound nbt )
 	{
 		// Attempt to get the aspect
 		Aspect aspect = Aspect.aspects.get( nbt.getString( "AspectTag" ) );
@@ -100,7 +100,7 @@ public class AspectStack
 	 * 
 	 * @return Aspect name, or empty string if no aspect.
 	 */
-	public String getAspectName( EntityPlayer player )
+	public String getAspectName( final EntityPlayer player )
 	{
 		// Do we have an aspect?
 		if( this.aspect == null )
@@ -149,7 +149,13 @@ public class AspectStack
 		return "";
 	}
 
-	public boolean hasPlayerDiscovered( EntityPlayer player )
+	/**
+	 * Checks if the player has discovered this aspect.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public boolean hasPlayerDiscovered( final EntityPlayer player )
 	{
 		boolean hasDiscovered = false;
 
@@ -174,7 +180,7 @@ public class AspectStack
 	 * The tag to write to
 	 * @return The nbt tag.
 	 */
-	public NBTTagCompound writeToNBT( NBTTagCompound nbt )
+	public NBTTagCompound writeToNBT( final NBTTagCompound nbt )
 	{
 		// Do we have an aspect?
 		if( this.aspect != null )

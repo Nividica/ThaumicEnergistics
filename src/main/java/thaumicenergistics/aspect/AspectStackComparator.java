@@ -42,23 +42,23 @@ public class AspectStackComparator
 	 * @param mode
 	 * Mode to sort by.
 	 */
-	public AspectStackComparator( ComparatorMode mode )
+	public AspectStackComparator( final ComparatorMode mode )
 	{
 		this.mode = mode;
 	}
 
-	private int compareByAmount( AspectStack left, AspectStack right )
+	private int compareByAmount( final AspectStack left, final AspectStack right )
 	{
 		return (int)( right.amount - left.amount );
 	}
 
-	private int compareByTag( AspectStack left, AspectStack right )
+	private int compareByTag( final AspectStack left, final AspectStack right )
 	{
 		return left.aspect.getTag().compareTo( right.aspect.getTag() );
 	}
 
 	@Override
-	public int compare( AspectStack left, AspectStack right )
+	public int compare( final AspectStack left, final AspectStack right )
 	{
 		switch ( this.mode )
 		{
@@ -68,16 +68,16 @@ public class AspectStackComparator
 
 			case MODE_AMOUNT:
 				// Compare amounts
-				int comp = this.compareByAmount( left, right );
+				int comparedAmounts = this.compareByAmount( left, right );
 
 				// Are the amounts equal?
-				if( comp == 0 )
+				if( comparedAmounts == 0 )
 				{
 					// Compare tags
-					comp = this.compareByTag( left, right );
+					comparedAmounts = this.compareByTag( left, right );
 				}
 
-				return comp;
+				return comparedAmounts;
 		}
 
 		return 0;

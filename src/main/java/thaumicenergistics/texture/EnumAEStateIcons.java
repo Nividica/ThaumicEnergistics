@@ -18,7 +18,8 @@ public enum EnumAEStateIcons
 		TAB_BUTTON (208, 0, 22, 22),
 		SORT_DIR_ASC (0, 48),
 		SORT_DIR_DEC (16, 48),
-		WRENCH (32, 64);
+		WRENCH (32, 64),
+		DISABLED( 0, 128 );
 
 	/**
 	 * Location of the AE states texture

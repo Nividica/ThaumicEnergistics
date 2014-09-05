@@ -18,6 +18,7 @@ import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.inventory.HandlerEssentiaStorageBus;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
+import thaumicenergistics.network.packet.client.PacketClientEssentiaStorageBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
@@ -44,7 +45,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaStorageBus
-	extends AEPartBase
+	extends AbstractAEPartBase
 	implements IGridTickable, ICellContainer, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory, IPriorityHost
 {
 	/**
@@ -56,6 +57,14 @@ public class AEPartEssentiaStorageBus
 	 * How much AE power is required to keep the part active.
 	 */
 	private static final double IDLE_POWER_DRAIN = 1.0D;
+
+	private static final String NBT_KEY_PRIORITY = "Priority";
+
+	private static final String NBT_KEY_FILTER = "FilterAspects#";
+
+	private static final String NBT_KEY_UPGRADES = "UpgradeInventory";
+
+	private static final String NBT_KEY_VOID = "IsVoidAllowed";
 
 	/**
 	 * Storage bus priority
@@ -120,7 +129,7 @@ public class AEPartEssentiaStorageBus
 	 * @param itemStack
 	 * @return
 	 */
-	public boolean addFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
+	public boolean addFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
 	{
 		// Get the aspect of the item
 		Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( itemStack );
@@ -156,7 +165,7 @@ public class AEPartEssentiaStorageBus
 	 * 
 	 * @param listener
 	 */
-	public void addListener( ContainerPartEssentiaStorageBus listener )
+	public void addListener( final ContainerPartEssentiaStorageBus listener )
 	{
 		if( !this.listeners.contains( listener ) )
 		{
@@ -168,7 +177,7 @@ public class AEPartEssentiaStorageBus
 	 * Ignored
 	 */
 	@Override
-	public void blinkCell( int slot )
+	public void blinkCell( final int slot )
 	{
 	}
 
@@ -185,7 +194,7 @@ public class AEPartEssentiaStorageBus
 	 * Hit/Collision boxes.
 	 */
 	@Override
-	public void getBoxes( IPartCollsionHelper helper )
+	public void getBoxes( final IPartCollsionHelper helper )
 	{
 		// Face
 		helper.addBox( 1.0F, 1.0F, 15.0F, 15.0F, 15.0F, 16.0F );
@@ -201,7 +210,7 @@ public class AEPartEssentiaStorageBus
 	 * Gets the 'cell' handler for the storage bus.
 	 */
 	@Override
-	public List<IMEInventoryHandler> getCellArray( StorageChannel channel )
+	public List<IMEInventoryHandler> getCellArray( final StorageChannel channel )
 	{
 		// Create a new list
 		List<IMEInventoryHandler> list = new ArrayList();
@@ -225,7 +234,7 @@ public class AEPartEssentiaStorageBus
 	 * Returns the client portion of the gui.
 	 */
 	@Override
-	public Object getClientGuiElement( EntityPlayer player )
+	public Object getClientGuiElement( final EntityPlayer player )
 	{
 		return new GuiEssentiaStorageBus( this, player );
 	}
@@ -234,7 +243,7 @@ public class AEPartEssentiaStorageBus
 	 * What do we drop when removed from the world.
 	 */
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 		// Were we wrenched?
 		if( wrenched )
@@ -277,7 +286,7 @@ public class AEPartEssentiaStorageBus
 	 * Gets the server part of the gui.
 	 */
 	@Override
-	public Object getServerGuiElement( EntityPlayer player )
+	public Object getServerGuiElement( final EntityPlayer player )
 	{
 		return new ContainerPartEssentiaStorageBus( this, player );
 	}
@@ -286,7 +295,7 @@ public class AEPartEssentiaStorageBus
 	 * Sets how often we would like ticks.
 	 */
 	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
+	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		// We would like a tick ever 20 MC ticks
 		return new TickingRequest( 20, 20, false, false );
@@ -306,7 +315,7 @@ public class AEPartEssentiaStorageBus
 	 * Called when the upgrade inventory changes.
 	 */
 	@Override
-	public void onChangeInventory( IInventory inv, int arg1, InvOperation arg2, ItemStack arg3, ItemStack arg4 )
+	public void onChangeInventory( final IInventory inv, final int arg1, final InvOperation arg2, final ItemStack arg3, final ItemStack arg4 )
 	{
 		this.onInventoryChanged( inv );
 	}
@@ -316,10 +325,29 @@ public class AEPartEssentiaStorageBus
 	 * 
 	 * @param player
 	 */
-	public void onClientRequestFullUpdate( EntityPlayer player )
+	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
-		// Send the update
+		// Send the void mode
+		new PacketClientEssentiaStorageBus().createSetIsVoidAllowed( player, this.handler.isVoidAllowed ).sendPacketToPlayer();
+
+		// Send the filter
 		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
+	}
+
+	/**
+	 * Called when a player has changed void mode via gui.
+	 * 
+	 * @param player
+	 * @param isVoidAllowed
+	 */
+	public void onClientRequestSetVoidMode( final EntityPlayer player, final boolean isVoidAllowed )
+	{
+		// Set the mode
+		this.handler.isVoidAllowed = isVoidAllowed;
+
+		// TODO: I should really synchronize this with all clients
+
+		this.saveChanges();
 	}
 
 	/**
@@ -328,7 +356,7 @@ public class AEPartEssentiaStorageBus
 	 * 
 	 * @param amountChanged_EU
 	 */
-	public void onEssentiaTransfered( int amountChanged_EU )
+	public void onEssentiaTransfered( final int amountChanged_EU )
 	{
 		/* Update the last amount so that on the next tick we don't think
 		 * that the amount has changed. 
@@ -340,7 +368,7 @@ public class AEPartEssentiaStorageBus
 	 * Updates the handler on the inverted state.
 	 */
 	@Override
-	public void onInventoryChanged( IInventory sourceInventory )
+	public void onInventoryChanged( final IInventory sourceInventory )
 	{
 		this.handler.setInverted( AEApi.instance().materials().materialCardInverter.sameAsStack( this.upgradeInventory.getStackInSlot( 0 ) ) );
 	}
@@ -380,22 +408,28 @@ public class AEPartEssentiaStorageBus
 	 * Reads the part data from NBT
 	 */
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		// Call super
 		super.readFromNBT( data );
 
 		// Read the priority
-		this.priority = data.getInteger( "priority" );
+		this.priority = data.getInteger( AEPartEssentiaStorageBus.NBT_KEY_PRIORITY );
 
 		// Read the filter list
 		for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
 		{
-			this.filteredAspects.set( index, Aspect.aspects.get( data.getString( "FilterAspects#" + index ) ) );
+			this.filteredAspects.set( index, Aspect.aspects.get( data.getString( AEPartEssentiaStorageBus.NBT_KEY_FILTER + index ) ) );
 		}
 
 		// Read the upgrade inventory
-		this.upgradeInventory.readFromNBT( data, "UpgradeInventory" );
+		this.upgradeInventory.readFromNBT( data, AEPartEssentiaStorageBus.NBT_KEY_UPGRADES );
+
+		// Read void
+		if( data.hasKey( AEPartEssentiaStorageBus.NBT_KEY_VOID ) )
+		{
+			this.handler.isVoidAllowed = data.getBoolean( AEPartEssentiaStorageBus.NBT_KEY_VOID );
+		}
 
 		// Update the handler inverted
 		this.onInventoryChanged( this.upgradeInventory );
@@ -409,7 +443,7 @@ public class AEPartEssentiaStorageBus
 	 * 
 	 * @param listener
 	 */
-	public void removeListener( ContainerPartEssentiaStorageBus listener )
+	public void removeListener( final ContainerPartEssentiaStorageBus listener )
 	{
 		this.listeners.remove( listener );
 	}
@@ -419,7 +453,7 @@ public class AEPartEssentiaStorageBus
 	 */
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void renderInventory( IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		Tessellator ts = Tessellator.instance;
 
@@ -436,7 +470,7 @@ public class AEPartEssentiaStorageBus
 
 		// Color overlay
 		helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
-		helper.setInvColor( AEPartBase.INVENTORY_OVERLAY_COLOR );
+		helper.setInvColor( AbstractAEPartBase.INVENTORY_OVERLAY_COLOR );
 		ts.setBrightness( 0xF000F0 );
 		helper.renderInventoryFace( BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[1], ForgeDirection.SOUTH, renderer );
 
@@ -450,7 +484,7 @@ public class AEPartEssentiaStorageBus
 	 */
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		Tessellator tessellator = Tessellator.instance;
 
@@ -465,7 +499,7 @@ public class AEPartEssentiaStorageBus
 
 		if( this.isActive() )
 		{
-			tessellator.setBrightness( AEPartBase.ACTIVE_BRIGHTNESS );
+			tessellator.setBrightness( AbstractAEPartBase.ACTIVE_BRIGHTNESS );
 		}
 
 		// Mid
@@ -488,7 +522,7 @@ public class AEPartEssentiaStorageBus
 	 * Ensures the storage bus gets saved.
 	 */
 	@Override
-	public void saveChanges( IMEInventory inventory )
+	public void saveChanges( final IMEInventory inventory )
 	{
 		this.saveChanges();
 	}
@@ -497,7 +531,7 @@ public class AEPartEssentiaStorageBus
 	 * Sets one of the filters.
 	 */
 	@Override
-	public void setAspect( int index, Aspect aspect, EntityPlayer player )
+	public void setAspect( final int index, final Aspect aspect, final EntityPlayer player )
 	{
 		this.filteredAspects.set( index, aspect );
 
@@ -513,7 +547,7 @@ public class AEPartEssentiaStorageBus
 	}
 
 	@Override
-	public void setPriority( int priority )
+	public void setPriority( final int priority )
 	{
 		this.priority = priority;
 	}
@@ -522,7 +556,7 @@ public class AEPartEssentiaStorageBus
 	 * Called periodically by AE2. Checks the Thaumcraft container.
 	 */
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
 		// Do we have a container?
 		if( this.facingContainer != null )
@@ -548,11 +582,11 @@ public class AEPartEssentiaStorageBus
 	 * Writes the storage busses state to NBT.
 	 */
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 
-		data.setInteger( "priority", this.priority );
+		data.setInteger( AEPartEssentiaStorageBus.NBT_KEY_PRIORITY, this.priority );
 
 		for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
 		{
@@ -560,15 +594,19 @@ public class AEPartEssentiaStorageBus
 
 			if( aspect != null )
 			{
-				data.setString( "FilterAspects#" + index, aspect.getTag() );
+				data.setString( AEPartEssentiaStorageBus.NBT_KEY_FILTER + index, aspect.getTag() );
 			}
 			else
 			{
-				data.setString( "FilterAspects#" + index, "" );
+				data.setString( AEPartEssentiaStorageBus.NBT_KEY_FILTER + index, "" );
 			}
 		}
 
-		this.upgradeInventory.writeToNBT( data, "UpgradeInventory" );
+		// Write upgrades
+		this.upgradeInventory.writeToNBT( data, AEPartEssentiaStorageBus.NBT_KEY_UPGRADES );
+
+		// Write void
+		data.setBoolean( AEPartEssentiaStorageBus.NBT_KEY_VOID, this.handler.isVoidAllowed );
 	}
 
 }

@@ -3,12 +3,13 @@ package thaumicenergistics.gui;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.ContainerEssentiaTerminal;
+import thaumicenergistics.gui.abstraction.AbstractGuiCellTerminalBase;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 
 public class GuiEssentiaTerminal
-	extends GuiCellTerminalBase
+	extends AbstractGuiCellTerminalBase
 	implements IAspectSelectorGui
 {
 	protected AEPartEssentiaTerminal terminal;

@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
+import thaumicenergistics.gui.abstraction.AbstractGuiWidgetHost;
 import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
@@ -19,14 +20,13 @@ import thaumicenergistics.parts.AEPartEssentiaIO;
 import thaumicenergistics.parts.AEPartEssentiaImportBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
-import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiEssentiatIO
-	extends GuiWidgetHost
+	extends AbstractGuiWidgetHost
 	implements WidgetAspectSlot.IConfigurable, IAspectSlotGui
 {
 
@@ -290,6 +290,9 @@ public class GuiEssentiatIO
 	@Override
 	public void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
 	{
+		// Call super
+		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
+
 		// Draw the title
 		this.fontRendererObj.drawString( this.guiTitle, GuiEssentiatIO.TITLE_POS_X, GuiEssentiatIO.TITLE_POS_Y, 0x000000 );
 
@@ -312,48 +315,21 @@ public class GuiEssentiatIO
 
 			slotWidget.drawWidget();
 		}
-		
-		List<String> tooltip = null;
-		
+
+		// Should we get the tooltip from the slot?
 		if( slotUnderMouse != null )
 		{
-			// Get the tooltip
-			tooltip = slotUnderMouse.getTooltip( new ArrayList<String>() );
+			// Add the tooltip from the widget
+			slotUnderMouse.getTooltip( this.tooltip );
 		}
 		else
 		{
-			// Is the mouse over any buttons?
-			for( Object obj : this.buttonList )
-			{
-				// Cast to button
-				GuiButton currentButton = (GuiButton)obj;
-
-				// Is the mouse over it?
-				if( GuiHelper.instance.isPointInRegion( currentButton.xPosition, currentButton.yPosition, currentButton.width, currentButton.height, mouseX,
-					mouseY ) )
-				{
-					// Is it the redstone button?
-					if( currentButton instanceof ButtonRedstoneModes )
-					{
-						// Get the tooltip
-						tooltip = ( (ButtonRedstoneModes)currentButton ).getTooltip( tooltip );
-					}
-
-					// Stop searching
-					break;
-				}
-			}
+			// Add the tooltip from the buttons
+			this.addTooltipFromButtons( mouseX, mouseY );
 		}
 
-		
-		if( ( tooltip != null ) && ( !tooltip.isEmpty() ) )
-		{
-			// Draw the tooltip
-			this.drawTooltip( tooltip, mouseX - this.guiLeft, mouseY - this.guiTop );
-		}
-
-		// Call super
-		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
+		// Draw the tooltip
+		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
 	}
 
 	@Override

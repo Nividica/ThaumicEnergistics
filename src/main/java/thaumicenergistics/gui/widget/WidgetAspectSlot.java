@@ -51,14 +51,12 @@ public class WidgetAspectSlot
 	}
 
 	@Override
-	public List<String> getTooltip( List<String> tooltip )
+	public void getTooltip( List<String> tooltip )
 	{
 		if( this.canRender() && ( this.getAspect() != null ) )
 		{
 			tooltip.add( this.aspectName );
 		}
-		
-		return tooltip;
 	}
 
 	@Override

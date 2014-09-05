@@ -48,7 +48,7 @@ public class WidgetAEItem
 	}
 
 	@Override
-	public List<String> getTooltip( final List<String> tooltip )
+	public void getTooltip( final List<String> tooltip )
 	{
 		if( this.aeItemStack != null )
 		{
@@ -72,6 +72,7 @@ public class WidgetAEItem
 					stackTooltip.set( index, EnumChatFormatting.GRAY + stackTooltip.get( index ) );
 				}
 
+				// Add the item tooltip line
 				tooltip.add( stackTooltip.get( index ) );
 			}
 
@@ -79,10 +80,9 @@ public class WidgetAEItem
 			String modName = ( (AEItemStack)this.aeItemStack ).getModID();
 			modName = modName.substring( 0, 1 ).toUpperCase() + modName.substring( 1 );
 			
+			// Add the mod name
 			tooltip.add( EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + modName );
 		}
-
-		return tooltip;
 	}
 
 	/**

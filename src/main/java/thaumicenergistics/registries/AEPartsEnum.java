@@ -9,7 +9,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
-import thaumicenergistics.parts.AEPartBase;
+import thaumicenergistics.parts.AbstractAEPartBase;
 import thaumicenergistics.parts.AEPartEssentiaExportBus;
 import thaumicenergistics.parts.AEPartEssentiaImportBus;
 import thaumicenergistics.parts.AEPartEssentiaLevelEmitter;
@@ -35,18 +35,18 @@ public enum AEPartsEnum
 
 	private String unlocalizedName;
 
-	private Class<? extends AEPartBase> partClass;
+	private Class<? extends AbstractAEPartBase> partClass;
 
 	private String groupName;
 
 	private Map<Upgrades, Integer> upgrades = new HashMap<Upgrades, Integer>();
 
-	private AEPartsEnum( String unlocalizedName, Class<? extends AEPartBase> partClass )
+	private AEPartsEnum( String unlocalizedName, Class<? extends AbstractAEPartBase> partClass )
 	{
 		this( unlocalizedName, partClass, null );
 	}
 
-	private AEPartsEnum( String unlocalizedName, Class<? extends AEPartBase> partClass, String groupName )
+	private AEPartsEnum( String unlocalizedName, Class<? extends AbstractAEPartBase> partClass, String groupName )
 	{
 		// Add the mod name and parts sub-folder to the name
 		this.unlocalizedName = ThaumicEnergistics.MOD_ID + ".aeparts." + unlocalizedName;
@@ -58,7 +58,7 @@ public enum AEPartsEnum
 		this.groupName = groupName;
 	}
 
-	private AEPartsEnum( String unlocalizedName, Class<? extends AEPartBase> partClass, String groupName, Pair<Upgrades, Integer> ... upgrades )
+	private AEPartsEnum( String unlocalizedName, Class<? extends AbstractAEPartBase> partClass, String groupName, Pair<Upgrades, Integer> ... upgrades )
 	{
 		this( unlocalizedName, partClass, groupName );
 
@@ -93,7 +93,7 @@ public enum AEPartsEnum
 		return values[clamped];
 	}
 
-	public static int getPartID( Class<? extends AEPartBase> partClass )
+	public static int getPartID( Class<? extends AbstractAEPartBase> partClass )
 	{
 		int id = -1;
 
@@ -117,10 +117,10 @@ public enum AEPartsEnum
 
 	}
 
-	public AEPartBase createPartInstance( ItemStack itemStack ) throws InstantiationException, IllegalAccessException
+	public AbstractAEPartBase createPartInstance( ItemStack itemStack ) throws InstantiationException, IllegalAccessException
 	{
 		// Create a new instance of the part
-		AEPartBase part = this.partClass.newInstance();
+		AbstractAEPartBase part = this.partClass.newInstance();
 
 		// Setup based on the itemStack
 		part.setupPartFromItem( itemStack );
@@ -145,7 +145,7 @@ public enum AEPartsEnum
 	 * 
 	 * @return
 	 */
-	public Class<? extends AEPartBase> getPartClass()
+	public Class<? extends AbstractAEPartBase> getPartClass()
 	{
 		return this.partClass;
 	}

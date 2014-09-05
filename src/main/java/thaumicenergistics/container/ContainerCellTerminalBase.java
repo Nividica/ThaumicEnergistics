@@ -15,7 +15,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.gui.GuiCellTerminalBase;
+import thaumicenergistics.gui.abstraction.AbstractGuiCellTerminalBase;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
@@ -112,7 +112,7 @@ public abstract class ContainerCellTerminalBase
 	/**
 	 * The gui associated with this container
 	 */
-	protected GuiCellTerminalBase guiBase;
+	protected AbstractGuiCellTerminalBase guiBase;
 
 	/**
 	 * Import and export inventory
@@ -636,7 +636,7 @@ public abstract class ContainerCellTerminalBase
 	 * 
 	 * @param guiBase
 	 */
-	public void setGui( GuiCellTerminalBase guiBase )
+	public void setGui( AbstractGuiCellTerminalBase guiBase )
 	{
 		if( guiBase != null )
 		{

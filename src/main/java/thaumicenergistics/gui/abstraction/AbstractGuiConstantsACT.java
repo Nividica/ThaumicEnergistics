@@ -1,4 +1,4 @@
-package thaumicenergistics.gui;
+package thaumicenergistics.gui.abstraction;
 
 import net.minecraft.inventory.Container;
 
@@ -8,8 +8,8 @@ import net.minecraft.inventory.Container;
  * @author Nividica
  * 
  */
-public abstract class GuiConstantsACT
-	extends GuiWidgetHost
+public abstract class AbstractGuiConstantsACT
+	extends AbstractGuiWidgetHost
 {
 
 	/**
@@ -134,7 +134,7 @@ public abstract class GuiConstantsACT
 	/**
 	 * Position + Height of the scroll bar.
 	 */
-	protected static final int SCROLLBAR_VERTICAL_BOUND = GuiConstantsACT.SCROLLBAR_HEIGHT + GuiConstantsACT.SCROLLBAR_POS_Y;
+	protected static final int SCROLLBAR_VERTICAL_BOUND = AbstractGuiConstantsACT.SCROLLBAR_HEIGHT + AbstractGuiConstantsACT.SCROLLBAR_POS_Y;
 
 	/**
 	 * X offset to draw the search field.
@@ -171,7 +171,7 @@ public abstract class GuiConstantsACT
 	 */
 	protected static final int TITLE_POS_Y = 6;
 
-	public GuiConstantsACT( final Container container )
+	public AbstractGuiConstantsACT( final Container container )
 	{
 		super( container );
 	}

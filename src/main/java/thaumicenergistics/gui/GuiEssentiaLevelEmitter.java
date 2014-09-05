@@ -1,6 +1,5 @@
 package thaumicenergistics.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -10,6 +9,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
+import thaumicenergistics.gui.abstraction.AbstractGuiWidgetHost;
 import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
@@ -19,7 +19,6 @@ import thaumicenergistics.network.packet.server.PacketServerEssentiaEmitter;
 import thaumicenergistics.parts.AEPartEssentiaLevelEmitter;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
-import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaLevelEmitter
-	extends GuiWidgetHost
+	extends AbstractGuiWidgetHost
 	implements IAspectSlotGui
 {
 	/**
@@ -103,7 +102,7 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * X position to start drawing buttons.
 	 */
-	private static final int BUTTON_POS_X = 170;
+	private static final int BUTTON_POS_X = 15;
 
 	/**
 	 * Y position to start drawing buttons.
@@ -326,32 +325,11 @@ public class GuiEssentiaLevelEmitter
 		// Draw the text field
 		this.amountField.drawTextBox();
 
-		// Is the mouse over any buttons?
-		for( Object obj : this.buttonList )
+		// Add the tooltip from the buttons
+		if( this.addTooltipFromButtons( mouseX, mouseY ) )
 		{
-			// Cast to button
-			GuiButton currentButton = (GuiButton)obj;
-
-			// Is the mouse over it?
-			if( GuiHelper.instance.isPointInRegion( currentButton.xPosition, currentButton.yPosition, currentButton.width, currentButton.height, mouseX,
-				mouseY ) )
-			{
-				// Is it the redstone button?
-				if( currentButton instanceof ButtonRedstoneModes )
-				{
-					// Get the tooltip
-					List<String> tooltip = ( (ButtonRedstoneModes)currentButton ).getTooltip( new ArrayList<String>() );
-					
-					if( !tooltip.isEmpty() )
-					{
-						// Draw the tooltip
-						this.drawTooltip( tooltip, mouseX - this.guiLeft, mouseY - this.guiTop );
-					}
-				}
-
-				// Stop searching
-				break;
-			}
+			// Draw the tooltip
+			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
 		}
 	}
 
@@ -427,7 +405,7 @@ public class GuiEssentiaLevelEmitter
 				int buttonIndex = ( row * 3 ) + column;
 
 				// Calculate the x position of the button
-				int xPos = ( ( this.guiTop + GuiEssentiaLevelEmitter.BUTTON_POS_X ) + ( column * ( GuiEssentiaLevelEmitter.BUTTON_WIDTH + GuiEssentiaLevelEmitter.BUTTON_PADDING_HORZ ) ) );
+				int xPos = ( ( this.guiLeft + GuiEssentiaLevelEmitter.BUTTON_POS_X ) + ( column * ( GuiEssentiaLevelEmitter.BUTTON_WIDTH + GuiEssentiaLevelEmitter.BUTTON_PADDING_HORZ ) ) );
 
 				this.buttonList.add( new GuiButton( buttonIndex, xPos, yPos, GuiEssentiaLevelEmitter.BUTTON_WIDTH,
 								GuiEssentiaLevelEmitter.BUTTON_HEIGHT, GuiEssentiaLevelEmitter.BUTTON_LABELS[buttonIndex] ) );

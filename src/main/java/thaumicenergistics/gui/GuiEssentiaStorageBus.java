@@ -10,8 +10,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
+import thaumicenergistics.gui.abstraction.AbstractGuiWidgetHost;
 import thaumicenergistics.gui.buttons.ButtonAETab;
-import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
+import thaumicenergistics.gui.buttons.ButtonAllowVoid;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -22,7 +23,6 @@ import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.EnumAEStateIcons;
 import thaumicenergistics.texture.GuiTextureManager;
-import thaumicenergistics.util.GuiHelper;
 
 /**
  * Gui for the storage bus.
@@ -31,7 +31,7 @@ import thaumicenergistics.util.GuiHelper;
  * 
  */
 public class GuiEssentiaStorageBus
-	extends GuiWidgetHost
+	extends AbstractGuiWidgetHost
 	implements IAspectSlotGui
 {
 	/**
@@ -55,9 +55,14 @@ public class GuiEssentiaStorageBus
 	private static final int WIDGET_Y_POS = 21;
 
 	/**
-	 * The width of the gui
+	 * The width of the gui with a network tool.
 	 */
-	private static final int GUI_WIDTH = 246;
+	private static final int GUI_WIDTH_NETWORK_TOOL = 246;
+
+	/**
+	 * The width of the gui without a network too
+	 */
+	private static final int GUI_WIDTH_NO_TOOL = 210;
 
 	/**
 	 * The height of the gui
@@ -65,24 +70,30 @@ public class GuiEssentiaStorageBus
 	private static final int GUI_HEIGHT = 184;
 
 	/**
-	 * ID of the priority button
-	 */
-	private static final int PRIORITY_BUTTON_ID = 0;
-
-	/**
-	 * X offset position of the priority button
-	 */
-	private static final int PRIORITY_BUTTON_X_POSITION = 154;
-
-	/**
 	 * X position of the title string.
 	 */
-	private static final int TITLE_POS_X = 6;
+	private static final int TITLE_X_POS = 6;
 
 	/**
 	 * Y position of the title string.
 	 */
-	private static final int TITLE_POS_Y = 5;
+	private static final int TITLE_Y_POS = 5;
+
+	/**
+	 * ID of the priority button
+	 */
+	private static final int BUTTON_PRIORITY_ID = 0;
+
+	/**
+	 * X offset position of the priority button
+	 */
+	private static final int BUTTON_PRIORITY_X_POSITION = 154;
+
+	private static final int BUTTON_ALLOW_VOID_ID = 1;
+
+	private static final int BUTTON_ALLOW_VOID_X_POS = -18;
+
+	private static final int BUTTON_ALLOW_VOID_Y_POS = 8;
 
 	/**
 	 * Player viewing this gui.
@@ -114,6 +125,8 @@ public class GuiEssentiaStorageBus
 	 */
 	private final String guiTitle = AEPartsEnum.EssentiaStorageBus.getStatName();
 
+	private boolean isVoidAllowed = false;
+
 	/**
 	 * Creates the GUI.
 	 * 
@@ -124,7 +137,7 @@ public class GuiEssentiaStorageBus
 	 * @param container
 	 * The inventory container.
 	 */
-	public GuiEssentiaStorageBus( AEPartEssentiaStorageBus storageBus, EntityPlayer player )
+	public GuiEssentiaStorageBus( final AEPartEssentiaStorageBus storageBus, final EntityPlayer player )
 	{
 		// Call super
 		super( new ContainerPartEssentiaStorageBus( storageBus, player ) );
@@ -139,7 +152,7 @@ public class GuiEssentiaStorageBus
 		this.hasNetworkTool = ( (ContainerPartEssentiaStorageBus)this.inventorySlots ).hasNetworkTool();
 
 		// Set the width and height
-		this.xSize = GuiEssentiaStorageBus.GUI_WIDTH;
+		this.xSize = ( this.hasNetworkTool ? GuiEssentiaStorageBus.GUI_WIDTH_NETWORK_TOOL : GuiEssentiaStorageBus.GUI_WIDTH_NO_TOOL );
 		this.ySize = GuiEssentiaStorageBus.GUI_HEIGHT;
 	}
 
@@ -147,7 +160,7 @@ public class GuiEssentiaStorageBus
 	 * Draws the gui background
 	 */
 	@Override
-	protected void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY )
+	protected void drawGuiContainerBackgroundLayer( final float alpha, final int mouseX, final int mouseY )
 	{
 		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -172,60 +185,7 @@ public class GuiEssentiaStorageBus
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
-	{
-		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
-
-		// Draw the title
-		this.fontRendererObj.drawString( this.guiTitle, GuiEssentiaStorageBus.TITLE_POS_X, GuiEssentiaStorageBus.TITLE_POS_Y, 0x000000 );
-
-		boolean hoverUnderlayRendered = false;
-
-		for( int i = 0; i < AEPartEssentiaStorageBus.FILTER_SIZE; i++ )
-		{
-			WidgetAspectSlot currentWidget = this.aspectWidgetList.get( i );
-
-			if( ( !hoverUnderlayRendered ) && ( currentWidget.canRender() ) && ( currentWidget.isMouseOverWidget( mouseX, mouseY ) ) )
-			{
-				currentWidget.drawMouseHoverUnderlay();
-
-				hoverUnderlayRendered = true;
-			}
-
-			currentWidget.drawWidget();
-		}
-
-		// Is the mouse over any buttons?
-		for( Object obj : this.buttonList )
-		{
-			// Cast to button
-			GuiButton currentButton = (GuiButton)obj;
-
-			// Is the mouse over it?
-			if( GuiHelper.instance.isPointInRegion( currentButton.xPosition, currentButton.yPosition, currentButton.width, currentButton.height,
-				mouseX, mouseY ) )
-			{
-				// Is it the redstone button?
-				if( currentButton instanceof ButtonRedstoneModes )
-				{
-					// Get the tooltip
-					List<String> tooltip = ( (ButtonRedstoneModes)currentButton ).getTooltip( new ArrayList<String>() );
-
-					if( !tooltip.isEmpty() )
-					{
-						// Draw the tooltip
-						this.drawTooltip( tooltip, mouseX - this.guiLeft, mouseY - this.guiTop );
-					}
-				}
-
-				// Stop searching
-				break;
-			}
-		}
-	}
-
-	@Override
-	protected void mouseClicked( int mouseX, int mouseY, int mouseButton )
+	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
 		// Call super
 		super.mouseClicked( mouseX, mouseY, mouseButton );
@@ -260,10 +220,10 @@ public class GuiEssentiaStorageBus
 	 * Called when a button is clicked.
 	 */
 	@Override
-	public void actionPerformed( GuiButton button )
+	public void actionPerformed( final GuiButton button )
 	{
 		// Was the priority button clicked?
-		if( button.id == GuiEssentiaStorageBus.PRIORITY_BUTTON_ID )
+		if( button.id == GuiEssentiaStorageBus.BUTTON_PRIORITY_ID )
 		{
 			// Get the storage buses host 
 			TileEntity host = this.storageBus.getHostTile();
@@ -276,7 +236,61 @@ public class GuiEssentiaStorageBus
 				host.yCoord, host.zCoord ).sendPacketToServer();
 
 		}
+		else if( button.id == GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID )
+		{
+			// Toggle the mode
+			this.isVoidAllowed = !this.isVoidAllowed;
 
+			// Update the button
+			( (ButtonAllowVoid)this.buttonList.get( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID ) ).isVoidAllowed = this.isVoidAllowed;
+
+			// Update the server
+			new PacketServerEssentiaStorageBus().createRequestSetVoidAllowed( this.player, this.storageBus, this.isVoidAllowed ).sendPacketToServer();
+		}
+
+	}
+
+	@Override
+	public void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
+	{
+		// Call super
+		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
+
+		// Draw the title
+		this.fontRendererObj.drawString( this.guiTitle, GuiEssentiaStorageBus.TITLE_X_POS, GuiEssentiaStorageBus.TITLE_Y_POS, 0x000000 );
+
+		WidgetAspectSlot slotUnderMouse = null;
+
+		// Draw widgets
+		for( WidgetAspectSlot currentWidget : this.aspectWidgetList )
+		{
+			if( ( slotUnderMouse == null ) && ( currentWidget.canRender() ) && ( currentWidget.isMouseOverWidget( mouseX, mouseY ) ) )
+			{
+				// Draw the underlay
+				currentWidget.drawMouseHoverUnderlay();
+
+				// Set the slot
+				slotUnderMouse = currentWidget;
+			}
+
+			// Draw the widget
+			currentWidget.drawWidget();
+		}
+
+		// Should we get the tooltip from the slot?
+		if( slotUnderMouse != null )
+		{
+			// Add the tooltip from the widget
+			slotUnderMouse.getTooltip( this.tooltip );
+		}
+		else
+		{
+			// Add the tooltip from the buttons
+			this.addTooltipFromButtons( mouseX, mouseY );
+		}
+
+		// Draw the tooltip
+		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
 	}
 
 	@Override
@@ -297,15 +311,33 @@ public class GuiEssentiaStorageBus
 		}
 
 		// Create the priority tab button
-		this.buttonList.add( new ButtonAETab( GuiEssentiaStorageBus.PRIORITY_BUTTON_ID, this.guiLeft +
-						GuiEssentiaStorageBus.PRIORITY_BUTTON_X_POSITION, this.guiTop, EnumAEStateIcons.WRENCH ) );
+		this.buttonList.add( new ButtonAETab( GuiEssentiaStorageBus.BUTTON_PRIORITY_ID, this.guiLeft +
+						GuiEssentiaStorageBus.BUTTON_PRIORITY_X_POSITION, this.guiTop, EnumAEStateIcons.WRENCH, "gui.appliedenergistics2.Priority" ) );
+
+		// Create the allow void button
+		this.buttonList.add( new ButtonAllowVoid( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID, this.guiLeft +
+						GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_X_POS, this.guiTop + GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_Y_POS ) );
 
 		// Request an update
 		new PacketServerEssentiaStorageBus().createRequestFullUpdate( this.player, this.storageBus ).sendPacketToServer();
 	}
 
+	/**
+	 * Called when the server has sent a change to void mode.
+	 * 
+	 * @param isVoidAllowed
+	 */
+	public void onServerSentVoidMode( final boolean isVoidAllowed )
+	{
+		// Set the mode
+		this.isVoidAllowed = isVoidAllowed;
+
+		// Update the button
+		( (ButtonAllowVoid)this.buttonList.get( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID ) ).isVoidAllowed = this.isVoidAllowed;
+	}
+
 	@Override
-	public void updateAspects( List<Aspect> aspectList )
+	public void updateAspects( final List<Aspect> aspectList )
 	{
 		int count = Math.min( this.aspectWidgetList.size(), aspectList.size() );
 
