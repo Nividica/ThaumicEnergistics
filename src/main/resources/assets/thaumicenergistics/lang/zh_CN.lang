@@ -33,6 +33,11 @@ thaumicenergistics.item.material.coalescence.core.name=聚集核心
 #Tooltips
 thaumicenergistics.tooltip.essentia.cell.bytes=%d / %d 字节已使用.
 thaumicenergistics.tooltip.essentia.cell.types=%d / %d 源质类型储存.
+thaumicenergistics.tooltip.button.clear.crafting=存放合成栏物品
+thaumicenergistics.tooltip.button.void=允许清空
+thaumicenergistics.tooltip.button.void.disabled=不清空源质
+thaumicenergistics.tooltip.button.void.allowed=罐子溢满时清空源质
+thaumicenergistics.tooltip.button.void.note=只供应给虚空罐子
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=奥术终端
