@@ -1,4 +1,12 @@
-﻿9/4/2014 0.6.6b
+﻿9/6/2014 0.6.7b
+  Dependency Changed: Applied Energistics 2 rv1 beta 20
+  All parts now break and drop if AE2 detects a security breach.
+  All parts now remember who placed them.
+  Fixes #33: All parts now check network security before allowing GUI to be opened.
+  Providers now respect BUILD security.
+  Essentia terminal now respects Inject and Extra security permissions.
+
+9/4/2014 0.6.6b
   Fixed Storage bus Gui width.
   Fixes #30: Add tooltips to buttons.
   Cleaned up storage bus NBT code.

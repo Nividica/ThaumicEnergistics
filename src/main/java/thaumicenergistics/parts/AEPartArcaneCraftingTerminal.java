@@ -19,6 +19,7 @@ import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.parts.IPartCollsionHelper;
@@ -130,6 +131,24 @@ public class AEPartArcaneCraftingTerminal
 				listener.onCraftMatrixChanged( this );
 			}
 		}
+	}
+	
+	/**
+	 * Checks if the specified player can open the gui.
+	 */
+	@Override
+	protected boolean canPlayerOpenGui( final int playerID )
+	{
+		// Does the player have export & import permissions
+		if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.EXTRACT ) )
+		{
+			if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.INJECT ) )
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -456,6 +475,9 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public void readFromNBT( NBTTagCompound data )
 	{
+		// Call super
+		super.readFromNBT( data );
+		
 		// Does the data tag have the list?
 		if( data.hasKey( AEPartArcaneCraftingTerminal.INVENTORY_NBT_KEY ) )
 		{
@@ -636,6 +658,9 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public void writeToNBT( NBTTagCompound data )
 	{
+		// Call super
+		super.writeToNBT( data );
+		
 		// Create a new tag list
 		NBTTagList nbtList = new NBTTagList();
 

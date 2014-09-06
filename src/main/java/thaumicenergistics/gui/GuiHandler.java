@@ -42,7 +42,7 @@ public class GuiHandler
 	 * @param z
 	 * @return
 	 */
-	private static AbstractAEPartBase getPart( ForgeDirection tileSide, World world, int x, int y, int z )
+	private static AbstractAEPartBase getPart( final ForgeDirection tileSide, final World world, final int x, final int y, final int z )
 	{
 		// Get the host at the specified position
 		IPartHost partHost = (IPartHost)( world.getTileEntity( x, y, z ) );
@@ -69,7 +69,8 @@ public class GuiHandler
 	 * @param isServerSide
 	 * @return
 	 */
-	private static Object getPartGuiElement( ForgeDirection tileSide, EntityPlayer player, World world, int x, int y, int z, boolean isServerSide )
+	private static Object getPartGuiElement( final ForgeDirection tileSide, final EntityPlayer player, final World world, final int x, final int y,
+												final int z, final boolean isServerSide )
 	{
 		// Get the part
 		AbstractAEPartBase part = GuiHandler.getPart( tileSide, world, x, y, z );
@@ -97,7 +98,7 @@ public class GuiHandler
 	 * @param side
 	 * @return
 	 */
-	public static int generatePriorityID( ForgeDirection side )
+	public static int generatePriorityID( final ForgeDirection side )
 	{
 		return GuiHandler.PRIORITY_ID + side.ordinal();
 	}
@@ -112,9 +113,13 @@ public class GuiHandler
 	 * @param y
 	 * @param z
 	 */
-	public static void launchGui( AbstractAEPartBase part, EntityPlayer player, World world, int x, int y, int z )
+	public static void launchGui( final AbstractAEPartBase part, final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
-		player.openGui( ThaumicEnergistics.instance, part.getSide().ordinal(), world, x, y, z );
+		// Ensure the player is allowed to open the gui
+		if( part.doesPlayerHavePermissionToOpenGui( player ) )
+		{
+			player.openGui( ThaumicEnergistics.instance, part.getSide().ordinal(), world, x, y, z );
+		}
 	}
 
 	/**
@@ -127,13 +132,13 @@ public class GuiHandler
 	 * @param y
 	 * @param z
 	 */
-	public static void launchGui( int ID, EntityPlayer player, World world, int x, int y, int z )
+	public static void launchGui( final int ID, final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
 		player.openGui( ThaumicEnergistics.instance, ID + GuiHandler.DIRECTION_OFFSET, world, x, y, z );
 	}
 
 	@Override
-	public Object getClientGuiElement( int ID, EntityPlayer player, World world, int x, int y, int z )
+	public Object getClientGuiElement( int ID, final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
 		// Is the ID a forge direction?
 		ForgeDirection side = ForgeDirection.getOrientation( ID );
@@ -180,7 +185,7 @@ public class GuiHandler
 	}
 
 	@Override
-	public Object getServerGuiElement( int ID, EntityPlayer player, World world, int x, int y, int z )
+	public Object getServerGuiElement( int ID, final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
 		// Is the ID a forge Direction?
 		ForgeDirection side = ForgeDirection.getOrientation( ID );

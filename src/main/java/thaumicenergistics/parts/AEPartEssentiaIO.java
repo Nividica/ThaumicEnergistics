@@ -42,6 +42,7 @@ import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+// TODO: Owner security
 public abstract class AEPartEssentiaIO
 	extends AbstractAEPartBase
 	implements IGridTickable, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory
@@ -349,6 +350,9 @@ public abstract class AEPartEssentiaIO
 		{
 			return false;
 		}
+
+		// Check the security
+		//if( this.doesPlayerHaveSecurityClearance( , permission ))
 
 		// Simulate a drain from the container
 		FluidStack drained = EssentiaTileContainerHelper.instance.extractFromContainer( this.facingContainer, amountToDrainFromContainer,
@@ -676,6 +680,7 @@ public abstract class AEPartEssentiaIO
 	@Override
 	public void readFromNBT( final NBTTagCompound data )
 	{
+		// Call super
 		super.readFromNBT( data );
 
 		// Read redstone mode
@@ -787,6 +792,7 @@ public abstract class AEPartEssentiaIO
 	@Override
 	public void writeToNBT( final NBTTagCompound data )
 	{
+		// Call super
 		super.writeToNBT( data );
 
 		// Write the redstone mode

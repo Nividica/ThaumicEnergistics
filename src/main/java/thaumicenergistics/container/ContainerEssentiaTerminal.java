@@ -46,7 +46,7 @@ public class ContainerEssentiaTerminal
 	 * @param player
 	 * Player that owns this container.
 	 */
-	public ContainerEssentiaTerminal( AEPartEssentiaTerminal terminal, EntityPlayer player )
+	public ContainerEssentiaTerminal( final AEPartEssentiaTerminal terminal, final EntityPlayer player )
 	{
 		// Call the super
 		super( player );
@@ -70,7 +70,7 @@ public class ContainerEssentiaTerminal
 			this.attachToMonitor();
 
 			// Add this container to the terminal's list
-			terminal.addContainer( this );
+			terminal.addListener( this );
 		}
 		else
 		{
@@ -90,6 +90,7 @@ public class ContainerEssentiaTerminal
 	@Override
 	public void detectAndSendChanges()
 	{
+		// Call super
 		super.detectAndSendChanges();
 
 		// Do we have a monitor
@@ -114,7 +115,8 @@ public class ContainerEssentiaTerminal
 											PowerMultiplier.CONFIG ) >= ContainerCellTerminalBase.POWER_PER_TRANSFER ) )
 						{
 							// Do the work.
-							if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, this.machineSource, this.selectedAspect ) )
+							if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, this.machineSource, this.selectedAspect,
+								this.player ) )
 							{
 								// We did work, extract power
 								eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.MODULATE, PowerMultiplier.CONFIG );
@@ -158,13 +160,13 @@ public class ContainerEssentiaTerminal
 	 * Removes this container from the terminal.
 	 */
 	@Override
-	public void onContainerClosed( EntityPlayer player )
+	public void onContainerClosed( final EntityPlayer player )
 	{
 		super.onContainerClosed( player );
 
 		if( EffectiveSide.isServerSide() && ( this.terminal != null ) )
 		{
-			this.terminal.removeContainer( this );
+			this.terminal.removeListener( this );
 		}
 	}
 
@@ -172,7 +174,7 @@ public class ContainerEssentiaTerminal
 	 * Updates the selected aspect and gui.
 	 */
 	@Override
-	public void onReceiveSelectedAspect( Aspect selectedAspect )
+	public void onReceiveSelectedAspect( final Aspect selectedAspect )
 	{
 		// Set the selected aspect
 		this.selectedAspect = selectedAspect;
@@ -193,7 +195,7 @@ public class ContainerEssentiaTerminal
 	/**
 	 * Called from the AE part when it's sorting mode has changed
 	 */
-	public void onSortingModeChanged( ComparatorMode sortingMode )
+	public void onSortingModeChanged( final ComparatorMode sortingMode )
 	{
 		// Inform the client
 		new PacketClientEssentiaTerminal().createSortModeUpdate( this.player, sortingMode ).sendPacketToPlayer();
@@ -203,7 +205,7 @@ public class ContainerEssentiaTerminal
 	 * Forwards the change to the client.
 	 */
 	@Override
-	public void postAspectStackChange( AspectStack change )
+	public void postAspectStackChange( final AspectStack change )
 	{
 		// Send the change
 		new PacketClientEssentiaTerminal().createListChanged( this.player, change ).sendPacketToPlayer();
@@ -214,7 +216,7 @@ public class ContainerEssentiaTerminal
 	 * Sends that change to the server for validation.
 	 */
 	@Override
-	public void setSelectedAspect( Aspect selectedAspect )
+	public void setSelectedAspect( final Aspect selectedAspect )
 	{
 		new PacketServerEssentiaTerminal().createUpdateSelectedAspect( this.player, selectedAspect ).sendPacketToServer();
 	}

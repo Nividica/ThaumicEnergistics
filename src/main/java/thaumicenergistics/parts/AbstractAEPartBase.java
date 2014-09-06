@@ -2,6 +2,7 @@ package thaumicenergistics.parts;
 
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -24,12 +25,14 @@ import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.AEApi;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
@@ -39,6 +42,7 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.WorldSettings;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -46,6 +50,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class AbstractAEPartBase
 	implements IPart, IGridHost, IActionHost
 {
+	private final static String NBT_KEY_OWNER = "Owner";
+
 	protected final static int INVENTORY_OVERLAY_COLOR = AEColor.Black.blackVariant;
 
 	protected final static int ACTIVE_BRIGHTNESS = 0xD000D0;
@@ -68,9 +74,14 @@ public abstract class AbstractAEPartBase
 
 	protected boolean redstonePowered;
 
+	/**
+	 * AE2 player ID for the owner of this part.
+	 */
+	protected int ownerID = -1;
+
 	public final ItemStack associatedItem;
 
-	public AbstractAEPartBase( AEPartsEnum associatedPart )
+	public AbstractAEPartBase( final AEPartsEnum associatedPart )
 	{
 		// Set the associated item 
 		this.associatedItem = ItemEnum.PART_ITEM.getItemStackWithDamage( associatedPart.ordinal() );
@@ -106,6 +117,37 @@ public abstract class AbstractAEPartBase
 	}
 
 	/**
+	 * Checks with the subclass if a player can open this parts gui.
+	 * 
+	 * @return
+	 */
+	protected abstract boolean canPlayerOpenGui( int playerID );
+
+	/**
+	 * Checks if the specifies player has clearance for the specified
+	 * permission.
+	 * 
+	 * @param player
+	 * @param permission
+	 * @return
+	 */
+	protected boolean doesPlayerHaveSecurityClearance( final int playerID, final SecurityPermissions permission )
+	{
+		// Get the security grid
+		ISecurityGrid sGrid = this.gridBlock.getSecurityGrid();
+
+		// Did we get the grid?
+		if( sGrid == null )
+		{
+			// No security grid to check against.
+			return false;
+		}
+
+		// Return the permission
+		return sGrid.hasPermission( playerID, permission );
+	}
+
+	/**
 	 * Checks if the part is active and powered.
 	 * 
 	 * @return
@@ -135,9 +177,14 @@ public abstract class AbstractAEPartBase
 		// Ignored on client side
 		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
 		{
+			// Create the grid block
 			this.gridBlock = new AEPartGridBlock( this );
 
+			// Create the node
 			this.node = AEApi.instance().createGridNode( this.gridBlock );
+
+			// Set the player id
+			this.node.setPlayerID( this.ownerID );
 
 			this.setPower( null );
 		}
@@ -147,7 +194,7 @@ public abstract class AbstractAEPartBase
 	public abstract int cableConnectionRenderTo();
 
 	@Override
-	public boolean canBePlacedOn( BusSupport type )
+	public boolean canBePlacedOn( final BusSupport type )
 	{
 		// Can not be placed on dense cable
 		return type != BusSupport.DENSE_CABLE;
@@ -157,6 +204,28 @@ public abstract class AbstractAEPartBase
 	public boolean canConnectRedstone()
 	{
 		return false;
+	}
+
+	/**
+	 * Called before a gui is shown to ensure a player has permission to do so.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public final boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
+	{
+		// Get the player ID
+		int pID = WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
+
+		// Is this the owner?
+		if( pID == this.ownerID )
+		{
+			// Owner can always interact
+			return true;
+		}
+
+		// Ensure they have build(make configuration changes) permission.
+		return this.canPlayerOpenGui( pID );
 	}
 
 	@Override
@@ -175,18 +244,18 @@ public abstract class AbstractAEPartBase
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public AECableType getCableConnectionType( final ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}
 
-	public Object getClientGuiElement( EntityPlayer player )
+	public Object getClientGuiElement( final EntityPlayer player )
 	{
 		return null;
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 	}
 
@@ -208,7 +277,7 @@ public abstract class AbstractAEPartBase
 	}
 
 	@Override
-	public IGridNode getGridNode( ForgeDirection direction )
+	public IGridNode getGridNode( final ForgeDirection direction )
 	{
 		return this.node;
 	}
@@ -238,7 +307,7 @@ public abstract class AbstractAEPartBase
 	 * Gets an itemstack that represents the specified part.
 	 */
 	@Override
-	public ItemStack getItemStack( PartItemStack partItemStack )
+	public ItemStack getItemStack( final PartItemStack partItemStack )
 	{
 		// Get the itemstack
 		ItemStack itemStack = new ItemStack( ItemEnum.PART_ITEM.getItem(), 1, AEPartsEnum.getPartID( this.getClass() ) );
@@ -259,10 +328,12 @@ public abstract class AbstractAEPartBase
 	@Override
 	public int getLightLevel()
 	{
-		return ( this.isActive() ? 15 : 0 );	}
+		return( this.isActive() ? 15 : 0 );
+	}
 
 	/**
 	 * Gets the location of this part.
+	 * 
 	 * @return
 	 */
 	public final DimensionalCoord getLocation()
@@ -270,7 +341,7 @@ public abstract class AbstractAEPartBase
 		return new DimensionalCoord( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord );
 	}
 
-	public Object getServerGuiElement( EntityPlayer player )
+	public Object getServerGuiElement( final EntityPlayer player )
 	{
 		return null;
 	}
@@ -284,9 +355,10 @@ public abstract class AbstractAEPartBase
 	{
 		return this.cableSide;
 	}
-	
+
 	/**
 	 * Gets the unlocalized name of this part.
+	 * 
 	 * @return
 	 */
 	public String getUnlocalizedName()
@@ -295,7 +367,7 @@ public abstract class AbstractAEPartBase
 	}
 
 	@Override
-	public boolean isLadder( EntityLivingBase entity )
+	public boolean isLadder( final EntityLivingBase entity )
 	{
 		return false;
 	}
@@ -319,7 +391,7 @@ public abstract class AbstractAEPartBase
 	}
 
 	@Override
-	public boolean onActivate( EntityPlayer player, Vec3 position )
+	public boolean onActivate( final EntityPlayer player, final Vec3 position )
 	{
 		// Is the player sneaking?
 		if( player.isSneaking() )
@@ -338,7 +410,7 @@ public abstract class AbstractAEPartBase
 	}
 
 	@Override
-	public void onEntityCollision( Entity entity )
+	public void onEntityCollision( final Entity entity )
 	{
 	}
 
@@ -374,28 +446,35 @@ public abstract class AbstractAEPartBase
 	}
 
 	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	public final void onPlacement( final EntityPlayer player, final ItemStack held, final ForgeDirection side )
 	{
+		// Set the owner
+		this.ownerID = WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
 	}
 
 	@Override
-	public boolean onShiftActivate( EntityPlayer player, Vec3 position )
+	public boolean onShiftActivate( final EntityPlayer player, final Vec3 position )
 	{
 		return false;
 	}
 
 	@Override
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
+	public void randomDisplayTick( final World world, final int x, final int y, final int z, final Random r )
 	{
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		// Read the owner
+		if( data.hasKey( AbstractAEPartBase.NBT_KEY_OWNER ) )
+		{
+			this.ownerID = data.getInteger( AbstractAEPartBase.NBT_KEY_OWNER );
+		}
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
 		this.isActive = data.readBoolean();
 		return true;
@@ -412,7 +491,7 @@ public abstract class AbstractAEPartBase
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void renderDynamic( double x, double y, double z, IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderDynamic( final double x, final double y, final double z, final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		// Ignored
 	}
@@ -422,7 +501,7 @@ public abstract class AbstractAEPartBase
 	public abstract void renderInventory( IPartRenderHelper helper, RenderBlocks renderer );
 
 	@SideOnly(Side.CLIENT)
-	public void renderInventoryBusLights( IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderInventoryBusLights( final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		// Set color to white
 		helper.setInvColor( 0xFFFFFF );
@@ -457,7 +536,7 @@ public abstract class AbstractAEPartBase
 	public abstract void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer );
 
 	@SideOnly(Side.CLIENT)
-	public void renderStaticBusLights( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderStaticBusLights( final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		IIcon busColorTexture = BlockTextureManager.BUS_COLOR.getTextures()[0];
 
@@ -503,10 +582,24 @@ public abstract class AbstractAEPartBase
 	@Override
 	public void securityBreak()
 	{
+		List<ItemStack> drops = new ArrayList<ItemStack>();
+
+		// Get this item
+		drops.add( this.getItemStack( null ) );
+
+		// Get the drops for this part
+		this.getDrops( drops, false );
+
+		// Drop it
+		appeng.util.Platform.spawnDrops( this.hostTile.getWorldObj(), this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord, drops );
+
+		// Remove the part
+		this.host.removePart( this.cableSide, false );
+
 	}
 
 	@Override
-	public final void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public final void setPartHostInfo( final ForgeDirection side, final IPartHost host, final TileEntity tile )
 	{
 		this.cableSide = side;
 
@@ -519,7 +612,7 @@ public abstract class AbstractAEPartBase
 	}
 
 	@MENetworkEventSubscribe
-	public final void setPower( MENetworkPowerStatusChange event )
+	public final void setPower( final MENetworkPowerStatusChange event )
 	{
 		this.updateStatus();
 
@@ -531,7 +624,7 @@ public abstract class AbstractAEPartBase
 	 * 
 	 * @param itemPart
 	 */
-	public void setupPartFromItem( ItemStack itemPart )
+	public void setupPartFromItem( final ItemStack itemPart )
 	{
 		if( itemPart.hasTagCompound() )
 		{
@@ -540,18 +633,20 @@ public abstract class AbstractAEPartBase
 	}
 
 	@MENetworkEventSubscribe
-	public void updateChannels( MENetworkChannelsChanged event )
+	public void updateChannels( final MENetworkChannelsChanged event )
 	{
 		this.updateStatus();
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
+		// Set the owner ID
+		data.setInteger( AbstractAEPartBase.NBT_KEY_OWNER, this.ownerID );
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public void writeToStream( final ByteBuf data ) throws IOException
 	{
 		data.writeBoolean( ( this.node != null ) && ( this.node.isActive() ) );
 	}

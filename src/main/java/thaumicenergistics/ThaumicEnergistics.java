@@ -1,9 +1,9 @@
 package thaumicenergistics;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.integration.IntegrationCore;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -32,7 +32,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.6.6b"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.6.7b"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -63,46 +63,64 @@ public class ThaumicEnergistics
 		}
 	};
 
+	private ImmutablePair<Long, String> beginLoadStageTracking( final String stageName )
+	{
+		// Print begin
+		FMLLog.info( "%s: Begining %s()", ThaumicEnergistics.MOD_ID, stageName );
+
+		// Return the current time
+		return new ImmutablePair<Long, String>( System.currentTimeMillis(), stageName );
+	}
+
+	private void endLoadStageTracking( final ImmutablePair<Long, String> beginInfo )
+	{
+		// Calculate time
+		long time = System.currentTimeMillis() - beginInfo.left;
+
+		// Print end
+		FMLLog.info( "%s: Finished %s(), Took: %dms", ThaumicEnergistics.MOD_ID, beginInfo.right, time );
+	}
+
 	@EventHandler
-	public void load( FMLInitializationEvent event )
+	public void load( final FMLInitializationEvent event )
 	{
 		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "load" );
-		
+
 		// Register block renderers
 		ThaumicEnergistics.proxy.registerRenderers();
-		
+
 		// Register tile entities
 		ThaumicEnergistics.proxy.registerTileEntities();
 
 		// Register network messages
 		ChannelHandler.registerMessages();
-		
+
 		// Register integration
 		IntegrationCore.init();
-		
+
 		this.endLoadStageTracking( t );
 	}
 
 	@EventHandler
-	public void postInit( FMLPostInitializationEvent event )
+	public void postInit( final FMLPostInitializationEvent event )
 	{
 		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "postInit" );
-		
+
 		// Register the standard thaumcraft container items and tiles
 		EssentiaTileContainerHelper.instance.registerThaumcraftContainers();
 		EssentiaItemContainerHelper.instance.registerThaumcraftContainers();
 
 		// Register my tiles with SpatialIO
 		ThaumicEnergistics.proxy.registerSpatialIOMovables();
-		
+
 		this.endLoadStageTracking( t );
 	}
 
 	@EventHandler
-	public void preInit( FMLPreInitializationEvent event )
+	public void preInit( final FMLPreInitializationEvent event )
 	{
 		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "preInit" );
-		
+
 		// Set the instance
 		ThaumicEnergistics.instance = this;
 
@@ -111,38 +129,20 @@ public class ThaumicEnergistics
 
 		// Register items
 		ThaumicEnergistics.proxy.registerItems();
-		
+
 		// Register fluids
 		ThaumicEnergistics.proxy.registerFluids();
-		
+
 		// Register blocks
 		ThaumicEnergistics.proxy.registerBlocks();
-		
+
 		// Register recipes
 		ThaumicEnergistics.proxy.registerRecipes();
-		
+
 		// Register TC research
 		ThaumicEnergistics.proxy.registerResearch();
-		
+
 		this.endLoadStageTracking( t );
-	}
-	
-	private ImmutablePair<Long, String> beginLoadStageTracking( String stageName )
-	{
-		// Print begin
-		FMLLog.info( "%s: Begining %s()", ThaumicEnergistics.MOD_ID, stageName );
-		
-		// Return the current time
-		return new ImmutablePair<Long, String>( System.currentTimeMillis(), stageName );
-	}
-	
-	private void endLoadStageTracking( ImmutablePair<Long, String> beginInfo )
-	{
-		// Calculate time
-		long time = System.currentTimeMillis() - beginInfo.left;
-		
-		// Print end
-		FMLLog.info( "%s: Finished %s(), Took: %dms", ThaumicEnergistics.MOD_ID, beginInfo.right, time );
 	}
 
 }

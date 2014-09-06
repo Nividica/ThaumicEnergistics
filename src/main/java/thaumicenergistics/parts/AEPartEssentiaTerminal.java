@@ -18,6 +18,7 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.PrivateInventory;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
@@ -67,7 +68,7 @@ public class AEPartEssentiaTerminal
 	private PrivateInventory inventory = new PrivateInventory( ThaumicEnergistics.MOD_ID + ".part.aspect.terminal", 2, 64 )
 	{
 		@Override
-		public boolean isItemValidForSlot( int slotId, ItemStack itemStack )
+		public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
 		{
 			return EssentiaItemContainerHelper.instance.isContainer( itemStack );
 		}
@@ -78,7 +79,25 @@ public class AEPartEssentiaTerminal
 		super( AEPartsEnum.EssentiaTerminal );
 	}
 
-	public void addContainer( ContainerCellTerminalBase container )
+	/**
+	 * Checks if the specified player can open the gui.
+	 */
+	@Override
+	protected boolean canPlayerOpenGui( final int playerID )
+	{
+		// Does the player have export & import permissions
+		if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.EXTRACT ) )
+		{
+			if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.INJECT ) )
+			{
+				return true;
+			}
+		}
+
+		return true;
+	}
+
+	public void addListener( final ContainerCellTerminalBase container )
 	{
 		if( container instanceof ContainerEssentiaTerminal )
 		{
@@ -93,7 +112,7 @@ public class AEPartEssentiaTerminal
 	}
 
 	@Override
-	public void getBoxes( IPartCollsionHelper helper )
+	public void getBoxes( final IPartCollsionHelper helper )
 	{
 		helper.addBox( 2.0D, 2.0D, 14.0D, 14.0D, 14.0D, 16.0D );
 
@@ -103,13 +122,13 @@ public class AEPartEssentiaTerminal
 	}
 
 	@Override
-	public Object getClientGuiElement( EntityPlayer player )
+	public Object getClientGuiElement( final EntityPlayer player )
 	{
 		return new GuiEssentiaTerminal( this, player );
 	}
 
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 		// Loop over inventory
 		for( int slotIndex = 0; slotIndex < 2; slotIndex++ )
@@ -142,7 +161,7 @@ public class AEPartEssentiaTerminal
 	}
 
 	@Override
-	public Object getServerGuiElement( EntityPlayer player )
+	public Object getServerGuiElement( final EntityPlayer player )
 	{
 		return new ContainerEssentiaTerminal( this, player );
 	}
@@ -207,7 +226,7 @@ public class AEPartEssentiaTerminal
 	 * 
 	 * @param sortMode
 	 */
-	public void onClientRequestSortingModeChange( ComparatorMode sortMode )
+	public void onClientRequestSortingModeChange( final ComparatorMode sortMode )
 	{
 		// Set the sort mode
 		this.sortMode = sortMode;
@@ -224,7 +243,7 @@ public class AEPartEssentiaTerminal
 	 * Called to read our saved state
 	 */
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		// Call super
 		super.readFromNBT( data );
@@ -242,14 +261,14 @@ public class AEPartEssentiaTerminal
 		}
 	}
 
-	public void removeContainer( ContainerEssentiaTerminal containerAspectTerminal )
+	public void removeListener( final ContainerEssentiaTerminal containerAspectTerminal )
 	{
 		this.listeners.remove( containerAspectTerminal );
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void renderInventory( IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		Tessellator ts = Tessellator.instance;
 
@@ -286,7 +305,7 @@ public class AEPartEssentiaTerminal
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		Tessellator ts = Tessellator.instance;
 
@@ -342,7 +361,7 @@ public class AEPartEssentiaTerminal
 	 * Called to save our state
 	 */
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		// Call super
 		super.writeToNBT( data );

@@ -51,7 +51,7 @@ public class ContainerEssentiaCell
 	private PrivateInventory privateInventory = new PrivateInventory( ThaumicEnergistics.MOD_ID + ".item.essentia.cell.inventory", 2, 64 )
 	{
 		@Override
-		public boolean isItemValidForSlot( int slotID, ItemStack itemStack )
+		public boolean isItemValidForSlot( final int slotID, final ItemStack itemStack )
 		{
 			return EssentiaItemContainerHelper.instance.isContainer( itemStack );
 		}
@@ -71,7 +71,7 @@ public class ContainerEssentiaCell
 	 * @param z
 	 * Z position of the ME chest.
 	 */
-	public ContainerEssentiaCell( EntityPlayer player, World world, int x, int y, int z )
+	public ContainerEssentiaCell( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
 		// Call the super-constructor
 		super( player );
@@ -165,7 +165,7 @@ public class ContainerEssentiaCell
 					if( eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.SIMULATE, PowerMultiplier.CONFIG ) >= ContainerCellTerminalBase.POWER_PER_TRANSFER )
 					{
 						// Do the work
-						if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, null, this.selectedAspect ) )
+						if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, null, this.selectedAspect, null ) )
 						{
 							// We did work, drain power
 							eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.MODULATE, PowerMultiplier.CONFIG );
@@ -221,7 +221,7 @@ public class ContainerEssentiaCell
 	 * 
 	 * @param sortingMode
 	 */
-	public void onClientRequestSortModeChange( ComparatorMode sortingMode, EntityPlayer player )
+	public void onClientRequestSortModeChange( final ComparatorMode sortingMode, final EntityPlayer player )
 	{
 		// Get the handler
 		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
@@ -237,7 +237,7 @@ public class ContainerEssentiaCell
 	 * Drops any items in the import and export inventory.
 	 */
 	@Override
-	public void onContainerClosed( EntityPlayer player )
+	public void onContainerClosed( final EntityPlayer player )
 	{
 		super.onContainerClosed( player );
 
@@ -254,7 +254,7 @@ public class ContainerEssentiaCell
 	 * Updates the selected aspect, aspect stack and gui.
 	 */
 	@Override
-	public void onReceiveSelectedAspect( Aspect selectedAspect )
+	public void onReceiveSelectedAspect( final Aspect selectedAspect )
 	{
 		this.selectedAspect = selectedAspect;
 
@@ -288,7 +288,7 @@ public class ContainerEssentiaCell
 	 * Forwards the change to the client.
 	 */
 	@Override
-	public void postAspectStackChange( AspectStack change )
+	public void postAspectStackChange( final AspectStack change )
 	{
 		// Send the change
 		new PacketClientEssentiaCell().createListChanged( this.player, change ).sendPacketToPlayer();
@@ -299,7 +299,7 @@ public class ContainerEssentiaCell
 	 * 
 	 * @param sortingMode
 	 */
-	public void sendSortModeChangeRequest( ComparatorMode sortingMode )
+	public void sendSortModeChangeRequest( final ComparatorMode sortingMode )
 	{
 		new PacketServerEssentiaCell().createRequestChangeSortMode( this.player, sortingMode ).sendPacketToServer();
 	}
@@ -309,7 +309,7 @@ public class ContainerEssentiaCell
 	 * Sends that change to the server for validation.
 	 */
 	@Override
-	public void setSelectedAspect( Aspect selectedAspect )
+	public void setSelectedAspect( final Aspect selectedAspect )
 	{
 		new PacketServerEssentiaCell().createUpdateSelectedAspect( this.player, selectedAspect ).sendPacketToServer();
 	}

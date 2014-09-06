@@ -4,6 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -20,7 +23,7 @@ public abstract class BlockProviderBase
 	extends BlockContainer
 {
 
-	protected BlockProviderBase( Material material )
+	protected BlockProviderBase( final Material material )
 	{
 		super( material );
 
@@ -29,7 +32,7 @@ public abstract class BlockProviderBase
 	}
 
 	@Override
-	public final boolean canRenderInPass( int pass )
+	public final boolean canRenderInPass( final int pass )
 	{
 		// Mark the current pass
 		Renderers.currentRenderPass = pass;
@@ -66,7 +69,7 @@ public abstract class BlockProviderBase
 	}
 
 	@Override
-	public boolean isSideSolid( IBlockAccess world, int x, int y, int z, ForgeDirection side )
+	public boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
 	{
 		// This is a solid cube
 		return true;
@@ -74,18 +77,36 @@ public abstract class BlockProviderBase
 
 	// Sets the metadata for the block based on which side of the neighbor block they clicked on.
 	@Override
-	public final int onBlockPlaced( World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metaData )
+	public final int onBlockPlaced( final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY,
+									final float hitZ, final int metaData )
 	{
 		// Get the opposite face and return it
 		return ForgeDirection.OPPOSITES[side];
 	}
 
 	@Override
+	public void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase entity, final ItemStack itemstack )
+	{
+		// Set the owner
+		if( entity instanceof EntityPlayer )
+		{
+			( (TileProviderBase)world.getTileEntity( x, y, z ) ).setOwner( (EntityPlayer)entity );
+		}
+	}
+
+	@Override
 	public abstract void onNeighborBlockChange( World world, int x, int y, int z, Block neighbor );
+
+	@Override
+	public boolean recolourBlock( final World world, final int x, final int y, final int z, final ForgeDirection side, final int color )
+	{
+		return ( (TileProviderBase)world.getTileEntity( x, y, z ) ).recolourBlock( side, AEColor.values()[color], null );
+
+	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public final void registerBlockIcons( IIconRegister register )
+	public final void registerBlockIcons( final IIconRegister register )
 	{
 		// Ignored
 
@@ -96,13 +117,6 @@ public abstract class BlockProviderBase
 	{
 		// We have a custom renderer for this block
 		return false;
-	}
-
-	@Override
-	public boolean recolourBlock( World world, int x, int y, int z, ForgeDirection side, int color )
-	{
-		return ( (TileProviderBase)world.getTileEntity( x, y, z ) ).recolourBlock( side, AEColor.values()[color], null );
-
 	}
 
 }

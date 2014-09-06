@@ -65,10 +65,10 @@ public abstract class TileProviderBase
 	 */
 	protected boolean isColorForced = false;
 
-	private AETileEventHandler eventHandler = new AETileEventHandler( TileEventType.WORLD_NBT, TileEventType.NETWORK )
+	private final AETileEventHandler eventHandler = new AETileEventHandler( TileEventType.WORLD_NBT, TileEventType.NETWORK )
 	{
 		@Override
-		public void readFromNBT( NBTTagCompound data )
+		public void readFromNBT( final NBTTagCompound data )
 		{
 			int attachmentSideFromNBT = ForgeDirection.UNKNOWN.ordinal();
 
@@ -98,7 +98,7 @@ public abstract class TileProviderBase
 
 		@Override
 		@SideOnly(Side.CLIENT)
-		public boolean readFromStream( ByteBuf data ) throws IOException
+		public boolean readFromStream( final ByteBuf data ) throws IOException
 		{
 			// Read the color from the stream
 			TileProviderBase.this.setProviderColor( AEColor.values()[data.readInt()] );
@@ -110,7 +110,7 @@ public abstract class TileProviderBase
 		}
 
 		@Override
-		public void writeToNBT( NBTTagCompound data )
+		public void writeToNBT( final NBTTagCompound data )
 		{
 			// Write our color to the tag
 			data.setInteger( TileProviderBase.NBT_KEY_COLOR, TileProviderBase.this.getGridColor().ordinal() );
@@ -123,7 +123,7 @@ public abstract class TileProviderBase
 		}
 
 		@Override
-		public void writeToStream( ByteBuf data ) throws IOException
+		public void writeToStream( final ByteBuf data ) throws IOException
 		{
 			// Write the color data to the stream
 			data.writeInt( TileProviderBase.this.getGridColor().ordinal() );
@@ -167,7 +167,7 @@ public abstract class TileProviderBase
 	}
 
 	// Returns how much was extracted
-	protected int extractEssentiaFromNetwork( Aspect wantedAspect, int wantedAmount, boolean mustMatch )
+	protected int extractEssentiaFromNetwork( final Aspect wantedAspect, final int wantedAmount, final boolean mustMatch )
 	{
 		// Ensure we have a monitor
 		if( this.getFluidMonitor() )
@@ -207,7 +207,7 @@ public abstract class TileProviderBase
 
 	}
 
-	protected AspectStack getAspectStackFromNetwork( Aspect searchAspect )
+	protected AspectStack getAspectStackFromNetwork( final Aspect searchAspect )
 	{
 		// Get the list from the network
 		List<AspectStack> aspectStackList = this.getNetworkAspects();
@@ -286,7 +286,7 @@ public abstract class TileProviderBase
 	 * 
 	 * @param gridColor
 	 */
-	protected void setProviderColor( AEColor gridColor )
+	protected void setProviderColor( final AEColor gridColor )
 	{
 		// Set our color to match
 		this.gridProxy.myColor = gridColor;
@@ -311,7 +311,7 @@ public abstract class TileProviderBase
 	}
 
 	@MENetworkEventSubscribe
-	public final void channelEvent( MENetworkChannelsChanged event )
+	public final void channelEvent( final MENetworkChannelsChanged event )
 	{
 		// Check that our color is still valid
 		this.checkGridConnectionColor();
@@ -331,20 +331,20 @@ public abstract class TileProviderBase
 			// Nothing to do
 			return;
 		}
-	
+
 		// Is our color forced?
 		if( this.isColorForced )
 		{
 			// Do not change colors.
 			return;
 		}
-	
+
 		// Get the colors of our neighbors
 		AEColor[] sideColors = this.getNeighborCableColors();
-	
+
 		// Get our current color
 		AEColor currentColor = this.gridProxy.myColor;
-	
+
 		// Are we attached to a side?
 		if( this.attachmentSide != ForgeDirection.UNKNOWN.ordinal() )
 		{
@@ -357,14 +357,14 @@ public abstract class TileProviderBase
 					// Nothing to change
 					return;
 				}
-	
+
 				// Set our color to match
 				this.setProviderColor( sideColors[this.attachmentSide] );
-	
+
 				return;
 			}
 		}
-	
+
 		// Are any of the other sides the same color?
 		for( int index = 0; index < 6; index++ )
 		{
@@ -375,10 +375,10 @@ public abstract class TileProviderBase
 				{
 					// Found another cable with the same color, lets attach to it
 					this.attachmentSide = index;
-	
+
 					// Mark for a save
 					this.saveChanges();
-	
+
 					return;
 				}
 				// Are we transparent?
@@ -386,25 +386,25 @@ public abstract class TileProviderBase
 				{
 					// Attach to this cable
 					this.attachmentSide = index;
-	
+
 					// Take on its color
 					this.setProviderColor( sideColors[index] );
-	
+
 					return;
 				}
 			}
 		}
-	
+
 		// No cables match our color, set attachment to unknown
 		this.attachmentSide = ForgeDirection.UNKNOWN.ordinal();
-	
+
 		// Set color to transparent
 		this.setProviderColor( AEColor.Transparent );
-	
+
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection direction )
+	public AECableType getCableConnectionType( final ForgeDirection direction )
 	{
 		return AECableType.SMART;
 	}
@@ -442,13 +442,15 @@ public abstract class TileProviderBase
 	@Override
 	public void onReady()
 	{
+		// Call super
 		super.onReady();
 
+		// Check grid color
 		this.checkGridConnectionColor();
 	}
 
 	@MENetworkEventSubscribe
-	public final void powerEvent( MENetworkPowerStatusChange event )
+	public final void powerEvent( final MENetworkPowerStatusChange event )
 	{
 		this.markForUpdate();
 	}
@@ -458,7 +460,7 @@ public abstract class TileProviderBase
 	 * Called when the provider's color is changed via the ColorApplicator item.
 	 */
 	@Override
-	public boolean recolourBlock( ForgeDirection side, AEColor color, EntityPlayer player )
+	public boolean recolourBlock( final ForgeDirection side, final AEColor color, final EntityPlayer player )
 	{
 		// Mark our color as forced
 		this.isColorForced = true;
@@ -470,12 +472,22 @@ public abstract class TileProviderBase
 	}
 
 	/**
+	 * Sets the owner of this tile.
+	 * 
+	 * @param player
+	 */
+	public void setOwner( final EntityPlayer player )
+	{
+		this.gridProxy.setOwner( player );
+	}
+
+	/**
 	 * Configures the provider based on the specified
 	 * attachment side.
 	 * 
 	 * @param attachmentSide
 	 */
-	public void setupProvider( int attachmentSide )
+	public void setupProvider( final int attachmentSide )
 	{
 		// Ignored on client side
 		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )

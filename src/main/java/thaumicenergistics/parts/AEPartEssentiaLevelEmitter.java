@@ -25,6 +25,7 @@ import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.RedstoneMode;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -191,7 +192,7 @@ public class AEPartEssentiaLevelEmitter
 			this.tile.zCoord + this.cableSide.offsetX, Blocks.air );
 	}
 
-	private void onMonitorUpdate( IMEMonitor<IAEFluidStack> monitor )
+	private void onMonitorUpdate( final IMEMonitor<IAEFluidStack> monitor )
 	{
 		// Do we have a filter?
 		if( this.filterAspect == null )
@@ -228,7 +229,7 @@ public class AEPartEssentiaLevelEmitter
 	 * 
 	 * @param amount
 	 */
-	private void setCurrentAmount( long amount )
+	private void setCurrentAmount( final long amount )
 	{
 		// Has the amount changed?
 		if( amount != this.currentAmount )
@@ -242,6 +243,16 @@ public class AEPartEssentiaLevelEmitter
 			// Check if we should be emitting
 			this.checkEmitting();
 		}
+	}
+
+	/**
+	 * Checks if the specified player can open the gui.
+	 */
+	@Override
+	protected boolean canPlayerOpenGui( final int playerID )
+	{
+		// Does the player have build permissions
+		return this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.BUILD );
 	}
 
 	/**
@@ -259,7 +270,7 @@ public class AEPartEssentiaLevelEmitter
 	 * @param channelEvent
 	 */
 	@MENetworkEventSubscribe
-	public void channelChanged( MENetworkChannelsChanged channelEvent )
+	public void channelChanged( final MENetworkChannelsChanged channelEvent )
 	{
 		this.onListUpdate();
 		this.checkRegistration();
@@ -270,7 +281,7 @@ public class AEPartEssentiaLevelEmitter
 	 * Collision boxes
 	 */
 	@Override
-	public void getBoxes( IPartCollsionHelper helper )
+	public void getBoxes( final IPartCollsionHelper helper )
 	{
 		helper.addBox( 7.0D, 7.0D, 11.0D, 9.0D, 9.0D, 16.0D );
 	}
@@ -279,7 +290,7 @@ public class AEPartEssentiaLevelEmitter
 	 * Gets the emitter gui
 	 */
 	@Override
-	public Object getClientGuiElement( EntityPlayer player )
+	public Object getClientGuiElement( final EntityPlayer player )
 	{
 		return new GuiEssentiaLevelEmitter( this, player );
 	}
@@ -298,7 +309,7 @@ public class AEPartEssentiaLevelEmitter
 	 * Gets the emitter container
 	 */
 	@Override
-	public Object getServerGuiElement( EntityPlayer player )
+	public Object getServerGuiElement( final EntityPlayer player )
 	{
 		return new ContainerPartEssentiaLevelEmitter( this, player );
 	}
@@ -326,7 +337,7 @@ public class AEPartEssentiaLevelEmitter
 	 * a specific grid.
 	 */
 	@Override
-	public boolean isValid( Object token )
+	public boolean isValid( final Object token )
 	{
 		// Get the grid
 		IGrid grid = this.gridBlock.getGrid();
@@ -346,7 +357,7 @@ public class AEPartEssentiaLevelEmitter
 	 * @param adjustmentAmount
 	 * @param player
 	 */
-	public void onClientAdjustWantedAmount( int adjustmentAmount, EntityPlayer player )
+	public void onClientAdjustWantedAmount( final int adjustmentAmount, final EntityPlayer player )
 	{
 		this.onClientSetWantedAmount( this.wantedAmount + adjustmentAmount, player );
 	}
@@ -357,7 +368,7 @@ public class AEPartEssentiaLevelEmitter
 	 * @param wantedAmount
 	 * @param player
 	 */
-	public void onClientSetWantedAmount( long wantedAmount, EntityPlayer player )
+	public void onClientSetWantedAmount( final long wantedAmount, final EntityPlayer player )
 	{
 		// Set the wanted amount
 		this.wantedAmount = wantedAmount;
@@ -387,7 +398,7 @@ public class AEPartEssentiaLevelEmitter
 	 * 
 	 * @param player
 	 */
-	public void onClientToggleRedstoneMode( EntityPlayer player )
+	public void onClientToggleRedstoneMode( final EntityPlayer player )
 	{
 		switch ( this.redstoneMode )
 		{
@@ -417,7 +428,7 @@ public class AEPartEssentiaLevelEmitter
 	 * 
 	 * @param player
 	 */
-	public void onClientUpdateRequest( EntityPlayer player )
+	public void onClientUpdateRequest( final EntityPlayer player )
 	{
 		// Send the full update to the client
 		new PacketClientEssentiaEmitter().createFullUpdate( this.redstoneMode, this.wantedAmount, player ).sendPacketToPlayer();
@@ -457,7 +468,7 @@ public class AEPartEssentiaLevelEmitter
 	 * of something in the storage grid.
 	 */
 	@Override
-	public void postChange( IBaseMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
+	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final IAEFluidStack change, final BaseActionSource source )
 	{
 		// Ensure we have a filter
 		if( this.filterAspect == null )
@@ -486,7 +497,7 @@ public class AEPartEssentiaLevelEmitter
 	 * @param powerEvent
 	 */
 	@MENetworkEventSubscribe
-	public void powerChanged( MENetworkPowerStatusChange powerEvent )
+	public void powerChanged( final MENetworkPowerStatusChange powerEvent )
 	{
 		this.onListUpdate();
 		this.checkRegistration();
@@ -497,7 +508,7 @@ public class AEPartEssentiaLevelEmitter
 	 * Spawns redstone particles when emitting
 	 */
 	@Override
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
+	public void randomDisplayTick( final World world, final int x, final int y, final int z, final Random r )
 	{
 		// Are we emitting?
 		if( this.isEmitting )
@@ -515,7 +526,7 @@ public class AEPartEssentiaLevelEmitter
 	 * Reads the state of the emitter from an NBT tag
 	 */
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		// Call super
 		super.readFromNBT( data );
@@ -540,7 +551,7 @@ public class AEPartEssentiaLevelEmitter
 	 */
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean readFromStream( ByteBuf stream ) throws IOException
+	public boolean readFromStream( final ByteBuf stream ) throws IOException
 	{
 		// Call super
 		super.readFromStream( stream );
@@ -556,7 +567,7 @@ public class AEPartEssentiaLevelEmitter
 	 */
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void renderInventory( IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		// Set the base texture
 		helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[0] );
@@ -575,7 +586,7 @@ public class AEPartEssentiaLevelEmitter
 	 */
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		// Set the base texture
 		helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[0] );
@@ -607,7 +618,7 @@ public class AEPartEssentiaLevelEmitter
 	 * Set's the aspect we are filtering
 	 */
 	@Override
-	public void setAspect( int index, Aspect aspect, EntityPlayer player )
+	public void setAspect( final int index, final Aspect aspect, final EntityPlayer player )
 	{
 		// Set the filtered aspect
 		this.filterAspect = aspect;
@@ -636,7 +647,7 @@ public class AEPartEssentiaLevelEmitter
 	 * @param itemStack
 	 * @return
 	 */
-	public boolean setFilteredAspectFromItemstack( EntityPlayer player, ItemStack itemStack )
+	public boolean setFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
 	{
 		// Get the aspect
 		Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( itemStack );
@@ -657,7 +668,7 @@ public class AEPartEssentiaLevelEmitter
 	 * Writes the state of the emitter to the tag
 	 */
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		// Call super
 		super.writeToNBT( data );
@@ -690,7 +701,7 @@ public class AEPartEssentiaLevelEmitter
 	 * @throws IOException
 	 */
 	@Override
-	public void writeToStream( ByteBuf stream ) throws IOException
+	public void writeToStream( final ByteBuf stream ) throws IOException
 	{
 		// Call super
 		super.writeToStream( stream );

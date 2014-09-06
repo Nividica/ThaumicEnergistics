@@ -1,5 +1,6 @@
 package thaumicenergistics.integration.tc;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
@@ -8,6 +9,9 @@ import thaumicenergistics.container.ContainerCellTerminalBase;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
@@ -18,15 +22,15 @@ public final class EssentiaCellTerminalWorker
 	 * Singleton
 	 */
 	public static final EssentiaCellTerminalWorker instance = new EssentiaCellTerminalWorker();
-	
+
 	/**
 	 * Private constructor
 	 */
 	private EssentiaCellTerminalWorker()
 	{
-		
+
 	}
-	
+
 	private final void decreaseInputSlot( final PrivateInventory inventory )
 	{
 		ItemStack slot = inventory.getStackInSlot( ContainerCellTerminalBase.INPUT_SLOT_ID );
@@ -70,7 +74,8 @@ public final class EssentiaCellTerminalWorker
 		int proposedDrainAmount_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( proposedDrainAmount_FU );
 
 		// Attempt to drain the item
-		ImmutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.instance.extractFromContainer( container, proposedDrainAmount_EU );
+		ImmutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.instance.extractFromContainer( container,
+			proposedDrainAmount_EU );
 
 		// Was the drain successful?
 		if( drainedContainer == null )
@@ -117,8 +122,9 @@ public final class EssentiaCellTerminalWorker
 		GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( currentAspect );
 
 		// Simulate an extraction from the network
-		IAEFluidStack result = monitor.extractItems( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, containerCapacity_EU ),
-			Actionable.SIMULATE, machineSource );
+		IAEFluidStack result = monitor.extractItems(
+			EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, containerCapacity_EU ), Actionable.SIMULATE,
+			machineSource );
 
 		// Is there anything to extract?
 		if( result == null )
@@ -193,12 +199,35 @@ public final class EssentiaCellTerminalWorker
 	}
 
 	public final boolean doWork( final PrivateInventory inventory, final IMEMonitor<IAEFluidStack> monitor, final MachineSource machineSource,
-									final Aspect currentAspect )
+									final Aspect currentAspect, final EntityPlayer player )
 	{
+		boolean allowedToExtract = true;
+		boolean allowedToInject = true;
+
 		// Ensure we have a valid monitor?
 		if( monitor == null )
 		{
 			return false;
+		}
+
+		// Do we have a machine source?
+		if( machineSource != null )
+		{
+			// Get the source node
+			IGridNode sourceNode = machineSource.via.getActionableNode();
+
+			// Ensure there is a node
+			if( sourceNode == null )
+			{
+				return false;
+			}
+
+			// Get the security grid for the node.
+			ISecurityGrid sGrid = sourceNode.getGrid().getCache( ISecurityGrid.class );
+
+			// Get permissions
+			allowedToExtract = sGrid.hasPermission( player, SecurityPermissions.EXTRACT );
+			allowedToInject = sGrid.hasPermission( player, SecurityPermissions.INJECT );
 		}
 
 		// Make a copy of the input slot
@@ -207,14 +236,22 @@ public final class EssentiaCellTerminalWorker
 		// Is the container empty?
 		if( EssentiaItemContainerHelper.instance.isContainerEmpty( inputSlot ) )
 		{
-			// Attempt to fill the container.
-			return this.fillContainer( inventory, monitor, inputSlot, machineSource, currentAspect );
+			// Does the player have extract permission?
+			if( allowedToExtract )
+			{
+				// Attempt to fill the container.
+				return this.fillContainer( inventory, monitor, inputSlot, machineSource, currentAspect );
+			}
 		}
 		// Is the container not empty?
 		else if( EssentiaItemContainerHelper.instance.isContainerFilled( inputSlot ) )
 		{
-			// Attempt to drain it.
-			return this.drainContainer( inventory, monitor, inputSlot, machineSource );
+			// Does the player have inject permission?
+			if( allowedToInject )
+			{
+				// Attempt to drain it.
+				return this.drainContainer( inventory, monitor, inputSlot, machineSource );
+			}
 		}
 
 		return false;

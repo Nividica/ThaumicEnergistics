@@ -24,6 +24,7 @@ import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
@@ -120,6 +121,24 @@ public class AEPartEssentiaStorageBus
 		{
 			listner.setFilteredAspects( this.filteredAspects );
 		}
+	}
+
+	/**
+	 * Checks if the specified player can open the gui.
+	 */
+	@Override
+	protected boolean canPlayerOpenGui( final int playerID )
+	{
+		// Does the player have export & import permissions
+		if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.EXTRACT ) )
+		{
+			if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.INJECT ) )
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -584,6 +603,7 @@ public class AEPartEssentiaStorageBus
 	@Override
 	public void writeToNBT( final NBTTagCompound data )
 	{
+		// Call super
 		super.writeToNBT( data );
 
 		data.setInteger( AEPartEssentiaStorageBus.NBT_KEY_PRIORITY, this.priority );

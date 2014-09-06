@@ -11,6 +11,7 @@ import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.parts.PartItemStack;
 import appeng.api.storage.IMEMonitor;
@@ -173,6 +174,35 @@ public class AEPartGridBlock
 	public ItemStack getMachineRepresentation()
 	{
 		return this.part.getItemStack( PartItemStack.Network );
+	}
+
+	/**
+	 * Gets the security grid
+	 * 
+	 * @return
+	 */
+	public ISecurityGrid getSecurityGrid()
+	{
+		// Get the grid node
+		IGridNode node = this.part.getGridNode();
+
+		// Do we have a grid node?
+		if( node == null )
+		{
+			return null;
+		}
+
+		// Get the grid.
+		IGrid grid = node.getGrid();
+
+		// Do we have a grid?
+		if( grid == null )
+		{
+			return null;
+		}
+
+		// Get the security grid from the cache.
+		return (ISecurityGrid)grid.getCache( ISecurityGrid.class );
 	}
 
 	/**

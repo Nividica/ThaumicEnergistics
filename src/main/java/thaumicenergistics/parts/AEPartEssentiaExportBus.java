@@ -8,6 +8,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.tiles.TileJarFillable;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -22,8 +23,18 @@ public class AEPartEssentiaExportBus
 		super( AEPartsEnum.EssentiaExportBus );
 	}
 
+	/**
+	 * Checks if the specified player can open the gui.
+	 */
 	@Override
-	public boolean aspectTransferAllowed( Aspect aspect )
+	protected boolean canPlayerOpenGui( final int playerID )
+	{
+		// Does the player have export permissions
+		return this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.EXTRACT );
+	}
+
+	@Override
+	public boolean aspectTransferAllowed( final Aspect aspect )
 	{
 		return true;
 	}
@@ -35,7 +46,7 @@ public class AEPartEssentiaExportBus
 	}
 
 	@Override
-	public boolean doWork( int transferAmount )
+	public boolean doWork( final int transferAmount )
 	{
 		if( ( this.facingContainer != null ) && ( this.facingContainer instanceof TileJarFillable ) )
 		{
@@ -46,7 +57,7 @@ public class AEPartEssentiaExportBus
 	}
 
 	@Override
-	public void getBoxes( IPartCollsionHelper helper )
+	public void getBoxes( final IPartCollsionHelper helper )
 	{
 		// Large chamber and back wall
 		helper.addBox( 4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 13.5F );
@@ -60,7 +71,7 @@ public class AEPartEssentiaExportBus
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void renderInventory( IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		Tessellator ts = Tessellator.instance;
 
@@ -115,7 +126,7 @@ public class AEPartEssentiaExportBus
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		Tessellator ts = Tessellator.instance;
 
