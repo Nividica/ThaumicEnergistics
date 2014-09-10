@@ -6,8 +6,8 @@ thaumicenergistics.group.essentia.transport=ME-Essentia-Import-/Exportbus
 thaumicenergistics.fluid.gaseous=Gas
 
 #Blocks
-thaumicenergistics.block.essentia.provider.name=Essentia Provider
-thaumicenergistics.block.infusion.provider.name=Infusion Provider
+thaumicenergistics.block.essentia.provider.name=Essentia-Versorger
+thaumicenergistics.block.infusion.provider.name=Infusions-Versorger
 
 #Cable parts
 thaumicenergistics.aeparts.essentia.ImportBus.name=ME-Essentia-Importbus
@@ -73,7 +73,7 @@ thaumicenergistics.research_page.TEIO.2=§lSpeicherbus§r<BR>Durch die Kombinati
 
 # Research Arcane crafting terminal
 tc.research_name.thaumicenergistics.TEARCANETERM=Arkane Fertigungskonsole
-tc.research_text.thaumicenergistics.TEARCANETERM=Herstllung mit Magie §ound Technik.§r
+tc.research_text.thaumicenergistics.TEARCANETERM=Herstellung mit Magie §ound Technik.§r
 thaumicenergistics.research_page.TEARCANETERM.1=Du hast herausgefunden, dass du mithilfe der primären Aspekte eine Konsole an einen arkanen Werktisch binden kannst. Dadurch erhält die Konsole die Fähigkeit, mit Vis arkane Gegenstände herzustellen.
 
 # Research Essentia terminal
