@@ -18,7 +18,6 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.PrivateInventory;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
@@ -85,15 +84,6 @@ public class AEPartEssentiaTerminal
 	@Override
 	protected boolean canPlayerOpenGui( final int playerID )
 	{
-		// Does the player have export & import permissions
-		if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.EXTRACT ) )
-		{
-			if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.INJECT ) )
-			{
-				return true;
-			}
-		}
-
 		return true;
 	}
 

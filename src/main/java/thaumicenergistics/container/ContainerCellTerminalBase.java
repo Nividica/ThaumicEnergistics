@@ -155,7 +155,7 @@ public abstract class ContainerCellTerminalBase
 	 * 
 	 * @param player
 	 */
-	public ContainerCellTerminalBase( EntityPlayer player )
+	public ContainerCellTerminalBase( final EntityPlayer player )
 	{
 		this.player = player;
 
@@ -179,7 +179,7 @@ public abstract class ContainerCellTerminalBase
 	 * If the item is new: Pair <-1, potentialChange>
 	 * 
 	 */
-	private ImmutablePair<Integer, AspectStack> isChange( AspectStack potentialChange, List<AspectStack> comparedAgainst )
+	private ImmutablePair<Integer, AspectStack> isChange( final AspectStack potentialChange, final List<AspectStack> comparedAgainst )
 	{
 		AspectStack matchingStack = null;
 
@@ -211,7 +211,7 @@ public abstract class ContainerCellTerminalBase
 	 * @param changeDetails
 	 * @return
 	 */
-	private boolean mergeChange( ImmutablePair<Integer, AspectStack> changeDetails )
+	private boolean mergeChange( final ImmutablePair<Integer, AspectStack> changeDetails )
 	{
 		// Get the index that changed
 		int changedIndex = changeDetails.getLeft();
@@ -293,7 +293,7 @@ public abstract class ContainerCellTerminalBase
 	 * 
 	 * @param inventory
 	 */
-	protected void bindToInventory( PrivateInventory inventory )
+	protected void bindToInventory( final PrivateInventory inventory )
 	{
 		// Set the inventory
 		this.inventory = inventory;
@@ -345,7 +345,7 @@ public abstract class ContainerCellTerminalBase
 	 * Who can interact with the container?
 	 */
 	@Override
-	public boolean canInteractWith( EntityPlayer player )
+	public boolean canInteractWith( final EntityPlayer player )
 	{
 		return true;
 	}
@@ -385,7 +385,7 @@ public abstract class ContainerCellTerminalBase
 	 * from the AE monitor?
 	 */
 	@Override
-	public boolean isValid( Object verificationToken )
+	public boolean isValid( final Object verificationToken )
 	{
 		return true;
 	}
@@ -396,7 +396,7 @@ public abstract class ContainerCellTerminalBase
 	 * @param change
 	 * @return
 	 */
-	public boolean mergeChange( AspectStack change )
+	public boolean mergeChange( final AspectStack change )
 	{
 		// Get the index of the change
 		int index = this.isChange( change, this.aspectStackList ).getLeft();
@@ -423,7 +423,7 @@ public abstract class ContainerCellTerminalBase
 	 * Unregister this container from the monitor.
 	 */
 	@Override
-	public void onContainerClosed( EntityPlayer player )
+	public void onContainerClosed( final EntityPlayer player )
 	{
 		super.onContainerClosed( player );
 
@@ -440,7 +440,7 @@ public abstract class ContainerCellTerminalBase
 	 * Called when the list of fluids on the ME network changes.
 	 */
 	@Override
-	public void onInventoryChanged( IInventory sourceInventory )
+	public void onInventoryChanged( final IInventory sourceInventory )
 	{
 		// Is this client side?
 		if( EffectiveSide.isClientSide() )
@@ -524,7 +524,7 @@ public abstract class ContainerCellTerminalBase
 	 * 
 	 * @param aspectStackList
 	 */
-	public void onReceiveAspectList( List<AspectStack> aspectStackList )
+	public void onReceiveAspectList( final List<AspectStack> aspectStackList )
 	{
 		// Set the aspect list
 		this.aspectStackList = aspectStackList;
@@ -554,7 +554,7 @@ public abstract class ContainerCellTerminalBase
 	 * 
 	 * @param change
 	 */
-	public void onReceiveAspectListChange( AspectStack change )
+	public void onReceiveAspectListChange( final AspectStack change )
 	{
 		// Ignored server side
 		if( EffectiveSide.isServerSide() )
@@ -613,22 +613,26 @@ public abstract class ContainerCellTerminalBase
 	 */
 
 	@Override
-	public final void postChange( IBaseMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
+	public final void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> changes, final BaseActionSource source )
 	{
 		// Ensure there was a change
-		if( change == null )
+		if( changes == null )
 		{
 			return;
 		}
-		
-		// Ensure the fluid is an essentia gas
-		if( !( change.getFluid() instanceof GaseousEssentia ) )
+
+		// Loop over the changes
+		for( IAEFluidStack change : changes )
 		{
-			return;
+			// Ensure the fluid is an essentia gas
+			if( !( change.getFluid() instanceof GaseousEssentia ) )
+			{
+				continue;
+			}
+
+			// Update the client
+			this.postAspectStackChange( EssentiaConversionHelper.instance.convertAEFluidStackToAspectStack( change ) );
 		}
-		
-		// Update the client
-		this.postAspectStackChange( EssentiaConversionHelper.instance.convertAEFluidStackToAspectStack( change ) );
 	}
 
 	/**
@@ -636,7 +640,7 @@ public abstract class ContainerCellTerminalBase
 	 * 
 	 * @param guiBase
 	 */
-	public void setGui( AbstractGuiCellTerminalBase guiBase )
+	public void setGui( final AbstractGuiCellTerminalBase guiBase )
 	{
 		if( guiBase != null )
 		{
@@ -651,7 +655,7 @@ public abstract class ContainerCellTerminalBase
 	public abstract void setSelectedAspect( Aspect selectedAspect );
 
 	@Override
-	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
+	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
 		// Get the slot that was shift-clicked
 		Slot slot = (Slot)this.inventorySlots.get( slotNumber );

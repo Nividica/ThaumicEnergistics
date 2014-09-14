@@ -1,10 +1,16 @@
-﻿9/6/2014 0.6.7b
+﻿9/14/2014 0.6.8b
+  Dependency Changed: Applied Energistics 2 rv1 beta 30
+  Updated AE2 API calls and callbacks.
+  Fixes #40: Unhandled null when aspect does not have fluid form.
+  Added AE2 version check. Throws exception when this mod can not be loaded.
+
+9/6/2014 0.6.7b
   Dependency Changed: Applied Energistics 2 rv1 beta 20
   All parts now break and drop if AE2 detects a security breach.
   All parts now remember who placed them.
   Fixes #33: All parts now check network security before allowing GUI to be opened.
   Providers now respect BUILD security.
-  Essentia terminal now respects Inject and Extra security permissions.
+  Essentia terminal now respects Inject and Extract security permissions.
 
 9/4/2014 0.6.6b
   Fixed Storage bus Gui width.

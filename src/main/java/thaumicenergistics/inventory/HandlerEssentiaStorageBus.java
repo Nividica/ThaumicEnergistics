@@ -312,8 +312,12 @@ public class HandlerEssentiaStorageBus
 						// Convert to fluid
 						GaseousEssentia gas = GaseousEssentia.getGasFromAspect( containerStack.aspect );
 
-						// Add to the item list
-						out.add( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( gas, (int)containerStack.amount ) );
+						// Is there a fluid form of the aspect?
+						if( gas != null )
+						{
+							// Add to the item list
+							out.add( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( gas, (int)containerStack.amount ) );
+						}
 					}
 				}
 			}

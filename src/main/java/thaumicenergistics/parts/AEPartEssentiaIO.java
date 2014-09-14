@@ -281,6 +281,12 @@ public abstract class AEPartEssentiaIO
 			// Get the gas form of the essentia
 			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( filterAspect );
 
+			// Is there a fluid form of the aspect?
+			if( essentiaGas == null )
+			{
+				continue;
+			}
+
 			// Create the fluid stack
 			IAEFluidStack toExtract = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, amountToFillContainer );
 

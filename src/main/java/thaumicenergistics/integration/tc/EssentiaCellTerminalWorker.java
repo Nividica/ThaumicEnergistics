@@ -121,6 +121,12 @@ public final class EssentiaCellTerminalWorker
 		// Get the gas form of the essentia
 		GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( currentAspect );
 
+		// Is there a fluid form of the aspect?
+		if( essentiaGas == null )
+		{
+			return false;
+		}
+
 		// Simulate an extraction from the network
 		IAEFluidStack result = monitor.extractItems(
 			EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, containerCapacity_EU ), Actionable.SIMULATE,

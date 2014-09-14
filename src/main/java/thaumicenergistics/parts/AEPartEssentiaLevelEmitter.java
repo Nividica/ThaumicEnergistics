@@ -204,6 +204,13 @@ public class AEPartEssentiaLevelEmitter
 		// Get the gas for the filter aspect
 		GaseousEssentia aspectGas = GaseousEssentia.getGasFromAspect( this.filterAspect );
 
+		// Is there a fluid form of the aspect?
+		if( aspectGas == null )
+		{
+			// Set the current amount to 0
+			this.setCurrentAmount( 0 );
+		}
+
 		// Convert to AE fluid stack
 		IAEFluidStack asGasStack = EssentiaConversionHelper.instance.createAEFluidStackInFluidUnits( aspectGas, 1 );
 
@@ -468,7 +475,7 @@ public class AEPartEssentiaLevelEmitter
 	 * of something in the storage grid.
 	 */
 	@Override
-	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final IAEFluidStack change, final BaseActionSource source )
+	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> changes, final BaseActionSource source )
 	{
 		// Ensure we have a filter
 		if( this.filterAspect == null )
@@ -477,18 +484,23 @@ public class AEPartEssentiaLevelEmitter
 		}
 
 		// Ensure there was a change
-		if( change == null )
+		if( changes == null )
 		{
 			return;
 		}
 
-		// Ensure the fluid is an essentia gas
-		if( !( change.getFluid() instanceof GaseousEssentia ) )
+		// Ensure one of the changes an essentia gas
+		for( IAEFluidStack change : changes )
 		{
-			return;
-		}
+			if( ( change.getFluid() instanceof GaseousEssentia ) )
+			{
+				// Propagate the update
+				this.onMonitorUpdate( (IMEMonitor<IAEFluidStack>)monitor );
 
-		this.onMonitorUpdate( (IMEMonitor<IAEFluidStack>)monitor );
+				// Stop searching
+				break;
+			}
+		}
 	}
 
 	/**

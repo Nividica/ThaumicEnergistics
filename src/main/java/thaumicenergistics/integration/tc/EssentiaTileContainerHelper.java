@@ -217,6 +217,13 @@ public final class EssentiaTileContainerHelper
 			return null;
 		}
 
+		// Is there a fluid form of the essentia?
+		GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( aspectToDrain );
+		if( essentiaGas == null )
+		{
+			return null;
+		}
+
 		// Get how much is in the container
 		int containerAmount = (int)containerStack.amount;
 
@@ -243,8 +250,7 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Return the amount drained with conversion
-		return new FluidStack( GaseousEssentia.getGasFromAspect( aspectToDrain ),
-						(int)EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( amountToDrain_EU ) );
+		return new FluidStack( essentiaGas, (int)EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( amountToDrain_EU ) );
 
 	}
 

@@ -175,6 +175,12 @@ public abstract class TileProviderBase
 			// Get the gas version of the aspect
 			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( wantedAspect );
 
+			// Is there a fluid version of the aspect?
+			if( essentiaGas == null )
+			{
+				return 0;
+			}
+
 			IAEFluidStack request = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, wantedAmount );
 
 			// Simulate the extraction

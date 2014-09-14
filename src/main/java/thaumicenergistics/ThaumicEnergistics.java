@@ -4,6 +4,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.logging.log4j.Level;
 import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.integration.IntegrationCore;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -11,6 +12,7 @@ import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.network.ChannelHandler;
 import thaumicenergistics.proxy.CommonProxy;
 import thaumicenergistics.registries.ItemEnum;
+import appeng.core.AppEng;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -24,6 +26,18 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 @Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:appliedenergistics2;required-after:Thaumcraft;after:Waila")
 public class ThaumicEnergistics
 {
+	private static class IncorrectAEVersion
+		extends Exception
+	{
+		private static final long serialVersionUID = 5768931808748164005L;
+
+		public IncorrectAEVersion( final int rv, final int build )
+		{
+			super( "Thaumic Energistics is unable to load. Your version of Applied Energistics is incompatible. Please use version rv" + rv +
+							"-beta-" + build + " or equivalent." );
+		}
+	}
+
 	/**
 	 * String ID of the mod.
 	 */
@@ -32,7 +46,9 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.6.7b"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.6.8b"; // Note: don't forget to change the build.gradle file as well
+
+	public static final String AE2VERSION = "";
 
 	/**
 	 * Singleton instance
@@ -62,6 +78,65 @@ public class ThaumicEnergistics
 			return ItemEnum.STORAGE_CASING.getItem();
 		}
 	};
+
+	/**
+	 * Checks if the installed version of applied energistics is at least the
+	 * version this mod was compiled against.
+	 * 
+	 * @throws IncorrectAEVersion
+	 */
+	private static void AE2VersionCheck() throws IncorrectAEVersion
+	{
+		int revisionCompiledAgainst = 1;
+		int buildCompiledAgainst = 30;
+
+		Level vLevel = Level.OFF;
+
+		// Get the mod info
+		cpw.mods.fml.common.Mod aeMod = AppEng.class.getAnnotation( cpw.mods.fml.common.Mod.class );
+
+		// Get the version
+		String[] version = aeMod.version().split( "-" );
+
+		// Get the revision
+		int revision = Integer.parseInt( version[0].substring( 2 ) );
+
+		// Get the build
+		int build = Integer.parseInt( version[2] );
+
+		// Check the revision
+		if( revision < revisionCompiledAgainst )
+		{
+			vLevel = Level.ERROR;
+		}
+		else if( revision > revisionCompiledAgainst )
+		{
+			vLevel = Level.WARN;
+		}
+
+		// Check the build
+		if( build < buildCompiledAgainst )
+		{
+			vLevel = Level.ERROR;
+		}
+		else if( build > buildCompiledAgainst )
+		{
+			vLevel = Level.WARN;
+		}
+
+		if( vLevel == Level.ERROR )
+		{
+			throw new IncorrectAEVersion( revisionCompiledAgainst, buildCompiledAgainst );
+		}
+
+		if( vLevel == Level.WARN )
+		{
+			FMLLog.bigWarning( "Warning: This verison of Thaumic Energistics was compiled for version rv%d-beta-%d"
+							+ " of Applied Energistics 2. There may be compatibiliy issues with this verison.", revisionCompiledAgainst,
+				buildCompiledAgainst );
+		}
+
+	}
 
 	private ImmutablePair<Long, String> beginLoadStageTracking( final String stageName )
 	{
@@ -117,9 +192,12 @@ public class ThaumicEnergistics
 	}
 
 	@EventHandler
-	public void preInit( final FMLPreInitializationEvent event )
+	public void preInit( final FMLPreInitializationEvent event ) throws Exception
 	{
 		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "preInit" );
+
+		// Check the AE2 version
+		ThaumicEnergistics.AE2VersionCheck();
 
 		// Set the instance
 		ThaumicEnergistics.instance = this;

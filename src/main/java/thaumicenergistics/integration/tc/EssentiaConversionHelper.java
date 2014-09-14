@@ -33,17 +33,6 @@ public final class EssentiaConversionHelper
 	}
 
 	/**
-	 * Converts a fluid amount(mb) into an essentia amount.
-	 * 
-	 * @param fluidAmount
-	 * @return
-	 */
-	public long convertFluidAmountToEssentiaAmount( final long fluidAmount )
-	{
-		return fluidAmount / EssentiaConversionHelper.CONVERSION_MULTIPLIER;
-	}
-
-	/**
 	 * Converts an AE fluid stack into an AspectStack.
 	 * 
 	 * @param fluidStack
@@ -71,6 +60,17 @@ public final class EssentiaConversionHelper
 	public long convertEssentiaAmountToFluidAmount( final long essentiaAmount )
 	{
 		return essentiaAmount * EssentiaConversionHelper.CONVERSION_MULTIPLIER;
+	}
+
+	/**
+	 * Converts a fluid amount(mb) into an essentia amount.
+	 * 
+	 * @param fluidAmount
+	 * @return
+	 */
+	public long convertFluidAmountToEssentiaAmount( final long fluidAmount )
+	{
+		return fluidAmount / EssentiaConversionHelper.CONVERSION_MULTIPLIER;
 	}
 
 	/**
@@ -134,6 +134,12 @@ public final class EssentiaConversionHelper
 
 		// Convert to gas
 		GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( containerAspect );
+
+		// Is there a fluid form of the aspect?
+		if( essentiaGas == null )
+		{
+			return null;
+		}
 
 		// Get how much is in the container
 		int containerAmount_EU = EssentiaItemContainerHelper.instance.getContainerStoredAmount( container );

@@ -348,6 +348,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Checks if two stacks match. Either directly, or by ore dictionary.
+	 * 
 	 * @param keyStack
 	 * @param potentialMatch
 	 * @return
@@ -532,7 +533,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 		// Cache the recipes aspects
 		Aspect[] recipeAspects = this.requiredAspects.getAspects();
-		
+
 		// Do we have a wand?
 		if( this.wand != null )
 		{
@@ -551,10 +552,10 @@ public class ContainerPartArcaneCraftingTerminal
 
 			// Get the adjusted amount
 			int requiredVis = baseVis * 100;
-			
+
 			// Assume we do not have enough
 			boolean hasEnough = false;
-			
+
 			// Do we have a wand?
 			if( ( wandItem != null ) && ( wandAspectList != null ) )
 			{
@@ -564,7 +565,7 @@ public class ContainerPartArcaneCraftingTerminal
 				// Does the wand not have enough of vis of this aspect?
 				hasEnough = ( wandAspectList.getAmount( currentAspect ) >= requiredVis );
 			}
-			
+
 			if( !hasEnough )
 			{
 				// Mark that we do not have enough vis to complete crafting
@@ -755,6 +756,71 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	/**
+	 * A client has requested that a region(inventory) be deposited into the ME
+	 * network.
+	 * 
+	 * @param player
+	 * @param slotNumber
+	 */
+	public void onClientRequestDepositRegion( final EntityPlayer player, final int slotNumber )
+	{
+		List<Slot> slotsToDeposit = null;
+
+		// Was the slot part of the player inventory?
+		if( this.slotClickedWasInPlayerInventory( slotNumber ) )
+		{
+			// Get the items in the player inventory
+			slotsToDeposit = this.getNonEmptySlotsFromPlayerInventory();
+		}
+		// Was the slot part of the hotbar?
+		else if( this.slotClickedWasInHotbarInventory( slotNumber ) )
+		{
+			// Get the items in the hotbar
+			slotsToDeposit = this.getNonEmptySlotsFromHotbar();
+		}
+
+		// Do we have any slots to transfer?
+		if( slotsToDeposit != null )
+		{
+			for( Slot slot : slotsToDeposit )
+			{
+				// Ensure the slot is not null and has a stack
+				if( ( slot == null ) || ( !slot.getHasStack() ) )
+				{
+					continue;
+				}
+
+				// Set the stack
+				ItemStack slotStack = slot.getStack();
+
+				// Inject into the ME network
+				boolean didMerge = this.mergeWithMENetwork( slotStack );
+
+				// Did any merge?
+				if( !didMerge )
+				{
+					continue;
+				}
+
+				// Did the merger drain the stack?
+				if( ( slotStack == null ) || ( slotStack.stackSize == 0 ) )
+				{
+					// Set the slot to have no item
+					slot.putStack( null );
+				}
+				else
+				{
+					// Inform the slot its stack changed;
+					slot.onSlotChanged();
+				}
+			}
+
+			// Update
+			this.detectAndSendChanges();
+		}
+	}
+
+	/**
 	 * A client player is requesting to extract an item stack out
 	 * of the ME network.
 	 * 
@@ -872,76 +938,12 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	/**
-	 * A client has requested that a region(inventory) be deposited into the ME
-	 * network.
-	 * 
-	 * @param player
-	 * @param slotNumber
-	 */
-	public void onClientRequestDepositRegion( final EntityPlayer player, final int slotNumber )
-	{
-		List<Slot> slotsToDeposit = null;
-
-		// Was the slot part of the player inventory?
-		if( this.slotClickedWasInPlayerInventory( slotNumber ) )
-		{
-			// Get the items in the player inventory
-			slotsToDeposit = this.getNonEmptySlotsFromPlayerInventory();
-		}
-		// Was the slot part of the hotbar?
-		else if( this.slotClickedWasInHotbarInventory( slotNumber ) )
-		{
-			// Get the items in the hotbar
-			slotsToDeposit = this.getNonEmptySlotsFromHotbar();
-		}
-
-		// Do we have any slots to transfer?
-		if( slotsToDeposit != null )
-		{
-			for( Slot slot : slotsToDeposit )
-			{
-				// Ensure the slot is not null and has a stack
-				if( ( slot == null ) || ( !slot.getHasStack() ) )
-				{
-					continue;
-				}
-
-				// Set the stack
-				ItemStack slotStack = slot.getStack();
-
-				// Inject into the ME network
-				boolean didMerge = this.mergeWithMENetwork( slotStack );
-
-				// Did any merge?
-				if( !didMerge )
-				{
-					continue;
-				}
-
-				// Did the merger drain the stack?
-				if( ( slotStack == null ) || ( slotStack.stackSize == 0 ) )
-				{
-					// Set the slot to have no item
-					slot.putStack( null );
-				}
-				else
-				{
-					// Inform the slot its stack changed;
-					slot.onSlotChanged();
-				}
-			}
-
-			// Update
-			this.detectAndSendChanges();
-		}
-	}
-
-	/**
 	 * A client has request that the stored sorting order be changed.
+	 * 
 	 * @param order
 	 * @param dir
 	 */
-	public void onClientRequestSetSort( SortOrder order, SortDir dir )
+	public void onClientRequestSetSort( final SortOrder order, final SortDir dir )
 	{
 		// Inform the terminal
 		this.terminal.setSorts( order, dir );
@@ -1020,23 +1022,26 @@ public class ContainerPartArcaneCraftingTerminal
 	 * Called when the amount of an item on the network changes.
 	 */
 	@Override
-	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final IAEItemStack change, final BaseActionSource actionSource )
+	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> changes, final BaseActionSource actionSource )
 	{
-		// Get the total amount of the item in the network
-		IAEItemStack newAmount = this.monitor.getStorageList().findPrecise( change );
-
-		// Is there no more?
-		if( newAmount == null )
+		for( IAEItemStack change : changes )
 		{
-			// Copy the item type from the change
-			newAmount = change.copy();
+			// Get the total amount of the item in the network
+			IAEItemStack newAmount = this.monitor.getStorageList().findPrecise( change );
 
-			// Set amount to 0
-			newAmount.setStackSize( 0 );
+			// Is there no more?
+			if( newAmount == null )
+			{
+				// Copy the item type from the change
+				newAmount = change.copy();
+
+				// Set amount to 0
+				newAmount.setStackSize( 0 );
+			}
+
+			// Send the change to the client
+			new PacketClientArcaneCraftingTerminal().createChangeUpdate( this.player, newAmount ).sendPacketToPlayer();
 		}
-
-		// Send the change to the client
-		new PacketClientArcaneCraftingTerminal().createChangeUpdate( this.player, newAmount ).sendPacketToPlayer();
 	}
 
 	/**

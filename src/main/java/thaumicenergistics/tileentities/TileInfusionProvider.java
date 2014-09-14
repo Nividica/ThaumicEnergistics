@@ -30,6 +30,23 @@ public class TileInfusionProvider
 	 */
 	protected List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
 
+	/**
+	 * How much power does this require just to be active?
+	 */
+	@Override
+	protected double getIdlePowerusage()
+	{
+		return 5.0;
+	}
+
+	@Override
+	protected ItemStack getItemFromTile( final Object obj )
+	{
+		// Return the itemstack the visually represents this tile
+		return new ItemStack( BlockEnum.INFUSION_PROVIDER.getBlock(), 1 );
+
+	}
+
 	@Override
 	protected void onChannelUpdate()
 	{
@@ -69,39 +86,22 @@ public class TileInfusionProvider
 		}
 	}
 
-	/**
-	 * How much power does this require just to be active?
-	 */
 	@Override
-	protected double getIdlePowerusage()
-	{
-		return 5.0;
-	}
-
-	@Override
-	protected ItemStack getItemFromTile( Object obj )
-	{
-		// Return the itemstack the visually represents this tile
-		return new ItemStack( BlockEnum.INFUSION_PROVIDER.getBlock(), 1 );
-
-	}
-
-	@Override
-	public int addToContainer( Aspect tag, int amount )
+	public int addToContainer( final Aspect tag, final int amount )
 	{
 		// Ignored
 		return 0;
 	}
 
 	@Override
-	public int containerContains( Aspect tag )
+	public int containerContains( final Aspect tag )
 	{
 		// Ignored
 		return 0;
 	}
 
 	@Override
-	public boolean doesContainerAccept( Aspect tag )
+	public boolean doesContainerAccept( final Aspect tag )
 	{
 		// Ignored
 		return false;
@@ -109,14 +109,14 @@ public class TileInfusionProvider
 
 	@Deprecated
 	@Override
-	public boolean doesContainerContain( AspectList ot )
+	public boolean doesContainerContain( final AspectList ot )
 	{
 		// Ignored
 		return false;
 	}
 
 	@Override
-	public boolean doesContainerContainAmount( Aspect tag, int amount )
+	public boolean doesContainerContainAmount( final Aspect tag, final int amount )
 	{
 		// Ignored
 		return false;
@@ -130,7 +130,7 @@ public class TileInfusionProvider
 	}
 
 	@Override
-	public boolean isValid( Object prevGrid )
+	public boolean isValid( final Object prevGrid )
 	{
 		IGrid grid;
 		try
@@ -143,9 +143,9 @@ public class TileInfusionProvider
 			// No grid
 			return false;
 		}
-		
+
 		// We are valid if our grid has not changed
-		return ( prevGrid == grid );
+		return( prevGrid == grid );
 	}
 
 	/**
@@ -171,35 +171,40 @@ public class TileInfusionProvider
 	 * Called by the AE monitor when the network changes.
 	 */
 	@Override
-	public void postChange( IBaseMonitor<IAEFluidStack> monitor, IAEFluidStack change, BaseActionSource source )
+	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> changes, final BaseActionSource source )
 	{
 		// Ensure there was a change
-		if( change == null )
+		if( changes == null )
 		{
 			return;
 		}
 
-		// Ensure the fluid is an essentia gas
-		if( !( change.getFluid() instanceof GaseousEssentia ) )
+		// Ensure one of the changes is an essentia gas
+		for( IAEFluidStack change : changes )
 		{
-			return;
+			if( ( change.getFluid() instanceof GaseousEssentia ) )
+			{
+				// Update the aspect list
+				this.aspectStackList = EssentiaConversionHelper.instance
+								.convertIIAEFluidStackListToAspectStackList( ( (IMEMonitor<IAEFluidStack>)monitor ).getStorageList() );
+
+				// Mark that we need to update the client
+				this.markForUpdate();
+
+				// Stop searching
+				break;
+			}
 		}
-
-		this.aspectStackList = EssentiaConversionHelper.instance.convertIIAEFluidStackListToAspectStackList( ( (IMEMonitor<IAEFluidStack>)monitor )
-						.getStorageList() );
-
-		// Mark that we need to update the client
-		this.markForUpdate();
 	}
 
 	@Override
-	public void setAspects( AspectList aspects )
+	public void setAspects( final AspectList aspects )
 	{
 		// Ignored
 	}
 
 	@Override
-	public boolean takeFromContainer( Aspect tag, int amount )
+	public boolean takeFromContainer( final Aspect tag, final int amount )
 	{
 		// Can we extract the essentia from the network?
 		if( this.extractEssentiaFromNetwork( tag, amount, true ) == amount )
@@ -212,7 +217,7 @@ public class TileInfusionProvider
 
 	@Deprecated
 	@Override
-	public boolean takeFromContainer( AspectList ot )
+	public boolean takeFromContainer( final AspectList ot )
 	{
 		// Ignored
 		return false;
