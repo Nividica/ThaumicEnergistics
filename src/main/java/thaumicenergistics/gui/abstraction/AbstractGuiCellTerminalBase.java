@@ -26,6 +26,7 @@ import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.gui.widget.WidgetAspectSelector;
 import thaumicenergistics.gui.widget.WidgetAspectSelectorComparator;
 import thaumicenergistics.texture.GuiTextureManager;
+import thaumicenergistics.util.GuiHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -109,7 +110,7 @@ public abstract class AbstractGuiCellTerminalBase
 	/**
 	 * X offset to draw the search field
 	 */
-	private static final int SEARCH_X_OFFSET = 100;
+	private static final int SEARCH_X_OFFSET = 98;
 
 	/**
 	 * Y offset to draw the search field
@@ -127,7 +128,7 @@ public abstract class AbstractGuiCellTerminalBase
 	private static final int SEARCH_HEIGHT = 10;
 
 	/**
-	 * The maximum number of displayable characters.
+	 * The maximum number of display-able characters.
 	 */
 	private static final int SEARCH_MAX_CHARS = 14;
 
@@ -219,7 +220,7 @@ public abstract class AbstractGuiCellTerminalBase
 	 * @param container
 	 * Container associated with the gui.
 	 */
-	public AbstractGuiCellTerminalBase( EntityPlayer player, ContainerCellTerminalBase container )
+	public AbstractGuiCellTerminalBase( final EntityPlayer player, final ContainerCellTerminalBase container )
 	{
 		// Call super
 		super( container );
@@ -343,7 +344,7 @@ public abstract class AbstractGuiCellTerminalBase
 	 * Draws the GUI background image.
 	 */
 	@Override
-	protected void drawGuiContainerBackgroundLayer( float alpha, int sizeX, int sizeY )
+	protected void drawGuiContainerBackgroundLayer( final float alpha, final int sizeX, final int sizeY )
 	{
 		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -362,7 +363,7 @@ public abstract class AbstractGuiCellTerminalBase
 	 * Draw the foreground layer.
 	 */
 	@Override
-	protected void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
+	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
 		// Draw the title
 		this.fontRendererObj.drawString( this.guiTitle, AbstractGuiCellTerminalBase.TITLE_POS_X, AbstractGuiCellTerminalBase.TITLE_POS_Y, 0 );
@@ -393,7 +394,7 @@ public abstract class AbstractGuiCellTerminalBase
 		{
 			this.addTooltipFromButtons( mouseX, mouseY );
 		}
-		
+
 		// Draw the tooltip
 		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
 	}
@@ -402,7 +403,7 @@ public abstract class AbstractGuiCellTerminalBase
 	 * Called when the player types a key.
 	 */
 	@Override
-	protected void keyTyped( char key, int keyID )
+	protected void keyTyped( final char key, final int keyID )
 	{
 		// Pass the key to the search field.
 		this.searchBar.textboxKeyTyped( key, keyID );
@@ -428,14 +429,8 @@ public abstract class AbstractGuiCellTerminalBase
 	 * Called when the player clicks the mouse.
 	 */
 	@Override
-	protected void mouseClicked( int mouseX, int mouseY, int mouseBtn )
+	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseBtn )
 	{
-		// Call super
-		super.mouseClicked( mouseX, mouseY, mouseBtn );
-
-		// Pass to search field.
-		this.searchBar.mouseClicked( mouseX, mouseY, mouseBtn );
-
 		// Get the number of widgets that match the current search.
 		int listSize = this.matchingSearchWidgets.size();
 
@@ -466,17 +461,41 @@ public abstract class AbstractGuiCellTerminalBase
 						// Send the click to the widget
 						currentWidget.mouseClicked();
 
-						// Stop searching
+						// Stop searching and do not pass to super
 						return;
 					}
 				}
 				else
 				{
 					// Stop searching
-					return;
+					y = AbstractGuiCellTerminalBase.ROWS_PER_PAGE;
+					break;
 				}
 			}
 		}
+
+		// Was the mouse right-clicked over the search field?
+		if( ( mouseBtn == GuiHelper.MOUSE_BUTTON_RIGHT ) &&
+						GuiHelper.instance.isPointInGuiRegion( AbstractGuiCellTerminalBase.SEARCH_Y_OFFSET,
+							AbstractGuiCellTerminalBase.SEARCH_X_OFFSET, AbstractGuiCellTerminalBase.SEARCH_HEIGHT,
+							AbstractGuiCellTerminalBase.SEARCH_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+		{
+			// Clear the search text
+			this.searchTerm = "";
+			this.searchBar.setText( this.searchTerm );
+
+			// Update the widgets
+			this.updateSearch();
+
+			// Do not pass to super
+			return;
+		}
+
+		// Pass to search field.
+		this.searchBar.mouseClicked( mouseX, mouseY, mouseBtn );
+
+		// Call super
+		super.mouseClicked( mouseX, mouseY, mouseBtn );
 
 	}
 
@@ -486,7 +505,7 @@ public abstract class AbstractGuiCellTerminalBase
 	 * Called when a button is clicked.
 	 */
 	@Override
-	public void actionPerformed( GuiButton button )
+	public void actionPerformed( final GuiButton button )
 	{
 		// Is the button the sort mode button?
 		if( button.id == AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_ID )
@@ -502,7 +521,7 @@ public abstract class AbstractGuiCellTerminalBase
 	 * @param mouseX
 	 * @param mouseY
 	 */
-	public void drawWidgets( int mouseX, int mouseY )
+	public void drawWidgets( final int mouseX, final int mouseY )
 	{
 		// Anything to draw?
 		if( !this.matchingSearchWidgets.isEmpty() )
@@ -566,7 +585,7 @@ public abstract class AbstractGuiCellTerminalBase
 
 			// Was the mouse over a widget?
 			if( widgetUnderMouse != null )
-			{	
+			{
 				// Get the tooltip from the widget
 				widgetUnderMouse.getTooltip( this.tooltip );
 			}
@@ -633,7 +652,7 @@ public abstract class AbstractGuiCellTerminalBase
 						AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_SIZE, AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_SIZE ) );
 	}
 
-	public void onSortModeChanged( ComparatorMode sortMode )
+	public void onSortModeChanged( final ComparatorMode sortMode )
 	{
 		// Set the sort mode
 		this.sortMode = sortMode;

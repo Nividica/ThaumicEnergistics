@@ -22,13 +22,13 @@ public abstract class AbstractGuiWithUpgradeSlots
 
 	private static int upgradeHeight = EnumAEStateIcons.UPGRADE_SLOT.getHeight();
 
-	public AbstractGuiWithUpgradeSlots( Container container )
+	public AbstractGuiWithUpgradeSlots( final Container container )
 	{
 		super( container );
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY )
+	protected void drawGuiContainerBackgroundLayer( final float alpha, final int mouseX, final int mouseY )
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture( EnumAEStateIcons.AE_STATES_TEXTURE );
 
@@ -42,8 +42,9 @@ public abstract class AbstractGuiWithUpgradeSlots
 			if( ( slot instanceof SlotNetworkTool ) || ( slot.inventory instanceof UpgradeInventory ) )
 			{
 				// Draw background
-				this.drawTexturedModalRect( this.guiLeft + slot.xDisplayPosition, this.guiTop + slot.yDisplayPosition, AbstractGuiWithUpgradeSlots.upgradeU,
-					AbstractGuiWithUpgradeSlots.upgradeV, AbstractGuiWithUpgradeSlots.upgradeWidth, AbstractGuiWithUpgradeSlots.upgradeHeight );
+				this.drawTexturedModalRect( this.guiLeft + slot.xDisplayPosition, this.guiTop + slot.yDisplayPosition,
+					AbstractGuiWithUpgradeSlots.upgradeU, AbstractGuiWithUpgradeSlots.upgradeV, AbstractGuiWithUpgradeSlots.upgradeWidth,
+					AbstractGuiWithUpgradeSlots.upgradeHeight );
 			}
 		}
 	}
@@ -55,7 +56,7 @@ public abstract class AbstractGuiWithUpgradeSlots
 	 * @param y
 	 * @return Slot the point is within, null if point is within no slots.
 	 */
-	protected Slot getSlotAtPosition( int x, int y )
+	protected Slot getSlotAtPosition( final int x, final int y )
 	{
 		// Loop over all slots
 		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ )
@@ -83,7 +84,7 @@ public abstract class AbstractGuiWithUpgradeSlots
 	 * @param y
 	 * @return True if the point is within the slot, false otherwise.
 	 */
-	protected boolean isPointWithinSlot( Slot slot, int x, int y )
+	protected boolean isPointWithinSlot( final Slot slot, final int x, final int y )
 	{
 		return GuiHelper.instance.isPointInGuiRegion( slot.yDisplayPosition, slot.xDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
 	}
@@ -92,7 +93,7 @@ public abstract class AbstractGuiWithUpgradeSlots
 	 * Called when the mouse is clicked.
 	 */
 	@Override
-	protected void mouseClicked( int mouseX, int mouseY, int mouseButton )
+	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
 		// Is our container one that could have a network tool?
 		if( this.inventorySlots instanceof ContainerWithNetworkTool )

@@ -95,12 +95,12 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * Starting X position for crafting slots.
 	 */
-	private static int CRAFTING_SLOT_X_POS = 44;
+	public static int CRAFTING_SLOT_X_POS = 44;
 
 	/**
 	 * Starting Y position for crafting slots.
 	 */
-	private static int CRAFTING_SLOT_Y_POS = 90;
+	public static int CRAFTING_SLOT_Y_POS = 90;
 
 	/**
 	 * Starting X position for the output slot.
@@ -709,8 +709,10 @@ public class ContainerPartArcaneCraftingTerminal
 		// Create the AE itemstack representation of the itemstack
 		IAEItemStack toInjectStack = AEApi.instance().storage().createItemStack( playerHolding );
 
-		// Was it a right click?
-		if( mouseButton == GuiHelper.MOUSE_BUTTON_RIGHT )
+		// Was it a right click or wheel movement?
+		boolean depositOne = ( mouseButton == GuiHelper.MOUSE_BUTTON_RIGHT ) || ( mouseButton == GuiHelper.MOUSE_WHEEL_MOTION );
+
+		if( depositOne )
 		{
 			// Set stack size to 1
 			toInjectStack.setStackSize( 1 );
@@ -734,8 +736,8 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 		else
 		{
-			// Was this a right click, and there was more than 1 item?
-			if( ( mouseButton == GuiHelper.MOUSE_BUTTON_RIGHT ) && ( playerHolding.stackSize > 1 ) )
+			// Are we only depositing one, and there was more than 1 item?
+			if( ( depositOne ) && ( playerHolding.stackSize > 1 ) )
 			{
 				// Set the player holding one less
 				playerHolding.stackSize-- ;
@@ -842,22 +844,16 @@ public class ContainerPartArcaneCraftingTerminal
 			return;
 		}
 
-		// Get what the player is holding
-		ItemStack playerHolding = player.inventory.getItemStack();
-
-		// Ensure they are not holding anything
-		if( playerHolding != null )
-		{
-			return;
-		}
+		// Get the maximum stack size for the requested itemstack
+		int maxStackSize = requestedStack.getItemStack().getMaxStackSize();
 
 		// Determine the amount to extract
 		int amountToExtract = 0;
 		switch ( mouseButton )
 		{
 			case GuiHelper.MOUSE_BUTTON_LEFT:
-				// Full amount up to 64
-				amountToExtract = (int)Math.min( 64L, requestedStack.getStackSize() );
+				// Full amount up to maxStackSize
+				amountToExtract = (int)Math.min( maxStackSize, requestedStack.getStackSize() );
 				break;
 
 			case GuiHelper.MOUSE_BUTTON_RIGHT:
@@ -869,10 +865,18 @@ public class ContainerPartArcaneCraftingTerminal
 				}
 				else
 				{
-					// Half amount up to 32
-					amountToExtract = (int)Math.min( 32L, requestedStack.getStackSize() / 2L );
+					// Half amount up to half of maxStackSize
+					amountToExtract = (int)Math.min( maxStackSize / 2L, requestedStack.getStackSize() / 2L );
 				}
 				break;
+
+			case GuiHelper.MOUSE_WHEEL_MOTION:
+				// Shift must be held
+				if( isShiftHeld )
+				{
+					// Extract 1
+					amountToExtract = 1;
+				}
 		}
 
 		// Ensure we have some amount to extract
@@ -888,29 +892,73 @@ public class ContainerPartArcaneCraftingTerminal
 		// Set the size
 		toExtract.setStackSize( amountToExtract );
 
-		// Attempt the extraction
-		IAEItemStack extractedStack = this.monitor.extractItems( toExtract, Actionable.MODULATE, this.machineSource );
+		// Simulate the extraction
+		IAEItemStack extractedStack = this.monitor.extractItems( toExtract, Actionable.SIMULATE, this.machineSource );
 
 		// Did we extract anything?
 		if( ( extractedStack != null ) && ( extractedStack.getStackSize() > 0 ) )
 		{
-			// Was this a leftclick and is shift being held?
+			// Was this a left-click and is shift being held?
 			if( ( mouseButton == GuiHelper.MOUSE_BUTTON_LEFT ) && isShiftHeld )
 			{
 				// Can we merge the item with the player inventory
 				if( player.inventory.addItemStackToInventory( extractedStack.getItemStack() ) )
 				{
-					// Merged with player inventory
+					// Merged with player inventory, extract the item
+					this.monitor.extractItems( toExtract, Actionable.MODULATE, this.machineSource );
+
+					// Do not attempt to merge with what the player is holding.
 					return;
 				}
 
 			}
 
-			// Set the extracted stack as what the player is holding
-			player.inventory.setItemStack( extractedStack.getItemStack() );
+			// Get what the player is holding
+			ItemStack playerHolding = player.inventory.getItemStack();
+
+			// Is the player holding anything?
+			if( playerHolding != null )
+			{
+				// Can we merge with what the player is holding?
+				if( ( playerHolding.stackSize < maxStackSize ) && ( playerHolding.isItemEqual( extractedStack.getItemStack() ) ) )
+				{
+					// Determine how much room is left in the player holding stack
+					amountToExtract = Math.min( amountToExtract, maxStackSize - playerHolding.stackSize );
+
+					// Is there any room?
+					if( amountToExtract <= 0 )
+					{
+						// Can't merge, not enough space
+						return;
+					}
+
+					// Increment what the player is holding
+					playerHolding.stackSize += amountToExtract;
+
+					// Set what the player is holding
+					player.inventory.setItemStack( playerHolding );
+
+					// Adjust extraction size
+					toExtract.setStackSize( amountToExtract );
+				}
+				else
+				{
+					// Can't merge, not enough space or items don't match
+					return;
+				}
+			}
+			else
+			{
+				// Set the extracted item(s) as what the player is holding
+				player.inventory.setItemStack( extractedStack.getItemStack() );
+			}
+
+			// Extract the item(s) from the network
+			this.monitor.extractItems( toExtract, Actionable.MODULATE, this.machineSource );
 
 			// Send the update to the client
-			new PacketClientArcaneCraftingTerminal().createPlayerHoldingUpdate( player, extractedStack ).sendPacketToPlayer();
+			new PacketClientArcaneCraftingTerminal().createPlayerHoldingUpdate( player,
+				AEApi.instance().storage().createItemStack( player.inventory.getItemStack() ) ).sendPacketToPlayer();
 		}
 
 	}
@@ -1128,14 +1176,21 @@ public class ContainerPartArcaneCraftingTerminal
 			// Was the slot clicked in the crafting grid or wand?
 			if( ( slotNumber == this.wandSlotNumber ) || this.slotClickedWasInCraftingInventory( slotNumber ) )
 			{
-				// Attempt to merge with the player inventory
-				didMerge = this.mergeSlotWithPlayerInventory( slotStack );
+				// Attempt to merge with the ME network
+				didMerge = this.mergeWithMENetwork( slotStack );
 
 				// Did we merge?
 				if( !didMerge )
 				{
-					// Attempt to merge with the hotbar
-					didMerge = this.mergeSlotWithHotbarInventory( slotStack );
+					// Attempt to merge with the player inventory
+					didMerge = this.mergeSlotWithPlayerInventory( slotStack );
+
+					// Did we merge?
+					if( !didMerge )
+					{
+						// Attempt to merge with the hotbar
+						didMerge = this.mergeSlotWithHotbarInventory( slotStack );
+					}
 				}
 			}
 			// Was the slot clicked in the player or hotbar inventory?

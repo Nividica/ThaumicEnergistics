@@ -23,7 +23,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:appliedenergistics2;required-after:Thaumcraft;after:Waila")
+@Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:appliedenergistics2;required-after:Thaumcraft;after:Waila;after:ForbiddenMagic")
 public class ThaumicEnergistics
 {
 	private static class IncorrectAEVersion
@@ -46,9 +46,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.6.8b"; // Note: don't forget to change the build.gradle file as well
-
-	public static final String AE2VERSION = "";
+	public static final String VERSION = "0.6.9b"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance

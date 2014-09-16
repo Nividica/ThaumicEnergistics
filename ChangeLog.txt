@@ -1,4 +1,11 @@
-﻿9/14/2014 0.6.8b
+﻿9/15/2014 0.6.9b
+  Fixes #41: Added compatibility for ForbiddenMagic aspects.
+  Fixes #35: Added support for Version Checker.
+  Fixes #38: Added shift+scroll wheel support to A.C.T
+  Shift+Click in A.C.T. crafting grid now moves item to ME network if possible.
+  Right click now clears search in A.C.T and Essentia Terminal.
+
+9/14/2014 0.6.8b
   Dependency Changed: Applied Energistics 2 rv1 beta 30
   Updated AE2 API calls and callbacks.
   Fixes #40: Unhandled null when aspect does not have fluid form.

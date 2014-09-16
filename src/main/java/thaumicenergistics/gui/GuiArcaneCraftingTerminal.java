@@ -136,6 +136,41 @@ public class GuiArcaneCraftingTerminal
 	}
 
 	/**
+	 * Extracts or inserts an item to/from the player held stack based on the
+	 * direction the mouse wheel was scrolled.
+	 * 
+	 * @param deltaZ
+	 */
+	private void doMEWheelAction( final int deltaZ )
+	{
+		// Get the mouse position
+		int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
+		int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+
+		// Is the mouse inside the ME area?
+		if( GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.ME_ITEM_POS_Y, AbstractGuiConstantsACT.ME_ITEM_POS_X,
+			AbstractGuiConstantsACT.ME_GRID_HEIGHT, AbstractGuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+		{
+			// Which direction was the scroll?
+			if( deltaZ > 0 )
+			{
+				// Is the player holding anything?
+				if( this.player.inventory.getItemStack() != null )
+				{
+					// Inform the server the user would like to deposit 1 of the currently held items into the ME network.
+					new PacketServerArcaneCraftingTerminal().createRequestDeposit( this.player, GuiHelper.MOUSE_WHEEL_MOTION ).sendPacketToServer();
+				}
+			}
+			else
+			{
+				// Extract an item based on the widget we are over
+				this.sendItemWidgetClicked( mouseX, mouseY, GuiHelper.MOUSE_WHEEL_MOTION );
+
+			}
+		}
+	}
+
+	/**
 	 * Draws the crafting aspect's and their costs.
 	 * 
 	 * @param craftingCost
@@ -367,8 +402,6 @@ public class GuiArcaneCraftingTerminal
 			// Get the tooltip from the buttons
 			this.addTooltipFromButtons( mouseX, mouseY );
 		}
-		
-
 
 		// Draw the tooltip
 		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
@@ -502,6 +535,26 @@ public class GuiArcaneCraftingTerminal
 			// Jump the scroll to the mouse
 			this.scrollBar.click( this.aeGuiBridge, mouseX - this.guiLeft, mouseY - this.guiTop );
 
+			// Update the widgets
+			this.updateMEWidgets();
+
+			// Do not pass to super
+			return;
+		}
+
+		// Was the mouse right-clicked over the search field?
+		if( ( mouseButton == GuiHelper.MOUSE_BUTTON_RIGHT ) &&
+						GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.SEARCH_POS_Y, AbstractGuiConstantsACT.SEARCH_POS_X,
+							AbstractGuiConstantsACT.SEARCH_HEIGHT, AbstractGuiConstantsACT.SEARCH_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+		{
+			// Clear the search field
+			this.searchField.setText( "" );
+
+			// Update the repo
+			this.repo.searchString = "";
+			this.repo.updateView();
+
+			// Update the widgets
 			this.updateMEWidgets();
 
 			// Do not pass to super
@@ -682,11 +735,20 @@ public class GuiArcaneCraftingTerminal
 		// Did it move?
 		if( deltaZ != 0 )
 		{
-			// Inform the scroll bar
-			this.scrollBar.wheel( deltaZ );
+			// Is shift being held?
+			if( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) )
+			{
+				// Extract or insert based on the motion of the wheel
+				this.doMEWheelAction( deltaZ );
+			}
+			else
+			{
+				// Inform the scroll bar
+				this.scrollBar.wheel( deltaZ );
 
-			// Update the item widgets
-			this.updateMEWidgets();
+				// Update the item widgets
+				this.updateMEWidgets();
+			}
 		}
 	}
 
@@ -858,7 +920,7 @@ public class GuiArcaneCraftingTerminal
 	 * @param order
 	 * @param direction
 	 */
-	public void onReceiveSorting( SortOrder order, SortDir direction )
+	public void onReceiveSorting( final SortOrder order, final SortDir direction )
 	{
 		// Set the direction
 		this.sortingDirection = direction;

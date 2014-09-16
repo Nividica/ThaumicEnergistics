@@ -17,6 +17,9 @@ public final class GuiHelper
 
 	public static final int MOUSE_BUTTON_WHEEL = 2;
 
+	// Special case representing not a click, but a motion of the mouse wheel
+	public static final int MOUSE_WHEEL_MOTION = -2;
+
 	/**
 	 * Character MC uses to denote the next character is a formating character
 	 */
