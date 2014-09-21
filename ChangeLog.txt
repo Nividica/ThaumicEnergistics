@@ -1,4 +1,8 @@
-﻿9/15/2014 0.6.9b
+﻿9/21/2014
+  Dependency Changed: Applied Energistics 2 rv1 stable 1
+  AE version checker now considers release.
+
+9/15/2014 0.6.9b
   Fixes #41: Added compatibility for ForbiddenMagic aspects.
   Fixes #35: Added support for Version Checker.
   Fixes #38: Added shift+scroll wheel support to A.C.T

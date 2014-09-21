@@ -1,5 +1,7 @@
 package thaumicenergistics;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,10 +33,10 @@ public class ThaumicEnergistics
 	{
 		private static final long serialVersionUID = 5768931808748164005L;
 
-		public IncorrectAEVersion( final int rv, final int build )
+		public IncorrectAEVersion( final int rv, final String release, final int build )
 		{
-			super( "Thaumic Energistics is unable to load. Your version of Applied Energistics is incompatible. Please use version rv" + rv +
-							"-beta-" + build + " or equivalent." );
+			super( "Thaumic Energistics is unable to load. Your version of Applied Energistics is incompatible. Please use version rv" + rv + "-" +
+							release + "-" + build + " or equivalent." );
 		}
 	}
 
@@ -46,7 +48,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.6.9b"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.6.10b"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -85,8 +87,13 @@ public class ThaumicEnergistics
 	 */
 	private static void AE2VersionCheck() throws IncorrectAEVersion
 	{
+		List<String> releases = new ArrayList<String>( 3 );
+		releases.add( "alpha" );
+		releases.add( "beta" );
+		releases.add( "stable" );
 		int revisionCompiledAgainst = 1;
-		int buildCompiledAgainst = 30;
+		int releaseCompiledAgainst = 2;
+		int buildCompiledAgainst = 1;
 
 		Level vLevel = Level.OFF;
 
@@ -98,6 +105,9 @@ public class ThaumicEnergistics
 
 		// Get the revision
 		int revision = Integer.parseInt( version[0].substring( 2 ) );
+
+		// Get the release
+		int release = releases.indexOf( version[1] );
 
 		// Get the build
 		int build = Integer.parseInt( version[2] );
@@ -111,27 +121,45 @@ public class ThaumicEnergistics
 		{
 			vLevel = Level.WARN;
 		}
-
-		// Check the build
-		if( build < buildCompiledAgainst )
+		else
 		{
-			vLevel = Level.ERROR;
-		}
-		else if( build > buildCompiledAgainst )
-		{
-			vLevel = Level.WARN;
+			// Check the release
+			if( release < releaseCompiledAgainst )
+			{
+				vLevel = Level.ERROR;
+			}
+			else if( release > releaseCompiledAgainst )
+			{
+				vLevel = Level.WARN;
+			}
+			else
+			{
+				// Check the build
+				if( build < buildCompiledAgainst )
+				{
+					vLevel = Level.ERROR;
+				}
+				else if( build > buildCompiledAgainst )
+				{
+					// Only warn if release is not stable
+					if( releaseCompiledAgainst < 2 )
+					{
+						vLevel = Level.WARN;
+					}
+				}
+			}
 		}
 
 		if( vLevel == Level.ERROR )
 		{
-			throw new IncorrectAEVersion( revisionCompiledAgainst, buildCompiledAgainst );
+			throw new IncorrectAEVersion( revisionCompiledAgainst, releases.get( releaseCompiledAgainst ), buildCompiledAgainst );
 		}
 
 		if( vLevel == Level.WARN )
 		{
-			FMLLog.bigWarning( "Warning: This verison of Thaumic Energistics was compiled for version rv%d-beta-%d"
+			FMLLog.bigWarning( "Warning: This verison of Thaumic Energistics was compiled for version rv%d-%s-%d"
 							+ " of Applied Energistics 2. There may be compatibiliy issues with this verison.", revisionCompiledAgainst,
-				buildCompiledAgainst );
+				releases.get( releaseCompiledAgainst ), buildCompiledAgainst );
 		}
 
 	}
