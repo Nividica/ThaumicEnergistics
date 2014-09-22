@@ -17,7 +17,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.grid.AEPartGridBlock;
 import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.registries.AEPartsEnum;
@@ -69,8 +68,6 @@ public abstract class AbstractAEPartBase
 	protected TileEntity tile;
 
 	protected TileEntity hostTile;
-
-	protected IAspectContainer facingContainer;
 
 	protected boolean redstonePowered;
 
@@ -145,6 +142,25 @@ public abstract class AbstractAEPartBase
 
 		// Return the permission
 		return sGrid.hasPermission( playerID, permission );
+	}
+
+	/**
+	 * Gets the tile entity the part is facing, if any.
+	 * 
+	 * @return
+	 */
+	protected TileEntity getFacingTile()
+	{
+		// Get the world
+		World world = this.hostTile.getWorldObj();
+
+		// Get our location
+		int x = this.hostTile.xCoord;
+		int y = this.hostTile.yCoord;
+		int z = this.hostTile.zCoord;
+
+		// Get the tile entity we are connected to
+		return world.getTileEntity( x + this.cableSide.offsetX, y + this.cableSide.offsetY, z + this.cableSide.offsetZ );
 	}
 
 	/**
@@ -426,18 +442,6 @@ public abstract class AbstractAEPartBase
 			int x = this.hostTile.xCoord;
 			int y = this.hostTile.yCoord;
 			int z = this.hostTile.zCoord;
-
-			// Get the tile entity we are connected to
-			TileEntity tileEntity = world.getTileEntity( x + this.cableSide.offsetX, y + this.cableSide.offsetY, z + this.cableSide.offsetZ );
-
-			// Set that we are not facing a container
-			this.facingContainer = null;
-
-			// Are we facing a container?
-			if( tileEntity instanceof IAspectContainer )
-			{
-				this.facingContainer = (IAspectContainer)tileEntity;
-			}
 
 			// Check redstone state
 			this.redstonePowered = world.isBlockIndirectlyGettingPowered( x, y, z );

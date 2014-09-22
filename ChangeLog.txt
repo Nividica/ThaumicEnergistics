@@ -1,4 +1,11 @@
-﻿9/21/2014
+﻿9/21/2014 0.7.0b
+  Added Vis Relay Interface [WIP]
+  Vis Relay Interface settings can be saved to memory card.
+  A.C.T can now load setting from memory card.
+  V.R.I can now request vis from attached relay.
+  A.C.T. can now charge its wand!
+
+9/21/2014 0.6.10b
   Dependency Changed: Applied Energistics 2 rv1 stable 1
   AE version checker now considers release.
 

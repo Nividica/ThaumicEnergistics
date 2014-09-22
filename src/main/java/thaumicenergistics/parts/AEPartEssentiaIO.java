@@ -8,9 +8,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.gui.GuiEssentiatIO;
@@ -90,16 +92,6 @@ public abstract class AEPartEssentiaIO
 
 	private static final RedstoneMode[] REDSTONE_MODES = RedstoneMode.values();
 
-	protected List<Aspect> filteredAspects = new ArrayList<Aspect>( AEPartEssentiaIO.MAX_FILTER_SIZE );
-
-	private RedstoneMode redstoneMode = RedstoneMode.IGNORE;
-
-	protected byte filterSize;
-
-	protected byte upgradeSpeedCount = 0;
-
-	protected boolean redstoneControlled;
-
 	private boolean lastRedstone;
 
 	private int[] availableFilterSlots = { AEPartEssentiaIO.BASE_SLOT_INDEX };
@@ -107,6 +99,18 @@ public abstract class AEPartEssentiaIO
 	private UpgradeInventory upgradeInventory = new UpgradeInventory( this.associatedItem, this, AEPartEssentiaIO.UPGRADE_INVENTORY_SIZE );
 
 	private List<ContainerPartEssentiaIOBus> listeners = new ArrayList<ContainerPartEssentiaIOBus>();
+
+	private RedstoneMode redstoneMode = RedstoneMode.IGNORE;
+
+	protected List<Aspect> filteredAspects = new ArrayList<Aspect>( AEPartEssentiaIO.MAX_FILTER_SIZE );
+
+	protected IAspectContainer facingContainer;
+
+	protected byte filterSize;
+
+	protected byte upgradeSpeedCount = 0;
+
+	protected boolean redstoneControlled;
 
 	public AEPartEssentiaIO( final AEPartsEnum associatedPart )
 	{
@@ -670,7 +674,26 @@ public abstract class AEPartEssentiaIO
 	@Override
 	public void onNeighborChanged()
 	{
+		// Call super
 		super.onNeighborChanged();
+
+		// Ignored client side
+		if( EffectiveSide.isClientSide() )
+		{
+			return;
+		}
+
+		// Set that we are not facing a container
+		this.facingContainer = null;
+
+		// Get the tile we are facing
+		TileEntity tileEntity = this.getFacingTile();
+
+		// Are we facing a container?
+		if( tileEntity instanceof IAspectContainer )
+		{
+			this.facingContainer = (IAspectContainer)tileEntity;
+		}
 
 		if( this.redstonePowered )
 		{

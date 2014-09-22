@@ -39,7 +39,7 @@ public class AEPartGridBlock
 	 * 
 	 * @param part
 	 */
-	public AEPartGridBlock( AbstractAEPartBase part )
+	public AEPartGridBlock( final AbstractAEPartBase part )
 	{
 		this.part = part;
 	}
@@ -183,17 +183,8 @@ public class AEPartGridBlock
 	 */
 	public ISecurityGrid getSecurityGrid()
 	{
-		// Get the grid node
-		IGridNode node = this.part.getGridNode();
-
-		// Do we have a grid node?
-		if( node == null )
-		{
-			return null;
-		}
-
 		// Get the grid.
-		IGrid grid = node.getGrid();
+		IGrid grid = this.getGrid();
 
 		// Do we have a grid?
 		if( grid == null )
@@ -212,17 +203,8 @@ public class AEPartGridBlock
 	 */
 	public IStorageGrid getStorageGrid()
 	{
-		// Get the grid node
-		IGridNode node = this.part.getGridNode();
-
-		// Do we have a grid node?
-		if( node == null )
-		{
-			return null;
-		}
-
 		// Get the grid.
-		IGrid grid = node.getGrid();
+		IGrid grid = this.getGrid();
 
 		// Do we have a grid?
 		if( grid == null )
@@ -250,7 +232,7 @@ public class AEPartGridBlock
 	}
 
 	@Override
-	public void onGridNotification( GridNotification notification )
+	public void onGridNotification( final GridNotification notification )
 	{
 		// Ignored
 	}
@@ -259,7 +241,7 @@ public class AEPartGridBlock
 	 * Called to update the grid and the channels used.
 	 */
 	@Override
-	public final void setNetworkStatus( IGrid grid, int usedChannels )
+	public final void setNetworkStatus( final IGrid grid, final int usedChannels )
 	{
 	}
 

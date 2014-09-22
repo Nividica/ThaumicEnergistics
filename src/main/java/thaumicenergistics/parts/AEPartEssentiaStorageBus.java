@@ -8,9 +8,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
 import thaumicenergistics.gui.GuiEssentiaStorageBus;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -76,6 +78,11 @@ public class AEPartEssentiaStorageBus
 	 * The amount in the container last tick
 	 */
 	private int lastAmountInContainer = 0;
+
+	/**
+	 * The container the bus is facing.
+	 */
+	private IAspectContainer facingContainer;
 
 	/**
 	 * "Cell' handler for the storage bus
@@ -398,12 +405,25 @@ public class AEPartEssentiaStorageBus
 	@Override
 	public void onNeighborChanged()
 	{
+		// Call super
 		super.onNeighborChanged();
 
 		// Ignored client side
 		if( EffectiveSide.isClientSide() )
 		{
 			return;
+		}
+
+		// Set that we are not facing a container
+		this.facingContainer = null;
+
+		// Get the tile we are facing
+		TileEntity tileEntity = this.getFacingTile();
+
+		// Are we facing a container?
+		if( tileEntity instanceof IAspectContainer )
+		{
+			this.facingContainer = (IAspectContainer)tileEntity;
 		}
 
 		this.handler.onNeighborChange();

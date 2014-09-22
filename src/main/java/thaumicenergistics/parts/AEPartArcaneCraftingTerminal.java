@@ -11,17 +11,27 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
+import thaumicenergistics.util.VisInterfaceData;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEColor;
@@ -30,7 +40,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartArcaneCraftingTerminal
 	extends AbstractAEPartBase
-	implements IInventory
+	implements IInventory, IGridTickable
 {
 	/**
 	 * Number of slots in the internal inventory
@@ -56,16 +66,21 @@ public class AEPartArcaneCraftingTerminal
 	 * Key used for reading/writing inventory slots to NBT
 	 */
 	private static final String SLOT_NBT_KEY = "Slot#";
-	
+
 	/**
 	 * Key used for reading/writing the sorting order.
 	 */
 	private static final String SORT_ORDER_NBT_KEY = "SortOrder";
-	
+
 	/**
 	 * Key used for reading/writing the sorting direction.
 	 */
 	private static final String SORT_DIRECTION_NBT_KEY = "SortDirection";
+
+	/**
+	 * Key used for reading/writing the vis info
+	 */
+	private static final String VIS_INTERFACE_NBT_KEY = "VisInterface";
 
 	/**
 	 * How much AE power is required to keep the part active.
@@ -93,6 +108,11 @@ public class AEPartArcaneCraftingTerminal
 	private SortDir sortingDirection = SortDir.ASCENDING;
 
 	/**
+	 * Data pertaining to the linked vis interface
+	 */
+	private VisInterfaceData visInterfaceInfo = new VisInterfaceData();
+
+	/**
 	 * Creates the terminal
 	 */
 	public AEPartArcaneCraftingTerminal()
@@ -101,13 +121,46 @@ public class AEPartArcaneCraftingTerminal
 		super( AEPartsEnum.ArcaneCraftingTerminal );
 	}
 
+	public static boolean isItemValidCraftingWand( final ItemStack stack )
+	{
+		// Ensure it is not null
+		if( stack == null )
+		{
+			return false;
+		}
+
+		// Get the item
+		Item item = stack.getItem();
+
+		// Ensure the item is not null
+		if( item == null )
+		{
+			return false;
+		}
+
+		// Ensure it is a casting wand
+		if( !( item instanceof ItemWandCasting ) )
+		{
+			return false;
+		}
+
+		// Ensure it is not a staff
+		if( ( (ItemWandCasting)item ).isStaff( stack ) )
+		{
+			return false;
+		}
+
+		// Valid wand
+		return true;
+	}
+
 	/**
 	 * Validates that a slot is inbounds of the inventory.
 	 * 
 	 * @param slotIndex
 	 * @return
 	 */
-	private boolean isSlotInRange( int slotIndex )
+	private boolean isSlotInRange( final int slotIndex )
 	{
 		// Is the slot in range?
 		return( ( slotIndex >= 0 ) && ( slotIndex < AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE ) );
@@ -119,7 +172,7 @@ public class AEPartArcaneCraftingTerminal
 	 * 
 	 * @param slotIndex
 	 */
-	private void notifyListeners( int slotIndex )
+	private void notifyListeners( final int slotIndex )
 	{
 		// Loop over all listeners
 		for( ContainerPartArcaneCraftingTerminal listener : this.listeners )
@@ -132,7 +185,7 @@ public class AEPartArcaneCraftingTerminal
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks if the specified player can open the gui.
 	 */
@@ -172,7 +225,7 @@ public class AEPartArcaneCraftingTerminal
 	 * Can be null.
 	 */
 	@Override
-	public ItemStack decrStackSize( int slotIndex, int amount )
+	public ItemStack decrStackSize( final int slotIndex, final int amount )
 	{
 		ItemStack returnStack = null;
 
@@ -220,7 +273,7 @@ public class AEPartArcaneCraftingTerminal
 	 * Collision boxes
 	 */
 	@Override
-	public void getBoxes( IPartCollsionHelper helper )
+	public void getBoxes( final IPartCollsionHelper helper )
 	{
 		helper.addBox( 2.0D, 2.0D, 14.0D, 14.0D, 14.0D, 16.0D );
 
@@ -231,7 +284,7 @@ public class AEPartArcaneCraftingTerminal
 	 * Gets the GUI associated with this part
 	 */
 	@Override
-	public Object getClientGuiElement( EntityPlayer player )
+	public Object getClientGuiElement( final EntityPlayer player )
 	{
 		return new GuiArcaneCraftingTerminal( this, player );
 	}
@@ -241,7 +294,7 @@ public class AEPartArcaneCraftingTerminal
 	 * the part has been removed.
 	 */
 	@Override
-	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 		// Were we wrenched?
 		if( wrenched )
@@ -303,7 +356,7 @@ public class AEPartArcaneCraftingTerminal
 	 * Gets the container associated with this part.
 	 */
 	@Override
-	public Object getServerGuiElement( EntityPlayer player )
+	public Object getServerGuiElement( final EntityPlayer player )
 	{
 		return new ContainerPartArcaneCraftingTerminal( this, player );
 	}
@@ -316,18 +369,20 @@ public class AEPartArcaneCraftingTerminal
 	{
 		return AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE;
 	}
-	
+
 	/**
 	 * Returns the stored sorting direction.
+	 * 
 	 * @return
 	 */
 	public SortDir getSortingDirection()
 	{
 		return this.sortingDirection;
 	}
-	
+
 	/**
 	 * Returns the stored sorting order.
+	 * 
 	 * @return
 	 */
 	public SortOrder getSortingOrder()
@@ -340,7 +395,7 @@ public class AEPartArcaneCraftingTerminal
 	 * Can be null.
 	 */
 	@Override
-	public ItemStack getStackInSlot( int slotIndex )
+	public ItemStack getStackInSlot( final int slotIndex )
 	{
 		// Is the slot in range?
 		if( this.isSlotInRange( slotIndex ) )
@@ -357,7 +412,7 @@ public class AEPartArcaneCraftingTerminal
 	 * Returns the itemstack in the specified slot, can be null.
 	 */
 	@Override
-	public ItemStack getStackInSlotOnClosing( int slotIndex )
+	public ItemStack getStackInSlotOnClosing( final int slotIndex )
 	{
 		// Is the slot in range?
 		if( this.isSlotInRange( slotIndex ) )
@@ -366,6 +421,13 @@ public class AEPartArcaneCraftingTerminal
 		}
 
 		return null;
+	}
+
+	@Override
+	public TickingRequest getTickingRequest( final IGridNode grid )
+	{
+		// We would like a tick ever 5 to 40 MC ticks
+		return new TickingRequest( 5, 40, false, false );
 	}
 
 	/**
@@ -387,44 +449,11 @@ public class AEPartArcaneCraftingTerminal
 		return true;
 	}
 
-	public static boolean isItemValidCraftingWand( ItemStack stack )
-	{
-		// Ensure it is not null
-		if( stack == null )
-		{
-			return false;
-		}
-
-		// Get the item
-		Item item = stack.getItem();
-
-		// Ensure the item is not null
-		if( item == null )
-		{
-			return false;
-		}
-
-		// Ensure it is a casting wand
-		if( !( item instanceof ItemWandCasting ) )
-		{
-			return false;
-		}
-
-		// Ensure it is not a staff
-		if( ( (ItemWandCasting)item ).isStaff( stack ) )
-		{
-			return false;
-		}
-
-		// Valid wand
-		return true;
-	}
-
 	/**
 	 * Determines if the specified itemstack is valid for the slot index.
 	 */
 	@Override
-	public boolean isItemValidForSlot( int slotIndex, ItemStack proposedStack )
+	public boolean isItemValidForSlot( final int slotIndex, final ItemStack proposedStack )
 	{
 		// Is the slot in range?
 		if( this.isSlotInRange( slotIndex ) )
@@ -448,7 +477,7 @@ public class AEPartArcaneCraftingTerminal
 	 * Who can use this?
 	 */
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer player )
+	public boolean isUseableByPlayer( final EntityPlayer player )
 	{
 		return true;
 	}
@@ -463,6 +492,44 @@ public class AEPartArcaneCraftingTerminal
 		this.hostTile.markDirty();
 	}
 
+	/**
+	 * Player right-clicked the terminal.
+	 */
+	@Override
+	public boolean onActivate( final EntityPlayer player, final Vec3 position )
+	{
+		// Get what the player is holding
+		ItemStack playerHolding = player.inventory.getCurrentItem();
+
+		// Are they holding a memory card?
+		if( ( playerHolding != null ) && ( playerHolding.getItem() instanceof IMemoryCard ) )
+		{
+			// Get the memory card
+			IMemoryCard memoryCard = (IMemoryCard)playerHolding.getItem();
+
+			// Does it contain the data about a vis interface?
+			if( memoryCard.getSettingsName( playerHolding ).equals( AEPartsEnum.VisInterface.getUnlocalizedName() ) )
+			{
+				// Get the data
+				NBTTagCompound data = memoryCard.getData( playerHolding );
+
+				// Load the info
+				this.visInterfaceInfo.readFromNBT( data );
+
+				// Inform the user
+				memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+
+				// Mark that we need to save
+				this.markDirty();
+			}
+
+			return true;
+		}
+
+		// Pass to super
+		return super.onActivate( player, position );
+	}
+
 	@Override
 	public void openInventory()
 	{
@@ -473,11 +540,11 @@ public class AEPartArcaneCraftingTerminal
 	 * Loads part data from NBT tag
 	 */
 	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		// Call super
 		super.readFromNBT( data );
-		
+
 		// Does the data tag have the list?
 		if( data.hasKey( AEPartArcaneCraftingTerminal.INVENTORY_NBT_KEY ) )
 		{
@@ -500,18 +567,21 @@ public class AEPartArcaneCraftingTerminal
 				}
 			}
 		}
-		
+
 		// Sort order
 		if( data.hasKey( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY ) )
 		{
-			this.sortingOrder = SortOrder.values()[ data.getInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY  )];
+			this.sortingOrder = SortOrder.values()[data.getInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY )];
 		}
-		
+
 		// Sort direction
 		if( data.hasKey( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY ) )
 		{
-			this.sortingDirection = SortDir.values()[ data.getInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY  )];
+			this.sortingDirection = SortDir.values()[data.getInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY )];
 		}
+
+		// Vis interface info
+		this.visInterfaceInfo.readFromNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
 	}
 
 	/**
@@ -519,7 +589,7 @@ public class AEPartArcaneCraftingTerminal
 	 * 
 	 * @param container
 	 */
-	public void registerListener( ContainerPartArcaneCraftingTerminal container )
+	public void registerListener( final ContainerPartArcaneCraftingTerminal container )
 	{
 		// Is this already registered?
 		if( !this.listeners.contains( container ) )
@@ -535,7 +605,7 @@ public class AEPartArcaneCraftingTerminal
 	 * 
 	 * @param container
 	 */
-	public void removeListener( ContainerPartArcaneCraftingTerminal container )
+	public void removeListener( final ContainerPartArcaneCraftingTerminal container )
 	{
 		// Remove the container from the listeners
 		this.listeners.remove( container );
@@ -546,7 +616,7 @@ public class AEPartArcaneCraftingTerminal
 	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderInventory( IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		Tessellator ts = Tessellator.instance;
 
@@ -572,7 +642,7 @@ public class AEPartArcaneCraftingTerminal
 	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderStatic( int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer )
+	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		Tessellator tessellator = Tessellator.instance;
 
@@ -607,7 +677,7 @@ public class AEPartArcaneCraftingTerminal
 	 * @return
 	 */
 	@Override
-	public void setInventorySlotContents( int slotIndex, ItemStack slotStack )
+	public void setInventorySlotContents( final int slotIndex, final ItemStack slotStack )
 	{
 		if( this.setInventorySlotContentsWithoutNotify( slotIndex, slotStack ) )
 		{
@@ -624,7 +694,7 @@ public class AEPartArcaneCraftingTerminal
 	 * @param slotStack
 	 * @return
 	 */
-	public boolean setInventorySlotContentsWithoutNotify( int slotIndex, ItemStack slotStack )
+	public boolean setInventorySlotContentsWithoutNotify( final int slotIndex, final ItemStack slotStack )
 	{
 		// Is the slot in range?
 		if( this.isSlotInRange( slotIndex ) )
@@ -637,30 +707,92 @@ public class AEPartArcaneCraftingTerminal
 
 		return false;
 	}
-	
+
 	/**
 	 * Sets the sorting order and direction
+	 * 
 	 * @param order
 	 * @param dir
 	 */
-	public void setSorts( SortOrder order, SortDir dir )
-	{	
+	public void setSorts( final SortOrder order, final SortDir dir )
+	{
 		this.sortingDirection = dir;
-		
+
 		this.sortingOrder = order;
-		
+
 		this.markDirty();
+	}
+
+	@Override
+	public TickRateModulation tickingRequest( final IGridNode node, final int TicksSinceLastCall )
+	{
+		// Do we have an interface to draw from?
+		if( this.visInterfaceInfo.getHasData() )
+		{
+			// Get the wand slot
+			ItemStack stack = this.getStackInSlot( WAND_SLOT_INDEX );
+
+			// Do we have a wand?
+			if( ( stack != null ) && ( stack.getItem() instanceof ItemWandCasting ) )
+			{
+				// Get the wand
+				ItemWandCasting wand = (ItemWandCasting)stack.getItem();
+
+				// Does the wand need vis?
+				AspectList neededVis = wand.getAspectsWithRoom( stack );
+				if( neededVis.size() > 0 )
+				{
+					// Get the interface
+					AEPartVisInterface visInterface = this.visInterfaceInfo.getInterface();
+
+					boolean sameGrid = false;
+
+					try
+					{
+						sameGrid = ( this.getGridBlock().getGrid().equals( visInterface.getGridBlock().getGrid() ) );
+					}
+					catch( Exception e )
+					{
+					}
+
+					// Are we on the same grid?
+					if( sameGrid )
+					{
+						for( Aspect vis : neededVis.getAspects() )
+						{
+							// Calculate the size of the request
+							int amountToDrain = wand.getMaxVis( stack ) - wand.getVis( stack, vis );
+
+							// Request the vis
+							int amountDrained = visInterface.requestDrain( vis, amountToDrain );
+
+							// Did we drain any?
+							if( amountDrained > 0 )
+							{
+								// Add to the wand
+								wand.addRealVis( stack, vis, amountDrained, true );
+							}
+
+						}
+
+						return TickRateModulation.URGENT;
+					}
+				}
+			}
+		}
+
+		return TickRateModulation.IDLE;
 	}
 
 	/**
 	 * Saves part data to NBT tag
 	 */
 	@Override
-	public void writeToNBT( NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data )
 	{
 		// Call super
 		super.writeToNBT( data );
-		
+
 		// Create a new tag list
 		NBTTagList nbtList = new NBTTagList();
 
@@ -686,12 +818,15 @@ public class AEPartArcaneCraftingTerminal
 
 		// Append the list to the data tag
 		data.setTag( AEPartArcaneCraftingTerminal.INVENTORY_NBT_KEY, nbtList );
-		
+
 		// Write direction
 		data.setInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY, this.sortingDirection.ordinal() );
-		
+
 		// Write order
 		data.setInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY, this.sortingOrder.ordinal() );
+
+		// Write the vis interface info
+		this.visInterfaceInfo.writeToNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
 	}
 
 }

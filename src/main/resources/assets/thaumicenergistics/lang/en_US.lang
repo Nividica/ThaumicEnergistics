@@ -16,6 +16,7 @@ thaumicenergistics.aeparts.essentia.levelemitter.name=Essentia Level Emitter
 thaumicenergistics.aeparts.essentia.StorageBus.name=Essentia Storage Bus
 thaumicenergistics.aeparts.essentia.terminal.name=Essentia Terminal
 thaumicenergistics.aeparts.arcane.crafting.terminal.name=Arcane Crafting Terminal
+thaumicenergistics.aeparts.vis.interface.name=Vis Relay Interface[WIP]
 
 #Items
 thaumicenergistics.item.essentia.cell.1k.name=ME 1k Essentia Storage Cell
