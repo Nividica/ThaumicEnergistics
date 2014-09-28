@@ -226,7 +226,7 @@ public class AEPartGridBlock
 	 * Parts are not world accessable
 	 */
 	@Override
-	public boolean isWorldAccessable()
+	public boolean isWorldAccessible()
 	{
 		return false;
 	}
@@ -244,5 +244,7 @@ public class AEPartGridBlock
 	public final void setNetworkStatus( final IGrid grid, final int usedChannels )
 	{
 	}
+
+
 
 }
