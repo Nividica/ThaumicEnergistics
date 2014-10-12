@@ -75,7 +75,7 @@ public class CommonProxy
 	 */
 	public void registerSpatialIOMovables()
 	{
-		IMovableRegistry movableRegistry = AEApi.instance().registries().moveable();
+		IMovableRegistry movableRegistry = AEApi.instance().registries().movable();
 
 		// Add essentia provider
 		movableRegistry.whiteListTileEntity( TileEssentiaProvider.class );

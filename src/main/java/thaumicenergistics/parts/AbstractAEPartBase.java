@@ -1,10 +1,12 @@
 package thaumicenergistics.parts;
 
 import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
@@ -34,7 +36,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
@@ -251,7 +253,7 @@ public abstract class AbstractAEPartBase
 	}
 
 	@Override
-	public abstract void getBoxes( IPartCollsionHelper helper );
+	public abstract void getBoxes( IPartCollisionHelper helper );
 
 	@Override
 	public IIcon getBreakingTexture()

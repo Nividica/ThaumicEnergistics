@@ -69,7 +69,7 @@ public class RecipeRegistry
 
 		ItemStack ChargedCertusQuartz = aeMaterials.materialCertusQuartzCrystalCharged.stack( 1 );
 
-		ItemStack PureCertusQuartz = aeMaterials.materialPureifiedCertusQuartzCrystal.stack( 1 );
+		ItemStack PureCertusQuartz = aeMaterials.materialPurifiedCertusQuartzCrystal.stack( 1 );
 
 		ItemStack QuartzGlass = aeBlocks.blockQuartzGlass.stack( 1 );
 

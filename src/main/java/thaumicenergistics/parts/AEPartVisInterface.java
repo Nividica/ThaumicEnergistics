@@ -16,7 +16,7 @@ import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.VisInterfaceData;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 
 public class AEPartVisInterface
@@ -64,7 +64,7 @@ public class AEPartVisInterface
 	 * Hit boxes.
 	 */
 	@Override
-	public void getBoxes( final IPartCollsionHelper helper )
+	public void getBoxes( final IPartCollisionHelper helper )
 	{
 		// Face
 		helper.addBox( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
