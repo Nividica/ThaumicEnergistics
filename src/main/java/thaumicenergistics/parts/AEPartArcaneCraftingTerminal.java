@@ -733,7 +733,7 @@ public class AEPartArcaneCraftingTerminal
 			ItemStack stack = this.getStackInSlot( WAND_SLOT_INDEX );
 
 			// Do we have a wand?
-			if( ( stack != null ) && ( stack.getItem() instanceof ItemWandCasting ) )
+			if( AEPartArcaneCraftingTerminal.isItemValidCraftingWand( stack ) )
 			{
 				// Get the wand
 				ItemWandCasting wand = (ItemWandCasting)stack.getItem();

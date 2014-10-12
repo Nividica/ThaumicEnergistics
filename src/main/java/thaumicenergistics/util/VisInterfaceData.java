@@ -1,11 +1,13 @@
 package thaumicenergistics.util;
 
+import java.lang.ref.WeakReference;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.parts.AEPartVisInterface;
+import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 
 public class VisInterfaceData
@@ -50,6 +52,11 @@ public class VisInterfaceData
 	private long UID;
 
 	/**
+	 * Cached reference to interface.
+	 */
+	private WeakReference<AEPartVisInterface> visInterface;
+
+	/**
 	 * Creates the info, setting that there is no data
 	 */
 	public VisInterfaceData()
@@ -92,6 +99,53 @@ public class VisInterfaceData
 		this.z = 0;
 		this.side = ForgeDirection.UNKNOWN.ordinal();
 		this.UID = 0;
+		this.visInterface = new WeakReference<AEPartVisInterface>( null );
+	}
+
+	private void refreshCache()
+	{
+		try
+		{
+			// Get the world
+			World world = DimensionManager.getWorld( this.world );
+
+			// Ensure the world is not null
+			if( world == null )
+			{
+				return;
+			}
+
+			// Get the tile
+			TileEntity tile = world.getTileEntity( this.x, this.y, this.z );
+
+			// Ensure we got a tile, and that it is a part host
+			if( !( tile instanceof IPartHost ) )
+			{
+				return;
+			}
+
+			// Get the part from the host
+			IPart part = ( (IPartHost)tile ).getPart( ForgeDirection.getOrientation( this.side ) );
+
+			// Ensure we got the part, and it is a vis interface
+			if( !( part instanceof AEPartVisInterface ) )
+			{
+				return;
+			}
+
+			// Cast to the interface
+			AEPartVisInterface visInterface = (AEPartVisInterface)part;
+
+			// Check the UID
+			if( visInterface.getUID() == this.UID )
+			{
+				// Set the interface
+				this.visInterface = new WeakReference<AEPartVisInterface>( visInterface );
+			}
+		}
+		catch( Exception e )
+		{
+		}
 	}
 
 	/**
@@ -111,31 +165,26 @@ public class VisInterfaceData
 	 */
 	public AEPartVisInterface getInterface()
 	{
+		// Do we have any data to load from?
 		if( this.hasData )
 		{
-
-			try
+			// Do we have an interface cached?
+			AEPartVisInterface vInt = this.visInterface.get();
+			if( vInt == null )
 			{
-				// Get the world
-				World world = DimensionManager.getWorld( this.world );
+				// Attempt to get the interface
+				this.refreshCache();
 
-				// Get the host tile
-				IPartHost host = (IPartHost)( world.getTileEntity( this.x, this.y, this.z ) );
-
-				// Get the part
-				AEPartVisInterface visInterface = (AEPartVisInterface)host.getPart( ForgeDirection.getOrientation( this.side ) );
-
-				// Check the UID
-				if( visInterface.getUID() == this.UID )
-				{
-					return visInterface;
-				}
+				// Return it if cached
+				return this.visInterface.get();
 			}
-			catch( Exception e )
-			{
-			}
+
+			// Return the cached
+			return vInt;
+
 		}
 
+		// Nothing to load
 		return null;
 	}
 

@@ -48,10 +48,11 @@ public class RecipeRegistry
 	public static IArcaneRecipe PART_ESSENTIA_TERMINAL;
 	public static IArcaneRecipe PART_ARCANE_TERMINAL;
 	public static IArcaneRecipe PART_ESSENTIA_LEVEL_EMITTER;
+	public static IArcaneRecipe PART_VIS_INTERFACE;
 	public static InfusionRecipe INFUSION_PROVIDER;
 	public static InfusionRecipe ESSENTIA_PROVIDER;
 
-	private static void registerComponents( Materials aeMaterials, Blocks aeBlocks )
+	private static void registerComponents( final Materials aeMaterials, final Blocks aeBlocks )
 	{
 		// Thaumcraft items
 		ItemStack EtheralEssence = new ItemStack( ConfigItems.itemWispEssence );
@@ -121,7 +122,7 @@ public class RecipeRegistry
 							'G', QuartzGlass } );
 	}
 
-	private static void registerMaterials( Materials aeMaterials )
+	private static void registerMaterials( final Materials aeMaterials )
 	{
 		// Thaumcraft items
 		ItemStack EntropyShard = new ItemStack( ConfigItems.itemShard, 1, 5 );
@@ -220,7 +221,7 @@ public class RecipeRegistry
 		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_64K_SHAPELESS );
 	}
 
-	private static void registerParts( Parts aeParts, Materials aeMaterials )
+	private static void registerParts( final Parts aeParts, final Materials aeMaterials )
 	{
 		// Minecraft items
 		String IronIngot = "ingotIron";
@@ -240,6 +241,8 @@ public class RecipeRegistry
 
 		ItemStack METerminal = aeParts.partTerminal.stack( 1 );
 
+		ItemStack MEP2P = aeParts.partP2PTunnelME.stack( 1 );
+
 		// Thaumcraft items
 		ItemStack FilterTube = new ItemStack( ConfigBlocks.blockTube, 1, 3 );
 
@@ -252,6 +255,8 @@ public class RecipeRegistry
 		ItemStack AspectFilter = new ItemStack( ConfigItems.itemResource, 1, 8 );
 
 		ItemStack SalisMundus = new ItemStack( ConfigItems.itemResource, 1, 14 );
+
+		ItemStack BallanceShard = new ItemStack( ConfigItems.itemShard, 1, 6 );
 
 		// My items
 		ItemStack DiffusionCore = RecipeRegistry.MATERIAL_DIFFUSION_CORE.getRecipeOutput();
@@ -269,6 +274,8 @@ public class RecipeRegistry
 		ItemStack ArcaneCraftingTerminal = AEPartsEnum.ArcaneCraftingTerminal.getStack();
 
 		ItemStack EssentiaLevelEmitter = AEPartsEnum.EssentiaLevelEmitter.getStack();
+
+		ItemStack VisInterface = AEPartsEnum.VisInterface.getStack();
 
 		// Item Groups		
 		ArrayList<ItemStack> GroupPanel = new ArrayList<ItemStack>( 3 );
@@ -325,9 +332,21 @@ public class RecipeRegistry
 		RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
 			ResearchRegistry.ResearchTypes.ESSENTIATERMINAL.getKey(), EssentiaLevelEmitter, emitterAspectList, CalculationProcessor, RedstoneTorch,
 			SalisMundus );
+
+		// Vis interface
+		AspectList visInterfaceAspectList = new AspectList();
+		visInterfaceAspectList.add( Aspect.AIR, 2 );
+		visInterfaceAspectList.add( Aspect.EARTH, 2 );
+		visInterfaceAspectList.add( Aspect.ENTROPY, 2 );
+		visInterfaceAspectList.add( Aspect.FIRE, 2 );
+		visInterfaceAspectList.add( Aspect.ORDER, 2 );
+		visInterfaceAspectList.add( Aspect.WATER, 2 );
+		RecipeRegistry.PART_VIS_INTERFACE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.VISINTERFACE.getKey(),
+			VisInterface, visInterfaceAspectList, BallanceShard, MEP2P );
+
 	}
 
-	private static void registerProviders( Blocks aeBlocks )
+	private static void registerProviders( final Blocks aeBlocks )
 	{
 		// Thaumcraft items
 		ItemStack FilteredPipe = new ItemStack( ConfigBlocks.blockTube, 1, 3 );
@@ -383,7 +402,8 @@ public class RecipeRegistry
 
 	}
 
-	private static void replaceRecipeIngredientWithGroup( ShapedArcaneRecipe recipe, ItemStack ingredient, ArrayList<ItemStack> group )
+	private static void replaceRecipeIngredientWithGroup( final ShapedArcaneRecipe recipe, final ItemStack ingredient,
+															final ArrayList<ItemStack> group )
 	{
 		// Get the input
 		Object[] input = recipe.getInput();
@@ -406,7 +426,8 @@ public class RecipeRegistry
 		}
 	}
 
-	private static void replaceRecipeIngredientWithGroup( ShapelessArcaneRecipe recipe, ItemStack ingredient, ArrayList<ItemStack> group )
+	private static void replaceRecipeIngredientWithGroup( final ShapelessArcaneRecipe recipe, final ItemStack ingredient,
+															final ArrayList<ItemStack> group )
 	{
 		// Get the input
 		ArrayList<Object> input = recipe.getInput();

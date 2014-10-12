@@ -1,5 +1,8 @@
 package thaumicenergistics.parts;
 
+import io.netty.buffer.ByteBuf;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,13 +17,21 @@ import thaumcraft.common.tiles.TileVisRelay;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.VisInterfaceData;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 
 public class AEPartVisInterface
 	extends AbstractAEPartBase
+	implements IGridTickable
 {
 	/**
 	 * NBT key for the unique ID
@@ -28,9 +39,35 @@ public class AEPartVisInterface
 	private static final String NBT_KEY_UID = "uid";
 
 	/**
+	 * The amount of time to display the color when not receiving updates
+	 */
+	private static final int TIME_TO_CLEAR = 500;
+
+	/**
+	 * The amount of power to use per each vis of a request.
+	 * The amount of vis doesn't matter.
+	 */
+	private static final int POWER_PER_REQUESTED_VIS = 4;
+
+	/**
 	 * Unique ID for this interface
 	 */
 	private long UID = 0;
+
+	/**
+	 * The aspect color we are currently draining
+	 */
+	private int visDrainingColor = 0;
+
+	/**
+	 * The last time the color was refreshed.
+	 */
+	private long lastColorUpdate = 0;
+
+	/**
+	 * Cached reference to the relay we are facing.
+	 */
+	private WeakReference<TileVisRelay> cachedRelay = new WeakReference<TileVisRelay>( null );
 
 	/**
 	 * Creates the interface.
@@ -40,6 +77,44 @@ public class AEPartVisInterface
 		super( AEPartsEnum.VisInterface );
 
 		this.UID = System.currentTimeMillis() ^ this.hashCode();
+	}
+
+	/**
+	 * Sets the color we are draining.
+	 * 
+	 * @param color
+	 */
+	private void setDrainColor( final int color )
+	{
+
+		// Are we setting the color?
+		if( color != 0 )
+		{
+			// Does it match what we already have?
+			if( color == this.visDrainingColor )
+			{
+				// Set the update time
+				this.lastColorUpdate = System.currentTimeMillis();
+
+				return;
+			}
+
+			// Has the alloted time passed for a change?
+			if( ( System.currentTimeMillis() - this.lastColorUpdate ) <= ( AEPartVisInterface.TIME_TO_CLEAR / 2 ) )
+			{
+				return;
+			}
+
+			// Set the update time
+			this.lastColorUpdate = System.currentTimeMillis();
+
+		}
+
+		// Set the color
+		this.visDrainingColor = color;
+
+		// Update
+		this.host.markForUpdate();
 	}
 
 	/**
@@ -84,6 +159,54 @@ public class AEPartVisInterface
 	public double getIdlePowerUsage()
 	{
 		return 0;
+	}
+
+	/**
+	 * Gets the relay the interface is facing. If any.
+	 * 
+	 * @return
+	 */
+	public TileVisRelay getRelay()
+	{
+		// Get the cached relay
+		TileVisRelay tVR = this.cachedRelay.get();
+
+		// Is there a cached relay?
+		if( tVR != null )
+		{
+			return tVR;
+		}
+
+		// Get the tile we are facing
+		TileEntity facingTile = this.getFacingTile();
+
+		// Is it a relay?
+		if( facingTile instanceof TileVisRelay )
+		{
+			// Get the relay
+			tVR = (TileVisRelay)facingTile;
+
+			// Is it facing the same direction as we are?
+			if( tVR.orientation == this.getSide().ordinal() )
+			{
+				// Set the cache
+				this.cachedRelay = new WeakReference<TileVisRelay>( tVR );
+
+				// Return it
+				return tVR;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * How often should we tick?
+	 */
+	@Override
+	public TickingRequest getTickingRequest( final IGridNode node )
+	{
+		return new TickingRequest( 30, 30, false, false );
 	}
 
 	/**
@@ -153,15 +276,29 @@ public class AEPartVisInterface
 	}
 
 	/**
+	 * Reads server-sent data
+	 */
+	@Override
+	public boolean readFromStream( final ByteBuf data ) throws IOException
+	{
+		// Call super
+		super.readFromStream( data );
+
+		// Read the drain color
+		this.visDrainingColor = data.readInt();
+
+		return true;
+
+	}
+
+	/**
 	 * Draws the interface in the inventory.
 	 */
 	@Override
 	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
-		Tessellator ts = Tessellator.instance;
-
 		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
-		helper.setTexture( side, side, side, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[0], side, side );
+		helper.setTexture( side, side, side, BlockTextureManager.VIS_RELAY_INTERFACE.getTexture(), side, side );
 
 		// Face
 		helper.setBounds( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
@@ -170,12 +307,6 @@ public class AEPartVisInterface
 		// Mid
 		helper.setBounds( 4.0F, 4.0F, 14.0F, 12.0F, 12.0F, 15.0F );
 		helper.renderInventoryBox( renderer );
-
-		// Color overlay
-		helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
-		helper.setInvColor( AbstractAEPartBase.INVENTORY_OVERLAY_COLOR );
-		ts.setBrightness( 0xF000F0 );
-		helper.renderInventoryFace( BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[1], ForgeDirection.SOUTH, renderer );
 
 		// Back
 		helper.setBounds( 5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F );
@@ -192,23 +323,21 @@ public class AEPartVisInterface
 		Tessellator tessellator = Tessellator.instance;
 
 		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
-		helper.setTexture( side, side, side, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTexture(), side, side );
+		helper.setTexture( side, side, side, BlockTextureManager.VIS_RELAY_INTERFACE.getTexture(), side, side );
 
-		// Front (facing relay)
+		// Face
 		helper.setBounds( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
 
-		tessellator.setColorOpaque_I( this.host.getColor().blackVariant );
-
-		if( this.isActive() )
-		{
-			tessellator.setBrightness( AbstractAEPartBase.ACTIVE_BRIGHTNESS );
-		}
-
 		// Mid
-		helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[1], ForgeDirection.SOUTH, renderer );
 		helper.setBounds( 4.0F, 4.0F, 14.0F, 12.0F, 12.0F, 15.0F );
-		helper.renderBlock( x, y, z, renderer );
+		helper.renderBlock( x, y, z, renderer );// Mid face
+
+		if( this.visDrainingColor != 0 )
+		{
+			tessellator.setColorOpaque_I( this.visDrainingColor );
+			helper.renderFace( x, y, z, BlockTextureManager.VIS_RELAY_INTERFACE.getTextures()[1], ForgeDirection.SOUTH, renderer );
+		}
 
 		// Back (facing bus)
 		helper.setBounds( 5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F );
@@ -224,25 +353,71 @@ public class AEPartVisInterface
 	 */
 	public int requestDrain( final Aspect vis, final int amount )
 	{
-		// Get the tile we are facing
-		TileEntity facingTile = this.getFacingTile();
-
-		// Is it a relay?
-		if( facingTile instanceof TileVisRelay )
+		// Ensure the interface is active
+		if( !this.isActive )
 		{
-			// Get the relay
-			TileVisRelay facingRelay = (TileVisRelay)facingTile;
+			return 0;
+		}
 
-			// Is it facing the same direction as we are?
-			if( facingRelay.orientation == this.getSide().ordinal() )
+		// Get the relay
+		TileVisRelay visRelay = this.getRelay();
+
+		// Ensure there is a relay
+		if( visRelay == null )
+		{
+			return 0;
+		}
+
+		// Get the power grid
+		IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
+
+		// Ensure we got the grid
+		if( eGrid == null )
+		{
+			return 0;
+		}
+
+		// Simulate a power drain
+		double drainedPower = eGrid.extractAEPower( AEPartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+
+		// Ensure we got the power we need
+		if( drainedPower < AEPartVisInterface.POWER_PER_REQUESTED_VIS )
+		{
+			return 0;
+		}
+
+		// Ask it for vis
+		int amountReceived = visRelay.consumeVis( vis, amount );
+
+		// Did we get any vis?
+		if( amountReceived > 0 )
+		{
+			// Set the color
+			this.setDrainColor( vis.getColor() );
+
+			// Drain the power
+			eGrid.extractAEPower( AEPartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.MODULATE, PowerMultiplier.CONFIG );
+		}
+
+		// Return the amount we received
+		return amountReceived;
+	}
+
+	/**
+	 * Called when the interface ticks
+	 */
+	@Override
+	public TickRateModulation tickingRequest( final IGridNode node, final int TicksSinceLastCall )
+	{
+		if( this.visDrainingColor != 0 )
+		{
+			if( ( System.currentTimeMillis() - this.lastColorUpdate ) > AEPartVisInterface.TIME_TO_CLEAR )
 			{
-				// Ask it for vis
-				return facingRelay.consumeVis( vis, amount );
+				this.setDrainColor( 0 );
 			}
 		}
 
-		// Nothing to drain
-		return 0;
+		return TickRateModulation.SAME;
 	}
 
 	/**
@@ -256,6 +431,19 @@ public class AEPartVisInterface
 
 		// Write the UID
 		data.setLong( AEPartVisInterface.NBT_KEY_UID, this.UID );
+	}
+
+	/**
+	 * Sends data to the client
+	 */
+	@Override
+	public void writeToStream( final ByteBuf data ) throws IOException
+	{
+		// Call super
+		super.writeToStream( data );
+
+		// Write the drain color
+		data.writeInt( this.visDrainingColor );
 	}
 
 }

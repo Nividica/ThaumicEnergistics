@@ -1,4 +1,21 @@
-﻿9/21/2014 0.7.0b
+﻿10/12/2014 0.7.0b
+  Dependency Changed: Thaumcraft 4.2.1.4
+  Updated forge to 10.13.1.1225
+  Fixes #47: Configurable Fluid conversion ratio.
+  Fixes #52: Disabled AE2 version check.
+  Fixes #54: Magic Bees now supported.
+  Fixes #55: Finally figured out how to move my Thaumonomicon tab.
+  Fixes #56: IO busses now work with Essentia Reservior.
+  Added V.R.I. graphics.
+  Added V.R.I. Thaumonomicon entry.
+  Optimized some of the V.R.I. code.
+  Draining vis now takes power. 4AE per aspect per drain tick.
+  Doubled the storage capacity of cells. 2 Essentia = 1 Byte
+  Major overhaul of essentia cell internal storage.
+  Storage cell capacity is now independent of fluid conversion factor.
+  Essentia Storage Bus can now use an Essentia Reservoir without filters set.
+
+9/21/2014 0.7.0b
   Added Vis Relay Interface [WIP]
   Vis Relay Interface settings can be saved to memory card.
   A.C.T can now load setting from memory card.

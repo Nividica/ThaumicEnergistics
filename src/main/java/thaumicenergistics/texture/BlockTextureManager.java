@@ -7,20 +7,32 @@ import thaumicenergistics.ThaumicEnergistics;
 public enum BlockTextureManager
 {
 		BUS_SIDE (TextureTypes.Part, new String[] { "bus.side" }),
+
 		BUS_BORDER (TextureTypes.Part, new String[] { "bus.border" }),
+
 		BUS_COLOR (TextureTypes.Part, new String[] { "bus.color.border", "bus.color.light" }),
+
 		ESSENTIA_IMPORT_BUS (TextureTypes.Part, new String[] { "essentia.import.bus.face", "essentia.import.bus.overlay",
 						"essentia.import.bus.chamber" }),
+
 		ESSENTIA_LEVEL_EMITTER (TextureTypes.Part, new String[] { "essentia.level.emitter.base", "essentia.level.emitter.active",
 						"essentia.level.emitter.inactive" }),
+
 		ESSENTIA_STORAGE_BUS (TextureTypes.Part, new String[] { "essentia.storage.bus.face", "essentia.storage.bus.overlay" }),
+
 		ESSENTIA_EXPORT_BUS (TextureTypes.Part, new String[] { "essentia.export.bus.face", "essentia.export.bus.overlay" }),
+
 		ESSENTIA_TERMINAL (TextureTypes.Part, new String[] { "essentia.terminal.overlay.dark", "essentia.terminal.overlay.medium",
 						"essentia.terminal.overlay.light" }),
+
 		ESSENTIA_PROVIDER (TextureTypes.Block, new String[] { "essentia.provider", "essentia.provider.overlay" }),
+
 		INFUSION_PROVIDER (TextureTypes.Block, new String[] { "infusion.provider", "infusion.provider.overlay" }),
+
 		ARCANE_CRAFTING_TERMINAL (TextureTypes.Part, new String[] { "arcane.crafting.overlay1", "arcane.crafting.overlay2",
-						"arcane.crafting.overlay3", "arcane.crafting.side" });
+						"arcane.crafting.overlay3", "arcane.crafting.side" }),
+
+		VIS_RELAY_INTERFACE (TextureTypes.Part, new String[] { "vis.interface", "vis.interface.runes" });
 
 	private enum TextureTypes
 	{
@@ -34,7 +46,7 @@ public enum BlockTextureManager
 
 	private IIcon[] textures;
 
-	private BlockTextureManager( TextureTypes textureType, String[] textureNames )
+	private BlockTextureManager( final TextureTypes textureType, final String[] textureNames )
 	{
 		this.textureType = textureType;
 		this.textureNames = textureNames;
@@ -51,7 +63,7 @@ public enum BlockTextureManager
 		return this.textures;
 	}
 
-	public void registerTexture( TextureMap textureMap )
+	public void registerTexture( final TextureMap textureMap )
 	{
 		if( textureMap.getTextureType() == 0 )
 		{

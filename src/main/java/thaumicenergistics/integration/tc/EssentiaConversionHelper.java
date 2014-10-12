@@ -17,7 +17,7 @@ public final class EssentiaConversionHelper
 	 * Controls the conversion ratio of essentia/fluid. <BR>
 	 * 1 essentia unit is converted to this many mb's of fluid.
 	 */
-	private static final int CONVERSION_MULTIPLIER = 250;
+	public static int CONVERSION_MULTIPLIER = 250;
 
 	/**
 	 * Singleton
@@ -142,7 +142,7 @@ public final class EssentiaConversionHelper
 		}
 
 		// Get how much is in the container
-		int containerAmount_EU = EssentiaItemContainerHelper.instance.getContainerStoredAmount( container );
+		long containerAmount_EU = EssentiaItemContainerHelper.instance.getContainerStoredAmount( container );
 
 		// Create and return the stack
 		return this.createAEFluidStackInEssentiaUnits( essentiaGas, containerAmount_EU );
@@ -157,9 +157,9 @@ public final class EssentiaConversionHelper
 	 * @param essentiaAmount
 	 * @return
 	 */
-	public IAEFluidStack createAEFluidStackInEssentiaUnits( final GaseousEssentia essentiaGas, final int essentiaAmount )
+	public IAEFluidStack createAEFluidStackInEssentiaUnits( final GaseousEssentia essentiaGas, final long essentiaAmount )
 	{
-		return this.createAEFluidStackInFluidUnits( essentiaGas, (int)this.convertEssentiaAmountToFluidAmount( essentiaAmount ) );
+		return this.createAEFluidStackInFluidUnits( essentiaGas, this.convertEssentiaAmountToFluidAmount( essentiaAmount ) );
 	}
 
 	/**
@@ -170,9 +170,13 @@ public final class EssentiaConversionHelper
 	 * @param fluidAmount
 	 * @return
 	 */
-	public IAEFluidStack createAEFluidStackInFluidUnits( final GaseousEssentia essentiaGas, final int fluidAmount )
+	public IAEFluidStack createAEFluidStackInFluidUnits( final GaseousEssentia essentiaGas, final long fluidAmount )
 	{
-		return AEApi.instance().storage().createFluidStack( new FluidStack( essentiaGas, fluidAmount ) );
+		IAEFluidStack ret = AEApi.instance().storage().createFluidStack( new FluidStack( essentiaGas, 1 ) );
+
+		ret.setStackSize( fluidAmount );
+
+		return ret;
 	}
 
 }

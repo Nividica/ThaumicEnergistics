@@ -5,7 +5,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
-import thaumcraft.common.tiles.TileJarFillable;
+import thaumcraft.common.tiles.TileEssentiaReservoir;
+import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import appeng.api.config.SecurityPermissions;
@@ -48,7 +49,9 @@ public class AEPartEssentiaExportBus
 	@Override
 	public boolean doWork( final int transferAmount )
 	{
-		if( ( this.facingContainer != null ) && ( this.facingContainer instanceof TileJarFillable ) )
+		EssentiaTileContainerHelper.instance.addTileToInjectWhitelist( TileEssentiaReservoir.class );
+
+		if( ( this.facingContainer != null ) )
 		{
 			return this.extractEssentiaFromNetwork( transferAmount );
 		}

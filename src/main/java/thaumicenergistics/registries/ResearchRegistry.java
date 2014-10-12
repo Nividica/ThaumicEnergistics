@@ -26,13 +26,14 @@ public class ResearchRegistry
 			ARCANETERMINAL ("ARCANETERM"),
 			ESSENTIATERMINAL ("ESSTERM"),
 			ESSENTIAPROVIDER ("ESSPROV"),
-			INFUSIONPROVIDER ("INFPROV");
+			INFUSIONPROVIDER ("INFPROV"),
+			VISINTERFACE ("VISINT");
 
 		private String internalName;
 
 		ResearchItem researchItem;
 
-		private ResearchTypes( String internalName )
+		private ResearchTypes( final String internalName )
 		{
 			this.internalName = "TE" + internalName;
 		}
@@ -57,13 +58,14 @@ public class ResearchRegistry
 		 * @param icon
 		 * @param pages
 		 */
-		void createResearchItem( AspectList aspectList, int column, int row, int complexity, ItemStack icon, ResearchPage[] pages )
+		void createResearchItem( final AspectList aspectList, final int column, final int row, final int complexity, final ItemStack icon,
+									final ResearchPage[] pages )
 		{
 			this.researchItem = new ResearchItem( this.getKey(), TERESEARCH_TAB, aspectList, column, row, complexity, icon );
 			this.researchItem.setPages( pages );
 		}
 
-		String getPageName( int index )
+		String getPageName( final int index )
 		{
 			return ThaumicEnergistics.MOD_ID + ".research_page." + this.internalName + "." + index;
 		}
@@ -96,7 +98,8 @@ public class ResearchRegistry
 						new ResearchPage( RecipeRegistry.PART_ARCANE_TERMINAL ) };
 
 		// Create the IO research
-		ResearchTypes.ARCANETERMINAL.createResearchItem( actAspectList, 1, -2, COMPLEXITY_SMALL, actIcon, actPages );
+		ResearchTypes.ARCANETERMINAL.createResearchItem( actAspectList, 2, -2, COMPLEXITY_SMALL, actIcon, actPages );
+		ResearchTypes.ARCANETERMINAL.researchItem.setParents( ResearchTypes.BASIC.getKey() );
 		ResearchTypes.ARCANETERMINAL.researchItem.registerResearchItem();
 
 	}
@@ -275,6 +278,30 @@ public class ResearchRegistry
 		ResearchTypes.STORAGE.researchItem.registerResearchItem();
 	}
 
+	private static void registerVisInterface()
+	{
+		// Set the research aspects
+		AspectList vriAspects = new AspectList();
+		vriAspects.add( Aspect.AURA, 5 );
+		vriAspects.add( Aspect.ENERGY, 4 );
+		vriAspects.add( Aspect.VOID, 3 );
+		vriAspects.add( Aspect.MECHANISM, 2 );
+
+		// Set the icon
+		ItemStack vriIcon = AEPartsEnum.VisInterface.getStack();
+
+		// Set the pages
+		ResearchPage[] vriPages = new ResearchPage[] { new ResearchPage( ResearchTypes.VISINTERFACE.getPageName( 1 ) ),
+						new ResearchPage( RecipeRegistry.PART_VIS_INTERFACE ), new ResearchPage( ResearchTypes.VISINTERFACE.getPageName( 2 ) ),
+						new ResearchPage( ResearchTypes.VISINTERFACE.getPageName( 3 ) ) };
+
+		// Create the vis relay interface research
+		ResearchTypes.VISINTERFACE.createResearchItem( vriAspects, -2, 2, COMPLEXITY_MEDIUM, vriIcon, vriPages );
+		ResearchTypes.VISINTERFACE.researchItem.setParents( ResearchTypes.BASIC.getKey() );
+		ResearchTypes.VISINTERFACE.researchItem.setParentsHidden( "VISPOWER" );
+		ResearchTypes.VISINTERFACE.researchItem.registerResearchItem();
+	}
+
 	public static void registerResearch()
 	{
 		// Create our research tab
@@ -295,5 +322,7 @@ public class ResearchRegistry
 		ResearchRegistry.registerInfusionProvider();
 
 		ResearchRegistry.registerEssentiaProvider();
+
+		ResearchRegistry.registerVisInterface();
 	}
 }

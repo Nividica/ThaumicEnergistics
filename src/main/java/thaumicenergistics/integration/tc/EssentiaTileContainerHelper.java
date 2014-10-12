@@ -2,6 +2,7 @@ package thaumicenergistics.integration.tc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -10,6 +11,7 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.common.tiles.TileAlembic;
 import thaumcraft.common.tiles.TileCentrifuge;
+import thaumcraft.common.tiles.TileEssentiaReservoir;
 import thaumcraft.common.tiles.TileJarFillable;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
@@ -155,39 +157,43 @@ public final class EssentiaTileContainerHelper
 	 * type and amount.
 	 * 
 	 * @param container
-	 * @param fluidStack
+	 * @param request
 	 * @param mode
 	 * @return
 	 */
-	public FluidStack extractFromContainer( final IAspectContainer container, final FluidStack fluidStack, final Actionable mode )
+	public FluidStack extractFromContainer( final IAspectContainer container, final FluidStack request, final Actionable mode )
 	{
-		// Can we extract?
+		// Is the container whitelisted?
 		if( !this.canExtract( container ) )
 		{
+			// Not whitelsited
 			return null;
 		}
 
-		if( fluidStack == null )
+		// Do we have a request
+		if( ( request == null ) || ( request.getFluid() == null ) || ( request.amount == 0 ) )
 		{
+			// No request
 			return null;
 		}
 
-		Fluid fluid = fluidStack.getFluid();
+		Fluid fluid = request.getFluid();
 
-		if( fluid instanceof GaseousEssentia )
+		// Ensure it is a gas
+		if( !( fluid instanceof GaseousEssentia ) )
 		{
-			// Is the requested amount > 0?
-			if( fluidStack.amount > 0 )
-			{
-				Aspect gasAspect = ( (GaseousEssentia)fluid ).getAssociatedAspect();
-
-				long amountToDrain_EU = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.amount );
-
-				return this.extractFromContainer( container, (int)amountToDrain_EU, gasAspect, mode );
-			}
+			// Not a gas
+			return null;
 		}
 
-		return null;
+		// Get the gas aspect
+		Aspect gasAspect = ( (GaseousEssentia)fluid ).getAssociatedAspect();
+
+		// Get the amount to extract
+		long amountToDrain_EU = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( request.amount );
+
+		// Extract
+		return this.extractFromContainer( container, (int)amountToDrain_EU, gasAspect, mode );
 	}
 
 	/**
@@ -202,41 +208,59 @@ public final class EssentiaTileContainerHelper
 	 */
 	public FluidStack extractFromContainer( final IAspectContainer container, int amountToDrain_EU, final Aspect aspectToDrain, final Actionable mode )
 	{
-		// Can we extract?
+		// Is the container whitelisted?
 		if( !this.canExtract( container ) )
 		{
+			// Not whitelisted
 			return null;
 		}
 
-		// Get what aspect and how much the container is holding
-		AspectStack containerStack = this.getAspectStackFromContainer( container );
-
-		// Is the container holding the correct aspect?
-		if( ( containerStack == null ) || ( aspectToDrain != containerStack.aspect ) )
+		// Is the request empty?
+		if( amountToDrain_EU == 0 )
 		{
+			// Empty request
 			return null;
+		}
+
+		// Get how much is in the container
+		int containerAmount = 0;
+
+		// Aspect match
+		if( container instanceof TileEssentiaReservoir )
+		{
+			// Get the aspect amount from the reservoir
+			containerAmount = container.getAspects().getAmount( aspectToDrain );
+		}
+		else
+		{
+			// Get what aspect and how much the container is holding
+			AspectStack containerStack = this.getAspectStackFromContainer( container );
+
+			// Is the container holding the correct aspect?
+			if( ( containerStack == null ) || ( aspectToDrain != containerStack.aspect ) )
+			{
+				return null;
+			}
+
+			// Get the amount
+			containerAmount = (int)containerStack.amount;
 		}
 
 		// Is there a fluid form of the essentia?
 		GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( aspectToDrain );
 		if( essentiaGas == null )
 		{
+			// Invalid aspect.
 			return null;
 		}
-
-		// Get how much is in the container
-		int containerAmount = (int)containerStack.amount;
 
 		// Is the container empty?
 		if( containerAmount == 0 )
 		{
+			// Empty container
 			return null;
 		}
-		// Is the request empty?
-		if( amountToDrain_EU == 0 )
-		{
-			return null;
-		}
+
 		// Is the drain for more than is in the container?
 		else if( amountToDrain_EU > containerAmount )
 		{
@@ -301,89 +325,145 @@ public final class EssentiaTileContainerHelper
 		return aspectStack;
 	}
 
+	/**
+	 * Gets the list of aspects in the container.
+	 * 
+	 * @param container
+	 * @return
+	 */
+	public List<AspectStack> getAspectStacksFromContainer( final IAspectContainer container )
+	{
+		List<AspectStack> stacks = new ArrayList<AspectStack>();
+
+		// Ensure we have a container
+		if( container == null )
+		{
+			return stacks;
+		}
+
+		// Get the list of aspects in the container
+		AspectList aspectList = container.getAspects();
+
+		if( aspectList == null )
+		{
+			return stacks;
+		}
+
+		// Populate the list
+		for( Entry<Aspect, Integer> essentia : aspectList.aspects.entrySet() )
+		{
+			if( ( essentia != null ) && ( essentia.getValue() != 0 ) )
+			{
+				stacks.add( new AspectStack( essentia.getKey(), essentia.getValue() ) );
+			}
+		}
+
+		return stacks;
+
+	}
+
 	public int getContainerCapacity( final IAspectContainer container )
 	{
+		int capacity = 0;
+
 		if( container instanceof TileJarFillable )
 		{
-			return ( (TileJarFillable)container ).maxAmount;
+			capacity = ( (TileJarFillable)container ).maxAmount;
 		}
 		else if( container instanceof TileAlembic )
 		{
-			return ( (TileAlembic)container ).maxAmount;
+			capacity = ( (TileAlembic)container ).maxAmount;
+		}
+		else if( container instanceof TileEssentiaReservoir )
+		{
+			capacity = ( (TileEssentiaReservoir)container ).maxAmount;
 		}
 
-		return 0;
+		return capacity;
 	}
 
 	public int getContainerStoredAmount( final IAspectContainer container )
 	{
+		int stored = 0;
+
 		if( container instanceof TileJarFillable )
 		{
-			return ( (TileJarFillable)container ).amount;
+			stored = ( (TileJarFillable)container ).amount;
 		}
 		else if( container instanceof TileAlembic )
 		{
-			return ( (TileAlembic)container ).amount;
+			stored = ( (TileAlembic)container ).amount;
+		}
+		else if( container instanceof TileEssentiaReservoir )
+		{
+			// Get the essentia list
+			for( AspectStack essentia : this.getAspectStacksFromContainer( container ) )
+			{
+				if( essentia != null )
+				{
+					stored += (int)essentia.amount;
+				}
+			}
 		}
 
-		return 0;
+		return stored;
 	}
 
 	public long injectIntoContainer( final IAspectContainer container, final IAEFluidStack fluidStack, final Actionable mode )
 	{
-		// Can we inject?
-		if( !this.canInject( container ) )
-		{
-			return 0;
-		}
-
+		// Do we have an input?
 		if( fluidStack == null )
 		{
+			// No input
 			return 0;
 		}
 
-		Fluid fluid = fluidStack.getFluid();
-
-		if( fluid instanceof GaseousEssentia )
+		// Is the container whitelisted?
+		if( !this.canInject( container ) )
 		{
-
-			Aspect gasAspect = ( (GaseousEssentia)fluid ).getAssociatedAspect();
-
-			long amountToFill = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
-
-			return this.injectIntoContainer( container, (int)amountToFill, gasAspect, mode );
+			// Not whitelisted
+			return 0;
 		}
 
-		return 0;
+		// Get the fluid.
+		Fluid fluid = fluidStack.getFluid();
+
+		// Ensure it is a gas
+		if( !( fluid instanceof GaseousEssentia ) )
+		{
+			// Not essentia gas
+			return 0;
+		}
+
+		// Get the aspect of the gas
+		Aspect gasAspect = ( (GaseousEssentia)fluid ).getAssociatedAspect();
+
+		// Get the amount to fill
+		long amountToFill = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+
+		// Inject
+		return this.injectIntoContainer( container, (int)amountToFill, gasAspect, mode );
 	}
 
 	public long injectIntoContainer( final IAspectContainer container, int amountToFillInEssentiaUnits, final Aspect aspectToFill,
 										final Actionable mode )
 	{
-		// Can we inject?
+		// Is the container whitelisted?
 		if( !this.canInject( container ) )
 		{
+			// Not whitelisted
 			return 0;
 		}
 
-		int containerAmount = 0;
-
-		// Get what aspect and how much the container is holding
-		AspectStack containerStack = this.getAspectStackFromContainer( container );
-
-		// Is there anything in the container?
-		if( containerStack != null )
+		// Match types on jars
+		if( ( container instanceof TileJarFillable ) )
 		{
 			// Do the aspects match?
-			if( aspectToFill != containerStack.aspect )
+			if( aspectToFill != this.getAspectStackFromContainer( container ).aspect )
 			{
 				// Aspects do not match;
 				return 0;
 			}
-
-			// Get how much is in the container
-			containerAmount = (int)containerStack.amount;
-
 		}
 		else if( !( container.doesContainerAccept( aspectToFill ) ) )
 		{
@@ -392,7 +472,7 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Get how much the container can hold
-		int containerCurrentCapacity = this.getContainerCapacity( container ) - containerAmount;
+		int containerCurrentCapacity = this.getContainerCapacity( container ) - this.getContainerStoredAmount( container );
 
 		// Is there more to fill than the container will hold?
 		if( amountToFillInEssentiaUnits > containerCurrentCapacity )
@@ -424,6 +504,10 @@ public final class EssentiaTileContainerHelper
 		// Jars
 		this.addTileToExtractWhitelist( TileJarFillable.class );
 		this.addTileToInjectWhitelist( TileJarFillable.class );
+
+		// Essentia reservoir
+		this.addTileToExtractWhitelist( TileEssentiaReservoir.class );
+		this.addTileToInjectWhitelist( TileEssentiaReservoir.class );
 	}
 
 }

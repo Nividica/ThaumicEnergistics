@@ -7,7 +7,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
-import thaumcraft.common.tiles.TileJarFillable;
+import thaumcraft.common.tiles.TileEssentiaReservoir;
 import thaumcraft.common.tiles.TileJarFillableVoid;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
@@ -80,6 +80,34 @@ public class HandlerEssentiaStorageBus
 	}
 
 	/**
+	 * Returns true if there is no filter AND the container is a reservoir
+	 * 
+	 * @return
+	 */
+	private boolean allowAny()
+	{
+		// Ensure we are facing a reservoir
+		if( !( this.aspectContainer instanceof TileEssentiaReservoir ) )
+		{
+			// Not facing reservoir
+			return false;
+		}
+
+		// Are all filters null?
+		for( Aspect filteredAspect : this.filteredAspects )
+		{
+			if( filteredAspect != null )
+			{
+				// There is a filter
+				return false;
+			}
+		}
+
+		// Reservoir + no filters
+		return true;
+	}
+
+	/**
 	 * Verifies that the requested fluidstack to insert/extract is both an
 	 * Essentia Gas and white-listed, or not black-listed.
 	 * 
@@ -106,6 +134,13 @@ public class HandlerEssentiaStorageBus
 
 		// Get the aspect of the request
 		Aspect requestAspect = gasRequest.getAssociatedAspect();
+
+		// Special case for reservoir
+		if( this.allowAny() )
+		{
+			// Allow the storage bus to store anything in a reservoir if no filters are set.
+			return true;
+		}
 
 		/*
 		 * Validate based on if the aspect is filtered and the storage bus is
@@ -175,8 +210,8 @@ public class HandlerEssentiaStorageBus
 			return false;
 		}
 
-		// Ensure the container is a fillable jar
-		if( !( this.aspectContainer instanceof TileJarFillable ) )
+		// Ensure the container is whitelisted
+		if( !( EssentiaTileContainerHelper.instance.canInject( this.aspectContainer ) ) )
 		{
 			// Invalid container
 			return false;
@@ -196,6 +231,13 @@ public class HandlerEssentiaStorageBus
 			 * Either: Not an essentia gas Not on whitelist Is on blacklist
 			 */
 			return false;
+		}
+
+		// Is the container a reservoir
+		if( this.aspectContainer instanceof TileEssentiaReservoir )
+		{
+			// Reservoir can accept any type
+			return true;
 		}
 
 		// Get the essentia, if any, in the container
@@ -294,29 +336,33 @@ public class HandlerEssentiaStorageBus
 	@Override
 	public IItemList<IAEFluidStack> getAvailableItems( final IItemList<IAEFluidStack> out )
 	{
+		boolean skipFilterCheck = this.allowAny();
+
 		if( this.aspectContainer != null )
 		{
-
 			// Only report back items that are extractable
 			if( EssentiaTileContainerHelper.instance.canExtract( this.aspectContainer ) )
 			{
-				// Get the essentia and amount in the container
-				AspectStack containerStack = EssentiaTileContainerHelper.instance.getAspectStackFromContainer( this.aspectContainer );
+				// Get the essentias and amounts in the container
+				List<AspectStack> containerStacks = EssentiaTileContainerHelper.instance.getAspectStacksFromContainer( this.aspectContainer );
 
-				// Is there an aspect?
-				if( containerStack != null )
+				// Are there any aspects?
+				if( ( containerStacks != null ) && !containerStacks.isEmpty() )
 				{
-					// Is the aspect in the filter?
-					if( this.filteredAspects.contains( containerStack.aspect ) )
+					for( AspectStack essentia : containerStacks )
 					{
-						// Convert to fluid
-						GaseousEssentia gas = GaseousEssentia.getGasFromAspect( containerStack.aspect );
-
-						// Is there a fluid form of the aspect?
-						if( gas != null )
+						// Is the aspect in the filter?
+						if( skipFilterCheck || ( this.filteredAspects.contains( essentia.aspect ) ) )
 						{
-							// Add to the item list
-							out.add( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( gas, (int)containerStack.amount ) );
+							// Convert to fluid
+							GaseousEssentia gas = GaseousEssentia.getGasFromAspect( essentia.aspect );
+
+							// Is there a fluid form of the aspect?
+							if( gas != null )
+							{
+								// Add to the item list
+								out.add( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( gas, (int)essentia.amount ) );
+							}
 						}
 					}
 				}

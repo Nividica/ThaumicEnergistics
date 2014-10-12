@@ -47,8 +47,6 @@ public class ItemEssentiaCell
 
 	private static final int MAX_TYPES = 8;
 
-	public static final long CONVERSION_SIZE = 250L;
-
 	private static final int CELL_STATUS_MISSING = 0;
 
 	private static final int CELL_STATUS_HAS_ROOM = 1;
@@ -70,10 +68,10 @@ public class ItemEssentiaCell
 		this.setHasSubtypes( true );
 	}
 
-	private void addContentsToCellDescription( HandlerItemEssentiaCell cellHandler, List displayList, EntityPlayer player )
+	private void addContentsToCellDescription( final HandlerItemEssentiaCell cellHandler, final List displayList, final EntityPlayer player )
 	{
 		// Get the list of stored aspects
-		List<AspectStack> cellAspects = cellHandler.getAvailableAspects();
+		List<AspectStack> cellAspects = cellHandler.getStoredEssentia();
 
 		// Sort the list
 		Collections.sort( cellAspects, new AspectStackComparator() );
@@ -109,7 +107,7 @@ public class ItemEssentiaCell
 	}
 
 	@Override
-	public void addInformation( ItemStack essentiaCell, EntityPlayer player, List displayList, boolean advancedItemTooltips )
+	public void addInformation( final ItemStack essentiaCell, final EntityPlayer player, final List displayList, final boolean advancedItemTooltips )
 	{
 		// TODO: Save provider??
 		// Get the contents of the cell
@@ -127,11 +125,11 @@ public class ItemEssentiaCell
 
 		// Create the bytes tooltip
 		String bytesTip = String.format( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.essentia.cell.bytes" ), new Object[] {
-						cellHandler.usedBytes() / ItemEssentiaCell.CONVERSION_SIZE, cellHandler.totalBytes() / ItemEssentiaCell.CONVERSION_SIZE } );
+						cellHandler.getUsedBytes(), cellHandler.getTotalBytes() } );
 
 		// Create the types tooltip
 		String typesTip = String.format( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.essentia.cell.types" ), new Object[] {
-						cellHandler.usedTypes(), cellHandler.totalTypes() } );
+						cellHandler.getUsedTypes(), cellHandler.getTotalTypes() } );
 
 		// Add the tooltips
 		displayList.add( bytesTip );
@@ -154,13 +152,13 @@ public class ItemEssentiaCell
 	}
 
 	@Override
-	public double cellIdleDrain( ItemStack itemStack, IMEInventory handler )
+	public double cellIdleDrain( final ItemStack itemStack, final IMEInventory handler )
 	{
 		return ItemEssentiaCell.IDLE_DRAIN_AMOUNTS[itemStack.getItemDamage()];
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory( ItemStack essentiaCell, ISaveProvider saveProvider, StorageChannel channel )
+	public IMEInventoryHandler getCellInventory( final ItemStack essentiaCell, final ISaveProvider saveProvider, final StorageChannel channel )
 	{
 		if( ( channel != StorageChannel.FLUIDS ) || ( essentiaCell.getItem() != this ) )
 		{
@@ -171,7 +169,7 @@ public class ItemEssentiaCell
 	}
 
 	@Override
-	public IIcon getIconFromDamage( int dmg )
+	public IIcon getIconFromDamage( final int dmg )
 	{
 		int index = MathHelper.clamp_int( dmg, 0, ItemStorageBase.SUFFIXES.length );
 
@@ -179,7 +177,7 @@ public class ItemEssentiaCell
 	}
 
 	@Override
-	public EnumRarity getRarity( ItemStack itemStack )
+	public EnumRarity getRarity( final ItemStack itemStack )
 	{
 		// Get the index based off of the meta data
 		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, ItemEssentiaCell.RARITIES.length );
@@ -189,7 +187,7 @@ public class ItemEssentiaCell
 	}
 
 	@Override
-	public int getStatusForCell( ItemStack essentiaCell, IMEInventory handler )
+	public int getStatusForCell( final ItemStack essentiaCell, final IMEInventory handler )
 	{
 		// Do we have a handler?
 		if( handler == null )
@@ -201,13 +199,13 @@ public class ItemEssentiaCell
 		HandlerItemEssentiaCell cellHandler = (HandlerItemEssentiaCell)handler;
 
 		// Full bytes?
-		if( cellHandler.usedBytes() == cellHandler.totalBytes() )
+		if( cellHandler.getUsedBytes() == cellHandler.getTotalBytes() )
 		{
 			return ItemEssentiaCell.CELL_STATUS_FULL;
 		}
 
 		// Full types?
-		if( cellHandler.usedTypes() == cellHandler.totalTypes() )
+		if( cellHandler.getUsedTypes() == cellHandler.getTotalTypes() )
 		{
 			return ItemEssentiaCell.CELL_STATUS_TYPES_FULL;
 		}
@@ -217,7 +215,7 @@ public class ItemEssentiaCell
 	}
 
 	@Override
-	public void getSubItems( Item item, CreativeTabs creativeTab, List listSubItems )
+	public void getSubItems( final Item item, final CreativeTabs creativeTab, final List listSubItems )
 	{
 		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
 		{
@@ -245,29 +243,29 @@ public class ItemEssentiaCell
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack itemStack )
+	public String getUnlocalizedName( final ItemStack itemStack )
 	{
 		return ThaumicEnergistics.MOD_ID + ".item.essentia.cell." + ItemStorageBase.SUFFIXES[itemStack.getItemDamage()];
 	}
 
 	@Override
-	public boolean isCell( ItemStack itemStack )
+	public boolean isCell( final ItemStack itemStack )
 	{
 		return itemStack.getItem() == this;
 	}
 
-	public int maxStorage( ItemStack essentiaCell )
+	public int maxStorage( final ItemStack essentiaCell )
 	{
 		return ItemStorageBase.SIZES[Math.max( 0, essentiaCell.getItemDamage() )];
 	}
 
-	public int maxTypes( ItemStack itemStack )
+	public int maxTypes( final ItemStack itemStack )
 	{
 		return ItemEssentiaCell.MAX_TYPES;
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack essentiaCell, World world, EntityPlayer player )
+	public ItemStack onItemRightClick( final ItemStack essentiaCell, final World world, final EntityPlayer player )
 	{
 		// Ensure the player is sneaking(holding shift)
 		if( !player.isSneaking() )
@@ -290,7 +288,7 @@ public class ItemEssentiaCell
 		HandlerItemEssentiaCell cellHandler = (HandlerItemEssentiaCell)handler;
 
 		// If the cell is empty, and the player can hold the casing
-		if( ( cellHandler.usedBytes() == 0 ) && ( player.inventory.addItemStackToInventory( ItemEnum.STORAGE_CASING.getItemStackWithSize( 1 ) ) ) )
+		if( ( cellHandler.getUsedBytes() == 0 ) && ( player.inventory.addItemStackToInventory( ItemEnum.STORAGE_CASING.getItemStackWithSize( 1 ) ) ) )
 		{
 			// Return the storage component
 			return ItemEnum.STORAGE_COMPONENT.getItemStackWithDamage( essentiaCell.getItemDamage() );
@@ -301,8 +299,8 @@ public class ItemEssentiaCell
 	}
 
 	@Override
-	public void openChestGui( EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack itemStack,
-								StorageChannel channel )
+	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv,
+								final ItemStack itemStack, final StorageChannel channel )
 	{
 		// Ensure this is the fluid channel
 		if( channel != StorageChannel.FLUIDS )
@@ -331,7 +329,7 @@ public class ItemEssentiaCell
 	}
 
 	@Override
-	public void registerIcons( IIconRegister iconRegister )
+	public void registerIcons( final IIconRegister iconRegister )
 	{
 		this.icons = new IIcon[ItemStorageBase.SUFFIXES.length];
 
