@@ -1,6 +1,8 @@
 ﻿10/19/2014 0.7.1b
   Fixes #63: Essentia gas generation moved to post-init event.
   This should now support all TC addon essentia types.
+  Fixes #64: Added build.gradle for diff visibility.
+  Fixes #65: Properly sided V.R.I rendering code.
   
 10/13/2014 0.7.1b
   Fixes #57: Export buses not longer crash when attempting to export to empty jar.

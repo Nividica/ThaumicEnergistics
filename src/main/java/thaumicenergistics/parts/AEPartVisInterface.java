@@ -28,6 +28,8 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartVisInterface
 	extends AbstractAEPartBase
@@ -295,6 +297,7 @@ public class AEPartVisInterface
 	 * Draws the interface in the inventory.
 	 */
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
@@ -318,6 +321,7 @@ public class AEPartVisInterface
 	 * Draws the interface in the world.
 	 */
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		Tessellator tessellator = Tessellator.instance;
