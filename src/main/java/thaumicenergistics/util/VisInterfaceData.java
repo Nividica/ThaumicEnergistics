@@ -87,21 +87,6 @@ public class VisInterfaceData
 		}
 	}
 
-	/**
-	 * Erases all data
-	 */
-	private void clearData()
-	{
-		this.hasData = false;
-		this.world = -1;
-		this.x = 0;
-		this.y = 0;
-		this.z = 0;
-		this.side = ForgeDirection.UNKNOWN.ordinal();
-		this.UID = 0;
-		this.visInterface = new WeakReference<AEPartVisInterface>( null );
-	}
-
 	private void refreshCache()
 	{
 		try
@@ -149,6 +134,21 @@ public class VisInterfaceData
 	}
 
 	/**
+	 * Erases all data
+	 */
+	public void clearData()
+	{
+		this.hasData = false;
+		this.world = -1;
+		this.x = 0;
+		this.y = 0;
+		this.z = 0;
+		this.side = ForgeDirection.UNKNOWN.ordinal();
+		this.UID = 0;
+		this.visInterface = new WeakReference<AEPartVisInterface>( null );
+	}
+
+	/**
 	 * True if there is data.
 	 * 
 	 * @return
@@ -163,14 +163,14 @@ public class VisInterfaceData
 	 * 
 	 * @return
 	 */
-	public AEPartVisInterface getInterface()
+	public AEPartVisInterface getInterface( final boolean forceUpdate )
 	{
 		// Do we have any data to load from?
 		if( this.hasData )
 		{
 			// Do we have an interface cached?
 			AEPartVisInterface vInt = this.visInterface.get();
-			if( vInt == null )
+			if( forceUpdate || vInt == null )
 			{
 				// Attempt to get the interface
 				this.refreshCache();
@@ -210,6 +210,9 @@ public class VisInterfaceData
 
 			// Read the uid
 			this.UID = tag.getLong( VisInterfaceData.NBT_KEY_UID );
+
+			// Erase the cache
+			this.visInterface.clear();
 		}
 	}
 

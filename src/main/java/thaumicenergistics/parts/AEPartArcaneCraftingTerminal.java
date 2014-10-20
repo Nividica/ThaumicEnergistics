@@ -28,6 +28,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -507,8 +508,11 @@ public class AEPartArcaneCraftingTerminal
 			// Get the memory card
 			IMemoryCard memoryCard = (IMemoryCard)playerHolding.getItem();
 
+			// Get the stored name
+			String settingsName = memoryCard.getSettingsName( playerHolding );
+
 			// Does it contain the data about a vis interface?
-			if( memoryCard.getSettingsName( playerHolding ).equals( AEPartsEnum.VisInterface.getUnlocalizedName() ) )
+			if( settingsName.equals( AEPartsEnum.VisInterface.getUnlocalizedName() ) )
 			{
 				// Get the data
 				NBTTagCompound data = memoryCard.getData( playerHolding );
@@ -520,6 +524,18 @@ public class AEPartArcaneCraftingTerminal
 				memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
 
 				// Mark that we need to save
+				this.markDirty();
+			}
+			// Is the memory card empty?
+			else if( settingsName.equals( "gui.appliedenergistics2.Blank" ) )
+			{
+				// Clear the interface info
+				this.visInterfaceInfo.clearData();
+
+				// Inform the user
+				memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
+
+				// Mark dirty
 				this.markDirty();
 			}
 
@@ -723,65 +739,98 @@ public class AEPartArcaneCraftingTerminal
 		this.markDirty();
 	}
 
+	/**
+	 * Checks if the wand needs vis, and refills it if possible
+	 */
 	@Override
 	public TickRateModulation tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
 		// Do we have an interface to draw from?
-		if( this.visInterfaceInfo.getHasData() )
+		if( !this.visInterfaceInfo.getHasData() )
 		{
-			// Get the wand slot
-			ItemStack stack = this.getStackInSlot( WAND_SLOT_INDEX );
+			// No linked VRI
+			return TickRateModulation.IDLE;
+		}
 
-			// Do we have a wand?
-			if( AEPartArcaneCraftingTerminal.isItemValidCraftingWand( stack ) )
+		// Get the wand slot
+		ItemStack stack = this.getStackInSlot( WAND_SLOT_INDEX );
+
+		// Do we have a wand?
+		if( !AEPartArcaneCraftingTerminal.isItemValidCraftingWand( stack ) )
+		{
+			// Invalid wand
+			return TickRateModulation.IDLE;
+		}
+
+		// Get the wand
+		ItemWandCasting wand = (ItemWandCasting)stack.getItem();
+
+		// Does the wand need vis?
+		AspectList neededVis = wand.getAspectsWithRoom( stack );
+		if( neededVis.size() <= 0 )
+		{
+			// Wand is charged
+			return TickRateModulation.IDLE;
+		}
+
+		// Get the interface
+		AEPartVisInterface visInterface = this.visInterfaceInfo.getInterface( false );
+
+		boolean sameGrid = false;
+
+		try
+		{
+			// Get the vri grid
+			IGrid vriGrid = visInterface.getGridBlock().getGrid();
+
+			// Get the act grid
+			IGrid actGrid = this.getGridBlock().getGrid();
+
+			// Are we on the same grid?
+			sameGrid = ( actGrid.equals( vriGrid ) );
+			if( !sameGrid )
 			{
-				// Get the wand
-				ItemWandCasting wand = (ItemWandCasting)stack.getItem();
-
-				// Does the wand need vis?
-				AspectList neededVis = wand.getAspectsWithRoom( stack );
-				if( neededVis.size() > 0 )
+				// Update the vri grid if it seems to be the only device on the network
+				if( vriGrid.getMachinesClasses().size() == 1 )
 				{
-					// Get the interface
-					AEPartVisInterface visInterface = this.visInterfaceInfo.getInterface();
+					// Update the interface reference
+					visInterface = this.visInterfaceInfo.getInterface( true );
 
-					boolean sameGrid = false;
-
-					try
-					{
-						sameGrid = ( this.getGridBlock().getGrid().equals( visInterface.getGridBlock().getGrid() ) );
-					}
-					catch( Exception e )
-					{
-					}
-
-					// Are we on the same grid?
-					if( sameGrid )
-					{
-						for( Aspect vis : neededVis.getAspects() )
-						{
-							// Calculate the size of the request
-							int amountToDrain = wand.getMaxVis( stack ) - wand.getVis( stack, vis );
-
-							// Request the vis
-							int amountDrained = visInterface.requestDrain( vis, amountToDrain );
-
-							// Did we drain any?
-							if( amountDrained > 0 )
-							{
-								// Add to the wand
-								wand.addRealVis( stack, vis, amountDrained, true );
-							}
-
-						}
-
-						return TickRateModulation.URGENT;
-					}
+					// Check again
+					sameGrid = ( actGrid.equals( visInterface.getGridBlock().getGrid() ) );
 				}
 			}
 		}
+		catch( Exception e )
+		{
+		}
 
-		return TickRateModulation.IDLE;
+		// Are we on the same grid?
+		if( !sameGrid )
+		{
+			// Not on the same grid
+			return TickRateModulation.IDLE;
+		}
+
+		// Request vis for each aspect that the wand needs
+		for( Aspect vis : neededVis.getAspects() )
+		{
+			// Calculate the size of the request
+			int amountToDrain = wand.getMaxVis( stack ) - wand.getVis( stack, vis );
+
+			// Request the vis
+			int amountDrained = visInterface.requestDrain( vis, amountToDrain );
+
+			// Did we drain any?
+			if( amountDrained > 0 )
+			{
+				// Add to the wand
+				wand.addRealVis( stack, vis, amountDrained, true );
+			}
+
+		}
+
+		return TickRateModulation.URGENT;
 	}
 
 	/**

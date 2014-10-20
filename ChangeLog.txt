@@ -1,4 +1,8 @@
-﻿10/19/2014 0.7.1b
+﻿10/20/2014 0.7.1b
+  Fixes #60: V.R.I link now properly updates cached values.
+  You can now clear the A.C.T relay settings by right-clicking on it with an empty memory card.
+
+10/19/2014 0.7.1b
   Fixes #63: Essentia gas generation moved to post-init event.
   This should now support all TC addon essentia types.
   Fixes #64: Added build.gradle for diff visibility.
