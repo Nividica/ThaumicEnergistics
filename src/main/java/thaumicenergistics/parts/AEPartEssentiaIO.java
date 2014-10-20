@@ -248,6 +248,13 @@ public abstract class AEPartEssentiaIO
 
 	protected boolean extractEssentiaFromNetwork( final int amountToFillContainer )
 	{
+		// Ensure we have a container.
+		if( this.facingContainer == null )
+		{
+			// Invalid container
+			return false;
+		}
+
 		// Get the aspect in the container
 		Aspect aspectToMatch = EssentiaTileContainerHelper.instance.getAspectInContainer( this.facingContainer );
 

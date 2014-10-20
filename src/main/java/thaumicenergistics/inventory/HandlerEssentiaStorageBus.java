@@ -66,6 +66,11 @@ public class HandlerEssentiaStorageBus
 	public boolean isVoidAllowed = false;
 
 	/**
+	 * Set true when essentia was recently voided.
+	 */
+	public boolean didVoid = false;
+
+	/**
 	 * Creates the handler.
 	 * 
 	 * @param part
@@ -476,10 +481,21 @@ public class HandlerEssentiaStorageBus
 		// Calculate how much was left over
 		int remaining_FU = toFill.amount - filled_FU;
 
-		// Did we completely drain the input stack, or can we void the remainder?
-		if( remaining_FU == 0 || canVoid )
+		// Did we completely drain the input stack?
+		if( remaining_FU == 0 )
 		{
 			// Nothing left over
+			return null;
+		}
+		// Are we voiding the remainder?
+		else if( canVoid )
+		{
+			// Mark that we are voiding
+			this.didVoid = true;
+
+			// TODO: send changes to network here.
+
+			// Report that we accepted it all.
 			return null;
 		}
 

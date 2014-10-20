@@ -23,7 +23,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:appliedenergistics2;required-after:Thaumcraft;after:Waila;after:ForbiddenMagic;after:MagicBees")
+@Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:appliedenergistics2;required-after:Thaumcraft;after:Waila")
 public class ThaumicEnergistics
 {
 	/*
@@ -48,7 +48,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.7.0b"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.7.1b"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -270,6 +270,9 @@ public class ThaumicEnergistics
 		// Register TC research
 		ThaumicEnergistics.proxy.registerResearch();
 
+		// Register fluids
+		ThaumicEnergistics.proxy.registerFluids();
+
 		this.endLoadStageTracking( t );
 	}
 
@@ -301,9 +304,6 @@ public class ThaumicEnergistics
 
 		// Register items
 		ThaumicEnergistics.proxy.registerItems();
-
-		// Register fluids
-		ThaumicEnergistics.proxy.registerFluids();
 
 		// Register blocks
 		ThaumicEnergistics.proxy.registerBlocks();

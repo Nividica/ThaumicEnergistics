@@ -455,11 +455,14 @@ public final class EssentiaTileContainerHelper
 			return 0;
 		}
 
+		// Get the aspect in the container
+		AspectStack storedEssentia = this.getAspectStackFromContainer( container );
+
 		// Match types on jars
-		if( ( container instanceof TileJarFillable ) )
+		if( ( storedEssentia != null ) && ( container instanceof TileJarFillable ) )
 		{
 			// Do the aspects match?
-			if( aspectToFill != this.getAspectStackFromContainer( container ).aspect )
+			if( aspectToFill != storedEssentia.aspect )
 			{
 				// Aspects do not match;
 				return 0;
