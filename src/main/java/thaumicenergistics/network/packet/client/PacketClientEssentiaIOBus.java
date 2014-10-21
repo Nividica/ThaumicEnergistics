@@ -6,6 +6,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.gui.GuiEssentiatIO;
 import thaumicenergistics.network.packet.AbstractClientPacket;
+import thaumicenergistics.registries.EnumCache;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,8 +21,6 @@ public class PacketClientEssentiaIOBus
 	private static final byte MODE_SET_FILTER_SIZE = 2;
 
 	private static final byte MODE_SEND_FULL_UPDATE = 3;
-
-	private static final RedstoneMode[] REDSTONE_MODES = RedstoneMode.values();
 
 	private RedstoneMode redstoneMode;
 
@@ -72,7 +71,8 @@ public class PacketClientEssentiaIOBus
 		}
 	}
 
-	public PacketClientEssentiaIOBus createFullUpdate( EntityPlayer player, RedstoneMode redstoneMode, byte filterSize, boolean redstoneControlled )
+	public PacketClientEssentiaIOBus createFullUpdate( final EntityPlayer player, final RedstoneMode redstoneMode, final byte filterSize,
+														final boolean redstoneControlled )
 	{
 		// Set the player
 		this.player = player;
@@ -99,7 +99,7 @@ public class PacketClientEssentiaIOBus
 	 * @param filterSize
 	 * @return
 	 */
-	public PacketClientEssentiaIOBus createSetFilterSize( EntityPlayer player, byte filterSize )
+	public PacketClientEssentiaIOBus createSetFilterSize( final EntityPlayer player, final byte filterSize )
 	{
 		// Set the player
 		this.player = player;
@@ -121,7 +121,7 @@ public class PacketClientEssentiaIOBus
 	 * @param redstoneControlled
 	 * @return
 	 */
-	public PacketClientEssentiaIOBus createSetRedstoneControlled( EntityPlayer player, boolean redstoneControlled )
+	public PacketClientEssentiaIOBus createSetRedstoneControlled( final EntityPlayer player, final boolean redstoneControlled )
 	{
 		// Set the player 
 		this.player = player;
@@ -142,7 +142,7 @@ public class PacketClientEssentiaIOBus
 	 * @param redstoneMode
 	 * @return
 	 */
-	public PacketClientEssentiaIOBus createSetRedstoneMode( EntityPlayer player, RedstoneMode redstoneMode )
+	public PacketClientEssentiaIOBus createSetRedstoneMode( final EntityPlayer player, final RedstoneMode redstoneMode )
 	{
 		// Set the player
 		this.player = player;
@@ -157,7 +157,7 @@ public class PacketClientEssentiaIOBus
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -168,7 +168,7 @@ public class PacketClientEssentiaIOBus
 
 			case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_MODE:
 				// Read the redstone mode ordinal
-				this.redstoneMode = PacketClientEssentiaIOBus.REDSTONE_MODES[stream.readByte()];
+				this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readByte()];
 				break;
 
 			case PacketClientEssentiaIOBus.MODE_SET_FILTER_SIZE:
@@ -181,7 +181,7 @@ public class PacketClientEssentiaIOBus
 				this.redstoneControlled = stream.readBoolean();
 
 				// Read the redstone mode ordinal
-				this.redstoneMode = PacketClientEssentiaIOBus.REDSTONE_MODES[stream.readByte()];
+				this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readByte()];
 
 				// Read the filter size
 				this.filterSize = stream.readByte();
@@ -190,7 +190,7 @@ public class PacketClientEssentiaIOBus
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{

@@ -44,6 +44,11 @@ public enum AEPartsEnum
 
 	private Map<Upgrades, Integer> upgrades = new HashMap<Upgrades, Integer>();
 
+	/**
+	 * Cached enum values
+	 */
+	public static final AEPartsEnum[] VALUES = AEPartsEnum.values();
+
 	private AEPartsEnum( final String unlocalizedName, final Class<? extends AbstractAEPartBase> partClass )
 	{
 		this( unlocalizedName, partClass, null );
@@ -88,7 +93,7 @@ public enum AEPartsEnum
 	public static AEPartsEnum getPartFromDamageValue( final ItemStack itemStack )
 	{
 		// Get the values
-		AEPartsEnum[] values = AEPartsEnum.values();
+		AEPartsEnum[] values = AEPartsEnum.VALUES;
 
 		// Clamp the damage
 		int clamped = MathHelper.clamp_int( itemStack.getItemDamage(), 0, values.length );
@@ -102,7 +107,7 @@ public enum AEPartsEnum
 		int id = -1;
 
 		// Get the values
-		AEPartsEnum[] values = AEPartsEnum.values();
+		AEPartsEnum[] values = AEPartsEnum.VALUES;
 
 		// Check each part
 		for( int i = 0; i < values.length; i++ )

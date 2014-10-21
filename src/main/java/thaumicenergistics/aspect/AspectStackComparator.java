@@ -23,6 +23,11 @@ public class AspectStackComparator
 			 * Compare based on amount
 			 */
 			MODE_AMOUNT;
+
+		/**
+		 * Cache of the enum values
+		 */
+		public static final ComparatorMode[] VALUES = ComparatorMode.values();
 	}
 
 	private ComparatorMode mode;

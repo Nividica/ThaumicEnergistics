@@ -14,7 +14,12 @@ public enum BlockEnum
 
 	private String unlocalizedName;
 
-	private BlockEnum( String unlocalizedName, Block block )
+	/**
+	 * Cache of the enum values
+	 */
+	public static final BlockEnum[] VALUES = BlockEnum.values();
+
+	private BlockEnum( final String unlocalizedName, final Block block )
 	{
 		// Set the block
 		this.block = block;

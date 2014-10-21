@@ -139,7 +139,7 @@ public class HandlerItemEssentiaCell
 		// Load the sort mode
 		if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_SORT_KEY ) )
 		{
-			this.sortMode = ComparatorMode.values()[this.cellData.getInteger( HandlerItemEssentiaCell.NBT_SORT_KEY )];
+			this.sortMode = ComparatorMode.VALUES[this.cellData.getInteger( HandlerItemEssentiaCell.NBT_SORT_KEY )];
 		}
 		else
 		{

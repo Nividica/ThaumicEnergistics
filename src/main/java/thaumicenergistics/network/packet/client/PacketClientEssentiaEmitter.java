@@ -6,6 +6,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.gui.GuiEssentiaLevelEmitter;
 import thaumicenergistics.network.packet.AbstractClientPacket;
+import thaumicenergistics.registries.EnumCache;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -18,8 +19,6 @@ public class PacketClientEssentiaEmitter
 	private static final byte MODE_UPDATE_WANTED = 1;
 
 	private static final byte MODE_UPDATE_REDSTONE = 2;
-
-	private static final RedstoneMode[] REDSTONE_MODES = RedstoneMode.values();
 
 	private RedstoneMode redstoneMode;
 
@@ -65,7 +64,7 @@ public class PacketClientEssentiaEmitter
 	 * @param player
 	 * @return
 	 */
-	public PacketClientEssentiaEmitter createFullUpdate( RedstoneMode redstoneMode, long wantedAmount, EntityPlayer player )
+	public PacketClientEssentiaEmitter createFullUpdate( final RedstoneMode redstoneMode, final long wantedAmount, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -82,7 +81,7 @@ public class PacketClientEssentiaEmitter
 		return this;
 	}
 
-	public PacketClientEssentiaEmitter createRedstoneModeUpdate( RedstoneMode redstoneMode, EntityPlayer player )
+	public PacketClientEssentiaEmitter createRedstoneModeUpdate( final RedstoneMode redstoneMode, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -103,7 +102,7 @@ public class PacketClientEssentiaEmitter
 	 * @param player
 	 * @return
 	 */
-	public PacketClientEssentiaEmitter createWantedAmountUpdate( long wantedAmount, EntityPlayer player )
+	public PacketClientEssentiaEmitter createWantedAmountUpdate( final long wantedAmount, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -118,13 +117,13 @@ public class PacketClientEssentiaEmitter
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
 			case PacketClientEssentiaEmitter.MODE_FULL_UPDATE:
 				// Read the redstone mode ordinal
-				this.redstoneMode = REDSTONE_MODES[stream.readInt()];
+				this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readInt()];
 
 				// Read the wanted amount
 				this.wantedAmount = stream.readLong();
@@ -137,13 +136,13 @@ public class PacketClientEssentiaEmitter
 
 			case PacketClientEssentiaEmitter.MODE_UPDATE_REDSTONE:
 				// Read the redstone mode ordinal
-				this.redstoneMode = REDSTONE_MODES[stream.readInt()];
+				this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readInt()];
 				break;
 		}
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{

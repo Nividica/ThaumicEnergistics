@@ -13,9 +13,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.registries.Renderers;
 import thaumicenergistics.tileentities.TileProviderBase;
-import appeng.api.util.AEColor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -100,7 +100,7 @@ public abstract class BlockProviderBase
 	@Override
 	public boolean recolourBlock( final World world, final int x, final int y, final int z, final ForgeDirection side, final int color )
 	{
-		return ( (TileProviderBase)world.getTileEntity( x, y, z ) ).recolourBlock( side, AEColor.values()[color], null );
+		return ( (TileProviderBase)world.getTileEntity( x, y, z ) ).recolourBlock( side, EnumCache.AE_COLOR[color], null );
 
 	}
 

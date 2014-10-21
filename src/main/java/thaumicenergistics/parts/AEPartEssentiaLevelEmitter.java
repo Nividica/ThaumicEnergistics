@@ -22,6 +22,7 @@ import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaEmitter;
 import thaumicenergistics.registries.AEPartsEnum;
+import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.RedstoneMode;
@@ -547,7 +548,7 @@ public class AEPartEssentiaLevelEmitter
 		this.filterAspect = Aspect.aspects.get( data.getString( AEPartEssentiaLevelEmitter.ASPECT_FILTER_NBT_KEY ) );
 
 		// Read the redstone mode
-		this.redstoneMode = RedstoneMode.values()[data.getInteger( AEPartEssentiaLevelEmitter.REDSTONE_MODE_NBT_KEY )];
+		this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( AEPartEssentiaLevelEmitter.REDSTONE_MODE_NBT_KEY )];
 
 		// Read the wanted amount
 		this.wantedAmount = data.getLong( AEPartEssentiaLevelEmitter.WANTED_AMOUNT_NBT_KEY );

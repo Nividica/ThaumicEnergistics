@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.network.packet.AbstractClientPacket;
 import thaumicenergistics.network.packet.AbstractPacket;
+import thaumicenergistics.registries.EnumCache;
 import appeng.api.AEApi;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -70,7 +71,7 @@ public class PacketClientArcaneCraftingTerminal
 	 * @param player
 	 * @param change
 	 */
-	public PacketClientArcaneCraftingTerminal createChangeUpdate( EntityPlayer player, IAEItemStack change )
+	public PacketClientArcaneCraftingTerminal createChangeUpdate( final EntityPlayer player, final IAEItemStack change )
 	{
 		// Set the player
 		this.player = player;
@@ -91,7 +92,7 @@ public class PacketClientArcaneCraftingTerminal
 	 * @param player
 	 * @param fullList
 	 */
-	public PacketClientArcaneCraftingTerminal createFullListUpdate( EntityPlayer player, IItemList<IAEItemStack> fullList )
+	public PacketClientArcaneCraftingTerminal createFullListUpdate( final EntityPlayer player, final IItemList<IAEItemStack> fullList )
 	{
 		// Set the player
 		this.player = player;
@@ -115,7 +116,7 @@ public class PacketClientArcaneCraftingTerminal
 	 * @param heldItem
 	 * @return
 	 */
-	public PacketClientArcaneCraftingTerminal createPlayerHoldingUpdate( EntityPlayer player, IAEItemStack heldItem )
+	public PacketClientArcaneCraftingTerminal createPlayerHoldingUpdate( final EntityPlayer player, final IAEItemStack heldItem )
 	{
 		// Set the player
 		this.player = player;
@@ -134,12 +135,13 @@ public class PacketClientArcaneCraftingTerminal
 
 	/**
 	 * Creates a packet with an update to the sorting order and direction.
+	 * 
 	 * @param player
 	 * @param order
 	 * @param direction
 	 * @return
 	 */
-	public PacketClientArcaneCraftingTerminal createSortingUpdate( EntityPlayer player, SortOrder order, SortDir direction )
+	public PacketClientArcaneCraftingTerminal createSortingUpdate( final EntityPlayer player, final SortOrder order, final SortDir direction )
 	{
 		// Set the player
 		this.player = player;
@@ -155,7 +157,7 @@ public class PacketClientArcaneCraftingTerminal
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 
 		switch ( this.mode )
@@ -216,14 +218,14 @@ public class PacketClientArcaneCraftingTerminal
 
 			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
 				// Read sorts
-				this.sortingDirection = SortDir.values()[stream.readInt()];
-				this.sortingOrder = SortOrder.values()[stream.readInt()];
+				this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[stream.readInt()];
+				this.sortingOrder = EnumCache.AE_SORT_ORDERS[stream.readInt()];
 				break;
 		}
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 
 		switch ( this.mode )

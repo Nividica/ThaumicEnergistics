@@ -241,7 +241,7 @@ public class AEPartEssentiaTerminal
 		// Read the sorting mode
 		if( data.hasKey( SORT_MODE_NBT_KEY ) )
 		{
-			this.sortMode = ComparatorMode.values()[data.getInteger( SORT_MODE_NBT_KEY )];
+			this.sortMode = ComparatorMode.VALUES[data.getInteger( SORT_MODE_NBT_KEY )];
 		}
 
 		// Read inventory

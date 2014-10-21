@@ -160,32 +160,13 @@ public class EssentiaGasTexture
 	/**
 	 * The color we want to apply to the texture
 	 */
-	private PixelColor screenColor;
+	private int aspectColor;
 
 	public EssentiaGasTexture( final Aspect aspect )
 	{
 		super( ThaumicEnergistics.MOD_ID + ":" + GAS_FILE_NAME + "_" + aspect.getName() );
 
-		this.screenColor = new PixelColor( aspect.getColor() );
-	}
-
-	/**
-	 * Builds a completed resource path for the specified mipmap level.
-	 * 
-	 * @param location
-	 * @param mipLevel
-	 * @return
-	 */
-	private ResourceLocation completeResourceLocation( final ResourceLocation location, final int mipLevel )
-	{
-		if( mipLevel == 0 )
-		{
-			return new ResourceLocation( EssentiaGasTexture.TC_LOC, String.format( "%s/%s%s", new Object[] { EssentiaGasTexture.BASE_PATH,
-							GAS_FILE_NAME, ".png" } ) );
-		}
-
-		return new ResourceLocation( EssentiaGasTexture.TC_LOC, String.format( "%s/mipmaps/%s.%d%s", new Object[] { EssentiaGasTexture.BASE_PATH,
-						EssentiaGasTexture.GAS_FILE_NAME, Integer.valueOf( mipLevel ), ".png" } ) );
+		this.aspectColor = aspect.getColor();
 	}
 
 	/**
@@ -213,7 +194,7 @@ public class EssentiaGasTexture
 			pixel.setFromColor( pixels[i] );
 
 			// Multiply
-			pixel.screen( this.screenColor );
+			pixel.screen( new PixelColor( this.aspectColor ) );
 
 			// Set to pixel to our color
 			pixels[i] = pixel.getColor();
@@ -221,6 +202,25 @@ public class EssentiaGasTexture
 
 		// Set the pixels
 		image.setRGB( 0, 0, width, height, pixels, 0, width );
+	}
+
+	/**
+	 * Builds a completed resource path for the specified mipmap level.
+	 * 
+	 * @param location
+	 * @param mipLevel
+	 * @return
+	 */
+	private ResourceLocation completeResourceLocation( final ResourceLocation location, final int mipLevel )
+	{
+		if( mipLevel == 0 )
+		{
+			return new ResourceLocation( EssentiaGasTexture.TC_LOC, String.format( "%s/%s%s", new Object[] { EssentiaGasTexture.BASE_PATH,
+							GAS_FILE_NAME, ".png" } ) );
+		}
+
+		return new ResourceLocation( EssentiaGasTexture.TC_LOC, String.format( "%s/mipmaps/%s.%d%s", new Object[] { EssentiaGasTexture.BASE_PATH,
+						EssentiaGasTexture.GAS_FILE_NAME, Integer.valueOf( mipLevel ), ".png" } ) );
 	}
 
 	@Override

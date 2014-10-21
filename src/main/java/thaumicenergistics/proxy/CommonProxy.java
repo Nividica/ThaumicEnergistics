@@ -19,7 +19,7 @@ public class CommonProxy
 	 */
 	public void registerBlocks()
 	{
-		for( BlockEnum block : BlockEnum.values() )
+		for( BlockEnum block : BlockEnum.VALUES )
 		{
 			GameRegistry.registerBlock( block.getBlock(), block.getUnlocalizedName() );
 		}
@@ -39,7 +39,7 @@ public class CommonProxy
 	public void registerItems()
 	{
 
-		for( ItemEnum item : ItemEnum.values() )
+		for( ItemEnum item : ItemEnum.VALUES )
 		{
 			GameRegistry.registerItem( item.getItem(), item.getInternalName() );
 		}

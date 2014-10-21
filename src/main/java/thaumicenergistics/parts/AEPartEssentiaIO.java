@@ -23,6 +23,7 @@ import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
 import thaumicenergistics.registries.AEPartsEnum;
+import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
@@ -89,8 +90,6 @@ public abstract class AEPartEssentiaIO
 	 * The amount of power required to transfer 1 essentia.
 	 */
 	private static final double POWER_DRAIN_PER_ESSENTIA = 0.5;
-
-	private static final RedstoneMode[] REDSTONE_MODES = RedstoneMode.values();
 
 	private boolean lastRedstone;
 
@@ -603,13 +602,13 @@ public abstract class AEPartEssentiaIO
 		int nextOrdinal = this.redstoneMode.ordinal() + 1;
 
 		// Bounds check
-		if( nextOrdinal >= AEPartEssentiaIO.REDSTONE_MODES.length )
+		if( nextOrdinal >= EnumCache.AE_REDSTONE_MODES.length )
 		{
 			nextOrdinal = 0;
 		}
 
 		// Set the mode
-		this.redstoneMode = AEPartEssentiaIO.REDSTONE_MODES[nextOrdinal];
+		this.redstoneMode = EnumCache.AE_REDSTONE_MODES[nextOrdinal];
 
 		// Notify listeners
 		this.notifyListenersOfRedstoneModeChange();
@@ -720,7 +719,7 @@ public abstract class AEPartEssentiaIO
 		super.readFromNBT( data );
 
 		// Read redstone mode
-		this.redstoneMode = RedstoneMode.values()[data.getInteger( "redstoneMode" )];
+		this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( "redstoneMode" )];
 
 		for( int index = 0; index < AEPartEssentiaIO.MAX_FILTER_SIZE; index++ )
 		{

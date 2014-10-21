@@ -46,6 +46,11 @@ public enum BlockTextureManager
 
 	private IIcon[] textures;
 
+	/**
+	 * Cache of the enum values
+	 */
+	public static final BlockTextureManager[] VALUES = BlockTextureManager.values();
+
 	private BlockTextureManager( final TextureTypes textureType, final String[] textureNames )
 	{
 		this.textureType = textureType;

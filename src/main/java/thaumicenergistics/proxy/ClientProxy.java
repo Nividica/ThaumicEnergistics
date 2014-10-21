@@ -33,7 +33,7 @@ public class ClientProxy
 		TextureMap map = event.map;
 
 		// Register all block textures
-		for( BlockTextureManager texture : BlockTextureManager.values() )
+		for( BlockTextureManager texture : BlockTextureManager.VALUES )
 		{
 			texture.registerTexture( map );
 		}

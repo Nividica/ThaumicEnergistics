@@ -24,8 +24,6 @@ public class PacketClientEssentiaCell
 	private static final byte MODE_LIST_CHANGED = 2;
 	private static final byte MODE_SORT_MODE_CHANGED = 3;
 
-	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();
-
 	private List<AspectStack> aspectStackList;
 	private Aspect selectedAspect;
 	private AspectStack change;
@@ -71,7 +69,7 @@ public class PacketClientEssentiaCell
 		}
 	}
 
-	public PacketClientEssentiaCell createListChanged( EntityPlayer player, AspectStack change )
+	public PacketClientEssentiaCell createListChanged( final EntityPlayer player, final AspectStack change )
 	{
 		// Set the player
 		this.player = player;
@@ -85,7 +83,7 @@ public class PacketClientEssentiaCell
 		return this;
 	}
 
-	public PacketClientEssentiaCell createSelectedAspectUpdate( EntityPlayer player, Aspect selectedAspect )
+	public PacketClientEssentiaCell createSelectedAspectUpdate( final EntityPlayer player, final Aspect selectedAspect )
 	{
 		// Set the player
 		this.player = player;
@@ -99,7 +97,7 @@ public class PacketClientEssentiaCell
 		return this;
 	}
 
-	public PacketClientEssentiaCell createSortModeUpdate( EntityPlayer player, ComparatorMode sortMode )
+	public PacketClientEssentiaCell createSortModeUpdate( final EntityPlayer player, final ComparatorMode sortMode )
 	{
 		// Set the player
 		this.player = player;
@@ -113,7 +111,7 @@ public class PacketClientEssentiaCell
 		return this;
 	}
 
-	public PacketClientEssentiaCell createUpdateFullList( EntityPlayer player, List<AspectStack> list )
+	public PacketClientEssentiaCell createUpdateFullList( final EntityPlayer player, final List<AspectStack> list )
 	{
 		// Set the player
 		this.player = player;
@@ -131,7 +129,7 @@ public class PacketClientEssentiaCell
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -158,13 +156,13 @@ public class PacketClientEssentiaCell
 
 			case PacketClientEssentiaCell.MODE_SORT_MODE_CHANGED:
 				// Read the mode ordinal
-				this.sortMode = SORT_MODES[stream.readInt()];
+				this.sortMode = ComparatorMode.VALUES[stream.readInt()];
 				break;
 		}
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{

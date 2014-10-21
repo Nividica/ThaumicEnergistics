@@ -12,6 +12,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.tiles.IColorableTile;
@@ -82,7 +83,7 @@ public abstract class TileProviderBase
 			if( data.hasKey( TileProviderBase.NBT_KEY_COLOR ) )
 			{
 				// Read the color from the tag
-				TileProviderBase.this.setProviderColor( AEColor.values()[data.getInteger( TileProviderBase.NBT_KEY_COLOR )] );
+				TileProviderBase.this.setProviderColor( EnumCache.AE_COLOR[data.getInteger( TileProviderBase.NBT_KEY_COLOR )] );
 			}
 
 			// Do we have the attachment key?
@@ -101,7 +102,7 @@ public abstract class TileProviderBase
 		public boolean readFromStream( final ByteBuf data ) throws IOException
 		{
 			// Read the color from the stream
-			TileProviderBase.this.setProviderColor( AEColor.values()[data.readInt()] );
+			TileProviderBase.this.setProviderColor( EnumCache.AE_COLOR[data.readInt()] );
 
 			// Read the activity
 			TileProviderBase.this.isActive = data.readBoolean();

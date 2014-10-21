@@ -21,6 +21,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.registries.AEPartsEnum;
+import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.VisInterfaceData;
 import appeng.api.config.SecurityPermissions;
@@ -587,13 +588,13 @@ public class AEPartArcaneCraftingTerminal
 		// Sort order
 		if( data.hasKey( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY ) )
 		{
-			this.sortingOrder = SortOrder.values()[data.getInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY )];
+			this.sortingOrder = EnumCache.AE_SORT_ORDERS[data.getInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY )];
 		}
 
 		// Sort direction
 		if( data.hasKey( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY ) )
 		{
-			this.sortingDirection = SortDir.values()[data.getInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY )];
+			this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[data.getInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY )];
 		}
 
 		// Vis interface info

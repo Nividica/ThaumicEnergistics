@@ -15,12 +15,10 @@ public class PacketServerEssentiaCell
 	private static final byte MODE_FULL_UPDATE = 1;
 	private static final byte MODE_SORT_CHANGE = 2;
 
-	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();
-
 	protected Aspect selectedAspect;
 	private ComparatorMode sortMode;
 
-	public PacketServerEssentiaCell createFullUpdateRequest( EntityPlayer player )
+	public PacketServerEssentiaCell createFullUpdateRequest( final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -31,7 +29,7 @@ public class PacketServerEssentiaCell
 		return this;
 	}
 
-	public PacketServerEssentiaCell createRequestChangeSortMode( EntityPlayer player, ComparatorMode sortMode )
+	public PacketServerEssentiaCell createRequestChangeSortMode( final EntityPlayer player, final ComparatorMode sortMode )
 	{
 		// Set the player
 		this.player = player;
@@ -45,7 +43,7 @@ public class PacketServerEssentiaCell
 		return this;
 	}
 
-	public PacketServerEssentiaCell createUpdateSelectedAspect( EntityPlayer player, Aspect selectedAspect )
+	public PacketServerEssentiaCell createUpdateSelectedAspect( final EntityPlayer player, final Aspect selectedAspect )
 	{
 		// Set the player
 		this.player = player;
@@ -98,7 +96,7 @@ public class PacketServerEssentiaCell
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -109,13 +107,13 @@ public class PacketServerEssentiaCell
 
 			case PacketServerEssentiaCell.MODE_SORT_CHANGE:
 				// Read the mode ordinal
-				this.sortMode = SORT_MODES[stream.readInt()];
+				this.sortMode = ComparatorMode.VALUES[stream.readInt()];
 				break;
 		}
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{

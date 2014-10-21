@@ -16,13 +16,11 @@ public class PacketServerEssentiaTerminal
 	private static final byte MODE_FULL_UPDATE = 1;
 	private static final byte MODE_SORT_CHANGE = 2;
 
-	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();
-
 	private Aspect currentAspect;
 	private AEPartEssentiaTerminal terminal;
 	private ComparatorMode sortMode;
 
-	public PacketServerEssentiaTerminal createFullUpdateRequest( EntityPlayer player )
+	public PacketServerEssentiaTerminal createFullUpdateRequest( final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -33,7 +31,8 @@ public class PacketServerEssentiaTerminal
 		return this;
 	}
 
-	public PacketServerEssentiaTerminal createRequestChangeSortMode( EntityPlayer player, AEPartEssentiaTerminal terminal, ComparatorMode sortMode )
+	public PacketServerEssentiaTerminal createRequestChangeSortMode( final EntityPlayer player, final AEPartEssentiaTerminal terminal,
+																		final ComparatorMode sortMode )
 	{
 		// Set the player
 		this.player = player;
@@ -50,7 +49,7 @@ public class PacketServerEssentiaTerminal
 		return this;
 	}
 
-	public PacketServerEssentiaTerminal createUpdateSelectedAspect( EntityPlayer player, Aspect currentAspect )
+	public PacketServerEssentiaTerminal createUpdateSelectedAspect( final EntityPlayer player, final Aspect currentAspect )
 	{
 		// Set the player
 		this.player = player;
@@ -95,7 +94,7 @@ public class PacketServerEssentiaTerminal
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 
 		switch ( this.mode )
@@ -110,13 +109,13 @@ public class PacketServerEssentiaTerminal
 				this.terminal = (AEPartEssentiaTerminal)AbstractPacket.readPart( stream );
 
 				// Read the mode ordinal
-				this.sortMode = SORT_MODES[stream.readInt()];
+				this.sortMode = ComparatorMode.VALUES[stream.readInt()];
 				break;
 		}
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 
 		switch ( this.mode )

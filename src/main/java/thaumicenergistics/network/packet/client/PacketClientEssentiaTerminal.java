@@ -24,8 +24,6 @@ public class PacketClientEssentiaTerminal
 	private static final byte MODE_SORT_MODE_CHANGED = 2;
 	private static final byte MODE_LIST_CHANGED = 3;
 
-	private static final ComparatorMode[] SORT_MODES = ComparatorMode.values();
-
 	private List<AspectStack> aspectStackList;
 	private Aspect selectedAspect;
 	private ComparatorMode sortMode;
@@ -64,7 +62,7 @@ public class PacketClientEssentiaTerminal
 		}
 	}
 
-	public PacketClientEssentiaTerminal createListChanged( EntityPlayer player, AspectStack change )
+	public PacketClientEssentiaTerminal createListChanged( final EntityPlayer player, final AspectStack change )
 	{
 		// Set the player
 		this.player = player;
@@ -78,7 +76,7 @@ public class PacketClientEssentiaTerminal
 		return this;
 	}
 
-	public PacketClientEssentiaTerminal createSelectedAspectUpdate( EntityPlayer player, Aspect selectedAspect )
+	public PacketClientEssentiaTerminal createSelectedAspectUpdate( final EntityPlayer player, final Aspect selectedAspect )
 	{
 		// Set the player
 		this.player = player;
@@ -92,7 +90,7 @@ public class PacketClientEssentiaTerminal
 		return this;
 	}
 
-	public PacketClientEssentiaTerminal createSortModeUpdate( EntityPlayer player, ComparatorMode sortMode )
+	public PacketClientEssentiaTerminal createSortModeUpdate( final EntityPlayer player, final ComparatorMode sortMode )
 	{
 		// Set the player
 		this.player = player;
@@ -106,7 +104,7 @@ public class PacketClientEssentiaTerminal
 		return this;
 	}
 
-	public PacketClientEssentiaTerminal createUpdateFullList( EntityPlayer player, List<AspectStack> list )
+	public PacketClientEssentiaTerminal createUpdateFullList( final EntityPlayer player, final List<AspectStack> list )
 	{
 		// Set the player
 		this.player = player;
@@ -124,7 +122,7 @@ public class PacketClientEssentiaTerminal
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 
 		switch ( this.mode )
@@ -144,7 +142,7 @@ public class PacketClientEssentiaTerminal
 
 			case PacketClientEssentiaTerminal.MODE_SORT_MODE_CHANGED:
 				// Read the mode ordinal
-				this.sortMode = SORT_MODES[stream.readInt()];
+				this.sortMode = ComparatorMode.VALUES[stream.readInt()];
 				break;
 
 			case PacketClientEssentiaTerminal.MODE_LIST_CHANGED:
@@ -154,7 +152,7 @@ public class PacketClientEssentiaTerminal
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 
 		switch ( this.mode )

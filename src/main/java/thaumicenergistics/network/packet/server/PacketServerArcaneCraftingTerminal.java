@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.network.packet.AbstractPacket;
 import thaumicenergistics.network.packet.AbstractServerPacket;
+import thaumicenergistics.registries.EnumCache;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.storage.data.IAEItemStack;
@@ -33,7 +34,7 @@ public class PacketServerArcaneCraftingTerminal
 	 * 
 	 * @param player
 	 */
-	public PacketServerArcaneCraftingTerminal createRequestClearGrid( EntityPlayer player )
+	public PacketServerArcaneCraftingTerminal createRequestClearGrid( final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -51,7 +52,7 @@ public class PacketServerArcaneCraftingTerminal
 	 * @param player
 	 * @return
 	 */
-	public PacketServerArcaneCraftingTerminal createRequestDeposit( EntityPlayer player, int mouseButton )
+	public PacketServerArcaneCraftingTerminal createRequestDeposit( final EntityPlayer player, final int mouseButton )
 	{
 		// Set the player
 		this.player = player;
@@ -66,6 +67,28 @@ public class PacketServerArcaneCraftingTerminal
 	}
 
 	/**
+	 * Create a packet requesting that a region(inventory) be deposited into the
+	 * ME network.
+	 * 
+	 * @param player
+	 * @param slotNumber
+	 * @return
+	 */
+	public PacketServerArcaneCraftingTerminal createRequestDepositRegion( final EntityPlayer player, final int slotNumber )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION;
+
+		// Set the slot number
+		this.slotNumber = slotNumber;
+
+		return this;
+	}
+
+	/**
 	 * Creates a packet letting the server know the user would like to
 	 * extract the specified itemstack from the ME network.
 	 * 
@@ -74,7 +97,8 @@ public class PacketServerArcaneCraftingTerminal
 	 * @param mouseButton
 	 * @return
 	 */
-	public PacketServerArcaneCraftingTerminal createRequestExtract( EntityPlayer player, IAEItemStack itemStack, int mouseButton, boolean isShiftHeld )
+	public PacketServerArcaneCraftingTerminal createRequestExtract( final EntityPlayer player, final IAEItemStack itemStack, final int mouseButton,
+																	final boolean isShiftHeld )
 	{
 		// Set player
 		this.player = player;
@@ -101,7 +125,7 @@ public class PacketServerArcaneCraftingTerminal
 	 * 
 	 * @param player
 	 */
-	public PacketServerArcaneCraftingTerminal createRequestFullList( EntityPlayer player )
+	public PacketServerArcaneCraftingTerminal createRequestFullList( final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -113,33 +137,14 @@ public class PacketServerArcaneCraftingTerminal
 	}
 
 	/**
-	 * Create a packet requesting that a region(inventory) be deposited into the ME network.
-	 * @param player
-	 * @param slotNumber
-	 * @return
-	 */
-	public PacketServerArcaneCraftingTerminal createRequestDepositRegion( EntityPlayer player, int slotNumber )
-	{
-		// Set the player
-		this.player = player;
-
-		// Set the mode
-		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION;
-
-		// Set the slot number
-		this.slotNumber = slotNumber;
-
-		return this;
-	}
-
-	/**
 	 * Create a packet to request the sorting order and direction.
+	 * 
 	 * @param player
 	 * @param order
 	 * @param direction
 	 * @return
 	 */
-	public PacketServerArcaneCraftingTerminal createRequestSetSort( EntityPlayer player, SortOrder order, SortDir direction )
+	public PacketServerArcaneCraftingTerminal createRequestSetSort( final EntityPlayer player, final SortOrder order, final SortDir direction )
 	{
 		// Set the player
 		this.player = player;
@@ -182,22 +187,23 @@ public class PacketServerArcaneCraftingTerminal
 					// Request clear grid
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestClearCraftingGrid( this.player );
 					break;
-					
+
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
 					// Request deposit region
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestDepositRegion( this.player, this.slotNumber );
 					break;
-					
+
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
 					// Reqeust set sort
-					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestSetSort( this.sortingOrder, this.sortingDirection );
+					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestSetSort( this.sortingOrder,
+						this.sortingDirection );
 					break;
 			}
 		}
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -216,23 +222,23 @@ public class PacketServerArcaneCraftingTerminal
 				// Read the mouse button
 				this.mouseButton = stream.readInt();
 				break;
-				
+
 			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
 				// Read the slot number
 				this.slotNumber = stream.readInt();
 				break;
-				
+
 			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
 				// Read sorts
-				this.sortingDirection = SortDir.values()[stream.readInt()];
-				this.sortingOrder = SortOrder.values()[stream.readInt()];
+				this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[stream.readInt()];
+				this.sortingOrder = EnumCache.AE_SORT_ORDERS[stream.readInt()];
 				break;
 		}
 
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -251,12 +257,12 @@ public class PacketServerArcaneCraftingTerminal
 				// Write the mouse button
 				stream.writeInt( this.mouseButton );
 				break;
-				
+
 			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
 				// Write the slot number to the stream
 				stream.writeInt( this.slotNumber );
 				break;
-				
+
 			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
 				// Write the sorts
 				stream.writeInt( this.sortingDirection.ordinal() );

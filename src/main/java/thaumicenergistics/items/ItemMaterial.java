@@ -40,7 +40,12 @@ public class ItemMaterial
 		 */
 		private String unlocalizedName;
 
-		private MaterialTypes( int ID, String name )
+		/**
+		 * Cache of the enum values
+		 */
+		public static final MaterialTypes[] VALUES = MaterialTypes.values();
+
+		private MaterialTypes( final int ID, final String name )
 		{
 			this.ID = ID;
 
@@ -75,60 +80,54 @@ public class ItemMaterial
 	 */
 	private IIcon[] icons;
 
-	// Material array
-	private MaterialTypes[] materials;
-
 	public ItemMaterial()
 	{
 		this.setMaxDamage( 0 );
 		this.setHasSubtypes( true );
 		this.setCreativeTab( ThaumicEnergistics.ModTab );
-
-		// Get the material array
-		this.materials = MaterialTypes.values();
 	}
 
 	/**
 	 * Gets the icon for the specified material.
 	 */
 	@Override
-	public IIcon getIconFromDamage( int damage )
+	public IIcon getIconFromDamage( final int damage )
 	{
-		int index = MathHelper.clamp_int( damage, 0, this.materials.length );
+		int index = MathHelper.clamp_int( damage, 0, MaterialTypes.VALUES.length );
 
 		return this.icons[index];
 	}
 
 	@Override
-	public void getSubItems( Item item, CreativeTabs creativeTab, List itemList )
+	public void getSubItems( final Item item, final CreativeTabs creativeTab, final List itemList )
 	{
 		// Add each material item
-		for( MaterialTypes material : this.materials )
+		for( MaterialTypes material : MaterialTypes.VALUES )
 		{
 			itemList.add( new ItemStack( item, 1, material.getID() ) );
 		}
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack itemStack )
+	public String getUnlocalizedName( final ItemStack itemStack )
 	{
-		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, this.materials.length );
+		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, MaterialTypes.VALUES.length );
 
-		return this.materials[index].getUnlocalizedName();
+		return MaterialTypes.VALUES[index].getUnlocalizedName();
 	}
 
 	/**
 	 * Registers each materials icon.
 	 */
 	@Override
-	public void registerIcons( IIconRegister iconRegister )
+	public void registerIcons( final IIconRegister iconRegister )
 	{
 
 		// Create the icon array
-		this.icons = new IIcon[this.materials.length];
+		this.icons = new IIcon[MaterialTypes.VALUES.length];
 
 		// Register each icon
-		for( MaterialTypes material : this.materials )
+		for( MaterialTypes material : MaterialTypes.VALUES )
 		{
 			this.icons[material.getID()] = iconRegister.registerIcon( material.getTextureLocation() );
 		}

@@ -38,7 +38,7 @@ public class ItemAEPart
 
 		Map<Upgrades, Integer> possibleUpgradesList;
 
-		for( AEPartsEnum part : AEPartsEnum.values() )
+		for( AEPartsEnum part : AEPartsEnum.VALUES )
 		{
 			possibleUpgradesList = part.getUpgrades();
 
@@ -51,7 +51,7 @@ public class ItemAEPart
 	}
 
 	@Override
-	public IPart createPartFromItemStack( ItemStack itemStack )
+	public IPart createPartFromItemStack( final ItemStack itemStack )
 	{
 		IPart newPart = null;
 
@@ -78,7 +78,7 @@ public class ItemAEPart
 	}
 
 	@Override
-	public EnumRarity getRarity( ItemStack itemStack )
+	public EnumRarity getRarity( final ItemStack itemStack )
 	{
 		return EnumRarity.rare;
 	}
@@ -91,10 +91,10 @@ public class ItemAEPart
 	}
 
 	@Override
-	public void getSubItems( Item item, CreativeTabs tab, List itemList )
+	public void getSubItems( final Item item, final CreativeTabs tab, final List itemList )
 	{
 		// Get the number of parts
-		int count = AEPartsEnum.values().length;
+		int count = AEPartsEnum.VALUES.length;
 
 		// Add each one to the list
 		for( int i = 0; i < count; i++ )
@@ -105,19 +105,20 @@ public class ItemAEPart
 	}
 
 	@Override
-	public String getUnlocalizedGroupName( Set<ItemStack> arg0, ItemStack itemStack )
+	public String getUnlocalizedGroupName( final Set<ItemStack> arg0, final ItemStack itemStack )
 	{
 		return AEPartsEnum.getPartFromDamageValue( itemStack ).getGroupName();
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack itemStack )
+	public String getUnlocalizedName( final ItemStack itemStack )
 	{
 		return AEPartsEnum.getPartFromDamageValue( itemStack ).getUnlocalizedName();
 	}
 
 	@Override
-	public boolean onItemUse( ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	public boolean onItemUse( final ItemStack itemStack, final EntityPlayer player, final World world, final int x, final int y, final int z,
+								final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		// Can we place the item on the bus?
 		return AEApi.instance().partHelper().placeBus( itemStack, x, y, z, side, player, world );
@@ -125,7 +126,7 @@ public class ItemAEPart
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void registerIcons( IIconRegister par1IconRegister )
+	public void registerIcons( final IIconRegister par1IconRegister )
 	{
 	}
 }

@@ -691,6 +691,7 @@ public class GuiArcaneCraftingTerminal
 				this.isScrollBarHeld = false;
 			}
 		}
+
 	}
 
 	/**
