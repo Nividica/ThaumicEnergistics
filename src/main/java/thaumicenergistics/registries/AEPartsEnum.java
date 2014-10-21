@@ -92,28 +92,22 @@ public enum AEPartsEnum
 	 */
 	public static AEPartsEnum getPartFromDamageValue( final ItemStack itemStack )
 	{
-		// Get the values
-		AEPartsEnum[] values = AEPartsEnum.VALUES;
-
 		// Clamp the damage
-		int clamped = MathHelper.clamp_int( itemStack.getItemDamage(), 0, values.length );
+		int clamped = MathHelper.clamp_int( itemStack.getItemDamage(), 0, AEPartsEnum.VALUES.length );
 
 		// Get the part
-		return values[clamped];
+		return AEPartsEnum.VALUES[clamped];
 	}
 
 	public static int getPartID( final Class<? extends AbstractAEPartBase> partClass )
 	{
 		int id = -1;
 
-		// Get the values
-		AEPartsEnum[] values = AEPartsEnum.VALUES;
-
 		// Check each part
-		for( int i = 0; i < values.length; i++ )
+		for( int i = 0; i < AEPartsEnum.VALUES.length; i++ )
 		{
 			// Is it the same as the specified part?
-			if( values[i].getPartClass().equals( partClass ) )
+			if( AEPartsEnum.VALUES[i].getPartClass().equals( partClass ) )
 			{
 				// Found the id, set and stop searching
 				id = i;
