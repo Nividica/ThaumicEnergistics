@@ -1,6 +1,11 @@
-﻿10/21/2014 0.7.2b
+﻿10/22/2014 0.7.2b
+  Reworked essentia gas textures to reduce memory and texture consumption.
+  Updated icon.
+
+10/21/2014 0.7.2b
   Cached several enum values for faster performance.
   Removed dead objects created during essentia texture generation.
+  Removed redundant enum caches
 
 10/20/2014 0.7.1b
   Fixes #60: V.R.I link now properly updates cached values.

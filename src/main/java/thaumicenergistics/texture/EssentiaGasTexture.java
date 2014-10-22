@@ -141,9 +141,9 @@ public class EssentiaGasTexture
 	}
 
 	/**
-	 * Thaumcraft identifier.
+	 * Mod identifier.
 	 */
-	private static final String TC_LOC = "thaumcraft";
+	private static final String MOD_LOC = "thaumicenergistics";
 
 	/**
 	 * Path to the texture.
@@ -153,7 +153,7 @@ public class EssentiaGasTexture
 	/**
 	 * Name of the texture file.
 	 */
-	private static final String GAS_FILE_NAME = "animatedglow";
+	private static final String GAS_FILE_NAME = "essentia.gas";
 
 	public static int mipmapLevels;
 
@@ -215,11 +215,11 @@ public class EssentiaGasTexture
 	{
 		if( mipLevel == 0 )
 		{
-			return new ResourceLocation( EssentiaGasTexture.TC_LOC, String.format( "%s/%s%s", new Object[] { EssentiaGasTexture.BASE_PATH,
+			return new ResourceLocation( EssentiaGasTexture.MOD_LOC, String.format( "%s/%s%s", new Object[] { EssentiaGasTexture.BASE_PATH,
 							GAS_FILE_NAME, ".png" } ) );
 		}
 
-		return new ResourceLocation( EssentiaGasTexture.TC_LOC, String.format( "%s/mipmaps/%s.%d%s", new Object[] { EssentiaGasTexture.BASE_PATH,
+		return new ResourceLocation( EssentiaGasTexture.MOD_LOC, String.format( "%s/mipmaps/%s.%d%s", new Object[] { EssentiaGasTexture.BASE_PATH,
 						EssentiaGasTexture.GAS_FILE_NAME, Integer.valueOf( mipLevel ), ".png" } ) );
 	}
 
