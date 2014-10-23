@@ -131,13 +131,13 @@ public class ModuleNEI
 	{
 
 		// Register the ACT overlay
-		API.registerGuiOverlay( GuiArcaneCraftingTerminal.class, "crafting", new ACTSlotFinder() );
+		API.registerGuiOverlay( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, "crafting", new ACTSlotFinder() );
 
 		// Create the overlay handler
 		ACTOverlayHandler overlayHandler = new ACTOverlayHandler();
 
 		// Register the handler
-		API.registerGuiOverlayHandler( GuiArcaneCraftingTerminal.class, overlayHandler, "crafting" );
+		API.registerGuiOverlayHandler( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, overlayHandler, "crafting" );
 	}
 
 }

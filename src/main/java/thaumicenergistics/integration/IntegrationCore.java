@@ -2,9 +2,12 @@ package thaumicenergistics.integration;
 
 import net.minecraft.nbt.NBTTagCompound;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.util.EffectiveSide;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public final class IntegrationCore
 {
@@ -17,6 +20,19 @@ public final class IntegrationCore
 	 * Mod ID for Waila
 	 */
 	private static final String MODID_WAILA = "Waila";
+
+	@SideOnly(Side.CLIENT)
+	private static void integrateWithClientMods()
+	{
+		// Integrate with version checker
+		IntegrationCore.integrateWithVersionChecker();
+
+		// Integrate with NEI
+		IntegrationCore.integrateWithNEI();
+
+		// Integrate with Waila
+		IntegrationCore.integrateWithMod( IntegrationCore.MODID_WAILA );
+	}
 
 	/**
 	 * Integrates with the specified mod if it exists
@@ -43,7 +59,7 @@ public final class IntegrationCore
 			// Log success
 			FMLLog.info( "%s: Successfully integrated with %s", ThaumicEnergistics.MOD_ID, modID );
 		}
-		catch( Exception e )
+		catch( Throwable e )
 		{
 
 			// Log failure
@@ -68,7 +84,7 @@ public final class IntegrationCore
 			// All done
 			FMLLog.info( "%s: Successfully integrated with NEI", ThaumicEnergistics.MOD_ID );
 		}
-		catch( Exception e )
+		catch( Throwable e )
 		{
 			// Log that we are not integrating with NEI
 			FMLLog.info( "%s: Skipping integration with NEI", ThaumicEnergistics.MOD_ID );
@@ -102,13 +118,15 @@ public final class IntegrationCore
 	 */
 	public static void init()
 	{
-		// Integrate with version checker
-		IntegrationCore.integrateWithVersionChecker();
-
-		// Integrate with NEI
-		IntegrationCore.integrateWithNEI();
-
-		// Integrate with Waila
-		IntegrationCore.integrateWithMod( IntegrationCore.MODID_WAILA );
+		try
+		{
+			if( EffectiveSide.isClientSide() )
+			{
+				IntegrationCore.integrateWithClientMods();
+			}
+		}
+		catch( Throwable e )
+		{
+		}
 	}
 }
