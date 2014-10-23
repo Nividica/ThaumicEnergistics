@@ -319,9 +319,15 @@ public class ResearchRegistry
 
 		ResearchRegistry.registerEssentiaTerminal();
 
-		ResearchRegistry.registerInfusionProvider();
+		if( TEConfig.ALLOW_CRAFTING_INFUSION_PROVIDER )
+		{
+			ResearchRegistry.registerInfusionProvider();
+		}
 
-		ResearchRegistry.registerEssentiaProvider();
+		if( TEConfig.ALLOW_CRAFTING_ESSENTIA_PROVIDER )
+		{
+			ResearchRegistry.registerEssentiaProvider();
+		}
 
 		ResearchRegistry.registerVisInterface();
 	}

@@ -3,6 +3,7 @@
   Updated icon.
   Fixes #20: Integrated the A.C.T. with Not Enough Items.
   A.C.T. search bar no longer opens with focus.
+  Added config options to allow/disable crafting the essentia and infusion providers.
 
 10/21/2014 0.7.2b
   Cached several enum values for faster performance.

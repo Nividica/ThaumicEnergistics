@@ -7,18 +7,13 @@ import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.registries.TEConfig;
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 
 public final class EssentiaConversionHelper
 {
-	/**
-	 * Controls the conversion ratio of essentia/fluid. <BR>
-	 * 1 essentia unit is converted to this many mb's of fluid.
-	 */
-	public static int CONVERSION_MULTIPLIER = 250;
-
 	/**
 	 * Singleton
 	 */
@@ -59,7 +54,7 @@ public final class EssentiaConversionHelper
 	 */
 	public long convertEssentiaAmountToFluidAmount( final long essentiaAmount )
 	{
-		return essentiaAmount * EssentiaConversionHelper.CONVERSION_MULTIPLIER;
+		return essentiaAmount * TEConfig.CONVERSION_MULTIPLIER;
 	}
 
 	/**
@@ -70,7 +65,7 @@ public final class EssentiaConversionHelper
 	 */
 	public long convertFluidAmountToEssentiaAmount( final long fluidAmount )
 	{
-		return fluidAmount / EssentiaConversionHelper.CONVERSION_MULTIPLIER;
+		return fluidAmount / TEConfig.CONVERSION_MULTIPLIER;
 	}
 
 	/**

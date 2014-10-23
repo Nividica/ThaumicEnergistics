@@ -370,35 +370,41 @@ public class RecipeRegistry
 
 		ItemStack EssentiaProvider = new ItemStack( BlockEnum.ESSENTIA_PROVIDER.getBlock(), 1 );
 
-		// Set required aspects for infusion
-		AspectList infusionProviderList = new AspectList();
-		infusionProviderList.add( Aspect.MECHANISM, 64 );
-		infusionProviderList.add( Aspect.MAGIC, 32 );
-		infusionProviderList.add( Aspect.ORDER, 32 );
-		infusionProviderList.add( Aspect.EXCHANGE, 16 );
+		if( TEConfig.ALLOW_CRAFTING_INFUSION_PROVIDER )
+		{
+			// Set required aspects for infusion provider
+			AspectList infusionProviderList = new AspectList();
+			infusionProviderList.add( Aspect.MECHANISM, 64 );
+			infusionProviderList.add( Aspect.MAGIC, 32 );
+			infusionProviderList.add( Aspect.ORDER, 32 );
+			infusionProviderList.add( Aspect.EXCHANGE, 16 );
 
-		// Infusion provider recipe items
-		ItemStack[] infusionProviderRecipeItems = { EssentiaMirrorOrJar, SalisMundus, CoalescenceCore, AerShard, EssentiaMirrorOrJar, SalisMundus,
-						CoalescenceCore, AerShard };
+			// Infusion provider recipe items
+			ItemStack[] infusionProviderRecipeItems = { EssentiaMirrorOrJar, SalisMundus, CoalescenceCore, AerShard, EssentiaMirrorOrJar,
+							SalisMundus, CoalescenceCore, AerShard };
 
-		// Create the infusion provider recipe
-		RecipeRegistry.INFUSION_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.INFUSIONPROVIDER.getKey(),
-			InfusionProvider, 4, infusionProviderList, MEInterface, infusionProviderRecipeItems );
+			// Create the infusion provider recipe
+			RecipeRegistry.INFUSION_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.INFUSIONPROVIDER.getKey(),
+				InfusionProvider, 4, infusionProviderList, MEInterface, infusionProviderRecipeItems );
+		}
 
-		// Set required aspects for infusion
-		AspectList essentiaProviderList = new AspectList();
-		essentiaProviderList.add( Aspect.MECHANISM, 64 );
-		essentiaProviderList.add( Aspect.MAGIC, 32 );
-		essentiaProviderList.add( Aspect.ORDER, 32 );
-		essentiaProviderList.add( Aspect.EXCHANGE, 16 );
+		if( TEConfig.ALLOW_CRAFTING_ESSENTIA_PROVIDER )
+		{
+			// Set required aspects for essentia provider
+			AspectList essentiaProviderList = new AspectList();
+			essentiaProviderList.add( Aspect.MECHANISM, 64 );
+			essentiaProviderList.add( Aspect.MAGIC, 32 );
+			essentiaProviderList.add( Aspect.ORDER, 32 );
+			essentiaProviderList.add( Aspect.EXCHANGE, 16 );
 
-		// Essentia provider recipe items
-		ItemStack[] essentiaProviderRecipeItems = { FilteredPipe, SalisMundus, CoalescenceCore, WaterShard, FilteredPipe, SalisMundus,
-						CoalescenceCore, WaterShard };
+			// Essentia provider recipe items
+			ItemStack[] essentiaProviderRecipeItems = { FilteredPipe, SalisMundus, CoalescenceCore, WaterShard, FilteredPipe, SalisMundus,
+							CoalescenceCore, WaterShard };
 
-		// Create the essentia provider recipe
-		RecipeRegistry.ESSENTIA_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ESSENTIAPROVIDER.getKey(),
-			EssentiaProvider, 3, essentiaProviderList, MEInterface, essentiaProviderRecipeItems );
+			// Create the essentia provider recipe
+			RecipeRegistry.ESSENTIA_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ESSENTIAPROVIDER.getKey(),
+				EssentiaProvider, 3, essentiaProviderList, MEInterface, essentiaProviderRecipeItems );
+		}
 
 	}
 
