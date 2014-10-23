@@ -1,6 +1,8 @@
 ﻿10/22/2014 0.7.2b
   Reworked essentia gas textures to reduce memory and texture consumption.
   Updated icon.
+  Fixes #20: Integrated the A.C.T. with Not Enough Items.
+  A.C.T. search bar no longer opens with focus.
 
 10/21/2014 0.7.2b
   Cached several enum values for faster performance.

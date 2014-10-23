@@ -275,6 +275,73 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	/**
+	 * Attempts to clear the crafting grid by placing the items
+	 * back in the ME network.
+	 * 
+	 * @param sendUpdate
+	 * If true, any changes made are sent across the network
+	 * @return
+	 */
+	private boolean clearCraftingGrid( final boolean sendUpdate )
+	{
+		// Ignored client side
+		if( EffectiveSide.isClientSide() )
+		{
+			return false;
+		}
+
+		// Assume the grid is clear
+		boolean clearedAll = true;
+
+		for( int index = this.firstCraftingSlotNumber; index <= this.lastCraftingSlotNumber; index++ )
+		{
+			// Get the slot
+			Slot slot = (Slot)this.inventorySlots.get( index );
+
+			// Ensure the slot is not null and has a stack
+			if( ( slot == null ) || ( !slot.getHasStack() ) )
+			{
+				continue;
+			}
+
+			// Set the stack
+			ItemStack slotStack = slot.getStack();
+
+			// Inject into the ME network
+			boolean didMerge = this.mergeWithMENetwork( slotStack );
+
+			// Did any merge?
+			if( !didMerge )
+			{
+				// Items are left over in the grid
+				clearedAll = false;
+				continue;
+			}
+
+			// Did the merger drain the stack?
+			if( ( slotStack == null ) || ( slotStack.stackSize == 0 ) )
+			{
+				// Set the slot to have no item
+				slot.putStack( null );
+			}
+			else
+			{
+				// Items are left over in the grid
+				clearedAll = false;
+
+				// Inform the slot its stack changed;
+				slot.onSlotChanged();
+			}
+		}
+
+		// Update
+		this.detectAndSendChanges();
+
+		// Return if we cleared the whole grid or not
+		return clearedAll;
+	}
+
+	/**
 	 * Handles automatically crafting items when the crafting
 	 * output slot is shift+clicked
 	 * 
@@ -633,56 +700,51 @@ public class ContainerPartArcaneCraftingTerminal
 		return true;
 	}
 
+	public void onClientNEIRequestSetCraftingGrid( final EntityPlayer player, final IAEItemStack[] gridItems )
+	{
+		// Attempt to clear the crafting grid
+		if( this.clearCraftingGrid( false ) )
+		{
+			for( int craftingSlotIndex = 0; craftingSlotIndex < 9; craftingSlotIndex++ )
+			{
+				// Get the stack
+				IAEItemStack slotStack = gridItems[craftingSlotIndex];
+
+				// Ensure the slot was not null
+				if( slotStack == null )
+				{
+					// Skip null items
+					continue;
+				}
+
+				// Attempt to extract the item
+				IAEItemStack extractedStack = this.monitor.extractItems( slotStack, Actionable.MODULATE, this.machineSource );
+
+				// Ensure an item was extracted
+				if( ( extractedStack == null ) || ( extractedStack.getStackSize() == 0 ) )
+				{
+					// Could not extract
+					continue;
+				}
+
+				// Get the slot
+				Slot slot = (Slot)this.inventorySlots.get( this.firstCraftingSlotNumber + craftingSlotIndex );
+
+				// Set the slot contents
+				slot.putStack( extractedStack.getItemStack() );
+			}
+		}
+
+		// Update clients
+		this.detectAndSendChanges();
+	}
+
 	/**
-	 * Attempts to clear the crafting grid by placing the items
-	 * back in the ME network
+	 * Called when a client has clicked the clear grid button
 	 */
 	public void onClientRequestClearCraftingGrid( final EntityPlayer player )
 	{
-		// Ignored client side
-		if( EffectiveSide.isClientSide() )
-		{
-			return;
-		}
-
-		for( int index = this.firstCraftingSlotNumber; index <= this.lastCraftingSlotNumber; index++ )
-		{
-			// Get the slot
-			Slot slot = (Slot)this.inventorySlots.get( index );
-
-			// Ensure the slot is not null and has a stack
-			if( ( slot == null ) || ( !slot.getHasStack() ) )
-			{
-				continue;
-			}
-
-			// Set the stack
-			ItemStack slotStack = slot.getStack();
-
-			// Inject into the ME network
-			boolean didMerge = this.mergeWithMENetwork( slotStack );
-
-			// Did any merge?
-			if( !didMerge )
-			{
-				continue;
-			}
-
-			// Did the merger drain the stack?
-			if( ( slotStack == null ) || ( slotStack.stackSize == 0 ) )
-			{
-				// Set the slot to have no item
-				slot.putStack( null );
-			}
-			else
-			{
-				// Inform the slot its stack changed;
-				slot.onSlotChanged();
-			}
-		}
-
-		// Update
-		this.detectAndSendChanges();
+		this.clearCraftingGrid( true );
 	}
 
 	/**

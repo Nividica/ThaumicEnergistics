@@ -20,13 +20,66 @@ public class PacketServerArcaneCraftingTerminal
 	private static final byte MODE_REQUEST_CLEAR_GRID = 4;
 	private static final byte MODE_REQUEST_DEPOSIT_REGION = 5;
 	private static final byte MODE_REQUEST_SET_SORT = 6;
+	private static final byte MODE_REQUEST_SET_GRID = 7;
 
+	private static final int ITEM_GRID_SIZE = 9;
+
+	/**
+	 * Extracted or deposited item.
+	 */
 	private IAEItemStack itemStack;
+
+	/**
+	 * Mouse button being held.
+	 */
 	private int mouseButton;
+
+	/**
+	 * True if shift is being held.
+	 */
 	private boolean isShiftHeld;
+
+	/**
+	 * Identifies a region by a slot inside of it.
+	 */
 	private int slotNumber;
+
+	/**
+	 * Order to sort the items.
+	 */
 	private SortOrder sortingOrder;
+
+	/**
+	 * Direction to sort the items.
+	 */
 	private SortDir sortingDirection;
+
+	/**
+	 * Items to set the crafting grid to.
+	 */
+	private IAEItemStack[] gridItems;
+
+	/**
+	 * Create a packet to request that the crafting grid be set to these items.
+	 * 
+	 * @param player
+	 * @param items
+	 * Must be at least length of 9
+	 * @return
+	 */
+	public PacketServerArcaneCraftingTerminal createNEIRequestSetCraftingGrid( final EntityPlayer player, final IAEItemStack[] items )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID;
+
+		// Set the items
+		this.gridItems = items;
+
+		return this;
+	}
 
 	/**
 	 * Create a packet to request that the crafting grid be cleared.
@@ -194,9 +247,15 @@ public class PacketServerArcaneCraftingTerminal
 					break;
 
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
-					// Reqeust set sort
+					// Request set sort
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestSetSort( this.sortingOrder,
 						this.sortingDirection );
+					break;
+
+				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
+					// Request set grid
+					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer )
+									.onClientNEIRequestSetCraftingGrid( this.player, this.gridItems );
 					break;
 			}
 		}
@@ -233,6 +292,22 @@ public class PacketServerArcaneCraftingTerminal
 				this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[stream.readInt()];
 				this.sortingOrder = EnumCache.AE_SORT_ORDERS[stream.readInt()];
 				break;
+
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
+				// Init the items
+				this.gridItems = new IAEItemStack[PacketServerArcaneCraftingTerminal.ITEM_GRID_SIZE];
+
+				// Read the items
+				for( int slotIndex = 0; slotIndex < 9; slotIndex++ )
+				{
+					// Do we have an item to read?
+					if( stream.readBoolean() )
+					{
+						// Set the item
+						this.gridItems[slotIndex] = AbstractPacket.readAEItemStack( stream );
+					}
+				}
+				break;
 		}
 
 	}
@@ -267,6 +342,25 @@ public class PacketServerArcaneCraftingTerminal
 				// Write the sorts
 				stream.writeInt( this.sortingDirection.ordinal() );
 				stream.writeInt( this.sortingOrder.ordinal() );
+				break;
+
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
+				// Write each non-null item
+				for( int slotIndex = 0; slotIndex < PacketServerArcaneCraftingTerminal.ITEM_GRID_SIZE; slotIndex++ )
+				{
+					// Get the item
+					IAEItemStack slotItem = this.gridItems[slotIndex];
+
+					// Write if the slot is not null
+					boolean hasItem = slotItem != null;
+					stream.writeBoolean( hasItem );
+
+					if( hasItem )
+					{
+						// Write the item
+						AbstractPacket.writeAEItemStack( slotItem, stream );
+					}
+				}
 				break;
 		}
 	}

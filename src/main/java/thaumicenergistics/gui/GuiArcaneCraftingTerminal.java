@@ -779,7 +779,7 @@ public class GuiArcaneCraftingTerminal
 		this.searchField.setEnableBackgroundDrawing( false );
 
 		// Start focused
-		this.searchField.setFocused( true );
+		this.searchField.setFocused( false );
 
 		// Set maximum length
 		this.searchField.setMaxStringLength( AbstractGuiConstantsACT.SEARCH_MAX_CHARS );

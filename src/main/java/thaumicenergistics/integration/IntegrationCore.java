@@ -106,7 +106,7 @@ public final class IntegrationCore
 		IntegrationCore.integrateWithVersionChecker();
 
 		// Integrate with NEI
-		//IntegrationCore.integrateWithNEI();
+		IntegrationCore.integrateWithNEI();
 
 		// Integrate with Waila
 		IntegrationCore.integrateWithMod( IntegrationCore.MODID_WAILA );
