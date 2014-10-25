@@ -20,16 +20,16 @@ import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
+import thaumicenergistics.integration.tc.DigiVisSourceData;
+import thaumicenergistics.integration.tc.IDigiVisSource;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.texture.BlockTextureManager;
-import thaumicenergistics.util.VisInterfaceData;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -110,9 +110,9 @@ public class AEPartArcaneCraftingTerminal
 	private SortDir sortingDirection = SortDir.ASCENDING;
 
 	/**
-	 * Data pertaining to the linked vis interface
+	 * Data pertaining to the linked digi-vis source
 	 */
-	private VisInterfaceData visInterfaceInfo = new VisInterfaceData();
+	private DigiVisSourceData visSourceInfo = new DigiVisSourceData();
 
 	/**
 	 * Creates the terminal
@@ -428,8 +428,8 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode grid )
 	{
-		// We would like a tick ever 5 to 40 MC ticks
-		return new TickingRequest( 5, 40, false, false );
+		// We would like a tick ever 10 to 50 MC ticks
+		return new TickingRequest( 10, 50, false, false );
 	}
 
 	/**
@@ -512,14 +512,14 @@ public class AEPartArcaneCraftingTerminal
 			// Get the stored name
 			String settingsName = memoryCard.getSettingsName( playerHolding );
 
-			// Does it contain the data about a vis interface?
-			if( settingsName.equals( AEPartsEnum.VisInterface.getUnlocalizedName() ) )
+			// Does it contain the data about a vis source?
+			if( settingsName.equals( DigiVisSourceData.SOURCE_UNLOC_NAME ) )
 			{
 				// Get the data
 				NBTTagCompound data = memoryCard.getData( playerHolding );
 
 				// Load the info
-				this.visInterfaceInfo.readFromNBT( data );
+				this.visSourceInfo.readFromNBT( data );
 
 				// Inform the user
 				memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
@@ -530,8 +530,8 @@ public class AEPartArcaneCraftingTerminal
 			// Is the memory card empty?
 			else if( settingsName.equals( "gui.appliedenergistics2.Blank" ) )
 			{
-				// Clear the interface info
-				this.visInterfaceInfo.clearData();
+				// Clear the source info
+				this.visSourceInfo.clearData();
 
 				// Inform the user
 				memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
@@ -597,8 +597,8 @@ public class AEPartArcaneCraftingTerminal
 			this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[data.getInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY )];
 		}
 
-		// Vis interface info
-		this.visInterfaceInfo.readFromNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
+		// Vis source info
+		this.visSourceInfo.readFromNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
 	}
 
 	/**
@@ -746,10 +746,10 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public TickRateModulation tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
-		// Do we have an interface to draw from?
-		if( !this.visInterfaceInfo.getHasData() )
+		// Fast exit checks
+		if( ( this.gridBlock == null ) || ( !this.visSourceInfo.getHasData() ) )
 		{
-			// No linked VRI
+			// ACT does not have gridblock
 			return TickRateModulation.IDLE;
 		}
 
@@ -757,7 +757,7 @@ public class AEPartArcaneCraftingTerminal
 		ItemStack stack = this.getStackInSlot( WAND_SLOT_INDEX );
 
 		// Do we have a wand?
-		if( !AEPartArcaneCraftingTerminal.isItemValidCraftingWand( stack ) )
+		if( stack == null )
 		{
 			// Invalid wand
 			return TickRateModulation.IDLE;
@@ -774,42 +774,13 @@ public class AEPartArcaneCraftingTerminal
 			return TickRateModulation.IDLE;
 		}
 
-		// Get the interface
-		AEPartVisInterface visInterface = this.visInterfaceInfo.getInterface( false );
+		// Get the source
+		IDigiVisSource visSource = this.visSourceInfo.tryGetSource( this.gridBlock.getGrid() );
 
-		boolean sameGrid = false;
-
-		try
+		// Did we get an active source?
+		if( visSource == null )
 		{
-			// Get the vri grid
-			IGrid vriGrid = visInterface.getGridBlock().getGrid();
-
-			// Get the act grid
-			IGrid actGrid = this.getGridBlock().getGrid();
-
-			// Are we on the same grid?
-			sameGrid = ( actGrid.equals( vriGrid ) );
-			if( !sameGrid )
-			{
-				// Update the vri grid if it seems to be the only device on the network
-				if( vriGrid.getMachinesClasses().size() == 1 )
-				{
-					// Update the interface reference
-					visInterface = this.visInterfaceInfo.getInterface( true );
-
-					// Check again
-					sameGrid = ( actGrid.equals( visInterface.getGridBlock().getGrid() ) );
-				}
-			}
-		}
-		catch( Exception e )
-		{
-		}
-
-		// Are we on the same grid?
-		if( !sameGrid )
-		{
-			// Not on the same grid
+			// Invalid source
 			return TickRateModulation.IDLE;
 		}
 
@@ -820,17 +791,21 @@ public class AEPartArcaneCraftingTerminal
 			int amountToDrain = wand.getMaxVis( stack ) - wand.getVis( stack, vis );
 
 			// Request the vis
-			int amountDrained = visInterface.requestDrain( vis, amountToDrain );
+			int amountDrained = visSource.consumeVis( vis, amountToDrain );
 
 			// Did we drain any?
 			if( amountDrained > 0 )
 			{
+				// Instead of calling this 4 times a second, I call it 2 times a second with an amount multiplier.
+				// Think of it as simulated work. This greatly reduces server load.
+
 				// Add to the wand
-				wand.addRealVis( stack, vis, amountDrained, true );
+				wand.addRealVis( stack, vis, amountDrained * 10, true );
 			}
 
 		}
 
+		// Tick ASAP until the wand is charged.
 		return TickRateModulation.URGENT;
 	}
 
@@ -875,8 +850,8 @@ public class AEPartArcaneCraftingTerminal
 		// Write order
 		data.setInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY, this.sortingOrder.ordinal() );
 
-		// Write the vis interface info
-		this.visInterfaceInfo.writeToNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
+		// Write the vis source info
+		this.visSourceInfo.writeToNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
 	}
 
 }

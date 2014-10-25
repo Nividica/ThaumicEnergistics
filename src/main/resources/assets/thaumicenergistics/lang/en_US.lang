@@ -45,6 +45,7 @@ thaumicenergistics.gui.arcane.crafting.terminal.title=Arcane Terminal
 thaumicenergistics.gui.essentia.cell.title=Essentia Cell
 thaumicenergistics.gui.selected.amount=Amount
 thaumicenergistics.gui.selected.aspect=Aspect
+thaumicenergistics.gui.digivis.source.name=DigiVis Source
 
 #Research Tab
 tc.research_category.thaumicenergistics=Energistics
