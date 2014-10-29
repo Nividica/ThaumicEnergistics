@@ -1,4 +1,9 @@
-﻿10/24/2014 0.7.4b
+﻿10/29/2014 0.7.4b
+  Bugfix: Import/Export buses got caught in a loop and imported a full jar amount on neighbor change.
+  IO bus redstone pulse mode now works properly
+  Bugfix: Export bus would not export into reservoir if aspect to export, and aspect in reservoir did not match.
+
+10/24/2014 0.7.4b
   Created interface for digivis sources.
   Improved performance when ACT is charging a wand.
 

@@ -254,9 +254,6 @@ public abstract class AEPartEssentiaIO
 			return false;
 		}
 
-		// Get the aspect in the container
-		Aspect aspectToMatch = EssentiaTileContainerHelper.instance.getAspectInContainer( this.facingContainer );
-
 		// Do we have the power to transfer this amount?
 		if( !this.takePowerFromNetwork( amountToFillContainer, Actionable.SIMULATE ) )
 		{
@@ -271,13 +268,6 @@ public abstract class AEPartEssentiaIO
 			if( ( filterAspect == null ) || ( !this.aspectTransferAllowed( filterAspect ) ) )
 			{
 				// Invalid or not allowed
-				continue;
-			}
-
-			// Are we searching for a match?
-			if( ( aspectToMatch != null ) && ( filterAspect != aspectToMatch ) )
-			{
-				// Not a match
 				continue;
 			}
 
@@ -701,15 +691,19 @@ public abstract class AEPartEssentiaIO
 			this.facingContainer = (IAspectContainer)tileEntity;
 		}
 
-		if( this.redstonePowered )
+		// Is the bus pulse controlled?
+		if( this.redstoneMode == RedstoneMode.SIGNAL_PULSE )
 		{
-			if( !this.lastRedstone )
+			// Did the state of the redstone change?
+			if( this.redstonePowered != this.lastRedstone )
 			{
+				// Set the previous redstone state
+				this.lastRedstone = this.redstonePowered;
+
+				// Do work
 				this.doWork( this.getTransferAmountPerSecond() );
 			}
 		}
-
-		this.lastRedstone = this.redstonePowered;
 	}
 
 	@Override
