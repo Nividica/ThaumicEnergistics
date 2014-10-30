@@ -2,6 +2,7 @@ package thaumicenergistics.fluids;
 
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import net.minecraft.block.Block;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -56,6 +57,9 @@ public class GaseousEssentia
 
 		// This is a gas, adjusts the render pass.
 		this.setGaseous( true );
+
+		// If the gas ever makes its way out of the AE system, disperse.
+		this.setBlock( Block.getBlockFromName( "air" ) );
 
 	}
 
