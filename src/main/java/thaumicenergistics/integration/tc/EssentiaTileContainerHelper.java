@@ -3,7 +3,6 @@ package thaumicenergistics.integration.tc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
@@ -13,11 +12,12 @@ import thaumcraft.common.tiles.TileAlembic;
 import thaumcraft.common.tiles.TileCentrifuge;
 import thaumcraft.common.tiles.TileEssentiaReservoir;
 import thaumcraft.common.tiles.TileJarFillable;
+import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.registry.TEPermissionsTile;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import appeng.api.config.Actionable;
 import appeng.api.storage.data.IAEFluidStack;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Helper class for working with Thaumcraft TileEntity essentia containers.
@@ -33,124 +33,9 @@ public final class EssentiaTileContainerHelper
 	public static final EssentiaTileContainerHelper instance = new EssentiaTileContainerHelper();
 
 	/**
-	 * Holds a list of tiles that we are allowed to extract from.
+	 * Cache the permission class
 	 */
-	private final List<Class<? extends TileEntity>> extractWhiteList = new ArrayList<Class<? extends TileEntity>>();
-
-	/**
-	 * Holds a list of tiles that we are allowed to inject into.
-	 */
-	private final List<Class<? extends TileEntity>> injectWhiteList = new ArrayList<Class<? extends TileEntity>>();
-
-	/**
-	 * Adds a tile entity to the extract whitelist.
-	 * The tile must implement the interface {@link IAspectContainer}
-	 * 
-	 * @param tile
-	 * @return True if added to the list, False if not.
-	 */
-	public boolean addTileToExtractWhitelist( final Class<? extends TileEntity> tile )
-	{
-		// Ensure we have a tile
-		if( tile != null )
-		{
-			// Ensure it is a container
-			if( IAspectContainer.class.isAssignableFrom( tile ) )
-			{
-				// Is it already registered?
-				if( !this.extractWhiteList.contains( tile ) )
-				{
-					// Add to the list
-					this.extractWhiteList.add( tile );
-
-					// Log the addition
-					FMLCommonHandler.instance().getFMLLogger().info( "Adding " + tile.toString() + " to extraction whitelist." );
-				}
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Adds a tile entity to the inject whitelist.
-	 * The tile must implement the interface {@link IAspectContainer}
-	 * 
-	 * @param tile
-	 * @return True if added to the list, False if not.
-	 */
-	public boolean addTileToInjectWhitelist( final Class<? extends TileEntity> tile )
-	{
-		// Ensure we have a tile
-		if( tile != null )
-		{
-			// Ensure it is a container
-			if( IAspectContainer.class.isAssignableFrom( tile ) )
-			{
-				// Is it already registered?
-				if( !this.injectWhiteList.contains( tile ) )
-				{
-					// Add to the list
-					this.injectWhiteList.add( tile );
-
-					// Log the addition
-					FMLCommonHandler.instance().getFMLLogger().info( "Adding " + tile.toString() + " to injection whitelist." );
-				}
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Checks if the container can be extracted from
-	 * 
-	 * @param container
-	 * @return
-	 */
-	public boolean canExtract( final IAspectContainer container )
-	{
-		// Loop over blacklist
-		for( Class<? extends TileEntity> whiteClass : this.extractWhiteList )
-		{
-			// Is the container an instance of this whitelisted class?
-			if( whiteClass.isInstance( container ) )
-			{
-				// Return that we can extract
-				return true;
-			}
-		}
-
-		// Return that we can not extract
-		return false;
-	}
-
-	/**
-	 * Checks if the container can be injected into
-	 * 
-	 * @param container
-	 * @return
-	 */
-	public boolean canInject( final IAspectContainer container )
-	{
-		// Loop over blacklist
-		for( Class<? extends TileEntity> whiteClass : this.injectWhiteList )
-		{
-			// Is the container an instance of this whitelisted class?
-			if( whiteClass.isInstance( container ) )
-			{
-				// Return that we can inject
-				return true;
-			}
-		}
-
-		// Return that we can not inject
-		return false;
-	}
+	public final TEPermissionsTile perms = TEApi.instance.tileIOPermissions;
 
 	/**
 	 * Extracts essentia from a container based on the specified fluid stack
@@ -164,7 +49,7 @@ public final class EssentiaTileContainerHelper
 	public FluidStack extractFromContainer( final IAspectContainer container, final FluidStack request, final Actionable mode )
 	{
 		// Is the container whitelisted?
-		if( !this.canExtract( container ) )
+		if( !this.perms.canExtract( container ) )
 		{
 			// Not whitelsited
 			return null;
@@ -187,7 +72,7 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Get the gas aspect
-		Aspect gasAspect = ( (GaseousEssentia)fluid ).getAssociatedAspect();
+		Aspect gasAspect = ( (GaseousEssentia)fluid ).getAspect();
 
 		// Get the amount to extract
 		long amountToDrain_EU = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( request.amount );
@@ -209,7 +94,7 @@ public final class EssentiaTileContainerHelper
 	public FluidStack extractFromContainer( final IAspectContainer container, int amountToDrain_EU, final Aspect aspectToDrain, final Actionable mode )
 	{
 		// Is the container whitelisted?
-		if( !this.canExtract( container ) )
+		if( !this.perms.canExtract( container ) )
 		{
 			// Not whitelisted
 			return null;
@@ -419,7 +304,7 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Is the container whitelisted?
-		if( !this.canInject( container ) )
+		if( !this.perms.canInject( container ) )
 		{
 			// Not whitelisted
 			return 0;
@@ -436,7 +321,7 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Get the aspect of the gas
-		Aspect gasAspect = ( (GaseousEssentia)fluid ).getAssociatedAspect();
+		Aspect gasAspect = ( (GaseousEssentia)fluid ).getAspect();
 
 		// Get the amount to fill
 		long amountToFill = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
@@ -449,7 +334,7 @@ public final class EssentiaTileContainerHelper
 										final Actionable mode )
 	{
 		// Is the container whitelisted?
-		if( !this.canInject( container ) )
+		if( !this.perms.canInject( container ) )
 		{
 			// Not whitelisted
 			return 0;
@@ -494,23 +379,23 @@ public final class EssentiaTileContainerHelper
 	}
 
 	/**
-	 * Setup the standard white lists
+	 * Setup the standard white list
 	 */
 	public void registerThaumcraftContainers()
 	{
 		// Alembic
-		this.addTileToExtractWhitelist( TileAlembic.class );
+		this.perms.addTileToExtractWhitelist( TileAlembic.class );
 
 		// Centrifuge
-		this.addTileToExtractWhitelist( TileCentrifuge.class );
+		this.perms.addTileToExtractWhitelist( TileCentrifuge.class );
 
 		// Jars
-		this.addTileToExtractWhitelist( TileJarFillable.class );
-		this.addTileToInjectWhitelist( TileJarFillable.class );
+		this.perms.addTileToExtractWhitelist( TileJarFillable.class );
+		this.perms.addTileToInjectWhitelist( TileJarFillable.class );
 
 		// Essentia reservoir
-		this.addTileToExtractWhitelist( TileEssentiaReservoir.class );
-		this.addTileToInjectWhitelist( TileEssentiaReservoir.class );
+		this.perms.addTileToExtractWhitelist( TileEssentiaReservoir.class );
+		this.perms.addTileToInjectWhitelist( TileEssentiaReservoir.class );
 	}
 
 }

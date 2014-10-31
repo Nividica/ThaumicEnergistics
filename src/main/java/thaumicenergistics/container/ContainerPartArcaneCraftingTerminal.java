@@ -128,6 +128,11 @@ public class ContainerPartArcaneCraftingTerminal
 	private static int SLOT_SIZE = 18;
 
 	/**
+	 * Cache the crafting manager instance
+	 */
+	private static CraftingManager CRAFT_MANAGER = CraftingManager.getInstance();
+
+	/**
 	 * The arcane crafting terminal associated with the container.
 	 */
 	private AEPartArcaneCraftingTerminal terminal;
@@ -508,7 +513,7 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 
 		// Return the result
-		return CraftingManager.getInstance().findMatchingRecipe( craftingInventory, this.terminal.getWorldObj() );
+		return CRAFT_MANAGER.findMatchingRecipe( craftingInventory, this.terminal.getWorldObj() );
 	}
 
 	/**

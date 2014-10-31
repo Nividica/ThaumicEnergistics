@@ -5,9 +5,9 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.TEApi;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.registries.TEConfig;
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
@@ -39,8 +39,8 @@ public final class EssentiaConversionHelper
 		if( fluidStack.getFluid() instanceof GaseousEssentia )
 		{
 			// Create an aspect stack to match the fluid
-			return new AspectStack( ( (GaseousEssentia)fluidStack.getFluid() ).getAssociatedAspect(),
-							this.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() ) );
+			return new AspectStack( ( (GaseousEssentia)fluidStack.getFluid() ).getAspect(), this.convertFluidAmountToEssentiaAmount( fluidStack
+							.getStackSize() ) );
 		}
 
 		return null;
@@ -54,7 +54,7 @@ public final class EssentiaConversionHelper
 	 */
 	public long convertEssentiaAmountToFluidAmount( final long essentiaAmount )
 	{
-		return essentiaAmount * TEConfig.CONVERSION_MULTIPLIER;
+		return essentiaAmount * TEApi.instance.config.CONVERSION_MULTIPLIER;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public final class EssentiaConversionHelper
 	 */
 	public long convertFluidAmountToEssentiaAmount( final long fluidAmount )
 	{
-		return fluidAmount / TEConfig.CONVERSION_MULTIPLIER;
+		return fluidAmount / TEApi.instance.config.CONVERSION_MULTIPLIER;
 	}
 
 	/**

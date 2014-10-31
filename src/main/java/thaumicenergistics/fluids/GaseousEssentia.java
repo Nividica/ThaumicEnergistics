@@ -9,6 +9,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.interfaces.IEssentiaGas;
 import cpw.mods.fml.common.FMLLog;
 
 /**
@@ -19,11 +21,12 @@ import cpw.mods.fml.common.FMLLog;
  */
 public class GaseousEssentia
 	extends Fluid
+	implements IEssentiaGas
 {
 	/**
 	 * List of all created gasses.
 	 */
-	public static LinkedHashMap<Aspect, GaseousEssentia> gasList = new LinkedHashMap<Aspect, GaseousEssentia>();
+	public static final LinkedHashMap<Aspect, GaseousEssentia> gasList = new LinkedHashMap<Aspect, GaseousEssentia>();
 
 	/**
 	 * The aspect the gas is based off of.
@@ -89,6 +92,9 @@ public class GaseousEssentia
 			// Add to the list
 			gasList.put( aspect, newGas );
 
+			// Add to api
+			TEApi.instance.essentiaGases.add( newGas );
+
 			// Log info
 			FMLLog.info( "%s: Created fluid for aspect %s.", ThaumicEnergistics.MOD_ID, aspect.getTag() );
 		}
@@ -133,7 +139,8 @@ public class GaseousEssentia
 	 * 
 	 * @return
 	 */
-	public Aspect getAssociatedAspect()
+	@Override
+	public Aspect getAspect()
 	{
 		return this.associatedAspect;
 	}
@@ -150,6 +157,15 @@ public class GaseousEssentia
 		}
 
 		return super.getColor();
+	}
+
+	/**
+	 * Gets the fluid form of this gas.
+	 */
+	@Override
+	public Fluid getFluid()
+	{
+		return this;
 	}
 
 	/**

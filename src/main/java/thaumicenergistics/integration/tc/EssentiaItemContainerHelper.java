@@ -1,6 +1,5 @@
 package thaumicenergistics.integration.tc;
 
-import java.util.HashMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,8 +12,10 @@ import thaumcraft.common.blocks.ItemJarFilled;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.items.ItemEssence;
+import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.registry.TEPermissionsItem;
+import thaumicenergistics.api.registry.TEPermissionsItem.ContainerInfo;
 import thaumicenergistics.aspect.AspectStack;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Helper class for working with Thaumcraft item essentia containers.
@@ -25,111 +26,29 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public final class EssentiaItemContainerHelper
 {
 	/**
-	 * Collection of ContainerInfo indexed by metadata.
-	 * 
-	 * @author Nividica
-	 * 
-	 */
-	private static class ContainerItemInfoCollection
-	{
-		/**
-		 * Metadata -> Info map
-		 */
-		private HashMap<Integer, ContainerInfo> containers = new HashMap<Integer, EssentiaItemContainerHelper.ContainerInfo>();
-
-		/**
-		 * Constructor adding the specified info the the collection
-		 * 
-		 * @param capacity
-		 * @param canHoldPartialAmount
-		 * @param metadata
-		 */
-		public ContainerItemInfoCollection( final int capacity, final boolean canHoldPartialAmount, final int metadata )
-		{
-			this.addContainerInfo( capacity, canHoldPartialAmount, metadata );
-		}
-
-		/**
-		 * Adds the specified info to the collection
-		 * 
-		 * @param capacity
-		 * @param canHoldPartialAmount
-		 * @param metadata
-		 * @return
-		 */
-		public ContainerItemInfoCollection addContainerInfo( final int capacity, final boolean canHoldPartialAmount, final int metadata )
-		{
-			// Create the container info
-			ContainerInfo info = new ContainerInfo( capacity, canHoldPartialAmount );
-
-			// Add to the map
-			this.containers.put( metadata, info );
-
-			return this;
-		}
-
-		/**
-		 * Gets the info about the item using the specified metadata.
-		 * 
-		 * @param metadata
-		 * @return {@link ContainerInfo} if a match is found, null otherwise.
-		 */
-		public ContainerInfo getInfo( final int metadata )
-		{
-			return this.containers.get( metadata );
-		}
-	}
-
-	/**
-	 * Basic information about a thaumcraft container.
-	 * 
-	 * @author Nividica
-	 * 
-	 */
-	public static class ContainerInfo
-	{
-		/**
-		 * The maximum amount this container can hold
-		 */
-		public int capacity;
-
-		/**
-		 * Can the container be partialy filled?
-		 */
-		public boolean canHoldPartialAmount;
-
-		public ContainerInfo( final int capacity, final boolean canHoldPartialAmount )
-		{
-			this.capacity = capacity;
-			this.canHoldPartialAmount = canHoldPartialAmount;
-		}
-	}
-
-	/**
 	 * Singleton
 	 */
 	public static final EssentiaItemContainerHelper instance = new EssentiaItemContainerHelper();
 
 	/**
-	 * Standard Thaumcraft jar capacity
-	 */
-	private static final int JAR_CAPACITY = 64;
-
-	/**
-	 * Standard Thaumcraft phial capacity
-	 */
-	private static final int PHIAL_CAPACITY = 8;
-
-	/**
-	 * NBT key used to get the aspect of a jar's label
+	 * NBT key used to get the aspect of a jar's label.
 	 */
 	private static final String JAR_LABEL_NBT_KEY = "AspectFilter";
 
 	/**
-	 * Holds a list of items we are allowed to interact with, and their
-	 * capacity.
+	 * Standard Thaumcraft jar capacity.
 	 */
-	private final HashMap<Class<? extends IEssentiaContainerItem>, ContainerItemInfoCollection> itemWhitelist = new HashMap<Class<? extends IEssentiaContainerItem>, ContainerItemInfoCollection>();
+	private static final int JAR_CAPACITY = 64;
+
+	/**
+	 * Standard Thaumcraft phial capacity.
+	 */
+	private static final int PHIAL_CAPACITY = 8;
+
+	/**
+	 * Cache of the item permissions.
+	 */
+	private TEPermissionsItem perms = TEApi.instance.itemIOPermissions;
 
 	/**
 	 * Private constructor
@@ -137,80 +56,6 @@ public final class EssentiaItemContainerHelper
 	private EssentiaItemContainerHelper()
 	{
 
-	}
-
-	/**
-	 * Adds an item to the whitelist.
-	 * 
-	 * @param item
-	 * @param capacity
-	 * @param canHoldPartialAmount
-	 * @param metadata
-	 */
-	private void addItemToWhitelist( final Class<? extends IEssentiaContainerItem> item, final int capacity, final boolean canHoldPartialAmount,
-										final int metadata )
-	{
-		// Do we have an item?
-		if( item != null )
-		{
-			// Is it already registered?
-			if( this.itemWhitelist.containsKey( item ) )
-			{
-				// Add to the existing registry
-				this.itemWhitelist.get( item ).addContainerInfo( capacity, canHoldPartialAmount, metadata );
-			}
-			else
-			{
-				// Create a new registry
-				this.itemWhitelist.put( item, new ContainerItemInfoCollection( capacity, canHoldPartialAmount, metadata ) );
-			}
-
-			// Log the addition
-			FMLCommonHandler.instance().getFMLLogger().info( "Adding " + item.toString() + "[" + metadata + "] to item whitelist." );
-		}
-	}
-
-	/**
-	 * Gets the information about the container as it was registered to the
-	 * whitelist.
-	 * 
-	 * @param container
-	 * @param metadata
-	 * @return Info if was registered, null otherwise.
-	 */
-	private ContainerInfo getContainerInfo( final Class<? extends Item> container, final int metadata )
-	{
-		// Is the item registered?
-		if( this.itemWhitelist.containsKey( container ) )
-		{
-			// Return the info
-			return this.itemWhitelist.get( container ).getInfo( metadata );
-		}
-
-		// Special check for empty jars
-		if( container == BlockJarItem.class )
-		{
-			// Return the info for filled jars
-			return this.itemWhitelist.get( ItemJarFilled.class ).getInfo( metadata );
-		}
-
-		// Not registered return null
-		return null;
-	}
-
-	/**
-	 * Adds an item to the whitelist that must match the specified metadata
-	 * value.
-	 * 
-	 * @param item
-	 * @param capacity
-	 * @param metadata
-	 * @param canHoldPartialAmount
-	 */
-	public void addItemToWhitelist( final Class<? extends IEssentiaContainerItem> item, final int capacity, final int metadata,
-									final boolean canHoldPartialAmount )
-	{
-		this.addItemToWhitelist( item, capacity, canHoldPartialAmount, metadata );
 	}
 
 	/**
@@ -561,7 +406,7 @@ public final class EssentiaItemContainerHelper
 		// Is the item not null?
 		if( item != null )
 		{
-			return this.getContainerInfo( item.getClass(), metadata );
+			return this.perms.getContainerInfo( item.getClass(), metadata );
 		}
 
 		return null;
@@ -579,7 +424,7 @@ public final class EssentiaItemContainerHelper
 		// Is the itemstack not null?
 		if( itemStack != null )
 		{
-			return this.getContainerInfo( itemStack.getItem().getClass(), itemStack.getItemDamage() );
+			return this.perms.getContainerInfo( itemStack.getItem().getClass(), itemStack.getItemDamage() );
 		}
 
 		return null;
@@ -838,14 +683,14 @@ public final class EssentiaItemContainerHelper
 	public void registerThaumcraftContainers()
 	{
 		// Phials
-		this.addItemToWhitelist( ItemEssence.class, PHIAL_CAPACITY, 0, false );
-		this.addItemToWhitelist( ItemEssence.class, PHIAL_CAPACITY, 1, false );
+		this.perms.addItemToWhitelist( ItemEssence.class, PHIAL_CAPACITY, 0, false );
+		this.perms.addItemToWhitelist( ItemEssence.class, PHIAL_CAPACITY, 1, false );
 
 		// Filled jar
-		this.addItemToWhitelist( ItemJarFilled.class, JAR_CAPACITY, 0, true );
+		this.perms.addItemToWhitelist( ItemJarFilled.class, JAR_CAPACITY, 0, true );
 
 		// Void jar
-		this.addItemToWhitelist( ItemJarFilled.class, JAR_CAPACITY, 3, true );
+		this.perms.addItemToWhitelist( ItemJarFilled.class, JAR_CAPACITY, 3, true );
 	}
 
 	/**

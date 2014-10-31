@@ -6,10 +6,10 @@ import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectSource;
+import thaumicenergistics.api.TEApi;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
-import thaumicenergistics.registries.BlockEnum;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -43,7 +43,7 @@ public class TileInfusionProvider
 	protected ItemStack getItemFromTile( final Object obj )
 	{
 		// Return the itemstack the visually represents this tile
-		return new ItemStack( BlockEnum.INFUSION_PROVIDER.getBlock(), 1 );
+		return TEApi.instance.blocks.Infusion_Provider;
 
 	}
 

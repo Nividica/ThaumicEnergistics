@@ -329,7 +329,7 @@ public class HandlerItemEssentiaCell
 		GaseousEssentia gas = (GaseousEssentia)legacyFluid.getFluid();
 
 		// Get it's aspect
-		Aspect aspect = gas.getAssociatedAspect();
+		Aspect aspect = gas.getAspect();
 
 		// Get the amount, and convert
 		long amount = legacyFluid.amount / HandlerItemEssentiaCell.LEGACY_CONVERSION_MULTIPLIER;
@@ -389,7 +389,7 @@ public class HandlerItemEssentiaCell
 		}
 
 		// Return if there is a match or empty slot for the essentia
-		return( -1 != this.getSlotFor( ( (GaseousEssentia)inputFluid ).getAssociatedAspect() ) );
+		return( -1 != this.getSlotFor( ( (GaseousEssentia)inputFluid ).getAspect() ) );
 	}
 
 	/**
@@ -413,7 +413,7 @@ public class HandlerItemEssentiaCell
 		}
 
 		// Get the aspect of the essentia
-		Aspect requestAspect = ( (GaseousEssentia)request.getFluid() ).getAssociatedAspect();
+		Aspect requestAspect = ( (GaseousEssentia)request.getFluid() ).getAspect();
 
 		// Calculate the amount of essentia to extract
 		long essentiaAmountRequested = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( request.getStackSize() );
@@ -622,7 +622,7 @@ public class HandlerItemEssentiaCell
 		}
 
 		// Get the aspect of the gas
-		Aspect essentiaAspect = ( (GaseousEssentia)input.getFluid() ).getAssociatedAspect();
+		Aspect essentiaAspect = ( (GaseousEssentia)input.getFluid() ).getAspect();
 
 		// Calculate the amount to store
 		long amountToStore = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( input.getStackSize() );

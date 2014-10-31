@@ -11,8 +11,8 @@ import thaumcraft.api.research.ResearchItem;
 import thaumcraft.api.research.ResearchPage;
 import thaumcraft.common.config.Config;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.TEApi;
 import thaumicenergistics.items.ItemMaterial;
-import thaumicenergistics.items.ItemStorageBase;
 
 public class ResearchRegistry
 {
@@ -74,12 +74,14 @@ public class ResearchRegistry
 	// Complexity of research
 	private static final int COMPLEXITY_SMALL = 1;
 	private static final int COMPLEXITY_MEDIUM = 2;
-
 	private static final int COMPLEXITY_LARGE = 3;
+
 	// Tab name and icon
 	private static final String TERESEARCH_TAB = ThaumicEnergistics.MOD_ID;
 
 	private static final ResourceLocation TAB_ICON = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/research/tab.icon.png" );
+	private static final ResourceLocation RESEARCH_BACKGROUND = new ResourceLocation( ThaumicEnergistics.MOD_ID,
+					"textures/research/Research.Background.png" );
 
 	private static void registerACT()
 	{
@@ -251,7 +253,7 @@ public class ResearchRegistry
 		storageAspectList.add( Aspect.METAL, 3 );
 
 		// Set the icon
-		ItemStack storageIcon = ItemEnum.ESSENTIA_CELL.getItemStackWithDamage( ItemStorageBase.INDEX_64K );
+		ItemStack storageIcon = TEApi.instance.items.EssentiaCell_64k;
 
 		// Get the component recipes
 		IArcaneRecipe[] storageComponentRecipes = new IArcaneRecipe[] { RecipeRegistry.STORAGE_COMPONENT_4K, RecipeRegistry.STORAGE_COMPONENT_16K,
@@ -305,7 +307,7 @@ public class ResearchRegistry
 	public static void registerResearch()
 	{
 		// Create our research tab
-		ResearchCategories.registerCategory( TERESEARCH_TAB, TAB_ICON, new ResourceLocation( "thaumcraft", "textures/gui/gui_researchback.png" ) );
+		ResearchCategories.registerCategory( TERESEARCH_TAB, TAB_ICON, ResearchRegistry.RESEARCH_BACKGROUND );
 
 		ResearchRegistry.registerBasic();
 
@@ -319,12 +321,12 @@ public class ResearchRegistry
 
 		ResearchRegistry.registerEssentiaTerminal();
 
-		if( TEConfig.ALLOW_CRAFTING_INFUSION_PROVIDER )
+		if( TEApi.instance.config.ALLOW_CRAFTING_INFUSION_PROVIDER )
 		{
 			ResearchRegistry.registerInfusionProvider();
 		}
 
-		if( TEConfig.ALLOW_CRAFTING_ESSENTIA_PROVIDER )
+		if( TEApi.instance.config.ALLOW_CRAFTING_ESSENTIA_PROVIDER )
 		{
 			ResearchRegistry.registerEssentiaProvider();
 		}

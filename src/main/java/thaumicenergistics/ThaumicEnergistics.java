@@ -4,14 +4,14 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import thaumicenergistics.api.TEApi;
 import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.integration.IntegrationCore;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.network.ChannelHandler;
 import thaumicenergistics.proxy.CommonProxy;
-import thaumicenergistics.registries.ItemEnum;
-import thaumicenergistics.registries.TEConfig;
+import thaumicenergistics.registries.AEAspectRegistry;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -54,13 +54,13 @@ public class ThaumicEnergistics
 		@Override
 		public ItemStack getIconItemStack()
 		{
-			return new ItemStack( ItemEnum.STORAGE_CASING.getItem() );
+			return TEApi.instance.items.EssentiaCell_Casing;
 		}
 
 		@Override
 		public Item getTabIconItem()
 		{
-			return ItemEnum.STORAGE_CASING.getItem();
+			return TEApi.instance.items.EssentiaCell_Casing.getItem();
 		}
 	};
 
@@ -141,6 +141,9 @@ public class ThaumicEnergistics
 		// Register fluids
 		ThaumicEnergistics.proxy.registerFluids();
 
+		// Give AE items aspects		
+		AEAspectRegistry.instance.registerAEAspects();
+
 		this.endLoadStageTracking( t );
 	}
 
@@ -155,7 +158,7 @@ public class ThaumicEnergistics
 	{
 		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "preInit" );
 		// Sync with config
-		TEConfig.loadAndSyncConfigFile( event.getSuggestedConfigurationFile() );
+		ConfigHelper.loadAndSyncConfigFile( event.getSuggestedConfigurationFile() );
 
 		// Set the instance
 		ThaumicEnergistics.instance = this;

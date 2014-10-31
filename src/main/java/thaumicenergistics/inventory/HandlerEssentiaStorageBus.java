@@ -9,6 +9,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.common.tiles.TileEssentiaReservoir;
 import thaumcraft.common.tiles.TileJarFillableVoid;
+import thaumicenergistics.api.TEApi;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
@@ -138,7 +139,7 @@ public class HandlerEssentiaStorageBus
 		GaseousEssentia gasRequest = (GaseousEssentia)fluidRequest.getFluid();
 
 		// Get the aspect of the request
-		Aspect requestAspect = gasRequest.getAssociatedAspect();
+		Aspect requestAspect = gasRequest.getAspect();
 
 		// Special case for reservoir
 		if( this.allowAny() )
@@ -216,7 +217,7 @@ public class HandlerEssentiaStorageBus
 		}
 
 		// Ensure the container is whitelisted
-		if( !( EssentiaTileContainerHelper.instance.canInject( this.aspectContainer ) ) )
+		if( !( TEApi.instance.tileIOPermissions.canInject( this.aspectContainer ) ) )
 		{
 			// Invalid container
 			return false;
@@ -256,7 +257,7 @@ public class HandlerEssentiaStorageBus
 		}
 
 		// Get the gas aspect
-		Aspect gasAspect = ( (GaseousEssentia)fluidStack.getFluid() ).getAssociatedAspect();
+		Aspect gasAspect = ( (GaseousEssentia)fluidStack.getFluid() ).getAspect();
 
 		// Does the aspect in the container match the gas aspect?
 		return gasAspect == containerStack.aspect;
@@ -346,9 +347,9 @@ public class HandlerEssentiaStorageBus
 		if( this.aspectContainer != null )
 		{
 			// Only report back items that are extractable
-			if( EssentiaTileContainerHelper.instance.canExtract( this.aspectContainer ) )
+			if( TEApi.instance.tileIOPermissions.canExtract( this.aspectContainer ) )
 			{
-				// Get the essentias and amounts in the container
+				// Get the essentia's and amounts in the container
 				List<AspectStack> containerStacks = EssentiaTileContainerHelper.instance.getAspectStacksFromContainer( this.aspectContainer );
 
 				// Are there any aspects?

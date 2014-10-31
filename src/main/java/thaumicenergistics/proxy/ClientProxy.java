@@ -45,7 +45,7 @@ public class ClientProxy
 		for( GaseousEssentia gas : GaseousEssentia.gasList.values() )
 		{
 			// Create the texture
-			EssentiaGasTexture gasTexture = new EssentiaGasTexture( gas.getAssociatedAspect() );
+			EssentiaGasTexture gasTexture = new EssentiaGasTexture( gas.getAspect() );
 
 			// Add to the texture map
 			if( !map.setTextureEntry( gasTexture.getIconName(), gasTexture ) )

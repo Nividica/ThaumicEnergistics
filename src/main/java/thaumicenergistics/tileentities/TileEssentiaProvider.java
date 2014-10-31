@@ -5,8 +5,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
+import thaumicenergistics.api.TEApi;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.registries.BlockEnum;
 
 public class TileEssentiaProvider
 	extends TileProviderBase
@@ -24,14 +24,14 @@ public class TileEssentiaProvider
 	}
 
 	@Override
-	protected ItemStack getItemFromTile( Object obj )
+	protected ItemStack getItemFromTile( final Object obj )
 	{
 		// Return the itemstack the visually represents this tile
-		return new ItemStack( BlockEnum.ESSENTIA_PROVIDER.getBlock(), 1 );
+		return TEApi.instance.blocks.Essentia_Provider;
 
 	}
 
-	protected Aspect getNeighborWantedAspect( ForgeDirection face )
+	protected Aspect getNeighborWantedAspect( final ForgeDirection face )
 	{
 		// Get the tile entity next to this face
 		TileEntity neighbor = this.worldObj.getTileEntity( this.xCoord + face.offsetX, this.yCoord + face.offsetY, this.zCoord + face.offsetZ );
@@ -50,28 +50,34 @@ public class TileEssentiaProvider
 	}
 
 	@Override
-	public int addEssentia( Aspect aspect, int amount, ForgeDirection face )
+	protected void onChannelUpdate()
+	{
+		// Ignored
+	}
+
+	@Override
+	public int addEssentia( final Aspect aspect, final int amount, final ForgeDirection face )
 	{
 		// Doesn't accept essentia
 		return 0;
 	}
 
 	@Override
-	public boolean canInputFrom( ForgeDirection face )
+	public boolean canInputFrom( final ForgeDirection face )
 	{
 		// Doesn't accept essentia
 		return false;
 	}
 
 	@Override
-	public boolean canOutputTo( ForgeDirection face )
+	public boolean canOutputTo( final ForgeDirection face )
 	{
 		// Can output to any side
 		return true;
 	}
 
 	@Override
-	public int getEssentiaAmount( ForgeDirection face )
+	public int getEssentiaAmount( final ForgeDirection face )
 	{
 		// Get the aspect this neighbor wants
 		Aspect wantedAspect = this.getNeighborWantedAspect( face );
@@ -95,7 +101,7 @@ public class TileEssentiaProvider
 	}
 
 	@Override
-	public Aspect getEssentiaType( ForgeDirection face )
+	public Aspect getEssentiaType( final ForgeDirection face )
 	{
 		// Get the aspect this neighbor wants
 		Aspect wantedAspect = this.getNeighborWantedAspect( face );
@@ -123,21 +129,21 @@ public class TileEssentiaProvider
 	}
 
 	@Override
-	public int getSuctionAmount( ForgeDirection face )
+	public int getSuctionAmount( final ForgeDirection face )
 	{
 		// Doesn't accept essentia
 		return 0;
 	}
 
 	@Override
-	public Aspect getSuctionType( ForgeDirection face )
+	public Aspect getSuctionType( final ForgeDirection face )
 	{
 		// Doesn't accept essentia
 		return null;
 	}
 
 	@Override
-	public boolean isConnectable( ForgeDirection face )
+	public boolean isConnectable( final ForgeDirection face )
 	{
 		// Can connect on any side
 		return true;
@@ -151,22 +157,16 @@ public class TileEssentiaProvider
 	}
 
 	@Override
-	public void setSuction( Aspect aspect, int amount )
+	public void setSuction( final Aspect aspect, final int amount )
 	{
 		// Ignored
 	}
 
 	@Override
-	public int takeEssentia( Aspect aspect, int amount, ForgeDirection face )
+	public int takeEssentia( final Aspect aspect, final int amount, final ForgeDirection face )
 	{
 		// Extract essentia from the network, and return the amount extracted
 		return this.extractEssentiaFromNetwork( aspect, amount, false );
-	}
-
-	@Override
-	protected void onChannelUpdate()
-	{
-		// Ignored
 	}
 
 }
