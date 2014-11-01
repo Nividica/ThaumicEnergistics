@@ -217,7 +217,7 @@ public class HandlerEssentiaStorageBus
 		}
 
 		// Ensure the container is whitelisted
-		if( !( TEApi.instance.tileIOPermissions.canInject( this.aspectContainer ) ) )
+		if( !( TEApi.instance().transportPermissions().canInjectToAspectContainerTile( this.aspectContainer ) ) )
 		{
 			// Invalid container
 			return false;
@@ -347,7 +347,7 @@ public class HandlerEssentiaStorageBus
 		if( this.aspectContainer != null )
 		{
 			// Only report back items that are extractable
-			if( TEApi.instance.tileIOPermissions.canExtract( this.aspectContainer ) )
+			if( TEApi.instance().transportPermissions().canExtractFromAspectContainerTile( this.aspectContainer ) )
 			{
 				// Get the essentia's and amounts in the container
 				List<AspectStack> containerStacks = EssentiaTileContainerHelper.instance.getAspectStacksFromContainer( this.aspectContainer );

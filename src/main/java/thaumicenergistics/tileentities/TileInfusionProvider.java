@@ -43,7 +43,7 @@ public class TileInfusionProvider
 	protected ItemStack getItemFromTile( final Object obj )
 	{
 		// Return the itemstack the visually represents this tile
-		return TEApi.instance.blocks.Infusion_Provider;
+		return TEApi.instance().blocks().InfusionProvider.getStack();
 
 	}
 

@@ -16,10 +16,9 @@ import thaumcraft.api.crafting.ShapelessArcaneRecipe;
 import thaumcraft.common.config.Config;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
+import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.Items;
 import thaumicenergistics.api.TEApi;
-import thaumicenergistics.api.registry.TEBlocks;
-import thaumicenergistics.api.registry.TEItems;
-import thaumicenergistics.api.registry.TEParts;
 import thaumicenergistics.registries.ResearchRegistry.ResearchTypes;
 import appeng.api.AEApi;
 import appeng.api.definitions.Blocks;
@@ -54,7 +53,7 @@ public class RecipeRegistry
 	public static InfusionRecipe INFUSION_PROVIDER;
 	public static InfusionRecipe ESSENTIA_PROVIDER;
 
-	private static void registerComponents( final Materials aeMaterials, final Blocks aeBlocks, final TEItems teItems )
+	private static void registerComponents( final Materials aeMaterials, final Blocks aeBlocks, final Items teItems )
 	{
 		// Thaumcraft items
 		ItemStack EtheralEssence = new ItemStack( ConfigItems.itemWispEssence );
@@ -77,13 +76,13 @@ public class RecipeRegistry
 		ItemStack QuartzGlass = aeBlocks.blockQuartzGlass.stack( 1 );
 
 		// My items
-		ItemStack EssentiaCell_1k = teItems.EssentiaCell_1k;
+		ItemStack EssentiaCell_1k = teItems.EssentiaCell_1k.getStack();
 
-		ItemStack EssentiaCell_4k = teItems.EssentiaCell_4k;
+		ItemStack EssentiaCell_4k = teItems.EssentiaCell_4k.getStack();
 
-		ItemStack EssentiaCell_16k = teItems.EssentiaCell_16k;
+		ItemStack EssentiaCell_16k = teItems.EssentiaCell_16k.getStack();
 
-		ItemStack EssentiaCell_64k = teItems.EssentiaCell_64k;
+		ItemStack EssentiaCell_64k = teItems.EssentiaCell_64k.getStack();
 
 		// Item Groups		
 		ArrayList<ItemStack> GroupQuartz = new ArrayList<ItemStack>( 3 );
@@ -124,7 +123,7 @@ public class RecipeRegistry
 							QuartzGlass } );
 	}
 
-	private static void registerMaterials( final Materials aeMaterials, final TEItems teItems )
+	private static void registerMaterials( final Materials aeMaterials, final Items teItems )
 	{
 		// Thaumcraft items
 		ItemStack EntropyShard = new ItemStack( ConfigItems.itemShard, 1, 5 );
@@ -139,9 +138,9 @@ public class RecipeRegistry
 		ItemStack AnnihilationCore = aeMaterials.materialAnnihilationCore.stack( 1 );
 
 		// My items
-		ItemStack DiffusionCore = teItems.DiffusionCore;
+		ItemStack DiffusionCore = teItems.DiffusionCore.getStack();
 
-		ItemStack CoalescenceCore = teItems.CoalescenceCore;
+		ItemStack CoalescenceCore = teItems.CoalescenceCore.getStack();
 
 		// Coalescence Core
 		AspectList coalescenceAspects = new AspectList();
@@ -158,7 +157,7 @@ public class RecipeRegistry
 			DiffusionCore, diffusionAspects, QuickSilver, EntropyShard, AnnihilationCore );
 	}
 
-	private static void registerMECells( final TEItems teItems )
+	private static void registerMECells( final Items teItems )
 	{
 		// Minecraft items
 		ItemStack RedstoneDust = new ItemStack( (Item)Item.itemRegistry.getObject( "redstone" ) );
@@ -169,23 +168,23 @@ public class RecipeRegistry
 		ItemStack ThaumiumIngot = new ItemStack( ConfigItems.itemResource, 1, 2 );
 
 		// My items
-		ItemStack EssentiaCell_Casing = teItems.EssentiaCell_Casing;
+		ItemStack EssentiaCell_Casing = teItems.EssentiaCell_Casing.getStack();
 
-		ItemStack EssentiaCell_1k = teItems.EssentiaCell_1k;
+		ItemStack EssentiaCell_1k = teItems.EssentiaCell_1k.getStack();
 
-		ItemStack EssentiaCell_4k = teItems.EssentiaCell_4k;
+		ItemStack EssentiaCell_4k = teItems.EssentiaCell_4k.getStack();
 
-		ItemStack EssentiaCell_16k = teItems.EssentiaCell_16k;
+		ItemStack EssentiaCell_16k = teItems.EssentiaCell_16k.getStack();
 
-		ItemStack EssentiaCell_64k = teItems.EssentiaCell_64k;
+		ItemStack EssentiaCell_64k = teItems.EssentiaCell_64k.getStack();
 
-		ItemStack EssentiaStorageComponent_1k = teItems.EssentiaStorageComponent_1k;
+		ItemStack EssentiaStorageComponent_1k = teItems.EssentiaStorageComponent_1k.getStack();
 
-		ItemStack EssentiaStorageComponent_4k = teItems.EssentiaStorageComponent_4k;
+		ItemStack EssentiaStorageComponent_4k = teItems.EssentiaStorageComponent_4k.getStack();
 
-		ItemStack EssentiaStorageComponent_16k = teItems.EssentiaStorageComponent_16k;
+		ItemStack EssentiaStorageComponent_16k = teItems.EssentiaStorageComponent_16k.getStack();
 
-		ItemStack EssentiaStorageComponent_64k = teItems.EssentiaStorageComponent_64k;
+		ItemStack EssentiaStorageComponent_64k = teItems.EssentiaStorageComponent_64k.getStack();
 
 		// Storage Casing
 		RecipeRegistry.STORAGE_CASING = new ShapedOreRecipe( EssentiaCell_Casing, false, new Object[] { "WRW", "R R", "TTT", 'W', WardedGlass, 'R',
@@ -221,7 +220,7 @@ public class RecipeRegistry
 		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_64K_SHAPELESS );
 	}
 
-	private static void registerParts( final Parts aeParts, final Materials aeMaterials, final TEItems teItems )
+	private static void registerParts( final Parts aeParts, final Materials aeMaterials, final Items teItems )
 	{
 		// Minecraft items
 		String IronIngot = "ingotIron";
@@ -259,25 +258,25 @@ public class RecipeRegistry
 		ItemStack BallanceShard = new ItemStack( ConfigItems.itemShard, 1, 6 );
 
 		// My items
-		TEParts teParts = TEApi.instance.parts;
+		thaumicenergistics.api.Parts teParts = TEApi.instance().parts();
 
-		ItemStack DiffusionCore = teItems.DiffusionCore;
+		ItemStack DiffusionCore = teItems.DiffusionCore.getStack();
 
-		ItemStack CoalescencenCore = teItems.CoalescenceCore;
+		ItemStack CoalescencenCore = teItems.CoalescenceCore.getStack();
 
-		ItemStack EssentiaImportBus = teParts.Essentia_ImportBus;
+		ItemStack EssentiaImportBus = teParts.Essentia_ImportBus.getStack();
 
-		ItemStack EssentiaExportBus = teParts.Essentia_ExportBus;
+		ItemStack EssentiaExportBus = teParts.Essentia_ExportBus.getStack();
 
-		ItemStack EssentiaStorageBus = teParts.Essentia_StorageBus;
+		ItemStack EssentiaStorageBus = teParts.Essentia_StorageBus.getStack();
 
-		ItemStack EssentiaTerminal = teParts.Essentia_Terminal;
+		ItemStack EssentiaTerminal = teParts.Essentia_Terminal.getStack();
 
-		ItemStack ArcaneCraftingTerminal = teParts.ArcaneCrafting_Terminal;
+		ItemStack ArcaneCraftingTerminal = teParts.ArcaneCrafting_Terminal.getStack();
 
-		ItemStack EssentiaLevelEmitter = teParts.Essentia_LevelEmitter;
+		ItemStack EssentiaLevelEmitter = teParts.Essentia_LevelEmitter.getStack();
 
-		ItemStack VisInterface = teParts.VisRelay_Interface;
+		ItemStack VisInterface = teParts.VisRelay_Interface.getStack();
 
 		// Item Groups		
 		ArrayList<ItemStack> GroupPanel = new ArrayList<ItemStack>( 3 );
@@ -348,7 +347,7 @@ public class RecipeRegistry
 
 	}
 
-	private static void registerProviders( final Blocks aeBlocks, final TEItems teItems )
+	private static void registerProviders( final Blocks aeBlocks, final Items teItems )
 	{
 		// Thaumcraft items
 		ItemStack FilteredPipe = new ItemStack( ConfigBlocks.blockTube, 1, 3 );
@@ -366,14 +365,13 @@ public class RecipeRegistry
 		ItemStack MEInterface = aeBlocks.blockInterface.stack( 1 );
 
 		// My Items
-		TEBlocks teBlocks = TEApi.instance.blocks;
-		ItemStack CoalescenceCore = teItems.CoalescenceCore;
+		ItemStack CoalescenceCore = teItems.CoalescenceCore.getStack();
 
-		ItemStack InfusionProvider = teBlocks.Infusion_Provider;
+		ItemStack InfusionProvider = TEApi.instance().blocks().InfusionProvider.getStack();
 
-		ItemStack EssentiaProvider = teBlocks.Essentia_Provider;
+		ItemStack EssentiaProvider = TEApi.instance().blocks().EssentiaProvider.getStack();
 
-		if( TEApi.instance.config.ALLOW_CRAFTING_INFUSION_PROVIDER )
+		if( ThaumicEnergistics.config.allowedToCraftInfusionProvider() )
 		{
 			// Set required aspects for infusion provider
 			AspectList infusionProviderList = new AspectList();
@@ -391,7 +389,7 @@ public class RecipeRegistry
 				InfusionProvider, 4, infusionProviderList, MEInterface, infusionProviderRecipeItems );
 		}
 
-		if( TEApi.instance.config.ALLOW_CRAFTING_ESSENTIA_PROVIDER )
+		if( ThaumicEnergistics.config.allowedToCraftEssentiaProvider() )
 		{
 			// Set required aspects for essentia provider
 			AspectList essentiaProviderList = new AspectList();
@@ -471,7 +469,7 @@ public class RecipeRegistry
 		Parts aeParts = AEApi.instance().parts();
 
 		// Cache my item collection
-		TEItems teItems = TEApi.instance.items;
+		Items teItems = TEApi.instance().items();
 
 		// Register materials
 		RecipeRegistry.registerMaterials( aeMaterials, teItems );

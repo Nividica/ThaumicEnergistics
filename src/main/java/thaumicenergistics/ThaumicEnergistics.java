@@ -4,6 +4,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import thaumicenergistics.api.IConfig;
 import thaumicenergistics.api.TEApi;
 import thaumicenergistics.gui.GuiHandler;
 import thaumicenergistics.integration.IntegrationCore;
@@ -11,7 +12,7 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.network.ChannelHandler;
 import thaumicenergistics.proxy.CommonProxy;
-import thaumicenergistics.registries.AEAspectRegistry;
+import thaumicenergistics.registries.AEAspectRegister;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -46,6 +47,11 @@ public class ThaumicEnergistics
 	public static CommonProxy proxy;
 
 	/**
+	 * Mod configuration
+	 */
+	public static IConfig config;
+
+	/**
 	 * Creative tab that displays this mods items
 	 */
 	public static CreativeTabs ModTab = new CreativeTabs( "ThaumicEnergistics" )
@@ -54,13 +60,13 @@ public class ThaumicEnergistics
 		@Override
 		public ItemStack getIconItemStack()
 		{
-			return TEApi.instance.items.EssentiaCell_Casing;
+			return TEApi.instance().blocks().InfusionProvider.getStack();
 		}
 
 		@Override
 		public Item getTabIconItem()
 		{
-			return TEApi.instance.items.EssentiaCell_Casing.getItem();
+			return TEApi.instance().blocks().InfusionProvider.getItem();
 		}
 	};
 
@@ -142,7 +148,7 @@ public class ThaumicEnergistics
 		ThaumicEnergistics.proxy.registerFluids();
 
 		// Give AE items aspects		
-		AEAspectRegistry.instance.registerAEAspects();
+		AEAspectRegister.instance.registerAEAspects();
 
 		this.endLoadStageTracking( t );
 	}
@@ -158,7 +164,7 @@ public class ThaumicEnergistics
 	{
 		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "preInit" );
 		// Sync with config
-		ConfigHelper.loadAndSyncConfigFile( event.getSuggestedConfigurationFile() );
+		ThaumicEnergistics.config = ConfigurationHandler.loadAndSyncConfigFile( event.getSuggestedConfigurationFile() );
 
 		// Set the instance
 		ThaumicEnergistics.instance = this;

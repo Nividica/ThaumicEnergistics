@@ -12,8 +12,8 @@ import thaumcraft.common.tiles.TileAlembic;
 import thaumcraft.common.tiles.TileCentrifuge;
 import thaumcraft.common.tiles.TileEssentiaReservoir;
 import thaumcraft.common.tiles.TileJarFillable;
+import thaumicenergistics.api.ITransportPermissions;
 import thaumicenergistics.api.TEApi;
-import thaumicenergistics.api.registry.TEPermissionsTile;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import appeng.api.config.Actionable;
@@ -35,7 +35,7 @@ public final class EssentiaTileContainerHelper
 	/**
 	 * Cache the permission class
 	 */
-	public final TEPermissionsTile perms = TEApi.instance.tileIOPermissions;
+	public final ITransportPermissions perms = TEApi.instance().transportPermissions();
 
 	/**
 	 * Extracts essentia from a container based on the specified fluid stack
@@ -49,7 +49,7 @@ public final class EssentiaTileContainerHelper
 	public FluidStack extractFromContainer( final IAspectContainer container, final FluidStack request, final Actionable mode )
 	{
 		// Is the container whitelisted?
-		if( !this.perms.canExtract( container ) )
+		if( !this.perms.canExtractFromAspectContainerTile( container ) )
 		{
 			// Not whitelsited
 			return null;
@@ -94,7 +94,7 @@ public final class EssentiaTileContainerHelper
 	public FluidStack extractFromContainer( final IAspectContainer container, int amountToDrain_EU, final Aspect aspectToDrain, final Actionable mode )
 	{
 		// Is the container whitelisted?
-		if( !this.perms.canExtract( container ) )
+		if( !this.perms.canExtractFromAspectContainerTile( container ) )
 		{
 			// Not whitelisted
 			return null;
@@ -304,7 +304,7 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Is the container whitelisted?
-		if( !this.perms.canInject( container ) )
+		if( !this.perms.canInjectToAspectContainerTile( container ) )
 		{
 			// Not whitelisted
 			return 0;
@@ -334,7 +334,7 @@ public final class EssentiaTileContainerHelper
 										final Actionable mode )
 	{
 		// Is the container whitelisted?
-		if( !this.perms.canInject( container ) )
+		if( !this.perms.canInjectToAspectContainerTile( container ) )
 		{
 			// Not whitelisted
 			return 0;
@@ -384,18 +384,18 @@ public final class EssentiaTileContainerHelper
 	public void registerThaumcraftContainers()
 	{
 		// Alembic
-		this.perms.addTileToExtractWhitelist( TileAlembic.class );
+		this.perms.addAspectContainerTileToExtractPermissions( TileAlembic.class );
 
 		// Centrifuge
-		this.perms.addTileToExtractWhitelist( TileCentrifuge.class );
+		this.perms.addAspectContainerTileToExtractPermissions( TileCentrifuge.class );
 
 		// Jars
-		this.perms.addTileToExtractWhitelist( TileJarFillable.class );
-		this.perms.addTileToInjectWhitelist( TileJarFillable.class );
+		this.perms.addAspectContainerTileToExtractPermissions( TileJarFillable.class );
+		this.perms.addAspectContainerTileToInjectPermissions( TileJarFillable.class );
 
 		// Essentia reservoir
-		this.perms.addTileToExtractWhitelist( TileEssentiaReservoir.class );
-		this.perms.addTileToInjectWhitelist( TileEssentiaReservoir.class );
+		this.perms.addAspectContainerTileToExtractPermissions( TileEssentiaReservoir.class );
+		this.perms.addAspectContainerTileToInjectPermissions( TileEssentiaReservoir.class );
 	}
 
 }

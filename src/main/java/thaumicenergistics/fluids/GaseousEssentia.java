@@ -9,8 +9,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.api.TEApi;
-import thaumicenergistics.api.interfaces.IEssentiaGas;
+import thaumicenergistics.api.IEssentiaGas;
 import cpw.mods.fml.common.FMLLog;
 
 /**
@@ -91,9 +90,6 @@ public class GaseousEssentia
 		{
 			// Add to the list
 			gasList.put( aspect, newGas );
-
-			// Add to api
-			TEApi.instance.essentiaGases.add( newGas );
 
 			// Log info
 			FMLLog.info( "%s: Created fluid for aspect %s.", ThaumicEnergistics.MOD_ID, aspect.getTag() );

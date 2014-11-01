@@ -1,33 +1,55 @@
 package thaumicenergistics.api;
 
-import java.util.ArrayList;
 import java.util.List;
-import thaumicenergistics.api.interfaces.IEssentiaGas;
-import thaumicenergistics.api.registry.TEBlocks;
-import thaumicenergistics.api.registry.TEConfig;
-import thaumicenergistics.api.registry.TEItems;
-import thaumicenergistics.api.registry.TEParts;
-import thaumicenergistics.api.registry.TEPermissionsItem;
-import thaumicenergistics.api.registry.TEPermissionsTile;
+import com.google.common.collect.ImmutableList;
 
-public class TEApi
+/**
+ * Thaumic Energistics API
+ */
+public abstract class TEApi
 {
-	public static final TEApi instance = new TEApi();
-
-	public final TEBlocks blocks = new TEBlocks();
-	public final TEItems items = new TEItems();
-	public final TEParts parts = new TEParts();
-	public final List<IEssentiaGas> essentiaGases = new ArrayList<IEssentiaGas>();
-	public final TEConfig config = new TEConfig();
-	public final TEPermissionsTile tileIOPermissions = new TEPermissionsTile();
-	public final TEPermissionsItem itemIOPermissions = new TEPermissionsItem();
+	protected static TEApi instance;
 
 	/**
-	 * Private constructor
+	 * Thaumic Energistics API
 	 */
-	private TEApi()
+	public static TEApi instance()
 	{
-
+		if( TEApi.instance == null )
+		{
+			TEApi.instance = new thaumicenergistics.implementaion.API();
+		}
+		return TEApi.instance;
 	}
+
+	/**
+	 * Blocks
+	 */
+	public abstract Blocks blocks();
+
+	/**
+	 * Configuration
+	 */
+	public abstract IConfig config();
+
+	/**
+	 * Essentia Gasses
+	 */
+	public abstract ImmutableList<List<IEssentiaGas>> essentiaGases();
+
+	/**
+	 * Items
+	 */
+	public abstract Items items();
+
+	/**
+	 * Cable Parts
+	 */
+	public abstract Parts parts();
+
+	/**
+	 * Transport permissions.
+	 */
+	public abstract ITransportPermissions transportPermissions();
 
 }

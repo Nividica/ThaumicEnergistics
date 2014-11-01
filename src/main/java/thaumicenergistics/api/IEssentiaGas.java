@@ -1,4 +1,4 @@
-package thaumicenergistics.api.interfaces;
+package thaumicenergistics.api;
 
 import net.minecraftforge.fluids.Fluid;
 import thaumcraft.api.aspects.Aspect;

@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.TEApi;
+import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import appeng.api.AEApi;
@@ -54,7 +54,7 @@ public final class EssentiaConversionHelper
 	 */
 	public long convertEssentiaAmountToFluidAmount( final long essentiaAmount )
 	{
-		return essentiaAmount * TEApi.instance.config.CONVERSION_MULTIPLIER;
+		return essentiaAmount * ThaumicEnergistics.config.conversionMultiplier();
 	}
 
 	/**
@@ -65,7 +65,7 @@ public final class EssentiaConversionHelper
 	 */
 	public long convertFluidAmountToEssentiaAmount( final long fluidAmount )
 	{
-		return fluidAmount / TEApi.instance.config.CONVERSION_MULTIPLIER;
+		return fluidAmount / ThaumicEnergistics.config.conversionMultiplier();
 	}
 
 	/**

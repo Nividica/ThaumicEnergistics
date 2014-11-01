@@ -19,6 +19,8 @@ import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
 import appeng.api.features.IGrinderEntry;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEColoredItemDefinition;
 import appeng.api.util.AEItemDefinition;
 import appeng.recipes.GroupIngredient;
 import appeng.recipes.Ingredient;
@@ -32,7 +34,7 @@ import cpw.mods.fml.common.FMLLog;
  * @author Nividica
  * 
  */
-public class AEAspectRegistry
+public class AEAspectRegister
 {
 	/**
 	 * Helper class to derive aspects from an item definition.
@@ -214,7 +216,7 @@ public class AEAspectRegistry
 		private void buildAspects()
 		{
 			// Grinder recipes
-			for( IGrinderEntry recipe : AEAspectRegistry.this.GRINDER_RECIPES )
+			for( IGrinderEntry recipe : AEAspectRegister.this.GRINDER_RECIPES )
 			{
 				ItemStack recipeOutput = recipe.getOutput();
 
@@ -242,7 +244,7 @@ public class AEAspectRegistry
 			}
 
 			// Regular crafting recipes
-			for( IRecipe recipe : AEAspectRegistry.this.NORMAL_RECIPES )
+			for( IRecipe recipe : AEAspectRegister.this.NORMAL_RECIPES )
 			{
 				// Get the recipe's result
 				ItemStack recipeStack = recipe.getRecipeOutput();
@@ -282,7 +284,7 @@ public class AEAspectRegistry
 				if( ( stackAspects == null ) || ( stackAspects.size() == 0 ) )
 				{
 					// Is the item an AE item?
-					AEItemInfo ingInfo = AEAspectRegistry.this.getInfoForDefinitionOrStack( stack );
+					AEItemInfo ingInfo = AEAspectRegister.this.getInfoForDefinitionOrStack( stack );
 
 					if( ingInfo != null )
 					{
@@ -670,7 +672,7 @@ public class AEAspectRegistry
 			}
 
 			// Register the item
-			AEAspectRegistry.this.registerItem( this );
+			AEAspectRegister.this.registerItem( this );
 		}
 
 		/**
@@ -686,7 +688,7 @@ public class AEAspectRegistry
 	/**
 	 * Instance of the registry.
 	 */
-	public static final AEAspectRegistry instance = new AEAspectRegistry();
+	public static final AEAspectRegister instance = new AEAspectRegister();
 
 	/**
 	 * Common aspect amounts
@@ -719,14 +721,14 @@ public class AEAspectRegistry
 	/**
 	 * Private constructor.
 	 */
-	private AEAspectRegistry()
+	private AEAspectRegister()
 	{
 
 	}
 
 	/**
 	 * Registers the base items from AE. Those without a usable crafting
-	 * ancestry or world crafted.
+	 * ancestry, world crafted, or multi-part.
 	 */
 	private void registerBase()
 	{
@@ -739,29 +741,29 @@ public class AEAspectRegistry
 
 		// Certus Quartz Crystal
 		aspects = new AspectList();
-		aspects.add( Aspect.CRYSTAL, AEAspectRegistry.CRYSTAL_BASE );
+		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_BASE );
 		this.registerItem( aeMats.materialCertusQuartzCrystal, aspects );
 
 		// Charged Certus Quartz Crystal
 		aspects = new AspectList();
-		aspects.add( Aspect.CRYSTAL, AEAspectRegistry.CRYSTAL_BASE );
+		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_BASE );
 		aspects.add( Aspect.ENERGY, 4 );
 		this.registerItem( aeMats.materialCertusQuartzCrystalCharged, aspects );
 
 		// Pure Certus Quartz Crystal
 		aspects = new AspectList();
-		aspects.add( Aspect.CRYSTAL, AEAspectRegistry.CRYSTAL_PURE );
+		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_PURE );
 		this.registerItem( aeMats.materialPureifiedCertusQuartzCrystal, aspects );
 
 		// Certus Quartz Ore
 		aspects = new AspectList();
-		aspects.add( Aspect.CRYSTAL, AEAspectRegistry.CRYSTAL_BASE );
+		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_BASE );
 		aspects.add( Aspect.EARTH, 1 );
 		this.registerItem( aeBlocks.blockQuartzOre, aspects );
 
 		// Charged Certus Quartz Ore
 		aspects = new AspectList();
-		aspects.add( Aspect.CRYSTAL, AEAspectRegistry.CRYSTAL_BASE );
+		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_BASE );
 		aspects.add( Aspect.EARTH, 1 );
 		aspects.add( Aspect.ENERGY, 4 );
 		this.registerItem( aeBlocks.blockQuartzOreCharged, aspects );
@@ -774,14 +776,14 @@ public class AEAspectRegistry
 
 		// Fluix Crystal
 		aspects = new AspectList();
-		aspects.add( Aspect.CRYSTAL, AEAspectRegistry.CRYSTAL_BASE );
-		aspects.add( Aspect.ENERGY, AEAspectRegistry.FLUIX_CHARGE );
+		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_BASE );
+		aspects.add( Aspect.ENERGY, AEAspectRegister.FLUIX_CHARGE );
 		this.registerItem( aeMats.materialFluixCrystal, aspects );
 
 		// Pure Fluix Crystal		
 		aspects = new AspectList();
-		aspects.add( Aspect.CRYSTAL, AEAspectRegistry.CRYSTAL_PURE );
-		aspects.add( Aspect.ENERGY, AEAspectRegistry.FLUIX_CHARGE );
+		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_PURE );
+		aspects.add( Aspect.ENERGY, AEAspectRegister.FLUIX_CHARGE );
 		this.registerItem( aeMats.materialPureifiedFluixCrystal, aspects );
 
 		// Enderdust		
@@ -794,7 +796,7 @@ public class AEAspectRegistry
 
 		// Pure Nether Quartz
 		aspects = new AspectList();
-		aspects.add( Aspect.CRYSTAL, AEAspectRegistry.CRYSTAL_PURE );
+		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_PURE );
 		aspects.add( Aspect.ENERGY, 1 );
 		this.registerItem( aeMats.materialPureifiedNetherQuartzCrystal, aspects );
 
@@ -811,32 +813,6 @@ public class AEAspectRegistry
 		aspects.add( Aspect.DARKNESS, 1 );
 		this.registerItem( aeBlocks.blockSkyStone, aspects );
 
-		// Cables
-		aspects = new AspectList();
-		aspects.add( Aspect.CRYSTAL, 2 );
-		aspects.add( Aspect.ENERGY, 4 );
-		this.registerItem( aeBlocks.blockMultiPart, aspects );
-
-		//P2P tunnels
-		AspectList p2pAspects = new AspectList();
-		p2pAspects.add( Aspect.METAL, 6 );
-		p2pAspects.add( Aspect.ENERGY, 6 );
-		p2pAspects.add( Aspect.CRYSTAL, 4 );
-		p2pAspects.add( Aspect.GREED, 4 );
-		p2pAspects.add( Aspect.ORDER, 4 );
-		p2pAspects.add( Aspect.SENSES, 4 );
-		this.registerItem( aeParts.partP2PTunnelME, p2pAspects );
-		this.registerItem( aeParts.partP2PTunnelItems, p2pAspects );
-		aspects = p2pAspects.copy();
-		aspects.add( Aspect.WATER, 4 );
-		this.registerItem( aeParts.partP2PTunnelLiquids, aspects );
-		aspects = p2pAspects.copy();
-		aspects.add( Aspect.LIGHT, 4 );
-		this.registerItem( aeParts.partP2PTunnelLight, aspects );
-		aspects = p2pAspects.copy();
-		aspects.add( Aspect.ENERGY, 2 );
-		this.registerItem( aeParts.partP2PTunnelRedstone, aspects );
-
 		// Matter ball
 		aspects = new AspectList();
 		aspects.add( Aspect.SLIME, 4 );
@@ -844,6 +820,88 @@ public class AEAspectRegistry
 		aspects.add( Aspect.FLIGHT, 4 );
 		this.registerItem( aeMats.materialMatterBall, aspects );
 
+		// Cables -----------------------------------------
+
+		// Setup base aspect list
+		AspectList cableAspects = new AspectList();
+		cableAspects.add( Aspect.CRYSTAL, 1 );
+		cableAspects.add( Aspect.ENERGY, 2 );
+
+		// Pseudo-register it
+		this.registerItem( aeBlocks.blockMultiPart, cableAspects );
+
+		// Glass
+		aspects = cableAspects.copy();
+		this.registerCableSet( AEApi.instance().parts().partCableGlass, aspects );
+
+		// Covered
+		aspects = cableAspects.copy();
+		aspects.add( Aspect.CLOTH, 1 );
+		this.registerCableSet( AEApi.instance().parts().partCableCovered, aspects );
+
+		// Smart
+		aspects = cableAspects.copy();
+		aspects.add( Aspect.CLOTH, 1 );
+		aspects.add( Aspect.LIGHT, 1 );
+		aspects.add( Aspect.ENERGY, 1 );
+		this.registerCableSet( AEApi.instance().parts().partCableSmart, aspects );
+
+		// Dense
+		aspects = cableAspects.copy();
+		aspects.add( Aspect.CLOTH, 1 );
+		aspects.add( Aspect.LIGHT, 2 );
+		aspects.add( Aspect.ENERGY, 3 );
+		this.registerCableSet( AEApi.instance().parts().partCableDense, aspects );
+
+		// Anchor
+		aspects = new AspectList();
+		aspects.add( Aspect.METAL, 1 );
+		this.registerItem( AEApi.instance().parts().partCableAnchor, aspects );
+
+		//P2P tunnels ------------------------------------
+		// Setup base list
+		AspectList p2pAspects = new AspectList();
+		p2pAspects.add( Aspect.METAL, 6 );
+		p2pAspects.add( Aspect.ENERGY, 6 );
+		p2pAspects.add( Aspect.CRYSTAL, 4 );
+		p2pAspects.add( Aspect.GREED, 4 );
+		p2pAspects.add( Aspect.ORDER, 4 );
+		p2pAspects.add( Aspect.SENSES, 4 );
+
+		// ME & Items
+		this.registerItem( aeParts.partP2PTunnelME, p2pAspects );
+		this.registerItem( aeParts.partP2PTunnelItems, p2pAspects );
+		// Fluid
+		aspects = p2pAspects.copy();
+		aspects.add( Aspect.WATER, 4 );
+		this.registerItem( aeParts.partP2PTunnelLiquids, aspects );
+		// Light
+		aspects = p2pAspects.copy();
+		aspects.add( Aspect.LIGHT, 4 );
+		this.registerItem( aeParts.partP2PTunnelLight, aspects );
+		// Redstone
+		aspects = p2pAspects.copy();
+		aspects.add( Aspect.ENERGY, 2 );
+		this.registerItem( aeParts.partP2PTunnelRedstone, aspects );
+
+	}
+
+	/**
+	 * Registers all cable colors of this set with the specified aspects.
+	 * 
+	 * @param cableSet
+	 * @param aspects
+	 */
+	private void registerCableSet( final AEColoredItemDefinition cableSet, final AspectList aspects )
+	{
+		// Get the colors
+		AEColor[] colors = AEColor.values();
+
+		// Register each color
+		for( AEColor color : colors )
+		{
+			ThaumcraftApi.registerObjectTag( cableSet.stack( color, 1 ), aspects );
+		}
 	}
 
 	/**
@@ -882,10 +940,10 @@ public class AEAspectRegistry
 		aspects.add( Aspect.MAGIC, 3 );
 		aspects.add( Aspect.AURA, 5 );
 
-		ThaumcraftApi.registerObjectTag( TEApi.instance.items.EssentiaCell_1k, aspects );
-		ThaumcraftApi.registerObjectTag( TEApi.instance.items.EssentiaCell_4k, aspects );
-		ThaumcraftApi.registerObjectTag( TEApi.instance.items.EssentiaCell_16k, aspects );
-		ThaumcraftApi.registerObjectTag( TEApi.instance.items.EssentiaCell_64k, aspects );
+		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_1k.getStack(), aspects );
+		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_4k.getStack(), aspects );
+		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_16k.getStack(), aspects );
+		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_64k.getStack(), aspects );
 
 	}
 

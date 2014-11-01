@@ -27,7 +27,7 @@ public class TileEssentiaProvider
 	protected ItemStack getItemFromTile( final Object obj )
 	{
 		// Return the itemstack the visually represents this tile
-		return TEApi.instance.blocks.Essentia_Provider;
+		return TEApi.instance().blocks().EssentiaProvider.getStack();
 
 	}
 

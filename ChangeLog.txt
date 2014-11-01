@@ -1,4 +1,8 @@
-﻿10/31/2014 0.7.4b
+﻿11/1/2014 0.7.4b
+  Bugfix: Added ME cables to Thuamcraft scanning.
+  More API work.
+
+10/31/2014 0.7.4b
   Fixes #73: Added AE2 items/blocks to Thaumcraft scanning.
   Aspect assignment is done by internal examination of crafting recipe.
   Began work on API. This is very much WIP, don't depend on this yet.

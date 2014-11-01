@@ -253,7 +253,7 @@ public class ResearchRegistry
 		storageAspectList.add( Aspect.METAL, 3 );
 
 		// Set the icon
-		ItemStack storageIcon = TEApi.instance.items.EssentiaCell_64k;
+		ItemStack storageIcon = TEApi.instance().items().EssentiaCell_64k.getStack();
 
 		// Get the component recipes
 		IArcaneRecipe[] storageComponentRecipes = new IArcaneRecipe[] { RecipeRegistry.STORAGE_COMPONENT_4K, RecipeRegistry.STORAGE_COMPONENT_16K,
@@ -321,12 +321,12 @@ public class ResearchRegistry
 
 		ResearchRegistry.registerEssentiaTerminal();
 
-		if( TEApi.instance.config.ALLOW_CRAFTING_INFUSION_PROVIDER )
+		if( ThaumicEnergistics.config.allowedToCraftInfusionProvider() )
 		{
 			ResearchRegistry.registerInfusionProvider();
 		}
 
-		if( TEApi.instance.config.ALLOW_CRAFTING_ESSENTIA_PROVIDER )
+		if( ThaumicEnergistics.config.allowedToCraftEssentiaProvider() )
 		{
 			ResearchRegistry.registerEssentiaProvider();
 		}

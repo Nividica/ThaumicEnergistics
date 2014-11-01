@@ -12,9 +12,9 @@ import thaumcraft.common.blocks.ItemJarFilled;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.items.ItemEssence;
+import thaumicenergistics.api.IEssentiaContainerPermission;
+import thaumicenergistics.api.ITransportPermissions;
 import thaumicenergistics.api.TEApi;
-import thaumicenergistics.api.registry.TEPermissionsItem;
-import thaumicenergistics.api.registry.TEPermissionsItem.ContainerInfo;
 import thaumicenergistics.aspect.AspectStack;
 
 /**
@@ -48,14 +48,14 @@ public final class EssentiaItemContainerHelper
 	/**
 	 * Cache of the item permissions.
 	 */
-	private TEPermissionsItem perms = TEApi.instance.itemIOPermissions;
+	private ITransportPermissions perms;
 
 	/**
 	 * Private constructor
 	 */
 	private EssentiaItemContainerHelper()
 	{
-
+		this.perms = TEApi.instance().transportPermissions();
 	}
 
 	/**
@@ -191,7 +191,7 @@ public final class EssentiaItemContainerHelper
 		Item containerItem = container.getItem();
 
 		// Get the info about the container
-		ContainerInfo info = this.getContainerInfo( containerItem, container.getItemDamage() );
+		IEssentiaContainerPermission info = this.getContainerInfo( containerItem, container.getItemDamage() );
 
 		// Ensure we got info
 		if( info == null )
@@ -221,18 +221,18 @@ public final class EssentiaItemContainerHelper
 		int amountToDrain = (int)aspectStack.amount;
 
 		// Can this container do partial fills?
-		if( !info.canHoldPartialAmount )
+		if( !info.canHoldPartialAmount() )
 		{
 			// Ensure the request is for the containers capacity
-			if( amountToDrain < info.capacity )
+			if( amountToDrain < info.maximumCapacity() )
 			{
 				// Can not partially drain this container
 				return null;
 			}
-			else if( amountToDrain > info.capacity )
+			else if( amountToDrain > info.maximumCapacity() )
 			{
 				// Drain is to much, reduce to preset capacity
-				amountToDrain = info.capacity;
+				amountToDrain = info.maximumCapacity();
 			}
 		}
 		else
@@ -248,7 +248,7 @@ public final class EssentiaItemContainerHelper
 		ItemStack resultStack = null;
 
 		// Did we completely drain the container?
-		if( ( amountToDrain == containerAmountStored ) || ( amountToDrain == info.capacity ) )
+		if( ( amountToDrain == containerAmountStored ) || ( amountToDrain == info.maximumCapacity() ) )
 		{
 			// Is this a phial?
 			if( containerItem instanceof ItemEssence )
@@ -381,12 +381,12 @@ public final class EssentiaItemContainerHelper
 			Item containerItem = container.getItem();
 
 			// Get the info about the container
-			ContainerInfo info = this.getContainerInfo( containerItem, container.getItemDamage() );
+			IEssentiaContainerPermission info = this.getContainerInfo( containerItem, container.getItemDamage() );
 
 			// Did we get any info?
 			if( info != null )
 			{
-				return info.capacity;
+				return info.maximumCapacity();
 			}
 		}
 
@@ -401,12 +401,12 @@ public final class EssentiaItemContainerHelper
 	 * @param metadata
 	 * @return
 	 */
-	public ContainerInfo getContainerInfo( final Item item, final int metadata )
+	public IEssentiaContainerPermission getContainerInfo( final Item item, final int metadata ) // TODO
 	{
 		// Is the item not null?
 		if( item != null )
 		{
-			return this.perms.getContainerInfo( item.getClass(), metadata );
+			return this.perms.getEssentiaContainerInfo( item.getClass(), metadata );
 		}
 
 		return null;
@@ -419,12 +419,12 @@ public final class EssentiaItemContainerHelper
 	 * @param itemstack
 	 * @return
 	 */
-	public ContainerInfo getContainerInfo( final ItemStack itemStack )
+	public IEssentiaContainerPermission getContainerInfo( final ItemStack itemStack )
 	{
 		// Is the itemstack not null?
 		if( itemStack != null )
 		{
-			return this.perms.getContainerInfo( itemStack.getItem().getClass(), itemStack.getItemDamage() );
+			return this.perms.getEssentiaContainerInfo( itemStack.getItem().getClass(), itemStack.getItemDamage() );
 		}
 
 		return null;
@@ -526,7 +526,7 @@ public final class EssentiaItemContainerHelper
 		Item containerItem = container.getItem();
 
 		// Get the info about the container
-		ContainerInfo info = this.getContainerInfo( containerItem, container.getItemDamage() );
+		IEssentiaContainerPermission info = this.getContainerInfo( containerItem, container.getItemDamage() );
 
 		// Ensure we got the info
 		if( info == null )
@@ -537,7 +537,7 @@ public final class EssentiaItemContainerHelper
 		int containerAmountStored = this.getContainerStoredAmount( container );
 
 		// Calculate how much remaining storage is in the container
-		int remainaingStorage = info.capacity - containerAmountStored;
+		int remainaingStorage = info.maximumCapacity() - containerAmountStored;
 
 		// Is there any room left in the container?
 		if( remainaingStorage <= 0 )
@@ -549,27 +549,27 @@ public final class EssentiaItemContainerHelper
 		int amountToFill = (int)aspectStack.amount;
 
 		// Can this container do partial fills?
-		if( !info.canHoldPartialAmount )
+		if( !info.canHoldPartialAmount() )
 		{
 			// Ensure the request is for the containers capacity
-			if( amountToFill < info.capacity )
+			if( amountToFill < info.maximumCapacity() )
 			{
 				// Can not partially fill this container
 				return null;
 			}
-			else if( amountToFill > info.capacity )
+			else if( amountToFill > info.maximumCapacity() )
 			{
 				// Drain is to much, reduce to preset capacity
-				amountToFill = info.capacity;
+				amountToFill = info.maximumCapacity();
 			}
 		}
 		else
 		{
 			// Would the resulting amount be more than the container can hold?
-			if( amountToFill > ( containerAmountStored + info.capacity ) )
+			if( amountToFill > ( containerAmountStored + info.maximumCapacity() ) )
 			{
 				// Adjust the amount
-				amountToFill = info.capacity - containerAmountStored;
+				amountToFill = info.maximumCapacity() - containerAmountStored;
 			}
 		}
 
@@ -683,14 +683,14 @@ public final class EssentiaItemContainerHelper
 	public void registerThaumcraftContainers()
 	{
 		// Phials
-		this.perms.addItemToWhitelist( ItemEssence.class, PHIAL_CAPACITY, 0, false );
-		this.perms.addItemToWhitelist( ItemEssence.class, PHIAL_CAPACITY, 1, false );
+		this.perms.addEssentiaContainerItemToTransportPermissions( ItemEssence.class, PHIAL_CAPACITY, 0, false );
+		this.perms.addEssentiaContainerItemToTransportPermissions( ItemEssence.class, PHIAL_CAPACITY, 1, false );
 
 		// Filled jar
-		this.perms.addItemToWhitelist( ItemJarFilled.class, JAR_CAPACITY, 0, true );
+		this.perms.addEssentiaContainerItemToTransportPermissions( ItemJarFilled.class, JAR_CAPACITY, 0, true );
 
 		// Void jar
-		this.perms.addItemToWhitelist( ItemJarFilled.class, JAR_CAPACITY, 3, true );
+		this.perms.addEssentiaContainerItemToTransportPermissions( ItemJarFilled.class, JAR_CAPACITY, 3, true );
 	}
 
 	/**
