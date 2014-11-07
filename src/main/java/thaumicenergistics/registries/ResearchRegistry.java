@@ -27,7 +27,8 @@ public class ResearchRegistry
 			ESSENTIATERMINAL ("ESSTERM"),
 			ESSENTIAPROVIDER ("ESSPROV"),
 			INFUSIONPROVIDER ("INFPROV"),
-			VISINTERFACE ("VISINT");
+			VISINTERFACE ("VISINT"),
+			IRONGEARBOX ("IRONGEARBOX");
 
 		private String internalName;
 
@@ -152,7 +153,7 @@ public class ResearchRegistry
 		ItemStack essentiaProviderIcon = new ItemStack( BlockEnum.ESSENTIA_PROVIDER.getBlock(), 1 );
 
 		ResearchPage[] essentiaProviderPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ESSENTIAPROVIDER.getPageName( 1 ) ),
-						new ResearchPage( RecipeRegistry.ESSENTIA_PROVIDER ) };
+						new ResearchPage( RecipeRegistry.BLOCK_ESSENTIA_PROVIDER ) };
 
 		ResearchTypes.ESSENTIAPROVIDER
 						.createResearchItem( essentiaProviderList, -6, 0, COMPLEXITY_LARGE, essentiaProviderIcon, essentiaProviderPages );
@@ -204,7 +205,7 @@ public class ResearchRegistry
 
 		// Set the pages
 		ResearchPage[] infusionProviderPages = new ResearchPage[] { new ResearchPage( ResearchTypes.INFUSIONPROVIDER.getPageName( 1 ) ),
-						new ResearchPage( RecipeRegistry.INFUSION_PROVIDER ) };
+						new ResearchPage( RecipeRegistry.BLOCK_INFUSION_PROVIDER ) };
 
 		// Are mirrors allowed?
 		String researchKeyMirrorOrJar = ( Config.allowMirrors ? "MIRROR" : "JARLABEL" );
@@ -241,6 +242,27 @@ public class ResearchRegistry
 		ResearchTypes.IO.researchItem.setParentsHidden( "TUBEFILTER" );
 		ResearchTypes.IO.researchItem.setConcealed();
 		ResearchTypes.IO.researchItem.registerResearchItem();
+	}
+
+	private static void registerIronGearbox()
+	{
+		// Set the research aspects
+		AspectList igbAspects = new AspectList();
+		igbAspects.add( Aspect.MECHANISM, 6 );
+		igbAspects.add( Aspect.TREE, 4 );
+		igbAspects.add( Aspect.METAL, 4 );
+
+		// Set the icon
+		ItemStack igbIcon = TEApi.instance().items().IronGear.getStack();
+
+		// Set the pages
+		ResearchPage[] igbPages = new ResearchPage[] { new ResearchPage( RecipeRegistry.MATERIAL_IRON_GEAR ),
+						new ResearchPage( RecipeRegistry.BLOCK_IRONGEARBOX ) };
+
+		// Create the research
+		ResearchTypes.IRONGEARBOX.createResearchItem( igbAspects, 4, 4, COMPLEXITY_SMALL, igbIcon, igbPages );
+		ResearchTypes.IRONGEARBOX.researchItem.setSecondary();
+		ResearchTypes.IRONGEARBOX.researchItem.registerResearchItem();
 	}
 
 	private static void registerStorage()
@@ -320,6 +342,8 @@ public class ResearchRegistry
 		ResearchRegistry.registerIO();
 
 		ResearchRegistry.registerEssentiaTerminal();
+
+		ResearchRegistry.registerIronGearbox();
 
 		if( ThaumicEnergistics.config.allowedToCraftInfusionProvider() )
 		{

@@ -33,6 +33,8 @@ public class TileEssentiaProvider
 
 	protected Aspect getNeighborWantedAspect( final ForgeDirection face )
 	{
+		System.out.println( face );
+
 		// Get the tile entity next to this face
 		TileEntity neighbor = this.worldObj.getTileEntity( this.xCoord + face.offsetX, this.yCoord + face.offsetY, this.zCoord + face.offsetZ );
 
@@ -72,6 +74,7 @@ public class TileEssentiaProvider
 	@Override
 	public boolean canOutputTo( final ForgeDirection face )
 	{
+		System.out.println( face );
 		// Can output to any side
 		return true;
 	}

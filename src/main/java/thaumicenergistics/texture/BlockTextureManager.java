@@ -32,7 +32,8 @@ public enum BlockTextureManager
 		ARCANE_CRAFTING_TERMINAL (TextureTypes.Part, new String[] { "arcane.crafting.overlay1", "arcane.crafting.overlay2",
 						"arcane.crafting.overlay3", "arcane.crafting.side" }),
 
-		VIS_RELAY_INTERFACE (TextureTypes.Part, new String[] { "vis.interface", "vis.interface.runes" });
+		VIS_RELAY_INTERFACE (TextureTypes.Part, new String[] { "vis.interface", "vis.interface.runes" }),
+		GEAR_BOX (TextureTypes.Block, new String[] { "gear.box", "golem.gear.box" });
 
 	private enum TextureTypes
 	{

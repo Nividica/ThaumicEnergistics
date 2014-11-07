@@ -6,6 +6,7 @@ import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.registries.RecipeRegistry;
 import thaumicenergistics.registries.ResearchRegistry;
 import thaumicenergistics.tileentities.TileEssentiaProvider;
+import thaumicenergistics.tileentities.TileGearBox;
 import thaumicenergistics.tileentities.TileInfusionProvider;
 import appeng.api.AEApi;
 import appeng.api.movable.IMovableRegistry;
@@ -79,6 +80,8 @@ public class CommonProxy
 
 		// Add infusion provider
 		movableRegistry.whiteListTileEntity( TileInfusionProvider.class );
+
+		// TODO Add golem crank
 	}
 
 	/**
@@ -88,6 +91,7 @@ public class CommonProxy
 	{
 		GameRegistry.registerTileEntity( TileEssentiaProvider.class, TileEssentiaProvider.TILE_ID );
 		GameRegistry.registerTileEntity( TileInfusionProvider.class, TileInfusionProvider.TILE_ID );
+		GameRegistry.registerTileEntity( TileGearBox.class, TileGearBox.TILE_ID );
 	}
 
 }

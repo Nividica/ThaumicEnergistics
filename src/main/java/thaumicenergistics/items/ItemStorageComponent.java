@@ -23,7 +23,7 @@ public class ItemStorageComponent
 	{
 		this.setMaxDamage( 0 );
 		this.setHasSubtypes( true );
-		this.setCreativeTab( ThaumicEnergistics.ModTab );
+		this.setCreativeTab( ThaumicEnergistics.TETab );
 	}
 
 	@Override

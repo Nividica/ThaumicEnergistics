@@ -1,4 +1,7 @@
-﻿11/1/2014 0.7.4b
+﻿11/6/2014 0.8.b
+  Added Iron and Thaumium GearBoxes.
+
+11/1/2014 0.7.4b
   Bugfix: Added ME cables to Thuamcraft scanning.
   More API work.
 

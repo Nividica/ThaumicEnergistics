@@ -23,7 +23,8 @@ public class ItemMaterial
 	public static enum MaterialTypes
 	{
 			DIFFUSION_CORE (0, "diffusion.core"),
-			COALESCENCE_CORE (1, "coalescence.core");
+			COALESCENCE_CORE (1, "coalescence.core"),
+			IRON_GEAR (2, "iron.gear");
 
 		/**
 		 * Numeric ID of the material.
@@ -84,7 +85,7 @@ public class ItemMaterial
 	{
 		this.setMaxDamage( 0 );
 		this.setHasSubtypes( true );
-		this.setCreativeTab( ThaumicEnergistics.ModTab );
+		this.setCreativeTab( ThaumicEnergistics.TETab );
 	}
 
 	/**

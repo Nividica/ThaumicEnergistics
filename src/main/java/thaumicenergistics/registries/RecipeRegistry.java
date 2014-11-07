@@ -43,6 +43,7 @@ public class RecipeRegistry
 	public static IRecipe STORAGE_CELL_64K_SHAPELESS;
 	public static IArcaneRecipe MATERIAL_DIFFUSION_CORE;
 	public static IArcaneRecipe MATERIAL_COALESCENCE_CORE;
+	public static IArcaneRecipe MATERIAL_IRON_GEAR;
 	public static IArcaneRecipe PART_IMPORT_BUS;
 	public static IArcaneRecipe PART_EXPORT_BUS;
 	public static IArcaneRecipe PART_STORAGE_BUS;
@@ -50,8 +51,9 @@ public class RecipeRegistry
 	public static IArcaneRecipe PART_ARCANE_TERMINAL;
 	public static IArcaneRecipe PART_ESSENTIA_LEVEL_EMITTER;
 	public static IArcaneRecipe PART_VIS_INTERFACE;
-	public static InfusionRecipe INFUSION_PROVIDER;
-	public static InfusionRecipe ESSENTIA_PROVIDER;
+	public static InfusionRecipe BLOCK_INFUSION_PROVIDER;
+	public static InfusionRecipe BLOCK_ESSENTIA_PROVIDER;
+	public static IRecipe BLOCK_IRONGEARBOX;
 
 	private static void registerComponents( final Materials aeMaterials, final Blocks aeBlocks, final Items teItems )
 	{
@@ -123,8 +125,33 @@ public class RecipeRegistry
 							QuartzGlass } );
 	}
 
+	private static void registerGearbox( final Blocks aeBlocks, final Items teItems )
+	{
+		// Minecraft items
+		String Cobblestone = "cobblestone";
+
+		// Thaumcraft items
+		ItemStack Thaumium = new ItemStack( ConfigItems.itemResource, 1, 2 );
+
+		// AppEng items
+		ItemStack Crank = aeBlocks.blockCrankHandle.stack( 1 );
+
+		// My items
+		ItemStack IronGear = teItems.IronGear.getStack();
+		ItemStack IronGearBox = TEApi.instance().blocks().IronGearBox.getStack();
+
+		// Iron Gear Box
+		RecipeRegistry.BLOCK_IRONGEARBOX = new ShapedOreRecipe( IronGearBox, false, new Object[] { "SGS", "GCG", "SGS", 'S', Cobblestone, 'G',
+						IronGear, 'C', Crank } );
+		GameRegistry.addRecipe( RecipeRegistry.BLOCK_IRONGEARBOX );
+
+	}
+
 	private static void registerMaterials( final Materials aeMaterials, final Items teItems )
 	{
+		// Minecraft items
+		String IronIngot = "ingotIron";
+
 		// Thaumcraft items
 		ItemStack EntropyShard = new ItemStack( ConfigItems.itemShard, 1, 5 );
 
@@ -137,10 +164,14 @@ public class RecipeRegistry
 
 		ItemStack AnnihilationCore = aeMaterials.materialAnnihilationCore.stack( 1 );
 
+		ItemStack WoodGear = aeMaterials.materialWoodenGear.stack( 1 );
+
 		// My items
 		ItemStack DiffusionCore = teItems.DiffusionCore.getStack();
 
 		ItemStack CoalescenceCore = teItems.CoalescenceCore.getStack();
+
+		ItemStack IronGear = teItems.IronGear.getStack();
 
 		// Coalescence Core
 		AspectList coalescenceAspects = new AspectList();
@@ -155,6 +186,13 @@ public class RecipeRegistry
 		diffusionAspects.add( Aspect.ENTROPY, 2 );
 		RecipeRegistry.MATERIAL_DIFFUSION_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
 			DiffusionCore, diffusionAspects, QuickSilver, EntropyShard, AnnihilationCore );
+
+		// Diffusion Core
+		AspectList ironGearAspects = new AspectList();
+		ironGearAspects.add( Aspect.EARTH, 1 );
+		ironGearAspects.add( Aspect.FIRE, 1 );
+		RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRONGEARBOX.getKey(), IronGear,
+			ironGearAspects, new Object[] { " I ", "IWI", " I ", 'I', IronIngot, 'W', WoodGear } );
 	}
 
 	private static void registerMECells( final Items teItems )
@@ -385,8 +423,9 @@ public class RecipeRegistry
 							SalisMundus, CoalescenceCore, AerShard };
 
 			// Create the infusion provider recipe
-			RecipeRegistry.INFUSION_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.INFUSIONPROVIDER.getKey(),
-				InfusionProvider, 4, infusionProviderList, MEInterface, infusionProviderRecipeItems );
+			RecipeRegistry.BLOCK_INFUSION_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe(
+				ResearchRegistry.ResearchTypes.INFUSIONPROVIDER.getKey(), InfusionProvider, 4, infusionProviderList, MEInterface,
+				infusionProviderRecipeItems );
 		}
 
 		if( ThaumicEnergistics.config.allowedToCraftEssentiaProvider() )
@@ -403,8 +442,9 @@ public class RecipeRegistry
 							CoalescenceCore, WaterShard };
 
 			// Create the essentia provider recipe
-			RecipeRegistry.ESSENTIA_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ESSENTIAPROVIDER.getKey(),
-				EssentiaProvider, 3, essentiaProviderList, MEInterface, essentiaProviderRecipeItems );
+			RecipeRegistry.BLOCK_ESSENTIA_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe(
+				ResearchRegistry.ResearchTypes.ESSENTIAPROVIDER.getKey(), EssentiaProvider, 3, essentiaProviderList, MEInterface,
+				essentiaProviderRecipeItems );
 		}
 
 	}
@@ -485,6 +525,9 @@ public class RecipeRegistry
 
 		// Register the providers
 		RecipeRegistry.registerProviders( aeBlocks, teItems );
+
+		// Register the gearboxes
+		RecipeRegistry.registerGearbox( aeBlocks, teItems );
 	}
 
 }

@@ -23,4 +23,6 @@ public abstract class Items
 	public IItemDescription EssentiaStorageComponent_4k;
 
 	public IItemDescription EssentiaStorageComponent_64k;
+
+	public IItemDescription IronGear;
 }

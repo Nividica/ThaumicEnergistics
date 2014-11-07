@@ -34,7 +34,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.7.4b"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.8.0b"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -54,7 +54,7 @@ public class ThaumicEnergistics
 	/**
 	 * Creative tab that displays this mods items
 	 */
-	public static CreativeTabs ModTab = new CreativeTabs( "ThaumicEnergistics" )
+	public static CreativeTabs TETab = new CreativeTabs( "ThaumicEnergistics" )
 	{
 
 		@Override
@@ -163,6 +163,7 @@ public class ThaumicEnergistics
 	public void preInit( final FMLPreInitializationEvent event ) throws Exception
 	{
 		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "preInit" );
+
 		// Sync with config
 		ThaumicEnergistics.config = ConfigurationHandler.loadAndSyncConfigFile( event.getSuggestedConfigurationFile() );
 
