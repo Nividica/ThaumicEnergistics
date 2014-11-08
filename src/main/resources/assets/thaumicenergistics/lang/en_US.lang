@@ -106,4 +106,15 @@ thaumicenergistics.research_page.TEVISINT.3=§lLinks§r<LINE>§lArcane Crafting 
 
 # Research Iron Gear Box
 tc.research_name.thaumicenergistics.TEIRONGEARBOX=Iron Gear Box
-tc.research_text.thaumicenergistics.TEIRONGEARBOX=Mechanical Power
+tc.research_text.thaumicenergistics.TEIRONGEARBOX=One Turn At A Time
+thaumicenergistics.research_page.TEIRONGEARBOX.1= TODO
+
+# Research Thaumium Gear Box
+tc.research_name.thaumicenergistics.TETHAUMGBOX=Thaumium Gear Box
+tc.research_text.thaumicenergistics.TETHAUMGBOX=Little Labor Force
+thaumicenergistics.research_page.TETHAUMGBOX.1= TODO
+
+# Research Certus Quartz Duplication
+tc.research_name.thaumicenergistics.TECERTUSDUPE=Certus Quartz Duplication
+tc.research_text.thaumicenergistics.TECERTUSDUPE=Impurities Intact
+thaumicenergistics.research_page.TECERTUSDUPE.1= TODO

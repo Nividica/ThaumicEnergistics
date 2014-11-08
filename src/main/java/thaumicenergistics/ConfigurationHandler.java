@@ -33,7 +33,12 @@ class ConfigurationHandler
 	/**
 	 * Controls if the Infusion Provider is allowed to be crafted.
 	 */
-	public boolean allowInfusionProvider = true;
+	private boolean allowInfusionProvider = true;
+
+	/**
+	 * Controls if Certus Quartz can be duped in the crucible.
+	 */
+	private boolean allowCertusDupe = true;
 
 	private ConfigurationHandler( final Configuration config )
 	{
@@ -81,6 +86,10 @@ class ConfigurationHandler
 		this.allowInfusionProvider = this.configSettings.getBoolean( "Allow Crafting Infusion Provider", ConfigurationHandler.CATEGORY_CRAFTING,
 			this.allowInfusionProvider, "Controls if the Infusion Provider is allowed to be crafted." );
 
+		// Sync certus dupe
+		this.allowCertusDupe = this.configSettings.getBoolean( "Certus Quartz Duplication", ConfigurationHandler.CATEGORY_CRAFTING,
+			this.allowCertusDupe, "Controls if Certus Quartz can be duplicated in the crucible." );
+
 		// Has the config file changed?
 		if( this.configSettings.hasChanged() )
 		{
@@ -99,6 +108,12 @@ class ConfigurationHandler
 	public boolean allowedToCraftInfusionProvider()
 	{
 		return this.allowInfusionProvider;
+	}
+
+	@Override
+	public boolean allowedToDuplicateCertusQuartz()
+	{
+		return this.allowCertusDupe;
 	}
 
 	@Override

@@ -1,4 +1,12 @@
-﻿11/6/2014 0.8.b
+﻿11/8/2014 0.8.0b
+  Added Certus Quartz Duplication.
+  Added configuration option to disable certus duplication.
+
+11/7/2014 0.8.0b
+  Reworked Thaumonomicon layout.
+  Added parent nodes.
+
+11/6/2014 0.8.0b
   Added Iron and Thaumium GearBoxes.
 
 11/1/2014 0.7.4b

@@ -11,32 +11,82 @@ import thaumcraft.api.research.ResearchItem;
 import thaumcraft.api.research.ResearchPage;
 import thaumcraft.common.config.Config;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.IConfig;
 import thaumicenergistics.api.TEApi;
+import thaumicenergistics.integration.tc.PseudoResearchItem;
 import thaumicenergistics.items.ItemMaterial;
+import appeng.api.AEApi;
 
 public class ResearchRegistry
 {
+	// Fake research, serves as placeholder for existing research
+	private static enum PseudoResearchTypes
+	{
+			DISTILESSENTIA ("DISTILESSENTIA", "ALCHEMY", -2, 0),
+			TUBEFILTER ("TUBEFILTER", "ALCHEMY", -3, 0),
+			MIRROR ("MIRROR", "ARTIFICE", -4, 0),
+			JAR ("JARLABEL", "ALCHEMY", -4, 0),
+			INFUSION ("INFUSION", "ARTIFICE", -6, 0),
+			VISPOWER ("VISPOWER", "THAUMATURGY", 2, -1),
+			COREUSE ("COREUSE", "GOLEMANCY", 4, 3),
+			DUPE ("ALCHEMICALDUPLICATION", "ALCHEMY", -6, -7);
+
+		private String realResearchKey;
+		private String realResearchCategory;
+		private int column;
+		private int row;
+		private PseudoResearchItem researchItem;
+
+		private PseudoResearchTypes( final String key, final String cat, final int column, final int row )
+		{
+			this.realResearchCategory = cat;
+			this.realResearchKey = key;
+			this.column = column;
+			this.row = row;
+		}
+
+		public String getKey()
+		{
+			return ThaumicEnergistics.MOD_ID + ".Pseudo." + this.realResearchKey;
+		}
+
+		public void registerPsudeoResearch()
+		{
+			this.researchItem = PseudoResearchItem.newPseudo( this.getKey(), TERESEARCH_TAB, this.realResearchKey, this.realResearchCategory,
+				this.column, this.row );
+			this.researchItem.registerResearchItem();
+		}
+	}
+
 	// Research types
 	public static enum ResearchTypes
 	{
-			BASIC ("RESEARCH"),
-			CORES ("CORES"),
-			STORAGE ("STORAGE"),
-			IO ("IO"),
-			ARCANETERMINAL ("ARCANETERM"),
-			ESSENTIATERMINAL ("ESSTERM"),
-			ESSENTIAPROVIDER ("ESSPROV"),
-			INFUSIONPROVIDER ("INFPROV"),
-			VISINTERFACE ("VISINT"),
-			IRONGEARBOX ("IRONGEARBOX");
+			BASIC ("RESEARCH", 0, 0),
+			CORES ("CORES", -1, -2),
+			STORAGE ("STORAGE", -1, 2),
+			IO ("IO", -2, -2),
+			ARCANETERMINAL ("ARCANETERM", 0, -4),
+			ESSENTIATERMINAL ("ESSTERM", -1, -4),
+			ESSENTIAPROVIDER ("ESSPROV", -2, -4),
+			INFUSIONPROVIDER ("INFPROV", -5, -2),
+			VISINTERFACE ("VISINT", 2, 0),
+			IRONGEARBOX ("IRONGEARBOX", 3, 2),
+			THAUMIUMGEARBOX ("THAUMGBOX", 3, 3),
+			CERTUSDUPE ("CERTUSDUPE", -6, -6);
 
 		private String internalName;
 
+		private int column;
+
+		private int row;
+
 		ResearchItem researchItem;
 
-		private ResearchTypes( final String internalName )
+		private ResearchTypes( final String internalName, final int column, final int row )
 		{
 			this.internalName = "TE" + internalName;
+			this.row = row;
+			this.column = column;
 		}
 
 		public String getKey()
@@ -59,10 +109,9 @@ public class ResearchRegistry
 		 * @param icon
 		 * @param pages
 		 */
-		void createResearchItem( final AspectList aspectList, final int column, final int row, final int complexity, final ItemStack icon,
-									final ResearchPage[] pages )
+		void createResearchItem( final AspectList aspectList, final int complexity, final ItemStack icon, final ResearchPage[] pages )
 		{
-			this.researchItem = new ResearchItem( this.getKey(), TERESEARCH_TAB, aspectList, column, row, complexity, icon );
+			this.researchItem = new ResearchItem( this.getKey(), TERESEARCH_TAB, aspectList, this.column, this.row, complexity, icon );
 			this.researchItem.setPages( pages );
 		}
 
@@ -84,6 +133,69 @@ public class ResearchRegistry
 	private static final ResourceLocation RESEARCH_BACKGROUND = new ResourceLocation( ThaumicEnergistics.MOD_ID,
 					"textures/research/Research.Background.png" );
 
+	private static void addPseudoParents()
+	{
+		// Cache the configs
+		IConfig teConfig = ThaumicEnergistics.config;
+
+		// Get all pseudo types
+		PseudoResearchTypes[] pseudoTypes = PseudoResearchTypes.values();
+		for( PseudoResearchTypes type : pseudoTypes )
+		{
+			switch ( type )
+			{
+				case DUPE:
+					if( !teConfig.allowedToDuplicateCertusQuartz() )
+					{
+						// Skip this, dupes not allowed.
+						continue;
+					}
+					break;
+
+				case JAR:
+					if( Config.allowMirrors || !teConfig.allowedToCraftInfusionProvider() )
+					{
+						// Skip this, mirrors are allowed.
+						continue;
+					}
+					break;
+
+				case MIRROR:
+					if( !Config.allowMirrors || !teConfig.allowedToCraftInfusionProvider() )
+					{
+						// Skip this, mirrors are not allowed.
+						continue;
+					}
+					break;
+
+				case INFUSION:
+					if( !teConfig.allowedToCraftInfusionProvider() )
+					{
+						// Skip this, infusion provider not allowed
+						continue;
+					}
+					break;
+
+				default:
+					break;
+
+			}
+
+			// Check for the jar/mirror setting
+			if( ( type == PseudoResearchTypes.JAR ) && Config.allowMirrors )
+			{
+				continue;
+			}
+			else if( ( type == PseudoResearchTypes.MIRROR ) && !Config.allowMirrors )
+			{
+				continue;
+			}
+
+			type.registerPsudeoResearch();
+		}
+
+	}
+
 	private static void registerACT()
 	{
 		// Set the research aspects
@@ -101,7 +213,7 @@ public class ResearchRegistry
 						new ResearchPage( RecipeRegistry.PART_ARCANE_TERMINAL ) };
 
 		// Create the IO research
-		ResearchTypes.ARCANETERMINAL.createResearchItem( actAspectList, 2, -2, COMPLEXITY_SMALL, actIcon, actPages );
+		ResearchTypes.ARCANETERMINAL.createResearchItem( actAspectList, COMPLEXITY_SMALL, actIcon, actPages );
 		ResearchTypes.ARCANETERMINAL.researchItem.setParents( ResearchTypes.BASIC.getKey() );
 		ResearchTypes.ARCANETERMINAL.researchItem.registerResearchItem();
 
@@ -110,11 +222,40 @@ public class ResearchRegistry
 	private static void registerBasic()
 	{
 		// Create the basic research item
-
 		ResearchTypes.BASIC.researchItem = new ResearchItem( ResearchTypes.BASIC.getKey(), TERESEARCH_TAB, new AspectList(), 0, 0, 0, TAB_ICON );
 		ResearchTypes.BASIC.researchItem.setPages( new ResearchPage[] { new ResearchPage( ResearchTypes.BASIC.getPageName( 1 ) ) } );
 		ResearchTypes.BASIC.researchItem.setStub().setRound().setAutoUnlock();
 		ResearchTypes.BASIC.researchItem.registerResearchItem();
+
+	}
+
+	private static void registerCertusDupe()
+	{
+		// Set aspects
+		AspectList certusDupeAspects = new AspectList();
+		certusDupeAspects.add( Aspect.CRYSTAL, 5 );
+
+		// Get icon
+		ItemStack certusDupeIcon = AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 );
+
+		// Set pages
+		ResearchPage[] certusDupePages = new ResearchPage[] { new ResearchPage( ResearchTypes.CERTUSDUPE.getPageName( 1 ) ),
+						new ResearchPage( RecipeRegistry.DUPE_CERTUS ) };
+		// Create the item
+		ResearchTypes.CERTUSDUPE.createResearchItem( certusDupeAspects, COMPLEXITY_SMALL, certusDupeIcon, certusDupePages );
+
+		// Set parents
+		ResearchTypes.CERTUSDUPE.researchItem.setParents( PseudoResearchTypes.DUPE.getKey() );
+		ResearchTypes.CERTUSDUPE.researchItem.setParentsHidden( "ALCHEMICALDUPLICATION" );
+
+		// Set secondary and concealed
+		ResearchTypes.CERTUSDUPE.researchItem.setSecondary().setConcealed();
+
+		// Trigger when certus is scanned
+		ResearchTypes.CERTUSDUPE.researchItem.setItemTriggers( certusDupeIcon );
+
+		// Register
+		ResearchTypes.CERTUSDUPE.researchItem.registerResearchItem();
 
 	}
 
@@ -136,8 +277,8 @@ public class ResearchRegistry
 						new ResearchPage( RecipeRegistry.MATERIAL_DIFFUSION_CORE ) };
 
 		// Create the core research
-		ResearchTypes.CORES.createResearchItem( coreAspectList, -2, -2, COMPLEXITY_MEDIUM, coreIcon, corePages );
-		ResearchTypes.CORES.researchItem.setParents( ResearchTypes.BASIC.getKey() );
+		ResearchTypes.CORES.createResearchItem( coreAspectList, COMPLEXITY_MEDIUM, coreIcon, corePages );
+		ResearchTypes.CORES.researchItem.setParents( ResearchTypes.BASIC.getKey(), PseudoResearchTypes.DISTILESSENTIA.getKey() );
 		ResearchTypes.CORES.researchItem.setParentsHidden( "DISTILESSENTIA" );
 		ResearchTypes.CORES.researchItem.registerResearchItem();
 	}
@@ -155,8 +296,7 @@ public class ResearchRegistry
 		ResearchPage[] essentiaProviderPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ESSENTIAPROVIDER.getPageName( 1 ) ),
 						new ResearchPage( RecipeRegistry.BLOCK_ESSENTIA_PROVIDER ) };
 
-		ResearchTypes.ESSENTIAPROVIDER
-						.createResearchItem( essentiaProviderList, -6, 0, COMPLEXITY_LARGE, essentiaProviderIcon, essentiaProviderPages );
+		ResearchTypes.ESSENTIAPROVIDER.createResearchItem( essentiaProviderList, COMPLEXITY_LARGE, essentiaProviderIcon, essentiaProviderPages );
 		ResearchTypes.ESSENTIAPROVIDER.researchItem.setParents( ResearchTypes.IO.getKey() );
 		ResearchTypes.ESSENTIAPROVIDER.researchItem.setParentsHidden( "INFUSION", "TUBEFILTER" );
 		ResearchTypes.ESSENTIAPROVIDER.researchItem.setConcealed();
@@ -182,12 +322,57 @@ public class ResearchRegistry
 						new ResearchPage( RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER ) };
 
 		// Create the IO research
-		ResearchTypes.ESSENTIATERMINAL.createResearchItem( etAspectList, -2, -4, COMPLEXITY_SMALL, etIcon, etPages );
+		ResearchTypes.ESSENTIATERMINAL.createResearchItem( etAspectList, COMPLEXITY_SMALL, etIcon, etPages );
 		ResearchTypes.ESSENTIATERMINAL.researchItem.setParents( ResearchTypes.CORES.getKey() );
 		ResearchTypes.ESSENTIATERMINAL.researchItem.setConcealed();
 		ResearchTypes.ESSENTIATERMINAL.researchItem.setSecondary();
 		ResearchTypes.ESSENTIATERMINAL.researchItem.registerResearchItem();
 
+	}
+
+	private static void registerGearboxes()
+	{
+		// Set the research aspects for the Iron Gear Box
+		AspectList igbAspects = new AspectList();
+		igbAspects.add( Aspect.MECHANISM, 6 );
+		igbAspects.add( Aspect.TREE, 4 );
+		igbAspects.add( Aspect.METAL, 4 );
+
+		// Set the icon for the Iron Gear Box
+		ItemStack igbIcon = TEApi.instance().items().IronGear.getStack();
+
+		// Set the pages for the Iron Gear Box
+		ResearchPage[] igbPages = new ResearchPage[] { new ResearchPage( ResearchTypes.IRONGEARBOX.getPageName( 1 ) ),
+						new ResearchPage( RecipeRegistry.MATERIAL_IRON_GEAR ), new ResearchPage( RecipeRegistry.BLOCK_IRONGEARBOX ) };
+
+		// Create the research for the Iron Gear Box
+		ResearchTypes.IRONGEARBOX.createResearchItem( igbAspects, COMPLEXITY_SMALL, igbIcon, igbPages );
+
+		// Set as secondary and register
+		ResearchTypes.IRONGEARBOX.researchItem.setSecondary().registerResearchItem();
+
+		// Set the research aspects for the Thaumium Gear Box
+		AspectList tgbAspects = new AspectList();
+		tgbAspects.add( Aspect.MECHANISM, 10 );
+		tgbAspects.add( Aspect.MAGIC, 8 );
+		tgbAspects.add( Aspect.METAL, 5 );
+
+		// Set the icon for the Thaumium Gear Box
+		ItemStack tgbIcon = TEApi.instance().blocks().ThaumiumGearBox.getStack();
+
+		// Set the pages for the Thaumium Gear Box
+		ResearchPage[] tgbPages = new ResearchPage[] { new ResearchPage( ResearchTypes.THAUMIUMGEARBOX.getPageName( 1 ) ),
+						new ResearchPage( RecipeRegistry.BLOCK_THAUMIUMGEARBOX ) };
+
+		// Create the item for the Thaumium Gear Box
+		ResearchTypes.THAUMIUMGEARBOX.createResearchItem( tgbAspects, COMPLEXITY_SMALL, tgbIcon, tgbPages );
+
+		// Set parents for the Thaumium Gear Box
+		ResearchTypes.THAUMIUMGEARBOX.researchItem.setParents( ResearchTypes.IRONGEARBOX.getKey(), PseudoResearchTypes.COREUSE.getKey() );
+		ResearchTypes.THAUMIUMGEARBOX.researchItem.setParentsHidden( "COREUSE" );
+
+		// Set as secondary and register
+		ResearchTypes.THAUMIUMGEARBOX.researchItem.setSecondary().registerResearchItem();
 	}
 
 	private static void registerInfusionProvider()
@@ -209,13 +394,14 @@ public class ResearchRegistry
 
 		// Are mirrors allowed?
 		String researchKeyMirrorOrJar = ( Config.allowMirrors ? "MIRROR" : "JARLABEL" );
+		String pseudoKeyMirrorOrJar = ( Config.allowMirrors ? PseudoResearchTypes.MIRROR.getKey() : PseudoResearchTypes.JAR.getKey() );
 
 		// Create the infusion provider research
-		ResearchTypes.INFUSIONPROVIDER.createResearchItem( infusionProviderList, -6, -4, COMPLEXITY_LARGE, infusionProviderIcon,
-			infusionProviderPages );
-		ResearchTypes.INFUSIONPROVIDER.researchItem.setParents( ResearchTypes.IO.getKey() );
+		ResearchTypes.INFUSIONPROVIDER.createResearchItem( infusionProviderList, COMPLEXITY_LARGE, infusionProviderIcon, infusionProviderPages );
+		ResearchTypes.INFUSIONPROVIDER.researchItem.setParents( ResearchTypes.IO.getKey(), pseudoKeyMirrorOrJar,
+			PseudoResearchTypes.INFUSION.getKey() );
 		ResearchTypes.INFUSIONPROVIDER.researchItem.setParentsHidden( researchKeyMirrorOrJar, "INFUSION" );
-		ResearchTypes.INFUSIONPROVIDER.researchItem.setConcealed();
+		ResearchTypes.INFUSIONPROVIDER.researchItem.setConcealed().setSpecial();
 		ResearchTypes.INFUSIONPROVIDER.researchItem.registerResearchItem();
 	}
 
@@ -237,32 +423,11 @@ public class ResearchRegistry
 						new ResearchPage( RecipeRegistry.PART_EXPORT_BUS ), new ResearchPage( RecipeRegistry.PART_STORAGE_BUS ) };
 
 		// Create the IO research
-		ResearchTypes.IO.createResearchItem( ioAspectList, -4, -2, COMPLEXITY_MEDIUM, ioIcon, ioPages );
-		ResearchTypes.IO.researchItem.setParents( ResearchTypes.CORES.getKey() );
+		ResearchTypes.IO.createResearchItem( ioAspectList, COMPLEXITY_MEDIUM, ioIcon, ioPages );
+		ResearchTypes.IO.researchItem.setParents( ResearchTypes.CORES.getKey(), PseudoResearchTypes.TUBEFILTER.getKey() );
 		ResearchTypes.IO.researchItem.setParentsHidden( "TUBEFILTER" );
 		ResearchTypes.IO.researchItem.setConcealed();
 		ResearchTypes.IO.researchItem.registerResearchItem();
-	}
-
-	private static void registerIronGearbox()
-	{
-		// Set the research aspects
-		AspectList igbAspects = new AspectList();
-		igbAspects.add( Aspect.MECHANISM, 6 );
-		igbAspects.add( Aspect.TREE, 4 );
-		igbAspects.add( Aspect.METAL, 4 );
-
-		// Set the icon
-		ItemStack igbIcon = TEApi.instance().items().IronGear.getStack();
-
-		// Set the pages
-		ResearchPage[] igbPages = new ResearchPage[] { new ResearchPage( RecipeRegistry.MATERIAL_IRON_GEAR ),
-						new ResearchPage( RecipeRegistry.BLOCK_IRONGEARBOX ) };
-
-		// Create the research
-		ResearchTypes.IRONGEARBOX.createResearchItem( igbAspects, 4, 4, COMPLEXITY_SMALL, igbIcon, igbPages );
-		ResearchTypes.IRONGEARBOX.researchItem.setSecondary();
-		ResearchTypes.IRONGEARBOX.researchItem.registerResearchItem();
 	}
 
 	private static void registerStorage()
@@ -296,13 +461,13 @@ public class ResearchRegistry
 						new ResearchPage( storageCellsShaped ), new ResearchPage( storageCellsShapeless ) };
 
 		// Create the storage research
-		ResearchTypes.STORAGE.createResearchItem( storageAspectList, 2, 2, COMPLEXITY_MEDIUM, storageIcon, storagePages );
-		ResearchTypes.STORAGE.researchItem.setParents( ResearchTypes.BASIC.getKey() );
+		ResearchTypes.STORAGE.createResearchItem( storageAspectList, COMPLEXITY_MEDIUM, storageIcon, storagePages );
+		ResearchTypes.STORAGE.researchItem.setParents( ResearchTypes.BASIC.getKey(), PseudoResearchTypes.DISTILESSENTIA.getKey() );
 		ResearchTypes.STORAGE.researchItem.setParentsHidden( "DISTILESSENTIA" );
 		ResearchTypes.STORAGE.researchItem.registerResearchItem();
 	}
 
-	private static void registerVisInterface()
+	private static void registerVisRelayInterface()
 	{
 		// Set the research aspects
 		AspectList vriAspects = new AspectList();
@@ -320,8 +485,8 @@ public class ResearchRegistry
 						new ResearchPage( ResearchTypes.VISINTERFACE.getPageName( 3 ) ) };
 
 		// Create the vis relay interface research
-		ResearchTypes.VISINTERFACE.createResearchItem( vriAspects, -2, 2, COMPLEXITY_MEDIUM, vriIcon, vriPages );
-		ResearchTypes.VISINTERFACE.researchItem.setParents( ResearchTypes.BASIC.getKey() );
+		ResearchTypes.VISINTERFACE.createResearchItem( vriAspects, COMPLEXITY_MEDIUM, vriIcon, vriPages );
+		ResearchTypes.VISINTERFACE.researchItem.setParents( ResearchTypes.BASIC.getKey(), PseudoResearchTypes.VISPOWER.getKey() );
 		ResearchTypes.VISINTERFACE.researchItem.setParentsHidden( "VISPOWER" );
 		ResearchTypes.VISINTERFACE.researchItem.registerResearchItem();
 	}
@@ -331,30 +496,49 @@ public class ResearchRegistry
 		// Create our research tab
 		ResearchCategories.registerCategory( TERESEARCH_TAB, TAB_ICON, ResearchRegistry.RESEARCH_BACKGROUND );
 
+		// Central item
 		ResearchRegistry.registerBasic();
 
+		// Arcane Crafting Terminal
 		ResearchRegistry.registerACT();
 
+		// Transposition cores
 		ResearchRegistry.registerCores();
 
+		// ME Cells
 		ResearchRegistry.registerStorage();
 
+		// Buses
 		ResearchRegistry.registerIO();
 
+		// Essentia Terminal
 		ResearchRegistry.registerEssentiaTerminal();
 
-		ResearchRegistry.registerIronGearbox();
+		// Gearboxes
+		ResearchRegistry.registerGearboxes();
 
+		// Infusion provider
 		if( ThaumicEnergistics.config.allowedToCraftInfusionProvider() )
 		{
 			ResearchRegistry.registerInfusionProvider();
 		}
 
+		// Essentia provider
 		if( ThaumicEnergistics.config.allowedToCraftEssentiaProvider() )
 		{
 			ResearchRegistry.registerEssentiaProvider();
 		}
 
-		ResearchRegistry.registerVisInterface();
+		// Vis Relay Interface
+		ResearchRegistry.registerVisRelayInterface();
+
+		// Certus Quartz Duplication
+		if( ThaumicEnergistics.config.allowedToDuplicateCertusQuartz() )
+		{
+			ResearchRegistry.registerCertusDupe();
+		}
+
+		// Place parents
+		ResearchRegistry.addPseudoParents();
 	}
 }

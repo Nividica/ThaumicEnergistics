@@ -9,6 +9,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import thaumcraft.api.crafting.CrucibleRecipe;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.crafting.InfusionRecipe;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
@@ -54,6 +55,8 @@ public class RecipeRegistry
 	public static InfusionRecipe BLOCK_INFUSION_PROVIDER;
 	public static InfusionRecipe BLOCK_ESSENTIA_PROVIDER;
 	public static IRecipe BLOCK_IRONGEARBOX;
+	public static CrucibleRecipe BLOCK_THAUMIUMGEARBOX;
+	public static CrucibleRecipe DUPE_CERTUS;
 
 	private static void registerComponents( final Materials aeMaterials, final Blocks aeBlocks, final Items teItems )
 	{
@@ -130,20 +133,25 @@ public class RecipeRegistry
 		// Minecraft items
 		String Cobblestone = "cobblestone";
 
-		// Thaumcraft items
-		ItemStack Thaumium = new ItemStack( ConfigItems.itemResource, 1, 2 );
-
 		// AppEng items
 		ItemStack Crank = aeBlocks.blockCrankHandle.stack( 1 );
 
 		// My items
 		ItemStack IronGear = teItems.IronGear.getStack();
 		ItemStack IronGearBox = TEApi.instance().blocks().IronGearBox.getStack();
+		ItemStack ThaumiumGearBox = TEApi.instance().blocks().ThaumiumGearBox.getStack();
 
 		// Iron Gear Box
 		RecipeRegistry.BLOCK_IRONGEARBOX = new ShapedOreRecipe( IronGearBox, false, new Object[] { "SGS", "GCG", "SGS", 'S', Cobblestone, 'G',
 						IronGear, 'C', Crank } );
 		GameRegistry.addRecipe( RecipeRegistry.BLOCK_IRONGEARBOX );
+
+		// Thaumium Gear Box
+		AspectList tgbAspects = new AspectList();
+		tgbAspects.add( Aspect.METAL, 16 );
+		tgbAspects.add( Aspect.MAGIC, 16 );
+		RecipeRegistry.BLOCK_THAUMIUMGEARBOX = ThaumcraftApi.addCrucibleRecipe( ResearchRegistry.ResearchTypes.THAUMIUMGEARBOX.getKey(),
+			ThaumiumGearBox, IronGearBox, tgbAspects );
 
 	}
 
@@ -165,6 +173,9 @@ public class RecipeRegistry
 		ItemStack AnnihilationCore = aeMaterials.materialAnnihilationCore.stack( 1 );
 
 		ItemStack WoodGear = aeMaterials.materialWoodenGear.stack( 1 );
+
+		ItemStack Certus1 = aeMaterials.materialCertusQuartzCrystal.stack( 1 );
+		ItemStack Certus2 = aeMaterials.materialCertusQuartzCrystal.stack( 2 );
 
 		// My items
 		ItemStack DiffusionCore = teItems.DiffusionCore.getStack();
@@ -193,6 +204,16 @@ public class RecipeRegistry
 		ironGearAspects.add( Aspect.FIRE, 1 );
 		RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRONGEARBOX.getKey(), IronGear,
 			ironGearAspects, new Object[] { " I ", "IWI", " I ", 'I', IronIngot, 'W', WoodGear } );
+
+		// Certus quartz duplication
+		if( ThaumicEnergistics.config.allowedToDuplicateCertusQuartz() )
+		{
+			AspectList certusAspects = new AspectList();
+			certusAspects.add( Aspect.CRYSTAL, 4 );
+			certusAspects.add( Aspect.ORDER, 2 );
+			RecipeRegistry.DUPE_CERTUS = ThaumcraftApi.addCrucibleRecipe( ResearchRegistry.ResearchTypes.CERTUSDUPE.getKey(), Certus2, Certus1,
+				certusAspects );
+		}
 	}
 
 	private static void registerMECells( final Items teItems )

@@ -13,6 +13,11 @@ public interface IConfig
 	public boolean allowedToCraftInfusionProvider();
 
 	/**
+	 * Controls if Certus Quartz can be duped in the crucible.
+	 */
+	public boolean allowedToDuplicateCertusQuartz();
+
+	/**
 	 * Controls the conversion ratio of essentia/fluid. <BR>
 	 * 1 essentia unit is converted to this many mb's of fluid.
 	 */
