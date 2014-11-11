@@ -427,15 +427,15 @@ public class AEAspectRegister
 						}
 						else
 						{
-							System.out.println( "Missing ingredient clause for" );
-							System.out.println( ing.getClass() );
-							System.out.println();
+							//System.out.println( "Missing ingredient clause for" );
+							//System.out.println( ing.getClass() );
+							//System.out.println();
 						}
 
 					}
 					catch( Exception e )
 					{
-						System.out.println( e );
+						//System.out.println( e );
 					}
 
 					// Skip null stacks
@@ -458,7 +458,7 @@ public class AEAspectRegister
 			}
 			else
 			{
-				System.out.println( this.displayName + ": getIngredients() failed" );
+				//System.out.println( this.displayName + ": getIngredients() failed" );
 			}
 		}
 
@@ -930,20 +930,35 @@ public class AEAspectRegister
 	}
 
 	/**
-	 * Updates the aspects for the Essentia cells.
+	 * Updates the aspects for the thaumic energistics items.
 	 */
-	private void registerTECells()
+	private void registerTEItems()
 	{
 		// Get the aspect list for a 1k cell
-		AspectList aspects = ThaumcraftApiHelper.getObjectAspects( AEApi.instance().items().itemCell1k.stack( 1 ) ).copy();
+		AspectList cellAspects = ThaumcraftApiHelper.getObjectAspects( AEApi.instance().items().itemCell1k.stack( 1 ) ).copy();
 
-		aspects.add( Aspect.MAGIC, 3 );
-		aspects.add( Aspect.AURA, 5 );
+		cellAspects.add( Aspect.MAGIC, 3 );
+		cellAspects.add( Aspect.AURA, 5 );
 
-		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_1k.getStack(), aspects );
-		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_4k.getStack(), aspects );
-		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_16k.getStack(), aspects );
-		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_64k.getStack(), aspects );
+		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_1k.getStack(), cellAspects );
+		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_4k.getStack(), cellAspects );
+		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_16k.getStack(), cellAspects );
+		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_64k.getStack(), cellAspects );
+
+		// Set the aspects for the iron gearbox
+		AspectList ironGearboxAspects = new AspectList();
+		ironGearboxAspects.add( Aspect.METAL, 7 );
+		ironGearboxAspects.add( Aspect.MECHANISM, 5 );
+		ironGearboxAspects.add( Aspect.EARTH, 2 );
+		ironGearboxAspects.add( Aspect.ENTROPY, 2 );
+		ThaumcraftApi.registerObjectTag( TEApi.instance().blocks().IronGearBox.getStack(), ironGearboxAspects );
+
+		// Set the aspects for the thaumium gearbox
+		AspectList thaumGearbox = ironGearboxAspects.copy();
+		thaumGearbox.add( Aspect.MAGIC, 10 );
+		thaumGearbox.add( Aspect.MECHANISM, 5 );
+		thaumGearbox.add( Aspect.METAL, 3 );
+		ThaumcraftApi.registerObjectTag( TEApi.instance().blocks().ThaumiumGearBox.getStack(), thaumGearbox );
 
 	}
 
@@ -983,7 +998,7 @@ public class AEAspectRegister
 		}
 
 		// Finally register my cells
-		this.registerTECells();
+		this.registerTEItems();
 
 		// Cleanup
 		this.NORMAL_RECIPES = null;

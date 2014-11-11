@@ -9,7 +9,7 @@ import net.minecraft.inventory.Container;
  * 
  */
 public abstract class AbstractGuiConstantsACT
-	extends AbstractGuiWidgetHost
+	extends AbstractGuiWithScrollbar
 {
 
 	/**
@@ -41,7 +41,7 @@ public abstract class AbstractGuiConstantsACT
 	 * Minimum transparency of the aspect if there is not enough in the wand.
 	 */
 	protected static final float ASPECT_COST_MAX_ALPHA = 0.75F;
-	
+
 	/**
 	 * ID of the clear grid button
 	 */
@@ -60,15 +60,15 @@ public abstract class AbstractGuiConstantsACT
 	protected static final int BUTTON_SORT_ORDER_ID = 1;
 
 	protected static final int BUTTON_SORT_ORDER_POS_X = -18;
-	
+
 	protected static final int BUTTON_SORT_ORDER_POS_Y = 8;
 
 	protected static final int BUTTON_SORT_DIR_ID = 2;
 
 	protected static final int BUTTON_SORT_DIR_POS_X = BUTTON_SORT_ORDER_POS_X;
-	
+
 	protected static final int BUTTON_SORT_DIR_POS_Y = BUTTON_SORT_ORDER_POS_Y + 20;
-	
+
 	protected static final int BUTTON_SORT_SIZE = 16;
 
 	/**
@@ -125,16 +125,11 @@ public abstract class AbstractGuiConstantsACT
 	 * Y position of the scroll bar
 	 */
 	protected static final int SCROLLBAR_POS_Y = 18;
-	
+
 	/**
 	 * Height of the scroll bar
 	 */
 	protected static final int SCROLLBAR_HEIGHT = 52;
-	
-	/**
-	 * Position + Height of the scroll bar.
-	 */
-	protected static final int SCROLLBAR_VERTICAL_BOUND = AbstractGuiConstantsACT.SCROLLBAR_HEIGHT + AbstractGuiConstantsACT.SCROLLBAR_POS_Y;
 
 	/**
 	 * X offset to draw the search field.
@@ -170,6 +165,11 @@ public abstract class AbstractGuiConstantsACT
 	 * Y position of the title string
 	 */
 	protected static final int TITLE_POS_Y = 6;
+
+	/**
+	 * Determines how often to update the tooltip when the mouse is not moving.
+	 */
+	protected static final long WIDGET_TOOLTIP_UPDATE_INTERVAL = 3000L;
 
 	public AbstractGuiConstantsACT( final Container container )
 	{

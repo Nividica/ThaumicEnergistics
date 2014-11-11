@@ -401,7 +401,7 @@ public final class EssentiaItemContainerHelper
 	 * @param metadata
 	 * @return
 	 */
-	public IEssentiaContainerPermission getContainerInfo( final Item item, final int metadata ) // TODO
+	public IEssentiaContainerPermission getContainerInfo( final Item item, final int metadata )
 	{
 		// Is the item not null?
 		if( item != null )

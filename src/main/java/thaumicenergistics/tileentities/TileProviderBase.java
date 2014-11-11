@@ -283,6 +283,54 @@ public abstract class TileProviderBase
 	}
 
 	/**
+	 * Injects essentia into the ME network.
+	 * 
+	 * @param aspect
+	 * @param amount
+	 * @param mode
+	 * @return
+	 */
+	protected int injectEssentiaIntoNetwork( final Aspect aspect, final int amount, final Actionable mode )
+	{
+		// Ensure there is a request
+		if( amount == 0 )
+		{
+			return 0;
+		}
+
+		// Ensure we have a monitor
+		if( this.getFluidMonitor() )
+		{
+			// Get the gas version of the aspect
+			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( aspect );
+
+			// Is there a fluid version of the aspect?
+			if( essentiaGas == null )
+			{
+				return 0;
+			}
+
+			IAEFluidStack request = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, amount );
+
+			// Simulate the injection
+			IAEFluidStack fluidStack = this.monitor.injectItems( request, mode, new MachineSource( this ) );
+
+			// Was all injected?
+			if( fluidStack == null )
+			{
+				return amount;
+			}
+
+			// Return the amount not injected
+			return amount - (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+		}
+
+		// No monitor
+		return 0;
+
+	}
+
+	/**
 	 * Called when our channel updates.
 	 */
 	protected abstract void onChannelUpdate();

@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -29,8 +28,6 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.client.gui.AEBaseGui;
-import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.me.ItemRepo;
 import appeng.client.render.AppEngRenderItem;
@@ -70,26 +67,6 @@ public class GuiArcaneCraftingTerminal
 	private final ItemRepo repo;
 
 	/**
-	 * Scroll bar
-	 */
-	private final GuiScrollbar scrollBar;
-
-	/**
-	 * Serves as a graphics call bridge for the scroll bar.
-	 */
-	private AEBaseGui aeGuiBridge;
-
-	/**
-	 * True if the scroll bar has mouse focus.
-	 */
-	private boolean isScrollBarHeld = false;
-
-	/**
-	 * The last Y position of the mouse when the scroll bar has mouse focus.
-	 */
-	private int scrollHeldPrevY = 0;
-
-	/**
 	 * How the items are sorted.
 	 */
 	private SortOrder sortingOrder = SortOrder.NAME;
@@ -98,6 +75,22 @@ public class GuiArcaneCraftingTerminal
 	 * What direction are the items sorted.
 	 */
 	private SortDir sortingDirection = SortDir.ASCENDING;
+
+	/**
+	 * Tracks mouse movement.
+	 */
+	private int previousMouseX = 0;
+	private int previousMouseY = 0;
+
+	/**
+	 * Tracks what widget was under the mouse last draw.
+	 */
+	private WidgetAEItem previousWidgetUnderMouse = null;
+
+	/**
+	 * Tracks the last time the tooltip was updated.
+	 */
+	private long lastTooltipUpdateTime = 0;
 
 	public GuiArcaneCraftingTerminal( final AEPartArcaneCraftingTerminal part, final EntityPlayer player )
 	{
@@ -126,9 +119,6 @@ public class GuiArcaneCraftingTerminal
 								AbstractGuiConstantsACT.ME_ITEM_POS_Y + ( row * AbstractWidget.WIDGET_SIZE ), this.aeItemRenderer );
 			}
 		}
-
-		// Create the scrollbar
-		this.scrollBar = new GuiScrollbar();
 
 		// Create the repo
 		this.repo = new ItemRepo( this.scrollBar, this );
@@ -366,14 +356,14 @@ public class GuiArcaneCraftingTerminal
 	@Override
 	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
+		// Call super
+		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
+
 		// Draw the title
 		this.fontRendererObj.drawString( this.guiTitle, AbstractGuiConstantsACT.TITLE_POS_X, AbstractGuiConstantsACT.TITLE_POS_Y, 0x000000 );
 
 		// Draw the search field.
 		this.searchField.drawTextBox();
-
-		// Draw the scroll bar
-		this.scrollBar.draw( this.aeGuiBridge );
 
 		// Enable lighting
 		GL11.glEnable( GL11.GL_LIGHTING );
@@ -391,21 +381,63 @@ public class GuiArcaneCraftingTerminal
 			this.drawCraftingAspects( craftingCost );
 		}
 
-		// Do we have a widget under the mouse?
-		if( widgetUnderMouse != null )
+		// Should we force a tooltip update?
+		boolean forceTooltipUpdate = ( ( System.currentTimeMillis() - this.lastTooltipUpdateTime ) >= AbstractGuiConstantsACT.WIDGET_TOOLTIP_UPDATE_INTERVAL );
+
+		// Has the mouse moved, or timeout reached?
+		if( forceTooltipUpdate || ( this.previousMouseX != mouseX ) || ( this.previousMouseY != mouseY ) )
 		{
-			// Get the tooltip from the widget
-			widgetUnderMouse.getTooltip( this.tooltip );
-		}
-		else
-		{
-			// Get the tooltip from the buttons
-			this.addTooltipFromButtons( mouseX, mouseY );
+			// Do we have a widget under the mouse?
+			if( widgetUnderMouse != null )
+			{
+				// Has the widget changed?
+				if( forceTooltipUpdate || ( widgetUnderMouse != this.previousWidgetUnderMouse ) )
+				{
+					// Clear the tooltip
+					this.tooltip.clear();
+
+					// Get the tooltip from the widget
+					widgetUnderMouse.getTooltip( this.tooltip );
+
+					// Set the time
+					this.lastTooltipUpdateTime = System.currentTimeMillis();
+				}
+
+				// Set the previous widget
+				this.previousWidgetUnderMouse = widgetUnderMouse;
+			}
+			else
+			{
+				// Clear the tooltip
+				this.tooltip.clear();
+
+				// Set the time
+				this.lastTooltipUpdateTime = System.currentTimeMillis();
+
+				// Get the tooltip from the buttons
+				this.addTooltipFromButtons( mouseX, mouseY );
+			}
+
+			// Set the previous position
+			this.previousMouseX = mouseX;
+			this.previousMouseY = mouseY;
 		}
 
 		// Draw the tooltip
-		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, false );
 
+	}
+
+	/**
+	 * Returns the scroll bar parameters.
+	 * 
+	 * @return
+	 */
+	@Override
+	protected ScrollbarParams getScrollbarParameters()
+	{
+		return new ScrollbarParams( AbstractGuiConstantsACT.SCROLLBAR_POS_X, AbstractGuiConstantsACT.SCROLLBAR_POS_Y,
+						AbstractGuiConstantsACT.SCROLLBAR_HEIGHT );
 	}
 
 	/**
@@ -443,34 +475,6 @@ public class GuiArcaneCraftingTerminal
 				// Update the widgets
 				this.updateMEWidgets();
 			}
-		}
-		// Home Key
-		else if( keyID == Keyboard.KEY_HOME )
-		{
-			// Move the scroll all the way to home
-			this.scrollBar.click( this.aeGuiBridge, AbstractGuiConstantsACT.SCROLLBAR_POS_X + 1, AbstractGuiConstantsACT.SCROLLBAR_POS_Y + 1 );
-			this.scrollBar.wheel( 1 );
-			this.updateMEWidgets();
-		}
-		// End Key
-		else if( keyID == Keyboard.KEY_END )
-		{
-			// Move the scroll all the way to end
-			this.scrollBar.click( this.aeGuiBridge, AbstractGuiConstantsACT.SCROLLBAR_POS_X + 1, AbstractGuiConstantsACT.SCROLLBAR_VERTICAL_BOUND );
-			this.updateMEWidgets();
-
-		}
-		// Up Key
-		else if( keyID == Keyboard.KEY_UP )
-		{
-			this.scrollBar.wheel( 1 );
-			this.updateMEWidgets();
-		}
-		// Down Key
-		else if( keyID == Keyboard.KEY_DOWN )
-		{
-			this.scrollBar.wheel( -1 );
-			this.updateMEWidgets();
 		}
 		else
 		{
@@ -522,26 +526,6 @@ public class GuiArcaneCraftingTerminal
 			}
 		}
 
-		// Is the mouse over the scroll bar area?
-		if( GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.SCROLLBAR_POS_Y, AbstractGuiConstantsACT.SCROLLBAR_POS_X,
-			AbstractGuiConstantsACT.SCROLLBAR_HEIGHT, this.scrollBar.getWidth(), mouseX, mouseY, this.guiLeft, this.guiTop ) )
-		{
-			// The scroll bar now has mouse focus
-			this.isScrollBarHeld = true;
-
-			// Mark this Y
-			this.scrollHeldPrevY = mouseY;
-
-			// Jump the scroll to the mouse
-			this.scrollBar.click( this.aeGuiBridge, mouseX - this.guiLeft, mouseY - this.guiTop );
-
-			// Update the widgets
-			this.updateMEWidgets();
-
-			// Do not pass to super
-			return;
-		}
-
 		// Was the mouse right-clicked over the search field?
 		if( ( mouseButton == GuiHelper.MOUSE_BUTTON_RIGHT ) &&
 						GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.SEARCH_POS_Y, AbstractGuiConstantsACT.SEARCH_POS_X,
@@ -566,6 +550,13 @@ public class GuiArcaneCraftingTerminal
 
 		// Pass to super
 		super.mouseClicked( mouseX, mouseY, mouseButton );
+	}
+
+	@Override
+	protected void onScrollbarMoved()
+	{
+		// Update the widgets
+		this.updateMEWidgets();
 	}
 
 	/**
@@ -631,67 +622,6 @@ public class GuiArcaneCraftingTerminal
 			new PacketServerArcaneCraftingTerminal().createRequestSetSort( this.player, this.sortingOrder, this.sortingDirection )
 							.sendPacketToServer();
 		}
-	}
-
-	@Override
-	public void drawScreen( final int mouseX, final int mouseY, final float mouseBtn )
-	{
-		// Call super
-		super.drawScreen( mouseX, mouseY, mouseBtn );
-
-		// Is the mouse holding the scroll bar?
-		if( this.isScrollBarHeld )
-		{
-			// Is the mouse button still being held down?
-			if( Mouse.isButtonDown( GuiHelper.MOUSE_BUTTON_LEFT ) )
-			{
-				// Has the Y changed?
-				if( mouseY == this.scrollHeldPrevY )
-				{
-					return;
-				}
-
-				boolean correctForZero = false;
-
-				// Mark the Y
-				this.scrollHeldPrevY = mouseY;
-
-				// Calculate the Y position for the scroll bar
-				int repY = mouseY - this.guiTop;
-
-				// Has the mouse exceeded the 'upper' bound?
-				if( repY > AbstractGuiConstantsACT.SCROLLBAR_VERTICAL_BOUND )
-				{
-					repY = AbstractGuiConstantsACT.SCROLLBAR_VERTICAL_BOUND;
-				}
-				// Has the mouse exceeded the 'lower' bound?
-				else if( repY <= AbstractGuiConstantsACT.SCROLLBAR_POS_Y )
-				{
-					repY = AbstractGuiConstantsACT.SCROLLBAR_POS_Y;
-
-					// We will have to correct for zero
-					correctForZero = true;
-				}
-
-				// Update the scroll bar
-				this.scrollBar.click( this.aeGuiBridge, AbstractGuiConstantsACT.SCROLLBAR_POS_X + 1, repY );
-
-				// Should we correct for zero?
-				if( correctForZero )
-				{
-					this.scrollBar.wheel( 1 );
-				}
-
-				// Update the widgets
-				this.updateMEWidgets();
-			}
-			else
-			{
-				// The scroll bar no longer has mouse focus
-				this.isScrollBarHeld = false;
-			}
-		}
-
 	}
 
 	/**
@@ -790,49 +720,6 @@ public class GuiArcaneCraftingTerminal
 		// Create the clear grid button
 		this.buttonList.add( new ButtonClearCraftingGrid( AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_ID, this.guiLeft +
 						AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_POS_Y, 8, 8 ) );
-
-		// Create the AE bridge
-		this.aeGuiBridge = new AEBaseGui( this.inventorySlots )
-		{
-
-			@Override
-			public void bindTexture( final String file )
-			{
-				this.bindTexture( "appliedenergistics2", file );
-			}
-
-			@Override
-			public void bindTexture( final String base, final String file )
-			{
-				GuiArcaneCraftingTerminal.this.mc.getTextureManager().bindTexture( new ResourceLocation( base, "textures/" + file ) );
-			}
-
-			@Override
-			public void drawBG( final int arg0, final int arg1, final int arg2, final int arg3 )
-			{
-				// Ignored
-			}
-
-			@Override
-			public void drawFG( final int arg0, final int arg1, final int arg2, final int arg3 )
-			{
-				// Ignored
-			}
-
-			@Override
-			public void drawTexturedModalRect( final int posX, final int posY, final int sourceOffsetX, final int sourceOffsetY, final int width,
-												final int height )
-			{
-				GuiArcaneCraftingTerminal.this.drawTexturedModalRect( posX, posY, sourceOffsetX, sourceOffsetY, width, height );
-			}
-		};
-
-		// Setup the scroll bar
-		this.scrollBar.setLeft( AbstractGuiConstantsACT.SCROLLBAR_POS_X ).setTop( AbstractGuiConstantsACT.SCROLLBAR_POS_Y )
-						.setHeight( AbstractGuiConstantsACT.SCROLLBAR_HEIGHT );
-
-		// No scrolling until we get items
-		this.scrollBar.setRange( 0, 0, 1 );
 
 		// Add sort order button
 		this.buttonList.add( new ButtonSortingMode( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID, this.guiLeft +

@@ -499,7 +499,7 @@ public class HandlerItemEssentiaCell
 	}
 
 	/**
-	 * TODO: Implement this
+	 * TODO: Implement Essentia cell priority
 	 */
 	@Override
 	public int getPriority()
@@ -654,7 +654,7 @@ public class HandlerItemEssentiaCell
 	}
 
 	/**
-	 * TODO: Implement this
+	 * TODO: Implement Essentia cell pre-formated
 	 * 
 	 * @return
 	 */
@@ -674,7 +674,7 @@ public class HandlerItemEssentiaCell
 	}
 
 	/**
-	 * TODO: Implement this.
+	 * TODO: Implement if Essentia cell is pre-formated
 	 */
 	@Override
 	public boolean isPrioritized( final IAEFluidStack input )

@@ -5,6 +5,7 @@ import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import net.minecraft.client.Minecraft;
@@ -74,7 +75,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	protected static IAEItemStack readAEItemStack( ByteBuf stream )
+	protected static IAEItemStack readAEItemStack( final ByteBuf stream )
 	{
 		IAEItemStack itemStack;
 		try
@@ -97,7 +98,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	protected static Aspect readAspect( ByteBuf stream )
+	protected static Aspect readAspect( final ByteBuf stream )
 	{
 		return Aspect.aspects.get( readString( stream ) );
 	}
@@ -108,7 +109,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	protected static AbstractAEPartBase readPart( ByteBuf stream )
+	protected static AbstractAEPartBase readPart( final ByteBuf stream )
 	{
 		ForgeDirection side = ForgeDirection.getOrientation( stream.readInt() );
 
@@ -123,7 +124,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	protected static EntityPlayer readPlayer( ByteBuf stream )
+	protected static EntityPlayer readPlayer( final ByteBuf stream )
 	{
 		EntityPlayer player = null;
 
@@ -142,7 +143,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	protected static String readString( ByteBuf stream )
+	protected static String readString( final ByteBuf stream )
 	{
 		byte[] stringBytes = new byte[stream.readInt()];
 
@@ -157,7 +158,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	protected static TileEntity readTileEntity( ByteBuf stream )
+	protected static TileEntity readTileEntity( final ByteBuf stream )
 	{
 		World world = AbstractPacket.readWorld( stream );
 
@@ -170,7 +171,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 * @return
 	 */
-	protected static World readWorld( ByteBuf stream )
+	protected static World readWorld( final ByteBuf stream )
 	{
 		World world = DimensionManager.getWorld( stream.readInt() );
 
@@ -191,7 +192,7 @@ public abstract class AbstractPacket
 	 * @param itemStack
 	 * @param stream
 	 */
-	protected static void writeAEItemStack( IAEItemStack itemStack, ByteBuf stream )
+	protected static void writeAEItemStack( final IAEItemStack itemStack, final ByteBuf stream )
 	{
 		// Do we have a valid stack?
 		if( itemStack != null )
@@ -214,7 +215,7 @@ public abstract class AbstractPacket
 	 * @param aspect
 	 * @param stream
 	 */
-	protected static void writeAspect( Aspect aspect, ByteBuf stream )
+	protected static void writeAspect( final Aspect aspect, final ByteBuf stream )
 	{
 		String aspectName = "";
 
@@ -232,7 +233,7 @@ public abstract class AbstractPacket
 	 * @param part
 	 * @param stream
 	 */
-	protected static void writePart( AbstractAEPartBase part, ByteBuf stream )
+	protected static void writePart( final AbstractAEPartBase part, final ByteBuf stream )
 	{
 		stream.writeInt( part.getSide().ordinal() );
 
@@ -246,7 +247,7 @@ public abstract class AbstractPacket
 	 * @param stream
 	 */
 	@SuppressWarnings("null")
-	protected static void writePlayer( EntityPlayer player, ByteBuf stream )
+	protected static void writePlayer( final EntityPlayer player, final ByteBuf stream )
 	{
 		boolean validPlayer = ( player != null );
 
@@ -265,7 +266,7 @@ public abstract class AbstractPacket
 	 * @param string
 	 * @param stream
 	 */
-	protected static void writeString( String string, ByteBuf stream )
+	protected static void writeString( final String string, final ByteBuf stream )
 	{
 		byte[] stringBytes = string.getBytes( Charsets.UTF_8 );
 
@@ -280,7 +281,7 @@ public abstract class AbstractPacket
 	 * @param entity
 	 * @param stream
 	 */
-	protected static void writeTileEntity( TileEntity entity, ByteBuf stream )
+	protected static void writeTileEntity( final TileEntity entity, final ByteBuf stream )
 	{
 		writeWorld( entity.getWorldObj(), stream );
 		stream.writeInt( entity.xCoord );
@@ -294,7 +295,7 @@ public abstract class AbstractPacket
 	 * @param world
 	 * @param stream
 	 */
-	protected static void writeWorld( World world, ByteBuf stream )
+	protected static void writeWorld( final World world, final ByteBuf stream )
 	{
 		stream.writeInt( world.provider.dimensionId );
 	}
@@ -391,12 +392,17 @@ public abstract class AbstractPacket
 			{
 
 				@Override
-				public void write( int byteToWrite ) throws IOException
+				public void write( final int byteToWrite ) throws IOException
 				{
 					// Write the byte to the packet stream
 					packetStream.writeByte( byteToWrite & 0xFF );
 				}
-			} );
+			} )
+			{
+				{
+					this.def.setLevel( Deflater.BEST_COMPRESSION );
+				}
+			};
 
 			// Compress
 			compressor.write( streamToCompress.array(), 0, streamToCompress.writerIndex() );
@@ -444,7 +450,7 @@ public abstract class AbstractPacket
 	 * Reads data from the packet stream.
 	 */
 	@Override
-	public void fromBytes( ByteBuf stream )
+	public void fromBytes( final ByteBuf stream )
 	{
 		this.mode = stream.readByte();
 		this.player = AbstractPacket.readPlayer( stream );
@@ -466,7 +472,7 @@ public abstract class AbstractPacket
 	 * Writes data into the packet stream.
 	 */
 	@Override
-	public void toBytes( ByteBuf stream )
+	public void toBytes( final ByteBuf stream )
 	{
 		// Write the mode
 		stream.writeByte( this.mode );

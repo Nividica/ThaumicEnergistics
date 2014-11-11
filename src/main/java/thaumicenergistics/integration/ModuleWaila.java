@@ -7,7 +7,7 @@ import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import thaumicenergistics.blocks.BlockProviderBase;
+import thaumicenergistics.blocks.AbstractBlockProviderBase;
 import thaumicenergistics.tileentities.TileProviderBase;
 import appeng.core.localization.WailaText;
 import cpw.mods.fml.common.event.FMLInterModComms;
@@ -41,7 +41,7 @@ public class ModuleWaila
 	public static void callbackRegister( IWailaRegistrar registrar )
 	{
 		// Register the providers
-		registrar.registerBodyProvider( ModuleWaila.instance, BlockProviderBase.class );
+		registrar.registerBodyProvider( ModuleWaila.instance, AbstractBlockProviderBase.class );
 	}
 
 	/**

@@ -1,4 +1,12 @@
-﻿11/8/2014 0.8.0b
+﻿11/11/2014 0.8.0b
+  Fixed cell recipe.
+  Fixes #77: ACT no longer leaks memory on client side.
+  Gearboxes and Providers are now wrenchable.
+  Essentia cells can now hold 12 types.
+  Fixes #76: Added scrollbar to Essentia terminal.
+  Fixes #74: Essentia provider now has suction.
+
+11/8/2014 0.8.0b
   Added Certus Quartz Duplication.
   Added configuration option to disable certus duplication.
 
@@ -24,7 +32,7 @@
 10/29/2014 0.7.4b
   Bugfix: Import/Export buses got caught in a loop and imported a full jar amount on neighbor change.
   IO bus redstone pulse mode now works properly
-  Bugfix: Export bus would not export into reservoir if aspect to export, and aspect in reservoir did not match.
+  Bugfix: Export bus would not export into reservoir if aspect to export and aspect in reservoir did not match.
   Compatibility fix with ExtraCells2: Server crash when exporting essentia gas using the Fluid Formation Plane.
   Notice: Essentia gas will simply disperse if exported using the Fluid Formation Plane.
 

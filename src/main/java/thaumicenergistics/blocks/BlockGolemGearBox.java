@@ -5,7 +5,7 @@ import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 
 public class BlockGolemGearBox
-	extends BlockGearBoxBase
+	extends AbstractBlockGearBoxBase
 {
 
 	public BlockGolemGearBox()

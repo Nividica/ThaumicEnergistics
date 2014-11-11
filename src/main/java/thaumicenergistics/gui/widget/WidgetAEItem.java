@@ -40,49 +40,11 @@ public class WidgetAEItem
 	 * @param yPos
 	 * @param aeItemRenderer
 	 */
-	public WidgetAEItem( IWidgetHost hostGUI, int xPos, int yPos, AppEngRenderItem aeItemRenderer )
+	public WidgetAEItem( final IWidgetHost hostGUI, final int xPos, final int yPos, final AppEngRenderItem aeItemRenderer )
 	{
 		super( hostGUI, xPos, yPos );
 
 		this.aeItemRenderer = aeItemRenderer;
-	}
-
-	@Override
-	public void getTooltip( final List<String> tooltip )
-	{
-		if( this.aeItemStack != null )
-		{
-			// Get the stack
-			ItemStack stack = this.aeItemStack.getItemStack();
-
-			// Get the tooltip list
-			List<String> stackTooltip = stack.getTooltip( WidgetAEItem.MC.thePlayer, WidgetAEItem.MC.gameSettings.advancedItemTooltips );
-
-			// Set colors and add
-			for( int index = 0; index < stackTooltip.size(); index++ )
-			{
-				if( index == 0 )
-				{
-					// Item name based on rarity
-					stackTooltip.set( index, stack.getRarity().rarityColor + stackTooltip.get( index ) );
-				}
-				else
-				{
-					// The rest grey
-					stackTooltip.set( index, EnumChatFormatting.GRAY + stackTooltip.get( index ) );
-				}
-
-				// Add the item tooltip line
-				tooltip.add( stackTooltip.get( index ) );
-			}
-
-			// Get the mod name
-			String modName = ( (AEItemStack)this.aeItemStack ).getModID();
-			modName = modName.substring( 0, 1 ).toUpperCase() + modName.substring( 1 );
-			
-			// Add the mod name
-			tooltip.add( EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + modName );
-		}
 	}
 
 	/**
@@ -126,6 +88,44 @@ public class WidgetAEItem
 	}
 
 	@Override
+	public void getTooltip( final List<String> tooltip )
+	{
+		if( this.aeItemStack != null )
+		{
+			// Get the stack
+			ItemStack stack = this.aeItemStack.getItemStack();
+
+			// Get the tooltip list
+			List<String> stackTooltip = stack.getTooltip( WidgetAEItem.MC.thePlayer, WidgetAEItem.MC.gameSettings.advancedItemTooltips );
+
+			// Set colors and add
+			for( int index = 0; index < stackTooltip.size(); index++ )
+			{
+				if( index == 0 )
+				{
+					// Item name based on rarity
+					stackTooltip.set( index, stack.getRarity().rarityColor + stackTooltip.get( index ) );
+				}
+				else
+				{
+					// The rest grey
+					stackTooltip.set( index, EnumChatFormatting.GRAY + stackTooltip.get( index ) );
+				}
+
+				// Add the item tooltip line
+				tooltip.add( stackTooltip.get( index ) );
+			}
+
+			// Get the mod name
+			String modName = ( (AEItemStack)this.aeItemStack ).getModID();
+			modName = modName.substring( 0, 1 ).toUpperCase() + modName.substring( 1 );
+
+			// Add the mod name
+			tooltip.add( EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + modName );
+		}
+	}
+
+	@Override
 	public void mouseClicked()
 	{
 		// Unused
@@ -136,7 +136,7 @@ public class WidgetAEItem
 	 * 
 	 * @param itemStack
 	 */
-	public void setItemStack( IAEItemStack itemStack )
+	public void setItemStack( final IAEItemStack itemStack )
 	{
 		this.aeItemStack = itemStack;
 	}

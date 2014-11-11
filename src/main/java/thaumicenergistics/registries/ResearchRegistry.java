@@ -29,7 +29,8 @@ public class ResearchRegistry
 			INFUSION ("INFUSION", "ARTIFICE", -6, 0),
 			VISPOWER ("VISPOWER", "THAUMATURGY", 2, -1),
 			COREUSE ("COREUSE", "GOLEMANCY", 4, 3),
-			DUPE ("ALCHEMICALDUPLICATION", "ALCHEMY", -6, -7);
+			DUPE ("ALCHEMICALDUPLICATION", "ALCHEMY", -6, -7),
+			WARDED ("WARDEDARCANA", "ARTIFICE", 0, 2);
 
 		private String realResearchKey;
 		private String realResearchCategory;
@@ -175,6 +176,13 @@ public class ResearchRegistry
 						continue;
 					}
 					break;
+
+				case WARDED:
+					if( !Config.wardedStone )
+					{
+						// Skip this, warded research is disabled
+						continue;
+					}
 
 				default:
 					break;
@@ -460,9 +468,24 @@ public class ResearchRegistry
 						new ResearchPage( storageComponentRecipes ), new ResearchPage( RecipeRegistry.STORAGE_CASING ),
 						new ResearchPage( storageCellsShaped ), new ResearchPage( storageCellsShapeless ) };
 
+		String[] storageParents;
+
+		// Is the warded stone research enabled?
+		if( Config.wardedStone )
+		{
+			storageParents = new String[3];
+			storageParents[2] = PseudoResearchTypes.WARDED.getKey();
+		}
+		else
+		{
+			storageParents = new String[2];
+		}
+		storageParents[0] = ResearchTypes.BASIC.getKey();
+		storageParents[1] = PseudoResearchTypes.DISTILESSENTIA.getKey();
+
 		// Create the storage research
 		ResearchTypes.STORAGE.createResearchItem( storageAspectList, COMPLEXITY_MEDIUM, storageIcon, storagePages );
-		ResearchTypes.STORAGE.researchItem.setParents( ResearchTypes.BASIC.getKey(), PseudoResearchTypes.DISTILESSENTIA.getKey() );
+		ResearchTypes.STORAGE.researchItem.setParents( storageParents );
 		ResearchTypes.STORAGE.researchItem.setParentsHidden( "DISTILESSENTIA" );
 		ResearchTypes.STORAGE.researchItem.registerResearchItem();
 	}

@@ -1,7 +1,6 @@
 package thaumicenergistics.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,11 +18,11 @@ import thaumicenergistics.tileentities.TileProviderBase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class BlockProviderBase
-	extends BlockContainer
+public abstract class AbstractBlockProviderBase
+	extends AbstractBlockAEWrenchable
 {
 
-	protected BlockProviderBase( final Material material )
+	protected AbstractBlockProviderBase( final Material material )
 	{
 		super( material );
 
@@ -69,7 +68,7 @@ public abstract class BlockProviderBase
 	}
 
 	@Override
-	public boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
+	public final boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
 	{
 		// This is a solid cube
 		return true;
@@ -85,7 +84,8 @@ public abstract class BlockProviderBase
 	}
 
 	@Override
-	public void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase entity, final ItemStack itemstack )
+	public final void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase entity,
+										final ItemStack itemstack )
 	{
 		// Set the owner
 		if( entity instanceof EntityPlayer )

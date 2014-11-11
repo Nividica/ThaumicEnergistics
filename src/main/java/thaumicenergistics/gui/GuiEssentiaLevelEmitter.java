@@ -187,7 +187,7 @@ public class GuiEssentiaLevelEmitter
 	 * @param player
 	 * Player viewing the gui.
 	 */
-	public GuiEssentiaLevelEmitter( AEPartEssentiaLevelEmitter part, EntityPlayer player )
+	public GuiEssentiaLevelEmitter( final AEPartEssentiaLevelEmitter part, final EntityPlayer player )
 	{
 		// Call super
 		super( new ContainerPartEssentiaLevelEmitter( part, player ) );
@@ -211,7 +211,7 @@ public class GuiEssentiaLevelEmitter
 	 * Draw the gui background
 	 */
 	@Override
-	protected void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY )
+	protected void drawGuiContainerBackgroundLayer( final float alpha, final int mouseX, final int mouseY )
 	{
 		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -227,7 +227,7 @@ public class GuiEssentiaLevelEmitter
 	 * Called when the player types a key
 	 */
 	@Override
-	protected void keyTyped( char key, int keyID )
+	protected void keyTyped( final char key, final int keyID )
 	{
 		// Pass to super
 		super.keyTyped( key, keyID );
@@ -258,7 +258,7 @@ public class GuiEssentiaLevelEmitter
 	 * Called when the player clicks a mouse button
 	 */
 	@Override
-	protected void mouseClicked( int mouseX, int mouseY, int mouseBtn )
+	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseBtn )
 	{
 		// Pass to super
 		super.mouseClicked( mouseX, mouseY, mouseBtn );
@@ -275,7 +275,7 @@ public class GuiEssentiaLevelEmitter
 	 * Called when a button is clicked.
 	 */
 	@Override
-	public void actionPerformed( GuiButton button )
+	public void actionPerformed( final GuiButton button )
 	{
 		// Get the index of the button that was clicked
 		int index = button.id;
@@ -307,7 +307,7 @@ public class GuiEssentiaLevelEmitter
 	 * Draw the foreground
 	 */
 	@Override
-	public void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
+	public void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
 		// Draw the title
 		this.fontRendererObj.drawString( AEPartsEnum.EssentiaLevelEmitter.getStatName(), GuiEssentiaLevelEmitter.TITLE_POS_X,
@@ -329,7 +329,7 @@ public class GuiEssentiaLevelEmitter
 		if( this.addTooltipFromButtons( mouseX, mouseY ) )
 		{
 			// Draw the tooltip
-			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
 		}
 	}
 
@@ -337,7 +337,7 @@ public class GuiEssentiaLevelEmitter
 	 * Draws the screen and all the components in it.
 	 */
 	@Override
-	public void drawScreen( int x, int y, float f )
+	public void drawScreen( final int x, final int y, final float f )
 	{
 		// Call super
 		super.drawScreen( x, y, f );
@@ -436,7 +436,7 @@ public class GuiEssentiaLevelEmitter
 	 * 
 	 * @param mode
 	 */
-	public void onServerUpdateRedstoneMode( RedstoneMode mode )
+	public void onServerUpdateRedstoneMode( final RedstoneMode mode )
 	{
 		( (ButtonRedstoneModes)this.buttonList.get( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX ) ).setRedstoneMode( mode );
 	}
@@ -446,12 +446,12 @@ public class GuiEssentiaLevelEmitter
 	 * 
 	 * @param amount
 	 */
-	public void onServerUpdateWantedAmount( long amount )
+	public void onServerUpdateWantedAmount( final long amount )
 	{
 		this.amountField.setText( Long.toString( amount ) );
 	}
 
-	public boolean setFilteredAspectFromItemstack( ItemStack itemStack )
+	public boolean setFilteredAspectFromItemstack( final ItemStack itemStack )
 	{
 		Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( itemStack );
 
@@ -469,7 +469,7 @@ public class GuiEssentiaLevelEmitter
 	 * Sets the filtered aspect
 	 */
 	@Override
-	public void updateAspects( List<Aspect> aspectList )
+	public void updateAspects( final List<Aspect> aspectList )
 	{
 		if( ( aspectList == null ) || ( aspectList.isEmpty() ) )
 		{

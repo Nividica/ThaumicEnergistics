@@ -38,7 +38,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 @SideOnly(Side.CLIENT)
 public abstract class AbstractGuiCellTerminalBase
-	extends AbstractGuiWidgetHost
+	extends AbstractGuiWithScrollbar
 	implements IAspectSelectorGui
 {
 
@@ -60,7 +60,7 @@ public abstract class AbstractGuiCellTerminalBase
 	/**
 	 * Width of the gui
 	 */
-	private static final int GUI_SIZE_X = 176;
+	private static final int GUI_SIZE_X = 195;
 
 	/**
 	 * Height of the gui
@@ -151,6 +151,21 @@ public abstract class AbstractGuiCellTerminalBase
 	 * ID of the sort mode button.
 	 */
 	private static final int SORT_MODE_BUTTON_ID = 0;
+
+	/**
+	 * X position of the scroll bar
+	 */
+	private static final int SCROLLBAR_POS_X = 175;
+
+	/**
+	 * Y position of the scroll bar
+	 */
+	private static final int SCROLLBAR_POS_Y = 0;
+
+	/**
+	 * Height of the scroll bar
+	 */
+	private static final int SCROLLBAR_HEIGHT = 70;
 
 	/**
 	 * Local translation of the title.
@@ -275,45 +290,22 @@ public abstract class AbstractGuiCellTerminalBase
 	}
 
 	/**
-	 * Updates the scroll position based on mouse wheel movement.
+	 * Updates the scroll bar's range.
 	 */
-	private void updateScrollPosition()
+	private void updateScrollMaximum()
 	{
-		// Get the mouse wheel movement
-		int deltaMouseWheel = Mouse.getDWheel();
+		// Calculate the number of widgets the will overflow
+		double overflowWidgets = Math.max( 0, this.matchingSearchWidgets.size() - AbstractGuiCellTerminalBase.WIDGETS_PER_PAGE );
 
-		if( deltaMouseWheel < 0 )
+		// Calculate how many rows will overflow
+		int overflowRows = (int)Math.ceil( overflowWidgets / AbstractGuiCellTerminalBase.WIDGETS_PER_ROW );
+
+		// Update if the range has changed
+		if( overflowRows != this.scrollBar.getRange() )
 		{
-			this.currentScroll++ ;
-		}
-		else if( deltaMouseWheel > 0 )
-		{
-			this.currentScroll-- ;
-		}
-
-		// Lower Bounds check the scrolling
-		if( this.currentScroll < 0 )
-		{
-			this.currentScroll = 0;
-		}
-		else
-		{
-			// Get how many rows is required for the display-able widgets
-			int requiredRows = (int)Math.ceil( (double)this.matchingSearchWidgets.size() / (double)AbstractGuiCellTerminalBase.WIDGETS_PER_ROW );
-
-			// Subtract from the required rows the starting row
-			int rowsToDraw = requiredRows - this.currentScroll;
-
-			// Calculate how many blank rows that would leave
-			int blankRows = AbstractGuiCellTerminalBase.ROWS_PER_PAGE - rowsToDraw;
-
-			// Would that scroll leave any blank rows?
-			if( blankRows > 0 )
-			{
-				// Subtract the blank rows from the scroll, bounding to 0
-				this.currentScroll = Math.max( 0, this.currentScroll - blankRows );
-			}
-
+			// Update the scroll bar
+			this.scrollBar.setRange( 0, overflowRows, 1 );
+			this.onScrollbarMoved();
 		}
 	}
 
@@ -337,6 +329,9 @@ public abstract class AbstractGuiCellTerminalBase
 
 		// Sort
 		this.sortMatchingList();
+
+		// Update scrollbar
+		this.updateScrollMaximum();
 
 	}
 
@@ -365,6 +360,9 @@ public abstract class AbstractGuiCellTerminalBase
 	@Override
 	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
+		// Call super
+		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
+
 		// Draw the title
 		this.fontRendererObj.drawString( this.guiTitle, AbstractGuiCellTerminalBase.TITLE_POS_X, AbstractGuiCellTerminalBase.TITLE_POS_Y, 0 );
 
@@ -396,7 +394,14 @@ public abstract class AbstractGuiCellTerminalBase
 		}
 
 		// Draw the tooltip
-		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
+	}
+
+	@Override
+	protected ScrollbarParams getScrollbarParameters()
+	{
+		return new ScrollbarParams( AbstractGuiCellTerminalBase.SCROLLBAR_POS_X, AbstractGuiCellTerminalBase.SCROLLBAR_POS_Y,
+						AbstractGuiCellTerminalBase.SCROLLBAR_HEIGHT );
 	}
 
 	/**
@@ -414,13 +419,17 @@ public abstract class AbstractGuiCellTerminalBase
 			// Slot the screen.
 			this.mc.thePlayer.closeScreen();
 		}
-		else
+		else if( this.searchBar.isFocused() )
 		{
 			// Get the search term
 			this.searchTerm = this.searchBar.getText().trim().toLowerCase();
 
 			// Re-search the widgets
 			this.updateSearch();
+		}
+		else
+		{
+			super.keyTyped( key, keyID );
 		}
 
 	}
@@ -499,6 +508,12 @@ public abstract class AbstractGuiCellTerminalBase
 
 	}
 
+	@Override
+	protected void onScrollbarMoved()
+	{
+		this.currentScroll = this.scrollBar.getCurrentScroll();
+	}
+
 	protected abstract void sortModeButtonClicked( ComparatorMode modeRequested );
 
 	/**
@@ -526,9 +541,6 @@ public abstract class AbstractGuiCellTerminalBase
 		// Anything to draw?
 		if( !this.matchingSearchWidgets.isEmpty() )
 		{
-			// Get the scroll position
-			this.updateScrollPosition();
-
 			// Calculate the starting index
 			int startingIndex = this.currentScroll * AbstractGuiCellTerminalBase.WIDGETS_PER_ROW;
 
@@ -615,6 +627,27 @@ public abstract class AbstractGuiCellTerminalBase
 	}
 
 	/**
+	 * If the mouse wheel moves, updates the scrollbar
+	 */
+	@Override
+	public void handleMouseInput()
+	{
+		// Call super
+		super.handleMouseInput();
+
+		// Get the delta z for the scroll wheel
+		int deltaZ = Mouse.getEventDWheel();
+
+		// Did the wheel move?
+		if( deltaZ != 0 )
+		{
+			// Inform the scroll bar
+			this.scrollBar.wheel( deltaZ );
+			this.onScrollbarMoved();
+		}
+	}
+
+	/**
 	 * Sets the gui up.
 	 */
 	@Override
@@ -678,6 +711,9 @@ public abstract class AbstractGuiCellTerminalBase
 			// Create the widget
 			this.aspectWidgets.add( new WidgetAspectSelector( this, aspectStack, 0, 0, this.player ) );
 		}
+
+		// Update the scrollbar
+		this.updateScrollMaximum();
 
 		// Update the search results
 		this.updateSearch();

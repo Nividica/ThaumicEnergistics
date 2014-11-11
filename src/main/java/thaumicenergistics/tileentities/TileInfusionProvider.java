@@ -19,6 +19,8 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.me.GridAccessException;
 import cpw.mods.fml.common.FMLCommonHandler;
 
+// TODO: Display runes when providing essentia
+
 public class TileInfusionProvider
 	extends TileProviderBase
 	implements IAspectSource, IMEMonitorHandlerReceiver<IAEFluidStack>

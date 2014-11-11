@@ -37,6 +37,7 @@ thaumicenergistics.item.material.iron.gear.name=Iron Gear
 #Tooltips
 thaumicenergistics.tooltip.essentia.cell.bytes=%d of %d bytes used.
 thaumicenergistics.tooltip.essentia.cell.types=%d of %d essentia types stored.
+thaumicenergistics.tooltip.essentia.cell.details=Hold shift for details.
 thaumicenergistics.tooltip.button.clear.crafting=Deposit Crafting Grid
 thaumicenergistics.tooltip.button.void=Allow Void?
 thaumicenergistics.tooltip.button.void.disabled=Do not void essentia
@@ -90,7 +91,7 @@ thaumicenergistics.research_page.TEESSTERM.2=The §lEssentia Level Emitter§r wi
 # Research Essentia Provider
 tc.research_name.thaumicenergistics.TEESSPROV=Essentia Provider
 tc.research_text.thaumicenergistics.TEESSPROV=Ask and you shall receive.
-thaumicenergistics.research_page.TEESSPROV.1=While import and export buses are useful for an array of jobs, they lack the flexibility to interface with complex alchemical constructs. To overcome this limitation you have created a device that will allow these constructs to request essentia directly from the network.<BR>Using the §lEssentia Provider§r should prove to be a simple task. Simply connect it to both the network and construct, and it will do the rest.
+thaumicenergistics.research_page.TEESSPROV.1=While import and export buses are useful for an array of jobs, they lack the flexibility to interface with complex alchemical constructs. To overcome this limitation you have created a device that will allow these constructs to request essentia directly from the network.<BR>Using the §lEssentia Provider§r should prove to be a simple task. Simply connect it to both the network and construct, and it will do the rest.<BR>Like an essentia buffer it has a small amount of suction(8).
 
 # Research Infusion Provider
 tc.research_name.thaumicenergistics.TEINFPROV=Infusion Provider

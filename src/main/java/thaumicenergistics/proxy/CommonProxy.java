@@ -81,7 +81,8 @@ public class CommonProxy
 		// Add infusion provider
 		movableRegistry.whiteListTileEntity( TileInfusionProvider.class );
 
-		// TODO Add golem crank
+		// Added gearbox
+		movableRegistry.whiteListTileEntity( TileGearBox.class );
 	}
 
 	/**

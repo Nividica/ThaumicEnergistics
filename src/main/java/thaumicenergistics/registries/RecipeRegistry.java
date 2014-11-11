@@ -81,13 +81,13 @@ public class RecipeRegistry
 		ItemStack QuartzGlass = aeBlocks.blockQuartzGlass.stack( 1 );
 
 		// My items
-		ItemStack EssentiaCell_1k = teItems.EssentiaCell_1k.getStack();
+		ItemStack EssentiaComp_1k = teItems.EssentiaStorageComponent_1k.getStack();
 
-		ItemStack EssentiaCell_4k = teItems.EssentiaCell_4k.getStack();
+		ItemStack EssentiaComp_4k = teItems.EssentiaStorageComponent_4k.getStack();
 
-		ItemStack EssentiaCell_16k = teItems.EssentiaCell_16k.getStack();
+		ItemStack EssentiaComp_16k = teItems.EssentiaStorageComponent_16k.getStack();
 
-		ItemStack EssentiaCell_64k = teItems.EssentiaCell_64k.getStack();
+		ItemStack EssentiaComp_64k = teItems.EssentiaStorageComponent_64k.getStack();
 
 		// Item Groups		
 		ArrayList<ItemStack> GroupQuartz = new ArrayList<ItemStack>( 3 );
@@ -99,7 +99,7 @@ public class RecipeRegistry
 		AspectList storage1kAspects = new AspectList();
 		storage1kAspects.add( Aspect.FIRE, 3 );
 		storage1kAspects.add( Aspect.ORDER, 1 );
-		RecipeRegistry.STORAGE_COMPONENT_1K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaCell_1k,
+		RecipeRegistry.STORAGE_COMPONENT_1K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaComp_1k,
 			storage1kAspects, new Object[] { "EQE", "QPQ", "EQE", 'E', EtheralEssence, 'Q', CertusQuartz, 'P', LogicProcessor } );
 		RecipeRegistry.replaceRecipeIngredientWithGroup( (ShapedArcaneRecipe)RecipeRegistry.STORAGE_COMPONENT_1K, CertusQuartz, GroupQuartz );
 
@@ -107,24 +107,24 @@ public class RecipeRegistry
 		AspectList storage4kAspects = new AspectList();
 		storage4kAspects.add( Aspect.FIRE, 3 );
 		storage4kAspects.add( Aspect.ORDER, 2 );
-		RecipeRegistry.STORAGE_COMPONENT_4K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaCell_4k,
-			storage4kAspects, new Object[] { "EPE", "1G1", "E1E", 'E', EtheralEssence, '1', EssentiaCell_1k, 'P', CalculationProcessor, 'G',
+		RecipeRegistry.STORAGE_COMPONENT_4K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaComp_4k,
+			storage4kAspects, new Object[] { "EPE", "1G1", "E1E", 'E', EtheralEssence, '1', EssentiaComp_1k, 'P', CalculationProcessor, 'G',
 							QuartzGlass } );
 
 		// 16K Storage Component
 		AspectList storage16kAspects = new AspectList();
 		storage16kAspects.add( Aspect.FIRE, 3 );
 		storage16kAspects.add( Aspect.ORDER, 4 );
-		RecipeRegistry.STORAGE_COMPONENT_16K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaCell_16k,
-			storage16kAspects, new Object[] { "SPE", "4G4", "E4S", 'E', EtheralEssence, 'S', SalisMundus, '4', EssentiaCell_4k, 'P',
+		RecipeRegistry.STORAGE_COMPONENT_16K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaComp_16k,
+			storage16kAspects, new Object[] { "SPE", "4G4", "E4S", 'E', EtheralEssence, 'S', SalisMundus, '4', EssentiaComp_4k, 'P',
 							EngineeringProcessor, 'G', QuartzGlass } );
 
 		// 16K Storage Component
 		AspectList storage64kAspects = new AspectList();
 		storage64kAspects.add( Aspect.FIRE, 3 );
 		storage64kAspects.add( Aspect.ORDER, 8 );
-		RecipeRegistry.STORAGE_COMPONENT_64K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaCell_64k,
-			storage64kAspects, new Object[] { "SPS", "6G6", "S6S", 'S', SalisMundus, '6', EssentiaCell_16k, 'P', EngineeringProcessor, 'G',
+		RecipeRegistry.STORAGE_COMPONENT_64K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaComp_64k,
+			storage64kAspects, new Object[] { "SPS", "6G6", "S6S", 'S', SalisMundus, '6', EssentiaComp_16k, 'P', EngineeringProcessor, 'G',
 							QuartzGlass } );
 	}
 
@@ -210,7 +210,7 @@ public class RecipeRegistry
 		{
 			AspectList certusAspects = new AspectList();
 			certusAspects.add( Aspect.CRYSTAL, 4 );
-			certusAspects.add( Aspect.ORDER, 2 );
+			certusAspects.add( Aspect.WATER, 2 );
 			RecipeRegistry.DUPE_CERTUS = ThaumcraftApi.addCrucibleRecipe( ResearchRegistry.ResearchTypes.CERTUSDUPE.getKey(), Certus2, Certus1,
 				certusAspects );
 		}

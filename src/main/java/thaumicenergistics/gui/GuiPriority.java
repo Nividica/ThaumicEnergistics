@@ -31,7 +31,7 @@ public class GuiPriority
 
 			public final int width;
 
-			private EnumButtonWidth( int width )
+			private EnumButtonWidth( final int width )
 			{
 				this.width = width;
 			}
@@ -63,7 +63,7 @@ public class GuiPriority
 		 * @param buttonWidth
 		 * @param amount
 		 */
-		public AdjustmentButtonDef( EnumButtonWidth buttonWidth, int amount )
+		public AdjustmentButtonDef( final EnumButtonWidth buttonWidth, final int amount )
 		{
 			// Set the width
 			this.width = buttonWidth.width;
@@ -83,7 +83,7 @@ public class GuiPriority
 		 * @param yPosition
 		 * @return
 		 */
-		public GuiButton makeButton( int ID, int xPosition, int yPosition )
+		public GuiButton makeButton( final int ID, final int xPosition, final int yPosition )
 		{
 			return new GuiButton( ID, xPosition, yPosition, this.width, AdjustmentButtonDef.BUTTON_HEIGHT, this.caption );
 		}
@@ -199,7 +199,7 @@ public class GuiPriority
 	 * @param host
 	 * @param player
 	 */
-	public GuiPriority( IPriorityHost host, EntityPlayer player )
+	public GuiPriority( final IPriorityHost host, final EntityPlayer player )
 	{
 		// Call super and pass the priority container
 		super( new ContainerPriority( host, player ) );
@@ -219,7 +219,7 @@ public class GuiPriority
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY )
+	protected void drawGuiContainerBackgroundLayer( final float alpha, final int mouseX, final int mouseY )
 	{
 		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -235,7 +235,7 @@ public class GuiPriority
 	 * Called when the player types a key
 	 */
 	@Override
-	protected void keyTyped( char key, int keyID )
+	protected void keyTyped( final char key, final int keyID )
 	{
 		// Pass to super
 		super.keyTyped( key, keyID );
@@ -271,7 +271,7 @@ public class GuiPriority
 	 * Called when a button is clicked.
 	 */
 	@Override
-	public void actionPerformed( GuiButton button )
+	public void actionPerformed( final GuiButton button )
 	{
 		// Was the priority button clicked?
 		if( button.id == GuiPriority.PART_SWITCH_BUTTON_ID )
@@ -306,7 +306,7 @@ public class GuiPriority
 	 * Draw the foreground
 	 */
 	@Override
-	public void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
+	public void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
 		// Draw the title
 		this.fontRendererObj.drawString( this.title, GuiPriority.TITLE_POS_X, GuiPriority.TITLE_POS_Y, 0 );
@@ -318,7 +318,7 @@ public class GuiPriority
 		if( this.addTooltipFromButtons( mouseX, mouseY ) )
 		{
 			// Draw the tooltip
-			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
 		}
 	}
 
@@ -394,7 +394,7 @@ public class GuiPriority
 	 * 
 	 * @param priority
 	 */
-	public void onServerSendPriority( int priority )
+	public void onServerSendPriority( final int priority )
 	{
 		// Set the textbox text
 		this.amountField.setText( Integer.toString( priority ) );

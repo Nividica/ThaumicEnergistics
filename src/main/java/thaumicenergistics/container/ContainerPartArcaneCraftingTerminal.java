@@ -260,12 +260,12 @@ public class ContainerPartArcaneCraftingTerminal
 		// Set wand slot number
 		this.wandSlotNumber = wandSlot.slotNumber;
 
-		// Register the container with terminal
-		terminal.registerListener( this );
-
 		// Is this server side?
 		if( EffectiveSide.isServerSide() )
 		{
+			// Register the container with terminal
+			terminal.registerListener( this );
+
 			// Get the AE monitor
 			this.monitor = terminal.getGridBlock().getItemMonitor();
 
@@ -276,7 +276,6 @@ public class ContainerPartArcaneCraftingTerminal
 				this.monitor.addListener( this, null );
 			}
 		}
-
 	}
 
 	/**
@@ -933,7 +932,11 @@ public class ContainerPartArcaneCraftingTerminal
 				else
 				{
 					// Half amount up to half of maxStackSize
-					amountToExtract = (int)Math.min( maxStackSize / 2L, requestedStack.getStackSize() / 2L );
+					double halfRequest = requestedStack.getStackSize() / 2.0D;
+					double halfMax = maxStackSize / 2.0D;
+					halfRequest = Math.ceil( halfRequest );
+					halfMax = Math.ceil( halfMax );
+					amountToExtract = (int)Math.min( halfMax, halfRequest );
 				}
 				break;
 
@@ -1073,14 +1076,14 @@ public class ContainerPartArcaneCraftingTerminal
 		// Pass to super
 		super.onContainerClosed( player );
 
-		if( this.terminal != null )
-		{
-			this.terminal.removeListener( this );
-		}
-
 		// Is this server side?
 		if( EffectiveSide.isServerSide() )
 		{
+			if( this.terminal != null )
+			{
+				this.terminal.removeListener( this );
+			}
+
 			if( this.monitor != null )
 			{
 				this.monitor.removeListener( this );

@@ -5,7 +5,7 @@ import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 
 public class BlockGearBox
-	extends BlockGearBoxBase
+	extends AbstractBlockGearBoxBase
 {
 	@Override
 	public IIcon getIcon( final int side, final int meta )

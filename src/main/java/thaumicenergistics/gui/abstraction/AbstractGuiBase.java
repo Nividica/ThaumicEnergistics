@@ -114,7 +114,6 @@ public abstract class AbstractGuiBase
 	 * Thickness of the tooltip's borders.
 	 */
 	private static final int TOOLTIP_BORDER_SIZE = 3;
-	
 
 	/**
 	 * Lines to draw when drawTooltip is called.
@@ -182,11 +181,12 @@ public abstract class AbstractGuiBase
 
 	/**
 	 * Adds to the tooltip based on which button the mouse is over.
+	 * 
 	 * @param mouseX
 	 * @param mouseY
 	 * @return True when a tooltip was added, false otherwise.
 	 */
-	protected boolean addTooltipFromButtons( int mouseX, int mouseY )
+	protected boolean addTooltipFromButtons( final int mouseX, final int mouseY )
 	{
 		// Is the mouse over any buttons?
 		for( Object obj : this.buttonList )
@@ -208,7 +208,7 @@ public abstract class AbstractGuiBase
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -224,7 +224,7 @@ public abstract class AbstractGuiBase
 	 * @param posY
 	 * Y anchor position to draw the tooltip. Generally the mouse's Y position.
 	 */
-	protected final void drawTooltip( int posX, int posY )
+	protected final void drawTooltip( int posX, int posY, final boolean clearTooltipAfterDraw )
 	{
 		if( !this.tooltip.isEmpty() )
 		{
@@ -236,13 +236,12 @@ public abstract class AbstractGuiBase
 
 			// Disable depth testing
 			GL11.glDisable( GL11.GL_DEPTH_TEST );
-			
+
 			// Bounds check the position
 			if( posY < 0 )
 			{
 				posY = 0;
 			}
-			
 
 			// Assume string length is zero
 			int maxStringLength_px = 0;
@@ -322,9 +321,12 @@ public abstract class AbstractGuiBase
 
 			// Reenable scaling
 			GL11.glEnable( GL12.GL_RESCALE_NORMAL );
-			
+
 			// Clear the tooltip
-			this.tooltip.clear();
+			if( clearTooltipAfterDraw )
+			{
+				this.tooltip.clear();
+			}
 		}
 	}
 

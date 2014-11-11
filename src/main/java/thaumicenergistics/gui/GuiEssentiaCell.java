@@ -32,13 +32,13 @@ public class GuiEssentiaCell
 	 * @param z
 	 * Z position of the chest.
 	 */
-	public GuiEssentiaCell( EntityPlayer player, World world, int x, int y, int z )
+	public GuiEssentiaCell( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
 		super( player, new ContainerEssentiaCell( player, world, x, y, z ) );
 	}
 
 	@Override
-	protected void sortModeButtonClicked( ComparatorMode modeRequested )
+	protected void sortModeButtonClicked( final ComparatorMode modeRequested )
 	{
 		// Pass to the container
 		( (ContainerEssentiaCell)this.inventorySlots ).sendSortModeChangeRequest( modeRequested );

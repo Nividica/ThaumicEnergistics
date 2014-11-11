@@ -227,7 +227,6 @@ public class PacketClientArcaneCraftingTerminal
 	@Override
 	public void writeData( final ByteBuf stream )
 	{
-
 		switch ( this.mode )
 		{
 			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST:

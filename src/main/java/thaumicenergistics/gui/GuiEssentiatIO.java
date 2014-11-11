@@ -163,7 +163,7 @@ public class GuiEssentiatIO
 	 * @param partBus
 	 * @param player
 	 */
-	public GuiEssentiatIO( AEPartEssentiaIO partBus, EntityPlayer player )
+	public GuiEssentiatIO( final AEPartEssentiaIO partBus, final EntityPlayer player )
 	{
 		// Call super
 		super( new ContainerPartEssentiaIOBus( partBus, player ) );
@@ -204,7 +204,7 @@ public class GuiEssentiatIO
 	 * Draws the GUI background layer
 	 */
 	@Override
-	protected void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY )
+	protected void drawGuiContainerBackgroundLayer( final float alpha, final int mouseX, final int mouseY )
 	{
 		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -236,7 +236,7 @@ public class GuiEssentiatIO
 	 * Called when the mouse is clicked.
 	 */
 	@Override
-	protected void mouseClicked( int mouseX, int mouseY, int mouseButton )
+	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
 		// Call super
 		super.mouseClicked( mouseX, mouseY, mouseButton );
@@ -275,7 +275,7 @@ public class GuiEssentiatIO
 	 * Called when a button is pressed
 	 */
 	@Override
-	public void actionPerformed( GuiButton button )
+	public void actionPerformed( final GuiButton button )
 	{
 		// Call super
 		super.actionPerformed( button );
@@ -288,7 +288,7 @@ public class GuiEssentiatIO
 	}
 
 	@Override
-	public void drawGuiContainerForegroundLayer( int mouseX, int mouseY )
+	public void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
 		// Call super
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
@@ -329,7 +329,7 @@ public class GuiEssentiatIO
 		}
 
 		// Draw the tooltip
-		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
 	}
 
 	@Override
@@ -376,7 +376,7 @@ public class GuiEssentiatIO
 	 * 
 	 * @param filterSize
 	 */
-	public void onReceiveFilterSize( byte filterSize )
+	public void onReceiveFilterSize( final byte filterSize )
 	{
 		// Inform our part
 		this.part.receiveFilterSize( filterSize );
@@ -400,7 +400,7 @@ public class GuiEssentiatIO
 	 * 
 	 * @param newRedstoneControled
 	 */
-	public void onReceiveRedstoneControlled( boolean newRedstoneControled )
+	public void onReceiveRedstoneControlled( final boolean newRedstoneControled )
 	{
 		// Do we differ?
 		if( this.redstoneControlled != newRedstoneControled )
@@ -424,7 +424,7 @@ public class GuiEssentiatIO
 		}
 	}
 
-	public void onReceiveRedstoneMode( RedstoneMode redstoneMode )
+	public void onReceiveRedstoneMode( final RedstoneMode redstoneMode )
 	{
 		// Are we redstone controlled, and have the redstone mod button
 		if( this.redstoneControlled && ( this.buttonList.size() > 0 ) )
@@ -437,7 +437,7 @@ public class GuiEssentiatIO
 	}
 
 	@Override
-	public void updateAspects( List<Aspect> aspectList )
+	public void updateAspects( final List<Aspect> aspectList )
 	{
 		// Inform our part
 		this.part.receiveFilterList( aspectList );

@@ -1,7 +1,6 @@
 package thaumicenergistics.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,8 +15,8 @@ import thaumicenergistics.tileentities.TileGearBox;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class BlockGearBoxBase
-	extends BlockContainer
+public abstract class AbstractBlockGearBoxBase
+	extends AbstractBlockAEWrenchable
 {
 	/**
 	 * Determines if thaumcraft golems are allowed to interact with the gearbox.
@@ -27,7 +26,7 @@ public abstract class BlockGearBoxBase
 	/**
 	 * Creates the block.
 	 */
-	public BlockGearBoxBase()
+	public AbstractBlockGearBoxBase()
 	{
 		// Set material type
 		super( Material.ground );
@@ -37,6 +36,33 @@ public abstract class BlockGearBoxBase
 
 		// Set sound type
 		this.setStepSound( Block.soundTypeStone );
+
+		// Set hardness
+		this.setHardness( 0.6F );
+	}
+
+	@Override
+	public boolean canPlayerInteract( final EntityPlayer player )
+	{
+		// Fake player?
+		if( player instanceof FakePlayer )
+		{
+			// Are golems allowed to interact?
+			if( !this.allowGolemInteraction )
+			{
+				// Golem interaction not allowed
+				return false;
+			}
+
+			// Is the fake player a golem?
+			if( !player.getGameProfile().getName().equalsIgnoreCase( "FakeThaumcraftGolem" ) )
+			{
+				// Not a golem
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -74,7 +100,7 @@ public abstract class BlockGearBoxBase
 	 * Is solid.
 	 */
 	@Override
-	public boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
+	public final boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
 	{
 		// This is a solid cube
 		return true;
@@ -84,32 +110,26 @@ public abstract class BlockGearBoxBase
 	 * Determine if the tile should be cranked.
 	 */
 	@Override
-	public boolean onBlockActivated( final World w, final int x, final int y, final int z, final EntityPlayer p, final int side, final float hitX,
-										final float hitY, final float hitZ )
+	public boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
-		// Fake player?
-		if( p instanceof FakePlayer )
-		{
-			// Are golems allowed to interact?
-			if( !this.allowGolemInteraction )
-			{
-				// Golem interaction not allowed
-				return false;
-			}
-
-			// Is the fake player a golem?
-			if( !p.getGameProfile().getName().equalsIgnoreCase( "FakeThaumcraftGolem" ) )
-			{
-				// Not a golem
-				return false;
-			}
-		}
-
 		// Get the tile
-		TileGearBox gearBox = (TileGearBox)w.getTileEntity( x, y, z );
+		TileGearBox gearBox = (TileGearBox)world.getTileEntity( x, y, z );
 
 		// Crank it
 		return gearBox.crank();
+	}
+
+	/**
+	 * One of the adjacent blocks has changed.
+	 */
+	@Override
+	public void onNeighborBlockChange( final World w, final int x, final int y, final int z, final Block neighbor )
+	{
+		// Get the tile
+		TileGearBox gearBox = (TileGearBox)w.getTileEntity( x, y, z );
+
+		// Update it
+		gearBox.updateCrankables();
 	}
 
 	/**

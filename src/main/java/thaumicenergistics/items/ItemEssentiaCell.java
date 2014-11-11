@@ -45,15 +45,9 @@ public class ItemEssentiaCell
 
 	private static final double[] IDLE_DRAIN_AMOUNTS = { 0.5D, 1.0D, 1.5D, 2.0D };
 
-	private static final int MAX_TYPES = 8;
+	private static final int MAX_TYPES = 12;
 
-	private static final int CELL_STATUS_MISSING = 0;
-
-	private static final int CELL_STATUS_HAS_ROOM = 1;
-
-	private static final int CELL_STATUS_TYPES_FULL = 2;
-
-	private static final int CELL_STATUS_FULL = 3;
+	private static final int CELL_STATUS_MISSING = 0, CELL_STATUS_HAS_ROOM = 1, CELL_STATUS_TYPES_FULL = 2, CELL_STATUS_FULL = 3;
 
 	private IIcon[] icons;
 
@@ -92,12 +86,12 @@ public class ItemEssentiaCell
 				else
 				{
 					// It does not, set to gray
-					aspectChatColor = EnumChatFormatting.GRAY.toString();
+					aspectChatColor = EnumChatFormatting.WHITE.toString();
 				}
 
 				// Build the display string
 				String aspectInfo = String.format( "%s%s%s x %d", aspectChatColor, currentStack.getAspectName( player ),
-					EnumChatFormatting.GRAY.toString(), currentStack.amount );
+					EnumChatFormatting.WHITE.toString(), currentStack.amount );
 
 				// Add to the list
 				displayList.add( aspectInfo );
@@ -147,6 +141,12 @@ public class ItemEssentiaCell
 		{
 			// Add information about the essentia types in the cell
 			this.addContentsToCellDescription( cellHandler, displayList, player );
+		}
+		else
+		{
+			// Let the user know they can hold shift
+			displayList.add( EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString() +
+							StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.essentia.cell.details" ) );
 		}
 
 	}
@@ -220,7 +220,6 @@ public class ItemEssentiaCell
 		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
 		{
 			listSubItems.add( new ItemStack( item, 1, i ) );
-
 		}
 	}
 

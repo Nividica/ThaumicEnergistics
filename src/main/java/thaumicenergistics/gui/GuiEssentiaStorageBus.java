@@ -290,7 +290,7 @@ public class GuiEssentiaStorageBus
 		}
 
 		// Draw the tooltip
-		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop );
+		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
 	}
 
 	@Override

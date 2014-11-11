@@ -8,156 +8,196 @@ import appeng.api.implementations.tiles.ICrankable;
 public class TileGearBox
 	extends TileEntity
 {
+	/**
+	 * ID of the tileentity
+	 */
 	public static final String TILE_ID = "TileGearBox";
 
 	/**
-	 * Total amount of power per crank.
+	 * Amount of power generated each time the gearbox is cranked.
+	 * This power is divided among the connected shafts.
 	 */
 	private static final int BASE_POWER = 6;
 
 	/**
-	 * How much accumulated power is required to turn a grinder?
+	 * How much shaft power is required to apply a turn?
 	 */
 	private static final int REQUIRED_POWER = 18;
 
 	/**
+	 * Number of valid sides.
+	 */
+	private static final int SIDE_COUNT = ForgeDirection.VALID_DIRECTIONS.length;
+
+	/**
 	 * Tracks the amount of power being sent per side
 	 */
-	private int[] crankPower = new int[ForgeDirection.VALID_DIRECTIONS.length];
+	private int[] shafts = new int[SIDE_COUNT];
 
 	/**
-	 * Tracks if there is a grinder per side
+	 * Stores the located crankables.
 	 */
-	private boolean[] hasGrinder = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
+	private ICrankable[] crankables = new ICrankable[SIDE_COUNT];
 
 	/**
-	 * Gets the grinder on the specified side.
+	 * Tracks if the crankable can be turned.
+	 */
+	private boolean[] canTurn = new boolean[TileGearBox.SIDE_COUNT];
+
+	/**
+	 * The number of crankable tiles attached to the gearbox.
+	 */
+	private int crankableCount = -1;
+
+	/**
+	 * Calculates the amount of power to send to each crank.
 	 * 
-	 * @param sideIndex
 	 * @return
 	 */
-	private ICrankable getGrinder( final int sideIndex )
+	private int calculateTransferPower()
 	{
-		// Get the side
-		ForgeDirection side = ForgeDirection.VALID_DIRECTIONS[sideIndex];
+		// Number of crankables that can turn.
+		int powerDivisor = 0;
 
-		// Get the tile
-		TileEntity t = this.worldObj.getTileEntity( side.offsetX + this.xCoord, side.offsetY + this.yCoord, side.offsetZ + this.zCoord );
-
-		if( t instanceof ICrankable )
+		// Calculate how many can accept a turn
+		for( int sideIndex = 0; sideIndex < TileGearBox.SIDE_COUNT; sideIndex++ )
 		{
-			return (ICrankable)t;
+			ICrankable c = this.crankables[sideIndex];
+			if( ( c != null ) && ( c.canTurn() ) )
+			{
+				this.canTurn[sideIndex] = true;
+				powerDivisor++ ;
+			}
 		}
 
-		return null;
+		// Can any turn?
+		if( powerDivisor == 0 )
+		{
+			// None can turn
+			return 0;
+		}
+
+		// Calculate the amount of power to send to each
+		return TileGearBox.BASE_POWER / powerDivisor;
 	}
 
 	/**
-	 * Locates attached grinders.
+	 * Applies the specified power to each shaft.
+	 * Once a shaft has enough stored power, it applies a turn to
+	 * its crankable.
 	 * 
-	 * @return Number of attached grinders found.
+	 * @param powerTransfered
 	 */
-	private int locateGrinders( final boolean isServerThread )
+	private void updateShafts( final int powerTransfered )
 	{
-		// Number of attached grinders
-		int grinderCount = 0;
-
-		// Check all sides
-		for( int sideIndex = 0; sideIndex < ForgeDirection.VALID_DIRECTIONS.length; sideIndex++ )
+		for( int sideIndex = 0; sideIndex < TileGearBox.SIDE_COUNT; sideIndex++ )
 		{
-			// Get the side
-			ForgeDirection side = ForgeDirection.VALID_DIRECTIONS[sideIndex];
-
-			// Assume there is not a grinder
-			this.hasGrinder[sideIndex] = false;
-
-			// Get the grinder
-			ICrankable crank = this.getGrinder( sideIndex );
-
-			// Is there a grinder?
-			if( crank == null )
+			// Can this side turn?
+			if( this.canTurn[sideIndex] )
 			{
-				continue;
-			}
+				// Does it have enough power to turn the grinder?
+				if( ( this.shafts[sideIndex] += powerTransfered ) >= TileGearBox.REQUIRED_POWER )
+				{
+					// Reset the power
+					this.shafts[sideIndex] = 0;
 
-			// Can it turn?
-			if( isServerThread && ( !crank.canTurn() ) )
+					// Turn it
+					this.crankables[sideIndex].applyTurn();
+				}
+			}
+			else
 			{
-				continue;
+				// No power is going to this side.
+				this.shafts[sideIndex] = 0;
 			}
-
-			// Is it facing the correct direction?
-			if( crank.canCrankAttach( side.getOpposite() ) )
-			{
-				// Increment the grinder count
-				grinderCount++ ;
-
-				// Mark there is a grinder.
-				this.hasGrinder[sideIndex] = true;
-			}
-
 		}
-
-		return grinderCount;
-	}
-
-	@Override
-	public boolean canUpdate()
-	{
-		return false;
 	}
 
 	/**
-	 * Turns the crankshaft.
+	 * Cranks the gearbox.
 	 * 
 	 * @return
 	 */
 	public boolean crank()
 	{
-		boolean isServerSide = EffectiveSide.isServerSide();
-
-		// Get the grinders
-		int grinderCount = this.locateGrinders( isServerSide );
-
-		boolean hasGrinder = grinderCount > 0;
-
-		// Don't do work on client side.
-		if( !isServerSide )
+		// Update if needed
+		if( this.crankableCount == -1 )
 		{
-			return( hasGrinder );
+			this.updateCrankables();
 		}
 
-		// Were there any grinders?
-		if( hasGrinder )
+		// Are there any crankables?
+		if( this.crankableCount == 0 )
 		{
-			// Calculate the amount of power to send to each
-			int powerTransfered = TileGearBox.BASE_POWER / grinderCount;
+			// Nothing to crank.
+			return false;
+		}
 
-			// Update powers
-			for( int sideIndex = 0; sideIndex < this.crankPower.length; sideIndex++ )
+		// Don't do work on client side
+		if( EffectiveSide.isClientSide() )
+		{
+			return( true );
+		}
+
+		// Get the power transfer amount
+		int powerTransfered = this.calculateTransferPower();
+
+		// Ensure there is some power to transfer
+		if( powerTransfered == 0 )
+		{
+			// Nothing to crank
+			return false;
+		}
+
+		// Update the shafts
+		this.updateShafts( powerTransfered );
+
+		// Did work
+		return true;
+
+	}
+
+	/**
+	 * Locates attached crankables.
+	 * 
+	 * @return Number of attached crankables found.
+	 */
+	public void updateCrankables()
+	{
+		// Reset attached to zero
+		this.crankableCount = 0;
+
+		// Check all sides
+		for( int sideIndex = 0; sideIndex < TileGearBox.SIDE_COUNT; sideIndex++ )
+		{
+			// Get the side
+			ForgeDirection side = ForgeDirection.VALID_DIRECTIONS[sideIndex];
+
+			// Assume there is not a crankable
+			this.crankables[sideIndex] = null;
+
+			// Get the tile
+			TileEntity tile = this.worldObj.getTileEntity( side.offsetX + this.xCoord, side.offsetY + this.yCoord, side.offsetZ + this.zCoord );
+
+			// Is there a crankable?
+			if( !( tile instanceof ICrankable ) )
 			{
-				// Is there a grinder on this side?
-				if( this.hasGrinder[sideIndex] )
-				{
-					// Does it have enough power to turn the grinder?
-					if( ( this.crankPower[sideIndex] += powerTransfered ) >= TileGearBox.REQUIRED_POWER )
-					{
-						// Reset the power
-						this.crankPower[sideIndex] = 0;
-
-						// Turn the grinder
-						this.getGrinder( sideIndex ).applyTurn();
-					}
-				}
-				else
-				{
-					// No power is going to this side.
-					this.crankPower[sideIndex] = 0;
-				}
+				continue;
 			}
+
+			// Get the crankable
+			ICrankable crank = (ICrankable)tile;
+
+			// Is it facing the correct direction?
+			if( crank.canCrankAttach( side.getOpposite() ) )
+			{
+				// Increment the crankable count
+				this.crankableCount++ ;
+
+				// Mark there is a crankable.
+				this.crankables[sideIndex] = crank;
+			}
+
 		}
-
-		return( hasGrinder );
-
 	}
 }
