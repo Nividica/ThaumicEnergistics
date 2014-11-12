@@ -452,71 +452,7 @@ public abstract class ContainerCellTerminalBase
 	@Override
 	public void onListUpdate()
 	{
-		/* TODO: Re-visit this or figure out how to make storage bus send updates
-		// Ignored client side
-		if( EffectiveSide.isClientSide() )
-		{
-			return;
-		}
-
-		// Get the monitor list
-		List<AspectStack> monitorList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
-
-		// Get the iterator
-		Iterator<AspectStack> cachedIterator = this.aspectStackList.iterator();
-
-		// Compare to the current list
-		while( cachedIterator.hasNext() )
-		{
-			// Get the next item
-			AspectStack cachedStack = cachedIterator.next();
-
-			// Get the details about this potential change
-			ImmutablePair<Integer, AspectStack> changeDetails = this.isChange( cachedStack, monitorList );
-
-			// Get the montiorlist index
-			int monitorListIndex = changeDetails.getLeft();
-
-			// Was there a match?
-			if( monitorListIndex != -1 )
-			{
-				// Remove from the list
-				monitorList.remove( monitorListIndex );
-			}
-
-			// Get the changed amount
-			long changedAmount = -changeDetails.getRight().amount;
-
-			// Did anything change?
-			if( changedAmount == 0 )
-			{
-				continue;
-			}
-
-			// Was the item removed?
-			if( monitorListIndex == -1 )
-			{
-				// Remove from the cache
-				cachedIterator.remove();
-			}
-
-			// Update the current stack
-			cachedStack.amount += changedAmount;
-
-			// Inform the subclass
-			this.postAspectStackChange( new AspectStack( cachedStack.aspect, changedAmount ) );
-		}
-
-		// Any remaining items in the monitor list must be new
-		for( AspectStack newStack : monitorList )
-		{
-			// Add the stack to our cache
-			this.aspectStackList.add( newStack );
-
-			// Inform the subclass
-			this.postAspectStackChange( newStack );
-		}
-		*/
+		// Ignored
 	}
 
 	/**

@@ -739,6 +739,9 @@ public class GuiArcaneCraftingTerminal
 	@Override
 	public void onGuiClosed()
 	{
+		// Call super
+		super.onGuiClosed();
+
 		// Disable repeat keys
 		Keyboard.enableRepeatEvents( false );
 	}

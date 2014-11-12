@@ -133,17 +133,14 @@ public class RecipeRegistry
 		// Minecraft items
 		String Cobblestone = "cobblestone";
 
-		// AppEng items
-		ItemStack Crank = aeBlocks.blockCrankHandle.stack( 1 );
-
 		// My items
 		ItemStack IronGear = teItems.IronGear.getStack();
 		ItemStack IronGearBox = TEApi.instance().blocks().IronGearBox.getStack();
 		ItemStack ThaumiumGearBox = TEApi.instance().blocks().ThaumiumGearBox.getStack();
 
 		// Iron Gear Box
-		RecipeRegistry.BLOCK_IRONGEARBOX = new ShapedOreRecipe( IronGearBox, false, new Object[] { "SGS", "GCG", "SGS", 'S', Cobblestone, 'G',
-						IronGear, 'C', Crank } );
+		RecipeRegistry.BLOCK_IRONGEARBOX = new ShapedOreRecipe( IronGearBox, false, new Object[] { "SGS", "GGG", "SGS", 'S', Cobblestone, 'G',
+						IronGear } );
 		GameRegistry.addRecipe( RecipeRegistry.BLOCK_IRONGEARBOX );
 
 		// Thaumium Gear Box
@@ -198,12 +195,12 @@ public class RecipeRegistry
 		RecipeRegistry.MATERIAL_DIFFUSION_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
 			DiffusionCore, diffusionAspects, QuickSilver, EntropyShard, AnnihilationCore );
 
-		// Diffusion Core
+		// Iron Gear
 		AspectList ironGearAspects = new AspectList();
 		ironGearAspects.add( Aspect.EARTH, 1 );
 		ironGearAspects.add( Aspect.FIRE, 1 );
 		RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRONGEARBOX.getKey(), IronGear,
-			ironGearAspects, new Object[] { " I ", "IWI", " I ", 'I', IronIngot, 'W', WoodGear } );
+			ironGearAspects, new Object[] { " I ", " W ", "I I", 'I', IronIngot, 'W', WoodGear } );
 
 		// Certus quartz duplication
 		if( ThaumicEnergistics.config.allowedToDuplicateCertusQuartz() )

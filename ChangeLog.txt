@@ -1,4 +1,8 @@
-﻿11/11/2014 0.8.0b
+﻿11/12/2014 0.8.0b
+  REALLY fixed ACT memory leak.
+  Fixes #31: Temporary(I hope) fix for false essentia amounts after storage bus voids.
+
+11/11/2014 0.8.0b
   Fixed cell recipe.
   Fixes #77: ACT no longer leaks memory on client side.
   Gearboxes and Providers are now wrenchable.

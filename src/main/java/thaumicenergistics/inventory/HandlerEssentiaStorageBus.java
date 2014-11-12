@@ -1,5 +1,6 @@
 package thaumicenergistics.inventory;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.tileentity.TileEntity;
@@ -21,10 +22,13 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
+import com.google.common.collect.ImmutableList;
 
 public class HandlerEssentiaStorageBus
 	implements IMEInventoryHandler<IAEFluidStack>
@@ -494,7 +498,23 @@ public class HandlerEssentiaStorageBus
 			// Mark that we are voiding
 			this.didVoid = true;
 
-			// TODO: send changes to network here.
+			// TODO: Can storage bus voiding be done without reflection?
+			try
+			{
+				// Access the notify method
+				Method postChanges = MEMonitorHandler.class.getDeclaredMethod( "postChangesToListeners", Iterable.class, BaseActionSource.class );
+				postChanges.setAccessible( true );
+
+				// Create the change stack.
+				ImmutableList<IAEFluidStack> changes = ImmutableList.of( AEApi.instance().storage()
+								.createFluidStack( new FluidStack( toFill.getFluid(), -remaining_FU ) ) );
+
+				// Notify the listeners
+				postChanges.invoke( this.partStorageBus.getGridBlock().getFluidMonitor(), changes, new MachineSource( this.partStorageBus ) );
+			}
+			catch( Exception e )
+			{
+			}
 
 			// Report that we accepted it all.
 			return null;

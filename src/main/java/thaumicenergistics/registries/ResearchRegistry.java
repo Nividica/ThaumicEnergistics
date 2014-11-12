@@ -343,15 +343,16 @@ public class ResearchRegistry
 		// Set the research aspects for the Iron Gear Box
 		AspectList igbAspects = new AspectList();
 		igbAspects.add( Aspect.MECHANISM, 6 );
-		igbAspects.add( Aspect.TREE, 4 );
 		igbAspects.add( Aspect.METAL, 4 );
+		igbAspects.add( Aspect.EXCHANGE, 4 );
 
 		// Set the icon for the Iron Gear Box
 		ItemStack igbIcon = TEApi.instance().items().IronGear.getStack();
 
 		// Set the pages for the Iron Gear Box
 		ResearchPage[] igbPages = new ResearchPage[] { new ResearchPage( ResearchTypes.IRONGEARBOX.getPageName( 1 ) ),
-						new ResearchPage( RecipeRegistry.MATERIAL_IRON_GEAR ), new ResearchPage( RecipeRegistry.BLOCK_IRONGEARBOX ) };
+						new ResearchPage( ResearchTypes.IRONGEARBOX.getPageName( 2 ) ), new ResearchPage( RecipeRegistry.MATERIAL_IRON_GEAR ),
+						new ResearchPage( RecipeRegistry.BLOCK_IRONGEARBOX ) };
 
 		// Create the research for the Iron Gear Box
 		ResearchTypes.IRONGEARBOX.createResearchItem( igbAspects, COMPLEXITY_SMALL, igbIcon, igbPages );

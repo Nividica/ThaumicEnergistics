@@ -77,6 +77,7 @@ public abstract class AbstractBlockGearBoxBase
 	/**
 	 * Get the icon from subclass.
 	 */
+	@SideOnly(Side.CLIENT)
 	@Override
 	public abstract IIcon getIcon( final int side, final int meta );
 
