@@ -35,8 +35,8 @@ import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.core.localization.GuiText;
 
-// TODO: Partition support, ICellWorkbenchItem does not work.
 public class ItemEssentiaCell
 	extends ItemStorageBase
 	implements ICellHandler
@@ -130,23 +130,26 @@ public class ItemEssentiaCell
 		displayList.add( typesTip );
 
 		// Is the cell pre-formated?
-		if( cellHandler.isPreformatted() )
+		if( cellHandler.isPartitioned() )
 		{
-			displayList.add( StatCollector.translateToLocal( "Appeng.GuiITooltip.Partitioned" ) + " - " +
-							StatCollector.translateToLocal( "Appeng.GuiITooltip.Precise" ) );
+			displayList.add( GuiText.Partitioned.getLocal() );
 		}
 
-		// Is shift being held?
-		if( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || ( Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) )
+		// Does the cell have anything stored?
+		if( cellHandler.getUsedTypes() > 0 )
 		{
-			// Add information about the essentia types in the cell
-			this.addContentsToCellDescription( cellHandler, displayList, player );
-		}
-		else
-		{
-			// Let the user know they can hold shift
-			displayList.add( EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString() +
-							StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.essentia.cell.details" ) );
+			// Is shift being held?
+			if( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || ( Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) )
+			{
+				// Add information about the essentia types in the cell
+				this.addContentsToCellDescription( cellHandler, displayList, player );
+			}
+			else
+			{
+				// Let the user know they can hold shift
+				displayList.add( EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString() +
+								StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.essentia.cell.details" ) );
+			}
 		}
 
 	}

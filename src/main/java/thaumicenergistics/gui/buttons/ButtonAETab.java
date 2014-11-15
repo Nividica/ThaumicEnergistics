@@ -2,7 +2,7 @@ package thaumicenergistics.gui.buttons;
 
 import java.util.List;
 import net.minecraft.util.StatCollector;
-import thaumicenergistics.texture.EnumAEStateIcons;
+import thaumicenergistics.texture.AEStateIconsEnum;
 
 public class ButtonAETab
 	extends AbstractAEButton
@@ -10,12 +10,12 @@ public class ButtonAETab
 	/**
 	 * Height of the button
 	 */
-	private static final int BUTTON_HEIGHT = EnumAEStateIcons.TAB_BUTTON.getHeight();
+	private static final int BUTTON_HEIGHT = AEStateIconsEnum.TAB_BUTTON.getHeight();
 
 	/**
 	 * Width of the button
 	 */
-	private static final int BUTTON_WIDTH = EnumAEStateIcons.TAB_BUTTON.getWidth();
+	private static final int BUTTON_WIDTH = AEStateIconsEnum.TAB_BUTTON.getWidth();
 
 	private static int ICON_X_POSITION = 3;
 
@@ -26,9 +26,9 @@ public class ButtonAETab
 	/**
 	 * Icon to draw on the button
 	 */
-	protected EnumAEStateIcons icon;
+	protected AEStateIconsEnum icon;
 
-	public ButtonAETab( int ID, int xPosition, int yPosition, EnumAEStateIcons icon, String unlocalizedTooltip )
+	public ButtonAETab( int ID, int xPosition, int yPosition, AEStateIconsEnum icon, String unlocalizedTooltip )
 	{
 		// Call super
 		super( ID, xPosition, yPosition, ButtonAETab.BUTTON_WIDTH, ButtonAETab.BUTTON_HEIGHT, icon, ButtonAETab.ICON_X_POSITION,

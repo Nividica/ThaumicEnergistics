@@ -269,6 +269,7 @@ public class HandlerEssentiaStorageBus
 
 	/**
 	 * Extracts essentia from the container.
+	 * returns the number of items extracted, null
 	 */
 	@Override
 	public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable mode, final BaseActionSource source )
@@ -320,15 +321,13 @@ public class HandlerEssentiaStorageBus
 		// Inform the storage bus
 		this.partStorageBus.onEssentiaTransfered( -drainedAmount_EU );
 
-		// Did fulfill the request fully?
-		if( drained.amount == toDrain.amount )
-		{
-			// Fully satisfied.
-			return request;
-		}
+		// Copy the request
+		IAEFluidStack extractedFluid = request.copy();
 
-		// Return how much was drained
-		return AEApi.instance().storage().createFluidStack( new FluidStack( toDrain.getFluid(), drained.amount ) );
+		// Set the amount extracted
+		extractedFluid.setStackSize( drained.amount );
+
+		return extractedFluid;
 	}
 
 	/**
@@ -411,6 +410,7 @@ public class HandlerEssentiaStorageBus
 
 	/**
 	 * Inserts essentia into the container.
+	 * returns the number of items not added.
 	 */
 	@Override
 	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final BaseActionSource source )
@@ -427,7 +427,7 @@ public class HandlerEssentiaStorageBus
 		// Validate the request
 		if( !this.canTransferFluid( toFill ) )
 		{
-			return null;
+			return input;
 		}
 
 		// Is void allowed, and we are attached to a void jar?
@@ -450,6 +450,7 @@ public class HandlerEssentiaStorageBus
 			// Was any filled?
 			if( filled_FU == 0 )
 			{
+				// Can not inject partial essentia amounts.
 				return input;
 			}
 		}
@@ -521,7 +522,11 @@ public class HandlerEssentiaStorageBus
 		}
 
 		// Return what was left over
-		return AEApi.instance().storage().createFluidStack( new FluidStack( toFill.getFluid(), remaining_FU ) );
+		IAEFluidStack remainingFluid = input.copy();
+
+		remainingFluid.setStackSize( remaining_FU );
+
+		return remainingFluid;
 	}
 
 	/**

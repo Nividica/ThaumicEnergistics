@@ -9,11 +9,6 @@ public class TileGearBox
 	extends TileEntity
 {
 	/**
-	 * ID of the tileentity
-	 */
-	public static final String TILE_ID = "TileGearBox";
-
-	/**
 	 * Amount of power generated each time the gearbox is cranked.
 	 * This power is divided among the connected shafts.
 	 */

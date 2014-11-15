@@ -1,11 +1,9 @@
 package thaumicenergistics.gui.buttons;
 
 import java.util.List;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import thaumicenergistics.texture.EnumAEStateIcons;
+import thaumicenergistics.texture.AEStateIconsEnum;
 import appeng.api.config.RedstoneMode;
-import com.google.common.base.Splitter;
 
 public class ButtonRedstoneModes
 	extends AbstractAEButton
@@ -35,7 +33,7 @@ public class ButtonRedstoneModes
 	 * @param height
 	 * @param mode
 	 */
-	public ButtonRedstoneModes( int ID, int xPos, int yPos, int width, int height, RedstoneMode mode )
+	public ButtonRedstoneModes( final int ID, final int xPos, final int yPos, final int width, final int height, final RedstoneMode mode )
 	{
 		this( ID, xPos, yPos, width, height, mode, false );
 	}
@@ -51,7 +49,8 @@ public class ButtonRedstoneModes
 	 * @param mode
 	 * @param emitter
 	 */
-	public ButtonRedstoneModes( int ID, int xPos, int yPos, int width, int height, RedstoneMode mode, boolean emitter )
+	public ButtonRedstoneModes( final int ID, final int xPos, final int yPos, final int width, final int height, final RedstoneMode mode,
+								final boolean emitter )
 	{
 		// Call super
 		super( ID, xPos, yPos, width, height, null );
@@ -66,9 +65,6 @@ public class ButtonRedstoneModes
 	@Override
 	public void getTooltip( final List<String> tooltip )
 	{
-		// Add header
-		tooltip.add( StatCollector.translateToLocal( TOOLTIP_LOC_HEADER + "RedstoneMode" ) );
-
 		// Get the explanation based on mode
 		String explanation = "";
 		switch ( this.redstoneMode )
@@ -93,11 +89,9 @@ public class ButtonRedstoneModes
 
 		}
 
-		// Line wrap the explanation
-		for( String current : Splitter.fixedLength( 30 ).split( explanation ) )
-		{
-			tooltip.add( EnumChatFormatting.GRAY + current );
-		}
+		// Add info
+		this.addAboutToTooltip( tooltip, StatCollector.translateToLocal( TOOLTIP_LOC_HEADER + "RedstoneMode" ), explanation );
+
 	}
 
 	/**
@@ -105,7 +99,7 @@ public class ButtonRedstoneModes
 	 * 
 	 * @param mode
 	 */
-	public void setRedstoneMode( RedstoneMode mode )
+	public void setRedstoneMode( final RedstoneMode mode )
 	{
 		// Set the mode
 		this.redstoneMode = mode;
@@ -114,19 +108,19 @@ public class ButtonRedstoneModes
 		switch ( this.redstoneMode )
 		{
 			case HIGH_SIGNAL:
-				this.icon = EnumAEStateIcons.REDSTONE_HIGH;
+				this.icon = AEStateIconsEnum.REDSTONE_HIGH;
 				break;
 
 			case IGNORE:
-				this.icon = EnumAEStateIcons.REDSTONE_IGNORE;
+				this.icon = AEStateIconsEnum.REDSTONE_IGNORE;
 				break;
 
 			case LOW_SIGNAL:
-				this.icon = EnumAEStateIcons.REDSTONE_LOW;
+				this.icon = AEStateIconsEnum.REDSTONE_LOW;
 				break;
 
 			case SIGNAL_PULSE:
-				this.icon = EnumAEStateIcons.REDSTONE_PULSE;
+				this.icon = AEStateIconsEnum.REDSTONE_PULSE;
 				break;
 		}
 	}

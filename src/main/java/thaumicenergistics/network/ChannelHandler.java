@@ -12,6 +12,7 @@ import thaumicenergistics.network.handlers.HandlerClientPriority;
 import thaumicenergistics.network.handlers.HandlerServerAspectSlot;
 import thaumicenergistics.network.handlers.HandlerServerChangeGui;
 import thaumicenergistics.network.handlers.HandlerServerEssentiaCell;
+import thaumicenergistics.network.handlers.HandlerServerEssentiaCellWorkbench;
 import thaumicenergistics.network.handlers.HandlerServerPriority;
 import thaumicenergistics.network.handlers.part.HandlerClientArcaneCraftingTerminal;
 import thaumicenergistics.network.handlers.part.HandlerClientEssentiaIOBus;
@@ -35,6 +36,7 @@ import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTermin
 import thaumicenergistics.network.packet.server.PacketServerAspectSlot;
 import thaumicenergistics.network.packet.server.PacketServerChangeGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCell;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaCellWorkbench;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaEmitter;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
@@ -79,14 +81,16 @@ public class ChannelHandler
 		wrapper.registerMessage( HandlerClientPriority.class, PacketClientPriority.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerPriority.class, PacketServerPriority.class, discriminator++ , Side.SERVER );
 
+		wrapper.registerMessage( HandlerServerEssentiaCellWorkbench.class, PacketServerEssentiaCellWorkbench.class, discriminator++ , Side.SERVER );
+
 	}
 
-	public static void sendPacketToAllPlayers( AbstractPacket packet )
+	public static void sendPacketToAllPlayers( final AbstractPacket packet )
 	{
 		wrapper.sendToAll( packet );
 	}
 
-	public static void sendPacketToAllPlayers( Packet packet, World world )
+	public static void sendPacketToAllPlayers( final Packet packet, final World world )
 	{
 		for( Object player : world.playerEntities )
 		{
@@ -97,12 +101,12 @@ public class ChannelHandler
 		}
 	}
 
-	public static void sendPacketToPlayer( AbstractPacket packet, EntityPlayer player )
+	public static void sendPacketToPlayer( final AbstractPacket packet, final EntityPlayer player )
 	{
 		wrapper.sendTo( packet, (EntityPlayerMP)player );
 	}
 
-	public static void sendPacketToServer( AbstractPacket packet )
+	public static void sendPacketToServer( final AbstractPacket packet )
 	{
 		wrapper.sendToServer( packet );
 	}

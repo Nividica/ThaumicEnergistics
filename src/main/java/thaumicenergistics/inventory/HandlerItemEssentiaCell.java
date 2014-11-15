@@ -1,6 +1,7 @@
 package thaumicenergistics.inventory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,10 +17,12 @@ import thaumicenergistics.registries.ItemEnum;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
+import appeng.tile.storage.TileIOPort;
 
 // TODO: Drop legacy support at version 1.0
 
@@ -27,11 +30,13 @@ public class HandlerItemEssentiaCell
 	implements IMEInventoryHandler<IAEFluidStack>
 {
 	@Deprecated
-	private static final String NBT_LEGACY_FLUID_NUMBER_KEY = "Fluid#";
-	@Deprecated
-	private static final String NBT_LEGACY_PREFORMATTED_FLUID_NUMBER_KEY = "PreformattedFluidName#";
-	private static final String NBT_ESSENTIA_NUMBER_KEY = "Essentia#";
-	private static final String NBT_SORT_KEY = "SortMode";
+	private static final String NBT_LEGACY_FLUID_NUMBER_KEY = "Fluid#", NBT_LEGACY_PREFORMATTED_FLUID_NUMBER_KEY = "PreformattedFluidName#";
+
+	/**
+	 * NBT Keys
+	 */
+	private static final String NBT_ESSENTIA_NUMBER_KEY = "Essentia#", NBT_SORT_KEY = "SortMode", NBT_PARTITION_KEY = "Partitions",
+					NBT_PARTITION_COUNT_KEY = "PartitionCount", NBT_PARTITION_NUMBER_KEY = "Partition#";
 
 	/**
 	 * Old fluid <-> essentia conversion multiplier.
@@ -79,6 +84,11 @@ public class HandlerItemEssentiaCell
 	 */
 	private ComparatorMode sortMode;
 
+	/**
+	 * List of aspects this cell can only accept.
+	 */
+	private final List<Aspect> partitionAspects = new ArrayList<Aspect>();
+
 	public HandlerItemEssentiaCell( final ItemStack storageStack )
 	{
 		// Ensure we have a NBT tag
@@ -102,49 +112,8 @@ public class HandlerItemEssentiaCell
 		// Setup the storage
 		this.storedEssentia = new AspectStack[this.totalTypes];
 
-		// Load stored essentia from data
-		for( int index = 0; index < this.totalTypes; index++ )
-		{
-			// Is there a essentia tag?
-			if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_ESSENTIA_NUMBER_KEY + index ) )
-			{
-				// Set the storage
-				this.storedEssentia[index] = AspectStack.loadAspectStackFromNBT( this.cellData
-								.getCompoundTag( HandlerItemEssentiaCell.NBT_ESSENTIA_NUMBER_KEY + index ) );
-
-				// Update the stored amount
-				this.usedEssentiaStorage += this.storedEssentia[index].amount;
-			}
-		}
-
-		// Load legacy essentia from data
-		for( int index = 0; index < this.totalTypes; index++ )
-		{
-			// Is there a legacy tag?
-			if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_LEGACY_FLUID_NUMBER_KEY + index ) )
-			{
-				this.loadLegacyFluid( HandlerItemEssentiaCell.NBT_LEGACY_FLUID_NUMBER_KEY + index );
-			}
-		}
-
-		// Clear legacy preformat data
-		for( int index = 0; index < 63; index++ )
-		{
-			if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_LEGACY_PREFORMATTED_FLUID_NUMBER_KEY + index ) )
-			{
-				this.cellData.removeTag( HandlerItemEssentiaCell.NBT_LEGACY_PREFORMATTED_FLUID_NUMBER_KEY + index );
-			}
-		}
-
-		// Load the sort mode
-		if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_SORT_KEY ) )
-		{
-			this.sortMode = ComparatorMode.VALUES[this.cellData.getInteger( HandlerItemEssentiaCell.NBT_SORT_KEY )];
-		}
-		else
-		{
-			this.sortMode = ComparatorMode.MODE_ALPHABETIC;
-		}
+		// Read the cell data
+		readCellData();
 	}
 
 	/**
@@ -198,7 +167,7 @@ public class HandlerItemEssentiaCell
 			this.usedEssentiaStorage += amountToStore;
 
 			// Write the changes to the data tag
-			this.writeChanges( slotIndex, stackToAddTo );
+			this.writeStorageChanges( slotIndex, stackToAddTo );
 		}
 
 		// Return the amount we could not store
@@ -250,7 +219,7 @@ public class HandlerItemEssentiaCell
 			this.usedEssentiaStorage -= amountToExtract;
 
 			// Sync the data tag
-			this.writeChanges( slotIndex, slotToExtractFrom );
+			this.writeStorageChanges( slotIndex, slotToExtractFrom );
 
 		}
 
@@ -340,12 +309,131 @@ public class HandlerItemEssentiaCell
 	}
 
 	/**
+	 * Reads the data from the cell item.
+	 */
+	private void readCellData()
+	{
+		// Load stored essentia from data
+		for( int index = 0; index < this.totalTypes; index++ )
+		{
+			// Is there a essentia tag?
+			if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_ESSENTIA_NUMBER_KEY + index ) )
+			{
+				// Set the storage
+				this.storedEssentia[index] = AspectStack.loadAspectStackFromNBT( this.cellData
+								.getCompoundTag( HandlerItemEssentiaCell.NBT_ESSENTIA_NUMBER_KEY + index ) );
+
+				// Update the stored amount
+				this.usedEssentiaStorage += this.storedEssentia[index].amount;
+			}
+		}
+
+		// Load legacy essentia from data
+		for( int index = 0; index < this.totalTypes; index++ )
+		{
+			// Is there a legacy tag?
+			if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_LEGACY_FLUID_NUMBER_KEY + index ) )
+			{
+				this.loadLegacyFluid( HandlerItemEssentiaCell.NBT_LEGACY_FLUID_NUMBER_KEY + index );
+			}
+		}
+
+		// Clear legacy preformat data
+		for( int index = 0; index < 63; index++ )
+		{
+			if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_LEGACY_PREFORMATTED_FLUID_NUMBER_KEY + index ) )
+			{
+				this.cellData.removeTag( HandlerItemEssentiaCell.NBT_LEGACY_PREFORMATTED_FLUID_NUMBER_KEY + index );
+			}
+		}
+
+		// Load the sort mode
+		if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_SORT_KEY ) )
+		{
+			this.sortMode = ComparatorMode.VALUES[this.cellData.getInteger( HandlerItemEssentiaCell.NBT_SORT_KEY )];
+		}
+		else
+		{
+			this.sortMode = ComparatorMode.MODE_ALPHABETIC;
+		}
+
+		// Load partition list
+		if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_PARTITION_KEY ) )
+		{
+			// Get the partition tag
+			NBTTagCompound partitionData = this.cellData.getCompoundTag( HandlerItemEssentiaCell.NBT_PARTITION_KEY );
+
+			// Get the partition count
+			int partitionCount = partitionData.getInteger( HandlerItemEssentiaCell.NBT_PARTITION_COUNT_KEY );
+
+			// Read the partition list
+			String tag;
+			Aspect partitionAspect;
+			for( int i = 0; i < partitionCount; i++ )
+			{
+				// Read the aspect tag
+				tag = partitionData.getString( HandlerItemEssentiaCell.NBT_PARTITION_NUMBER_KEY + i );
+
+				// Skip if empty tag
+				if( tag.equals( "" ) )
+				{
+					continue;
+				}
+
+				// Get the aspect
+				partitionAspect = Aspect.aspects.get( tag );
+
+				if( partitionAspect != null )
+				{
+					// Add the aspect
+					this.partitionAspects.add( partitionAspect );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Synchronizes the data tag to the partition list.
+	 */
+	private void writePartitionList()
+	{
+		// Is the cell partitioned?
+		if( !this.isPartitioned() )
+		{
+			// Remove the partition tag
+			this.cellData.removeTag( HandlerItemEssentiaCell.NBT_PARTITION_KEY );
+		}
+		else
+		{
+			// Create the partition data
+			NBTTagCompound partitionData = new NBTTagCompound();
+
+			// Write the partition list
+			int count = 0;
+			for( Aspect pAspect : this.partitionAspects )
+			{
+				// Write the aspect tag
+				partitionData.setString( HandlerItemEssentiaCell.NBT_PARTITION_NUMBER_KEY + count, pAspect.getTag() );
+
+				// Increment the count
+				count++ ;
+			}
+
+			// Write the count
+			partitionData.setInteger( HandlerItemEssentiaCell.NBT_PARTITION_COUNT_KEY, count );
+
+			// Write the partition data
+			this.cellData.setTag( HandlerItemEssentiaCell.NBT_PARTITION_KEY, partitionData );
+		}
+	}
+
+	/**
 	 * Synchronizes the data tag to the changed slot.
 	 * 
 	 * @param slotIndex
 	 * @param fluidStack
 	 */
-	private void writeChanges( final int slotIndex, final AspectStack aspectStack )
+	private void writeStorageChanges( final int slotIndex, final AspectStack aspectStack )
 	{
 		// Create a new NBT
 		NBTTagCompound essentiaTag = new NBTTagCompound();
@@ -368,6 +456,28 @@ public class HandlerItemEssentiaCell
 	}
 
 	/**
+	 * Adds an aspect to the cells partitioning.
+	 * 
+	 * @param aspect
+	 */
+	public boolean addAspectToPartitionList( final Aspect aspect )
+	{
+		// Ensure the list does not already contain the aspect
+		if( !this.partitionAspects.contains( aspect ) )
+		{
+			// Add to the list
+			this.partitionAspects.add( aspect );
+
+			// Update the cell data
+			this.writePartitionList();
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Checks if the cell can accept/store the fluid.
 	 */
 	@Override
@@ -376,6 +486,7 @@ public class HandlerItemEssentiaCell
 		// Ensure there is an input
 		if( input == null )
 		{
+			// Null input
 			return false;
 		}
 
@@ -385,7 +496,22 @@ public class HandlerItemEssentiaCell
 		// Is the fluid an essentia gas?
 		if( !( inputFluid instanceof GaseousEssentia ) )
 		{
+			// Not essentia gas
 			return false;
+		}
+
+		// Is the cell partitioned?
+		if( this.isPartitioned() )
+		{
+			// Get the input aspect
+			Aspect inputAspect = ( (GaseousEssentia)inputFluid ).getAspect();
+
+			// Is the cell partitioned for this aspect?
+			if( !this.partitionAspects.contains( inputAspect ) )
+			{
+				// Cell partition will not allow this aspect.
+				return false;
+			}
 		}
 
 		// Return if there is a match or empty slot for the essentia
@@ -393,7 +519,20 @@ public class HandlerItemEssentiaCell
 	}
 
 	/**
+	 * Removes all partitioning from the cell.
+	 */
+	public void clearPartitioning()
+	{
+		// Clear the list
+		this.partitionAspects.clear();
+
+		// Update the cell data
+		this.writePartitionList();
+	}
+
+	/**
 	 * Attempts to extract essentia gas from the cell.
+	 * returns the number of items extracted, null
 	 */
 	@Override
 	public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable mode, final BaseActionSource src )
@@ -431,7 +570,7 @@ public class HandlerItemEssentiaCell
 		// Did we extract any?
 		if( extractedEssentiaAmount == 0 )
 		{
-			// Nothing extracted
+			// Nothing was extracted
 			return null;
 		}
 
@@ -499,8 +638,15 @@ public class HandlerItemEssentiaCell
 	}
 
 	/**
-	 * TODO: Implement Essentia cell priority
+	 * Gets the list of aspects this cell has been partitioned for.
+	 * 
+	 * @return
 	 */
+	public List<Aspect> getPartitionAspects()
+	{
+		return Collections.unmodifiableList( this.partitionAspects );
+	}
+
 	@Override
 	public int getPriority()
 	{
@@ -603,6 +749,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Attempts to add essentia gas to the cell.
+	 * returns the number of items not added.
 	 */
 	@Override
 	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final BaseActionSource src )
@@ -612,6 +759,16 @@ public class HandlerItemEssentiaCell
 		{
 			// No input
 			return input;
+		}
+
+		// Is an IO port trying to inject?
+		if( src instanceof MachineSource )
+		{
+			if( ( (MachineSource)src ).via instanceof TileIOPort )
+			{
+				// TODO: IO Port is not supported for cell injection.
+				return input;
+			}
 		}
 
 		// Ensure the input is a gas
@@ -637,13 +794,6 @@ public class HandlerItemEssentiaCell
 		// Get the amount not stored
 		long amountNotStored = this.addEssentiaToCell( essentiaAspect, amountToStore, mode );
 
-		// Did we store it all?
-		if( amountNotStored == 0 )
-		{
-			// All was stored
-			return null;
-		}
-
 		// Copy the input
 		IAEFluidStack result = input.copy();
 
@@ -654,32 +804,116 @@ public class HandlerItemEssentiaCell
 	}
 
 	/**
-	 * TODO: Implement Essentia cell pre-formated
+	 * Returns true if the cell is partitioned.
 	 * 
 	 * @return
 	 */
-	public boolean isPreformatted()
+	public boolean isPartitioned()
 	{
-		/*
-		for( Fluid currentFluid : this.prioritizedFluids )
+		return( this.partitionAspects.size() != 0 );
+	}
+
+	/**
+	 * Is the cell partitioned to accept the fluid?
+	 */
+	@Override
+	public boolean isPrioritized( final IAEFluidStack input )
+	{
+		// Is the cell partitioned?
+		if( this.isPartitioned() )
 		{
-			if( currentFluid != null )
+			// Ensure there is an input
+			if( input == null )
 			{
-				return true;
+				// Null input
+				return false;
 			}
+
+			// Get the fluid
+			Fluid inputFluid = input.getFluid();
+
+			// Is the fluid an essentia gas?
+			if( !( inputFluid instanceof GaseousEssentia ) )
+			{
+				// Not essentia gas
+				return false;
+			}
+
+			// Get the aspect
+			Aspect inputAspect = ( (GaseousEssentia)inputFluid ).getAspect();
+
+			// Is the cell partitioned for this aspect?
+			return this.partitionAspects.contains( inputAspect );
 		}
-		*/
 
 		return false;
 	}
 
 	/**
-	 * TODO: Implement if Essentia cell is pre-formated
+	 * Sets the partition list to the contents of the cell.
 	 */
-	@Override
-	public boolean isPrioritized( final IAEFluidStack input )
+	public void partitionToCellContents()
 	{
-		//return ( input != null ) && ( this.prioritizedFluids.contains( input.getFluid() ) );
+		// Clear any existing partition data
+		this.partitionAspects.clear();
+
+		// Loop over the cell contents
+		for( int slotIndex = 0; slotIndex < this.totalTypes; slotIndex++ )
+		{
+			// Is there anything stored in this slot?
+			if( this.storedEssentia[slotIndex] != null )
+			{
+				// Add to the partition list
+				this.partitionAspects.add( this.storedEssentia[slotIndex].aspect );
+			}
+		}
+
+		// Write changes
+		this.writePartitionList();
+	}
+
+	/**
+	 * Removes an aspect from the cells partitioning.
+	 * 
+	 * @param aspect
+	 */
+	public boolean removeAspectFromPartitionList( final Aspect aspect )
+	{
+		// Was the aspect removed?
+		if( this.partitionAspects.remove( aspect ) )
+		{
+			// Update the cell data
+			this.writePartitionList();
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Replaces one aspect with another in the partition list.
+	 * 
+	 * @param originalAspect
+	 * @param newAspect
+	 */
+	public boolean replaceAspectInPartitionList( final Aspect originalAspect, final Aspect newAspect )
+	{
+		// Get the index of the original aspect.
+		int index = this.partitionAspects.indexOf( originalAspect );
+
+		// Is the original aspect in the list?
+		if( index >= 0 )
+		{
+			// Replace the aspect.
+			this.partitionAspects.set( index, newAspect );
+
+			// Update the cell data
+			this.writePartitionList();
+
+			return true;
+		}
+
 		return false;
 	}
 

@@ -27,16 +27,6 @@ public abstract class AbstractBlockAEWrenchable
 	}
 
 	/**
-	 * Called when the block is being removed via AE wrench.
-	 * 
-	 * @return
-	 */
-	public ItemStack getWrenchDrop()
-	{
-		return new ItemStack( this );
-	}
-
-	/**
 	 * Called when the block is right-clicked
 	 * 
 	 * @param world
@@ -73,10 +63,16 @@ public abstract class AbstractBlockAEWrenchable
 				// Is the player sneaking?
 				if( player.isSneaking() )
 				{
-					// Drop the block
-					this.dropBlockAsItem( world, x, y, z, this.getWrenchDrop() );
+					// Call on wrench
+					this.onWrenched( world, x, y, z );
 
-					// Set to air
+					// Call break
+					this.breakBlock( world, x, y, z, this, world.getBlockMetadata( x, y, z ) );
+
+					// Drop the block
+					this.dropBlockAsItem( world, x, y, z, new ItemStack( this ) );
+
+					// Set the block to air
 					world.setBlockToAir( x, y, z );
 
 					return true;
@@ -89,6 +85,13 @@ public abstract class AbstractBlockAEWrenchable
 
 		return this.onBlockActivated( world, x, y, z, player );
 
+	}
+
+	/**
+	 * Called when the block is being removed via AE wrench.
+	 */
+	public void onWrenched( final World world, final int x, final int y, final int z )
+	{
 	}
 
 }

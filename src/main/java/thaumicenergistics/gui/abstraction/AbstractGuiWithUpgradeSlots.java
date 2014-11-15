@@ -5,7 +5,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import thaumicenergistics.container.ContainerWithNetworkTool;
 import thaumicenergistics.container.slot.SlotNetworkTool;
-import thaumicenergistics.texture.EnumAEStateIcons;
+import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.AEApi;
 import appeng.parts.automation.UpgradeInventory;
@@ -14,13 +14,13 @@ public abstract class AbstractGuiWithUpgradeSlots
 	extends AbstractGuiBase
 {
 
-	private static int upgradeU = EnumAEStateIcons.UPGRADE_SLOT.getU();
+	private static int upgradeU = AEStateIconsEnum.UPGRADE_SLOT.getU();
 
-	private static int upgradeV = EnumAEStateIcons.UPGRADE_SLOT.getV();
+	private static int upgradeV = AEStateIconsEnum.UPGRADE_SLOT.getV();
 
-	private static int upgradeWidth = EnumAEStateIcons.UPGRADE_SLOT.getWidth();
+	private static int upgradeWidth = AEStateIconsEnum.UPGRADE_SLOT.getWidth();
 
-	private static int upgradeHeight = EnumAEStateIcons.UPGRADE_SLOT.getHeight();
+	private static int upgradeHeight = AEStateIconsEnum.UPGRADE_SLOT.getHeight();
 
 	public AbstractGuiWithUpgradeSlots( final Container container )
 	{
@@ -30,7 +30,7 @@ public abstract class AbstractGuiWithUpgradeSlots
 	@Override
 	protected void drawGuiContainerBackgroundLayer( final float alpha, final int mouseX, final int mouseY )
 	{
-		Minecraft.getMinecraft().renderEngine.bindTexture( EnumAEStateIcons.AE_STATES_TEXTURE );
+		Minecraft.getMinecraft().renderEngine.bindTexture( AEStateIconsEnum.AE_STATES_TEXTURE );
 
 		// Locate any upgrade or network slots
 		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ )

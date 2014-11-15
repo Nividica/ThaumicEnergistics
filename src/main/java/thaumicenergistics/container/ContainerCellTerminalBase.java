@@ -628,16 +628,19 @@ public abstract class ContainerCellTerminalBase
 
 			}
 
-			// Did the merger drain the stack?
-			if( slotStack.stackSize == 0 )
+			if( didMerge )
 			{
-				// Set the slot to have no item
-				slot.putStack( null );
-			}
-			else
-			{
-				// Inform the slot its stack changed;
-				slot.onSlotChanged();
+				// Did the merger drain the stack?
+				if( slotStack.stackSize == 0 )
+				{
+					// Set the slot to have no item
+					slot.putStack( null );
+				}
+				else
+				{
+					// Inform the slot its stack changed;
+					slot.onSlotChanged();
+				}
 			}
 
 		}

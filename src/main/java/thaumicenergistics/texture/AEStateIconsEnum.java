@@ -2,7 +2,7 @@ package thaumicenergistics.texture;
 
 import net.minecraft.util.ResourceLocation;
 
-public enum EnumAEStateIcons
+public enum AEStateIconsEnum
 {
 		REGULAR_BUTTON (240, 240),
 		REDSTONE_LOW (0, 0),
@@ -19,7 +19,8 @@ public enum EnumAEStateIcons
 		SORT_DIR_ASC (0, 48),
 		SORT_DIR_DEC (16, 48),
 		WRENCH (32, 64),
-		DISABLED( 0, 128 );
+		DISABLED (0, 128),
+		CELL (240, 0);
 
 	/**
 	 * Location of the AE states texture
@@ -57,7 +58,7 @@ public enum EnumAEStateIcons
 	 * @param u
 	 * @param v
 	 */
-	private EnumAEStateIcons( int u, int v )
+	private AEStateIconsEnum( final int u, final int v )
 	{
 		this( u, v, STANDARD_ICON_SIZE, STANDARD_ICON_SIZE );
 	}
@@ -70,7 +71,7 @@ public enum EnumAEStateIcons
 	 * @param width
 	 * @param height
 	 */
-	private EnumAEStateIcons( int u, int v, int width, int height )
+	private AEStateIconsEnum( final int u, final int v, final int width, final int height )
 	{
 		// Set the u
 		this.minU = u;

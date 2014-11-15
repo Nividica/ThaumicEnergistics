@@ -15,8 +15,6 @@ public class TileEssentiaProvider
 	extends TileProviderBase
 	implements IEssentiaTransport
 {
-	public static final String TILE_ID = "TileEssentiaProvider";
-
 	/**
 	 * How often should the tile tick.
 	 */

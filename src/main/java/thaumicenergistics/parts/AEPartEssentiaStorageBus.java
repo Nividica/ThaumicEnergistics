@@ -371,8 +371,6 @@ public class AEPartEssentiaStorageBus
 		// Set the mode
 		this.handler.isVoidAllowed = isVoidAllowed;
 
-		// TODO: I should really synchronize this with all clients
-
 		this.saveChanges();
 	}
 

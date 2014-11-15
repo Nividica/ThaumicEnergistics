@@ -5,9 +5,7 @@ import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.registries.RecipeRegistry;
 import thaumicenergistics.registries.ResearchRegistry;
-import thaumicenergistics.tileentities.TileEssentiaProvider;
-import thaumicenergistics.tileentities.TileGearBox;
-import thaumicenergistics.tileentities.TileInfusionProvider;
+import thaumicenergistics.registries.TileEnum;
 import appeng.api.AEApi;
 import appeng.api.movable.IMovableRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -74,25 +72,24 @@ public class CommonProxy
 	public void registerSpatialIOMovables()
 	{
 		IMovableRegistry movableRegistry = AEApi.instance().registries().moveable();
-
-		// Add essentia provider
-		movableRegistry.whiteListTileEntity( TileEssentiaProvider.class );
-
-		// Add infusion provider
-		movableRegistry.whiteListTileEntity( TileInfusionProvider.class );
-
-		// Added gearbox
-		movableRegistry.whiteListTileEntity( TileGearBox.class );
+		for( TileEnum tile : TileEnum.values() )
+		{
+			movableRegistry.whiteListTileEntity( tile.getTileClass() );
+		}
 	}
 
 	/**
 	 * Registers tile entities with the game.
 	 */
+	@SuppressWarnings("deprecation")
 	public void registerTileEntities()
 	{
-		GameRegistry.registerTileEntity( TileEssentiaProvider.class, TileEssentiaProvider.TILE_ID );
-		GameRegistry.registerTileEntity( TileInfusionProvider.class, TileInfusionProvider.TILE_ID );
-		GameRegistry.registerTileEntity( TileGearBox.class, TileGearBox.TILE_ID );
+		for( TileEnum tile : TileEnum.values() )
+		{
+			// TODO: Drop legacy support at version 1.0
+			GameRegistry.registerTileEntityWithAlternatives( tile.getTileClass(), tile.getTileID(), tile.getOldTileID() );
+			//GameRegistry.registerTileEntity(
+		}
 	}
 
 }

@@ -5,6 +5,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerEssentiaCell;
+import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
 import thaumicenergistics.container.ContainerPriority;
 import thaumicenergistics.parts.AbstractAEPartBase;
 import appeng.api.parts.IPartHost;
@@ -30,7 +31,10 @@ public class GuiHandler
 	 */
 	private static final int PRIORITY_ID = 20;
 
-	private static final int END_PLACEHOLDER = 30;
+	/**
+	 * ID of the essentia cell workbench
+	 */
+	public static final int CELL_WORKBENCH_ID = 30;
 
 	/**
 	 * Gets the AE part at the specified location.
@@ -160,7 +164,7 @@ public class GuiHandler
 		}
 
 		// Is this the priority window?
-		if( ( ID >= GuiHandler.PRIORITY_ID ) && ( ID < GuiHandler.END_PLACEHOLDER ) )
+		if( ( ID >= GuiHandler.PRIORITY_ID ) && ( ID < GuiHandler.CELL_WORKBENCH_ID ) )
 		{
 			// Get the side
 			side = ForgeDirection.getOrientation( ID - GuiHandler.PRIORITY_ID );
@@ -177,6 +181,12 @@ public class GuiHandler
 			// Return the gui
 			return new GuiPriority( (IPriorityHost)part, player );
 
+		}
+
+		// Is this the cell workbench?
+		if( ID == GuiHandler.CELL_WORKBENCH_ID )
+		{
+			return new GuiEssentiaCellWorkbench( player, world, x, y, z );
 		}
 
 		// No matching GUI element found
@@ -207,7 +217,7 @@ public class GuiHandler
 		}
 
 		// Is this the priority window?
-		if( ( ID >= GuiHandler.PRIORITY_ID ) && ( ID < GuiHandler.END_PLACEHOLDER ) )
+		if( ( ID >= GuiHandler.PRIORITY_ID ) && ( ID < GuiHandler.CELL_WORKBENCH_ID ) )
 		{
 			// Get the side
 			side = ForgeDirection.getOrientation( ID - GuiHandler.PRIORITY_ID );
@@ -224,6 +234,12 @@ public class GuiHandler
 			// Return the container
 			return new ContainerPriority( (IPriorityHost)part, player );
 
+		}
+
+		// Is this the cell workbench?
+		if( ID == GuiHandler.CELL_WORKBENCH_ID )
+		{
+			return new ContainerEssentiaCellWorkbench( player, world, x, y, z );
 		}
 
 		// No matching GUI element found

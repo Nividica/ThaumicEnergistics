@@ -370,7 +370,7 @@ public abstract class AbstractGuiCellTerminalBase
 		this.drawWidgets( mouseX, mouseY );
 
 		// Do we have a selected aspect?
-		if( this.selectedAspectStack != null )
+		if( ( this.selectedAspectStack != null ) && ( this.selectedAspectStack.amount > 0 ) )
 		{
 			// Convert the selected amount into a string
 			String amountToText = Long.toString( this.selectedAspectStack.amount );

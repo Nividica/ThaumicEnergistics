@@ -3,7 +3,7 @@ package thaumicenergistics.gui.buttons;
 import java.util.List;
 import net.minecraft.util.StatCollector;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.texture.EnumAEStateIcons;
+import thaumicenergistics.texture.AEStateIconsEnum;
 
 public class ButtonClearCraftingGrid
 	extends AbstractAEButton
@@ -11,7 +11,7 @@ public class ButtonClearCraftingGrid
 	/**
 	 * Clear grid icon
 	 */
-	private static final EnumAEStateIcons CLEAR_ICON = EnumAEStateIcons.CLEAR_GRID;
+	private static final AEStateIconsEnum CLEAR_ICON = AEStateIconsEnum.CLEAR_GRID;
 
 	/**
 	 * Creates the button

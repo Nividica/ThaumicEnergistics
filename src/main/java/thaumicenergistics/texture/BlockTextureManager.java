@@ -33,7 +33,11 @@ public enum BlockTextureManager
 						"arcane.crafting.overlay3", "arcane.crafting.side" }),
 
 		VIS_RELAY_INTERFACE (TextureTypes.Part, new String[] { "vis.interface", "vis.interface.runes" }),
-		GEAR_BOX (TextureTypes.Block, new String[] { "gear.box", "golem.gear.box" });
+
+		GEAR_BOX (TextureTypes.Block, new String[] { "gear.box", "golem.gear.box" }),
+
+		ESSENTIA_CELL_WORKBENCH (TextureTypes.Block, new String[] { "essentia.cell.workbench.top", "essentia.cell.workbench.bottom",
+						"essentia.cell.workbench.side" });
 
 	private enum TextureTypes
 	{

@@ -10,7 +10,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.texture.EnumAEStateIcons;
+import thaumicenergistics.texture.AEStateIconsEnum;
 
 public class ButtonAllowVoid
 	extends AbstractButtonBase
@@ -53,7 +53,7 @@ public class ButtonAllowVoid
 	/**
 	 * Disabled icon from the AE sprite sheet.
 	 */
-	private EnumAEStateIcons disabledIcon = EnumAEStateIcons.DISABLED;
+	private AEStateIconsEnum disabledIcon = AEStateIconsEnum.DISABLED;
 
 	/**
 	 * First line of the tooltip
@@ -125,7 +125,7 @@ public class ButtonAllowVoid
 		if( !this.isVoidAllowed )
 		{
 			// Bind the AE states texture
-			minecraftInstance.getTextureManager().bindTexture( EnumAEStateIcons.AE_STATES_TEXTURE );
+			minecraftInstance.getTextureManager().bindTexture( AEStateIconsEnum.AE_STATES_TEXTURE );
 
 			// Draw the disabled icon
 			this.drawTexturedModalRect( this.xPosition + 1, this.yPosition + 1, this.disabledIcon.getU(), this.disabledIcon.getV(),

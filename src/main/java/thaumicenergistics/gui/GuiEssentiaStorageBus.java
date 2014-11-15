@@ -21,7 +21,7 @@ import thaumicenergistics.network.packet.server.PacketServerChangeGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import thaumicenergistics.registries.AEPartsEnum;
-import thaumicenergistics.texture.EnumAEStateIcons;
+import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 
 /**
@@ -312,7 +312,7 @@ public class GuiEssentiaStorageBus
 
 		// Create the priority tab button
 		this.buttonList.add( new ButtonAETab( GuiEssentiaStorageBus.BUTTON_PRIORITY_ID, this.guiLeft +
-						GuiEssentiaStorageBus.BUTTON_PRIORITY_X_POSITION, this.guiTop, EnumAEStateIcons.WRENCH, "gui.appliedenergistics2.Priority" ) );
+						GuiEssentiaStorageBus.BUTTON_PRIORITY_X_POSITION, this.guiTop, AEStateIconsEnum.WRENCH, "gui.appliedenergistics2.Priority" ) );
 
 		// Create the allow void button
 		this.buttonList.add( new ButtonAllowVoid( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID, this.guiLeft +

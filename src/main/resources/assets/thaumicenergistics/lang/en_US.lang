@@ -10,6 +10,7 @@ thaumicenergistics.block.essentia.provider.name=Essentia Provider
 thaumicenergistics.block.infusion.provider.name=Infusion Provider
 thaumicenergistics.block.gear.box.name=Iron Gear Box
 thaumicenergistics.block.golem.gear.box.name=Thaumium Gear Box
+thaumicenergistics.block.essentia.cell.workbench.name=Essentia Cell Workbench
 
 #Cable parts
 thaumicenergistics.aeparts.essentia.ImportBus.name=Essentia Import Bus
@@ -50,6 +51,7 @@ thaumicenergistics.gui.essentia.cell.title=Essentia Cell
 thaumicenergistics.gui.selected.amount=Amount
 thaumicenergistics.gui.selected.aspect=Aspect
 thaumicenergistics.gui.digivis.source.name=DigiVis Source
+thaumicenergistics.gui.essentia.cell.workbench.title.name=Essentia Cell Workbench
 
 #Research Tab
 tc.research_category.thaumicenergistics=Energistics

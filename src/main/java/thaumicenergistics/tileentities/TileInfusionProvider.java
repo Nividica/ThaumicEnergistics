@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectSource;
+import thaumcraft.common.Thaumcraft;
 import thaumicenergistics.api.TEApi;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
@@ -19,18 +20,28 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.me.GridAccessException;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-// TODO: Display runes when providing essentia
-
 public class TileInfusionProvider
 	extends TileProviderBase
 	implements IAspectSource, IMEMonitorHandlerReceiver<IAEFluidStack>
 {
-	public static final String TILE_ID = "TileInfusionProvider";
-
 	/**
 	 * List of aspects on the network
 	 */
 	protected List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
+
+	private void doParticalFX( final int aspectColor )
+	{
+		float red = ( aspectColor & 0xFF0000 ) / 16711680.0F;
+		float green = ( aspectColor & 0x00FF00 ) / 65280.0F;
+		float blue = ( aspectColor & 0x0000FF ) / 255.0F;
+
+		//System.out.printf( "R:%f G:%f B:%f %n", red, green, blue );
+
+		for( int i = 0; i < 10; i++ )
+		{
+			Thaumcraft.proxy.blockRunes( this.worldObj, this.xCoord, this.yCoord, this.zCoord, red, green, blue, 10, -0.1F );
+		}
+	}
 
 	/**
 	 * How much power does this require just to be active?
@@ -211,6 +222,9 @@ public class TileInfusionProvider
 		// Can we extract the essentia from the network?
 		if( this.extractEssentiaFromNetwork( tag, amount, true ) == amount )
 		{
+			// Show partical FX
+			this.doParticalFX( tag.getColor() );
+
 			return true;
 		}
 

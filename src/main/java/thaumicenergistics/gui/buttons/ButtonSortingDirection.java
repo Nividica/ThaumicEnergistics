@@ -1,39 +1,37 @@
 package thaumicenergistics.gui.buttons;
 
 import java.util.List;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import thaumicenergistics.texture.AEStateIconsEnum;
 import appeng.api.config.SortDir;
-import thaumicenergistics.texture.EnumAEStateIcons;
 
 public class ButtonSortingDirection
 	extends AbstractAEButton
 {
 
-	public ButtonSortingDirection( int ID, int xPosition, int yPosition, int width, int height )
+	public ButtonSortingDirection( final int ID, final int xPosition, final int yPosition, final int width, final int height )
 	{
-		super( ID, xPosition, yPosition, width, height, EnumAEStateIcons.SORT_DIR_ASC );
+		super( ID, xPosition, yPosition, width, height, AEStateIconsEnum.SORT_DIR_ASC );
 	}
-	
-	public void setSortingDirection( SortDir direction )
+
+	@Override
+	public void getTooltip( final List<String> tooltip )
+	{
+		this.addAboutToTooltip( tooltip, StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.SortOrder" ),
+			StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.ToggleSortDirection" ) );
+	}
+
+	public void setSortingDirection( final SortDir direction )
 	{
 		switch ( direction )
 		{
 			case ASCENDING:
-				this.icon = EnumAEStateIcons.SORT_DIR_ASC;
+				this.icon = AEStateIconsEnum.SORT_DIR_ASC;
 				break;
-				
+
 			case DESCENDING:
-				this.icon = EnumAEStateIcons.SORT_DIR_DEC;
+				this.icon = AEStateIconsEnum.SORT_DIR_DEC;
 				break;
 		}
 	}
-
-	@Override
-	public void getTooltip( List<String> tooltip )
-	{
-		tooltip.add( StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.SortOrder" ) );
-		tooltip.add( EnumChatFormatting.GRAY + StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.ToggleSortDirection" ) );
-	}
-
 }

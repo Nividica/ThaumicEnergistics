@@ -10,11 +10,12 @@ public enum GuiTextureManager
 		ESSENTIA_TERMINAL ("essentia.terminal"),
 		ESSENTIA_IO_BUS ("essentia.io.bus"),
 		ARCANE_CRAFTING_TERMINAL ("arcane.crafting"),
-		PRIORITY ("priority");
+		PRIORITY ("priority"),
+		CELL_WORKBENCH ("essentia.cell.workbench");
 
 	private ResourceLocation texture;
 
-	private GuiTextureManager( String textureName )
+	private GuiTextureManager( final String textureName )
 	{
 		// Create the resource location
 		this.texture = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/gui/" + textureName + ".png" );

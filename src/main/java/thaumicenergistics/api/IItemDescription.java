@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+// TODO: Add getBlockTileEntity to API
+
 public interface IItemDescription
 {
 

@@ -1,4 +1,9 @@
-﻿11/12/2014 0.8.0b
+﻿11/13/2014 0.8.0b
+  Fixes #21: Added Essentia Cell Workbench.
+  Changed tile entity mapping, support for worlds saved prior to 0.8.0 will be dropped at version 1.0
+  Infusion provider has particle effects while active.
+
+11/12/2014 0.8.0b
   REALLY fixed ACT memory leak.
   Fixes #31: Temporary(I hope) fix for false essentia amounts after storage bus voids.
 

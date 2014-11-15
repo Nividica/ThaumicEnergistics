@@ -1,9 +1,12 @@
 package thaumicenergistics.gui.buttons;
 
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
-import thaumicenergistics.texture.EnumAEStateIcons;
+import thaumicenergistics.texture.AEStateIconsEnum;
+import com.google.common.base.Splitter;
 
 public abstract class AbstractAEButton
 	extends AbstractButtonBase
@@ -11,12 +14,12 @@ public abstract class AbstractAEButton
 	/**
 	 * Button background
 	 */
-	private EnumAEStateIcons background = EnumAEStateIcons.REGULAR_BUTTON;
+	private AEStateIconsEnum background = AEStateIconsEnum.REGULAR_BUTTON;
 
 	/**
 	 * Icon to draw on the button
 	 */
-	protected EnumAEStateIcons icon;
+	protected AEStateIconsEnum icon;
 
 	/**
 	 * X position of the icon
@@ -48,7 +51,7 @@ public abstract class AbstractAEButton
 	 * @param height
 	 * @param icon
 	 */
-	public AbstractAEButton( int ID, int xPosition, int yPosition, int width, int height, EnumAEStateIcons icon )
+	public AbstractAEButton( final int ID, final int xPosition, final int yPosition, final int width, final int height, final AEStateIconsEnum icon )
 	{
 		this( ID, xPosition, yPosition, width, height, icon, 0, 0, width, height, false );
 	}
@@ -70,8 +73,8 @@ public abstract class AbstractAEButton
 	 * @param iconHeight
 	 * @param isTab
 	 */
-	public AbstractAEButton( int ID, int xPosition, int yPosition, int width, int height, EnumAEStateIcons icon, int iconXPosition,
-								int iconYPosition, int iconWidth, int iconHeight, boolean isTab )
+	public AbstractAEButton( final int ID, final int xPosition, final int yPosition, final int width, final int height, final AEStateIconsEnum icon,
+								final int iconXPosition, final int iconYPosition, final int iconWidth, final int iconHeight, final boolean isTab )
 	{
 		// Call super
 		super( ID, xPosition, yPosition, width, height, "" );
@@ -94,7 +97,7 @@ public abstract class AbstractAEButton
 		// Set tab background
 		if( isTab )
 		{
-			this.background = EnumAEStateIcons.TAB_BUTTON;
+			this.background = AEStateIconsEnum.TAB_BUTTON;
 		}
 
 	}
@@ -104,19 +107,39 @@ public abstract class AbstractAEButton
 	 * 
 	 * @param icon
 	 */
-	private void drawIcon( EnumAEStateIcons icon, int xPosition, int yPosition, int width, int height )
+	private void drawIcon( final AEStateIconsEnum icon, final int xPosition, final int yPosition, final int width, final int height )
 	{
 		this.drawScaledTexturedModalRect( xPosition, yPosition, icon.getU(), icon.getV(), width, height, icon.getWidth(), icon.getHeight() );
 	}
 
+	/**
+	 * Adds info to the tooltip as a white header, and grey body.
+	 * The body is broken down into lines of length 30.
+	 * 
+	 * @param tooltip
+	 * @param title
+	 * @param text
+	 */
+	protected void addAboutToTooltip( final List<String> tooltip, final String title, final String text )
+	{
+		// Title
+		tooltip.add( EnumChatFormatting.WHITE + title );
+
+		// Body
+		for( String line : Splitter.fixedLength( 30 ).split( text ) )
+		{
+			tooltip.add( EnumChatFormatting.GRAY + line );
+		}
+	}
+
 	@Override
-	public final void drawButton( Minecraft minecraftInstance, int x, int y )
+	public final void drawButton( final Minecraft minecraftInstance, final int x, final int y )
 	{
 		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		// Bind the AE states texture
-		minecraftInstance.getTextureManager().bindTexture( EnumAEStateIcons.AE_STATES_TEXTURE );
+		minecraftInstance.getTextureManager().bindTexture( AEStateIconsEnum.AE_STATES_TEXTURE );
 
 		// Draw the background button image
 		this.drawIcon( this.background, this.xPosition, this.yPosition, this.width, this.height );
@@ -133,7 +156,8 @@ public abstract class AbstractAEButton
 	 * Draws a textured rectangle at the stored z-value, the texture will
 	 * be scaled to fit within the width and height
 	 */
-	public void drawScaledTexturedModalRect( int xPosition, int yPosition, int u, int v, int width, int height, int textureWidth, int textureHeight )
+	public void drawScaledTexturedModalRect( final int xPosition, final int yPosition, final int u, final int v, final int width, final int height,
+												final int textureWidth, final int textureHeight )
 	{
 		// No idea what this is
 		float magic_number = 0.00390625F;

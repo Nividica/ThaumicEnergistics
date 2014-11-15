@@ -14,7 +14,7 @@ import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.network.packet.server.PacketServerChangeGui;
 import thaumicenergistics.network.packet.server.PacketServerPriority;
 import thaumicenergistics.parts.AbstractAEPartBase;
-import thaumicenergistics.texture.EnumAEStateIcons;
+import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import appeng.helpers.IPriorityHost;
 
@@ -333,7 +333,7 @@ public class GuiPriority
 
 		// Create the part switch button
 		this.buttonList.add( new ButtonAETab( GuiPriority.PART_SWITCH_BUTTON_ID, this.guiLeft + GuiPriority.PART_SWITCH_BUTTON_X_POSITION,
-						this.guiTop, EnumAEStateIcons.WRENCH, this.part.getUnlocalizedName() ) );
+						this.guiTop, AEStateIconsEnum.WRENCH, this.part.getUnlocalizedName() ) );
 
 		// Create the adjustment buttons
 		int buttonXPosition = GuiPriority.ADJUSTMENT_BUTTONS_X_POSITION;
