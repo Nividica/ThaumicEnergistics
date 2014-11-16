@@ -9,7 +9,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
-import thaumicenergistics.gui.abstraction.AbstractGuiWidgetHost;
+import thaumicenergistics.gui.abstraction.AbstractGuiBase;
 import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaLevelEmitter
-	extends AbstractGuiWidgetHost
+	extends AbstractGuiBase
 	implements IAspectSlotGui
 {
 	/**
@@ -316,7 +316,11 @@ public class GuiEssentiaLevelEmitter
 		// Draw underlay when mouse is over slot.
 		if( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
 		{
+			// Draw underlay
 			this.aspectFilterSlot.drawMouseHoverUnderlay();
+
+			// Get tooltip
+			this.aspectFilterSlot.getTooltip( this.tooltip );
 		}
 
 		// Draw the filter widget
@@ -325,8 +329,13 @@ public class GuiEssentiaLevelEmitter
 		// Draw the text field
 		this.amountField.drawTextBox();
 
-		// Add the tooltip from the buttons
-		if( this.addTooltipFromButtons( mouseX, mouseY ) )
+		if( this.tooltip.size() == 0 )
+		{
+			// Add the tooltip from the buttons
+			this.addTooltipFromButtons( mouseX, mouseY );
+		}
+
+		if( this.tooltip.size() > 0 )
 		{
 			// Draw the tooltip
 			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );

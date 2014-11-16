@@ -23,7 +23,7 @@ public class PacketServerEssentiaEmitter
 
 	private int adjustmentAmount;
 
-	public PacketServerEssentiaEmitter createRedstoneModeToggle( AEPartEssentiaLevelEmitter part, EntityPlayer player )
+	public PacketServerEssentiaEmitter createRedstoneModeToggle( final AEPartEssentiaLevelEmitter part, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -45,7 +45,7 @@ public class PacketServerEssentiaEmitter
 	 * @param player
 	 * @return
 	 */
-	public PacketServerEssentiaEmitter createUpdateRequest( AEPartEssentiaLevelEmitter part, EntityPlayer player )
+	public PacketServerEssentiaEmitter createUpdateRequest( final AEPartEssentiaLevelEmitter part, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -67,7 +67,8 @@ public class PacketServerEssentiaEmitter
 	 * @param player
 	 * @return
 	 */
-	public PacketServerEssentiaEmitter createWantedAmountAdjustment( int adjustmentAmount, AEPartEssentiaLevelEmitter part, EntityPlayer player )
+	public PacketServerEssentiaEmitter createWantedAmountAdjustment( final int adjustmentAmount, final AEPartEssentiaLevelEmitter part,
+																		final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -92,7 +93,8 @@ public class PacketServerEssentiaEmitter
 	 * @param player
 	 * @return
 	 */
-	public PacketServerEssentiaEmitter createWantedAmountUpdate( long wantedAmount, AEPartEssentiaLevelEmitter part, EntityPlayer player )
+	public PacketServerEssentiaEmitter createWantedAmountUpdate( final long wantedAmount, final AEPartEssentiaLevelEmitter part,
+																	final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -137,7 +139,7 @@ public class PacketServerEssentiaEmitter
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -170,7 +172,7 @@ public class PacketServerEssentiaEmitter
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{

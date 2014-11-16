@@ -27,13 +27,13 @@ public class ItemStorageComponent
 	}
 
 	@Override
-	public int getBytes( ItemStack itemStack )
+	public int getBytes( final ItemStack itemStack )
 	{
 		return ItemStorageBase.SIZES[itemStack.getItemDamage()];
 	}
 
 	@Override
-	public IIcon getIconFromDamage( int damage )
+	public IIcon getIconFromDamage( final int damage )
 	{
 		int index = MathHelper.clamp_int( damage, 0, ItemStorageBase.SUFFIXES.length );
 
@@ -41,7 +41,7 @@ public class ItemStorageComponent
 	}
 
 	@Override
-	public EnumRarity getRarity( ItemStack itemStack )
+	public EnumRarity getRarity( final ItemStack itemStack )
 	{
 		// Get the index based off of the meta data
 		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, ItemStorageComponent.RARITIES.length );
@@ -51,7 +51,7 @@ public class ItemStorageComponent
 	}
 
 	@Override
-	public void getSubItems( Item item, CreativeTabs creativeTab, List itemList )
+	public void getSubItems( final Item item, final CreativeTabs creativeTab, final List itemList )
 	{
 		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
 		{
@@ -60,19 +60,19 @@ public class ItemStorageComponent
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack itemStack )
+	public String getUnlocalizedName( final ItemStack itemStack )
 	{
 		return ThaumicEnergistics.MOD_ID + ".item.storage.component." + ItemStorageBase.SUFFIXES[itemStack.getItemDamage()];
 	}
 
 	@Override
-	public boolean isStorageComponent( ItemStack itemStack )
+	public boolean isStorageComponent( final ItemStack itemStack )
 	{
 		return( itemStack.getItem() == this );
 	}
 
 	@Override
-	public void registerIcons( IIconRegister iconRegister )
+	public void registerIcons( final IIconRegister iconRegister )
 	{
 		this.icons = new IIcon[ItemStorageBase.SUFFIXES.length];
 

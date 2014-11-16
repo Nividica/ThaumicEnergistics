@@ -29,7 +29,7 @@ public class SlotArcaneCraftingResult
 	 * Itemstack that represents the wand.
 	 */
 	private ItemStack wand;
-	
+
 	/**
 	 * The wand item.
 	 */
@@ -50,8 +50,9 @@ public class SlotArcaneCraftingResult
 	 * @param xPos
 	 * @param yPos
 	 */
-	public SlotArcaneCraftingResult( EntityPlayer player, ContainerPartArcaneCraftingTerminal hostContianer, IInventory terminalInventory,
-										IInventory slotInventory, int slotIndex, int xPos, int yPos )
+	public SlotArcaneCraftingResult( final EntityPlayer player, final ContainerPartArcaneCraftingTerminal hostContianer,
+										final IInventory terminalInventory, final IInventory slotInventory, final int slotIndex, final int xPos,
+										final int yPos )
 	{
 		// Call super
 		super( player, terminalInventory, slotInventory, slotIndex, xPos, yPos );
@@ -64,7 +65,7 @@ public class SlotArcaneCraftingResult
 	}
 
 	@Override
-	public void onPickupFromSlot( EntityPlayer player, ItemStack itemStack )
+	public void onPickupFromSlot( final EntityPlayer player, final ItemStack itemStack )
 	{
 		// Call the transfer
 		this.onPickupFromSlotViaTransfer( player, itemStack );
@@ -84,7 +85,7 @@ public class SlotArcaneCraftingResult
 	 * @param player
 	 * @param itemStack
 	 */
-	public void onPickupFromSlotViaTransfer( EntityPlayer player, ItemStack itemStack )
+	public void onPickupFromSlotViaTransfer( final EntityPlayer player, final ItemStack itemStack )
 	{
 		// Not really sure what this does, but "SlotCrafting" does it, so I shall also!
 		FMLCommonHandler.instance().firePlayerCraftingEvent( player, itemStack, this.terminalInventory );
@@ -196,13 +197,13 @@ public class SlotArcaneCraftingResult
 		}
 	}
 
-	public void setResultAspects( AspectList aspectList )
+	public void setResultAspects( final AspectList aspectList )
 	{
 		this.craftingAspects = aspectList;
 	}
 
-	public void setWand( ItemStack wand )
-	{	
+	public void setWand( final ItemStack wand )
+	{
 		if( wand != null )
 		{
 			this.wand = wand;

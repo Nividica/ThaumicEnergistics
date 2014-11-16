@@ -10,7 +10,7 @@ public class HandlerServerChangeGui
 {
 
 	@Override
-	public IMessage onMessage( PacketServerChangeGui message, MessageContext ctx )
+	public IMessage onMessage( final PacketServerChangeGui message, final MessageContext ctx )
 	{
 		message.execute();
 		return null;

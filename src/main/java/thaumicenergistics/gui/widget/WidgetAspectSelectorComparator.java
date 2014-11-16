@@ -24,14 +24,14 @@ public class WidgetAspectSelectorComparator
 	 * @param mode
 	 * Mode to sort by.
 	 */
-	public WidgetAspectSelectorComparator( ComparatorMode mode )
+	public WidgetAspectSelectorComparator( final ComparatorMode mode )
 	{
 		// Create the internal comparator
 		this.internalComparator = new AspectStackComparator( mode );
 	}
 
 	@Override
-	public int compare( WidgetAspectSelector left, WidgetAspectSelector right )
+	public int compare( final WidgetAspectSelector left, final WidgetAspectSelector right )
 	{
 		// Compare
 		return this.internalComparator.compare( left.getAspectStackRepresentation(), right.getAspectStackRepresentation() );

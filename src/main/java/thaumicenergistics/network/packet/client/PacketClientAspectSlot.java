@@ -42,7 +42,7 @@ public class PacketClientAspectSlot
 
 	}
 
-	public PacketClientAspectSlot createFilterListUpdate( List<Aspect> filterAspects, EntityPlayer player )
+	public PacketClientAspectSlot createFilterListUpdate( final List<Aspect> filterAspects, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -60,7 +60,7 @@ public class PacketClientAspectSlot
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -81,7 +81,7 @@ public class PacketClientAspectSlot
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{

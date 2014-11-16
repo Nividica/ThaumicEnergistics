@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
-import thaumicenergistics.gui.abstraction.AbstractGuiWidgetHost;
+import thaumicenergistics.gui.abstraction.AbstractGuiBase;
 import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
@@ -24,9 +24,15 @@ import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Gui for the Import and Export buses
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
-public class GuiEssentiatIO
-	extends AbstractGuiWidgetHost
+public class GuiEssentiaIO
+	extends AbstractGuiBase
 	implements WidgetAspectSlot.IConfigurable, IAspectSlotGui
 {
 
@@ -163,7 +169,7 @@ public class GuiEssentiatIO
 	 * @param partBus
 	 * @param player
 	 */
-	public GuiEssentiatIO( final AEPartEssentiaIO partBus, final EntityPlayer player )
+	public GuiEssentiaIO( final AEPartEssentiaIO partBus, final EntityPlayer player )
 	{
 		// Call super
 		super( new ContainerPartEssentiaIOBus( partBus, player ) );
@@ -178,10 +184,10 @@ public class GuiEssentiatIO
 		this.hasNetworkTool = ( (ContainerPartEssentiaIOBus)this.inventorySlots ).hasNetworkTool();
 
 		// Set the width
-		this.xSize = ( this.hasNetworkTool ? GuiEssentiatIO.GUI_WIDTH_WITH_TOOL : GuiEssentiatIO.GUI_WIDTH_NO_TOOL );
+		this.xSize = ( this.hasNetworkTool ? GuiEssentiaIO.GUI_WIDTH_WITH_TOOL : GuiEssentiaIO.GUI_WIDTH_NO_TOOL );
 
 		// Set the height
-		this.ySize = GuiEssentiatIO.GUI_HEIGHT;
+		this.ySize = GuiEssentiaIO.GUI_HEIGHT;
 
 		// Set the title
 		if( partBus instanceof AEPartEssentiaImportBus )
@@ -216,16 +222,16 @@ public class GuiEssentiatIO
 		if( this.hasNetworkTool )
 		{
 			// Draw the full gui
-			this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, GuiEssentiatIO.GUI_WIDTH_WITH_TOOL, GuiEssentiatIO.GUI_HEIGHT );
+			this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, GuiEssentiaIO.GUI_WIDTH_WITH_TOOL, GuiEssentiaIO.GUI_HEIGHT );
 		}
 		else
 		{
 			// Draw main gui
-			this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, GuiEssentiatIO.GUI_MAIN_WIDTH, GuiEssentiatIO.GUI_HEIGHT );
+			this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, GuiEssentiaIO.GUI_MAIN_WIDTH, GuiEssentiaIO.GUI_HEIGHT );
 
 			// Draw upgrade slots
-			this.drawTexturedModalRect( this.guiLeft + GuiEssentiatIO.GUI_MAIN_WIDTH, this.guiTop, GuiEssentiatIO.GUI_MAIN_WIDTH, 0,
-				GuiEssentiatIO.GUI_UPGRADES_WIDTH, GuiEssentiatIO.GUI_UPGRADES_HEIGHT );
+			this.drawTexturedModalRect( this.guiLeft + GuiEssentiaIO.GUI_MAIN_WIDTH, this.guiTop, GuiEssentiaIO.GUI_MAIN_WIDTH, 0,
+				GuiEssentiaIO.GUI_UPGRADES_WIDTH, GuiEssentiaIO.GUI_UPGRADES_HEIGHT );
 		}
 
 		// Call super
@@ -281,7 +287,7 @@ public class GuiEssentiatIO
 		super.actionPerformed( button );
 
 		// Was the clicked button the redstone mode button?
-		if( button.id == GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_ID )
+		if( button.id == GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID )
 		{
 			new PacketServerEssentiaIOBus().createRequestChangeRedstoneMode( this.player, this.part ).sendPacketToServer();
 		}
@@ -294,7 +300,7 @@ public class GuiEssentiatIO
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
 
 		// Draw the title
-		this.fontRendererObj.drawString( this.guiTitle, GuiEssentiatIO.TITLE_POS_X, GuiEssentiatIO.TITLE_POS_Y, 0x000000 );
+		this.fontRendererObj.drawString( this.guiTitle, GuiEssentiaIO.TITLE_POS_X, GuiEssentiaIO.TITLE_POS_Y, 0x000000 );
 
 		boolean hoverUnderlayRendered = false;
 
@@ -348,21 +354,21 @@ public class GuiEssentiatIO
 		super.initGui();
 
 		// Add the slots
-		for( int row = 0; row < GuiEssentiatIO.FILTER_GRID_SIZE; row++ )
+		for( int row = 0; row < GuiEssentiaIO.FILTER_GRID_SIZE; row++ )
 		{
-			for( int column = 0; column < GuiEssentiatIO.FILTER_GRID_SIZE; column++ )
+			for( int column = 0; column < GuiEssentiaIO.FILTER_GRID_SIZE; column++ )
 			{
 				// Calculate the index
-				int index = ( row * GuiEssentiatIO.FILTER_GRID_SIZE ) + column;
+				int index = ( row * GuiEssentiaIO.FILTER_GRID_SIZE ) + column;
 
 				// Calculate the x position
-				int xPos = GuiEssentiatIO.WIDGET_X_POSITION + ( column * AbstractWidget.WIDGET_SIZE );
+				int xPos = GuiEssentiaIO.WIDGET_X_POSITION + ( column * AbstractWidget.WIDGET_SIZE );
 
 				// Calculate the y position
-				int yPos = GuiEssentiatIO.WIDGET_Y_POSITION + ( row * AbstractWidget.WIDGET_SIZE );
+				int yPos = GuiEssentiaIO.WIDGET_Y_POSITION + ( row * AbstractWidget.WIDGET_SIZE );
 
 				this.aspectSlotList.add( new WidgetAspectSlot( this, this.player, this.part, index, xPos, yPos, this,
-								GuiEssentiatIO.WIDGET_CONFIG_BYTES[index] ) );
+								GuiEssentiaIO.WIDGET_CONFIG_BYTES[index] ) );
 			}
 		}
 
@@ -414,9 +420,9 @@ public class GuiEssentiatIO
 			else
 			{
 				// Create the redstone button
-				this.buttonList.add( new ButtonRedstoneModes( GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_ID, this.guiLeft +
-								GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_POS_X, this.guiTop + GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_POS_Y,
-								GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_SIZE, GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_SIZE, this.redstoneMode, false ) );
+				this.buttonList.add( new ButtonRedstoneModes( GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID, this.guiLeft +
+								GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_POS_X, this.guiTop + GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_POS_Y,
+								GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_SIZE, GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_SIZE, this.redstoneMode, false ) );
 			}
 
 			// Set redstone controlled
@@ -429,7 +435,7 @@ public class GuiEssentiatIO
 		// Are we redstone controlled, and have the redstone mod button
 		if( this.redstoneControlled && ( this.buttonList.size() > 0 ) )
 		{
-			( (ButtonRedstoneModes)this.buttonList.get( GuiEssentiatIO.REDSTONE_CONTROL_BUTTON_ID ) ).setRedstoneMode( redstoneMode );
+			( (ButtonRedstoneModes)this.buttonList.get( GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID ) ).setRedstoneMode( redstoneMode );
 		}
 
 		// Mark the mode

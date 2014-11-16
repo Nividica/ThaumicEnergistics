@@ -22,13 +22,13 @@ public class ButtonClearCraftingGrid
 	 * @param width
 	 * @param height
 	 */
-	public ButtonClearCraftingGrid( int ID, int xPosition, int yPosition, int width, int height )
+	public ButtonClearCraftingGrid( final int ID, final int xPosition, final int yPosition, final int width, final int height )
 	{
 		super( ID, xPosition, yPosition, width, height, ButtonClearCraftingGrid.CLEAR_ICON );
 	}
 
 	@Override
-	public void getTooltip( List<String> tooltip )
+	public void getTooltip( final List<String> tooltip )
 	{
 		// Add the tooltip text
 		tooltip.add( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.button.clear.crafting" ) );

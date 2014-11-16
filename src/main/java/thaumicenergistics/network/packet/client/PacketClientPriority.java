@@ -17,7 +17,7 @@ public class PacketClientPriority
 	private int priority;
 
 	@Override
-	protected void readData( ByteBuf stream )
+	protected void readData( final ByteBuf stream )
 	{
 		if( this.mode == PacketClientPriority.MODE_SEND )
 		{
@@ -53,7 +53,7 @@ public class PacketClientPriority
 	}
 
 	@Override
-	protected void writeData( ByteBuf stream )
+	protected void writeData( final ByteBuf stream )
 	{
 		if( this.mode == PacketClientPriority.MODE_SEND )
 		{
@@ -62,7 +62,7 @@ public class PacketClientPriority
 		}
 	}
 
-	public PacketClientPriority createSendPriority( int priority, EntityPlayer player )
+	public PacketClientPriority createSendPriority( final int priority, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;

@@ -10,7 +10,7 @@ public class HandlerServerEssentiaIOBus
 {
 
 	@Override
-	public IMessage onMessage( PacketServerEssentiaIOBus message, MessageContext ctx )
+	public IMessage onMessage( final PacketServerEssentiaIOBus message, final MessageContext ctx )
 	{
 		message.execute();
 		return null;

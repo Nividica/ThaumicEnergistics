@@ -7,9 +7,18 @@ import org.lwjgl.input.Mouse;
 import thaumicenergistics.util.GuiHelper;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base GUI for guis with scrollbars.
+ * 
+ * @author Nividica
+ * 
+ */
+@SideOnly(Side.CLIENT)
 public abstract class AbstractGuiWithScrollbar
-	extends AbstractGuiWidgetHost
+	extends AbstractGuiBase
 {
 	protected class ScrollbarParams
 	{

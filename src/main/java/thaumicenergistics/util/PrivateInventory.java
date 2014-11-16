@@ -15,14 +15,14 @@ public class PrivateInventory
 	private int stackLimit;
 	private IInventoryUpdateReceiver receiver = null;
 
-	public PrivateInventory( String customName, int size, int stackLimit )
+	public PrivateInventory( final String customName, final int size, final int stackLimit )
 	{
 		this.slots = new ItemStack[size];
 		this.customName = customName;
 		this.stackLimit = stackLimit;
 	}
 
-	public PrivateInventory( String customName, int size, int stackLimit, IInventoryUpdateReceiver receiver )
+	public PrivateInventory( final String customName, final int size, final int stackLimit, final IInventoryUpdateReceiver receiver )
 	{
 		this( customName, size, stackLimit );
 
@@ -35,7 +35,7 @@ public class PrivateInventory
 	}
 
 	@Override
-	public ItemStack decrStackSize( int slotId, int amount )
+	public ItemStack decrStackSize( final int slotId, final int amount )
 	{
 		ItemStack slotStack = null;
 
@@ -86,13 +86,13 @@ public class PrivateInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot( int index )
+	public ItemStack getStackInSlot( final int index )
 	{
 		return this.slots[index];
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( int slotId )
+	public ItemStack getStackInSlotOnClosing( final int slotId )
 	{
 		return this.slots[slotId];
 	}
@@ -103,7 +103,7 @@ public class PrivateInventory
 		return false;
 	}
 
-	public ItemStack incrStackSize( int slotId, int amount )
+	public ItemStack incrStackSize( final int slotId, final int amount )
 	{
 		ItemStack slotStack = this.slots[slotId];
 		ItemStack added = null;
@@ -133,19 +133,19 @@ public class PrivateInventory
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int slotId, ItemStack itemStack )
+	public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
 	{
 		// Assume it is not valid
 		return false;
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer player )
+	public boolean isUseableByPlayer( final EntityPlayer player )
 	{
 		return true;
 	}
 
-	public final void loadFromNBT( NBTTagCompound data, String tagName )
+	public final void loadFromNBT( final NBTTagCompound data, final String tagName )
 	{
 		// Ensure there is a data tag
 		if( data == null )
@@ -194,7 +194,7 @@ public class PrivateInventory
 	{
 	}
 
-	public final void saveToNBT( NBTTagCompound data, String tagName )
+	public final void saveToNBT( final NBTTagCompound data, final String tagName )
 	{
 		// Ensure there is a data tag
 		if( data == null )
@@ -230,7 +230,7 @@ public class PrivateInventory
 	}
 
 	@Override
-	public void setInventorySlotContents( int slotId, ItemStack itemStack )
+	public void setInventorySlotContents( final int slotId, final ItemStack itemStack )
 	{
 		// Is the stack size to large?
 		if( ( itemStack != null ) && ( itemStack.stackSize > this.getInventoryStackLimit() ) )
@@ -243,7 +243,7 @@ public class PrivateInventory
 		this.markDirty();
 	}
 
-	public void setReceiver( IInventoryUpdateReceiver receiver )
+	public void setReceiver( final IInventoryUpdateReceiver receiver )
 	{
 		this.receiver = receiver;
 	}

@@ -124,7 +124,7 @@ public class DigiVisSourceData
 		{
 			// Do we have an source cached?
 			IDigiVisSource vInt = this.digiVisSource.get();
-			if( forceUpdate || vInt == null )
+			if( forceUpdate || ( vInt == null ) )
 			{
 				// Attempt to get the source
 				this.refreshCache();

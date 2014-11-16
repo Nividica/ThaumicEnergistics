@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
-import thaumicenergistics.gui.abstraction.AbstractGuiWidgetHost;
+import thaumicenergistics.gui.abstraction.AbstractGuiBase;
 import thaumicenergistics.gui.buttons.ButtonClearCellPartitioning;
 import thaumicenergistics.gui.buttons.ButtonSetCellPartitioningToCurrent;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
@@ -20,9 +20,18 @@ import thaumicenergistics.network.packet.server.PacketServerEssentiaCellWorkbenc
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.tileentities.TileEssentiaCellWorkbench;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Gui for the cell workbench
+ * 
+ * @author Nividica
+ * 
+ */
+@SideOnly(Side.CLIENT)
 public class GuiEssentiaCellWorkbench
-	extends AbstractGuiWidgetHost
+	extends AbstractGuiBase
 	implements IAspectSlotGui
 {
 	private class SimpleAspectWidget

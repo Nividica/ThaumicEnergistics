@@ -20,10 +20,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PacketClientArcaneCraftingTerminal
 	extends AbstractClientPacket
 {
-	private static final byte MODE_RECEIVE_CHANGE = 0;
-	private static final byte MODE_RECEIVE_FULL_LIST = 1;
-	private static final byte MODE_RECEIVE_PLAYER_HOLDING = 2;
-	private static final byte MODE_RECEIVE_SORTS = 3;
+	/**
+	 * Packet modes
+	 */
+	private static final byte MODE_RECEIVE_CHANGE = 0, MODE_RECEIVE_FULL_LIST = 1, MODE_RECEIVE_PLAYER_HOLDING = 2, MODE_RECEIVE_SORTS = 3;
 
 	private IAEItemStack changedStack;
 	private IItemList<IAEItemStack> fullList;
@@ -55,7 +55,7 @@ public class PacketClientArcaneCraftingTerminal
 
 				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
 					// Set the held item
-					( (GuiArcaneCraftingTerminal)gui ).onPlayerHeldReceived( this.changedStack );
+					( (GuiArcaneCraftingTerminal)gui ).onReceivePlayerHeld( this.changedStack );
 					break;
 
 				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:

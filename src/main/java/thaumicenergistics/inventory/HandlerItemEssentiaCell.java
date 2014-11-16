@@ -113,7 +113,7 @@ public class HandlerItemEssentiaCell
 		this.storedEssentia = new AspectStack[this.totalTypes];
 
 		// Read the cell data
-		readCellData();
+		this.readCellData();
 	}
 
 	/**

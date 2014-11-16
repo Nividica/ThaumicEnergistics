@@ -24,18 +24,19 @@ public class WidgetAspectSlot
 
 	private byte configOption;
 
-	public WidgetAspectSlot( IWidgetHost hostGui, EntityPlayer player, IAspectSlotPart part, int posX, int posY )
+	public WidgetAspectSlot( final IWidgetHost hostGui, final EntityPlayer player, final IAspectSlotPart part, final int posX, final int posY )
 	{
 		this( hostGui, player, part, 0, posX, posY, null, (byte)0 );
 	}
 
-	public WidgetAspectSlot( IWidgetHost hostGui, EntityPlayer player, IAspectSlotPart part, int id, int posX, int posY )
+	public WidgetAspectSlot( final IWidgetHost hostGui, final EntityPlayer player, final IAspectSlotPart part, final int id, final int posX,
+								final int posY )
 	{
 		this( hostGui, player, part, id, posX, posY, null, (byte)0 );
 	}
 
-	public WidgetAspectSlot( IWidgetHost hostGui, EntityPlayer player, IAspectSlotPart part, int id, int posX, int posY, IConfigurable configurable,
-								byte configOption )
+	public WidgetAspectSlot( final IWidgetHost hostGui, final EntityPlayer player, final IAspectSlotPart part, final int id, final int posX,
+								final int posY, final IConfigurable configurable, final byte configOption )
 	{
 		super( hostGui, null, posX, posY, player );
 		this.player = player;
@@ -48,15 +49,6 @@ public class WidgetAspectSlot
 	public boolean canRender()
 	{
 		return ( this.configurable == null ) || ( this.configurable.getConfigState() >= this.configOption );
-	}
-
-	@Override
-	public void getTooltip( List<String> tooltip )
-	{
-		if( this.canRender() && ( this.getAspect() != null ) )
-		{
-			tooltip.add( this.aspectName );
-		}
 	}
 
 	@Override
@@ -101,12 +93,21 @@ public class WidgetAspectSlot
 	}
 
 	@Override
+	public void getTooltip( final List<String> tooltip )
+	{
+		if( this.canRender() && ( this.getAspect() != null ) )
+		{
+			tooltip.add( this.aspectName );
+		}
+	}
+
+	@Override
 	public void mouseClicked()
 	{
 		// Ignored
 	}
 
-	public void mouseClicked( Aspect withAspect )
+	public void mouseClicked( final Aspect withAspect )
 	{
 		this.setAspect( withAspect );
 

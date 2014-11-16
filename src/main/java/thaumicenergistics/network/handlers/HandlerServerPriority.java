@@ -10,7 +10,7 @@ public class HandlerServerPriority
 {
 
 	@Override
-	public IMessage onMessage( PacketServerPriority message, MessageContext ctx )
+	public IMessage onMessage( final PacketServerPriority message, final MessageContext ctx )
 	{
 		message.execute();
 		return null;

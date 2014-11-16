@@ -17,7 +17,16 @@ import thaumicenergistics.parts.AbstractAEPartBase;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import appeng.helpers.IPriorityHost;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Gui for the priority window
+ * 
+ * @author Nividica
+ * 
+ */
+@SideOnly(Side.CLIENT)
 public class GuiPriority
 	extends AbstractGuiBase
 {

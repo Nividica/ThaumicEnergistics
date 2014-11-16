@@ -19,7 +19,7 @@ public abstract class AbstractWidget
 
 	protected IWidgetHost hostGUI;
 
-	public AbstractWidget( IWidgetHost hostGUI, int xPos, int yPos )
+	public AbstractWidget( final IWidgetHost hostGUI, final int xPos, final int yPos )
 	{
 		this.hostGUI = hostGUI;
 
@@ -41,19 +41,19 @@ public abstract class AbstractWidget
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 	}
 
-	public abstract void getTooltip( List<String> tooltip );
-
 	public abstract void drawWidget();
 
-	public boolean isMouseOverWidget( int mouseX, int mouseY )
+	public abstract void getTooltip( List<String> tooltip );
+
+	public boolean isMouseOverWidget( final int mouseX, final int mouseY )
 	{
-		return GuiHelper.instance.isPointInGuiRegion( this.yPosition, this.xPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE, mouseX, mouseY,
-			this.hostGUI.guiLeft(), this.hostGUI.guiTop() );
+		return GuiHelper.instance.isPointInGuiRegion( this.yPosition, this.xPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE, mouseX,
+			mouseY, this.hostGUI.guiLeft(), this.hostGUI.guiTop() );
 	}
 
 	public abstract void mouseClicked();
 
-	public void setPosition( int xPos, int yPos )
+	public void setPosition( final int xPos, final int yPos )
 	{
 		this.xPosition = xPos;
 		this.yPosition = yPos;

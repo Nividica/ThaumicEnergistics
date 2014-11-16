@@ -10,7 +10,7 @@ public class HandlerServerArcaneCraftingTerminal
 {
 
 	@Override
-	public IMessage onMessage( PacketServerArcaneCraftingTerminal message, MessageContext ctx )
+	public IMessage onMessage( final PacketServerArcaneCraftingTerminal message, final MessageContext ctx )
 	{
 		message.execute();
 		return null;

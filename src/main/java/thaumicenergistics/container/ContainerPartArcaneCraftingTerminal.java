@@ -3,6 +3,8 @@ package thaumicenergistics.container;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -18,6 +20,7 @@ import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumcraft.common.tiles.TileMagicWorkbench;
 import thaumicenergistics.container.slot.SlotArcaneCraftingResult;
 import thaumicenergistics.container.slot.SlotRestrictive;
+import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.network.packet.client.PacketClientArcaneCraftingTerminal;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
 import thaumicenergistics.util.EffectiveSide;
@@ -33,6 +36,8 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerPartArcaneCraftingTerminal
 	extends ContainerWithPlayerInventory
@@ -73,14 +78,9 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	/**
-	 * Y position for the player inventory.
+	 * Y position for the player and hotbar inventory.
 	 */
-	private static int PLAYER_INV_POSITION_Y = 162;
-
-	/**
-	 * Y position for the hotbar inventory.
-	 */
-	private static int HOTBAR_INV_POSITION_Y = 220;
+	private static int PLAYER_INV_POSITION_Y = 162, HOTBAR_INV_POSITION_Y = 220;
 
 	/**
 	 * Row and Column counts of the crafting grid.
@@ -93,34 +93,24 @@ public class ContainerPartArcaneCraftingTerminal
 	public static int CRAFTING_GRID_TOTAL_SIZE = CRAFTING_GRID_SIZE * CRAFTING_GRID_SIZE;
 
 	/**
-	 * Starting X position for crafting slots.
+	 * Starting position for crafting slots.
 	 */
-	public static int CRAFTING_SLOT_X_POS = 44;
+	public static int CRAFTING_SLOT_X_POS = 44, CRAFTING_SLOT_Y_POS = 90;
 
 	/**
-	 * Starting Y position for crafting slots.
+	 * Position of the output slot.
 	 */
-	public static int CRAFTING_SLOT_Y_POS = 90;
+	private static int RESULT_SLOT_X_POS = 116, RESULT_SLOT_Y_POS = 126;
 
 	/**
-	 * Starting X position for the output slot.
+	 * Position of the wand slot.
 	 */
-	private static int RESULT_SLOT_X_POS = 116;
+	private static int WAND_SLOT_XPOS = 116, WAND_SLOT_YPOS = 90;
 
 	/**
-	 * Starting Y position for the output slot.
+	 * Starting position of the view slots
 	 */
-	private static int RESULT_SLOT_Y_POS = 126;
-
-	/**
-	 * Starting X position for the wand slot.
-	 */
-	private static int WAND_SLOT_XPOS = 116;
-
-	/**
-	 * Starting Y position for the wand slot.
-	 */
-	private static int WAND_SLOT_YPOS = 90;
+	public static int VIEW_SLOT_XPOS = 206, VIEW_SLOT_YPOS = 8;
 
 	/**
 	 * Width and height of a slot.
@@ -143,14 +133,14 @@ public class ContainerPartArcaneCraftingTerminal
 	private EntityPlayer player;
 
 	/**
-	 * Slot number of the first crafting slot.
+	 * Slot number of the first and last crafting slots.
 	 */
-	private int firstCraftingSlotNumber = -1;
+	private int firstCraftingSlotNumber = -1, lastCraftingSlotNumber = -1;
 
 	/**
-	 * Slot number of the last crafting slot.
+	 * Slot number of the first and last view slots.
 	 */
-	private int lastCraftingSlotNumber = -1;
+	private int firstViewSlotNumber = -1, lastViewSlotNumber = -1;
 
 	/**
 	 * Slot number of the wand.
@@ -259,6 +249,33 @@ public class ContainerPartArcaneCraftingTerminal
 
 		// Set wand slot number
 		this.wandSlotNumber = wandSlot.slotNumber;
+
+		// Create the view slots
+		SlotRestrictive viewSlot = null;
+		for( int viewSlotID = AEPartArcaneCraftingTerminal.VIEW_SLOT_MIN; viewSlotID <= AEPartArcaneCraftingTerminal.VIEW_SLOT_MAX; viewSlotID++ )
+		{
+			// Calculate the y position
+			int row = viewSlotID - AEPartArcaneCraftingTerminal.VIEW_SLOT_MIN;
+			int yPos = ContainerPartArcaneCraftingTerminal.VIEW_SLOT_YPOS + ( row * ContainerPartArcaneCraftingTerminal.SLOT_SIZE );
+
+			// Create the slot
+			viewSlot = new SlotRestrictive( terminal, viewSlotID, ContainerPartArcaneCraftingTerminal.VIEW_SLOT_XPOS, yPos );
+
+			// Add the slot
+			this.addSlotToContainer( viewSlot );
+
+			// Check first view slot
+			if( row == 0 )
+			{
+				this.firstViewSlotNumber = viewSlot.slotNumber;
+			}
+		}
+
+		// Set last view slot number
+		if( viewSlot != null )
+		{
+			this.lastViewSlotNumber = viewSlot.slotNumber;
+		}
 
 		// Register the container with terminal
 		terminal.registerListener( this );
@@ -516,6 +533,34 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	/**
+	 * Gets the view cells in the terminal.
+	 * 
+	 * @return
+	 */
+	private ItemStack[] getViewCells()
+	{
+		List<ItemStack> viewCells = new ArrayList<ItemStack>();
+
+		Slot viewSlot;
+		for( int viewSlotIndex = this.firstViewSlotNumber; viewSlotIndex <= this.lastViewSlotNumber; viewSlotIndex++ )
+		{
+			// Get the slot
+			viewSlot = this.getSlot( viewSlotIndex );
+
+			// Ensure the slot is not empty
+			if( !viewSlot.getHasStack() )
+			{
+				continue;
+			}
+
+			// Add the cell
+			viewCells.add( viewSlot.getStack() );
+		}
+
+		return viewCells.toArray( new ItemStack[viewCells.size()] );
+	}
+
+	/**
 	 * Sets 'wand' if there is a wand in the wand slot.
 	 */
 	private void getWand()
@@ -583,6 +628,62 @@ public class ContainerPartArcaneCraftingTerminal
 		itemStack.stackSize = 0;
 
 		return true;
+	}
+
+	/**
+	 * Attempts to add the itemstack to the view cell slots
+	 * 
+	 * @param itemStack
+	 * @return True if was moved, False otherwise.
+	 */
+	private boolean mergeWithViewCells( final ItemStack itemStack )
+	{
+		// Ensure the item a view cell
+		if( !this.terminal.isItemValidForSlot( AEPartArcaneCraftingTerminal.VIEW_SLOT_MIN, itemStack ) )
+		{
+			return false;
+		}
+
+		Slot viewSlot;
+		for( int viewSlotIndex = this.firstViewSlotNumber; viewSlotIndex <= this.lastViewSlotNumber; viewSlotIndex++ )
+		{
+			// Get the slot
+			viewSlot = this.getSlot( viewSlotIndex );
+
+			// Ensure the slot is empty
+			if( viewSlot.getHasStack() )
+			{
+				continue;
+			}
+
+			// Insert the view cell
+			viewSlot.putStack( itemStack.copy() );
+
+			// Clear the source stack
+			itemStack.stackSize = 0;
+
+			// Merge/move complete
+			return true;
+		}
+
+		// Unable to move
+		return false;
+	}
+
+	/**
+	 * Informs the GUI that the view cells have changed
+	 */
+	@SideOnly(Side.CLIENT)
+	private void updateGUIViewCells()
+	{
+		// Get the current screen being displayed to the user
+		Gui gui = Minecraft.getMinecraft().currentScreen;
+
+		// Is that screen the gui for the ACT?
+		if( gui instanceof GuiArcaneCraftingTerminal )
+		{
+			( (GuiArcaneCraftingTerminal)gui ).onViewCellsChanged( this.getViewCells() );
+		}
 	}
 
 	/**
@@ -1137,6 +1238,19 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	/**
+	 * The view cells have been changed, inform the gui.
+	 */
+	public void onViewCellChange()
+	{
+		// Only client side
+		if( EffectiveSide.isClientSide() )
+		{
+			// Update the gui
+			this.updateGUIViewCells();
+		}
+	}
+
+	/**
 	 * Called when the amount of an item on the network changes.
 	 */
 	@Override
@@ -1252,14 +1366,14 @@ public class ContainerPartArcaneCraftingTerminal
 				// Did we merge?
 				if( !didMerge )
 				{
-					// Attempt to merge with the player inventory
-					didMerge = this.mergeSlotWithPlayerInventory( slotStack );
+					// Attempt to merge with the hotbar
+					didMerge = this.mergeSlotWithHotbarInventory( slotStack );
 
 					// Did we merge?
 					if( !didMerge )
 					{
-						// Attempt to merge with the hotbar
-						didMerge = this.mergeSlotWithHotbarInventory( slotStack );
+						// Attempt to merge with the player inventory
+						didMerge = this.mergeSlotWithPlayerInventory( slotStack );
 					}
 				}
 			}
@@ -1277,20 +1391,27 @@ public class ContainerPartArcaneCraftingTerminal
 				// Did we merge?
 				if( !didMerge )
 				{
-					// Attempt to merge with the ME network
-					didMerge = this.mergeWithMENetwork( slotStack );
+					// Attempt to merge with view cells
+					didMerge = this.mergeWithViewCells( slotStack );
 
 					// Did we merge?
 					if( !didMerge )
 					{
-						// Attempt to merge with the crafting grid
-						didMerge = this.mergeItemStack( slotStack, this.firstCraftingSlotNumber, this.lastCraftingSlotNumber + 1, false );
+						// Attempt to merge with the ME network
+						didMerge = this.mergeWithMENetwork( slotStack );
 
 						// Did we merge?
 						if( !didMerge )
 						{
-							// Attempt to swap hotbar<->player inventory
-							didMerge = this.swapSlotInventoryHotbar( slotNumber, slotStack );
+							// Attempt to merge with the crafting grid
+							didMerge = this.mergeItemStack( slotStack, this.firstCraftingSlotNumber, this.lastCraftingSlotNumber + 1, false );
+
+							// Did we merge?
+							if( !didMerge )
+							{
+								// Attempt to swap hotbar<->player inventory
+								didMerge = this.swapSlotInventoryHotbar( slotNumber, slotStack );
+							}
 						}
 					}
 				}
@@ -1302,6 +1423,19 @@ public class ContainerPartArcaneCraftingTerminal
 				this.doShiftAutoCrafting( player );
 
 				return null;
+			}
+			// Was the slot clicked a view cell?
+			else if( ( slotNumber >= this.firstViewSlotNumber ) && ( slotNumber <= this.lastViewSlotNumber ) )
+			{
+				// Attempt to merge with the hotbar
+				didMerge = this.mergeSlotWithHotbarInventory( slotStack );
+
+				// Did we merge?
+				if( !didMerge )
+				{
+					// Attempt to merge with the player inventory
+					didMerge = this.mergeSlotWithPlayerInventory( slotStack );
+				}
 			}
 
 			// Did we merge?

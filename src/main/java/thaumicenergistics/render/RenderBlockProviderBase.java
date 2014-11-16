@@ -15,7 +15,8 @@ public abstract class RenderBlockProviderBase
 	implements ISimpleBlockRenderingHandler
 {
 
-	private boolean renderWorldPass( double x, double y, double z, AEColor overlayColor, int blockBrightness, boolean isActive )
+	private boolean renderWorldPass( final double x, final double y, final double z, final AEColor overlayColor, int blockBrightness,
+										final boolean isActive )
 	{
 		// Get the tessellator instance
 		Tessellator tessellator = Tessellator.instance;
@@ -42,7 +43,7 @@ public abstract class RenderBlockProviderBase
 					// Nothing additional to render
 					return false;
 				}
-				
+
 				// Inactive, set the drawing color to black
 				tessellator.setColorRGBA( 0, 0, 0, 255 );
 			}
@@ -50,7 +51,7 @@ public abstract class RenderBlockProviderBase
 			{
 				// Set the drawing color
 				tessellator.setColorOpaque_I( overlayColor.mediumVariant );
-				
+
 				// Are we active?
 				if( !isActive )
 				{
@@ -126,7 +127,7 @@ public abstract class RenderBlockProviderBase
 	protected abstract IIcon getOverlayTexture();
 
 	@Override
-	public final void renderInventoryBlock( Block block, int metadata, int modelId, RenderBlocks renderer )
+	public final void renderInventoryBlock( final Block block, final int metadata, final int modelId, final RenderBlocks renderer )
 	{
 		// Get the tessellator instance
 		Tessellator tessellator = Tessellator.instance;
@@ -169,7 +170,8 @@ public abstract class RenderBlockProviderBase
 	}
 
 	@Override
-	public final boolean renderWorldBlock( IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer )
+	public final boolean renderWorldBlock( final IBlockAccess world, final int x, final int y, final int z, final Block block, final int modelId,
+											final RenderBlocks renderer )
 	{
 		// Calculate the brightness based on light hitting each face
 		int blockBrightness = world.getLightBrightnessForSkyBlocks( x + 1, y, z, 0 ) | world.getLightBrightnessForSkyBlocks( x - 1, y, z, 0 ) |
@@ -198,7 +200,7 @@ public abstract class RenderBlockProviderBase
 	}
 
 	@Override
-	public final boolean shouldRender3DInInventory( int modelId )
+	public final boolean shouldRender3DInInventory( final int modelId )
 	{
 		return true;
 	}

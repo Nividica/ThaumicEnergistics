@@ -12,7 +12,7 @@ import appeng.api.parts.IPartHost;
 import appeng.helpers.IPriorityHost;
 import cpw.mods.fml.common.network.IGuiHandler;
 
-public class GuiHandler
+public class TEGuiHandler
 	implements IGuiHandler
 {
 	// ID's between 0 and this number indicate that they are AE parts
@@ -77,7 +77,7 @@ public class GuiHandler
 												final int z, final boolean isServerSide )
 	{
 		// Get the part
-		AbstractAEPartBase part = GuiHandler.getPart( tileSide, world, x, y, z );
+		AbstractAEPartBase part = TEGuiHandler.getPart( tileSide, world, x, y, z );
 
 		// Ensure we got the part
 		if( part == null )
@@ -104,7 +104,7 @@ public class GuiHandler
 	 */
 	public static int generatePriorityID( final ForgeDirection side )
 	{
-		return GuiHandler.PRIORITY_ID + side.ordinal();
+		return TEGuiHandler.PRIORITY_ID + side.ordinal();
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class GuiHandler
 	 */
 	public static void launchGui( final int ID, final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
-		player.openGui( ThaumicEnergistics.instance, ID + GuiHandler.DIRECTION_OFFSET, world, x, y, z );
+		player.openGui( ThaumicEnergistics.instance, ID + TEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
 	}
 
 	@Override
@@ -151,26 +151,26 @@ public class GuiHandler
 		if( ( world != null ) && ( side != ForgeDirection.UNKNOWN ) )
 		{
 			// This is an AE part, get its gui
-			return GuiHandler.getPartGuiElement( side, player, world, x, y, z, false );
+			return TEGuiHandler.getPartGuiElement( side, player, world, x, y, z, false );
 		}
 
 		// This is not an AE part, adjust the ID
-		ID -= GuiHandler.DIRECTION_OFFSET;
+		ID -= TEGuiHandler.DIRECTION_OFFSET;
 
 		// Is this the essentia cell?
-		if( ID == GuiHandler.ESSENTIA_CELL_ID )
+		if( ID == TEGuiHandler.ESSENTIA_CELL_ID )
 		{
 			return new GuiEssentiaCell( player, world, x, y, z );
 		}
 
 		// Is this the priority window?
-		if( ( ID >= GuiHandler.PRIORITY_ID ) && ( ID < GuiHandler.CELL_WORKBENCH_ID ) )
+		if( ( ID >= TEGuiHandler.PRIORITY_ID ) && ( ID < TEGuiHandler.CELL_WORKBENCH_ID ) )
 		{
 			// Get the side
-			side = ForgeDirection.getOrientation( ID - GuiHandler.PRIORITY_ID );
+			side = ForgeDirection.getOrientation( ID - TEGuiHandler.PRIORITY_ID );
 
 			// Get the part
-			AbstractAEPartBase part = GuiHandler.getPart( side, world, x, y, z );
+			AbstractAEPartBase part = TEGuiHandler.getPart( side, world, x, y, z );
 
 			// Ensure we got the part, and that it implements IPriortyHost
 			if( ( part == null ) || !( part instanceof IPriorityHost ) )
@@ -184,7 +184,7 @@ public class GuiHandler
 		}
 
 		// Is this the cell workbench?
-		if( ID == GuiHandler.CELL_WORKBENCH_ID )
+		if( ID == TEGuiHandler.CELL_WORKBENCH_ID )
 		{
 			return new GuiEssentiaCellWorkbench( player, world, x, y, z );
 		}
@@ -204,26 +204,26 @@ public class GuiHandler
 		if( ( world != null ) && ( side != ForgeDirection.UNKNOWN ) )
 		{
 			// This is an AE part, get its gui
-			return GuiHandler.getPartGuiElement( side, player, world, x, y, z, true );
+			return TEGuiHandler.getPartGuiElement( side, player, world, x, y, z, true );
 		}
 
 		// This is not an AE part, adjust the ID
-		ID -= GuiHandler.DIRECTION_OFFSET;
+		ID -= TEGuiHandler.DIRECTION_OFFSET;
 
 		// Is this the essentia cell?
-		if( ID == GuiHandler.ESSENTIA_CELL_ID )
+		if( ID == TEGuiHandler.ESSENTIA_CELL_ID )
 		{
 			return new ContainerEssentiaCell( player, world, x, y, z );
 		}
 
 		// Is this the priority window?
-		if( ( ID >= GuiHandler.PRIORITY_ID ) && ( ID < GuiHandler.CELL_WORKBENCH_ID ) )
+		if( ( ID >= TEGuiHandler.PRIORITY_ID ) && ( ID < TEGuiHandler.CELL_WORKBENCH_ID ) )
 		{
 			// Get the side
-			side = ForgeDirection.getOrientation( ID - GuiHandler.PRIORITY_ID );
+			side = ForgeDirection.getOrientation( ID - TEGuiHandler.PRIORITY_ID );
 
 			// Get the part
-			AbstractAEPartBase part = GuiHandler.getPart( side, world, x, y, z );
+			AbstractAEPartBase part = TEGuiHandler.getPart( side, world, x, y, z );
 
 			// Ensure we got the part, and that it implements IPriortyHost
 			if( ( part == null ) || !( part instanceof IPriorityHost ) )
@@ -237,7 +237,7 @@ public class GuiHandler
 		}
 
 		// Is this the cell workbench?
-		if( ID == GuiHandler.CELL_WORKBENCH_ID )
+		if( ID == TEGuiHandler.CELL_WORKBENCH_ID )
 		{
 			return new ContainerEssentiaCellWorkbench( player, world, x, y, z );
 		}

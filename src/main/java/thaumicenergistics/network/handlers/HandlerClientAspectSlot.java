@@ -10,7 +10,7 @@ public class HandlerClientAspectSlot
 {
 
 	@Override
-	public IMessage onMessage( PacketClientAspectSlot message, MessageContext ctx )
+	public IMessage onMessage( final PacketClientAspectSlot message, final MessageContext ctx )
 	{
 		message.execute();
 		return null;

@@ -7,7 +7,16 @@ import thaumicenergistics.gui.abstraction.AbstractGuiCellTerminalBase;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Gui for the essentia terminal
+ * 
+ * @author Nividica
+ * 
+ */
+@SideOnly(Side.CLIENT)
 public class GuiEssentiaTerminal
 	extends AbstractGuiCellTerminalBase
 	implements IAspectSelectorGui
@@ -16,7 +25,7 @@ public class GuiEssentiaTerminal
 
 	protected ContainerEssentiaTerminal containerAspectTerminal;
 
-	public GuiEssentiaTerminal( AEPartEssentiaTerminal terminal, EntityPlayer player )
+	public GuiEssentiaTerminal( final AEPartEssentiaTerminal terminal, final EntityPlayer player )
 	{
 		super( player, new ContainerEssentiaTerminal( terminal, player ) );
 
@@ -24,7 +33,7 @@ public class GuiEssentiaTerminal
 	}
 
 	@Override
-	protected void sortModeButtonClicked( ComparatorMode modeRequested )
+	protected void sortModeButtonClicked( final ComparatorMode modeRequested )
 	{
 		// Request update from server
 		new PacketServerEssentiaTerminal().createRequestChangeSortMode( this.player, this.terminal, modeRequested ).sendPacketToServer();

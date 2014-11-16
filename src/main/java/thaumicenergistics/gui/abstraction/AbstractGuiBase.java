@@ -6,12 +6,30 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import thaumicenergistics.container.ContainerWithNetworkTool;
+import thaumicenergistics.container.slot.SlotNetworkTool;
 import thaumicenergistics.gui.buttons.AbstractButtonBase;
+import thaumicenergistics.gui.widget.IWidgetHost;
+import thaumicenergistics.texture.AEStateIconsEnum;
+import thaumicenergistics.util.GuiHelper;
+import appeng.api.AEApi;
+import appeng.parts.automation.UpgradeInventory;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base gui of all Thaumic Energistics guis
+ * 
+ * @author Nividica
+ * 
+ */
+@SideOnly(Side.CLIENT)
 public abstract class AbstractGuiBase
 	extends GuiContainer
+	implements IWidgetHost
 {
 	/**
 	 * Pixel area represented by the top-left and bottom-right corners of a
@@ -115,6 +133,11 @@ public abstract class AbstractGuiBase
 	 */
 	private static final int TOOLTIP_BORDER_SIZE = 3;
 
+	private static int upgradeU = AEStateIconsEnum.UPGRADE_SLOT.getU();
+	private static int upgradeV = AEStateIconsEnum.UPGRADE_SLOT.getV();
+	private static int upgradeWidth = AEStateIconsEnum.UPGRADE_SLOT.getWidth();
+	private static int upgradeHeight = AEStateIconsEnum.UPGRADE_SLOT.getHeight();
+
 	/**
 	 * Lines to draw when drawTooltip is called.
 	 */
@@ -213,7 +236,25 @@ public abstract class AbstractGuiBase
 	}
 
 	@Override
-	protected abstract void drawGuiContainerBackgroundLayer( float alpha, int mouseX, int mouseY );
+	protected void drawGuiContainerBackgroundLayer( final float alpha, final int mouseX, final int mouseY )
+	{
+		Minecraft.getMinecraft().renderEngine.bindTexture( AEStateIconsEnum.AE_STATES_TEXTURE );
+
+		// Locate any upgrade or network slots
+		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ )
+		{
+			// Get the slot
+			Slot slot = (Slot)this.inventorySlots.inventorySlots.get( i );
+
+			// Is it network or upgrade?
+			if( ( slot instanceof SlotNetworkTool ) || ( slot.inventory instanceof UpgradeInventory ) )
+			{
+				// Draw background
+				this.drawTexturedModalRect( this.guiLeft + slot.xDisplayPosition, this.guiTop + slot.yDisplayPosition, AbstractGuiBase.upgradeU,
+					AbstractGuiBase.upgradeV, AbstractGuiBase.upgradeWidth, AbstractGuiBase.upgradeHeight );
+			}
+		}
+	}
 
 	/**
 	 * Draws an on-screen tooltip box based on the string in this.tooltip.
@@ -330,4 +371,90 @@ public abstract class AbstractGuiBase
 		}
 	}
 
+	/**
+	 * Gets the slot who contains the specified point.
+	 * 
+	 * @param x
+	 * @param y
+	 * @return Slot the point is within, null if point is within no slots.
+	 */
+	protected Slot getSlotAtPosition( final int x, final int y )
+	{
+		// Loop over all slots
+		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ )
+		{
+			// Get the slot
+			Slot slot = (Slot)this.inventorySlots.inventorySlots.get( i );
+
+			// Is the point within the slot?
+			if( this.isPointWithinSlot( slot, x, y ) )
+			{
+				// Return the slot
+				return slot;
+			}
+		}
+
+		// Point was not within any slot
+		return null;
+	}
+
+	/**
+	 * Checks if the specified point is within the bounds of the specified slot.
+	 * 
+	 * @param slot
+	 * @param x
+	 * @param y
+	 * @return True if the point is within the slot, false otherwise.
+	 */
+	protected boolean isPointWithinSlot( final Slot slot, final int x, final int y )
+	{
+		return GuiHelper.instance.isPointInGuiRegion( slot.yDisplayPosition, slot.xDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
+	}
+
+	/**
+	 * Called when the mouse is clicked.
+	 */
+	@Override
+	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
+	{
+		// Is our container one that could have a network tool?
+		if( this.inventorySlots instanceof ContainerWithNetworkTool )
+		{
+			// Do we have a network tool?
+			if( ( (ContainerWithNetworkTool)this.inventorySlots ).hasNetworkTool() )
+			{
+				// Get the slot the mouse was clicked over
+				Slot slot = this.getSlotAtPosition( mouseX, mouseY );
+
+				// Was the slot the network tool?
+				if( ( slot != null ) && ( slot.getStack() != null ) &&
+								( slot.getStack().isItemEqual( AEApi.instance().items().itemNetworkTool.stack( 1 ) ) ) )
+				{
+					// Do not allow any interaction with the network tool slot.
+					return;
+				}
+			}
+		}
+
+		// Call super
+		super.mouseClicked( mouseX, mouseY, mouseButton );
+	}
+
+	/**
+	 * Gets the starting X position for the Gui.
+	 */
+	@Override
+	public final int guiLeft()
+	{
+		return this.guiLeft;
+	}
+
+	/**
+	 * Gets the starting Y position for the Gui.
+	 */
+	@Override
+	public final int guiTop()
+	{
+		return this.guiTop;
+	}
 }

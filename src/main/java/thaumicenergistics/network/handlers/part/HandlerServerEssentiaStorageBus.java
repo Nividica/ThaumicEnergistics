@@ -10,7 +10,7 @@ public class HandlerServerEssentiaStorageBus
 {
 
 	@Override
-	public IMessage onMessage( PacketServerEssentiaStorageBus message, MessageContext ctx )
+	public IMessage onMessage( final PacketServerEssentiaStorageBus message, final MessageContext ctx )
 	{
 		message.execute();
 		return null;

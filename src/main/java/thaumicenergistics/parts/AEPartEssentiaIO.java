@@ -15,7 +15,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.gui.GuiEssentiatIO;
+import thaumicenergistics.gui.GuiEssentiaIO;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
@@ -57,7 +57,7 @@ public abstract class AEPartEssentiaIO
 	/**
 	 * How much additional essentia can be transfered per upgrade.
 	 */
-	private final static int ADDITIONAL_TRANSFER_PER_SECOND = 7;
+	private final static int ADDITIONAL_TRANSFER_PER_SECOND = 8;
 
 	private final static int MINIMUM_TICKS_PER_OPERATION = 10;
 
@@ -495,7 +495,7 @@ public abstract class AEPartEssentiaIO
 	@Override
 	public Object getClientGuiElement( final EntityPlayer player )
 	{
-		return new GuiEssentiatIO( this, player );
+		return new GuiEssentiaIO( this, player );
 	}
 
 	@Override

@@ -24,7 +24,7 @@ public abstract class AbstractAspectWidget
 
 	private byte[] aspectColorBytes;
 
-	public AbstractAspectWidget( IWidgetHost hostGui, Aspect aspect, int xPos, int yPos, EntityPlayer player )
+	public AbstractAspectWidget( final IWidgetHost hostGui, final Aspect aspect, final int xPos, final int yPos, final EntityPlayer player )
 	{
 		// Call super
 		super( hostGui, xPos, yPos );
@@ -81,7 +81,7 @@ public abstract class AbstractAspectWidget
 		return this.aspect;
 	}
 
-	public void setAspect( Aspect aspect )
+	public void setAspect( final Aspect aspect )
 	{
 		// Set the aspect
 		this.aspect = aspect;

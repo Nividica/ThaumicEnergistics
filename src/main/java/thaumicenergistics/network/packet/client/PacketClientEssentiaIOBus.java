@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
-import thaumicenergistics.gui.GuiEssentiatIO;
+import thaumicenergistics.gui.GuiEssentiaIO;
 import thaumicenergistics.network.packet.AbstractClientPacket;
 import thaumicenergistics.registries.EnumCache;
 import appeng.api.config.RedstoneMode;
@@ -36,7 +36,7 @@ public class PacketClientEssentiaIOBus
 		Gui gui = Minecraft.getMinecraft().currentScreen;
 
 		// Ensure the gui is a GuiEssentiaIO
-		if( !( gui instanceof GuiEssentiatIO ) )
+		if( !( gui instanceof GuiEssentiaIO ) )
 		{
 			return;
 		}
@@ -45,28 +45,28 @@ public class PacketClientEssentiaIOBus
 		{
 			case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_CONTROLLED:
 				// Set redstone controlled
-				( (GuiEssentiatIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
+				( (GuiEssentiaIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
 				break;
 
 			case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_MODE:
 				// Set redstone mode
-				( (GuiEssentiatIO)gui ).onReceiveRedstoneMode( this.redstoneMode );
+				( (GuiEssentiaIO)gui ).onReceiveRedstoneMode( this.redstoneMode );
 				break;
 
 			case PacketClientEssentiaIOBus.MODE_SET_FILTER_SIZE:
 				// Set filter size
-				( (GuiEssentiatIO)gui ).onReceiveFilterSize( this.filterSize );
+				( (GuiEssentiaIO)gui ).onReceiveFilterSize( this.filterSize );
 				break;
 
 			case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
 				// Set redstone mode
-				( (GuiEssentiatIO)gui ).onReceiveRedstoneMode( this.redstoneMode );
+				( (GuiEssentiaIO)gui ).onReceiveRedstoneMode( this.redstoneMode );
 
 				// Set redstone controlled
-				( (GuiEssentiatIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
+				( (GuiEssentiaIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
 
 				// Set filter size
-				( (GuiEssentiatIO)gui ).onReceiveFilterSize( this.filterSize );
+				( (GuiEssentiaIO)gui ).onReceiveFilterSize( this.filterSize );
 				break;
 		}
 	}

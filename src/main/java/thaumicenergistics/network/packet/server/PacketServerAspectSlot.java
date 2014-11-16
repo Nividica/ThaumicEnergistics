@@ -19,7 +19,7 @@ public class PacketServerAspectSlot
 
 	private IAspectSlotPart part;
 
-	public PacketServerAspectSlot createUpdatePartAspect( IAspectSlotPart part, int index, Aspect aspect, EntityPlayer player )
+	public PacketServerAspectSlot createUpdatePartAspect( final IAspectSlotPart part, final int index, final Aspect aspect, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -52,7 +52,7 @@ public class PacketServerAspectSlot
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -70,7 +70,7 @@ public class PacketServerAspectSlot
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{

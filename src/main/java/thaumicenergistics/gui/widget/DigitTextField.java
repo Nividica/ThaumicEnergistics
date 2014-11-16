@@ -17,13 +17,13 @@ public class DigitTextField
 	 * @param length
 	 * @param height
 	 */
-	public DigitTextField( FontRenderer fontRenderer, int x, int y, int length, int height )
+	public DigitTextField( final FontRenderer fontRenderer, final int x, final int y, final int length, final int height )
 	{
 		super( fontRenderer, x, y, length, height );
 	}
 
 	@Override
-	public boolean textboxKeyTyped( char keyChar, int keyID )
+	public boolean textboxKeyTyped( final char keyChar, final int keyID )
 	{
 		// Ensure we have focus
 		if( this.isFocused() )
@@ -44,7 +44,7 @@ public class DigitTextField
 				this.writeText( Character.toString( keyChar ) );
 				return true;
 			}
-			
+
 			// Is the text empty or the value of the text 0?
 			if( this.getText().isEmpty() || this.getText().equals( "0" ) )
 			{

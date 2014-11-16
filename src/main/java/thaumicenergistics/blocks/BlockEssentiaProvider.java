@@ -35,7 +35,7 @@ public class BlockEssentiaProvider
 	}
 
 	@Override
-	public TileEntity createNewTileEntity( World world, int metaData )
+	public TileEntity createNewTileEntity( final World world, final int metaData )
 	{
 		// Create a new provider tile, passing the side to attach to
 		TileEssentiaProvider tile = new TileEssentiaProvider();
@@ -49,7 +49,7 @@ public class BlockEssentiaProvider
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public IIcon getIcon( int side, int metaData )
+	public IIcon getIcon( final int side, final int metaData )
 	{
 		return BlockTextureManager.ESSENTIA_PROVIDER.getTexture();
 	}
@@ -68,7 +68,7 @@ public class BlockEssentiaProvider
 	}
 
 	@Override
-	public void onNeighborBlockChange( World world, int x, int y, int z, Block neighbor )
+	public void onNeighborBlockChange( final World world, final int x, final int y, final int z, final Block neighbor )
 	{
 		// Inform our tile entity a neighbor has changed
 		( (TileEssentiaProvider)world.getTileEntity( x, y, z ) ).checkGridConnectionColor();

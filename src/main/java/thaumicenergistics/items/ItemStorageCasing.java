@@ -19,13 +19,13 @@ public class ItemStorageCasing
 	}
 
 	@Override
-	public String getUnlocalizedName( ItemStack itemStack )
+	public String getUnlocalizedName( final ItemStack itemStack )
 	{
 		return ThaumicEnergistics.MOD_ID + ".item." + ItemEnum.STORAGE_CASING.getInternalName();
 	}
 
 	@Override
-	public void registerIcons( IIconRegister iconRegister )
+	public void registerIcons( final IIconRegister iconRegister )
 	{
 		this.itemIcon = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":essentia.cell.casing" );
 	}

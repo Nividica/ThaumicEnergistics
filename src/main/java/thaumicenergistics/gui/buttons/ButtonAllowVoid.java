@@ -24,7 +24,7 @@ public class ButtonAllowVoid
 	 * Cache the font renderer
 	 */
 	private static final FontRenderer FONT_RENDERER = Minecraft.getMinecraft().fontRenderer;
-	
+
 	/**
 	 * Header string for all tooltips used.
 	 */
@@ -59,7 +59,7 @@ public class ButtonAllowVoid
 	 * First line of the tooltip
 	 */
 	private String tooltipTitle = StatCollector.translateToLocal( ButtonAllowVoid.TOOLTIP_LOC_HEADER );
-	
+
 	/**
 	 * Second line of the tooltip if void is disabled
 	 */
@@ -79,7 +79,7 @@ public class ButtonAllowVoid
 	 */
 	public boolean isVoidAllowed = false;
 
-	public ButtonAllowVoid( int ID, int xPosition, int yPosition )
+	public ButtonAllowVoid( final int ID, final int xPosition, final int yPosition )
 	{
 		super( ID, xPosition, yPosition, ButtonAllowVoid.BUTTON_SIZE, ButtonAllowVoid.BUTTON_SIZE, "" );
 
@@ -91,28 +91,7 @@ public class ButtonAllowVoid
 	}
 
 	@Override
-	public void getTooltip( List<String> tooltip )
-	{
-		// Add the title
-		tooltip.add( this.tooltipTitle );
-		
-		// Add allowed/disabled
-		if( this.isVoidAllowed )
-		{
-			tooltip.add( EnumChatFormatting.GRAY + this.tooltipAllowed );
-		}
-		else
-		{
-			tooltip.add( EnumChatFormatting.GRAY + this.tooltipDisabled );
-		}
-		
-		// Add the note
-		tooltip.add( EnumChatFormatting.ITALIC + this.tooltipNote );
-
-	}
-
-	@Override
-	public void drawButton( Minecraft minecraftInstance, int x, int y )
+	public void drawButton( final Minecraft minecraftInstance, final int x, final int y )
 	{
 		// Draw the usual button
 		super.drawButton( minecraftInstance, x, y );
@@ -131,5 +110,26 @@ public class ButtonAllowVoid
 			this.drawTexturedModalRect( this.xPosition + 1, this.yPosition + 1, this.disabledIcon.getU(), this.disabledIcon.getV(),
 				ButtonAllowVoid.DISABLED_ICON_SIZE, ButtonAllowVoid.DISABLED_ICON_SIZE );
 		}
+	}
+
+	@Override
+	public void getTooltip( final List<String> tooltip )
+	{
+		// Add the title
+		tooltip.add( this.tooltipTitle );
+
+		// Add allowed/disabled
+		if( this.isVoidAllowed )
+		{
+			tooltip.add( EnumChatFormatting.GRAY + this.tooltipAllowed );
+		}
+		else
+		{
+			tooltip.add( EnumChatFormatting.GRAY + this.tooltipDisabled );
+		}
+
+		// Add the note
+		tooltip.add( EnumChatFormatting.ITALIC + this.tooltipNote );
+
 	}
 }

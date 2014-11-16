@@ -20,7 +20,8 @@ public enum AEStateIconsEnum
 		SORT_DIR_DEC (16, 48),
 		WRENCH (32, 64),
 		DISABLED (0, 128),
-		CELL (240, 0);
+		CELL (240, 0),
+		VIEW_CELL (224, 64);
 
 	/**
 	 * Location of the AE states texture

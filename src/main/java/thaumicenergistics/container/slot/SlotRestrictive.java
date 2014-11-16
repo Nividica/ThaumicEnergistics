@@ -32,7 +32,7 @@ public class SlotRestrictive
 	 * @param y
 	 * Y position of the slot
 	 */
-	public SlotRestrictive( IInventory inventory, int index, int x, int y )
+	public SlotRestrictive( final IInventory inventory, final int index, final int x, final int y )
 	{
 		// Pass to super
 		super( inventory, index, x, y );
@@ -48,7 +48,7 @@ public class SlotRestrictive
 	 * Pass the is valid call to the inventory.
 	 */
 	@Override
-	public boolean isItemValid( ItemStack itemstack )
+	public boolean isItemValid( final ItemStack itemstack )
 	{
 		return this.inventory.isItemValidForSlot( this.myIndex, itemstack );
 	}

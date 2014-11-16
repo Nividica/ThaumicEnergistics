@@ -10,7 +10,7 @@ public class HandlerClientEssentiaCell
 {
 
 	@Override
-	public IMessage onMessage( PacketClientEssentiaCell message, MessageContext ctx )
+	public IMessage onMessage( final PacketClientEssentiaCell message, final MessageContext ctx )
 	{
 		message.execute();
 		return null;

@@ -35,7 +35,8 @@ public class WidgetAspectSelector
 	 */
 	private long amount = 0;
 
-	public WidgetAspectSelector( IAspectSelectorGui selectorGui, AspectStack stack, int xPos, int yPos, EntityPlayer player )
+	public WidgetAspectSelector( final IAspectSelectorGui selectorGui, final AspectStack stack, final int xPos, final int yPos,
+									final EntityPlayer player )
 	{
 		// Call super
 		super( selectorGui, stack.aspect, xPos, yPos, player );
@@ -61,7 +62,7 @@ public class WidgetAspectSelector
 	 * @param color
 	 * @param thickness
 	 */
-	private void drawHollowRectWithCorners( int posX, int posY, int width, int height, int color, int thickness )
+	private void drawHollowRectWithCorners( final int posX, final int posY, final int width, final int height, final int color, final int thickness )
 	{
 		// Calculate points
 
@@ -133,23 +134,6 @@ public class WidgetAspectSelector
 	}
 
 	/**
-	 * Draws the aspect name and amount
-	 */
-	@Override
-	public void getTooltip( List<String> tooltip )
-	{
-		if( ( this.getAspect() != null ) && ( this.amount > 0L ) )
-		{
-
-			// Add the name
-			tooltip.add( this.aspectName );
-
-			// Add the amount
-			tooltip.add( Long.toString( this.amount ) );
-		}
-	}
-
-	/**
 	 * Draws the aspect icon and selector border if it is selected.
 	 */
 	@Override
@@ -214,6 +198,23 @@ public class WidgetAspectSelector
 	}
 
 	/**
+	 * Draws the aspect name and amount
+	 */
+	@Override
+	public void getTooltip( final List<String> tooltip )
+	{
+		if( ( this.getAspect() != null ) && ( this.amount > 0L ) )
+		{
+
+			// Add the name
+			tooltip.add( this.aspectName );
+
+			// Add the amount
+			tooltip.add( Long.toString( this.amount ) );
+		}
+	}
+
+	/**
 	 * Called when we are clicked
 	 */
 	@Override
@@ -230,7 +231,7 @@ public class WidgetAspectSelector
 	 * 
 	 * @param amount
 	 */
-	public void setAmount( long amount )
+	public void setAmount( final long amount )
 	{
 		this.amount = amount;
 	}

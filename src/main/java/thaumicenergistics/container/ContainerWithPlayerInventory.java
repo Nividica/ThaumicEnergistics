@@ -56,7 +56,7 @@ public abstract class ContainerWithPlayerInventory
 	 * @param slotStack
 	 * @return
 	 */
-	protected final boolean mergeSlotWithHotbarInventory( ItemStack slotStack )
+	protected final boolean mergeSlotWithHotbarInventory( final ItemStack slotStack )
 	{
 		return this.mergeItemStack( slotStack, this.firstHotbarSlotNumber, this.lastHotbarSlotNumber + 1, false );
 	}
@@ -67,7 +67,7 @@ public abstract class ContainerWithPlayerInventory
 	 * @param slotStack
 	 * @return
 	 */
-	protected final boolean mergeSlotWithPlayerInventory( ItemStack slotStack )
+	protected final boolean mergeSlotWithPlayerInventory( final ItemStack slotStack )
 	{
 		return this.mergeItemStack( slotStack, this.firstPlayerSlotNumber, this.lastPlayerSlotNumber + 1, false );
 	}
@@ -78,7 +78,7 @@ public abstract class ContainerWithPlayerInventory
 	 * @param slotNumber
 	 * @return True if it was in the hotbar inventory, false otherwise.
 	 */
-	protected final boolean slotClickedWasInHotbarInventory( int slotNumber )
+	protected final boolean slotClickedWasInHotbarInventory( final int slotNumber )
 	{
 		return ( slotNumber >= this.firstHotbarSlotNumber ) && ( slotNumber <= this.lastHotbarSlotNumber );
 	}
@@ -89,7 +89,7 @@ public abstract class ContainerWithPlayerInventory
 	 * @param slotNumber
 	 * @return True if it was in the player inventory, false otherwise.
 	 */
-	protected final boolean slotClickedWasInPlayerInventory( int slotNumber )
+	protected final boolean slotClickedWasInPlayerInventory( final int slotNumber )
 	{
 		return ( slotNumber >= this.firstPlayerSlotNumber ) && ( slotNumber <= this.lastPlayerSlotNumber );
 	}
@@ -100,7 +100,7 @@ public abstract class ContainerWithPlayerInventory
 	 * @param slotNumber
 	 * @return
 	 */
-	protected final boolean swapSlotInventoryHotbar( int slotNumber, ItemStack slotStack )
+	protected final boolean swapSlotInventoryHotbar( final int slotNumber, final ItemStack slotStack )
 	{
 		if( this.slotClickedWasInHotbarInventory( slotNumber ) )
 		{
@@ -124,7 +124,7 @@ public abstract class ContainerWithPlayerInventory
 	 * @param hotbarPositionY
 	 * The Y position offset for hotbar slots
 	 */
-	public final void bindPlayerInventory( IInventory playerInventory, int inventoryOffsetY, int hotbarPositionY )
+	public final void bindPlayerInventory( final IInventory playerInventory, final int inventoryOffsetY, final int hotbarPositionY )
 	{
 
 		// Hot-bar ID's 0-8
@@ -180,44 +180,21 @@ public abstract class ContainerWithPlayerInventory
 			this.lastPlayerSlotNumber = inventorySlot.slotNumber;
 		}
 	}
-	
-	/**
-	 * Gets all non-empty slot from the player inventory.
-	 * @return
-	 */
-	public final List<Slot> getNonEmptySlotsFromPlayerInventory()
-	{
-		List<Slot> pSlots = new ArrayList<Slot>();
-		
-		for( int slotNumber = this.firstPlayerSlotNumber; slotNumber <= this.lastPlayerSlotNumber; slotNumber++ )
-		{
-			// Get the slot
-			Slot pSlot = this.getSlot( slotNumber );
-			
-			// Is the slot not-empty
-			if( pSlot.getHasStack() )
-			{
-				// Add to the list
-				pSlots.add( pSlot );
-			}
-		}
-		
-		return pSlots;	
-	}
-	
+
 	/**
 	 * Gets all non-empty slot from the hotbar inventory.
+	 * 
 	 * @return
 	 */
 	public final List<Slot> getNonEmptySlotsFromHotbar()
 	{
 		List<Slot> hSlots = new ArrayList<Slot>();
-		
+
 		for( int slotNumber = this.firstHotbarSlotNumber; slotNumber <= this.lastHotbarSlotNumber; slotNumber++ )
 		{
 			// Get the slot
 			Slot hSlot = this.getSlot( slotNumber );
-			
+
 			// Is the slot not-empty
 			if( hSlot.getHasStack() )
 			{
@@ -225,7 +202,32 @@ public abstract class ContainerWithPlayerInventory
 				hSlots.add( hSlot );
 			}
 		}
-		
-		return hSlots;	
+
+		return hSlots;
+	}
+
+	/**
+	 * Gets all non-empty slot from the player inventory.
+	 * 
+	 * @return
+	 */
+	public final List<Slot> getNonEmptySlotsFromPlayerInventory()
+	{
+		List<Slot> pSlots = new ArrayList<Slot>();
+
+		for( int slotNumber = this.firstPlayerSlotNumber; slotNumber <= this.lastPlayerSlotNumber; slotNumber++ )
+		{
+			// Get the slot
+			Slot pSlot = this.getSlot( slotNumber );
+
+			// Is the slot not-empty
+			if( pSlot.getHasStack() )
+			{
+				// Add to the list
+				pSlots.add( pSlot );
+			}
+		}
+
+		return pSlots;
 	}
 }

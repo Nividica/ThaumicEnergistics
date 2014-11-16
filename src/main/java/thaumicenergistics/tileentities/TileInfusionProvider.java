@@ -29,14 +29,19 @@ public class TileInfusionProvider
 	 */
 	protected List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
 
+	/**
+	 * Shows runes on the infusion provider.
+	 * 
+	 * @param aspectColor
+	 */
 	private void doParticalFX( final int aspectColor )
 	{
-		float red = ( aspectColor & 0xFF0000 ) / 16711680.0F;
-		float green = ( aspectColor & 0x00FF00 ) / 65280.0F;
-		float blue = ( aspectColor & 0x0000FF ) / 255.0F;
+		// Convert each color to percentage
+		float red = ( aspectColor & 0xFF0000 ) / (float)0xFF0000;
+		float green = ( aspectColor & 0x00FF00 ) / (float)0x00FF00;
+		float blue = ( aspectColor & 0x0000FF ) / (float)0x0000FF;
 
-		//System.out.printf( "R:%f G:%f B:%f %n", red, green, blue );
-
+		// Add 10 particles
 		for( int i = 0; i < 10; i++ )
 		{
 			Thaumcraft.proxy.blockRunes( this.worldObj, this.xCoord, this.yCoord, this.zCoord, red, green, blue, 10, -0.1F );

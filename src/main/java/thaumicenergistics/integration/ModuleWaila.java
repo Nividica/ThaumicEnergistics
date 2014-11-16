@@ -38,7 +38,7 @@ public class ModuleWaila
 	 * 
 	 * @param registrar
 	 */
-	public static void callbackRegister( IWailaRegistrar registrar )
+	public static void callbackRegister( final IWailaRegistrar registrar )
 	{
 		// Register the providers
 		registrar.registerBodyProvider( ModuleWaila.instance, AbstractBlockProviderBase.class );
@@ -48,7 +48,8 @@ public class ModuleWaila
 	 * Changes the body of the Waila message.
 	 */
 	@Override
-	public List<String> getWailaBody( ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaBody( final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor,
+										final IWailaConfigHandler config )
 	{
 		// Get the tile entity
 		TileEntity tileProvider = accessor.getTileEntity();
@@ -76,21 +77,23 @@ public class ModuleWaila
 	}
 
 	@Override
-	public List<String> getWailaHead( ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaHead( final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor,
+										final IWailaConfigHandler config )
 	{
 		// Ignored
 		return currenttip;
 	}
 
 	@Override
-	public ItemStack getWailaStack( IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public ItemStack getWailaStack( final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
 		// Ignored
 		return null;
 	}
 
 	@Override
-	public List<String> getWailaTail( ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config )
+	public List<String> getWailaTail( final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor,
+										final IWailaConfigHandler config )
 	{
 		// Ignored
 		return currenttip;

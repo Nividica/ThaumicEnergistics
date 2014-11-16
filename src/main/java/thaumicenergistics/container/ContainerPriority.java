@@ -19,7 +19,7 @@ public class ContainerPriority
 	 */
 	private final EntityPlayer player;
 
-	public ContainerPriority( IPriorityHost host, EntityPlayer player )
+	public ContainerPriority( final IPriorityHost host, final EntityPlayer player )
 	{
 		// Set the host
 		this.host = host;
@@ -41,7 +41,7 @@ public class ContainerPriority
 	 * Who can interact with this?
 	 */
 	@Override
-	public boolean canInteractWith( EntityPlayer player )
+	public boolean canInteractWith( final EntityPlayer player )
 	{
 		return true;
 	}
@@ -51,7 +51,7 @@ public class ContainerPriority
 	 * 
 	 * @param newPriority
 	 */
-	public void onClientRequestAdjustPriority( int adjustment )
+	public void onClientRequestAdjustPriority( final int adjustment )
 	{
 		// Adjust
 		int newPriority = this.host.getPriority() + adjustment;
@@ -74,7 +74,7 @@ public class ContainerPriority
 	 * 
 	 * @param newPriority
 	 */
-	public void onClientRequestSetPriority( int newPriority )
+	public void onClientRequestSetPriority( final int newPriority )
 	{
 		// Set the priority
 		this.host.setPriority( newPriority );

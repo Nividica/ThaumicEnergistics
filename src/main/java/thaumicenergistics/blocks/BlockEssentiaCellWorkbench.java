@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.gui.GuiHandler;
+import thaumicenergistics.gui.TEGuiHandler;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.tileentities.TileEssentiaCellWorkbench;
@@ -145,7 +145,7 @@ public class BlockEssentiaCellWorkbench
 	public boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
 		// Launch the gui.
-		GuiHandler.launchGui( GuiHandler.CELL_WORKBENCH_ID, player, world, x, y, z );
+		TEGuiHandler.launchGui( TEGuiHandler.CELL_WORKBENCH_ID, player, world, x, y, z );
 
 		return true;
 	}

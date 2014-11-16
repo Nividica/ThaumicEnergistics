@@ -10,7 +10,7 @@ public class HandlerClientEssentiaLevelEmitter
 {
 
 	@Override
-	public IMessage onMessage( PacketClientEssentiaEmitter message, MessageContext ctx )
+	public IMessage onMessage( final PacketClientEssentiaEmitter message, final MessageContext ctx )
 	{
 		message.execute();
 		return null;

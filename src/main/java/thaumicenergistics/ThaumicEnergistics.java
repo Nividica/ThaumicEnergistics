@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumicenergistics.api.IConfig;
 import thaumicenergistics.api.TEApi;
-import thaumicenergistics.gui.GuiHandler;
+import thaumicenergistics.gui.TEGuiHandler;
 import thaumicenergistics.integration.IntegrationCore;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
@@ -171,7 +171,7 @@ public class ThaumicEnergistics
 		ThaumicEnergistics.instance = this;
 
 		// Register the gui handler
-		NetworkRegistry.INSTANCE.registerGuiHandler( this, new GuiHandler() );
+		NetworkRegistry.INSTANCE.registerGuiHandler( this, new TEGuiHandler() );
 
 		// Register items
 		ThaumicEnergistics.proxy.registerItems();

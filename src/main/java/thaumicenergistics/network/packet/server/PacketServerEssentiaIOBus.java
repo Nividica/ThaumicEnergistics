@@ -15,7 +15,7 @@ public class PacketServerEssentiaIOBus
 
 	private AEPartEssentiaIO part;
 
-	public PacketServerEssentiaIOBus createRequestChangeRedstoneMode( EntityPlayer player, AEPartEssentiaIO part )
+	public PacketServerEssentiaIOBus createRequestChangeRedstoneMode( final EntityPlayer player, final AEPartEssentiaIO part )
 	{
 		// Set the player
 		this.player = player;
@@ -29,7 +29,7 @@ public class PacketServerEssentiaIOBus
 		return this;
 	}
 
-	public PacketServerEssentiaIOBus createRequestFullUpdate( EntityPlayer player, AEPartEssentiaIO part )
+	public PacketServerEssentiaIOBus createRequestFullUpdate( final EntityPlayer player, final AEPartEssentiaIO part )
 	{
 		// Set the player
 		this.player = player;
@@ -61,7 +61,7 @@ public class PacketServerEssentiaIOBus
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -74,7 +74,7 @@ public class PacketServerEssentiaIOBus
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{

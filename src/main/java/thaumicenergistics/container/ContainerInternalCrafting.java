@@ -12,7 +12,7 @@ public class ContainerInternalCrafting
 	}
 
 	@Override
-	public boolean canInteractWith( EntityPlayer player )
+	public boolean canInteractWith( final EntityPlayer player )
 	{
 		return false;
 	}

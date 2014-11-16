@@ -35,7 +35,7 @@ public class ContainerPartEssentiaStorageBus
 
 	private EntityPlayer player;
 
-	public ContainerPartEssentiaStorageBus( AEPartEssentiaStorageBus part, EntityPlayer player )
+	public ContainerPartEssentiaStorageBus( final AEPartEssentiaStorageBus part, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -63,13 +63,13 @@ public class ContainerPartEssentiaStorageBus
 	 * Who can interact with the container?
 	 */
 	@Override
-	public boolean canInteractWith( EntityPlayer player )
+	public boolean canInteractWith( final EntityPlayer player )
 	{
 		return true;
 	}
 
 	@Override
-	public void onContainerClosed( EntityPlayer player )
+	public void onContainerClosed( final EntityPlayer player )
 	{
 		if( this.part != null )
 		{
@@ -77,13 +77,13 @@ public class ContainerPartEssentiaStorageBus
 		}
 	}
 
-	public void setFilteredAspects( List<Aspect> filteredAspects )
+	public void setFilteredAspects( final List<Aspect> filteredAspects )
 	{
 		new PacketClientAspectSlot().createFilterListUpdate( filteredAspects, this.player ).sendPacketToPlayer();
 	}
 
 	@Override
-	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
+	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
 		// Get the slot
 		Slot slot = this.getSlot( slotNumber );

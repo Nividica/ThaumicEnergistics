@@ -1,6 +1,7 @@
 package thaumicenergistics.gui;
 
 import java.util.List;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +22,7 @@ import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
 import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
+import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.GuiHelper;
 import appeng.api.config.SortDir;
@@ -31,7 +33,16 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.me.ItemRepo;
 import appeng.client.render.AppEngRenderItem;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Gui for the Arcane Crafting Terminal
+ * 
+ * @author Nividica
+ * 
+ */
+@SideOnly(Side.CLIENT)
 public class GuiArcaneCraftingTerminal
 	extends AbstractGuiConstantsACT
 	implements ISortSource
@@ -134,8 +145,8 @@ public class GuiArcaneCraftingTerminal
 	private void doMEWheelAction( final int deltaZ )
 	{
 		// Get the mouse position
-		int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
-		int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+		int mouseX = ( Mouse.getEventX() * this.width ) / this.mc.displayWidth;
+		int mouseY = this.height - ( ( Mouse.getEventY() * this.height ) / this.mc.displayHeight ) - 1;
 
 		// Is the mouse inside the ME area?
 		if( GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.ME_ITEM_POS_Y, AbstractGuiConstantsACT.ME_ITEM_POS_X,
@@ -348,6 +359,19 @@ public class GuiArcaneCraftingTerminal
 
 		// Draw the gui image
 		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, AbstractGuiConstantsACT.GUI_WIDTH, AbstractGuiConstantsACT.GUI_HEIGHT );
+
+		// Bind the AE states texture
+		Minecraft.getMinecraft().renderEngine.bindTexture( AEStateIconsEnum.AE_STATES_TEXTURE );
+
+		// Draw the view cell backgrounds
+		int u = AEStateIconsEnum.VIEW_CELL.getU(), v = AEStateIconsEnum.VIEW_CELL.getV();
+		int h = AEStateIconsEnum.VIEW_CELL.getHeight(), w = AEStateIconsEnum.VIEW_CELL.getWidth();
+		int x = this.guiLeft + ContainerPartArcaneCraftingTerminal.VIEW_SLOT_XPOS, y = this.guiTop +
+						ContainerPartArcaneCraftingTerminal.VIEW_SLOT_YPOS;
+		for( int row = 0; row < 5; row++ )
+		{
+			this.drawTexturedModalRect( x, y + ( row * 18 ), u, v, w, h );
+		}
 	}
 
 	/**
@@ -698,9 +722,6 @@ public class GuiArcaneCraftingTerminal
 		// Enable repeat keys
 		Keyboard.enableRepeatEvents( true );
 
-		// Request a full update from the server
-		new PacketServerArcaneCraftingTerminal().createRequestFullList( this.player ).sendPacketToServer();
-
 		// Set up the search bar
 		this.searchField = new GuiTextField( this.fontRendererObj, AbstractGuiConstantsACT.SEARCH_POS_X, AbstractGuiConstantsACT.SEARCH_POS_Y,
 						AbstractGuiConstantsACT.SEARCH_WIDTH, AbstractGuiConstantsACT.SEARCH_HEIGHT );
@@ -731,6 +752,9 @@ public class GuiArcaneCraftingTerminal
 						AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_Y,
 						AbstractGuiConstantsACT.BUTTON_SORT_SIZE, AbstractGuiConstantsACT.BUTTON_SORT_SIZE ) );
 
+		// Request a full update from the server
+		new PacketServerArcaneCraftingTerminal().createRequestFullList( this.player ).sendPacketToServer();
+
 	}
 
 	/**
@@ -744,25 +768,6 @@ public class GuiArcaneCraftingTerminal
 
 		// Disable repeat keys
 		Keyboard.enableRepeatEvents( false );
-	}
-
-	/**
-	 * Called to update what the player is holding.
-	 * 
-	 * @param heldItemstack
-	 */
-	public void onPlayerHeldReceived( final IAEItemStack heldItemstack )
-	{
-		ItemStack itemStack = null;
-
-		// Get the stack
-		if( heldItemstack != null )
-		{
-			itemStack = heldItemstack.getItemStack();
-		}
-
-		// Set what the player is holding
-		this.player.inventory.setItemStack( itemStack );
 	}
 
 	/**
@@ -806,6 +811,25 @@ public class GuiArcaneCraftingTerminal
 	}
 
 	/**
+	 * Called to update what the player is holding.
+	 * 
+	 * @param heldItemstack
+	 */
+	public void onReceivePlayerHeld( final IAEItemStack heldItemstack )
+	{
+		ItemStack itemStack = null;
+
+		// Get the stack
+		if( heldItemstack != null )
+		{
+			itemStack = heldItemstack.getItemStack();
+		}
+
+		// Set what the player is holding
+		this.player.inventory.setItemStack( itemStack );
+	}
+
+	/**
 	 * Called when the server sends the sorting order and direction.
 	 * 
 	 * @param order
@@ -821,6 +845,19 @@ public class GuiArcaneCraftingTerminal
 
 		// Update
 		this.updateSorting();
+	}
+
+	/**
+	 * Called when the view cells change.
+	 */
+	public void onViewCellsChanged( final ItemStack[] viewCells )
+	{
+		// Update the repo
+		this.repo.setViewCell( viewCells );
+
+		// Update the widgets and scrollbar
+		this.updateMEWidgets();
+		this.updateScrollMaximum();
 	}
 
 }

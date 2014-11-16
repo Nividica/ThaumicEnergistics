@@ -37,6 +37,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEColor;
+import appeng.items.storage.ItemViewCell;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -47,17 +48,12 @@ public class AEPartArcaneCraftingTerminal
 	/**
 	 * Number of slots in the internal inventory
 	 */
-	private static final int MY_INVENTORY_SIZE = 11;
+	private static final int MY_INVENTORY_SIZE = 16;
 
 	/**
-	 * Index of the wand slot
+	 * Index of the wand, result, and view slot(s)
 	 */
-	public static final int WAND_SLOT_INDEX = 9;
-
-	/**
-	 * Index of the result slot
-	 */
-	public static final int RESULT_SLOT_INDEX = 10;
+	public static final int WAND_SLOT_INDEX = 9, RESULT_SLOT_INDEX = 10, VIEW_SLOT_MIN = 11, VIEW_SLOT_MAX = 15;
 
 	/**
 	 * Inventory name
@@ -176,14 +172,24 @@ public class AEPartArcaneCraftingTerminal
 	 */
 	private void notifyListeners( final int slotIndex )
 	{
+		// Did the crafting slots, wand, or results slot change?
+		boolean notifyCrafting = ( slotIndex <= AEPartArcaneCraftingTerminal.RESULT_SLOT_INDEX );
+
 		// Loop over all listeners
 		for( ContainerPartArcaneCraftingTerminal listener : this.listeners )
 		{
 			// Ensure the listener is still there
 			if( listener != null )
 			{
-				// Notify it
-				listener.onCraftMatrixChanged( this );
+				// Crafting changes?
+				if( notifyCrafting )
+				{
+					listener.onCraftMatrixChanged( this );
+				}
+				else
+				{
+					listener.onViewCellChange();
+				}
 			}
 		}
 	}
@@ -263,7 +269,7 @@ public class AEPartArcaneCraftingTerminal
 					this.slots[slotIndex] = null;
 				}
 
-				// Notify the worker
+				// Notify the containers
 				this.notifyListeners( slotIndex );
 			}
 		}
@@ -460,11 +466,25 @@ public class AEPartArcaneCraftingTerminal
 		// Is the slot in range?
 		if( this.isSlotInRange( slotIndex ) )
 		{
+			// Is the stack null?
+			if( proposedStack == null )
+			{
+				// Can always remove from slot
+				return true;
+			}
+
 			// Is this the wand slot?
 			if( slotIndex == AEPartArcaneCraftingTerminal.WAND_SLOT_INDEX )
 			{
 				// Is the item a wand?
 				return AEPartArcaneCraftingTerminal.isItemValidCraftingWand( proposedStack );
+			}
+			// Is this a view slot?
+			if( ( slotIndex >= AEPartArcaneCraftingTerminal.VIEW_SLOT_MIN ) && ( slotIndex <= AEPartArcaneCraftingTerminal.VIEW_SLOT_MAX ) )
+			{
+				// Is the stack a view slot?
+				return( proposedStack.getItem() instanceof ItemViewCell );
+
 			}
 
 			// Unrestricted slot

@@ -62,7 +62,7 @@ public class ContainerPartEssentiaIOBus
 	 * @param player
 	 * The owner of the container.
 	 */
-	public ContainerPartEssentiaIOBus( AEPartEssentiaIO part, EntityPlayer player )
+	public ContainerPartEssentiaIOBus( final AEPartEssentiaIO part, final EntityPlayer player )
 	{
 		// Set the part
 		this.part = part;
@@ -86,7 +86,7 @@ public class ContainerPartEssentiaIOBus
 	}
 
 	@Override
-	protected void retrySlotClick( int par1, int par2, boolean par3, EntityPlayer player )
+	protected void retrySlotClick( final int par1, final int par2, final boolean par3, final EntityPlayer player )
 	{
 		// Ignored
 	}
@@ -95,13 +95,13 @@ public class ContainerPartEssentiaIOBus
 	 * Who can interact with the container?
 	 */
 	@Override
-	public boolean canInteractWith( EntityPlayer player )
+	public boolean canInteractWith( final EntityPlayer player )
 	{
 		return true;
 	}
 
 	@Override
-	public void onContainerClosed( EntityPlayer player )
+	public void onContainerClosed( final EntityPlayer player )
 	{
 		if( this.part != null )
 		{
@@ -109,22 +109,22 @@ public class ContainerPartEssentiaIOBus
 		}
 	}
 
-	public void setFilteredAspect( List<Aspect> filteredAspects )
+	public void setFilteredAspect( final List<Aspect> filteredAspects )
 	{
 		new PacketClientAspectSlot().createFilterListUpdate( filteredAspects, this.player ).sendPacketToPlayer();
 	}
 
-	public void setFilterSize( byte filterSize )
+	public void setFilterSize( final byte filterSize )
 	{
 		new PacketClientEssentiaIOBus().createSetFilterSize( this.player, filterSize ).sendPacketToPlayer();
 	}
 
-	public void setRedstoneControlled( boolean isRedstoneControlled )
+	public void setRedstoneControlled( final boolean isRedstoneControlled )
 	{
 		new PacketClientEssentiaIOBus().createSetRedstoneControlled( this.player, isRedstoneControlled ).sendPacketToPlayer();
 	}
 
-	public void setRedstoneMode( RedstoneMode redstoneMode )
+	public void setRedstoneMode( final RedstoneMode redstoneMode )
 	{
 		new PacketClientEssentiaIOBus().createSetRedstoneMode( this.player, redstoneMode ).sendPacketToPlayer();
 	}
@@ -133,7 +133,7 @@ public class ContainerPartEssentiaIOBus
 	 * Called when the player shift+clicks on a slot.
 	 */
 	@Override
-	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
+	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
 		// Get the slot
 		Slot slot = this.getSlot( slotNumber );

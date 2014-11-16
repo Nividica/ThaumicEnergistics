@@ -3,7 +3,7 @@ package thaumicenergistics.network.packet.server;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import thaumicenergistics.gui.GuiHandler;
+import thaumicenergistics.gui.TEGuiHandler;
 import thaumicenergistics.network.packet.AbstractPacket;
 import thaumicenergistics.network.packet.AbstractServerPacket;
 import thaumicenergistics.parts.AbstractAEPartBase;
@@ -21,7 +21,8 @@ public class PacketServerChangeGui
 	private int y;
 	private int z;
 
-	public PacketServerChangeGui createChangeGuiRequest( AbstractAEPartBase part, EntityPlayer player, World world, int x, int y, int z )
+	public PacketServerChangeGui createChangeGuiRequest( final AbstractAEPartBase part, final EntityPlayer player, final World world, final int x,
+															final int y, final int z )
 	{
 		// Set the player
 		this.player = player;
@@ -43,7 +44,8 @@ public class PacketServerChangeGui
 		return this;
 	}
 
-	public PacketServerChangeGui createChangeGuiRequest( int guiID, EntityPlayer player, World world, int x, int y, int z )
+	public PacketServerChangeGui createChangeGuiRequest( final int guiID, final EntityPlayer player, final World world, final int x, final int y,
+															final int z )
 	{
 		// Set the player
 		this.player = player;
@@ -71,18 +73,18 @@ public class PacketServerChangeGui
 		if( this.mode == PacketServerChangeGui.MODE_REGULAR )
 		{
 			// Launch regular
-			GuiHandler.launchGui( this.guiID, this.player, this.world, this.x, this.y, this.z );
+			TEGuiHandler.launchGui( this.guiID, this.player, this.world, this.x, this.y, this.z );
 		}
 		else if( this.mode == PacketServerChangeGui.MODE_PART )
 		{
 			// Launch part
-			GuiHandler.launchGui( this.part, this.player, this.world, this.x, this.y, this.z );
+			TEGuiHandler.launchGui( this.part, this.player, this.world, this.x, this.y, this.z );
 		}
 
 	}
 
 	@Override
-	public void readData( ByteBuf stream )
+	public void readData( final ByteBuf stream )
 	{
 		if( this.mode == PacketServerChangeGui.MODE_REGULAR )
 		{
@@ -105,7 +107,7 @@ public class PacketServerChangeGui
 	}
 
 	@Override
-	public void writeData( ByteBuf stream )
+	public void writeData( final ByteBuf stream )
 	{
 		if( this.mode == PacketServerChangeGui.MODE_REGULAR )
 		{

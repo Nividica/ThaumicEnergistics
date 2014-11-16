@@ -15,7 +15,7 @@ public class PacketServerPriority
 	private int priority;
 
 	@Override
-	protected void readData( ByteBuf stream )
+	protected void readData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -28,7 +28,7 @@ public class PacketServerPriority
 	}
 
 	@Override
-	protected void writeData( ByteBuf stream )
+	protected void writeData( final ByteBuf stream )
 	{
 		switch ( this.mode )
 		{
@@ -48,7 +48,7 @@ public class PacketServerPriority
 	 * @param player
 	 * @return
 	 */
-	public PacketServerPriority createRequestAdjustPriority( int priority, EntityPlayer player )
+	public PacketServerPriority createRequestAdjustPriority( final int priority, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -62,7 +62,7 @@ public class PacketServerPriority
 		return this;
 	}
 
-	public PacketServerPriority createRequestPriority( EntityPlayer player )
+	public PacketServerPriority createRequestPriority( final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;
@@ -80,7 +80,7 @@ public class PacketServerPriority
 	 * @param player
 	 * @return
 	 */
-	public PacketServerPriority createRequestSetPriority( int priority, EntityPlayer player )
+	public PacketServerPriority createRequestSetPriority( final int priority, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;

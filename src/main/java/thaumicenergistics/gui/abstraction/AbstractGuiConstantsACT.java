@@ -1,6 +1,8 @@
 package thaumicenergistics.gui.abstraction;
 
 import net.minecraft.inventory.Container;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Holds all constants for the Arcane Crafting Terminal GUI
@@ -8,6 +10,7 @@ import net.minecraft.inventory.Container;
  * @author Nividica
  * 
  */
+@SideOnly(Side.CLIENT)
 public abstract class AbstractGuiConstantsACT
 	extends AbstractGuiWithScrollbar
 {
@@ -74,7 +77,7 @@ public abstract class AbstractGuiConstantsACT
 	/**
 	 * The width of the gui
 	 */
-	protected static final int GUI_WIDTH = 194;
+	protected static final int GUI_WIDTH = 230;
 
 	/**
 	 * The height of the gui

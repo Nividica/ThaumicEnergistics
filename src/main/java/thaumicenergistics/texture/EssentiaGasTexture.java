@@ -19,34 +19,25 @@ import cpw.mods.fml.common.FMLLog;
 public class EssentiaGasTexture
 	extends TextureAtlasSprite
 {
-	private class PixelColor
+	/**
+	 * Helper class to adjust the color of an ARGB int packed color.
+	 * 
+	 * @author Nividica
+	 * 
+	 */
+	private class ARGB_Color
 	{
 		/**
-		 * Array index of alpha.
+		 * Array index of each color
 		 */
-		private static final int ALPHA = 0;
-
-		/**
-		 * Array index of red.
-		 */
-		private static final int RED = 1;
-
-		/**
-		 * Array index of green.
-		 */
-		private static final int GREEN = 2;
-
-		/**
-		 * Array index of blue.
-		 */
-		private static final int BLUE = 3;
+		private static final int ALPHA = 0, RED = 1, GREEN = 2, BLUE = 3;
 
 		/**
 		 * Array of 'bytes', where each byte is a color
 		 */
 		private int[] colorBytes;
 
-		public PixelColor()
+		public ARGB_Color()
 		{
 			/**
 			 * Create the array
@@ -54,7 +45,7 @@ public class EssentiaGasTexture
 			this.colorBytes = new int[4];
 		}
 
-		public PixelColor( final int color )
+		public ARGB_Color( final int color )
 		{
 			// Call the default constructor
 			this();
@@ -62,7 +53,7 @@ public class EssentiaGasTexture
 			/**
 			 * Set the color
 			 */
-			this.setFromColor( color );
+			this.setFromPackedColor( color );
 		}
 
 		/**
@@ -84,21 +75,11 @@ public class EssentiaGasTexture
 		}
 
 		/**
-		 * Gets the ARGB packed integer color.
-		 * 
-		 * @return
-		 */
-		public int getColor()
-		{
-			return( ( this.colorBytes[ALPHA] << 24 ) | ( this.colorBytes[RED] << 16 ) | ( this.colorBytes[GREEN] << 8 ) | this.colorBytes[BLUE] );
-		}
-
-		/**
 		 * Applies screen blending to this pixel.
 		 * 
 		 * @param otherPixel
 		 */
-		public void screen( final PixelColor otherPixel )
+		public void applyScreen( final ARGB_Color otherPixel )
 		{
 
 			// Calculated the inverted & multiplied values
@@ -116,11 +97,21 @@ public class EssentiaGasTexture
 		}
 
 		/**
+		 * Gets the ARGB packed integer color.
+		 * 
+		 * @return
+		 */
+		public int getPackedColor()
+		{
+			return( ( this.colorBytes[ALPHA] << 24 ) | ( this.colorBytes[RED] << 16 ) | ( this.colorBytes[GREEN] << 8 ) | this.colorBytes[BLUE] );
+		}
+
+		/**
 		 * Set's the stored color
 		 * 
 		 * @param color
 		 */
-		public void setFromColor( final int color )
+		public void setFromPackedColor( final int color )
 		{
 			this.colorBytes[ALPHA] = ( ( color & 0xFF000000 ) >>> 24 );
 			this.colorBytes[RED] = ( ( color & 0x00FF0000 ) >>> 16 );
@@ -129,15 +120,6 @@ public class EssentiaGasTexture
 
 			this.clamp();
 		}
-
-		/*
-		@Override
-		public String toString()
-		{
-			return "Pixel Values: [" + this.colorBytes[ALPHA] + ", " + this.colorBytes[RED] + ", " + this.colorBytes[GREEN] + ", " +
-							this.colorBytes[BLUE] + "]";
-		}
-		*/
 	}
 
 	/**
@@ -155,7 +137,10 @@ public class EssentiaGasTexture
 	 */
 	private static final String GAS_FILE_NAME = "essentia.gas";
 
-	public static int mipmapLevels;
+	/**
+	 * Number of mipmap levels
+	 */
+	public static int mipmapLevels = 0;
 
 	/**
 	 * The color we want to apply to the texture
@@ -181,27 +166,29 @@ public class EssentiaGasTexture
 			return;
 		}
 
-		int width = image.getWidth();
-		int height = image.getHeight();
+		// Get the width and height of the image
+		int width = image.getWidth(), height = image.getHeight();
 
-		// Create an array to hold the pixels
-		int[] pixels = image.getRGB( 0, 0, width, height, null, 0, width );
-		PixelColor pixel = new PixelColor();
+		// Get a copy of the colors that comprise the image
+		int[] imagePixels = image.getRGB( 0, 0, width, height, null, 0, width );
 
-		for( int i = 0; i < pixels.length; i++ )
+		// Create a helper for the image and the aspect color
+		ARGB_Color imagePixel = new ARGB_Color(), aspectColor = new ARGB_Color( this.aspectColor );
+
+		for( int i = 0; i < imagePixels.length; i++ )
 		{
-			// Get the pixel
-			pixel.setFromColor( pixels[i] );
+			// Set the pixel from the image color
+			imagePixel.setFromPackedColor( imagePixels[i] );
 
-			// Multiply
-			pixel.screen( new PixelColor( this.aspectColor ) );
+			// Screen the aspect color onto it
+			imagePixel.applyScreen( aspectColor );
 
-			// Set to pixel to our color
-			pixels[i] = pixel.getColor();
+			// Set the image color to the screened color
+			imagePixels[i] = imagePixel.getPackedColor();
 		}
 
-		// Set the pixels
-		image.setRGB( 0, 0, width, height, pixels, 0, width );
+		// Set the image to the new colors
+		image.setRGB( 0, 0, width, height, imagePixels, 0, width );
 	}
 
 	/**
@@ -223,82 +210,133 @@ public class EssentiaGasTexture
 						EssentiaGasTexture.GAS_FILE_NAME, Integer.valueOf( mipLevel ), ".png" } ) );
 	}
 
+	/**
+	 * Loads the mipmaps for the specified texture resource
+	 * 
+	 * @param resourceManager
+	 * @param baseResourcelocation
+	 * @param textureResource
+	 * @param images
+	 */
+	private void loadMipmaps( final IResourceManager resourceManager, final ResourceLocation baseResourcelocation, final IResource textureResource,
+								final BufferedImage[] images )
+	{
+		// Read the metadata
+		TextureMetadataSection mipmapMetaData = (TextureMetadataSection)textureResource.getMetadata( "texture" );
+
+		// Is there mipmap meta data?
+		if( mipmapMetaData != null )
+		{
+			// Get the mipmap levels
+			List mipmapLevels = mipmapMetaData.getListMipmaps();
+
+			// Are there any mipmaps?
+			if( !mipmapLevels.isEmpty() )
+			{
+				// Get the width and height of the texture
+				int textureWidth = images[0].getWidth(), textureHeight = images[0].getHeight();
+
+				// Ensure the texture ratio is correct
+				if( ( MathHelper.roundUpToPowerOfTwo( textureWidth ) != textureWidth ) ||
+								( MathHelper.roundUpToPowerOfTwo( textureHeight ) != textureHeight ) )
+				{
+					// Invalid width or height
+					throw new RuntimeException( "Unable to load extra miplevels, source-texture is not power of two" );
+				}
+
+				// Get the list iterator for the mipmap levels
+				Iterator mmIterator = mipmapLevels.iterator();
+
+				// Load each mipmap
+				while( mmIterator.hasNext() )
+				{
+					// Get the next mipmap level
+					int currentMipmapLevel = ( (Integer)mmIterator.next() ).intValue();
+
+					// Bounds check the level
+					if( ( currentMipmapLevel <= 0 ) || ( currentMipmapLevel >= images.length ) )
+					{
+						// Skip, Level is out of bounds.
+						continue;
+					}
+
+					// Ensure the mipmap has not already been loaded
+					if( images[currentMipmapLevel] != null )
+					{
+						// Skip, Mipmap already loaded.
+						continue;
+					}
+
+					// Get the mipmap location
+					ResourceLocation mmLocation = this.completeResourceLocation( baseResourcelocation, currentMipmapLevel );
+
+					// Attempt to load the mipmap image
+					try
+					{
+						// Load the mipmap
+						images[currentMipmapLevel] = ImageIO.read( resourceManager.getResource( mmLocation ).getInputStream() );
+					}
+					catch( IOException ioexception )
+					{
+						FMLLog.warning( "Unable to load miplevel %d from: %s", currentMipmapLevel, mmLocation.toString() );
+					}
+				}
+			}
+		}
+	}
+
 	@Override
 	public final boolean hasCustomLoader( final IResourceManager manager, final ResourceLocation location )
 	{
 		return true;
 	}
 
-	// TODO This is a mess.
+	/**
+	 * Load the gas texture and apply the aspect color.
+	 */
 	@Override
-	public boolean load( final IResourceManager par1ResourceManager, final ResourceLocation resourcelocation )
+	public boolean load( final IResourceManager resourceManager, final ResourceLocation baseResourcelocation )
 	{
-		ResourceLocation resourcelocation1 = this.completeResourceLocation( resourcelocation, 0 );
+		// Get the texture location
+		ResourceLocation textureLocation = this.completeResourceLocation( baseResourcelocation, 0 );
 
+		// Attempt to load the texture
 		try
 		{
-			IResource iresource = par1ResourceManager.getResource( resourcelocation1 );
-			BufferedImage[] abufferedimage = new BufferedImage[1 + EssentiaGasTexture.mipmapLevels];
-			abufferedimage[0] = ImageIO.read( iresource.getInputStream() );
-			TextureMetadataSection texturemetadatasection = (TextureMetadataSection)iresource.getMetadata( "texture" );
+			// Get the texture as a resource
+			IResource textureResource = resourceManager.getResource( textureLocation );
 
-			if( texturemetadatasection != null )
+			// Create the image array
+			BufferedImage[] images = new BufferedImage[1 + EssentiaGasTexture.mipmapLevels];
+
+			// Load the texture
+			images[0] = ImageIO.read( textureResource.getInputStream() );
+
+			// Load any mipmaps
+			this.loadMipmaps( resourceManager, baseResourcelocation, textureResource, images );
+
+			// Apply the aspect color to each texture
+			for( int index = 0; index < images.length; index++ )
 			{
-				List list = texturemetadatasection.getListMipmaps();
-				int l;
-
-				if( !list.isEmpty() )
-				{
-					int k = abufferedimage[0].getWidth();
-					l = abufferedimage[0].getHeight();
-
-					if( ( MathHelper.roundUpToPowerOfTwo( k ) != k ) || ( MathHelper.roundUpToPowerOfTwo( l ) != l ) )
-					{
-						throw new RuntimeException( "Unable to load extra miplevels, source-texture is not power of two" );
-					}
-				}
-
-				Iterator iterator3 = list.iterator();
-
-				while( iterator3.hasNext() )
-				{
-					l = ( (Integer)iterator3.next() ).intValue();
-
-					if( ( l > 0 ) && ( l < ( abufferedimage.length - 1 ) ) && ( abufferedimage[l] == null ) )
-					{
-						ResourceLocation resourcelocation2 = this.completeResourceLocation( resourcelocation, l );
-
-						try
-						{
-							abufferedimage[l] = ImageIO.read( par1ResourceManager.getResource( resourcelocation2 ).getInputStream() );
-						}
-						catch( IOException ioexception )
-						{
-							FMLLog.warning( "Unable to load miplevel %d from: %s", l, resourcelocation2.toString() );
-						}
-					}
-				}
+				this.applyScreen( images[index] );
 			}
 
-			for( int i = 0; i < abufferedimage.length; i++ )
-			{
-				this.applyScreen( abufferedimage[i] );
-			}
+			// Get the animation metadata
+			AnimationMetadataSection animMetaData = (AnimationMetadataSection)textureResource.getMetadata( "animation" );
 
-			AnimationMetadataSection animationmetadatasection = (AnimationMetadataSection)iresource.getMetadata( "animation" );
-
-			this.loadSprite( abufferedimage, animationmetadatasection, false );
+			// Load the sprite
+			super.loadSprite( images, animMetaData, false );
 		}
 		catch( RuntimeException runtimeexception )
 		{
-			FMLLog.warning( "Unable to parse metadata from %s", resourcelocation1.toString() );
+			FMLLog.warning( "Unable to parse metadata from %s", textureLocation.toString() );
 		}
 		catch( IOException ioexception1 )
 		{
-			FMLLog.warning( "Using missing texture, unable to load %s", resourcelocation1.toString() );
+			FMLLog.warning( "Using missing texture, unable to load %s", textureLocation.toString() );
 		}
 
+		// Do not attempt to stitch into the master texture, causes MISSION_TEXTURE to show in-game.
 		return false;
 	}
-
 }

@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
-import thaumicenergistics.gui.abstraction.AbstractGuiWidgetHost;
+import thaumicenergistics.gui.abstraction.AbstractGuiBase;
 import thaumicenergistics.gui.buttons.ButtonAETab;
 import thaumicenergistics.gui.buttons.ButtonAllowVoid;
 import thaumicenergistics.gui.widget.AbstractWidget;
@@ -23,6 +23,8 @@ import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Gui for the storage bus.
@@ -30,8 +32,9 @@ import thaumicenergistics.texture.GuiTextureManager;
  * @author Nividica
  * 
  */
+@SideOnly(Side.CLIENT)
 public class GuiEssentiaStorageBus
-	extends AbstractGuiWidgetHost
+	extends AbstractGuiBase
 	implements IAspectSlotGui
 {
 	/**
@@ -232,8 +235,8 @@ public class GuiEssentiaStorageBus
 			ForgeDirection side = this.storageBus.getSide();
 
 			// Ask the server to change to the priority gui
-			new PacketServerChangeGui().createChangeGuiRequest( GuiHandler.generatePriorityID( side ), this.player, host.getWorldObj(), host.xCoord,
-				host.yCoord, host.zCoord ).sendPacketToServer();
+			new PacketServerChangeGui().createChangeGuiRequest( TEGuiHandler.generatePriorityID( side ), this.player, host.getWorldObj(),
+				host.xCoord, host.yCoord, host.zCoord ).sendPacketToServer();
 
 		}
 		else if( button.id == GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID )

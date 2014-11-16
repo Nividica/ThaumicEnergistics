@@ -10,7 +10,7 @@ public class HandlerClientEssentiaTerminal
 {
 
 	@Override
-	public IMessage onMessage( PacketClientEssentiaTerminal message, MessageContext ctx )
+	public IMessage onMessage( final PacketClientEssentiaTerminal message, final MessageContext ctx )
 	{
 		message.execute();
 		return null;

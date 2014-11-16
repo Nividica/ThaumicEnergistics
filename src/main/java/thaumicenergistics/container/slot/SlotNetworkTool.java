@@ -33,7 +33,7 @@ public class SlotNetworkTool
 	 * @param yDisplayPosition
 	 * Y position of the slot
 	 */
-	public SlotNetworkTool( INetworkTool inventory, int slotIndex, int xDisplayPosition, int yDisplayPosition )
+	public SlotNetworkTool( final INetworkTool inventory, final int slotIndex, final int xDisplayPosition, final int yDisplayPosition )
 	{
 		// Pass to super
 		super( inventory, slotIndex, xDisplayPosition, yDisplayPosition );
@@ -47,7 +47,7 @@ public class SlotNetworkTool
 	 * Called to see if an item can go in this inventory
 	 */
 	@Override
-	public boolean isItemValid( ItemStack itemStack )
+	public boolean isItemValid( final ItemStack itemStack )
 	{
 		// Is the itemstack valid?
 		if( itemStack != null )

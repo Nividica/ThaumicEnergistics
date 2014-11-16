@@ -81,7 +81,7 @@ public abstract class ContainerWithNetworkTool
 	 * @param xPosition
 	 * @param yPosition
 	 */
-	protected void addUpgradeSlots( UpgradeInventory upgradeInventory, int count, int xPosition, int yPosition )
+	protected void addUpgradeSlots( final UpgradeInventory upgradeInventory, final int count, final int xPosition, final int yPosition )
 	{
 		Slot upgradeSlot = null;
 
@@ -109,7 +109,7 @@ public abstract class ContainerWithNetworkTool
 		}
 	}
 
-	protected void bindToNetworkTool( InventoryPlayer playerInventory, DimensionalCoord partLocation )
+	protected void bindToNetworkTool( final InventoryPlayer playerInventory, final DimensionalCoord partLocation )
 	{
 		// Check the player inventory for the network tool
 		for( int slotIndex = 0; slotIndex < playerInventory.getSizeInventory(); slotIndex++ )
@@ -174,7 +174,7 @@ public abstract class ContainerWithNetworkTool
 	 * @param slotStack
 	 * @return
 	 */
-	protected boolean mergeSlotWithNetworkTool( ItemStack slotStack )
+	protected boolean mergeSlotWithNetworkTool( final ItemStack slotStack )
 	{
 		if( this.hasNetworkTool )
 		{
@@ -197,7 +197,7 @@ public abstract class ContainerWithNetworkTool
 	 * @param slotStack
 	 * @return
 	 */
-	protected boolean mergeSlotWithUpgrades( ItemStack slotStack )
+	protected boolean mergeSlotWithUpgrades( final ItemStack slotStack )
 	{
 		// Is the item an upgrade card?
 		if( !( slotStack.getItem() instanceof IUpgradeModule ) )
@@ -252,12 +252,12 @@ public abstract class ContainerWithNetworkTool
 	 * @param slotNumber
 	 * @return True if it was in the tools inventory, false otherwise.
 	 */
-	protected boolean slotClickedWasInNetworkTool( int slotNumber )
+	protected boolean slotClickedWasInNetworkTool( final int slotNumber )
 	{
 		return this.hasNetworkTool && ( slotNumber >= this.firstToolSlotNumber ) && ( slotNumber <= this.lastToolSlotNumber );
 	}
 
-	protected boolean slotClickedWasInUpgrades( int slotNumber )
+	protected boolean slotClickedWasInUpgrades( final int slotNumber )
 	{
 		return ( slotNumber >= this.firstUpgradeSlot ) && ( slotNumber <= this.lastUpgradeSlot );
 	}
@@ -269,7 +269,7 @@ public abstract class ContainerWithNetworkTool
 
 	// Note: mergeItemStack args: ItemStack stack, int slotStart, int slotEnd(exclusive), boolean reverse
 	@Override
-	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
+	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
 
 		// Get the slot that was clicked on

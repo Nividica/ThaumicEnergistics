@@ -35,7 +35,7 @@ public class ContainerPartEssentiaLevelEmitter
 	 * @param player
 	 * The owner of this container.
 	 */
-	public ContainerPartEssentiaLevelEmitter( AEPartEssentiaLevelEmitter part, EntityPlayer player )
+	public ContainerPartEssentiaLevelEmitter( final AEPartEssentiaLevelEmitter part, final EntityPlayer player )
 	{
 		// Set the part
 		this.part = part;
@@ -49,13 +49,13 @@ public class ContainerPartEssentiaLevelEmitter
 	 * Who can interact with the container?
 	 */
 	@Override
-	public boolean canInteractWith( EntityPlayer player )
+	public boolean canInteractWith( final EntityPlayer player )
 	{
 		return true;
 	}
 
 	@Override
-	public ItemStack transferStackInSlot( EntityPlayer player, int slotNumber )
+	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
 		// Get the slot
 		Slot slot = this.getSlot( slotNumber );
