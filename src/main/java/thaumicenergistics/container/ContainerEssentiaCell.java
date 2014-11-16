@@ -19,6 +19,7 @@ import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannel;
@@ -44,6 +45,11 @@ public class ContainerEssentiaCell
 	 * The ME chest the cell is stored in.
 	 */
 	private TileChest hostChest;
+
+	/**
+	 * The source of all actions in the gui.
+	 */
+	private PlayerSource playerSource = null;
 
 	/**
 	 * Import and export inventory slots.
@@ -81,6 +87,9 @@ public class ContainerEssentiaCell
 		{
 			// Get the tile entity for the chest
 			this.hostChest = (TileChest)world.getTileEntity( x, y, z );
+
+			// Create the action source
+			this.playerSource = new PlayerSource( this.player, this.hostChest );
 
 			try
 			{
@@ -137,7 +146,7 @@ public class ContainerEssentiaCell
 		}
 
 		// Get the handler
-		return new HandlerItemEssentiaCell( essentiaCell );
+		return new HandlerItemEssentiaCell( essentiaCell, this.hostChest );
 	}
 
 	/**
@@ -165,7 +174,8 @@ public class ContainerEssentiaCell
 					if( eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.SIMULATE, PowerMultiplier.CONFIG ) >= ContainerCellTerminalBase.POWER_PER_TRANSFER )
 					{
 						// Do the work
-						if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, null, this.selectedAspect, null ) )
+						if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, this.playerSource, this.selectedAspect,
+							this.player ) )
 						{
 							// We did work, drain power
 							eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.MODULATE, PowerMultiplier.CONFIG );

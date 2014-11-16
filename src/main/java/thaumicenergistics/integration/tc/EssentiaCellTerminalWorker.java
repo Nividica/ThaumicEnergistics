@@ -11,6 +11,7 @@ import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEMonitor;
@@ -46,7 +47,7 @@ public final class EssentiaCellTerminalWorker
 	}
 
 	private final boolean drainContainer( final PrivateInventory inventory, final IMEMonitor<IAEFluidStack> monitor, final ItemStack container,
-											final MachineSource machineSource )
+											final BaseActionSource actionSource )
 	{
 		// Get the fluid stack from the item
 		IAEFluidStack containerFluid = EssentiaConversionHelper.instance.createAEFluidStackFromItemEssentiaContainer( container );
@@ -54,7 +55,7 @@ public final class EssentiaCellTerminalWorker
 		int proposedDrainAmount_FU = (int)containerFluid.getStackSize();
 
 		// Simulate an injection
-		IAEFluidStack notInjected = monitor.injectItems( containerFluid, Actionable.SIMULATE, machineSource );
+		IAEFluidStack notInjected = monitor.injectItems( containerFluid, Actionable.SIMULATE, actionSource );
 
 		// Get how much was rejected
 		if( notInjected != null )
@@ -89,7 +90,7 @@ public final class EssentiaCellTerminalWorker
 			containerFluid.setStackSize( EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( drainedContainer.getLeft() ) );
 
 			// Fill to network
-			monitor.injectItems( containerFluid, Actionable.MODULATE, machineSource );
+			monitor.injectItems( containerFluid, Actionable.MODULATE, actionSource );
 
 			this.decreaseInputSlot( inventory );
 
@@ -101,7 +102,7 @@ public final class EssentiaCellTerminalWorker
 	}
 
 	private final boolean fillContainer( final PrivateInventory inventory, final IMEMonitor<IAEFluidStack> monitor, final ItemStack container,
-											final MachineSource machineSource, final Aspect currentAspect )
+											final BaseActionSource actionSource, final Aspect currentAspect )
 	{
 		// Is there an aspect selected?
 		if( currentAspect == null )
@@ -130,7 +131,7 @@ public final class EssentiaCellTerminalWorker
 		// Simulate an extraction from the network
 		IAEFluidStack result = monitor.extractItems(
 			EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, containerCapacity_EU ), Actionable.SIMULATE,
-			machineSource );
+			actionSource );
 
 		// Is there anything to extract?
 		if( result == null )
@@ -160,7 +161,7 @@ public final class EssentiaCellTerminalWorker
 		{
 			// Drain the essentia from the network
 			monitor.extractItems( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, filledContainer.getLeft() ),
-				Actionable.MODULATE, machineSource );
+				Actionable.MODULATE, actionSource );
 
 			// Decrease the stack in the first slot
 			this.decreaseInputSlot( inventory );
@@ -204,7 +205,7 @@ public final class EssentiaCellTerminalWorker
 		return false;
 	}
 
-	public final boolean doWork( final PrivateInventory inventory, final IMEMonitor<IAEFluidStack> monitor, final MachineSource machineSource,
+	public final boolean doWork( final PrivateInventory inventory, final IMEMonitor<IAEFluidStack> monitor, final BaseActionSource actionSource,
 									final Aspect currentAspect, final EntityPlayer player )
 	{
 		boolean allowedToExtract = true;
@@ -217,10 +218,10 @@ public final class EssentiaCellTerminalWorker
 		}
 
 		// Do we have a machine source?
-		if( machineSource != null )
+		if( ( actionSource != null ) && ( actionSource instanceof MachineSource ) )
 		{
 			// Get the source node
-			IGridNode sourceNode = machineSource.via.getActionableNode();
+			IGridNode sourceNode = ( (MachineSource)actionSource ).via.getActionableNode();
 
 			// Ensure there is a node
 			if( sourceNode == null )
@@ -246,7 +247,7 @@ public final class EssentiaCellTerminalWorker
 			if( allowedToExtract )
 			{
 				// Attempt to fill the container.
-				return this.fillContainer( inventory, monitor, inputSlot, machineSource, currentAspect );
+				return this.fillContainer( inventory, monitor, inputSlot, actionSource, currentAspect );
 			}
 		}
 		// Is the container not empty?
@@ -256,7 +257,7 @@ public final class EssentiaCellTerminalWorker
 			if( allowedToInject )
 			{
 				// Attempt to drain it.
-				return this.drainContainer( inventory, monitor, inputSlot, machineSource );
+				return this.drainContainer( inventory, monitor, inputSlot, actionSource );
 			}
 		}
 

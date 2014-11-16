@@ -14,10 +14,12 @@ import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.items.ItemEssentiaCell;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.util.EffectiveSide;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.ISaveProvider;
 
 public class TileEssentiaCellWorkbench
 	extends TileEntity
-	implements IInventory
+	implements IInventory, ISaveProvider
 {
 	private static String NBT_KEY_CELL = "EssentiaCell";
 
@@ -317,6 +319,16 @@ public class TileEssentiaCellWorkbench
 	}
 
 	/**
+	 * Called when the cell changes
+	 */
+	@Override
+	public void saveChanges( final IMEInventory cellInventory )
+	{
+		// Mark the chunk as needing to be saved.( less invasive than this.markDirty() )
+		this.worldObj.markTileEntityChunkModified( this.xCoord, this.yCoord, this.zCoord, this );
+	}
+
+	/**
 	 * Sets the stored cell
 	 * 
 	 * @param cell
@@ -339,7 +351,7 @@ public class TileEssentiaCellWorkbench
 				else
 				{
 					// Get the handler
-					this.eCellHandler = new HandlerItemEssentiaCell( stack );
+					this.eCellHandler = new HandlerItemEssentiaCell( stack, this );
 				}
 
 				// Update containers

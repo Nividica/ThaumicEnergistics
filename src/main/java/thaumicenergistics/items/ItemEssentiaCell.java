@@ -103,7 +103,6 @@ public class ItemEssentiaCell
 	@Override
 	public void addInformation( final ItemStack essentiaCell, final EntityPlayer player, final List displayList, final boolean advancedItemTooltips )
 	{
-		// TODO: Save provider??
 		// Get the contents of the cell
 		IMEInventoryHandler<IAEFluidStack> handler = AEApi.instance().registries().cell()
 						.getCellInventory( essentiaCell, null, StorageChannel.FLUIDS );
@@ -168,7 +167,7 @@ public class ItemEssentiaCell
 			return null;
 		}
 
-		return new HandlerItemEssentiaCell( essentiaCell );
+		return new HandlerItemEssentiaCell( essentiaCell, saveProvider );
 	}
 
 	@Override
@@ -275,7 +274,6 @@ public class ItemEssentiaCell
 			return essentiaCell;
 		}
 
-		// TODO: SaveProvider??
 		// Get the handler
 		IMEInventoryHandler<IAEFluidStack> handler = AEApi.instance().registries().cell()
 						.getCellInventory( essentiaCell, null, StorageChannel.FLUIDS );

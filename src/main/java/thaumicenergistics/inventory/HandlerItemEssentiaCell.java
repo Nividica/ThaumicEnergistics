@@ -19,6 +19,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
@@ -85,11 +86,17 @@ public class HandlerItemEssentiaCell
 	private ComparatorMode sortMode;
 
 	/**
+	 * Who do we tell we have changed?
+	 * Can be null.
+	 */
+	private final ISaveProvider saveProvider;
+
+	/**
 	 * List of aspects this cell can only accept.
 	 */
 	private final List<Aspect> partitionAspects = new ArrayList<Aspect>();
 
-	public HandlerItemEssentiaCell( final ItemStack storageStack )
+	public HandlerItemEssentiaCell( final ItemStack storageStack, final ISaveProvider saveProvider )
 	{
 		// Ensure we have a NBT tag
 		if( !storageStack.hasTagCompound() )
@@ -111,6 +118,9 @@ public class HandlerItemEssentiaCell
 
 		// Setup the storage
 		this.storedEssentia = new AspectStack[this.totalTypes];
+
+		// Set the save provider
+		this.saveProvider = saveProvider;
 
 		// Read the cell data
 		this.readCellData();
@@ -425,6 +435,12 @@ public class HandlerItemEssentiaCell
 			// Write the partition data
 			this.cellData.setTag( HandlerItemEssentiaCell.NBT_PARTITION_KEY, partitionData );
 		}
+
+		// Inform the save provider
+		if( this.saveProvider != null )
+		{
+			this.saveProvider.saveChanges( this );
+		}
 	}
 
 	/**
@@ -453,6 +469,11 @@ public class HandlerItemEssentiaCell
 			this.cellData.removeTag( HandlerItemEssentiaCell.NBT_ESSENTIA_NUMBER_KEY + slotIndex );
 		}
 
+		// Inform the save provider
+		if( this.saveProvider != null )
+		{
+			this.saveProvider.saveChanges( this );
+		}
 	}
 
 	/**

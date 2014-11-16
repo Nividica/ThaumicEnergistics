@@ -3,6 +3,7 @@
   Fixes #71: Added view cell support for A.C.T.
   Bugfix: Level emitter aspect now shows tooltip.
   Lots of code clean up.
+  Fixed a long standing bug: Essentia cells in a ME chest now update the network when changed via the chest gui.
 
 11/15/2014 0.8.0b
   Fixes #21: Added Essentia Cell Workbench.
