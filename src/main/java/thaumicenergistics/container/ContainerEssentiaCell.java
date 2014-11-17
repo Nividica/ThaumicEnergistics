@@ -19,9 +19,11 @@ import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.me.GridAccessException;
@@ -47,9 +49,16 @@ public class ContainerEssentiaCell
 	private TileChest hostChest;
 
 	/**
-	 * The source of all actions in the gui.
+	 * Network source representing the player who is interacting with the
+	 * container.
 	 */
 	private PlayerSource playerSource = null;
+
+	/**
+	 * Compiler safe reference to the TileChest when using the
+	 * ISaveProvider interface.
+	 */
+	private ISaveProvider chestSaveProvider;
 
 	/**
 	 * Import and export inventory slots.
@@ -88,8 +97,16 @@ public class ContainerEssentiaCell
 			// Get the tile entity for the chest
 			this.hostChest = (TileChest)world.getTileEntity( x, y, z );
 
+			/*
+			 * Note: Casting the hostChest to an object is required to prevent the compiler
+			 * from seeing the soft-dependencies of AE2, such a buildcraft, which it attempts
+			 * to resolve at compile time.
+			 * */
+			Object hostObject = this.hostChest;
+			this.chestSaveProvider = ( (ISaveProvider)hostObject );
+
 			// Create the action source
-			this.playerSource = new PlayerSource( this.player, this.hostChest );
+			this.playerSource = new PlayerSource( this.player, (IActionHost)hostObject );
 
 			try
 			{
@@ -146,7 +163,7 @@ public class ContainerEssentiaCell
 		}
 
 		// Get the handler
-		return new HandlerItemEssentiaCell( essentiaCell, this.hostChest );
+		return new HandlerItemEssentiaCell( essentiaCell, this.chestSaveProvider );
 	}
 
 	/**

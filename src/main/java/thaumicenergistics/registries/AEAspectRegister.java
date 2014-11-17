@@ -13,6 +13,7 @@ import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.Items;
 import thaumicenergistics.api.TEApi;
 import appeng.api.AEApi;
 import appeng.api.definitions.Blocks;
@@ -940,10 +941,12 @@ public class AEAspectRegister
 		cellAspects.add( Aspect.MAGIC, 3 );
 		cellAspects.add( Aspect.AURA, 5 );
 
-		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_1k.getStack(), cellAspects );
-		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_4k.getStack(), cellAspects );
-		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_16k.getStack(), cellAspects );
-		ThaumcraftApi.registerObjectTag( TEApi.instance().items().EssentiaCell_64k.getStack(), cellAspects );
+		Items teItems = TEApi.instance().items();
+		thaumicenergistics.api.Blocks teBlocks = TEApi.instance().blocks();
+		ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_1k.getStack(), cellAspects );
+		ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_4k.getStack(), cellAspects );
+		ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_16k.getStack(), cellAspects );
+		ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_64k.getStack(), cellAspects );
 
 		// Set the aspects for the iron gearbox
 		AspectList ironGearboxAspects = new AspectList();
@@ -951,14 +954,14 @@ public class AEAspectRegister
 		ironGearboxAspects.add( Aspect.MECHANISM, 5 );
 		ironGearboxAspects.add( Aspect.EARTH, 2 );
 		ironGearboxAspects.add( Aspect.ENTROPY, 2 );
-		ThaumcraftApi.registerObjectTag( TEApi.instance().blocks().IronGearBox.getStack(), ironGearboxAspects );
+		ThaumcraftApi.registerObjectTag( teBlocks.IronGearBox.getStack(), ironGearboxAspects );
 
 		// Set the aspects for the thaumium gearbox
 		AspectList thaumGearbox = ironGearboxAspects.copy();
 		thaumGearbox.add( Aspect.MAGIC, 10 );
 		thaumGearbox.add( Aspect.MECHANISM, 5 );
 		thaumGearbox.add( Aspect.METAL, 3 );
-		ThaumcraftApi.registerObjectTag( TEApi.instance().blocks().ThaumiumGearBox.getStack(), thaumGearbox );
+		ThaumcraftApi.registerObjectTag( teBlocks.ThaumiumGearBox.getStack(), thaumGearbox );
 
 	}
 

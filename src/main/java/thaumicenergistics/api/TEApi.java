@@ -8,18 +8,32 @@ import com.google.common.collect.ImmutableList;
  */
 public abstract class TEApi
 {
-	protected static TEApi instance;
+	protected static TEApi api;
 
 	/**
 	 * Thaumic Energistics API
 	 */
 	public static TEApi instance()
 	{
-		if( TEApi.instance == null )
+		// Have we already retrieved the api?
+		if( TEApi.api == null )
 		{
-			TEApi.instance = new thaumicenergistics.implementaion.API();
+			try
+			{
+				// Attempt to locate the API implementation
+				Class clazz = Class.forName( "thaumicenergistics.implementaion.API" );
+
+				// Attempt to get the API instance
+				TEApi.api = (TEApi)clazz.getField( "instance" ).get( clazz );
+			}
+			catch( Throwable e )
+			{
+				// Unable to locate the API, return null
+				return null;
+			}
 		}
-		return TEApi.instance;
+
+		return TEApi.api;
 	}
 
 	/**
@@ -31,6 +45,20 @@ public abstract class TEApi
 	 * Configuration
 	 */
 	public abstract IConfig config();
+
+	/**
+	 * Converts an amount of milibuckets to an amount of Essentia.
+	 * 
+	 * @return
+	 */
+	public abstract long convertEssentiaAmountToFluidAmount( long essentiaAmount );
+
+	/**
+	 * Converts an amount of Essentia to an amount of milibuckets.
+	 * 
+	 * @return
+	 */
+	public abstract long convertFluidAmountToEssentiaAmount( long milibuckets );
 
 	/**
 	 * Essentia Gasses
@@ -48,7 +76,7 @@ public abstract class TEApi
 	public abstract Parts parts();
 
 	/**
-	 * Transport permissions.
+	 * Transport Permissions.
 	 */
 	public abstract ITransportPermissions transportPermissions();
 

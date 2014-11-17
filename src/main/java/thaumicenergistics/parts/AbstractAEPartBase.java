@@ -74,7 +74,7 @@ public abstract class AbstractAEPartBase
 	/**
 	 * AE2 player ID for the owner of this part.
 	 */
-	protected int ownerID = -1;
+	private int ownerID = -1;
 
 	public final ItemStack associatedItem;
 
@@ -232,13 +232,6 @@ public abstract class AbstractAEPartBase
 	{
 		// Get the player ID
 		int pID = WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
-
-		// Is this the owner?
-		if( pID == this.ownerID )
-		{
-			// Owner can always interact
-			return true;
-		}
 
 		// Ensure they have build(make configuration changes) permission.
 		return this.canPlayerOpenGui( pID );

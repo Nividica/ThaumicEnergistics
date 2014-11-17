@@ -467,7 +467,8 @@ public class ResearchRegistry
 		ResearchPage[] storagePages = new ResearchPage[] { new ResearchPage( ResearchTypes.STORAGE.getPageName( 1 ) ),
 						new ResearchPage( ResearchTypes.STORAGE.getPageName( 2 ) ), new ResearchPage( RecipeRegistry.STORAGE_COMPONENT_1K ),
 						new ResearchPage( storageComponentRecipes ), new ResearchPage( RecipeRegistry.STORAGE_CASING ),
-						new ResearchPage( storageCellsShaped ), new ResearchPage( storageCellsShapeless ) };
+						new ResearchPage( storageCellsShaped ), new ResearchPage( storageCellsShapeless ),
+						new ResearchPage( RecipeRegistry.BLOCK_CELL_WORKBENCH ) };
 
 		String[] storageParents;
 

@@ -57,6 +57,7 @@ public class RecipeRegistry
 	public static IRecipe BLOCK_IRONGEARBOX;
 	public static CrucibleRecipe BLOCK_THAUMIUMGEARBOX;
 	public static CrucibleRecipe DUPE_CERTUS;
+	public static IRecipe BLOCK_CELL_WORKBENCH;
 
 	private static void registerComponents( final Materials aeMaterials, final Blocks aeBlocks, final Items teItems )
 	{
@@ -80,6 +81,8 @@ public class RecipeRegistry
 
 		ItemStack QuartzGlass = aeBlocks.blockQuartzGlass.stack( 1 );
 
+		ItemStack CellWorkbench = aeBlocks.blockCellWorkbench.stack( 1 );
+
 		// My items
 		ItemStack EssentiaComp_1k = teItems.EssentiaStorageComponent_1k.getStack();
 
@@ -88,6 +91,8 @@ public class RecipeRegistry
 		ItemStack EssentiaComp_16k = teItems.EssentiaStorageComponent_16k.getStack();
 
 		ItemStack EssentiaComp_64k = teItems.EssentiaStorageComponent_64k.getStack();
+
+		ItemStack EssentiaCellWorkbench = TEApi.instance().blocks().EssentiaCellWorkbench.getStack();
 
 		// Item Groups		
 		ArrayList<ItemStack> GroupQuartz = new ArrayList<ItemStack>( 3 );
@@ -126,6 +131,10 @@ public class RecipeRegistry
 		RecipeRegistry.STORAGE_COMPONENT_64K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaComp_64k,
 			storage64kAspects, new Object[] { "SPS", "6G6", "S6S", 'S', SalisMundus, '6', EssentiaComp_16k, 'P', EngineeringProcessor, 'G',
 							QuartzGlass } );
+
+		// Workbench
+		RecipeRegistry.BLOCK_CELL_WORKBENCH = new ShapelessOreRecipe( EssentiaCellWorkbench, new Object[] { EssentiaComp_1k, CellWorkbench } );
+		GameRegistry.addRecipe( RecipeRegistry.BLOCK_CELL_WORKBENCH );
 	}
 
 	private static void registerGearbox( final Blocks aeBlocks, final Items teItems )
@@ -526,7 +535,7 @@ public class RecipeRegistry
 		Blocks aeBlocks = AEApi.instance().blocks();
 		Parts aeParts = AEApi.instance().parts();
 
-		// Cache my item collection
+		// Cache my API
 		Items teItems = TEApi.instance().items();
 
 		// Register materials

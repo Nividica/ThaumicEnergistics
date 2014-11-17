@@ -30,7 +30,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -173,9 +173,10 @@ public class ContainerPartArcaneCraftingTerminal
 	private IMEMonitor<IAEItemStack> monitor;
 
 	/**
-	 * AE Machine representation of the terminal.
+	 * Network source representing the player who is interacting with the
+	 * container.
 	 */
-	private MachineSource machineSource;
+	private PlayerSource playerSource;
 
 	/**
 	 * Creates the container
@@ -188,8 +189,8 @@ public class ContainerPartArcaneCraftingTerminal
 		// Set the part
 		this.terminal = terminal;
 
-		// Set the machine source
-		this.machineSource = new MachineSource( terminal );
+		// Set the player source
+		this.playerSource = new PlayerSource( this.player, terminal );
 
 		// Set the player
 		this.player = player;
@@ -606,7 +607,7 @@ public class ContainerPartArcaneCraftingTerminal
 		IAEItemStack toInject = AEApi.instance().storage().createItemStack( itemStack );
 
 		// Get what is left over after the injection
-		IAEItemStack leftOver = this.monitor.injectItems( toInject, Actionable.MODULATE, this.machineSource );
+		IAEItemStack leftOver = this.monitor.injectItems( toInject, Actionable.MODULATE, this.playerSource );
 
 		// Do we have any left over?
 		if( ( leftOver != null ) && ( leftOver.getStackSize() > 0 ) )
@@ -823,7 +824,7 @@ public class ContainerPartArcaneCraftingTerminal
 				}
 
 				// Attempt to extract the item
-				IAEItemStack extractedStack = this.monitor.extractItems( slotStack, Actionable.MODULATE, this.machineSource );
+				IAEItemStack extractedStack = this.monitor.extractItems( slotStack, Actionable.MODULATE, this.playerSource );
 
 				// Ensure an item was extracted
 				if( ( extractedStack == null ) || ( extractedStack.getStackSize() == 0 ) )
@@ -886,7 +887,7 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 
 		// Attempt to inject
-		IAEItemStack leftOverStack = this.monitor.injectItems( toInjectStack, Actionable.MODULATE, this.machineSource );
+		IAEItemStack leftOverStack = this.monitor.injectItems( toInjectStack, Actionable.MODULATE, this.playerSource );
 
 		// Was there anything left over?
 		if( ( leftOverStack != null ) && ( leftOverStack.getStackSize() > 0 ) )
@@ -1064,7 +1065,7 @@ public class ContainerPartArcaneCraftingTerminal
 		toExtract.setStackSize( amountToExtract );
 
 		// Simulate the extraction
-		IAEItemStack extractedStack = this.monitor.extractItems( toExtract, Actionable.SIMULATE, this.machineSource );
+		IAEItemStack extractedStack = this.monitor.extractItems( toExtract, Actionable.SIMULATE, this.playerSource );
 
 		// Did we extract anything?
 		if( ( extractedStack != null ) && ( extractedStack.getStackSize() > 0 ) )
@@ -1076,7 +1077,7 @@ public class ContainerPartArcaneCraftingTerminal
 				if( player.inventory.addItemStackToInventory( extractedStack.getItemStack() ) )
 				{
 					// Merged with player inventory, extract the item
-					this.monitor.extractItems( toExtract, Actionable.MODULATE, this.machineSource );
+					this.monitor.extractItems( toExtract, Actionable.MODULATE, this.playerSource );
 
 					// Do not attempt to merge with what the player is holding.
 					return;
@@ -1125,7 +1126,7 @@ public class ContainerPartArcaneCraftingTerminal
 			}
 
 			// Extract the item(s) from the network
-			this.monitor.extractItems( toExtract, Actionable.MODULATE, this.machineSource );
+			this.monitor.extractItems( toExtract, Actionable.MODULATE, this.playerSource );
 
 			// Send the update to the client
 			new PacketClientArcaneCraftingTerminal().createPlayerHoldingUpdate( player,
@@ -1292,7 +1293,7 @@ public class ContainerPartArcaneCraftingTerminal
 		requestStack.setStackSize( 1 );
 
 		// Attempt an extraction
-		IAEItemStack replenishment = this.monitor.extractItems( requestStack, Actionable.MODULATE, this.machineSource );
+		IAEItemStack replenishment = this.monitor.extractItems( requestStack, Actionable.MODULATE, this.playerSource );
 
 		// Did we get a replenishment?
 		if( replenishment != null )
@@ -1318,7 +1319,7 @@ public class ContainerPartArcaneCraftingTerminal
 				requestStack.setStackSize( 1 );
 
 				// Attempt an extraction
-				replenishment = this.monitor.extractItems( requestStack, Actionable.MODULATE, this.machineSource );
+				replenishment = this.monitor.extractItems( requestStack, Actionable.MODULATE, this.playerSource );
 
 				// Did we get a replenishment?
 				if( ( replenishment != null ) && ( replenishment.getStackSize() > 0 ) )

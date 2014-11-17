@@ -1,4 +1,10 @@
-﻿11/16/2014 0.8.0b
+﻿11/17/2014 0.8.0b
+  Fixes #79: Essentia cells now work with the ME IO Port(Please oh please let this never break again)...
+  Added conversion methods to API, made API type-safe as stand alone.
+  Added cell workbench recipe.
+  Bugfix: Fixed security violation in TE parts with GUI.
+
+11/16/2014 0.8.0b
   Minor optimizations.
   Fixes #71: Added view cell support for A.C.T.
   Bugfix: Level emitter aspect now shows tooltip.
@@ -200,7 +206,7 @@
 
 8/23/2014 0.6.1a
   Fixes #12: Can use a staff in the A.C.T. for crafting.
-  Fixes #13: Fluid changes in the ME network cause that are not essentia gas cause unnecessary updates to propagate.
+  Fixes #13: Fluid changes in the ME network that are not essentia gas cause unnecessary updates to propagate.
 
 8/22/2014 0.6.0a
   Dependency Changed: Thaumcraft 4.2.0.0

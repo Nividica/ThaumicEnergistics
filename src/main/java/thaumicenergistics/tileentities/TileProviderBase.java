@@ -47,6 +47,11 @@ public abstract class TileProviderBase
 	protected static final String NBT_KEY_ISCOLORFORCED = "ColorForced";
 
 	/**
+	 * Network source representing the provider.
+	 */
+	private MachineSource asMachineSource;
+
+	/**
 	 * ForgeDirection ordinal of our attachment side.
 	 */
 	protected int attachmentSide;
@@ -138,6 +143,9 @@ public abstract class TileProviderBase
 	{
 		// Register our event handler
 		this.addNewHandler( this.eventHandler );
+
+		// Create the source
+		this.asMachineSource = new MachineSource( this );
 	}
 
 	private AEColor[] getNeighborCableColors()
@@ -185,7 +193,7 @@ public abstract class TileProviderBase
 			IAEFluidStack request = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, wantedAmount );
 
 			// Simulate the extraction
-			IAEFluidStack fluidStack = this.monitor.extractItems( request, Actionable.SIMULATE, new MachineSource( this ) );
+			IAEFluidStack fluidStack = this.monitor.extractItems( request, Actionable.SIMULATE, this.asMachineSource );
 
 			// Were we able to extract any?
 			if( fluidStack == null )
@@ -204,7 +212,7 @@ public abstract class TileProviderBase
 			}
 
 			// Take from the network
-			this.monitor.extractItems( request, Actionable.MODULATE, new MachineSource( this ) );
+			this.monitor.extractItems( request, Actionable.MODULATE, this.asMachineSource );
 
 			// Return how much was extracted
 			return (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
@@ -313,7 +321,7 @@ public abstract class TileProviderBase
 			IAEFluidStack request = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, amount );
 
 			// Simulate the injection
-			IAEFluidStack fluidStack = this.monitor.injectItems( request, mode, new MachineSource( this ) );
+			IAEFluidStack fluidStack = this.monitor.injectItems( request, mode, this.asMachineSource );
 
 			// Was all injected?
 			if( fluidStack == null )

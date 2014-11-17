@@ -12,5 +12,6 @@ class TEBlocks
 		this.InfusionProvider = new TEDescription( BlockEnum.INFUSION_PROVIDER.getBlock() );
 		this.IronGearBox = new TEDescription( BlockEnum.IRON_GEAR_BOX.getBlock() );
 		this.ThaumiumGearBox = new TEDescription( BlockEnum.THAUMIUM_GEAR_BOX.getBlock() );
+		this.EssentiaCellWorkbench = new TEDescription( BlockEnum.ESSENTIA_CELL_WORKBENCH.getBlock() );
 	}
 }

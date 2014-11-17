@@ -558,17 +558,10 @@ public class HandlerItemEssentiaCell
 	@Override
 	public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable mode, final BaseActionSource src )
 	{
-		// Ensure there is a request
-		if( ( request == null ) || ( request.getFluid() == null ) )
+		// Ensure there is a request, and that it is an essentia gas
+		if( ( request == null ) || ( request.getFluid() == null ) || ( !( request.getFluid() instanceof GaseousEssentia ) ) )
 		{
-			// Empty request.
-			return null;
-		}
-
-		// Ensure the request is a valid gas
-		if( !( request.getFluid() instanceof GaseousEssentia ) )
-		{
-			// Invalid fluid.
+			// Invalid request.
 			return null;
 		}
 
@@ -598,8 +591,17 @@ public class HandlerItemEssentiaCell
 		// Copy the request
 		IAEFluidStack extractedFluid = request.copy();
 
-		// Set the amount extracted
-		extractedFluid.setStackSize( EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( extractedEssentiaAmount ) );
+		/*
+		 * NOTE: I don't like this 'fix'
+		 * If the machine requesting the extraction is the IO port, lie and say that the full request
+		 * was extracted. If I report the actual amount extracted, it gets hung in an infinite loop and
+		 * suddenly the network thinks we only have 6mb of essentia gas stored.
+		*/
+		if( !( ( src instanceof MachineSource ) && ( ( (MachineSource)src ).via instanceof TileIOPort ) ) )
+		{
+			// Not IO port, set the actual amount extracted
+			extractedFluid.setStackSize( EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( extractedEssentiaAmount ) );
+		}
 
 		return extractedFluid;
 
@@ -776,27 +778,17 @@ public class HandlerItemEssentiaCell
 	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final BaseActionSource src )
 	{
 		// Ensure we have an input.
-		if( ( input == null ) || ( input.getFluid() == null ) )
+		if( ( input == null ) )
 		{
 			// No input
-			return input;
-		}
-
-		// Is an IO port trying to inject?
-		if( src instanceof MachineSource )
-		{
-			if( ( (MachineSource)src ).via instanceof TileIOPort )
-			{
-				// TODO: IO Port is not supported for cell injection.
-				return input;
-			}
+			return null;
 		}
 
 		// Ensure the input is a gas
-		if( !( input.getFluid() instanceof GaseousEssentia ) )
+		if( ( input.getFluid() == null ) || !( input.getFluid() instanceof GaseousEssentia ) )
 		{
 			// Invalid fluid
-			return input;
+			return input.copy();
 		}
 
 		// Get the aspect of the gas
@@ -809,11 +801,18 @@ public class HandlerItemEssentiaCell
 		if( amountToStore == 0 )
 		{
 			// Can not store partial amounts.
-			return input;
+			return input.copy();
 		}
 
 		// Get the amount not stored
 		long amountNotStored = this.addEssentiaToCell( essentiaAspect, amountToStore, mode );
+
+		// Was all stored?
+		if( amountNotStored == 0 )
+		{
+			// All was stored
+			return null;
+		}
 
 		// Copy the input
 		IAEFluidStack result = input.copy();

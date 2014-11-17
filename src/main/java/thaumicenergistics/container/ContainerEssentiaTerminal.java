@@ -12,7 +12,7 @@ import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.PlayerSource;
 
 /**
  * Inventory container for the essentia terminal.
@@ -29,9 +29,10 @@ public class ContainerEssentiaTerminal
 	private AEPartEssentiaTerminal terminal = null;
 
 	/**
-	 * The AE machine source representation of the terminal.
+	 * Network source representing the player who is interacting with the
+	 * container.
 	 */
-	private MachineSource machineSource = null;
+	private PlayerSource playerSource = null;
 
 	/**
 	 * The player associated with this open container
@@ -58,7 +59,7 @@ public class ContainerEssentiaTerminal
 		this.terminal = terminal;
 
 		// Get and set the machine source
-		this.machineSource = terminal.getTerminalMachineSource();
+		this.playerSource = new PlayerSource( player, this.terminal );
 
 		// Is this server side?
 		if( EffectiveSide.isServerSide() )
@@ -115,7 +116,7 @@ public class ContainerEssentiaTerminal
 											PowerMultiplier.CONFIG ) >= ContainerCellTerminalBase.POWER_PER_TRANSFER ) )
 						{
 							// Do the work.
-							if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, this.machineSource, this.selectedAspect,
+							if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, this.playerSource, this.selectedAspect,
 								this.player ) )
 							{
 								// We did work, extract power

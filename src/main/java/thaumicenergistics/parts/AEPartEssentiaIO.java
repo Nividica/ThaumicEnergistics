@@ -100,6 +100,11 @@ public abstract class AEPartEssentiaIO
 
 	private RedstoneMode redstoneMode = RedstoneMode.IGNORE;
 
+	/**
+	 * Network source representing this part.
+	 */
+	private MachineSource asMachineSource;
+
 	protected List<Aspect> filteredAspects = new ArrayList<Aspect>( AEPartEssentiaIO.MAX_FILTER_SIZE );
 
 	protected IAspectContainer facingContainer;
@@ -119,6 +124,9 @@ public abstract class AEPartEssentiaIO
 		{
 			this.filteredAspects.add( null );
 		}
+
+		// Create the source
+		this.asMachineSource = new MachineSource( this );
 	}
 
 	private boolean canDoWork()
@@ -343,7 +351,7 @@ public abstract class AEPartEssentiaIO
 			return null;
 		}
 
-		return monitor.extractItems( toExtract, action, new MachineSource( this ) );
+		return monitor.extractItems( toExtract, action, this.asMachineSource );
 	}
 
 	protected boolean injectEssentaToNetwork( int amountToDrainFromContainer )
@@ -436,7 +444,7 @@ public abstract class AEPartEssentiaIO
 			return null;
 		}
 
-		return monitor.injectItems( toInject, action, new MachineSource( this ) );
+		return monitor.injectItems( toInject, action, this.asMachineSource );
 	}
 
 	public boolean addFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )

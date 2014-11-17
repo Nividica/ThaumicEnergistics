@@ -40,6 +40,11 @@ public class HandlerEssentiaStorageBus
 	private static final double POWER_DRAIN_PER_ESSENTIA = 0.5;
 
 	/**
+	 * Cache the API instance
+	 */
+	private static final TEApi TEAPI = TEApi.instance();
+
+	/**
 	 * Storage bus associated with this handler.
 	 */
 	private AEPartEssentiaStorageBus partStorageBus;
@@ -65,6 +70,11 @@ public class HandlerEssentiaStorageBus
 	private boolean inverted;
 
 	/**
+	 * Source of all actions the handler performs.
+	 */
+	private MachineSource machineSource;
+
+	/**
 	 * When true excess essentia will be destroyed IF we are attached to a void
 	 * jar.
 	 */
@@ -87,6 +97,9 @@ public class HandlerEssentiaStorageBus
 
 		// Set to full read/write access.
 		this.access = AccessRestriction.READ_WRITE;
+
+		// Set the source
+		this.machineSource = new MachineSource( part );
 	}
 
 	/**
@@ -221,7 +234,7 @@ public class HandlerEssentiaStorageBus
 		}
 
 		// Ensure the container is whitelisted
-		if( !( TEApi.instance().transportPermissions().canInjectToAspectContainerTile( this.aspectContainer ) ) )
+		if( !( TEAPI.transportPermissions().canInjectToAspectContainerTile( this.aspectContainer ) ) )
 		{
 			// Invalid container
 			return false;
@@ -350,7 +363,7 @@ public class HandlerEssentiaStorageBus
 		if( this.aspectContainer != null )
 		{
 			// Only report back items that are extractable
-			if( TEApi.instance().transportPermissions().canExtractFromAspectContainerTile( this.aspectContainer ) )
+			if( TEAPI.transportPermissions().canExtractFromAspectContainerTile( this.aspectContainer ) )
 			{
 				// Get the essentia's and amounts in the container
 				List<AspectStack> containerStacks = EssentiaTileContainerHelper.instance.getAspectStacksFromContainer( this.aspectContainer );
@@ -499,7 +512,7 @@ public class HandlerEssentiaStorageBus
 			// Mark that we are voiding
 			this.didVoid = true;
 
-			// TODO: Can storage bus voiding be done without reflection?
+			// NOTE: Can storage bus voiding be done without reflection?
 			try
 			{
 				// Access the notify method
@@ -511,7 +524,7 @@ public class HandlerEssentiaStorageBus
 								.createFluidStack( new FluidStack( toFill.getFluid(), -remaining_FU ) ) );
 
 				// Notify the listeners
-				postChanges.invoke( this.partStorageBus.getGridBlock().getFluidMonitor(), changes, new MachineSource( this.partStorageBus ) );
+				postChanges.invoke( this.partStorageBus.getGridBlock().getFluidMonitor(), changes, this.machineSource );
 			}
 			catch( Exception e )
 			{

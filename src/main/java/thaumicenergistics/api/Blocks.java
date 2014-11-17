@@ -9,4 +9,6 @@ public abstract class Blocks
 	public IItemDescription IronGearBox;
 
 	public IItemDescription ThaumiumGearBox;
+
+	public IItemDescription EssentiaCellWorkbench;
 }

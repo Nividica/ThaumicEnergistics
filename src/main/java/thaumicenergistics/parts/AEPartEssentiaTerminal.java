@@ -18,7 +18,6 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.PrivateInventory;
-import appeng.api.networking.security.MachineSource;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEColor;
@@ -48,11 +47,6 @@ public class AEPartEssentiaTerminal
 	 * List of currently opened containers.
 	 */
 	private List<ContainerEssentiaTerminal> listeners = new ArrayList<ContainerEssentiaTerminal>();
-
-	/**
-	 * Machine representation of this part.
-	 */
-	private MachineSource machineSource = new MachineSource( this );
 
 	/**
 	 * Tracks if the inventory has been locked for work.
@@ -164,11 +158,6 @@ public class AEPartEssentiaTerminal
 	public ComparatorMode getSortingMode()
 	{
 		return this.sortMode;
-	}
-
-	public MachineSource getTerminalMachineSource()
-	{
-		return this.machineSource;
 	}
 
 	/**

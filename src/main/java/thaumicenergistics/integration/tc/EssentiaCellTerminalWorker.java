@@ -14,6 +14,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 
@@ -217,11 +218,19 @@ public final class EssentiaCellTerminalWorker
 			return false;
 		}
 
-		// Do we have a machine source?
-		if( ( actionSource != null ) && ( actionSource instanceof MachineSource ) )
+		// Do we have a source?
+		if( actionSource != null )
 		{
 			// Get the source node
-			IGridNode sourceNode = ( (MachineSource)actionSource ).via.getActionableNode();
+			IGridNode sourceNode = null;
+			if( actionSource instanceof MachineSource )
+			{
+				sourceNode = ( (MachineSource)actionSource ).via.getActionableNode();
+			}
+			else if( actionSource instanceof PlayerSource )
+			{
+				sourceNode = ( (PlayerSource)actionSource ).via.getActionableNode();
+			}
 
 			// Ensure there is a node
 			if( sourceNode == null )

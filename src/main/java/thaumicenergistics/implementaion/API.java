@@ -14,6 +14,7 @@ import thaumicenergistics.api.Items;
 import thaumicenergistics.api.Parts;
 import thaumicenergistics.api.TEApi;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import com.google.common.collect.ImmutableList;
 
 public class API
@@ -25,6 +26,18 @@ public class API
 	private final List<IEssentiaGas> essentiaGases = new ArrayList<IEssentiaGas>();
 	private final TETransportPermissions transportPermissions = new TETransportPermissions();
 
+	/**
+	 * Create the API instance.
+	 */
+	public static final API instance = new API();
+
+	/**
+	 * Private constructor
+	 */
+	private API()
+	{
+	}
+
 	@Override
 	public Blocks blocks()
 	{
@@ -35,6 +48,18 @@ public class API
 	public IConfig config()
 	{
 		return ThaumicEnergistics.config;
+	}
+
+	@Override
+	public long convertEssentiaAmountToFluidAmount( final long essentiaAmount )
+	{
+		return EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( essentiaAmount );
+	}
+
+	@Override
+	public long convertFluidAmountToEssentiaAmount( final long milibuckets )
+	{
+		return EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( milibuckets );
 	}
 
 	@Override
