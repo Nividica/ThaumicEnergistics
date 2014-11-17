@@ -1,4 +1,4 @@
-﻿#Group names
+#Group names
 itemGroup.ThaumicEnergistics=神秘能源
 thaumicenergistics.group.essentia.transport=ME源质输入/输出总线
 
@@ -8,6 +8,9 @@ thaumicenergistics.fluid.gaseous=气体
 #Blocks
 thaumicenergistics.block.essentia.provider.name=源质供应器
 thaumicenergistics.block.infusion.provider.name=注魔供应器
+thaumicenergistics.block.gear.box.name=铁齿轮箱
+thaumicenergistics.block.golem.gear.box.name=神秘齿轮箱
+thaumicenergistics.block.essentia.cell.workbench.name=源质元件工作台
 
 #Cable parts
 thaumicenergistics.aeparts.essentia.ImportBus.name=源质输入总线
@@ -30,10 +33,12 @@ thaumicenergistics.item.storage.component.16k.name=16k-ME源质存储组件
 thaumicenergistics.item.storage.component.64k.name=64k-ME源质存储组件
 thaumicenergistics.item.material.diffusion.core.name=扩散核心
 thaumicenergistics.item.material.coalescence.core.name=聚集核心
+thaumicenergistics.item.material.iron.gear.name=铁齿轮
 
 #Tooltips
 thaumicenergistics.tooltip.essentia.cell.bytes=%d / %d 字节已使用.
 thaumicenergistics.tooltip.essentia.cell.types=%d / %d 源质类型储存.
+thaumicenergistics.tooltip.essentia.cell.details=按shift查看详情.
 thaumicenergistics.tooltip.button.clear.crafting=存放合成栏物品
 thaumicenergistics.tooltip.button.void=允许清空
 thaumicenergistics.tooltip.button.void.disabled=不清空源质
@@ -45,6 +50,8 @@ thaumicenergistics.gui.arcane.crafting.terminal.title=奥术终端
 thaumicenergistics.gui.essentia.cell.title=源质元件
 thaumicenergistics.gui.selected.amount=数量
 thaumicenergistics.gui.selected.aspect=要素
+thaumicenergistics.gui.digivis.source.name=DigiVis Source
+thaumicenergistics.gui.essentia.cell.workbench.title.name=源质元件工作台
 
 #Research Tab
 tc.research_category.thaumicenergistics=神秘能源
@@ -99,3 +106,19 @@ tc.research_text.thaumicenergistics.TEVISINT=数位化使用要素魔力
 thaumicenergistics.research_page.TEVISINT.1=发现要素能量网之后,你开始研究将其与数字网络连接的方法.<BR>在细致观察要素魔力在§l要素中继§r网络中的流动后,你确信自己也能做出一个有着相似功能的设备.利用数字网络的特殊能力你就能点对点传输要素魔力,但不能储存它.
 thaumicenergistics.research_page.TEVISINT.2=要使用§l要素中继接口§r,只需将其接入数字网络并在其上放置一个要素中继器.中继器的底端必须附在接口上.<BR>若要将其他设备连接到接口则需§l内存卡§r.<BR>用内存卡shift右击接口,之后右击一个设备来建立连接.
 thaumicenergistics.research_page.TEVISINT.3=§l连接§r<LINE>§l奥术合成终端§r. 在A.C.T(奥术合成终端)中给法杖充能.
+
+# Research Iron Gear Box
+tc.research_name.thaumicenergistics.TEIRONGEARBOX=铁齿轮箱
+tc.research_text.thaumicenergistics.TEIRONGEARBOX=只需转动那一个
+thaumicenergistics.research_page.TEIRONGEARBOX.1=使用过§l木质曲柄§r后你产生了些许疑问,它是否还能有所改进?<BR>你想方设法将一组齿轮装入盒子中,当其中一侧转动时便会驱动其他面的齿轮.为此你就需要比木材更加坚固的材料,最终你将铁固定在木齿轮上,做出了§l铁齿轮§r.<BR>§l铁齿轮箱§r让你能同时转动多个设备.你需要调整这些设备的朝向,让输入面朝着齿轮箱.
+thaumicenergistics.research_page.TEIRONGEARBOX.2=驱动多个设备时如两个研磨机和充能器时,动力将会被平均分配到所有可传递的方向上.<BR>它的另一个优势就在于能被多人同时使用.人数越多,输出的动力就越大.<BR>只要你能找到人能为你整天站在那里转这个...
+
+# Research Thaumium Gear Box
+tc.research_name.thaumicenergistics.TETHAUMGBOX=神秘齿轮箱
+tc.research_text.thaumicenergistics.TETHAUMGBOX=蠢萌的免费劳力
+thaumicenergistics.research_page.TETHAUMGBOX.1=既然傀儡能代替你右击操作,是时候把齿轮箱改造成适合它们的版本了.加上一点金属和魔法,你就成功地将§l铁齿轮箱§r改造成了§l神秘齿轮箱§r.<BR>改良后的齿轮箱可让任意装有§l使用运转核心§r的傀儡驱动.
+
+# Research Certus Quartz Duplication
+tc.research_name.thaumicenergistics.TECERTUSDUPE=赛特斯石英复制
+tc.research_text.thaumicenergistics.TECERTUSDUPE=吃我炼金术
+thaumicenergistics.research_page.TECERTUSDUPE.1=你现在能用炼金术复制§l赛特苏石英晶体§r了.
