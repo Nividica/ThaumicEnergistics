@@ -1,4 +1,8 @@
-﻿11/17/2014 0.8.0b
+﻿11/17/2014
+  Fixes #82: Prevent recipes with null outputs from crashing the game during aspect registration.
+  Removed duplicate entry in language file. Ty Mrkwtkr for noticing ^.^
+
+11/17/2014 0.8.0b
   Fixes #79: Essentia cells now work with the ME IO Port(Please oh please let this never break again)...
   Added conversion methods to API, made API type-safe as stand alone.
   Added cell workbench recipe.

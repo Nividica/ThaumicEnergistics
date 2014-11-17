@@ -219,51 +219,82 @@ public class AEAspectRegister
 			// Grinder recipes
 			for( IGrinderEntry recipe : AEAspectRegister.this.GRINDER_RECIPES )
 			{
-				ItemStack recipeOutput = recipe.getOutput();
-
-				if( this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
+				try
 				{
-					if( this.isRecipeUsable( recipe ) )
+					ItemStack recipeOutput = recipe.getOutput();
+
+					// Skip null items
+					if( recipeOutput == null || recipeOutput.getItem() == null )
 					{
-						return;
+						continue;
 					}
+
+					if( this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
+					{
+						if( this.isRecipeUsable( recipe ) )
+						{
+							return;
+						}
+					}
+				}
+				catch( Exception e )
+				{
 				}
 			}
 
 			// Inscriber recipes
 			for( InscriberRecipe recipe : Inscribe.recipes )
 			{
-				ItemStack recipeOutput = recipe.output;
-
-				if( this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
+				try
 				{
-					if( this.isRecipeUsable( recipe ) )
+					ItemStack recipeOutput = recipe.output;
+
+					// Skip null items
+					if( recipeOutput == null || recipeOutput.getItem() == null )
 					{
-						return;
+						continue;
 					}
+
+					if( this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
+					{
+						if( this.isRecipeUsable( recipe ) )
+						{
+							return;
+						}
+					}
+				}
+				catch( Exception e )
+				{
 				}
 			}
 
 			// Regular crafting recipes
 			for( IRecipe recipe : AEAspectRegister.this.NORMAL_RECIPES )
 			{
-				// Get the recipe's result
-				ItemStack recipeStack = recipe.getRecipeOutput();
-
-				if( recipeStack == null )
+				try
 				{
-					continue;
+					// Get the recipe's result
+					ItemStack recipeOutput = recipe.getRecipeOutput();
+
+					// Skip null items
+					if( recipeOutput == null || recipeOutput.getItem() == null )
+					{
+						continue;
+					}
+
+					// Is this what we are looking for?
+					if( !this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
+					{
+						continue;
+					}
+
+					if( this.isRecipeUsable( recipe ) )
+					{
+						return;
+					}
 				}
-
-				// Is this what we are looking for?
-				if( !this.areStacksEqualIgnoreAmount( recipeStack, this.itemStack ) )
+				catch( Exception e )
 				{
-					continue;
-				}
-
-				if( this.isRecipeUsable( recipe ) )
-				{
-					return;
 				}
 
 			}
@@ -554,7 +585,7 @@ public class AEAspectRegister
 		public boolean areStacksEqualIgnoreAmount( final ItemStack stack1, final ItemStack stack2 )
 		{
 			// Nulls never match
-			if( ( stack1 == null ) || ( stack2 == null ) )
+			if( ( stack1 == null ) || ( stack2 == null ) || ( stack1.getItem() == null ) || ( stack2.getItem() == null ) )
 			{
 				return false;
 			}

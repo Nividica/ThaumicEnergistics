@@ -117,7 +117,6 @@ thaumicenergistics.research_page.TEIRONGEARBOX.2=When cranking multiple devices,
 tc.research_name.thaumicenergistics.TETHAUMGBOX=Thaumium Gear Box
 tc.research_text.thaumicenergistics.TETHAUMGBOX=Little Labor Force
 thaumicenergistics.research_page.TETHAUMGBOX.1=Now that your golems can right-click on your behalf, its time you updated the gearbox to accommodate them. Adding a dash of metal and magic, you have retrofitted the §lIron Gear Box§r and created the §lThaumium Gear Box§r.<BR>The redesigned model will allow any golem with the §lUse Core§r to crank the gearbox.
-thaumicenergistics.research_page.TETHAUMGBOX.1=Now that your golems can right-click on your behalf, its time you updated the gearbox to accommodate them. Adding a splash of metal and magic, you have retrofitted the §lIron Gear Box§r and created the §lThaumium Gear Box§r.<BR>The redesigned model will allow any golem with the §lUse Core§r to crank the gearbox.
 
 # Research Certus Quartz Duplication
 tc.research_name.thaumicenergistics.TECERTUSDUPE=Certus Quartz Duplication
