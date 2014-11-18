@@ -180,6 +180,20 @@ public class RecipeRegistry
 
 		ItemStack WoodGear = aeMaterials.materialWoodenGear.stack( 1 );
 
+		// Is the gear disabled?
+		if( ( WoodGear == null ) || ( WoodGear.getItem() == null ) )
+		{
+			// Get the crank
+			WoodGear = AEApi.instance().blocks().blockCrankHandle.stack( 1 );
+
+			// Is the crank disabled?
+			if( ( WoodGear == null ) || ( WoodGear.getItem() == null ) )
+			{
+				// Get the grindstone.
+				WoodGear = AEApi.instance().blocks().blockGrindStone.stack( 1 );
+			}
+		}
+
 		ItemStack Certus1 = aeMaterials.materialCertusQuartzCrystal.stack( 1 );
 		ItemStack Certus2 = aeMaterials.materialCertusQuartzCrystal.stack( 2 );
 
@@ -205,11 +219,18 @@ public class RecipeRegistry
 			DiffusionCore, diffusionAspects, QuickSilver, EntropyShard, AnnihilationCore );
 
 		// Iron Gear
-		AspectList ironGearAspects = new AspectList();
-		ironGearAspects.add( Aspect.EARTH, 1 );
-		ironGearAspects.add( Aspect.FIRE, 1 );
-		RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRONGEARBOX.getKey(), IronGear,
-			ironGearAspects, new Object[] { " I ", " W ", "I I", 'I', IronIngot, 'W', WoodGear } );
+		if( ( WoodGear != null ) && ( WoodGear.getItem() != null ) )
+		{
+			AspectList ironGearAspects = new AspectList();
+			ironGearAspects.add( Aspect.EARTH, 1 );
+			ironGearAspects.add( Aspect.FIRE, 1 );
+			RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRONGEARBOX.getKey(), IronGear,
+				ironGearAspects, new Object[] { " I ", " W ", "I I", 'I', IronIngot, 'W', WoodGear } );
+		}
+		else
+		{
+			RecipeRegistry.MATERIAL_IRON_GEAR = null;
+		}
 
 		// Certus quartz duplication
 		if( ThaumicEnergistics.config.allowedToDuplicateCertusQuartz() )

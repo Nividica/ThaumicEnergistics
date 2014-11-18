@@ -540,7 +540,10 @@ public class ResearchRegistry
 		ResearchRegistry.registerEssentiaTerminal();
 
 		// Gearboxes
-		ResearchRegistry.registerGearboxes();
+		if( RecipeRegistry.MATERIAL_IRON_GEAR != null )
+		{
+			ResearchRegistry.registerGearboxes();
+		}
 
 		// Infusion provider
 		if( ThaumicEnergistics.config.allowedToCraftInfusionProvider() )

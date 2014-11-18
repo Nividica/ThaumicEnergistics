@@ -2,6 +2,7 @@
   Fixes #88: Tooltips are no longer laggy.
   Fixes #86: Items in the ME network show their aspects in the A.C.T.
   Potentialy Fixes #84: Added circular dependency checking to AE Aspect registry.
+  Fixes #83 and #87: Added checks for wooden gear being disabled.
 
 11/17/2014 0.8.1b
   Fixes #82: Prevent recipes with null outputs from crashing the game during aspect registration.
