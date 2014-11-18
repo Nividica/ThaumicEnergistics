@@ -232,7 +232,7 @@ public class PrivateInventory
 	@Override
 	public void setInventorySlotContents( final int slotId, final ItemStack itemStack )
 	{
-		// Is the stack size to large?
+		// Is the stack size too large?
 		if( ( itemStack != null ) && ( itemStack.stackSize > this.getInventoryStackLimit() ) )
 		{
 			itemStack.stackSize = this.getInventoryStackLimit();

@@ -12,6 +12,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.client.lib.UtilsFX;
+import thaumcraft.common.config.Config;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
 import thaumicenergistics.gui.abstraction.AbstractGuiConstantsACT;
@@ -20,6 +21,7 @@ import thaumicenergistics.gui.buttons.ButtonSortingDirection;
 import thaumicenergistics.gui.buttons.ButtonSortingMode;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
+import thaumicenergistics.integration.tc.MEItemAspectBridgeContainer;
 import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
 import thaumicenergistics.texture.AEStateIconsEnum;
@@ -103,6 +105,8 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private long lastTooltipUpdateTime = 0;
 
+	private MEItemAspectBridgeContainer meAspectBridge;
+
 	public GuiArcaneCraftingTerminal( final AEPartArcaneCraftingTerminal part, final EntityPlayer player )
 	{
 		// Call super
@@ -118,16 +122,31 @@ public class GuiArcaneCraftingTerminal
 		// Set the title
 		this.guiTitle = StatCollector.translateToLocal( "thaumicenergistics.gui.arcane.crafting.terminal.title" );
 
-		// Create the widgets
+		// Create the aspect bridge
+		try
+		{
+			this.meAspectBridge = new MEItemAspectBridgeContainer( AbstractGuiConstantsACT.ME_WIDGET_COUNT );
+		}
+		catch( Exception e )
+		{
+			this.meAspectBridge = null;
+		}
+
+		// Create the widgets and bridge slots
 		for( int row = 0; row < AbstractGuiConstantsACT.ME_ROWS; row++ )
 		{
 			for( int column = 0; column < AbstractGuiConstantsACT.ME_COLUMNS; column++ )
 			{
-				// Calculate the index
+				// Calculate the index and position
 				int index = ( row * AbstractGuiConstantsACT.ME_COLUMNS ) + column;
+				int posX = AbstractGuiConstantsACT.ME_ITEM_POS_X + ( column * AbstractWidget.WIDGET_SIZE );
+				int posY = AbstractGuiConstantsACT.ME_ITEM_POS_Y + ( row * AbstractWidget.WIDGET_SIZE );
 
-				this.itemWidgets[index] = new WidgetAEItem( this, AbstractGuiConstantsACT.ME_ITEM_POS_X + ( column * AbstractWidget.WIDGET_SIZE ),
-								AbstractGuiConstantsACT.ME_ITEM_POS_Y + ( row * AbstractWidget.WIDGET_SIZE ), this.aeItemRenderer );
+				this.itemWidgets[index] = new WidgetAEItem( this, posX, posY, this.aeItemRenderer );
+				if( this.meAspectBridge != null )
+				{
+					this.meAspectBridge.addSlot( index, posX, posY );
+				}
 			}
 		}
 
@@ -305,11 +324,19 @@ public class GuiArcaneCraftingTerminal
 			{
 				// Set the item
 				this.itemWidgets[index].setItemStack( stack );
+				if( this.meAspectBridge != null )
+				{
+					this.meAspectBridge.setSlot( index, stack.getItemStack().copy() );
+				}
 			}
 			else
 			{
 				// Set to null
 				this.itemWidgets[index].setItemStack( null );
+				if( this.meAspectBridge != null )
+				{
+					this.meAspectBridge.setSlot( index, null );
+				}
 			}
 		}
 	}
@@ -426,9 +453,6 @@ public class GuiArcaneCraftingTerminal
 					// Set the time
 					this.lastTooltipUpdateTime = System.currentTimeMillis();
 				}
-
-				// Set the previous widget
-				this.previousWidgetUnderMouse = widgetUnderMouse;
 			}
 			else
 			{
@@ -445,11 +469,13 @@ public class GuiArcaneCraftingTerminal
 			// Set the previous position
 			this.previousMouseX = mouseX;
 			this.previousMouseY = mouseY;
+
+			// Set the previous widget
+			this.previousWidgetUnderMouse = widgetUnderMouse;
 		}
 
 		// Draw the tooltip
 		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, false );
-
 	}
 
 	/**
@@ -645,6 +671,23 @@ public class GuiArcaneCraftingTerminal
 			// Send to server
 			new PacketServerArcaneCraftingTerminal().createRequestSetSort( this.player, this.sortingOrder, this.sortingDirection )
 							.sendPacketToServer();
+		}
+	}
+
+	/**
+	 * Draws all screen elements, specifically calling on TC to draw the aspects
+	 * of whatever the mouse is over.
+	 */
+	@Override
+	public void drawScreen( final int mouseX, final int mouseY, final float mouseBtn )
+	{
+		// Call super
+		super.drawScreen( mouseX, mouseY, mouseBtn );
+
+		// Show TC aspects for items in the ME network.
+		if( ( this.meAspectBridge != null ) && ( !Config.showTags == Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) ) )
+		{
+			this.meAspectBridge.renderAspects( this, this.player );
 		}
 	}
 
