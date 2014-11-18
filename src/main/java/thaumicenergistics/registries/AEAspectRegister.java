@@ -81,6 +81,11 @@ public class AEAspectRegister
 		public ItemStack itemStack;
 
 		/**
+		 * The current trial pass.
+		 */
+		private int pass;
+
+		/**
 		 * Creates the info.
 		 * 
 		 * @param itemDef
@@ -320,11 +325,15 @@ public class AEAspectRegister
 
 					if( ingInfo != null )
 					{
-						// Register the item
-						ingInfo.registerItem();
+						// Ensure the item is not in the dependency chain.
+						if( !AEAspectRegister.this.DEPENDENCY_CHAIN.contains( ingInfo ) )
+						{
+							// Register the item
+							ingInfo.registerItem( this.pass );
 
-						// Attempt to get the aspects again
-						stackAspects = ThaumcraftApiHelper.getObjectAspects( stack );
+							// Attempt to get the aspects again
+							stackAspects = ThaumcraftApiHelper.getObjectAspects( stack );
+						}
 					}
 				}
 
@@ -684,8 +693,14 @@ public class AEAspectRegister
 		/**
 		 * Builds this items aspect list, then registers it with Thaumcraft.
 		 */
-		public void registerItem()
+		public void registerItem( final int pass )
 		{
+			// Add to the dependency chain
+			AEAspectRegister.this.DEPENDENCY_CHAIN.add( this );
+
+			// Set the pass
+			this.pass = pass;
+
 			// Get the ingredients
 			this.buildAspects();
 
@@ -695,11 +710,23 @@ public class AEAspectRegister
 			// Clean up the ingredient aspects
 			this.reballanceIngredientAspects();
 
+			// Remove from the dependency chain
+			AEAspectRegister.this.DEPENDENCY_CHAIN.remove( this );
+
 			// Are there aspects?
 			if( ( this.ingredientAspects.size() == 0 ) && ( this.bonusAspects.size() == 0 ) )
 			{
-				// Nothing to register
-				FMLLog.info( "%s: '%s' was not registered.", ThaumicEnergistics.MOD_ID, this.displayName );
+				// Was this pass one?
+				if( pass == 1 )
+				{
+					// Add to the unregisterable list for trial again later.
+					AEAspectRegister.this.UNREGISTERABLE.add( this );
+				}
+				else
+				{
+					// Still could not register on pass 2.
+					FMLLog.info( "%s: '%s' was not registered for TC scanning.", ThaumicEnergistics.MOD_ID, this.displayName );
+				}
 				return;
 			}
 
@@ -743,6 +770,16 @@ public class AEAspectRegister
 	 * Items that have been added.
 	 */
 	private List<AEItemInfo> ITEMS_REGISTERED = new ArrayList<AEItemInfo>();
+
+	/**
+	 * Used to prevent stack overflows when two items depend on each other.
+	 */
+	List<AEItemInfo> DEPENDENCY_CHAIN = new ArrayList<AEItemInfo>();
+
+	/**
+	 * Tracks items that could not be registered.
+	 */
+	List<AEItemInfo> UNREGISTERABLE = new ArrayList<AEItemInfo>();
 
 	/**
 	 * Recipe caches
@@ -1018,17 +1055,27 @@ public class AEAspectRegister
 		this.registerBase();
 
 		// Register the remaining items
-		while( this.ITEMS_TO_ADD.size() > 0 )
+		for( int pass = 1; pass <= 2; pass++ )
 		{
-			// Get the next item
-			AEItemInfo itemInfo = this.ITEMS_TO_ADD.get( 0 );
+			while( this.ITEMS_TO_ADD.size() > 0 )
+			{
+				// Get the next item
+				AEItemInfo itemInfo = this.ITEMS_TO_ADD.get( 0 );
 
-			// Remove
-			this.ITEMS_TO_ADD.remove( 0 );
+				// Remove
+				this.ITEMS_TO_ADD.remove( 0 );
 
-			// Register it
-			itemInfo.registerItem();
+				// Register it
+				itemInfo.registerItem( pass );
 
+			}
+
+			// Upon completion of pass 1, move all unregisterable items back into the items to add, and try again. 
+			if( pass == 1 )
+			{
+				this.ITEMS_TO_ADD.addAll( this.UNREGISTERABLE );
+				this.UNREGISTERABLE.clear();
+			}
 		}
 
 		// Finally register my cells
@@ -1040,6 +1087,8 @@ public class AEAspectRegister
 		this.ALL_ITEMS = null;
 		this.ITEMS_REGISTERED = null;
 		this.ITEMS_TO_ADD = null;
+		this.DEPENDENCY_CHAIN = null;
+		this.UNREGISTERABLE = null;
 
 		// Log
 		FMLLog.info( "%s: AE scanables registered.", ThaumicEnergistics.MOD_ID );
