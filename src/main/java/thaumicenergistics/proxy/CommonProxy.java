@@ -1,6 +1,8 @@
 package thaumicenergistics.proxy;
 
+import net.minecraftforge.oredict.OreDictionary;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.items.ItemMaterial.MaterialTypes;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.registries.RecipeRegistry;
@@ -40,6 +42,9 @@ public class CommonProxy
 		{
 			GameRegistry.registerItem( item.getItem(), item.getInternalName() );
 		}
+
+		// Add iron gear to the oredic
+		OreDictionary.registerOre( "gearIron", MaterialTypes.IRON_GEAR.getItemStack() );
 	}
 
 	/**

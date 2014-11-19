@@ -34,7 +34,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.8.2b"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.8.3b"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -138,6 +138,9 @@ public class ThaumicEnergistics
 		EssentiaTileContainerHelper.instance.registerThaumcraftContainers();
 		EssentiaItemContainerHelper.instance.registerThaumcraftContainers();
 
+		// Register recipes
+		ThaumicEnergistics.proxy.registerRecipes();
+
 		// Register my tiles with SpatialIO
 		ThaumicEnergistics.proxy.registerSpatialIOMovables();
 
@@ -178,9 +181,6 @@ public class ThaumicEnergistics
 
 		// Register blocks
 		ThaumicEnergistics.proxy.registerBlocks();
-
-		// Register recipes
-		ThaumicEnergistics.proxy.registerRecipes();
 
 		this.endLoadStageTracking( t );
 	}

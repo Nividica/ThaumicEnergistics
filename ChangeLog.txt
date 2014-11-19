@@ -1,4 +1,10 @@
-﻿11/17/2014 0.8.2b
+﻿11/19/2014 0.8.3b
+  Fixes #90: Recipes with the "Wooden Gear" and "Certus Quartz" now refer to the ore dictionary.
+  Not 100% sure this will fix the crucible result, but should fix the catalyst.
+  Iron gear now registered with ore dictionary.
+  Iron Gearbox is now an Arcane recipe.
+
+11/17/2014 0.8.2b
   Fixes #88: Tooltips are no longer laggy.
   Fixes #86: Items in the ME network show their aspects in the A.C.T.
   Potentialy Fixes #84: Added circular dependency checking to AE Aspect registry.

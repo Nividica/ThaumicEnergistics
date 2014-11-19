@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import thaumcraft.api.ThaumcraftApi;
@@ -13,7 +14,6 @@ import thaumcraft.api.crafting.CrucibleRecipe;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.crafting.InfusionRecipe;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
-import thaumcraft.api.crafting.ShapelessArcaneRecipe;
 import thaumcraft.common.config.Config;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
@@ -54,7 +54,7 @@ public class RecipeRegistry
 	public static IArcaneRecipe PART_VIS_INTERFACE;
 	public static InfusionRecipe BLOCK_INFUSION_PROVIDER;
 	public static InfusionRecipe BLOCK_ESSENTIA_PROVIDER;
-	public static IRecipe BLOCK_IRONGEARBOX;
+	public static IArcaneRecipe BLOCK_IRONGEARBOX;
 	public static CrucibleRecipe BLOCK_THAUMIUMGEARBOX;
 	public static CrucibleRecipe DUPE_CERTUS;
 	public static IRecipe BLOCK_CELL_WORKBENCH;
@@ -143,14 +143,16 @@ public class RecipeRegistry
 		String Cobblestone = "cobblestone";
 
 		// My items
-		ItemStack IronGear = teItems.IronGear.getStack();
+		String IronGear = "gearIron";
 		ItemStack IronGearBox = TEApi.instance().blocks().IronGearBox.getStack();
 		ItemStack ThaumiumGearBox = TEApi.instance().blocks().ThaumiumGearBox.getStack();
 
 		// Iron Gear Box
-		RecipeRegistry.BLOCK_IRONGEARBOX = new ShapedOreRecipe( IronGearBox, false, new Object[] { "SGS", "GGG", "SGS", 'S', Cobblestone, 'G',
-						IronGear } );
-		GameRegistry.addRecipe( RecipeRegistry.BLOCK_IRONGEARBOX );
+		AspectList igbAspects = new AspectList();
+		igbAspects.add( Aspect.AIR, 2 );
+		igbAspects.add( Aspect.ORDER, 2 );
+		RecipeRegistry.BLOCK_IRONGEARBOX = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRONGEARBOX.getKey(), IronGearBox,
+			igbAspects, new Object[] { "SGS", "GGG", "SGS", 'S', Cobblestone, 'G', IronGear } );
 
 		// Thaumium Gear Box
 		AspectList tgbAspects = new AspectList();
@@ -178,24 +180,11 @@ public class RecipeRegistry
 
 		ItemStack AnnihilationCore = aeMaterials.materialAnnihilationCore.stack( 1 );
 
-		ItemStack WoodGear = aeMaterials.materialWoodenGear.stack( 1 );
+		String WoodGear = "gearWood";
 
-		// Is the gear disabled?
-		if( ( WoodGear == null ) || ( WoodGear.getItem() == null ) )
-		{
-			// Get the crank
-			WoodGear = AEApi.instance().blocks().blockCrankHandle.stack( 1 );
-
-			// Is the crank disabled?
-			if( ( WoodGear == null ) || ( WoodGear.getItem() == null ) )
-			{
-				// Get the grindstone.
-				WoodGear = AEApi.instance().blocks().blockGrindStone.stack( 1 );
-			}
-		}
-
-		ItemStack Certus1 = aeMaterials.materialCertusQuartzCrystal.stack( 1 );
-		ItemStack Certus2 = aeMaterials.materialCertusQuartzCrystal.stack( 2 );
+		String Certus1 = "crystalCertusQuartz";
+		ItemStack Certus2 = OreDictionary.getOres( Certus1 ).get( 0 );
+		Certus2.stackSize = 2;
 
 		// My items
 		ItemStack DiffusionCore = teItems.DiffusionCore.getStack();
@@ -219,18 +208,11 @@ public class RecipeRegistry
 			DiffusionCore, diffusionAspects, QuickSilver, EntropyShard, AnnihilationCore );
 
 		// Iron Gear
-		if( ( WoodGear != null ) && ( WoodGear.getItem() != null ) )
-		{
-			AspectList ironGearAspects = new AspectList();
-			ironGearAspects.add( Aspect.EARTH, 1 );
-			ironGearAspects.add( Aspect.FIRE, 1 );
-			RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRONGEARBOX.getKey(), IronGear,
-				ironGearAspects, new Object[] { " I ", " W ", "I I", 'I', IronIngot, 'W', WoodGear } );
-		}
-		else
-		{
-			RecipeRegistry.MATERIAL_IRON_GEAR = null;
-		}
+		AspectList ironGearAspects = new AspectList();
+		ironGearAspects.add( Aspect.EARTH, 1 );
+		ironGearAspects.add( Aspect.FIRE, 1 );
+		RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRONGEARBOX.getKey(), IronGear,
+			ironGearAspects, new Object[] { " I ", " W ", "I I", 'I', IronIngot, 'W', WoodGear } );
 
 		// Certus quartz duplication
 		if( ThaumicEnergistics.config.allowedToDuplicateCertusQuartz() )
@@ -314,11 +296,7 @@ public class RecipeRegistry
 		ItemStack RedstoneTorch = new ItemStack( net.minecraft.init.Blocks.redstone_torch );
 
 		// AppEng items
-		ItemStack DarkIlluminatedPanel = aeParts.partDarkMonitor.stack( 1 );
-
-		ItemStack IlluminatedPanel = aeParts.partSemiDarkMonitor.stack( 1 );
-
-		ItemStack BrightIlluminatedPanel = aeParts.partMonitor.stack( 1 );
+		String IlluminatedPanel = "itemIlluminatedPanel";
 
 		ItemStack LogicProcessor = aeMaterials.materialLogicProcessor.stack( 1 );
 
@@ -364,12 +342,6 @@ public class RecipeRegistry
 
 		ItemStack VisInterface = teParts.VisRelay_Interface.getStack();
 
-		// Item Groups		
-		ArrayList<ItemStack> GroupPanel = new ArrayList<ItemStack>( 3 );
-		GroupPanel.add( DarkIlluminatedPanel );
-		GroupPanel.add( IlluminatedPanel );
-		GroupPanel.add( BrightIlluminatedPanel );
-
 		// Import Bus
 		AspectList ioAspectList = new AspectList();
 		ioAspectList.add( Aspect.FIRE, 2 );
@@ -399,7 +371,6 @@ public class RecipeRegistry
 		RecipeRegistry.PART_ESSENTIA_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
 			ResearchRegistry.ResearchTypes.ESSENTIATERMINAL.getKey(), EssentiaTerminal, etAspectList, IlluminatedPanel, DiffusionCore,
 			CoalescencenCore, LogicProcessor, AspectFilter );
-		RecipeRegistry.replaceRecipeIngredientWithGroup( (ShapelessArcaneRecipe)RecipeRegistry.PART_ESSENTIA_TERMINAL, IlluminatedPanel, GroupPanel );
 
 		// Arcane Crafting Terminal
 		AspectList actAspectList = new AspectList();
@@ -516,30 +487,6 @@ public class RecipeRegistry
 				{
 					// Replace it
 					input[index] = group;
-				}
-			}
-		}
-	}
-
-	private static void replaceRecipeIngredientWithGroup( final ShapelessArcaneRecipe recipe, final ItemStack ingredient,
-															final ArrayList<ItemStack> group )
-	{
-		// Get the input
-		ArrayList<Object> input = recipe.getInput();
-
-		// For every listed slot change the input to the group
-		for( int index = 0; index < input.size(); index++ )
-		{
-			Object slot = input.get( index );
-
-			// Is this slot an itemstack?
-			if( slot instanceof ItemStack )
-			{
-				// Does it match the stack to replace?
-				if( ingredient.isItemEqual( (ItemStack)slot ) )
-				{
-					// Replace it
-					input.set( index, group );
 				}
 			}
 		}

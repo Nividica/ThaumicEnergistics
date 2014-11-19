@@ -1167,6 +1167,23 @@ public class ContainerPartArcaneCraftingTerminal
 	{
 		// Inform the terminal
 		this.terminal.setSorts( order, dir );
+
+		String[] names = OreDictionary.getOreNames();
+
+		for( String name : names )
+		{
+			ArrayList<ItemStack> items = OreDictionary.getOres( name );
+
+			for( ItemStack item : items )
+			{
+				//IAEItemStack aeItem = AEApi.instance().storage().createItemStack( item );
+
+				//this.monitor.injectItems( aeItem, Actionable.MODULATE, this.playerSource );
+
+				System.out.printf( "%s:%s%n", name, item.getDisplayName() );
+			}
+		}
+
 	}
 
 	/**
