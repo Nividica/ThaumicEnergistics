@@ -314,6 +314,15 @@ public class AEPartEssentiaLevelEmitter
 	}
 
 	/**
+	 * Light level based on if emitter is emitting.
+	 */
+	@Override
+	public int getLightLevel()
+	{
+		return( this.isEmitting ? 7 : 0 );
+	}
+
+	/**
 	 * Gets the emitter container
 	 */
 	@Override

@@ -361,6 +361,15 @@ public class AEPartArcaneCraftingTerminal
 	}
 
 	/**
+	 * Light level based on if the ACT is on or off.
+	 */
+	@Override
+	public int getLightLevel()
+	{
+		return( this.isActive ? 10 : 0 );
+	}
+
+	/**
 	 * Gets the container associated with this part.
 	 */
 	@Override
@@ -688,17 +697,23 @@ public class AEPartArcaneCraftingTerminal
 		helper.setTexture( side, side, side, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0], side, side );
 		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
-
 		if( this.isActive() )
 		{
+			// Set brightness
 			tessellator.setBrightness( AbstractAEPartBase.ACTIVE_BRIGHTNESS );
 
+			// Draw corners
 			helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
 			tessellator.setColorOpaque_I( this.host.getColor().blackVariant );
 			helper.renderFace( x, y, z, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer );
-
 			tessellator.setColorOpaque_I( this.host.getColor().mediumVariant );
 			helper.renderFace( x, y, z, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[1], ForgeDirection.SOUTH, renderer );
+
+			// Draw crafting overlay
+			tessellator.setBrightness( 0xA000A0 );
+			tessellator.setColorOpaque_I( AEColor.Lime.blackVariant );
+			helper.renderFace( x, y, z, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[4], ForgeDirection.SOUTH, renderer );
+
 		}
 
 		helper.setBounds( 5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F );

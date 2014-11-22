@@ -300,6 +300,15 @@ public class AEPartEssentiaStorageBus
 	}
 
 	/**
+	 * Does not produce light.
+	 */
+	@Override
+	public int getLightLevel()
+	{
+		return 0;
+	}
+
+	/**
 	 * Gets the priority for this storage bus.
 	 */
 	@Override

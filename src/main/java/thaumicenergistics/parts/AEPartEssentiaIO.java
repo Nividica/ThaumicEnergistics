@@ -541,10 +541,13 @@ public abstract class AEPartEssentiaIO
 		return AEPartEssentiaIO.IDLE_POWER_DRAIN;
 	}
 
+	/**
+	 * Produces a small amount of light when active.
+	 */
 	@Override
 	public int getLightLevel()
 	{
-		return 0;
+		return( this.isActive ? 4 : 0 );
 	}
 
 	public RedstoneMode getRedstoneMode()

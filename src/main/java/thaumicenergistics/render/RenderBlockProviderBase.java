@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.registries.Renderers;
 import thaumicenergistics.tileentities.TileProviderBase;
@@ -14,117 +15,107 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 public abstract class RenderBlockProviderBase
 	implements ISimpleBlockRenderingHandler
 {
+	/**
+	 * The tessellator instance.
+	 */
+	private static Tessellator tessellator = Tessellator.instance;
 
-	private boolean renderWorldPass( final double x, final double y, final double z, final AEColor overlayColor, int blockBrightness,
-										final boolean isActive )
+	/**
+	 * Side/Face array cache.
+	 */
+	private static ForgeDirection[] FACES = ForgeDirection.VALID_DIRECTIONS;
+
+	/**
+	 * Base texture
+	 */
+	private IIcon baseTexture;
+
+	/**
+	 * Texture UV's
+	 */
+	double baseUV[], overlayUV[];
+
+	public RenderBlockProviderBase( final IIcon baseTexture, final IIcon overlayTexture )
 	{
-		// Get the tessellator instance
-		Tessellator tessellator = Tessellator.instance;
+		// Set the base texture
+		this.baseTexture = baseTexture;
 
-		IIcon texture;
+		// Set the base UV's
+		this.baseUV = new double[] { baseTexture.getMinU(), baseTexture.getMaxU(), baseTexture.getMinV(), baseTexture.getMaxV() };
 
-		// Is this the opaque pass?
-		if( Renderers.currentRenderPass == Renderers.PASS_OPAQUE )
-		{
-			// Set texture to base
-			texture = this.getBaseTexture();
-
-			// Set the drawing color to full white
-			tessellator.setColorRGBA( 255, 255, 255, 255 );
-		}
-		else
-		{
-			// Are we transparent?
-			if( overlayColor == AEColor.Transparent )
-			{
-				// Are we active?
-				if( isActive )
-				{
-					// Nothing additional to render
-					return false;
-				}
-
-				// Inactive, set the drawing color to black
-				tessellator.setColorRGBA( 0, 0, 0, 255 );
-			}
-			else
-			{
-				// Set the drawing color
-				tessellator.setColorOpaque_I( overlayColor.mediumVariant );
-
-				// Are we active?
-				if( !isActive )
-				{
-					// Adjust brightness
-					blockBrightness = 0x300030;
-				}
-
-			}
-
-			// Set the texture to overlay
-			texture = this.getOverlayTexture();
-		}
-
-		// Set the brightness
-		tessellator.setBrightness( blockBrightness );
-
-		// Get the texture coords
-		double minU = texture.getMinU();
-		double maxU = texture.getMaxU();
-		double minV = texture.getMinV();
-		double maxV = texture.getMaxV();
-
-		// Calculate positions
-		double zNorth = z + 1.0D;
-		double zSouth = z;
-		double xEast = x + 1.0D;
-		double xWest = x;
-		double yUp = y + 1.0D;
-		double yDown = y;
-
-		// North face
-		tessellator.addVertexWithUV( xWest, yDown, zNorth, minU, maxV );
-		tessellator.addVertexWithUV( xEast, yDown, zNorth, maxU, maxV );
-		tessellator.addVertexWithUV( xEast, yUp, zNorth, maxU, minV );
-		tessellator.addVertexWithUV( xWest, yUp, zNorth, minU, minV );
-
-		// South face
-		tessellator.addVertexWithUV( xWest, yUp, zSouth, maxU, minV );
-		tessellator.addVertexWithUV( xEast, yUp, zSouth, minU, minV );
-		tessellator.addVertexWithUV( xEast, yDown, zSouth, minU, maxV );
-		tessellator.addVertexWithUV( xWest, yDown, zSouth, maxU, maxV );
-
-		// East face
-		tessellator.addVertexWithUV( xEast, yDown, zSouth, maxU, maxV );
-		tessellator.addVertexWithUV( xEast, yUp, zSouth, maxU, minV );
-		tessellator.addVertexWithUV( xEast, yUp, zNorth, minU, minV );
-		tessellator.addVertexWithUV( xEast, yDown, zNorth, minU, maxV );
-
-		// West face
-		tessellator.addVertexWithUV( xWest, yDown, zNorth, maxU, maxV );
-		tessellator.addVertexWithUV( xWest, yUp, zNorth, maxU, minV );
-		tessellator.addVertexWithUV( xWest, yUp, zSouth, minU, minV );
-		tessellator.addVertexWithUV( xWest, yDown, zSouth, minU, maxV );
-
-		// Up face
-		tessellator.addVertexWithUV( xWest, yUp, zNorth, maxU, minV );
-		tessellator.addVertexWithUV( xEast, yUp, zNorth, minU, minV );
-		tessellator.addVertexWithUV( xEast, yUp, zSouth, minU, maxV );
-		tessellator.addVertexWithUV( xWest, yUp, zSouth, maxU, maxV );
-
-		// Down face
-		tessellator.addVertexWithUV( xWest, yDown, zSouth, minU, maxV );
-		tessellator.addVertexWithUV( xEast, yDown, zSouth, maxU, maxV );
-		tessellator.addVertexWithUV( xEast, yDown, zNorth, maxU, minV );
-		tessellator.addVertexWithUV( xWest, yDown, zNorth, minU, minV );
-
-		// We did some drawing
-		return true;
+		// Set the overlay UV's
+		this.overlayUV = new double[] { overlayTexture.getMinU(), overlayTexture.getMaxU(), overlayTexture.getMinV(), overlayTexture.getMaxV() };
 	}
 
-	protected abstract IIcon getBaseTexture();
+	private void renderFaces( final IBlockAccess world, final int x, final int y, final int z, final double[] UVs, final boolean getFaceBrightness )
+	{
+		// Set texture to base
+		double minU = UVs[0];
+		double maxU = UVs[1];
+		double minV = UVs[2];
+		double maxV = UVs[3];
 
-	protected abstract IIcon getOverlayTexture();
+		// Vertex +1 offsets
+		int x1 = x + 1, y1 = y + 1, z1 = z + 1;
+
+		for( ForgeDirection face : FACES )
+		{
+			// Should the face brightness be calculated?
+			if( getFaceBrightness )
+			{
+				tessellator.setBrightness( world.getLightBrightnessForSkyBlocks( x + face.offsetX, y + face.offsetY, z + face.offsetZ, 0 ) );
+			}
+
+			switch ( face )
+			{
+				case DOWN:
+					tessellator.addVertexWithUV( x, y, z, minU, maxV );
+					tessellator.addVertexWithUV( x1, y, z, maxU, maxV );
+					tessellator.addVertexWithUV( x1, y, z1, maxU, minV );
+					tessellator.addVertexWithUV( x, y, z1, minU, minV );
+					break;
+
+				case EAST:
+					tessellator.addVertexWithUV( x1, y, z, maxU, maxV );
+					tessellator.addVertexWithUV( x1, y1, z, maxU, minV );
+					tessellator.addVertexWithUV( x1, y1, z1, minU, minV );
+					tessellator.addVertexWithUV( x1, y, z1, minU, maxV );
+					break;
+
+				case NORTH:
+					tessellator.addVertexWithUV( x, y, z1, minU, maxV );
+					tessellator.addVertexWithUV( x1, y, z1, maxU, maxV );
+					tessellator.addVertexWithUV( x1, y1, z1, maxU, minV );
+					tessellator.addVertexWithUV( x, y1, z1, minU, minV );
+					break;
+
+				case SOUTH:
+					tessellator.addVertexWithUV( x, y1, z, maxU, minV );
+					tessellator.addVertexWithUV( x1, y1, z, minU, minV );
+					tessellator.addVertexWithUV( x1, y, z, minU, maxV );
+					tessellator.addVertexWithUV( x, y, z, maxU, maxV );
+					break;
+
+				case UP:
+					tessellator.addVertexWithUV( x, y1, z1, maxU, minV );
+					tessellator.addVertexWithUV( x1, y1, z1, minU, minV );
+					tessellator.addVertexWithUV( x1, y1, z, minU, maxV );
+					tessellator.addVertexWithUV( x, y1, z, maxU, maxV );
+					break;
+
+				case WEST:
+					tessellator.addVertexWithUV( x, y, z1, maxU, maxV );
+					tessellator.addVertexWithUV( x, y1, z1, maxU, minV );
+					tessellator.addVertexWithUV( x, y1, z, minU, minV );
+					tessellator.addVertexWithUV( x, y, z, minU, maxV );
+					break;
+
+				default:
+					// Invalid side.
+					break;
+			}
+		}
+	}
 
 	@Override
 	public final void renderInventoryBlock( final Block block, final int metadata, final int modelId, final RenderBlocks renderer )
@@ -132,36 +123,26 @@ public abstract class RenderBlockProviderBase
 		// Get the tessellator instance
 		Tessellator tessellator = Tessellator.instance;
 
-		IIcon texture = this.getBaseTexture();
+		IIcon texture = this.baseTexture;
 
 		GL11.glTranslatef( -0.5F, -0.5F, -0.5F );
 
 		tessellator.startDrawingQuads();
 		tessellator.setNormal( 0.0F, -1.0F, 0.0F );
 		renderer.renderFaceYNeg( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
 
-		tessellator.startDrawingQuads();
 		tessellator.setNormal( 0.0F, 1.0F, 0.0F );
 		renderer.renderFaceYPos( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
 
-		tessellator.startDrawingQuads();
 		tessellator.setNormal( 0.0F, 0.0F, -1.0F );
 		renderer.renderFaceZNeg( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
 
-		tessellator.startDrawingQuads();
 		tessellator.setNormal( 0.0F, 0.0F, 1.0F );
 		renderer.renderFaceZPos( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
 
-		tessellator.startDrawingQuads();
 		tessellator.setNormal( -1.0F, 0.0F, 0.0F );
 		renderer.renderFaceXNeg( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
 
-		tessellator.startDrawingQuads();
 		tessellator.setNormal( 1.0F, 0.0F, 0.0F );
 		renderer.renderFaceXPos( block, 0.0D, 0.0D, 0.0D, texture );
 		tessellator.draw();
@@ -173,30 +154,62 @@ public abstract class RenderBlockProviderBase
 	public final boolean renderWorldBlock( final IBlockAccess world, final int x, final int y, final int z, final Block block, final int modelId,
 											final RenderBlocks renderer )
 	{
-		// Calculate the brightness based on light hitting each face
-		int blockBrightness = world.getLightBrightnessForSkyBlocks( x + 1, y, z, 0 ) | world.getLightBrightnessForSkyBlocks( x - 1, y, z, 0 ) |
-						world.getLightBrightnessForSkyBlocks( x, y + 1, z, 0 ) | world.getLightBrightnessForSkyBlocks( x, y - 1, z, 0 ) |
-						world.getLightBrightnessForSkyBlocks( x, y, z + 1, 0 ) | world.getLightBrightnessForSkyBlocks( x, y, z - 1, 0 );
+		// Texture UVs
+		double UVs[];
 
-		AEColor overlayColor = null;
+		// Should we ignore the actual brightness and go full?
+		boolean overrideBrightness = false;
 
-		boolean isActive = false;
-
-		// Is this the alpha pass?
-		if( Renderers.currentRenderPass == Renderers.PASS_ALPHA )
+		// Is this the opaque pass?
+		if( Renderers.currentRenderPass == Renderers.PASS_OPAQUE )
 		{
+			// Set the texture to the base
+			UVs = this.baseUV;
+
+			// Set the drawing color to full white
+			tessellator.setColorRGBA( 255, 255, 255, 255 );
+
+		}
+		// This is the alpha pass.
+		else
+		{
+			// Set the texture to the overlay
+			UVs = this.overlayUV;
+
 			// Get the provider
 			TileProviderBase provider = (TileProviderBase)world.getTileEntity( x, y, z );
 
 			// Get the color of the provider
-			overlayColor = provider.getColor();
+			AEColor overlayColor = provider.getColor();
 
 			// Get the active state
-			isActive = provider.isActive();
+			boolean isActive = provider.isActive();
+
+			// Is the provider active?
+			if( isActive )
+			{
+				// Adjust brightness
+				overrideBrightness = true;
+				tessellator.setBrightness( 0xF000F0 );
+
+				// Is the provider's network color not fluix?
+				//if( overlayColor != AEColor.Transparent )
+				//{
+				// Set the drawing color
+				tessellator.setColorOpaque_I( overlayColor.mediumVariant );
+				//}
+			}
+			else
+			{
+				// Inactive, set the drawing color to black
+				tessellator.setColorRGBA( 0, 0, 0, 255 );
+			}
 		}
 
-		// Render and return 
-		return this.renderWorldPass( x, y, z, overlayColor, blockBrightness, isActive );
+		// Render the faces
+		this.renderFaces( world, x, y, z, UVs, !overrideBrightness );
+
+		return true;
 	}
 
 	@Override

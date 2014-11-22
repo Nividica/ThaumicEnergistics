@@ -53,6 +53,9 @@ public abstract class AbstractAEPartBase
 
 	protected final static int INVENTORY_OVERLAY_COLOR = AEColor.Black.blackVariant;
 
+	/**
+	 * Texture brightness when active.
+	 */
 	protected final static int ACTIVE_BRIGHTNESS = 0xD000D0;
 
 	protected ForgeDirection cableSide;
@@ -335,10 +338,7 @@ public abstract class AbstractAEPartBase
 	 * Gets the block light level for this part.
 	 */
 	@Override
-	public int getLightLevel()
-	{
-		return( this.isActive() ? 15 : 0 );
-	}
+	public abstract int getLightLevel();
 
 	/**
 	 * Gets the location of this part.

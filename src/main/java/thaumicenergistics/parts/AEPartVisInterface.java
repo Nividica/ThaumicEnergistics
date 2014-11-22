@@ -253,6 +253,15 @@ public class AEPartVisInterface
 	}
 
 	/**
+	 * Produces a small amount of light.
+	 */
+	@Override
+	public int getLightLevel()
+	{
+		return 8;
+	}
+
+	/**
 	 * Gets the relay the interface is facing. If any.
 	 * 
 	 * @return

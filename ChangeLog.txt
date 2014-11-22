@@ -1,4 +1,11 @@
-﻿11/19/2014 0.8.3b
+﻿11/22/2014 0.8.4b
+  Cleaned up provider rendering code.
+  Updated ACT graphics.
+  Fixes #61: Reworked light levels of all parts.
+  Added Nether Quartz duplication to Certus Quartz duplication research.
+  Fixes #91: Removed essentia gas air-block. This does brake compatibility with EC2's fluid formation plane.
+
+11/19/2014 0.8.3b
   Fixes #90: Recipes with the "Wooden Gear" and "Certus Quartz" now refer to the ore dictionary.
   Not 100% sure this will fix the crucible result, but should fix the catalyst.
   Iron gear now registered with ore dictionary.

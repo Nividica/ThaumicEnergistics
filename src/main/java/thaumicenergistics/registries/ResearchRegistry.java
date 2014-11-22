@@ -248,7 +248,7 @@ public class ResearchRegistry
 
 		// Set pages
 		ResearchPage[] certusDupePages = new ResearchPage[] { new ResearchPage( ResearchTypes.CERTUSDUPE.getPageName( 1 ) ),
-						new ResearchPage( RecipeRegistry.DUPE_CERTUS ) };
+						new ResearchPage( RecipeRegistry.DUPE_CERTUS ), new ResearchPage( RecipeRegistry.DUPE_NETHER_QUARTZ ) };
 		// Create the item
 		ResearchTypes.CERTUSDUPE.createResearchItem( certusDupeAspects, COMPLEXITY_SMALL, certusDupeIcon, certusDupePages );
 

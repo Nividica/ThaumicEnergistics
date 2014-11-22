@@ -144,6 +144,15 @@ public class AEPartEssentiaTerminal
 		return this.inventory;
 	}
 
+	/**
+	 * Light level based on if terminal is active.
+	 */
+	@Override
+	public int getLightLevel()
+	{
+		return( this.isActive ? 10 : 0 );
+	}
+
 	@Override
 	public Object getServerGuiElement( final EntityPlayer player )
 	{

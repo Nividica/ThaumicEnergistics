@@ -57,6 +57,7 @@ public class RecipeRegistry
 	public static IArcaneRecipe BLOCK_IRONGEARBOX;
 	public static CrucibleRecipe BLOCK_THAUMIUMGEARBOX;
 	public static CrucibleRecipe DUPE_CERTUS;
+	public static CrucibleRecipe DUPE_NETHER_QUARTZ;
 	public static IRecipe BLOCK_CELL_WORKBENCH;
 
 	private static void registerComponents( final Materials aeMaterials, final Blocks aeBlocks, final Items teItems )
@@ -168,6 +169,10 @@ public class RecipeRegistry
 		// Minecraft items
 		String IronIngot = "ingotIron";
 
+		String NetherQuartz1 = "gemQuartz";
+		ItemStack NetherQuartz2 = OreDictionary.getOres( NetherQuartz1 ).get( 0 ).copy();
+		NetherQuartz2.stackSize = 2;
+
 		// Thaumcraft items
 		ItemStack EntropyShard = new ItemStack( ConfigItems.itemShard, 1, 5 );
 
@@ -183,7 +188,7 @@ public class RecipeRegistry
 		String WoodGear = "gearWood";
 
 		String Certus1 = "crystalCertusQuartz";
-		ItemStack Certus2 = OreDictionary.getOres( Certus1 ).get( 0 );
+		ItemStack Certus2 = OreDictionary.getOres( Certus1 ).get( 0 ).copy();
 		Certus2.stackSize = 2;
 
 		// My items
@@ -214,14 +219,23 @@ public class RecipeRegistry
 		RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRONGEARBOX.getKey(), IronGear,
 			ironGearAspects, new Object[] { " I ", " W ", "I I", 'I', IronIngot, 'W', WoodGear } );
 
-		// Certus quartz duplication
+		// Quartz duplication
 		if( ThaumicEnergistics.config.allowedToDuplicateCertusQuartz() )
 		{
+			// Certus Quartz
 			AspectList certusAspects = new AspectList();
 			certusAspects.add( Aspect.CRYSTAL, 4 );
 			certusAspects.add( Aspect.WATER, 2 );
 			RecipeRegistry.DUPE_CERTUS = ThaumcraftApi.addCrucibleRecipe( ResearchRegistry.ResearchTypes.CERTUSDUPE.getKey(), Certus2, Certus1,
 				certusAspects );
+
+			// Nether Quartz
+			AspectList nQAspects = new AspectList();
+			nQAspects.add( Aspect.CRYSTAL, 4 );
+			nQAspects.add( Aspect.WATER, 2 );
+			nQAspects.add( Aspect.ENERGY, 2 );
+			RecipeRegistry.DUPE_NETHER_QUARTZ = ThaumcraftApi.addCrucibleRecipe( ResearchRegistry.ResearchTypes.CERTUSDUPE.getKey(), NetherQuartz2,
+				NetherQuartz1, nQAspects );
 		}
 	}
 
