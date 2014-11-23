@@ -8,16 +8,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
 import thaumicenergistics.gui.GuiEssentiaStorageBus;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
-import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
-import thaumicenergistics.inventory.HandlerEssentiaStorageBus;
+import thaumicenergistics.inventory.AbstractHandlerEssentiaStorageBus;
+import thaumicenergistics.inventory.HandlerEssentiaStorageBusDuality;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaStorageBus;
@@ -30,7 +28,6 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkStorageEvent;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -75,19 +72,9 @@ public class AEPartEssentiaStorageBus
 	private int priority = 0;
 
 	/**
-	 * The amount in the container last tick
+	 * "Cell" handler for the storage bus.
 	 */
-	private int lastAmountInContainer = 0;
-
-	/**
-	 * The container the bus is facing.
-	 */
-	private IAspectContainer facingContainer;
-
-	/**
-	 * "Cell' handler for the storage bus
-	 */
-	private HandlerEssentiaStorageBus handler = new HandlerEssentiaStorageBus( this );
+	private AbstractHandlerEssentiaStorageBus handler = new HandlerEssentiaStorageBusDuality( this );
 
 	/**
 	 * Filter list
@@ -127,6 +114,26 @@ public class AEPartEssentiaStorageBus
 		for( ContainerPartEssentiaStorageBus listner : this.listeners )
 		{
 			listner.setFilteredAspects( this.filteredAspects );
+		}
+	}
+
+	/**
+	 * Notifies the grid that the storage bus "contents" have changed.
+	 */
+	private void postGridUpdateEvent()
+	{
+		// Does the storage bus have a grid node?
+		if( this.node != null )
+		{
+			// Get the grid.
+			IGrid grid = this.node.getGrid();
+
+			// Does the grid node have a grid?
+			if( grid != null )
+			{
+				// Post an update to the grid
+				grid.postEvent( new MENetworkCellArrayUpdate() );
+			}
 		}
 	}
 
@@ -244,9 +251,6 @@ public class AEPartEssentiaStorageBus
 		// Is this the fluid channel?
 		if( channel == StorageChannel.FLUIDS )
 		{
-			// Ensure the handler has been made aware of any containers
-			this.handler.onNeighborChange();
-
 			// Add our handler
 			list.add( this.handler );
 		}
@@ -363,7 +367,7 @@ public class AEPartEssentiaStorageBus
 	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
 		// Send the void mode
-		new PacketClientEssentiaStorageBus().createSetIsVoidAllowed( player, this.handler.isVoidAllowed ).sendPacketToPlayer();
+		new PacketClientEssentiaStorageBus().createSetIsVoidAllowed( player, this.handler.isVoidAllowed() ).sendPacketToPlayer();
 
 		// Send the filter
 		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
@@ -378,23 +382,9 @@ public class AEPartEssentiaStorageBus
 	public void onClientRequestSetVoidMode( final EntityPlayer player, final boolean isVoidAllowed )
 	{
 		// Set the mode
-		this.handler.isVoidAllowed = isVoidAllowed;
+		this.handler.setVoidAllowed( isVoidAllowed );
 
 		this.saveChanges();
-	}
-
-	/**
-	 * Called to inform the storage bus that the handler has transfered essentia
-	 * in/out of the container.
-	 * 
-	 * @param amountChanged_EU
-	 */
-	public void onEssentiaTransfered( final int amountChanged_EU )
-	{
-		/* Update the last amount so that on the next tick we don't think
-		 * that the amount has changed. 
-		 */
-		this.lastAmountInContainer += amountChanged_EU;
 	}
 
 	/**
@@ -407,6 +397,7 @@ public class AEPartEssentiaStorageBus
 	}
 
 	/**
+	 * /**
 	 * Updates the grid and handler that a neighbor has changed.
 	 */
 	@Override
@@ -415,42 +406,20 @@ public class AEPartEssentiaStorageBus
 		// Call super
 		super.onNeighborChanged();
 
-		// Ignored client side
-		if( EffectiveSide.isClientSide() )
+		// Send grid update event on server side
+		if( EffectiveSide.isServerSide() )
 		{
-			return;
-		}
-
-		// Set that we are not facing a container
-		this.facingContainer = null;
-
-		// Get the tile we are facing
-		TileEntity tileEntity = this.getFacingTile();
-
-		// Are we facing a container?
-		if( tileEntity instanceof IAspectContainer )
-		{
-			this.facingContainer = (IAspectContainer)tileEntity;
-		}
-
-		this.handler.onNeighborChange();
-
-		if( this.node != null )
-		{
-			IGrid grid = this.node.getGrid();
-
-			if( grid != null )
+			// Update the handler
+			if( this.handler.onNeighborChange() )
 			{
-				grid.postEvent( new MENetworkCellArrayUpdate() );
-
-				grid.postEvent( new MENetworkStorageEvent( this.gridBlock.getFluidMonitor(), StorageChannel.FLUIDS ) );
+				// Send the update event
+				this.postGridUpdateEvent();
 			}
-
-			this.host.markForUpdate();
 		}
 	}
 
 	/**
+	 * /**
 	 * Reads the part data from NBT
 	 */
 	@Override
@@ -474,7 +443,7 @@ public class AEPartEssentiaStorageBus
 		// Read void
 		if( data.hasKey( AEPartEssentiaStorageBus.NBT_KEY_VOID ) )
 		{
-			this.handler.isVoidAllowed = data.getBoolean( AEPartEssentiaStorageBus.NBT_KEY_VOID );
+			this.handler.setVoidAllowed( data.getBoolean( AEPartEssentiaStorageBus.NBT_KEY_VOID ) );
 		}
 
 		// Update the handler inverted
@@ -589,6 +558,12 @@ public class AEPartEssentiaStorageBus
 
 			// Update the clients
 			this.notifyListenersOfFilteredAspectsChange();
+
+			// Update the grid
+			this.postGridUpdateEvent();
+
+			// Mark for save
+			this.host.markForSave();
 		}
 	}
 
@@ -599,28 +574,15 @@ public class AEPartEssentiaStorageBus
 	}
 
 	/**
-	 * Called periodically by AE2. Checks the Thaumcraft container.
+	 * Called periodically by AE2. Passes the tick to the handler.
 	 */
 	@Override
 	public TickRateModulation tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
-		// Do we have a container?
-		if( this.facingContainer != null )
-		{
-			// Check the amount in the container
-			int currentAmount = EssentiaTileContainerHelper.instance.getContainerStoredAmount( this.facingContainer );
-			// Has the amount changed?
-			if( currentAmount != this.lastAmountInContainer )
-			{
-				// Update
-				this.onNeighborChanged();
+		// Update the handler.
+		this.handler.tickingRequest( node, TicksSinceLastCall );
 
-				// Set the last amount
-				this.lastAmountInContainer = currentAmount;
-			}
-		}
-
-		// Keep chugging along
+		//Keep chugging along
 		return TickRateModulation.SAME;
 	}
 
@@ -653,7 +615,7 @@ public class AEPartEssentiaStorageBus
 		this.upgradeInventory.writeToNBT( data, AEPartEssentiaStorageBus.NBT_KEY_UPGRADES );
 
 		// Write void
-		data.setBoolean( AEPartEssentiaStorageBus.NBT_KEY_VOID, this.handler.isVoidAllowed );
+		data.setBoolean( AEPartEssentiaStorageBus.NBT_KEY_VOID, this.handler.isVoidAllowed() );
 	}
 
 }

@@ -1,4 +1,10 @@
 ﻿11/22/2014 0.8.4b
+  Storage bus no longer requires a filter to be able to interact with a jar.
+  Fixes #93: Essentia terminal no longer drops inventory contents when wrenched.
+  Fixes #44: Subnets are now supported by placing an Essentia Storage Bus against a ME Interface block.
+  Note: Filter is not respected for subnet operation.
+
+11/22/2014 0.8.4b
   Cleaned up provider rendering code.
   Updated ACT graphics.
   Fixes #61: Reworked light levels of all parts.

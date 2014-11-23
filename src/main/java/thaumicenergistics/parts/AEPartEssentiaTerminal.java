@@ -114,6 +114,12 @@ public class AEPartEssentiaTerminal
 	@Override
 	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
+		// Inventory is saved when wrenched.
+		if( wrenched )
+		{
+			return;
+		}
+
 		// Loop over inventory
 		for( int slotIndex = 0; slotIndex < 2; slotIndex++ )
 		{
