@@ -349,10 +349,10 @@ public abstract class AbstractHandlerEssentiaStorageBus
 	 */
 	public abstract void tickingRequest( final IGridNode node, final int TicksSinceLastCall );
 
+	/**
+	 * Is the handler valid for this pass?
+	 */
 	@Override
-	public boolean validForPass( final int pass )
-	{
-		return true;
-	}
+	public abstract boolean validForPass( final int pass );
 
 }

@@ -213,11 +213,6 @@ public abstract class AbstractGuiCellTerminalBase
 	protected String searchTerm = "";
 
 	/**
-	 * The currently selected aspect
-	 */
-	public AspectStack selectedAspectStack;
-
-	/**
 	 * The container associated with this gui
 	 */
 	protected ContainerCellTerminalBase containerBase;
@@ -226,6 +221,21 @@ public abstract class AbstractGuiCellTerminalBase
 	 * Mode used to sort the aspects
 	 */
 	protected ComparatorMode sortMode = ComparatorMode.MODE_ALPHABETIC;
+
+	/**
+	 * The cached amount of the selected stack.
+	 */
+	private long cacheAmountSelected = -1;
+
+	/**
+	 * The cached display string of the selected stack.
+	 */
+	private String cacheAmountDisplay = "0";
+
+	/**
+	 * The currently selected aspect
+	 */
+	public AspectStack selectedAspectStack;
 
 	/**
 	 * Creates the gui.
@@ -372,8 +382,15 @@ public abstract class AbstractGuiCellTerminalBase
 		// Do we have a selected aspect?
 		if( ( this.selectedAspectStack != null ) && ( this.selectedAspectStack.amount > 0 ) )
 		{
-			// Convert the selected amount into a string
-			String amountToText = Long.toString( this.selectedAspectStack.amount );
+			// Update the display amount?
+			if( this.selectedAspectStack.amount != this.cacheAmountSelected )
+			{
+				// Convert the selected amount into a string
+				this.cacheAmountDisplay = GuiHelper.shortenCount( this.selectedAspectStack.amount );
+
+				// Cache the amount
+				this.cacheAmountSelected = this.selectedAspectStack.amount;
+			}
 
 			// Get the name of the aspect
 			String aspectName = this.selectedAspectStack.getAspectName( this.player );
@@ -383,8 +400,8 @@ public abstract class AbstractGuiCellTerminalBase
 				AbstractGuiCellTerminalBase.SELECTED_INFO_NAME_POS_Y, 0 );
 
 			// Draw the amount
-			this.fontRendererObj.drawString( this.selectedInfoAmountPrefix + amountToText, AbstractGuiCellTerminalBase.SELECTED_INFO_POS_X,
-				AbstractGuiCellTerminalBase.SELECTED_INFO_AMOUNT_POS_Y, 0 );
+			this.fontRendererObj.drawString( this.selectedInfoAmountPrefix + this.cacheAmountDisplay,
+				AbstractGuiCellTerminalBase.SELECTED_INFO_POS_X, AbstractGuiCellTerminalBase.SELECTED_INFO_AMOUNT_POS_Y, 0 );
 		}
 
 		// Get the tooltip from the buttons

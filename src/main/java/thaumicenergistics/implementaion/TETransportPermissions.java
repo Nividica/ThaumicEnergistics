@@ -11,7 +11,7 @@ import thaumcraft.common.blocks.BlockJarItem;
 import thaumcraft.common.blocks.ItemJarFilled;
 import thaumicenergistics.api.IEssentiaContainerPermission;
 import thaumicenergistics.api.ITransportPermissions;
-import cpw.mods.fml.common.FMLCommonHandler;
+import thaumicenergistics.util.TELog;
 
 class TETransportPermissions
 	implements ITransportPermissions
@@ -135,7 +135,7 @@ class TETransportPermissions
 					this.tileExtractWhiteList.add( tileClass );
 
 					// Log the addition
-					FMLCommonHandler.instance().getFMLLogger().info( "Adding " + tileClass.toString() + " to extraction whitelist." );
+					TELog.info( "Added %s to extraction whitelist.", tileClass.toString() );
 				}
 
 				return true;
@@ -161,7 +161,7 @@ class TETransportPermissions
 					this.tileInjectWhiteList.add( tileClass );
 
 					// Log the addition
-					FMLCommonHandler.instance().getFMLLogger().info( "Adding " + tileClass.toString() + " to injection whitelist." );
+					TELog.info( "Added %s to injection whitelist.", tileClass.toString() );
 				}
 
 				return true;
@@ -191,7 +191,7 @@ class TETransportPermissions
 			}
 
 			// Log the addition
-			FMLCommonHandler.instance().getFMLLogger().info( "Adding " + itemClass.toString() + "[" + metadata + "] to item whitelist." );
+			TELog.info( "Adding %s[%d] to item whitelist.", itemClass.toString(), metadata );
 		}
 	}
 

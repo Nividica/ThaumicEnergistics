@@ -10,14 +10,13 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.registries.AEPartsEnum;
+import thaumicenergistics.util.TELog;
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -66,7 +65,7 @@ public class ItemAEPart
 		catch( Throwable e )
 		{
 			// Bad stuff, log the error.
-			FMLLog.severe( ThaumicEnergistics.MOD_ID + ": Unable to create part from item " + itemStack.getDisplayName() );
+			TELog.severe( "Unable to create cable-part from item: %s", itemStack.getDisplayName() );
 
 			// Print that stack-trace
 			e.printStackTrace();

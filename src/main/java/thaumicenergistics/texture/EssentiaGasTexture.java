@@ -14,7 +14,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
-import cpw.mods.fml.common.FMLLog;
+import thaumicenergistics.util.TELog;
 
 public class EssentiaGasTexture
 	extends TextureAtlasSprite
@@ -278,7 +278,7 @@ public class EssentiaGasTexture
 					}
 					catch( IOException ioexception )
 					{
-						FMLLog.warning( "Unable to load miplevel %d from: %s", currentMipmapLevel, mmLocation.toString() );
+						TELog.warning( "Unable to load miplevel %d from: %s", currentMipmapLevel, mmLocation.toString() );
 					}
 				}
 			}
@@ -329,11 +329,11 @@ public class EssentiaGasTexture
 		}
 		catch( RuntimeException runtimeexception )
 		{
-			FMLLog.warning( "Unable to parse metadata from %s", textureLocation.toString() );
+			TELog.warning( "Unable to parse metadata from %s", textureLocation.toString() );
 		}
 		catch( IOException ioexception1 )
 		{
-			FMLLog.warning( "Using missing texture, unable to load %s", textureLocation.toString() );
+			TELog.warning( "Using missing texture, unable to load %s", textureLocation.toString() );
 		}
 
 		// Do not attempt to stitch into the master texture, causes MISSION_TEXTURE to show in-game.

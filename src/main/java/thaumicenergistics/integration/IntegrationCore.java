@@ -3,8 +3,7 @@ package thaumicenergistics.integration;
 import net.minecraft.nbt.NBTTagCompound;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.util.EffectiveSide;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
+import thaumicenergistics.util.TELog;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,6 +19,11 @@ public final class IntegrationCore
 	 * Mod ID for Waila
 	 */
 	private static final String MODID_WAILA = "Waila";
+
+	/**
+	 * Mod ID for NEI
+	 */
+	private static final String MODID_NEI = "NEI";
 
 	@SideOnly(Side.CLIENT)
 	private static void integrateWithClientMods()
@@ -41,13 +45,6 @@ public final class IntegrationCore
 	 */
 	private static void integrateWithMod( final String modID )
 	{
-		// Is the mod loaded?
-		if( !Loader.isModLoaded( modID ) )
-		{
-			// Log skipping
-			FMLLog.info( "%s: Mod %s not loaded. Skipping integration.", ThaumicEnergistics.MOD_ID, modID );
-		}
-
 		try
 		{
 			// Attempt to get the module
@@ -57,14 +54,13 @@ public final class IntegrationCore
 			module.newInstance();
 
 			// Log success
-			FMLLog.info( "%s: Successfully integrated with %s", ThaumicEnergistics.MOD_ID, modID );
+			TELog.info( "Successfully integrated with %s", modID );
 		}
 		catch( Throwable e )
 		{
 
 			// Log failure
-			FMLLog.warning( "%s: Error encountered while integrating with %s", ThaumicEnergistics.MOD_ID, modID );
-			e.printStackTrace( System.err );
+			TELog.warning( "Skipping integrating with %s", modID );
 		}
 	}
 
@@ -73,22 +69,7 @@ public final class IntegrationCore
 	 */
 	private static void integrateWithNEI()
 	{
-		try
-		{
-			// Attempt to get the NEI module
-			Class<?> module = Class.forName( IntegrationCore.CLASS_PATH + "NEI" );
-
-			// Instantiate it
-			module.newInstance();
-
-			// All done
-			FMLLog.info( "%s: Successfully integrated with NEI", ThaumicEnergistics.MOD_ID );
-		}
-		catch( Throwable e )
-		{
-			// Log that we are not integrating with NEI
-			FMLLog.info( "%s: Skipping integration with NEI", ThaumicEnergistics.MOD_ID );
-		}
+		IntegrationCore.integrateWithMod( IntegrationCore.MODID_NEI );
 	}
 
 	/**
@@ -118,6 +99,7 @@ public final class IntegrationCore
 	 */
 	public static void init()
 	{
+		long startTime = TELog.beginSection( "Integration" );
 		try
 		{
 			if( EffectiveSide.isClientSide() )
@@ -128,5 +110,6 @@ public final class IntegrationCore
 		catch( Throwable e )
 		{
 		}
+		TELog.endSection( "Integration", startTime );
 	}
 }

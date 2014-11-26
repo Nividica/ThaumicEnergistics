@@ -744,7 +744,7 @@ public class HandlerItemEssentiaCell
 	 */
 	public long getUsedBytes()
 	{
-		return this.usedEssentiaStorage / HandlerItemEssentiaCell.ESSENTIA_PER_BYTE;
+		return (long)Math.ceil( this.usedEssentiaStorage / (double)HandlerItemEssentiaCell.ESSENTIA_PER_BYTE );
 	}
 
 	/**
@@ -952,12 +952,26 @@ public class HandlerItemEssentiaCell
 	}
 
 	/**
-	 * No idea.
+	 * Valid for pass 1 if partitioned or has stored essentia.
+	 * essentia.
+	 * Valid for pass 2 if not partitioned and empty.
+	 * 
+	 * @return
 	 */
 	@Override
 	public boolean validForPass( final int pass )
 	{
-		return true;
-	}
+		boolean isPartitioned = this.isPartitioned();
+		boolean hasStoredEssentia = ( this.usedEssentiaStorage > 0 );
 
+		// Is this the priority pass?
+		if( pass == 1 )
+		{
+			// Valid if is partitioned or cell has something in it.
+			return( isPartitioned || hasStoredEssentia );
+		}
+
+		// Valid if not partitioned and cell is empty.
+		return( ( !isPartitioned ) && ( !hasStoredEssentia ) );
+	}
 }

@@ -109,9 +109,11 @@ public abstract class ContainerCellTerminalBase
 	 */
 	protected EntityPlayer player;
 
+	// TODO: Move all gui code into the GUI...
 	/**
 	 * The gui associated with this container
 	 */
+	@SideOnly(Side.CLIENT)
 	protected AbstractGuiCellTerminalBase guiBase;
 
 	/**
@@ -413,11 +415,7 @@ public abstract class ContainerCellTerminalBase
 	 * Called when a client requests the state of the container.
 	 * Updates our cached list of aspects
 	 */
-	public void onClientRequestFullUpdate()
-	{
-		// Update our cached list of aspects
-		//this.aspectStackList = EssentiaConversionHelper.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
-	}
+	public abstract void onClientRequestFullUpdate();
 
 	/**
 	 * Unregister this container from the monitor.
@@ -450,16 +448,14 @@ public abstract class ContainerCellTerminalBase
 	}
 
 	@Override
-	public void onListUpdate()
-	{
-		// Ignored
-	}
+	public abstract void onListUpdate();
 
 	/**
 	 * Called when the server sends a full list of network aspects.
 	 * 
 	 * @param aspectStackList
 	 */
+	@SideOnly(Side.CLIENT)
 	public void onReceiveAspectList( final List<AspectStack> aspectStackList )
 	{
 		// Set the aspect list
@@ -490,6 +486,7 @@ public abstract class ContainerCellTerminalBase
 	 * 
 	 * @param change
 	 */
+	@SideOnly(Side.CLIENT)
 	public void onReceiveAspectListChange( final AspectStack change )
 	{
 		// Ignored server side
@@ -576,6 +573,7 @@ public abstract class ContainerCellTerminalBase
 	 * 
 	 * @param guiBase
 	 */
+	@SideOnly(Side.CLIENT)
 	public void setGui( final AbstractGuiCellTerminalBase guiBase )
 	{
 		if( guiBase != null )

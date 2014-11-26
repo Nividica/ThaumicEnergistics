@@ -144,9 +144,6 @@ public class ContainerEssentiaTerminal
 	@Override
 	public void onClientRequestFullUpdate()
 	{
-		// Call super
-		super.onClientRequestFullUpdate();
-
 		// Send the sorting mode
 		this.onSortingModeChanged( this.terminal.getSortingMode() );
 
@@ -169,6 +166,15 @@ public class ContainerEssentiaTerminal
 		{
 			this.terminal.removeListener( this );
 		}
+	}
+
+	/**
+	 * Resent the full list to the client.
+	 */
+	@Override
+	public void onListUpdate()
+	{
+		//this.onClientRequestFullUpdate();
 	}
 
 	/**

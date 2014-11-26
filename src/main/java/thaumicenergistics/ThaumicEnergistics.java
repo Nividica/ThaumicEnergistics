@@ -3,7 +3,6 @@ package thaumicenergistics;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumicenergistics.api.IConfig;
 import thaumicenergistics.api.TEApi;
 import thaumicenergistics.gui.TEGuiHandler;
@@ -13,7 +12,7 @@ import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.network.ChannelHandler;
 import thaumicenergistics.proxy.CommonProxy;
 import thaumicenergistics.registries.AEAspectRegister;
-import cpw.mods.fml.common.FMLLog;
+import thaumicenergistics.util.TELog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -71,35 +70,6 @@ public class ThaumicEnergistics
 	};
 
 	/**
-	 * Marks the time and the stage name for reporting later.
-	 * 
-	 * @param stageName
-	 * @return
-	 */
-	private ImmutablePair<Long, String> beginLoadStageTracking( final String stageName )
-	{
-		// Print begin
-		FMLLog.info( "%s: Begining %s()", ThaumicEnergistics.MOD_ID, stageName );
-
-		// Return the current time
-		return new ImmutablePair<Long, String>( System.currentTimeMillis(), stageName );
-	}
-
-	/**
-	 * Reports the time the specified stage took.
-	 * 
-	 * @param beginInfo
-	 */
-	private void endLoadStageTracking( final ImmutablePair<Long, String> beginInfo )
-	{
-		// Calculate time
-		long time = System.currentTimeMillis() - beginInfo.left;
-
-		// Print end
-		FMLLog.info( "%s: Finished %s(), Took: %dms", ThaumicEnergistics.MOD_ID, beginInfo.right, time );
-	}
-
-	/**
 	 * Called after the preInit event, and before the post init event.
 	 * 
 	 * @param event
@@ -107,7 +77,7 @@ public class ThaumicEnergistics
 	@EventHandler
 	public void load( final FMLInitializationEvent event )
 	{
-		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "load" );
+		long startTime = TELog.beginSection( "Load" );
 
 		// Register block renderers
 		ThaumicEnergistics.proxy.registerRenderers();
@@ -121,7 +91,7 @@ public class ThaumicEnergistics
 		// Register integration
 		IntegrationCore.init();
 
-		this.endLoadStageTracking( t );
+		TELog.endSection( "Load", startTime );
 	}
 
 	/**
@@ -132,7 +102,7 @@ public class ThaumicEnergistics
 	@EventHandler
 	public void postInit( final FMLPostInitializationEvent event )
 	{
-		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "postInit" );
+		long startTime = TELog.beginSection( "PostInit" );
 
 		// Register the standard thaumcraft container items and tiles
 		EssentiaTileContainerHelper.instance.registerThaumcraftContainers();
@@ -153,7 +123,7 @@ public class ThaumicEnergistics
 		// Give AE items aspects		
 		AEAspectRegister.instance.registerAEAspects();
 
-		this.endLoadStageTracking( t );
+		TELog.endSection( "PostInit", startTime );
 	}
 
 	/**
@@ -165,7 +135,7 @@ public class ThaumicEnergistics
 	@EventHandler
 	public void preInit( final FMLPreInitializationEvent event ) throws Exception
 	{
-		ImmutablePair<Long, String> t = this.beginLoadStageTracking( "preInit" );
+		long startTime = TELog.beginSection( "PreInit" );
 
 		// Sync with config
 		ThaumicEnergistics.config = ConfigurationHandler.loadAndSyncConfigFile( event.getSuggestedConfigurationFile() );
@@ -182,7 +152,7 @@ public class ThaumicEnergistics
 		// Register blocks
 		ThaumicEnergistics.proxy.registerBlocks();
 
-		this.endLoadStageTracking( t );
+		TELog.endSection( "PreInit", startTime );
 	}
 
 	// TODO: Unify all logging.

@@ -12,6 +12,7 @@ import thaumcraft.common.tiles.TileAlembic;
 import thaumcraft.common.tiles.TileCentrifuge;
 import thaumcraft.common.tiles.TileEssentiaReservoir;
 import thaumcraft.common.tiles.TileJarFillable;
+import thaumcraft.common.tiles.TileTubeBuffer;
 import thaumicenergistics.api.ITransportPermissions;
 import thaumicenergistics.api.TEApi;
 import thaumicenergistics.aspect.AspectStack;
@@ -396,6 +397,9 @@ public final class EssentiaTileContainerHelper
 		// Essentia reservoir
 		this.perms.addAspectContainerTileToExtractPermissions( TileEssentiaReservoir.class );
 		this.perms.addAspectContainerTileToInjectPermissions( TileEssentiaReservoir.class );
+
+		// Essentia buffer
+		this.perms.addAspectContainerTileToExtractPermissions( TileTubeBuffer.class );
 	}
 
 }

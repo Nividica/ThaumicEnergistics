@@ -8,7 +8,7 @@ import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.registries.Renderers;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.texture.EssentiaGasTexture;
-import cpw.mods.fml.common.FMLLog;
+import thaumicenergistics.util.TELog;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy
@@ -50,7 +50,7 @@ public class ClientProxy
 			// Add to the texture map
 			if( !map.setTextureEntry( gasTexture.getIconName(), gasTexture ) )
 			{
-				FMLLog.warning( "Unable to register texture for %s", gasTexture.getIconName() );
+				TELog.warning( "Unable to register texture for %s", gasTexture.getIconName() );
 			}
 
 			// Set the texture

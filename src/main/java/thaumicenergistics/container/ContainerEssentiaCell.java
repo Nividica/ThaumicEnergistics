@@ -223,9 +223,6 @@ public class ContainerEssentiaCell
 	@Override
 	public void onClientRequestFullUpdate()
 	{
-		// Call super
-		super.onClientRequestFullUpdate();
-
 		// Get the handler
 		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
 
@@ -275,6 +272,15 @@ public class ContainerEssentiaCell
 				this.player.dropPlayerItemWithRandomChoice( ( (Slot)this.inventorySlots.get( i ) ).getStack(), false );
 			}
 		}
+	}
+
+	/**
+	 * Resent the full list to the client.
+	 */
+	@Override
+	public void onListUpdate()
+	{
+		//this.onClientRequestFullUpdate();
 	}
 
 	/**

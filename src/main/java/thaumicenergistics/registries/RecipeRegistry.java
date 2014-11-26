@@ -245,7 +245,15 @@ public class RecipeRegistry
 		ItemStack RedstoneDust = new ItemStack( (Item)Item.itemRegistry.getObject( "redstone" ) );
 
 		// Thaumcraft items
-		ItemStack WardedGlass = new ItemStack( ConfigBlocks.blockCosmeticOpaque, 1, 2 );
+		Object WardedGlass;
+		if( !Config.wardedStone )
+		{
+			WardedGlass = new ItemStack( ConfigBlocks.blockCosmeticOpaque, 1, 2 );
+		}
+		else
+		{
+			WardedGlass = "blockGlass";
+		}
 
 		ItemStack ThaumiumIngot = new ItemStack( ConfigItems.itemResource, 1, 2 );
 

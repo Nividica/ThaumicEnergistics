@@ -358,7 +358,7 @@ class HandlerEssentiaStorageBusContainer
 			// Was any filled?
 			if( filled_FU == 0 )
 			{
-				// Can not inject partial essentia amounts.
+				// Can not inject any.
 				return input;
 			}
 		}
@@ -455,4 +455,33 @@ class HandlerEssentiaStorageBusContainer
 		// Ignored
 	}
 
+	/**
+	 * Valid for pass 1 if there are filters or the container has stored
+	 * essentia.
+	 * Valid for pass 2 if no filters or stored essentia.
+	 * 
+	 * @return
+	 */
+	@Override
+	public boolean validForPass( final int pass )
+	{
+		if( this.aspectContainer != null )
+		{
+			boolean hasFilters = !this.allowAny();
+			boolean hasStored = !EssentiaTileContainerHelper.instance.getAspectStacksFromContainer( this.aspectContainer ).isEmpty();
+
+			// Is this the priority pass?
+			if( pass == 1 )
+			{
+				// Valid if has filters or container has something in it
+				return( hasFilters || hasStored );
+			}
+
+			// Valid if has no filters and container is empty.
+			return( ( !hasFilters ) && ( !hasStored ) );
+
+		}
+
+		return false;
+	}
 }

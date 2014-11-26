@@ -43,6 +43,30 @@ public final class GuiHelper
 
 	}
 
+	/**
+	 * Changes a large number into a binary postfixed version.
+	 * For example: 10,500 -> 10.5K
+	 * 
+	 * @param count
+	 * @return
+	 */
+	public static String shortenCount( final long count )
+	{
+		int unit = 1000;
+
+		// Are there at least 1000?
+		if( count < unit )
+			return Long.toString( count );
+
+		// Calculate the exponential
+		int exponential = (int)( Math.log( count ) / Math.log( unit ) );
+
+		// Get the posfix char
+		char postfix = "KMGTPE".charAt( exponential - 1 );
+
+		return String.format( "%.1f%c", ( count / Math.pow( unit, exponential ) ), postfix );
+	}
+
 	public final byte[] convertPackedColorToARGB( final int color )
 	{
 		byte[] colorBytes = new byte[COLOR_ARRAY_SIZE];

@@ -12,9 +12,9 @@ import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
-import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.Items;
 import thaumicenergistics.api.TEApi;
+import thaumicenergistics.util.TELog;
 import appeng.api.AEApi;
 import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Materials;
@@ -27,7 +27,6 @@ import appeng.recipes.GroupIngredient;
 import appeng.recipes.Ingredient;
 import appeng.recipes.handlers.Inscribe;
 import appeng.recipes.handlers.Inscribe.InscriberRecipe;
-import cpw.mods.fml.common.FMLLog;
 
 /**
  * Gives items from AE2 aspects when scanned.
@@ -725,7 +724,7 @@ public class AEAspectRegister
 				else
 				{
 					// Still could not register on pass 2.
-					FMLLog.info( "%s: '%s' was not registered for TC scanning.", ThaumicEnergistics.MOD_ID, this.displayName );
+					TELog.info( "'%s' was not registered for TC scanning.", this.displayName );
 				}
 				return;
 			}
@@ -1039,7 +1038,7 @@ public class AEAspectRegister
 	public void registerAEAspects()
 	{
 		// Log
-		FMLLog.info( "%s: Registering AppliedEnergistics scanables with Thaumcraft.", ThaumicEnergistics.MOD_ID );
+		long sectionStartTime = TELog.beginSection( "AE Scanables" );
 
 		// Get the current recipes
 		this.NORMAL_RECIPES = CraftingManager.getInstance().getRecipeList();
@@ -1091,7 +1090,7 @@ public class AEAspectRegister
 		this.UNREGISTERABLE = null;
 
 		// Log
-		FMLLog.info( "%s: AE scanables registered.", ThaumicEnergistics.MOD_ID );
+		TELog.endSection( "AE Scanables", sectionStartTime );
 	}
 
 	/**

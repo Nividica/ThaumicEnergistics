@@ -32,7 +32,6 @@ public class HandlerEssentiaStorageBusDuality
 	/**
 	 * Handler used when facing an interface.
 	 */
-	// TODO: Rename this -.-
 	private HandlerEssentiaStorageBusInterface interfaceHandler;
 
 	/**
@@ -50,73 +49,74 @@ public class HandlerEssentiaStorageBusDuality
 	 */
 	private void updateInternalHandler()
 	{
-		// Is there an internal handler?
-		if( this.internalHandler == null )
+		// Ensure there is an internal handler?
+		if( this.internalHandler != null )
 		{
-			// Nothing to update.
-			return;
+			// Set the filtered aspects
+			this.internalHandler.filteredAspects = this.filteredAspects;
+
+			// Set inverted
+			this.internalHandler.inverted = this.inverted;
+
+			// Set void
+			this.internalHandler.setVoidAllowed( this.isVoidAllowed() );
 		}
-
-		// Set the filtered aspects
-		this.internalHandler.filteredAspects = this.filteredAspects;
-
-		// Set inverted
-		this.internalHandler.inverted = this.inverted;
-
-		// Set void
-		this.internalHandler.setVoidAllowed( this.isVoidAllowed() );
 	}
 
 	@Override
 	public boolean canAccept( final IAEFluidStack fluidStack )
 	{
 		// Ensure we have an internal handler
-		if( this.internalHandler == null )
+		if( this.internalHandler != null )
 		{
-			return false;
+			// Pass to handler
+			return this.internalHandler.canAccept( fluidStack );
 		}
 
-		// Pass to handler
-		return this.internalHandler.canAccept( fluidStack );
+		// No handler
+		return false;
 	}
 
 	@Override
 	public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable mode, final BaseActionSource source )
 	{
 		// Ensure we have an internal handler
-		if( this.internalHandler == null )
+		if( this.internalHandler != null )
 		{
-			return null;
+			// Pass to handler
+			return this.internalHandler.extractItems( request, mode, source );
 		}
 
-		// Pass to handler
-		return this.internalHandler.extractItems( request, mode, source );
+		// No handler
+		return null;
 	}
 
 	@Override
 	public IItemList<IAEFluidStack> getAvailableItems( final IItemList<IAEFluidStack> out )
 	{
 		// Ensure we have an internal handler
-		if( this.internalHandler == null )
+		if( this.internalHandler != null )
 		{
-			return out;
+			// Pass to handler
+			return this.internalHandler.getAvailableItems( out );
 		}
 
-		// Pass to handler
-		return this.internalHandler.getAvailableItems( out );
+		// No handler
+		return out;
 	}
 
 	@Override
 	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final BaseActionSource source )
 	{
 		// Ensure we have an internal handler
-		if( this.internalHandler == null )
+		if( this.internalHandler != null )
 		{
-			return input;
+			// Pass to handler
+			return this.internalHandler.injectItems( input, mode, source );
 		}
 
-		// Pass to handler
-		return this.internalHandler.injectItems( input, mode, source );
+		// No handler
+		return input;
 	}
 
 	@Override
@@ -207,13 +207,24 @@ public class HandlerEssentiaStorageBusDuality
 	public void tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
 		// Ensure we have an internal handler
-		if( this.internalHandler == null )
+		if( this.internalHandler != null )
 		{
-			return;
+			// Pass to handler
+			this.internalHandler.tickingRequest( node, TicksSinceLastCall );
 		}
-
-		// Pass to handler
-		this.internalHandler.tickingRequest( node, TicksSinceLastCall );
 	}
 
+	@Override
+	public boolean validForPass( final int pass )
+	{
+		// Ensure we have an internal handler
+		if( this.internalHandler != null )
+		{
+			// Pass to handler
+			return this.internalHandler.validForPass( pass );
+		}
+
+		// No handler
+		return false;
+	}
 }

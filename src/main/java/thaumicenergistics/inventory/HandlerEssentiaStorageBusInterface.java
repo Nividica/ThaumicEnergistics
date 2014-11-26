@@ -275,12 +275,24 @@ class HandlerEssentiaStorageBusInterface
 
 		// Update the host grid
 		this.postAlterationToHostGrid( change );
+		this.haltChanges = true;
 	}
 
 	@Override
 	public void tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
 		this.canPostUpdate = true;
+	}
+
+	@Override
+	public boolean validForPass( final int pass )
+	{
+		if( this.handler != null )
+		{
+			return this.handler.validForPass( pass );
+		}
+
+		return false;
 	}
 
 }
