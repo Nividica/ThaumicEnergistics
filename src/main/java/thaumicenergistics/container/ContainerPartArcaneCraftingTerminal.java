@@ -278,12 +278,12 @@ public class ContainerPartArcaneCraftingTerminal
 			this.lastViewSlotNumber = viewSlot.slotNumber;
 		}
 
-		// Register the container with terminal
-		terminal.registerListener( this );
-
 		// Is this server side?
 		if( EffectiveSide.isServerSide() )
 		{
+			// Register with part
+			this.registerForUpdates();
+
 			// Get the AE monitor
 			this.monitor = terminal.getGridBlock().getItemMonitor();
 
@@ -442,7 +442,6 @@ public class ContainerPartArcaneCraftingTerminal
 	 * @param potentialMatch
 	 * @return
 	 */
-	@SuppressWarnings("deprecation")
 	private boolean doStacksMatch( final IAEItemStack keyStack, final IAEItemStack potentialMatch )
 	{
 		// Do the stacks directly match?
@@ -454,17 +453,28 @@ public class ContainerPartArcaneCraftingTerminal
 		// No direct match, see if they match via the ore dictionary
 
 		// Get the ore dictionary Id's
-		int keyID = OreDictionary.getOreID( keyStack.getItemStack() );
-		int matchID = OreDictionary.getOreID( potentialMatch.getItemStack() );
+		int[] keyIDs = OreDictionary.getOreIDs( keyStack.getItemStack() );
+		int[] matchIDs = OreDictionary.getOreIDs( potentialMatch.getItemStack() );
 
 		// Is either item not registered?
-		if( ( keyID == -1 ) || ( matchID == -1 ) )
+		if( ( keyIDs.length == 0 ) || ( matchIDs.length == 0 ) )
 		{
 			return false;
 		}
 
 		// Do the keys match?
-		return keyID == matchID;
+		for( int keyID : keyIDs )
+		{
+			for( int matchID : matchIDs )
+			{
+				if( keyID == matchID )
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -823,26 +833,24 @@ public class ContainerPartArcaneCraftingTerminal
 					continue;
 				}
 
-				// Attempt to extract the item
-				IAEItemStack extractedStack = this.monitor.extractItems( slotStack, Actionable.MODULATE, this.playerSource );
+				// Find a matching stack.
+				ItemStack matchingStack = this.requestCraftingReplenishment( slotStack.getItemStack() );
 
-				// Ensure an item was extracted
-				if( ( extractedStack == null ) || ( extractedStack.getStackSize() == 0 ) )
+				// Ensure a stack was found
+				if( matchingStack != null )
 				{
-					// Could not extract
-					continue;
+					// Get the slot
+					Slot slot = (Slot)this.inventorySlots.get( this.firstCraftingSlotNumber + craftingSlotIndex );
+
+					// Set the slot contents
+					slot.putStack( matchingStack );
 				}
-
-				// Get the slot
-				Slot slot = (Slot)this.inventorySlots.get( this.firstCraftingSlotNumber + craftingSlotIndex );
-
-				// Set the slot contents
-				slot.putStack( extractedStack.getItemStack() );
 			}
+
+			// Update clients
+			this.detectAndSendChanges();
 		}
 
-		// Update clients
-		this.detectAndSendChanges();
 	}
 
 	/**
@@ -1275,6 +1283,15 @@ public class ContainerPartArcaneCraftingTerminal
 			// Send the change to the client
 			new PacketClientArcaneCraftingTerminal().createChangeUpdate( this.player, newAmount ).sendPacketToPlayer();
 		}
+	}
+
+	/**
+	 * Registers the container for updates from the terminal part.
+	 */
+	public void registerForUpdates()
+	{
+		// Register the container with terminal
+		this.terminal.registerListener( this );
 	}
 
 	/**

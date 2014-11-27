@@ -64,6 +64,15 @@ public class TileEssentiaCellWorkbench
 		}
 	}
 
+	/**
+	 * Workbench does not need ticks.
+	 */
+	@Override
+	public boolean canUpdate()
+	{
+		return false;
+	}
+
 	@Override
 	public void closeInventory()
 	{

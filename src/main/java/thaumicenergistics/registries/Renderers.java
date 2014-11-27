@@ -2,6 +2,9 @@ package thaumicenergistics.registries;
 
 import thaumicenergistics.render.RenderBlockEssentiaProvider;
 import thaumicenergistics.render.RenderBlockInfusionProvider;
+import thaumicenergistics.render.RenderTileGearbox;
+import thaumicenergistics.tileentities.TileGearBox;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class Renderers
@@ -26,5 +29,8 @@ public class Renderers
 		Renderers.InfusionProviderRenderID = RenderingRegistry.getNextAvailableRenderId();
 		// Register the infusion provider renderer
 		RenderingRegistry.registerBlockHandler( new RenderBlockInfusionProvider() );
+
+		// Register the gearbox renderer
+		ClientRegistry.bindTileEntitySpecialRenderer( TileGearBox.class, new RenderTileGearbox() );
 	}
 }

@@ -465,17 +465,10 @@ public class AEAspectRegister
 						{
 							currentIngredientStack = (ItemStack)ing;
 						}
-						else
-						{
-							//System.out.println( "Missing ingredient clause for" );
-							//System.out.println( ing.getClass() );
-							//System.out.println();
-						}
 
 					}
 					catch( Exception e )
 					{
-						//System.out.println( e );
 					}
 
 					// Skip null stacks
@@ -495,10 +488,6 @@ public class AEAspectRegister
 					this.ingredients = new ItemStack[ingredientStackList.size()];
 					this.ingredients = ingredientStackList.toArray( this.ingredients );
 				}
-			}
-			else
-			{
-				//System.out.println( this.displayName + ": getIngredients() failed" );
 			}
 		}
 

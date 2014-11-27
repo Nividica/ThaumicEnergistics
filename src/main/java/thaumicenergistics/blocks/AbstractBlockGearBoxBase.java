@@ -88,23 +88,21 @@ public abstract class AbstractBlockGearBoxBase
 	public abstract String getUnlocalizedName();
 
 	/**
-	 * Is opaque.
+	 * Is not opaque.
 	 */
 	@Override
 	public final boolean isOpaqueCube()
 	{
-		// Occlude adjoining faces.
-		return true;
+		return false;
 	}
 
 	/**
-	 * Is solid.
+	 * No sides are solid.
 	 */
 	@Override
 	public final boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
 	{
-		// This is a solid cube
-		return true;
+		return false;
 	}
 
 	/**
@@ -131,6 +129,12 @@ public abstract class AbstractBlockGearBoxBase
 
 		// Update it
 		gearBox.updateCrankables();
+
+		// Update the client tileentity
+		w.markBlockForUpdate( x, y, z );
+
+		// Mark for saving
+		gearBox.markDirty();
 	}
 
 	/**
@@ -150,6 +154,15 @@ public abstract class AbstractBlockGearBoxBase
 	public final boolean renderAsNormalBlock()
 	{
 		return true;
+	}
+
+	/**
+	 * Prevents MC from using the default block renderer.
+	 */
+	@Override
+	public boolean shouldSideBeRendered( final IBlockAccess iblockaccess, final int i, final int j, final int k, final int l )
+	{
+		return false;
 	}
 
 }

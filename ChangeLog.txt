@@ -1,4 +1,14 @@
-﻿11/25/2014 0.8.4b
+﻿11/27/2014 0.8.5b
+  Created model for gearboxes.
+  Fixed an A.C.T crafting bug.
+  A.C.T. search bar can be focused with right-click.
+
+11/26/2014 0.8.5b
+  Changed name of storage cell "casing" to "housing" to conform to AE.
+  Fixes #97: NEI Shift+Click in the A.C.T. now includes ore dictionary matches, this also fixes shift-crafting not matching properly.
+  A.C.T. Search bar opens with focus again.
+
+11/25/2014 0.8.4b
   Lots of AE network code fixes. Lots.
   Fixes #94: Cell recipe now uses glass if warded glass has been disabled.
   Fixes #96: Import bus can now import from Essentia Buffers.

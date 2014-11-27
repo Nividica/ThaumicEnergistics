@@ -591,6 +591,9 @@ public class GuiArcaneCraftingTerminal
 			// Update the widgets
 			this.updateMEWidgets();
 
+			// Inform search field.
+			this.searchField.mouseClicked( mouseX - this.guiLeft, mouseY - this.guiTop, mouseButton );
+
 			// Do not pass to super
 			return;
 		}
@@ -773,7 +776,7 @@ public class GuiArcaneCraftingTerminal
 		this.searchField.setEnableBackgroundDrawing( false );
 
 		// Start focused
-		this.searchField.setFocused( false );
+		this.searchField.setFocused( true );
 
 		// Set maximum length
 		this.searchField.setMaxStringLength( AbstractGuiConstantsACT.SEARCH_MAX_CHARS );
@@ -794,6 +797,9 @@ public class GuiArcaneCraftingTerminal
 		this.buttonList.add( new ButtonSortingDirection( AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID, this.guiLeft +
 						AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_Y,
 						AbstractGuiConstantsACT.BUTTON_SORT_SIZE, AbstractGuiConstantsACT.BUTTON_SORT_SIZE ) );
+
+		// Add the container as a listener
+		( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).registerForUpdates();
 
 		// Request a full update from the server
 		new PacketServerArcaneCraftingTerminal().createRequestFullList( this.player ).sendPacketToServer();
