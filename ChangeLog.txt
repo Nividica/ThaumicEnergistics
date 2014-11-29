@@ -2,6 +2,7 @@
   Fixes #100: A.C.T. Checks user permissions again.
   Potential Fix #99 Un-cached texture location in provider renderer.
   Cleaned up terminal work code.
+  Added Wireless E.Term. recipe and included in E.Term. research.
 
 11/28/2014 0.8.5b
   Fixes #81: Added Wireless Essentia Terminal.

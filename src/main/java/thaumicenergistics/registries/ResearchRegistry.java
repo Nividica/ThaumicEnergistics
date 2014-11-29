@@ -325,7 +325,7 @@ public class ResearchRegistry
 
 		// Set the pages
 		ResearchPage[] etPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 1 ) ),
-						new ResearchPage( RecipeRegistry.PART_ESSENTIA_TERMINAL ),
+						new ResearchPage( RecipeRegistry.PART_ESSENTIA_TERMINAL ), new ResearchPage( RecipeRegistry.WIRELESS_ESSENTIA_TERMINAL ),
 						new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 2 ) ),
 						new ResearchPage( RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER ) };
 

@@ -59,6 +59,7 @@ public class RecipeRegistry
 	public static CrucibleRecipe DUPE_CERTUS;
 	public static CrucibleRecipe DUPE_NETHER_QUARTZ;
 	public static IRecipe BLOCK_CELL_WORKBENCH;
+	public static IRecipe WIRELESS_ESSENTIA_TERMINAL;
 
 	private static void registerComponents( final Materials aeMaterials, final Blocks aeBlocks, final Items teItems )
 	{
@@ -328,6 +329,10 @@ public class RecipeRegistry
 
 		ItemStack MEP2P = aeParts.partP2PTunnelME.stack( 1 );
 
+		ItemStack WirelessReceiver = aeMaterials.materialWireless.stack( 1 );
+
+		ItemStack DenseCell = AEApi.instance().blocks().blockEnergyCellDense.stack( 1 );
+
 		// Thaumcraft items
 		ItemStack FilterTube = new ItemStack( ConfigBlocks.blockTube, 1, 3 );
 
@@ -364,6 +369,8 @@ public class RecipeRegistry
 
 		ItemStack VisInterface = teParts.VisRelay_Interface.getStack();
 
+		ItemStack WirelessEssentiaTerminal = teItems.WirelessEssentiaTerminal.getStack();
+
 		// Import Bus
 		AspectList ioAspectList = new AspectList();
 		ioAspectList.add( Aspect.FIRE, 2 );
@@ -393,6 +400,10 @@ public class RecipeRegistry
 		RecipeRegistry.PART_ESSENTIA_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
 			ResearchRegistry.ResearchTypes.ESSENTIATERMINAL.getKey(), EssentiaTerminal, etAspectList, IlluminatedPanel, DiffusionCore,
 			CoalescencenCore, LogicProcessor, AspectFilter );
+
+		// Wireless Essentia Terminal
+		RecipeRegistry.WIRELESS_ESSENTIA_TERMINAL = new ShapelessOreRecipe( WirelessEssentiaTerminal, WirelessReceiver, EssentiaTerminal, DenseCell );
+		GameRegistry.addRecipe( RecipeRegistry.WIRELESS_ESSENTIA_TERMINAL );
 
 		// Arcane Crafting Terminal
 		AspectList actAspectList = new AspectList();
