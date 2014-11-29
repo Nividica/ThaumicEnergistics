@@ -14,8 +14,6 @@ public class ItemStorageCasing
 		this.setMaxDamage( 0 );
 
 		this.setHasSubtypes( false );
-
-		//ThaumcraftApi.registerObjectTag( new ItemStack( this ), new AspectList().add( Aspect.MECHANISM, 5 ) );
 	}
 
 	@Override

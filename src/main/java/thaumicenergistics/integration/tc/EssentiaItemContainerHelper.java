@@ -489,12 +489,11 @@ public final class EssentiaItemContainerHelper
 	}
 
 	/**
-	 * Injects the aspect and amount as specified by the AspectStack
-	 * into the container.
+	 * Creates a copy of the container filled with the additional gas.
 	 * 
 	 * @param container
 	 * @param aspectStack
-	 * @return
+	 * @return The amount that was inject, and the new container.
 	 */
 	public ImmutablePair<Integer, ItemStack> injectIntoContainer( final ItemStack container, final AspectStack aspectStack )
 	{

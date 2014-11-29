@@ -1,19 +1,18 @@
 package thaumicenergistics.container;
 
+import java.util.ArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
-import thaumicenergistics.integration.tc.EssentiaCellTerminalWorker;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.items.ItemEssentiaCell;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaCell;
-import thaumicenergistics.network.packet.server.PacketServerEssentiaCell;
+import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
@@ -36,13 +35,8 @@ import appeng.tile.storage.TileChest;
  * 
  */
 public class ContainerEssentiaCell
-	extends ContainerCellTerminalBase
+	extends AbstractContainerCellTerminalBase
 {
-	/**
-	 * The aspect the player has selected.
-	 */
-	private AspectStack selectedAspectStack;
-
 	/**
 	 * The ME chest the cell is stored in.
 	 */
@@ -131,7 +125,7 @@ public class ContainerEssentiaCell
 		else
 		{
 			// Request a full update from the server
-			new PacketServerEssentiaCell().createFullUpdateRequest( player ).sendPacketToServer();
+			new PacketServerEssentiaCellTerminal().createFullUpdateRequest( player ).sendPacketToServer();
 			this.hasRequested = true;
 		}
 
@@ -166,54 +160,40 @@ public class ContainerEssentiaCell
 		return new HandlerItemEssentiaCell( essentiaCell, this.chestSaveProvider );
 	}
 
-	/**
-	 * Checks if there is any work to perform.
-	 * If there is it does so.
-	 */
 	@Override
-	public void detectAndSendChanges()
+	protected boolean extractPowerForEssentiaTransfer( final int amountOfEssentiaTransfered, final Actionable mode )
 	{
-		super.detectAndSendChanges();
-
-		// Do we have a monitor?
-		if( this.monitor != null )
+		try
 		{
-			// Is there work to do?
-			if( EssentiaCellTerminalWorker.instance.hasWork( this.inventory ) )
+			// Get the energy grid
+			IEnergyGrid eGrid = this.hostChest.getProxy().getEnergy();
+
+			// Did we get the grid
+			if( eGrid != null )
 			{
+				// Calculate the amount of power to drain
+				double powerRequired = AbstractContainerCellTerminalBase.POWER_PER_TRANSFER * amountOfEssentiaTransfered;
 
-				try
-				{
-					// Get the energy grid
-					IEnergyGrid eGrid = this.hostChest.getProxy().getEnergy();
-
-					// Can we drain energy from the network?
-					if( eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.SIMULATE, PowerMultiplier.CONFIG ) >= ContainerCellTerminalBase.POWER_PER_TRANSFER )
-					{
-						// Do the work
-						if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, this.playerSource, this.selectedAspect,
-							this.player ) )
-						{
-							// We did work, drain power
-							eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.MODULATE, PowerMultiplier.CONFIG );
-						}
-					}
-				}
-				catch( GridAccessException e )
-				{
-				}
+				// Drain power
+				return( eGrid.extractAEPower( powerRequired, mode, PowerMultiplier.CONFIG ) >= powerRequired );
 			}
 		}
+		catch( GridAccessException e )
+		{
+		}
+
+		// Unable to drain power.
+		return false;
 	}
 
 	/**
-	 * Gets the currently selected aspect.
-	 * 
-	 * @return
+	 * Transfers essentia.
 	 */
-	public AspectStack getSelectedAspectStack()
+	@Override
+	public void doWork( final int elapsedTicks )
 	{
-		return this.selectedAspectStack;
+		// Transfer essentia if needed.
+		this.transferEssentia( this.playerSource );
 	}
 
 	/**
@@ -223,6 +203,7 @@ public class ContainerEssentiaCell
 	@Override
 	public void onClientRequestFullUpdate()
 	{
+
 		// Get the handler
 		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
 
@@ -230,21 +211,22 @@ public class ContainerEssentiaCell
 		if( cellHandler != null )
 		{
 			// Send the sorting mode
-			new PacketClientEssentiaCell().createSortModeUpdate( this.player, cellHandler.getSortingMode() ).sendPacketToPlayer();
+			new PacketClientEssentiaCellTerminal().createSortModeUpdate( this.player, cellHandler.getSortingMode() ).sendPacketToPlayer();
 		}
 
 		// Send the list
-		if( this.monitor != null )
+		if( ( this.monitor != null ) && ( this.hostChest.isPowered() ) )
 		{
-			new PacketClientEssentiaCell().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
+			new PacketClientEssentiaCellTerminal().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
+		}
+		else
+		{
+			new PacketClientEssentiaCellTerminal().createUpdateFullList( this.player, new ArrayList<AspectStack>() ).sendPacketToPlayer();
+
 		}
 	}
 
-	/**
-	 * Called when a client sends a sorting mode request.
-	 * 
-	 * @param sortingMode
-	 */
+	@Override
 	public void onClientRequestSortModeChange( final ComparatorMode sortingMode, final EntityPlayer player )
 	{
 		// Get the handler
@@ -254,7 +236,7 @@ public class ContainerEssentiaCell
 		cellHandler.setSortingMode( sortingMode );
 
 		// Send confirmation back to client
-		new PacketClientEssentiaCell().createSortModeUpdate( player, sortingMode ).sendPacketToPlayer();
+		new PacketClientEssentiaCellTerminal().createSortModeUpdate( player, sortingMode ).sendPacketToPlayer();
 	}
 
 	/**
@@ -272,78 +254,5 @@ public class ContainerEssentiaCell
 				this.player.dropPlayerItemWithRandomChoice( ( (Slot)this.inventorySlots.get( i ) ).getStack(), false );
 			}
 		}
-	}
-
-	/**
-	 * Resent the full list to the client.
-	 */
-	@Override
-	public void onListUpdate()
-	{
-		//this.onClientRequestFullUpdate();
-	}
-
-	/**
-	 * Updates the selected aspect, aspect stack and gui.
-	 */
-	@Override
-	public void onReceiveSelectedAspect( final Aspect selectedAspect )
-	{
-		this.selectedAspect = selectedAspect;
-
-		if( this.selectedAspect != null )
-		{
-			for( AspectStack stack : this.aspectStackList )
-			{
-				if( ( stack != null ) && ( stack.aspect == this.selectedAspect ) )
-				{
-					this.selectedAspectStack = stack;
-
-					break;
-				}
-			}
-		}
-
-		// Is this the client?
-		if( EffectiveSide.isClientSide() )
-		{
-			// Update the gui
-			this.guiBase.updateSelectedAspect();
-		}
-		else
-		{
-			// Update the client
-			new PacketClientEssentiaCell().createSelectedAspectUpdate( this.player, this.selectedAspect ).sendPacketToPlayer();
-		}
-	}
-
-	/**
-	 * Forwards the change to the client.
-	 */
-	@Override
-	public void postAspectStackChange( final AspectStack change )
-	{
-		// Send the change
-		new PacketClientEssentiaCell().createListChanged( this.player, change ).sendPacketToPlayer();
-	}
-
-	/**
-	 * Called when the player has clicked the sorting mode button.
-	 * 
-	 * @param sortingMode
-	 */
-	public void sendSortModeChangeRequest( final ComparatorMode sortingMode )
-	{
-		new PacketServerEssentiaCell().createRequestChangeSortMode( this.player, sortingMode ).sendPacketToServer();
-	}
-
-	/**
-	 * Called when the user has clicked on an aspect.
-	 * Sends that change to the server for validation.
-	 */
-	@Override
-	public void setSelectedAspect( final Aspect selectedAspect )
-	{
-		new PacketServerEssentiaCell().createUpdateSelectedAspect( this.player, selectedAspect ).sendPacketToServer();
 	}
 }

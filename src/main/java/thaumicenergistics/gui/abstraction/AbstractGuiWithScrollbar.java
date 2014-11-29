@@ -20,7 +20,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class AbstractGuiWithScrollbar
 	extends AbstractGuiBase
 {
-	protected class ScrollbarParams
+	public class ScrollbarParams
 	{
 		/**
 		 * X position of the scroll bar

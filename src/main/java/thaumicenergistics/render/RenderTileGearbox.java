@@ -24,8 +24,8 @@ public class RenderTileGearbox
 	/**
 	 * Textures
 	 */
-	private static final ResourceLocation textureIronGearbox = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/models/gearbox.iron.png" ),
-					textureThaumiumGearbox = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/models/gearbox.thaumium.png" );
+	private static final ResourceLocation TEX_IRON = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/models/gearbox.iron.png" ),
+					TEX_THAUMIUM = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/models/gearbox.thaumium.png" );
 
 	/**
 	 * Renders the gearbox.
@@ -61,11 +61,11 @@ public class RenderTileGearbox
 		// Bind the model texture
 		if( gearboxTile.isThaumiumGearbox() )
 		{
-			this.bindTexture( RenderTileGearbox.textureThaumiumGearbox );
+			this.bindTexture( RenderTileGearbox.TEX_THAUMIUM );
 		}
 		else
 		{
-			this.bindTexture( RenderTileGearbox.textureIronGearbox );
+			this.bindTexture( RenderTileGearbox.TEX_IRON );
 		}
 
 		// Scale down

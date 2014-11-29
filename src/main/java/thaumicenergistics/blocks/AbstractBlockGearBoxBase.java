@@ -130,11 +130,8 @@ public abstract class AbstractBlockGearBoxBase
 		// Update it
 		gearBox.updateCrankables();
 
-		// Update the client tileentity
+		// Update the client tile entity
 		w.markBlockForUpdate( x, y, z );
-
-		// Mark for saving
-		gearBox.markDirty();
 	}
 
 	/**

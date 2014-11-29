@@ -189,11 +189,11 @@ public class ContainerPartArcaneCraftingTerminal
 		// Set the part
 		this.terminal = terminal;
 
-		// Set the player source
-		this.playerSource = new PlayerSource( this.player, terminal );
-
 		// Set the player
 		this.player = player;
+
+		// Set the player source
+		this.playerSource = new PlayerSource( this.player, terminal );
 
 		// Bind to the players inventory
 		this.bindPlayerInventory( player.inventory, ContainerPartArcaneCraftingTerminal.PLAYER_INV_POSITION_Y,

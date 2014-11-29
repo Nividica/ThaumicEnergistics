@@ -412,13 +412,17 @@ public class TileGearBox
 			// Have enough ticks elapsed?
 			if( this.syncTickCount >= TileGearBox.MIN_TICKS_PER_SYNC )
 			{
-				// Reset the counter
-				this.syncTickCount = 0;
+				// Decrement the tick count
+				this.syncTickCount-- ;
 
 				// Is there rotation to send?
 				if( this.hasNewCranks )
 				{
+					// Mark for update
 					this.worldObj.markBlockForUpdate( this.xCoord, this.yCoord, this.zCoord );
+
+					// Reset the counter
+					this.syncTickCount = 0;
 				}
 			}
 		}

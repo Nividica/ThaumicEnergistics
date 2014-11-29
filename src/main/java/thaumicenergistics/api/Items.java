@@ -25,4 +25,6 @@ public abstract class Items
 	public IItemDescription EssentiaStorageComponent_64k;
 
 	public IItemDescription IronGear;
+
+	public IItemDescription WirelessEssentiaTerminal;
 }

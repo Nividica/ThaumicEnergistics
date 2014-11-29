@@ -1,4 +1,4 @@
-package thaumicenergistics.gui.abstraction;
+package thaumicenergistics.gui;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,34 +10,40 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
-import thaumicenergistics.container.ContainerCellTerminalBase;
+import thaumicenergistics.container.AbstractContainerCellTerminalBase;
 import thaumicenergistics.container.ContainerEssentiaCell;
 import thaumicenergistics.container.ContainerEssentiaTerminal;
+import thaumicenergistics.container.ContainerWirelessEssentiaTerminal;
 import thaumicenergistics.container.IAspectSelectorContainer;
+import thaumicenergistics.gui.abstraction.AbstractGuiWithScrollbar;
 import thaumicenergistics.gui.buttons.ButtonSortingMode;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.gui.widget.WidgetAspectSelector;
 import thaumicenergistics.gui.widget.WidgetAspectSelectorComparator;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
+import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.GuiHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Base class for cell and terminal guis
+ * Essentia terminal, wireless terminal, and cell(ME Chest) Gui.
  * 
  * @author Nividica
  * 
  */
 @SideOnly(Side.CLIENT)
-public abstract class AbstractGuiCellTerminalBase
+public class GuiEssentiaCellTerminal
 	extends AbstractGuiWithScrollbar
 	implements IAspectSelectorGui
 {
@@ -215,7 +221,7 @@ public abstract class AbstractGuiCellTerminalBase
 	/**
 	 * The container associated with this gui
 	 */
-	protected ContainerCellTerminalBase containerBase;
+	protected AbstractContainerCellTerminalBase baseContainer;
 
 	/**
 	 * Mode used to sort the aspects
@@ -245,41 +251,25 @@ public abstract class AbstractGuiCellTerminalBase
 	 * @param container
 	 * Container associated with the gui.
 	 */
-	public AbstractGuiCellTerminalBase( final EntityPlayer player, final ContainerCellTerminalBase container )
+	private GuiEssentiaCellTerminal( final EntityPlayer player, final AbstractContainerCellTerminalBase container, final String title )
 	{
 		// Call super
 		super( container );
 
 		// Set the container.
-		this.containerBase = ( (ContainerCellTerminalBase)this.inventorySlots );
-
-		// Inform the container we are the gui.
-		this.containerBase.setGui( this );
+		this.baseContainer = container;
 
 		// Set the player
 		this.player = player;
 
 		// Set the X size
-		this.xSize = AbstractGuiCellTerminalBase.GUI_SIZE_X;
+		this.xSize = GuiEssentiaCellTerminal.GUI_SIZE_X;
 
 		// Set the Y size
-		this.ySize = AbstractGuiCellTerminalBase.GUI_SIZE_Y;
+		this.ySize = GuiEssentiaCellTerminal.GUI_SIZE_Y;
 
 		// Set the title
-		if( container instanceof ContainerEssentiaTerminal )
-		{
-			// Essentia terminal
-			this.guiTitle = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".aeparts.essentia.terminal.name" );
-		}
-		else if( container instanceof ContainerEssentiaCell )
-		{
-			// Essentia cell
-			this.guiTitle = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.essentia.cell.title" );
-		}
-		else
-		{
-			this.guiTitle = "";
-		}
+		this.guiTitle = title;
 
 		// Set the name prefix
 		this.selectedInfoNamePrefix = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.selected.aspect" ) + ": ";
@@ -287,6 +277,52 @@ public abstract class AbstractGuiCellTerminalBase
 		// Set the amount prefix
 		this.selectedInfoAmountPrefix = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.selected.amount" ) + ": ";
 
+	}
+
+	/**
+	 * Creates the GUI for an essentia cell inside an ME chest.
+	 * 
+	 * @param player
+	 * Player viewing the gui.
+	 * @param world
+	 * World the chest is in.
+	 * @param x
+	 * X position of the chest.
+	 * @param y
+	 * Y position of the chest.
+	 * @param z
+	 * Z position of the chest.
+	 * @return
+	 */
+	public static GuiEssentiaCellTerminal NewEssentiaCellGui( final EntityPlayer player, final World world, final int x, final int y, final int z )
+	{
+		return new GuiEssentiaCellTerminal( player, new ContainerEssentiaCell( player, world, x, y, z ),
+						StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.essentia.cell.title" ) );
+	}
+
+	/**
+	 * Creates the GUI for an essentia terminal.
+	 * 
+	 * @param terminal
+	 * @param player
+	 * @return
+	 */
+	public static GuiEssentiaCellTerminal NewEssentiaTerminalGui( final AEPartEssentiaTerminal terminal, final EntityPlayer player )
+	{
+		return new GuiEssentiaCellTerminal( player, new ContainerEssentiaTerminal( terminal, player ),
+						StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".aeparts.essentia.terminal.name" ) );
+	}
+
+	/**
+	 * Creates the GUI for a wireless essentia terminal.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public static GuiEssentiaCellTerminal NewWirelessEssentiaTerminalGui( final EntityPlayer player )
+	{
+		return new GuiEssentiaCellTerminal( player, new ContainerWirelessEssentiaTerminal( player, null ),
+						StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".aeparts.essentia.terminal.name" ) );
 	}
 
 	/**
@@ -305,10 +341,10 @@ public abstract class AbstractGuiCellTerminalBase
 	private void updateScrollMaximum()
 	{
 		// Calculate the number of widgets the will overflow
-		double overflowWidgets = Math.max( 0, this.matchingSearchWidgets.size() - AbstractGuiCellTerminalBase.WIDGETS_PER_PAGE );
+		double overflowWidgets = Math.max( 0, this.matchingSearchWidgets.size() - GuiEssentiaCellTerminal.WIDGETS_PER_PAGE );
 
 		// Calculate how many rows will overflow
-		int overflowRows = (int)Math.ceil( overflowWidgets / AbstractGuiCellTerminalBase.WIDGETS_PER_ROW );
+		int overflowRows = (int)Math.ceil( overflowWidgets / GuiEssentiaCellTerminal.WIDGETS_PER_ROW );
 
 		// Update if the range has changed
 		if( overflowRows != this.scrollBar.getRange() )
@@ -358,7 +394,7 @@ public abstract class AbstractGuiCellTerminalBase
 		Minecraft.getMinecraft().renderEngine.bindTexture( GuiTextureManager.ESSENTIA_TERMINAL.getTexture() );
 
 		// Draw the gui
-		this.drawTexturedModalRect( this.guiLeft, this.guiTop - AbstractGuiCellTerminalBase.GUI_OFFSET_Y, 0, 0, this.xSize, this.ySize );
+		this.drawTexturedModalRect( this.guiLeft, this.guiTop - GuiEssentiaCellTerminal.GUI_OFFSET_Y, 0, 0, this.xSize, this.ySize );
 
 		// Draw the search field.
 		this.searchBar.drawTextBox();
@@ -374,7 +410,7 @@ public abstract class AbstractGuiCellTerminalBase
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
 
 		// Draw the title
-		this.fontRendererObj.drawString( this.guiTitle, AbstractGuiCellTerminalBase.TITLE_POS_X, AbstractGuiCellTerminalBase.TITLE_POS_Y, 0 );
+		this.fontRendererObj.drawString( this.guiTitle, GuiEssentiaCellTerminal.TITLE_POS_X, GuiEssentiaCellTerminal.TITLE_POS_Y, 0 );
 
 		// Draw the widgets
 		this.drawWidgets( mouseX, mouseY );
@@ -396,12 +432,12 @@ public abstract class AbstractGuiCellTerminalBase
 			String aspectName = this.selectedAspectStack.getAspectName( this.player );
 
 			// Draw the name
-			this.fontRendererObj.drawString( this.selectedInfoNamePrefix + aspectName, AbstractGuiCellTerminalBase.SELECTED_INFO_POS_X,
-				AbstractGuiCellTerminalBase.SELECTED_INFO_NAME_POS_Y, 0 );
+			this.fontRendererObj.drawString( this.selectedInfoNamePrefix + aspectName, GuiEssentiaCellTerminal.SELECTED_INFO_POS_X,
+				GuiEssentiaCellTerminal.SELECTED_INFO_NAME_POS_Y, 0 );
 
 			// Draw the amount
-			this.fontRendererObj.drawString( this.selectedInfoAmountPrefix + this.cacheAmountDisplay,
-				AbstractGuiCellTerminalBase.SELECTED_INFO_POS_X, AbstractGuiCellTerminalBase.SELECTED_INFO_AMOUNT_POS_Y, 0 );
+			this.fontRendererObj.drawString( this.selectedInfoAmountPrefix + this.cacheAmountDisplay, GuiEssentiaCellTerminal.SELECTED_INFO_POS_X,
+				GuiEssentiaCellTerminal.SELECTED_INFO_AMOUNT_POS_Y, 0 );
 		}
 
 		// Get the tooltip from the buttons
@@ -417,8 +453,8 @@ public abstract class AbstractGuiCellTerminalBase
 	@Override
 	protected ScrollbarParams getScrollbarParameters()
 	{
-		return new ScrollbarParams( AbstractGuiCellTerminalBase.SCROLLBAR_POS_X, AbstractGuiCellTerminalBase.SCROLLBAR_POS_Y,
-						AbstractGuiCellTerminalBase.SCROLLBAR_HEIGHT );
+		return new ScrollbarParams( GuiEssentiaCellTerminal.SCROLLBAR_POS_X, GuiEssentiaCellTerminal.SCROLLBAR_POS_Y,
+						GuiEssentiaCellTerminal.SCROLLBAR_HEIGHT );
 	}
 
 	/**
@@ -463,13 +499,13 @@ public abstract class AbstractGuiCellTerminalBase
 		int index = 0;
 
 		// Rows
-		for( int y = 0; y < AbstractGuiCellTerminalBase.ROWS_PER_PAGE; y++ )
+		for( int y = 0; y < GuiEssentiaCellTerminal.ROWS_PER_PAGE; y++ )
 		{
 			// Columns
-			for( int x = 0; x < AbstractGuiCellTerminalBase.WIDGETS_PER_ROW; x++ )
+			for( int x = 0; x < GuiEssentiaCellTerminal.WIDGETS_PER_ROW; x++ )
 			{
 				// Calculate the index
-				index = ( ( y + this.currentScroll ) * AbstractGuiCellTerminalBase.WIDGETS_PER_ROW ) + x;
+				index = ( ( y + this.currentScroll ) * GuiEssentiaCellTerminal.WIDGETS_PER_ROW ) + x;
 
 				// Is the index in bounds?
 				if( index < listSize )
@@ -494,7 +530,7 @@ public abstract class AbstractGuiCellTerminalBase
 				else
 				{
 					// Stop searching
-					y = AbstractGuiCellTerminalBase.ROWS_PER_PAGE;
+					y = GuiEssentiaCellTerminal.ROWS_PER_PAGE;
 					break;
 				}
 			}
@@ -502,9 +538,8 @@ public abstract class AbstractGuiCellTerminalBase
 
 		// Was the mouse right-clicked over the search field?
 		if( ( mouseBtn == GuiHelper.MOUSE_BUTTON_RIGHT ) &&
-						GuiHelper.instance.isPointInGuiRegion( AbstractGuiCellTerminalBase.SEARCH_Y_OFFSET,
-							AbstractGuiCellTerminalBase.SEARCH_X_OFFSET, AbstractGuiCellTerminalBase.SEARCH_HEIGHT,
-							AbstractGuiCellTerminalBase.SEARCH_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+						GuiHelper.instance.isPointInGuiRegion( GuiEssentiaCellTerminal.SEARCH_Y_OFFSET, GuiEssentiaCellTerminal.SEARCH_X_OFFSET,
+							GuiEssentiaCellTerminal.SEARCH_HEIGHT, GuiEssentiaCellTerminal.SEARCH_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 		{
 			// Clear the search text
 			this.searchTerm = "";
@@ -531,8 +566,6 @@ public abstract class AbstractGuiCellTerminalBase
 		this.currentScroll = this.scrollBar.getCurrentScroll();
 	}
 
-	protected abstract void sortModeButtonClicked( ComparatorMode modeRequested );
-
 	/**
 	 * Called when a button is clicked.
 	 */
@@ -540,10 +573,12 @@ public abstract class AbstractGuiCellTerminalBase
 	public void actionPerformed( final GuiButton button )
 	{
 		// Is the button the sort mode button?
-		if( button.id == AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_ID )
+		if( button.id == GuiEssentiaCellTerminal.SORT_MODE_BUTTON_ID )
 		{
-			// Pass to subclass
-			this.sortModeButtonClicked( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC );
+			// Request update from server
+			new PacketServerEssentiaCellTerminal().createRequestChangeSortMode( this.player,
+				( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC ) )
+							.sendPacketToServer();
 		}
 	}
 
@@ -559,14 +594,14 @@ public abstract class AbstractGuiCellTerminalBase
 		if( !this.matchingSearchWidgets.isEmpty() )
 		{
 			// Calculate the starting index
-			int startingIndex = this.currentScroll * AbstractGuiCellTerminalBase.WIDGETS_PER_ROW;
+			int startingIndex = this.currentScroll * GuiEssentiaCellTerminal.WIDGETS_PER_ROW;
 
 			// Calculate the ending index
 			int endingIndex = Math.min( this.matchingSearchWidgets.size(), startingIndex + WIDGETS_PER_PAGE );
 
 			// Set the starting positions
-			int widgetPosX = AbstractGuiCellTerminalBase.WIDGET_OFFSET_X;
-			int widgetPosY = AbstractGuiCellTerminalBase.WIDGET_OFFSET_Y;
+			int widgetPosX = GuiEssentiaCellTerminal.WIDGET_OFFSET_X;
+			int widgetPosY = GuiEssentiaCellTerminal.WIDGET_OFFSET_Y;
 			int widgetColumnPosition = 1;
 
 			// Holder for the widget under the mouse
@@ -594,10 +629,10 @@ public abstract class AbstractGuiCellTerminalBase
 				widgetColumnPosition++ ;
 
 				// Are we done with this row?
-				if( widgetColumnPosition > AbstractGuiCellTerminalBase.WIDGETS_PER_ROW )
+				if( widgetColumnPosition > GuiEssentiaCellTerminal.WIDGETS_PER_ROW )
 				{
 					// Reset X
-					widgetPosX = AbstractGuiCellTerminalBase.WIDGET_OFFSET_X;
+					widgetPosX = GuiEssentiaCellTerminal.WIDGET_OFFSET_X;
 
 					// Reset column position to 1
 					widgetColumnPosition = 1;
@@ -631,7 +666,7 @@ public abstract class AbstractGuiCellTerminalBase
 	@Override
 	public IAspectSelectorContainer getContainer()
 	{
-		return this.containerBase;
+		return this.baseContainer;
 	}
 
 	/**
@@ -680,9 +715,8 @@ public abstract class AbstractGuiCellTerminalBase
 		this.updateAspects();
 
 		// Set up the search bar
-		this.searchBar = new GuiTextField( this.fontRendererObj, this.guiLeft + AbstractGuiCellTerminalBase.SEARCH_X_OFFSET, this.guiTop +
-						AbstractGuiCellTerminalBase.SEARCH_Y_OFFSET, AbstractGuiCellTerminalBase.SEARCH_WIDTH,
-						AbstractGuiCellTerminalBase.SEARCH_HEIGHT );
+		this.searchBar = new GuiTextField( this.fontRendererObj, this.guiLeft + GuiEssentiaCellTerminal.SEARCH_X_OFFSET, this.guiTop +
+						GuiEssentiaCellTerminal.SEARCH_Y_OFFSET, GuiEssentiaCellTerminal.SEARCH_WIDTH, GuiEssentiaCellTerminal.SEARCH_HEIGHT );
 
 		// Set the search bar to draw in the foreground
 		this.searchBar.setEnableBackgroundDrawing( false );
@@ -691,24 +725,72 @@ public abstract class AbstractGuiCellTerminalBase
 		this.searchBar.setFocused( true );
 
 		// Set maximum length
-		this.searchBar.setMaxStringLength( AbstractGuiCellTerminalBase.SEARCH_MAX_CHARS );
+		this.searchBar.setMaxStringLength( GuiEssentiaCellTerminal.SEARCH_MAX_CHARS );
 
 		// Clear any existing buttons
 		this.buttonList.clear();
 
 		// Add the sort mode button
-		this.buttonList.add( new ButtonSortingMode( AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_ID, this.guiLeft +
-						AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_POS_X, this.guiTop + AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_POS_Y,
-						AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_SIZE, AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_SIZE ) );
+		this.buttonList.add( new ButtonSortingMode( GuiEssentiaCellTerminal.SORT_MODE_BUTTON_ID, this.guiLeft +
+						GuiEssentiaCellTerminal.SORT_MODE_BUTTON_POS_X, this.guiTop + GuiEssentiaCellTerminal.SORT_MODE_BUTTON_POS_Y,
+						GuiEssentiaCellTerminal.SORT_MODE_BUTTON_SIZE, GuiEssentiaCellTerminal.SORT_MODE_BUTTON_SIZE ) );
 	}
 
+	/**
+	 * Called when the server sends a full list of network aspects.
+	 * 
+	 * @param aspectStackList
+	 */
+	public void onReceiveAspectList( final List<AspectStack> aspectStackList )
+	{
+		// Update the container
+		this.baseContainer.onReceivedAspectList( aspectStackList );
+
+		// Update the gui
+		this.updateAspects();
+	}
+
+	/**
+	 * Called when an aspect in the list changes amount.
+	 * 
+	 * @param change
+	 */
+	public void onReceiveAspectListChange( final AspectStack change )
+	{
+		// Update the container
+		if( this.baseContainer.onReceivedAspectListChange( change ) )
+		{
+			// Update the gui
+			this.updateAspects();
+		}
+	}
+
+	/**
+	 * Called when the server sends a change to the selected aspect.
+	 * 
+	 * @param selectedAspect
+	 */
+	public void onReceiveSelectedAspect( final Aspect selectedAspect )
+	{
+		// Update the container
+		this.baseContainer.onReceivedSelectedAspect( selectedAspect );
+
+		// Update the gui
+		this.updateSelectedAspect();
+	}
+
+	/**
+	 * Called when the server sends a change in the sorting mode.
+	 * 
+	 * @param sortMode
+	 */
 	public void onSortModeChanged( final ComparatorMode sortMode )
 	{
 		// Set the sort mode
 		this.sortMode = sortMode;
 
 		// Update the sort button
-		( (ButtonSortingMode)this.buttonList.get( AbstractGuiCellTerminalBase.SORT_MODE_BUTTON_ID ) ).setSortMode( sortMode );
+		( (ButtonSortingMode)this.buttonList.get( GuiEssentiaCellTerminal.SORT_MODE_BUTTON_ID ) ).setSortMode( sortMode );
 
 		// Resort the list
 		this.sortMatchingList();
@@ -723,7 +805,7 @@ public abstract class AbstractGuiCellTerminalBase
 		this.aspectWidgets = new ArrayList<WidgetAspectSelector>();
 
 		// Make a widget for every aspect
-		for( AspectStack aspectStack : this.containerBase.getAspectStackList() )
+		for( AspectStack aspectStack : this.baseContainer.getAspectStackList() )
 		{
 			// Create the widget
 			this.aspectWidgets.add( new WidgetAspectSelector( this, aspectStack, 0, 0, this.player ) );
@@ -748,10 +830,10 @@ public abstract class AbstractGuiCellTerminalBase
 		this.selectedAspectStack = null;
 
 		// Check all aspects
-		for( AspectStack aspectStack : this.containerBase.getAspectStackList() )
+		for( AspectStack aspectStack : this.baseContainer.getAspectStackList() )
 		{
 			// Does this match?
-			if( aspectStack.aspect == this.containerBase.getSelectedAspect() )
+			if( aspectStack.aspect == this.baseContainer.getSelectedAspect() )
 			{
 				// Set our selection
 				this.selectedAspectStack = aspectStack;

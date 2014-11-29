@@ -1,4 +1,13 @@
-﻿11/27/2014 0.8.5b
+﻿11/29/2014 0.8.5b
+  Fixes #100: A.C.T. Checks user permissions again.
+  Potential Fix #99 Un-cached texture location in provider renderer.
+  Cleaned up terminal work code.
+
+11/28/2014 0.8.5b
+  Fixes #81: Added Wireless Essentia Terminal.
+  Major GUI cleanup for essentia terminals and cells.
+
+11/27/2014 0.8.5b
   Created model for gearboxes.
   Fixed an A.C.T crafting bug.
   A.C.T. search bar can be focused with right-click.

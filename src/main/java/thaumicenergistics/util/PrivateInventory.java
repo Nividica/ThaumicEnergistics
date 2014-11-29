@@ -37,34 +37,43 @@ public class PrivateInventory
 	@Override
 	public ItemStack decrStackSize( final int slotId, final int amount )
 	{
-		ItemStack slotStack = null;
+		// Get the stack
+		ItemStack slotStack = this.slots[slotId];
+		ItemStack resultStack = null;
 
-		if( this.slots[slotId] != null )
+		// Is the slot empty?
+		if( slotStack == null )
 		{
-			if( this.slots[slotId].stackSize <= amount )
-			{
-				slotStack = this.slots[slotId];
-
-				this.slots[slotId] = null;
-			}
-			else
-			{
-				ItemStack tmp = this.slots[slotId];
-
-				slotStack = tmp.splitStack( amount );
-
-				this.slots[slotId] = tmp;
-
-				if( this.slots[slotId].stackSize == 0 )
-				{
-					this.slots[slotId] = null;
-				}
-			}
-
-			this.markDirty();
+			// Slot is empty
+			return null;
 		}
 
-		return slotStack;
+		// Calculate the amount to get
+		int decAmount = Math.min( amount, slotStack.stackSize );
+
+		// Calculate the remaining amount
+		int remAmount = slotStack.stackSize - decAmount;
+
+		// Is there anything remaining in the slot?
+		if( remAmount > 0 )
+		{
+			this.slots[slotId].stackSize = remAmount;
+		}
+		else
+		{
+			this.slots[slotId] = null;
+		}
+
+		// Was any amount gotten?
+		if( decAmount > 0 )
+		{
+			resultStack = slotStack.copy();
+			resultStack.stackSize = decAmount;
+		}
+
+		this.markDirty();
+
+		return resultStack;
 	}
 
 	@Override
@@ -103,29 +112,35 @@ public class PrivateInventory
 		return false;
 	}
 
-	public ItemStack incrStackSize( final int slotId, final int amount )
+	/**
+	 * Increases the stack size of the specified slot, and marks the inventory
+	 * as dirty.
+	 * 
+	 * @param slotId
+	 * @param amount
+	 * @return The amount that was added.
+	 */
+	public int incrStackSize( final int slotId, final int amount )
 	{
+		// Get the stack
 		ItemStack slotStack = this.slots[slotId];
-		ItemStack added = null;
+
+		// Assume none was added
+		int added = 0;
 
 		if( slotStack != null )
 		{
-			int stackLimit = this.getInventoryStackLimit();
+			// Calculate the stack limit
+			int stackLimit = Math.min( this.getInventoryStackLimit(), slotStack.getMaxStackSize() );
 
-			if( stackLimit > slotStack.getMaxStackSize() )
+			// Calculate how much can be added
+			added = Math.min( amount, stackLimit - slotStack.stackSize );
+
+			// Can any be added?
+			if( added > 0 )
 			{
-				stackLimit = slotStack.getMaxStackSize();
-			}
-
-			int addedAmount = ( slotStack.stackSize + amount );
-
-			if( addedAmount <= stackLimit )
-			{
-				added = slotStack.copy();
-
-				added.stackSize = amount;
-
-				slotStack.stackSize += added.stackSize;
+				this.slots[slotId].stackSize += added;
+				this.markDirty();
 			}
 		}
 

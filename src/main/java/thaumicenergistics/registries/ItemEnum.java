@@ -9,6 +9,7 @@ import thaumicenergistics.items.ItemEssentiaCell;
 import thaumicenergistics.items.ItemMaterial;
 import thaumicenergistics.items.ItemStorageCasing;
 import thaumicenergistics.items.ItemStorageComponent;
+import thaumicenergistics.items.ItemWirelessEssentiaTerminal;
 
 public enum ItemEnum
 {
@@ -16,7 +17,8 @@ public enum ItemEnum
 		ESSENTIA_CELL ("storage.essentia", new ItemEssentiaCell()),
 		STORAGE_COMPONENT ("storage.component", new ItemStorageComponent()),
 		STORAGE_CASING ("storage.casing", new ItemStorageCasing()),
-		MATERIAL ("material", new ItemMaterial());
+		MATERIAL ("material", new ItemMaterial()),
+		WIRELESS_TERMINAL ("wireless.essentia.terminal", new ItemWirelessEssentiaTerminal());
 
 	private final String internalName;
 	private Item item;
@@ -57,7 +59,7 @@ public enum ItemEnum
 		return new ItemStack( this.item, size );
 	}
 
-	public String getStatName()
+	public String getLocalizedName()
 	{
 		return StatCollector.translateToLocal( this.item.getUnlocalizedName() );
 	}

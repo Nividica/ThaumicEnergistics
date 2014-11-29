@@ -7,6 +7,8 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerEssentiaCell;
 import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
 import thaumicenergistics.container.ContainerPriority;
+import thaumicenergistics.container.ContainerWirelessEssentiaTerminal;
+import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.parts.AbstractAEPartBase;
 import appeng.api.parts.IPartHost;
 import appeng.helpers.IPriorityHost;
@@ -35,6 +37,16 @@ public class TEGuiHandler
 	 * ID of the essentia cell workbench
 	 */
 	public static final int CELL_WORKBENCH_ID = 30;
+
+	/**
+	 * ID of the wireless terminal gui.
+	 */
+	public static final int WIRELESS_TERMINAL_ID = 40;
+
+	/**
+	 * Extra data used for some GUI calls.
+	 */
+	private static Object[] extraData = null;
 
 	/**
 	 * Gets the AE part at the specified location.
@@ -141,6 +153,25 @@ public class TEGuiHandler
 		player.openGui( ThaumicEnergistics.instance, ID + TEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
 	}
 
+	/**
+	 * Launches a non AE part gui with the specified extra data.
+	 * 
+	 * @param ID
+	 * @param player
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param extraData
+	 */
+	public static void launchGui( final int ID, final EntityPlayer player, final World world, final int x, final int y, final int z,
+									final Object[] extraData )
+	{
+		TEGuiHandler.extraData = extraData;
+		player.openGui( ThaumicEnergistics.instance, ID + TEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
+		TEGuiHandler.extraData = null;
+	}
+
 	@Override
 	public Object getClientGuiElement( int ID, final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
@@ -160,7 +191,7 @@ public class TEGuiHandler
 		// Is this the essentia cell?
 		if( ID == TEGuiHandler.ESSENTIA_CELL_ID )
 		{
-			return new GuiEssentiaCell( player, world, x, y, z );
+			return GuiEssentiaCellTerminal.NewEssentiaCellGui( player, world, x, y, z );
 		}
 
 		// Is this the priority window?
@@ -187,6 +218,12 @@ public class TEGuiHandler
 		if( ID == TEGuiHandler.CELL_WORKBENCH_ID )
 		{
 			return new GuiEssentiaCellWorkbench( player, world, x, y, z );
+		}
+
+		// Is this the wireless gui?
+		if( ID == TEGuiHandler.WIRELESS_TERMINAL_ID )
+		{
+			return GuiEssentiaCellTerminal.NewWirelessEssentiaTerminalGui( player );
 		}
 
 		// No matching GUI element found
@@ -240,6 +277,13 @@ public class TEGuiHandler
 		if( ID == TEGuiHandler.CELL_WORKBENCH_ID )
 		{
 			return new ContainerEssentiaCellWorkbench( player, world, x, y, z );
+		}
+
+		// Is this the wireless gui?
+		if( ID == TEGuiHandler.WIRELESS_TERMINAL_ID )
+		{
+			HandlerWirelessEssentiaTerminal handler = (HandlerWirelessEssentiaTerminal)TEGuiHandler.extraData[0];
+			return new ContainerWirelessEssentiaTerminal( player, handler );
 		}
 
 		// No matching GUI element found

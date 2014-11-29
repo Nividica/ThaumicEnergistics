@@ -26,34 +26,24 @@ public abstract class RenderBlockProviderBase
 	private static ForgeDirection[] FACES = ForgeDirection.VALID_DIRECTIONS;
 
 	/**
-	 * Base texture
+	 * Textures
 	 */
-	private IIcon baseTexture;
-
-	/**
-	 * Texture UV's
-	 */
-	double baseUV[], overlayUV[];
+	private IIcon baseTexture, overlayTexture;
 
 	public RenderBlockProviderBase( final IIcon baseTexture, final IIcon overlayTexture )
 	{
-		// Set the base texture
+		// Set the textures
 		this.baseTexture = baseTexture;
-
-		// Set the base UV's
-		this.baseUV = new double[] { baseTexture.getMinU(), baseTexture.getMaxU(), baseTexture.getMinV(), baseTexture.getMaxV() };
-
-		// Set the overlay UV's
-		this.overlayUV = new double[] { overlayTexture.getMinU(), overlayTexture.getMaxU(), overlayTexture.getMinV(), overlayTexture.getMaxV() };
+		this.overlayTexture = overlayTexture;
 	}
 
-	private void renderFaces( final IBlockAccess world, final int x, final int y, final int z, final double[] UVs, final boolean getFaceBrightness )
+	private void renderFaces( final IBlockAccess world, final int x, final int y, final int z, final IIcon texture, final boolean getFaceBrightness )
 	{
-		// Set texture to base
-		double minU = UVs[0];
-		double maxU = UVs[1];
-		double minV = UVs[2];
-		double maxV = UVs[3];
+		// Get the UV's
+		double minU = texture.getMinU();
+		double maxU = texture.getMaxU();
+		double minV = texture.getMinV();
+		double maxV = texture.getMaxV();
 
 		// Vertex +1 offsets
 		int x1 = x + 1, y1 = y + 1, z1 = z + 1;
@@ -154,8 +144,8 @@ public abstract class RenderBlockProviderBase
 	public final boolean renderWorldBlock( final IBlockAccess world, final int x, final int y, final int z, final Block block, final int modelId,
 											final RenderBlocks renderer )
 	{
-		// Texture UVs
-		double UVs[];
+		// Texture
+		IIcon texture;
 
 		// Should we ignore the actual brightness and go full?
 		boolean overrideBrightness = false;
@@ -164,7 +154,7 @@ public abstract class RenderBlockProviderBase
 		if( Renderers.currentRenderPass == Renderers.PASS_OPAQUE )
 		{
 			// Set the texture to the base
-			UVs = this.baseUV;
+			texture = this.baseTexture;
 
 			// Set the drawing color to full white
 			tessellator.setColorRGBA( 255, 255, 255, 255 );
@@ -174,7 +164,7 @@ public abstract class RenderBlockProviderBase
 		else
 		{
 			// Set the texture to the overlay
-			UVs = this.overlayUV;
+			texture = this.overlayTexture;
 
 			// Get the provider
 			TileProviderBase provider = (TileProviderBase)world.getTileEntity( x, y, z );
@@ -207,7 +197,7 @@ public abstract class RenderBlockProviderBase
 		}
 
 		// Render the faces
-		this.renderFaces( world, x, y, z, UVs, !overrideBrightness );
+		this.renderFaces( world, x, y, z, texture, !overrideBrightness );
 
 		return true;
 	}

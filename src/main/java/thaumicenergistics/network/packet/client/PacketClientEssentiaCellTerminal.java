@@ -9,18 +9,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
-import thaumicenergistics.container.ContainerEssentiaTerminal;
-import thaumicenergistics.gui.GuiEssentiaTerminal;
+import thaumicenergistics.gui.GuiEssentiaCellTerminal;
 import thaumicenergistics.network.packet.AbstractClientPacket;
 import thaumicenergistics.network.packet.AbstractPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PacketClientEssentiaTerminal
+public class PacketClientEssentiaCellTerminal
 	extends AbstractClientPacket
 {
 	private static final byte MODE_FULL_LIST = 0;
-	private static final byte MODE_SET_CURRENT = 1;
+	private static final byte MODE_SELECTED_ASPECT = 1;
 	private static final byte MODE_SORT_MODE_CHANGED = 2;
 	private static final byte MODE_LIST_CHANGED = 3;
 
@@ -35,40 +34,38 @@ public class PacketClientEssentiaTerminal
 	{
 		Gui gui = Minecraft.getMinecraft().currentScreen;
 
-		if( gui instanceof GuiEssentiaTerminal )
+		if( gui instanceof GuiEssentiaCellTerminal )
 		{
-			ContainerEssentiaTerminal container = (ContainerEssentiaTerminal)( (GuiEssentiaTerminal)gui ).inventorySlots;
-
 			switch ( this.mode )
 			{
-				case PacketClientEssentiaTerminal.MODE_FULL_LIST:
-					container.onReceiveAspectList( this.aspectStackList );
+				case PacketClientEssentiaCellTerminal.MODE_FULL_LIST:
+					( (GuiEssentiaCellTerminal)gui ).onReceiveAspectList( this.aspectStackList );
 					break;
 
-				case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
-					container.onReceiveSelectedAspect( this.selectedAspect );
+				case PacketClientEssentiaCellTerminal.MODE_SELECTED_ASPECT:
+					( (GuiEssentiaCellTerminal)gui ).onReceiveSelectedAspect( this.selectedAspect );
 					break;
 
-				case PacketClientEssentiaTerminal.MODE_SORT_MODE_CHANGED:
+				case PacketClientEssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
 					// Update the sorting mode
-					( (GuiEssentiaTerminal)gui ).onSortModeChanged( this.sortMode );
+					( (GuiEssentiaCellTerminal)gui ).onSortModeChanged( this.sortMode );
 					break;
 
-				case PacketClientEssentiaTerminal.MODE_LIST_CHANGED:
+				case PacketClientEssentiaCellTerminal.MODE_LIST_CHANGED:
 					// Update the list
-					container.onReceiveAspectListChange( this.change );
+					( (GuiEssentiaCellTerminal)gui ).onReceiveAspectListChange( this.change );
 					break;
 			}
 		}
 	}
 
-	public PacketClientEssentiaTerminal createListChanged( final EntityPlayer player, final AspectStack change )
+	public PacketClientEssentiaCellTerminal createListChanged( final EntityPlayer player, final AspectStack change )
 	{
 		// Set the player
 		this.player = player;
 
 		// Set the mode
-		this.mode = PacketClientEssentiaTerminal.MODE_LIST_CHANGED;
+		this.mode = PacketClientEssentiaCellTerminal.MODE_LIST_CHANGED;
 
 		// Set the change
 		this.change = change;
@@ -76,13 +73,13 @@ public class PacketClientEssentiaTerminal
 		return this;
 	}
 
-	public PacketClientEssentiaTerminal createSelectedAspectUpdate( final EntityPlayer player, final Aspect selectedAspect )
+	public PacketClientEssentiaCellTerminal createSelectedAspectUpdate( final EntityPlayer player, final Aspect selectedAspect )
 	{
 		// Set the player
 		this.player = player;
 
 		// Set the mode
-		this.mode = PacketClientEssentiaTerminal.MODE_SET_CURRENT;
+		this.mode = PacketClientEssentiaCellTerminal.MODE_SELECTED_ASPECT;
 
 		// Set the selected aspect
 		this.selectedAspect = selectedAspect;
@@ -90,13 +87,13 @@ public class PacketClientEssentiaTerminal
 		return this;
 	}
 
-	public PacketClientEssentiaTerminal createSortModeUpdate( final EntityPlayer player, final ComparatorMode sortMode )
+	public PacketClientEssentiaCellTerminal createSortModeUpdate( final EntityPlayer player, final ComparatorMode sortMode )
 	{
 		// Set the player
 		this.player = player;
 
 		// Set the mode
-		this.mode = PacketClientEssentiaTerminal.MODE_SORT_MODE_CHANGED;
+		this.mode = PacketClientEssentiaCellTerminal.MODE_SORT_MODE_CHANGED;
 
 		// Set the sort mode
 		this.sortMode = sortMode;
@@ -104,13 +101,13 @@ public class PacketClientEssentiaTerminal
 		return this;
 	}
 
-	public PacketClientEssentiaTerminal createUpdateFullList( final EntityPlayer player, final List<AspectStack> list )
+	public PacketClientEssentiaCellTerminal createUpdateFullList( final EntityPlayer player, final List<AspectStack> list )
 	{
 		// Set the player
 		this.player = player;
 
 		// Set the mode
-		this.mode = PacketClientEssentiaTerminal.MODE_FULL_LIST;
+		this.mode = PacketClientEssentiaCellTerminal.MODE_FULL_LIST;
 
 		// Mark to use compression
 		this.useCompression = true;
@@ -127,7 +124,7 @@ public class PacketClientEssentiaTerminal
 
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaTerminal.MODE_FULL_LIST:
+			case PacketClientEssentiaCellTerminal.MODE_FULL_LIST:
 				this.aspectStackList = new ArrayList<AspectStack>();
 
 				while( stream.readableBytes() > 0 )
@@ -136,16 +133,16 @@ public class PacketClientEssentiaTerminal
 				}
 				break;
 
-			case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
+			case PacketClientEssentiaCellTerminal.MODE_SELECTED_ASPECT:
 				this.selectedAspect = AbstractPacket.readAspect( stream );
 				break;
 
-			case PacketClientEssentiaTerminal.MODE_SORT_MODE_CHANGED:
+			case PacketClientEssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
 				// Read the mode ordinal
 				this.sortMode = ComparatorMode.VALUES[stream.readInt()];
 				break;
 
-			case PacketClientEssentiaTerminal.MODE_LIST_CHANGED:
+			case PacketClientEssentiaCellTerminal.MODE_LIST_CHANGED:
 				// Read the stack
 				this.change = new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() );
 		}
@@ -157,7 +154,7 @@ public class PacketClientEssentiaTerminal
 
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaTerminal.MODE_FULL_LIST:
+			case PacketClientEssentiaCellTerminal.MODE_FULL_LIST:
 				for( AspectStack stack : this.aspectStackList )
 				{
 					AbstractPacket.writeAspect( stack.aspect, stream );
@@ -166,16 +163,16 @@ public class PacketClientEssentiaTerminal
 				}
 				break;
 
-			case PacketClientEssentiaTerminal.MODE_SET_CURRENT:
+			case PacketClientEssentiaCellTerminal.MODE_SELECTED_ASPECT:
 				AbstractPacket.writeAspect( this.selectedAspect, stream );
 				break;
 
-			case PacketClientEssentiaTerminal.MODE_SORT_MODE_CHANGED:
+			case PacketClientEssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
 				// Write the mode ordinal
 				stream.writeInt( this.sortMode.ordinal() );
 				break;
 
-			case PacketClientEssentiaTerminal.MODE_LIST_CHANGED:
+			case PacketClientEssentiaCellTerminal.MODE_LIST_CHANGED:
 				// Write the aspect
 				AbstractPacket.writeAspect( this.change.aspect, stream );
 

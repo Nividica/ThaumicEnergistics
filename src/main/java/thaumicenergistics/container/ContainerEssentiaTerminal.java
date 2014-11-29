@@ -1,12 +1,9 @@
 package thaumicenergistics.container;
 
 import net.minecraft.entity.player.EntityPlayer;
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
-import thaumicenergistics.integration.tc.EssentiaCellTerminalWorker;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaTerminal;
-import thaumicenergistics.network.packet.server.PacketServerEssentiaTerminal;
+import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
+import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.Actionable;
@@ -21,7 +18,7 @@ import appeng.api.networking.security.PlayerSource;
  * 
  */
 public class ContainerEssentiaTerminal
-	extends ContainerCellTerminalBase
+	extends AbstractContainerCellTerminalBase
 {
 	/**
 	 * The terminal this is associated with.
@@ -76,7 +73,7 @@ public class ContainerEssentiaTerminal
 		else
 		{
 			// Ask for a list update
-			new PacketServerEssentiaTerminal().createFullUpdateRequest( this.player ).sendPacketToServer();
+			new PacketServerEssentiaCellTerminal().createFullUpdateRequest( this.player ).sendPacketToServer();
 			this.hasRequested = true;
 		}
 
@@ -84,57 +81,40 @@ public class ContainerEssentiaTerminal
 		this.bindToInventory( terminal.getInventory() );
 	}
 
-	/**
-	 * Checks if there is any work to perform.
-	 * If there is it does so.
-	 */
 	@Override
-	public void detectAndSendChanges()
+	protected boolean extractPowerForEssentiaTransfer( final int amountOfEssentiaTransfered, final Actionable mode )
 	{
-		// Call super
-		super.detectAndSendChanges();
-
-		// Do we have a monitor
-		if( this.monitor != null )
+		try
 		{
+			// Get the energy grid
+			IEnergyGrid eGrid = this.terminal.getGridBlock().getEnergyGrid();
 
-			// Can we lock the inventory?
-			if( this.terminal.lockInventoryForWork() )
+			// Did we get the grid
+			if( eGrid != null )
 			{
-				// Try block ensures lock gets released.
-				try
-				{
-					// Do we have work to do?
-					if( EssentiaCellTerminalWorker.instance.hasWork( this.inventory ) )
-					{
-						// Get the energy grid
-						IEnergyGrid eGrid = this.terminal.getGridBlock().getEnergyGrid();
+				// Calculate the amount of power to drain
+				double powerRequired = AbstractContainerCellTerminalBase.POWER_PER_TRANSFER * amountOfEssentiaTransfered;
 
-						// Did we get the grid, and can we drain energy?
-						if( ( eGrid != null ) &&
-										( eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.SIMULATE,
-											PowerMultiplier.CONFIG ) >= ContainerCellTerminalBase.POWER_PER_TRANSFER ) )
-						{
-							// Do the work.
-							if( EssentiaCellTerminalWorker.instance.doWork( this.inventory, this.monitor, this.playerSource, this.selectedAspect,
-								this.player ) )
-							{
-								// We did work, extract power
-								eGrid.extractAEPower( ContainerCellTerminalBase.POWER_PER_TRANSFER, Actionable.MODULATE, PowerMultiplier.CONFIG );
-							}
-						}
-					}
-				}
-				catch( Exception e )
-				{
-				}
-				finally
-				{
-					// Release the lock.
-					this.terminal.unlockInventory();
-				}
+				// Drain power
+				return( eGrid.extractAEPower( powerRequired, mode, PowerMultiplier.CONFIG ) >= powerRequired );
 			}
 		}
+		catch( Exception e )
+		{
+		}
+
+		// Power could not be drained.
+		return false;
+	}
+
+	/**
+	 * Transfers essentia.
+	 */
+	@Override
+	public void doWork( final int elapsedTicks )
+	{
+		// Transfer essentia if needed.
+		this.transferEssentia( this.playerSource );
 	}
 
 	/**
@@ -150,8 +130,14 @@ public class ContainerEssentiaTerminal
 		// Send the aspect list
 		if( this.monitor != null )
 		{
-			new PacketClientEssentiaTerminal().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
+			new PacketClientEssentiaCellTerminal().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
 		}
+	}
+
+	@Override
+	public void onClientRequestSortModeChange( final ComparatorMode sortingMode, final EntityPlayer player )
+	{
+		this.terminal.onClientRequestSortingModeChange( sortingMode );
 	}
 
 	/**
@@ -169,63 +155,12 @@ public class ContainerEssentiaTerminal
 	}
 
 	/**
-	 * Resent the full list to the client.
-	 */
-	@Override
-	public void onListUpdate()
-	{
-		//this.onClientRequestFullUpdate();
-	}
-
-	/**
-	 * Updates the selected aspect and gui.
-	 */
-	@Override
-	public void onReceiveSelectedAspect( final Aspect selectedAspect )
-	{
-		// Set the selected aspect
-		this.selectedAspect = selectedAspect;
-
-		// Is this client side?
-		if( EffectiveSide.isClientSide() )
-		{
-			// Update the gui
-			this.guiBase.updateSelectedAspect();
-		}
-		else
-		{
-			// Send the change back to the client
-			new PacketClientEssentiaTerminal().createSelectedAspectUpdate( this.player, this.selectedAspect ).sendPacketToPlayer();
-		}
-	}
-
-	/**
-	 * Called from the AE part when it's sorting mode has changed
+	 * Called from the terminal when it's sorting mode has changed
 	 */
 	public void onSortingModeChanged( final ComparatorMode sortingMode )
 	{
 		// Inform the client
-		new PacketClientEssentiaTerminal().createSortModeUpdate( this.player, sortingMode ).sendPacketToPlayer();
-	}
-
-	/**
-	 * Forwards the change to the client.
-	 */
-	@Override
-	public void postAspectStackChange( final AspectStack change )
-	{
-		// Send the change
-		new PacketClientEssentiaTerminal().createListChanged( this.player, change ).sendPacketToPlayer();
-	}
-
-	/**
-	 * Called when the user has clicked on an aspect.
-	 * Sends that change to the server for validation.
-	 */
-	@Override
-	public void setSelectedAspect( final Aspect selectedAspect )
-	{
-		new PacketServerEssentiaTerminal().createUpdateSelectedAspect( this.player, selectedAspect ).sendPacketToServer();
+		new PacketClientEssentiaCellTerminal().createSortModeUpdate( this.player, sortingMode ).sendPacketToPlayer();
 	}
 
 }

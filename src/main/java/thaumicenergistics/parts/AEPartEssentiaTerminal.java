@@ -11,9 +11,9 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
-import thaumicenergistics.container.ContainerCellTerminalBase;
+import thaumicenergistics.container.AbstractContainerCellTerminalBase;
 import thaumicenergistics.container.ContainerEssentiaTerminal;
-import thaumicenergistics.gui.GuiEssentiaTerminal;
+import thaumicenergistics.gui.GuiEssentiaCellTerminal;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
@@ -81,7 +81,7 @@ public class AEPartEssentiaTerminal
 		return true;
 	}
 
-	public void addListener( final ContainerCellTerminalBase container )
+	public void addListener( final AbstractContainerCellTerminalBase container )
 	{
 		if( container instanceof ContainerEssentiaTerminal )
 		{
@@ -108,7 +108,7 @@ public class AEPartEssentiaTerminal
 	@Override
 	public Object getClientGuiElement( final EntityPlayer player )
 	{
-		return new GuiEssentiaTerminal( this, player );
+		return GuiEssentiaCellTerminal.NewEssentiaTerminalGui( this, player );
 	}
 
 	@Override
@@ -181,6 +181,7 @@ public class AEPartEssentiaTerminal
 	 * 
 	 * @return True if the lock was acquired, false otherwise.
 	 */
+	@Deprecated
 	public boolean lockInventoryForWork()
 	{
 		boolean gotLock = false;
@@ -342,6 +343,7 @@ public class AEPartEssentiaTerminal
 	 * perform work. This should only be called from
 	 * a thread that owns the lock.
 	 */
+	@Deprecated
 	public void unlockInventory()
 	{
 		// Ensure only 1 thread can access the lock at a time

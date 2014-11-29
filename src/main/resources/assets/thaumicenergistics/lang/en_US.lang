@@ -34,6 +34,7 @@ thaumicenergistics.item.storage.component.64k.name=ME 64k Essentia Storage Compo
 thaumicenergistics.item.material.diffusion.core.name=Diffusion Core
 thaumicenergistics.item.material.coalescence.core.name=Coalescence Core
 thaumicenergistics.item.material.iron.gear.name=Iron Gear
+thaumicenergistics.item.wireless.essentia.terminal.name=Wireless Essentia Terminal
 
 #Tooltips
 thaumicenergistics.tooltip.essentia.cell.bytes=%d of %d bytes used.
