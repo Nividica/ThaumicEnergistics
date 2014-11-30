@@ -1,15 +1,16 @@
 package thaumicenergistics.render;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.registries.Renderers;
 import thaumicenergistics.tileentities.TileProviderBase;
-import appeng.api.util.AEColor;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -29,6 +30,12 @@ public abstract class RenderBlockProviderBase
 	 */
 	private IIcon baseTexture, overlayTexture;
 
+	/**
+	 * Creates the renderer.
+	 * 
+	 * @param baseTexture
+	 * @param overlayTexture
+	 */
 	public RenderBlockProviderBase( final IIcon baseTexture, final IIcon overlayTexture )
 	{
 		// Set the textures
@@ -36,7 +43,17 @@ public abstract class RenderBlockProviderBase
 		this.overlayTexture = overlayTexture;
 	}
 
-	private void renderFaces( final IBlockAccess world, final int x, final int y, final int z, final IIcon texture, final boolean getFaceBrightness )
+	/**
+	 * Renders all faces of the provider.
+	 * 
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param texture
+	 * @param glowAmount
+	 */
+	private void renderFaces( final IBlockAccess world, final int x, final int y, final int z, final IIcon texture, final int glowAmount )
 	{
 		Tessellator tessellator = Tessellator.instance;
 
@@ -51,11 +68,8 @@ public abstract class RenderBlockProviderBase
 
 		for( ForgeDirection face : FACES )
 		{
-			// Should the face brightness be calculated?
-			if( getFaceBrightness )
-			{
-				tessellator.setBrightness( world.getLightBrightnessForSkyBlocks( x + face.offsetX, y + face.offsetY, z + face.offsetZ, 0 ) );
-			}
+			// Calculate the brightness
+			tessellator.setBrightness( world.getLightBrightnessForSkyBlocks( x + face.offsetX, y + face.offsetY, z - face.offsetZ, glowAmount ) );
 
 			switch ( face )
 			{
@@ -108,44 +122,47 @@ public abstract class RenderBlockProviderBase
 		}
 	}
 
+	/**
+	 * Renders the provider in the inventory.
+	 */
 	@Override
 	public final void renderInventoryBlock( final Block block, final int metadata, final int modelId, final RenderBlocks renderer )
 	{
 		// Get the tessellator instance
 		Tessellator tessellator = Tessellator.instance;
 
+		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
+
 		IIcon texture = this.baseTexture;
 
 		GL11.glTranslatef( -0.5F, -0.5F, -0.5F );
 
 		tessellator.startDrawingQuads();
+
+		// Down
 		tessellator.setNormal( 0.0F, -1.0F, 0.0F );
 		renderer.renderFaceYNeg( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
 
-		tessellator.startDrawingQuads();
+		// Up
 		tessellator.setNormal( 0.0F, 1.0F, 0.0F );
 		renderer.renderFaceYPos( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
 
-		tessellator.startDrawingQuads();
+		// North
 		tessellator.setNormal( 0.0F, 0.0F, -1.0F );
 		renderer.renderFaceZNeg( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
 
-		tessellator.startDrawingQuads();
+		// South
 		tessellator.setNormal( 0.0F, 0.0F, 1.0F );
 		renderer.renderFaceZPos( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
 
-		tessellator.startDrawingQuads();
+		// West
 		tessellator.setNormal( -1.0F, 0.0F, 0.0F );
 		renderer.renderFaceXNeg( block, 0.0D, 0.0D, 0.0D, texture );
-		tessellator.draw();
 
-		tessellator.startDrawingQuads();
+		// East
 		tessellator.setNormal( 1.0F, 0.0F, 0.0F );
 		renderer.renderFaceXPos( block, 0.0D, 0.0D, 0.0D, texture );
+
 		tessellator.draw();
 
 		GL11.glTranslatef( 0.5F, 0.5F, 0.5F );
@@ -155,13 +172,17 @@ public abstract class RenderBlockProviderBase
 	public final boolean renderWorldBlock( final IBlockAccess world, final int x, final int y, final int z, final Block block, final int modelId,
 											final RenderBlocks renderer )
 	{
+		// Get the tessellator 
 		Tessellator tessellator = Tessellator.instance;
+
+		// Bind the blocks texture
+		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
 
 		// Texture
 		IIcon texture;
 
-		// Should we ignore the actual brightness and go full?
-		boolean overrideBrightness = false;
+		// The forced glow of the block
+		int glow = 0;
 
 		// Is this the opaque pass?
 		if( Renderers.currentRenderPass == Renderers.PASS_OPAQUE )
@@ -182,21 +203,14 @@ public abstract class RenderBlockProviderBase
 			// Get the provider
 			TileProviderBase provider = (TileProviderBase)world.getTileEntity( x, y, z );
 
-			// Get the color of the provider
-			AEColor overlayColor = provider.getColor();
-
-			// Get the active state
-			boolean isActive = provider.isActive();
-
 			// Is the provider active?
-			if( isActive )
+			if( provider.isActive() )
 			{
-				// Adjust brightness
-				overrideBrightness = true;
-				tessellator.setBrightness( 0xF000F0 );
+				// Adjust overlay brightness
+				glow = 15;
 
 				// Set the drawing color
-				tessellator.setColorOpaque_I( overlayColor.mediumVariant );
+				tessellator.setColorOpaque_I( provider.getColor().mediumVariant );
 			}
 			else
 			{
@@ -206,7 +220,7 @@ public abstract class RenderBlockProviderBase
 		}
 
 		// Render the faces
-		this.renderFaces( world, x, y, z, texture, !overrideBrightness );
+		this.renderFaces( world, x, y, z, texture, glow );
 
 		return true;
 	}
