@@ -12,7 +12,10 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.TEApi;
 import thaumicenergistics.render.model.ModelGearbox;
 import thaumicenergistics.tileentities.TileGearBox;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class RenderTileGearbox
 	extends TileEntitySpecialRenderer
 {

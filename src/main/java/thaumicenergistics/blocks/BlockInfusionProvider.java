@@ -65,6 +65,7 @@ public class BlockInfusionProvider
 		return BlockTextureManager.INFUSION_PROVIDER.getTextures()[1];
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getRenderType()
 	{

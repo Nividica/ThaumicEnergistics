@@ -47,6 +47,7 @@ public abstract class AbstractBlockProviderBase
 	@Override
 	public abstract IIcon getIcon( int side, int metaData );
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public final int getRenderBlockPass()
 	{
@@ -54,6 +55,7 @@ public abstract class AbstractBlockProviderBase
 		return Renderers.PASS_ALPHA;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public abstract int getRenderType();
 

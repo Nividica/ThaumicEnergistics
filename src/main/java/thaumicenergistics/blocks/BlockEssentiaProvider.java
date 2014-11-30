@@ -54,6 +54,7 @@ public class BlockEssentiaProvider
 		return BlockTextureManager.ESSENTIA_PROVIDER.getTexture();
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getRenderType()
 	{

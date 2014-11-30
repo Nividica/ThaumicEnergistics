@@ -11,14 +11,13 @@ import thaumicenergistics.registries.Renderers;
 import thaumicenergistics.tileentities.TileProviderBase;
 import appeng.api.util.AEColor;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public abstract class RenderBlockProviderBase
 	implements ISimpleBlockRenderingHandler
 {
-	/**
-	 * The tessellator instance.
-	 */
-	private static Tessellator tessellator = Tessellator.instance;
 
 	/**
 	 * Side/Face array cache.
@@ -39,6 +38,8 @@ public abstract class RenderBlockProviderBase
 
 	private void renderFaces( final IBlockAccess world, final int x, final int y, final int z, final IIcon texture, final boolean getFaceBrightness )
 	{
+		Tessellator tessellator = Tessellator.instance;
+
 		// Get the UV's
 		double minU = texture.getMinU();
 		double maxU = texture.getMaxU();
@@ -120,19 +121,29 @@ public abstract class RenderBlockProviderBase
 		tessellator.startDrawingQuads();
 		tessellator.setNormal( 0.0F, -1.0F, 0.0F );
 		renderer.renderFaceYNeg( block, 0.0D, 0.0D, 0.0D, texture );
+		tessellator.draw();
 
+		tessellator.startDrawingQuads();
 		tessellator.setNormal( 0.0F, 1.0F, 0.0F );
 		renderer.renderFaceYPos( block, 0.0D, 0.0D, 0.0D, texture );
+		tessellator.draw();
 
+		tessellator.startDrawingQuads();
 		tessellator.setNormal( 0.0F, 0.0F, -1.0F );
 		renderer.renderFaceZNeg( block, 0.0D, 0.0D, 0.0D, texture );
+		tessellator.draw();
 
+		tessellator.startDrawingQuads();
 		tessellator.setNormal( 0.0F, 0.0F, 1.0F );
 		renderer.renderFaceZPos( block, 0.0D, 0.0D, 0.0D, texture );
+		tessellator.draw();
 
+		tessellator.startDrawingQuads();
 		tessellator.setNormal( -1.0F, 0.0F, 0.0F );
 		renderer.renderFaceXNeg( block, 0.0D, 0.0D, 0.0D, texture );
+		tessellator.draw();
 
+		tessellator.startDrawingQuads();
 		tessellator.setNormal( 1.0F, 0.0F, 0.0F );
 		renderer.renderFaceXPos( block, 0.0D, 0.0D, 0.0D, texture );
 		tessellator.draw();
@@ -144,6 +155,8 @@ public abstract class RenderBlockProviderBase
 	public final boolean renderWorldBlock( final IBlockAccess world, final int x, final int y, final int z, final Block block, final int modelId,
 											final RenderBlocks renderer )
 	{
+		Tessellator tessellator = Tessellator.instance;
+
 		// Texture
 		IIcon texture;
 
@@ -182,12 +195,8 @@ public abstract class RenderBlockProviderBase
 				overrideBrightness = true;
 				tessellator.setBrightness( 0xF000F0 );
 
-				// Is the provider's network color not fluix?
-				//if( overlayColor != AEColor.Transparent )
-				//{
 				// Set the drawing color
 				tessellator.setColorOpaque_I( overlayColor.mediumVariant );
-				//}
 			}
 			else
 			{
