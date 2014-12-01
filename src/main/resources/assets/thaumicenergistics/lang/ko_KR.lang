@@ -26,7 +26,7 @@ thaumicenergistics.item.essentia.cell.1k.name=ME 1k 에센시아 저장소
 thaumicenergistics.item.essentia.cell.4k.name=ME 4k 에센시아 저장소
 thaumicenergistics.item.essentia.cell.16k.name=ME 16k 에센시아 저장소
 thaumicenergistics.item.essentia.cell.64k.name=ME 64k 에센시아 저장소
-thaumicenergistics.item.storage.casing.name=ME 에센시아 저장소 케이싱
+thaumicenergistics.item.storage.casing.name=ME 에센시아 저장소 하우징
 thaumicenergistics.item.storage.component.1k.name=ME 1k 에센시아 저장요소
 thaumicenergistics.item.storage.component.4k.name=ME 4k 에센시아 저장요소
 thaumicenergistics.item.storage.component.16k.name=ME 16k 에센시아 저장요소
@@ -34,6 +34,7 @@ thaumicenergistics.item.storage.component.64k.name=ME 64k 에센시아 저장요
 thaumicenergistics.item.material.diffusion.core.name=증류 코어
 thaumicenergistics.item.material.coalescence.core.name=응결 코어
 thaumicenergistics.item.material.iron.gear.name=철 톱니바퀴
+thaumicenergistics.item.wireless.essentia.terminal.name=무선 에센시아 단말기
 
 #Tooltips
 thaumicenergistics.tooltip.essentia.cell.bytes=%d 바이트가 %d 중에서 사용됨
@@ -71,7 +72,7 @@ thaumicenergistics.research_page.TECORES.2=§증류 코어§r<BR>증류된 에�
 tc.research_name.thaumicenergistics.TESTORAGE=[TE] 디지-센시아 저장소
 tc.research_text.thaumicenergistics.TESTORAGE=이걸로 에센시아를 저장할 수 있을까?
 thaumicenergistics.research_page.TESTORAGE.1=디지털 저장장치들을 살펴본 후 당신은 디지털화된 에센시아를 실제로 저장할 수 있다는 결론을 내렸습니다.<BR>§l세투스 석영§r에 농축된 에센스를 주입함으로서, 디지털화된 상태에서도 에센시아를 활성 상태를 유지한 채로 저장할 수 있는 능력을 가지게 할 수 있습니다.<BR>당신은 석영 자체에 저장 가능한 제한량이 있음에도 불구하고, 에센스의 농도가 높으면 높을수록 더 많은 양의 에센시아를 저장할 수 있다고 결론내렸습니다.
-thaumicenergistics.research_page.TESTORAGE.2=§l구성요소들§r<BR>저장요소는 에센시아를 디지털 데이터로써 저장합니다. 저장소 케이싱으로 디지털 네트워크와의 인터페이스를 만들지 않으면 사용할 수 없습니다.<LINE>§l저장소 케이싱§r<BR>저장소 케이싱은 구성요소와의 인터페이스를 제공하며, 또한 구성요소를 충격으로부터 보호합니다. 그 자체로는 어떤 마력도 지니고 있지 않으며, 그래서 조합에 비스가 필요하지 않습니다.
+thaumicenergistics.research_page.TESTORAGE.2=§l구성요소들§r<BR>저장요소는 에센시아를 디지털 데이터로써 저장합니다. 저장소 케이싱으로 디지털 네트워크와의 인터페이스를 만들지 않으면 사용할 수 없습니다.<BR>§l저장소 케이싱§r<BR>저장소 케이싱은 구성요소와의 인터페이스를 제공하며, 또한 구성요소를 충격으로부터 보호합니다.<BR>§lEssentia Cell Workbench§r<BR>The cell workbench allows you to partition a cell, specifying what essentia types are allowed to be stored.
 
 # Research IO
 tc.research_name.thaumicenergistics.TEIO=[TE] 디지-센시아 운송
@@ -87,7 +88,7 @@ thaumicenergistics.research_page.TEARCANETERM.1=당신은 근본적인 양상들
 # Research Essentia terminal
 tc.research_name.thaumicenergistics.TEESSTERM=[TE]에센시아 단말기
 tc.research_text.thaumicenergistics.TEESSTERM=당신이 얼마나 가지고 있는지를 알라.
-thaumicenergistics.research_page.TEESSTERM.1=The 에센시아 단말기는 allows you to monitor how much essentia is stored within the network, and provides a way to fill and drain essentia containers within the terminal.
+thaumicenergistics.research_page.TEESSTERM.1=The 에센시아 단말기는and §l무선 에센시아 단말기§r allows you to monitor how much essentia is stored within the network, and provides a way to fill and drain essentia containers within the terminal.
 
 # Research Essentia Provider
 tc.research_name.thaumicenergistics.TEESSPROV=에센시아 공급기
@@ -118,9 +119,8 @@ thaumicenergistics.research_page.TEIRONGEARBOX.2=When cranking multiple devices,
 tc.research_name.thaumicenergistics.TETHAUMGBOX=사우뮴 기어박스
 tc.research_text.thaumicenergistics.TETHAUMGBOX=Little Labor Force
 thaumicenergistics.research_page.TETHAUMGBOX.1=Now that your golems can right-click on your behalf, its time you updated the gearbox to accommodate them. Adding a dash of metal and magic, you have retrofitted the §lIron Gear Box§r and created the §lThaumium Gear Box§r.<BR>The redesigned model will allow any golem with the §lUse Core§r to crank the gearbox.
-thaumicenergistics.research_page.TETHAUMGBOX.1=Now that your golems can right-click on your behalf, its time you updated the gearbox to accommodate them. Adding a splash of metal and magic, you have retrofitted the §lIron Gear Box§r and created the §lThaumium Gear Box§r.<BR>The redesigned model will allow any golem with the §lUse Core§r to crank the gearbox.
 
 # Research Certus Quartz Duplication
-tc.research_name.thaumicenergistics.TECERTUSDUPE=Certus Quartz Duplication
+tc.research_name.thaumicenergistics.TECERTUSDUPE=Quartz Duplication
 tc.research_text.thaumicenergistics.TECERTUSDUPE=Impurities Intact
-thaumicenergistics.research_page.TECERTUSDUPE.1=You are now able to alchemicaly duplicate §lCertus Quartz Crystal§r.
+thaumicenergistics.research_page.TECERTUSDUPE.1=You are now able to alchemicaly duplicate §lCertus Quartz Crystal§r. and §lNether Quartz§r.
