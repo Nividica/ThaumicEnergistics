@@ -1,4 +1,8 @@
-﻿11/30/2014 0.8.6b
+﻿11/30/2014 0.8.7b
+  Reproduced provider render bug thanks to the suggestion of Einsvies to test with Ars Magica 2. #99
+  Renderer now reacquires the texture reference every draw call.
+
+11/30/2014 0.8.6b
   Fixed provider render bug?
 
 11/29/2014 0.8.6b

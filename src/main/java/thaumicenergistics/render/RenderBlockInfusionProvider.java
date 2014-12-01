@@ -12,7 +12,7 @@ public class RenderBlockInfusionProvider
 
 	public RenderBlockInfusionProvider()
 	{
-		super( BlockTextureManager.INFUSION_PROVIDER.getTextures()[0], BlockTextureManager.INFUSION_PROVIDER.getTextures()[1] );
+		super( BlockTextureManager.INFUSION_PROVIDER );
 	}
 
 	@Override

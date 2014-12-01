@@ -1,15 +1,14 @@
 package thaumicenergistics.render;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.registries.Renderers;
+import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.tileentities.TileProviderBase;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -28,7 +27,7 @@ public abstract class RenderBlockProviderBase
 	/**
 	 * Textures
 	 */
-	private IIcon baseTexture, overlayTexture;
+	private BlockTextureManager textureSource;
 
 	/**
 	 * Creates the renderer.
@@ -36,11 +35,9 @@ public abstract class RenderBlockProviderBase
 	 * @param baseTexture
 	 * @param overlayTexture
 	 */
-	public RenderBlockProviderBase( final IIcon baseTexture, final IIcon overlayTexture )
+	public RenderBlockProviderBase( final BlockTextureManager sourceTextures )
 	{
-		// Set the textures
-		this.baseTexture = baseTexture;
-		this.overlayTexture = overlayTexture;
+		this.textureSource = sourceTextures;
 	}
 
 	/**
@@ -131,9 +128,7 @@ public abstract class RenderBlockProviderBase
 		// Get the tessellator instance
 		Tessellator tessellator = Tessellator.instance;
 
-		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
-
-		IIcon texture = this.baseTexture;
+		IIcon texture = this.textureSource.getTextures()[0];
 
 		GL11.glTranslatef( -0.5F, -0.5F, -0.5F );
 
@@ -175,9 +170,6 @@ public abstract class RenderBlockProviderBase
 		// Get the tessellator 
 		Tessellator tessellator = Tessellator.instance;
 
-		// Bind the blocks texture
-		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
-
 		// Texture
 		IIcon texture;
 
@@ -188,7 +180,7 @@ public abstract class RenderBlockProviderBase
 		if( Renderers.currentRenderPass == Renderers.PASS_OPAQUE )
 		{
 			// Set the texture to the base
-			texture = this.baseTexture;
+			texture = this.textureSource.getTextures()[0];
 
 			// Set the drawing color to full white
 			tessellator.setColorRGBA( 255, 255, 255, 255 );
@@ -198,7 +190,7 @@ public abstract class RenderBlockProviderBase
 		else
 		{
 			// Set the texture to the overlay
-			texture = this.overlayTexture;
+			texture = this.textureSource.getTextures()[1];
 
 			// Get the provider
 			TileProviderBase provider = (TileProviderBase)world.getTileEntity( x, y, z );

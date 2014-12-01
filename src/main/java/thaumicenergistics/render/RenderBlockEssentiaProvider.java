@@ -11,7 +11,7 @@ public class RenderBlockEssentiaProvider
 {
 	public RenderBlockEssentiaProvider()
 	{
-		super( BlockTextureManager.ESSENTIA_PROVIDER.getTextures()[0], BlockTextureManager.ESSENTIA_PROVIDER.getTextures()[1] );
+		super( BlockTextureManager.ESSENTIA_PROVIDER );
 	}
 
 	@Override
