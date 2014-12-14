@@ -94,7 +94,6 @@ public class TileGearBox
 	/**
 	 * The current amount of shaft rotation.
 	 */
-	@SideOnly(Side.CLIENT)
 	public float shaftRotation = 0.0F;
 
 	/**

@@ -247,7 +247,7 @@ public class RecipeRegistry
 
 		// Thaumcraft items
 		Object WardedGlass;
-		if( !Config.wardedStone )
+		if( Config.wardedStone )
 		{
 			WardedGlass = new ItemStack( ConfigBlocks.blockCosmeticOpaque, 1, 2 );
 		}

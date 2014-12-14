@@ -98,6 +98,9 @@ public abstract class AbstractAEPartBase
 		// Do we have a node?
 		if( this.node != null )
 		{
+			// Update the node
+			this.node.updateState();
+
 			// Get the active state
 			boolean currentlyActive = this.node.isActive();
 

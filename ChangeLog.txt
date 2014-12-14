@@ -1,4 +1,10 @@
-﻿11/30/2014 0.8.7b
+﻿12/14/2014 0.8.7.1b
+  Changed version number scheme: Release.Major.Minor.Bugfix
+  Fixes #103: Warded glass recipes fixed.
+  Fixes #102: Servers no longer crash third-party code is exploring the gearbox tile.
+  
+
+11/30/2014 0.8.7b
   Reproduced provider render bug thanks to the suggestion of Einsvies to test with Ars Magica 2. #99
   Renderer now reacquires the texture reference every draw call.
 
