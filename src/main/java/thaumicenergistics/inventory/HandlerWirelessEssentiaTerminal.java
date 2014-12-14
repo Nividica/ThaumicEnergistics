@@ -2,6 +2,8 @@ package thaumicenergistics.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import thaumicenergistics.api.IWirelessEssentiaTerminal;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.items.ItemWirelessEssentiaTerminal;
 import appeng.api.config.Actionable;
@@ -19,10 +21,12 @@ import appeng.tile.networking.TileWireless;
 
 public class HandlerWirelessEssentiaTerminal
 {
+	private static final String NBT_KEY_SORTING_MODE = "SortingMode";
+
 	/**
-	 * Wireless terminal itemstack.
+	 * Wireless terminal.
 	 */
-	private ItemStack wirelessTerminal;
+	private IWirelessEssentiaTerminal wirelessTerminal;
 
 	/**
 	 * Access point used to communicate with the AE network.
@@ -40,11 +44,6 @@ public class HandlerWirelessEssentiaTerminal
 	private DimensionalCoord locationOfAccessPoint;
 
 	/**
-	 * Item instance.
-	 */
-	private ItemWirelessEssentiaTerminal internalHandler;
-
-	/**
 	 * Player who is using the wireless terminal.
 	 */
 	private EntityPlayer player;
@@ -55,16 +54,83 @@ public class HandlerWirelessEssentiaTerminal
 	 */
 	private PlayerSource playerSource = null;
 
-	public HandlerWirelessEssentiaTerminal( final EntityPlayer player, final ItemStack wirelessTerminal )
-	{
-		this.setPlayer( player );
-		this.setTerminal( wirelessTerminal );
-	}
+	/**
+	 * The itemstack that represents this terminal.
+	 */
+	private ItemStack wirelessItemstack;
 
-	public HandlerWirelessEssentiaTerminal( final IWirelessAccessPoint accessPoint )
+	public HandlerWirelessEssentiaTerminal( final EntityPlayer player, final IWirelessAccessPoint accessPoint,
+											final IWirelessEssentiaTerminal wirelessTerminalInterface, final ItemStack wirelessTerminalItemstack )
 	{
+		// Set the player
+		this.player = player;
+
+		// Set the terminal interface
+		this.wirelessTerminal = wirelessTerminalInterface;
+
+		// Set the itemstack
+		this.wirelessItemstack = wirelessTerminalItemstack;
+
 		// Set the access point
 		this.setAccessPoint( accessPoint );
+	}
+
+	/**
+	 * Gets the distance the specified player is from the AP.
+	 * 
+	 * @param APLocation
+	 * @param player
+	 * @return
+	 */
+	private static double getSquaredPlayerDistanceFromAP( final DimensionalCoord APLocation, final EntityPlayer player )
+	{
+		// Get the player position
+		int pX = (int)Math.floor( player.posX ), pY = (int)Math.floor( player.posY ), pZ = (int)Math.floor( player.posZ );
+
+		// Calculate the distance from the AP
+		int dX = APLocation.x - pX, dY = APLocation.y - pY, dZ = APLocation.z - pZ;
+
+		// Calculate the square distance
+		int squareDistance = ( dX * dX ) + ( dY * dY ) + ( dZ * dZ );
+
+		return squareDistance;
+	}
+
+	/**
+	 * Checks if the AP at the specified location and has the specified range,
+	 * is close enough to communicate with.
+	 * 
+	 * @param APLocation
+	 * @param APRange
+	 * @param X
+	 * @param Y
+	 * @param Z
+	 * @return
+	 */
+	public static boolean isAPInRangeOfPlayer( final DimensionalCoord APLocation, final double APRange, final EntityPlayer player )
+	{
+		// Is the AP and the player in the same world?
+		if( !APLocation.isInWorld( player.worldObj ) )
+		{
+			return false;
+		}
+
+		// Calculate the square distance
+		double squareDistance = HandlerWirelessEssentiaTerminal.getSquaredPlayerDistanceFromAP( APLocation, player );
+
+		// Return if close enough to use AP
+		return squareDistance <= ( APRange * APRange );
+	}
+
+	/**
+	 * Returns true if the wireless terminal is linked to a network.
+	 * 
+	 * @param wirelessTerminal
+	 * @return
+	 */
+	public static boolean isTerminalLinked( final IWirelessEssentiaTerminal wirelessTerminal, final ItemStack wirelessTerminalItemstack )
+	{
+		return( !wirelessTerminal.getEncryptionKey( wirelessTerminalItemstack ).isEmpty() );
 	}
 
 	/**
@@ -74,8 +140,8 @@ public class HandlerWirelessEssentiaTerminal
 	 */
 	private boolean isAPInRangeAndActive()
 	{
-		return( ( this.accessPoint.isActive() ) && ( this.internalHandler.isAPInRangeOfPlayer( this.locationOfAccessPoint, this.rangeOfAccessPoint,
-			this.player ) ) );
+		return( ( this.accessPoint.isActive() ) && ( HandlerWirelessEssentiaTerminal.isAPInRangeOfPlayer( this.locationOfAccessPoint,
+			this.rangeOfAccessPoint, this.player ) ) );
 	}
 
 	/**
@@ -123,11 +189,11 @@ public class HandlerWirelessEssentiaTerminal
 		if( mode == Actionable.SIMULATE )
 		{
 			// Return true if there is enough power to satisfy the request.
-			return( this.internalHandler.getAECurrentPower( this.wirelessTerminal ) >= amount );
+			return( this.wirelessTerminal.getAECurrentPower( this.wirelessItemstack ) >= amount );
 		}
 
 		// Return true if enough power was extracted.
-		return( this.internalHandler.extractAEPower( this.wirelessTerminal, amount ) == amount );
+		return( this.wirelessTerminal.extractAEPower( this.wirelessItemstack, amount ) == amount );
 	}
 
 	/**
@@ -164,7 +230,16 @@ public class HandlerWirelessEssentiaTerminal
 	 */
 	public ComparatorMode getSortingMode()
 	{
-		return this.internalHandler.getSortingMode( this.wirelessTerminal );
+		// Get the data tag
+		NBTTagCompound dataTagCompound = this.wirelessTerminal.getWETerminalTag( this.wirelessItemstack );
+
+		// Does the tag have the sorting mode stored?
+		if( dataTagCompound.hasKey( HandlerWirelessEssentiaTerminal.NBT_KEY_SORTING_MODE ) )
+		{
+			return ComparatorMode.valueOf( dataTagCompound.getString( HandlerWirelessEssentiaTerminal.NBT_KEY_SORTING_MODE ) );
+		}
+
+		return ComparatorMode.MODE_ALPHABETIC;
 	}
 
 	/**
@@ -172,9 +247,9 @@ public class HandlerWirelessEssentiaTerminal
 	 * 
 	 * @return
 	 */
-	public ItemStack getTerminal()
+	public ItemStack getTerminalItem()
 	{
-		return this.wirelessTerminal;
+		return this.wirelessItemstack;
 	}
 
 	/**
@@ -185,7 +260,7 @@ public class HandlerWirelessEssentiaTerminal
 	public double getWirelessPowerMultiplier()
 	{
 		// Get the squared distance
-		double distance = this.internalHandler.getSquaredPlayerDistanceFromAP( this.locationOfAccessPoint, this.player );
+		double distance = HandlerWirelessEssentiaTerminal.getSquaredPlayerDistanceFromAP( this.locationOfAccessPoint, this.player );
 
 		// Calculate the distance
 		distance = Math.sqrt( distance );
@@ -201,7 +276,7 @@ public class HandlerWirelessEssentiaTerminal
 	 */
 	public boolean hasPower()
 	{
-		return( this.internalHandler.getAECurrentPower( this.wirelessTerminal ) > 0 );
+		return( this.wirelessTerminal.getAECurrentPower( this.wirelessItemstack ) > 0 );
 	}
 
 	/**
@@ -244,7 +319,7 @@ public class HandlerWirelessEssentiaTerminal
 			if( AP.isActive() )
 			{
 				// Is the player close enough to the AP?
-				if( this.internalHandler.isAPInRangeOfPlayer( AP.getLocation(), AP.getRange(), this.player ) )
+				if( HandlerWirelessEssentiaTerminal.isAPInRangeOfPlayer( AP.getLocation(), AP.getRange(), this.player ) )
 				{
 					// Set the new AP
 					this.setAccessPoint( AP );
@@ -260,38 +335,17 @@ public class HandlerWirelessEssentiaTerminal
 	}
 
 	/**
-	 * Sets the player.
-	 * 
-	 * @param player
-	 */
-	public void setPlayer( final EntityPlayer player )
-	{
-		this.player = player;
-
-		if( this.accessPoint != null )
-		{
-			// Create the action source
-			this.playerSource = new PlayerSource( this.player, this.accessPoint );
-		}
-	}
-
-	/**
 	 * Sets the terminals sorting mode.
 	 * 
 	 * @param mode
 	 */
 	public void setSortingMode( final ComparatorMode mode )
 	{
-		this.internalHandler.setSortingMode( this.wirelessTerminal, mode );
-	}
+		// Get the data tag
+		NBTTagCompound dataTag = this.wirelessTerminal.getWETerminalTag( this.wirelessItemstack );
 
-	public void setTerminal( final ItemStack wirelessTerminal )
-	{
-		// Set the terminal
-		this.wirelessTerminal = wirelessTerminal;
-
-		// Get and set the wireless-terminal-item handler
-		this.internalHandler = (ItemWirelessEssentiaTerminal)wirelessTerminal.getItem();
+		// Set the sorting mode
+		dataTag.setString( HandlerWirelessEssentiaTerminal.NBT_KEY_SORTING_MODE, mode.name() );
 	}
 
 }

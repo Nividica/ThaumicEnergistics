@@ -82,10 +82,6 @@ public class ContainerWirelessEssentiaTerminal
 		// Server side?
 		if( EffectiveSide.isServerSide() )
 		{
-			// Set the player and terminal
-			this.handler.setPlayer( player );
-			this.handler.setTerminal( player.inventory.getCurrentItem() );
-
 			// Set the monitor
 			this.monitor = this.handler.getMonitor();
 
@@ -176,7 +172,7 @@ public class ContainerWirelessEssentiaTerminal
 			this.handler.extractPower( this.powerMultipler * this.powerTickCounter, Actionable.MODULATE );
 
 			// Update the item
-			this.player.inventory.mainInventory[this.terminalSlotIndex] = this.handler.getTerminal();
+			this.player.inventory.mainInventory[this.terminalSlotIndex] = this.handler.getTerminalItem();
 
 			// Reset the tick counter
 			this.powerTickCounter = 0;

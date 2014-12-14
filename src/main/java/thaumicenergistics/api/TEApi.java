@@ -1,6 +1,7 @@
 package thaumicenergistics.api;
 
 import java.util.List;
+import net.minecraft.entity.player.EntityPlayer;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -69,6 +70,14 @@ public abstract class TEApi
 	 * Items
 	 */
 	public abstract Items items();
+
+	/**
+	 * Opens the wireless gui for the specified player.
+	 * The item the player is holding is used for the settings and power.
+	 * 
+	 * @param player
+	 */
+	public abstract void openWirelessTerminalGui( final EntityPlayer player, final IWirelessEssentiaTerminal terminalInterface );
 
 	/**
 	 * Cable Parts

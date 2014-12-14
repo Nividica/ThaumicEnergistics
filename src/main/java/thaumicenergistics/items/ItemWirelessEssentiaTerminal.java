@@ -8,35 +8,23 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
-import thaumicenergistics.gui.TEGuiHandler;
+import thaumicenergistics.api.IWirelessEssentiaTerminal;
+import thaumicenergistics.api.TEApi;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.registries.ItemEnum;
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.features.INetworkEncodable;
-import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.api.implementations.tiles.IWirelessAccessPoint;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IMachineSet;
-import appeng.api.util.DimensionalCoord;
 import appeng.core.localization.GuiText;
-import appeng.core.localization.PlayerMessages;
-import appeng.tile.misc.TileSecurity;
-import appeng.tile.networking.TileWireless;
 
 public class ItemWirelessEssentiaTerminal
 	extends Item
-	implements INetworkEncodable, IAEItemPowerStorage
+	implements IWirelessEssentiaTerminal
 {
 	/**
 	 * NBT keys
 	 */
-	private static final String NBT_AE_SOURCE_KEY = "SourceKey", NBT_STORED_POWER = "StoredPower", NBT_KEY_SORTING_MODE = "SortingMode";
+	private static final String NBT_AE_SOURCE_KEY = "SourceKey", NBT_STORED_POWER = "StoredPower";
 
 	/**
 	 * Amount of power the wireless terminal can store.
@@ -87,124 +75,6 @@ public class ItemWirelessEssentiaTerminal
 	}
 
 	/**
-	 * Opens the wireless gui for the specified player.
-	 * The player must be holding a wireless terminal.
-	 * 
-	 * @param world
-	 * @param player
-	 */
-	private void openWirelessTerminalGui( final World world, final EntityPlayer player, final ItemStack wirelessTerminal )
-	{
-		// Ignored client side
-		if( world.isRemote )
-		{
-			return;
-		}
-
-		// Ensure the stack is a valid terminal
-		if( ( wirelessTerminal == null ) || !( wirelessTerminal.getItem() instanceof ItemWirelessEssentiaTerminal ) )
-		{
-			// Invalid terminal
-			return;
-		}
-
-		// Get the terminal item.
-		ItemWirelessEssentiaTerminal itemWTerm = (ItemWirelessEssentiaTerminal)wirelessTerminal.getItem();
-
-		// Ensure the terminal has power
-		if( itemWTerm.getAECurrentPower( wirelessTerminal ) == 0 )
-		{
-			// Terminal is dead
-			player.addChatMessage( PlayerMessages.DeviceNotPowered.get() );
-			return;
-		}
-
-		// Ensure the terminal is linked
-		if( !itemWTerm.isTerminalLinked( wirelessTerminal ) )
-		{
-			// Unlinked terminal
-			player.addChatMessage( PlayerMessages.CommunicationError.get() );
-			return;
-		}
-
-		// Get the encryption key
-		long encryptionKey;
-		try
-		{
-			encryptionKey = Long.parseLong( itemWTerm.getEncryptionKey( wirelessTerminal ) );
-		}
-		catch( NumberFormatException e )
-		{
-			// Invalid security key
-			player.addChatMessage( PlayerMessages.CommunicationError.get() );
-			return;
-		}
-
-		// Get the linked source
-		Object source = AEApi.instance().registries().locateable().findLocateableBySerial( encryptionKey );
-
-		// Ensure it is a security terminal
-		if( !( source instanceof TileSecurity ) )
-		{
-			// Invalid security terminal
-			player.addChatMessage( PlayerMessages.CommunicationError.get() );
-			return;
-		}
-
-		// Get the terminal
-		TileSecurity securityHost = (TileSecurity)source;
-
-		// Get the grid
-		IGrid hostGrid;
-		try
-		{
-			hostGrid = securityHost.getGridNode( ForgeDirection.UNKNOWN ).getGrid();
-		}
-		catch( Exception e )
-		{
-			// Can not find the grid
-			player.addChatMessage( PlayerMessages.CommunicationError.get() );
-			return;
-		}
-
-		// Get the AP's
-		IMachineSet accessPoints = hostGrid.getMachines( TileWireless.class );
-
-		// Loop over AP's and see if any are close enough to communicate with
-		for( IGridNode APNode : accessPoints )
-		{
-			// Get the AP
-			IWirelessAccessPoint AP = (IWirelessAccessPoint)APNode.getMachine();
-
-			// Is the AP active?
-			if( AP.isActive() )
-			{
-				// Is the player close enough to the AP?
-				if( this.isAPInRangeOfPlayer( AP.getLocation(), AP.getRange(), player ) )
-				{
-					// Launch the gui
-					TEGuiHandler.launchGui( TEGuiHandler.WIRELESS_TERMINAL_ID, player, world, (int)player.posX, (int)player.posY, (int)player.posZ,
-						new Object[] { new HandlerWirelessEssentiaTerminal( AP ) } );
-
-					// All done.
-					return;
-				}
-			}
-		}
-
-		// No AP's were close enough
-		if( accessPoints.isEmpty() )
-		{
-			player.addChatMessage( PlayerMessages.CommunicationError.get() );
-		}
-		else
-		{
-			player.addChatMessage( PlayerMessages.OutOfRange.get() );
-		}
-
-	}
-
-	/**
 	 * Adds information about the wireless terminal to its tooltip.
 	 */
 	@Override
@@ -218,7 +88,7 @@ public class ItemWirelessEssentiaTerminal
 			100.0D * ( storedPower / ItemWirelessEssentiaTerminal.POWER_STORAGE ) ) );
 
 		// Add link info
-		if( this.isTerminalLinked( wirelessTerminal ) )
+		if( HandlerWirelessEssentiaTerminal.isTerminalLinked( this, wirelessTerminal ) )
 		{
 			// Is linked
 			tooltip.add( GuiText.Linked.getLocal() );
@@ -368,51 +238,6 @@ public class ItemWirelessEssentiaTerminal
 	}
 
 	/**
-	 * Gets the terminals sorting mode.
-	 * 
-	 * @param wirelessTerminal
-	 * @return
-	 */
-	public ComparatorMode getSortingMode( final ItemStack wirelessTerminal )
-	{
-		// Does the terminal have a data tag?
-		if( wirelessTerminal.hasTagCompound() )
-		{
-			// Get the data tag
-			NBTTagCompound dataTagCompound = wirelessTerminal.getTagCompound();
-
-			// Does the tag have the sorting mode stored?
-			if( dataTagCompound.hasKey( ItemWirelessEssentiaTerminal.NBT_KEY_SORTING_MODE ) )
-			{
-				return ComparatorMode.valueOf( dataTagCompound.getString( ItemWirelessEssentiaTerminal.NBT_KEY_SORTING_MODE ) );
-			}
-		}
-
-		return ComparatorMode.MODE_ALPHABETIC;
-	}
-
-	/**
-	 * Gets the distance the specified player is from the AP.
-	 * 
-	 * @param APLocation
-	 * @param player
-	 * @return
-	 */
-	public double getSquaredPlayerDistanceFromAP( final DimensionalCoord APLocation, final EntityPlayer player )
-	{
-		// Get the player position
-		int pX = (int)Math.floor( player.posX ), pY = (int)Math.floor( player.posY ), pZ = (int)Math.floor( player.posZ );
-
-		// Calculate the distance from the AP
-		int dX = APLocation.x - pX, dY = APLocation.y - pY, dZ = APLocation.z - pZ;
-
-		// Calculate the square distance
-		int squareDistance = ( dX * dX ) + ( dY * dY ) + ( dZ * dZ );
-
-		return squareDistance;
-	}
-
-	/**
 	 * Adds an uncharged, and fully charged wireless terminal to the creative
 	 * tab.
 	 */
@@ -435,6 +260,15 @@ public class ItemWirelessEssentiaTerminal
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
 		return ThaumicEnergistics.MOD_ID + ".item." + ItemEnum.WIRELESS_TERMINAL.getInternalName();
+	}
+
+	/**
+	 * Gets the data tag used to save the terminal settings a power level.
+	 */
+	@Override
+	public NBTTagCompound getWETerminalTag( final ItemStack wirelessTerminal )
+	{
+		return this.getOrCreateCompoundTag( wirelessTerminal );
 	}
 
 	/**
@@ -464,32 +298,6 @@ public class ItemWirelessEssentiaTerminal
 		return amount - canInjectAmount;
 	}
 
-	/**
-	 * Checks if the AP at the specified location and has the specified range,
-	 * is close enough to communicate with.
-	 * 
-	 * @param APLocation
-	 * @param APRange
-	 * @param X
-	 * @param Y
-	 * @param Z
-	 * @return
-	 */
-	public boolean isAPInRangeOfPlayer( final DimensionalCoord APLocation, final double APRange, final EntityPlayer player )
-	{
-		// Is the AP and the player in the same world?
-		if( !APLocation.isInWorld( player.worldObj ) )
-		{
-			return false;
-		}
-
-		// Calculate the square distance
-		double squareDistance = this.getSquaredPlayerDistanceFromAP( APLocation, player );
-
-		// Return if close enough to use AP
-		return squareDistance <= ( APRange * APRange );
-	}
-
 	@Override
 	public boolean isDamageable()
 	{
@@ -509,17 +317,6 @@ public class ItemWirelessEssentiaTerminal
 	}
 
 	/**
-	 * Returns true if the wireless terminal is linked to a network.
-	 * 
-	 * @param wirelessTerminal
-	 * @return
-	 */
-	public boolean isTerminalLinked( final ItemStack wirelessTerminal )
-	{
-		return( !this.getEncryptionKey( wirelessTerminal ).isEmpty() );
-	}
-
-	/**
 	 * Opens the wireless terminal.
 	 * 
 	 * @param itemStack
@@ -531,7 +328,7 @@ public class ItemWirelessEssentiaTerminal
 	public ItemStack onItemRightClick( final ItemStack itemStack, final World world, final EntityPlayer player )
 	{
 		// Open the gui
-		this.openWirelessTerminalGui( world, player, itemStack );
+		TEApi.instance().openWirelessTerminalGui( player, this );
 
 		return itemStack;
 
@@ -564,21 +361,6 @@ public class ItemWirelessEssentiaTerminal
 	{
 		// Set the key
 		this.getOrCreateCompoundTag( wirelessTerminal ).setString( ItemWirelessEssentiaTerminal.NBT_AE_SOURCE_KEY, sourceKey );
-	}
-
-	/**
-	 * Sets the terminals sorting mode.
-	 * 
-	 * @param wirelessTerminal
-	 * @param mode
-	 */
-	public void setSortingMode( final ItemStack wirelessTerminal, final ComparatorMode mode )
-	{
-		// Get the data tag
-		NBTTagCompound dataTag = this.getOrCreateCompoundTag( wirelessTerminal );
-
-		// Set the sorting mode
-		dataTag.setString( ItemWirelessEssentiaTerminal.NBT_KEY_SORTING_MODE, mode.name() );
 	}
 
 	/**

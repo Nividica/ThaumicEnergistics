@@ -1,5 +1,6 @@
 ﻿12/14/2014 0.8.7.2b
   Removed essentia gas dynamic texture generation.
+  Abstracted the wireless terminal interface, and moved into API.
 
 12/14/2014 0.8.7.1b
   Changed version number scheme: Release.Major.Minor.Bugfix
