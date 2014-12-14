@@ -37,7 +37,9 @@ public enum BlockTextureManager
 		GEAR_BOX (TextureTypes.Block, new String[] { "gear.box", "golem.gear.box" }),
 
 		ESSENTIA_CELL_WORKBENCH (TextureTypes.Block, new String[] { "essentia.cell.workbench.top", "essentia.cell.workbench.bottom",
-						"essentia.cell.workbench.side" });
+						"essentia.cell.workbench.side" }),
+
+		GASEOUS_ESSENTIA (TextureTypes.Block, new String[] { "essentia.gas" });
 
 	private enum TextureTypes
 	{

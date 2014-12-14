@@ -2,12 +2,14 @@ package thaumicenergistics.fluids;
 
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.IEssentiaGas;
+import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.TELog;
 
 /**
@@ -154,6 +156,12 @@ public class GaseousEssentia
 		return super.getColor();
 	}
 
+	@Override
+	public IIcon getFlowingIcon()
+	{
+		return BlockTextureManager.GASEOUS_ESSENTIA.getTexture();
+	}
+
 	/**
 	 * Gets the fluid form of this gas.
 	 */
@@ -182,6 +190,12 @@ public class GaseousEssentia
 	public String getLocalizedName( final FluidStack stack )
 	{
 		return this.associatedAspect.getName() + " " + StatCollector.translateToLocal( "thaumicenergistics.fluid.gaseous" );
+	}
+
+	@Override
+	public IIcon getStillIcon()
+	{
+		return BlockTextureManager.GASEOUS_ESSENTIA.getTexture();
 	}
 
 }
