@@ -47,8 +47,7 @@ public class AEPartGridBlock
 	@Override
 	public EnumSet<ForgeDirection> getConnectableSides()
 	{
-		// Ignored.
-		return null;
+		return EnumSet.noneOf( ForgeDirection.class );
 	}
 
 	public IEnergyGrid getEnergyGrid()

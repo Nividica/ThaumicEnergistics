@@ -268,7 +268,6 @@ public abstract class AbstractGuiWithScrollbar
 		// Create the AE bridge
 		this.aeGuiBridge = new AEBaseGui( this.inventorySlots )
 		{
-
 			@Override
 			public void bindTexture( final String file )
 			{
