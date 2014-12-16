@@ -28,7 +28,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.tile.networking.TileCableBus;
@@ -71,79 +71,8 @@ public abstract class TileProviderBase
 	 */
 	protected boolean isColorForced = false;
 
-	private final AETileEventHandler eventHandler = new AETileEventHandler( TileEventType.WORLD_NBT, TileEventType.NETWORK )
-	{
-		@Override
-		public void readFromNBT( final NBTTagCompound data )
-		{
-			int attachmentSideFromNBT = ForgeDirection.UNKNOWN.ordinal();
-
-			// Do we have the forced key?
-			if( data.hasKey( TileProviderBase.NBT_KEY_ISCOLORFORCED ) )
-			{
-				TileProviderBase.this.isColorForced = data.getBoolean( TileProviderBase.NBT_KEY_ISCOLORFORCED );
-			}
-
-			// Do we have the color key?
-			if( data.hasKey( TileProviderBase.NBT_KEY_COLOR ) )
-			{
-				// Read the color from the tag
-				TileProviderBase.this.setProviderColor( EnumCache.AE_COLOR[data.getInteger( TileProviderBase.NBT_KEY_COLOR )] );
-			}
-
-			// Do we have the attachment key?
-			if( data.hasKey( TileProviderBase.NBT_KEY_ATTACHMENT ) )
-			{
-				// Read the attachment side
-				attachmentSideFromNBT = data.getInteger( TileProviderBase.NBT_KEY_ATTACHMENT );
-			}
-
-			// Setup the tile
-			TileProviderBase.this.setupProvider( attachmentSideFromNBT );
-		}
-
-		@Override
-		@SideOnly(Side.CLIENT)
-		public boolean readFromStream( final ByteBuf data ) throws IOException
-		{
-			// Read the color from the stream
-			TileProviderBase.this.setProviderColor( EnumCache.AE_COLOR[data.readInt()] );
-
-			// Read the activity
-			TileProviderBase.this.isActive = data.readBoolean();
-
-			return true;
-		}
-
-		@Override
-		public void writeToNBT( final NBTTagCompound data )
-		{
-			// Write our color to the tag
-			data.setInteger( TileProviderBase.NBT_KEY_COLOR, TileProviderBase.this.getGridColor().ordinal() );
-
-			// Write the attachment side to the tag
-			data.setInteger( TileProviderBase.NBT_KEY_ATTACHMENT, TileProviderBase.this.attachmentSide );
-
-			// Write the forced color flag
-			data.setBoolean( TileProviderBase.NBT_KEY_ISCOLORFORCED, TileProviderBase.this.isColorForced );
-		}
-
-		@Override
-		public void writeToStream( final ByteBuf data ) throws IOException
-		{
-			// Write the color data to the stream
-			data.writeInt( TileProviderBase.this.getGridColor().ordinal() );
-
-			// Write the activity to the stream
-			data.writeBoolean( TileProviderBase.this.isActive() );
-		}
-	};
-
 	public TileProviderBase()
 	{
-		// Register our event handler
-		this.addNewHandler( this.eventHandler );
-
 		// Create the source
 		this.asMachineSource = new MachineSource( this );
 	}
@@ -502,6 +431,35 @@ public abstract class TileProviderBase
 		return this.isActive;
 	}
 
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void onLoadNBT( final NBTTagCompound data )
+	{
+		int attachmentSideFromNBT = ForgeDirection.UNKNOWN.ordinal();
+
+		// Do we have the forced key?
+		if( data.hasKey( TileProviderBase.NBT_KEY_ISCOLORFORCED ) )
+		{
+			this.isColorForced = data.getBoolean( TileProviderBase.NBT_KEY_ISCOLORFORCED );
+		}
+
+		// Do we have the color key?
+		if( data.hasKey( TileProviderBase.NBT_KEY_COLOR ) )
+		{
+			// Read the color from the tag
+			this.setProviderColor( EnumCache.AE_COLOR[data.getInteger( TileProviderBase.NBT_KEY_COLOR )] );
+		}
+
+		// Do we have the attachment key?
+		if( data.hasKey( TileProviderBase.NBT_KEY_ATTACHMENT ) )
+		{
+			// Read the attachment side
+			attachmentSideFromNBT = data.getInteger( TileProviderBase.NBT_KEY_ATTACHMENT );
+		}
+
+		// Setup the tile
+		this.setupProvider( attachmentSideFromNBT );
+	}
+
 	@Override
 	public void onReady()
 	{
@@ -510,6 +468,42 @@ public abstract class TileProviderBase
 
 		// Check grid color
 		this.checkGridConnectionColor();
+	}
+
+	@TileEvent(TileEventType.NETWORK_READ)
+	@SideOnly(Side.CLIENT)
+	public boolean onReceiveNetworkData( final ByteBuf data )
+	{
+		// Read the color from the stream
+		this.setProviderColor( EnumCache.AE_COLOR[data.readInt()] );
+
+		// Read the activity
+		this.isActive = data.readBoolean();
+
+		return true;
+	}
+
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void onSaveNBT( final NBTTagCompound data )
+	{
+		// Write our color to the tag
+		data.setInteger( TileProviderBase.NBT_KEY_COLOR, this.getGridColor().ordinal() );
+
+		// Write the attachment side to the tag
+		data.setInteger( TileProviderBase.NBT_KEY_ATTACHMENT, this.attachmentSide );
+
+		// Write the forced color flag
+		data.setBoolean( TileProviderBase.NBT_KEY_ISCOLORFORCED, this.isColorForced );
+	}
+
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void onSendNetworkData( final ByteBuf data ) throws IOException
+	{
+		// Write the color data to the stream
+		data.writeInt( this.getGridColor().ordinal() );
+
+		// Write the activity to the stream
+		data.writeBoolean( this.isActive() );
 	}
 
 	@MENetworkEventSubscribe

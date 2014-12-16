@@ -8,7 +8,7 @@ import thaumcraft.api.aspects.IEssentiaTransport;
 import thaumicenergistics.api.TEApi;
 import thaumicenergistics.aspect.AspectStack;
 import appeng.api.config.Actionable;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 
 public class TileEssentiaProvider
@@ -20,15 +20,6 @@ public class TileEssentiaProvider
 	 */
 	private static final int TICK_RATE_IDLE = 15, TICK_RATE_URGENT = 5;
 
-	private final AETileEventHandler tickHandler = new AETileEventHandler( TileEventType.TICK )
-	{
-		@Override
-		public void Tick()
-		{
-			TileEssentiaProvider.this.onTick();
-		}
-	};
-
 	/**
 	 * Tracks the number of ticks that have occurred.
 	 */
@@ -38,12 +29,6 @@ public class TileEssentiaProvider
 	 * How often should the tile tick.
 	 */
 	private int tickRate = TileEssentiaProvider.TICK_RATE_IDLE;
-
-	public TileEssentiaProvider()
-	{
-		// Add the tick handler
-		this.addNewHandler( this.tickHandler );
-	}
 
 	/**
 	 * How much power does this require just to be active?
@@ -179,30 +164,11 @@ public class TileEssentiaProvider
 		return true;
 	}
 
-	@Override
-	public boolean renderExtendedTube()
-	{
-		// We take up a full block
-		return false;
-	}
-
-	@Override
-	public void setSuction( final Aspect aspect, final int amount )
-	{
-		// Ignored
-	}
-
-	@Override
-	public int takeEssentia( final Aspect aspect, final int amount, final ForgeDirection side )
-	{
-		// Extract essentia from the network, and return the amount extracted
-		return this.extractEssentiaFromNetwork( aspect, amount, false );
-	}
-
 	/**
 	 * Called during the tileentity update phase.
 	 */
-	void onTick()
+	@TileEvent(TileEventType.TICK)
+	public void onTick()
 	{
 		// Ensure this is server side, and that 5 ticks have elapsed
 		if( ( !this.worldObj.isRemote ) && ( ++this.tickCount >= this.tickRate ) )
@@ -267,6 +233,26 @@ public class TileEssentiaProvider
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean renderExtendedTube()
+	{
+		// We take up a full block
+		return false;
+	}
+
+	@Override
+	public void setSuction( final Aspect aspect, final int amount )
+	{
+		// Ignored
+	}
+
+	@Override
+	public int takeEssentia( final Aspect aspect, final int amount, final ForgeDirection side )
+	{
+		// Extract essentia from the network, and return the amount extracted
+		return this.extractEssentiaFromNetwork( aspect, amount, false );
 	}
 
 }

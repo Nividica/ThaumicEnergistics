@@ -226,7 +226,7 @@ public class AEPartGridBlock
 	 * Parts are not world accessable
 	 */
 	@Override
-	public boolean isWorldAccessable()
+	public boolean isWorldAccessible()
 	{
 		return false;
 	}

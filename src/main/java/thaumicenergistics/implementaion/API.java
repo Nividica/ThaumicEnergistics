@@ -160,7 +160,7 @@ public class API
 		}
 
 		// Get the linked source
-		Object source = AEApi.instance().registries().locateable().findLocateableBySerial( encryptionKey );
+		Object source = AEApi.instance().registries().locatable().findLocatableBySerial( encryptionKey );
 
 		// Ensure it is a security terminal
 		if( !( source instanceof TileSecurity ) )

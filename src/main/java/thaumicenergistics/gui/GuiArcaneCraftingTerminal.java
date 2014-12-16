@@ -317,7 +317,7 @@ public class GuiArcaneCraftingTerminal
 		// List all items
 		for( int index = 0; index < AbstractGuiConstantsACT.ME_WIDGET_COUNT; index++ )
 		{
-			IAEItemStack stack = this.repo.getRefrenceItem( index );
+			IAEItemStack stack = this.repo.getReferenceItem( index );
 
 			// Did we get a stack?
 			if( stack != null )

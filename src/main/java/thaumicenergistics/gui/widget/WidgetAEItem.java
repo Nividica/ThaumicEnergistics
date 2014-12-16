@@ -60,7 +60,7 @@ public class WidgetAEItem
 			this.aeItemRenderer.zLevel = 2.0F;
 
 			// Set the item
-			this.aeItemRenderer.aestack = this.aeItemStack;
+			this.aeItemRenderer.aeStack = this.aeItemStack;
 
 			// Draw the item
 			this.aeItemRenderer.renderItemAndEffectIntoGUI( WidgetAEItem.MC.fontRenderer, WidgetAEItem.TEXTURE_MANAGER,

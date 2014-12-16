@@ -18,7 +18,7 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.PrivateInventory;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEColor;
 import cpw.mods.fml.relauncher.Side;
@@ -96,7 +96,7 @@ public class AEPartEssentiaTerminal
 	}
 
 	@Override
-	public void getBoxes( final IPartCollsionHelper helper )
+	public void getBoxes( final IPartCollisionHelper helper )
 	{
 		helper.addBox( 2.0D, 2.0D, 14.0D, 14.0D, 14.0D, 16.0D );
 

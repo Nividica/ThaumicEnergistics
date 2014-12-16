@@ -31,7 +31,7 @@ import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.ICellContainer;
 import appeng.api.storage.IMEInventory;
@@ -227,7 +227,7 @@ public class AEPartEssentiaStorageBus
 	 * Hit/Collision boxes.
 	 */
 	@Override
-	public void getBoxes( final IPartCollsionHelper helper )
+	public void getBoxes( final IPartCollisionHelper helper )
 	{
 		// Face
 		helper.addBox( 1.0F, 1.0F, 15.0F, 15.0F, 15.0F, 16.0F );

@@ -8,7 +8,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -57,7 +57,7 @@ public class AEPartEssentiaExportBus
 	}
 
 	@Override
-	public void getBoxes( final IPartCollsionHelper helper )
+	public void getBoxes( final IPartCollisionHelper helper )
 	{
 		// Large chamber and back wall
 		helper.addBox( 4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 13.5F );

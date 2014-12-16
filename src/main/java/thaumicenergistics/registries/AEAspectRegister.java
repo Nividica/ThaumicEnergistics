@@ -810,7 +810,7 @@ public class AEAspectRegister
 		// Pure Certus Quartz Crystal
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_PURE );
-		this.registerItem( aeMats.materialPureifiedCertusQuartzCrystal, aspects );
+		this.registerItem( aeMats.materialPurifiedCertusQuartzCrystal, aspects );
 
 		// Certus Quartz Ore
 		aspects = new AspectList();
@@ -841,7 +841,7 @@ public class AEAspectRegister
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_PURE );
 		aspects.add( Aspect.ENERGY, AEAspectRegister.FLUIX_CHARGE );
-		this.registerItem( aeMats.materialPureifiedFluixCrystal, aspects );
+		this.registerItem( aeMats.materialPurifiedFluixCrystal, aspects );
 
 		// Enderdust		
 		aspects = new AspectList();
@@ -855,7 +855,7 @@ public class AEAspectRegister
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_PURE );
 		aspects.add( Aspect.ENERGY, 1 );
-		this.registerItem( aeMats.materialPureifiedNetherQuartzCrystal, aspects );
+		this.registerItem( aeMats.materialPurifiedNetherQuartzCrystal, aspects );
 
 		// Silicon
 		aspects = new AspectList();

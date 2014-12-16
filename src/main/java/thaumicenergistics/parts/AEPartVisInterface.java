@@ -28,7 +28,7 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -203,7 +203,7 @@ public class AEPartVisInterface
 	 * Hit boxes.
 	 */
 	@Override
-	public void getBoxes( final IPartCollsionHelper helper )
+	public void getBoxes( final IPartCollisionHelper helper )
 	{
 		// Face
 		helper.addBox( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );

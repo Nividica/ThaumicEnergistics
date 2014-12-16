@@ -1,4 +1,7 @@
-﻿12/14/2014 0.8.7.2b
+﻿12/16/2014 0.8.7.2a-rv2
+  Initial port to RV2
+
+12/14/2014 0.8.7.2b-rv1
   Removed essentia gas dynamic texture generation.
   Abstracted the wireless terminal interface, and moved into API.
 

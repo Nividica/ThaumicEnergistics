@@ -76,7 +76,7 @@ public class CommonProxy
 	 */
 	public void registerSpatialIOMovables()
 	{
-		IMovableRegistry movableRegistry = AEApi.instance().registries().moveable();
+		IMovableRegistry movableRegistry = AEApi.instance().registries().movable();
 		for( TileEnum tile : TileEnum.values() )
 		{
 			movableRegistry.whiteListTileEntity( tile.getTileClass() );
