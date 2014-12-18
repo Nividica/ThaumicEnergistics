@@ -133,10 +133,10 @@ public abstract class AbstractGuiBase
 	 */
 	private static final int TOOLTIP_BORDER_SIZE = 3;
 
-	private static int upgradeU = AEStateIconsEnum.UPGRADE_SLOT.getU();
-	private static int upgradeV = AEStateIconsEnum.UPGRADE_SLOT.getV();
-	private static int upgradeWidth = AEStateIconsEnum.UPGRADE_SLOT.getWidth();
-	private static int upgradeHeight = AEStateIconsEnum.UPGRADE_SLOT.getHeight();
+	private static int upgradeU = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getU();
+	private static int upgradeV = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getV();
+	private static int upgradeWidth = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getWidth();
+	private static int upgradeHeight = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getHeight();
 
 	/**
 	 * Lines to draw when drawTooltip is called.

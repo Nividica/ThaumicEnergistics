@@ -85,7 +85,7 @@ public class ItemMaterial
 	{
 		this.setMaxDamage( 0 );
 		this.setHasSubtypes( true );
-		this.setCreativeTab( ThaumicEnergistics.TETab );
+		this.setCreativeTab( ThaumicEnergistics.ThETab );
 	}
 
 	/**

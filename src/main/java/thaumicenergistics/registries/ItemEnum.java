@@ -6,6 +6,7 @@ import net.minecraft.util.StatCollector;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.items.ItemAEPart;
 import thaumicenergistics.items.ItemEssentiaCell;
+import thaumicenergistics.items.ItemKnowledgeCore;
 import thaumicenergistics.items.ItemMaterial;
 import thaumicenergistics.items.ItemStorageCasing;
 import thaumicenergistics.items.ItemStorageComponent;
@@ -18,9 +19,17 @@ public enum ItemEnum
 		STORAGE_COMPONENT ("storage.component", new ItemStorageComponent()),
 		STORAGE_CASING ("storage.casing", new ItemStorageCasing()),
 		MATERIAL ("material", new ItemMaterial()),
-		WIRELESS_TERMINAL ("wireless.essentia.terminal", new ItemWirelessEssentiaTerminal());
+		WIRELESS_TERMINAL ("wireless.essentia.terminal", new ItemWirelessEssentiaTerminal()),
+		KNOWLEDGE_CORE ("knowledge.core", new ItemKnowledgeCore());
 
+	/**
+	 * Internal name of the item.
+	 */
 	private final String internalName;
+
+	/**
+	 * The actual item.
+	 */
 	private Item item;
 
 	/**
@@ -34,9 +43,7 @@ public enum ItemEnum
 
 		this.item = item;
 
-		this.item.setUnlocalizedName( ThaumicEnergistics.MOD_ID + "." + this.internalName );
-
-		this.item.setCreativeTab( ThaumicEnergistics.TETab );
+		this.item.setCreativeTab( ThaumicEnergistics.ThETab );
 	}
 
 	public String getInternalName()

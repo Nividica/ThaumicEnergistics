@@ -130,10 +130,11 @@ public class ContainerWirelessEssentiaTerminal
 				// Disconnect from the monitor
 				this.detachFromMonitor();
 
-				// TODO: Close the gui.
-
 				// Send the empty list
 				this.onClientRequestFullUpdate();
+
+				// Close the gui.
+				this.player.closeScreen();
 			}
 
 			// Set as no longer connected

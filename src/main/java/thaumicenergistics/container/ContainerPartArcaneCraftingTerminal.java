@@ -29,6 +29,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -36,6 +37,9 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.container.implementations.ContainerCraftAmount;
+import appeng.core.sync.GuiBridge;
+import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -285,7 +289,7 @@ public class ContainerPartArcaneCraftingTerminal
 			this.registerForUpdates();
 
 			// Get the AE monitor
-			this.monitor = terminal.getGridBlock().getItemMonitor();
+			this.monitor = terminal.getItemInventory();
 
 			// Did we get a monitor?
 			if( this.monitor != null )
@@ -854,6 +858,27 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	/**
+	 * Called when a client has clicked on a craftable item.
+	 * 
+	 * @param player
+	 * @param result
+	 */
+	public void onClientRequestAutoCraft( final EntityPlayer player, final IAEItemStack result )
+	{
+		Platform.openGUI( player, this.terminal.getHostTile(), this.terminal.getSide(), GuiBridge.GUI_CRAFTING_AMOUNT );
+
+		if( player.openContainer instanceof ContainerCraftAmount )
+		{
+			ContainerCraftAmount cca = (ContainerCraftAmount)this.player.openContainer;
+
+			cca.craftingItem.putStack( result.getItemStack() );
+			cca.whatToMake = result;
+
+			cca.detectAndSendChanges();
+		}
+	}
+
+	/**
 	 * Called when a client has clicked the clear grid button
 	 */
 	public void onClientRequestClearCraftingGrid( final EntityPlayer player )
@@ -1151,8 +1176,8 @@ public class ContainerPartArcaneCraftingTerminal
 	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
 		// Send the sorting info
-		new PacketClientArcaneCraftingTerminal().createSortingUpdate( player, this.terminal.getSortingOrder(), this.terminal.getSortingDirection() )
-						.sendPacketToPlayer();
+		new PacketClientArcaneCraftingTerminal().createSortingUpdate( player, this.terminal.getSortingOrder(), this.terminal.getSortingDirection(),
+			this.terminal.getViewMode() ).sendPacketToPlayer();
 
 		// Ensure we have a monitor
 		if( this.monitor != null )
@@ -1171,10 +1196,10 @@ public class ContainerPartArcaneCraftingTerminal
 	 * @param order
 	 * @param dir
 	 */
-	public void onClientRequestSetSort( final SortOrder order, final SortDir dir )
+	public void onClientRequestSetSort( final SortOrder order, final SortDir dir, final ViewItems viewMode )
 	{
 		// Inform the terminal
-		this.terminal.setSorts( order, dir );
+		this.terminal.setSorts( order, dir, viewMode );
 	}
 
 	/**

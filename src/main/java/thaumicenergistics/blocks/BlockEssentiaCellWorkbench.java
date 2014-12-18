@@ -40,7 +40,7 @@ public class BlockEssentiaCellWorkbench
 		this.setStepSound( Block.soundTypeMetal );
 
 		// Place in the TE creative tab
-		this.setCreativeTab( ThaumicEnergistics.TETab );
+		this.setCreativeTab( ThaumicEnergistics.ThETab );
 	}
 
 	/**

@@ -6,6 +6,7 @@ import net.minecraft.util.StatCollector;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import appeng.api.config.SortOrder;
+import appeng.core.localization.ButtonToolTips;
 
 public class ButtonSortingMode
 	extends AbstractAEButton
@@ -20,8 +21,7 @@ public class ButtonSortingMode
 	@Override
 	public void getTooltip( final List<String> tooltip )
 	{
-		this.addAboutToTooltip( tooltip, StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.SortBy" ), EnumChatFormatting.GRAY +
-						this.tooltipSortBy );
+		this.addAboutToTooltip( tooltip, ButtonToolTips.SortBy.getLocal(), EnumChatFormatting.GRAY + this.tooltipSortBy );
 	}
 
 	/**
@@ -35,12 +35,12 @@ public class ButtonSortingMode
 		{
 			case MODE_ALPHABETIC:
 				this.icon = AEStateIconsEnum.SORT_MODE_ALPHABETIC;
-				this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.ItemName" );
+				this.tooltipSortBy = ButtonToolTips.ItemName.getLocal();
 				break;
 
 			case MODE_AMOUNT:
 				this.icon = AEStateIconsEnum.SORT_MODE_AMOUNT;
-				this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.NumberOfItems" );
+				this.tooltipSortBy = ButtonToolTips.NumberOfItems.getLocal();
 				break;
 
 		}

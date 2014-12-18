@@ -28,6 +28,7 @@ import thaumicenergistics.texture.BlockTextureManager;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.IGridNode;
@@ -36,14 +37,19 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
+import appeng.api.util.IConfigManager;
 import appeng.items.storage.ItemViewCell;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartArcaneCraftingTerminal
 	extends AbstractAEPartBase
-	implements IInventory, IGridTickable
+	implements IInventory, IGridTickable, ITerminalHost
 {
 	/**
 	 * Number of slots in the internal inventory
@@ -76,6 +82,11 @@ public class AEPartArcaneCraftingTerminal
 	private static final String SORT_DIRECTION_NBT_KEY = "SortDirection";
 
 	/**
+	 * Key used for reading/writing the view mode.
+	 */
+	private static final String VIEW_MODE_NBT_KEY = "ViewMode";
+
+	/**
 	 * Key used for reading/writing the vis info
 	 */
 	private static final String VIS_INTERFACE_NBT_KEY = "VisInterface";
@@ -104,6 +115,11 @@ public class AEPartArcaneCraftingTerminal
 	 * What direction are the items sorted.
 	 */
 	private SortDir sortingDirection = SortDir.ASCENDING;
+
+	/**
+	 * What items types are visible.
+	 */
+	private ViewItems viewMode = ViewItems.ALL;
 
 	/**
 	 * Data pertaining to the linked digi-vis source
@@ -297,6 +313,13 @@ public class AEPartArcaneCraftingTerminal
 		return new GuiArcaneCraftingTerminal( this, player );
 	}
 
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		// NOTE: Ignored
+		return null;
+	}
+
 	/**
 	 * Determines if items should be dropped on the ground when
 	 * the part has been removed.
@@ -332,6 +355,12 @@ public class AEPartArcaneCraftingTerminal
 		}
 	}
 
+	@Override
+	public IMEMonitor<IAEFluidStack> getFluidInventory()
+	{
+		return this.getGridBlock().getFluidMonitor();
+	}
+
 	/**
 	 * Determines how much power the part takes for just
 	 * existing.
@@ -358,6 +387,12 @@ public class AEPartArcaneCraftingTerminal
 	public int getInventoryStackLimit()
 	{
 		return 64;
+	}
+
+	@Override
+	public IMEMonitor<IAEItemStack> getItemInventory()
+	{
+		return this.getGridBlock().getItemMonitor();
 	}
 
 	/**
@@ -445,6 +480,16 @@ public class AEPartArcaneCraftingTerminal
 	{
 		// We would like a tick ever 10 to 50 MC ticks
 		return new TickingRequest( 10, 50, false, false );
+	}
+
+	/**
+	 * Returns the view mode.
+	 * 
+	 * @return
+	 */
+	public ViewItems getViewMode()
+	{
+		return this.viewMode;
 	}
 
 	/**
@@ -626,6 +671,12 @@ public class AEPartArcaneCraftingTerminal
 			this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[data.getInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY )];
 		}
 
+		// View mode
+		if( data.hasKey( AEPartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY ) )
+		{
+			this.viewMode = EnumCache.AE_VIEW_ITEMS[data.getInteger( AEPartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY )];
+		}
+
 		// Vis source info
 		this.visSourceInfo.readFromNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
 	}
@@ -766,11 +817,13 @@ public class AEPartArcaneCraftingTerminal
 	 * @param order
 	 * @param dir
 	 */
-	public void setSorts( final SortOrder order, final SortDir dir )
+	public void setSorts( final SortOrder order, final SortDir dir, final ViewItems viewMode )
 	{
 		this.sortingDirection = dir;
 
 		this.sortingOrder = order;
+
+		this.viewMode = viewMode;
 
 		this.markDirty();
 	}
@@ -884,6 +937,9 @@ public class AEPartArcaneCraftingTerminal
 
 		// Write order
 		data.setInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY, this.sortingOrder.ordinal() );
+
+		// Write view mode
+		data.setInteger( AEPartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY, this.viewMode.ordinal() );
 
 		// Write the vis source info
 		this.visSourceInfo.writeToNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );

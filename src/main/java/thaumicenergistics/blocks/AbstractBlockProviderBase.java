@@ -27,7 +27,7 @@ public abstract class AbstractBlockProviderBase
 		super( material );
 
 		// Place in our creative tab
-		this.setCreativeTab( ThaumicEnergistics.TETab );
+		this.setCreativeTab( ThaumicEnergistics.ThETab );
 	}
 
 	@Override

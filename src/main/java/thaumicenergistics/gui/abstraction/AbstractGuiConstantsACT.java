@@ -46,33 +46,31 @@ public abstract class AbstractGuiConstantsACT
 	protected static final float ASPECT_COST_MAX_ALPHA = 0.75F;
 
 	/**
-	 * ID of the clear grid button
+	 * Clear grid button
 	 */
-	protected static final int BUTTON_CLEAR_GRID_ID = 0;
+	protected static final int BUTTON_CLEAR_GRID_ID = 0, BUTTON_CLEAR_GRID_POS_X = 98, BUTTON_CLEAR_GRID_POS_Y = 89;
 
 	/**
-	 * X offset to draw the clear grid button.
+	 * Sort order button
 	 */
-	protected static final int BUTTON_CLEAR_GRID_POS_X = 98;
+	protected static final int BUTTON_SORT_ORDER_ID = 1, BUTTON_SORT_ORDER_POS_X = -18, BUTTON_SORT_ORDER_POS_Y = 8;
 
 	/**
-	 * Y offset to draw the clear grid button.
+	 * Sort direction button
 	 */
-	protected static final int BUTTON_CLEAR_GRID_POS_Y = 89;
+	protected static final int BUTTON_SORT_DIR_ID = 2, BUTTON_SORT_DIR_POS_X = BUTTON_SORT_ORDER_POS_X,
+					BUTTON_SORT_DIR_POS_Y = BUTTON_SORT_ORDER_POS_Y + 20;
 
-	protected static final int BUTTON_SORT_ORDER_ID = 1;
+	/**
+	 * View type button
+	 */
+	protected static final int BUTTON_VIEW_TYPE_ID = 3, BUTTON_VIEW_TYPE_POS_X = BUTTON_SORT_ORDER_POS_X,
+					BUTTON_VIEW_TYPE_POS_Y = BUTTON_SORT_DIR_POS_Y + 20;
 
-	protected static final int BUTTON_SORT_ORDER_POS_X = -18;
-
-	protected static final int BUTTON_SORT_ORDER_POS_Y = 8;
-
-	protected static final int BUTTON_SORT_DIR_ID = 2;
-
-	protected static final int BUTTON_SORT_DIR_POS_X = BUTTON_SORT_ORDER_POS_X;
-
-	protected static final int BUTTON_SORT_DIR_POS_Y = BUTTON_SORT_ORDER_POS_Y + 20;
-
-	protected static final int BUTTON_SORT_SIZE = 16;
+	/**
+	 * Size of the AE buttons
+	 */
+	protected static final int AE_BUTTON_SIZE = 16;
 
 	/**
 	 * The width of the gui

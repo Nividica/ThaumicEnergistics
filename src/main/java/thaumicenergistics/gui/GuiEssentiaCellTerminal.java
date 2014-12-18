@@ -480,7 +480,8 @@ public class GuiEssentiaCellTerminal
 			// Re-search the widgets
 			this.updateSearch();
 		}
-		else
+		// Disable numeric key hotbar swaping.
+		else if( !Character.isDigit( key ) )
 		{
 			super.keyTyped( key, keyID );
 		}

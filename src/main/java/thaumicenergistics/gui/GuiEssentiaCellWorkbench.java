@@ -84,7 +84,7 @@ public class GuiEssentiaCellWorkbench
 	/**
 	 * Cache the cell background icon.
 	 */
-	private static final AEStateIconsEnum CELL_BG_ICON = AEStateIconsEnum.CELL;
+	private static final AEStateIconsEnum CELL_BG_ICON = AEStateIconsEnum.ME_CELL_BACKGROUND;
 
 	/**
 	 * Partition to current, button info.

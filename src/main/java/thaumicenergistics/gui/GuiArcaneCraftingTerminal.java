@@ -19,6 +19,7 @@ import thaumicenergistics.gui.abstraction.AbstractGuiConstantsACT;
 import thaumicenergistics.gui.buttons.ButtonClearCraftingGrid;
 import thaumicenergistics.gui.buttons.ButtonSortingDirection;
 import thaumicenergistics.gui.buttons.ButtonSortingMode;
+import thaumicenergistics.gui.buttons.ButtonViewType;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
 import thaumicenergistics.integration.tc.MEItemAspectBridgeContainer;
@@ -88,6 +89,11 @@ public class GuiArcaneCraftingTerminal
 	 * What direction are the items sorted.
 	 */
 	private SortDir sortingDirection = SortDir.ASCENDING;
+
+	/**
+	 * Which items can be viewed in the terminal.
+	 */
+	private ViewItems viewMode = ViewItems.ALL;
 
 	/**
 	 * Tracks mouse movement.
@@ -285,8 +291,8 @@ public class GuiArcaneCraftingTerminal
 		{
 			// Get the widget
 			WidgetAEItem currentWidget = this.itemWidgets[index];
-			// Is the mouse over this widget
 
+			// Is the mouse over this widget
 			if( currentWidget.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the AE itemstack this widget represents
@@ -295,12 +301,24 @@ public class GuiArcaneCraftingTerminal
 				// Did we get an item?
 				if( widgetStack != null )
 				{
-					// Get the state of the shift keys
-					boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
+					// Should the item be crafted?
+					if( widgetStack.getStackSize() == 0 )
+					{
+						if( widgetStack.isCraftable() )
+						{
+							// TODO: Get with the AE2 team to see if I can get this working.
+							//new PacketServerArcaneCraftingTerminal().createRequestAutoCraft( this.player, widgetStack ).sendPacketToServer();
+						}
+					}
+					else
+					{
+						// Get the state of the shift keys
+						boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
 
-					// Let the server know the user is requesting an itemstack.
-					new PacketServerArcaneCraftingTerminal().createRequestExtract( this.player, widgetStack, mouseButton, isShiftHeld )
-									.sendPacketToServer();
+						// Let the server know the user is requesting an itemstack.
+						new PacketServerArcaneCraftingTerminal().createRequestExtract( this.player, widgetStack, mouseButton, isShiftHeld )
+										.sendPacketToServer();
+					}
 				}
 
 				// Stop searching
@@ -364,6 +382,9 @@ public class GuiArcaneCraftingTerminal
 		// Set the order icon
 		( (ButtonSortingMode)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID ) ).setSortMode( this.sortingOrder );
 
+		// Set the view mode
+		( (ButtonViewType)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID ) ).setViewMode( this.viewMode );
+
 		// Update the repo
 		this.repo.updateView();
 
@@ -391,8 +412,8 @@ public class GuiArcaneCraftingTerminal
 		Minecraft.getMinecraft().renderEngine.bindTexture( AEStateIconsEnum.AE_STATES_TEXTURE );
 
 		// Draw the view cell backgrounds
-		int u = AEStateIconsEnum.VIEW_CELL.getU(), v = AEStateIconsEnum.VIEW_CELL.getV();
-		int h = AEStateIconsEnum.VIEW_CELL.getHeight(), w = AEStateIconsEnum.VIEW_CELL.getWidth();
+		int u = AEStateIconsEnum.VIEW_CELL_BACKGROUND.getU(), v = AEStateIconsEnum.VIEW_CELL_BACKGROUND.getV();
+		int h = AEStateIconsEnum.VIEW_CELL_BACKGROUND.getHeight(), w = AEStateIconsEnum.VIEW_CELL_BACKGROUND.getWidth();
 		int x = this.guiLeft + ContainerPartArcaneCraftingTerminal.VIEW_SLOT_XPOS, y = this.guiTop +
 						ContainerPartArcaneCraftingTerminal.VIEW_SLOT_YPOS;
 		for( int row = 0; row < 5; row++ )
@@ -661,7 +682,24 @@ public class GuiArcaneCraftingTerminal
 
 				}
 				sortingChanged = true;
+				break;
 
+			case AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID:
+				switch ( this.viewMode )
+				{
+					case ALL:
+						this.viewMode = ViewItems.STORED;
+						break;
+
+					case STORED:
+						this.viewMode = ViewItems.CRAFTABLE;
+						break;
+
+					case CRAFTABLE:
+						this.viewMode = ViewItems.ALL;
+						break;
+				}
+				sortingChanged = true;
 				break;
 		}
 
@@ -671,8 +709,11 @@ public class GuiArcaneCraftingTerminal
 			// Update the sorting
 			this.updateSorting();
 
+			// Reset the tooltip
+			this.lastTooltipUpdateTime = 0;
+
 			// Send to server
-			new PacketServerArcaneCraftingTerminal().createRequestSetSort( this.player, this.sortingOrder, this.sortingDirection )
+			new PacketServerArcaneCraftingTerminal().createRequestSetSort( this.player, this.sortingOrder, this.sortingDirection, this.viewMode )
 							.sendPacketToServer();
 		}
 	}
@@ -718,7 +759,7 @@ public class GuiArcaneCraftingTerminal
 	@Override
 	public Enum getSortDisplay()
 	{
-		return ViewItems.STORED;
+		return this.viewMode;
 	}
 
 	/**
@@ -791,12 +832,17 @@ public class GuiArcaneCraftingTerminal
 		// Add sort order button
 		this.buttonList.add( new ButtonSortingMode( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID, this.guiLeft +
 						AbstractGuiConstantsACT.BUTTON_SORT_ORDER_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SORT_ORDER_POS_Y,
-						AbstractGuiConstantsACT.BUTTON_SORT_SIZE, AbstractGuiConstantsACT.BUTTON_SORT_SIZE ) );
+						AbstractGuiConstantsACT.AE_BUTTON_SIZE, AbstractGuiConstantsACT.AE_BUTTON_SIZE ) );
 
 		// Add sort direction button
 		this.buttonList.add( new ButtonSortingDirection( AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID, this.guiLeft +
 						AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_Y,
-						AbstractGuiConstantsACT.BUTTON_SORT_SIZE, AbstractGuiConstantsACT.BUTTON_SORT_SIZE ) );
+						AbstractGuiConstantsACT.AE_BUTTON_SIZE, AbstractGuiConstantsACT.AE_BUTTON_SIZE ) );
+
+		// Add view type button
+		this.buttonList.add( new ButtonViewType( AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID, this.guiLeft +
+						AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_POS_Y,
+						AbstractGuiConstantsACT.AE_BUTTON_SIZE, AbstractGuiConstantsACT.AE_BUTTON_SIZE ) );
 
 		// Add the container as a listener
 		( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).registerForUpdates();
@@ -884,13 +930,16 @@ public class GuiArcaneCraftingTerminal
 	 * @param order
 	 * @param direction
 	 */
-	public void onReceiveSorting( final SortOrder order, final SortDir direction )
+	public void onReceiveSorting( final SortOrder order, final SortDir direction, final ViewItems viewMode )
 	{
 		// Set the direction
 		this.sortingDirection = direction;
 
 		// Set the order
 		this.sortingOrder = order;
+
+		// Set view mode
+		this.viewMode = viewMode;
 
 		// Update
 		this.updateSorting();

@@ -3,6 +3,7 @@ package thaumicenergistics.registries;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.util.AEColor;
 
 /**
@@ -27,6 +28,11 @@ public class EnumCache
 	 * SortOrder
 	 */
 	public static final SortOrder[] AE_SORT_ORDERS = SortOrder.values();
+
+	/**
+	 * ViewItems
+	 */
+	public static final ViewItems[] AE_VIEW_ITEMS = ViewItems.values();
 
 	/**
 	 * RedstoneMode

@@ -35,6 +35,7 @@ thaumicenergistics.item.material.diffusion.core.name=Diffusion Core
 thaumicenergistics.item.material.coalescence.core.name=Coalescence Core
 thaumicenergistics.item.material.iron.gear.name=Iron Gear
 thaumicenergistics.item.wireless.essentia.terminal.name=Wireless Essentia Terminal
+thaumicenergistics.item.knowledge.core.name=Knowledge Core
 
 #Tooltips
 thaumicenergistics.tooltip.essentia.cell.bytes=%d of %d bytes used.
@@ -45,6 +46,8 @@ thaumicenergistics.tooltip.button.void=Allow Void?
 thaumicenergistics.tooltip.button.void.disabled=Do not void essentia
 thaumicenergistics.tooltip.button.void.allowed=Void essentia if jar is full
 thaumicenergistics.tooltip.button.void.note=Only applies to void jars
+thaumicenergistics.tooltip.core.bound=Bound to player:
+thaumicenergistics.tooltip.core.unbound=Unbound - Right Click To Bind
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=Arcane Terminal

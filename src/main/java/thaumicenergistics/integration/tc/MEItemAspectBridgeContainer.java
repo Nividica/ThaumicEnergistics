@@ -17,6 +17,14 @@ import cpw.mods.fml.common.eventhandler.EventBus;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Allows the Thaumcraft item aspect renderer (the aspects you see while holding
+ * down shift and mousing over and item) to be aware of the added slots and
+ * their contents.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class MEItemAspectBridgeContainer
 	extends Container

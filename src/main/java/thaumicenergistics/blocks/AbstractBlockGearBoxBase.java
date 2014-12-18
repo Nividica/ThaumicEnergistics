@@ -32,7 +32,7 @@ public abstract class AbstractBlockGearBoxBase
 		super( Material.ground );
 
 		// Set creative tab
-		this.setCreativeTab( ThaumicEnergistics.TETab );
+		this.setCreativeTab( ThaumicEnergistics.ThETab );
 
 		// Set sound type
 		this.setStepSound( Block.soundTypeStone );

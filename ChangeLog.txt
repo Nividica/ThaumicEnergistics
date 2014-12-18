@@ -1,5 +1,15 @@
-﻿12/16/2014 0.8.7.2a-rv2
+﻿12/18/2014 0.8.7.2a-rv2
+  Added Knowledge Core item.
+  Began work on Arcane Assembler.
+
+12/17/2014 0.8.7.2a-rv2
+  A.C.T. can now see craftable items, but can not issue crafting jobs.
+
+12/16/2014 0.8.7.2a-rv2
   Initial port to RV2
+  Null return fix for grid block.
+  Dupe fix for wireless terminal.
+  Fixed unresponsive tooltip on sort buttons in A.C.T.
 
 12/14/2014 0.8.7.2b-rv1
   Removed essentia gas dynamic texture generation.

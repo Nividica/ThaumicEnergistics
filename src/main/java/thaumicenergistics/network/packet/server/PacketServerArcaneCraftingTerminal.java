@@ -8,6 +8,7 @@ import thaumicenergistics.network.packet.AbstractServerPacket;
 import thaumicenergistics.registries.EnumCache;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
 
 public class PacketServerArcaneCraftingTerminal
@@ -21,6 +22,7 @@ public class PacketServerArcaneCraftingTerminal
 	private static final byte MODE_REQUEST_DEPOSIT_REGION = 5;
 	private static final byte MODE_REQUEST_SET_SORT = 6;
 	private static final byte MODE_REQUEST_SET_GRID = 7;
+	private static final byte MODE_REQUEST_AUTO_CRAFT = 8;
 
 	private static final int ITEM_GRID_SIZE = 9;
 
@@ -55,6 +57,11 @@ public class PacketServerArcaneCraftingTerminal
 	private SortDir sortingDirection;
 
 	/**
+	 * What mode is used to view the items.
+	 */
+	private ViewItems viewMode;
+
+	/**
 	 * Items to set the crafting grid to.
 	 */
 	private IAEItemStack[] gridItems;
@@ -77,6 +84,27 @@ public class PacketServerArcaneCraftingTerminal
 
 		// Set the items
 		this.gridItems = items;
+
+		return this;
+	}
+
+	/**
+	 * Create a packet to request to autocraft the specified item.
+	 * 
+	 * @param player
+	 * @param result
+	 * @return
+	 */
+	public PacketServerArcaneCraftingTerminal createRequestAutoCraft( final EntityPlayer player, final IAEItemStack result )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_AUTO_CRAFT;
+
+		// Set the result
+		this.itemStack = result;
 
 		return this;
 	}
@@ -197,7 +225,8 @@ public class PacketServerArcaneCraftingTerminal
 	 * @param direction
 	 * @return
 	 */
-	public PacketServerArcaneCraftingTerminal createRequestSetSort( final EntityPlayer player, final SortOrder order, final SortDir direction )
+	public PacketServerArcaneCraftingTerminal createRequestSetSort( final EntityPlayer player, final SortOrder order, final SortDir direction,
+																	final ViewItems viewMode )
 	{
 		// Set the player
 		this.player = player;
@@ -208,6 +237,7 @@ public class PacketServerArcaneCraftingTerminal
 		// Set the sorts
 		this.sortingDirection = direction;
 		this.sortingOrder = order;
+		this.viewMode = viewMode;
 
 		return this;
 	}
@@ -249,13 +279,18 @@ public class PacketServerArcaneCraftingTerminal
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
 					// Request set sort
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestSetSort( this.sortingOrder,
-						this.sortingDirection );
+						this.sortingDirection, this.viewMode );
 					break;
 
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
 					// Request set grid
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer )
 									.onClientNEIRequestSetCraftingGrid( this.player, this.gridItems );
+					break;
+
+				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_AUTO_CRAFT:
+					// Request auto-crafting
+					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestAutoCraft( this.player, this.itemStack );
 					break;
 			}
 		}
@@ -291,6 +326,7 @@ public class PacketServerArcaneCraftingTerminal
 				// Read sorts
 				this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[stream.readInt()];
 				this.sortingOrder = EnumCache.AE_SORT_ORDERS[stream.readInt()];
+				this.viewMode = EnumCache.AE_VIEW_ITEMS[stream.readInt()];
 				break;
 
 			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
@@ -307,6 +343,11 @@ public class PacketServerArcaneCraftingTerminal
 						this.gridItems[slotIndex] = AbstractPacket.readAEItemStack( stream );
 					}
 				}
+				break;
+
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_AUTO_CRAFT:
+				// Read the requested item
+				this.itemStack = AbstractPacket.readAEItemStack( stream );
 				break;
 		}
 
@@ -342,6 +383,7 @@ public class PacketServerArcaneCraftingTerminal
 				// Write the sorts
 				stream.writeInt( this.sortingDirection.ordinal() );
 				stream.writeInt( this.sortingOrder.ordinal() );
+				stream.writeInt( this.viewMode.ordinal() );
 				break;
 
 			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
@@ -361,6 +403,11 @@ public class PacketServerArcaneCraftingTerminal
 						AbstractPacket.writeAEItemStack( slotItem, stream );
 					}
 				}
+				break;
+
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_AUTO_CRAFT:
+				// Write the requested item
+				AbstractPacket.writeAEItemStack( this.itemStack, stream );
 				break;
 		}
 	}

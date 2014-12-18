@@ -12,6 +12,7 @@ import thaumicenergistics.registries.EnumCache;
 import appeng.api.AEApi;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import cpw.mods.fml.relauncher.Side;
@@ -30,6 +31,7 @@ public class PacketClientArcaneCraftingTerminal
 	private boolean isHeldEmpty;
 	private SortOrder sortingOrder;
 	private SortDir sortingDirection;
+	private ViewItems viewMode;
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -59,7 +61,7 @@ public class PacketClientArcaneCraftingTerminal
 					break;
 
 				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
-					( (GuiArcaneCraftingTerminal)gui ).onReceiveSorting( this.sortingOrder, this.sortingDirection );
+					( (GuiArcaneCraftingTerminal)gui ).onReceiveSorting( this.sortingOrder, this.sortingDirection, this.viewMode );
 					break;
 			}
 		}
@@ -141,7 +143,8 @@ public class PacketClientArcaneCraftingTerminal
 	 * @param direction
 	 * @return
 	 */
-	public PacketClientArcaneCraftingTerminal createSortingUpdate( final EntityPlayer player, final SortOrder order, final SortDir direction )
+	public PacketClientArcaneCraftingTerminal createSortingUpdate( final EntityPlayer player, final SortOrder order, final SortDir direction,
+																	final ViewItems viewMode )
 	{
 		// Set the player
 		this.player = player;
@@ -152,6 +155,7 @@ public class PacketClientArcaneCraftingTerminal
 		// Set the sorts
 		this.sortingDirection = direction;
 		this.sortingOrder = order;
+		this.viewMode = viewMode;
 
 		return this;
 	}
@@ -220,6 +224,7 @@ public class PacketClientArcaneCraftingTerminal
 				// Read sorts
 				this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[stream.readInt()];
 				this.sortingOrder = EnumCache.AE_SORT_ORDERS[stream.readInt()];
+				this.viewMode = EnumCache.AE_VIEW_ITEMS[stream.readInt()];
 				break;
 		}
 	}
@@ -276,6 +281,7 @@ public class PacketClientArcaneCraftingTerminal
 				// Write the sorts
 				stream.writeInt( this.sortingDirection.ordinal() );
 				stream.writeInt( this.sortingOrder.ordinal() );
+				stream.writeInt( this.viewMode.ordinal() );
 				break;
 		}
 

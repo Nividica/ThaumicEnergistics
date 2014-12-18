@@ -53,7 +53,7 @@ public class ThaumicEnergistics
 	/**
 	 * Creative tab that displays this mods items
 	 */
-	public static CreativeTabs TETab = new CreativeTabs( "ThaumicEnergistics" )
+	public static CreativeTabs ThETab = new CreativeTabs( "ThaumicEnergistics" )
 	{
 
 		@Override
