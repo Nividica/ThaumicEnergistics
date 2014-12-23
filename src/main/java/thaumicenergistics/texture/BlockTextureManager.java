@@ -39,7 +39,9 @@ public enum BlockTextureManager
 		ESSENTIA_CELL_WORKBENCH (TextureTypes.Block, new String[] { "essentia.cell.workbench.top", "essentia.cell.workbench.bottom",
 						"essentia.cell.workbench.side" }),
 
-		GASEOUS_ESSENTIA (TextureTypes.Block, new String[] { "essentia.gas" });
+		GASEOUS_ESSENTIA (TextureTypes.Block, new String[] { "essentia.gas" }),
+
+		ARCANE_ASSEMBLER (TextureTypes.Block, new String[] { "arcane.assembler" });
 
 	private enum TextureTypes
 	{

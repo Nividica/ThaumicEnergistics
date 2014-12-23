@@ -27,4 +27,6 @@ public abstract class Items
 	public IItemDescription IronGear;
 
 	public IItemDescription WirelessEssentiaTerminal;
+
+	public IItemDescription KnowledgeCore;
 }

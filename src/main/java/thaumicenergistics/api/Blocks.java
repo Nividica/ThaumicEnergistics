@@ -11,4 +11,6 @@ public abstract class Blocks
 	public IItemDescription ThaumiumGearBox;
 
 	public IItemDescription EssentiaCellWorkbench;
+
+	public IItemDescription ArcaneAssembler;
 }

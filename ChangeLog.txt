@@ -1,4 +1,9 @@
-﻿12/18/2014 0.8.7.2a-rv2
+﻿12/22/2014 0.8.7.2a-rv2
+  Fixed storage bus recipe when Warded Arcana research is disabled.
+  Added A.A. block, tile, and gui.
+  Fixes #69: Final RV2 testing complete.
+
+12/18/2014 0.8.7.2a-rv2
   Added Knowledge Core item.
   Began work on Arcane Assembler.
 

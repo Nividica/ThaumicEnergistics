@@ -4,6 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+import thaumicenergistics.items.ItemKnowledgeCore;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -26,35 +27,65 @@ public class TileArcaneAssembler
 	private class AssemblerInventory
 		extends PrivateInventory
 	{
-		/**
-		 * Index of the slot used for the knowledge core.
-		 */
-		public static final int KCORE_SLOT_INDEX = 9;
 
 		public AssemblerInventory()
 		{
-			super( "ArcaneAssemblerInventory", 10, 1 );
+			super( "ArcaneAssemblerInventory", TileArcaneAssembler.SLOT_COUNT, 1 );
+		}
+
+		@Override
+		public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
+		{
+			// Is the slot being assigned the knowledge core slot?
+			if( slotId == TileArcaneAssembler.KCORE_SLOT_INDEX )
+			{
+				// Ensure the item is a knowledge core.
+				return( ( itemStack != null ) && ( itemStack.getItem() != null ) && ( itemStack.getItem() instanceof ItemKnowledgeCore ) );
+			}
+
+			// Assume it is not valid
+			return false;
 		}
 
 	}
 
+	/**
+	 * Total number of slots pattern+kcore
+	 */
+	public static final int SLOT_COUNT = 22;
+
+	/**
+	 * Index of the slot used for the knowledge core.
+	 */
+	public static final int KCORE_SLOT_INDEX = 21;
+
+	/**
+	 * Holds the patterns and the kcore
+	 */
 	private AssemblerInventory internalInventory;
 
+	/**
+	 * Is the assembler busy?
+	 */
 	private boolean isBusy = false;
 
-	ICraftingWatcher craftingWatcher;
+	private ICraftingWatcher craftingWatcher;
 
+	/**
+	 * Creates the assembler and it's inventory.
+	 */
 	public TileArcaneAssembler()
 	{
 		this.internalInventory = new AssemblerInventory();
-
 	}
 
+	/**
+	 * Inventory is not world accessible.
+	 */
 	@Override
 	public int[] getAccessibleSlotsBySide( final ForgeDirection whichSide )
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return new int[0];
 	}
 
 	@Override
@@ -118,7 +149,7 @@ public class TileArcaneAssembler
 		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
 		{
 			// Set idle power usage
-			this.gridProxy.setIdlePowerUsage( 0.0D );
+			this.gridProxy.setIdlePowerUsage( 1.0D );
 
 			// Set that we require a channel
 			this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );

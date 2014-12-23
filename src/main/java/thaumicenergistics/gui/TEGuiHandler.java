@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.container.ContainerArcaneAssembler;
 import thaumicenergistics.container.ContainerEssentiaCell;
 import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
 import thaumicenergistics.container.ContainerPriority;
@@ -42,6 +43,11 @@ public class TEGuiHandler
 	 * ID of the wireless terminal gui.
 	 */
 	public static final int WIRELESS_TERMINAL_ID = 40;
+
+	/**
+	 * ID of the arcane assembler gui.
+	 */
+	public static final int ARCANE_ASSEMBLER_ID = 50;
 
 	/**
 	 * Extra data used for some GUI calls.
@@ -226,6 +232,12 @@ public class TEGuiHandler
 			return GuiEssentiaCellTerminal.NewWirelessEssentiaTerminalGui( player );
 		}
 
+		// Is this the arcane assembler?
+		if( ID == TEGuiHandler.ARCANE_ASSEMBLER_ID )
+		{
+			return new GuiArcaneAssembler( player, world, x, y, z );
+		}
+
 		// No matching GUI element found
 		return null;
 
@@ -284,6 +296,12 @@ public class TEGuiHandler
 		{
 			HandlerWirelessEssentiaTerminal handler = (HandlerWirelessEssentiaTerminal)TEGuiHandler.extraData[0];
 			return new ContainerWirelessEssentiaTerminal( player, handler );
+		}
+
+		// Is this the arcane assembler?
+		if( ID == TEGuiHandler.ARCANE_ASSEMBLER_ID )
+		{
+			return new ContainerArcaneAssembler( player, world, x, y, z );
 		}
 
 		// No matching GUI element found

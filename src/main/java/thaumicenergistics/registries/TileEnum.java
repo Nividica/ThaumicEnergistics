@@ -1,6 +1,7 @@
 package thaumicenergistics.registries;
 
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.tileentities.TileArcaneAssembler;
 import thaumicenergistics.tileentities.TileEssentiaCellWorkbench;
 import thaumicenergistics.tileentities.TileEssentiaProvider;
 import thaumicenergistics.tileentities.TileGearBox;
@@ -11,7 +12,8 @@ public enum TileEnum
 		EssentiaProvider ("TileEssentiaProvider", TileEssentiaProvider.class),
 		InfusionProvider ("TileInfusionProvider", TileInfusionProvider.class),
 		GearBox ("TileGearBox", TileGearBox.class),
-		CellWorkbench ("TileEssentiaCellWorkbench", TileEssentiaCellWorkbench.class);
+		CellWorkbench ("TileEssentiaCellWorkbench", TileEssentiaCellWorkbench.class),
+		ArcaneAssembler ("TileArcaneAssembler", TileArcaneAssembler.class);
 
 	/**
 	 * Unique ID of the tile entity

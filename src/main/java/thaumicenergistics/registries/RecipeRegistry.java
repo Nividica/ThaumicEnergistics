@@ -338,7 +338,15 @@ public class RecipeRegistry
 
 		ItemStack WardedJar = new ItemStack( ConfigBlocks.blockJar, 1, 0 );
 
-		ItemStack WardedGlass = new ItemStack( ConfigBlocks.blockCosmeticOpaque, 1, 2 );
+		Object WardedGlass;
+		if( Config.wardedStone )
+		{
+			WardedGlass = new ItemStack( ConfigBlocks.blockCosmeticOpaque, 1, 2 );
+		}
+		else
+		{
+			WardedGlass = WardedJar;
+		}
 
 		ItemStack ArcaneWorkTable = new ItemStack( ConfigBlocks.blockTable, 1, 15 );
 

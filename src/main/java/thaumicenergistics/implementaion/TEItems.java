@@ -23,5 +23,6 @@ class TEItems
 		this.EssentiaStorageComponent_64k = new TEDescription( ItemEnum.STORAGE_COMPONENT.getItemStackWithDamage( ItemStorageBase.INDEX_64K ) );
 		this.IronGear = new TEDescription( ItemEnum.MATERIAL.getItemStackWithDamage( MaterialTypes.IRON_GEAR.getID() ) );
 		this.WirelessEssentiaTerminal = new TEDescription( ItemEnum.WIRELESS_TERMINAL.getItemStackWithSize( 1 ) );
+		this.KnowledgeCore = new TEDescription( ItemEnum.KNOWLEDGE_CORE.getItemStackWithSize( 1 ) );
 	}
 }

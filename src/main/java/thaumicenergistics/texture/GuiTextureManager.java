@@ -11,7 +11,8 @@ public enum GuiTextureManager
 		ESSENTIA_IO_BUS ("essentia.io.bus"),
 		ARCANE_CRAFTING_TERMINAL ("arcane.crafting"),
 		PRIORITY ("priority"),
-		CELL_WORKBENCH ("essentia.cell.workbench");
+		CELL_WORKBENCH ("essentia.cell.workbench"),
+		ARCANE_ASSEMBLER ("arcane.assembler");
 
 	private ResourceLocation texture;
 

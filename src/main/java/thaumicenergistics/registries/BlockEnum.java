@@ -2,6 +2,7 @@ package thaumicenergistics.registries;
 
 import net.minecraft.block.Block;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.blocks.BlockArcaneAssembler;
 import thaumicenergistics.blocks.BlockEssentiaCellWorkbench;
 import thaumicenergistics.blocks.BlockEssentiaProvider;
 import thaumicenergistics.blocks.BlockGearBox;
@@ -14,7 +15,8 @@ public enum BlockEnum
 		INFUSION_PROVIDER ("infusion.provider", new BlockInfusionProvider()),
 		IRON_GEAR_BOX ("gear.box", new BlockGearBox()),
 		THAUMIUM_GEAR_BOX ("golem.gear.box", new BlockGolemGearBox()),
-		ESSENTIA_CELL_WORKBENCH ("essentia.cell.workbench", new BlockEssentiaCellWorkbench());
+		ESSENTIA_CELL_WORKBENCH ("essentia.cell.workbench", new BlockEssentiaCellWorkbench()),
+		ARCANE_ASSEMBLER ("arcane.assembler", new BlockArcaneAssembler());
 
 	private Block block;
 
