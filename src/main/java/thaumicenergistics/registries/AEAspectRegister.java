@@ -524,55 +524,6 @@ public class AEAspectRegister
 		}
 
 		/**
-		 * Trims low values when high values are present.
-		 */
-		private void reballanceIngredientAspects()
-		{
-			int aspectCount = this.ingredientAspects.size();
-
-			if( aspectCount == 0 )
-			{
-				return;
-			}
-
-			// Find maximum & minimum
-			int max = 0;
-			int min = Integer.MAX_VALUE;
-			for( Aspect aspect : this.ingredientAspects.getAspects() )
-			{
-				int amount = this.ingredientAspects.getAmount( aspect );
-
-				max = Math.max( max, amount );
-				min = Math.min( min, amount );
-			}
-
-			// Calculate trim point
-			int trimPoint = max / 5;
-
-			if( trimPoint < min )
-			{
-				// Nothing to trim
-				return;
-			}
-
-			// Get the iterator
-			Iterator<Entry<Aspect, Integer>> iterator = this.ingredientAspects.aspects.entrySet().iterator();
-
-			while( iterator.hasNext() )
-			{
-				// Get next
-				Entry<Aspect, Integer> entry = iterator.next();
-
-				// Trim?
-				if( entry.getValue() < trimPoint )
-				{
-					// Trim.
-					iterator.remove();
-				}
-			}
-		}
-
-		/**
 		 * Determines if the specified stacks are equal.
 		 * 
 		 * @param stack1
@@ -655,6 +606,59 @@ public class AEAspectRegister
 				}
 			}
 
+			// Get the final aspect count
+			int aspectCount = finalAspects.size();
+
+			if( aspectCount == 0 )
+			{
+				return finalAspects;
+			}
+
+			// Find maximum & minimum
+			int max = 0;
+			int min = Integer.MAX_VALUE;
+			for( Aspect aspect : finalAspects.getAspects() )
+			{
+				int amount = finalAspects.getAmount( aspect );
+
+				max = Math.max( max, amount );
+				min = Math.min( min, amount );
+			}
+
+			// Calculate trim point
+			int trimPoint = max / 5;
+
+			if( trimPoint > min )
+			{
+				// Get the iterator
+				Iterator<Entry<Aspect, Integer>> iterator = finalAspects.aspects.entrySet().iterator();
+
+				while( iterator.hasNext() )
+				{
+					// Get next
+					Entry<Aspect, Integer> entry = iterator.next();
+
+					// Trim?
+					if( entry.getValue() < trimPoint )
+					{
+						// Trim.
+						iterator.remove();
+					}
+				}
+			}
+
+			// Can only have 6 aspects
+			if( aspectCount > 6 )
+			{
+				Aspect[] aspects = finalAspects.getAspectsSortedAmount();
+
+				// Remove the lowest aspects
+				for( int index = 6; index < aspects.length; index++ )
+				{
+					finalAspects.remove( aspects[index] );
+				}
+			}
+
 			return finalAspects;
 		}
 
@@ -694,9 +698,6 @@ public class AEAspectRegister
 
 			// Calculate the preset bonuses
 			this.addPredefinedBonuses();
-
-			// Clean up the ingredient aspects
-			this.reballanceIngredientAspects();
 
 			// Remove from the dependency chain
 			AEAspectRegister.this.DEPENDENCY_CHAIN.remove( this );
@@ -993,6 +994,19 @@ public class AEAspectRegister
 	{
 		// Get the aspect list for a 1k cell
 		AspectList cellAspects = ThaumcraftApiHelper.getObjectAspects( AEApi.instance().items().itemCell1k.stack( 1 ) ).copy();
+
+		int aspectCount = cellAspects.size();
+
+		if( aspectCount > 4 )
+		{
+			Aspect[] OrderedAspects = cellAspects.getAspectsSortedAmount();
+			cellAspects.remove( OrderedAspects[aspectCount - 1] );
+
+			if( aspectCount > 5 )
+			{
+				cellAspects.remove( OrderedAspects[aspectCount - 2] );
+			}
+		}
 
 		cellAspects.add( Aspect.MAGIC, 3 );
 		cellAspects.add( Aspect.AURA, 5 );

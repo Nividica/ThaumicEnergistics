@@ -1,5 +1,6 @@
 package thaumicenergistics.items;
 
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 
 public abstract class ItemStorageBase
@@ -14,7 +15,11 @@ public abstract class ItemStorageBase
 
 	public static final int INDEX_64K = 3;
 
-	protected static final String[] SUFFIXES = { "1k", "4k", "16k", "64k" };
+	public static final int INDEX_CREATIVE = 4;
 
-	protected static final int[] SIZES = { 1024, 4096, 16348, 65536 };
+	protected static final String[] SUFFIXES = { "1k", "4k", "16k", "64k", "creative" };
+
+	protected static final int[] SIZES = { 1024, 4096, 16348, 65536, 0 };
+
+	protected static final EnumRarity[] RARITIES = { EnumRarity.uncommon, EnumRarity.uncommon, EnumRarity.rare, EnumRarity.rare, EnumRarity.epic };
 }

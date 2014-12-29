@@ -21,6 +21,7 @@ import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator;
 import thaumicenergistics.gui.TEGuiHandler;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
+import thaumicenergistics.inventory.HandlerItemEssentiaCellCreative;
 import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.GuiHelper;
@@ -41,11 +42,9 @@ public class ItemEssentiaCell
 	extends ItemStorageBase
 	implements ICellHandler
 {
-	private static final EnumRarity[] RARITIES = { EnumRarity.uncommon, EnumRarity.uncommon, EnumRarity.rare, EnumRarity.epic };
+	private static final double[] IDLE_DRAIN_AMOUNTS = { 0.5D, 1.0D, 1.5D, 2.0D, 0.0D };
 
-	private static final double[] IDLE_DRAIN_AMOUNTS = { 0.5D, 1.0D, 1.5D, 2.0D };
-
-	private static final int MAX_TYPES = 12;
+	private static final int MAX_TYPES = 12, CREATIVE_MAX_TYPES = 63;
 
 	private static final int CELL_STATUS_MISSING = 0, CELL_STATUS_HAS_ROOM = 1, CELL_STATUS_TYPES_FULL = 2, CELL_STATUS_FULL = 3;
 
@@ -167,6 +166,11 @@ public class ItemEssentiaCell
 			return null;
 		}
 
+		if( essentiaCell.getItemDamage() == ItemStorageBase.INDEX_CREATIVE )
+		{
+			return new HandlerItemEssentiaCellCreative( essentiaCell, saveProvider );
+		}
+
 		return new HandlerItemEssentiaCell( essentiaCell, saveProvider );
 	}
 
@@ -182,10 +186,10 @@ public class ItemEssentiaCell
 	public EnumRarity getRarity( final ItemStack itemStack )
 	{
 		// Get the index based off of the meta data
-		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, ItemEssentiaCell.RARITIES.length );
+		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, ItemStorageBase.RARITIES.length );
 
 		// Return the rarity
-		return ItemEssentiaCell.RARITIES[index];
+		return ItemStorageBase.RARITIES[index];
 	}
 
 	@Override
@@ -199,6 +203,12 @@ public class ItemEssentiaCell
 
 		// Get the inventory handler
 		HandlerItemEssentiaCell cellHandler = (HandlerItemEssentiaCell)handler;
+
+		// Creative?
+		if( cellHandler.isCreative() )
+		{
+			return ItemEssentiaCell.CELL_STATUS_TYPES_FULL;
+		}
 
 		// Full bytes?
 		if( cellHandler.getUsedBytes() == cellHandler.getTotalBytes() )
@@ -260,8 +270,13 @@ public class ItemEssentiaCell
 		return ItemStorageBase.SIZES[Math.max( 0, essentiaCell.getItemDamage() )];
 	}
 
-	public int maxTypes( final ItemStack itemStack )
+	public int maxTypes( final ItemStack essentiaCell )
 	{
+		if( essentiaCell.getItemDamage() == ItemStorageBase.INDEX_CREATIVE )
+		{
+			return ItemEssentiaCell.CREATIVE_MAX_TYPES;
+		}
+
 		return ItemEssentiaCell.MAX_TYPES;
 	}
 
@@ -270,6 +285,12 @@ public class ItemEssentiaCell
 	{
 		// Ensure the player is sneaking(holding shift)
 		if( !player.isSneaking() )
+		{
+			return essentiaCell;
+		}
+
+		// Ensure this is not a creative cell
+		if( essentiaCell.getItemDamage() == ItemStorageBase.INDEX_CREATIVE )
 		{
 			return essentiaCell;
 		}

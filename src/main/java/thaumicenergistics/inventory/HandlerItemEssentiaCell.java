@@ -68,12 +68,12 @@ public class HandlerItemEssentiaCell
 	/**
 	 * Total number of bytes the cell can store.
 	 */
-	private long totalBytes;
+	protected long totalBytes;
 
 	/**
 	 * Total number of essentia the cell can hold.
 	 */
-	private long totalEssentiaStorage;
+	protected long totalEssentiaStorage;
 
 	/**
 	 * Number of essentia stored on the cell.
@@ -94,7 +94,7 @@ public class HandlerItemEssentiaCell
 	/**
 	 * List of aspects this cell can only accept.
 	 */
-	private final List<Aspect> partitionAspects = new ArrayList<Aspect>();
+	protected final List<Aspect> partitionAspects = new ArrayList<Aspect>();
 
 	public HandlerItemEssentiaCell( final ItemStack storageStack, final ISaveProvider saveProvider )
 	{
@@ -821,6 +821,16 @@ public class HandlerItemEssentiaCell
 		result.setStackSize( EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( amountNotStored ) );
 
 		return result;
+	}
+
+	/**
+	 * Is the cell being handled a creative cell?
+	 * 
+	 * @return
+	 */
+	public boolean isCreative()
+	{
+		return false;
 	}
 
 	/**

@@ -15,7 +15,6 @@ public class ItemStorageComponent
 	extends ItemStorageBase
 	implements IStorageComponent
 {
-	private static final EnumRarity[] RARITIES = { EnumRarity.uncommon, EnumRarity.uncommon, EnumRarity.rare, EnumRarity.epic };
 
 	private IIcon[] icons;
 
@@ -44,10 +43,10 @@ public class ItemStorageComponent
 	public EnumRarity getRarity( final ItemStack itemStack )
 	{
 		// Get the index based off of the meta data
-		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, ItemStorageComponent.RARITIES.length );
+		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, ItemStorageBase.RARITIES.length );
 
 		// Return the rarity
-		return ItemStorageComponent.RARITIES[index];
+		return ItemStorageBase.RARITIES[index];
 	}
 
 	@Override
@@ -55,6 +54,12 @@ public class ItemStorageComponent
 	{
 		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
 		{
+			// Skip the creative cell
+			if( i == ItemStorageBase.INDEX_CREATIVE )
+			{
+				continue;
+			}
+
 			itemList.add( new ItemStack( item, 1, i ) );
 		}
 	}

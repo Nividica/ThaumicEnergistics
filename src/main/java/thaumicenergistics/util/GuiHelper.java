@@ -62,7 +62,7 @@ public final class GuiHelper
 		int exponential = (int)( Math.log( count ) / Math.log( unit ) );
 
 		// Get the posfix char
-		char postfix = "KMGTPE".charAt( exponential - 1 );
+		char postfix = "KMBT".charAt( exponential - 1 );
 
 		return String.format( "%.1f%c", ( count / Math.pow( unit, exponential ) ), postfix );
 	}
