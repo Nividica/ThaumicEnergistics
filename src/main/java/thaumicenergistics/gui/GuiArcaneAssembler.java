@@ -65,7 +65,6 @@ public class GuiArcaneAssembler
 		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize );
 
 		// Draw the bars
-
 		int fakeAmount = (int)( ( System.currentTimeMillis() / 100 ) % 17 );
 		if( fakeAmount > 0 )
 		{

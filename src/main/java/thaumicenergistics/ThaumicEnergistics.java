@@ -5,7 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.api.IConfig;
 import thaumicenergistics.api.TEApi;
-import thaumicenergistics.gui.TEGuiHandler;
+import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.IntegrationCore;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
@@ -144,7 +144,7 @@ public class ThaumicEnergistics
 		ThaumicEnergistics.instance = this;
 
 		// Register the gui handler
-		NetworkRegistry.INSTANCE.registerGuiHandler( this, new TEGuiHandler() );
+		NetworkRegistry.INSTANCE.registerGuiHandler( this, new ThEGuiHandler() );
 
 		// Register items
 		ThaumicEnergistics.proxy.registerItems();
@@ -156,5 +156,7 @@ public class ThaumicEnergistics
 	}
 
 	// TODO: Get crash log for flux gas on anailation plane, ask Mega fix that and to add null checking to formation plane.
+	// TODO: Create issue on AE2 page for API request dealing with issueing crafting jobs.
+	// TODO: Generalize creating grids of slots.
 
 }

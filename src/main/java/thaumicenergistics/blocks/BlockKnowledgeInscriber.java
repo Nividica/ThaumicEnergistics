@@ -13,15 +13,14 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
-import thaumicenergistics.tileentities.TileArcaneAssembler;
+import thaumicenergistics.tileentities.TileKnowledgeInscriber;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockArcaneAssembler
+public class BlockKnowledgeInscriber
 	extends AbstractBlockAEWrenchable
 {
-
-	public BlockArcaneAssembler()
+	public BlockKnowledgeInscriber()
 	{
 		// Call super with material machine (iron) 
 		super( Material.iron );
@@ -36,17 +35,10 @@ public class BlockArcaneAssembler
 		this.setCreativeTab( ThaumicEnergistics.ThETab );
 	}
 
-	/**
-	 * Creates a new Arcane Assembler tile
-	 */
 	@Override
-	public TileEntity createNewTileEntity( final World p_149915_1_, final int p_149915_2_ )
+	public TileEntity createNewTileEntity( final World world, final int metaData )
 	{
-		TileArcaneAssembler assembler = new TileArcaneAssembler();
-
-		assembler.setupAssemblerTile();
-
-		return assembler;
+		return new TileKnowledgeInscriber();
 	}
 
 	/**
@@ -57,7 +49,7 @@ public class BlockArcaneAssembler
 	public IIcon getIcon( final int side, final int meta )
 	{
 		// Sides
-		return BlockTextureManager.ARCANE_ASSEMBLER.getTexture();
+		return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTexture();
 	}
 
 	/**
@@ -66,7 +58,7 @@ public class BlockArcaneAssembler
 	@Override
 	public String getUnlocalizedName()
 	{
-		return BlockEnum.ARCANE_ASSEMBLER.getUnlocalizedName();
+		return BlockEnum.KNOWLEDGE_INSCRIBER.getUnlocalizedName();
 	}
 
 	/**
@@ -89,21 +81,11 @@ public class BlockArcaneAssembler
 		return true;
 	}
 
-	/**
-	 * Called when the assembler is right-clicked
-	 * 
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param player
-	 * @return
-	 */
 	@Override
-	public boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
+	public final boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
 		// Launch the gui.
-		ThEGuiHandler.launchGui( ThEGuiHandler.ARCANE_ASSEMBLER_ID, player, world, x, y, z );
+		ThEGuiHandler.launchGui( ThEGuiHandler.KNOWLEDGE_INSCRIBER, player, world, x, y, z );
 
 		return true;
 	}

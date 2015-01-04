@@ -8,11 +8,13 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.network.handlers.HandlerClientAspectSlot;
 import thaumicenergistics.network.handlers.HandlerClientEssentiaCellTerminal;
 import thaumicenergistics.network.handlers.HandlerClientEssentiaStorageBus;
+import thaumicenergistics.network.handlers.HandlerClientKnowledgeInscriber;
 import thaumicenergistics.network.handlers.HandlerClientPriority;
 import thaumicenergistics.network.handlers.HandlerServerAspectSlot;
 import thaumicenergistics.network.handlers.HandlerServerChangeGui;
 import thaumicenergistics.network.handlers.HandlerServerEssentiaCellTerminal;
 import thaumicenergistics.network.handlers.HandlerServerEssentiaCellWorkbench;
+import thaumicenergistics.network.handlers.HandlerServerKnowledgeInscriber;
 import thaumicenergistics.network.handlers.HandlerServerPriority;
 import thaumicenergistics.network.handlers.part.HandlerClientArcaneCraftingTerminal;
 import thaumicenergistics.network.handlers.part.HandlerClientEssentiaIOBus;
@@ -28,6 +30,7 @@ import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal
 import thaumicenergistics.network.packet.client.PacketClientEssentiaEmitter;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaStorageBus;
+import thaumicenergistics.network.packet.client.PacketClientKnowledgeInscriber;
 import thaumicenergistics.network.packet.client.PacketClientPriority;
 import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
 import thaumicenergistics.network.packet.server.PacketServerAspectSlot;
@@ -37,6 +40,7 @@ import thaumicenergistics.network.packet.server.PacketServerEssentiaCellWorkbenc
 import thaumicenergistics.network.packet.server.PacketServerEssentiaEmitter;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
+import thaumicenergistics.network.packet.server.PacketServerKnowledgeInscriber;
 import thaumicenergistics.network.packet.server.PacketServerPriority;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -75,6 +79,9 @@ public class ChannelHandler
 		wrapper.registerMessage( HandlerServerPriority.class, PacketServerPriority.class, discriminator++ , Side.SERVER );
 
 		wrapper.registerMessage( HandlerServerEssentiaCellWorkbench.class, PacketServerEssentiaCellWorkbench.class, discriminator++ , Side.SERVER );
+
+		wrapper.registerMessage( HandlerClientKnowledgeInscriber.class, PacketClientKnowledgeInscriber.class, discriminator++ , Side.CLIENT );
+		wrapper.registerMessage( HandlerServerKnowledgeInscriber.class, PacketServerKnowledgeInscriber.class, discriminator++ , Side.SERVER );
 
 	}
 

@@ -12,6 +12,7 @@ thaumicenergistics.block.gear.box.name=Iron Gear Box
 thaumicenergistics.block.golem.gear.box.name=Thaumium Gear Box
 thaumicenergistics.block.essentia.cell.workbench.name=Essentia Cell Workbench
 thaumicenergistics.block.arcane.assembler.name=Arcane Assembler
+thaumicenergistics.block.knowledge.inscriber.name=Knowledge Inscriber
 
 #Cable parts
 thaumicenergistics.aeparts.essentia.ImportBus.name=Essentia Import Bus
@@ -48,8 +49,6 @@ thaumicenergistics.tooltip.button.void=Allow Void?
 thaumicenergistics.tooltip.button.void.disabled=Do not void essentia
 thaumicenergistics.tooltip.button.void.allowed=Void essentia if jar is full
 thaumicenergistics.tooltip.button.void.note=Only applies to void jars
-thaumicenergistics.tooltip.core.bound=Bound to player:
-thaumicenergistics.tooltip.core.unbound=Unbound - Right Click To Bind
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=Arcane Terminal
@@ -105,7 +104,7 @@ thaumicenergistics.research_page.TEESSPROV.1=While import and export buses are u
 # Research Infusion Provider
 tc.research_name.thaumicenergistics.TEINFPROV=Infusion Provider
 tc.research_text.thaumicenergistics.TEINFPROV=Infusion made easier.
-thaumicenergistics.research_page.TEINFPROV.1=By researching the process of essentia infusion, you have discovered a method for instantaneous conversion between digi-sentia and essentia that can be used for infusion.<BR>By placing the §lInfusion Provider§r near a thaumic device, the device can draw essentia directly from the network. This could prove to be very useful for infusion alter.
+thaumicenergistics.research_page.TEINFPROV.1=By researching the process of essentia infusion, you have discovered a method for instantaneous conversion between digi-sentia and essentia that can be used for infusion.<BR>By placing the §lInfusion Provider§r near a thaumic device, the device can draw essentia directly from the network. This could prove to be very useful for the infusion alter.
 
 # Research Vis Interface
 tc.research_name.thaumicenergistics.TEVISINT=Vis Relay Interface

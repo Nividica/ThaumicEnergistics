@@ -83,6 +83,12 @@ public class ItemStorageComponent
 
 		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
 		{
+			// Skip the creative cell
+			if( i == ItemStorageBase.INDEX_CREATIVE )
+			{
+				continue;
+			}
+
 			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":storage.component." + ItemStorageBase.SUFFIXES[i] );
 		}
 	}

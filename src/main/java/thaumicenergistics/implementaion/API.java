@@ -19,7 +19,7 @@ import thaumicenergistics.api.Items;
 import thaumicenergistics.api.Parts;
 import thaumicenergistics.api.TEApi;
 import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.gui.TEGuiHandler;
+import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
 import appeng.api.AEApi;
@@ -202,7 +202,7 @@ public class API
 				if( HandlerWirelessEssentiaTerminal.isAPInRangeOfPlayer( AP.getLocation(), AP.getRange(), player ) )
 				{
 					// Launch the gui
-					TEGuiHandler.launchGui( TEGuiHandler.WIRELESS_TERMINAL_ID, player, player.worldObj, (int)player.posX, (int)player.posY,
+					ThEGuiHandler.launchGui( ThEGuiHandler.WIRELESS_TERMINAL_ID, player, player.worldObj, (int)player.posX, (int)player.posY,
 						(int)player.posZ, new Object[] { new HandlerWirelessEssentiaTerminal( player, AP, terminalInterface, wirelessTerminal ) } );
 
 					// All done.

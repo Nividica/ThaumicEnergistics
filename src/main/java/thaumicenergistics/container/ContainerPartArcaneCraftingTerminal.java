@@ -12,15 +12,14 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.OreDictionary;
-import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.common.items.wands.ItemWandCasting;
-import thaumcraft.common.tiles.TileMagicWorkbench;
 import thaumicenergistics.container.slot.SlotArcaneCraftingResult;
 import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
+import thaumicenergistics.integration.tc.ArcaneRecipeHelper;
 import thaumicenergistics.network.packet.client.PacketClientArcaneCraftingTerminal;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
 import thaumicenergistics.util.EffectiveSide;
@@ -488,41 +487,20 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	private ItemStack findMatchingArcaneResult()
 	{
-		// Create a new workbench tile (finally figured this bit out, can't just use any old inventory. Nooope.)
-		TileMagicWorkbench workbenchTile = new TileMagicWorkbench();
+		ItemStack arcaneResult = null;
 
-		// Load the workbench inventory based on what is in the part's inventory
-		for( int slotIndex = 0; slotIndex < ( ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE ); slotIndex++ )
+		// Is there a matching recipe?
+		IArcaneRecipe matchingRecipe = ArcaneRecipeHelper.instance.findMatchingArcaneResult( this.terminal, 0,
+			ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, this.player );
+
+		if( matchingRecipe != null )
 		{
-			// Set the slot
-			workbenchTile.setInventorySlotContentsSoftly( slotIndex, this.terminal.getStackInSlot( slotIndex ) );
+			// Found a match, validate it.
+			arcaneResult = this.validateWandVisAmount( matchingRecipe );
 		}
-
-		ItemStack arcaneCraft = null;
-
-		// Loop through all arcane crafting recipes
-		for( Object currentRecipe : ThaumcraftApi.getCraftingRecipes() )
-		{
-			// Is the current recipe an arcane one?
-			if( ( currentRecipe != null ) && ( currentRecipe instanceof IArcaneRecipe ) )
-			{
-				// Does the recipe have a match?
-				if( ( (IArcaneRecipe)currentRecipe ).matches( workbenchTile, this.player.worldObj, this.player ) )
-				{
-					// Found a match, validate it.
-					arcaneCraft = this.validateWandVisAmount( (IArcaneRecipe)currentRecipe, workbenchTile );
-
-					// Stop searching
-					break;
-				}
-			}
-		}
-
-		// Invalidate the tile (not sure if this is needed, but seems a good idea)
-		workbenchTile.invalidate();
 
 		// Return the result
-		return arcaneCraft;
+		return arcaneResult;
 	}
 
 	/**
@@ -706,17 +684,16 @@ public class ContainerPartArcaneCraftingTerminal
 	 * Takes into consideration the players multiplier.
 	 * 
 	 * @param forRecipe
-	 * @param workbenchTile
 	 * @return ItemStack of the result if wand has enough vis, null otherwise.
 	 */
-	private ItemStack validateWandVisAmount( final IArcaneRecipe forRecipe, final TileMagicWorkbench workbenchTile )
+	private ItemStack validateWandVisAmount( final IArcaneRecipe forRecipe )
 	{
 		boolean hasAll = true;
 		AspectList wandAspectList = null;
 		ItemWandCasting wandItem = null;
 
 		// Get a copy the aspects of the recipe.
-		this.requiredAspects = forRecipe.getAspects( workbenchTile ).copy();
+		this.requiredAspects = forRecipe.getAspects().copy();
 
 		// Cache the recipes aspects
 		Aspect[] recipeAspects = this.requiredAspects.getAspects();
@@ -767,7 +744,7 @@ public class ContainerPartArcaneCraftingTerminal
 		if( hasAll )
 		{
 			// Get the result of the recipe.
-			return forRecipe.getCraftingResult( workbenchTile );
+			return forRecipe.getCraftingResult( null );
 		}
 
 		return null;

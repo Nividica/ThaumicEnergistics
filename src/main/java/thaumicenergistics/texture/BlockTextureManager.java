@@ -41,7 +41,9 @@ public enum BlockTextureManager
 
 		GASEOUS_ESSENTIA (TextureTypes.Block, new String[] { "essentia.gas" }),
 
-		ARCANE_ASSEMBLER (TextureTypes.Block, new String[] { "arcane.assembler" });
+		ARCANE_ASSEMBLER (TextureTypes.Block, new String[] { "arcane.assembler" }),
+
+		KNOWLEDGE_INSCRIBER (TextureTypes.Block, new String[] { "knowledge.inscriber" });
 
 	private enum TextureTypes
 	{

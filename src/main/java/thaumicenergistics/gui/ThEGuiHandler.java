@@ -7,6 +7,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerArcaneAssembler;
 import thaumicenergistics.container.ContainerEssentiaCell;
 import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
+import thaumicenergistics.container.ContainerKnowledgeInscriber;
 import thaumicenergistics.container.ContainerPriority;
 import thaumicenergistics.container.ContainerWirelessEssentiaTerminal;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
@@ -15,7 +16,7 @@ import appeng.api.parts.IPartHost;
 import appeng.helpers.IPriorityHost;
 import cpw.mods.fml.common.network.IGuiHandler;
 
-public class TEGuiHandler
+public class ThEGuiHandler
 	implements IGuiHandler
 {
 	// ID's between 0 and this number indicate that they are AE parts
@@ -48,6 +49,11 @@ public class TEGuiHandler
 	 * ID of the arcane assembler gui.
 	 */
 	public static final int ARCANE_ASSEMBLER_ID = 50;
+
+	/**
+	 * ID of the knowledge inscriber gui.
+	 */
+	public static final int KNOWLEDGE_INSCRIBER = 60;
 
 	/**
 	 * Extra data used for some GUI calls.
@@ -95,7 +101,7 @@ public class TEGuiHandler
 												final int z, final boolean isServerSide )
 	{
 		// Get the part
-		AbstractAEPartBase part = TEGuiHandler.getPart( tileSide, world, x, y, z );
+		AbstractAEPartBase part = ThEGuiHandler.getPart( tileSide, world, x, y, z );
 
 		// Ensure we got the part
 		if( part == null )
@@ -122,7 +128,7 @@ public class TEGuiHandler
 	 */
 	public static int generatePriorityID( final ForgeDirection side )
 	{
-		return TEGuiHandler.PRIORITY_ID + side.ordinal();
+		return ThEGuiHandler.PRIORITY_ID + side.ordinal();
 	}
 
 	/**
@@ -156,7 +162,7 @@ public class TEGuiHandler
 	 */
 	public static void launchGui( final int ID, final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
-		player.openGui( ThaumicEnergistics.instance, ID + TEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
+		player.openGui( ThaumicEnergistics.instance, ID + ThEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
 	}
 
 	/**
@@ -173,9 +179,9 @@ public class TEGuiHandler
 	public static void launchGui( final int ID, final EntityPlayer player, final World world, final int x, final int y, final int z,
 									final Object[] extraData )
 	{
-		TEGuiHandler.extraData = extraData;
-		player.openGui( ThaumicEnergistics.instance, ID + TEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
-		TEGuiHandler.extraData = null;
+		ThEGuiHandler.extraData = extraData;
+		player.openGui( ThaumicEnergistics.instance, ID + ThEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
+		ThEGuiHandler.extraData = null;
 	}
 
 	@Override
@@ -188,26 +194,26 @@ public class TEGuiHandler
 		if( ( world != null ) && ( side != ForgeDirection.UNKNOWN ) )
 		{
 			// This is an AE part, get its gui
-			return TEGuiHandler.getPartGuiElement( side, player, world, x, y, z, false );
+			return ThEGuiHandler.getPartGuiElement( side, player, world, x, y, z, false );
 		}
 
 		// This is not an AE part, adjust the ID
-		ID -= TEGuiHandler.DIRECTION_OFFSET;
+		ID -= ThEGuiHandler.DIRECTION_OFFSET;
 
 		// Is this the essentia cell?
-		if( ID == TEGuiHandler.ESSENTIA_CELL_ID )
+		if( ID == ThEGuiHandler.ESSENTIA_CELL_ID )
 		{
 			return GuiEssentiaCellTerminal.NewEssentiaCellGui( player, world, x, y, z );
 		}
 
 		// Is this the priority window?
-		if( ( ID >= TEGuiHandler.PRIORITY_ID ) && ( ID < TEGuiHandler.CELL_WORKBENCH_ID ) )
+		if( ( ID >= ThEGuiHandler.PRIORITY_ID ) && ( ID < ThEGuiHandler.CELL_WORKBENCH_ID ) )
 		{
 			// Get the side
-			side = ForgeDirection.getOrientation( ID - TEGuiHandler.PRIORITY_ID );
+			side = ForgeDirection.getOrientation( ID - ThEGuiHandler.PRIORITY_ID );
 
 			// Get the part
-			AbstractAEPartBase part = TEGuiHandler.getPart( side, world, x, y, z );
+			AbstractAEPartBase part = ThEGuiHandler.getPart( side, world, x, y, z );
 
 			// Ensure we got the part, and that it implements IPriortyHost
 			if( ( part == null ) || !( part instanceof IPriorityHost ) )
@@ -221,21 +227,27 @@ public class TEGuiHandler
 		}
 
 		// Is this the cell workbench?
-		if( ID == TEGuiHandler.CELL_WORKBENCH_ID )
+		if( ID == ThEGuiHandler.CELL_WORKBENCH_ID )
 		{
 			return new GuiEssentiaCellWorkbench( player, world, x, y, z );
 		}
 
 		// Is this the wireless gui?
-		if( ID == TEGuiHandler.WIRELESS_TERMINAL_ID )
+		if( ID == ThEGuiHandler.WIRELESS_TERMINAL_ID )
 		{
 			return GuiEssentiaCellTerminal.NewWirelessEssentiaTerminalGui( player );
 		}
 
 		// Is this the arcane assembler?
-		if( ID == TEGuiHandler.ARCANE_ASSEMBLER_ID )
+		if( ID == ThEGuiHandler.ARCANE_ASSEMBLER_ID )
 		{
 			return new GuiArcaneAssembler( player, world, x, y, z );
+		}
+
+		// Is this the knowledge inscriber?
+		if( ID == ThEGuiHandler.KNOWLEDGE_INSCRIBER )
+		{
+			return new GuiKnowledgeInscriber( player, world, x, y, z );
 		}
 
 		// No matching GUI element found
@@ -253,26 +265,26 @@ public class TEGuiHandler
 		if( ( world != null ) && ( side != ForgeDirection.UNKNOWN ) )
 		{
 			// This is an AE part, get its gui
-			return TEGuiHandler.getPartGuiElement( side, player, world, x, y, z, true );
+			return ThEGuiHandler.getPartGuiElement( side, player, world, x, y, z, true );
 		}
 
 		// This is not an AE part, adjust the ID
-		ID -= TEGuiHandler.DIRECTION_OFFSET;
+		ID -= ThEGuiHandler.DIRECTION_OFFSET;
 
 		// Is this the essentia cell?
-		if( ID == TEGuiHandler.ESSENTIA_CELL_ID )
+		if( ID == ThEGuiHandler.ESSENTIA_CELL_ID )
 		{
 			return new ContainerEssentiaCell( player, world, x, y, z );
 		}
 
 		// Is this the priority window?
-		if( ( ID >= TEGuiHandler.PRIORITY_ID ) && ( ID < TEGuiHandler.CELL_WORKBENCH_ID ) )
+		if( ( ID >= ThEGuiHandler.PRIORITY_ID ) && ( ID < ThEGuiHandler.CELL_WORKBENCH_ID ) )
 		{
 			// Get the side
-			side = ForgeDirection.getOrientation( ID - TEGuiHandler.PRIORITY_ID );
+			side = ForgeDirection.getOrientation( ID - ThEGuiHandler.PRIORITY_ID );
 
 			// Get the part
-			AbstractAEPartBase part = TEGuiHandler.getPart( side, world, x, y, z );
+			AbstractAEPartBase part = ThEGuiHandler.getPart( side, world, x, y, z );
 
 			// Ensure we got the part, and that it implements IPriortyHost
 			if( ( part == null ) || !( part instanceof IPriorityHost ) )
@@ -286,26 +298,31 @@ public class TEGuiHandler
 		}
 
 		// Is this the cell workbench?
-		if( ID == TEGuiHandler.CELL_WORKBENCH_ID )
+		if( ID == ThEGuiHandler.CELL_WORKBENCH_ID )
 		{
 			return new ContainerEssentiaCellWorkbench( player, world, x, y, z );
 		}
 
 		// Is this the wireless gui?
-		if( ID == TEGuiHandler.WIRELESS_TERMINAL_ID )
+		if( ID == ThEGuiHandler.WIRELESS_TERMINAL_ID )
 		{
-			HandlerWirelessEssentiaTerminal handler = (HandlerWirelessEssentiaTerminal)TEGuiHandler.extraData[0];
+			HandlerWirelessEssentiaTerminal handler = (HandlerWirelessEssentiaTerminal)ThEGuiHandler.extraData[0];
 			return new ContainerWirelessEssentiaTerminal( player, handler );
 		}
 
 		// Is this the arcane assembler?
-		if( ID == TEGuiHandler.ARCANE_ASSEMBLER_ID )
+		if( ID == ThEGuiHandler.ARCANE_ASSEMBLER_ID )
 		{
 			return new ContainerArcaneAssembler( player, world, x, y, z );
+		}
+
+		// Is this the knowledge inscriber?
+		if( ID == ThEGuiHandler.KNOWLEDGE_INSCRIBER )
+		{
+			return new ContainerKnowledgeInscriber( player, world, x, y, z );
 		}
 
 		// No matching GUI element found
 		return null;
 	}
-
 }

@@ -235,7 +235,7 @@ public class GuiEssentiaStorageBus
 			ForgeDirection side = this.storageBus.getSide();
 
 			// Ask the server to change to the priority gui
-			new PacketServerChangeGui().createChangeGuiRequest( TEGuiHandler.generatePriorityID( side ), this.player, host.getWorldObj(),
+			new PacketServerChangeGui().createChangeGuiRequest( ThEGuiHandler.generatePriorityID( side ), this.player, host.getWorldObj(),
 				host.xCoord, host.yCoord, host.zCoord ).sendPacketToServer();
 
 		}

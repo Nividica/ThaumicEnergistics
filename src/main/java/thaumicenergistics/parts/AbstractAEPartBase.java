@@ -18,7 +18,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.grid.AEPartGridBlock;
-import thaumicenergistics.gui.TEGuiHandler;
+import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.texture.BlockTextureManager;
@@ -415,7 +415,7 @@ public abstract class AbstractAEPartBase
 		if( EffectiveSide.isServerSide() )
 		{
 			// Launch the gui
-			TEGuiHandler.launchGui( this, player, this.hostTile.getWorldObj(), this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord );
+			ThEGuiHandler.launchGui( this, player, this.hostTile.getWorldObj(), this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord );
 		}
 
 		return true;

@@ -3,7 +3,7 @@ package thaumicenergistics.network.packet.server;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import thaumicenergistics.gui.TEGuiHandler;
+import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.network.packet.AbstractPacket;
 import thaumicenergistics.network.packet.AbstractServerPacket;
 import thaumicenergistics.parts.AbstractAEPartBase;
@@ -73,12 +73,12 @@ public class PacketServerChangeGui
 		if( this.mode == PacketServerChangeGui.MODE_REGULAR )
 		{
 			// Launch regular
-			TEGuiHandler.launchGui( this.guiID, this.player, this.world, this.x, this.y, this.z );
+			ThEGuiHandler.launchGui( this.guiID, this.player, this.world, this.x, this.y, this.z );
 		}
 		else if( this.mode == PacketServerChangeGui.MODE_PART )
 		{
 			// Launch part
-			TEGuiHandler.launchGui( this.part, this.player, this.world, this.x, this.y, this.z );
+			ThEGuiHandler.launchGui( this.part, this.player, this.world, this.x, this.y, this.z );
 		}
 
 	}

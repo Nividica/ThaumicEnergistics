@@ -12,7 +12,8 @@ public enum GuiTextureManager
 		ARCANE_CRAFTING_TERMINAL ("arcane.crafting"),
 		PRIORITY ("priority"),
 		CELL_WORKBENCH ("essentia.cell.workbench"),
-		ARCANE_ASSEMBLER ("arcane.assembler");
+		ARCANE_ASSEMBLER ("arcane.assembler"),
+		KNOWLEDGE_INSCRIBER ("knowledge.inscriber");
 
 	private ResourceLocation texture;
 

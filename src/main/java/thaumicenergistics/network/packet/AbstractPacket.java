@@ -10,6 +10,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -21,6 +22,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
 import com.google.common.base.Charsets;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -101,6 +103,17 @@ public abstract class AbstractPacket
 	protected static Aspect readAspect( final ByteBuf stream )
 	{
 		return Aspect.aspects.get( readString( stream ) );
+	}
+
+	/**
+	 * Reads an itemstack from the stream.
+	 * 
+	 * @param stream
+	 * @return
+	 */
+	protected static ItemStack readItemstack( final ByteBuf stream )
+	{
+		return ByteBufUtils.readItemStack( stream );
 	}
 
 	/**
@@ -206,7 +219,6 @@ public abstract class AbstractPacket
 			{
 			}
 		}
-
 	}
 
 	/**
@@ -225,6 +237,17 @@ public abstract class AbstractPacket
 		}
 
 		writeString( aspectName, stream );
+	}
+
+	/**
+	 * Writes an itemstack into the stream.
+	 * 
+	 * @param stack
+	 * @param stream
+	 */
+	protected static void writeItemstack( final ItemStack stack, final ByteBuf stream )
+	{
+		ByteBufUtils.writeItemStack( stream, stack );
 	}
 
 	/**

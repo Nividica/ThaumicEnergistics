@@ -19,7 +19,7 @@ import org.lwjgl.input.Keyboard;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator;
-import thaumicenergistics.gui.TEGuiHandler;
+import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.inventory.HandlerItemEssentiaCellCreative;
 import thaumicenergistics.registries.ItemEnum;
@@ -342,7 +342,7 @@ public class ItemEssentiaCell
 				TileEntity chestEntity = (TileEntity)chest;
 
 				// Show the terminal gui
-				TEGuiHandler.launchGui( TEGuiHandler.ESSENTIA_CELL_ID, player, chestEntity.getWorldObj(), chestEntity.xCoord, chestEntity.yCoord,
+				ThEGuiHandler.launchGui( ThEGuiHandler.ESSENTIA_CELL_ID, player, chestEntity.getWorldObj(), chestEntity.xCoord, chestEntity.yCoord,
 					chestEntity.zCoord );
 			}
 		}

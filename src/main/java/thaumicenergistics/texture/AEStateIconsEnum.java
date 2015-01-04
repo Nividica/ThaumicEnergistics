@@ -38,6 +38,9 @@ public enum AEStateIconsEnum
 		// Misc
 		WRENCH (32, 64),
 		DISABLED (0, 128),
+		ENABLED (16, 128),
+		SAVE (0, 176),
+		DELETE (0, 192),
 		CLEAR_GRID (96, 0);
 
 	/**

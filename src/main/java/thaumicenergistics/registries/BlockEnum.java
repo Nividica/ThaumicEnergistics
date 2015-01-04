@@ -8,6 +8,7 @@ import thaumicenergistics.blocks.BlockEssentiaProvider;
 import thaumicenergistics.blocks.BlockGearBox;
 import thaumicenergistics.blocks.BlockGolemGearBox;
 import thaumicenergistics.blocks.BlockInfusionProvider;
+import thaumicenergistics.blocks.BlockKnowledgeInscriber;
 
 public enum BlockEnum
 {
@@ -16,7 +17,8 @@ public enum BlockEnum
 		IRON_GEAR_BOX ("gear.box", new BlockGearBox()),
 		THAUMIUM_GEAR_BOX ("golem.gear.box", new BlockGolemGearBox()),
 		ESSENTIA_CELL_WORKBENCH ("essentia.cell.workbench", new BlockEssentiaCellWorkbench()),
-		ARCANE_ASSEMBLER ("arcane.assembler", new BlockArcaneAssembler());
+		ARCANE_ASSEMBLER ("arcane.assembler", new BlockArcaneAssembler()),
+		KNOWLEDGE_INSCRIBER ("knowledge.inscriber", new BlockKnowledgeInscriber());
 
 	private Block block;
 
