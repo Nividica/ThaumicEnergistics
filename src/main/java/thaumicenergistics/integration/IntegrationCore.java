@@ -16,14 +16,19 @@ public final class IntegrationCore
 	private static final String CLASS_PATH = ThaumicEnergistics.MOD_ID + ".integration.Module";
 
 	/**
-	 * Mod ID for Waila
+	 * Module ID for Waila
 	 */
 	private static final String MODID_WAILA = "Waila";
 
 	/**
-	 * Mod ID for NEI
+	 * Module ID for NEI
 	 */
 	private static final String MODID_NEI = "NEI";
+
+	/**
+	 * Module ID for EC2
+	 */
+	private static final String MODID_EC2 = "EC2";
 
 	@SideOnly(Side.CLIENT)
 	private static void integrateWithClientMods()
@@ -106,6 +111,9 @@ public final class IntegrationCore
 			{
 				IntegrationCore.integrateWithClientMods();
 			}
+
+			// Integrate with EC2
+			IntegrationCore.integrateWithMod( IntegrationCore.MODID_EC2 );
 		}
 		catch( Throwable e )
 		{

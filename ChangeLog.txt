@@ -1,5 +1,6 @@
 ﻿1/4/2015 0.8.7.3a-rv2
   Added first bits of the Knowledge Inscriber.
+  Fixes #110: Essentia gasses are now hidden from EC2. Requires EC2 version 2.2.24b44 or higher.
 
 12/22/2014 0.8.7.3a-rv2
   Fixes #108: Added essentia creative cell. Set aspects in cell workbench.
