@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
+import thaumicenergistics.items.ItemKnowledgeCore;
 
 public class HandlerKnowledgeCore
 {
@@ -136,6 +137,15 @@ public class HandlerKnowledgeCore
 	}
 
 	/**
+	 * Instructs the handler to close.
+	 */
+	public void close()
+	{
+		this.kCore = null;
+		this.patterns.clear();
+	}
+
+	/**
 	 * Gets the pattern that produces the result.
 	 * 
 	 * @param resultStack
@@ -160,6 +170,16 @@ public class HandlerKnowledgeCore
 
 		// No matching patterns
 		return null;
+	}
+
+	/**
+	 * Gets the list of stored patterns.
+	 * 
+	 * @return
+	 */
+	public ArrayList<ArcaneCraftingPattern> getPatterns()
+	{
+		return this.patterns;
 	}
 
 	/**
@@ -205,6 +225,38 @@ public class HandlerKnowledgeCore
 	public boolean hasRoomToStorePattern()
 	{
 		return( this.patterns.size() < HandlerKnowledgeCore.MAXIMUM_STORED_PATTERNS );
+	}
+
+	/**
+	 * Return's true if this handler is handling the specified knowledge core.
+	 * 
+	 * @param kCore
+	 * @return
+	 */
+	public boolean isHandlingCore( final ItemStack kCore )
+	{
+		// Is the handler handling a core?
+		if( this.kCore == null )
+		{
+			// Handler has been closed.
+			return false;
+		}
+
+		// Is the specified itemstack valid?
+		if( ( kCore == null ) || ( kCore.getItem() == null ) )
+		{
+			// Invalid itemstack
+			return false;
+		}
+
+		// Is the specified item a knowledge core?
+		if( !( kCore.getItem() instanceof ItemKnowledgeCore ) )
+		{
+			// Invalid core
+			return false;
+		}
+
+		return( ItemStack.areItemStacksEqual( kCore, this.kCore ) && ( ItemStack.areItemStackTagsEqual( kCore, this.kCore ) ) );
 	}
 
 	/**

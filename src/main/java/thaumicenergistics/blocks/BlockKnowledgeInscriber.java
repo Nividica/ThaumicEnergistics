@@ -3,6 +3,7 @@ package thaumicenergistics.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -14,10 +15,10 @@ import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.tileentities.TileKnowledgeInscriber;
+import thaumicenergistics.util.EffectiveSide;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// TODO: Drop kcore on destroy
 public class BlockKnowledgeInscriber
 	extends AbstractBlockAEWrenchable
 {
@@ -34,6 +35,31 @@ public class BlockKnowledgeInscriber
 
 		// Place in the ThE creative tab
 		this.setCreativeTab( ThaumicEnergistics.ThETab );
+	}
+
+	/**
+	 * Called when the block is broken.
+	 */
+	@Override
+	public void breakBlock( final World world, final int x, final int y, final int z, final Block block, final int metaData )
+	{
+		// Is this server side?
+		if( EffectiveSide.isServerSide() )
+		{
+			// Get the tile
+			TileKnowledgeInscriber tileKI = (TileKnowledgeInscriber)world.getTileEntity( x, y, z );
+
+			// Does the inscriber have a cell?
+			if( ( tileKI != null ) && ( tileKI.hasKCore() ) )
+			{
+				// Spawn the core as an item entity.
+				world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, tileKI.getInventory().getStackInSlot(
+					TileKnowledgeInscriber.KCORE_SLOT ) ) );
+			}
+		}
+
+		// Call super
+		super.breakBlock( world, x, y, z, block, metaData );
 	}
 
 	@Override

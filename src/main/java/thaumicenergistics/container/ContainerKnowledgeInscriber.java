@@ -3,6 +3,7 @@ package thaumicenergistics.container;
 import java.util.ArrayList;
 import java.util.Iterator;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -12,6 +13,7 @@ import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
 import thaumicenergistics.integration.tc.ArcaneRecipeHelper;
 import thaumicenergistics.inventory.HandlerKnowledgeCore;
+import thaumicenergistics.items.ItemKnowledgeCore;
 import thaumicenergistics.network.packet.client.PacketClientKnowledgeInscriber;
 import thaumicenergistics.tileentities.TileKnowledgeInscriber;
 import thaumicenergistics.util.EffectiveSide;
@@ -97,6 +99,11 @@ public class ContainerKnowledgeInscriber
 	 */
 	private boolean hadCoreLastCheck = false;
 
+	/**
+	 * Inscriber tile entity.
+	 */
+	private TileKnowledgeInscriber inscriber;
+
 	public ContainerKnowledgeInscriber( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
 		// Set the player
@@ -107,10 +114,10 @@ public class ContainerKnowledgeInscriber
 			ContainerKnowledgeInscriber.HOTBAR_INV_POSITION_Y );
 
 		// Get the inscriber
-		TileKnowledgeInscriber inscriber = (TileKnowledgeInscriber)world.getTileEntity( x, y, z );
+		this.inscriber = (TileKnowledgeInscriber)world.getTileEntity( x, y, z );
 
 		// Get the inscriber's inventory
-		IInventory inscriberInventory = inscriber.getInventory();
+		IInventory inscriberInventory = this.inscriber.getInventory();
 
 		// Create the Kcore slot
 		this.kCoreSlot = new SlotRestrictive( inscriberInventory, TileKnowledgeInscriber.KCORE_SLOT, ContainerKnowledgeInscriber.KCORE_SLOT_X,
@@ -281,6 +288,12 @@ public class ContainerKnowledgeInscriber
 				// Clear the slot
 				patternSlot.putStack( null );
 			}
+
+			// Update clients with change
+			for( int cIndex = 0; cIndex < this.crafters.size(); ++cIndex )
+			{
+				( (ICrafting)this.crafters.get( cIndex ) ).sendSlotContents( this, patternSlot.slotNumber, patternSlot.getStack() );
+			}
 		}
 	}
 
@@ -333,10 +346,14 @@ public class ContainerKnowledgeInscriber
 
 			// Update the client
 			this.onClientRequestFullUpdate( this.player );
+
+			// Mark the inscriber as dirty
+			this.inscriber.markDirty();
 		}
 
 		// Mark the cores presence
 		this.hadCoreLastCheck = hasCore;
+
 	}
 
 	/**
@@ -380,6 +397,9 @@ public class ContainerKnowledgeInscriber
 
 			// Update the client
 			this.onClientRequestFullUpdate( player );
+
+			// Mark the inscriber as dirty
+			this.inscriber.markDirty();
 		}
 		else if( saveState == CoreSaveState.Enabled_Delete )
 		{
@@ -397,6 +417,9 @@ public class ContainerKnowledgeInscriber
 
 				// Update the client
 				this.onClientRequestFullUpdate( player );
+
+				// Mark the inscriber as dirty
+				this.inscriber.markDirty();
 			}
 		}
 	}
@@ -512,6 +535,7 @@ public class ContainerKnowledgeInscriber
 			}
 		}
 
+		// Pass to super
 		return super.slotClick( slotID, buttonPressed, flag, player );
 
 	}
@@ -519,6 +543,77 @@ public class ContainerKnowledgeInscriber
 	@Override
 	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
+		// Is this client side?
+		if( EffectiveSide.isClientSide() )
+		{
+			// Do nothing.
+			return null;
+		}
+
+		// Get the slot that was shift-clicked
+		Slot slot = (Slot)this.inventorySlots.get( slotNumber );
+
+		// Is there a valid slot with and item?
+		if( ( slot != null ) && ( slot.getHasStack() ) )
+		{
+			boolean didMerge = false;
+
+			// Get the itemstack in the slot
+			ItemStack slotStack = slot.getStack();
+
+			// Was the slot clicked in the player or hotbar inventory?
+			if( this.slotClickedWasInPlayerInventory( slotNumber ) || this.slotClickedWasInHotbarInventory( slotNumber ) )
+			{
+				// Attempt to merge with kcore slot
+				if( slotStack.getItem() instanceof ItemKnowledgeCore )
+				{
+					didMerge = this.mergeItemStack( slotStack, this.kCoreSlot.slotNumber, this.kCoreSlot.slotNumber + 1, false );
+				}
+
+				// Was the stack merged?
+				if( !didMerge )
+				{
+					// Attempt to merge with player inventory
+					didMerge = this.swapSlotInventoryHotbar( slotNumber, slotStack );
+				}
+			}
+			// Was the slot clicked the KCore slot?
+			else if( this.kCoreSlot.slotNumber == slotNumber )
+			{
+				// Attempt to merge with player hotbar
+				didMerge = this.mergeSlotWithHotbarInventory( slotStack );
+
+				// Was the stack merged?
+				if( !didMerge )
+				{
+					// Attempt to merge with the player inventory
+					didMerge = this.mergeSlotWithPlayerInventory( slotStack );
+				}
+			}
+
+			// Was the stack merged?
+			if( didMerge )
+			{
+
+				// Did the merger drain the stack?
+				if( ( slotStack == null ) || ( slotStack.stackSize == 0 ) )
+				{
+					// Set the slot to have no item
+					slot.putStack( null );
+				}
+				else
+				{
+					// Inform the slot its stack changed;
+					slot.onSlotChanged();
+				}
+
+				// Send changes
+				this.detectAndSendChanges();
+			}
+		}
+
+		// All done.
 		return null;
+
 	}
 }

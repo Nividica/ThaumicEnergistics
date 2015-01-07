@@ -3,7 +3,9 @@ package thaumicenergistics.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -14,6 +16,8 @@ import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
+import thaumicenergistics.util.EffectiveSide;
+import appeng.api.implementations.items.IMemoryCard;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,6 +38,31 @@ public class BlockArcaneAssembler
 
 		// Place in the ThE creative tab
 		this.setCreativeTab( ThaumicEnergistics.ThETab );
+	}
+
+	/**
+	 * Called when the block is broken.
+	 */
+	@Override
+	public void breakBlock( final World world, final int x, final int y, final int z, final Block block, final int metaData )
+	{
+		// Is this server side?
+		if( EffectiveSide.isServerSide() )
+		{
+			// Get the tile
+			TileArcaneAssembler assembler = (TileArcaneAssembler)world.getTileEntity( x, y, z );
+
+			// Does the inscriber have a cell?
+			if( ( assembler != null ) && ( assembler.hasKCore() ) )
+			{
+				// Spawn the core as an item entity.
+				world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, assembler.getInternalInventory().getStackInSlot(
+					TileArcaneAssembler.KCORE_SLOT_INDEX ) ) );
+			}
+		}
+
+		// Call super
+		super.breakBlock( world, x, y, z, block, metaData );
 	}
 
 	/**
@@ -102,8 +131,25 @@ public class BlockArcaneAssembler
 	@Override
 	public boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
-		// Launch the gui.
-		ThEGuiHandler.launchGui( ThEGuiHandler.ARCANE_ASSEMBLER_ID, player, world, x, y, z );
+		// Get what the player is holding
+		ItemStack playerHolding = player.inventory.getCurrentItem();
+
+		// Are they holding a memory card?
+		if( ( playerHolding != null ) && ( playerHolding.getItem() instanceof IMemoryCard ) )
+		{
+			// Get the tile
+			TileArcaneAssembler assembler = (TileArcaneAssembler)world.getTileEntity( x, y, z );
+			if( assembler != null )
+			{
+				// Inform the tile of the event
+				assembler.onMemoryCardActivate( player, (IMemoryCard)playerHolding.getItem(), playerHolding );
+			}
+		}
+		else
+		{
+			// Launch the gui.
+			ThEGuiHandler.launchGui( ThEGuiHandler.ARCANE_ASSEMBLER_ID, player, world, x, y, z );
+		}
 
 		return true;
 	}

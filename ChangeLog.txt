@@ -1,5 +1,8 @@
 ﻿1/7/2015 0.8.7.3a-rv2
   Knowledge Inscriber fully functional.
+  Knowledge Inscriber now saves inventory, and drops Knowledge core when broken.
+  Arcane Assembler can be linked with vis relay.
+  Assembler GUI now reflects Vis amount.  
 
 1/4/2015 0.8.7.3a-rv2
   Added first bits of the Knowledge Inscriber.
