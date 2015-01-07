@@ -3,16 +3,22 @@ package thaumicenergistics.integration.tc;
 import java.util.ArrayList;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.api.aspects.AspectList;
 import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.util.item.AEItemStack;
 
 public class ArcaneCraftingPattern
 	implements ICraftingPatternDetails
 {
+	private static final String NBTKEY_INGREDIENT = "input#", NBTKEY_RESULT = "output";
+
+	private static final int GRID_SIZE = 9;
+
 	/**
 	 * Aspects required.
 	 */
@@ -21,7 +27,7 @@ public class ArcaneCraftingPattern
 	/**
 	 * Ingredients.
 	 */
-	public IAEItemStack[] ingredients = new IAEItemStack[9];
+	public IAEItemStack[] ingredients = new IAEItemStack[ArcaneCraftingPattern.GRID_SIZE];
 
 	/**
 	 * Crafting result.
@@ -33,6 +39,13 @@ public class ArcaneCraftingPattern
 	 */
 	public ItemStack knowledgeCoreHost;
 
+	/**
+	 * 
+	 * @param knowledgeCore
+	 * @param aspects
+	 * @param craftingResult
+	 * @param craftingIngredients
+	 */
 	public ArcaneCraftingPattern( final ItemStack knowledgeCore, final AspectList aspects, final ItemStack craftingResult,
 									final ItemStack[] craftingIngredients )
 	{
@@ -57,6 +70,23 @@ public class ArcaneCraftingPattern
 				this.ingredients[index] = AEApi.instance().storage().createItemStack( nextIng );
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @param knowledgeCore
+	 * @param data
+	 */
+	public ArcaneCraftingPattern( final ItemStack knowledgeCore, final NBTTagCompound data )
+	{
+		// Set the host
+		this.knowledgeCoreHost = knowledgeCore;
+
+		// Create the aspect list
+		this.aspects = new AspectList();
+
+		// Read the data
+		this.readFromNBT( data );
 	}
 
 	@Override
@@ -180,10 +210,73 @@ public class ArcaneCraftingPattern
 		return false;
 	}
 
+	public void readFromNBT( final NBTTagCompound data )
+	{
+		// Read the aspects
+		this.aspects.readFromNBT( data );
+
+		// Read ingredients
+		for( int index = 0; index < ArcaneCraftingPattern.GRID_SIZE; index++ )
+		{
+			if( data.hasKey( ArcaneCraftingPattern.NBTKEY_INGREDIENT + index ) )
+			{
+				NBTTagCompound ingData = data.getCompoundTag( ArcaneCraftingPattern.NBTKEY_INGREDIENT + index );
+				this.ingredients[index] = AEItemStack.loadItemStackFromNBT( ingData );
+			}
+			else
+			{
+				this.ingredients[index] = null;
+			}
+		}
+
+		// Read the result
+		if( data.hasKey( ArcaneCraftingPattern.NBTKEY_RESULT ) )
+		{
+			NBTTagCompound outData = data.getCompoundTag( ArcaneCraftingPattern.NBTKEY_RESULT );
+			this.result = AEItemStack.loadItemStackFromNBT( outData );
+		}
+	}
+
 	@Override
 	public void setPriority( final int priority )
 	{
 		// Ignored.
+	}
+
+	/**
+	 * Write's the pattern to the NBT tag.
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	{
+		// Write the aspects
+		this.aspects.writeToNBT( data );
+
+		// Write the ingredients
+		for( int index = 0; index < ArcaneCraftingPattern.GRID_SIZE; index++ )
+		{
+			// Ensure it is not null
+			if( this.ingredients[index] != null )
+			{
+				// Create the tag
+				NBTTagCompound ingData = new NBTTagCompound();
+
+				// Write the ingredient data
+				this.ingredients[index].writeToNBT( ingData );
+
+				// Write into the main data tag
+				data.setTag( ArcaneCraftingPattern.NBTKEY_INGREDIENT + index, ingData );
+			}
+		}
+
+		// Write the result
+		NBTTagCompound outData = new NBTTagCompound();
+		this.result.writeToNBT( outData );
+		data.setTag( ArcaneCraftingPattern.NBTKEY_RESULT, outData );
+
+		return data;
 	}
 
 }

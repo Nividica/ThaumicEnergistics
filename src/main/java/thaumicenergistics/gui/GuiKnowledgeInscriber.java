@@ -32,12 +32,24 @@ public class GuiKnowledgeInscriber
 	 */
 	private static final int TITLE_POS_X = 6, TITLE_POS_Y = 6;
 
+	/**
+	 * Save / Delete button.
+	 */
 	private ButtonSaveDelete saveButton;
 
+	/**
+	 * GUI Title
+	 */
 	private String title;
 
+	/**
+	 * State of the save button.
+	 */
 	private CoreSaveState saveState = CoreSaveState.Disabled_MissingCore;
 
+	/**
+	 * Player viewing the GUI.
+	 */
 	private EntityPlayer player;
 
 	public GuiKnowledgeInscriber( final EntityPlayer player, final World world, final int x, final int y, final int z )
@@ -59,8 +71,10 @@ public class GuiKnowledgeInscriber
 	@Override
 	protected void actionPerformed( final GuiButton button )
 	{
+		// Was the clicked button the save button?
 		if( button == this.saveButton )
 		{
+			// Send the request to the server
 			new PacketServerKnowledgeInscriber().createRequestSaveDelete( this.player ).sendPacketToServer();
 		}
 	}
@@ -71,6 +85,7 @@ public class GuiKnowledgeInscriber
 	@Override
 	protected void drawGuiContainerBackgroundLayer( final float alpha, final int mouseX, final int mouseY )
 	{
+		// Calculate the color shifts
 		long slowTime = ( System.currentTimeMillis() / 100 );
 		float redBounce = Math.abs( 1.0F - ( ( ( slowTime % 50 ) / 50.0F ) * 2.0F ) );
 		float greenBounce = 1.0F - redBounce;

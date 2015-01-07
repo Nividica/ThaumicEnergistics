@@ -842,7 +842,8 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	public void onClientRequestAutoCraft( final EntityPlayer player, final IAEItemStack result )
 	{
-		Platform.openGUI( player, this.arcaneCraftingTerminalPart.getHostTile(), this.arcaneCraftingTerminalPart.getSide(), GuiBridge.GUI_CRAFTING_AMOUNT );
+		Platform.openGUI( player, this.arcaneCraftingTerminalPart.getHostTile(), this.arcaneCraftingTerminalPart.getSide(),
+			GuiBridge.GUI_CRAFTING_AMOUNT );
 
 		if( player.openContainer instanceof ContainerCraftAmount )
 		{
@@ -1153,8 +1154,8 @@ public class ContainerPartArcaneCraftingTerminal
 	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
 		// Send the sorting info
-		new PacketClientArcaneCraftingTerminal().createSortingUpdate( player, this.arcaneCraftingTerminalPart.getSortingOrder(), this.arcaneCraftingTerminalPart.getSortingDirection(),
-			this.arcaneCraftingTerminalPart.getViewMode() ).sendPacketToPlayer();
+		new PacketClientArcaneCraftingTerminal().createSortingUpdate( player, this.arcaneCraftingTerminalPart.getSortingOrder(),
+			this.arcaneCraftingTerminalPart.getSortingDirection(), this.arcaneCraftingTerminalPart.getViewMode() ).sendPacketToPlayer();
 
 		// Ensure we have a monitor
 		if( this.monitor != null )

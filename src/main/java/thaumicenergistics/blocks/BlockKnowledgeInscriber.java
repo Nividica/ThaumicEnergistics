@@ -17,6 +17,7 @@ import thaumicenergistics.tileentities.TileKnowledgeInscriber;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+// TODO: Drop kcore on destroy
 public class BlockKnowledgeInscriber
 	extends AbstractBlockAEWrenchable
 {

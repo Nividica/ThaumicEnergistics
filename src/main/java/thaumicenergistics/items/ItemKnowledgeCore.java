@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.registries.ItemEnum;
 
@@ -23,22 +22,6 @@ public class ItemKnowledgeCore
 
 		// Can not stack
 		this.setMaxStackSize( 1 );
-	}
-
-	/**
-	 * Gets or creates the NBT tag for the specified core.
-	 * 
-	 * @param kCore
-	 * @return
-	 */
-	private NBTTagCompound getOrCreateNBT( final ItemStack kCore )
-	{
-		if( !kCore.hasTagCompound() )
-		{
-			kCore.stackTagCompound = new NBTTagCompound();
-		}
-
-		return kCore.stackTagCompound;
 	}
 
 	@Override

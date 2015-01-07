@@ -2,16 +2,112 @@ package thaumicenergistics.inventory;
 
 import java.util.ArrayList;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
 
 public class HandlerKnowledgeCore
 {
+	/**
+	 * NBT Keys.
+	 */
+	private static final String NBTKEY_PATTERNS = "Patterns";
+
+	/**
+	 * Maximum number of stored patterns.
+	 */
 	public static final int MAXIMUM_STORED_PATTERNS = 21;
 
+	/**
+	 * Array of stored patterns.
+	 */
 	private ArrayList<ArcaneCraftingPattern> patterns = new ArrayList<ArcaneCraftingPattern>( HandlerKnowledgeCore.MAXIMUM_STORED_PATTERNS );
 
-	public HandlerKnowledgeCore()
+	/**
+	 * Knowledge core being handled.
+	 */
+	private ItemStack kCore;
+
+	public HandlerKnowledgeCore( final ItemStack kCore )
 	{
+		// Set the kCore
+		this.kCore = kCore;
+
+		// Load
+		this.loadKCoreData();
+	}
+
+	/**
+	 * Gets or creates the NBT tag for the knowledge core.
+	 * 
+	 * @return
+	 */
+	private NBTTagCompound getOrCreateNBT()
+	{
+		if( !this.kCore.hasTagCompound() )
+		{
+			this.kCore.stackTagCompound = new NBTTagCompound();
+		}
+
+		return this.kCore.stackTagCompound;
+	}
+
+	/**
+	 * Loads the data from the knowledge core's nbt.
+	 */
+	private void loadKCoreData()
+	{
+		// Clear any existing data
+		this.patterns.clear();
+
+		// Get the data tag
+		NBTTagCompound data = this.getOrCreateNBT();
+
+		// Are there saved patterns?
+		if( data.hasKey( HandlerKnowledgeCore.NBTKEY_PATTERNS ) )
+		{
+			// Get the list
+			NBTTagList plist = data.getTagList( HandlerKnowledgeCore.NBTKEY_PATTERNS, Constants.NBT.TAG_COMPOUND );
+
+			// Read in each pattern
+			for( int index = 0; index < plist.tagCount(); index++ )
+			{
+				this.patterns.add( new ArcaneCraftingPattern( this.kCore, plist.getCompoundTagAt( index ) ) );
+			}
+		}
+
+	}
+
+	/**
+	 * Saves the data to the knowldge core's nbt.
+	 */
+	private void saveKCoreData()
+	{
+		// Get the data tag
+		NBTTagCompound data = this.getOrCreateNBT();
+
+		// Create the pattern list
+		NBTTagList plist = new NBTTagList();
+
+		// Save each pattern
+		for( ArcaneCraftingPattern pattern : this.patterns )
+		{
+			// Ensure the pattern is not null
+			if( pattern == null )
+			{
+				continue;
+			}
+
+			// Write the pattern
+			plist.appendTag( pattern.writeToNBT( new NBTTagCompound() ) );
+		}
+
+		// Write the list to the data
+		if( plist.tagCount() > 0 )
+		{
+			data.setTag( HandlerKnowledgeCore.NBTKEY_PATTERNS, plist );
+		}
 	}
 
 	/**
@@ -25,8 +121,18 @@ public class HandlerKnowledgeCore
 			return;
 		}
 
-		// TODO: Check for duplicate patterns
-		this.patterns.add( pattern );
+		// Check for duplicate patterns
+		ArcaneCraftingPattern existingPattern = this.getPatternForItem( pattern.result.getItemStack() );
+
+		if( existingPattern == null )
+		{
+			// Add the pattern
+			this.patterns.add( pattern );
+
+			// Save
+			this.saveKCoreData();
+		}
+
 	}
 
 	/**
@@ -37,17 +143,22 @@ public class HandlerKnowledgeCore
 	 */
 	public ArcaneCraftingPattern getPatternForItem( final ItemStack resultStack )
 	{
+		// Loop over all stored patterns
 		for( ArcaneCraftingPattern p : this.patterns )
 		{
+			// Does the pattern have a valid output?
 			if( ( p != null ) && ( p.result != null ) )
 			{
+				// Is the output equal to the specified result?
 				if( ItemStack.areItemStacksEqual( p.result.getItemStack(), resultStack ) )
 				{
+					// Found the pattern
 					return p;
 				}
 			}
 		}
 
+		// No matching patterns
 		return null;
 	}
 
@@ -58,8 +169,10 @@ public class HandlerKnowledgeCore
 	 */
 	public ArrayList<ItemStack> getStoredOutputs()
 	{
+		// Create the array
 		ArrayList<ItemStack> results = new ArrayList<ItemStack>();
 
+		// Add each stored patterns output
 		for( ArcaneCraftingPattern p : this.patterns )
 		{
 			if( ( p != null ) && ( p.result != null ) )
@@ -68,6 +181,7 @@ public class HandlerKnowledgeCore
 			}
 		}
 
+		// Return the array
 		return results;
 	}
 
@@ -100,7 +214,12 @@ public class HandlerKnowledgeCore
 	 */
 	public void removePattern( final ArcaneCraftingPattern pattern )
 	{
-		this.patterns.remove( pattern );
+		// Attempt to remove the pattern
+		if( this.patterns.remove( pattern ) )
+		{
+			// Save
+			this.saveKCoreData();
+		}
 	}
 
 }
