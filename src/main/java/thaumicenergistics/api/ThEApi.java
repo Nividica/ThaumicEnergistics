@@ -7,17 +7,17 @@ import com.google.common.collect.ImmutableList;
 /**
  * Thaumic Energistics API
  */
-public abstract class TEApi
+public abstract class ThEApi
 {
-	protected static TEApi api;
+	protected static ThEApi api;
 
 	/**
 	 * Thaumic Energistics API
 	 */
-	public static TEApi instance()
+	public static ThEApi instance()
 	{
 		// Have we already retrieved the api?
-		if( TEApi.api == null )
+		if( ThEApi.api == null )
 		{
 			try
 			{
@@ -25,7 +25,7 @@ public abstract class TEApi
 				Class clazz = Class.forName( "thaumicenergistics.implementaion.API" );
 
 				// Attempt to get the API instance
-				TEApi.api = (TEApi)clazz.getField( "instance" ).get( clazz );
+				ThEApi.api = (ThEApi)clazz.getField( "instance" ).get( clazz );
 			}
 			catch( Throwable e )
 			{
@@ -34,7 +34,7 @@ public abstract class TEApi
 			}
 		}
 
-		return TEApi.api;
+		return ThEApi.api;
 	}
 
 	/**

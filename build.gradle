@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "0.8.7.3a-rv2"
+version = "0.8.8.0a-rv2"
 group= "thaumicenergistics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "thaumicenergistics"
 

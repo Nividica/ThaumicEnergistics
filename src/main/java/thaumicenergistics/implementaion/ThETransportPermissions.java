@@ -11,9 +11,9 @@ import thaumcraft.common.blocks.BlockJarItem;
 import thaumcraft.common.blocks.ItemJarFilled;
 import thaumicenergistics.api.IEssentiaContainerPermission;
 import thaumicenergistics.api.ITransportPermissions;
-import thaumicenergistics.util.TELog;
+import thaumicenergistics.util.ThELog;
 
-class TETransportPermissions
+class ThETransportPermissions
 	implements ITransportPermissions
 {
 	/**
@@ -135,7 +135,7 @@ class TETransportPermissions
 					this.tileExtractWhiteList.add( tileClass );
 
 					// Log the addition
-					TELog.info( "Added %s to extraction whitelist.", tileClass.toString() );
+					ThELog.info( "Added %s to extraction whitelist.", tileClass.toString() );
 				}
 
 				return true;
@@ -161,7 +161,7 @@ class TETransportPermissions
 					this.tileInjectWhiteList.add( tileClass );
 
 					// Log the addition
-					TELog.info( "Added %s to injection whitelist.", tileClass.toString() );
+					ThELog.info( "Added %s to injection whitelist.", tileClass.toString() );
 				}
 
 				return true;
@@ -191,7 +191,7 @@ class TETransportPermissions
 			}
 
 			// Log the addition
-			TELog.info( "Adding %s[%d] to item whitelist.", itemClass.toString(), metadata );
+			ThELog.info( "Adding %s[%d] to item whitelist.", itemClass.toString(), metadata );
 		}
 	}
 

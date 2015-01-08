@@ -23,7 +23,8 @@ public class GuiArcaneAssembler
 	/**
 	 * Gui size.
 	 */
-	private static final int GUI_WIDTH = 211, GUI_HEIGHT = 197;
+	private static final int FULL_GUI_WIDTH = 247, MAIN_GUI_WIDTH = 176, UPGRADE_GUI_WIDTH = 211 - MAIN_GUI_WIDTH, GUI_HEIGHT = 197,
+					UPGRADE_GUI_HEIGHT = 104;
 
 	/**
 	 * Title position.
@@ -36,11 +37,6 @@ public class GuiArcaneAssembler
 	private static final int VIS_EMPTY_Y = 87, VIS_FULL_Y = 202, VIS_BAR_HEIGHT = 16, VIS_BAR_WIDTH = 4;
 
 	/**
-	 * The player who is looking at the GUI.
-	 */
-	private EntityPlayer player;
-
-	/**
 	 * Title displayed on the GUI
 	 */
 	private String title;
@@ -50,16 +46,26 @@ public class GuiArcaneAssembler
 	 */
 	private Dictionary<Aspect, Integer> visBarPositionMap = new Hashtable<Aspect, Integer>();
 
+	/**
+	 * True if the player is holding a network tool.
+	 */
+	private boolean hasNetworkTool = false;
+
+	/**
+	 * Fake aspect used to simplify progress bar draw calls
+	 */
+	private Aspect progressAspect = Aspect.MECHANISM;
+
 	public GuiArcaneAssembler( final EntityPlayer player, final World world, final int X, final int Y, final int Z )
 	{
 		// Call super
 		super( new ContainerArcaneAssembler( player, world, X, Y, Z ) );
 
-		// Set the player
-		this.player = player;
+		this.hasNetworkTool = ( (ContainerArcaneAssembler)this.inventorySlots ).hasNetworkTool();
 
 		// Set the GUI size
-		this.xSize = GuiArcaneAssembler.GUI_WIDTH;
+		this.xSize = ( this.hasNetworkTool ? GuiArcaneAssembler.FULL_GUI_WIDTH : GuiArcaneAssembler.MAIN_GUI_WIDTH +
+						GuiArcaneAssembler.UPGRADE_GUI_WIDTH );
 		this.ySize = GuiArcaneAssembler.GUI_HEIGHT;
 
 		// Set the title
@@ -72,6 +78,7 @@ public class GuiArcaneAssembler
 		this.visBarPositionMap.put( Aspect.ORDER, 95 );
 		this.visBarPositionMap.put( Aspect.ENTROPY, 113 );
 		this.visBarPositionMap.put( Aspect.EARTH, 131 );
+		this.visBarPositionMap.put( this.progressAspect, 149 );
 	}
 
 	private void drawVisBar( final Aspect aspect, final float percent )
@@ -108,7 +115,20 @@ public class GuiArcaneAssembler
 		Minecraft.getMinecraft().renderEngine.bindTexture( GuiTextureManager.ARCANE_ASSEMBLER.getTexture() );
 
 		// Draw the gui texture
-		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize );
+		if( this.hasNetworkTool )
+		{
+			// Draw the full gui
+			this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize );
+		}
+		else
+		{
+			// Draw main body
+			this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, GuiArcaneAssembler.MAIN_GUI_WIDTH, this.ySize );
+
+			// Draw upgrades
+			this.drawTexturedModalRect( this.guiLeft + GuiArcaneAssembler.MAIN_GUI_WIDTH, this.guiTop, GuiArcaneAssembler.MAIN_GUI_WIDTH, 0,
+				GuiArcaneAssembler.UPGRADE_GUI_WIDTH, GuiArcaneAssembler.UPGRADE_GUI_HEIGHT );
+		}
 
 		// Get the aspect amounts
 		AspectList storedVis = ( (ContainerArcaneAssembler)this.inventorySlots ).assembler.getStoredVis();
@@ -116,9 +136,15 @@ public class GuiArcaneAssembler
 		// Draw the bars
 		for( Aspect aspect : TileArcaneAssembler.PRIMALS )
 		{
-			float percent = storedVis.getAmount( aspect ) / (float)TileArcaneAssembler.MAX_STORED_VIS;
+			float percent = storedVis.getAmount( aspect ) / (float)TileArcaneAssembler.MAX_STORED_CVIS;
 			this.drawVisBar( aspect, percent );
 		}
+
+		// Draw crafting percent
+		this.drawVisBar( this.progressAspect, ( (ContainerArcaneAssembler)this.inventorySlots ).assembler.getPercentComplete() );
+
+		// Call super
+		super.drawGuiContainerBackgroundLayer( alpha, mouseX, mouseY );
 	}
 
 	/**
@@ -138,11 +164,11 @@ public class GuiArcaneAssembler
 				GuiArcaneAssembler.VIS_BAR_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 			{
 				// Add the aspect name to the tooltip
-				this.tooltip.add( StringUtils.capitalize( aspect.getTag() ) );
+				this.tooltip.add( GuiHelper.instance.getAspectChatColor( aspect ) + StringUtils.capitalize( aspect.getTag() ) );
 
 				// Add the amount
 				int amount = ( (ContainerArcaneAssembler)this.inventorySlots ).assembler.getStoredVis().getAmount( aspect );
-				this.tooltip.add( Integer.toString( amount ) + " / 100" );
+				this.tooltip.add( Float.toString( amount / 10.0F ) + " / 150" );
 
 				// Draw the tooltip
 				this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );

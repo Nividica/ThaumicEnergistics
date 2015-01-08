@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import appeng.api.config.AccessRestriction;
@@ -26,7 +26,7 @@ public abstract class AbstractHandlerEssentiaStorageBus
 	/**
 	 * Cache the API instance
 	 */
-	protected static final TEApi TEAPI = TEApi.instance();
+	protected static final ThEApi TEAPI = ThEApi.instance();
 
 	/**
 	 * Storage bus associated with this handler.

@@ -5,26 +5,26 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.api.IItemDescription;
 
-public class TEDescription
+public class ThEDescription
 	implements IItemDescription
 {
 	private Block myBlock = null;
 	private Item myItem = null;
 	private int itemMeta = 0;
 
-	TEDescription( final Block block )
+	ThEDescription( final Block block )
 	{
 		this( Item.getItemFromBlock( block ), 0 );
 		this.myBlock = block;
 	}
 
-	TEDescription( final Item item, final int meta )
+	ThEDescription( final Item item, final int meta )
 	{
 		this.myItem = item;
 		this.itemMeta = meta;
 	}
 
-	TEDescription( final ItemStack stack )
+	ThEDescription( final ItemStack stack )
 	{
 		this( stack.getItem(), stack.getItemDamage() );
 	}

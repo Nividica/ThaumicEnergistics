@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.IEssentiaGas;
 import thaumicenergistics.texture.BlockTextureManager;
-import thaumicenergistics.util.TELog;
+import thaumicenergistics.util.ThELog;
 
 /**
  * A fluid which represents the gas form of an essentia.
@@ -89,12 +89,12 @@ public class GaseousEssentia
 			gasList.put( aspect, newGas );
 
 			// Log info
-			TELog.info( "Created fluid for aspect %s.", aspect.getTag() );
+			ThELog.info( "Created fluid for aspect %s.", aspect.getTag() );
 		}
 		else
 		{
 			// Log a warning
-			TELog.warning( "Unable to register '%s' as fluid.", aspect.getTag() );
+			ThELog.warning( "Unable to register '%s' as fluid.", aspect.getTag() );
 		}
 
 	}
@@ -115,7 +115,7 @@ public class GaseousEssentia
 	 */
 	public static void registerGases()
 	{
-		long startTime = TELog.beginSection( "Essentia Gas Creation" );
+		long startTime = ThELog.beginSection( "Essentia Gas Creation" );
 
 		// Create a gas for each essentia type
 		for( Entry<String, Aspect> aspectType : Aspect.aspects.entrySet() )
@@ -127,7 +127,7 @@ public class GaseousEssentia
 			GaseousEssentia.create( aspect );
 		}
 
-		TELog.endSection( "Essentia Gas Creation", startTime );
+		ThELog.endSection( "Essentia Gas Creation", startTime );
 
 	}
 

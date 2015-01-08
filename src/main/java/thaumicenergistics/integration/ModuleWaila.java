@@ -8,8 +8,7 @@ import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import thaumicenergistics.blocks.AbstractBlockProviderBase;
-import thaumicenergistics.tileentities.TileProviderBase;
-import appeng.core.localization.WailaText;
+import thaumicenergistics.blocks.BlockArcaneAssembler;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class ModuleWaila
@@ -42,38 +41,27 @@ public class ModuleWaila
 	{
 		// Register the providers
 		registrar.registerBodyProvider( ModuleWaila.instance, AbstractBlockProviderBase.class );
+		registrar.registerBodyProvider( ModuleWaila.instance, BlockArcaneAssembler.class );
 	}
 
 	/**
 	 * Changes the body of the Waila message.
 	 */
 	@Override
-	public List<String> getWailaBody( final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor,
+	public List<String> getWailaBody( final ItemStack itemStack, final List<String> tooltip, final IWailaDataAccessor accessor,
 										final IWailaConfigHandler config )
 	{
 		// Get the tile entity
-		TileEntity tileProvider = accessor.getTileEntity();
+		TileEntity tileEntity = accessor.getTileEntity();
 
-		// Did we get a valid provider?
-		if( tileProvider instanceof TileProviderBase )
+		// Does the tile implement the tooltip method?
+		if( tileEntity instanceof IWailaSource )
 		{
-			// Is it active?
-			if( ( (TileProviderBase)tileProvider ).isActive() )
-			{
-				// Get activity string from AppEng2
-				currenttip.add( WailaText.DeviceOnline.getLocal() );
-			}
-			else
-			{
-				// Get activity string from AppEng2
-				currenttip.add( WailaText.DeviceOffline.getLocal() );
-			}
-
-			// Add the color
-			currenttip.add( "Color: " + ( (TileProviderBase)tileProvider ).getColor().toString() );
+			// Add the info
+			( (IWailaSource)tileEntity ).addWailaInformation( tooltip );
 		}
 
-		return currenttip;
+		return tooltip;
 	}
 
 	@Override

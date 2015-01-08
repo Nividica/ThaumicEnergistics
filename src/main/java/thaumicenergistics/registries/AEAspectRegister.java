@@ -13,8 +13,8 @@ import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumicenergistics.api.Items;
-import thaumicenergistics.api.TEApi;
-import thaumicenergistics.util.TELog;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.util.ThELog;
 import appeng.api.AEApi;
 import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Materials;
@@ -714,7 +714,7 @@ public class AEAspectRegister
 				else
 				{
 					// Still could not register on pass 2.
-					TELog.info( "'%s' was not registered for TC scanning.", this.displayName );
+					ThELog.info( "'%s' was not registered for TC scanning.", this.displayName );
 				}
 				return;
 			}
@@ -1011,8 +1011,8 @@ public class AEAspectRegister
 		cellAspects.add( Aspect.MAGIC, 3 );
 		cellAspects.add( Aspect.AURA, 5 );
 
-		Items teItems = TEApi.instance().items();
-		thaumicenergistics.api.Blocks teBlocks = TEApi.instance().blocks();
+		Items teItems = ThEApi.instance().items();
+		thaumicenergistics.api.Blocks teBlocks = ThEApi.instance().blocks();
 		ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_1k.getStack(), cellAspects );
 		ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_4k.getStack(), cellAspects );
 		ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_16k.getStack(), cellAspects );
@@ -1041,7 +1041,7 @@ public class AEAspectRegister
 	public void registerAEAspects()
 	{
 		// Log
-		long sectionStartTime = TELog.beginSection( "AE Scanables" );
+		long sectionStartTime = ThELog.beginSection( "AE Scanables" );
 
 		// Get the current recipes
 		this.NORMAL_RECIPES = CraftingManager.getInstance().getRecipeList();
@@ -1093,7 +1093,7 @@ public class AEAspectRegister
 		this.UNREGISTERABLE = null;
 
 		// Log
-		TELog.endSection( "AE Scanables", sectionStartTime );
+		ThELog.endSection( "AE Scanables", sectionStartTime );
 	}
 
 	/**

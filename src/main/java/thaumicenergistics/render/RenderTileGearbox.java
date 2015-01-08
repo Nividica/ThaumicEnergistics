@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.render.model.ModelGearbox;
 import thaumicenergistics.tileentities.TileGearBox;
 import cpw.mods.fml.relauncher.Side;
@@ -107,7 +107,7 @@ public class RenderTileGearbox
 
 		// Render the gearbox
 		this.renderGearbox( gearBox, tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord,
-			TEApi.instance().blocks().IronGearBox.getBlock() );
+			ThEApi.instance().blocks().IronGearBox.getBlock() );
 
 		// Pop the GL matrix
 		GL11.glPopMatrix();

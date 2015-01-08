@@ -4,7 +4,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.api.IConfig;
-import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.IntegrationCore;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -12,7 +12,7 @@ import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.network.ChannelHandler;
 import thaumicenergistics.proxy.CommonProxy;
 import thaumicenergistics.registries.AEAspectRegister;
-import thaumicenergistics.util.TELog;
+import thaumicenergistics.util.ThELog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -33,7 +33,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.8.7.3a-rv2"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.8.8.0a-rv2"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -59,13 +59,13 @@ public class ThaumicEnergistics
 		@Override
 		public ItemStack getIconItemStack()
 		{
-			return TEApi.instance().blocks().InfusionProvider.getStack();
+			return ThEApi.instance().blocks().InfusionProvider.getStack();
 		}
 
 		@Override
 		public Item getTabIconItem()
 		{
-			return TEApi.instance().blocks().InfusionProvider.getItem();
+			return ThEApi.instance().blocks().InfusionProvider.getItem();
 		}
 	};
 
@@ -77,7 +77,7 @@ public class ThaumicEnergistics
 	@EventHandler
 	public void load( final FMLInitializationEvent event )
 	{
-		long startTime = TELog.beginSection( "Load" );
+		long startTime = ThELog.beginSection( "Load" );
 
 		// Register block renderers
 		ThaumicEnergistics.proxy.registerRenderers();
@@ -91,7 +91,7 @@ public class ThaumicEnergistics
 		// Register integration
 		IntegrationCore.init();
 
-		TELog.endSection( "Load", startTime );
+		ThELog.endSection( "Load", startTime );
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class ThaumicEnergistics
 	@EventHandler
 	public void postInit( final FMLPostInitializationEvent event )
 	{
-		long startTime = TELog.beginSection( "PostInit" );
+		long startTime = ThELog.beginSection( "PostInit" );
 
 		// Register the standard thaumcraft container items and tiles
 		EssentiaTileContainerHelper.instance.registerThaumcraftContainers();
@@ -123,7 +123,7 @@ public class ThaumicEnergistics
 		// Give AE items aspects		
 		AEAspectRegister.instance.registerAEAspects();
 
-		TELog.endSection( "PostInit", startTime );
+		ThELog.endSection( "PostInit", startTime );
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class ThaumicEnergistics
 	@EventHandler
 	public void preInit( final FMLPreInitializationEvent event ) throws Exception
 	{
-		long startTime = TELog.beginSection( "PreInit" );
+		long startTime = ThELog.beginSection( "PreInit" );
 
 		// Sync with config
 		ThaumicEnergistics.config = ConfigurationHandler.loadAndSyncConfigFile( event.getSuggestedConfigurationFile() );
@@ -152,11 +152,7 @@ public class ThaumicEnergistics
 		// Register blocks
 		ThaumicEnergistics.proxy.registerBlocks();
 
-		TELog.endSection( "PreInit", startTime );
+		ThELog.endSection( "PreInit", startTime );
 	}
-
-	// TODO: Get crash log for flux gas on anailation plane, ask Mega fix that and to add null checking to formation plane.
-	// TODO: Create issue on AE2 page for API request dealing with issueing crafting jobs.
-	// TODO: Generalize creating grids of slots.
 
 }

@@ -478,8 +478,8 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode grid )
 	{
-		// We would like a tick ever 10 to 50 MC ticks
-		return new TickingRequest( 10, 50, false, false );
+		// We would like a tick ever 2 to 50 MC ticks
+		return new TickingRequest( 2, 50, false, false );
 	}
 
 	/**
@@ -884,11 +884,8 @@ public class AEPartArcaneCraftingTerminal
 			// Did we drain any?
 			if( amountDrained > 0 )
 			{
-				// Instead of calling this 4 times a second, I call it 2 times a second with an amount multiplier.
-				// Think of it as simulated work. This greatly reduces server load.
-
 				// Add to the wand
-				wand.addRealVis( stack, vis, amountDrained * 10, true );
+				wand.addRealVis( stack, vis, amountDrained, true );
 			}
 
 		}

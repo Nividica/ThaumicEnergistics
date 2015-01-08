@@ -17,7 +17,7 @@ import thaumicenergistics.api.ITransportPermissions;
 import thaumicenergistics.api.IWirelessEssentiaTerminal;
 import thaumicenergistics.api.Items;
 import thaumicenergistics.api.Parts;
-import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
@@ -33,13 +33,13 @@ import appeng.tile.networking.TileWireless;
 import com.google.common.collect.ImmutableList;
 
 public class API
-	extends TEApi
+	extends ThEApi
 {
-	private final TEBlocks blocks = new TEBlocks();
-	private final TEItems items = new TEItems();
-	private final TEParts parts = new TEParts();
+	private final ThEBlocks blocks = new ThEBlocks();
+	private final ThEItems items = new ThEItems();
+	private final ThEParts parts = new ThEParts();
 	private final List<IEssentiaGas> essentiaGases = new ArrayList<IEssentiaGas>();
-	private final TETransportPermissions transportPermissions = new TETransportPermissions();
+	private final ThETransportPermissions transportPermissions = new ThETransportPermissions();
 
 	/**
 	 * Create the API instance.

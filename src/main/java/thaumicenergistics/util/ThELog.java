@@ -5,7 +5,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import com.google.common.collect.ObjectArrays;
 import cpw.mods.fml.common.FMLLog;
 
-public class TELog
+public class ThELog
 {
 	/**
 	 * Mod ID as title case.

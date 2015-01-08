@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.IWirelessEssentiaTerminal;
-import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.registries.ItemEnum;
 import appeng.api.config.AccessRestriction;
@@ -328,7 +328,7 @@ public class ItemWirelessEssentiaTerminal
 	public ItemStack onItemRightClick( final ItemStack itemStack, final World world, final EntityPlayer player )
 	{
 		// Open the gui
-		TEApi.instance().openWirelessTerminalGui( player, this );
+		ThEApi.instance().openWirelessTerminalGui( player, this );
 
 		return itemStack;
 

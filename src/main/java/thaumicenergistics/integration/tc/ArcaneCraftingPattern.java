@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -38,6 +39,11 @@ public class ArcaneCraftingPattern
 	 * The knowledge core this pattern belongs to.
 	 */
 	public ItemStack knowledgeCoreHost;
+
+	/**
+	 * Cached array of required aspects
+	 */
+	private Aspect[] cachedAspects;
 
 	/**
 	 * 
@@ -95,6 +101,21 @@ public class ArcaneCraftingPattern
 		return true;
 	}
 
+	/**
+	 * Returns a cached array of the required aspects for this pattern.
+	 * 
+	 * @return
+	 */
+	public Aspect[] getCachedAspects()
+	{
+		if( this.cachedAspects == null )
+		{
+			this.cachedAspects = this.aspects.getAspects();
+		}
+
+		return this.cachedAspects;
+	}
+
 	@Override
 	public IAEItemStack[] getCondensedInputs()
 	{
@@ -137,7 +158,6 @@ public class ArcaneCraftingPattern
 	@Override
 	public ItemStack getOutput( final InventoryCrafting craftingInv, final World world )
 	{
-		// TODO Inspect the crafting inventory for vis reducing items.
 		return this.result.getItemStack();
 	}
 
@@ -169,8 +189,6 @@ public class ArcaneCraftingPattern
 	@Override
 	public boolean isValidItemForSlot( final int slotIndex, final ItemStack repStack, final World world )
 	{
-		// TODO: Im not quite sure about this yet.
-
 		// Get the item currently in the slot
 		IAEItemStack ingStack = this.ingredients[slotIndex];
 

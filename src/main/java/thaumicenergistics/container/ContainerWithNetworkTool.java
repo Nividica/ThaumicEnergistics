@@ -109,7 +109,8 @@ public abstract class ContainerWithNetworkTool
 		}
 	}
 
-	protected void bindToNetworkTool( final InventoryPlayer playerInventory, final DimensionalCoord partLocation )
+	protected void bindToNetworkTool( final InventoryPlayer playerInventory, final DimensionalCoord partLocation, final int slotOffsetX,
+										final int slotOffsetY )
 	{
 		// Check the player inventory for the network tool
 		for( int slotIndex = 0; slotIndex < playerInventory.getSizeInventory(); slotIndex++ )
@@ -138,9 +139,9 @@ public abstract class ContainerWithNetworkTool
 						int slotToolIndex = column + ( row * ContainerWithNetworkTool.TOOL_COLUMNS );
 
 						// Create the slot
-						toolSlot = new SlotNetworkTool( networkTool, slotToolIndex, ContainerWithNetworkTool.TOOL_SLOT_X_OFFSET +
+						toolSlot = new SlotNetworkTool( networkTool, slotToolIndex, ContainerWithNetworkTool.TOOL_SLOT_X_OFFSET + slotOffsetX +
 										( column * ContainerWithPlayerInventory.SLOT_SIZE ), ( row * ContainerWithPlayerInventory.SLOT_SIZE ) +
-										ContainerWithNetworkTool.TOOL_SLOT_Y_OFFSET );
+										ContainerWithNetworkTool.TOOL_SLOT_Y_OFFSET + slotOffsetY );
 
 						// Add the slot
 						this.addSlotToContainer( toolSlot );
@@ -345,6 +346,9 @@ public abstract class ContainerWithNetworkTool
 
 			// Inform the slot its stack changed;
 			slot.onSlotChanged();
+
+			// Sync
+			this.detectAndSendChanges();
 		}
 
 		// Done ( returning null prevents retrySlotClick from being called )

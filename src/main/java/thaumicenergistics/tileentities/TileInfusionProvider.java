@@ -7,7 +7,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectSource;
 import thaumcraft.common.Thaumcraft;
-import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
@@ -61,7 +61,7 @@ public class TileInfusionProvider
 	protected ItemStack getItemFromTile( final Object obj )
 	{
 		// Return the itemstack the visually represents this tile
-		return TEApi.instance().blocks().InfusionProvider.getStack();
+		return ThEApi.instance().blocks().InfusionProvider.getStack();
 
 	}
 

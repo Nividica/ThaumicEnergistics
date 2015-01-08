@@ -1,5 +1,9 @@
 package thaumicenergistics.util;
 
+import java.util.HashMap;
+import net.minecraft.util.EnumChatFormatting;
+import thaumcraft.api.aspects.Aspect;
+
 public final class GuiHelper
 {
 
@@ -21,11 +25,6 @@ public final class GuiHelper
 	public static final int MOUSE_WHEEL_MOTION = -2;
 
 	/**
-	 * Character MC uses to denote the next character is a formating character
-	 */
-	public static final String CHAT_COLOR_HEADER = "§";
-
-	/**
 	 * Length of color arrays.
 	 */
 	private static final int COLOR_ARRAY_SIZE = 4;
@@ -36,10 +35,22 @@ public final class GuiHelper
 	private final int[] COLOR_SHIFT_AMOUNT = new int[] { 0, 8, 16, 24 };
 
 	/**
+	 * Maps aspects to chat colors.
+	 */
+	private HashMap<Aspect, String> aspectChatColors = new HashMap<Aspect, String>();
+
+	/**
 	 * Private constructor.
 	 */
 	private GuiHelper()
 	{
+		// Add the chat colors
+		this.aspectChatColors.put( Aspect.AIR, EnumChatFormatting.YELLOW.toString() );
+		this.aspectChatColors.put( Aspect.WATER, EnumChatFormatting.AQUA.toString() );
+		this.aspectChatColors.put( Aspect.FIRE, EnumChatFormatting.RED.toString() );
+		this.aspectChatColors.put( Aspect.ORDER, EnumChatFormatting.GRAY.toString() );
+		this.aspectChatColors.put( Aspect.ENTROPY, EnumChatFormatting.DARK_GRAY.toString() );
+		this.aspectChatColors.put( Aspect.EARTH, EnumChatFormatting.GREEN.toString() );
 
 	}
 
@@ -145,6 +156,21 @@ public final class GuiHelper
 		gradient[iterations - 1] = toColor;
 
 		return gradient;
+	}
+
+	/**
+	 * Gets the chat color associated with the specified aspect.
+	 * 
+	 * @param aspect
+	 * @return
+	 */
+	public final String getAspectChatColor( final Aspect aspect )
+	{
+		if( this.aspectChatColors.containsKey( aspect ) )
+		{
+			return this.aspectChatColors.get( aspect );
+		}
+		return EnumChatFormatting.WHITE.toString();
 	}
 
 	/**

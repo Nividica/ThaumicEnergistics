@@ -25,6 +25,8 @@ public class BlockArcaneAssembler
 	extends AbstractBlockAEWrenchable
 {
 
+	public static final int MAX_SPEED_UPGRADES = 4;
+
 	public BlockArcaneAssembler()
 	{
 		// Call super with material machine (iron) 

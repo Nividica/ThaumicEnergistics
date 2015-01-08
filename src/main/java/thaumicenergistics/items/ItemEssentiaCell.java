@@ -24,7 +24,6 @@ import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.inventory.HandlerItemEssentiaCellCreative;
 import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.texture.BlockTextureManager;
-import thaumicenergistics.util.GuiHelper;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.implementations.tiles.IMEChest;
@@ -77,14 +76,9 @@ public class ItemEssentiaCell
 				String aspectChatColor = currentStack.getChatColor();
 
 				// Does this aspect have color?
-				if( aspectChatColor != null )
+				if( aspectChatColor == null )
 				{
-					// Add the color header
-					aspectChatColor = GuiHelper.CHAT_COLOR_HEADER + aspectChatColor;
-				}
-				else
-				{
-					// It does not, set to gray
+					// It does not, set to white
 					aspectChatColor = EnumChatFormatting.WHITE.toString();
 				}
 

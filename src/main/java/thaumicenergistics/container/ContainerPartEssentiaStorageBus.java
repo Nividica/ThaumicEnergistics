@@ -52,7 +52,7 @@ public class ContainerPartEssentiaStorageBus
 			ContainerPartEssentiaStorageBus.HOTBAR_INV_POSITION_Y );
 
 		// Bind to the network tool
-		this.bindToNetworkTool( player.inventory, part.getHost().getLocation() );
+		this.bindToNetworkTool( player.inventory, part.getHost().getLocation(), 0, 0 );
 
 		// Register as a listener
 		this.part.addListener( this );

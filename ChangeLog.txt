@@ -1,8 +1,15 @@
-﻿1/7/2015 0.8.7.3a-rv2
+﻿1/8/2015 0.8.8.0b-rv2
+  Fixes #106: Arcane items are now auto-craftable!
+  Corrected centi-vis math.
+  Added WAILA text to assembler.
+  API Updated with ThE mod abbreviation.
+  Assembler GUI now reflects active crafting job, and accepts upgrades.
+
+1/7/2015 0.8.7.3a-rv2
   Knowledge Inscriber fully functional.
   Knowledge Inscriber now saves inventory, and drops Knowledge core when broken.
   Arcane Assembler can be linked with vis relay.
-  Assembler GUI now reflects Vis amount.  
+  Assembler GUI now reflects Vis amount.
 
 1/4/2015 0.8.7.3a-rv2
   Added first bits of the Knowledge Inscriber.

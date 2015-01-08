@@ -12,7 +12,7 @@ import thaumcraft.api.research.ResearchPage;
 import thaumcraft.common.config.Config;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.IConfig;
-import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.integration.tc.PseudoResearchItem;
 import thaumicenergistics.items.ItemMaterial;
 import appeng.api.AEApi;
@@ -347,7 +347,7 @@ public class ResearchRegistry
 		igbAspects.add( Aspect.EXCHANGE, 4 );
 
 		// Set the icon for the Iron Gear Box
-		ItemStack igbIcon = TEApi.instance().items().IronGear.getStack();
+		ItemStack igbIcon = ThEApi.instance().items().IronGear.getStack();
 
 		// Set the pages for the Iron Gear Box
 		ResearchPage[] igbPages = new ResearchPage[] { new ResearchPage( ResearchTypes.IRONGEARBOX.getPageName( 1 ) ),
@@ -367,7 +367,7 @@ public class ResearchRegistry
 		tgbAspects.add( Aspect.METAL, 5 );
 
 		// Set the icon for the Thaumium Gear Box
-		ItemStack tgbIcon = TEApi.instance().blocks().ThaumiumGearBox.getStack();
+		ItemStack tgbIcon = ThEApi.instance().blocks().ThaumiumGearBox.getStack();
 
 		// Set the pages for the Thaumium Gear Box
 		ResearchPage[] tgbPages = new ResearchPage[] { new ResearchPage( ResearchTypes.THAUMIUMGEARBOX.getPageName( 1 ) ),
@@ -449,7 +449,7 @@ public class ResearchRegistry
 		storageAspectList.add( Aspect.METAL, 3 );
 
 		// Set the icon
-		ItemStack storageIcon = TEApi.instance().items().EssentiaCell_64k.getStack();
+		ItemStack storageIcon = ThEApi.instance().items().EssentiaCell_64k.getStack();
 
 		// Get the component recipes
 		IArcaneRecipe[] storageComponentRecipes = new IArcaneRecipe[] { RecipeRegistry.STORAGE_COMPONENT_4K, RecipeRegistry.STORAGE_COMPONENT_16K,

@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.integration.IWailaSource;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.util.EffectiveSide;
@@ -28,6 +29,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.core.localization.WailaText;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
@@ -38,7 +40,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class TileProviderBase
 	extends AENetworkTile
-	implements IColorableTile
+	implements IColorableTile, IWailaSource
 {
 	protected static final String NBT_KEY_COLOR = "TEColor";
 
@@ -300,6 +302,28 @@ public abstract class TileProviderBase
 			this.markForUpdate();
 			this.saveChanges();
 		}
+	}
+
+	/**
+	 * Adds the power state and color to a Waila tooltip
+	 */
+	@Override
+	public void addWailaInformation( final List<String> tooltip )
+	{
+		// Is it active?
+		if( this.isActive() )
+		{
+			// Get activity string from AppEng2
+			tooltip.add( WailaText.DeviceOnline.getLocal() );
+		}
+		else
+		{
+			// Get activity string from AppEng2
+			tooltip.add( WailaText.DeviceOffline.getLocal() );
+		}
+
+		// Add the color
+		tooltip.add( "Color: " + this.getColor().toString() );
 	}
 
 	@MENetworkEventSubscribe

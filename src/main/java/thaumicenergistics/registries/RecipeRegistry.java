@@ -19,7 +19,7 @@ import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.Items;
-import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.registries.ResearchRegistry.ResearchTypes;
 import appeng.api.AEApi;
 import appeng.api.definitions.Blocks;
@@ -94,7 +94,7 @@ public class RecipeRegistry
 
 		ItemStack EssentiaComp_64k = teItems.EssentiaStorageComponent_64k.getStack();
 
-		ItemStack EssentiaCellWorkbench = TEApi.instance().blocks().EssentiaCellWorkbench.getStack();
+		ItemStack EssentiaCellWorkbench = ThEApi.instance().blocks().EssentiaCellWorkbench.getStack();
 
 		// Item Groups		
 		ArrayList<ItemStack> GroupQuartz = new ArrayList<ItemStack>( 3 );
@@ -146,8 +146,8 @@ public class RecipeRegistry
 
 		// My items
 		String IronGear = "gearIron";
-		ItemStack IronGearBox = TEApi.instance().blocks().IronGearBox.getStack();
-		ItemStack ThaumiumGearBox = TEApi.instance().blocks().ThaumiumGearBox.getStack();
+		ItemStack IronGearBox = ThEApi.instance().blocks().IronGearBox.getStack();
+		ItemStack ThaumiumGearBox = ThEApi.instance().blocks().ThaumiumGearBox.getStack();
 
 		// Iron Gear Box
 		AspectList igbAspects = new AspectList();
@@ -357,7 +357,7 @@ public class RecipeRegistry
 		ItemStack BallanceShard = new ItemStack( ConfigItems.itemShard, 1, 6 );
 
 		// My items
-		thaumicenergistics.api.Parts teParts = TEApi.instance().parts();
+		thaumicenergistics.api.Parts teParts = ThEApi.instance().parts();
 
 		ItemStack DiffusionCore = teItems.DiffusionCore.getStack();
 
@@ -465,9 +465,9 @@ public class RecipeRegistry
 		// My Items
 		ItemStack CoalescenceCore = teItems.CoalescenceCore.getStack();
 
-		ItemStack InfusionProvider = TEApi.instance().blocks().InfusionProvider.getStack();
+		ItemStack InfusionProvider = ThEApi.instance().blocks().InfusionProvider.getStack();
 
-		ItemStack EssentiaProvider = TEApi.instance().blocks().EssentiaProvider.getStack();
+		ItemStack EssentiaProvider = ThEApi.instance().blocks().EssentiaProvider.getStack();
 
 		if( ThaumicEnergistics.config.allowedToCraftInfusionProvider() )
 		{
@@ -545,7 +545,7 @@ public class RecipeRegistry
 		Parts aeParts = AEApi.instance().parts();
 
 		// Cache my API
-		Items teItems = TEApi.instance().items();
+		Items teItems = ThEApi.instance().items();
 
 		// Register materials
 		RecipeRegistry.registerMaterials( aeMaterials, teItems );

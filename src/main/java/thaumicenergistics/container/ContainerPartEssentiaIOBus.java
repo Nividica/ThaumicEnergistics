@@ -79,7 +79,7 @@ public class ContainerPartEssentiaIOBus
 			ContainerPartEssentiaIOBus.UPGRADE_X_POS, ContainerPartEssentiaIOBus.UPGRADE_Y_POS );
 
 		// Bind to the network tool
-		this.bindToNetworkTool( player.inventory, part.getHost().getLocation() );
+		this.bindToNetworkTool( player.inventory, part.getHost().getLocation(), 0, 0 );
 
 		// Register as a listener on the part
 		this.part.addListener( this );

@@ -5,7 +5,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
-import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.aspect.AspectStack;
 import appeng.api.config.Actionable;
 import appeng.tile.TileEvent;
@@ -43,7 +43,7 @@ public class TileEssentiaProvider
 	protected ItemStack getItemFromTile( final Object obj )
 	{
 		// Return the itemstack the visually represents this tile
-		return TEApi.instance().blocks().EssentiaProvider.getStack();
+		return ThEApi.instance().blocks().EssentiaProvider.getStack();
 
 	}
 

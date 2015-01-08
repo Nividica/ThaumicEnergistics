@@ -307,7 +307,7 @@ public class GuiArcaneCraftingTerminal
 						if( widgetStack.isCraftable() )
 						{
 							// TODO: Get with the AE2 team to see if I can get this working.
-							new PacketServerArcaneCraftingTerminal().createRequestAutoCraft( this.player, widgetStack ).sendPacketToServer();
+							//new PacketServerArcaneCraftingTerminal().createRequestAutoCraft( this.player, widgetStack ).sendPacketToServer();
 						}
 					}
 					else

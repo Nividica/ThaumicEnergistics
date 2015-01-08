@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
+import thaumicenergistics.util.GuiHelper;
 
 /**
  * Stores an aspect and an amount.
@@ -127,7 +128,7 @@ public class AspectStack
 		// Do we have an aspect?
 		if( this.aspect != null )
 		{
-			return this.aspect.getChatcolor();
+			return GuiHelper.instance.getAspectChatColor( this.aspect );
 		}
 
 		return "";

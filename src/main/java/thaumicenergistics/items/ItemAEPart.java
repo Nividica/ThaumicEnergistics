@@ -11,7 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import thaumicenergistics.registries.AEPartsEnum;
-import thaumicenergistics.util.TELog;
+import thaumicenergistics.util.ThELog;
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IItemGroup;
@@ -65,7 +65,7 @@ public class ItemAEPart
 		catch( Throwable e )
 		{
 			// Bad stuff, log the error.
-			TELog.severe( "Unable to create cable-part from item: %s", itemStack.getDisplayName() );
+			ThELog.severe( "Unable to create cable-part from item: %s", itemStack.getDisplayName() );
 
 			// Print that stack-trace
 			e.printStackTrace();

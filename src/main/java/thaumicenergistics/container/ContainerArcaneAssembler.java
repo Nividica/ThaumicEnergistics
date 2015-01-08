@@ -5,6 +5,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import thaumicenergistics.blocks.BlockArcaneAssembler;
 import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.items.ItemKnowledgeCore;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
@@ -12,7 +13,7 @@ import thaumicenergistics.util.EffectiveSide;
 import appeng.container.slot.SlotInaccessible;
 
 public class ContainerArcaneAssembler
-	extends ContainerWithPlayerInventory
+	extends ContainerWithNetworkTool
 {
 
 	/**
@@ -41,6 +42,16 @@ public class ContainerArcaneAssembler
 	private static final int KCORE_SLOT_X = 187, KCORE_SLOT_Y = 8;
 
 	/**
+	 * Upgrade slots.
+	 */
+	private static final int UPGRADE_SLOT_COUNT = BlockArcaneAssembler.MAX_SPEED_UPGRADES, UPGRADE_SLOT_X = 187, UPGRADE_SLOT_Y = 26;
+
+	/**
+	 * Target slot.
+	 */
+	private static final int TARGET_SLOT_X = 14, TARGET_SLOT_Y = 87;
+
+	/**
 	 * Reference to the arcane assembler
 	 */
 	public TileArcaneAssembler assembler;
@@ -49,21 +60,24 @@ public class ContainerArcaneAssembler
 
 	public ContainerArcaneAssembler( final EntityPlayer player, final World world, final int X, final int Y, final int Z )
 	{
-		// Bind to the players inventory
-		this.bindPlayerInventory( player.inventory, ContainerArcaneAssembler.PLAYER_INV_POSITION_Y, ContainerArcaneAssembler.HOTBAR_INV_POSITION_Y );
-
 		// Get the assembler
 		this.assembler = (TileArcaneAssembler)world.getTileEntity( X, Y, Z );
 
 		// Get the assemblers inventory
 		IInventory asmInv = this.assembler.getInternalInventory();
 
+		// Bind to the players inventory
+		this.bindPlayerInventory( player.inventory, ContainerArcaneAssembler.PLAYER_INV_POSITION_Y, ContainerArcaneAssembler.HOTBAR_INV_POSITION_Y );
+
+		// Bind to network tool
+		this.bindToNetworkTool( player.inventory, this.assembler.getLocation(), 0, 35 );
+
 		// Add the kcore slot
 		this.kCoreSlot = new SlotRestrictive( asmInv, TileArcaneAssembler.KCORE_SLOT_INDEX, ContainerArcaneAssembler.KCORE_SLOT_X,
 						ContainerArcaneAssembler.KCORE_SLOT_Y );
 		this.addSlotToContainer( this.kCoreSlot );
 
-		// Create the slots
+		// Create the pattern slots
 		for( int row = 0; row < ContainerArcaneAssembler.PATTERN_ROWS; row++ )
 		{
 			for( int col = 0; col < ContainerArcaneAssembler.PATTERN_COLS; col++ )
@@ -76,6 +90,14 @@ public class ContainerArcaneAssembler
 								ContainerArcaneAssembler.PATTERN_SLOT_Y + ( 18 * row ) ) );
 			}
 		}
+
+		// Create the upgrade slots
+		this.addUpgradeSlots( this.assembler.getUpgradeInventory(), ContainerArcaneAssembler.UPGRADE_SLOT_COUNT,
+			ContainerArcaneAssembler.UPGRADE_SLOT_X, ContainerArcaneAssembler.UPGRADE_SLOT_Y );
+
+		// Create the target slot
+		this.addSlotToContainer( new SlotInaccessible( asmInv, TileArcaneAssembler.TARGET_SLOT_INDEX, ContainerArcaneAssembler.TARGET_SLOT_X,
+						ContainerArcaneAssembler.TARGET_SLOT_Y ) );
 
 	}
 
@@ -160,8 +182,8 @@ public class ContainerArcaneAssembler
 			}
 		}
 
-		// All done.
-		return null;
+		// Call super
+		return super.transferStackInSlot( player, slotNumber );
 	}
 
 }

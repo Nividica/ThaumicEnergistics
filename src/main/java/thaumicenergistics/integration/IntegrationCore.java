@@ -2,8 +2,11 @@ package thaumicenergistics.integration;
 
 import net.minecraft.nbt.NBTTagCompound;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.blocks.BlockArcaneAssembler;
 import thaumicenergistics.util.EffectiveSide;
-import thaumicenergistics.util.TELog;
+import thaumicenergistics.util.ThELog;
+import appeng.api.config.Upgrades;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -59,13 +62,13 @@ public final class IntegrationCore
 			module.newInstance();
 
 			// Log success
-			TELog.info( "Successfully integrated with %s", modID );
+			ThELog.info( "Successfully integrated with %s", modID );
 		}
 		catch( Throwable e )
 		{
 
 			// Log failure
-			TELog.warning( "Skipping integrating with %s", modID );
+			ThELog.warning( "Skipping integrating with %s", modID );
 		}
 	}
 
@@ -104,7 +107,7 @@ public final class IntegrationCore
 	 */
 	public static void init()
 	{
-		long startTime = TELog.beginSection( "Integration" );
+		long startTime = ThELog.beginSection( "Integration" );
 		try
 		{
 			if( EffectiveSide.isClientSide() )
@@ -118,6 +121,10 @@ public final class IntegrationCore
 		catch( Throwable e )
 		{
 		}
-		TELog.endSection( "Integration", startTime );
+
+		// Register the Arcane Assembler for upgrades
+		Upgrades.SPEED.registerItem( ThEApi.instance().blocks().ArcaneAssembler.getStack(), BlockArcaneAssembler.MAX_SPEED_UPGRADES );
+
+		ThELog.endSection( "Integration", startTime );
 	}
 }

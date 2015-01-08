@@ -14,7 +14,7 @@ import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.items.ItemEssence;
 import thaumicenergistics.api.IEssentiaContainerPermission;
 import thaumicenergistics.api.ITransportPermissions;
-import thaumicenergistics.api.TEApi;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.aspect.AspectStack;
 
 /**
@@ -55,7 +55,7 @@ public final class EssentiaItemContainerHelper
 	 */
 	private EssentiaItemContainerHelper()
 	{
-		this.perms = TEApi.instance().transportPermissions();
+		this.perms = ThEApi.instance().transportPermissions();
 	}
 
 	/**

@@ -4,36 +4,51 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.blocks.BlockArcaneAssembler;
+import thaumicenergistics.integration.IWailaSource;
 import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
 import thaumicenergistics.integration.tc.DigiVisSourceData;
 import thaumicenergistics.integration.tc.IDigiVisSource;
 import thaumicenergistics.inventory.HandlerKnowledgeCore;
 import thaumicenergistics.items.ItemKnowledgeCore;
 import thaumicenergistics.util.EffectiveSide;
+import thaumicenergistics.util.GuiHelper;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import thaumicenergistics.util.PrivateInventory;
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.definitions.Materials;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
-import appeng.api.networking.crafting.ICraftingWatcher;
-import appeng.api.networking.crafting.ICraftingWatcherHost;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.localization.WailaText;
 import appeng.me.GridAccessException;
+import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
@@ -44,7 +59,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileArcaneAssembler
 	extends AENetworkInvTile
-	implements ICraftingProvider, ICraftingWatcherHost, IInventoryUpdateReceiver
+	implements ICraftingProvider, IInventoryUpdateReceiver, IWailaSource
 {
 	private class AssemblerInventory
 		extends PrivateInventory
@@ -52,7 +67,7 @@ public class TileArcaneAssembler
 
 		public AssemblerInventory()
 		{
-			super( "ArcaneAssemblerInventory", TileArcaneAssembler.SLOT_COUNT, 1, TileArcaneAssembler.this );
+			super( "ArcaneAssemblerInventory", TileArcaneAssembler.SLOT_COUNT, 64, TileArcaneAssembler.this );
 		}
 
 		@Override
@@ -74,27 +89,44 @@ public class TileArcaneAssembler
 	/**
 	 * NBT Keys
 	 */
-	private static final String NBTKEY_KCORE = "kcore", NBTKEY_VIS_INTERFACE = "vis_interface", NBTKEY_STORED_VIS = "stored_vis";
+	private static final String NBTKEY_KCORE = "kcore", NBTKEY_VIS_INTERFACE = "vis_interface", NBTKEY_STORED_VIS = "stored_vis",
+					NBTKEY_UPGRADES = "upgradeCount", NBTKEY_UPGRADEINV = "upgrades", NBTKEY_CRAFTING = "isCrafting",
+					NBTKEY_CRAFTING_PATTERN = "pattern";
+
+	/**
+	 * Used to simulate floating point amounts of vis.
+	 */
+	private static final int CVIS_MULTIPLER = 10;
 
 	/**
 	 * Primal aspects.
 	 */
-	public static final Aspect[] PRIMALS = new Aspect[] { Aspect.AIR, Aspect.EARTH, Aspect.ENTROPY, Aspect.FIRE, Aspect.ORDER, Aspect.WATER };
+	public static final Aspect[] PRIMALS = new Aspect[] { Aspect.AIR, Aspect.WATER, Aspect.FIRE, Aspect.ORDER, Aspect.ENTROPY, Aspect.EARTH };
 
 	/**
-	 * Total number of slots pattern+kcore
+	 * The number of ticks required to craft an item without any upgrades.
 	 */
-	public static final int SLOT_COUNT = 22;
+	private static final int BASE_TICKS_PER_CRAFT = 20;
 
 	/**
-	 * Index of the slot used for the knowledge core and patterns.
+	 * Total number of slots. 1 KCore + 21 Patterns + 1 Target
 	 */
-	public static final int KCORE_SLOT_INDEX = 0, PATTERN_SLOT_INDEX = 1;
+	public static final int SLOT_COUNT = 23;
 
 	/**
-	 * Maximum amount of stored vis.
+	 * Index of the slots.
 	 */
-	public static final int MAX_STORED_VIS = 100;
+	public static final int KCORE_SLOT_INDEX = 0, PATTERN_SLOT_INDEX = 1, TARGET_SLOT_INDEX = 22;
+
+	/**
+	 * Maximum amount of stored centi-vis.
+	 */
+	public static final int MAX_STORED_CVIS = 150 * TileArcaneAssembler.CVIS_MULTIPLER;
+
+	/**
+	 * Power usage.
+	 */
+	public static double IDLE_POWER = 0.0D, ACTIVE_POWER = 1.2D;
 
 	/**
 	 * Holds the patterns and the kcore
@@ -102,19 +134,19 @@ public class TileArcaneAssembler
 	private AssemblerInventory internalInventory;
 
 	/**
-	 * Is the assembler busy?
+	 * Holds the upgrades
 	 */
-	private boolean isBusy = false;
+	private UpgradeInventory upgradeInventory;
 
 	/**
-	 * Crafting job watcher.
+	 * Is the assembler busy crafting?
 	 */
-	private ICraftingWatcher craftingWatcher;
+	private boolean isCrafting = false;
 
 	/**
-	 * List of items that has been requested to craft.
+	 * The pattern currently being crafted.
 	 */
-	private ArrayList<IAEItemStack> craftingJobs = new ArrayList<IAEItemStack>();
+	private ArcaneCraftingPattern currentPattern = null;
 
 	/**
 	 * Handles interaction with the knowledge core.
@@ -139,14 +171,143 @@ public class TileArcaneAssembler
 	/**
 	 * Number of elapsed ticks.
 	 */
-	private int tickCounter = 0;
+	private int visTickCounter = 0, craftTickCounter = 0;
+
+	/**
+	 * Source of all actions.
+	 */
+	private MachineSource mySource;
+
+	/**
+	 * True when the assembler is online.
+	 */
+	private boolean isActive = false;
+
+	/**
+	 * The number of installed upgrades.
+	 */
+	private int upgradeCount = 0;
 
 	/**
 	 * Creates the assembler and it's inventory.
 	 */
 	public TileArcaneAssembler()
 	{
+		// Create the inventory
 		this.internalInventory = new AssemblerInventory();
+
+		// Create the upgrade inventory
+		this.upgradeInventory = new UpgradeInventory( ThEApi.instance().blocks().ArcaneAssembler.getStack(), this,
+						BlockArcaneAssembler.MAX_SPEED_UPGRADES );
+
+		// Set the machine source
+		this.mySource = new MachineSource( this );
+
+		// Set idle power usage
+		this.gridProxy.setIdlePowerUsage( TileArcaneAssembler.IDLE_POWER );
+	}
+
+	private void craftingTick()
+	{
+		// Null check
+		if( this.currentPattern == null )
+		{
+			this.isCrafting = false;
+		}
+
+		// Is there enough vis to complete the crafting?
+		if( !this.hasEnoughVisForCraft() )
+		{
+			return;
+		}
+
+		// Has the assembler finished crafting?
+		if( this.craftTickCounter >= this.ticksPerCraft() )
+		{
+			try
+			{
+				// Get the storage grid
+				IStorageGrid storageGrid = this.gridProxy.getStorage();
+
+				// Simulate placing the items
+				IAEItemStack rejected = storageGrid.getItemInventory().injectItems( this.currentPattern.result, Actionable.SIMULATE, this.mySource );
+
+				// Was all items accepted?
+				if( ( rejected == null ) || ( rejected.getStackSize() == 0 ) )
+				{
+					// Inject into the network
+					storageGrid.getItemInventory().injectItems( this.currentPattern.result.copy(), Actionable.MODULATE, this.mySource );
+
+					// Mark the assembler as no longer crafting
+					this.isCrafting = false;
+					this.internalInventory.slots[TileArcaneAssembler.TARGET_SLOT_INDEX] = null;
+					this.currentPattern = null;
+
+					// Mark for network update
+					this.markForUpdate();
+				}
+			}
+			catch( GridAccessException e )
+			{
+			}
+		}
+		else
+		{
+			try
+			{
+				// Attempt to take power
+				IEnergyGrid eGrid = this.gridProxy.getEnergy();
+				double powerExtracted = eGrid.extractAEPower( TileArcaneAssembler.ACTIVE_POWER * this.upgradeCount, Actionable.MODULATE,
+					PowerMultiplier.CONFIG );
+
+				if( ( powerExtracted - ( TileArcaneAssembler.ACTIVE_POWER * this.upgradeCount ) ) <= 0.0D )
+				{
+					// Increment the counter
+					this.craftTickCounter++ ;
+
+					if( this.craftTickCounter >= this.ticksPerCraft() )
+					{
+						// Take the required vis
+						Aspect[] required = this.currentPattern.getCachedAspects();
+						for( Aspect aspect : required )
+						{
+							this.storedVis.reduce( aspect, this.currentPattern.aspects.getAmount( aspect ) * TileArcaneAssembler.CVIS_MULTIPLER );
+						}
+
+						this.markForUpdate();
+					}
+				}
+			}
+			catch( GridAccessException e )
+			{
+			}
+		}
+
+	}
+
+	private boolean hasEnoughVisForCraft()
+	{
+		// Null check
+		if( this.currentPattern == null )
+		{
+			return false;
+		}
+
+		// Get the required aspects
+		Aspect[] required = this.currentPattern.getCachedAspects();
+
+		// Check each aspect required by the pattern
+		for( Aspect aspect : required )
+		{
+			// Is there not enough?
+			if( this.storedVis.getAmount( aspect ) < ( this.currentPattern.aspects.getAmount( aspect ) * TileArcaneAssembler.CVIS_MULTIPLER ) )
+			{
+				return false;
+			}
+		}
+
+		// Has enough of all aspects
+		return true;
 	}
 
 	/**
@@ -174,11 +335,13 @@ public class TileArcaneAssembler
 		// Calculate how much vis is needed for each primal
 		for( Aspect primal : TileArcaneAssembler.PRIMALS )
 		{
+			int numNeeded = TileArcaneAssembler.MAX_STORED_CVIS - this.storedVis.getAmount( primal );
+
 			// Is any needed?
-			if( TileArcaneAssembler.MAX_STORED_VIS > this.storedVis.getAmount( primal ) )
+			if( numNeeded > 0 )
 			{
 				// Request the vis
-				int amountDrained = visSource.consumeVis( primal, 1 );
+				int amountDrained = visSource.consumeVis( primal, numNeeded );
 
 				// Was any drained?
 				if( amountDrained > 0 )
@@ -192,6 +355,14 @@ public class TileArcaneAssembler
 			}
 		}
 
+	}
+
+	/**
+	 * The number of ticks required to craft an item.
+	 */
+	private int ticksPerCraft()
+	{
+		return TileArcaneAssembler.BASE_TICKS_PER_CRAFT - ( 4 * this.upgradeCount );
 	}
 
 	/**
@@ -222,6 +393,73 @@ public class TileArcaneAssembler
 				this.internalInventory.slots[index] = null;
 			}
 		}
+	}
+
+	@Override
+	protected ItemStack getItemFromTile( final Object obj )
+	{
+		// Return the itemstack the visually represents this tile
+		return ThEApi.instance().blocks().ArcaneAssembler.getStack();
+
+	}
+
+	@Override
+	public void addWailaInformation( final List<String> tooltip )
+	{
+		// Is it active?
+		if( this.isActive() )
+		{
+			// Get activity string from AppEng2
+			tooltip.add( WailaText.DeviceOnline.getLocal() );
+		}
+		else
+		{
+			// Get activity string from AppEng2
+			tooltip.add( WailaText.DeviceOffline.getLocal() );
+		}
+
+		// Is the assembler crafting anything?
+		if( ( this.isCrafting ) && ( this.internalInventory.slots[TileArcaneAssembler.TARGET_SLOT_INDEX] != null ) )
+		{
+			// Add what is being crafted and the percent it is complete
+			tooltip.add( String.format( "%s, %.0f%%", this.internalInventory.slots[TileArcaneAssembler.TARGET_SLOT_INDEX].getDisplayName(),
+				( ( this.getPercentComplete() * 100.0F ) ) ) );
+		}
+
+		// Build vis amounts
+		StringBuilder strAspects = new StringBuilder();
+		for( int i = 0; i < TileArcaneAssembler.PRIMALS.length; i++ )
+		{
+			// Get the primal
+			Aspect primal = TileArcaneAssembler.PRIMALS[i];
+
+			// Change color
+			strAspects.append( GuiHelper.instance.getAspectChatColor( primal ) );
+
+			// Add amount
+			strAspects.append( ( this.storedVis.getAmount( primal ) / (float)TileArcaneAssembler.CVIS_MULTIPLER ) );
+
+			// Are there more primals after this one?
+			if( ( i + 1 ) < TileArcaneAssembler.PRIMALS.length )
+			{
+				// Add a gray pipe
+				strAspects.append( EnumChatFormatting.WHITE.toString() );
+				strAspects.append( " | " );
+			}
+		}
+
+		// Add vis amounts
+		tooltip.add( strAspects.toString() );
+	}
+
+	@MENetworkEventSubscribe
+	public final void channelEvent( final MENetworkChannelsChanged event )
+	{
+		// Update the grid node
+		this.gridProxy.getNode().updateState();
+
+		// Mark for update
+		this.markForUpdate();
 	}
 
 	/**
@@ -261,6 +499,18 @@ public class TileArcaneAssembler
 		return new DimensionalCoord( this );
 	}
 
+	public float getPercentComplete()
+	{
+		float percent = 0.0F;
+
+		if( this.isCrafting )
+		{
+			percent = Math.min( ( (float)this.craftTickCounter / this.ticksPerCraft() ), 1.0F );
+		}
+
+		return percent;
+	}
+
 	/**
 	 * Get's the stored vis amounts.
 	 * 
@@ -269,6 +519,11 @@ public class TileArcaneAssembler
 	public AspectList getStoredVis()
 	{
 		return this.storedVis;
+	}
+
+	public UpgradeInventory getUpgradeInventory()
+	{
+		return this.upgradeInventory;
 	}
 
 	/**
@@ -281,17 +536,55 @@ public class TileArcaneAssembler
 		return( this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX] != null );
 	}
 
-	@Override
-	public boolean isBusy()
+	public boolean isActive()
 	{
-		return this.isBusy;
+		// Are we server side?
+		if( EffectiveSide.isServerSide() )
+		{
+			// Do we have a proxy and grid node?
+			if( ( this.gridProxy != null ) && ( this.gridProxy.getNode() != null ) )
+			{
+				// Get the grid node activity
+				this.isActive = this.gridProxy.getNode().isActive();
+			}
+		}
+
+		return this.isActive;
 	}
 
 	@Override
+	public boolean isBusy()
+	{
+		return this.isCrafting;
+	}
+
+	/**
+	 * Called when the upgrade inventory changes
+	 */
+	@Override
 	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
-		// TODO Auto-generated method stub
+		// Reset the upgrade count
+		this.upgradeCount = 0;
 
+		Materials aeMaterals = AEApi.instance().materials();
+
+		// Look for speed cards
+		for( int i = 0; i < this.upgradeInventory.getSizeInventory(); i++ )
+		{
+			ItemStack slotStack = this.upgradeInventory.getStackInSlot( i );
+
+			if( slotStack != null )
+			{
+				if( aeMaterals.materialCardSpeed.sameAsStack( slotStack ) )
+				{
+					this.upgradeCount++ ;
+				}
+			}
+		}
+
+		// Mark for save
+		this.markDirty();
 	}
 
 	/**
@@ -373,6 +666,29 @@ public class TileArcaneAssembler
 		{
 			this.storedVis.readFromNBT( data, TileArcaneAssembler.NBTKEY_STORED_VIS );
 		}
+
+		// Read upgrade count
+		if( data.hasKey( TileArcaneAssembler.NBTKEY_UPGRADES ) )
+		{
+			this.upgradeCount = data.getInteger( TileArcaneAssembler.NBTKEY_UPGRADES );
+		}
+
+		// Read upgrade inventory
+		this.upgradeInventory.readFromNBT( data, TileArcaneAssembler.NBTKEY_UPGRADEINV );
+
+		// Read the crafting status
+		if( data.hasKey( TileArcaneAssembler.NBTKEY_CRAFTING ) )
+		{
+			this.isCrafting = data.getBoolean( TileArcaneAssembler.NBTKEY_CRAFTING );
+		}
+
+		// Read the pattern
+		if( data.hasKey( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN ) )
+		{
+			this.currentPattern = new ArcaneCraftingPattern( this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX],
+							data.getCompoundTag( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN ) );
+		}
+
 	}
 
 	/**
@@ -417,25 +733,33 @@ public class TileArcaneAssembler
 
 	@TileEvent(TileEventType.NETWORK_READ)
 	@SideOnly(Side.CLIENT)
-	public boolean onReceiveNetworkData( final ByteBuf data )
+	public boolean onReceiveNetworkData( final ByteBuf stream )
 	{
+		// Read the active state
+		this.isActive = stream.readBoolean();
+
+		// Read the crafting status
+		this.isCrafting = stream.readBoolean();
+		if( this.isCrafting )
+		{
+			// Read the crafting progress
+			this.craftTickCounter = stream.readInt();
+		}
+
+		// Clear old vis values
 		this.storedVis.aspects.clear();
 
 		// Read each stored aspect
 		for( int i = 0; i < TileArcaneAssembler.PRIMALS.length; i++ )
 		{
 			// Read the stored amount
-			this.storedVis.add( TileArcaneAssembler.PRIMALS[i], data.readInt() );
+			this.storedVis.add( TileArcaneAssembler.PRIMALS[i], stream.readInt() );
 		}
 
+		// Read upgrade count
+		this.upgradeCount = stream.readInt();
+
 		return true;
-	}
-
-	@Override
-	public void onRequestChange( final ICraftingGrid craftingGrid, final IAEItemStack what )
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
@@ -455,17 +779,46 @@ public class TileArcaneAssembler
 		// Write the stored vis
 		this.storedVis.writeToNBT( data, TileArcaneAssembler.NBTKEY_STORED_VIS );
 
+		// Write the number of upgrades
+		data.setInteger( TileArcaneAssembler.NBTKEY_UPGRADES, this.upgradeCount );
+
+		// Write the upgrade inventory
+		this.upgradeInventory.writeToNBT( data, TileArcaneAssembler.NBTKEY_UPGRADEINV );
+
+		// Write the crafting state
+		data.setBoolean( TileArcaneAssembler.NBTKEY_CRAFTING, this.isCrafting );
+
+		// Write the current pattern
+		if( this.currentPattern != null )
+		{
+			data.setTag( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN, this.currentPattern.writeToNBT( new NBTTagCompound() ) );
+		}
+
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void onSendNetworkData( final ByteBuf data ) throws IOException
+	public void onSendNetworkData( final ByteBuf stream ) throws IOException
 	{
+		// Write the active state
+		stream.writeBoolean( this.isActive() );
+
+		// Write if the assembler is crafting
+		stream.writeBoolean( this.isCrafting );
+		if( this.isCrafting )
+		{
+			// Write the crafting progress
+			stream.writeInt( this.craftTickCounter );
+		}
+
 		// Write each stored aspect
 		for( int i = 0; i < TileArcaneAssembler.PRIMALS.length; i++ )
 		{
 			// Write the stored amount
-			data.writeInt( this.storedVis.getAmount( TileArcaneAssembler.PRIMALS[i] ) );
+			stream.writeInt( this.storedVis.getAmount( TileArcaneAssembler.PRIMALS[i] ) );
 		}
+
+		// Write the upgrade count
+		stream.writeInt( this.upgradeCount );
 	}
 
 	@TileEvent(TileEventType.TICK)
@@ -474,11 +827,19 @@ public class TileArcaneAssembler
 		// Ignored on client side.
 		if( EffectiveSide.isClientSide() )
 		{
+			if( ( this.isCrafting ) && ( this.craftTickCounter < TileArcaneAssembler.BASE_TICKS_PER_CRAFT ) )
+			{
+				this.craftTickCounter++ ;
+			}
+
 			return;
 		}
 
-		// Increment the tick counter.
-		this.tickCounter++ ;
+		// Ensure the assembler is active
+		if( !this.isActive() )
+		{
+			return;
+		}
 
 		// Are the network patterns stale?
 		if( this.stalePatterns )
@@ -496,18 +857,39 @@ public class TileArcaneAssembler
 			}
 		}
 
-		// Has five ticks elapsed?
-		if( this.tickCounter == 5 )
+		// Is the assembler linked to a vis relay?
+		if( this.visSourceInfo.getHasData() )
 		{
-			// Reset the tick counter
-			this.tickCounter = 0;
+			// Increment the vis tick counter.
+			this.visTickCounter++ ;
 
-			// Replenish vis stores
-			if( this.visSourceInfo.getHasData() )
+			// Has five ticks elapsed?
+			if( this.visTickCounter == 5 )
 			{
+				// Reset the tick counter
+				this.visTickCounter = 0;
+
+				// Replenish vis stores
 				this.replenishVis();
 			}
 		}
+
+		// Is the assembler crafting?
+		if( this.isCrafting )
+		{
+			// Tick crafting
+			craftingTick();
+		}
+	}
+
+	@MENetworkEventSubscribe
+	public final void powerEvent( final MENetworkPowerStatusChange event )
+	{
+		// Update the grid node
+		this.gridProxy.getNode().updateState();
+
+		// Mark for update
+		this.markForUpdate();
 	}
 
 	@Override
@@ -533,7 +915,23 @@ public class TileArcaneAssembler
 	@Override
 	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
 	{
-		// TODO Auto-generated method stub
+		if( ( !this.isCrafting ) && ( patternDetails instanceof ArcaneCraftingPattern ) )
+		{
+			// Mark that crafting has begun
+			this.isCrafting = true;
+
+			// Reset the crafting tick counter
+			this.craftTickCounter = 0;
+
+			// Set the pattern that is being crafted
+			this.currentPattern = (ArcaneCraftingPattern)patternDetails;
+
+			// Set the target item
+			this.internalInventory.slots[TileArcaneAssembler.TARGET_SLOT_INDEX] = this.currentPattern.result.getItemStack();
+
+			return true;
+		}
+
 		return false;
 	}
 
@@ -551,16 +949,6 @@ public class TileArcaneAssembler
 			// Set that we require a channel
 			this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		}
-	}
-
-	@Override
-	public void updateWatcher( final ICraftingWatcher newWatcher )
-	{
-		// Set the watcher
-		this.craftingWatcher = newWatcher;
-
-		// Clear all requests
-		this.craftingJobs.clear();
 	}
 
 }
