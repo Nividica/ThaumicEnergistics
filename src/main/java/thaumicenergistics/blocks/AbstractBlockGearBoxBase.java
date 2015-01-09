@@ -150,7 +150,7 @@ public abstract class AbstractBlockGearBoxBase
 	@Override
 	public final boolean renderAsNormalBlock()
 	{
-		return true;
+		return false;
 	}
 
 	/**

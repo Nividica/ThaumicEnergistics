@@ -1,8 +1,13 @@
 package thaumicenergistics.registries;
 
+import net.minecraftforge.client.MinecraftForgeClient;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.render.RenderBlockEssentiaProvider;
 import thaumicenergistics.render.RenderBlockInfusionProvider;
+import thaumicenergistics.render.RenderTileArcaneAssembler;
 import thaumicenergistics.render.RenderTileGearbox;
+import thaumicenergistics.render.TileAsItemRenderer;
+import thaumicenergistics.tileentities.TileArcaneAssembler;
 import thaumicenergistics.tileentities.TileGearBox;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -17,9 +22,7 @@ public class Renderers
 
 	public static int currentRenderPass = 0;
 
-	public static int EssentiaProviderRenderID;
-
-	public static int InfusionProviderRenderID;
+	public static int EssentiaProviderRenderID, InfusionProviderRenderID;
 
 	public static void registerRenderers()
 	{
@@ -36,5 +39,21 @@ public class Renderers
 
 		// Register the gearbox renderer
 		ClientRegistry.bindTileEntitySpecialRenderer( TileGearBox.class, new RenderTileGearbox() );
+
+		// Register thaumium gearbox item renderer
+		MinecraftForgeClient.registerItemRenderer( ThEApi.instance().blocks().ThaumiumGearBox.getItem(), new TileAsItemRenderer(
+						new RenderTileGearbox(), new TileGearBox( true ) ) );
+
+		// Register iron gearbox item renderer
+		MinecraftForgeClient.registerItemRenderer( ThEApi.instance().blocks().IronGearBox.getItem(), new TileAsItemRenderer( new RenderTileGearbox(),
+						new TileGearBox( false ) ) );
+
+		// Register the arcane assembler renderer
+		ClientRegistry.bindTileEntitySpecialRenderer( TileArcaneAssembler.class, new RenderTileArcaneAssembler() );
+
+		// Register arcane assembler item renderer
+		MinecraftForgeClient.registerItemRenderer( ThEApi.instance().blocks().ArcaneAssembler.getItem(), new TileAsItemRenderer(
+						new RenderTileArcaneAssembler(), new TileArcaneAssembler() ) );
+
 	}
 }

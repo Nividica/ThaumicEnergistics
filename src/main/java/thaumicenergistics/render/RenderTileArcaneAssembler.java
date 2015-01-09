@@ -11,48 +11,40 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.render.model.ModelGearbox;
-import thaumicenergistics.tileentities.TileGearBox;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import thaumicenergistics.render.model.ModelArcaneAssembler;
+import thaumicenergistics.tileentities.TileArcaneAssembler;
 
-@SideOnly(Side.CLIENT)
-public class RenderTileGearbox
+public class RenderTileArcaneAssembler
 	extends TileEntitySpecialRenderer
 {
-	/**
-	 * Gearbox model
-	 */
-	private final ModelGearbox gearboxModel = new ModelGearbox();
 
 	/**
-	 * Textures
+	 * Assembler model.
 	 */
-	private final ResourceLocation TEX_IRON = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/models/gearbox.iron.png" ),
-					TEX_THAUMIUM = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/models/gearbox.thaumium.png" );
+	private final ModelArcaneAssembler assemblerModel = new ModelArcaneAssembler();
 
 	/**
-	 * Cache of the gearbox block.
+	 * Texture
 	 */
-	private final Block gearboxBlock = ThEApi.instance().blocks().IronGearBox.getBlock();
+	private final ResourceLocation assemblerTexture = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/models/arcane.assembler.png" );
 
 	/**
-	 * Renders the gearbox.
-	 * 
-	 * @param gearboxTile
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param block
+	 * Cache of the assembler block.
 	 */
-	private void renderGearbox( final TileGearBox gearboxTile, final World world, final int x, final int y, final int z )
+	private final Block assemblerBlock = ThEApi.instance().blocks().ArcaneAssembler.getBlock();
+
+	public RenderTileArcaneAssembler()
+	{
+		// TODO Auto-generated constructor stub
+	}
+
+	private void renderAssembler( final TileArcaneAssembler assemblerTile, final World world, final int x, final int y, final int z )
 	{
 		// Ensure there is a world object
 		if( world != null )
 		{
 			// Get the block lightning
-			float mixedBrightness = this.gearboxBlock.getMixedBrightnessForBlock( world, x, y, z );
+			float mixedBrightness = this.assemblerBlock.getMixedBrightnessForBlock( world, x, y, z );
 			int light = world.getLightBrightnessForSkyBlocks( x, y, z, 0 );
 
 			int l1 = light % 65536;
@@ -77,36 +69,20 @@ public class RenderTileGearbox
 		GL11.glTranslatef( 0.5F, 0.5F, 0.5F );
 
 		// Bind the model texture
-		if( gearboxTile.isThaumiumGearbox() )
-		{
-			Minecraft.getMinecraft().renderEngine.bindTexture( this.TEX_THAUMIUM );
-		}
-		else
-		{
-			Minecraft.getMinecraft().renderEngine.bindTexture( this.TEX_IRON );
-		}
+		Minecraft.getMinecraft().renderEngine.bindTexture( this.assemblerTexture );
 
 		// Scale down
-		GL11.glScalef( 0.12F, 0.12F, 0.12F );
-
-		// Update the model.
-		this.gearboxModel.updateToTileEntity( gearboxTile );
+		GL11.glScalef( 0.047F, 0.047F, 0.047F );
 
 		// Render the gearbox
-		this.gearboxModel.render( null, 0, 0, -0.1F, 0, 0, 0.625F );
+		this.assemblerModel.render( null, 0, 0, -0.1F, 0, 0, 0.625F );
 
 		// Pop the matrix
 		GL11.glPopMatrix();
 	}
 
 	/**
-	 * Called when a gearbox tile entity needs to be rendered.
-	 * 
-	 * @param tileEntity
-	 * @param d
-	 * @param d1
-	 * @param d2
-	 * @param f
+	 * Called when the assembler needs to be rendered.
 	 */
 	@Override
 	public void renderTileEntityAt( final TileEntity tileEntity, final double d, final double d1, final double d2, final float f )
@@ -117,13 +93,15 @@ public class RenderTileGearbox
 		// Computes the proper place to draw
 		GL11.glTranslatef( (float)d, (float)d1, (float)d2 );
 
-		// Get the gearbox
-		TileGearBox gearBox = (TileGearBox)tileEntity;
+		// Get the assembler
+		TileArcaneAssembler assemblerTile = (TileArcaneAssembler)tileEntity;
 
 		// Render the gearbox
-		this.renderGearbox( gearBox, tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord );
+		this.renderAssembler( assemblerTile, tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord );
 
 		// Pop the GL matrix
 		GL11.glPopMatrix();
+
 	}
+
 }

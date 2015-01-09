@@ -100,24 +100,16 @@ public class BlockArcaneAssembler
 		return BlockEnum.ARCANE_ASSEMBLER.getUnlocalizedName();
 	}
 
-	/**
-	 * Is opaque.
-	 */
 	@Override
 	public final boolean isOpaqueCube()
 	{
-		// Occlude adjoining faces.
-		return true;
+		return false;
 	}
 
-	/**
-	 * Is solid.
-	 */
 	@Override
 	public final boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
 	{
-		// This is a solid cube
-		return true;
+		return false;
 	}
 
 	/**
@@ -166,13 +158,19 @@ public class BlockArcaneAssembler
 		// Ignored
 	}
 
-	/**
-	 * Normal renderer.
-	 */
 	@Override
 	public final boolean renderAsNormalBlock()
 	{
-		return true;
+		return false;
+	}
+
+	/**
+	 * Prevents MC from using the default block renderer.
+	 */
+	@Override
+	public boolean shouldSideBeRendered( final IBlockAccess iblockaccess, final int i, final int j, final int k, final int l )
+	{
+		return false;
 	}
 
 }

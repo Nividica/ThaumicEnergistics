@@ -14,6 +14,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import thaumcraft.common.Thaumcraft;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.blocks.BlockArcaneAssembler;
 import thaumicenergistics.integration.IWailaSource;
@@ -47,6 +48,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.localization.WailaText;
+import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.TileEvent;
@@ -54,6 +56,7 @@ import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -689,6 +692,9 @@ public class TileArcaneAssembler
 							data.getCompoundTag( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN ) );
 		}
 
+		// Setup the assembler
+		this.setupAssemblerTile();
+
 	}
 
 	/**
@@ -744,6 +750,12 @@ public class TileArcaneAssembler
 		{
 			// Read the crafting progress
 			this.craftTickCounter = stream.readInt();
+
+			// Add  particles
+			for( int i = 0; i < 2; i++ )
+			{
+				Thaumcraft.proxy.blockRunes( this.worldObj, this.xCoord, this.yCoord, this.zCoord, 0.5F, 0.0F, 0.5F, 10, -0.1F );
+			}
 		}
 
 		// Clear old vis values
@@ -929,6 +941,18 @@ public class TileArcaneAssembler
 			// Set the target item
 			this.internalInventory.slots[TileArcaneAssembler.TARGET_SLOT_INDEX] = this.currentPattern.result.getItemStack();
 
+			// AE effects
+			try
+			{
+				NetworkRegistry.TargetPoint where = new NetworkRegistry.TargetPoint( this.worldObj.provider.dimensionId, this.xCoord, this.yCoord,
+								this.zCoord, 32.0D );
+				appeng.core.sync.network.NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( this.xCoord, this.yCoord,
+								this.zCoord, (byte)( 10 + ( 9 * this.upgradeCount ) ), this.currentPattern.result ), where );
+			}
+			catch( IOException e )
+			{
+			}
+
 			return true;
 		}
 
@@ -944,7 +968,7 @@ public class TileArcaneAssembler
 		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
 		{
 			// Set idle power usage
-			this.gridProxy.setIdlePowerUsage( 1.0D );
+			this.gridProxy.setIdlePowerUsage( 0.0D );
 
 			// Set that we require a channel
 			this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );

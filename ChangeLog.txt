@@ -1,4 +1,9 @@
-﻿1/8/2015 0.8.8.0b-rv2
+﻿1/9/2015 0.8.8.0b-rv2
+  Added Assembler model.
+  Models now render in inventory.
+  Added crafting effects.
+  
+1/8/2015 0.8.8.0b-rv2
   Fixes #106: Arcane items are now auto-craftable!
   Corrected centi-vis math.
   Added WAILA text to assembler.

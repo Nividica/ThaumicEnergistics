@@ -97,6 +97,24 @@ public class TileGearBox
 	public float shaftRotation = 0.0F;
 
 	/**
+	 * Default constructor.
+	 */
+	public TileGearBox()
+	{
+		// Intentionally Empty
+	}
+
+	/**
+	 * Constructor used for item rendering.
+	 * 
+	 * @param isThaumium
+	 */
+	public TileGearBox( final boolean isThaumium )
+	{
+		this.isThaumiumGearbox = isThaumium;
+	}
+
+	/**
 	 * Calculates the amount of power to send to each crank.
 	 * 
 	 * @return
