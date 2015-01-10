@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
+import thaumicenergistics.registries.ThEStrings;
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
@@ -17,7 +18,7 @@ public class DigiVisSourceData
 	private static final String NBT_KEY_DATA = "data";
 	private static final String NBT_KEY_UID = "uid";
 
-	public static final String SOURCE_UNLOC_NAME = "thaumicenergistics.gui.digivis.source";
+	public static final String SOURCE_UNLOC_NAME = ThEStrings.Gui_DigiVisSource.getUnlocalized();
 
 	/**
 	 * True if there is data.

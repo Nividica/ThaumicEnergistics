@@ -9,13 +9,11 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.AbstractContainerCellTerminalBase;
@@ -31,6 +29,7 @@ import thaumicenergistics.gui.widget.WidgetAspectSelector;
 import thaumicenergistics.gui.widget.WidgetAspectSelectorComparator;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.GuiHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -272,10 +271,10 @@ public class GuiEssentiaCellTerminal
 		this.guiTitle = title;
 
 		// Set the name prefix
-		this.selectedInfoNamePrefix = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.selected.aspect" ) + ": ";
+		this.selectedInfoNamePrefix = ThEStrings.Gui_SelectedAspect.getLocalized() + ": ";
 
 		// Set the amount prefix
-		this.selectedInfoAmountPrefix = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.selected.amount" ) + ": ";
+		this.selectedInfoAmountPrefix = ThEStrings.Gui_SelectedAmount.getLocalized() + ": ";
 
 	}
 
@@ -297,7 +296,7 @@ public class GuiEssentiaCellTerminal
 	public static GuiEssentiaCellTerminal NewEssentiaCellGui( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
 		return new GuiEssentiaCellTerminal( player, new ContainerEssentiaCell( player, world, x, y, z ),
-						StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.essentia.cell.title" ) );
+						ThEStrings.Gui_TitleEssentiaCell.getLocalized() );
 	}
 
 	/**
@@ -310,7 +309,7 @@ public class GuiEssentiaCellTerminal
 	public static GuiEssentiaCellTerminal NewEssentiaTerminalGui( final AEPartEssentiaTerminal terminal, final EntityPlayer player )
 	{
 		return new GuiEssentiaCellTerminal( player, new ContainerEssentiaTerminal( terminal, player ),
-						StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".aeparts.essentia.terminal.name" ) );
+						ThEStrings.Part_EssentiaTerminal.getLocalized() );
 	}
 
 	/**
@@ -322,7 +321,7 @@ public class GuiEssentiaCellTerminal
 	public static GuiEssentiaCellTerminal NewWirelessEssentiaTerminalGui( final EntityPlayer player )
 	{
 		return new GuiEssentiaCellTerminal( player, new ContainerWirelessEssentiaTerminal( player, null ),
-						StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".aeparts.essentia.terminal.name" ) );
+						ThEStrings.Part_EssentiaTerminal.getLocalized() );
 	}
 
 	/**
@@ -723,7 +722,7 @@ public class GuiEssentiaCellTerminal
 		this.searchBar.setEnableBackgroundDrawing( false );
 
 		// Start focused
-		this.searchBar.setFocused( true );
+		this.searchBar.setFocused( false );
 
 		// Set maximum length
 		this.searchBar.setMaxStringLength( GuiEssentiaCellTerminal.SEARCH_MAX_CHARS );

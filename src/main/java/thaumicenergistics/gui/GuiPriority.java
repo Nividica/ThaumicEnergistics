@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.container.ContainerPriority;
@@ -16,6 +15,7 @@ import thaumicenergistics.network.packet.server.PacketServerPriority;
 import thaumicenergistics.parts.AbstractAEPartBase;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
+import appeng.core.localization.GuiText;
 import appeng.helpers.IPriorityHost;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -224,7 +224,7 @@ public class GuiPriority
 		this.ySize = GuiPriority.GUI_HEIGHT;
 
 		// Set the title
-		this.title = StatCollector.translateToLocal( "gui.appliedenergistics2.Priority" );
+		this.title = GuiText.Priority.getLocal();
 	}
 
 	@Override

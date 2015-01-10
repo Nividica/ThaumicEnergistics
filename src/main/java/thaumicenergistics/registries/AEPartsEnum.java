@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import thaumicenergistics.ThaumicEnergistics;
@@ -20,23 +19,24 @@ import appeng.api.config.Upgrades;
 
 public enum AEPartsEnum
 {
-		EssentiaImportBus ("essentia.ImportBus", AEPartEssentiaImportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport", new Pair[] {
-						generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
+		EssentiaImportBus (ThEStrings.Part_EssentiaImportBus, AEPartEssentiaImportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport",
+			new Pair[] { generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
 
-		EssentiaLevelEmitter ("essentia.levelemitter", AEPartEssentiaLevelEmitter.class),
+		EssentiaLevelEmitter (ThEStrings.Part_EssentiaLevelEmitter, AEPartEssentiaLevelEmitter.class),
 
-		EssentiaStorageBus ("essentia.StorageBus", AEPartEssentiaStorageBus.class, null, new Pair[] { generatePair( Upgrades.INVERTER, 1 ) }),
+		EssentiaStorageBus (ThEStrings.Part_EssentiaStorageBus, AEPartEssentiaStorageBus.class, null,
+			new Pair[] { generatePair( Upgrades.INVERTER, 1 ) }),
 
-		EssentiaExportBus ("essentia.ExportBus", AEPartEssentiaExportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport", new Pair[] {
-						generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
+		EssentiaExportBus (ThEStrings.Part_EssentiaExportBus, AEPartEssentiaExportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport",
+			new Pair[] { generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
 
-		EssentiaTerminal ("essentia.terminal", AEPartEssentiaTerminal.class),
+		EssentiaTerminal (ThEStrings.Part_EssentiaTerminal, AEPartEssentiaTerminal.class),
 
-		ArcaneCraftingTerminal ("arcane.crafting.terminal", AEPartArcaneCraftingTerminal.class),
+		ArcaneCraftingTerminal (ThEStrings.Part_ArcaneCraftingTerminal, AEPartArcaneCraftingTerminal.class),
 
-		VisInterface ("vis.interface", AEPartVisInterface.class);
+		VisInterface (ThEStrings.Part_VisRelayInterface, AEPartVisInterface.class);
 
-	private String unlocalizedName;
+	private ThEStrings unlocalizedName;
 
 	private Class<? extends AbstractAEPartBase> partClass;
 
@@ -49,15 +49,15 @@ public enum AEPartsEnum
 	 */
 	public static final AEPartsEnum[] VALUES = AEPartsEnum.values();
 
-	private AEPartsEnum( final String unlocalizedName, final Class<? extends AbstractAEPartBase> partClass )
+	private AEPartsEnum( final ThEStrings unlocalizedName, final Class<? extends AbstractAEPartBase> partClass )
 	{
 		this( unlocalizedName, partClass, null );
 	}
 
-	private AEPartsEnum( final String unlocalizedName, final Class<? extends AbstractAEPartBase> partClass, final String groupName )
+	private AEPartsEnum( final ThEStrings unlocalizedName, final Class<? extends AbstractAEPartBase> partClass, final String groupName )
 	{
-		// Add the mod name and parts sub-folder to the name
-		this.unlocalizedName = ThaumicEnergistics.MOD_ID + ".aeparts." + unlocalizedName;
+		// Set the localization string
+		this.unlocalizedName = unlocalizedName;
 
 		// Set the class
 		this.partClass = partClass;
@@ -66,7 +66,7 @@ public enum AEPartsEnum
 		this.groupName = groupName;
 	}
 
-	private AEPartsEnum( final String unlocalizedName, final Class<? extends AbstractAEPartBase> partClass, final String groupName,
+	private AEPartsEnum( final ThEStrings unlocalizedName, final Class<? extends AbstractAEPartBase> partClass, final String groupName,
 							final Pair<Upgrades, Integer> ... upgrades )
 	{
 		this( unlocalizedName, partClass, groupName );
@@ -143,6 +143,11 @@ public enum AEPartsEnum
 		return this.groupName;
 	}
 
+	public String getLocalizedName()
+	{
+		return this.unlocalizedName.getLocalized();
+	}
+
 	/**
 	 * Gets the class associated with this part.
 	 * 
@@ -155,12 +160,7 @@ public enum AEPartsEnum
 
 	public ItemStack getStack()
 	{
-		return ItemEnum.PART_ITEM.getItemStackWithDamage( this.ordinal() );
-	}
-
-	public String getStatName()
-	{
-		return StatCollector.translateToLocal( this.unlocalizedName + ".name" );
+		return ItemEnum.ITEM_AEPART.getItemStackWithDamage( this.ordinal() );
 	}
 
 	/**
@@ -170,7 +170,7 @@ public enum AEPartsEnum
 	 */
 	public String getUnlocalizedName()
 	{
-		return this.unlocalizedName;
+		return this.unlocalizedName.getUnlocalized();
 	}
 
 	public Map<Upgrades, Integer> getUpgrades()

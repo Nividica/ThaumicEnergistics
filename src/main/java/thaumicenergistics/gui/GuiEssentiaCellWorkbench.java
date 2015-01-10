@@ -4,11 +4,9 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
 import thaumicenergistics.gui.buttons.ButtonClearCellPartitioning;
@@ -17,6 +15,7 @@ import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellWorkbench;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.tileentities.TileEssentiaCellWorkbench;
@@ -128,7 +127,7 @@ public class GuiEssentiaCellWorkbench
 		this.ySize = GuiEssentiaCellWorkbench.GUI_HEIGHT;
 
 		// Set the title
-		this.title = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.essentia.cell.workbench.title.name" );
+		this.title = ThEStrings.Gui_TitleEssentiaCellWorkbench.getLocalized();
 
 		// Create the widget array
 		this.partitionWidgets = new SimpleAspectWidget[GuiEssentiaCellWorkbench.NUMBER_OF_WIDGETS];

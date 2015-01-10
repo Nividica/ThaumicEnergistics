@@ -41,10 +41,14 @@ public class TileInfusionProvider
 		float green = ( aspectColor & 0x00FF00 ) / (float)0x00FF00;
 		float blue = ( aspectColor & 0x0000FF ) / (float)0x0000FF;
 
-		// Add 10 particles
-		for( int i = 0; i < 10; i++ )
+		// Add particles
+		for( int i = 0; i < 5; i++ )
 		{
-			Thaumcraft.proxy.blockRunes( this.worldObj, this.xCoord, this.yCoord, this.zCoord, red, green, blue, 10, -0.1F );
+			Thaumcraft.proxy.blockRunes( this.worldObj, this.xCoord, this.yCoord, this.zCoord, red, green, blue, 15, -0.1F );
+		}
+		for( int i = 0; i < 5; i++ )
+		{
+			Thaumcraft.proxy.blockRunes( this.worldObj, this.xCoord, this.yCoord, this.zCoord, red, green, blue, 15, 0.1F );
 		}
 	}
 

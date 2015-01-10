@@ -84,7 +84,7 @@ public abstract class AbstractAEPartBase
 	public AbstractAEPartBase( final AEPartsEnum associatedPart )
 	{
 		// Set the associated item 
-		this.associatedItem = ItemEnum.PART_ITEM.getItemStackWithDamage( associatedPart.ordinal() );
+		this.associatedItem = ItemEnum.ITEM_AEPART.getItemStackWithDamage( associatedPart.ordinal() );
 	}
 
 	private void updateStatus()
@@ -325,7 +325,7 @@ public abstract class AbstractAEPartBase
 	public ItemStack getItemStack( final PartItemStack partItemStack )
 	{
 		// Get the itemstack
-		ItemStack itemStack = new ItemStack( ItemEnum.PART_ITEM.getItem(), 1, AEPartsEnum.getPartID( this.getClass() ) );
+		ItemStack itemStack = new ItemStack( ItemEnum.ITEM_AEPART.getItem(), 1, AEPartsEnum.getPartID( this.getClass() ) );
 
 		if( partItemStack != PartItemStack.Break )
 		{

@@ -193,12 +193,12 @@ public class GuiEssentiaIO
 		if( partBus instanceof AEPartEssentiaImportBus )
 		{
 			// Import
-			this.guiTitle = AEPartsEnum.EssentiaImportBus.getStatName();
+			this.guiTitle = AEPartsEnum.EssentiaImportBus.getLocalizedName();
 		}
 		else if( partBus instanceof AEPartEssentiaExportBus )
 		{
 			// Export
-			this.guiTitle = AEPartsEnum.EssentiaExportBus.getStatName();
+			this.guiTitle = AEPartsEnum.EssentiaExportBus.getLocalizedName();
 		}
 		else
 		{

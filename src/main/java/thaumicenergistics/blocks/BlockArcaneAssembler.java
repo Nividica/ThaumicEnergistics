@@ -55,11 +55,17 @@ public class BlockArcaneAssembler
 			TileArcaneAssembler assembler = (TileArcaneAssembler)world.getTileEntity( x, y, z );
 
 			// Does the inscriber have a cell?
-			if( ( assembler != null ) && ( assembler.hasKCore() ) )
+			if( assembler != null )
 			{
-				// Spawn the core as an item entity.
-				world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, assembler.getInternalInventory().getStackInSlot(
-					TileArcaneAssembler.KCORE_SLOT_INDEX ) ) );
+				if( assembler.hasKCore() )
+				{
+					// Spawn the core as an item entity.
+					world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, assembler.getInternalInventory().getStackInSlot(
+						TileArcaneAssembler.KCORE_SLOT_INDEX ) ) );
+				}
+
+				// Inform the tile it is being broken
+				assembler.onBreak();
 			}
 		}
 

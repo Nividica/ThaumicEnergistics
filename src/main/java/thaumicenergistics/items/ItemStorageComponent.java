@@ -9,10 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.registries.ThEStrings;
 import appeng.api.implementations.items.IStorageComponent;
 
 public class ItemStorageComponent
-	extends ItemStorageBase
+	extends AbstractStorageBase
 	implements IStorageComponent
 {
 
@@ -28,13 +29,13 @@ public class ItemStorageComponent
 	@Override
 	public int getBytes( final ItemStack itemStack )
 	{
-		return ItemStorageBase.SIZES[itemStack.getItemDamage()];
+		return AbstractStorageBase.SIZES[itemStack.getItemDamage()];
 	}
 
 	@Override
 	public IIcon getIconFromDamage( final int damage )
 	{
-		int index = MathHelper.clamp_int( damage, 0, ItemStorageBase.SUFFIXES.length );
+		int index = MathHelper.clamp_int( damage, 0, AbstractStorageBase.SIZES.length );
 
 		return this.icons[index];
 	}
@@ -43,19 +44,19 @@ public class ItemStorageComponent
 	public EnumRarity getRarity( final ItemStack itemStack )
 	{
 		// Get the index based off of the meta data
-		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, ItemStorageBase.RARITIES.length );
+		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, AbstractStorageBase.RARITIES.length );
 
 		// Return the rarity
-		return ItemStorageBase.RARITIES[index];
+		return AbstractStorageBase.RARITIES[index];
 	}
 
 	@Override
 	public void getSubItems( final Item item, final CreativeTabs creativeTab, final List itemList )
 	{
-		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
+		for( int i = 0; i < AbstractStorageBase.SIZES.length; i++ )
 		{
 			// Skip the creative cell
-			if( i == ItemStorageBase.INDEX_CREATIVE )
+			if( i == AbstractStorageBase.INDEX_CREATIVE )
 			{
 				continue;
 			}
@@ -67,7 +68,24 @@ public class ItemStorageComponent
 	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
-		return ThaumicEnergistics.MOD_ID + ".item.storage.component." + ItemStorageBase.SUFFIXES[itemStack.getItemDamage()];
+		switch ( itemStack.getItemDamage() )
+		{
+			case 0:
+				return ThEStrings.Item_StorageComponent_1k.getUnlocalized();
+
+			case 1:
+				return ThEStrings.Item_StorageComponent_4k.getUnlocalized();
+
+			case 2:
+				return ThEStrings.Item_StorageComponent_16k.getUnlocalized();
+
+			case 3:
+				return ThEStrings.Item_StorageComponent_64k.getUnlocalized();
+
+			default:
+				return "";
+
+		}
 	}
 
 	@Override
@@ -79,17 +97,17 @@ public class ItemStorageComponent
 	@Override
 	public void registerIcons( final IIconRegister iconRegister )
 	{
-		this.icons = new IIcon[ItemStorageBase.SUFFIXES.length];
+		this.icons = new IIcon[AbstractStorageBase.SUFFIXES.length];
 
-		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
+		for( int i = 0; i < AbstractStorageBase.SUFFIXES.length; i++ )
 		{
 			// Skip the creative cell
-			if( i == ItemStorageBase.INDEX_CREATIVE )
+			if( i == AbstractStorageBase.INDEX_CREATIVE )
 			{
 				continue;
 			}
 
-			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":storage.component." + ItemStorageBase.SUFFIXES[i] );
+			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":storage.component." + AbstractStorageBase.SUFFIXES[i] );
 		}
 	}
 

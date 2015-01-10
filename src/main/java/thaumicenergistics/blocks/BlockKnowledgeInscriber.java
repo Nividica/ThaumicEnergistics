@@ -22,6 +22,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockKnowledgeInscriber
 	extends AbstractBlockAEWrenchable
 {
+	/**
+	 * Cached value of the UP ordinal.
+	 */
+	private static final int SIDE_TOP = ForgeDirection.UP.ordinal();
+
 	public BlockKnowledgeInscriber()
 	{
 		// Call super with material machine (iron) 
@@ -75,8 +80,13 @@ public class BlockKnowledgeInscriber
 	@Override
 	public IIcon getIcon( final int side, final int meta )
 	{
-		// Sides
-		return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTexture();
+		if( side == BlockKnowledgeInscriber.SIDE_TOP )
+		{
+			return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTextures()[1];
+		}
+
+		// Sides + bottom
+		return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTextures()[0];
 	}
 
 	/**

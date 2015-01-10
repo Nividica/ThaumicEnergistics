@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.registries.ItemEnum;
+import thaumicenergistics.registries.ThEStrings;
 
 public class ItemStorageCasing
 	extends Item
@@ -19,7 +19,7 @@ public class ItemStorageCasing
 	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
-		return ThaumicEnergistics.MOD_ID + ".item." + ItemEnum.STORAGE_CASING.getInternalName();
+		return ThEStrings.Item_EssentiaCellHousing.getUnlocalized();
 	}
 
 	@Override

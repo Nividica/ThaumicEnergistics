@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -17,6 +18,7 @@ import thaumcraft.api.crafting.ShapedArcaneRecipe;
 import thaumcraft.common.config.Config;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
+import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.Items;
 import thaumicenergistics.api.ThEApi;
@@ -60,6 +62,105 @@ public class RecipeRegistry
 	public static CrucibleRecipe DUPE_NETHER_QUARTZ;
 	public static IRecipe BLOCK_CELL_WORKBENCH;
 	public static IRecipe WIRELESS_ESSENTIA_TERMINAL;
+	public static IArcaneRecipe ITEM_KNOWLEDGE_CORE;
+	public static IArcaneRecipe BLOCK_KNOWLEDGE_INSCRIBER;
+	public static InfusionRecipe BLOCK_ARCANE_ASSEMBLER;
+
+	private static void registerAutocrafting( final Materials aeMaterials, final Blocks aeBlocks, final Items teItems )
+	{
+		thaumicenergistics.api.Blocks teBlocks = ThEApi.instance().blocks();
+
+		// Minecraft items
+		ItemStack Lapis = new ItemStack( (Item)Item.itemRegistry.getObject( "dye" ), 1, 4 );
+
+		String IronIngot = "ingotIron";
+
+		// Thaumcraft items
+		ItemStack ZombieBrain = new ItemStack( ConfigItems.itemZombieBrain );
+
+		ItemStack Thaumonomicon = new ItemStack( ConfigItems.itemThaumonomicon );
+
+		ItemStack AirShard = new ItemStack( ConfigItems.itemShard, 1, 0 );
+
+		ItemStack FireShard = new ItemStack( ConfigItems.itemShard, 1, 1 );
+
+		ItemStack WaterShard = new ItemStack( ConfigItems.itemShard, 1, 2 );
+
+		ItemStack EarthShard = new ItemStack( ConfigItems.itemShard, 1, 3 );
+
+		ItemStack OrderShard = new ItemStack( ConfigItems.itemShard, 1, 4 );
+
+		ItemStack EntropyShard = new ItemStack( ConfigItems.itemShard, 1, 5 );
+
+		ItemStack BallanceShard = new ItemStack( ConfigItems.itemShard, 1, 6 );
+
+		ItemStack CraftingScepter = new ItemStack( ConfigItems.itemWandCasting, 1, 128 );
+		( (ItemWandCasting)CraftingScepter.getItem() ).setCap( CraftingScepter, ConfigItems.WAND_CAP_THAUMIUM );
+		( (ItemWandCasting)CraftingScepter.getItem() ).setRod( CraftingScepter, ConfigItems.WAND_ROD_SILVERWOOD );
+		CraftingScepter.setTagInfo( "sceptre", new NBTTagByte( (byte)1 ) );
+		for( Aspect aspect : Aspect.getPrimalAspects() )
+		{
+			( (ItemWandCasting)CraftingScepter.getItem() ).addVis( CraftingScepter, aspect,
+				( (ItemWandCasting)CraftingScepter.getItem() ).getMaxVis( CraftingScepter ), true );
+		}
+
+		// AppEng items
+		ItemStack VibrantGlass = aeBlocks.blockQuartzVibrantGlass.stack( 1 );
+
+		ItemStack CalculationProcessor = aeMaterials.materialCalcProcessor.stack( 1 );
+
+		ItemStack LogicProcessor = aeMaterials.materialLogicProcessor.stack( 1 );
+
+		String IlluminatedPanel = "itemIlluminatedPanel";
+
+		ItemStack MAC = aeBlocks.blockMolecularAssembler.stack( 1 );
+
+		// My Items
+		ItemStack KnowledgeCore = teItems.KnowledgeCore.getStack();
+
+		ItemStack KnowledgeInscriber = teBlocks.KnowledgeInscriber.getStack();
+
+		ItemStack ArcaneAssembler = teBlocks.ArcaneAssembler.getStack();
+
+		// Knowledge Core
+		AspectList kCoreAspects = new AspectList();
+		kCoreAspects.add( Aspect.WATER, 3 );
+		kCoreAspects.add( Aspect.ORDER, 3 );
+		kCoreAspects.add( Aspect.EARTH, 1 );
+
+		RecipeRegistry.ITEM_KNOWLEDGE_CORE = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.KNOWLEDGEINSCRIBER.getKey(),
+			KnowledgeCore, kCoreAspects, new Object[] { "VLV", "LZL", "VCV", 'V', VibrantGlass, 'L', Lapis, 'Z', ZombieBrain, 'C',
+							CalculationProcessor } );
+
+		// Knowledge Inscriber
+		AspectList kiAspects = new AspectList();
+		kiAspects.add( Aspect.WATER, 5 );
+		kiAspects.add( Aspect.ORDER, 5 );
+		kiAspects.add( Aspect.EARTH, 5 );
+		kiAspects.add( Aspect.ENTROPY, 5 );
+		kiAspects.add( Aspect.FIRE, 5 );
+		kiAspects.add( Aspect.AIR, 5 );
+
+		RecipeRegistry.BLOCK_KNOWLEDGE_INSCRIBER = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.KNOWLEDGEINSCRIBER.getKey(),
+			KnowledgeInscriber, kiAspects, new Object[] { "IPI", " T ", "ILI", 'I', IronIngot, 'P', IlluminatedPanel, 'T', Thaumonomicon, 'L',
+							LogicProcessor } );
+
+		// Arcane Assembler
+		AspectList assemblerAspects = new AspectList();
+		assemblerAspects.add( Aspect.CRAFT, 64 );
+		assemblerAspects.add( Aspect.EXCHANGE, 32 );
+		assemblerAspects.add( Aspect.AURA, 16 );
+		assemblerAspects.add( Aspect.MAGIC, 16 );
+		assemblerAspects.add( Aspect.METAL, 8 );
+		assemblerAspects.add( Aspect.CRYSTAL, 8 );
+
+		// Infusion provider recipe items
+		ItemStack[] assemblerItems = { CraftingScepter, AirShard, EarthShard, WaterShard, BallanceShard, OrderShard, EntropyShard, FireShard };
+
+		// Create the infusion provider recipe
+		RecipeRegistry.BLOCK_ARCANE_ASSEMBLER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ARCANEASSEMBLER.getKey(),
+			ArcaneAssembler, 7, assemblerAspects, MAC, assemblerItems );
+	}
 
 	private static void registerComponents( final Materials aeMaterials, final Blocks aeBlocks, final Items teItems )
 	{
@@ -564,6 +665,9 @@ public class RecipeRegistry
 
 		// Register the gearboxes
 		RecipeRegistry.registerGearbox( aeBlocks, teItems );
+
+		// Register autocrafting
+		RecipeRegistry.registerAutocrafting( aeMaterials, aeBlocks, teItems );
 	}
 
 }

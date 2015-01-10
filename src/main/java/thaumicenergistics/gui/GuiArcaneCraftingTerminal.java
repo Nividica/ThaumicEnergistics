@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -25,6 +24,7 @@ import thaumicenergistics.gui.widget.WidgetAEItem;
 import thaumicenergistics.integration.tc.MEItemAspectBridgeContainer;
 import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.GuiHelper;
@@ -126,7 +126,7 @@ public class GuiArcaneCraftingTerminal
 		this.ySize = AbstractGuiConstantsACT.GUI_HEIGHT;
 
 		// Set the title
-		this.guiTitle = StatCollector.translateToLocal( "thaumicenergistics.gui.arcane.crafting.terminal.title" );
+		this.guiTitle = ThEStrings.Gui_TitleArcaneCraftingTerminal.getLocalized();
 
 		// Create the aspect bridge
 		try
@@ -332,14 +332,22 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private void updateMEWidgets()
 	{
+		int repoIndex = 0;
 		// List all items
 		for( int index = 0; index < AbstractGuiConstantsACT.ME_WIDGET_COUNT; index++ )
 		{
-			IAEItemStack stack = this.repo.getReferenceItem( index );
+			IAEItemStack stack = this.repo.getReferenceItem( repoIndex++ );
 
-			// Did we get a stack?
+			// Did we get a stack? 
 			if( stack != null )
 			{
+				// TODO: Prevent craftable items from being shown until AE2 team accepts pull request.
+				if( stack.getStackSize() == 0 )
+				{
+					index-- ;
+					continue;
+				}
+
 				// Set the item
 				this.itemWidgets[index].setItemStack( stack );
 				if( this.meAspectBridge != null )
@@ -817,7 +825,7 @@ public class GuiArcaneCraftingTerminal
 		this.searchField.setEnableBackgroundDrawing( false );
 
 		// Start focused
-		this.searchField.setFocused( true );
+		this.searchField.setFocused( false );
 
 		// Set maximum length
 		this.searchField.setMaxStringLength( AbstractGuiConstantsACT.SEARCH_MAX_CHARS );

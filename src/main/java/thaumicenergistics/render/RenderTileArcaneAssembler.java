@@ -33,11 +33,6 @@ public class RenderTileArcaneAssembler
 	 */
 	private final Block assemblerBlock = ThEApi.instance().blocks().ArcaneAssembler.getBlock();
 
-	public RenderTileArcaneAssembler()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	private void renderAssembler( final TileArcaneAssembler assemblerTile, final World world, final int x, final int y, final int z )
 	{
 		// Ensure there is a world object
@@ -74,7 +69,7 @@ public class RenderTileArcaneAssembler
 		// Scale down
 		GL11.glScalef( 0.047F, 0.047F, 0.047F );
 
-		// Render the gearbox
+		// Render the assembler
 		this.assemblerModel.render( null, 0, 0, -0.1F, 0, 0, 0.625F );
 
 		// Pop the matrix

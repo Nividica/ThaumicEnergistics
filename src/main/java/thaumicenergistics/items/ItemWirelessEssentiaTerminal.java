@@ -12,7 +12,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.IWirelessEssentiaTerminal;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
-import thaumicenergistics.registries.ItemEnum;
+import thaumicenergistics.registries.ThEStrings;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerMultiplier;
 import appeng.core.localization.GuiText;
@@ -259,7 +259,7 @@ public class ItemWirelessEssentiaTerminal
 	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
-		return ThaumicEnergistics.MOD_ID + ".item." + ItemEnum.WIRELESS_TERMINAL.getInternalName();
+		return ThEStrings.Item_WirelessEssentiaTerminal.getUnlocalized();
 	}
 
 	/**

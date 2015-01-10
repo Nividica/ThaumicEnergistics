@@ -2,7 +2,6 @@ package thaumicenergistics.registries;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.items.ItemAEPart;
 import thaumicenergistics.items.ItemEssentiaCell;
@@ -14,7 +13,7 @@ import thaumicenergistics.items.ItemWirelessEssentiaTerminal;
 
 public enum ItemEnum
 {
-		PART_ITEM ("part.base", new ItemAEPart()),
+		ITEM_AEPART ("part.base", new ItemAEPart()),
 		ESSENTIA_CELL ("storage.essentia", new ItemEssentiaCell()),
 		STORAGE_COMPONENT ("storage.component", new ItemStorageComponent()),
 		STORAGE_CASING ("storage.casing", new ItemStorageCasing()),
@@ -64,11 +63,6 @@ public enum ItemEnum
 	public ItemStack getItemStackWithSize( final int size )
 	{
 		return new ItemStack( this.item, size );
-	}
-
-	public String getLocalizedName()
-	{
-		return StatCollector.translateToLocal( this.item.getUnlocalizedName() );
 	}
 
 }

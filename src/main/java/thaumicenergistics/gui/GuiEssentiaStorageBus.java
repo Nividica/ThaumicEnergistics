@@ -126,7 +126,7 @@ public class GuiEssentiaStorageBus
 	/**
 	 * Title of the gui
 	 */
-	private final String guiTitle = AEPartsEnum.EssentiaStorageBus.getStatName();
+	private final String guiTitle = AEPartsEnum.EssentiaStorageBus.getLocalizedName();
 
 	private boolean isVoidAllowed = false;
 

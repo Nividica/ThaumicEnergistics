@@ -1,8 +1,7 @@
 package thaumicenergistics.gui.buttons;
 
 import java.util.List;
-import net.minecraft.util.StatCollector;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 
 public class ButtonClearCraftingGrid
@@ -31,7 +30,7 @@ public class ButtonClearCraftingGrid
 	public void getTooltip( final List<String> tooltip )
 	{
 		// Add the tooltip text
-		tooltip.add( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.button.clear.crafting" ) );
+		tooltip.add( ThEStrings.TooltipButton_DepositCraftingGrid.getLocalized() );
 	}
 
 }

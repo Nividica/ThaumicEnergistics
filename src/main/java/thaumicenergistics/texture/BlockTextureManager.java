@@ -43,7 +43,7 @@ public enum BlockTextureManager
 
 		ARCANE_ASSEMBLER (TextureTypes.Block, new String[] { "arcane.assembler" }),
 
-		KNOWLEDGE_INSCRIBER (TextureTypes.Block, new String[] { "knowledge.inscriber" });
+		KNOWLEDGE_INSCRIBER (TextureTypes.Block, new String[] { "knowledge.inscriber.side", "knowledge.inscriber.top" });
 
 	private enum TextureTypes
 	{

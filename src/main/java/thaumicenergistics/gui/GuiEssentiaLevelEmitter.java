@@ -310,7 +310,7 @@ public class GuiEssentiaLevelEmitter
 	public void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
 		// Draw the title
-		this.fontRendererObj.drawString( AEPartsEnum.EssentiaLevelEmitter.getStatName(), GuiEssentiaLevelEmitter.TITLE_POS_X,
+		this.fontRendererObj.drawString( AEPartsEnum.EssentiaLevelEmitter.getLocalizedName(), GuiEssentiaLevelEmitter.TITLE_POS_X,
 			GuiEssentiaLevelEmitter.TITLE_POS_Y, 0 );
 
 		// Draw underlay when mouse is over slot.

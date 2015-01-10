@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.registries.ItemEnum;
+import thaumicenergistics.registries.ThEStrings;
 
 public class ItemKnowledgeCore
 	extends Item
@@ -33,7 +33,7 @@ public class ItemKnowledgeCore
 	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
-		return ThaumicEnergistics.MOD_ID + ".item." + ItemEnum.KNOWLEDGE_CORE.getInternalName();
+		return ThEStrings.Item_KnowledgeCore.getUnlocalized();
 	}
 
 	/**

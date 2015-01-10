@@ -49,6 +49,11 @@ thaumicenergistics.tooltip.button.void=Allow Void?
 thaumicenergistics.tooltip.button.void.disabled=Do not void essentia
 thaumicenergistics.tooltip.button.void.allowed=Void essentia if jar is full
 thaumicenergistics.tooltip.button.void.note=Only applies to void jars
+thaumicenergistics.tooltip.button.inscriber.invalid=Invalid Recipe
+thaumicenergistics.tooltip.button.inscriber.full=Knowledge Core Is Full
+thaumicenergistics.tooltip.button.inscriber.delete=Erase Pattern From Knowledge Core
+thaumicenergistics.tooltip.button.inscriber.save=Save Pattern To Knowledge Core
+thaumicenergistics.tooltip.button.inscriber.missing=Requires Knowledge Core
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=Arcane Terminal
@@ -56,7 +61,7 @@ thaumicenergistics.gui.essentia.cell.title=Essentia Cell
 thaumicenergistics.gui.selected.amount=Amount
 thaumicenergistics.gui.selected.aspect=Aspect
 thaumicenergistics.gui.digivis.source.name=DigiVis Source
-thaumicenergistics.gui.essentia.cell.workbench.title.name=Essentia Cell Workbench
+thaumicenergistics.gui.essentia.cell.workbench.title=Essentia Cell Workbench
 thaumicenergistics.gui.arcane.assembler.title=Arcane Assembler
 
 #Research Tab
@@ -110,7 +115,7 @@ thaumicenergistics.research_page.TEINFPROV.1=By researching the process of essen
 tc.research_name.thaumicenergistics.TEVISINT=Vis Relay Interface
 tc.research_text.thaumicenergistics.TEVISINT=Using Vis Digitally
 thaumicenergistics.research_page.TEVISINT.1=Having discovered the vis power network, you now pursue the means of linking your digital system to this network.<BR>After observing how vis flows through the network of §lvis relays§r, you believe you can construct a digital device to perform a similar function. By utilizing the peer-to-peer capabilities of the digital network you import vis into the network, however it can not be stored.
-thaumicenergistics.research_page.TEVISINT.2=To use the §lVis Relay Interface§r, attach it to the digital network and place a vis relay on it. The base of the relay must be against the interface.<BR>Linking other devices to the interface will require the use of a §lMemory Card§r.<BR>Shift right-click on the interface with a memory card, then right-click on a device to create the link.<BR>Right clicking the device(not the interface) with a blank memory card will remove the link.
+thaumicenergistics.research_page.TEVISINT.2=To use the §lVis Relay Interface§r, attach it to the digital network and place a vis relay on it. The base of the relay must be against the interface.<BR>In order for a device to receive vis it must be linked with the interface. Linking other devices to the interface will require the use of a §lMemory Card§r.<BR>Shift right-click on the interface with a memory card, then right-click on a device to create the link.<BR>Right clicking the device(not the interface) with a blank memory card will remove the link.
 thaumicenergistics.research_page.TEVISINT.3=§lLinks§r<LINE>§lArcane Crafting Terminal§r. Charges the wand in the A.C.T.<BR>§lArcane Assembler§r. Fills vis storage, used for crafting.
 
 # Research Iron Gear Box
@@ -127,4 +132,16 @@ thaumicenergistics.research_page.TETHAUMGBOX.1=Now that your golems can right-cl
 # Research Certus Quartz Duplication
 tc.research_name.thaumicenergistics.TECERTUSDUPE=Quartz Duplication
 tc.research_text.thaumicenergistics.TECERTUSDUPE=Impurities Intact
-thaumicenergistics.research_page.TECERTUSDUPE.1=You are now able to alchemicaly duplicate §lCertus Quartz Crystal§r and §lNether Quartz§r.
+thaumicenergistics.research_page.TECERTUSDUPE.1=You are now able to alchemically duplicate §lCertus Quartz Crystal§r and §lNether Quartz§r.
+
+# Research Knowledge Inscriber + Core
+tc.research_name.thaumicenergistics.TEKNOWLEDGEINSCRIBER=Knowledge Inscription
+tc.research_text.thaumicenergistics.TEKNOWLEDGEINSCRIBER=Magical Patterns
+thaumicenergistics.research_page.TEKNOWLEDGEINSCRIBER.1=With the §lArcane Assembler§r constructed, you will need a way to teach it what it will be assembling. You have devised a device capable of storing a limited number of arcane recipes. The §lKnowledge Core§r serves as pattern storage, giving the assembler instructions on how to build items.<BR>To encode recipe patterns on the core, you will need the services of the §lKnowledge Inscriber§r.
+thaumicenergistics.research_page.TEKNOWLEDGEINSCRIBER.2=Using The Knowledge Inscriber<BR>First place a §lKnowledge Core§r into the top-right slot. Next, use the crafting grid to setup the recipe for the item. If you have the required knowledge(research) for the recipe, the resulting item will be displayed. Pressing the save button will then inscribe the recipe onto the core. The finished product will then show in the stored-pattern area.<BR>To remove an inscribed recipe from the core, first select a pattern from the stored-pattern area. The selected patterns recipe will then display in the crafting area. Finally, clicking the delete button will remove the pattern from the core.
+
+# Research Arcane Assembler
+tc.research_name.thaumicenergistics.TEARCANEASSEMBLER=Arcane Assembler
+tc.research_text.thaumicenergistics.TEARCANEASSEMBLER=Magical Molecule Assembly
+thaumicenergistics.research_page.TEARCANEASSEMBLER.1=While examining the §lMolecular Assembler§r it occurs to you that it may be possible to modify the assembler to produce arcane items. You conclude that by infusing the assembler with the appropriate shards it will be able to regulate vis flow into items. It will also need a moderate amount of vis storage, and the §lSilverwood Sceptre§r seems the best choice.<BR>Note: Even though a fully charged sceptre is required for infusion, it's stored vis is used up during the infusion process.
+thaumicenergistics.research_page.TEARCANEASSEMBLER.2=§lPattern Storage§r<BR>The assembler itself does not store crafting recipes. Further research may be required to devise a pattern storage medium.<LINE>§lVis Replenishment§r<BR>Replenishing the assembler's internal vis storage will require the services of a §lVis Relay Interface§r.

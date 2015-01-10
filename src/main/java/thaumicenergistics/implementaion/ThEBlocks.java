@@ -14,5 +14,6 @@ class ThEBlocks
 		this.ThaumiumGearBox = new ThEDescription( BlockEnum.THAUMIUM_GEAR_BOX.getBlock() );
 		this.EssentiaCellWorkbench = new ThEDescription( BlockEnum.ESSENTIA_CELL_WORKBENCH.getBlock() );
 		this.ArcaneAssembler = new ThEDescription( BlockEnum.ARCANE_ASSEMBLER.getBlock() );
+		this.KnowledgeInscriber = new ThEDescription( BlockEnum.KNOWLEDGE_INSCRIBER.getBlock() );
 	}
 }

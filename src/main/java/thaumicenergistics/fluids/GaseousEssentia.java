@@ -3,12 +3,12 @@ package thaumicenergistics.fluids;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.IEssentiaGas;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.ThELog;
 
@@ -189,7 +189,7 @@ public class GaseousEssentia
 	@Override
 	public String getLocalizedName( final FluidStack stack )
 	{
-		return this.associatedAspect.getName() + " " + StatCollector.translateToLocal( "thaumicenergistics.fluid.gaseous" );
+		return this.associatedAspect.getName() + " " + ThEStrings.Fluid_GaseousEssentia.getLocalized();
 	}
 
 	@Override

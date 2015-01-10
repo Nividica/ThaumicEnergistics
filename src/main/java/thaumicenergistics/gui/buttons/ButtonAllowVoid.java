@@ -7,9 +7,8 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import thaumcraft.common.config.ConfigBlocks;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 
 public class ButtonAllowVoid
@@ -24,11 +23,6 @@ public class ButtonAllowVoid
 	 * Cache the font renderer
 	 */
 	private static final FontRenderer FONT_RENDERER = Minecraft.getMinecraft().fontRenderer;
-
-	/**
-	 * Header string for all tooltips used.
-	 */
-	private static final String TOOLTIP_LOC_HEADER = ThaumicEnergistics.MOD_ID + ".tooltip.button.void";
 
 	/**
 	 * Height and width of the button
@@ -54,25 +48,6 @@ public class ButtonAllowVoid
 	 * Disabled icon from the AE sprite sheet.
 	 */
 	private AEStateIconsEnum disabledIcon = AEStateIconsEnum.DISABLED;
-
-	/**
-	 * First line of the tooltip
-	 */
-	private String tooltipTitle = StatCollector.translateToLocal( ButtonAllowVoid.TOOLTIP_LOC_HEADER );
-
-	/**
-	 * Second line of the tooltip if void is disabled
-	 */
-	private String tooltipDisabled = StatCollector.translateToLocal( ButtonAllowVoid.TOOLTIP_LOC_HEADER + ".disabled" );
-
-	/**
-	 * Second line of the tooltip if void is allowed
-	 */
-	private String tooltipAllowed = StatCollector.translateToLocal( ButtonAllowVoid.TOOLTIP_LOC_HEADER + ".allowed" );
-	/**
-	 * Third line of the tooltip
-	 */
-	private String tooltipNote = StatCollector.translateToLocal( ButtonAllowVoid.TOOLTIP_LOC_HEADER + ".note" );
 
 	/**
 	 * When false, draws the disabled icon over the jar
@@ -116,20 +91,20 @@ public class ButtonAllowVoid
 	public void getTooltip( final List<String> tooltip )
 	{
 		// Add the title
-		tooltip.add( this.tooltipTitle );
+		tooltip.add( ThEStrings.TooltipButton_VoidHeader.getLocalized() );
 
 		// Add allowed/disabled
 		if( this.isVoidAllowed )
 		{
-			tooltip.add( EnumChatFormatting.GRAY + this.tooltipAllowed );
+			tooltip.add( EnumChatFormatting.GRAY + ThEStrings.TooltipButton_VoidAllow.getLocalized() );
 		}
 		else
 		{
-			tooltip.add( EnumChatFormatting.GRAY + this.tooltipDisabled );
+			tooltip.add( EnumChatFormatting.GRAY + ThEStrings.TooltipButton_VoidDisable.getLocalized() );
 		}
 
 		// Add the note
-		tooltip.add( EnumChatFormatting.ITALIC + this.tooltipNote );
+		tooltip.add( EnumChatFormatting.ITALIC + ThEStrings.TooltipButton_VoidNote.getLocalized() );
 
 	}
 }

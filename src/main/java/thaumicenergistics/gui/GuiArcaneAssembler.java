@@ -4,15 +4,14 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
-import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerArcaneAssembler;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
 import thaumicenergistics.util.GuiHelper;
@@ -69,7 +68,7 @@ public class GuiArcaneAssembler
 		this.ySize = GuiArcaneAssembler.GUI_HEIGHT;
 
 		// Set the title
-		this.title = StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".gui.arcane.assembler.title" );
+		this.title = ThEStrings.Gui_TitleArcaneAssembler.getLocalized();
 
 		// Add the vis bar positions
 		this.visBarPositionMap.put( Aspect.AIR, 41 );

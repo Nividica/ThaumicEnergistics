@@ -205,9 +205,6 @@ public class TileArcaneAssembler
 
 		// Set the machine source
 		this.mySource = new MachineSource( this );
-
-		// Set idle power usage
-		this.gridProxy.setIdlePowerUsage( TileArcaneAssembler.IDLE_POWER );
 	}
 
 	private void craftingTick()
@@ -319,6 +316,12 @@ public class TileArcaneAssembler
 	private void replenishVis()
 	{
 		IDigiVisSource visSource = null;
+
+		// Ensure the grid is ready
+		if( !this.gridProxy.isReady() )
+		{
+			return;
+		}
 
 		try
 		{
@@ -459,7 +462,10 @@ public class TileArcaneAssembler
 	public final void channelEvent( final MENetworkChannelsChanged event )
 	{
 		// Update the grid node
-		this.gridProxy.getNode().updateState();
+		if( this.gridProxy.isReady() )
+		{
+			this.gridProxy.getNode().updateState();
+		}
 
 		// Mark for update
 		this.markForUpdate();
@@ -559,6 +565,15 @@ public class TileArcaneAssembler
 	public boolean isBusy()
 	{
 		return this.isCrafting;
+	}
+
+	/**
+	 * Called when the tile entity is about to be destroyed by a block break.
+	 */
+	public void onBreak()
+	{
+		this.isCrafting = false;
+		this.gridProxy.invalidate();
 	}
 
 	/**
@@ -854,7 +869,7 @@ public class TileArcaneAssembler
 		}
 
 		// Are the network patterns stale?
-		if( this.stalePatterns )
+		if( this.stalePatterns && this.gridProxy.isReady() )
 		{
 			try
 			{
@@ -898,7 +913,10 @@ public class TileArcaneAssembler
 	public final void powerEvent( final MENetworkPowerStatusChange event )
 	{
 		// Update the grid node
-		this.gridProxy.getNode().updateState();
+		if( this.gridProxy.isReady() )
+		{
+			this.gridProxy.getNode().updateState();
+		}
 
 		// Mark for update
 		this.markForUpdate();
@@ -968,7 +986,7 @@ public class TileArcaneAssembler
 		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
 		{
 			// Set idle power usage
-			this.gridProxy.setIdlePowerUsage( 0.0D );
+			this.gridProxy.setIdlePowerUsage( TileArcaneAssembler.IDLE_POWER );
 
 			// Set that we require a channel
 			this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );

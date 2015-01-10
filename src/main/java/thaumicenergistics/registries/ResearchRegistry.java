@@ -73,7 +73,9 @@ public class ResearchRegistry
 			VISINTERFACE ("VISINT", 2, 0),
 			IRONGEARBOX ("IRONGEARBOX", 3, 2),
 			THAUMIUMGEARBOX ("THAUMGBOX", 3, 3),
-			CERTUSDUPE ("CERTUSDUPE", -6, -6);
+			CERTUSDUPE ("CERTUSDUPE", -6, -6),
+			ARCANEASSEMBLER ("ARCANEASSEMBLER", 4, 0),
+			KNOWLEDGEINSCRIBER ("KNOWLEDGEINSCRIBER", 4, -2);
 
 		private String internalName;
 
@@ -224,6 +226,40 @@ public class ResearchRegistry
 		ResearchTypes.ARCANETERMINAL.createResearchItem( actAspectList, COMPLEXITY_SMALL, actIcon, actPages );
 		ResearchTypes.ARCANETERMINAL.researchItem.setParents( ResearchTypes.BASIC.getKey() );
 		ResearchTypes.ARCANETERMINAL.researchItem.registerResearchItem();
+
+	}
+
+	private static void registerArcaneAssembler()
+	{
+		// Set the research aspects
+		AspectList assemblerAspectList = new AspectList();
+		assemblerAspectList.add( Aspect.CRAFT, 5 );
+		assemblerAspectList.add( Aspect.MECHANISM, 3 );
+		assemblerAspectList.add( Aspect.MIND, 3 );
+		assemblerAspectList.add( Aspect.EXCHANGE, 3 );
+		assemblerAspectList.add( Aspect.AURA, 3 );
+		assemblerAspectList.add( Aspect.GREED, 3 );
+
+		// Set the icon
+		ItemStack assemblerIcon = ThEApi.instance().blocks().ArcaneAssembler.getStack();
+
+		// Set the pages
+		ResearchPage[] assemblerPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ARCANEASSEMBLER.getPageName( 1 ) ),
+						new ResearchPage( RecipeRegistry.BLOCK_ARCANE_ASSEMBLER ), new ResearchPage( ResearchTypes.ARCANEASSEMBLER.getPageName( 2 ) ) };
+
+		// Create the assembler research
+		ResearchTypes.ARCANEASSEMBLER.createResearchItem( assemblerAspectList, COMPLEXITY_LARGE, assemblerIcon, assemblerPages );
+
+		// Set the parents
+		ResearchTypes.ARCANEASSEMBLER.researchItem.setParents( ResearchTypes.VISINTERFACE.getKey() );
+		ResearchTypes.ARCANEASSEMBLER.researchItem.setParentsHidden( ResearchTypes.ARCANETERMINAL.getKey() );
+		ResearchTypes.ARCANEASSEMBLER.researchItem.setConcealed();
+
+		// Trigger when MAC is scanned.
+		ResearchTypes.ARCANEASSEMBLER.researchItem.setItemTriggers( AEApi.instance().blocks().blockMolecularAssembler.stack( 1 ) );
+
+		// Register the research
+		ResearchTypes.ARCANEASSEMBLER.researchItem.registerResearchItem();
 
 	}
 
@@ -439,6 +475,35 @@ public class ResearchRegistry
 		ResearchTypes.IO.researchItem.registerResearchItem();
 	}
 
+	private static void registerKnowledgeInscriber()
+	{
+		// Set the research aspects
+		AspectList kiAspectList = new AspectList();
+		kiAspectList.add( Aspect.MIND, 5 );
+		kiAspectList.add( Aspect.MECHANISM, 3 );
+		kiAspectList.add( Aspect.CRAFT, 3 );
+		kiAspectList.add( Aspect.EXCHANGE, 1 );
+
+		// Set the icon
+		ItemStack kiIcon = ThEApi.instance().blocks().KnowledgeInscriber.getStack();
+
+		// Set the pages
+		ResearchPage[] kiPages = new ResearchPage[] { new ResearchPage( ResearchTypes.KNOWLEDGEINSCRIBER.getPageName( 1 ) ),
+						new ResearchPage( RecipeRegistry.ITEM_KNOWLEDGE_CORE ), new ResearchPage( RecipeRegistry.BLOCK_KNOWLEDGE_INSCRIBER ),
+						new ResearchPage( ResearchTypes.KNOWLEDGEINSCRIBER.getPageName( 2 ) ) };
+
+		// Create the KI research
+		ResearchTypes.KNOWLEDGEINSCRIBER.createResearchItem( kiAspectList, COMPLEXITY_SMALL, kiIcon, kiPages );
+		ResearchTypes.KNOWLEDGEINSCRIBER.researchItem.setSecondary();
+
+		// Set the parent
+		ResearchTypes.KNOWLEDGEINSCRIBER.researchItem.setParents( ResearchTypes.ARCANEASSEMBLER.getKey() );
+		ResearchTypes.KNOWLEDGEINSCRIBER.researchItem.setConcealed();
+
+		// Register the research
+		ResearchTypes.KNOWLEDGEINSCRIBER.researchItem.registerResearchItem();
+	}
+
 	private static void registerStorage()
 	{
 		// Set the research aspects
@@ -565,6 +630,12 @@ public class ResearchRegistry
 		{
 			ResearchRegistry.registerCertusDupe();
 		}
+
+		// Arcane Assembler
+		ResearchRegistry.registerArcaneAssembler();
+
+		// Knowledge Inscriber + Core
+		ResearchRegistry.registerKnowledgeInscriber();
 
 		// Place parents
 		ResearchRegistry.addPseudoParents();

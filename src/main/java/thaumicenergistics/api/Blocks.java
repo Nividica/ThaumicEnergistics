@@ -13,4 +13,6 @@ public abstract class Blocks
 	public IItemDescription EssentiaCellWorkbench;
 
 	public IItemDescription ArcaneAssembler;
+
+	public IItemDescription KnowledgeInscriber;
 }

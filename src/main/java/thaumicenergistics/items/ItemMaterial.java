@@ -9,6 +9,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.registries.ItemEnum;
+import thaumicenergistics.registries.ThEStrings;
 
 public class ItemMaterial
 	extends Item
@@ -22,9 +23,9 @@ public class ItemMaterial
 	 */
 	public static enum MaterialTypes
 	{
-			DIFFUSION_CORE (0, "diffusion.core"),
-			COALESCENCE_CORE (1, "coalescence.core"),
-			IRON_GEAR (2, "iron.gear");
+			DIFFUSION_CORE (0, "diffusion.core", ThEStrings.Item_DiffusionCore),
+			COALESCENCE_CORE (1, "coalescence.core", ThEStrings.Item_CoalescenceCore),
+			IRON_GEAR (2, "iron.gear", ThEStrings.Item_IronGear);
 
 		/**
 		 * Numeric ID of the material.
@@ -37,22 +38,22 @@ public class ItemMaterial
 		private String textureLocation;
 
 		/**
-		 * Unlocalized name for the material.
+		 * Localization string.
 		 */
-		private String unlocalizedName;
+		private ThEStrings unlocalizedName;
 
 		/**
 		 * Cache of the enum values
 		 */
 		public static final MaterialTypes[] VALUES = MaterialTypes.values();
 
-		private MaterialTypes( final int ID, final String name )
+		private MaterialTypes( final int ID, final String textureName, final ThEStrings unlocalizedName )
 		{
 			this.ID = ID;
 
-			this.textureLocation = ThaumicEnergistics.MOD_ID + ":material." + name;
+			this.textureLocation = ThaumicEnergistics.MOD_ID + ":material." + textureName;
 
-			this.unlocalizedName = ThaumicEnergistics.MOD_ID + ".item.material." + name;
+			this.unlocalizedName = unlocalizedName;
 		}
 
 		public int getID()
@@ -72,7 +73,7 @@ public class ItemMaterial
 
 		public String getUnlocalizedName()
 		{
-			return this.unlocalizedName;
+			return this.unlocalizedName.getUnlocalized();
 		}
 	}
 

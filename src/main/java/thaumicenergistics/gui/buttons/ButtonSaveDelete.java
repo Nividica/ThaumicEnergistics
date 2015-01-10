@@ -2,6 +2,7 @@ package thaumicenergistics.gui.buttons;
 
 import java.util.List;
 import thaumicenergistics.container.ContainerKnowledgeInscriber.CoreSaveState;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 
 public class ButtonSaveDelete
@@ -31,40 +32,38 @@ public class ButtonSaveDelete
 	 */
 	public void setSaveState( final CoreSaveState saveState )
 	{
-		// TODO: Localize Tooltips
 		switch ( saveState )
 		{
 			case Disabled_InvalidRecipe:
 				this.enabled = false;
 				this.icon = null;
-				this.cachedTooltip = "Invalid Recipe";
+				this.cachedTooltip = ThEStrings.TooltipButton_InscriberInvalid.getLocalized();
 				break;
 
 			case Disabled_CoreFull:
 				this.enabled = false;
 				this.icon = null;
-				this.cachedTooltip = "Knowledge Core Is Full";
+				this.cachedTooltip = ThEStrings.TooltipButton_InscriberFull.getLocalized();
 				break;
 
 			case Enabled_Delete:
 				this.enabled = true;
 				this.icon = AEStateIconsEnum.DELETE;
-				this.cachedTooltip = "Erase Pattern From Knowledge Core";
+				this.cachedTooltip = ThEStrings.TooltipButton_InscriberDelete.getLocalized();
 				break;
 
 			case Enabled_Save:
 				this.enabled = true;
 				this.icon = AEStateIconsEnum.SAVE;
-				this.cachedTooltip = "Save Pattern To Knowledge Core";
+				this.cachedTooltip = ThEStrings.TooltipButton_InscriberSave.getLocalized();
 				break;
 
 			case Disabled_MissingCore:
 				this.enabled = false;
 				this.icon = null;
-				this.cachedTooltip = "Requires Knowledge Core";
+				this.cachedTooltip = ThEStrings.TooltipButton_InscriberMissing.getLocalized();
 				break;
 
 		}
 	}
-
 }

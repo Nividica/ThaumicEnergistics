@@ -12,7 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
@@ -23,6 +22,7 @@ import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.inventory.HandlerItemEssentiaCellCreative;
 import thaumicenergistics.registries.ItemEnum;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.BlockTextureManager;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
@@ -38,7 +38,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.localization.GuiText;
 
 public class ItemEssentiaCell
-	extends ItemStorageBase
+	extends AbstractStorageBase
 	implements ICellHandler
 {
 	private static final double[] IDLE_DRAIN_AMOUNTS = { 0.5D, 1.0D, 1.5D, 2.0D, 0.0D };
@@ -110,12 +110,12 @@ public class ItemEssentiaCell
 		HandlerItemEssentiaCell cellHandler = (HandlerItemEssentiaCell)handler;
 
 		// Create the bytes tooltip
-		String bytesTip = String.format( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.essentia.cell.bytes" ), new Object[] {
-						cellHandler.getUsedBytes(), cellHandler.getTotalBytes() } );
+		String bytesTip = String.format( ThEStrings.Tooltip_CellBytes.getLocalized(),
+			new Object[] { cellHandler.getUsedBytes(), cellHandler.getTotalBytes() } );
 
 		// Create the types tooltip
-		String typesTip = String.format( StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.essentia.cell.types" ), new Object[] {
-						cellHandler.getUsedTypes(), cellHandler.getTotalTypes() } );
+		String typesTip = String.format( ThEStrings.Tooltip_CellTypes.getLocalized(),
+			new Object[] { cellHandler.getUsedTypes(), cellHandler.getTotalTypes() } );
 
 		// Add the tooltips
 		displayList.add( bytesTip );
@@ -140,7 +140,7 @@ public class ItemEssentiaCell
 			{
 				// Let the user know they can hold shift
 				displayList.add( EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString() +
-								StatCollector.translateToLocal( ThaumicEnergistics.MOD_ID + ".tooltip.essentia.cell.details" ) );
+								ThEStrings.Tooltip_CellDetails.getLocalized() );
 			}
 		}
 
@@ -160,7 +160,7 @@ public class ItemEssentiaCell
 			return null;
 		}
 
-		if( essentiaCell.getItemDamage() == ItemStorageBase.INDEX_CREATIVE )
+		if( essentiaCell.getItemDamage() == AbstractStorageBase.INDEX_CREATIVE )
 		{
 			return new HandlerItemEssentiaCellCreative( essentiaCell, saveProvider );
 		}
@@ -171,7 +171,7 @@ public class ItemEssentiaCell
 	@Override
 	public IIcon getIconFromDamage( final int dmg )
 	{
-		int index = MathHelper.clamp_int( dmg, 0, ItemStorageBase.SUFFIXES.length );
+		int index = MathHelper.clamp_int( dmg, 0, AbstractStorageBase.SIZES.length );
 
 		return this.icons[index];
 	}
@@ -180,10 +180,10 @@ public class ItemEssentiaCell
 	public EnumRarity getRarity( final ItemStack itemStack )
 	{
 		// Get the index based off of the meta data
-		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, ItemStorageBase.RARITIES.length );
+		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, AbstractStorageBase.RARITIES.length );
 
 		// Return the rarity
-		return ItemStorageBase.RARITIES[index];
+		return AbstractStorageBase.RARITIES[index];
 	}
 
 	@Override
@@ -223,7 +223,7 @@ public class ItemEssentiaCell
 	@Override
 	public void getSubItems( final Item item, final CreativeTabs creativeTab, final List listSubItems )
 	{
-		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
+		for( int i = 0; i < AbstractStorageBase.SIZES.length; i++ )
 		{
 			listSubItems.add( new ItemStack( item, 1, i ) );
 		}
@@ -250,7 +250,27 @@ public class ItemEssentiaCell
 	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
-		return ThaumicEnergistics.MOD_ID + ".item.essentia.cell." + ItemStorageBase.SUFFIXES[itemStack.getItemDamage()];
+		switch ( itemStack.getItemDamage() )
+		{
+			case 0:
+				return ThEStrings.Item_EssentiaCell_1k.getUnlocalized();
+
+			case 1:
+				return ThEStrings.Item_EssentiaCell_4k.getUnlocalized();
+
+			case 2:
+				return ThEStrings.Item_EssentiaCell_16k.getUnlocalized();
+
+			case 3:
+				return ThEStrings.Item_EssentiaCell_64k.getUnlocalized();
+
+			case 4:
+				return ThEStrings.Item_EssentiaCell_Creative.getUnlocalized();
+
+			default:
+				return "";
+
+		}
 	}
 
 	@Override
@@ -261,12 +281,12 @@ public class ItemEssentiaCell
 
 	public int maxStorage( final ItemStack essentiaCell )
 	{
-		return ItemStorageBase.SIZES[Math.max( 0, essentiaCell.getItemDamage() )];
+		return AbstractStorageBase.SIZES[Math.max( 0, essentiaCell.getItemDamage() )];
 	}
 
 	public int maxTypes( final ItemStack essentiaCell )
 	{
-		if( essentiaCell.getItemDamage() == ItemStorageBase.INDEX_CREATIVE )
+		if( essentiaCell.getItemDamage() == AbstractStorageBase.INDEX_CREATIVE )
 		{
 			return ItemEssentiaCell.CREATIVE_MAX_TYPES;
 		}
@@ -284,7 +304,7 @@ public class ItemEssentiaCell
 		}
 
 		// Ensure this is not a creative cell
-		if( essentiaCell.getItemDamage() == ItemStorageBase.INDEX_CREATIVE )
+		if( essentiaCell.getItemDamage() == AbstractStorageBase.INDEX_CREATIVE )
 		{
 			return essentiaCell;
 		}
@@ -346,11 +366,11 @@ public class ItemEssentiaCell
 	@Override
 	public void registerIcons( final IIconRegister iconRegister )
 	{
-		this.icons = new IIcon[ItemStorageBase.SUFFIXES.length];
+		this.icons = new IIcon[AbstractStorageBase.SUFFIXES.length];
 
-		for( int i = 0; i < ItemStorageBase.SUFFIXES.length; i++ )
+		for( int i = 0; i < AbstractStorageBase.SUFFIXES.length; i++ )
 		{
-			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":essentia.cell." + ItemStorageBase.SUFFIXES[i] );
+			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":essentia.cell." + AbstractStorageBase.SUFFIXES[i] );
 		}
 	}
 

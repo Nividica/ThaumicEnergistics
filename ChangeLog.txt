@@ -1,7 +1,15 @@
-﻿1/9/2015 0.8.8.0b-rv2
+﻿1/10/2015 0.8.8.0b-rv2
+  Added recipes and lore for inscriber and assembler.
+  Disabled craftable items in A.C.T.
+  Added localization registry.
+  Moved all ThE displayable strings to localization registry.
+
+1/9/2015 0.8.8.0b-rv2
   Added Assembler model.
   Models now render in inventory.
   Added crafting effects.
+  Terminal search bars no longer open with focus.
+  Added Knowledge Inscriber icons.
   
 1/8/2015 0.8.8.0b-rv2
   Fixes #106: Arcane items are now auto-craftable!

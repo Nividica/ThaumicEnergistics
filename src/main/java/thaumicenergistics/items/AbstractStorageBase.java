@@ -3,7 +3,7 @@ package thaumicenergistics.items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 
-public abstract class ItemStorageBase
+public abstract class AbstractStorageBase
 	extends Item
 {
 
