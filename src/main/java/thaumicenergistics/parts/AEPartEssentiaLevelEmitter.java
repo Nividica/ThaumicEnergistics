@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
@@ -292,6 +293,12 @@ public class AEPartEssentiaLevelEmitter
 	public void getBoxes( final IPartCollisionHelper helper )
 	{
 		helper.addBox( 7.0D, 7.0D, 11.0D, 9.0D, 9.0D, 16.0D );
+	}
+
+	@Override
+	public IIcon getBreakingTexture()
+	{
+		return BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[1];
 	}
 
 	/**
@@ -593,12 +600,13 @@ public class AEPartEssentiaLevelEmitter
 	{
 		// Set the base texture
 		helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[0] );
-		helper.setBounds( 9.0F, 4.0F, 14.0F, 11.0F, 11.0F, 16.0F );
+		helper.setBounds( 7.0F, 1.0F, 14.0F, 9.0F, 7.0F, 16.0F );
+		//helper.setBounds( 7.0F, 7.0F, 11.0F, 9.0F, 9.0F, 14.0F );
 		helper.renderInventoryBox( renderer );
 
 		// Set the active texture
 		helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[1] );
-		helper.setBounds( 9.0F, 11.0F, 14.0F, 11.0F, 13.0F, 16.0F );
+		helper.setBounds( 7.0F, 7.0F, 14.0F, 9.0F, 9.0F, 16.0F );
 		helper.renderInventoryBox( renderer );
 
 	}

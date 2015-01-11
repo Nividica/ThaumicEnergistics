@@ -8,6 +8,7 @@ import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectContainer;
+import thaumcraft.common.tiles.TileAlchemyFurnaceAdvancedNozzle;
 import thaumcraft.common.tiles.TileAlembic;
 import thaumcraft.common.tiles.TileCentrifuge;
 import thaumcraft.common.tiles.TileEssentiaReservoir;
@@ -198,7 +199,7 @@ public final class EssentiaTileContainerHelper
 		AspectStack aspectStack = new AspectStack();
 
 		// Set the aspect
-		aspectStack.aspect = aspectList.getAspects()[0];
+		aspectStack.aspect = aspectList.getAspectsSortedAmount()[0];
 
 		if( aspectStack.aspect == null )
 		{
@@ -400,6 +401,9 @@ public final class EssentiaTileContainerHelper
 
 		// Essentia buffer
 		this.perms.addAspectContainerTileToExtractPermissions( TileTubeBuffer.class );
+
+		// Advanced alchemical furnace
+		this.perms.addAspectContainerTileToExtractPermissions( TileAlchemyFurnaceAdvancedNozzle.class );
 	}
 
 }

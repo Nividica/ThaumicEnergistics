@@ -364,9 +364,6 @@ public abstract class AEPartEssentiaIO
 			return false;
 		}
 
-		// Check the security
-		//if( this.doesPlayerHaveSecurityClearance( , permission ))
-
 		// Simulate a drain from the container
 		FluidStack drained = EssentiaTileContainerHelper.instance.extractFromContainer( this.facingContainer, amountToDrainFromContainer,
 			aspectToDrain, Actionable.SIMULATE );

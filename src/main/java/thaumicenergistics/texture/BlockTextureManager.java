@@ -6,24 +6,22 @@ import thaumicenergistics.ThaumicEnergistics;
 
 public enum BlockTextureManager
 {
-		BUS_SIDE (TextureTypes.Part, new String[] { "bus.side" }),
-
-		BUS_BORDER (TextureTypes.Part, new String[] { "bus.border" }),
-
-		BUS_COLOR (TextureTypes.Part, new String[] { "bus.color.border", "bus.color.light" }),
+		BUS_COLOR (TextureTypes.Part, new String[] { "bus.color.border", "bus.color.light", "bus.color.side" }),
 
 		ESSENTIA_IMPORT_BUS (TextureTypes.Part, new String[] { "essentia.import.bus.face", "essentia.import.bus.overlay",
-						"essentia.import.bus.chamber" }),
+						"essentia.import.bus.chamber", "essentia.import.bus.side" }),
 
 		ESSENTIA_LEVEL_EMITTER (TextureTypes.Part, new String[] { "essentia.level.emitter.base", "essentia.level.emitter.active",
 						"essentia.level.emitter.inactive" }),
 
-		ESSENTIA_STORAGE_BUS (TextureTypes.Part, new String[] { "essentia.storage.bus.face", "essentia.storage.bus.overlay" }),
+		ESSENTIA_STORAGE_BUS (TextureTypes.Part, new String[] { "essentia.storage.bus.face", "essentia.storage.bus.overlay",
+						"essentia.storage.bus.side" }),
 
-		ESSENTIA_EXPORT_BUS (TextureTypes.Part, new String[] { "essentia.export.bus.face", "essentia.export.bus.overlay" }),
+		ESSENTIA_EXPORT_BUS (TextureTypes.Part, new String[] { "essentia.export.bus.face", "essentia.export.bus.overlay",
+						"essentia.export.bus.chamber", "essentia.export.bus.side" }),
 
 		ESSENTIA_TERMINAL (TextureTypes.Part, new String[] { "essentia.terminal.overlay.dark", "essentia.terminal.overlay.medium",
-						"essentia.terminal.overlay.light" }),
+						"essentia.terminal.overlay.light", "essentia.terminal.side", "essentia.termina.border" }),
 
 		ESSENTIA_PROVIDER (TextureTypes.Block, new String[] { "essentia.provider", "essentia.provider.overlay" }),
 
@@ -32,18 +30,18 @@ public enum BlockTextureManager
 		ARCANE_CRAFTING_TERMINAL (TextureTypes.Part, new String[] { "arcane.crafting.overlay1", "arcane.crafting.overlay2",
 						"arcane.crafting.overlay3", "arcane.crafting.side", "arcane.crafting.overlay4" }),
 
-		VIS_RELAY_INTERFACE (TextureTypes.Part, new String[] { "vis.interface", "vis.interface.runes" }),
+		VIS_RELAY_INTERFACE (TextureTypes.Part, new String[] { "vis.interface", "vis.interface.runes", "vis.interface.side" }),
 
-		GEAR_BOX (TextureTypes.Block, new String[] { "gear.box", "golem.gear.box" }),
+		GEAR_BOX (TextureTypes.Block, new String[] { "gear.box.fallback", "golem.gear.box.fallback" }),
 
 		ESSENTIA_CELL_WORKBENCH (TextureTypes.Block, new String[] { "essentia.cell.workbench.top", "essentia.cell.workbench.bottom",
 						"essentia.cell.workbench.side" }),
 
 		GASEOUS_ESSENTIA (TextureTypes.Block, new String[] { "essentia.gas" }),
 
-		ARCANE_ASSEMBLER (TextureTypes.Block, new String[] { "arcane.assembler" }),
+		ARCANE_ASSEMBLER (TextureTypes.Block, new String[] { "arcane.assembler.fallback" }),
 
-		KNOWLEDGE_INSCRIBER (TextureTypes.Block, new String[] { "knowledge.inscriber.side", "knowledge.inscriber.top" });
+		KNOWLEDGE_INSCRIBER (TextureTypes.Block, new String[] { "knowledge.inscriber.side", "knowledge.inscriber.top", "knowledge.inscriber.bottom" });
 
 	private enum TextureTypes
 	{

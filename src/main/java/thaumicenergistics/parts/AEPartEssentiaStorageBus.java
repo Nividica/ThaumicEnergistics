@@ -239,6 +239,12 @@ public class AEPartEssentiaStorageBus
 		helper.addBox( 5.0D, 5.0D, 13.0D, 11.0D, 11.0D, 14.0D );
 	}
 
+	@Override
+	public IIcon getBreakingTexture()
+	{
+		return BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[0];
+	}
+
 	/**
 	 * Gets the 'cell' handler for the storage bus.
 	 */
@@ -472,7 +478,7 @@ public class AEPartEssentiaStorageBus
 	{
 		Tessellator ts = Tessellator.instance;
 
-		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon side = BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[2];
 		helper.setTexture( side, side, side, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[0], side, side );
 
 		// Face
@@ -503,7 +509,7 @@ public class AEPartEssentiaStorageBus
 	{
 		Tessellator tessellator = Tessellator.instance;
 
-		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon side = BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[2];
 		helper.setTexture( side, side, side, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTexture(), side, side );
 
 		// Front (facing jar)

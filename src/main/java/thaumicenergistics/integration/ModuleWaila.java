@@ -5,8 +5,11 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import thaumicenergistics.blocks.AbstractBlockProviderBase;
 import thaumicenergistics.blocks.BlockArcaneAssembler;
 import cpw.mods.fml.common.event.FMLInterModComms;
@@ -42,6 +45,14 @@ public class ModuleWaila
 		// Register the providers
 		registrar.registerBodyProvider( ModuleWaila.instance, AbstractBlockProviderBase.class );
 		registrar.registerBodyProvider( ModuleWaila.instance, BlockArcaneAssembler.class );
+	}
+
+	@Override
+	public NBTTagCompound getNBTData( final EntityPlayerMP player, final TileEntity tileEntity, final NBTTagCompound data, final World world,
+										final int x, final int y, final int z )
+	{
+		// Ignored
+		return data;
 	}
 
 	/**

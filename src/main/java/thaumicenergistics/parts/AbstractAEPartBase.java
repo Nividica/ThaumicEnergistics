@@ -253,10 +253,7 @@ public abstract class AbstractAEPartBase
 	public abstract void getBoxes( IPartCollisionHelper helper );
 
 	@Override
-	public IIcon getBreakingTexture()
-	{
-		return BlockTextureManager.BUS_SIDE.getTexture();
-	}
+	public abstract IIcon getBreakingTexture();
 
 	@Override
 	public AECableType getCableConnectionType( final ForgeDirection dir )
@@ -508,7 +505,7 @@ public abstract class AbstractAEPartBase
 
 		IIcon busColorTexture = BlockTextureManager.BUS_COLOR.getTextures()[0];
 
-		IIcon sideTexture = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon sideTexture = BlockTextureManager.BUS_COLOR.getTextures()[2];
 
 		helper.setTexture( busColorTexture, busColorTexture, sideTexture, sideTexture, busColorTexture, busColorTexture );
 
@@ -540,7 +537,7 @@ public abstract class AbstractAEPartBase
 	{
 		IIcon busColorTexture = BlockTextureManager.BUS_COLOR.getTextures()[0];
 
-		IIcon sideTexture = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon sideTexture = BlockTextureManager.BUS_COLOR.getTextures()[2];
 
 		helper.setTexture( busColorTexture, busColorTexture, sideTexture, sideTexture, busColorTexture, busColorTexture );
 

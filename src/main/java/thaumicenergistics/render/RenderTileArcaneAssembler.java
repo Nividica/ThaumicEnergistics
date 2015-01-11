@@ -13,7 +13,10 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.render.model.ModelArcaneAssembler;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class RenderTileArcaneAssembler
 	extends TileEntitySpecialRenderer
 {

@@ -23,9 +23,9 @@ public class BlockKnowledgeInscriber
 	extends AbstractBlockAEWrenchable
 {
 	/**
-	 * Cached value of the UP ordinal.
+	 * Cached value of the UP and DOWN ordinal.
 	 */
-	private static final int SIDE_TOP = ForgeDirection.UP.ordinal();
+	private static final int SIDE_TOP = ForgeDirection.UP.ordinal(), SIDE_BOTTOM = ForgeDirection.DOWN.ordinal();
 
 	public BlockKnowledgeInscriber()
 	{
@@ -80,12 +80,18 @@ public class BlockKnowledgeInscriber
 	@Override
 	public IIcon getIcon( final int side, final int meta )
 	{
+		// Top
 		if( side == BlockKnowledgeInscriber.SIDE_TOP )
 		{
 			return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTextures()[1];
 		}
+		// Bottom
+		else if( side == BlockKnowledgeInscriber.SIDE_BOTTOM )
+		{
+			return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTextures()[2];
+		}
 
-		// Sides + bottom
+		// Sides
 		return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTextures()[0];
 	}
 

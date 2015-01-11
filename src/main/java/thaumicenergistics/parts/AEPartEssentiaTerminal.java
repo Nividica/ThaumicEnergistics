@@ -106,6 +106,12 @@ public class AEPartEssentiaTerminal
 	}
 
 	@Override
+	public IIcon getBreakingTexture()
+	{
+		return BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[3];
+	}
+
+	@Override
 	public Object getClientGuiElement( final EntityPlayer player )
 	{
 		return GuiEssentiaCellTerminal.NewEssentiaTerminalGui( this, player );
@@ -267,13 +273,13 @@ public class AEPartEssentiaTerminal
 	{
 		Tessellator ts = Tessellator.instance;
 
-		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon side = BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[3];
 
 		helper.setTexture( side );
 		helper.setBounds( 4.0F, 4.0F, 13.0F, 12.0F, 12.0F, 14.0F );
 		helper.renderInventoryBox( renderer );
 
-		helper.setTexture( side, side, side, BlockTextureManager.BUS_BORDER.getTexture(), side, side );
+		helper.setTexture( side, side, side, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], side, side );
 		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
 		helper.renderInventoryBox( renderer );
 
@@ -281,7 +287,7 @@ public class AEPartEssentiaTerminal
 
 		helper.setInvColor( 0xFFFFFF );
 
-		helper.renderInventoryFace( BlockTextureManager.BUS_BORDER.getTexture(), ForgeDirection.SOUTH, renderer );
+		helper.renderInventoryFace( BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], ForgeDirection.SOUTH, renderer );
 
 		helper.setBounds( 3.0F, 3.0F, 15.0F, 13.0F, 13.0F, 16.0F );
 
@@ -304,13 +310,13 @@ public class AEPartEssentiaTerminal
 	{
 		Tessellator ts = Tessellator.instance;
 
-		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon side = BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[3];
 
 		helper.setTexture( side );
 		helper.setBounds( 4.0F, 4.0F, 13.0F, 12.0F, 12.0F, 14.0F );
 		helper.renderBlock( x, y, z, renderer );
 
-		helper.setTexture( side, side, side, BlockTextureManager.BUS_BORDER.getTexture(), side, side );
+		helper.setTexture( side, side, side, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], side, side );
 		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
 
@@ -321,7 +327,7 @@ public class AEPartEssentiaTerminal
 
 		ts.setColorOpaque_I( 0xFFFFFF );
 
-		helper.renderFace( x, y, z, BlockTextureManager.BUS_BORDER.getTexture(), ForgeDirection.SOUTH, renderer );
+		helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], ForgeDirection.SOUTH, renderer );
 
 		helper.setBounds( 3.0F, 3.0F, 15.0F, 13.0F, 13.0F, 16.0F );
 		ts.setColorOpaque_I( this.host.getColor().blackVariant );

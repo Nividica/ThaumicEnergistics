@@ -69,13 +69,19 @@ public class AEPartEssentiaExportBus
 		helper.addBox( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
 	}
 
+	@Override
+	public IIcon getBreakingTexture()
+	{
+		return BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[2];
+	}
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		Tessellator ts = Tessellator.instance;
 
-		IIcon busSideTexture = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon busSideTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[3];
 
 		// Set the texture to the side texture
 		helper.setTexture( busSideTexture );
@@ -85,7 +91,7 @@ public class AEPartEssentiaExportBus
 		helper.renderInventoryBox( renderer );
 
 		// Set the texture to the chamber
-		helper.setTexture( BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[2] );
+		helper.setTexture( BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[2] );
 
 		// Large chamber
 		helper.setBounds( 4.0F, 4.0F, 12.5F, 12.0F, 12.0F, 13.5F );
@@ -130,7 +136,7 @@ public class AEPartEssentiaExportBus
 	{
 		Tessellator ts = Tessellator.instance;
 
-		IIcon busSideTexture = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon busSideTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[3];
 
 		// Set the texture to the side texture
 		helper.setTexture( busSideTexture );
@@ -143,7 +149,7 @@ public class AEPartEssentiaExportBus
 		helper.renderForPass( 1 );
 
 		// Set the texture to the chamber
-		helper.setTexture( BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[2] );
+		helper.setTexture( BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[2] );
 
 		// Large chamber
 		helper.setBounds( 4.0F, 4.0F, 12.5F, 12.0F, 12.0F, 13.5F );

@@ -216,6 +216,12 @@ public class AEPartVisInterface
 
 	}
 
+	@Override
+	public IIcon getBreakingTexture()
+	{
+		return BlockTextureManager.VIS_RELAY_INTERFACE.getTextures()[0];
+	}
+
 	/**
 	 * Returns the side of the cable the interface is attached to.
 	 */
@@ -410,7 +416,7 @@ public class AEPartVisInterface
 	@SideOnly(Side.CLIENT)
 	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
-		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon side = BlockTextureManager.VIS_RELAY_INTERFACE.getTextures()[2];
 		helper.setTexture( side, side, side, BlockTextureManager.VIS_RELAY_INTERFACE.getTexture(), side, side );
 
 		// Face
@@ -436,7 +442,7 @@ public class AEPartVisInterface
 	{
 		Tessellator tessellator = Tessellator.instance;
 
-		IIcon side = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon side = BlockTextureManager.VIS_RELAY_INTERFACE.getTextures()[2];
 		helper.setTexture( side, side, side, BlockTextureManager.VIS_RELAY_INTERFACE.getTexture(), side, side );
 
 		// Face

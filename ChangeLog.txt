@@ -3,6 +3,10 @@
   Disabled craftable items in A.C.T.
   Added localization registry.
   Moved all ThE displayable strings to localization registry.
+  Fixes #111: All parts now have fully customizable textures.
+  Corrected part breaking textures.
+  Fixed level emitter texture offset.
+  Essentia Import bus now works with the Advanced Alchemical Furnace
 
 1/9/2015 0.8.8.0b-rv2
   Added Assembler model.

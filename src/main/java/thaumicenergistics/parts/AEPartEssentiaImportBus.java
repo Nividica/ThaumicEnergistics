@@ -94,6 +94,12 @@ public class AEPartEssentiaImportBus
 		helper.addBox( 6.0D, 6.0D, 11.0D, 10.0D, 10.0D, 12.0D );
 	}
 
+	@Override
+	public IIcon getBreakingTexture()
+	{
+		return BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[2];
+	}
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
@@ -102,7 +108,7 @@ public class AEPartEssentiaImportBus
 		Tessellator ts = Tessellator.instance;
 
 		// Get the side texture
-		IIcon busSideTexture = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon busSideTexture = BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[3];
 
 		helper.setTexture( busSideTexture, busSideTexture, busSideTexture, BlockTextureManager.ESSENTIA_IMPORT_BUS.getTexture(), busSideTexture,
 			busSideTexture );
@@ -146,7 +152,7 @@ public class AEPartEssentiaImportBus
 	{
 		Tessellator ts = Tessellator.instance;
 
-		IIcon busSideTexture = BlockTextureManager.BUS_SIDE.getTexture();
+		IIcon busSideTexture = BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[3];
 		helper.setTexture( busSideTexture, busSideTexture, busSideTexture, BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[0], busSideTexture,
 			busSideTexture );
 

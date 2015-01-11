@@ -304,6 +304,12 @@ public class AEPartArcaneCraftingTerminal
 		helper.addBox( 5.0D, 5.0D, 13.0D, 11.0D, 11.0D, 14.0D );
 	}
 
+	@Override
+	public IIcon getBreakingTexture()
+	{
+		return BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0];
+	}
+
 	/**
 	 * Gets the GUI associated with this part
 	 */

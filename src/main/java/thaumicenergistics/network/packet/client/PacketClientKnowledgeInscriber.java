@@ -7,6 +7,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.container.ContainerKnowledgeInscriber.CoreSaveState;
 import thaumicenergistics.gui.GuiKnowledgeInscriber;
 import thaumicenergistics.network.packet.AbstractClientPacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketClientKnowledgeInscriber
 	extends AbstractClientPacket
@@ -24,6 +26,7 @@ public class PacketClientKnowledgeInscriber
 		this.saveState = PacketClientKnowledgeInscriber.SAVE_STATES[stream.readInt()];
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	protected void wrappedExecute()
 	{
