@@ -42,8 +42,25 @@ public class TileAsItemRenderer
 		// Push the matrix
 		GL11.glPushMatrix();
 
-		// Center the item
-		GL11.glTranslatef( -0.5f, -0.5f, -0.5f );
+		// Adjust position based on render type
+		switch ( type )
+		{
+			case ENTITY:
+				GL11.glTranslatef( -0.5F, -0.5F, -0.5F );
+				break;
+
+			case EQUIPPED_FIRST_PERSON:
+				GL11.glTranslatef( 0.5F, 0.2F, 0.0F );
+				break;
+
+			case INVENTORY:
+				GL11.glTranslatef( -0.5F, -0.5F, -0.5F );
+				break;
+
+			case FIRST_PERSON_MAP:
+			case EQUIPPED:
+				break;
+		}
 
 		// Render the entity
 		this.tileRenderer.renderTileEntityAt( this.fakeEntity, 0, 0, 0, 0 );

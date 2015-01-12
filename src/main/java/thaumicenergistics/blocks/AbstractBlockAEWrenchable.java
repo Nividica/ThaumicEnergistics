@@ -17,6 +17,23 @@ public abstract class AbstractBlockAEWrenchable
 	}
 
 	/**
+	 * Called when the block is being removed via AE wrench.
+	 */
+	protected void onDismantled( final World world, final int x, final int y, final int z )
+	{
+	}
+
+	/**
+	 * Called when the block has been hit with an AE wrench.
+	 * 
+	 * @return True if handled, false otherwise.
+	 */
+	protected boolean onWrenched( final World world, final int x, final int y, final int z, final int side )
+	{
+		return false;
+	}
+
+	/**
 	 * Returning false will cancel onBlockActivated.
 	 * 
 	 * @return
@@ -64,7 +81,7 @@ public abstract class AbstractBlockAEWrenchable
 				if( player.isSneaking() )
 				{
 					// Call on wrench
-					this.onWrenched( world, x, y, z );
+					this.onDismantled( world, x, y, z );
 
 					// Call break
 					this.breakBlock( world, x, y, z, this, world.getBlockMetadata( x, y, z ) );
@@ -78,20 +95,13 @@ public abstract class AbstractBlockAEWrenchable
 					return true;
 				}
 
-				// Ignore
-				return false;
+				// Let the subclass handle the event
+				return this.onWrenched( world, x, y, z, side );
 			}
 		}
 
 		return this.onBlockActivated( world, x, y, z, player );
 
-	}
-
-	/**
-	 * Called when the block is being removed via AE wrench.
-	 */
-	public void onWrenched( final World world, final int x, final int y, final int z )
-	{
 	}
 
 }

@@ -692,8 +692,15 @@ public class ContainerPartArcaneCraftingTerminal
 		AspectList wandAspectList = null;
 		ItemWandCasting wandItem = null;
 
-		// Get a copy the aspects of the recipe.
-		this.requiredAspects = forRecipe.getAspects().copy();
+		// Get the cost
+		this.requiredAspects = ArcaneRecipeHelper.instance.getRecipeAspectCost( this.arcaneCraftingTerminalPart, 0,
+			ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, forRecipe );
+
+		// Ensure there is a cost
+		if( this.requiredAspects == null )
+		{
+			return null;
+		}
 
 		// Cache the recipes aspects
 		Aspect[] recipeAspects = this.requiredAspects.getAspects();
@@ -744,7 +751,8 @@ public class ContainerPartArcaneCraftingTerminal
 		if( hasAll )
 		{
 			// Get the result of the recipe.
-			return forRecipe.getCraftingResult( null );
+			return ArcaneRecipeHelper.instance.getRecipeOutput( this.arcaneCraftingTerminalPart, 0,
+				ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, forRecipe );
 		}
 
 		return null;

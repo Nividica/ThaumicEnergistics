@@ -3,8 +3,10 @@ package thaumicenergistics.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -22,11 +24,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockKnowledgeInscriber
 	extends AbstractBlockAEWrenchable
 {
-	/**
-	 * Cached value of the UP and DOWN ordinal.
-	 */
-	private static final int SIDE_TOP = ForgeDirection.UP.ordinal(), SIDE_BOTTOM = ForgeDirection.DOWN.ordinal();
-
 	public BlockKnowledgeInscriber()
 	{
 		// Call super with material machine (iron) 
@@ -40,6 +37,24 @@ public class BlockKnowledgeInscriber
 
 		// Place in the ThE creative tab
 		this.setCreativeTab( ThaumicEnergistics.ThETab );
+	}
+
+	@Override
+	protected boolean onWrenched( final World world, final int x, final int y, final int z, final int side )
+	{
+		// Get and increment the meta data
+		int metaData = world.getBlockMetadata( x, y, z ) + 1;
+
+		// Bounds check
+		if( metaData >= ForgeDirection.VALID_DIRECTIONS.length )
+		{
+			metaData = 0;
+		}
+
+		// Set the meta data
+		world.setBlockMetadataWithNotify( x, y, z, metaData, 3 );
+
+		return true;
 	}
 
 	/**
@@ -80,14 +95,14 @@ public class BlockKnowledgeInscriber
 	@Override
 	public IIcon getIcon( final int side, final int meta )
 	{
-		// Top
-		if( side == BlockKnowledgeInscriber.SIDE_TOP )
+		if( side == ForgeDirection.OPPOSITES[meta] )
 		{
+			// Face(top) texture
 			return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTextures()[1];
 		}
-		// Bottom
-		else if( side == BlockKnowledgeInscriber.SIDE_BOTTOM )
+		else if( side == meta )
 		{
+			// Bottom texture
 			return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTextures()[2];
 		}
 
@@ -131,6 +146,13 @@ public class BlockKnowledgeInscriber
 		ThEGuiHandler.launchGui( ThEGuiHandler.KNOWLEDGE_INSCRIBER, player, world, x, y, z );
 
 		return true;
+	}
+
+	@Override
+	public void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack )
+	{
+		// Set the metadata to up
+		world.setBlockMetadataWithNotify( x, y, z, 0, 3 );
 	}
 
 	/**

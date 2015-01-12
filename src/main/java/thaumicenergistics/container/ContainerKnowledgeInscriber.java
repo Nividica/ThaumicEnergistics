@@ -8,6 +8,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
@@ -171,34 +172,46 @@ public class ContainerKnowledgeInscriber
 			saveState = CoreSaveState.Disabled_MissingCore;
 		}
 		// Is there a valid recipe?
-		else if( ( this.activeRecipe == null ) || ( this.activeRecipe.getRecipeOutput() == null ) )
+		else if( this.activeRecipe == null )
 		{
 			saveState = CoreSaveState.Disabled_InvalidRecipe;
 		}
 		else
 		{
-			// Does the core already have this recipe, or one that produces the same result, stored?
-			boolean isNew = !this.kCoreHandler.hasPatternFor( this.activeRecipe.getRecipeOutput() );
+			// Get the recipe output
+			ItemStack recipeOutput = ArcaneRecipeHelper.instance.getRecipeOutput( this.inscriber.getInventory(),
+				TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
 
-			// Would the recipe be a new pattern?
-			if( isNew )
+			// Ensure there is an output
+			if( recipeOutput == null )
 			{
-				// Is there room for the recipe?
-				if( this.kCoreHandler.hasRoomToStorePattern() )
-				{
-					// Enable saving
-					saveState = CoreSaveState.Enabled_Save;
-				}
-				else
-				{
-					// Core is full
-					saveState = CoreSaveState.Disabled_CoreFull;
-				}
+				saveState = CoreSaveState.Disabled_InvalidRecipe;
 			}
 			else
 			{
-				// Enable deleting
-				saveState = CoreSaveState.Enabled_Delete;
+				// Does the core already have this recipe, or one that produces the same result, stored?
+				boolean isNew = !this.kCoreHandler.hasPatternFor( recipeOutput );
+
+				// Would the recipe be a new pattern?
+				if( isNew )
+				{
+					// Is there room for the recipe?
+					if( this.kCoreHandler.hasRoomToStorePattern() )
+					{
+						// Enable saving
+						saveState = CoreSaveState.Enabled_Save;
+					}
+					else
+					{
+						// Core is full
+						saveState = CoreSaveState.Disabled_CoreFull;
+					}
+				}
+				else
+				{
+					// Enable deleting
+					saveState = CoreSaveState.Enabled_Delete;
+				}
 			}
 		}
 
@@ -385,9 +398,12 @@ public class ContainerKnowledgeInscriber
 				inputs[index] = this.craftingSlots[index].getStack();
 			}
 
+			// Get the aspect cost
+			AspectList recipeAspects = ArcaneRecipeHelper.instance.getRecipeAspectCost( this.inscriber.getInventory(),
+				TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
+
 			// Create the pattern
-			ArcaneCraftingPattern pattern = new ArcaneCraftingPattern( this.kCoreSlot.getStack(), this.activeRecipe.getAspects(),
-							this.resultSlot.getStack(), inputs );
+			ArcaneCraftingPattern pattern = new ArcaneCraftingPattern( this.kCoreSlot.getStack(), recipeAspects, this.resultSlot.getStack(), inputs );
 
 			// Add the pattern
 			this.kCoreHandler.addPattern( pattern );
@@ -435,15 +451,15 @@ public class ContainerKnowledgeInscriber
 		// Set the active recipe
 		this.activeRecipe = ArcaneRecipeHelper.instance.findMatchingArcaneResult( inv, TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.player );
 
+		ItemStack craftResult = null;
+
 		// Set the result slot
-		if( ( this.activeRecipe != null ) && ( this.activeRecipe.getRecipeOutput() != null ) )
+		if( this.activeRecipe != null )
 		{
-			this.resultSlot.putStack( this.activeRecipe.getRecipeOutput() );
+			craftResult = ArcaneRecipeHelper.instance.getRecipeOutput( inv, TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
 		}
-		else
-		{
-			this.resultSlot.putStack( null );
-		}
+
+		this.resultSlot.putStack( craftResult );
 
 		// Update the client
 		if( EffectiveSide.isServerSide() )

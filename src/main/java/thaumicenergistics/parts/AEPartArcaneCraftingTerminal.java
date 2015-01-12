@@ -484,8 +484,8 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode grid )
 	{
-		// We would like a tick ever 2 to 50 MC ticks
-		return new TickingRequest( 2, 50, false, false );
+		// We would like a tick ever 2 to 20 MC ticks
+		return new TickingRequest( 2, 20, false, false );
 	}
 
 	/**
@@ -853,7 +853,7 @@ public class AEPartArcaneCraftingTerminal
 		// Do we have a wand?
 		if( stack == null )
 		{
-			// Invalid wand
+			// No wand
 			return TickRateModulation.IDLE;
 		}
 

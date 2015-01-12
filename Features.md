@@ -16,3 +16,4 @@
     
 ###Crafting
     Thaumcraft crafting terminal with access to items on the network.
+    Arcane Assembler, for automation of crafting arcane items.

@@ -1,4 +1,10 @@
-﻿1/10/2015 0.8.8.0b-rv2
+﻿1/11/2015 0.8.8.1b-rv2
+  Corrected model placement when player is holding it.
+  Fixes #115: Arcane recipes are now fully validated.
+  Decreased the time period between vis checks in the A.C.T.(wands will start charging sooner)
+  Fixes #113: The knowledge inscriber can now be rotated with an AE wrench.
+
+1/10/2015 0.8.8.0b-rv2
   Added recipes and lore for inscriber and assembler.
   Disabled craftable items in A.C.T.
   Added localization registry.
@@ -6,7 +12,7 @@
   Fixes #111: All parts now have fully customizable textures.
   Corrected part breaking textures.
   Fixed level emitter texture offset.
-  Essentia Import bus now works with the Advanced Alchemical Furnace
+  Essentia Import bus now works with the Advanced Alchemical Furnace.
 
 1/9/2015 0.8.8.0b-rv2
   Added Assembler model.
