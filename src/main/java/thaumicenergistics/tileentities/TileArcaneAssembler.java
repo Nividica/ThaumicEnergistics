@@ -660,6 +660,17 @@ public class TileArcaneAssembler
 				}
 			}
 
+			// Add armor
+			for( int i = 0; i < 4; i++ )
+			{
+				ItemStack armor = this.internalInventory.slots[TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + i];
+
+				if( armor != null )
+				{
+					drops.add( armor );
+				}
+			}
+
 		}
 	}
 
