@@ -1,4 +1,16 @@
-﻿1/11/2015 0.8.8.1b-rv2
+﻿1/13/2015 0.8.8.4b-rv2
+  Added forge version information to dependencies.
+  Clarified permission API.
+  Fixes #117: Added config option for gearbox models.
+  Fixes #120: Assembler recipe now properly accepts a crafted scepter.
+  Fixes #119: Assembler saves core and upgrades when wrenched.
+  Fixes #118: Assembler now drops upgrades when broken.
+  Fixes #114: Assembler now has slots for vis discount armor and inherits the scepter's vis discount.
+  Bugfix: Assembler power calculation fixed.
+  Bugfix: Fixed Assembler's GUI shift+click for upgrade cards.
+  Reduced network overhead in assembler.
+
+1/11/2015 0.8.8.1b-rv2
   Corrected model placement when player is holding it.
   Fixes #115: Arcane recipes are now fully validated.
   Decreased the time period between vis checks in the A.C.T.(wands will start charging sooner)

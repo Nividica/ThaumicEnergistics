@@ -5,11 +5,14 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import thaumcraft.api.IVisDiscountGear;
 import thaumicenergistics.blocks.BlockArcaneAssembler;
 import thaumicenergistics.container.slot.SlotRestrictive;
+import thaumicenergistics.container.slot.SlotVisDiscountArmor;
 import thaumicenergistics.items.ItemKnowledgeCore;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
 import thaumicenergistics.util.EffectiveSide;
+import appeng.api.implementations.items.IUpgradeModule;
 import appeng.container.slot.SlotInaccessible;
 
 public class ContainerArcaneAssembler
@@ -52,11 +55,24 @@ public class ContainerArcaneAssembler
 	private static final int TARGET_SLOT_X = 14, TARGET_SLOT_Y = 87;
 
 	/**
+	 * Discount armor slots.
+	 */
+	private static final int DISCOUNT_ARMOR_SLOT_X = 210, DISCOUNT_ARMOR_SLOT_Y = 26, DISCOUNT_ARMOR_COUNT = 4;
+
+	/**
 	 * Reference to the arcane assembler
 	 */
 	public TileArcaneAssembler assembler;
 
+	/**
+	 * Knowledge Core slot.
+	 */
 	private SlotRestrictive kCoreSlot;
+
+	/**
+	 * Discount armor slots.
+	 */
+	private SlotVisDiscountArmor[] discountSlots = new SlotVisDiscountArmor[4];
 
 	public ContainerArcaneAssembler( final EntityPlayer player, final World world, final int X, final int Y, final int Z )
 	{
@@ -99,6 +115,42 @@ public class ContainerArcaneAssembler
 		this.addSlotToContainer( new SlotInaccessible( asmInv, TileArcaneAssembler.TARGET_SLOT_INDEX, ContainerArcaneAssembler.TARGET_SLOT_X,
 						ContainerArcaneAssembler.TARGET_SLOT_Y ) );
 
+		// Add armor slots
+		for( int index = 0; index < ContainerArcaneAssembler.DISCOUNT_ARMOR_COUNT; index++ )
+		{
+			this.discountSlots[index] = new SlotVisDiscountArmor( asmInv, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index,
+							ContainerArcaneAssembler.DISCOUNT_ARMOR_SLOT_X, ContainerArcaneAssembler.DISCOUNT_ARMOR_SLOT_Y + ( index * 18 ), index );
+
+			this.addSlotToContainer( this.discountSlots[index] );
+		}
+
+	}
+
+	/**
+	 * Attempts to merge the itemstack with the armor slots.
+	 * 
+	 * @param slotStack
+	 * @return
+	 */
+	private boolean mergeWithArmorSlots( final ItemStack slotStack )
+	{
+		// Check each armor slot
+		for( int index = 0; index < ContainerArcaneAssembler.DISCOUNT_ARMOR_COUNT; index++ )
+		{
+			// Is the item for the slot?
+			if( this.discountSlots[index].isItemValid( slotStack ) )
+			{
+				// Place the item
+				this.discountSlots[index].putStack( slotStack.copy() );
+
+				// Clear the input stack
+				slotStack.stackSize = 0;
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
@@ -134,21 +186,30 @@ public class ContainerArcaneAssembler
 			// Was the slot clicked in the player or hotbar inventory?
 			if( this.slotClickedWasInPlayerInventory( slotNumber ) || this.slotClickedWasInHotbarInventory( slotNumber ) )
 			{
-				// Attempt to merge with kcore slot
-				if( slotStack.getItem() instanceof ItemKnowledgeCore )
+				// Skip upgrade cards, let the super class handle them
+				if( !( slotStack.getItem() instanceof IUpgradeModule ) )
 				{
-					didMerge = this.mergeItemStack( slotStack, this.kCoreSlot.slotNumber, this.kCoreSlot.slotNumber + 1, false );
-				}
+					// Attempt to merge with kcore slot
+					if( slotStack.getItem() instanceof ItemKnowledgeCore )
+					{
+						didMerge = this.mergeItemStack( slotStack, this.kCoreSlot.slotNumber, this.kCoreSlot.slotNumber + 1, false );
+					}
+					else if( slotStack.getItem() instanceof IVisDiscountGear )
+					{
+						didMerge = this.mergeWithArmorSlots( slotStack );
+					}
 
-				// Was the stack merged?
-				if( !didMerge )
-				{
-					// Attempt to merge with player inventory
-					didMerge = this.swapSlotInventoryHotbar( slotNumber, slotStack );
+					// Was the stack merged?
+					if( !didMerge )
+					{
+						// Attempt to merge with player inventory
+						didMerge = this.swapSlotInventoryHotbar( slotNumber, slotStack );
+					}
 				}
 			}
-			// Was the slot clicked the KCore slot?
-			else if( this.kCoreSlot.slotNumber == slotNumber )
+			// Was the slot clicked the KCore slot or armor slots?
+			else if( ( this.kCoreSlot.slotNumber == slotNumber ) ||
+							( ( slotNumber >= this.discountSlots[0].slotNumber ) && ( slotNumber <= this.discountSlots[ContainerArcaneAssembler.DISCOUNT_ARMOR_COUNT - 1].slotNumber ) ) )
 			{
 				// Attempt to merge with player hotbar
 				didMerge = this.mergeSlotWithHotbarInventory( slotStack );
@@ -179,11 +240,12 @@ public class ContainerArcaneAssembler
 
 				// Send changes
 				this.detectAndSendChanges();
+
+				return null;
 			}
 		}
 
 		// Call super
 		return super.transferStackInSlot( player, slotNumber );
 	}
-
 }

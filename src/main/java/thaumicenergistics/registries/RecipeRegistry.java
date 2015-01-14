@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagByte;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -18,11 +17,12 @@ import thaumcraft.api.crafting.ShapedArcaneRecipe;
 import thaumcraft.common.config.Config;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
-import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.Items;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.integration.tc.VisCraftingHelper;
 import thaumicenergistics.registries.ResearchRegistry.ResearchTypes;
+import thaumicenergistics.tileentities.TileArcaneAssembler;
 import appeng.api.AEApi;
 import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Materials;
@@ -94,15 +94,7 @@ public class RecipeRegistry
 
 		ItemStack BallanceShard = new ItemStack( ConfigItems.itemShard, 1, 6 );
 
-		ItemStack CraftingScepter = new ItemStack( ConfigItems.itemWandCasting, 1, 128 );
-		( (ItemWandCasting)CraftingScepter.getItem() ).setCap( CraftingScepter, ConfigItems.WAND_CAP_THAUMIUM );
-		( (ItemWandCasting)CraftingScepter.getItem() ).setRod( CraftingScepter, ConfigItems.WAND_ROD_SILVERWOOD );
-		CraftingScepter.setTagInfo( "sceptre", new NBTTagByte( (byte)1 ) );
-		for( Aspect aspect : Aspect.getPrimalAspects() )
-		{
-			( (ItemWandCasting)CraftingScepter.getItem() ).addVis( CraftingScepter, aspect,
-				( (ItemWandCasting)CraftingScepter.getItem() ).getMaxVis( CraftingScepter ), true );
-		}
+		ItemStack CraftingScepter = VisCraftingHelper.instance.getCraftingScepter();
 
 		// AppEng items
 		ItemStack VibrantGlass = aeBlocks.blockQuartzVibrantGlass.stack( 1 );
@@ -121,6 +113,7 @@ public class RecipeRegistry
 		ItemStack KnowledgeInscriber = teBlocks.KnowledgeInscriber.getStack();
 
 		ItemStack ArcaneAssembler = teBlocks.ArcaneAssembler.getStack();
+		ArcaneAssembler.setTagCompound( TileArcaneAssembler.getCraftTag() );
 
 		// Knowledge Core
 		AspectList kCoreAspects = new AspectList();

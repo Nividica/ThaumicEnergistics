@@ -248,6 +248,12 @@ public class ItemEssentiaCell
 	}
 
 	@Override
+	public String getUnlocalizedName()
+	{
+		return ThaumicEnergistics.MOD_ID + ".item.essentia.cell";
+	}
+
+	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
 		switch ( itemStack.getItemDamage() )

@@ -1,11 +1,14 @@
 package thaumicenergistics.blocks;
 
+import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -43,6 +46,36 @@ public class BlockArcaneAssembler
 	}
 
 	/**
+	 * Called when the assembler is dismantled via wrench.
+	 */
+	@Override
+	protected ItemStack onDismantled( final World world, final int x, final int y, final int z )
+	{
+		// Create the itemstack
+		ItemStack itemStack = new ItemStack( this );
+
+		// Get the tile
+		TileArcaneAssembler tile = (TileArcaneAssembler)world.getTileEntity( x, y, z );
+
+		if( tile != null )
+		{
+			// Create a compound tag
+			NBTTagCompound data = new NBTTagCompound();
+
+			// Save the tile entity state
+			tile.onSaveNBT( data );
+
+			// Set the itemstack tag
+			itemStack.setTagCompound( data );
+
+			// Set that it was dismantled
+			tile.onDismantled();
+		}
+
+		return itemStack;
+	}
+
+	/**
 	 * Called when the block is broken.
 	 */
 	@Override
@@ -54,14 +87,15 @@ public class BlockArcaneAssembler
 			// Get the tile
 			TileArcaneAssembler assembler = (TileArcaneAssembler)world.getTileEntity( x, y, z );
 
-			// Does the inscriber have a cell?
 			if( assembler != null )
 			{
-				if( assembler.hasKCore() )
+				// Get the drops
+				ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+				assembler.getDrops( world, x, y, z, drops );
+
+				for( ItemStack drop : drops )
 				{
-					// Spawn the core as an item entity.
-					world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, assembler.getInternalInventory().getStackInSlot(
-						TileArcaneAssembler.KCORE_SLOT_INDEX ) ) );
+					world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, drop ) );
 				}
 
 				// Inform the tile it is being broken
@@ -152,6 +186,19 @@ public class BlockArcaneAssembler
 		}
 
 		return true;
+	}
+
+	@Override
+	public void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack )
+	{
+		// Get the tile
+		TileArcaneAssembler tile = (TileArcaneAssembler)world.getTileEntity( x, y, z );
+
+		if( ( tile != null ) && ( itemStack.getTagCompound() != null ) )
+		{
+			// Load the saved data
+			tile.onLoadNBT( itemStack.getTagCompound() );
+		}
 	}
 
 	/**

@@ -245,7 +245,9 @@ public class ResearchRegistry
 
 		// Set the pages
 		ResearchPage[] assemblerPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ARCANEASSEMBLER.getPageName( 1 ) ),
-						new ResearchPage( RecipeRegistry.BLOCK_ARCANE_ASSEMBLER ), new ResearchPage( ResearchTypes.ARCANEASSEMBLER.getPageName( 2 ) ) };
+						new ResearchPage( RecipeRegistry.BLOCK_ARCANE_ASSEMBLER ),
+						new ResearchPage( ResearchTypes.ARCANEASSEMBLER.getPageName( 2 ) ),
+						new ResearchPage( ResearchTypes.ARCANEASSEMBLER.getPageName( 3 ) ) };
 
 		// Create the assembler research
 		ResearchTypes.ARCANEASSEMBLER.createResearchItem( assemblerAspectList, COMPLEXITY_LARGE, assemblerIcon, assemblerPages );

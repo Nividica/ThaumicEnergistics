@@ -10,6 +10,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.util.ThELog;
 import appeng.api.AEApi;
@@ -107,6 +108,12 @@ public class ItemAEPart
 	public String getUnlocalizedGroupName( final Set<ItemStack> arg0, final ItemStack itemStack )
 	{
 		return AEPartsEnum.getPartFromDamageValue( itemStack ).getGroupName();
+	}
+
+	@Override
+	public String getUnlocalizedName()
+	{
+		return ThaumicEnergistics.MOD_ID + ".item.aeparts";
 	}
 
 	@Override

@@ -37,16 +37,20 @@ public class Renderers
 		// Register the infusion provider renderer
 		RenderingRegistry.registerBlockHandler( new RenderBlockInfusionProvider() );
 
-		// Register the gearbox renderer
-		ClientRegistry.bindTileEntitySpecialRenderer( TileGearBox.class, new RenderTileGearbox() );
+		// Are gearbox models enabled?
+		if( !ThEApi.instance().config().gearboxModelDisabled() )
+		{
+			// Register the gearbox renderer
+			ClientRegistry.bindTileEntitySpecialRenderer( TileGearBox.class, new RenderTileGearbox() );
 
-		// Register thaumium gearbox item renderer
-		MinecraftForgeClient.registerItemRenderer( ThEApi.instance().blocks().ThaumiumGearBox.getItem(), new TileAsItemRenderer(
-						new RenderTileGearbox(), new TileGearBox( true ) ) );
+			// Register thaumium gearbox item renderer
+			MinecraftForgeClient.registerItemRenderer( ThEApi.instance().blocks().ThaumiumGearBox.getItem(), new TileAsItemRenderer(
+							new RenderTileGearbox(), new TileGearBox( true ) ) );
 
-		// Register iron gearbox item renderer
-		MinecraftForgeClient.registerItemRenderer( ThEApi.instance().blocks().IronGearBox.getItem(), new TileAsItemRenderer( new RenderTileGearbox(),
-						new TileGearBox( false ) ) );
+			// Register iron gearbox item renderer
+			MinecraftForgeClient.registerItemRenderer( ThEApi.instance().blocks().IronGearBox.getItem(), new TileAsItemRenderer(
+							new RenderTileGearbox(), new TileGearBox( false ) ) );
+		}
 
 		// Register the arcane assembler renderer
 		ClientRegistry.bindTileEntitySpecialRenderer( TileArcaneAssembler.class, new RenderTileArcaneAssembler() );

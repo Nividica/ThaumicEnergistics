@@ -10,9 +10,15 @@ class ConfigurationHandler
 	private static ConfigurationHandler instance;
 
 	/**
-	 * Name of the crafting category
+	 * Names of the categories.
 	 */
-	private static final String CATEGORY_CRAFTING = "crafting";
+	private static final String CATEGORY_CRAFTING = "crafting", CATEGORY_CLIENT = "client";
+
+	/**
+	 * Default values.
+	 */
+	private static final int DEFAULT_CONVERSION = 250;
+	private static final boolean DEFAULT_ESSENTIAPROVIDER = true, DEFAULT_INFUSIONPROVIDER = true, DEFAULT_QUARTZ = true, DEFAULT_GEARBOX = false;
 
 	/**
 	 * Mod configuration
@@ -39,6 +45,12 @@ class ConfigurationHandler
 	 * Controls if Certus Quartz can be duped in the crucible.
 	 */
 	private boolean allowCertusDupe = true;
+
+	/**
+	 * Controls if the iron and thaumium gearbox's will be rendered as a
+	 * standard block.
+	 */
+	private boolean gearboxModelDisabled = false;
 
 	private ConfigurationHandler( final Configuration config )
 	{
@@ -71,7 +83,7 @@ class ConfigurationHandler
 						.getInt(
 							"Essentia Fluid Ratio",
 							Configuration.CATEGORY_GENERAL,
-							this.conversionMultiplier,
+							ConfigurationHandler.DEFAULT_CONVERSION,
 							1,
 							10000,
 							"Controls the conversion ratio of essentia/fluid. 1 essentia is converted to this many milibuckets of fluid. "
@@ -80,15 +92,18 @@ class ConfigurationHandler
 
 		// Sync essentia provider
 		this.allowEssentiaProvider = this.configSettings.getBoolean( "Allow Crafting Essentia Provider", ConfigurationHandler.CATEGORY_CRAFTING,
-			this.allowEssentiaProvider, "Controls if the Essentia Provider is allowed to be crafted." );
+			ConfigurationHandler.DEFAULT_ESSENTIAPROVIDER, "Controls if the Essentia Provider is allowed to be crafted." );
 
 		// Sync essentia provider
 		this.allowInfusionProvider = this.configSettings.getBoolean( "Allow Crafting Infusion Provider", ConfigurationHandler.CATEGORY_CRAFTING,
-			this.allowInfusionProvider, "Controls if the Infusion Provider is allowed to be crafted." );
+			ConfigurationHandler.DEFAULT_INFUSIONPROVIDER, "Controls if the Infusion Provider is allowed to be crafted." );
 
 		// Sync certus dupe
 		this.allowCertusDupe = this.configSettings.getBoolean( "Certus Quartz Duplication", ConfigurationHandler.CATEGORY_CRAFTING,
-			this.allowCertusDupe, "Controls if Certus Quartz can be duplicated in the crucible." );
+			ConfigurationHandler.DEFAULT_QUARTZ, "Controls if Certus Quartz can be duplicated in the crucible." );
+
+		this.gearboxModelDisabled = this.configSettings.getBoolean( "Disable Gearbox Model", ConfigurationHandler.CATEGORY_CLIENT,
+			ConfigurationHandler.DEFAULT_GEARBOX, "The iron and thaumium gearboxes will be rendered as a standard block." );
 
 		// Has the config file changed?
 		if( this.configSettings.hasChanged() )
@@ -120,6 +135,12 @@ class ConfigurationHandler
 	public int conversionMultiplier()
 	{
 		return this.conversionMultiplier;
+	}
+
+	@Override
+	public boolean gearboxModelDisabled()
+	{
+		return this.gearboxModelDisabled;
 	}
 
 }

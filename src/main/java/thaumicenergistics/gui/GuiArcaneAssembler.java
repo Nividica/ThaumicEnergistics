@@ -4,6 +4,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
@@ -22,7 +23,7 @@ public class GuiArcaneAssembler
 	/**
 	 * Gui size.
 	 */
-	private static final int FULL_GUI_WIDTH = 247, MAIN_GUI_WIDTH = 176, UPGRADE_GUI_WIDTH = 211 - MAIN_GUI_WIDTH, GUI_HEIGHT = 197,
+	private static final int FULL_GUI_WIDTH = 247, MAIN_GUI_WIDTH = 176, UPGRADE_GUI_WIDTH = 234 - MAIN_GUI_WIDTH, GUI_HEIGHT = 197,
 					UPGRADE_GUI_HEIGHT = 104;
 
 	/**
@@ -168,6 +169,10 @@ public class GuiArcaneAssembler
 				// Add the amount
 				int amount = ( (ContainerArcaneAssembler)this.inventorySlots ).assembler.getStoredVis().getAmount( aspect );
 				this.tooltip.add( Float.toString( amount / 10.0F ) + " / 150" );
+
+				// Add the discount
+				float discount = ( (ContainerArcaneAssembler)this.inventorySlots ).assembler.getVisDiscountForAspect( aspect );
+				this.tooltip.add( String.format( "%.0f%% %s", ( discount * 100.0F ), StatCollector.translateToLocal( "tc.vis.costavg" ) ) );
 
 				// Draw the tooltip
 				this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );

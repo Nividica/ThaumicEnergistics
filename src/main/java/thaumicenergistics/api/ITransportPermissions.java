@@ -1,6 +1,7 @@
 package thaumicenergistics.api;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
@@ -34,16 +35,25 @@ public interface ITransportPermissions
 	public boolean addAspectContainerTileToInjectPermissions( Class<? extends TileEntity> tileClass );
 
 	/**
-	 * Adds an item to the whitelist that must match the specified metadata
+	 * Adds an item to the whitelist that must match the specified damage
 	 * value.
 	 * 
 	 * @param itemClass
 	 * @param capacity
-	 * @param metadata
+	 * @param damageValue
 	 * @param canHoldPartialAmount
 	 */
-	public void addEssentiaContainerItemToTransportPermissions( Class<? extends IEssentiaContainerItem> itemClass, int capacity, int metadata,
+	public void addEssentiaContainerItemToTransportPermissions( Class<? extends IEssentiaContainerItem> itemClass, int capacity, int damageValue,
 																boolean canHoldPartialAmount );
+
+	/**
+	 * Adds the specified item to the whitelist.
+	 * 
+	 * @param containerItem
+	 * @param capacity
+	 * @param canHoldPartialAmount
+	 */
+	public void addEssentiaContainerItemToTransportPermissions( ItemStack containerItem, int capacity, boolean canHoldPartialAmount );
 
 	/**
 	 * Checks if the container can be extracted from
@@ -66,8 +76,8 @@ public interface ITransportPermissions
 	 * whitelist.
 	 * 
 	 * @param itemClass
-	 * @param metadata
+	 * @param damageValue
 	 * @return Info if was registered, null otherwise.
 	 */
-	public IEssentiaContainerPermission getEssentiaContainerInfo( Class<? extends Item> itemClass, int metadata );
+	public IEssentiaContainerPermission getEssentiaContainerInfo( Class<? extends Item> itemClass, int damageValue );
 }

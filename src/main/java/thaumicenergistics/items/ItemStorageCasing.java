@@ -17,6 +17,12 @@ public class ItemStorageCasing
 	}
 
 	@Override
+	public String getUnlocalizedName()
+	{
+		return ThEStrings.Item_EssentiaCellHousing.getUnlocalized();
+	}
+
+	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
 		return ThEStrings.Item_EssentiaCellHousing.getUnlocalized();

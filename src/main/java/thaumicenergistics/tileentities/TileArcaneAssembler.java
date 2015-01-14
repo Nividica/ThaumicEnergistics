@@ -3,6 +3,7 @@ package thaumicenergistics.tileentities;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +12,10 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import thaumcraft.api.IVisDiscountGear;
+import thaumcraft.api.IWarpingGear;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.Thaumcraft;
@@ -21,6 +25,7 @@ import thaumicenergistics.integration.IWailaSource;
 import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
 import thaumicenergistics.integration.tc.DigiVisSourceData;
 import thaumicenergistics.integration.tc.IDigiVisSource;
+import thaumicenergistics.integration.tc.VisCraftingHelper;
 import thaumicenergistics.inventory.HandlerKnowledgeCore;
 import thaumicenergistics.items.ItemKnowledgeCore;
 import thaumicenergistics.util.EffectiveSide;
@@ -94,7 +99,7 @@ public class TileArcaneAssembler
 	 */
 	private static final String NBTKEY_KCORE = "kcore", NBTKEY_VIS_INTERFACE = "vis_interface", NBTKEY_STORED_VIS = "stored_vis",
 					NBTKEY_UPGRADES = "upgradeCount", NBTKEY_UPGRADEINV = "upgrades", NBTKEY_CRAFTING = "isCrafting",
-					NBTKEY_CRAFTING_PATTERN = "pattern";
+					NBTKEY_CRAFTING_PATTERN = "pattern", NBTKEY_DISCOUNT_ARMOR = "discount_armor#";
 
 	/**
 	 * Used to simulate floating point amounts of vis.
@@ -102,24 +107,25 @@ public class TileArcaneAssembler
 	private static final int CVIS_MULTIPLER = 10;
 
 	/**
-	 * Primal aspects.
-	 */
-	public static final Aspect[] PRIMALS = new Aspect[] { Aspect.AIR, Aspect.WATER, Aspect.FIRE, Aspect.ORDER, Aspect.ENTROPY, Aspect.EARTH };
-
-	/**
 	 * The number of ticks required to craft an item without any upgrades.
 	 */
 	private static final int BASE_TICKS_PER_CRAFT = 20;
 
 	/**
-	 * Total number of slots. 1 KCore + 21 Patterns + 1 Target
+	 * Primal aspects.
 	 */
-	public static final int SLOT_COUNT = 23;
+	public static final Aspect[] PRIMALS = new Aspect[] { Aspect.AIR, Aspect.WATER, Aspect.FIRE, Aspect.ORDER, Aspect.ENTROPY, Aspect.EARTH };
+
+	/**
+	 * Total number of slots. 1 KCore + 21 Patterns + 1 Target + 4 Discount
+	 * Armor
+	 */
+	public static final int SLOT_COUNT = 27;
 
 	/**
 	 * Index of the slots.
 	 */
-	public static final int KCORE_SLOT_INDEX = 0, PATTERN_SLOT_INDEX = 1, TARGET_SLOT_INDEX = 22;
+	public static final int KCORE_SLOT_INDEX = 0, PATTERN_SLOT_INDEX = 1, TARGET_SLOT_INDEX = 22, DISCOUNT_ARMOR_INDEX = 23;
 
 	/**
 	 * Maximum amount of stored centi-vis.
@@ -129,7 +135,7 @@ public class TileArcaneAssembler
 	/**
 	 * Power usage.
 	 */
-	public static double IDLE_POWER = 0.0D, ACTIVE_POWER = 1.2D;
+	public static double IDLE_POWER = 0.0D, ACTIVE_POWER = 1.2D, WARP_POWER_PERCENT = 0.15;
 
 	/**
 	 * Holds the patterns and the kcore
@@ -174,7 +180,7 @@ public class TileArcaneAssembler
 	/**
 	 * Number of elapsed ticks.
 	 */
-	private int visTickCounter = 0, craftTickCounter = 0;
+	private int visTickCounter = 0, craftTickCounter = 0, delayTickCounter = 0;
 
 	/**
 	 * Source of all actions.
@@ -192,6 +198,26 @@ public class TileArcaneAssembler
 	private int upgradeCount = 0;
 
 	/**
+	 * Set to true when being dismantled by a wrench.
+	 */
+	private boolean wasDismantled = false;
+
+	/**
+	 * How much discount each aspect is receiving.
+	 */
+	private Hashtable<Aspect, Float> visDiscount = new Hashtable<Aspect, Float>();
+
+	/**
+	 * How much additional power is required due to warp.
+	 */
+	private float warpPowerMultiplier = 1.0F;
+
+	/**
+	 * When true will send network update periodically.
+	 */
+	private boolean delayedUpdate = false;
+
+	/**
 	 * Creates the assembler and it's inventory.
 	 */
 	public TileArcaneAssembler()
@@ -205,6 +231,95 @@ public class TileArcaneAssembler
 
 		// Set the machine source
 		this.mySource = new MachineSource( this );
+
+		// Prep the discount table
+		for( Aspect primal : TileArcaneAssembler.PRIMALS )
+		{
+			this.visDiscount.put( primal, VisCraftingHelper.instance.getScepterVisModifier( primal ) );
+		}
+	}
+
+	/**
+	 * Get's the NBT tag for the just-crafted assembler.
+	 * 
+	 * @return
+	 */
+	public static NBTTagCompound getCraftTag()
+	{
+		NBTTagCompound data = new NBTTagCompound();
+
+		// Create the vis list
+		AspectList vis = new AspectList();
+
+		// Add each primal
+		for( Aspect primal : TileArcaneAssembler.PRIMALS )
+		{
+			vis.add( primal, TileArcaneAssembler.MAX_STORED_CVIS );
+		}
+
+		// Write into the tag
+		vis.writeToNBT( data, TileArcaneAssembler.NBTKEY_STORED_VIS );
+
+		return data;
+	}
+
+	/**
+	 * Calculates how much vis discount applies to each aspect
+	 */
+	private void calculateVisDiscounts()
+	{
+		float discount;
+
+		for( Aspect primal : TileArcaneAssembler.PRIMALS )
+		{
+			// Get the discount from the scepter
+			discount = VisCraftingHelper.instance.getScepterVisModifier( primal );
+
+			// Factor in the discount armor
+			for( int index = 0; index < 4; index++ )
+			{
+				// Get the armor stack
+				ItemStack armor = this.internalInventory.slots[TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index];
+
+				// Ensure it is valid discount gear
+				if( ( armor != null ) && ( armor.getItem() instanceof IVisDiscountGear ) )
+				{
+					try
+					{
+						// Get the discount
+						discount -= ( ( (IVisDiscountGear)armor.getItem() ).getVisDiscount( armor, null, primal ) / 100.0F );
+					}
+					catch( Exception e )
+					{
+					}
+				}
+			}
+
+			this.visDiscount.put( primal, discount );
+		}
+
+		// Reset warp power multiplier
+		this.warpPowerMultiplier = 1.0F;
+
+		// Calculate warp power multiplier
+		for( int index = 0; index < 4; index++ )
+		{
+			// Get the armor stack
+			ItemStack armor = this.internalInventory.slots[TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index];
+
+			// Ensure it is valid warp gear
+			if( ( armor != null ) && ( armor.getItem() instanceof IWarpingGear ) )
+			{
+				try
+				{
+					// Add to the warp multiplier
+					this.warpPowerMultiplier += ( ( (IWarpingGear)armor.getItem() ).getWarp( armor, null ) * TileArcaneAssembler.WARP_POWER_PERCENT );
+				}
+				catch( Exception e )
+				{
+				}
+			}
+		}
 	}
 
 	private void craftingTick()
@@ -244,7 +359,7 @@ public class TileArcaneAssembler
 					this.currentPattern = null;
 
 					// Mark for network update
-					this.markForUpdate();
+					this.markForDelayedUpdate();
 				}
 			}
 			catch( GridAccessException e )
@@ -255,12 +370,15 @@ public class TileArcaneAssembler
 		{
 			try
 			{
+				// Calculate power required
+				double powerRequired = TileArcaneAssembler.ACTIVE_POWER + ( ( TileArcaneAssembler.ACTIVE_POWER * this.upgradeCount ) / 2.0D ) *
+								this.warpPowerMultiplier;
+
 				// Attempt to take power
 				IEnergyGrid eGrid = this.gridProxy.getEnergy();
-				double powerExtracted = eGrid.extractAEPower( TileArcaneAssembler.ACTIVE_POWER * this.upgradeCount, Actionable.MODULATE,
-					PowerMultiplier.CONFIG );
+				double powerExtracted = eGrid.extractAEPower( powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
-				if( ( powerExtracted - ( TileArcaneAssembler.ACTIVE_POWER * this.upgradeCount ) ) <= 0.0D )
+				if( ( powerExtracted - powerRequired ) <= 0.0D )
 				{
 					// Increment the counter
 					this.craftTickCounter++ ;
@@ -268,13 +386,17 @@ public class TileArcaneAssembler
 					if( this.craftTickCounter >= this.ticksPerCraft() )
 					{
 						// Take the required vis
-						Aspect[] required = this.currentPattern.getCachedAspects();
-						for( Aspect aspect : required )
+						Aspect[] requiredAspects = this.currentPattern.getCachedAspects();
+						for( Aspect aspect : requiredAspects )
 						{
-							this.storedVis.reduce( aspect, this.currentPattern.aspects.getAmount( aspect ) * TileArcaneAssembler.CVIS_MULTIPLER );
+							// Calculate the required amount
+							int requiredAmount = this.getRequiredAmountForAspect( aspect );
+
+							// Take the vis
+							this.storedVis.reduce( aspect, requiredAmount );
 						}
 
-						this.markForUpdate();
+						this.markForDelayedUpdate();
 					}
 				}
 			}
@@ -283,6 +405,19 @@ public class TileArcaneAssembler
 			}
 		}
 
+	}
+
+	/**
+	 * Helper function to calculate how much vis is required for the specified
+	 * aspect for the current recipe.
+	 * 
+	 * @param aspect
+	 * @return
+	 */
+	private int getRequiredAmountForAspect( final Aspect aspect )
+	{
+		return (int)Math.ceil( this.visDiscount.get( aspect ) *
+						( this.currentPattern.aspects.getAmount( aspect ) * TileArcaneAssembler.CVIS_MULTIPLER ) );
 	}
 
 	private boolean hasEnoughVisForCraft()
@@ -294,13 +429,16 @@ public class TileArcaneAssembler
 		}
 
 		// Get the required aspects
-		Aspect[] required = this.currentPattern.getCachedAspects();
+		Aspect[] requiredAspects = this.currentPattern.getCachedAspects();
 
 		// Check each aspect required by the pattern
-		for( Aspect aspect : required )
+		for( Aspect aspect : requiredAspects )
 		{
+			// Calculate the required amount
+			int requiredAmount = this.getRequiredAmountForAspect( aspect );
+
 			// Is there not enough?
-			if( this.storedVis.getAmount( aspect ) < ( this.currentPattern.aspects.getAmount( aspect ) * TileArcaneAssembler.CVIS_MULTIPLER ) )
+			if( this.storedVis.getAmount( aspect ) < requiredAmount )
 			{
 				return false;
 			}
@@ -308,6 +446,14 @@ public class TileArcaneAssembler
 
 		// Has enough of all aspects
 		return true;
+	}
+
+	/**
+	 * Marks the tile for a delayed update.
+	 */
+	private void markForDelayedUpdate()
+	{
+		this.delayedUpdate = true;
 	}
 
 	/**
@@ -356,7 +502,7 @@ public class TileArcaneAssembler
 					this.storedVis.add( primal, amountDrained );
 
 					// Mark for network sync
-					this.markForUpdate();
+					this.markForDelayedUpdate();
 				}
 			}
 		}
@@ -386,7 +532,7 @@ public class TileArcaneAssembler
 		}
 
 		// Set pattern slots
-		for( int index = TileArcaneAssembler.PATTERN_SLOT_INDEX; index < TileArcaneAssembler.SLOT_COUNT; index++ )
+		for( int index = TileArcaneAssembler.PATTERN_SLOT_INDEX; index < ( TileArcaneAssembler.PATTERN_SLOT_INDEX + HandlerKnowledgeCore.MAXIMUM_STORED_PATTERNS ); index++ )
 		{
 			if( ( pIterator != null ) && ( pIterator.hasNext() ) )
 			{
@@ -486,6 +632,37 @@ public class TileArcaneAssembler
 		return AECableType.SMART;
 	}
 
+	/**
+	 * Called when the block is broken to get any additional items.
+	 * 
+	 * @return
+	 */
+	@Override
+	public void getDrops( final World world, final int x, final int y, final int z, final ArrayList<ItemStack> drops )
+	{
+		if( !this.wasDismantled )
+		{
+			// Add the kCore
+			ItemStack kCore = this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX];
+			if( kCore != null )
+			{
+				drops.add( kCore );
+			}
+
+			// Add upgrades
+			for( int i = 0; i < this.upgradeInventory.getSizeInventory(); i++ )
+			{
+				ItemStack upgrade = this.upgradeInventory.getStackInSlot( i );
+
+				if( upgrade != null )
+				{
+					drops.add( upgrade );
+				}
+			}
+
+		}
+	}
+
 	@Override
 	public IInventory getInternalInventory()
 	{
@@ -536,13 +713,14 @@ public class TileArcaneAssembler
 	}
 
 	/**
-	 * Returns true if a knowledge core is stored.
+	 * Returns the discount for the specified aspect.
 	 * 
+	 * @param aspect
 	 * @return
 	 */
-	public boolean hasKCore()
+	public float getVisDiscountForAspect( final Aspect aspect )
 	{
-		return( this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX] != null );
+		return this.visDiscount.get( aspect );
 	}
 
 	public boolean isActive()
@@ -601,8 +779,22 @@ public class TileArcaneAssembler
 			}
 		}
 
-		// Mark for save
-		this.markDirty();
+		if( EffectiveSide.isServerSide() )
+		{
+			// Mark for save
+			this.markDirty();
+
+			// Mark for network update
+			this.markForUpdate();
+		}
+	}
+
+	/**
+	 * Called when being dismantled.
+	 */
+	public void onDismantled()
+	{
+		this.wasDismantled = true;
 	}
 
 	/**
@@ -651,8 +843,14 @@ public class TileArcaneAssembler
 			}
 		}
 
-		// Mark for save.
-		this.markDirty();
+		//Recalculate the vis discount.
+		this.calculateVisDiscounts();
+
+		if( EffectiveSide.isServerSide() )
+		{
+			// Mark for save.
+			this.markDirty();
+		}
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_READ)
@@ -664,6 +862,9 @@ public class TileArcaneAssembler
 			// Load the saved core
 			this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX] = ItemStack.loadItemStackFromNBT( data
 							.getCompoundTag( TileArcaneAssembler.NBTKEY_KCORE ) );
+
+			// Create the handler
+			this.kCoreHandler = new HandlerKnowledgeCore( this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX] );
 
 			// Update the pattern slots
 			this.updatePatternSlots();
@@ -707,8 +908,21 @@ public class TileArcaneAssembler
 							data.getCompoundTag( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN ) );
 		}
 
+		// Read the armor
+		for( int index = 0; index < 4; index++ )
+		{
+			if( data.hasKey( TileArcaneAssembler.NBTKEY_DISCOUNT_ARMOR + index ) )
+			{
+				this.internalInventory.slots[TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index] = ItemStack.loadItemStackFromNBT( data
+								.getCompoundTag( TileArcaneAssembler.NBTKEY_DISCOUNT_ARMOR + index ) );
+			}
+		}
+
 		// Setup the assembler
 		this.setupAssemblerTile();
+
+		// Recalculate the vis discounts
+		this.calculateVisDiscounts();
 
 	}
 
@@ -793,7 +1007,7 @@ public class TileArcaneAssembler
 	public void onSaveNBT( final NBTTagCompound data )
 	{
 		// Get the kcore
-		ItemStack kCore = this.internalInventory.slots[TileKnowledgeInscriber.KCORE_SLOT];
+		ItemStack kCore = this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX];
 		if( kCore != null )
 		{
 			// Write the kcore
@@ -819,6 +1033,19 @@ public class TileArcaneAssembler
 		if( this.currentPattern != null )
 		{
 			data.setTag( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN, this.currentPattern.writeToNBT( new NBTTagCompound() ) );
+		}
+
+		// Write the discount armors
+		for( int index = 0; index < 4; index++ )
+		{
+			// Get the armor
+			ItemStack armor = this.internalInventory.slots[TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index];
+
+			if( armor != null )
+			{
+				// Write the armor
+				data.setTag( TileArcaneAssembler.NBTKEY_DISCOUNT_ARMOR + index, armor.writeToNBT( new NBTTagCompound() ) );
+			}
 		}
 
 	}
@@ -898,6 +1125,24 @@ public class TileArcaneAssembler
 
 				// Replenish vis stores
 				this.replenishVis();
+			}
+		}
+
+		// Is there a delayed update queued?
+		if( this.delayedUpdate )
+		{
+			// Increase the counter
+			this.delayTickCounter++ ;
+
+			// Have 5 ticks elapsed?
+			if( this.delayTickCounter >= 5 )
+			{
+				// Mark for an update
+				this.markForUpdate();
+
+				// Reset the trackers
+				this.delayedUpdate = false;
+				this.delayTickCounter = 0;
 			}
 		}
 

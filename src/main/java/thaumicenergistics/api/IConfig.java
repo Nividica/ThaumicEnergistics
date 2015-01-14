@@ -22,4 +22,10 @@ public interface IConfig
 	 * 1 essentia unit is converted to this many mb's of fluid.
 	 */
 	public int conversionMultiplier();
+
+	/**
+	 * If true the iron and thaumium gearbox's will be rendered as a standard
+	 * block.
+	 */
+	public boolean gearboxModelDisabled();
 }

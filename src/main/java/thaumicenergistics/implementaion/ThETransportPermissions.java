@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
@@ -17,7 +18,7 @@ class ThETransportPermissions
 	implements ITransportPermissions
 {
 	/**
-	 * Collection of ContainerInfo indexed by metadata.
+	 * Collection of ContainerInfo indexed by damage value.
 	 * 
 	 * @author Nividica
 	 * 
@@ -25,7 +26,7 @@ class ThETransportPermissions
 	private class ContainerCollection
 	{
 		/**
-		 * Metadata -> Info map
+		 * DamageValue -> Info map
 		 */
 		private HashMap<Integer, ContainerInfo> containers = new HashMap<Integer, ContainerInfo>();
 
@@ -34,11 +35,11 @@ class ThETransportPermissions
 		 * 
 		 * @param capacity
 		 * @param canHoldPartialAmount
-		 * @param metadata
+		 * @param damageValue
 		 */
-		public ContainerCollection( final int capacity, final boolean canHoldPartialAmount, final int metadata )
+		public ContainerCollection( final int capacity, final boolean canHoldPartialAmount, final int damageValue )
 		{
-			this.addContainer( capacity, canHoldPartialAmount, metadata );
+			this.addContainer( capacity, canHoldPartialAmount, damageValue );
 		}
 
 		/**
@@ -46,16 +47,16 @@ class ThETransportPermissions
 		 * 
 		 * @param capacity
 		 * @param canHoldPartialAmount
-		 * @param metadata
+		 * @param damageValue
 		 * @return
 		 */
-		public ContainerCollection addContainer( final int capacity, final boolean canHoldPartialAmount, final int metadata )
+		public ContainerCollection addContainer( final int capacity, final boolean canHoldPartialAmount, final int damageValue )
 		{
 			// Create the container info
 			ContainerInfo info = new ContainerInfo( capacity, canHoldPartialAmount );
 
 			// Add to the map
-			this.containers.put( metadata, info );
+			this.containers.put( damageValue, info );
 
 			return this;
 		}
@@ -63,12 +64,12 @@ class ThETransportPermissions
 		/**
 		 * Gets the info about the item using the specified metadata.
 		 * 
-		 * @param metadata
+		 * @param damageValue
 		 * @return {@link ContainerInfo} if a match is found, null otherwise.
 		 */
-		public ContainerInfo getInfo( final int metadata )
+		public ContainerInfo getInfo( final int damageValue )
 		{
-			return this.containers.get( metadata );
+			return this.containers.get( damageValue );
 		}
 	}
 
@@ -173,7 +174,7 @@ class ThETransportPermissions
 
 	@Override
 	public void addEssentiaContainerItemToTransportPermissions( final Class<? extends IEssentiaContainerItem> itemClass, final int capacity,
-																final int metadata, final boolean canHoldPartialAmount )
+																final int damageValue, final boolean canHoldPartialAmount )
 	{
 		// Do we have an item?
 		if( itemClass != null )
@@ -182,17 +183,37 @@ class ThETransportPermissions
 			if( this.itemWhitelist.containsKey( itemClass ) )
 			{
 				// Add to the existing registry
-				this.itemWhitelist.get( itemClass ).addContainer( capacity, canHoldPartialAmount, metadata );
+				this.itemWhitelist.get( itemClass ).addContainer( capacity, canHoldPartialAmount, damageValue );
 			}
 			else
 			{
 				// Create a new registry
-				this.itemWhitelist.put( itemClass, new ContainerCollection( capacity, canHoldPartialAmount, metadata ) );
+				this.itemWhitelist.put( itemClass, new ContainerCollection( capacity, canHoldPartialAmount, damageValue ) );
 			}
 
 			// Log the addition
-			ThELog.info( "Adding %s[%d] to item whitelist.", itemClass.toString(), metadata );
+			ThELog.info( "Adding %s[%d] to item whitelist.", itemClass.toString(), damageValue );
 		}
+	}
+
+	@Override
+	public void addEssentiaContainerItemToTransportPermissions( final ItemStack containerItem, final int capacity, final boolean canHoldPartialAmount )
+	{
+		// Ensure the item is a valid container
+		if( ( containerItem == null ) || !( containerItem.getItem() instanceof IEssentiaContainerItem ) )
+		{
+			return;
+		}
+
+		try
+		{
+			this.addEssentiaContainerItemToTransportPermissions( (Class<? extends IEssentiaContainerItem>)containerItem.getItem().getClass(),
+				capacity, containerItem.getItemDamage(), canHoldPartialAmount );
+		}
+		catch( Throwable t )
+		{
+		}
+
 	}
 
 	@Override
@@ -244,20 +265,20 @@ class ThETransportPermissions
 	}
 
 	@Override
-	public IEssentiaContainerPermission getEssentiaContainerInfo( final Class<? extends Item> itemClass, final int metadata )
+	public IEssentiaContainerPermission getEssentiaContainerInfo( final Class<? extends Item> itemClass, final int damageValue )
 	{
 		// Is the item registered?
 		if( this.itemWhitelist.containsKey( itemClass ) )
 		{
 			// Return the info
-			return this.itemWhitelist.get( itemClass ).getInfo( metadata );
+			return this.itemWhitelist.get( itemClass ).getInfo( damageValue );
 		}
 
 		// Special check for empty jars
 		if( itemClass == BlockJarItem.class )
 		{
 			// Return the info for filled jars
-			return this.itemWhitelist.get( ItemJarFilled.class ).getInfo( metadata );
+			return this.itemWhitelist.get( ItemJarFilled.class ).getInfo( damageValue );
 		}
 
 		// Not registered return null

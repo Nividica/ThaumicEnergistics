@@ -18,9 +18,11 @@ public abstract class AbstractBlockAEWrenchable
 
 	/**
 	 * Called when the block is being removed via AE wrench.
+	 * Return an itemstack that represents the block. Can be null.
 	 */
-	protected void onDismantled( final World world, final int x, final int y, final int z )
+	protected ItemStack onDismantled( final World world, final int x, final int y, final int z )
 	{
+		return null;
 	}
 
 	/**
@@ -80,14 +82,21 @@ public abstract class AbstractBlockAEWrenchable
 				// Is the player sneaking?
 				if( player.isSneaking() )
 				{
-					// Call on wrench
-					this.onDismantled( world, x, y, z );
+					// Call on dismantled
+					ItemStack representitive = this.onDismantled( world, x, y, z );
 
 					// Call break
 					this.breakBlock( world, x, y, z, this, world.getBlockMetadata( x, y, z ) );
 
-					// Drop the block
-					this.dropBlockAsItem( world, x, y, z, new ItemStack( this ) );
+					// Is there an representative itemstack?
+					if( representitive == null )
+					{
+						// Create a basic stack.
+						representitive = new ItemStack( this );
+					}
+
+					// Drop the itemstack
+					this.dropBlockAsItem( world, x, y, z, representitive );
 
 					// Set the block to air
 					world.setBlockToAir( x, y, z );

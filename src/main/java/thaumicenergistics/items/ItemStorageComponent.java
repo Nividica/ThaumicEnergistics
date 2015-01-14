@@ -66,6 +66,12 @@ public class ItemStorageComponent
 	}
 
 	@Override
+	public String getUnlocalizedName()
+	{
+		return ThaumicEnergistics.MOD_ID + ".item.storage.component";
+	}
+
+	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
 		switch ( itemStack.getItemDamage() )

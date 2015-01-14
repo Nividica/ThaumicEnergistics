@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.tileentities.TileGearBox;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -97,16 +98,16 @@ public abstract class AbstractBlockGearBoxBase
 	}
 
 	/**
-	 * No sides are solid.
+	 * Dependent on config setting.
 	 */
 	@Override
 	public final boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
 	{
-		return false;
+		return ThEApi.instance().config().gearboxModelDisabled();
 	}
 
 	/**
-	 * Determine if the tile should be cranked.
+	 * Crank the gearbox.
 	 */
 	@Override
 	public boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
@@ -145,21 +146,22 @@ public abstract class AbstractBlockGearBoxBase
 	}
 
 	/**
-	 * Normal renderer.
+	 * Dependent on config setting.
 	 */
 	@Override
 	public final boolean renderAsNormalBlock()
 	{
-		return false;
+		return ThEApi.instance().config().gearboxModelDisabled();
 	}
 
 	/**
 	 * Prevents MC from using the default block renderer.
+	 * Dependent on config setting.
 	 */
 	@Override
 	public boolean shouldSideBeRendered( final IBlockAccess iblockaccess, final int i, final int j, final int k, final int l )
 	{
-		return false;
+		return ThEApi.instance().config().gearboxModelDisabled();
 	}
 
 }

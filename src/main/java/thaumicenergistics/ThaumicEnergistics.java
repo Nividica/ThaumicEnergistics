@@ -22,7 +22,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:appliedenergistics2;required-after:Thaumcraft;after:Waila;after:extracells")
+@Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:appliedenergistics2@[rv2-beta-7,);required-after:Thaumcraft@[4.2.3.0,);after:Waila;after:extracells")
 public class ThaumicEnergistics
 {
 	/**
@@ -33,7 +33,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.8.8.1b-rv2"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.8.8.4b-rv2"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance

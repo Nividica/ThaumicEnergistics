@@ -257,6 +257,12 @@ public class ItemWirelessEssentiaTerminal
 	}
 
 	@Override
+	public String getUnlocalizedName()
+	{
+		return ThEStrings.Item_WirelessEssentiaTerminal.getUnlocalized();
+	}
+
+	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
 		return ThEStrings.Item_WirelessEssentiaTerminal.getUnlocalized();

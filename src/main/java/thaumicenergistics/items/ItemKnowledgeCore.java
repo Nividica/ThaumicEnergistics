@@ -31,6 +31,12 @@ public class ItemKnowledgeCore
 	}
 
 	@Override
+	public String getUnlocalizedName()
+	{
+		return ThEStrings.Item_KnowledgeCore.getUnlocalized();
+	}
+
+	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
 		return ThEStrings.Item_KnowledgeCore.getUnlocalized();
