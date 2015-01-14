@@ -14,8 +14,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.IVisDiscountGear;
-import thaumcraft.api.IWarpingGear;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.Thaumcraft;
@@ -135,7 +133,7 @@ public class TileArcaneAssembler
 	/**
 	 * Power usage.
 	 */
-	public static double IDLE_POWER = 0.0D, ACTIVE_POWER = 1.2D, WARP_POWER_PERCENT = 0.15;
+	public static double IDLE_POWER = 0.0D, ACTIVE_POWER = 1.5D, WARP_POWER_PERCENT = 0.15;
 
 	/**
 	 * Holds the patterns and the kcore
@@ -276,24 +274,7 @@ public class TileArcaneAssembler
 			discount = VisCraftingHelper.instance.getScepterVisModifier( primal );
 
 			// Factor in the discount armor
-			for( int index = 0; index < 4; index++ )
-			{
-				// Get the armor stack
-				ItemStack armor = this.internalInventory.slots[TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index];
-
-				// Ensure it is valid discount gear
-				if( ( armor != null ) && ( armor.getItem() instanceof IVisDiscountGear ) )
-				{
-					try
-					{
-						// Get the discount
-						discount -= ( ( (IVisDiscountGear)armor.getItem() ).getVisDiscount( armor, null, primal ) / 100.0F );
-					}
-					catch( Exception e )
-					{
-					}
-				}
-			}
+			discount -= VisCraftingHelper.instance.calculateArmorDiscount( this.internalInventory, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX, primal );
 
 			this.visDiscount.put( primal, discount );
 		}
@@ -302,24 +283,8 @@ public class TileArcaneAssembler
 		this.warpPowerMultiplier = 1.0F;
 
 		// Calculate warp power multiplier
-		for( int index = 0; index < 4; index++ )
-		{
-			// Get the armor stack
-			ItemStack armor = this.internalInventory.slots[TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index];
-
-			// Ensure it is valid warp gear
-			if( ( armor != null ) && ( armor.getItem() instanceof IWarpingGear ) )
-			{
-				try
-				{
-					// Add to the warp multiplier
-					this.warpPowerMultiplier += ( ( (IWarpingGear)armor.getItem() ).getWarp( armor, null ) * TileArcaneAssembler.WARP_POWER_PERCENT );
-				}
-				catch( Exception e )
-				{
-				}
-			}
-		}
+		this.warpPowerMultiplier += VisCraftingHelper.instance.calculateArmorWarp( this.internalInventory, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX ) *
+						TileArcaneAssembler.WARP_POWER_PERCENT;
 	}
 
 	private void craftingTick()
@@ -371,8 +336,10 @@ public class TileArcaneAssembler
 			try
 			{
 				// Calculate power required
-				double powerRequired = TileArcaneAssembler.ACTIVE_POWER + ( ( TileArcaneAssembler.ACTIVE_POWER * this.upgradeCount ) / 2.0D ) *
+				double powerRequired = ( TileArcaneAssembler.ACTIVE_POWER + ( ( TileArcaneAssembler.ACTIVE_POWER * this.upgradeCount ) / 2.0D ) ) *
 								this.warpPowerMultiplier;
+
+				System.out.println( powerRequired );
 
 				// Attempt to take power
 				IEnergyGrid eGrid = this.gridProxy.getEnergy();

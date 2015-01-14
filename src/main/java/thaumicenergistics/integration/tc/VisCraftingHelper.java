@@ -1,7 +1,10 @@
 package thaumicenergistics.integration.tc;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagByte;
+import thaumcraft.api.IVisDiscountGear;
+import thaumcraft.api.IWarpingGear;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.items.wands.ItemWandCasting;
@@ -19,6 +22,73 @@ public class VisCraftingHelper
 	private VisCraftingHelper()
 	{
 		// Intentionally Empty
+	}
+
+	/**
+	 * Calculates the vis discount for the specified armor slots and aspect.
+	 * 
+	 * @param inventory
+	 * @param firstSlotIndex
+	 * @param aspect
+	 * @return
+	 */
+	public float calculateArmorDiscount( final IInventory inventory, final int firstSlotIndex, final Aspect aspect )
+	{
+		float discount = 0.0F;
+
+		for( int index = 0; index < 4; index++ )
+		{
+			// Get the armor stack
+			ItemStack armor = inventory.getStackInSlot( firstSlotIndex + index );
+
+			// Ensure it is valid discount gear
+			if( ( armor != null ) && ( armor.getItem() instanceof IVisDiscountGear ) )
+			{
+				try
+				{
+					// Get the discount
+					discount += ( ( (IVisDiscountGear)armor.getItem() ).getVisDiscount( armor, null, aspect ) / 100.0F );
+				}
+				catch( Exception e )
+				{
+				}
+			}
+		}
+
+		return discount;
+	}
+
+	/**
+	 * Calculates the amount of warp generated from the specified armor slots.
+	 * 
+	 * @param inventory
+	 * @param firstSlotIndex
+	 * @return
+	 */
+	public int calculateArmorWarp( final IInventory inventory, final int firstSlotIndex )
+	{
+		int warp = 0;
+
+		for( int index = 0; index < 4; index++ )
+		{
+			// Get the armor stack
+			ItemStack armor = inventory.getStackInSlot( firstSlotIndex + index );
+
+			// Ensure it is valid warp gear
+			if( ( armor != null ) && ( armor.getItem() instanceof IWarpingGear ) )
+			{
+				try
+				{
+					// Get the warp
+					warp += ( (IWarpingGear)armor.getItem() ).getWarp( armor, null );
+				}
+				catch( Exception e )
+				{
+				}
+			}
+		}
+
+		return warp;
 	}
 
 	/**
