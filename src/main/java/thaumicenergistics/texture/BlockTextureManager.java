@@ -41,7 +41,10 @@ public enum BlockTextureManager
 
 		ARCANE_ASSEMBLER (TextureTypes.Block, new String[] { "arcane.assembler.fallback" }),
 
-		KNOWLEDGE_INSCRIBER (TextureTypes.Block, new String[] { "knowledge.inscriber.side", "knowledge.inscriber.top", "knowledge.inscriber.bottom" });
+		KNOWLEDGE_INSCRIBER (TextureTypes.Block, new String[] { "knowledge.inscriber.side", "knowledge.inscriber.top", "knowledge.inscriber.bottom" }),
+
+		ESSENTIA_VIBRATION_CHAMBER (TextureTypes.Block, new String[] { "essentia.vibration.chamber.side", "essentia.vibration.chamber.face.off",
+						"essentia.vibration.chamber.face.on", });
 
 	private enum TextureTypes
 	{

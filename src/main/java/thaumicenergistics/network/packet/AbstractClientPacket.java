@@ -34,14 +34,6 @@ public abstract class AbstractClientPacket
 	}
 
 	/**
-	 * Send this packet to all players.
-	 */
-	public void sendPacketToAllPlayers()
-	{
-		ChannelHandler.sendPacketToAllPlayers( this );
-	}
-
-	/**
 	 * Send this packet to the player.
 	 * 
 	 * @param player

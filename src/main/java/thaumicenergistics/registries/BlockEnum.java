@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import thaumicenergistics.blocks.BlockArcaneAssembler;
 import thaumicenergistics.blocks.BlockEssentiaCellWorkbench;
 import thaumicenergistics.blocks.BlockEssentiaProvider;
+import thaumicenergistics.blocks.BlockEssentiaVibrationChamber;
 import thaumicenergistics.blocks.BlockGearBox;
 import thaumicenergistics.blocks.BlockGolemGearBox;
 import thaumicenergistics.blocks.BlockInfusionProvider;
@@ -17,7 +18,8 @@ public enum BlockEnum
 		THAUMIUM_GEAR_BOX (ThEStrings.Block_ThaumiumGearbox, new BlockGolemGearBox()),
 		ESSENTIA_CELL_WORKBENCH (ThEStrings.Block_EssentiaCellWorkbench, new BlockEssentiaCellWorkbench()),
 		ARCANE_ASSEMBLER (ThEStrings.Block_ArcaneAssembler, new BlockArcaneAssembler()),
-		KNOWLEDGE_INSCRIBER (ThEStrings.Block_KnowledgeInscriber, new BlockKnowledgeInscriber());
+		KNOWLEDGE_INSCRIBER (ThEStrings.Block_KnowledgeInscriber, new BlockKnowledgeInscriber()),
+		ESSENTIA_VIBRATION_CHAMBER (ThEStrings.Block_EssentiaVibrationChamber, new BlockEssentiaVibrationChamber());
 
 	private Block block;
 

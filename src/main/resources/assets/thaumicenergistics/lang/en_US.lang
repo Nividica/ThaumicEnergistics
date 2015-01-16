@@ -13,6 +13,7 @@ thaumicenergistics.block.golem.gear.box.name=Thaumium Gear Box
 thaumicenergistics.block.essentia.cell.workbench.name=Essentia Cell Workbench
 thaumicenergistics.block.arcane.assembler.name=Arcane Assembler
 thaumicenergistics.block.knowledge.inscriber.name=Knowledge Inscriber
+thaumicenergistics.block.essentia.vibration.chamber.name=Essentia Vibration Chamber
 
 #Cable parts
 thaumicenergistics.aeparts.essentia.ImportBus.name=Essentia Import Bus
@@ -39,6 +40,7 @@ thaumicenergistics.item.material.coalescence.core.name=Coalescence Core
 thaumicenergistics.item.material.iron.gear.name=Iron Gear
 thaumicenergistics.item.wireless.essentia.terminal.name=Wireless Essentia Terminal
 thaumicenergistics.item.knowledge.core.name=Knowledge Core
+thaumicenergistics.item.focus.aewrench.name=Wand Focus: AE Wrench
 
 #Tooltips
 thaumicenergistics.tooltip.essentia.cell.bytes=%d of %d bytes used.
@@ -146,3 +148,8 @@ tc.research_text.thaumicenergistics.TEARCANEASSEMBLER=Magical Molecule Assembly
 thaumicenergistics.research_page.TEARCANEASSEMBLER.1=While examining the §lMolecular Assembler§r it occurs to you that it may be possible to modify the assembler to produce arcane items. You conclude that by infusing the assembler with the appropriate shards it will be able to regulate vis flow into items. It will also need a moderate amount of vis storage, and the §lSilverwood Scepter§r seems the best choice.<BR>Note: A fully charged scepter is required for the infusion.
 thaumicenergistics.research_page.TEARCANEASSEMBLER.2=§lPattern Storage§r<BR>The assembler itself does not store crafting recipes. Further research may be required to devise a pattern storage medium.<BR>§lVis Replenishment§r<BR>Replenishing the assembler's internal vis storage will require the services of a §lVis Relay Interface§r.<BR>§lAcceleration Cards§r<BR>Each card decreases crafting time by 20% and increases power required by 50%.
 thaumicenergistics.research_page.TEARCANEASSEMBLER.3=§lVis Discounts§r<BR>Due to the inclusion of the crafting scepter, the assembler has a base vis discount equal to that of the scepter. The discount can be further enhanced by providing the assembler vis discount armor. The discount for each aspect can be viewed by hovering over the aspect in the GUI.<BR>Keep in mind that the assembler is not immune to the effects of warping gear. For each point of warp the assembler must draw an additional 15% power to remain stable. This effect only applies during crafting.
+
+# Research Wrench Focus
+tc.research_name.thaumicenergistics.TEFOCUSWRENCH=Wand Focus: AE Wrench
+tc.research_text.thaumicenergistics.TEFOCUSWRENCH=Some Assembly Required
+thaumicenergistics.research_page.TEFOCUSWRENCH.1=Stuff

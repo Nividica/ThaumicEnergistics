@@ -2,9 +2,8 @@ package thaumicenergistics.network;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.Packet;
-import net.minecraft.world.World;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.network.handlers.HandlerAreaParticleFX;
 import thaumicenergistics.network.handlers.HandlerClientAspectSlot;
 import thaumicenergistics.network.handlers.HandlerClientEssentiaCellTerminal;
 import thaumicenergistics.network.handlers.HandlerClientEssentiaStorageBus;
@@ -24,6 +23,7 @@ import thaumicenergistics.network.handlers.part.HandlerServerEssentiaIOBus;
 import thaumicenergistics.network.handlers.part.HandlerServerEssentiaLevelEmitter;
 import thaumicenergistics.network.handlers.part.HandlerServerEssentiaStorageBus;
 import thaumicenergistics.network.packet.AbstractPacket;
+import thaumicenergistics.network.packet.client.PacketAreaParticleFX;
 import thaumicenergistics.network.packet.client.PacketClientArcaneCraftingTerminal;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
@@ -43,6 +43,7 @@ import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
 import thaumicenergistics.network.packet.server.PacketServerKnowledgeInscriber;
 import thaumicenergistics.network.packet.server.PacketServerPriority;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 
@@ -55,50 +56,54 @@ public class ChannelHandler
 	{
 		byte discriminator = 0;
 
+		// Aspect slot
 		wrapper.registerMessage( HandlerClientAspectSlot.class, PacketClientAspectSlot.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerAspectSlot.class, PacketServerAspectSlot.class, discriminator++ , Side.SERVER );
 
+		// Essentia import/export bus
 		wrapper.registerMessage( HandlerClientEssentiaIOBus.class, PacketClientEssentiaIOBus.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerEssentiaIOBus.class, PacketServerEssentiaIOBus.class, discriminator++ , Side.SERVER );
 
+		// Essentia storage bus
 		wrapper.registerMessage( HandlerClientEssentiaStorageBus.class, PacketClientEssentiaStorageBus.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerEssentiaStorageBus.class, PacketServerEssentiaStorageBus.class, discriminator++ , Side.SERVER );
 
+		// Essentia level emitter
 		wrapper.registerMessage( HandlerClientEssentiaLevelEmitter.class, PacketClientEssentiaEmitter.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerEssentiaLevelEmitter.class, PacketServerEssentiaEmitter.class, discriminator++ , Side.SERVER );
 
+		// Essentia terminal
 		wrapper.registerMessage( HandlerServerEssentiaCellTerminal.class, PacketServerEssentiaCellTerminal.class, discriminator++ , Side.SERVER );
 		wrapper.registerMessage( HandlerClientEssentiaCellTerminal.class, PacketClientEssentiaCellTerminal.class, discriminator++ , Side.CLIENT );
 
+		// Arcane crafting terminal
 		wrapper.registerMessage( HandlerClientArcaneCraftingTerminal.class, PacketClientArcaneCraftingTerminal.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerArcaneCraftingTerminal.class, PacketServerArcaneCraftingTerminal.class, discriminator++ , Side.SERVER );
 
+		// Change GUI
 		wrapper.registerMessage( HandlerServerChangeGui.class, PacketServerChangeGui.class, discriminator++ , Side.SERVER );
 
+		// Priority GUI
 		wrapper.registerMessage( HandlerClientPriority.class, PacketClientPriority.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerPriority.class, PacketServerPriority.class, discriminator++ , Side.SERVER );
 
+		// Essentia cell workbench
 		wrapper.registerMessage( HandlerServerEssentiaCellWorkbench.class, PacketServerEssentiaCellWorkbench.class, discriminator++ , Side.SERVER );
 
+		// Knowledge inscriber
 		wrapper.registerMessage( HandlerClientKnowledgeInscriber.class, PacketClientKnowledgeInscriber.class, discriminator++ , Side.CLIENT );
 		wrapper.registerMessage( HandlerServerKnowledgeInscriber.class, PacketServerKnowledgeInscriber.class, discriminator++ , Side.SERVER );
 
+		// Particle FX
+		wrapper.registerMessage( HandlerAreaParticleFX.class, PacketAreaParticleFX.class, discriminator++ , Side.CLIENT );
+
 	}
 
-	public static void sendPacketToAllPlayers( final AbstractPacket packet )
+	public static void sendPacketToAllAround( final AbstractPacket packet, final int dimension, final double x, final double y, final double z,
+												final int range )
 	{
-		wrapper.sendToAll( packet );
-	}
-
-	public static void sendPacketToAllPlayers( final Packet packet, final World world )
-	{
-		for( Object player : world.playerEntities )
-		{
-			if( player instanceof EntityPlayerMP )
-			{
-				( (EntityPlayerMP)player ).playerNetServerHandler.sendPacket( packet );
-			}
-		}
+		TargetPoint p = new TargetPoint( dimension, x, y, z, range );
+		wrapper.sendToAllAround( packet, p );
 	}
 
 	public static void sendPacketToPlayer( final AbstractPacket packet, final EntityPlayer player )

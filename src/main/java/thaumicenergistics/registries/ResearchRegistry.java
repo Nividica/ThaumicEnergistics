@@ -29,8 +29,9 @@ public class ResearchRegistry
 			INFUSION ("INFUSION", "ARTIFICE", -6, 0),
 			VISPOWER ("VISPOWER", "THAUMATURGY", 2, -1),
 			COREUSE ("COREUSE", "GOLEMANCY", 4, 3),
-			DUPE ("ALCHEMICALDUPLICATION", "ALCHEMY", -6, -7),
-			WARDED ("WARDEDARCANA", "ARTIFICE", 0, 2);
+			DUPE ("ALCHEMICALDUPLICATION", "ALCHEMY", -5, -6),
+			WARDED ("WARDEDARCANA", "ARTIFICE", 0, 2),
+			FOCUSFIRE ("FOCUSFIRE", "THAUMATURGY", -4, -7);
 
 		private String realResearchKey;
 		private String realResearchCategory;
@@ -73,9 +74,10 @@ public class ResearchRegistry
 			VISINTERFACE ("VISINT", 2, 0),
 			IRONGEARBOX ("IRONGEARBOX", 3, 2),
 			THAUMIUMGEARBOX ("THAUMGBOX", 3, 3),
-			CERTUSDUPE ("CERTUSDUPE", -6, -6),
+			CERTUSDUPE ("CERTUSDUPE", -5, -5),
 			ARCANEASSEMBLER ("ARCANEASSEMBLER", 4, 0),
-			KNOWLEDGEINSCRIBER ("KNOWLEDGEINSCRIBER", 4, -2);
+			KNOWLEDGEINSCRIBER ("KNOWLEDGEINSCRIBER", 4, -2),
+			FOCUSWRENCH ("FOCUSWRENCH", -3, -7);
 
 		private String internalName;
 
@@ -583,6 +585,27 @@ public class ResearchRegistry
 		ResearchTypes.VISINTERFACE.researchItem.registerResearchItem();
 	}
 
+	private static void registerWrenchFocus()
+	{
+		// Set the research aspects
+		AspectList focusAspects = new AspectList();
+		focusAspects.add( Aspect.MECHANISM, 6 );
+		focusAspects.add( Aspect.TOOL, 5 );
+		focusAspects.add( Aspect.MAGIC, 3 );
+
+		// Set the icon
+		ItemStack focusIcon = ItemEnum.FOCUS_AEWRENCH.getItemStackWithSize( 1 );
+
+		// Set the pages
+		ResearchPage[] focusPages = new ResearchPage[] { new ResearchPage( ResearchTypes.FOCUSWRENCH.getPageName( 1 ) ) };
+
+		// Create the research
+		ResearchTypes.FOCUSWRENCH.createResearchItem( focusAspects, COMPLEXITY_SMALL, focusIcon, focusPages );
+		ResearchTypes.FOCUSWRENCH.researchItem.setParents( PseudoResearchTypes.FOCUSFIRE.getKey() ).setSecondary();
+		ResearchTypes.FOCUSWRENCH.researchItem.registerResearchItem();
+
+	}
+
 	public static void registerResearch()
 	{
 		// Create our research tab
@@ -638,6 +661,9 @@ public class ResearchRegistry
 
 		// Knowledge Inscriber + Core
 		ResearchRegistry.registerKnowledgeInscriber();
+
+		// Wrench focus
+		ResearchRegistry.registerWrenchFocus();
 
 		// Place parents
 		ResearchRegistry.addPseudoParents();

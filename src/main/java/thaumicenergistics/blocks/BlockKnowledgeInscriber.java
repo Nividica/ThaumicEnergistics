@@ -152,7 +152,7 @@ public class BlockKnowledgeInscriber
 	public void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack )
 	{
 		// Set the metadata to up
-		world.setBlockMetadataWithNotify( x, y, z, 0, 3 );
+		world.setBlockMetadataWithNotify( x, y, z, 0, 2 );
 	}
 
 	/**

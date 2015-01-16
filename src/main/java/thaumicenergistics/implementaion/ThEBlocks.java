@@ -15,5 +15,6 @@ class ThEBlocks
 		this.EssentiaCellWorkbench = new ThEDescription( BlockEnum.ESSENTIA_CELL_WORKBENCH.getBlock() );
 		this.ArcaneAssembler = new ThEDescription( BlockEnum.ARCANE_ASSEMBLER.getBlock() );
 		this.KnowledgeInscriber = new ThEDescription( BlockEnum.KNOWLEDGE_INSCRIBER.getBlock() );
+		this.EssentiaVibrationChamber = new ThEDescription( BlockEnum.ESSENTIA_VIBRATION_CHAMBER.getBlock() );
 	}
 }

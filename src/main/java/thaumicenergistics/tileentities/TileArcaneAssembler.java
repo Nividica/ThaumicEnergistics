@@ -339,8 +339,6 @@ public class TileArcaneAssembler
 				double powerRequired = ( TileArcaneAssembler.ACTIVE_POWER + ( ( TileArcaneAssembler.ACTIVE_POWER * this.upgradeCount ) / 2.0D ) ) *
 								this.warpPowerMultiplier;
 
-				System.out.println( powerRequired );
-
 				// Attempt to take power
 				IEnergyGrid eGrid = this.gridProxy.getEnergy();
 				double powerExtracted = eGrid.extractAEPower( powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG );
@@ -1201,9 +1199,19 @@ public class TileArcaneAssembler
 	}
 
 	/**
+	 * Sets the owner of this tile.
+	 * 
+	 * @param player
+	 */
+	public void setOwner( final EntityPlayer player )
+	{
+		this.gridProxy.setOwner( player );
+	}
+
+	/**
 	 * Configures the Assembler.
 	 */
-	public void setupAssemblerTile()
+	public TileArcaneAssembler setupAssemblerTile()
 	{
 		// Ignored on client side
 		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
@@ -1214,6 +1222,8 @@ public class TileArcaneAssembler
 			// Set that we require a channel
 			this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		}
+
+		return this;
 	}
 
 }

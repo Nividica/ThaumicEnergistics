@@ -22,6 +22,7 @@ public enum ThEStrings
 		Block_EssentiaCellWorkbench ("block.essentia.cell.workbench", true),
 		Block_ArcaneAssembler ("block.arcane.assembler", true),
 		Block_KnowledgeInscriber ("block.knowledge.inscriber", true),
+		Block_EssentiaVibrationChamber ("block.essentia.vibration.chamber", true),
 
 		// Parts
 		Part_EssentiaImportBus ("aeparts.essentia.ImportBus", true),
@@ -48,6 +49,7 @@ public enum ThEStrings
 		Item_IronGear ("item.material.iron.gear", true),
 		Item_WirelessEssentiaTerminal ("item.wireless.essentia.terminal", true),
 		Item_KnowledgeCore ("item.knowledge.core", true),
+		Item_FocusAEWrench ("item.focus.aewrench", true),
 
 		// Tooltips
 		Tooltip_CellBytes ("tooltip.essentia.cell.bytes", false),

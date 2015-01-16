@@ -7,13 +7,15 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.integration.tc.EssentiaTransportHelper;
+import thaumicenergistics.integration.tc.IEssentiaTransportWithSimulate;
 import appeng.api.config.Actionable;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 
 public class TileEssentiaProvider
 	extends TileProviderBase
-	implements IEssentiaTransport
+	implements IEssentiaTransportWithSimulate
 {
 	/**
 	 * How often should the tile tick.
@@ -74,7 +76,28 @@ public class TileEssentiaProvider
 	@Override
 	public int addEssentia( final Aspect aspect, final int amount, final ForgeDirection side )
 	{
-		return this.injectEssentiaIntoNetwork( aspect, amount, Actionable.MODULATE );
+		return this.addEssentia( aspect, amount, side, Actionable.MODULATE );
+	}
+
+	@Override
+	public int addEssentia( final Aspect aspect, final int amount, final ForgeDirection side, final Actionable mode )
+	{
+		// Validate amount
+		if( amount <= 0 )
+		{
+			// Invalid amount
+			return 0;
+		}
+
+		// Get the amount injected
+		int acceptedAmount = this.injectEssentiaIntoNetwork( aspect, amount, mode );
+
+		if( ( mode == Actionable.MODULATE ) && ( acceptedAmount > 0 ) )
+		{
+			this.tickRate = TileEssentiaProvider.TICK_RATE_URGENT;
+		}
+
+		return acceptedAmount;
 	}
 
 	@Override
@@ -179,59 +202,8 @@ public class TileEssentiaProvider
 			// Assume idle
 			this.tickRate = TileEssentiaProvider.TICK_RATE_IDLE;
 
-			// Search every side
-			for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
-			{
-				// Get the tile
-				TileEntity tile = this.worldObj.getTileEntity( side.offsetX + this.xCoord, side.offsetY + this.yCoord, side.offsetZ + this.zCoord );
-
-				// Ensure it is a transport
-				if( !( tile instanceof IEssentiaTransport ) )
-				{
-					// Not transport, skip it.
-					continue;
-				}
-
-				// Cast
-				IEssentiaTransport transport = (IEssentiaTransport)tile;
-				ForgeDirection opSide = side.getOpposite();
-
-				// Does the transport have essentia to give?
-				if( transport.getEssentiaAmount( opSide ) == 0 )
-				{
-					// No essentia.
-					continue;
-				}
-
-				// Set tick rate to urgent.
-				this.tickRate = TileEssentiaProvider.TICK_RATE_URGENT;
-
-				// Is there enough suction to pull it out?
-				if( ( this.getSuctionAmount( side ) < transport.getMinimumSuction() ) ||
-								( this.getSuctionAmount( side ) < transport.getSuctionAmount( opSide ) ) )
-				{
-					// Not enough suction.
-					continue;
-				}
-
-				// Get the aspect of the essentia.
-				Aspect aspect = transport.getEssentiaType( side );
-
-				// Ensure there is an aspect
-				if( aspect == null )
-				{
-					// Null aspect
-					continue;
-				}
-
-				// Can the essentia be imported?
-				if( this.injectEssentiaIntoNetwork( aspect, 1, Actionable.SIMULATE ) == 1 )
-				{
-					// Take from tile and import
-					this.injectEssentiaIntoNetwork( aspect, transport.takeEssentia( aspect, 1, opSide ), Actionable.MODULATE );
-
-				}
-			}
+			// Take essentia from the neighbors
+			EssentiaTransportHelper.instance.takeEssentiaFromTransportNeighbors( this, this.worldObj, this.xCoord, this.yCoord, this.zCoord );
 		}
 	}
 

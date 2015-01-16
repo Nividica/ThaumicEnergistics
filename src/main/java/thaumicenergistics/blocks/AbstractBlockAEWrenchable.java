@@ -5,6 +5,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.items.IAEWrench;
 
 public abstract class AbstractBlockAEWrenchable
@@ -105,12 +106,19 @@ public abstract class AbstractBlockAEWrenchable
 				}
 
 				// Let the subclass handle the event
-				return this.onWrenched( world, x, y, z, side );
+				//return this.onWrenched( world, x, y, z, side );
+				return true;
 			}
 		}
 
 		return this.onBlockActivated( world, x, y, z, player );
 
+	}
+
+	@Override
+	public boolean rotateBlock( final World world, final int x, final int y, final int z, final ForgeDirection side )
+	{
+		return this.onWrenched( world, x, y, z, side.ordinal() );
 	}
 
 }

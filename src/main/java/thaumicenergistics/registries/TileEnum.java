@@ -4,6 +4,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
 import thaumicenergistics.tileentities.TileEssentiaCellWorkbench;
 import thaumicenergistics.tileentities.TileEssentiaProvider;
+import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
 import thaumicenergistics.tileentities.TileGearBox;
 import thaumicenergistics.tileentities.TileInfusionProvider;
 import thaumicenergistics.tileentities.TileKnowledgeInscriber;
@@ -15,7 +16,8 @@ public enum TileEnum
 		GearBox ("TileGearBox", TileGearBox.class),
 		CellWorkbench ("TileEssentiaCellWorkbench", TileEssentiaCellWorkbench.class),
 		ArcaneAssembler ("TileArcaneAssembler", TileArcaneAssembler.class),
-		KnowledgeInscriber ("TileKnowledgeInscriber", TileKnowledgeInscriber.class);
+		KnowledgeInscriber ("TileKnowledgeInscriber", TileKnowledgeInscriber.class),
+		EssentiaVibrationChamber ("TileEssentiaVibrationChamber", TileEssentiaVibrationChamber.class);
 
 	/**
 	 * Unique ID of the tile entity

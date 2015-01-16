@@ -12,6 +12,7 @@ import thaumicenergistics.container.ContainerKnowledgeInscriber.CoreSaveState;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
 import thaumicenergistics.gui.buttons.ButtonSaveDelete;
 import thaumicenergistics.network.packet.server.PacketServerKnowledgeInscriber;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.GuiTextureManager;
 
 public class GuiKnowledgeInscriber
@@ -64,8 +65,8 @@ public class GuiKnowledgeInscriber
 		this.xSize = GuiKnowledgeInscriber.GUI_WIDTH;
 		this.ySize = GuiKnowledgeInscriber.GUI_HEIGHT;
 
-		// TODO: Localize title
-		this.title = "Knowledge Inscriber";
+		// Set title
+		this.title = ThEStrings.Block_KnowledgeInscriber.getLocalized();
 	}
 
 	@Override

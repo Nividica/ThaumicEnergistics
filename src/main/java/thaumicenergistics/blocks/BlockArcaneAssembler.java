@@ -111,13 +111,9 @@ public class BlockArcaneAssembler
 	 * Creates a new Arcane Assembler tile
 	 */
 	@Override
-	public TileEntity createNewTileEntity( final World p_149915_1_, final int p_149915_2_ )
+	public TileEntity createNewTileEntity( final World world, final int metadata )
 	{
-		TileArcaneAssembler assembler = new TileArcaneAssembler();
-
-		assembler.setupAssemblerTile();
-
-		return assembler;
+		return new TileArcaneAssembler().setupAssemblerTile();
 	}
 
 	/**
@@ -192,12 +188,21 @@ public class BlockArcaneAssembler
 	public void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack )
 	{
 		// Get the tile
-		TileArcaneAssembler tile = (TileArcaneAssembler)world.getTileEntity( x, y, z );
+		TileArcaneAssembler assembler = (TileArcaneAssembler)world.getTileEntity( x, y, z );
 
-		if( ( tile != null ) && ( itemStack.getTagCompound() != null ) )
+		if( assembler != null )
 		{
-			// Load the saved data
-			tile.onLoadNBT( itemStack.getTagCompound() );
+			if( itemStack.getTagCompound() != null )
+			{
+				// Load the saved data
+				assembler.onLoadNBT( itemStack.getTagCompound() );
+			}
+
+			if( player instanceof EntityPlayer )
+			{
+				// Set the owner
+				assembler.setOwner( (EntityPlayer)player );
+			}
 		}
 	}
 

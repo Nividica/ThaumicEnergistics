@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.items.ItemAEPart;
 import thaumicenergistics.items.ItemEssentiaCell;
+import thaumicenergistics.items.ItemFocusAEWrench;
 import thaumicenergistics.items.ItemKnowledgeCore;
 import thaumicenergistics.items.ItemMaterial;
 import thaumicenergistics.items.ItemStorageCasing;
@@ -19,7 +20,8 @@ public enum ItemEnum
 		STORAGE_CASING ("storage.casing", new ItemStorageCasing()),
 		MATERIAL ("material", new ItemMaterial()),
 		WIRELESS_TERMINAL ("wireless.essentia.terminal", new ItemWirelessEssentiaTerminal()),
-		KNOWLEDGE_CORE ("knowledge.core", new ItemKnowledgeCore());
+		KNOWLEDGE_CORE ("knowledge.core", new ItemKnowledgeCore()),
+		FOCUS_AEWRENCH ("focus.aewrench", new ItemFocusAEWrench());
 
 	/**
 	 * Internal name of the item.
