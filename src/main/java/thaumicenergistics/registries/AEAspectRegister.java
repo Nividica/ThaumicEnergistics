@@ -247,7 +247,7 @@ public class AEAspectRegister
 			}
 
 			// Inscriber recipes
-			for( InscriberRecipe recipe : Inscribe.RECIPIES )
+			for( InscriberRecipe recipe : Inscribe.RECIPES )
 			{
 				try
 				{
