@@ -3,6 +3,7 @@ package thaumicenergistics.registries;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import net.minecraft.item.ItemStack;
@@ -247,28 +248,31 @@ public class AEAspectRegister
 			}
 
 			// Inscriber recipes
-			for( InscriberRecipe recipe : Inscribe.recipes )
+			if( AEAspectRegister.this.INSCRIBER_RECIPES != null )
 			{
-				try
+				for( InscriberRecipe recipe : AEAspectRegister.this.INSCRIBER_RECIPES )
 				{
-					ItemStack recipeOutput = recipe.output;
-
-					// Skip null items
-					if( recipeOutput == null || recipeOutput.getItem() == null )
+					try
 					{
-						continue;
-					}
+						ItemStack recipeOutput = recipe.output;
 
-					if( this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
-					{
-						if( this.isRecipeUsable( recipe ) )
+						// Skip null items
+						if( recipeOutput == null || recipeOutput.getItem() == null )
 						{
-							return;
+							continue;
+						}
+
+						if( this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
+						{
+							if( this.isRecipeUsable( recipe ) )
+							{
+								return;
+							}
 						}
 					}
-				}
-				catch( Exception e )
-				{
+					catch( Exception e )
+					{
+					}
 				}
 			}
 
@@ -775,6 +779,7 @@ public class AEAspectRegister
 	 */
 	List<IRecipe> NORMAL_RECIPES;
 	List<IGrinderEntry> GRINDER_RECIPES;
+	LinkedList<InscriberRecipe> INSCRIBER_RECIPES;
 
 	/**
 	 * Private constructor.
@@ -1046,6 +1051,36 @@ public class AEAspectRegister
 		// Get the current recipes
 		this.NORMAL_RECIPES = CraftingManager.getInstance().getRecipeList();
 		this.GRINDER_RECIPES = AEApi.instance().registries().grinder().getRecipes();
+
+		// Get the inscriber recipes
+		Field fieldInscriberRecipes = null;
+		try
+		{
+			fieldInscriberRecipes = Inscribe.class.getDeclaredField( "RECIPES" );
+		}
+		catch( Exception e )
+		{
+			// TODO: Drop legacy support at version 1.0
+			try
+			{
+				fieldInscriberRecipes = Inscribe.class.getDeclaredField( "recipes" );
+			}
+			catch( Exception e1 )
+			{
+			}
+		}
+
+		if( fieldInscriberRecipes != null )
+		{
+			try
+			{
+				this.INSCRIBER_RECIPES = (LinkedList<InscriberRecipe>)fieldInscriberRecipes.get( null );
+			}
+			catch( Exception e )
+			{
+			}
+
+		}
 
 		// Build the list of items to give aspects to
 		this.getItemsFromAERegistryClass( AEApi.instance().materials() );

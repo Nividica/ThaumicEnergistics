@@ -65,6 +65,7 @@ public class RecipeRegistry
 	public static IArcaneRecipe ITEM_KNOWLEDGE_CORE;
 	public static IArcaneRecipe BLOCK_KNOWLEDGE_INSCRIBER;
 	public static InfusionRecipe BLOCK_ARCANE_ASSEMBLER;
+	public static IArcaneRecipe ITEM_WRENCH_FOCUS;
 
 	private static void registerAutocrafting( final Materials aeMaterials, final Blocks aeBlocks, final Items teItems )
 	{
@@ -231,6 +232,30 @@ public class RecipeRegistry
 		// Workbench
 		RecipeRegistry.BLOCK_CELL_WORKBENCH = new ShapelessOreRecipe( EssentiaCellWorkbench, new Object[] { EssentiaComp_1k, CellWorkbench } );
 		GameRegistry.addRecipe( RecipeRegistry.BLOCK_CELL_WORKBENCH );
+	}
+
+	private static void registerFoci( final Items teItems )
+	{
+		// Minecraft items
+		String NetherQuartz = "gemQuartz";
+
+		// Thaumcraft items
+		ItemStack AirShard = new ItemStack( ConfigItems.itemShard, 1, 0 );
+
+		ItemStack FireShard = new ItemStack( ConfigItems.itemShard, 1, 1 );
+
+		// AE Items
+		ItemStack CertusWrench = AEApi.instance().items().itemCertusQuartzWrench.stack( 1 );
+
+		// My items
+		ItemStack WrenchFocus = teItems.WandFocusAEWrench.getStack();
+
+		// Wrench focus
+		AspectList wrenchAspects = new AspectList();
+		wrenchAspects.add( Aspect.AIR, 10 );
+		wrenchAspects.add( Aspect.FIRE, 10 );
+		RecipeRegistry.ITEM_WRENCH_FOCUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.FOCUSWRENCH.getKey(), WrenchFocus,
+			wrenchAspects, new Object[] { "ANF", "NWN", "FNA", 'A', AirShard, 'F', FireShard, 'N', NetherQuartz, 'W', CertusWrench } );
 	}
 
 	private static void registerGearbox( final Blocks aeBlocks, final Items teItems )
@@ -661,6 +686,9 @@ public class RecipeRegistry
 
 		// Register autocrafting
 		RecipeRegistry.registerAutocrafting( aeMaterials, aeBlocks, teItems );
+
+		// Register foci
+		RecipeRegistry.registerFoci( teItems );
 	}
 
 }

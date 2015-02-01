@@ -158,5 +158,6 @@ public class ThaumicEnergistics
 	// TODO: Sync server configs
 	// TODO: Knowledge Inscriber GUI, add particles like focal manipulator
 	// TODO: Use area packets over tile sync when possible
+	// TODO: Use getIcon that gives world to determine icon for vibration chamber
 
 }

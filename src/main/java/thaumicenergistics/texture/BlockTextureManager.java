@@ -43,8 +43,8 @@ public enum BlockTextureManager
 
 		KNOWLEDGE_INSCRIBER (TextureTypes.Block, new String[] { "knowledge.inscriber.side", "knowledge.inscriber.top", "knowledge.inscriber.bottom" }),
 
-		ESSENTIA_VIBRATION_CHAMBER (TextureTypes.Block, new String[] { "essentia.vibration.chamber.side", "essentia.vibration.chamber.face.off",
-						"essentia.vibration.chamber.face.on", });
+		ESSENTIA_VIBRATION_CHAMBER (TextureTypes.Block, new String[] { "e.vibration.input", "e.vibration.face.off", "e.vibration.face.ignis",
+						"e.vibration.face.potentia", });
 
 	private enum TextureTypes
 	{

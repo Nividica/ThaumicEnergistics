@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
@@ -20,6 +21,9 @@ import thaumicenergistics.network.packet.client.PacketAreaParticleFX;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.AEApi;
+import appeng.api.parts.IPartHost;
+import appeng.parts.PartPlacement;
+import appeng.parts.PartPlacement.PlaceType;
 
 public class ItemFocusAEWrench
 	extends ItemFocusBasic
@@ -99,8 +103,8 @@ public class ItemFocusAEWrench
 
 	}
 
-	private void activateWrenchRightClick( final World world, final int x, final int y, final int z, final EntityPlayer player, final int side,
-											final float hitX, final float hitY, final float hitZ, final ItemStack wandStack )
+	private void activateWrenchRightClick( final World world, final EntityPlayer player, final MovingObjectPosition position,
+											final ItemStack wandStack )
 	{
 		// Is this server side?
 		if( world.isRemote )
@@ -110,7 +114,7 @@ public class ItemFocusAEWrench
 		}
 
 		// Get the block that was clicked
-		Block block = world.getBlock( x, y, z );
+		Block block = world.getBlock( position.blockX, position.blockY, position.blockZ );
 
 		// Ensure the block is valid
 		if( ( block == null ) || ( block == Blocks.air ) )
@@ -147,15 +151,37 @@ public class ItemFocusAEWrench
 
 		try
 		{
-			// Call onActivate
-			if( block.onBlockActivated( world, x, y, z, player, side, hitX, hitY, hitZ ) )
+			boolean didWrench = false;
+
+			// Is there a part host?
+			TileEntity tile = world.getTileEntity( position.blockX, position.blockY, position.blockZ );
+			if( tile instanceof IPartHost )
+			{
+				didWrench = PartPlacement.place( this.psuedoWrench, position.blockX, position.blockY, position.blockZ, position.sideHit, player,
+					world, PlaceType.INTERACT_FIRST_PASS, 0 );
+			}
+
+			if( !didWrench )
+			{
+				// Call onActivate
+				block.onBlockActivated( world, position.blockX, position.blockY, position.blockZ, player, position.sideHit,
+					(float)position.hitVec.xCoord, (float)position.hitVec.yCoord, (float)position.hitVec.zCoord );
+
+				// Is the block gone?
+				didWrench = ( world.getBlock( position.blockX, position.blockY, position.blockZ ) == Blocks.air );
+			}
+
+			// Was something removed?
+			if( didWrench )
 			{
 				// Spawn beam
-				new PacketAreaParticleFX().createWrenchFX( world, player.posX, player.posY, player.posZ, x, y, z, Aspect.ENERGY ).sendToAllAround( 20 );
+				new PacketAreaParticleFX().createWrenchFX( world, player.posX, player.posY, player.posZ, position.blockX, position.blockY,
+					position.blockZ, Aspect.ENERGY ).sendToAllAround( 20 );
 
 				// Use vis
 				wand.consumeAllVis( wandStack, player, this.castCost, true, false );
 			}
+
 		}
 		finally
 		{
@@ -244,8 +270,7 @@ public class ItemFocusAEWrench
 		if( ( player.isSneaking() ) && ( position != null ) && ( position.typeOfHit == MovingObjectType.BLOCK ) )
 		{
 			// Use the wrench
-			this.activateWrenchRightClick( world, position.blockX, position.blockY, position.blockZ, player, position.sideHit,
-				(float)position.hitVec.xCoord, (float)position.hitVec.yCoord, (float)position.hitVec.zCoord, wandStack );
+			this.activateWrenchRightClick( world, player, position, wandStack );
 		}
 
 		return wandStack;

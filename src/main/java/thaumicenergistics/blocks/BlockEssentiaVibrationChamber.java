@@ -9,8 +9,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
@@ -21,9 +23,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockEssentiaVibrationChamber
 	extends AbstractBlockAEWrenchable
 {
-	public static final int[] FACE_DIRS = new int[] { 2, 5, 3, 4 };
-
-	private static final int FLAG_ON = 8, BITS_SIDE = 7;
 
 	public BlockEssentiaVibrationChamber()
 	{
@@ -40,85 +39,26 @@ public class BlockEssentiaVibrationChamber
 		this.setCreativeTab( ThaumicEnergistics.ThETab );
 	}
 
-	/**
-	 * Gets the side that represents the face of the block.
-	 * 
-	 * @param metaData
-	 * @return
-	 */
-	public static final ForgeDirection getFaceSideFromMeta( final int metaData )
-	{
-		int index = ( metaData & BlockEssentiaVibrationChamber.BITS_SIDE ) - 1;
-
-		return ForgeDirection.VALID_DIRECTIONS[BlockEssentiaVibrationChamber.FACE_DIRS[index]];
-
-	}
-
-	/**
-	 * Sets the index of the side that should be the face.
-	 * 
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param index
-	 */
-	public static final void setBlockFaceIndex( final World world, final int x, final int y, final int z, int index )
-	{
-		// Ensure index bits are clean
-		index = index % BlockEssentiaVibrationChamber.FACE_DIRS.length;
-
-		// Get the block meta data
-		int metaData = world.getBlockMetadata( x, y, z );
-
-		// Extract the on/off flag
-		int onFlag = metaData & BlockEssentiaVibrationChamber.FLAG_ON;
-
-		// Combine
-		metaData = ( index + 1 ) | onFlag;
-
-		// Set
-		world.setBlockMetadataWithNotify( x, y, z, metaData, 3 );
-	}
-
-	/**
-	 * Sets the face texture to on or off.
-	 * 
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param isOn
-	 */
-	public static final void setBlockOnState( final World world, final int x, final int y, final int z, final boolean isOn )
-	{
-		// Get the block meta data, stripping the ON flags
-		int metaData = world.getBlockMetadata( x, y, z ) & BlockEssentiaVibrationChamber.BITS_SIDE;
-
-		// Combine
-		if( isOn )
-		{
-			metaData |= BlockEssentiaVibrationChamber.FLAG_ON;
-		}
-
-		// Set
-		world.setBlockMetadataWithNotify( x, y, z, metaData, 2 );
-	}
-
 	@Override
 	protected boolean onWrenched( final World world, final int x, final int y, final int z, final int side )
 	{
-		// Get and increment the meta data, striping ON flag
-		int index = ( world.getBlockMetadata( x, y, z ) & BlockEssentiaVibrationChamber.BITS_SIDE );
+		// Get the chamber
+		TileEssentiaVibrationChamber chamber = (TileEssentiaVibrationChamber)world.getTileEntity( x, y, z );
 
-		// Bounds check
-		if( index >= BlockEssentiaVibrationChamber.FACE_DIRS.length )
+		// Ensure the chamber is present
+		if( chamber == null )
 		{
-			index = 0;
+			return false;
 		}
 
-		// Set
-		BlockEssentiaVibrationChamber.setBlockFaceIndex( world, x, y, z, index );
+		int sideIndex = chamber.getForward().ordinal() + 1;
+
+		if( sideIndex >= ForgeDirection.VALID_DIRECTIONS.length )
+		{
+			sideIndex = 0;
+		}
+
+		chamber.setOrientation( ForgeDirection.getOrientation( sideIndex ), ForgeDirection.UP );
 
 		return true;
 	}
@@ -130,37 +70,63 @@ public class BlockEssentiaVibrationChamber
 	}
 
 	/**
-	 * Gets the standard block icon.
+	 * Gets the world icons
+	 * 
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param side
+	 * @return
+	 */
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon( final IBlockAccess world, final int x, final int y, final int z, final int side )
+	{
+		// Get the chamber
+		TileEssentiaVibrationChamber chamber = (TileEssentiaVibrationChamber)world.getTileEntity( x, y, z );
+
+		// Ensure the chamber is present
+		if( chamber == null )
+		{
+			return this.getIcon( side, 0 );
+		}
+
+		// Is this side the face?		
+		if( ( chamber.getForward() != null ) && ( side == chamber.getForward().ordinal() ) )
+		{
+			// Get the aspect in the chamber
+			Aspect aspect = chamber.getEssentiaType( null );
+
+			if( aspect == Aspect.ENERGY )
+			{
+				// On: Potentia
+				return BlockTextureManager.ESSENTIA_VIBRATION_CHAMBER.getTextures()[3];
+			}
+			else if( aspect == Aspect.FIRE )
+			{
+				// On: Ignis
+				return BlockTextureManager.ESSENTIA_VIBRATION_CHAMBER.getTextures()[2];
+			}
+
+			// Off
+			return BlockTextureManager.ESSENTIA_VIBRATION_CHAMBER.getTextures()[1];
+		}
+
+		// Input
+		return BlockTextureManager.ESSENTIA_VIBRATION_CHAMBER.getTextures()[0];
+	}
+
+	/**
+	 * Gets the inventory icons.
 	 */
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon( final int side, final int meta )
 	{
 		// Inventory icons
-		if( meta == 0 )
+		if( side == 4 )
 		{
-			if( side == 4 )
-			{
-				// Face off
-				return BlockTextureManager.ESSENTIA_VIBRATION_CHAMBER.getTextures()[1];
-			}
-
-			// Sides
-			return BlockTextureManager.ESSENTIA_VIBRATION_CHAMBER.getTextures()[0];
-		}
-
-		int index = ( meta & BlockEssentiaVibrationChamber.BITS_SIDE ) - 1;
-
-		// World icons
-		// Is face?
-		if( side == BlockEssentiaVibrationChamber.FACE_DIRS[index] )
-		{
-			if( ( meta & BlockEssentiaVibrationChamber.FLAG_ON ) > 0 )
-			{
-				// Face on
-				return BlockTextureManager.ESSENTIA_VIBRATION_CHAMBER.getTextures()[2];
-			}
-
 			// Face off
 			return BlockTextureManager.ESSENTIA_VIBRATION_CHAMBER.getTextures()[1];
 		}
@@ -182,7 +148,7 @@ public class BlockEssentiaVibrationChamber
 	@Override
 	public void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack )
 	{
-		// Get the tile
+		// Get the chamber
 		TileEssentiaVibrationChamber chamber = (TileEssentiaVibrationChamber)world.getTileEntity( x, y, z );
 
 		if( chamber != null )
@@ -198,13 +164,45 @@ public class BlockEssentiaVibrationChamber
 				// Set the owner
 				chamber.setOwner( (EntityPlayer)player );
 			}
+
+			ForgeDirection face = ForgeDirection.NORTH;
+
+			// Is the player looking down?
+			if( player.rotationPitch > 50 )
+			{
+				face = ForgeDirection.UP;
+			}
+			// Is the player looking up?
+			else if( player.rotationPitch < -50 )
+			{
+				face = ForgeDirection.DOWN;
+			}
+
+			else
+			{
+				// Get the side index based on which direction the player is turned
+				int sideIndex = MathHelper.floor_double( ( player.rotationYaw * 4.0F / 360.0F ) + 0.5D ) & 3;
+
+				switch ( sideIndex )
+				{
+					case 0:
+						face = ForgeDirection.NORTH;
+						break;
+					case 1:
+						face = ForgeDirection.EAST;
+						break;
+					case 2:
+						face = ForgeDirection.SOUTH;
+						break;
+					case 3:
+						face = ForgeDirection.WEST;
+						break;
+				}
+			}
+
+			// Set the orientation
+			chamber.setOrientation( face, ForgeDirection.UP );
 		}
-
-		// Get the index based on which direction the player is turned
-		int index = MathHelper.floor_double( ( player.rotationYaw * 4.0F / 360.0F ) + 0.5D ) & 3;
-
-		// Set the meta data
-		world.setBlockMetadataWithNotify( x, y, z, ( index + 1 ), 2 );
 	}
 
 	/**

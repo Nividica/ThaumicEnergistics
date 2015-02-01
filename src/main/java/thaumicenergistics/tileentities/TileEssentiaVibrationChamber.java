@@ -1,5 +1,7 @@
 package thaumicenergistics.tileentities;
 
+import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -7,7 +9,6 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectSource;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.blocks.BlockEssentiaVibrationChamber;
 import thaumicenergistics.integration.tc.EssentiaTransportHelper;
 import thaumicenergistics.integration.tc.IEssentiaTransportWithSimulate;
 import appeng.api.config.Actionable;
@@ -17,13 +18,19 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
+import appeng.tile.TileEvent;
+import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEssentiaVibrationChamber
 	extends AENetworkTile
 	implements IGridTickable, IEssentiaTransportWithSimulate, IAspectSource
 {
+	private static final byte STATE_OFF = 0, STATE_IGNIS = 1, STATE_POTENTIA = 2;
+
 	/**
 	 * Ticking rates.
 	 */
@@ -48,6 +55,11 @@ public class TileEssentiaVibrationChamber
 	 * The rate at which ticks should arrive.
 	 */
 	private TickRateModulation tickRate = TickRateModulation.SAME;
+
+	/**
+	 * 1-100: Ignis, 100-200: Potentia
+	 */
+	private int suctionRotationTimer = 1;
 
 	@Override
 	protected ItemStack getItemFromTile( final Object obj )
@@ -88,7 +100,20 @@ public class TileEssentiaVibrationChamber
 			this.storedEssentiaAmount += addedAmount;
 
 			// Adjust tick rate
-			this.tickRate = TickRateModulation.FASTER;
+			if( this.storedEssentiaAmount < 10 )
+			{
+				this.tickRate = TickRateModulation.URGENT;
+			}
+			else
+			{
+				this.tickRate = TickRateModulation.FASTER;
+			}
+
+			// Mark for update
+			this.markForUpdate();
+
+			// Mark for save
+			this.markDirty();
 		}
 
 		return addedAmount;
@@ -104,7 +129,7 @@ public class TileEssentiaVibrationChamber
 	@Override
 	public boolean canInputFrom( final ForgeDirection side )
 	{
-		return( side != BlockEssentiaVibrationChamber.getFaceSideFromMeta( this.getBlockMetadata() ) );
+		return( side != this.getForward() );
 	}
 
 	/**
@@ -193,9 +218,6 @@ public class TileEssentiaVibrationChamber
 		return this.storedEssentiaAmount;
 	}
 
-	/**
-	 * Can not output.
-	 */
 	@Override
 	public Aspect getEssentiaType( final ForgeDirection side )
 	{
@@ -226,7 +248,27 @@ public class TileEssentiaVibrationChamber
 	@Override
 	public Aspect getSuctionType( final ForgeDirection side )
 	{
-		// TODO rotate suction type if empty, else set to stored type
+		// Is there anything stored?
+		if( this.storedEssentiaAspect != null )
+		{
+			// Suction type must match what is stored
+			return this.storedEssentiaAspect;
+		}
+
+		// Is the timer over 100?
+		if( this.suctionRotationTimer > 100 )
+		{
+			// Does the timer need to be reset?
+			if( this.suctionRotationTimer > 200 )
+			{
+				this.suctionRotationTimer = 0;
+			}
+
+			// Potentia
+			return Aspect.ENERGY;
+		}
+
+		// Ignis
 		return Aspect.FIRE;
 	}
 
@@ -241,7 +283,58 @@ public class TileEssentiaVibrationChamber
 	@Override
 	public boolean isConnectable( final ForgeDirection side )
 	{
-		return( side != BlockEssentiaVibrationChamber.getFaceSideFromMeta( this.getBlockMetadata() ) );
+		return( side != this.getForward() );
+	}
+
+	@TileEvent(TileEventType.NETWORK_READ)
+	@SideOnly(Side.CLIENT)
+	public boolean onReceiveNetworkData( final ByteBuf stream )
+	{
+		// Read essentia type
+		byte state = stream.readByte();
+
+		// Assign essentia type
+		if( state == TileEssentiaVibrationChamber.STATE_POTENTIA )
+		{
+			this.storedEssentiaAspect = Aspect.ENERGY;
+		}
+		else if( state == TileEssentiaVibrationChamber.STATE_IGNIS )
+		{
+			this.storedEssentiaAspect = Aspect.FIRE;
+		}
+		else
+		{
+			this.storedEssentiaAspect = null;
+		}
+
+		// Read essentia amount
+		this.storedEssentiaAmount = stream.readByte();
+
+		return true;
+	}
+
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void onSendNetworkData( final ByteBuf stream ) throws IOException
+	{
+		// Write essentia type
+		if( this.storedEssentiaAspect == Aspect.ENERGY )
+		{
+			// On: Potentia
+			stream.writeByte( TileEssentiaVibrationChamber.STATE_POTENTIA );
+		}
+		else if( this.storedEssentiaAspect == Aspect.FIRE )
+		{
+			// On: Ignis
+			stream.writeByte( TileEssentiaVibrationChamber.STATE_IGNIS );
+		}
+		else
+		{
+			// Off
+			stream.writeByte( TileEssentiaVibrationChamber.STATE_OFF );
+		}
+
+		// Write essentia amount
+		stream.writeByte( (byte)this.storedEssentiaAmount );
 	}
 
 	/**
@@ -321,7 +414,7 @@ public class TileEssentiaVibrationChamber
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( final IGridNode node, final int TicksSinceLastCall )
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
 		// Assume slower
 		this.tickRate = TickRateModulation.SLOWER;
@@ -331,6 +424,16 @@ public class TileEssentiaVibrationChamber
 		{
 			// Replenish essentia
 			EssentiaTransportHelper.instance.takeEssentiaFromTransportNeighbors( this, this.worldObj, this.xCoord, this.yCoord, this.zCoord );
+		}
+
+		// Is there anything stored?
+		if( this.storedEssentiaAspect == null )
+		{
+			// Nothing is stored, keep moving the rotation timer
+			this.suctionRotationTimer += ticksSinceLastCall;
+
+			// TODO: Resume here
+			//System.out.println( this.suctionRotationTimer );
 		}
 
 		return this.tickRate;

@@ -594,10 +594,11 @@ public class ResearchRegistry
 		focusAspects.add( Aspect.MAGIC, 3 );
 
 		// Set the icon
-		ItemStack focusIcon = ItemEnum.FOCUS_AEWRENCH.getItemStackWithSize( 1 );
+		ItemStack focusIcon = ThEApi.instance().items().WandFocusAEWrench.getStack();
 
 		// Set the pages
-		ResearchPage[] focusPages = new ResearchPage[] { new ResearchPage( ResearchTypes.FOCUSWRENCH.getPageName( 1 ) ) };
+		ResearchPage[] focusPages = new ResearchPage[] { new ResearchPage( ResearchTypes.FOCUSWRENCH.getPageName( 1 ) ),
+						new ResearchPage( RecipeRegistry.ITEM_WRENCH_FOCUS ) };
 
 		// Create the research
 		ResearchTypes.FOCUSWRENCH.createResearchItem( focusAspects, COMPLEXITY_SMALL, focusIcon, focusPages );

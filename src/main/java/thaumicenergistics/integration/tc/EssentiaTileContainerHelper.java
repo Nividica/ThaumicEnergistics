@@ -3,12 +3,12 @@ package thaumicenergistics.integration.tc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectContainer;
-import thaumcraft.common.tiles.TileAlchemyFurnaceAdvancedNozzle;
 import thaumcraft.common.tiles.TileAlembic;
 import thaumcraft.common.tiles.TileCentrifuge;
 import thaumcraft.common.tiles.TileEssentiaReservoir;
@@ -395,15 +395,29 @@ public final class EssentiaTileContainerHelper
 		this.perms.addAspectContainerTileToExtractPermissions( TileJarFillable.class );
 		this.perms.addAspectContainerTileToInjectPermissions( TileJarFillable.class );
 
-		// Essentia reservoir
-		this.perms.addAspectContainerTileToExtractPermissions( TileEssentiaReservoir.class );
-		this.perms.addAspectContainerTileToInjectPermissions( TileEssentiaReservoir.class );
-
 		// Essentia buffer
 		this.perms.addAspectContainerTileToExtractPermissions( TileTubeBuffer.class );
 
-		// Advanced alchemical furnace
-		this.perms.addAspectContainerTileToExtractPermissions( TileAlchemyFurnaceAdvancedNozzle.class );
+		// TODO: Drop legacy support at version 1.0
+		try
+		{
+			// Essentia reservoir
+			Class<?> ter = Class.forName( "thaumcraft.common.tiles.TileEssentiaReservoir" );
+			this.perms.addAspectContainerTileToExtractPermissions( (Class<? extends TileEntity>)ter );
+			this.perms.addAspectContainerTileToInjectPermissions( (Class<? extends TileEntity>)ter );
+		}
+		catch( ClassNotFoundException e )
+		{
+		}
+		try
+		{
+			// Advanced alchemical furnace
+			Class<?> tafan = Class.forName( "thaumcraft.common.tiles.TileAlchemyFurnaceAdvancedNozzle" );
+			this.perms.addAspectContainerTileToExtractPermissions( (Class<? extends TileEntity>)tafan );
+		}
+		catch( ClassNotFoundException e )
+		{
+		}
 	}
 
 }

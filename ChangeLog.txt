@@ -1,4 +1,11 @@
-﻿1/15/2015 0.8.9.0b-rv2
+﻿2/1/2015 0.8.9.0b-rv2
+  Finished wrench focus recipe and lore
+  Fixes #126: Added support for AE2-rv2-beta8
+  
+1/16/2015 0.8.9.0b-rv2
+  Added support for cable parts to wrench focus.
+
+1/15/2015 0.8.9.0b-rv2
   Fixes #122: Assembler will now connect to a network with a security terminal.
   Fixes #123: Added wrench focus.
   Began work on Essentia vibration chamber.

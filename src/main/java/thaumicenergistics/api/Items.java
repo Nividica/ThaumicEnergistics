@@ -29,4 +29,6 @@ public abstract class Items
 	public IItemDescription WirelessEssentiaTerminal;
 
 	public IItemDescription KnowledgeCore;
+
+	public IItemDescription WandFocusAEWrench;
 }
