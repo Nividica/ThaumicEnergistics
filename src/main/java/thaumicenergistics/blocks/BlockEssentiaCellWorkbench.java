@@ -53,13 +53,14 @@ public class BlockEssentiaCellWorkbench
 		if( EffectiveSide.isServerSide() )
 		{
 			// Get the tile
-			TileEssentiaCellWorkbench tileWorkBench = (TileEssentiaCellWorkbench)world.getTileEntity( x, y, z );
+			TileEntity tileWorkBench = world.getTileEntity( x, y, z );
 
 			// Does the workbench have a cell?
-			if( ( tileWorkBench != null ) && ( tileWorkBench.hasEssentiaCell() ) )
+			if( ( tileWorkBench instanceof TileEssentiaCellWorkbench ) && ( ( (TileEssentiaCellWorkbench)tileWorkBench ).hasEssentiaCell() ) )
 			{
 				// Spawn the cell as an item entity.
-				world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, tileWorkBench.getStackInSlot( 0 ) ) );
+				world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, ( (TileEssentiaCellWorkbench)tileWorkBench )
+								.getStackInSlot( 0 ) ) );
 			}
 		}
 

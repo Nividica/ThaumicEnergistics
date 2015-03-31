@@ -1,4 +1,16 @@
-﻿2/1/2015 0.8.9.0b-rv2
+﻿3/32/2015 0.8.9.1b-rv2
+  Dependency Updated: Forge 10.13.2.1291
+  Dependency Updated: Thaumcraft 4.2.3.5
+  Dependency Updated: AE2 rv2 beta 18
+  Fixes #145: Blocks now make sure their tile entity is valid before using them.
+  Fixes #143: Removed essentia types are now properly ignored on launch.
+  Fixes #133: Assembler AE-network connection initialization now protected.
+  Merged language translation updates.
+  Fixed ItemFocusAEWrench init bug
+  Aspect registration is now protected from causing a crash.
+  
+
+2/1/2015 0.8.9.0b-rv2
   Finished wrench focus recipe and lore
   Fixes #126: Added support for AE2-rv2-beta8
   

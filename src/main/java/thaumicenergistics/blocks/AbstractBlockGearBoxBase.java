@@ -126,13 +126,16 @@ public abstract class AbstractBlockGearBoxBase
 	public void onNeighborBlockChange( final World w, final int x, final int y, final int z, final Block neighbor )
 	{
 		// Get the tile
-		TileGearBox gearBox = (TileGearBox)w.getTileEntity( x, y, z );
+		TileEntity gearBox = w.getTileEntity( x, y, z );
 
 		// Update it
-		gearBox.updateCrankables();
+		if( gearBox instanceof TileGearBox )
+		{
+			( (TileGearBox)gearBox ).updateCrankables();
 
-		// Update the client tile entity
-		w.markBlockForUpdate( x, y, z );
+			// Update the client tile entity
+			w.markBlockForUpdate( x, y, z );
+		}
 	}
 
 	/**

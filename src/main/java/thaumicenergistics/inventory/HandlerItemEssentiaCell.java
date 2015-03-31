@@ -333,8 +333,11 @@ public class HandlerItemEssentiaCell
 				this.storedEssentia[index] = AspectStack.loadAspectStackFromNBT( this.cellData
 								.getCompoundTag( HandlerItemEssentiaCell.NBT_ESSENTIA_NUMBER_KEY + index ) );
 
-				// Update the stored amount
-				this.usedEssentiaStorage += this.storedEssentia[index].amount;
+				if( this.storedEssentia[index] != null )
+				{
+					// Update the stored amount
+					this.usedEssentiaStorage += this.storedEssentia[index].amount;
+				}
 			}
 		}
 

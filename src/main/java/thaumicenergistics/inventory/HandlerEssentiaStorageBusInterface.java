@@ -234,9 +234,9 @@ class HandlerEssentiaStorageBusInterface
 				this.handler = new MEInventoryHandler<IAEFluidStack>( inv, StorageChannel.FLUIDS );
 
 				// Set the handler properties
-				this.handler.myAccess = this.getAccess();
-				this.handler.myWhitelist = IncludeExclude.WHITELIST;
-				this.handler.myPriority = this.getPriority();
+				this.handler.setBaseAccess( this.getAccess() );
+				this.handler.setWhitelist( IncludeExclude.WHITELIST );
+				this.handler.setPriority( this.getPriority() );
 
 				if( inv instanceof IMEMonitor )
 				{

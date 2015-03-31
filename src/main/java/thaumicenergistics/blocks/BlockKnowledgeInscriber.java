@@ -67,14 +67,18 @@ public class BlockKnowledgeInscriber
 		if( EffectiveSide.isServerSide() )
 		{
 			// Get the tile
-			TileKnowledgeInscriber tileKI = (TileKnowledgeInscriber)world.getTileEntity( x, y, z );
+			TileEntity tile = world.getTileEntity( x, y, z );
 
-			// Does the inscriber have a cell?
-			if( ( tileKI != null ) && ( tileKI.hasKCore() ) )
+			if( tile instanceof TileKnowledgeInscriber )
 			{
-				// Spawn the core as an item entity.
-				world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, tileKI.getInventory().getStackInSlot(
-					TileKnowledgeInscriber.KCORE_SLOT ) ) );
+				TileKnowledgeInscriber tileKI = (TileKnowledgeInscriber)tile;
+				// Does the inscriber have a cell?
+				if( tileKI.hasKCore() )
+				{
+					// Spawn the core as an item entity.
+					world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, tileKI.getInventory().getStackInSlot(
+						TileKnowledgeInscriber.KCORE_SLOT ) ) );
+				}
 			}
 		}
 

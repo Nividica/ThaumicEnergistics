@@ -92,7 +92,11 @@ public abstract class AbstractBlockProviderBase
 		// Set the owner
 		if( entity instanceof EntityPlayer )
 		{
-			( (TileProviderBase)world.getTileEntity( x, y, z ) ).setOwner( (EntityPlayer)entity );
+			TileEntity tileProvider = world.getTileEntity( x, y, z );
+			if( tileProvider instanceof TileProviderBase )
+			{
+				( (TileProviderBase)tileProvider ).setOwner( (EntityPlayer)entity );
+			}
 		}
 	}
 

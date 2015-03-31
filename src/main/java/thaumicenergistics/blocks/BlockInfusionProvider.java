@@ -31,14 +31,14 @@ public class BlockInfusionProvider
 	@Override
 	public void breakBlock( final World world, final int x, final int y, final int z, final Block block, final int metadata )
 	{
-		// Get our tile entity
-		TileInfusionProvider tile = (TileInfusionProvider)world.getTileEntity( x, y, z );
+		// Get  tile entity
+		TileEntity tileProvider = world.getTileEntity( x, y, z );
 
-		// Do we still have a tile?
-		if( tile != null )
+		// Is there still have a tile?
+		if( tileProvider instanceof TileInfusionProvider )
 		{
 			// Inform it that its going away
-			tile.onBreakBlock();
+			( (TileInfusionProvider)tileProvider ).onBreakBlock();
 		}
 
 		// Pass to super
@@ -82,8 +82,13 @@ public class BlockInfusionProvider
 	@Override
 	public void onNeighborBlockChange( final World world, final int x, final int y, final int z, final Block neighbor )
 	{
-		// Inform our tile entity a neighbor has changed
-		( (TileInfusionProvider)world.getTileEntity( x, y, z ) ).checkGridConnectionColor();
+		// Get tile entity
+		TileEntity tileProvider = world.getTileEntity( x, y, z );
+		if( tileProvider instanceof TileInfusionProvider )
+		{
+			// Inform our tile entity a neighbor has changed
+			( (TileInfusionProvider)tileProvider ).checkGridConnectionColor();
+		}
 
 	}
 

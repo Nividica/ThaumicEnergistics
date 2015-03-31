@@ -55,21 +55,21 @@ public class BlockArcaneAssembler
 		ItemStack itemStack = new ItemStack( this );
 
 		// Get the tile
-		TileArcaneAssembler tile = (TileArcaneAssembler)world.getTileEntity( x, y, z );
+		TileEntity tileAssembler = world.getTileEntity( x, y, z );
 
-		if( tile != null )
+		if( tileAssembler instanceof TileArcaneAssembler )
 		{
 			// Create a compound tag
 			NBTTagCompound data = new NBTTagCompound();
 
 			// Save the tile entity state
-			tile.onSaveNBT( data );
+			( (TileArcaneAssembler)tileAssembler ).onSaveNBT( data );
 
 			// Set the itemstack tag
 			itemStack.setTagCompound( data );
 
 			// Set that it was dismantled
-			tile.onDismantled();
+			( (TileArcaneAssembler)tileAssembler ).onDismantled();
 		}
 
 		return itemStack;
@@ -85,13 +85,13 @@ public class BlockArcaneAssembler
 		if( EffectiveSide.isServerSide() )
 		{
 			// Get the tile
-			TileArcaneAssembler assembler = (TileArcaneAssembler)world.getTileEntity( x, y, z );
+			TileEntity tileAssembler = world.getTileEntity( x, y, z );
 
-			if( assembler != null )
+			if( tileAssembler instanceof TileArcaneAssembler )
 			{
 				// Get the drops
 				ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
-				assembler.getDrops( world, x, y, z, drops );
+				( (TileArcaneAssembler)tileAssembler ).getDrops( world, x, y, z, drops );
 
 				for( ItemStack drop : drops )
 				{
@@ -99,7 +99,7 @@ public class BlockArcaneAssembler
 				}
 
 				// Inform the tile it is being broken
-				assembler.onBreak();
+				( (TileArcaneAssembler)tileAssembler ).onBreak();
 			}
 		}
 
@@ -168,11 +168,12 @@ public class BlockArcaneAssembler
 		if( ( playerHolding != null ) && ( playerHolding.getItem() instanceof IMemoryCard ) )
 		{
 			// Get the tile
-			TileArcaneAssembler assembler = (TileArcaneAssembler)world.getTileEntity( x, y, z );
-			if( assembler != null )
+			TileEntity tileAssembler = world.getTileEntity( x, y, z );
+
+			if( tileAssembler instanceof TileArcaneAssembler )
 			{
 				// Inform the tile of the event
-				assembler.onMemoryCardActivate( player, (IMemoryCard)playerHolding.getItem(), playerHolding );
+				( (TileArcaneAssembler)tileAssembler ).onMemoryCardActivate( player, (IMemoryCard)playerHolding.getItem(), playerHolding );
 			}
 		}
 		else
@@ -188,20 +189,20 @@ public class BlockArcaneAssembler
 	public void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack )
 	{
 		// Get the tile
-		TileArcaneAssembler assembler = (TileArcaneAssembler)world.getTileEntity( x, y, z );
+		TileEntity tileAssembler = world.getTileEntity( x, y, z );
 
-		if( assembler != null )
+		if( tileAssembler instanceof TileArcaneAssembler )
 		{
 			if( itemStack.getTagCompound() != null )
 			{
 				// Load the saved data
-				assembler.onLoadNBT( itemStack.getTagCompound() );
+				( (TileArcaneAssembler)tileAssembler ).onLoadNBT( itemStack.getTagCompound() );
 			}
 
 			if( player instanceof EntityPlayer )
 			{
 				// Set the owner
-				assembler.setOwner( (EntityPlayer)player );
+				( (TileArcaneAssembler)tileAssembler ).setOwner( (EntityPlayer)player );
 			}
 		}
 	}

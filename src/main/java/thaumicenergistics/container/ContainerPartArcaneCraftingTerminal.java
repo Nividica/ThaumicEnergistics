@@ -158,6 +158,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * The wand currently in the wand slot.
 	 */
+	// TODO: Issue 142
 	private ItemStack wand;
 
 	/**
@@ -1449,6 +1450,7 @@ public class ContainerPartArcaneCraftingTerminal
 			else if( slotNumber == this.resultSlotNumber )
 			{
 				// Start the autocrafting loop
+				// TODO: Issue 139
 				this.doShiftAutoCrafting( player );
 
 				return null;

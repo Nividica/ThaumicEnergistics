@@ -71,8 +71,12 @@ public class BlockEssentiaProvider
 	@Override
 	public void onNeighborBlockChange( final World world, final int x, final int y, final int z, final Block neighbor )
 	{
-		// Inform our tile entity a neighbor has changed
-		( (TileEssentiaProvider)world.getTileEntity( x, y, z ) ).checkGridConnectionColor();
+		TileEntity te = world.getTileEntity( x, y, z );
+		if( te instanceof TileEssentiaProvider )
+		{
+			// Inform our tile entity a neighbor has changed
+			( (TileEssentiaProvider)te ).checkGridConnectionColor();
+		}
 	}
 
 }

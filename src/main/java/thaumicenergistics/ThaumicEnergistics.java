@@ -33,7 +33,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.8.9.0b-rv2"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.8.9.1b-rv2"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -120,8 +120,15 @@ public class ThaumicEnergistics
 		// Register fluids
 		ThaumicEnergistics.proxy.registerFluids();
 
-		// Give AE items aspects		
-		AEAspectRegister.instance.registerAEAspects();
+		// Give AE items aspects
+		try
+		{
+			AEAspectRegister.instance.registerAEAspects();
+		}
+		catch( Exception e )
+		{
+			ThELog.warning( "Unable to finish aspect registration due to exception:%n%s%n", e.getMessage() );
+		}
 
 		ThELog.endSection( "PostInit", startTime );
 	}
@@ -155,9 +162,12 @@ public class ThaumicEnergistics
 		ThELog.endSection( "PreInit", startTime );
 	}
 
+	// TODO: Add config option for enabling fluid compatibility with ExtraCells, default is off.
 	// TODO: Sync server configs
 	// TODO: Knowledge Inscriber GUI, add particles like focal manipulator
 	// TODO: Use area packets over tile sync when possible
 	// TODO: Use getIcon that gives world to determine icon for vibration chamber
+	// TODO: Cleanup thaumnom page for essentia monitor and level emitter
+	// TODO: Add checks to blocks ensuring that a tile entity is what it expects it to be
 
 }

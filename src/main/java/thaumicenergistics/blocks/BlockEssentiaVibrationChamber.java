@@ -43,22 +43,22 @@ public class BlockEssentiaVibrationChamber
 	protected boolean onWrenched( final World world, final int x, final int y, final int z, final int side )
 	{
 		// Get the chamber
-		TileEssentiaVibrationChamber chamber = (TileEssentiaVibrationChamber)world.getTileEntity( x, y, z );
+		TileEntity tileChamber = world.getTileEntity( x, y, z );
 
 		// Ensure the chamber is present
-		if( chamber == null )
+		if( !( tileChamber instanceof TileEssentiaVibrationChamber ) )
 		{
 			return false;
 		}
 
-		int sideIndex = chamber.getForward().ordinal() + 1;
+		int sideIndex = ( (TileEssentiaVibrationChamber)tileChamber ).getForward().ordinal() + 1;
 
 		if( sideIndex >= ForgeDirection.VALID_DIRECTIONS.length )
 		{
 			sideIndex = 0;
 		}
 
-		chamber.setOrientation( ForgeDirection.getOrientation( sideIndex ), ForgeDirection.UP );
+		( (TileEssentiaVibrationChamber)tileChamber ).setOrientation( ForgeDirection.getOrientation( sideIndex ), ForgeDirection.UP );
 
 		return true;
 	}
@@ -84,13 +84,14 @@ public class BlockEssentiaVibrationChamber
 	public IIcon getIcon( final IBlockAccess world, final int x, final int y, final int z, final int side )
 	{
 		// Get the chamber
-		TileEssentiaVibrationChamber chamber = (TileEssentiaVibrationChamber)world.getTileEntity( x, y, z );
+		TileEntity tileChamber = world.getTileEntity( x, y, z );
 
 		// Ensure the chamber is present
-		if( chamber == null )
+		if( !( tileChamber instanceof TileEssentiaVibrationChamber ) )
 		{
 			return this.getIcon( side, 0 );
 		}
+		TileEssentiaVibrationChamber chamber = ( (TileEssentiaVibrationChamber)tileChamber );
 
 		// Is this side the face?		
 		if( ( chamber.getForward() != null ) && ( side == chamber.getForward().ordinal() ) )
@@ -149,9 +150,10 @@ public class BlockEssentiaVibrationChamber
 	public void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack )
 	{
 		// Get the chamber
-		TileEssentiaVibrationChamber chamber = (TileEssentiaVibrationChamber)world.getTileEntity( x, y, z );
+		TileEntity tileChamber = world.getTileEntity( x, y, z );
 
-		if( chamber != null )
+		// Ensure the chamber is present
+		if( tileChamber instanceof TileEssentiaVibrationChamber )
 		{
 			if( itemStack.getTagCompound() != null )
 			{
@@ -162,7 +164,7 @@ public class BlockEssentiaVibrationChamber
 			if( player instanceof EntityPlayer )
 			{
 				// Set the owner
-				chamber.setOwner( (EntityPlayer)player );
+				( (TileEssentiaVibrationChamber)tileChamber ).setOwner( (EntityPlayer)player );
 			}
 
 			ForgeDirection face = ForgeDirection.NORTH;
@@ -201,7 +203,7 @@ public class BlockEssentiaVibrationChamber
 			}
 
 			// Set the orientation
-			chamber.setOrientation( face, ForgeDirection.UP );
+			( (TileEssentiaVibrationChamber)tileChamber ).setOrientation( face, ForgeDirection.UP );
 		}
 	}
 

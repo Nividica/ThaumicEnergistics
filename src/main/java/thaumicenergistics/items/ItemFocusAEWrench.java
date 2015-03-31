@@ -32,7 +32,7 @@ public class ItemFocusAEWrench
 	/**
 	 * Wrench used for dismantling.
 	 */
-	private final ItemStack psuedoWrench = AEApi.instance().items().itemCertusQuartzWrench.stack( 1 );
+	private ItemStack psuedoWrench = null;
 
 	/**
 	 * How much vis is cost to use the focus.
@@ -147,7 +147,7 @@ public class ItemFocusAEWrench
 		ItemStack prevHolding = player.inventory.mainInventory[heldIndex];
 
 		// Set the wrench as what the player is holding
-		player.inventory.mainInventory[heldIndex] = this.psuedoWrench;
+		player.inventory.mainInventory[heldIndex] = this.getWrench();
 
 		try
 		{
@@ -157,7 +157,7 @@ public class ItemFocusAEWrench
 			TileEntity tile = world.getTileEntity( position.blockX, position.blockY, position.blockZ );
 			if( tile instanceof IPartHost )
 			{
-				didWrench = PartPlacement.place( this.psuedoWrench, position.blockX, position.blockY, position.blockZ, position.sideHit, player,
+				didWrench = PartPlacement.place( this.getWrench(), position.blockX, position.blockY, position.blockZ, position.sideHit, player,
 					world, PlaceType.INTERACT_FIRST_PASS, 0 );
 			}
 
@@ -189,6 +189,16 @@ public class ItemFocusAEWrench
 			player.inventory.mainInventory[heldIndex] = prevHolding;
 		}
 
+	}
+
+	private ItemStack getWrench()
+	{
+		if( this.psuedoWrench == null )
+		{
+			this.psuedoWrench = AEApi.instance().items().itemCertusQuartzWrench.stack( 1 );
+		}
+
+		return this.psuedoWrench;
 	}
 
 	@Override

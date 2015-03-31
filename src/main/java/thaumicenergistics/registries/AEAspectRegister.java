@@ -995,33 +995,41 @@ public class AEAspectRegister
 	/**
 	 * Updates the aspects for the thaumic energistics items.
 	 */
-	private void registerTEItems()
+	private void registerThEItems()
 	{
-		// Get the aspect list for a 1k cell
-		AspectList cellAspects = ThaumcraftApiHelper.getObjectAspects( AEApi.instance().items().itemCell1k.stack( 1 ) ).copy();
-
-		int aspectCount = cellAspects.size();
-
-		if( aspectCount > 4 )
-		{
-			Aspect[] OrderedAspects = cellAspects.getAspectsSortedAmount();
-			cellAspects.remove( OrderedAspects[aspectCount - 1] );
-
-			if( aspectCount > 5 )
-			{
-				cellAspects.remove( OrderedAspects[aspectCount - 2] );
-			}
-		}
-
-		cellAspects.add( Aspect.MAGIC, 3 );
-		cellAspects.add( Aspect.AURA, 5 );
-
 		Items teItems = ThEApi.instance().items();
 		thaumicenergistics.api.Blocks teBlocks = ThEApi.instance().blocks();
-		ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_1k.getStack(), cellAspects );
-		ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_4k.getStack(), cellAspects );
-		ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_16k.getStack(), cellAspects );
-		ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_64k.getStack(), cellAspects );
+
+		try
+		{
+			// Get the aspect list for a 1k cell
+			ItemStack aeCell = AEApi.instance().items().itemCell1k.stack( 1 );
+			AspectList cellAspects = ThaumcraftApiHelper.getObjectAspects( aeCell ).copy();
+
+			int aspectCount = cellAspects.size();
+
+			if( aspectCount > 4 )
+			{
+				Aspect[] OrderedAspects = cellAspects.getAspectsSortedAmount();
+				cellAspects.remove( OrderedAspects[aspectCount - 1] );
+
+				if( aspectCount > 5 )
+				{
+					cellAspects.remove( OrderedAspects[aspectCount - 2] );
+				}
+			}
+
+			cellAspects.add( Aspect.MAGIC, 3 );
+			cellAspects.add( Aspect.AURA, 5 );
+			ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_1k.getStack(), cellAspects );
+			ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_4k.getStack(), cellAspects );
+			ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_16k.getStack(), cellAspects );
+			ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_64k.getStack(), cellAspects );
+		}
+		catch( Exception e )
+		{
+			ThELog.info( "'%s' was not registered for TC scanning.", "Essentia Cells" );
+		}
 
 		// Set the aspects for the iron gearbox
 		AspectList ironGearboxAspects = new AspectList();
@@ -1116,7 +1124,7 @@ public class AEAspectRegister
 		}
 
 		// Finally register my cells
-		this.registerTEItems();
+		this.registerThEItems();
 
 		// Cleanup
 		this.NORMAL_RECIPES = null;

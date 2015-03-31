@@ -53,6 +53,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.localization.WailaText;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.me.GridAccessException;
+import appeng.me.GridException;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -939,6 +940,21 @@ public class TileArcaneAssembler
 
 			// Mark dirty
 			this.markDirty();
+		}
+	}
+
+	@Override
+	public void onReady()
+	{
+		try
+		{
+			this.gridProxy.onReady();
+		}
+		catch( GridException e )
+		{
+			// Figure out the root cause of this when it happens
+			// Unable to reproduce so far.
+			this.isActive = false;
 		}
 	}
 
