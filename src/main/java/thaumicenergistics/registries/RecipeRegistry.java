@@ -21,6 +21,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.Items;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.integration.tc.VisCraftingHelper;
+import thaumicenergistics.items.ItemFocusAEWrench;
 import thaumicenergistics.registries.ResearchRegistry.ResearchTypes;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
 import appeng.api.AEApi;
@@ -236,26 +237,31 @@ public class RecipeRegistry
 
 	private static void registerFoci( final Items teItems )
 	{
-		// Minecraft items
-		String NetherQuartz = "gemQuartz";
+		// Wrench Focus
+		if( ItemFocusAEWrench.isWrenchEnabled() )
+		{
+			// Minecraft items
+			String NetherQuartz = "gemQuartz";
 
-		// Thaumcraft items
-		ItemStack AirShard = new ItemStack( ConfigItems.itemShard, 1, 0 );
+			// Thaumcraft items
+			ItemStack AirShard = new ItemStack( ConfigItems.itemShard, 1, 0 );
 
-		ItemStack FireShard = new ItemStack( ConfigItems.itemShard, 1, 1 );
+			ItemStack FireShard = new ItemStack( ConfigItems.itemShard, 1, 1 );
 
-		// AE Items
-		ItemStack CertusWrench = AEApi.instance().items().itemCertusQuartzWrench.stack( 1 );
+			// AE Items
+			ItemStack CertusWrench = AEApi.instance().items().itemCertusQuartzWrench.stack( 1 );
 
-		// My items
-		ItemStack WrenchFocus = teItems.WandFocusAEWrench.getStack();
+			// My items
+			ItemStack WrenchFocus = teItems.WandFocusAEWrench.getStack();
 
-		// Wrench focus
-		AspectList wrenchAspects = new AspectList();
-		wrenchAspects.add( Aspect.AIR, 10 );
-		wrenchAspects.add( Aspect.FIRE, 10 );
-		RecipeRegistry.ITEM_WRENCH_FOCUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.FOCUSWRENCH.getKey(), WrenchFocus,
-			wrenchAspects, new Object[] { "ANF", "NWN", "FNA", 'A', AirShard, 'F', FireShard, 'N', NetherQuartz, 'W', CertusWrench } );
+			// Wrench focus
+			AspectList wrenchAspects = new AspectList();
+			wrenchAspects.add( Aspect.AIR, 10 );
+			wrenchAspects.add( Aspect.FIRE, 10 );
+			RecipeRegistry.ITEM_WRENCH_FOCUS = ThaumcraftApi
+							.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.FOCUSWRENCH.getKey(), WrenchFocus, wrenchAspects, new Object[] {
+											"ANF", "NWN", "FNA", 'A', AirShard, 'F', FireShard, 'N', NetherQuartz, 'W', CertusWrench } );
+		}
 	}
 
 	private static void registerGearbox( final Blocks aeBlocks, final Items teItems )

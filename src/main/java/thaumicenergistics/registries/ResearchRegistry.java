@@ -14,6 +14,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.IConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.integration.tc.PseudoResearchItem;
+import thaumicenergistics.items.ItemFocusAEWrench;
 import thaumicenergistics.items.ItemMaterial;
 import appeng.api.AEApi;
 
@@ -664,7 +665,10 @@ public class ResearchRegistry
 		ResearchRegistry.registerKnowledgeInscriber();
 
 		// Wrench focus
-		ResearchRegistry.registerWrenchFocus();
+		if( ItemFocusAEWrench.isWrenchEnabled() )
+		{
+			ResearchRegistry.registerWrenchFocus();
+		}
 
 		// Place parents
 		ResearchRegistry.addPseudoParents();

@@ -22,6 +22,8 @@ import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.parts.IPartHost;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import appeng.parts.PartPlacement;
 import appeng.parts.PartPlacement.PlaceType;
 
@@ -43,6 +45,18 @@ public class ItemFocusAEWrench
 	{
 		this.castCost.add( Aspect.FIRE, 10 );
 		this.castCost.add( Aspect.AIR, 10 );
+	}
+
+	/**
+	 * Returns true if the wrench is enabled. False if the wrench has been
+	 * disabled
+	 * because the AE quartz wrench has been disabled.
+	 * 
+	 * @return
+	 */
+	public static boolean isWrenchEnabled()
+	{
+		return AEConfig.instance.isFeatureEnabled( AEFeature.QuartzWrench );
 	}
 
 	private void activateWrenchLeftClick( final World world, final int x, final int y, final int z, final EntityPlayer player, final int side,
@@ -153,12 +167,16 @@ public class ItemFocusAEWrench
 		{
 			boolean didWrench = false;
 
-			// Is there a part host?
-			TileEntity tile = world.getTileEntity( position.blockX, position.blockY, position.blockZ );
-			if( tile instanceof IPartHost )
+			// Is there a wrench to use?
+			if( this.getWrench() != null )
 			{
-				didWrench = PartPlacement.place( this.getWrench(), position.blockX, position.blockY, position.blockZ, position.sideHit, player,
-					world, PlaceType.INTERACT_FIRST_PASS, 0 );
+				// Is there a part host?
+				TileEntity tile = world.getTileEntity( position.blockX, position.blockY, position.blockZ );
+				if( tile instanceof IPartHost )
+				{
+					didWrench = PartPlacement.place( this.getWrench(), position.blockX, position.blockY, position.blockZ, position.sideHit, player,
+						world, PlaceType.INTERACT_FIRST_PASS, 0 );
+				}
 			}
 
 			if( !didWrench )
@@ -193,7 +211,8 @@ public class ItemFocusAEWrench
 
 	private ItemStack getWrench()
 	{
-		if( this.psuedoWrench == null )
+		// Has the wrench already be initialized, and can it be?
+		if( ( this.psuedoWrench == null ) && ItemFocusAEWrench.isWrenchEnabled() )
 		{
 			this.psuedoWrench = AEApi.instance().items().itemCertusQuartzWrench.stack( 1 );
 		}
