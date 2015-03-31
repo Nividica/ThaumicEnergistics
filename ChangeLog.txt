@@ -6,9 +6,12 @@
   Fixes #143: Removed essentia types are now properly ignored on launch.
   Fixes #133: Assembler AE-network connection initialization now protected.
   Fixes #129: Wrench focus disabled when quartz wrench has been disabled.
-  Merged language translation updates.
-  Fixed ItemFocusAEWrench init bug
+  Fixes #139: A.C.T. ignores right-clicks on the crafting result.
+  Added config option that controls if essentia gas can be used by ExtraCells.
+  Fixed ItemFocusAEWrench init bug.
   Aspect registration is now protected from causing a crash.
+  Merged language translation updates.
+  Cleaned up some logging.
   
 
 2/1/2015 0.8.9.0b-rv2

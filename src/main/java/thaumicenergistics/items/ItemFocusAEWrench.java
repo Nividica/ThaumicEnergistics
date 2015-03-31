@@ -242,13 +242,21 @@ public class ItemFocusAEWrench
 	@Override
 	public String getUnlocalizedName()
 	{
-		return ThEStrings.Item_FocusAEWrench.getUnlocalized();
+		// Is the wrench enabled?
+		if( isWrenchEnabled() )
+		{
+			// Wrench enabled
+			return ThEStrings.Item_FocusAEWrench.getUnlocalized();
+		}
+
+		// Wrench disabled
+		return ThEStrings.Item_FocusAEWrench_Disabled.getUnlocalized();
 	}
 
 	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
-		return ThEStrings.Item_FocusAEWrench.getUnlocalized();
+		return this.getUnlocalizedName();
 	}
 
 	@Override

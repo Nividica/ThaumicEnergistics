@@ -1364,6 +1364,23 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	/**
+	 * Called when a slot is clicked by the player.
+	 */
+	@Override
+	public ItemStack slotClick( final int slotID, final int button, final int flag, final EntityPlayer player )
+	{
+		if( ( slotID == this.resultSlotNumber ) && ( button == GuiHelper.MOUSE_BUTTON_RIGHT ) )
+		{
+			// Ignore if result slot is right clicked.
+			return null;
+		}
+
+		// Pass to super
+		return super.slotClick( slotID, button, flag, player );
+
+	}
+
+	/**
 	 * Called when the player shift+clicks on a slot
 	 */
 	@Override

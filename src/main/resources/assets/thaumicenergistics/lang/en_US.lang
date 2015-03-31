@@ -41,6 +41,7 @@ thaumicenergistics.item.material.iron.gear.name=Iron Gear
 thaumicenergistics.item.wireless.essentia.terminal.name=Wireless Essentia Terminal
 thaumicenergistics.item.knowledge.core.name=Knowledge Core
 thaumicenergistics.item.focus.aewrench.name=Wand Focus: AE Wrench
+thaumicenergistics.item.focus.aewrench.disabled.name=Wand Focus: AE Wrench - Wrench Mode Disabled
 
 #Tooltips
 thaumicenergistics.tooltip.essentia.cell.bytes=%d of %d bytes used.

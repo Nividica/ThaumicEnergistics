@@ -1,39 +1,18 @@
 package thaumicenergistics.util;
 
-import org.apache.logging.log4j.Level;
-import thaumicenergistics.ThaumicEnergistics;
-import com.google.common.collect.ObjectArrays;
-import cpw.mods.fml.common.FMLLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ThELog
 {
-	/**
-	 * Mod ID as title case.
-	 */
-	private static final String NICE_MOD_ID = "ThaumicEnergistics";
-
-	/**
-	 * Appends this mod's ID to the object array.
-	 * 
-	 * @param data
-	 * @return
-	 */
-	private static Object[] appendModID( final Object[] data )
-	{
-		if( data != null )
-		{
-			return ObjectArrays.concat( NICE_MOD_ID, data );
-		}
-
-		return new Object[] { NICE_MOD_ID };
-	}
+	public static final Logger log = LogManager.getLogger( "ThE" );
 
 	/**
 	 * Displays the section header.
 	 */
 	public static long beginSection( final String section )
 	{
-		FMLLog.log( Level.INFO, "[%s] Starting (%s)", ThaumicEnergistics.MOD_ID, section );
+		log.info( String.format( "Starting (%s)", section ) );
 		return System.currentTimeMillis();
 	}
 
@@ -42,7 +21,7 @@ public class ThELog
 	 */
 	public static void endSection( final String section, final long sectionStartTime )
 	{
-		FMLLog.log( Level.INFO, "[%s] Finished (%s in %dms)", ThaumicEnergistics.MOD_ID, section, ( System.currentTimeMillis() - sectionStartTime ) );
+		log.info( String.format( "Finished (%s in %dms)", section, ( System.currentTimeMillis() - sectionStartTime ) ) );
 	}
 
 	/**
@@ -53,7 +32,7 @@ public class ThELog
 	 */
 	public static void info( final String format, final Object ... data )
 	{
-		FMLLog.log( Level.INFO, "[%s] " + format, appendModID( data ) );
+		log.info( String.format( format, data ) );
 	}
 
 	/**
@@ -64,7 +43,7 @@ public class ThELog
 	 */
 	public static void severe( final String format, final Object ... data )
 	{
-		FMLLog.log( Level.ERROR, "[%s] " + format, appendModID( data ) );
+		log.error( String.format( format, data ) );
 	}
 
 	/**
@@ -75,7 +54,7 @@ public class ThELog
 	 */
 	public static void warning( final String format, final Object ... data )
 	{
-		FMLLog.log( Level.WARN, "[%s] " + format, appendModID( data ) );
+		log.warn( String.format( format, data ) );
 	}
 
 }

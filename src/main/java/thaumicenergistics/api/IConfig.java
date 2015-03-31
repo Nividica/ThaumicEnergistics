@@ -18,6 +18,13 @@ public interface IConfig
 	public boolean allowedToDuplicateCertusQuartz();
 
 	/**
+	 * If true essentia gas will be blacklisted from ExtraCells.
+	 * 
+	 * @return
+	 */
+	public boolean blacklistEssentiaFluidInExtraCells();
+
+	/**
 	 * Controls the conversion ratio of essentia/fluid. <BR>
 	 * 1 essentia unit is converted to this many mb's of fluid.
 	 */

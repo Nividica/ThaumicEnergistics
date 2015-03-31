@@ -50,6 +50,7 @@ public enum ThEStrings
 		Item_WirelessEssentiaTerminal ("item.wireless.essentia.terminal", true),
 		Item_KnowledgeCore ("item.knowledge.core", true),
 		Item_FocusAEWrench ("item.focus.aewrench", true),
+		Item_FocusAEWrench_Disabled ("item.focus.aewrench.disabled", true),
 
 		// Tooltips
 		Tooltip_CellBytes ("tooltip.essentia.cell.bytes", false),

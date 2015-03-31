@@ -29,7 +29,7 @@ public final class IntegrationCore
 	private static final String MODID_NEI = "NEI";
 
 	/**
-	 * Module ID for EC2
+	 * Module ID for ExtraCells2
 	 */
 	private static final String MODID_EC2 = "EC2";
 
@@ -115,8 +115,11 @@ public final class IntegrationCore
 				IntegrationCore.integrateWithClientMods();
 			}
 
-			// Integrate with EC2
-			IntegrationCore.integrateWithMod( IntegrationCore.MODID_EC2 );
+			// Integrate with EC2 if blacklisting enabled
+			if( ThEApi.instance().config().blacklistEssentiaFluidInExtraCells() )
+			{
+				IntegrationCore.integrateWithMod( IntegrationCore.MODID_EC2 );
+			}
 		}
 		catch( Throwable e )
 		{

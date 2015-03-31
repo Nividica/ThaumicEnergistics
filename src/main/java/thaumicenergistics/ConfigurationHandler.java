@@ -12,13 +12,14 @@ class ConfigurationHandler
 	/**
 	 * Names of the categories.
 	 */
-	private static final String CATEGORY_CRAFTING = "crafting", CATEGORY_CLIENT = "client";
+	private static final String CATEGORY_CRAFTING = "crafting", CATEGORY_CLIENT = "client", CATEGORY_INTEGRATION = "integration";
 
 	/**
 	 * Default values.
 	 */
 	private static final int DEFAULT_CONVERSION = 250;
-	private static final boolean DEFAULT_ESSENTIAPROVIDER = true, DEFAULT_INFUSIONPROVIDER = true, DEFAULT_QUARTZ = true, DEFAULT_GEARBOX = false;
+	private static final boolean DEFAULT_ESSENTIAPROVIDER = true, DEFAULT_INFUSIONPROVIDER = true, DEFAULT_QUARTZ = true, DEFAULT_GEARBOX = false,
+					DEFAULT_EXTRACELLS_BLIST = true;
 
 	/**
 	 * Mod configuration
@@ -51,6 +52,11 @@ class ConfigurationHandler
 	 * standard block.
 	 */
 	private boolean gearboxModelDisabled = false;
+
+	/**
+	 * Controls if essentia gas is blacklisted
+	 */
+	private boolean extracellsBlacklist = true;
 
 	private ConfigurationHandler( final Configuration config )
 	{
@@ -102,8 +108,13 @@ class ConfigurationHandler
 		this.allowCertusDupe = this.configSettings.getBoolean( "Certus Quartz Duplication", ConfigurationHandler.CATEGORY_CRAFTING,
 			ConfigurationHandler.DEFAULT_QUARTZ, "Controls if Certus Quartz can be duplicated in the crucible." );
 
+		// Gearbox model
 		this.gearboxModelDisabled = this.configSettings.getBoolean( "Disable Gearbox Model", ConfigurationHandler.CATEGORY_CLIENT,
 			ConfigurationHandler.DEFAULT_GEARBOX, "The iron and thaumium gearboxes will be rendered as a standard block." );
+
+		// Extra cells blacklist
+		this.extracellsBlacklist = this.configSettings.getBoolean( "ExtraCells Blacklist", ConfigurationHandler.CATEGORY_INTEGRATION,
+			ConfigurationHandler.DEFAULT_EXTRACELLS_BLIST, "Prevents extra cells from interacting with essentia gas" );
 
 		// Has the config file changed?
 		if( this.configSettings.hasChanged() )
@@ -129,6 +140,12 @@ class ConfigurationHandler
 	public boolean allowedToDuplicateCertusQuartz()
 	{
 		return this.allowCertusDupe;
+	}
+
+	@Override
+	public boolean blacklistEssentiaFluidInExtraCells()
+	{
+		return this.extracellsBlacklist;
 	}
 
 	@Override
