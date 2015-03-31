@@ -203,7 +203,7 @@ public class RecipeRegistry
 		storage1kAspects.add( Aspect.FIRE, 3 );
 		storage1kAspects.add( Aspect.ORDER, 1 );
 		RecipeRegistry.STORAGE_COMPONENT_1K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaComp_1k,
-			storage1kAspects, new Object[] { "EQE", "QPQ", "EQE", 'E', EtheralEssence, 'Q', CertusQuartz, 'P', LogicProcessor } );
+			storage1kAspects, new Object[] { "EQ ", "QPQ", " QE", 'E', EtheralEssence, 'Q', CertusQuartz, 'P', LogicProcessor } );
 		RecipeRegistry.replaceRecipeIngredientWithGroup( (ShapedArcaneRecipe)RecipeRegistry.STORAGE_COMPONENT_1K, CertusQuartz, GroupQuartz );
 
 		// 4K Storage Component
@@ -304,7 +304,7 @@ public class RecipeRegistry
 
 		ItemStack OrderShard = new ItemStack( ConfigItems.itemShard, 1, 4 );
 
-		ItemStack QuickSilver = new ItemStack( ConfigItems.itemResource, 1, 3 );
+		ItemStack QuickSilver = new ItemStack( ConfigItems.itemNugget, 1, 5 );
 
 		// AppEng items
 		ItemStack FormationCore = aeMaterials.materialFormationCore.stack( 1 );
@@ -329,14 +329,14 @@ public class RecipeRegistry
 		coalescenceAspects.add( Aspect.WATER, 2 );
 		coalescenceAspects.add( Aspect.ORDER, 2 );
 		RecipeRegistry.MATERIAL_COALESCENCE_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
-			CoalescenceCore, coalescenceAspects, QuickSilver, OrderShard, FormationCore );
+			CoalescenceCore, coalescenceAspects, QuickSilver, QuickSilver, QuickSilver, OrderShard, FormationCore );
 
 		// Diffusion Core
 		AspectList diffusionAspects = new AspectList();
 		diffusionAspects.add( Aspect.WATER, 2 );
 		diffusionAspects.add( Aspect.ENTROPY, 2 );
 		RecipeRegistry.MATERIAL_DIFFUSION_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
-			DiffusionCore, diffusionAspects, QuickSilver, EntropyShard, AnnihilationCore );
+			DiffusionCore, diffusionAspects, QuickSilver, QuickSilver, QuickSilver, EntropyShard, AnnihilationCore );
 
 		// Iron Gear
 		AspectList ironGearAspects = new AspectList();

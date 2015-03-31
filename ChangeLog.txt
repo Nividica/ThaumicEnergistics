@@ -11,9 +11,10 @@
   Fixed ItemFocusAEWrench init bug.
   Aspect registration is now protected from causing a crash.
   Merged language translation updates.
-  Cleaned up some logging.
-  
-
+  Cleaned logging.
+  Re-ballanced some recipes.
+  Clarified Thaumonomicon entries.
+    
 2/1/2015 0.8.9.0b-rv2
   Finished wrench focus recipe and lore
   Fixes #126: Added support for AE2-rv2-beta8

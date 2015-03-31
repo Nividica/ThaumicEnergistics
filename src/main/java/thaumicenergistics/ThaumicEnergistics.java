@@ -162,12 +162,8 @@ public class ThaumicEnergistics
 		ThELog.endSection( "PreInit", startTime );
 	}
 
-	// TODO: Add config option for enabling fluid compatibility with ExtraCells, default is off.
 	// TODO: Sync server configs
 	// TODO: Knowledge Inscriber GUI, add particles like focal manipulator
 	// TODO: Use area packets over tile sync when possible
-	// TODO: Use getIcon that gives world to determine icon for vibration chamber
-	// TODO: Cleanup thaumnom page for essentia monitor and level emitter
-	// TODO: Add checks to blocks ensuring that a tile entity is what it expects it to be
 
 }
