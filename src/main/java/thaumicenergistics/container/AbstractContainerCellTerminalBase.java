@@ -574,6 +574,40 @@ public abstract class AbstractContainerCellTerminalBase
 	}
 
 	/**
+	 * Set's the labels aspect to the currently selected aspect
+	 */
+	private void setLabelAspect()
+	{
+		// Is there a selected aspect?
+		if( this.selectedAspect == null )
+		{
+			// Nothing to set
+			return;
+		}
+
+		// Ensure the output slot is not full
+		Slot outputSlot = this.getSlot( AbstractContainerCellTerminalBase.OUTPUT_SLOT_ID );
+		if( ( outputSlot.getHasStack() ) && ( outputSlot.getStack().stackSize == 64 ) )
+		{
+			// Output full
+			return;
+		}
+
+		// Re-validate the label
+		ItemStack label = this.inventory.getStackInSlot( AbstractContainerCellTerminalBase.INPUT_SLOT_ID );
+		if( !EssentiaItemContainerHelper.instance.isLabel( label ) )
+		{
+			// Not a label
+			return;
+		}
+
+		// Set the label
+		EssentiaItemContainerHelper.instance.setLabelAspect( label, this.selectedAspect );
+		this.inventory.markDirty();
+
+	}
+
+	/**
 	 * Attach this container to the AE monitor
 	 */
 	protected void attachToMonitor()
@@ -705,7 +739,11 @@ public abstract class AbstractContainerCellTerminalBase
 		// Ensure the input slot is an aspect container item.
 		if( !EssentiaItemContainerHelper.instance.isContainer( inputStack ) )
 		{
-			// Input is not aspect container.
+			// Input is not aspect container, is it a label?
+			if( EssentiaItemContainerHelper.instance.isLabel( inputStack ) )
+			{
+				this.setLabelAspect();
+			}
 			return;
 		}
 

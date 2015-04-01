@@ -12,6 +12,7 @@ import thaumcraft.common.blocks.ItemJarFilled;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.items.ItemEssence;
+import thaumcraft.common.items.ItemResource;
 import thaumicenergistics.api.IEssentiaContainerPermission;
 import thaumicenergistics.api.ITransportPermissions;
 import thaumicenergistics.api.ThEApi;
@@ -314,6 +315,37 @@ public final class EssentiaItemContainerHelper
 	}
 
 	/**
+	 * Gets the aspect on the label.
+	 * Can return null.
+	 * 
+	 * @param label
+	 * @return
+	 */
+	public Aspect getAspectFromLabel( final ItemStack label )
+	{
+		// Ensure the item is a label
+		if( !this.isLabel( label ) )
+		{
+			return null;
+		}
+
+		// Get the item
+		ItemResource rLabel = (ItemResource)label.getItem();
+
+		// Get the aspects
+		AspectList aspects = rLabel.getAspects( label );
+
+		// Ensure there is an aspect to get
+		if( ( aspects == null ) || ( aspects.size() == 0 ) )
+		{
+			return null;
+		}
+
+		// Return the aspect
+		return aspects.getAspects()[0];
+	}
+
+	/**
 	 * Returns the aspect of whatever essentia is in the container.
 	 * 
 	 * @param container
@@ -321,20 +353,29 @@ public final class EssentiaItemContainerHelper
 	 */
 	public Aspect getAspectInContainer( final ItemStack container )
 	{
-		// Is the container valid?
-		if( ( container != null ) && ( container.getItem() instanceof IEssentiaContainerItem ) )
+		// Is it a label?
+		if( this.isLabel( container ) )
 		{
-			// Is the container whitelisted?
-			if( this.isContainerWhitelisted( container ) )
+			return this.getAspectFromLabel( container );
+		}
+		// Is the itemstack valid?
+		else if( container != null )
+		{
+			// Is it a container?
+			if( container.getItem() instanceof IEssentiaContainerItem )
 			{
-				// Get the list of aspects from the container
-				AspectList aspectList = ( (IEssentiaContainerItem)container.getItem() ).getAspects( container );
-
-				// Is there are list?
-				if( aspectList != null )
+				// Is the container whitelisted?
+				if( this.isContainerWhitelisted( container ) )
 				{
-					// Return the aspect contained
-					return aspectList.getAspects()[0];
+					// Get the list of aspects from the container
+					AspectList aspectList = ( (IEssentiaContainerItem)container.getItem() ).getAspects( container );
+
+					// Is there are list?
+					if( aspectList != null )
+					{
+						// Return the aspect contained
+						return aspectList.getAspects()[0];
+					}
 				}
 			}
 		}
@@ -654,6 +695,17 @@ public final class EssentiaItemContainerHelper
 	}
 
 	/**
+	 * True if the item is a container or label
+	 * 
+	 * @param stack
+	 * @return
+	 */
+	public boolean isContainerOrLabel( final ItemStack stack )
+	{
+		return this.isContainer( stack ) || this.isLabel( stack );
+	}
+
+	/**
 	 * Quick check to see if the item is whitelisted.
 	 * 
 	 * @param item
@@ -677,6 +729,24 @@ public final class EssentiaItemContainerHelper
 	}
 
 	/**
+	 * True if the itemstack is a jar label.
+	 * 
+	 * @param stack
+	 * @return
+	 */
+	public boolean isLabel( final ItemStack stack )
+	{
+		// Ensure the stack is not null
+		if( stack != null )
+		{
+			// True if resource and meta = 13
+			return( ( stack.getItem() instanceof ItemResource ) && ( stack.getItemDamage() == 13 ) );
+		}
+
+		return false;
+	}
+
+	/**
 	 * Setup the standard white list
 	 */
 	public void registerThaumcraftContainers()
@@ -690,6 +760,9 @@ public final class EssentiaItemContainerHelper
 
 		// Void jar
 		this.perms.addEssentiaContainerItemToTransportPermissions( ItemJarFilled.class, JAR_CAPACITY, 3, true );
+
+		// Label
+		//this.emptyJarLabel = new ItemStack( thaumcraft.common.config.ConfigItems.itemResource, 1, 13 );
 	}
 
 	/**
@@ -735,5 +808,31 @@ public final class EssentiaItemContainerHelper
 		}
 
 		return jar;
+	}
+
+	/**
+	 * Sets a labels aspect
+	 * 
+	 * @param label
+	 * @param aspect
+	 */
+	public void setLabelAspect( final ItemStack label, final Aspect aspect )
+	{
+		// Ensure the item is a label
+		if( !this.isLabel( label ) )
+		{
+			return;
+		}
+
+		// Get the item
+		ItemResource rLabel = (ItemResource)label.getItem();
+
+		// Create the aspects
+		AspectList aspects = new AspectList();
+		aspects.add( aspect, 1 );
+
+		// Set the aspect
+		rLabel.setAspects( label, aspects );
+
 	}
 }

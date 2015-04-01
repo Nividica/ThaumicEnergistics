@@ -7,6 +7,7 @@
   Fixes #133: Assembler AE-network connection initialization now protected.
   Fixes #129: Wrench focus disabled when quartz wrench has been disabled.
   Fixes #139: A.C.T. ignores right-clicks on the crafting result.
+  Adds #138: Jar labels can be set in the essentia terminal.
   Added config option that controls if essentia gas can be used by ExtraCells.
   Fixed ItemFocusAEWrench init bug.
   Aspect registration is now protected from causing a crash.
@@ -14,6 +15,7 @@
   Cleaned logging.
   Re-ballanced some recipes.
   Clarified Thaumonomicon entries.
+  Essentia filter-slots can now be set by jar labels.
     
 2/1/2015 0.8.9.0b-rv2
   Finished wrench focus recipe and lore
