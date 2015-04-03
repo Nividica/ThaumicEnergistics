@@ -86,14 +86,11 @@ public class CommonProxy
 	/**
 	 * Registers tile entities with the game.
 	 */
-	@SuppressWarnings("deprecation")
 	public void registerTileEntities()
 	{
 		for( TileEnum tile : TileEnum.values() )
 		{
-			// TODO: Drop legacy support at version 1.0
-			GameRegistry.registerTileEntityWithAlternatives( tile.getTileClass(), tile.getTileID(), tile.getOldTileID() );
-			//GameRegistry.registerTileEntity(
+			GameRegistry.registerTileEntity( tile.getTileClass(), tile.getTileID() );
 		}
 	}
 

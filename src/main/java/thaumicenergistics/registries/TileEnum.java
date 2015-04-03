@@ -35,13 +35,6 @@ public enum TileEnum
 		this.clazz = clazz;
 	}
 
-	// TODO: Drop legacy support at version 1.0
-	@Deprecated
-	public String getOldTileID()
-	{
-		return this.ID;
-	}
-
 	/**
 	 * Gets the tile entity's class.
 	 */

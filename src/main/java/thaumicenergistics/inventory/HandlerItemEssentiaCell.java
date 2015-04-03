@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
@@ -25,25 +24,15 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.tile.storage.TileIOPort;
 
-// TODO: Drop legacy support at version 1.0
-
 public class HandlerItemEssentiaCell
 	implements IMEInventoryHandler<IAEFluidStack>
 {
-	@Deprecated
-	private static final String NBT_LEGACY_FLUID_NUMBER_KEY = "Fluid#", NBT_LEGACY_PREFORMATTED_FLUID_NUMBER_KEY = "PreformattedFluidName#";
 
 	/**
 	 * NBT Keys
 	 */
 	private static final String NBT_ESSENTIA_NUMBER_KEY = "Essentia#", NBT_SORT_KEY = "SortMode", NBT_PARTITION_KEY = "Partitions",
 					NBT_PARTITION_COUNT_KEY = "PartitionCount", NBT_PARTITION_NUMBER_KEY = "Partition#";
-
-	/**
-	 * Old fluid <-> essentia conversion multiplier.
-	 */
-	@Deprecated
-	private static final long LEGACY_CONVERSION_MULTIPLIER = 250;
 
 	/**
 	 * Controls how many essentia can fit in a single byte.
@@ -279,46 +268,6 @@ public class HandlerItemEssentiaCell
 	}
 
 	/**
-	 * Adds a legacy fluid stored in the NBT data to the cell.
-	 * 
-	 * @param cellData
-	 * @param key
-	 */
-	@Deprecated
-	private void loadLegacyFluid( final String key )
-	{
-		// Load the fluid stack
-		FluidStack legacyFluid = FluidStack.loadFluidStackFromNBT( this.cellData.getCompoundTag( key ) );
-
-		// Remove the legacy key
-		this.cellData.removeTag( key );
-
-		// Ensure the fluid is not null
-		if( legacyFluid == null )
-		{
-			return;
-		}
-		// Ensure the fluid is a valid essentia gas
-		if( !( legacyFluid.getFluid() instanceof GaseousEssentia ) )
-		{
-			return;
-		}
-
-		// Convert to gas
-		GaseousEssentia gas = (GaseousEssentia)legacyFluid.getFluid();
-
-		// Get it's aspect
-		Aspect aspect = gas.getAspect();
-
-		// Get the amount, and convert
-		long amount = legacyFluid.amount / HandlerItemEssentiaCell.LEGACY_CONVERSION_MULTIPLIER;
-
-		// Add to the cell
-		this.addEssentiaToCell( aspect, amount, Actionable.MODULATE );
-
-	}
-
-	/**
 	 * Reads the data from the cell item.
 	 */
 	private void readCellData()
@@ -338,25 +287,6 @@ public class HandlerItemEssentiaCell
 					// Update the stored amount
 					this.usedEssentiaStorage += this.storedEssentia[index].amount;
 				}
-			}
-		}
-
-		// Load legacy essentia from data
-		for( int index = 0; index < this.totalTypes; index++ )
-		{
-			// Is there a legacy tag?
-			if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_LEGACY_FLUID_NUMBER_KEY + index ) )
-			{
-				this.loadLegacyFluid( HandlerItemEssentiaCell.NBT_LEGACY_FLUID_NUMBER_KEY + index );
-			}
-		}
-
-		// Clear legacy preformat data
-		for( int index = 0; index < 63; index++ )
-		{
-			if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_LEGACY_PREFORMATTED_FLUID_NUMBER_KEY + index ) )
-			{
-				this.cellData.removeTag( HandlerItemEssentiaCell.NBT_LEGACY_PREFORMATTED_FLUID_NUMBER_KEY + index );
 			}
 		}
 
