@@ -60,6 +60,13 @@ public class ItemEssentiaCell
 		this.setHasSubtypes( true );
 	}
 
+	/**
+	 * Adds the contents of the cell to the description tooltip.
+	 * 
+	 * @param cellHandler
+	 * @param displayList
+	 * @param player
+	 */
 	private void addContentsToCellDescription( final HandlerItemEssentiaCell cellHandler, final List displayList, final EntityPlayer player )
 	{
 		// Get the list of stored aspects
@@ -93,6 +100,9 @@ public class ItemEssentiaCell
 
 	}
 
+	/**
+	 * Creates the cell tooltip.
+	 */
 	@Override
 	public void addInformation( final ItemStack essentiaCell, final EntityPlayer player, final List displayList, final boolean advancedItemTooltips )
 	{
@@ -146,12 +156,18 @@ public class ItemEssentiaCell
 
 	}
 
+	/**
+	 * How much power is required by the cell each tick.
+	 */
 	@Override
 	public double cellIdleDrain( final ItemStack itemStack, final IMEInventory handler )
 	{
 		return ItemEssentiaCell.IDLE_DRAIN_AMOUNTS[itemStack.getItemDamage()];
 	}
 
+	/**
+	 * Gets a handler for the cell.
+	 */
 	@Override
 	public IMEInventoryHandler getCellInventory( final ItemStack essentiaCell, final ISaveProvider saveProvider, final StorageChannel channel )
 	{
@@ -168,6 +184,9 @@ public class ItemEssentiaCell
 		return new HandlerItemEssentiaCell( essentiaCell, saveProvider );
 	}
 
+	/**
+	 * Gets the cell's icon.
+	 */
 	@Override
 	public IIcon getIconFromDamage( final int dmg )
 	{
@@ -176,6 +195,9 @@ public class ItemEssentiaCell
 		return this.icons[index];
 	}
 
+	/**
+	 * Gets the rarity of the cell.
+	 */
 	@Override
 	public EnumRarity getRarity( final ItemStack itemStack )
 	{
@@ -186,6 +208,10 @@ public class ItemEssentiaCell
 		return AbstractStorageBase.RARITIES[index];
 	}
 
+	/**
+	 * Gets the status of the cell.
+	 * Full | Type Full | Has Room
+	 */
 	@Override
 	public int getStatusForCell( final ItemStack essentiaCell, final IMEInventory handler )
 	{
@@ -220,6 +246,9 @@ public class ItemEssentiaCell
 
 	}
 
+	/**
+	 * Gets the different cell sizes and places them on the creative tab.
+	 */
 	@Override
 	public void getSubItems( final Item item, final CreativeTabs creativeTab, final List listSubItems )
 	{
@@ -229,18 +258,27 @@ public class ItemEssentiaCell
 		}
 	}
 
+	/**
+	 * ME Chest icon
+	 */
 	@Override
 	public IIcon getTopTexture_Dark()
 	{
 		return BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0];
 	}
 
+	/**
+	 * ME Chest icon
+	 */
 	@Override
 	public IIcon getTopTexture_Light()
 	{
 		return BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[2];
 	}
 
+	/**
+	 * ME Chest icon
+	 */
 	@Override
 	public IIcon getTopTexture_Medium()
 	{
@@ -253,6 +291,9 @@ public class ItemEssentiaCell
 		return ThaumicEnergistics.MOD_ID + ".item.essentia.cell";
 	}
 
+	/**
+	 * Name of the cell.
+	 */
 	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
@@ -279,17 +320,32 @@ public class ItemEssentiaCell
 		}
 	}
 
+	/**
+	 * True if the specified item is an Essentia cell.
+	 */
 	@Override
 	public boolean isCell( final ItemStack itemStack )
 	{
 		return itemStack.getItem() == this;
 	}
 
+	/**
+	 * Maximum storage, in bytes, the cell can hold.
+	 * 
+	 * @param essentiaCell
+	 * @return
+	 */
 	public int maxStorage( final ItemStack essentiaCell )
 	{
 		return AbstractStorageBase.SIZES[Math.max( 0, essentiaCell.getItemDamage() )];
 	}
 
+	/**
+	 * The maximum number of types each cell can hold.
+	 * 
+	 * @param essentiaCell
+	 * @return
+	 */
 	public int maxTypes( final ItemStack essentiaCell )
 	{
 		if( essentiaCell.getItemDamage() == AbstractStorageBase.INDEX_CREATIVE )
@@ -300,6 +356,9 @@ public class ItemEssentiaCell
 		return ItemEssentiaCell.MAX_TYPES;
 	}
 
+	/**
+	 * Attempts to remove the storage element.
+	 */
 	@Override
 	public ItemStack onItemRightClick( final ItemStack essentiaCell, final World world, final EntityPlayer player )
 	{
@@ -339,6 +398,9 @@ public class ItemEssentiaCell
 		return essentiaCell;
 	}
 
+	/**
+	 * Shows the cell GUI.
+	 */
 	@Override
 	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv,
 								final ItemStack itemStack, final StorageChannel channel )

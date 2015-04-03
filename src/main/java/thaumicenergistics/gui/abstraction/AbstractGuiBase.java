@@ -428,7 +428,7 @@ public abstract class AbstractGuiBase
 
 				// Was the slot the network tool?
 				if( ( slot != null ) && ( slot.getStack() != null ) &&
-								( slot.getStack().isItemEqual( AEApi.instance().items().itemNetworkTool.stack( 1 ) ) ) )
+								( slot.getStack().isItemEqual( AEApi.instance().definitions().items().networkTool().maybeStack( 1 ).get() ) ) )
 				{
 					// Do not allow any interaction with the network tool slot.
 					return;

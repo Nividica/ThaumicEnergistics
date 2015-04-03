@@ -261,7 +261,8 @@ public class ResearchRegistry
 		ResearchTypes.ARCANEASSEMBLER.researchItem.setConcealed();
 
 		// Trigger when MAC is scanned.
-		ResearchTypes.ARCANEASSEMBLER.researchItem.setItemTriggers( AEApi.instance().blocks().blockMolecularAssembler.stack( 1 ) );
+		ResearchTypes.ARCANEASSEMBLER.researchItem.setItemTriggers( AEApi.instance().definitions().blocks().molecularAssembler().maybeStack( 1 )
+						.get() );
 
 		// Register the research
 		ResearchTypes.ARCANEASSEMBLER.researchItem.registerResearchItem();
@@ -285,7 +286,7 @@ public class ResearchRegistry
 		certusDupeAspects.add( Aspect.CRYSTAL, 5 );
 
 		// Get icon
-		ItemStack certusDupeIcon = AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 );
+		ItemStack certusDupeIcon = AEApi.instance().definitions().materials().certusQuartzCrystal().maybeStack( 1 ).get();
 
 		// Set pages
 		ResearchPage[] certusDupePages = new ResearchPage[] { new ResearchPage( ResearchTypes.CERTUSDUPE.getPageName( 1 ) ),

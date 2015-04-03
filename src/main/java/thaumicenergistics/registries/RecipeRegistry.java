@@ -25,9 +25,9 @@ import thaumicenergistics.items.ItemFocusAEWrench;
 import thaumicenergistics.registries.ResearchRegistry.ResearchTypes;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
 import appeng.api.AEApi;
-import appeng.api.definitions.Blocks;
-import appeng.api.definitions.Materials;
-import appeng.api.definitions.Parts;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IMaterials;
+import appeng.api.definitions.IParts;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class RecipeRegistry
@@ -68,7 +68,7 @@ public class RecipeRegistry
 	public static InfusionRecipe BLOCK_ARCANE_ASSEMBLER;
 	public static IArcaneRecipe ITEM_WRENCH_FOCUS;
 
-	private static void registerAutocrafting( final Materials aeMaterials, final Blocks aeBlocks, final Items teItems )
+	private static void registerAutocrafting( final IMaterials aeMaterials, final IBlocks aeBlocks, final Items teItems )
 	{
 		thaumicenergistics.api.Blocks teBlocks = ThEApi.instance().blocks();
 
@@ -99,15 +99,15 @@ public class RecipeRegistry
 		ItemStack CraftingScepter = VisCraftingHelper.instance.getCraftingScepter();
 
 		// AppEng items
-		ItemStack VibrantGlass = aeBlocks.blockQuartzVibrantGlass.stack( 1 );
+		ItemStack VibrantGlass = aeBlocks.quartzVibrantGlass().maybeStack( 1 ).get();
 
-		ItemStack CalculationProcessor = aeMaterials.materialCalcProcessor.stack( 1 );
+		ItemStack CalculationProcessor = aeMaterials.calcProcessor().maybeStack( 1 ).get();
 
-		ItemStack LogicProcessor = aeMaterials.materialLogicProcessor.stack( 1 );
+		ItemStack LogicProcessor = aeMaterials.logicProcessor().maybeStack( 1 ).get();
 
 		String IlluminatedPanel = "itemIlluminatedPanel";
 
-		ItemStack MAC = aeBlocks.blockMolecularAssembler.stack( 1 );
+		ItemStack MAC = aeBlocks.molecularAssembler().maybeStack( 1 ).get();
 
 		// My Items
 		ItemStack KnowledgeCore = teItems.KnowledgeCore.getStack();
@@ -157,7 +157,7 @@ public class RecipeRegistry
 			ArcaneAssembler, 7, assemblerAspects, MAC, assemblerItems );
 	}
 
-	private static void registerComponents( final Materials aeMaterials, final Blocks aeBlocks, final Items teItems )
+	private static void registerComponents( final IMaterials aeMaterials, final IBlocks aeBlocks, final Items teItems )
 	{
 		// Thaumcraft items
 		ItemStack EtheralEssence = new ItemStack( ConfigItems.itemWispEssence );
@@ -165,21 +165,21 @@ public class RecipeRegistry
 		ItemStack SalisMundus = new ItemStack( ConfigItems.itemResource, 1, 14 );
 
 		// AppEng items
-		ItemStack LogicProcessor = aeMaterials.materialLogicProcessor.stack( 1 );
+		ItemStack LogicProcessor = aeMaterials.logicProcessor().maybeStack( 1 ).get();
 
-		ItemStack CalculationProcessor = aeMaterials.materialCalcProcessor.stack( 1 );
+		ItemStack CalculationProcessor = aeMaterials.calcProcessor().maybeStack( 1 ).get();
 
-		ItemStack EngineeringProcessor = aeMaterials.materialEngProcessor.stack( 1 );
+		ItemStack EngineeringProcessor = aeMaterials.engProcessor().maybeStack( 1 ).get();
 
-		ItemStack CertusQuartz = aeMaterials.materialCertusQuartzCrystal.stack( 1 );
+		ItemStack CertusQuartz = aeMaterials.certusQuartzCrystal().maybeStack( 1 ).get();
 
-		ItemStack ChargedCertusQuartz = aeMaterials.materialCertusQuartzCrystalCharged.stack( 1 );
+		ItemStack ChargedCertusQuartz = aeMaterials.certusQuartzCrystalCharged().maybeStack( 1 ).get();
 
-		ItemStack PureCertusQuartz = aeMaterials.materialPurifiedCertusQuartzCrystal.stack( 1 );
+		ItemStack PureCertusQuartz = aeMaterials.purifiedCertusQuartzCrystal().maybeStack( 1 ).get();
 
-		ItemStack QuartzGlass = aeBlocks.blockQuartzGlass.stack( 1 );
+		ItemStack QuartzGlass = aeBlocks.quartzGlass().maybeStack( 1 ).get();
 
-		ItemStack CellWorkbench = aeBlocks.blockCellWorkbench.stack( 1 );
+		ItemStack CellWorkbench = aeBlocks.cellWorkbench().maybeStack( 1 ).get();
 
 		// My items
 		ItemStack EssentiaComp_1k = teItems.EssentiaStorageComponent_1k.getStack();
@@ -249,7 +249,7 @@ public class RecipeRegistry
 			ItemStack FireShard = new ItemStack( ConfigItems.itemShard, 1, 1 );
 
 			// AE Items
-			ItemStack CertusWrench = AEApi.instance().items().itemCertusQuartzWrench.stack( 1 );
+			ItemStack CertusWrench = AEApi.instance().definitions().items().certusQuartzWrench().maybeStack( 1 ).get();
 
 			// My items
 			ItemStack WrenchFocus = teItems.WandFocusAEWrench.getStack();
@@ -264,7 +264,7 @@ public class RecipeRegistry
 		}
 	}
 
-	private static void registerGearbox( final Blocks aeBlocks, final Items teItems )
+	private static void registerGearbox( final IBlocks aeBlocks, final Items teItems )
 	{
 		// Minecraft items
 		String Cobblestone = "cobblestone";
@@ -290,7 +290,7 @@ public class RecipeRegistry
 
 	}
 
-	private static void registerMaterials( final Materials aeMaterials, final Items teItems )
+	private static void registerMaterials( final IMaterials aeMaterials, final Items teItems )
 	{
 		// Minecraft items
 		String IronIngot = "ingotIron";
@@ -307,9 +307,9 @@ public class RecipeRegistry
 		ItemStack QuickSilver = new ItemStack( ConfigItems.itemNugget, 1, 5 );
 
 		// AppEng items
-		ItemStack FormationCore = aeMaterials.materialFormationCore.stack( 1 );
+		ItemStack FormationCore = aeMaterials.formationCore().maybeStack( 1 ).get();
 
-		ItemStack AnnihilationCore = aeMaterials.materialAnnihilationCore.stack( 1 );
+		ItemStack AnnihilationCore = aeMaterials.annihilationCore().maybeStack( 1 ).get();
 
 		String WoodGear = "gearWood";
 
@@ -436,7 +436,7 @@ public class RecipeRegistry
 		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_64K_SHAPELESS );
 	}
 
-	private static void registerParts( final Parts aeParts, final Materials aeMaterials, final Items teItems )
+	private static void registerParts( final IParts aeParts, final IMaterials aeMaterials, final Items teItems )
 	{
 		// Minecraft items
 		String IronIngot = "ingotIron";
@@ -446,17 +446,17 @@ public class RecipeRegistry
 		// AppEng items
 		String IlluminatedPanel = "itemIlluminatedPanel";
 
-		ItemStack LogicProcessor = aeMaterials.materialLogicProcessor.stack( 1 );
+		ItemStack LogicProcessor = aeMaterials.logicProcessor().maybeStack( 1 ).get();
 
-		ItemStack CalculationProcessor = aeMaterials.materialCalcProcessor.stack( 1 );
+		ItemStack CalculationProcessor = aeMaterials.calcProcessor().maybeStack( 1 ).get();
 
-		ItemStack METerminal = aeParts.partTerminal.stack( 1 );
+		ItemStack METerminal = aeParts.terminal().maybeStack( 1 ).get();
 
-		ItemStack MEP2P = aeParts.partP2PTunnelME.stack( 1 );
+		ItemStack MEP2P = aeParts.p2PTunnelME().maybeStack( 1 ).get();
 
-		ItemStack WirelessReceiver = aeMaterials.materialWireless.stack( 1 );
+		ItemStack WirelessReceiver = aeMaterials.wireless().maybeStack( 1 ).get();
 
-		ItemStack DenseCell = AEApi.instance().blocks().blockEnergyCellDense.stack( 1 );
+		ItemStack DenseCell = AEApi.instance().definitions().blocks().energyCellDense().maybeStack( 1 ).get();
 
 		// Thaumcraft items
 		ItemStack FilterTube = new ItemStack( ConfigBlocks.blockTube, 1, 3 );
@@ -570,7 +570,7 @@ public class RecipeRegistry
 
 	}
 
-	private static void registerProviders( final Blocks aeBlocks, final Items teItems )
+	private static void registerProviders( final IBlocks aeBlocks, final Items teItems )
 	{
 		// Thaumcraft items
 		ItemStack FilteredPipe = new ItemStack( ConfigBlocks.blockTube, 1, 3 );
@@ -585,7 +585,7 @@ public class RecipeRegistry
 		ItemStack AerShard = new ItemStack( ConfigItems.itemShard, 1, 0 );
 
 		// AE Items
-		ItemStack MEInterface = aeBlocks.blockInterface.stack( 1 );
+		ItemStack MEInterface = aeBlocks.iface().maybeStack( 1 ).get();
 
 		// My Items
 		ItemStack CoalescenceCore = teItems.CoalescenceCore.getStack();
@@ -665,9 +665,9 @@ public class RecipeRegistry
 	{
 
 		// Cache the AE item collections
-		Materials aeMaterials = AEApi.instance().materials();
-		Blocks aeBlocks = AEApi.instance().blocks();
-		Parts aeParts = AEApi.instance().parts();
+		IMaterials aeMaterials = AEApi.instance().definitions().materials();
+		IBlocks aeBlocks = AEApi.instance().definitions().blocks();
+		IParts aeParts = AEApi.instance().definitions().parts();
 
 		// Cache my API
 		Items teItems = ThEApi.instance().items();

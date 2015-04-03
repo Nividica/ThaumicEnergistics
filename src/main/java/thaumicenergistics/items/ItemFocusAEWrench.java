@@ -214,7 +214,7 @@ public class ItemFocusAEWrench
 		// Has the wrench already be initialized, and can it be?
 		if( ( this.psuedoWrench == null ) && ItemFocusAEWrench.isWrenchEnabled() )
 		{
-			this.psuedoWrench = AEApi.instance().items().itemCertusQuartzWrench.stack( 1 );
+			this.psuedoWrench = AEApi.instance().definitions().items().certusQuartzWrench().maybeStack( 1 ).orNull();
 		}
 
 		return this.psuedoWrench;

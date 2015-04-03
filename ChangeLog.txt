@@ -1,4 +1,7 @@
-﻿3/32/2015 0.8.9.1b-rv2
+﻿4/2/2015 0.8.9.2a-rv2
+  Dependency Updated: AE2 rv2 beta 22
+
+3/32/2015 0.8.9.1b-rv2
   Dependency Updated: Forge 10.13.2.1291
   Dependency Updated: Thaumcraft 4.2.3.5
   Dependency Updated: AE2 rv2 beta 18

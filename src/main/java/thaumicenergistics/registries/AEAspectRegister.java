@@ -17,13 +17,13 @@ import thaumicenergistics.api.Items;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.util.ThELog;
 import appeng.api.AEApi;
-import appeng.api.definitions.Blocks;
-import appeng.api.definitions.Materials;
-import appeng.api.definitions.Parts;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.IMaterials;
+import appeng.api.definitions.IParts;
 import appeng.api.features.IGrinderEntry;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
-import appeng.api.util.AEItemDefinition;
 import appeng.recipes.GroupIngredient;
 import appeng.recipes.Ingredient;
 import appeng.recipes.handlers.Inscribe;
@@ -68,7 +68,7 @@ public class AEAspectRegister
 		/**
 		 * Definition of the item.
 		 */
-		private AEItemDefinition definition;
+		private IItemDefinition definition;
 
 		/**
 		 * Aspects manually added to the item.
@@ -90,11 +90,15 @@ public class AEAspectRegister
 		 * 
 		 * @param itemDef
 		 */
-		public AEItemInfo( final AEItemDefinition itemDef )
+		public AEItemInfo( final IItemDefinition itemDef )
 		{
-			this.itemStack = itemDef.stack( 1 );
-			this.displayName = this.itemStack.getDisplayName();
 			this.definition = itemDef;
+			this.itemStack = itemDef.maybeStack( 1 ).orNull();
+
+			if( this.itemStack != null )
+			{
+				this.displayName = this.itemStack.getDisplayName();
+			}
 		}
 
 		/**
@@ -102,8 +106,8 @@ public class AEAspectRegister
 		 */
 		private void addPredefinedBonuses()
 		{
-			Blocks aeBlocks = AEApi.instance().blocks();
-			Materials aeMats = AEApi.instance().materials();
+			IBlocks aeBlocks = AEApi.instance().definitions().blocks();
+			IMaterials aeMats = AEApi.instance().definitions().materials();
 
 			// Grinder recipe?
 			if( this.recipe instanceof IGrinderEntry )
@@ -116,7 +120,7 @@ public class AEAspectRegister
 			}
 
 			// Molecular Assembler
-			else if( this.definition.equals( aeBlocks.blockMolecularAssembler ) )
+			else if( this.definition.equals( aeBlocks.molecularAssembler() ) )
 			{
 				// Add extra craft, machina, potentia and vitrius
 				this.bonusAspects.add( Aspect.CRAFT, 4 );
@@ -126,14 +130,14 @@ public class AEAspectRegister
 			}
 
 			// Sky stone
-			else if( this.definition.equals( aeBlocks.blockSkyStone ) )
+			else if( this.definition.equals( aeBlocks.skyStone() ) )
 			{
 				// Add tene
 				this.bonusAspects.add( Aspect.DARKNESS, 3 );
 			}
 
 			// Sky chest
-			else if( this.definition.equals( aeBlocks.blockSkyChest ) )
+			else if( this.definition.equals( aeBlocks.skyChest() ) )
 			{
 				// Add vac
 				this.bonusAspects.add( Aspect.VOID, 4 );
@@ -143,14 +147,14 @@ public class AEAspectRegister
 			}
 
 			// Quartz glass
-			else if( this.definition.equals( aeBlocks.blockQuartzGlass ) )
+			else if( this.definition.equals( aeBlocks.quartzGlass() ) )
 			{
 				// Add vit
 				this.bonusAspects.add( Aspect.CRYSTAL, 4 );
 			}
 
 			// ME Controller
-			else if( this.definition.equals( aeBlocks.blockController ) )
+			else if( this.definition.equals( aeBlocks.controller() ) )
 			{
 				// Add mach, sense, mind
 				this.bonusAspects.add( Aspect.MECHANISM, 3 );
@@ -163,7 +167,7 @@ public class AEAspectRegister
 			}
 
 			// ME Drive
-			else if( this.definition.equals( aeBlocks.blockDrive ) )
+			else if( this.definition.equals( aeBlocks.drive() ) )
 			{
 				// Add vac
 				this.bonusAspects.add( Aspect.VOID, 4 );
@@ -176,7 +180,7 @@ public class AEAspectRegister
 			}
 
 			// ME Chest
-			else if( this.definition.equals( aeBlocks.blockChest ) )
+			else if( this.definition.equals( aeBlocks.chest() ) )
 			{
 				// Add vac
 				this.bonusAspects.add( Aspect.VOID, 4 );
@@ -189,7 +193,7 @@ public class AEAspectRegister
 			}
 
 			// ME IO Port
-			else if( this.definition.equals( aeBlocks.blockIOPort ) )
+			else if( this.definition.equals( aeBlocks.iOPort() ) )
 			{
 				// Add perm
 				this.bonusAspects.add( Aspect.EXCHANGE, 4 );
@@ -202,16 +206,28 @@ public class AEAspectRegister
 			}
 
 			// ME IO Port
-			else if( this.definition.equals( aeBlocks.blockCondenser ) )
+			else if( this.definition.equals( aeBlocks.condenser() ) )
 			{
 				// Add vac
 				this.bonusAspects.add( Aspect.VOID, 10 );
 			}
-
-			else if( this.definition.equals( aeMats.materialCardRedstone ) )
+			// Redstone card
+			else if( this.definition.equals( aeMats.cardRedstone() ) )
 			{
 				// Add sense
 				this.bonusAspects.add( Aspect.SENSES, 2 );
+			}
+			// Cell workbench
+			else if( this.definition.equals( aeBlocks.cellWorkbench() ) )
+			{
+				// Add cloth
+				this.bonusAspects.add( Aspect.CLOTH, 2 );
+			}
+			// ME Interface
+			else if( this.definition.equals( aeBlocks.iface() ) )
+			{
+				// Add permutatio
+				this.bonusAspects.add( Aspect.EXCHANGE, 6 );
 			}
 
 		}
@@ -575,9 +591,9 @@ public class AEAspectRegister
 			{
 				return this.isMatch( (ItemStack)obj );
 			}
-			else if( obj instanceof AEItemDefinition )
+			else if( obj instanceof IItemDefinition )
 			{
-				return this.isMatch( ( (AEItemDefinition)obj ).stack( 1 ) );
+				return this.isMatch( ( (IItemDefinition)obj ).maybeStack( 1 ).orNull() );
 			}
 
 			return false;
@@ -691,20 +707,23 @@ public class AEAspectRegister
 		 */
 		public void registerItem( final int pass )
 		{
-			// Add to the dependency chain
-			AEAspectRegister.this.DEPENDENCY_CHAIN.add( this );
-
 			// Set the pass
 			this.pass = pass;
 
-			// Get the ingredients
-			this.buildAspects();
+			if( this.itemStack != null )
+			{
+				// Add to the dependency chain
+				AEAspectRegister.this.DEPENDENCY_CHAIN.add( this );
 
-			// Calculate the preset bonuses
-			this.addPredefinedBonuses();
+				// Get the ingredients
+				this.buildAspects();
 
-			// Remove from the dependency chain
-			AEAspectRegister.this.DEPENDENCY_CHAIN.remove( this );
+				// Calculate the preset bonuses
+				this.addPredefinedBonuses();
+
+				// Remove from the dependency chain
+				AEAspectRegister.this.DEPENDENCY_CHAIN.remove( this );
+			}
 
 			// Are there aspects?
 			if( ( this.ingredientAspects.size() == 0 ) && ( this.bonusAspects.size() == 0 ) )
@@ -718,7 +737,10 @@ public class AEAspectRegister
 				else
 				{
 					// Still could not register on pass 2.
-					ThELog.info( "'%s' was not registered for TC scanning.", this.displayName );
+					if( !this.displayName.isEmpty() )
+					{
+						ThELog.info( "'%s' was not registered for TC scanning.", this.displayName );
+					}
 				}
 				return;
 			}
@@ -795,9 +817,9 @@ public class AEAspectRegister
 	 */
 	private void registerBase()
 	{
-		Materials aeMats = AEApi.instance().materials();
-		Blocks aeBlocks = AEApi.instance().blocks();
-		Parts aeParts = AEApi.instance().parts();
+		IMaterials aeMats = AEApi.instance().definitions().materials();
+		IBlocks aeBlocks = AEApi.instance().definitions().blocks();
+		IParts aeParts = AEApi.instance().definitions().parts();
 		//Items aeItems = AEApi.instance().items();
 
 		AspectList aspects;
@@ -805,49 +827,49 @@ public class AEAspectRegister
 		// Certus Quartz Crystal
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_BASE );
-		this.registerItem( aeMats.materialCertusQuartzCrystal, aspects );
+		this.registerItem( aeMats.certusQuartzCrystal(), aspects );
 
 		// Charged Certus Quartz Crystal
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_BASE );
 		aspects.add( Aspect.ENERGY, 4 );
-		this.registerItem( aeMats.materialCertusQuartzCrystalCharged, aspects );
+		this.registerItem( aeMats.certusQuartzCrystalCharged(), aspects );
 
 		// Pure Certus Quartz Crystal
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_PURE );
-		this.registerItem( aeMats.materialPurifiedCertusQuartzCrystal, aspects );
+		this.registerItem( aeMats.purifiedCertusQuartzCrystal(), aspects );
 
 		// Certus Quartz Ore
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_BASE );
 		aspects.add( Aspect.EARTH, 1 );
-		this.registerItem( aeBlocks.blockQuartzOre, aspects );
+		this.registerItem( aeBlocks.quartzOre(), aspects );
 
 		// Charged Certus Quartz Ore
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_BASE );
 		aspects.add( Aspect.EARTH, 1 );
 		aspects.add( Aspect.ENERGY, 4 );
-		this.registerItem( aeBlocks.blockQuartzOreCharged, aspects );
+		this.registerItem( aeBlocks.quartzOreCharged(), aspects );
 
 		// Crystal Seed		
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, 1 );
 		aspects.add( Aspect.EXCHANGE, 1 );
-		this.registerItem( AEApi.instance().items().itemCrystalSeed, aspects );
+		this.registerItem( AEApi.instance().definitions().items().crystalSeed(), aspects );
 
 		// Fluix Crystal
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_BASE );
 		aspects.add( Aspect.ENERGY, AEAspectRegister.FLUIX_CHARGE );
-		this.registerItem( aeMats.materialFluixCrystal, aspects );
+		this.registerItem( aeMats.fluixCrystal(), aspects );
 
 		// Pure Fluix Crystal		
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_PURE );
 		aspects.add( Aspect.ENERGY, AEAspectRegister.FLUIX_CHARGE );
-		this.registerItem( aeMats.materialPurifiedFluixCrystal, aspects );
+		this.registerItem( aeMats.purifiedFluixCrystal(), aspects );
 
 		// Enderdust		
 		aspects = new AspectList();
@@ -855,33 +877,33 @@ public class AEAspectRegister
 		aspects.add( Aspect.MOTION, 2 );
 		aspects.add( Aspect.MAGIC, 1 );
 		aspects.add( Aspect.ENTROPY, 1 );
-		this.registerItem( aeMats.materialEnderDust, aspects );
+		this.registerItem( aeMats.enderDust(), aspects );
 
 		// Pure Nether Quartz
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_PURE );
 		aspects.add( Aspect.ENERGY, 1 );
-		this.registerItem( aeMats.materialPurifiedNetherQuartzCrystal, aspects );
+		this.registerItem( aeMats.purifiedNetherQuartzCrystal(), aspects );
 
 		// Silicon
 		aspects = new AspectList();
 		aspects.add( Aspect.FIRE, 1 );
 		aspects.add( Aspect.SENSES, 1 );
 		aspects.add( Aspect.ORDER, 1 );
-		this.registerItem( aeMats.materialSilicon, aspects );
+		this.registerItem( aeMats.silicon(), aspects );
 
 		// Skystone
 		aspects = new AspectList();
 		aspects.add( Aspect.EARTH, 1 );
 		aspects.add( Aspect.DARKNESS, 1 );
-		this.registerItem( aeBlocks.blockSkyStone, aspects );
+		this.registerItem( aeBlocks.skyStone(), aspects );
 
 		// Matter ball
 		aspects = new AspectList();
 		aspects.add( Aspect.SLIME, 4 );
 		aspects.add( Aspect.EARTH, 4 );
 		aspects.add( Aspect.FLIGHT, 4 );
-		this.registerItem( aeMats.materialMatterBall, aspects );
+		this.registerItem( aeMats.matterBall(), aspects );
 
 		// Cables -----------------------------------------
 
@@ -891,35 +913,35 @@ public class AEAspectRegister
 		cableAspects.add( Aspect.ENERGY, 2 );
 
 		// Pseudo-register it
-		this.registerItem( aeBlocks.blockMultiPart, cableAspects );
+		this.registerItem( aeBlocks.multiPart(), cableAspects );
 
 		// Glass
 		aspects = cableAspects.copy();
-		this.registerCableSet( AEApi.instance().parts().partCableGlass, aspects );
+		this.registerCableSet( aeParts.cableGlass(), aspects );
 
 		// Covered
 		aspects = cableAspects.copy();
 		aspects.add( Aspect.CLOTH, 1 );
-		this.registerCableSet( AEApi.instance().parts().partCableCovered, aspects );
+		this.registerCableSet( aeParts.cableCovered(), aspects );
 
 		// Smart
 		aspects = cableAspects.copy();
 		aspects.add( Aspect.CLOTH, 1 );
 		aspects.add( Aspect.LIGHT, 1 );
 		aspects.add( Aspect.ENERGY, 1 );
-		this.registerCableSet( AEApi.instance().parts().partCableSmart, aspects );
+		this.registerCableSet( aeParts.cableSmart(), aspects );
 
 		// Dense
 		aspects = cableAspects.copy();
 		aspects.add( Aspect.CLOTH, 1 );
 		aspects.add( Aspect.LIGHT, 2 );
 		aspects.add( Aspect.ENERGY, 3 );
-		this.registerCableSet( AEApi.instance().parts().partCableDense, aspects );
+		this.registerCableSet( aeParts.cableDense(), aspects );
 
 		// Anchor
 		aspects = new AspectList();
 		aspects.add( Aspect.METAL, 1 );
-		this.registerItem( AEApi.instance().parts().partCableAnchor, aspects );
+		this.registerItem( aeParts.cableAnchor(), aspects );
 
 		//P2P tunnels ------------------------------------
 		// Setup base list
@@ -932,20 +954,20 @@ public class AEAspectRegister
 		p2pAspects.add( Aspect.SENSES, 4 );
 
 		// ME & Items
-		this.registerItem( aeParts.partP2PTunnelME, p2pAspects );
-		this.registerItem( aeParts.partP2PTunnelItems, p2pAspects );
+		this.registerItem( aeParts.p2PTunnelME(), p2pAspects );
+		this.registerItem( aeParts.p2PTunnelItems(), p2pAspects );
 		// Fluid
 		aspects = p2pAspects.copy();
 		aspects.add( Aspect.WATER, 4 );
-		this.registerItem( aeParts.partP2PTunnelLiquids, aspects );
+		this.registerItem( aeParts.p2PTunnelLiquids(), aspects );
 		// Light
 		aspects = p2pAspects.copy();
 		aspects.add( Aspect.LIGHT, 4 );
-		this.registerItem( aeParts.partP2PTunnelLight, aspects );
+		this.registerItem( aeParts.p2PTunnelLight(), aspects );
 		// Redstone
 		aspects = p2pAspects.copy();
 		aspects.add( Aspect.ENERGY, 2 );
-		this.registerItem( aeParts.partP2PTunnelRedstone, aspects );
+		this.registerItem( aeParts.p2PTunnelRedstone(), aspects );
 
 	}
 
@@ -973,7 +995,7 @@ public class AEAspectRegister
 	 * @param itemDef
 	 * @param aspects
 	 */
-	private void registerItem( final AEItemDefinition itemDef, final AspectList aspects )
+	private void registerItem( final IItemDefinition itemDef, final AspectList aspects )
 	{
 		// Get the info for the def
 		AEItemInfo itemInfo = this.getInfoForDefinitionOrStack( itemDef );
@@ -1000,33 +1022,48 @@ public class AEAspectRegister
 		Items teItems = ThEApi.instance().items();
 		thaumicenergistics.api.Blocks teBlocks = ThEApi.instance().blocks();
 
-		try
+		// Get an AE 1K Cell
+		ItemStack aeCell = AEApi.instance().definitions().items().cell1k().maybeStack( 1 ).orNull();
+		AspectList cellAspects = null;
+		if( aeCell != null )
 		{
 			// Get the aspect list for a 1k cell
-			ItemStack aeCell = AEApi.instance().items().itemCell1k.stack( 1 );
-			AspectList cellAspects = ThaumcraftApiHelper.getObjectAspects( aeCell ).copy();
-
-			int aspectCount = cellAspects.size();
-
-			if( aspectCount > 4 )
+			AspectList aeCellAspects = ThaumcraftApiHelper.getObjectAspects( aeCell );
+			if( aeCellAspects != null )
 			{
-				Aspect[] OrderedAspects = cellAspects.getAspectsSortedAmount();
-				cellAspects.remove( OrderedAspects[aspectCount - 1] );
+				// Copy the aspects
+				cellAspects = aeCellAspects.copy();
+				int aspectCount = cellAspects.size();
 
-				if( aspectCount > 5 )
+				// Is there too many aspects?
+				if( aspectCount > 4 )
 				{
-					cellAspects.remove( OrderedAspects[aspectCount - 2] );
-				}
-			}
+					Aspect[] OrderedAspects = cellAspects.getAspectsSortedAmount();
 
-			cellAspects.add( Aspect.MAGIC, 3 );
-			cellAspects.add( Aspect.AURA, 5 );
-			ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_1k.getStack(), cellAspects );
-			ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_4k.getStack(), cellAspects );
-			ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_16k.getStack(), cellAspects );
-			ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_64k.getStack(), cellAspects );
+					// Remove lowest
+					cellAspects.remove( OrderedAspects[aspectCount - 1] );
+
+					// Still not enough room?
+					if( aspectCount > 5 )
+					{
+
+						// Remove lowest
+						cellAspects.remove( OrderedAspects[aspectCount - 2] );
+					}
+				}
+
+				// Add magic and aura
+				cellAspects.add( Aspect.MAGIC, 3 );
+				cellAspects.add( Aspect.AURA, 5 );
+				ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_1k.getStack(), cellAspects );
+				ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_4k.getStack(), cellAspects );
+				ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_16k.getStack(), cellAspects );
+				ThaumcraftApi.registerObjectTag( teItems.EssentiaCell_64k.getStack(), cellAspects );
+			}
 		}
-		catch( Exception e )
+
+		// Were the cells registered?
+		if( ( aeCell == null ) || ( cellAspects == null ) )
 		{
 			ThELog.info( "'%s' was not registered for TC scanning.", "Essentia Cells" );
 		}
@@ -1061,40 +1098,13 @@ public class AEAspectRegister
 		this.GRINDER_RECIPES = AEApi.instance().registries().grinder().getRecipes();
 
 		// Get the inscriber recipes
-		Field fieldInscriberRecipes = null;
-		try
-		{
-			fieldInscriberRecipes = Inscribe.class.getDeclaredField( "RECIPES" );
-		}
-		catch( Exception e )
-		{
-			// TODO: Drop legacy support at version 1.0
-			try
-			{
-				fieldInscriberRecipes = Inscribe.class.getDeclaredField( "recipes" );
-			}
-			catch( Exception e1 )
-			{
-			}
-		}
-
-		if( fieldInscriberRecipes != null )
-		{
-			try
-			{
-				this.INSCRIBER_RECIPES = (LinkedList<InscriberRecipe>)fieldInscriberRecipes.get( null );
-			}
-			catch( Exception e )
-			{
-			}
-
-		}
+		this.INSCRIBER_RECIPES = Inscribe.RECIPES;
 
 		// Build the list of items to give aspects to
-		this.getItemsFromAERegistryClass( AEApi.instance().materials() );
-		this.getItemsFromAERegistryClass( AEApi.instance().items() );
-		this.getItemsFromAERegistryClass( AEApi.instance().blocks() );
-		this.getItemsFromAERegistryClass( AEApi.instance().parts() );
+		this.getItemsFromAERegistryClass( AEApi.instance().definitions().materials() );
+		this.getItemsFromAERegistryClass( AEApi.instance().definitions().items() );
+		this.getItemsFromAERegistryClass( AEApi.instance().definitions().blocks() );
+		this.getItemsFromAERegistryClass( AEApi.instance().definitions().parts() );
 
 		// Give base AE items & materials aspects
 		this.registerBase();
@@ -1187,14 +1197,17 @@ public class AEAspectRegister
 		{
 			try
 			{
+				// Set accessible
+				f.setAccessible( true );
+
 				// Get the field
 				Object fObj = f.get( AEDefinitionInstance );
 
 				// Ensure it is an item def
-				if( fObj instanceof AEItemDefinition )
+				if( fObj instanceof IItemDefinition )
 				{
 					// Create the info
-					itemInfo = new AEItemInfo( (AEItemDefinition)fObj );
+					itemInfo = new AEItemInfo( (IItemDefinition)fObj );
 
 					// Has the stack already been registered?
 					if( this.ITEMS_REGISTERED.contains( itemInfo ) )

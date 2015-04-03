@@ -119,7 +119,7 @@ public abstract class ContainerWithNetworkTool
 			ItemStack stack = playerInventory.getStackInSlot( slotIndex );
 
 			// Is it the network tool?
-			if( ( stack != null ) && ( stack.isItemEqual( AEApi.instance().items().itemNetworkTool.stack( 1 ) ) ) )
+			if( ( stack != null ) && ( stack.isItemEqual( AEApi.instance().definitions().items().networkTool().maybeStack( 1 ).get() ) ) )
 			{
 				// Get the gui item for the tool
 				IGuiItem guiItem = (IGuiItem)stack.getItem();

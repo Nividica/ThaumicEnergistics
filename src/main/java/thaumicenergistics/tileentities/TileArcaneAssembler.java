@@ -33,7 +33,7 @@ import thaumicenergistics.util.PrivateInventory;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.definitions.Materials;
+import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.GridFlags;
@@ -54,6 +54,7 @@ import appeng.core.localization.WailaText;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.me.GridAccessException;
 import appeng.me.GridException;
+import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -225,7 +226,7 @@ public class TileArcaneAssembler
 		this.internalInventory = new AssemblerInventory();
 
 		// Create the upgrade inventory
-		this.upgradeInventory = new UpgradeInventory( ThEApi.instance().blocks().ArcaneAssembler.getStack(), this,
+		this.upgradeInventory = new BlockUpgradeInventory( ThEApi.instance().blocks().ArcaneAssembler.getBlock(), this,
 						BlockArcaneAssembler.MAX_SPEED_UPGRADES );
 
 		// Set the machine source
@@ -740,7 +741,7 @@ public class TileArcaneAssembler
 		// Reset the upgrade count
 		this.upgradeCount = 0;
 
-		Materials aeMaterals = AEApi.instance().materials();
+		IMaterials aeMaterals = AEApi.instance().definitions().materials();
 
 		// Look for speed cards
 		for( int i = 0; i < this.upgradeInventory.getSizeInventory(); i++ )
@@ -749,7 +750,7 @@ public class TileArcaneAssembler
 
 			if( slotStack != null )
 			{
-				if( aeMaterals.materialCardSpeed.sameAsStack( slotStack ) )
+				if( aeMaterals.cardSpeed().isSameAs( slotStack ) )
 				{
 					this.upgradeCount++ ;
 				}

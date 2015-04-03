@@ -30,7 +30,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
-import appeng.api.definitions.Materials;
+import appeng.api.definitions.IMaterials;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.MachineSource;
@@ -39,6 +39,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
@@ -94,7 +95,7 @@ public abstract class AEPartEssentiaIO
 
 	private int[] availableFilterSlots = { AEPartEssentiaIO.BASE_SLOT_INDEX };
 
-	private UpgradeInventory upgradeInventory = new UpgradeInventory( this.associatedItem, this, AEPartEssentiaIO.UPGRADE_INVENTORY_SIZE );
+	private UpgradeInventory upgradeInventory = new StackUpgradeInventory( this.associatedItem, this, AEPartEssentiaIO.UPGRADE_INVENTORY_SIZE );
 
 	private List<ContainerPartEssentiaIOBus> listeners = new ArrayList<ContainerPartEssentiaIOBus>();
 
@@ -634,7 +635,7 @@ public abstract class AEPartEssentiaIO
 		this.redstoneControlled = false;
 		this.upgradeSpeedCount = 0;
 
-		Materials aeMaterals = AEApi.instance().materials();
+		IMaterials aeMaterals = AEApi.instance().definitions().materials();
 
 		for( int i = 0; i < this.upgradeInventory.getSizeInventory(); i++ )
 		{
@@ -642,15 +643,15 @@ public abstract class AEPartEssentiaIO
 
 			if( slotStack != null )
 			{
-				if( aeMaterals.materialCardCapacity.sameAsStack( slotStack ) )
+				if( aeMaterals.cardCapacity().isSameAs( slotStack ) )
 				{
 					this.filterSize++ ;
 				}
-				else if( aeMaterals.materialCardRedstone.sameAsStack( slotStack ) )
+				else if( aeMaterals.cardRedstone().isSameAs( slotStack ) )
 				{
 					this.redstoneControlled = true;
 				}
-				else if( aeMaterals.materialCardSpeed.sameAsStack( slotStack ) )
+				else if( aeMaterals.cardSpeed().isSameAs( slotStack ) )
 				{
 					this.upgradeSpeedCount++ ;
 				}

@@ -38,6 +38,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.helpers.IPriorityHost;
+import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
@@ -84,7 +85,7 @@ public class AEPartEssentiaStorageBus
 	/**
 	 * Upgrade inventory
 	 */
-	private UpgradeInventory upgradeInventory = new UpgradeInventory( this.associatedItem, this, 1 );
+	private UpgradeInventory upgradeInventory = new StackUpgradeInventory( this.associatedItem, this, 1 );
 
 	/**
 	 * Containers listening for events
@@ -399,7 +400,8 @@ public class AEPartEssentiaStorageBus
 	@Override
 	public void onInventoryChanged( final IInventory sourceInventory )
 	{
-		this.handler.setInverted( AEApi.instance().materials().materialCardInverter.sameAsStack( this.upgradeInventory.getStackInSlot( 0 ) ) );
+		boolean inverted = AEApi.instance().definitions().materials().cardInverter().isSameAs( this.upgradeInventory.getStackInSlot( 0 ) );
+		this.handler.setInverted( inverted );
 	}
 
 	/**
