@@ -56,7 +56,8 @@ public class ItemFocusAEWrench
 	 */
 	public static boolean isWrenchEnabled()
 	{
-		return AEConfig.instance.isFeatureEnabled( AEFeature.QuartzWrench );
+		return AEConfig.instance.isFeatureEnabled( AEFeature.QuartzWrench ) &&
+						AEApi.instance().definitions().items().certusQuartzWrench().maybeItem().isPresent();
 	}
 
 	private void activateWrenchLeftClick( final World world, final int x, final int y, final int z, final EntityPlayer player, final int side,

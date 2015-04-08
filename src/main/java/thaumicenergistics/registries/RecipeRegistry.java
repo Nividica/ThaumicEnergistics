@@ -249,10 +249,15 @@ public class RecipeRegistry
 			ItemStack FireShard = new ItemStack( ConfigItems.itemShard, 1, 1 );
 
 			// AE Items
-			ItemStack CertusWrench = AEApi.instance().definitions().items().certusQuartzWrench().maybeStack( 1 ).get();
+			ItemStack CertusWrench = AEApi.instance().definitions().items().certusQuartzWrench().maybeStack( 1 ).orNull();
 
 			// My items
 			ItemStack WrenchFocus = teItems.WandFocusAEWrench.getStack();
+
+			if( CertusWrench == null )
+			{
+				return;
+			}
 
 			// Wrench focus
 			AspectList wrenchAspects = new AspectList();

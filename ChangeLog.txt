@@ -1,4 +1,10 @@
-﻿4/2/2015 0.8.9.2a-rv2
+﻿4/8/2015 0.8.9.3a-rv2
+  Dependency Updated: AE2 rv2 beta 27
+  Fixes #160: More robust checking for disabled wrench
+  Fixes #162: Updated AE2
+  Better aspect registration & cleanup.
+  
+4/2/2015 0.8.9.2a-rv2
   Dependency Updated: AE2 rv2 beta 22
 
 3/32/2015 0.8.9.1b-rv2

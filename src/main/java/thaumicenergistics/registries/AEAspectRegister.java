@@ -2,10 +2,7 @@ package thaumicenergistics.registries;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -22,12 +19,12 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.definitions.IParts;
 import appeng.api.features.IGrinderEntry;
+import appeng.api.features.IInscriberRecipe;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
+import appeng.core.features.registries.entries.InscriberRecipe;
 import appeng.recipes.GroupIngredient;
 import appeng.recipes.Ingredient;
-import appeng.recipes.handlers.Inscribe;
-import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 
 /**
  * Gives items from AE2 aspects when scanned.
@@ -108,6 +105,7 @@ public class AEAspectRegister
 		{
 			IBlocks aeBlocks = AEApi.instance().definitions().blocks();
 			IMaterials aeMats = AEApi.instance().definitions().materials();
+			//IItems aeItems = AEApi.instance().definitions().items();
 
 			// Grinder recipe?
 			if( this.recipe instanceof IGrinderEntry )
@@ -159,7 +157,7 @@ public class AEAspectRegister
 				// Add mach, sense, mind
 				this.bonusAspects.add( Aspect.MECHANISM, 3 );
 				this.bonusAspects.add( Aspect.SENSES, 1 );
-				this.bonusAspects.add( Aspect.MIND, 5 );
+				this.bonusAspects.add( Aspect.MIND, 9 );
 
 				// Remove fire, order
 				this.ingredientAspects.remove( Aspect.FIRE );
@@ -229,6 +227,41 @@ public class AEAspectRegister
 				// Add permutatio
 				this.bonusAspects.add( Aspect.EXCHANGE, 6 );
 			}
+			// Logic processor
+			else if( this.definition.equals( aeMats.logicProcessor() ) )
+			{
+				// Remove metal & fire & ordo
+				this.ingredientAspects.remove( Aspect.METAL );
+				this.ingredientAspects.remove( Aspect.FIRE );
+				this.ingredientAspects.remove( Aspect.ORDER );
+
+				// Add mind & metal
+				this.bonusAspects.add( Aspect.MIND, 3 );
+				this.bonusAspects.add( Aspect.METAL, 1 );
+			}
+			// Calc processor
+			else if( this.definition.equals( aeMats.calcProcessor() ) )
+			{
+				// Remove metal & fire & ordo
+				this.ingredientAspects.remove( Aspect.METAL );
+				this.ingredientAspects.remove( Aspect.FIRE );
+				this.ingredientAspects.remove( Aspect.ORDER );
+
+				// Add mind & metal
+				this.bonusAspects.add( Aspect.MIND, 6 );
+				this.bonusAspects.add( Aspect.METAL, 1 );
+			}
+			// Eng processor
+			else if( this.definition.equals( aeMats.engProcessor() ) )
+			{
+				// Remove metal & fire & ordo
+				this.ingredientAspects.remove( Aspect.METAL );
+				this.ingredientAspects.remove( Aspect.FIRE );
+				this.ingredientAspects.remove( Aspect.ORDER );
+
+				// Add mind
+				this.bonusAspects.add( Aspect.MIND, 9 );
+			}
 
 		}
 
@@ -266,11 +299,11 @@ public class AEAspectRegister
 			// Inscriber recipes
 			if( AEAspectRegister.this.INSCRIBER_RECIPES != null )
 			{
-				for( InscriberRecipe recipe : AEAspectRegister.this.INSCRIBER_RECIPES )
+				for( IInscriberRecipe recipe : AEAspectRegister.this.INSCRIBER_RECIPES )
 				{
 					try
 					{
-						ItemStack recipeOutput = recipe.output;
+						ItemStack recipeOutput = recipe.getOutput();
 
 						// Skip null items
 						if( recipeOutput == null || recipeOutput.getItem() == null )
@@ -414,21 +447,25 @@ public class AEAspectRegister
 				// Cast
 				InscriberRecipe iRec = (InscriberRecipe)this.recipe;
 
-				// Get imprintable count
-				int imprintCount = iRec.imprintable.length;
+				// Get inputs
+				List<ItemStack> inputs = new ArrayList<ItemStack>( iRec.getInputs() );
 
-				// Create array
-				ingredientObjects = new Object[2 + imprintCount];
-
-				// Add imprintables
-				for( int i = 0; i < imprintCount; i++ )
+				// Is there a top?
+				if( iRec.getTopOptional().isPresent() )
 				{
-					ingredientObjects[i] = iRec.imprintable[i];
+					// Add top
+					inputs.add( iRec.getTopOptional().get() );
 				}
 
-				// Add plates
-				ingredientObjects[imprintCount] = iRec.plateA;
-				ingredientObjects[imprintCount + 1] = iRec.plateB;
+				// Is there a bottom?
+				if( iRec.getBottomOptional().isPresent() )
+				{
+					// Add bottom
+					inputs.add( iRec.getBottomOptional().get() );
+				}
+
+				// Create array
+				ingredientObjects = inputs.toArray( new Object[inputs.size()] );
 
 			}
 
@@ -613,6 +650,9 @@ public class AEAspectRegister
 			{
 				for( Aspect aspect : this.ingredientAspects.getAspects() )
 				{
+					if( aspect == null )
+						continue;
+
 					finalAspects.add( aspect, this.ingredientAspects.getAmount( aspect ) );
 				}
 			}
@@ -622,6 +662,9 @@ public class AEAspectRegister
 			{
 				for( Aspect aspect : this.bonusAspects.getAspects() )
 				{
+					if( aspect == null )
+						continue;
+
 					finalAspects.add( aspect, this.bonusAspects.getAmount( aspect ) );
 				}
 			}
@@ -634,6 +677,7 @@ public class AEAspectRegister
 				return finalAspects;
 			}
 
+			/*
 			// Find maximum & minimum
 			int max = 0;
 			int min = Integer.MAX_VALUE;
@@ -666,6 +710,7 @@ public class AEAspectRegister
 					}
 				}
 			}
+			*/
 
 			// Can only have 6 aspects
 			if( aspectCount > 6 )
@@ -801,7 +846,7 @@ public class AEAspectRegister
 	 */
 	List<IRecipe> NORMAL_RECIPES;
 	List<IGrinderEntry> GRINDER_RECIPES;
-	LinkedList<InscriberRecipe> INSCRIBER_RECIPES;
+	List<IInscriberRecipe> INSCRIBER_RECIPES;
 
 	/**
 	 * Private constructor.
@@ -1098,7 +1143,7 @@ public class AEAspectRegister
 		this.GRINDER_RECIPES = AEApi.instance().registries().grinder().getRecipes();
 
 		// Get the inscriber recipes
-		this.INSCRIBER_RECIPES = Inscribe.RECIPES;
+		this.INSCRIBER_RECIPES = AEApi.instance().registries().inscriber().getRecipes();
 
 		// Build the list of items to give aspects to
 		this.getItemsFromAERegistryClass( AEApi.instance().definitions().materials() );
