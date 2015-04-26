@@ -1,155 +1,156 @@
-﻿#Group names
+#Group names
 itemGroup.ThaumicEnergistics=Thaumic Energistics
-thaumicenergistics.group.essentia.transport=ME шина импорта/экспорта эссенций
+thaumicenergistics.group.essentia.transport=МЭ шина импорта/экспорта эссенции
 
 #Fluids
 thaumicenergistics.fluid.gaseous=Газ
 
 #Blocks
-thaumicenergistics.block.essentia.provider.name=Провайдер эссенций
-thaumicenergistics.block.infusion.provider.name=Инфузионный провайдер
+thaumicenergistics.block.essentia.provider.name=Поставщик эссенции
+thaumicenergistics.block.infusion.provider.name=Поставщик наполнения
 thaumicenergistics.block.gear.box.name=Железная коробка передач
 thaumicenergistics.block.golem.gear.box.name=Таумическая коробка передач
-thaumicenergistics.block.essentia.cell.workbench.name=Верстак для ячеек с эссенциями
+thaumicenergistics.block.essentia.cell.workbench.name=Верстак для ячеек эссенции
 thaumicenergistics.block.arcane.assembler.name=Магический сборщик
 thaumicenergistics.block.knowledge.inscriber.name=Высекатель знаний
-thaumicenergistics.block.essentia.vibration.chamber.name=[WIP] Вибрационная камера эссенций
+thaumicenergistics.block.essentia.vibration.chamber.name=[WIP]Вибрационная камера эссенции
 
 #Cable parts
-thaumicenergistics.aeparts.essentia.ImportBus.name=Шина импорта эссенций
-thaumicenergistics.aeparts.essentia.ExportBus.name=Шина экспорта эссенций
-thaumicenergistics.aeparts.essentia.levelemitter.name=Показатель уровня эссенций
-thaumicenergistics.aeparts.essentia.StorageBus.name=Шина хранения эссенций
-thaumicenergistics.aeparts.essentia.terminal.name=Терминал эссенций
+thaumicenergistics.aeparts.essentia.ImportBus.name=Шина импорта эссенции
+thaumicenergistics.aeparts.essentia.ExportBus.name=Шина экспорта эссенции
+thaumicenergistics.aeparts.essentia.levelemitter.name=Излучатель уровня эссенции
+thaumicenergistics.aeparts.essentia.StorageBus.name=Шина хранения эссенции
+thaumicenergistics.aeparts.essentia.terminal.name=Терминал эссенции
 thaumicenergistics.aeparts.arcane.crafting.terminal.name=Магический терминал создания
-thaumicenergistics.aeparts.vis.interface.name=Вис-канал интерфейс
+thaumicenergistics.aeparts.vis.interface.name=Интерфейс Вис-реле
 
 #Items
-thaumicenergistics.item.essentia.cell.1k.name=1k МЭ ячейка хранения эссенций
-thaumicenergistics.item.essentia.cell.4k.name=4k МЭ ячейка хранения эссенций
-thaumicenergistics.item.essentia.cell.16k.name=16k МЭ ячейка хранения эссенций
-thaumicenergistics.item.essentia.cell.64k.name=64k МЭ ячейка хранения эссенций
-thaumicenergistics.item.essentia.cell.creative.name=Креативная ячейка хранения эссенций
-thaumicenergistics.item.storage.casing.name=МЭ хранения эссенций
-thaumicenergistics.item.storage.component.1k.name=1k компонент хранения эссенций
-thaumicenergistics.item.storage.component.4k.name=4k компонент хранения эссенций
-thaumicenergistics.item.storage.component.16k.name=16k компонент хранения эссенций
-thaumicenergistics.item.storage.component.64k.name=64k компонент хранения эссенций
+thaumicenergistics.item.essentia.cell.1k.name=МЭ 1К ячейка хранения эссенции
+thaumicenergistics.item.essentia.cell.4k.name=МЭ 4К ячейка хранения эссенции
+thaumicenergistics.item.essentia.cell.16k.name=МЭ 16К ячейка хранения эссенции
+thaumicenergistics.item.essentia.cell.64k.name=МЭ 64К ячейка хранения эссенции
+thaumicenergistics.item.essentia.cell.creative.name=Творческая ячейка хранения эссенции
+thaumicenergistics.item.storage.casing.name=МЭ корпус ячейки хранения эссенции
+thaumicenergistics.item.storage.component.1k.name=МЭ 1К компонент хранения эссенции
+thaumicenergistics.item.storage.component.4k.name=МЭ 4К компонент хранения эссенции
+thaumicenergistics.item.storage.component.16k.name=МЭ 16К компонент хранения эссенции
+thaumicenergistics.item.storage.component.64k.name=МЭ 64К компонент хранения эссенции
 thaumicenergistics.item.material.diffusion.core.name=Ядро диффузии
 thaumicenergistics.item.material.coalescence.core.name=Ядро слияния
 thaumicenergistics.item.material.iron.gear.name=Железная шестерня
-thaumicenergistics.item.wireless.essentia.terminal.name=Беспроводной терминал эссенций
+thaumicenergistics.item.wireless.essentia.terminal.name=Беспроводной терминал эссенции
 thaumicenergistics.item.knowledge.core.name=Ядро знаний
-thaumicenergistics.item.focus.aewrench.name=Набалдашник: AE ключ
+thaumicenergistics.item.focus.aewrench.name=Набалдашник: AE-ключ
+thaumicenergistics.item.focus.aewrench.disabled.name=Набалдашник: AE-ключ - режим ключа отключен
 
 #Tooltips
-thaumicenergistics.tooltip.essentia.cell.bytes=%d из %d байтов используется.
-thaumicenergistics.tooltip.essentia.cell.types=%d из %d видов essentia хранится.
-thaumicenergistics.tooltip.essentia.cell.details=Удерживайте SHIFT для деталей.
-thaumicenergistics.tooltip.button.clear.crafting=Задаток сетки крафта
-thaumicenergistics.tooltip.button.void=Разрешить пустоту?
-thaumicenergistics.tooltip.button.void.disabled=Нет пустотной эссенции
-thaumicenergistics.tooltip.button.void.allowed=Пустотная эссенция в банке заполнена
-thaumicenergistics.tooltip.button.void.note=Применяется только к пустотной банке
-thaumicenergistics.tooltip.button.inscriber.invalid=Неверный Рецепт
-thaumicenergistics.tooltip.button.inscriber.full=Базовые знания заполнены
-thaumicenergistics.tooltip.button.inscriber.delete=Стереть шаблон с базовых знаний
-thaumicenergistics.tooltip.button.inscriber.save=Сохранить шаблон базовых знаний
-thaumicenergistics.tooltip.button.inscriber.missing=Требуются базовые знания
+thaumicenergistics.tooltip.essentia.cell.bytes=%d из %d байт использовано.
+thaumicenergistics.tooltip.essentia.cell.types=%d из %d типов эссенции накоплено.
+thaumicenergistics.tooltip.essentia.cell.details=Удерживайте §eshift§f для деталей.
+thaumicenergistics.tooltip.button.clear.crafting=Очистить сетку создания
+thaumicenergistics.tooltip.button.void=Разрешить уничтожение?
+thaumicenergistics.tooltip.button.void.disabled=Не уничтожать эссенцию
+thaumicenergistics.tooltip.button.void.allowed=Уничтожать эссенцию, если банка заполнена
+thaumicenergistics.tooltip.button.void.note=Применяется только на пустотные банки
+thaumicenergistics.tooltip.button.inscriber.invalid=Неверный рецепт
+thaumicenergistics.tooltip.button.inscriber.full=Ядро знаний заполнено
+thaumicenergistics.tooltip.button.inscriber.delete=Стереть шаблон из ядра знаний
+thaumicenergistics.tooltip.button.inscriber.save=Сохранить шаблон в ядро знаний
+thaumicenergistics.tooltip.button.inscriber.missing=Требуется ядро знаний
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=Магический терминал
-thaumicenergistics.gui.essentia.cell.title=Ячейка эссенций
+thaumicenergistics.gui.essentia.cell.title=Ячейка эссенции
 thaumicenergistics.gui.selected.amount=Количество
 thaumicenergistics.gui.selected.aspect=Аспект
-thaumicenergistics.gui.digivis.source.name=Источник Диги-Вис
-thaumicenergistics.gui.essentia.cell.workbench.title=Верстак для ячеек эссенций
+thaumicenergistics.gui.digivis.source.name=Источник ЦифроВис
+thaumicenergistics.gui.essentia.cell.workbench.title=Верстак для ячеек эссенции
 thaumicenergistics.gui.arcane.assembler.title=Магический сборщик
 
 #Research Tab
-tc.research_category.thaumicenergistics=Таумотическая Энергетика
+tc.research_category.thaumicenergistics=Energistics
 
 # Research basics
-tc.research_name.thaumicenergistics.TERESEARCH=Таумотическая Энергетика
-tc.research_text.thaumicenergistics.TERESEARCH=Тауматургический вход в цифровую эпоху.
-thaumicenergistics.research_page.TERESEARCH.1=Поскольку учёные и маги захотели работать вместе, мы решили, что это должно объединять технологии и магию стабильным и продуктивным образом.<BR>Вам нужно будет изучить принципы преобразования энергии в материю, для достижения этой цели. Вполне вероятно, что некоторые аспекты тауматургии, которые могут выполнить эти задачи, а также технологии, способны делать то же самое.<BR>Это потребует глубоких изучений, но вы уверены, что это будет выгодным вложением вашего времени.
+tc.research_name.thaumicenergistics.TERESEARCH=Thaumic Energistics
+tc.research_text.thaumicenergistics.TERESEARCH=Для тауматургии наступает цифровая эпоха.
+thaumicenergistics.research_page.TERESEARCH.1=Как учёный и знаток магии, Вы предположили, что должно быть возможно объединить технологию и магию стабильным и продуктивным образом.<BR>Для достижения этой цели, Вам нужно будет подробно изучить принципы преобразования материальной энергии. Вполне вероятно, что некоторые аспекты тауматургии могут решить эту задачу, также как и технология, способная сделать то же самое.<BR>Потребуется глубоко изучить материальную энергию, но Вы уверены, что это будет выгодным вложением Вашего времени.
 
 # Research conversion cores
-tc.research_name.thaumicenergistics.TECORES=Дигисенции
-tc.research_text.thaumicenergistics.TECORES=Цифровые эссенции.
-thaumicenergistics.research_page.TECORES.1=Обнаружив, как перегоняются эссенции, и что происходит с ними, вы научились хранить эссенции в цифровом виде.<BR>Изучая §lЯдро формирования§r и §lЯдро истребления§r вы понимаете, что с некоторыми незначительными изменениями они могут служить в качестве средства для преобразования эссенций в цифровой формат.<BR>Тем не менее, из-за коррозионных типов эссенций, требуется слой ртути вокруг схемы, чтобы предотвратить повреждение.
-thaumicenergistics.research_page.TECORES.2=§lЯдро диффузии§r<BR>Довольно высокую волатильность и огромное количество энергии требуется в дистиллированной эссенции, чтобы она начала рассеиваться, а затем превратилась в цифровую форму. Буферная камера, вероятно, будет необходимым пунктом чтобы провести рассеивание эссенции.<LINE>§lЯдро слияния§r<BR>Компрессы и связывания повторно материализованной эссенции распространяются обратно в сыром виде. Буферная камера также, вероятно, потребуется для этого.
+tc.research_name.thaumicenergistics.TECORES=Цифросенция
+tc.research_text.thaumicenergistics.TECORES=Цифровая эссенция.
+thaumicenergistics.research_page.TECORES.1=Обнаружив как перегонять эссенцию, Вы решили, что возможно сможете хранить её в цифром виде.<BR>Изучив §lЯдро формирования§r и §lЯдро истребления§r, Вы понимаете, что после некоторых незначительных изменений они смогут служить в качестве средства для преобразования эссенции в цифровый формат и из него.<BR>Однако, из-за коррозионной природы некоторых типов эссенций вокруг схемы требуется слой ртути для предотвращения разрушения.
+thaumicenergistics.research_page.TECORES.2=§lЯдро диффузии§r<BR>Из-за относительно высокой летучести и огромной энергии в дистиллированной эссенции её сначала нужно рассеить, а потом перевести в цифровую форму. Скорее всего потребуется какая-нибудь буферная камера для хранения рассеянной эссенции.<LINE>§lЯдро слияния§r<BR>Сжимает и связывает повторно материализованную рассеянную эссенцию обратно в её необработанную форму. Вероятно, буферная камера также потребуется.
 
 # Research storage
-tc.research_name.thaumicenergistics.TESTORAGE=Хранилище дигисенций
-tc.research_text.thaumicenergistics.TESTORAGE=Может ли эта вещь хранить эссенции?
-thaumicenergistics.research_page.TESTORAGE.1=При проверке существующих цифровых носителей информации вы пришли к выводу, что вы можете оцифровывать эссенции в хранилище фактов.<BR>Путем вливания §lКристалла истинного кварца§r в концентрированные эссенциии, вы получили возможность хранить эссенции, которые остаются на удивление активными, даже в цифровом виде.<BR>Вы пришли к выводу, что чем выше концентрация эссенции, тем больше она должна быть в состоянии хранения, хотя есть пределы того, сколько кварц сам по себе может хранить.
-thaumicenergistics.research_page.TESTORAGE.2=§lКомпоненты§r<BR>Магазины эссенций в цифровом формате. Неработают если корпус ячейки не используется для взаимодействия с цифровой сетью.<BR>§lКорпус ячейки§r<BR>Обеспечивает интерфейс и защищает компоненты хранения.<BR>§lВерстак для ячеек с эссенциями§r<BR>Верстак для ячеек позволяет разделить ячейку, указав, какие типы эссенций разрешено хранить.
+tc.research_name.thaumicenergistics.TESTORAGE=Хранилище цифросенции
+tc.research_text.thaumicenergistics.TESTORAGE=Эта вещица и вправду может хранить эссенцию?
+thaumicenergistics.research_page.TESTORAGE.1=Во время осмотра существующих цифровых носителей информации Вы пришли к выводу, что Вы в самом деле сможете хранить цифровую эссенцию.<BR>Наполнение §lИстинного кварца§r концентрированной эссенцией, даст ему возможность хранить эссенцию в себе, которая остаётся на удивление активной, даже в цифровом виде.<BR>Вы заключили, что чем выше концентрация эссенции, тем больше эссенции кварц сможет её содержать, не смотря на это существуют природные пределы того сколько кварц может содержать в себе эссенции.
+thaumicenergistics.research_page.TESTORAGE.2=§lКомпоненты§r<BR>Хранят эссенцию в цифровом формате. Не функционируют, если только корпус ячейки не используются для взаимодействия с цифровыми сетям.<BR>§lКорпус ячейки§r<BR>Предоставляет интерфейс и защищает компонент хранения.<BR>§lВерстак для ячеек эссенции§r<BR>Верстак для ячеек позволяет Вам разметить ячейку, указав какие типы эссенции можно хранить в ней.
 
 # Research IO
-tc.research_name.thaumicenergistics.TEIO=Транспортировка дигисенций
-tc.research_text.thaumicenergistics.TEIO=Перемещение цифровых эссенций!
-thaumicenergistics.research_page.TEIO.1=Теперь, когда вы знаете, как делать Дигисенции, пришло время поставить эти знания, чтобы они работали.<LINE>§lИмпорт и экспорт§r<BR>При связывании соответствующего ядра к трубе и камере эссенции, вы сможете передвигать эссенцию из сети хранения данных. Использование фильтра трубы позволяет указать, какие аспекты могут быть переданы.
-thaumicenergistics.research_page.TEIO.2=§lШина хранения эссенций§r<BR>Cочетание шины импорта и экспорта в одном устройстве позволяет использовать внешние контейнеры эссенции в качестве сетевого хранилища. Из-за отсутствия камеры, это вряд ли будет работать с чем-нибудь, но отразит что содержится в банках.
+tc.research_name.thaumicenergistics.TEIO=Транспортировка цифросенции
+tc.research_text.thaumicenergistics.TEIO=Цифровой перенос эссенции!
+thaumicenergistics.research_page.TEIO.1=Теперь, когда Вы знаете как оцифровать эссенцию, пора применить эти знания на практике.<LINE>§lИмпорт и Экспорт§r<BR>Связав соответствующее ядро с трубой для эссенции и камерой, Вы сможете отправлять эссенцию в сеть хранения и из сети. Используя фильтрующую трубу, Вы сможете указать какие аспекты можно передавать.
+thaumicenergistics.research_page.TEIO.2=§lШина хранения§r<BR>Объединение шины импорта и экспорта в единое устройство позволит Вам использовать внешние контейнеры эссенции в качестве сети хранения. Из-за отсутствия камеры, оно вряд ли будет работать с чем-то, кроме банок.
 
 # Research Arcane crafting terminal
 tc.research_name.thaumicenergistics.TEARCANETERM=Магический терминал создания
-tc.research_text.thaumicenergistics.TEARCANETERM=Крафт с помощью магии §oи техники.§r
-thaumicenergistics.research_page.TEARCANETERM.1=Вы обнаружили, что использование первичных аспектов может привязать §lТерминал§r к §lМагическому верстаку§r, и позволит пополнять терминал с возможностью рабочего стола, чтобы крафтить магические предметы.
+tc.research_text.thaumicenergistics.TEARCANETERM=Создание с помощью магии §oи технологии.§r
+thaumicenergistics.research_page.TEARCANETERM.1=Вы обнаружили, что использование первичных аспектов для соединения §lТерминала§r с §lМагическим верстаком§r позволяет Вам наполнить терминал редкой способностью верстака, которая позволяет создавать магические предметы.
 
 # Research Essentia terminal
-tc.research_name.thaumicenergistics.TEESSTERM=Мониторинг эссенций
-tc.research_text.thaumicenergistics.TEESSTERM=Зная, сколько у вас есть.
-thaumicenergistics.research_page.TEESSTERM.1=§lТерминал эссенций§r и §lБеспроводной терминал эссенций§r позволяет контролировать, сколько эссенций хранится в сети, и предоставляет возможность заполнять и сливать из стеклянных пузырьков эссенции в терминале.
-thaumicenergistics.research_page.TEESSTERM.2=§lПоказатель уровня эссенций§r будет постоянно следить за уровнем эссенций в сети, и выдавать редстоун сигнал, когда соответствуют условия.
+tc.research_name.thaumicenergistics.TEESSTERM=Мониторинг эссенции
+tc.research_text.thaumicenergistics.TEESSTERM=Зная, сколько у Вас есть.
+thaumicenergistics.research_page.TEESSTERM.1=§lТерминал эссенции§r и §lБеспроводной терминал эссенции§r позволяют Вам следить за количеством накопленной эссенции в сети и предоставляют возможность заполнять и опустошать контейнеры эссенции в терминале.<BR>§lИзлучатель уровня эссенции§r будет постоянно следить за уровнями эссенции в сети и подавать сигнал красного камня, когда соответствующие условия выполняются.
 
 # Research Essentia Provider
-tc.research_name.thaumicenergistics.TEESSPROV=Провайдер эссенций
-tc.research_text.thaumicenergistics.TEESSPROV=Просите, и вы получите.
-thaumicenergistics.research_page.TEESSPROV.1=Импортные и экспортные шины полезны для массива рабочих мест, но им не хватает гибкости, чтобы взаимодействовать со сложными алхимическими конструкциями. Чтобы преодолеть это ограничение, мы создали устройство, которое позволит этим конструкциям просить эссенции прямо из сети.<BR>Использование §lПровайдера эссенций§r должно оказаться лёгким решением. Просто подключите его к обеим концам сети и конструкциям, и он сделает всё остальное за вас.<BR>В то время как буфер эссенций имеет небольшое количество всасывания (8).
+tc.research_name.thaumicenergistics.TEESSPROV=Поставщик эссенции
+tc.research_text.thaumicenergistics.TEESSPROV=Спросите и Вы получите.
+thaumicenergistics.research_page.TEESSPROV.1=В то время как шины импорта и экспорта полезны для массива заданий, им не хватает гибкости для взаимодействия со сложными алхимическими конструкциями. Чтобы преодолеть это ограничение, Вы сделали устройство, которое позволит этим конструкциям запрашивать любую эссенцию напрямую из сети.<BR>Использование §lПоставщика эссенции§r не должно вызвать затруднений. Просто подключите его к сети и к конструкции, остальное оно выполнит автоматически.<BR>Как и у буфера эссенции у него есть небольшое количество всасывания(8).
 
 # Research Infusion Provider
-tc.research_name.thaumicenergistics.TEINFPROV=Инфузионный провайдер
-tc.research_text.thaumicenergistics.TEINFPROV=Инфузия стала легче.
-thaumicenergistics.research_page.TEINFPROV.1=В процессе исследования инфузии эссенций, вы обнаружили способ мгновенного преобразования между дигисенций и эссенций, которые могут использоваться для инфузии.<BR>Размещая §lИнфузионный провайдер§r рядом с таумическими устройствами, он может брать эссенции прямо из сети. Это может оказаться очень полезным для изменения инфузии.
+tc.research_name.thaumicenergistics.TEINFPROV=Поставщик наполнения
+tc.research_text.thaumicenergistics.TEINFPROV=Упрощает наполнение.
+thaumicenergistics.research_page.TEINFPROV.1=После изучения процесса наполнения эссенцией, Вы обнаружили способ мгновенного преобразования между цифросенцией и эссенцией, который может использоваться во время наполнения.<BR>После размещения §lПоставщика эссенции§r вблизи таумического устройство, устройство сможет потреблять эссенцию напрямую из сети, как будто оно - банка.<BR>Это устройство может быть полезным для алтаря наполнения.
 
 # Research Vis Interface
-tc.research_name.thaumicenergistics.TEVISINT=Вис-канал интерфейс
-tc.research_text.thaumicenergistics.TEVISINT=Использование дигисенций
-thaumicenergistics.research_page.TEVISINT.1=Узнав о сети питания вис, вы не преследовали способы увязки вашей цифровой системы к этой сети.<BR>Наблюдая, как вис течет через сеть §lВис-каналов§r, вы считаете, что можете построить цифровое устройство для выполнения подобной функции. Благодаря использованию равной-равному возможности цифровой сети, вы импортируете вис в сеть, однако он не может быть сохранён.
-thaumicenergistics.research_page.TEVISINT.2=Чтобы использовать §lВис-канал интерфейс§r, приложите его к цифровой сети и поместите вис-канал на нем. Основание реле должно быть приложено к интерфейсу.<BR>Для того, чтобы устройство получало вис, оно должно быть связано с интерфейсом. Связь других устройств с интерфейсом потребует использование §lКарты памяти§r.<BR>Нажмите Shift + правый щелчок на интерфейсе с картой памяти, а затем щелкните правой кнопкой мыши на устройстве, чтобы создать ссылку.<BR>Правый щелчок на устройстве (не интерфейсе) с пустой картой памяти будет удалять ссылку.
-thaumicenergistics.research_page.TEVISINT.3=§r<LINE>§lМагический терминал создания§r: Собирает палочку в A.C.T<BR>§lМагический ассемблер§r: Заполняет хранилище вис, используется для крафта.
+tc.research_name.thaumicenergistics.TEVISINT=Интерфейс Вис-реле
+tc.research_text.thaumicenergistics.TEVISINT=Цифровое использование Вис
+thaumicenergistics.research_page.TEVISINT.1=После обнаружения энергетической системы Вис, Вы начали искать способы соединения Вашей цифровой системы с системой Вис.<BR>После наблюдения затем как Вис течёт по сети §lВис-реле§r, Вы решили, что можно сделать цифровое устройство для обуздания Вис. Благодаря использованию возможности точка-точка цифровой сети, Вис может быть извлечён и использован Вашими цифровыми устройствами.<BR>Извлечение Вис из сети или его накопление потребует больших исследований.
+
+thaumicenergistics.research_page.TEVISINT.2=Чтобы использовать §lИнтерфейс Вис-реле§r, присоедините его к цифровой сети и поставьте Вис-реле на него. Основа реле должна быть напротив интерфейса.<BR>Для того, чтобы устройство получало Вис, оно должно быть соединено с интерфейсом. Чтобы присоединить другие устройства к интерфейсу, Вам потребуется §lКарта памяти§r. Каждое устройство может быть соединено только с одним интерфейсом.<BR>Shift-ПКМ по интерфейсу картой памяти, затем ПКМ по устройству, чтобы создать соединение.<BR>Нажатие ПКМ по устройству (не интерфейсу) пустой картой памяти удалит соединение.
+thaumicenergistics.research_page.TEVISINT.3=§lСоединения§r<LINE>§lМагический терминал создания§r. Заряжает желз в М.Т.С.<BR>§lМагический сборщик§r. Заполняет хранилище Вис, используется в создании.
 
 # Research Iron Gear Box
 tc.research_name.thaumicenergistics.TEIRONGEARBOX=Железная коробка передач
-tc.research_text.thaumicenergistics.TEIRONGEARBOX=Один оборот за один раз
-thaumicenergistics.research_page.TEIRONGEARBOX.1=Ваш опыт с §lДеревянной рукояткой§r оставил вам интерес, можно исправить эту ситуацию?<BR>Вы разработали способ создания серии передач в коробке так, что когда-либо какая-нибудь сторона включена, все другие стороны также включится. Однако вам понадобится прочный материал, чем дерево, и с этой целью вы создали §lЖелезную передачу§r путем склеивания железа к деревянной передаче.<BR>§lЖелезная коробка передач§r позволит вам провернуть несколько устройств одновременно.Вам нужно будет ориентировать устройства так, что их вход сталкивался с коробкой передач.
-thaumicenergistics.research_page.TEIRONGEARBOX.2=Когда раскручивается несколько устройств, например, двух шлифовальных и зарядное устройство, мощность запуска будет разделена поровну между всеми устройствами, которые в настоящее время находятся в состоянии раскрутиться.<BR>Еще одним преимуществом является то, что коробка передач может быть использован несколькими людьми одновременно. Каждый человек проворачивая коробку передач, будет добавилять выход коленчатого питания. 
+tc.research_text.thaumicenergistics.TEIRONGEARBOX=Один оборот за раз
+thaumicenergistics.research_page.TEIRONGEARBOX.1=Ваш опыт знакомства с §lДеревянной рукояткой§r заставил Вас задуматься над тем, можно ли её улучшить?<BR>Вы придумали способ создания серии коробок передач, так что когда какая-то сторона вращается, все другие стороны тоже будут вращаться. Однако, Вам нужен материал покрепче, чем дерево, поэтому Вы сделали §lЖелезную шестерню§r, присоединив железо к деревянной шестерне.<BR>§lЖелезная коробка передач§r позволит Вам крутить несколько устройств одновременно. Вам только нужно повернуть стороны входа устройств к коробке передач.
+thaumicenergistics.research_page.TEIRONGEARBOX.2=При вращении нескольких устройств, вроде двух дробителей и зарядника, сила вращения будет разделена равномерно между всеми устройствами, которые можно вращать.<BR>Ещё одним преимуществом коробки передач является то, что она может использоваться несколькими людьми одновременно. Каждый игрок, крутящий коробку передач, увеличит выходную силу вращения.<BR>Теперь Вам осталось найти того, кто будет стоять весь день и крутить коробку передач для Вас...
 
 # Research Thaumium Gear Box
 tc.research_name.thaumicenergistics.TETHAUMGBOX=Таумическая коробка передач
-tc.research_text.thaumicenergistics.TETHAUMGBOX=Маленькая рабочая сила
-thaumicenergistics.research_page.TETHAUMGBOX.1=Теперь, ваши големы могут нажимать на правую кнопку мыши от вашего имени, и в это время обновлять коробки передач, чтобы вместить их. Добавляя щепотку металла и магии, вы модернизировали §lЖелезную коробку передач§r и создали §lТаумическую коробку передач§r.<BR>Усовершенствование модели позволит любому голему §lИспользовать основы§r для поворота коробки передач.
+tc.research_text.thaumicenergistics.TETHAUMGBOX=Небольшая рабочая сила
+thaumicenergistics.research_page.TETHAUMGBOX.1=Теперь, когда Ваши големы могут симулировать нажатие ПКМ от Вашего имени, пришло время для обновлённой коробки передач. Добавив немного металла и магии, Вы модернизировали §lЖелезную коробку передач§r и создали §lТаумическую коробку передач§r.<BR>Усовершенствованная модель позволит любому голему с сердцем §lИспользование§r крутить коробку передач.
 
 # Research Certus Quartz Duplication
-tc.research_name.thaumicenergistics.TECERTUSDUPE=Дублирование Кварца
-tc.research_text.thaumicenergistics.TECERTUSDUPE=Примеси интактные
-thaumicenergistics.research_page.TECERTUSDUPE.1=Вы теперь в состоянии алхимически дублировать §lКристалл истинного кварца§r и §lКварц нижнего мира§r.
+tc.research_name.thaumicenergistics.TECERTUSDUPE=Удвоение кварца
+tc.research_text.thaumicenergistics.TECERTUSDUPE=Интактные примеси
+thaumicenergistics.research_page.TECERTUSDUPE.1=Теперь Вы можете алхимически удваивать §lКристалл истинного кварца§r и §lКварц Нижнего мира§r.
 
 # Research Knowledge Inscriber + Core
-tc.research_name.thaumicenergistics.TEKNOWLEDGEINSCRIBER=Начертание знаний
-tc.research_text.thaumicenergistics.TEKNOWLEDGEINSCRIBER=Магические модели
-thaumicenergistics.research_page.TEKNOWLEDGEINSCRIBER.1=С построением §lМагического ассемблера§r , вы будете нуждаться в пути, чтобы научить его, что он будет монтажировать.Вы разработали устройство, способное хранить ограниченное количество тайных рецептов. §lЯдро знаний§r служит в качестве хранилища образов, давая инструкции ассемблеру о том, как построить элементы.<BR>Для кодирования рецепта моделей на ядре, вам понадобится §lВысекатель знаний§r.
-thaumicenergistics.research_page.TEKNOWLEDGEINSCRIBER.2=Использование Высекателя знаний<BR>Сначала вы кладёте §lЯдро знаний§r в правый верхний слот. Затем, используйте сетку крафта для настройки рецепта для данного элемента. Если у вас есть необходимые знания (исследования) для рецепта, в результате элемент будет отображаться. При нажатии на кнопку сохранения будет вписан рецепт на ядро. Готовый продукт будет отображаться в области для хранения образов.<BR>Чтобы удалить вписанный рецепт из ядра, сначала выберите шаблон из области хранения образов. Выбранный образец рецепта будет отображаться в области крафта. Наконец, нажав на кнопку удаления, вы удалите шаблон из ядра.
+tc.research_name.thaumicenergistics.TEKNOWLEDGEINSCRIBER=Высечение знаний
+tc.research_text.thaumicenergistics.TEKNOWLEDGEINSCRIBER=Магические шаблоны
+thaumicenergistics.research_page.TEKNOWLEDGEINSCRIBER.1=После создания §lМагического сборщика§r, Вам нужно научить его тому, что он сможет собирать.<BR>Вы изобрели §lЯдро знаний§r, устройство, способное хранить магические рецепты. Ядро работает как шаблонное хранилище, показывая сборщику инструкции того как нужно собирать предметы.<BR>Чтобы закодировать шаблоны рецептов в ядро, Вам придётся применить §lВысекатель знаний§r.
+thaumicenergistics.research_page.TEKNOWLEDGEINSCRIBER.2=Применение §lВысекателя знаний§r<BR>Для начала положите §lЯдро знаний§r в верхний правый слот. Далее, используйте сетку создания для установки рецепта предмета. Если у Вас имеется требуемое знание (исследование) для рецепта, создаваемый предмет отобразится. Нажав кнопку сохранить, Вы высечете рецепт на ядре. Конечный продукт отобразиться в области хранилища шаблонов.<BR>Чтобы убрать высеченный рецепт с ядра, сначала выберите шаблон из хранилища шаблонов. Рецепт выбранного шаблона отобразиться в сетке создания. В конце концов, нажмите кнопку удалить для удаления рецепта с ядра.
 
 # Research Arcane Assembler
 tc.research_name.thaumicenergistics.TEARCANEASSEMBLER=Магический сборщик
-tc.research_text.thaumicenergistics.TEARCANEASSEMBLER=Волшебный молекулярный сборщик
-thaumicenergistics.research_page.TEARCANEASSEMBLER.1=Изучая §lМолекулярный Ассемблер§r вам пришло в голову, что это может быть возможным, чтобы заставить сборщик производить тайные пункты. Вы заключаете, что вливая в сборщик соответствующие осколки он сможет регулировать отношение впадающих пунктов. Для этого также необходимо умеренное количество вис хранения, и §lСеребродревесный скипетр§r кажется, лучшим выбором.<BR>Заметка: Полностью заряженный жезл требуется для инфузии.
-thaumicenergistics.research_page.TEARCANEASSEMBLER.2=§lХранилище шаблонов§r<BR>Сам сборщик не хранит рецепты крафтов. Дальнейшее исследование может потребоваться, чтобы разработал носитель модели.<BR>§lПополнение Вис§r<BR>Пополнение внутренней памяти ассемблера вис потребует услуги §lВис-реле интерфейса§r.<BR>§lУскорительные карты§r<BR>Каждая ускорительная карта уменьшает время крафта на 20%, и увеличивает необходимую мощность на 50%.
-thaumicenergistics.research_page.TEARCANEASSEMBLER.3=§lЗатрата вис§r<BR>В связи с включенным в крафт скипетром, сборщик имеет базовую затрату вис, равную скипетру. Затрата может быть расширена путем предоставления ассемблеру брони затраты вис. Затрату для каждого аспекта можно посмотреть, подведя курсор к аспекту в GUI.<BR>Имейте в виду, что сборщик не застрахован от последствий деформирования передач. За каждую единицу деформации сборщик должен сделать дополнительные 15% мощности, чтобы оставаться стабильным. Этот эффект применяется только при крафте.
+tc.research_text.thaumicenergistics.TEARCANEASSEMBLER=Магическая сборка молекул
+thaumicenergistics.research_page.TEARCANEASSEMBLER.1=Изучая §lМолекулярный сборщик§r, Вам пришла в голову идея, что возможно можно модифицировать сборщик для производства магических предметов. Вы подтвердили это, наполнив сборщик соответствующими осколками, теперь он сможет направлять поток Вис в предметы. Ему также потребуются небольшое хранилище Вис и §lСкипетр из серебрянного дерева§r.<BR>Примечание: Скипетр соединится со сборщиком, он должен быть полностью заряжен.
+thaumicenergistics.research_page.TEARCANEASSEMBLER.2=§lХранилище шаблонов§r<BR>Сам по себе сборщик не хранит рецепты. Может потребоваться дополнительное исследование, чтобы изобрести хранилище для шаблонов.<BR>§lПополнение Вис§r<BR>Для пополнения внутреннего хранилища Вис сборщика потребуется §lИнтерфейс Вис-реле§r.<BR>§lУскорение картами§r<BR>Каждая карта уменьшает время создания на 20% и увеличивает потребляемую энергию на 50%.
+thaumicenergistics.research_page.TEARCANEASSEMBLER.3=§lУменьшение затрат Вис§r<BR>Из-за объединения со скипетром, у сборщика теперь есть основное уменьшение затрат Вис равное уменьшению скипетра. Уменьшение можно увеличить, добавив в сборщик броню с уменьшением затрат Вис. Уменьшение для каждого аспекта можно увидеть наведясь на этот аспект в интерфейсе.<BR>У сборщика нет иммунитета к эффектам искажения, которые могут быть на снаряжении; За каждое очко искажения сборщик будет потреблять дополнительные 15% энергии для того чтобы оставаться стабильным во время создания.
 
 # Research Wrench Focus
-tc.research_name.thaumicenergistics.TEFOCUSWRENCH=Набалдашник: AE ключ
-tc.research_text.thaumicenergistics.TEFOCUSWRENCH=Требуется сборка
-thaumicenergistics.research_page.TEFOCUSWRENCH.1=Этот набалдашник взаимодействует с блоками и машинами, как если бы это был АЕ2 ключ.<BR>SHIFT + левый щелчок: Повернуть.<BR>SHIFT + правый щелчок: Демонтировать.<BR>Пожалуйста, обратите внимание, что полная поддержка для кабельных частей в настоящее время в стадии разработки.
+tc.research_name.thaumicenergistics.TEFOCUSWRENCH=Набалдашник: AE-ключ
+tc.research_text.thaumicenergistics.TEFOCUSWRENCH=Требуется немного сборки
+thaumicenergistics.research_page.TEFOCUSWRENCH.1=Этот набалдашник взаимодействует с блоками и механизмами, как если бы это был ключ АЕ2.<BR>ЛКМ, присев: Повернуть.<BR>ПКМ, присев: Демонтировать.<BR>Пожалуйста, обратите внимание, что полная поддержка кабелей в настоящее время находится в разработке.
