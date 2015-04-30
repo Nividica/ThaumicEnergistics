@@ -68,7 +68,7 @@ thaumicenergistics.gui.essentia.cell.workbench.title=Верстак для яч�
 thaumicenergistics.gui.arcane.assembler.title=Магический сборщик
 
 #Research Tab
-tc.research_category.thaumicenergistics=Thaumic Energistics
+tc.research_category.thaumicenergistics=Энергетика
 
 # Research basics
 tc.research_name.thaumicenergistics.TERESEARCH=Thaumic Energistics
