@@ -13,11 +13,13 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.visnet.VisNetHandler;
 import thaumcraft.common.tiles.TileVisRelay;
 import thaumicenergistics.integration.tc.DigiVisSourceData;
 import thaumicenergistics.integration.tc.IDigiVisSource;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
+import thaumicenergistics.tileentities.SubTileVisProvider;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.items.IMemoryCard;
@@ -41,6 +43,16 @@ public class AEPartVisInterface
 	 * NBT key for the unique ID
 	 */
 	private static final String NBT_KEY_UID = "uid";
+
+	/**
+	 * NBT key for if the interface is a source or not.
+	 */
+	private static final String NBT_KEY_IS_PROVIDER = "isProvider";
+
+	/**
+	 * NBT key for the source of this provider.
+	 */
+	private static final String NBT_KEY_PROVIDER_SOURCE = "linkedSource";
 
 	/**
 	 * The amount of time to display the color when not receiving updates
@@ -74,6 +86,21 @@ public class AEPartVisInterface
 	private WeakReference<TileVisRelay> cachedRelay = new WeakReference<TileVisRelay>( null );
 
 	/**
+	 * True if this end of the P2P is a vis provider.
+	 */
+	private boolean isProvider = false;
+
+	/**
+	 * If this end is a provider, this stores the source.
+	 */
+	private DigiVisSourceData visP2PSourceInfo = new DigiVisSourceData();
+
+	/**
+	 * If this end is a provider, this interacts with the vis network.
+	 */
+	private SubTileVisProvider visProviderSubTile = null;
+
+	/**
 	 * Creates the interface.
 	 */
 	public AEPartVisInterface()
@@ -81,6 +108,100 @@ public class AEPartVisInterface
 		super( AEPartsEnum.VisInterface );
 
 		this.UID = System.currentTimeMillis() ^ this.hashCode();
+	}
+
+	/**
+	 * Requests that the interface drain vis from the relay
+	 * 
+	 * @param digiVisAspect
+	 * @param amount
+	 * @return
+	 */
+	private int consumeVisFromVisNetwork( final Aspect digiVisAspect, final int amount )
+	{
+		// Get the relay
+		TileVisRelay visRelay = this.getRelay();
+
+		// Ensure there is a relay
+		if( visRelay == null )
+		{
+			return 0;
+		}
+
+		// Get the power grid
+		IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
+
+		// Ensure we got the grid
+		if( eGrid == null )
+		{
+			return 0;
+		}
+
+		// Simulate a power drain
+		double drainedPower = eGrid.extractAEPower( AEPartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+
+		// Ensure we got the power we need
+		if( drainedPower < AEPartVisInterface.POWER_PER_REQUESTED_VIS )
+		{
+			return 0;
+		}
+
+		// Ask it for vis
+		int amountReceived = visRelay.consumeVis( digiVisAspect, amount );
+
+		// Did we get any vis?
+		if( amountReceived > 0 )
+		{
+			// Drain the power
+			eGrid.extractAEPower( AEPartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.MODULATE, PowerMultiplier.CONFIG );
+		}
+
+		// Return the amount we received
+		return amountReceived;
+	}
+
+	/**
+	 * Verifies that a p2p source is valid
+	 * 
+	 * @return
+	 */
+	private boolean isP2PSourceValid()
+	{
+		// Is there anything even linked to?
+		if( !this.visP2PSourceInfo.getHasData() )
+		{
+			return false;
+		}
+
+		// Get the source
+		IDigiVisSource p2pSource = this.visP2PSourceInfo.tryGetSource( this.getGrid() );
+
+		// There must be source data
+		if( p2pSource == null )
+		{
+			return false;
+		}
+
+		// Source must be a vis interface
+		if( !( p2pSource instanceof AEPartVisInterface ) )
+		{
+			return false;
+		}
+
+		// Can't link to self
+		if( this.equals( p2pSource ) )
+		{
+			return false;
+		}
+
+		// Source must not be a provider
+		if( ( (AEPartVisInterface)p2pSource ).isVisProvider() )
+		{
+			return false;
+		}
+
+		// Source seems valid
+		return true;
 	}
 
 	/**
@@ -121,6 +242,28 @@ public class AEPartVisInterface
 		this.host.markForUpdate();
 	}
 
+	private void setIsVisProvider( final boolean isProviding )
+	{
+
+		// Is the interface to be a provider?
+		if( !isProviding )
+		{
+			// Clear the source info
+			this.visP2PSourceInfo.clearData();
+
+			// Null the subtile
+			if( this.visProviderSubTile != null )
+			{
+				this.visProviderSubTile.invalidate();
+				this.visProviderSubTile = null;
+			}
+
+		}
+
+		this.isProvider = isProviding;
+
+	}
+
 	/**
 	 * No gui.
 	 */
@@ -140,7 +283,7 @@ public class AEPartVisInterface
 	}
 
 	/**
-	 * Requests that the interface drain vis from the relay
+	 * Drains vis from either the vis relay network, or from the p2p source.
 	 * 
 	 * @param digiVisAspect
 	 * @param amount
@@ -155,47 +298,32 @@ public class AEPartVisInterface
 			return 0;
 		}
 
-		// Get the relay
-		TileVisRelay visRelay = this.getRelay();
+		int amountReceived = 0;
 
-		// Ensure there is a relay
-		if( visRelay == null )
+		// Is the interface a provider?
+		if( this.isProvider )
 		{
-			return 0;
+			if( this.isP2PSourceValid() )
+			{
+				// Get the p2p source
+				IDigiVisSource source = this.visP2PSourceInfo.tryGetSource( this.getGrid() );
+
+				// Ask the source for vis
+				amountReceived = source.consumeVis( digiVisAspect, amount );
+			}
+		}
+		else
+		{
+			amountReceived = consumeVisFromVisNetwork( digiVisAspect, amount );
 		}
 
-		// Get the power grid
-		IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
-
-		// Ensure we got the grid
-		if( eGrid == null )
-		{
-			return 0;
-		}
-
-		// Simulate a power drain
-		double drainedPower = eGrid.extractAEPower( AEPartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.SIMULATE, PowerMultiplier.CONFIG );
-
-		// Ensure we got the power we need
-		if( drainedPower < AEPartVisInterface.POWER_PER_REQUESTED_VIS )
-		{
-			return 0;
-		}
-
-		// Ask it for vis
-		int amountReceived = visRelay.consumeVis( digiVisAspect, amount );
-
-		// Did we get any vis?
+		// Was any vis received?
 		if( amountReceived > 0 )
 		{
 			// Set the color
 			this.setDrainColor( digiVisAspect.getColor() );
-
-			// Drain the power
-			eGrid.extractAEPower( AEPartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.MODULATE, PowerMultiplier.CONFIG );
 		}
 
-		// Return the amount we received
 		return amountReceived;
 	}
 
@@ -280,7 +408,11 @@ public class AEPartVisInterface
 		// Is there a cached relay?
 		if( tVR != null )
 		{
-			return tVR;
+			// Ensure it is still there
+			if( tVR == this.hostTile.getWorldObj().getTileEntity( tVR.xCoord, tVR.yCoord, tVR.zCoord ) )
+			{
+				return tVR;
+			}
 		}
 
 		// Get the tile we are facing
@@ -337,12 +469,75 @@ public class AEPartVisInterface
 		return super.isActive();
 	}
 
+	public Boolean isVisProvider()
+	{
+		return this.isProvider;
+	}
+
 	/**
 	 * Player right-clicked the interface.
 	 */
 	@Override
 	public boolean onActivate( final EntityPlayer player, final Vec3 position )
 	{
+		// Get what the player is holding
+		ItemStack playerHolding = player.inventory.getCurrentItem();
+
+		// Are they holding a memory card?
+		if( ( playerHolding != null ) && ( playerHolding.getItem() instanceof IMemoryCard ) )
+		{
+			// Get the memory card
+			IMemoryCard memoryCard = (IMemoryCard)playerHolding.getItem();
+
+			// Get the stored name
+			String settingsName = memoryCard.getSettingsName( playerHolding );
+
+			// Does it contain the data about a vis source?
+			if( settingsName.equals( DigiVisSourceData.SOURCE_UNLOC_NAME ) )
+			{
+				// Get the data
+				NBTTagCompound data = memoryCard.getData( playerHolding );
+
+				// Load the info
+				this.visP2PSourceInfo.readFromNBT( data );
+
+				// Can the link be established?
+				if( !this.isP2PSourceValid() )
+				{
+					// Unable to link
+					memoryCard.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
+
+					// Clear the source data
+					this.visP2PSourceInfo.clearData();
+				}
+				else
+				{
+					// Mark that we are now a provider
+					this.setIsVisProvider( true );
+
+					// Inform the user
+					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+
+					// Mark that we need to save
+					this.getHost().markForSave();
+				}
+			}
+			// Is the memory card empty?
+			else if( settingsName.equals( "gui.appliedenergistics2.Blank" ) && this.isProvider )
+			{
+				// Mark that we are not a provider
+				this.setIsVisProvider( false );
+
+				// Inform the user
+				memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
+
+				// Mark for save
+				this.getHost().markForSave();
+			}
+
+			return true;
+		}
+
 		return false;
 	}
 
@@ -370,6 +565,12 @@ public class AEPartVisInterface
 			// Notify the user
 			memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
 
+			// Mark that we are not a provider
+			this.setIsVisProvider( false );
+
+			// Mark for save
+			this.getHost().markForSave();
+
 			return true;
 		}
 
@@ -390,6 +591,19 @@ public class AEPartVisInterface
 		{
 			// Read the UID
 			this.UID = data.getLong( AEPartVisInterface.NBT_KEY_UID );
+		}
+
+		// Is there provider data?
+		if( data.hasKey( AEPartVisInterface.NBT_KEY_IS_PROVIDER ) )
+		{
+			// Set provider status
+			this.isProvider = data.getBoolean( AEPartVisInterface.NBT_KEY_IS_PROVIDER );
+
+			// Read source information
+			if( data.hasKey( AEPartVisInterface.NBT_KEY_PROVIDER_SOURCE ) )
+			{
+				this.visP2PSourceInfo.readFromNBT( data, AEPartVisInterface.NBT_KEY_PROVIDER_SOURCE );
+			}
 		}
 	}
 
@@ -478,6 +692,48 @@ public class AEPartVisInterface
 			}
 		}
 
+		// Is the interface a provider?
+		if( this.isProvider )
+		{
+			boolean hasProvider = ( this.visProviderSubTile != null );
+
+			// Validate the P2P Settings
+			if( !this.isP2PSourceValid() )
+			{
+				// Invalid source, remove provider
+				if( hasProvider )
+				{
+					this.visProviderSubTile.invalidate();
+					this.visProviderSubTile = null;
+				}
+			}
+			else
+			{
+				boolean hasRelay = ( this.getRelay() != null );
+
+				// Invalid: Can't have a provider without a relay
+				if( !hasRelay && hasProvider )
+				{
+					// Remove the provider
+					this.visProviderSubTile.invalidate();
+					this.visProviderSubTile = null;
+				}
+				// Has relay but no provider
+				else if( hasRelay && !hasProvider )
+				{
+					// Create the provider
+					this.visProviderSubTile = new SubTileVisProvider( this );
+
+					// Register the provider
+					VisNetHandler.addSource( this.hostTile.getWorldObj(), this.visProviderSubTile );
+				}
+				else if( hasProvider )
+				{
+					this.visProviderSubTile.updateEntity();
+				}
+			}
+		}
+
 		return TickRateModulation.SAME;
 	}
 
@@ -492,6 +748,16 @@ public class AEPartVisInterface
 
 		// Write the UID
 		data.setLong( AEPartVisInterface.NBT_KEY_UID, this.UID );
+
+		if( this.isProvider )
+		{
+			// Write provider status
+			data.setBoolean( AEPartVisInterface.NBT_KEY_IS_PROVIDER, this.isProvider );
+
+			// Write source data
+			this.visP2PSourceInfo.writeToNBT( data, AEPartVisInterface.NBT_KEY_PROVIDER_SOURCE );
+		}
+
 	}
 
 	/**

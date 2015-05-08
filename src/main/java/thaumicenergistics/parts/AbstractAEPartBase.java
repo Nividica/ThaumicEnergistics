@@ -165,7 +165,7 @@ public abstract class AbstractAEPartBase
 		int y = this.hostTile.yCoord;
 		int z = this.hostTile.zCoord;
 
-		// Get the tile entity we are connected to
+		// Get the tile entity we are facing
 		return world.getTileEntity( x + this.cableSide.offsetX, y + this.cableSide.offsetY, z + this.cableSide.offsetZ );
 	}
 
