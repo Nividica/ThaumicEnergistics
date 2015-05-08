@@ -1,7 +1,6 @@
 package thaumicenergistics.api;
 
 import java.util.List;
-import net.minecraft.entity.player.EntityPlayer;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -48,36 +47,21 @@ public abstract class ThEApi
 	public abstract IConfig config();
 
 	/**
-	 * Converts an amount of milibuckets to an amount of Essentia.
-	 * 
-	 * @return
-	 */
-	public abstract long convertEssentiaAmountToFluidAmount( long essentiaAmount );
-
-	/**
-	 * Converts an amount of Essentia to an amount of milibuckets.
-	 * 
-	 * @return
-	 */
-	public abstract long convertFluidAmountToEssentiaAmount( long milibuckets );
-
-	/**
 	 * Essentia Gasses
 	 */
 	public abstract ImmutableList<List<IEssentiaGas>> essentiaGases();
 
 	/**
+	 * Gets the ThE interaction manager
+	 * 
+	 * @return
+	 */
+	public abstract IInteractionHelper interact();
+
+	/**
 	 * Items
 	 */
 	public abstract Items items();
-
-	/**
-	 * Opens the wireless gui for the specified player.
-	 * The item the player is holding is used for the settings and power.
-	 * 
-	 * @param player
-	 */
-	public abstract void openWirelessTerminalGui( final EntityPlayer player, final IWirelessEssentiaTerminal terminalInterface );
 
 	/**
 	 * Cable Parts

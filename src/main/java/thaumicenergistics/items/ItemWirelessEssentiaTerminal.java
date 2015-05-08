@@ -334,7 +334,7 @@ public class ItemWirelessEssentiaTerminal
 	public ItemStack onItemRightClick( final ItemStack itemStack, final World world, final EntityPlayer player )
 	{
 		// Open the gui
-		ThEApi.instance().openWirelessTerminalGui( player, this );
+		ThEApi.instance().interact().openWirelessTerminalGui( player, this );
 
 		return itemStack;
 

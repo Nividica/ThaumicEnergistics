@@ -162,6 +162,7 @@ public class ThaumicEnergistics
 		ThELog.endSection( "PreInit", startTime );
 	}
 
+	// TODO: Add API for setting ACT terminal crafting grid
 	// TODO: Sync server configs
 	// TODO: Knowledge Inscriber GUI, add particles like focal manipulator
 	// TODO: Use area packets over tile sync when possible
