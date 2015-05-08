@@ -3,7 +3,7 @@
   Version numbers simplified.
   Fixes #179: Export Bus now has void jar support.
   Merged RV2 branch into main branch.
-  API Updated to support third-party code setting ACT Crafting Grid.
+  API Updated to support third-party code setting ACT Crafting Grid. #135
 
 4/8/2015 0.8.9.3a-rv2
   Dependency Updated: AE2 rv2 beta 27
