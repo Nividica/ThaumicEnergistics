@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
+import thaumicenergistics.gui.buttons.ButtonAllowVoid;
 import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
@@ -89,34 +90,20 @@ public class GuiEssentiaIO
 	private static final int GUI_UPGRADES_HEIGHT = 86;
 
 	/**
-	 * X position of the redstone control button.
+	 * Position of the title string.
 	 */
-	private static final int REDSTONE_CONTROL_BUTTON_POS_X = -18;
+	private static final int TITLE_POS_X = 6, TITLE_POS_Y = 5;
 
 	/**
-	 * Y position of the redstone control button.
+	 * Redstone Control button placement
 	 */
-	private static final int REDSTONE_CONTROL_BUTTON_POS_Y = 2;
+	private static final int REDSTONE_CONTROL_BUTTON_POS_Y = 2, REDSTONE_CONTROL_BUTTON_POS_X = -18, REDSTONE_CONTROL_BUTTON_SIZE = 16,
+					REDSTONE_CONTROL_BUTTON_ID = 0;
 
 	/**
-	 * Width and height of the redstone control button.
+	 * Void button placement
 	 */
-	private static final int REDSTONE_CONTROL_BUTTON_SIZE = 16;
-
-	/**
-	 * ID of the redstone control button.
-	 */
-	private static final int REDSTONE_CONTROL_BUTTON_ID = 0;
-
-	/**
-	 * X position of the title string.
-	 */
-	private static final int TITLE_POS_X = 6;
-
-	/**
-	 * Y position of the title string.
-	 */
-	private static final int TITLE_POS_Y = 5;
+	private static final int ALLOW_VOID_BUTTON_POS_Y = 2, ALLOW_VOID_BUTTON_POS_X = -19, ALLOW_VOID_BUTTON_ID = 1;
 
 	/**
 	 * The part associated with this gui.
@@ -144,11 +131,6 @@ public class GuiEssentiaIO
 	private List<Aspect> filteredAspects = new ArrayList<Aspect>();
 
 	/**
-	 * True if this is redstone controlled
-	 */
-	private boolean redstoneControlled;
-
-	/**
 	 * True if the player has a network tool in their inventory.
 	 */
 	private boolean hasNetworkTool;
@@ -162,6 +144,16 @@ public class GuiEssentiaIO
 	 * Title of the gui
 	 */
 	private final String guiTitle;
+
+	/**
+	 * Shown when the bus is redstone controlled
+	 */
+	private ButtonRedstoneModes redstoneControlButton = null;
+
+	/**
+	 * Button controlling if voiding is allowed.
+	 */
+	private ButtonAllowVoid voidModeButton = null;
 
 	/**
 	 * Creates the gui
@@ -291,6 +283,14 @@ public class GuiEssentiaIO
 		{
 			new PacketServerEssentiaIOBus().createRequestChangeRedstoneMode( this.player, this.part ).sendPacketToServer();
 		}
+		// Void button?
+		else if( button.id == GuiEssentiaIO.ALLOW_VOID_BUTTON_ID )
+		{
+			if( this.part instanceof AEPartEssentiaExportBus )
+			{
+				new PacketServerEssentiaIOBus().createRequestChangeVoidMode( this.player, (AEPartEssentiaExportBus)this.part ).sendPacketToServer();
+			}
+		}
 	}
 
 	@Override
@@ -372,6 +372,19 @@ public class GuiEssentiaIO
 			}
 		}
 
+		// Create the redstone control button
+		this.redstoneControlButton = new ButtonRedstoneModes( GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID, this.guiLeft +
+						GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_POS_X, this.guiTop + GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_POS_Y,
+						GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_SIZE, GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_SIZE, this.redstoneMode, false );
+
+		// Create the allow void button if export bus
+		if( this.part instanceof AEPartEssentiaExportBus )
+		{
+			this.voidModeButton = new ButtonAllowVoid( GuiEssentiaIO.ALLOW_VOID_BUTTON_ID, this.guiLeft + GuiEssentiaIO.ALLOW_VOID_BUTTON_POS_X,
+							this.guiTop + GuiEssentiaIO.ALLOW_VOID_BUTTON_POS_Y );
+			this.buttonList.add( this.voidModeButton );
+		}
+
 		// Request a full update from the server
 		new PacketServerEssentiaIOBus().createRequestFullUpdate( this.player, this.part ).sendPacketToServer();
 
@@ -385,7 +398,7 @@ public class GuiEssentiaIO
 	public void onReceiveFilterSize( final byte filterSize )
 	{
 		// Inform our part
-		this.part.receiveFilterSize( filterSize );
+		this.part.onReceiveFilterSize( filterSize );
 
 		this.filterSize = filterSize;
 
@@ -408,45 +421,53 @@ public class GuiEssentiaIO
 	 */
 	public void onReceiveRedstoneControlled( final boolean newRedstoneControled )
 	{
-		// Do we differ?
-		if( this.redstoneControlled != newRedstoneControled )
+		// Show/hide the redstone control button
+		if( newRedstoneControled && !this.buttonList.contains( this.redstoneControlButton ) )
 		{
-			// Were we previously controlled?
-			if( this.redstoneControlled )
-			{
-				// Clear the button list
-				this.buttonList.clear();
-			}
-			else
-			{
-				// Create the redstone button
-				this.buttonList.add( new ButtonRedstoneModes( GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID, this.guiLeft +
-								GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_POS_X, this.guiTop + GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_POS_Y,
-								GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_SIZE, GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_SIZE, this.redstoneMode, false ) );
-			}
+			// Remove from the list
+			this.buttonList.add( this.redstoneControlButton );
 
-			// Set redstone controlled
-			this.redstoneControlled = newRedstoneControled;
+			// Adjust void mode button Y
+			this.voidModeButton.yPosition += 18;
+		}
+		else if( !newRedstoneControled && this.buttonList.contains( this.redstoneControlButton ) )
+		{
+			// Add to list
+			this.buttonList.remove( this.redstoneControlButton );
+
+			// Adjust void mode button Y
+			this.voidModeButton.yPosition -= 18;
 		}
 	}
 
 	public void onReceiveRedstoneMode( final RedstoneMode redstoneMode )
 	{
-		// Are we redstone controlled, and have the redstone mod button
-		if( this.redstoneControlled && ( this.buttonList.size() > 0 ) )
-		{
-			( (ButtonRedstoneModes)this.buttonList.get( GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID ) ).setRedstoneMode( redstoneMode );
-		}
+		// Set the button state
+		this.redstoneControlButton.setRedstoneMode( redstoneMode );
 
 		// Mark the mode
 		this.redstoneMode = redstoneMode;
+	}
+
+	/**
+	 * Called when the server sends the void mode status
+	 * 
+	 * @param isVoidAllowed
+	 */
+	public void onServerSendVoidMode( final boolean isVoidAllowed )
+	{
+		// Set the void mode if there is a void button
+		if( this.voidModeButton != null )
+		{
+			this.voidModeButton.isVoidAllowed = isVoidAllowed;
+		}
 	}
 
 	@Override
 	public void updateAspects( final List<Aspect> aspectList )
 	{
 		// Inform our part
-		this.part.receiveFilterList( aspectList );
+		this.part.onReceiveFilterList( aspectList );
 
 		int count = Math.min( this.aspectSlotList.size(), aspectList.size() );
 

@@ -128,6 +128,9 @@ public class GuiEssentiaStorageBus
 	 */
 	private final String guiTitle = AEPartsEnum.EssentiaStorageBus.getLocalizedName();
 
+	/**
+	 * Is the storage buss allowed to void excess essentia?
+	 */
 	private boolean isVoidAllowed = false;
 
 	/**

@@ -14,7 +14,6 @@ import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
-import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.gui.GuiEssentiaIO;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -235,101 +234,6 @@ public abstract class AEPartEssentiaIO
 		}
 	}
 
-	private boolean takePowerFromNetwork( final int essentiaAmount, final Actionable mode )
-	{
-		// Get the energy grid
-		IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
-
-		// Ensure we have a grid
-		if( eGrid == null )
-		{
-			return false;
-		}
-
-		// Calculate amount of power to take
-		double powerDrain = AEPartEssentiaIO.POWER_DRAIN_PER_ESSENTIA * essentiaAmount;
-
-		// Extract
-		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
-	}
-
-	protected boolean extractEssentiaFromNetwork( final int amountToFillContainer )
-	{
-		// Ensure we have a container.
-		if( this.facingContainer == null )
-		{
-			// Invalid container
-			return false;
-		}
-
-		// Do we have the power to transfer this amount?
-		if( !this.takePowerFromNetwork( amountToFillContainer, Actionable.SIMULATE ) )
-		{
-			// Not enough power
-			return false;
-		}
-
-		// Loop over all aspect filters
-		for( Aspect filterAspect : this.filteredAspects )
-		{
-			// Can we transfer?
-			if( ( filterAspect == null ) || ( !this.aspectTransferAllowed( filterAspect ) ) )
-			{
-				// Invalid or not allowed
-				continue;
-			}
-
-			// Can we inject any of this into the container
-			if( EssentiaTileContainerHelper.instance.injectIntoContainer( this.facingContainer, 1, filterAspect, Actionable.SIMULATE ) < 1 )
-			{
-				// Container will not accept any of this
-				continue;
-			}
-
-			// Get the gas form of the essentia
-			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( filterAspect );
-
-			// Is there a fluid form of the aspect?
-			if( essentiaGas == null )
-			{
-				continue;
-			}
-
-			// Create the fluid stack
-			IAEFluidStack toExtract = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, amountToFillContainer );
-
-			// Simulate a network extraction
-			IAEFluidStack extractedStack = this.extractFluid( toExtract, Actionable.SIMULATE );
-
-			// Were we able to extract any?
-			if( ( extractedStack != null ) && ( extractedStack.getStackSize() > 0 ) )
-			{
-				// Fill the container
-				int filledAmount = (int)EssentiaTileContainerHelper.instance.injectIntoContainer( this.facingContainer, extractedStack,
-					Actionable.MODULATE );
-
-				// Were we able to fill the container?
-				if( filledAmount == 0 )
-				{
-					continue;
-				}
-
-				// Take the power required for the filled amount
-				this.takePowerFromNetwork( (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( filledAmount ),
-					Actionable.MODULATE );
-
-				// Take from the network
-				this.extractFluid( EssentiaConversionHelper.instance.createAEFluidStackInFluidUnits( essentiaGas, filledAmount ), Actionable.MODULATE );
-
-				// Done
-				return true;
-			}
-		}
-
-		return false;
-
-	}
-
 	/**
 	 * Extracts fluid from the ME network.
 	 * 
@@ -443,6 +347,24 @@ public abstract class AEPartEssentiaIO
 		}
 
 		return monitor.injectItems( toInject, action, this.asMachineSource );
+	}
+
+	protected boolean takePowerFromNetwork( final int essentiaAmount, final Actionable mode )
+	{
+		// Get the energy grid
+		IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
+
+		// Ensure we have a grid
+		if( eGrid == null )
+		{
+			return false;
+		}
+
+		// Calculate amount of power to take
+		double powerDrain = AEPartEssentiaIO.POWER_DRAIN_PER_ESSENTIA * essentiaAmount;
+
+		// Extract
+		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
 	}
 
 	public boolean addFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
@@ -714,6 +636,34 @@ public abstract class AEPartEssentiaIO
 		}
 	}
 
+	/**
+	 * Called client-side to keep the client-side part in sync
+	 * with the server-side part. This aids in keeping the
+	 * gui in sync even in high network lag enviroments.
+	 * 
+	 * @param filteredAspects
+	 */
+	@SideOnly(Side.CLIENT)
+	public void onReceiveFilterList( final List<Aspect> filteredAspects )
+	{
+		this.filteredAspects = filteredAspects;
+	}
+
+	/**
+	 * Called client-side to keep the client-side part in sync
+	 * with the server-side part. This aids in keeping the
+	 * gui in sync even in high network lag enviroments.
+	 * 
+	 * @param filterSize
+	 */
+	@SideOnly(Side.CLIENT)
+	public void onReceiveFilterSize( final byte filterSize )
+	{
+		this.filterSize = filterSize;
+
+		this.resizeAvailableArray();
+	}
+
 	@Override
 	public void readFromNBT( final NBTTagCompound data )
 	{
@@ -742,34 +692,6 @@ public abstract class AEPartEssentiaIO
 	public final boolean readFromStream( final ByteBuf stream ) throws IOException
 	{
 		return super.readFromStream( stream );
-	}
-
-	/**
-	 * Called client-side to keep the client-side part in sync
-	 * with the server-side part. This aids in keeping the
-	 * gui in sync even in high network lag enviroments.
-	 * 
-	 * @param filteredAspects
-	 */
-	@SideOnly(Side.CLIENT)
-	public void receiveFilterList( final List<Aspect> filteredAspects )
-	{
-		this.filteredAspects = filteredAspects;
-	}
-
-	/**
-	 * Called client-side to keep the client-side part in sync
-	 * with the server-side part. This aids in keeping the
-	 * gui in sync even in high network lag enviroments.
-	 * 
-	 * @param filterSize
-	 */
-	@SideOnly(Side.CLIENT)
-	public void receiveFilterSize( final byte filterSize )
-	{
-		this.filterSize = filterSize;
-
-		this.resizeAvailableArray();
 	}
 
 	public void removeListener( final ContainerPartEssentiaIOBus container )

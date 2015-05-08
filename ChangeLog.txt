@@ -1,4 +1,9 @@
-﻿4/8/2015 0.8.9.3a-rv2
+﻿5/7/2015 0.8.10.0
+  Dependency Updated: AE2 rv2 stable 1
+  Version numbers simplified.
+  Fixes #179: Export Bus now has void jar support.
+
+4/8/2015 0.8.9.3a-rv2
   Dependency Updated: AE2 rv2 beta 27
   Fixes #160: More robust checking for disabled wrench
   Fixes #162: Updated AE2

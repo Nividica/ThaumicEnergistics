@@ -17,9 +17,9 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "0.8.9.3a-rv2"
+version = "0.8.10.0"
 group= "thaumicenergistics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "thaumicenergistics"
+archivesBaseName = "ThaumicEnergistics"
 
 minecraft {
     version = "1.7.10-10.13.2.1291"

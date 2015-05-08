@@ -14,19 +14,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PacketClientEssentiaIOBus
 	extends AbstractClientPacket
 {
-	private static final byte MODE_SET_REDSTONE_CONTROLLED = 0;
-
-	private static final byte MODE_SET_REDSTONE_MODE = 1;
-
-	private static final byte MODE_SET_FILTER_SIZE = 2;
-
-	private static final byte MODE_SEND_FULL_UPDATE = 3;
+	private static final byte MODE_SET_REDSTONE_CONTROLLED = 0, MODE_SET_REDSTONE_MODE = 1, MODE_SET_FILTER_SIZE = 2, MODE_SEND_FULL_UPDATE = 3,
+					MODE_SEND_VOID_MODE = 4;
 
 	private RedstoneMode redstoneMode;
 
 	private byte filterSize;
 
-	private boolean redstoneControlled;
+	private boolean redstoneControlled, isVoidAllowed;
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -67,6 +62,11 @@ public class PacketClientEssentiaIOBus
 
 				// Set filter size
 				( (GuiEssentiaIO)gui ).onReceiveFilterSize( this.filterSize );
+				break;
+
+			case PacketClientEssentiaIOBus.MODE_SEND_VOID_MODE:
+				// Set void mode
+				( (GuiEssentiaIO)gui ).onServerSendVoidMode( this.isVoidAllowed );
 				break;
 		}
 	}
@@ -156,6 +156,27 @@ public class PacketClientEssentiaIOBus
 		return this;
 	}
 
+	/**
+	 * Sends an update the client informing it of the void mode.
+	 * 
+	 * @param player
+	 * @param isVoidAllowed
+	 * @return
+	 */
+	public PacketClientEssentiaIOBus createVoidModeUpdate( final EntityPlayer player, final boolean isVoidAllowed )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientEssentiaIOBus.MODE_SEND_VOID_MODE;
+
+		// Set the void mode
+		this.isVoidAllowed = isVoidAllowed;
+
+		return this;
+	}
+
 	@Override
 	public void readData( final ByteBuf stream )
 	{
@@ -185,6 +206,11 @@ public class PacketClientEssentiaIOBus
 
 				// Read the filter size
 				this.filterSize = stream.readByte();
+				break;
+
+			case PacketClientEssentiaIOBus.MODE_SEND_VOID_MODE:
+				// Read void mode
+				this.isVoidAllowed = stream.readBoolean();
 				break;
 		}
 	}
@@ -218,6 +244,11 @@ public class PacketClientEssentiaIOBus
 
 				// Write the filter size
 				stream.writeByte( this.filterSize );
+				break;
+
+			case PacketClientEssentiaIOBus.MODE_SEND_VOID_MODE:
+				// Write void mode
+				stream.writeBoolean( this.isVoidAllowed );
 				break;
 
 		}
