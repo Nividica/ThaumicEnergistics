@@ -3,6 +3,7 @@
   Version numbers simplified.
   Fixes #179: Export Bus now has void jar support.
   Fixes #181: Vis Relay Interfaces now support full P2P, can export vis.
+  Fixes #130: Wireless Essentia Terminal can be charged from other power systems.
   Merged RV2 branch into main branch.
   API Updated to support third-party code setting ACT Crafting Grid. #135
 

@@ -11,14 +11,16 @@ import net.minecraft.world.World;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.IWirelessEssentiaTerminal;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.registries.ThEStrings;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerMultiplier;
-import appeng.core.localization.GuiText;
+import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import com.google.common.base.Optional;
 
+// Note to fix inconsistent hierarchy: Include the COFHCore & IC2 Api's into
+// build path
 public class ItemWirelessEssentiaTerminal
-	extends Item
+	extends AEBasePoweredItem
 	implements IWirelessEssentiaTerminal
 {
 	/**
@@ -41,6 +43,8 @@ public class ItemWirelessEssentiaTerminal
 	 */
 	public ItemWirelessEssentiaTerminal()
 	{
+		super( POWER_STORAGE, Optional.<String> absent() );
+
 		// Can not stack
 		this.setMaxStackSize( 1 );
 
@@ -72,33 +76,6 @@ public class ItemWirelessEssentiaTerminal
 		}
 
 		return dataTag;
-	}
-
-	/**
-	 * Adds information about the wireless terminal to its tooltip.
-	 */
-	@Override
-	public void addInformation( final ItemStack wirelessTerminal, final EntityPlayer player, final List tooltip, final boolean advancedItemTooltips )
-	{
-		// Get the current power
-		double storedPower = this.getAECurrentPower( wirelessTerminal );
-
-		// Add the energy amount
-		tooltip.add( String.format( "%s %.0f AE - %.1f%%", GuiText.StoredEnergy.getLocal(), storedPower,
-			100.0D * ( storedPower / ItemWirelessEssentiaTerminal.POWER_STORAGE ) ) );
-
-		// Add link info
-		if( HandlerWirelessEssentiaTerminal.isTerminalLinked( this, wirelessTerminal ) )
-		{
-			// Is linked
-			tooltip.add( GuiText.Linked.getLocal() );
-		}
-		else
-		{
-			// Is not linked
-			tooltip.add( GuiText.Unlinked.getLocal() );
-
-		}
 	}
 
 	/**
