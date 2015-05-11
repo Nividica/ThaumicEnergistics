@@ -165,6 +165,5 @@ public class ThaumicEnergistics
 	// TODO: Sync server configs
 	// TODO: Knowledge Inscriber GUI, add particles like focal manipulator
 	// TODO: Use area packets over tile sync when possible
-	// TODO: Packet sending should be automatic .-.
 
 }
