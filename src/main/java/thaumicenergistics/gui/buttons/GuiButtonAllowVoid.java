@@ -11,8 +11,8 @@ import thaumcraft.common.config.ConfigBlocks;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 
-public class ButtonAllowVoid
-	extends AbstractButtonBase
+public class GuiButtonAllowVoid
+	extends AbstractGuiButtonBase
 {
 	/**
 	 * Cache the render engine
@@ -54,14 +54,14 @@ public class ButtonAllowVoid
 	 */
 	public boolean isVoidAllowed = false;
 
-	public ButtonAllowVoid( final int ID, final int xPosition, final int yPosition )
+	public GuiButtonAllowVoid( final int ID, final int xPosition, final int yPosition )
 	{
-		super( ID, xPosition, yPosition, ButtonAllowVoid.BUTTON_SIZE, ButtonAllowVoid.BUTTON_SIZE, "" );
+		super( ID, xPosition, yPosition, GuiButtonAllowVoid.BUTTON_SIZE, GuiButtonAllowVoid.BUTTON_SIZE, "" );
 
 		// Ensure we have made the void jar stack
-		if( ButtonAllowVoid.voidJar == null )
+		if( GuiButtonAllowVoid.voidJar == null )
 		{
-			ButtonAllowVoid.voidJar = new ItemStack( ConfigBlocks.blockJar, 1, 3 );
+			GuiButtonAllowVoid.voidJar = new ItemStack( ConfigBlocks.blockJar, 1, 3 );
 		}
 	}
 
@@ -72,7 +72,7 @@ public class ButtonAllowVoid
 		super.drawButton( minecraftInstance, x, y );
 
 		// Draw the void jar
-		itemRenderer.renderItemIntoGUI( ButtonAllowVoid.FONT_RENDERER, ButtonAllowVoid.RENDER_ENGINE, voidJar, this.xPosition + 1,
+		itemRenderer.renderItemIntoGUI( GuiButtonAllowVoid.FONT_RENDERER, GuiButtonAllowVoid.RENDER_ENGINE, voidJar, this.xPosition + 1,
 			this.yPosition + 1, false );
 
 		// Is void not allowed?
@@ -83,7 +83,7 @@ public class ButtonAllowVoid
 
 			// Draw the disabled icon
 			this.drawTexturedModalRect( this.xPosition + 1, this.yPosition + 1, this.disabledIcon.getU(), this.disabledIcon.getV(),
-				ButtonAllowVoid.DISABLED_ICON_SIZE, ButtonAllowVoid.DISABLED_ICON_SIZE );
+				GuiButtonAllowVoid.DISABLED_ICON_SIZE, GuiButtonAllowVoid.DISABLED_ICON_SIZE );
 		}
 	}
 

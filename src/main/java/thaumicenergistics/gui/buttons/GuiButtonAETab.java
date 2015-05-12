@@ -4,8 +4,8 @@ import java.util.List;
 import net.minecraft.util.StatCollector;
 import thaumicenergistics.texture.AEStateIconsEnum;
 
-public class ButtonAETab
-	extends AbstractAEButton
+public class GuiButtonAETab
+	extends AbstractStateGuiButton
 {
 	/**
 	 * Height of the button
@@ -28,11 +28,11 @@ public class ButtonAETab
 	 */
 	protected AEStateIconsEnum icon;
 
-	public ButtonAETab( final int ID, final int xPosition, final int yPosition, final AEStateIconsEnum icon, final String unlocalizedTooltip )
+	public GuiButtonAETab( final int ID, final int xPosition, final int yPosition, final AEStateIconsEnum icon, final String unlocalizedTooltip )
 	{
 		// Call super
-		super( ID, xPosition, yPosition, ButtonAETab.BUTTON_WIDTH, ButtonAETab.BUTTON_HEIGHT, icon, ButtonAETab.ICON_X_POSITION,
-				ButtonAETab.ICON_Y_POSITION, icon.getWidth(), icon.getHeight(), true );
+		super( ID, xPosition, yPosition, GuiButtonAETab.BUTTON_WIDTH, GuiButtonAETab.BUTTON_HEIGHT, icon, GuiButtonAETab.ICON_X_POSITION,
+				GuiButtonAETab.ICON_Y_POSITION, AEStateIconsEnum.TAB_BUTTON );
 
 		// Set the tooltip
 		this.tooltipMessageUnlocalized = unlocalizedTooltip;

@@ -6,8 +6,8 @@ import thaumicenergistics.texture.AEStateIconsEnum;
 import appeng.api.config.ViewItems;
 import appeng.core.localization.ButtonToolTips;
 
-public class ButtonViewType
-	extends AbstractAEButton
+public class GuiButtonViewType
+	extends AbstractStateGuiButton
 {
 	/**
 	 * Cached tooltip for the buttons view mode.
@@ -23,9 +23,9 @@ public class ButtonViewType
 	 * @param width
 	 * @param height
 	 */
-	public ButtonViewType( final int ID, final int xPosition, final int yPosition, final int width, final int height )
+	public GuiButtonViewType( final int ID, final int xPosition, final int yPosition, final int width, final int height )
 	{
-		super( ID, xPosition, yPosition, width, height, AEStateIconsEnum.VIEW_TYPE_ALL );
+		super( ID, xPosition, yPosition, width, height, AEStateIconsEnum.VIEW_TYPE_ALL, 0, 0, AEStateIconsEnum.REGULAR_BUTTON );
 		this.setViewMode( ViewItems.ALL );
 	}
 
@@ -46,17 +46,17 @@ public class ButtonViewType
 		{
 			case ALL:
 				this.tooltipViewType = ButtonToolTips.StoredCraftable.getLocal();
-				this.icon = AEStateIconsEnum.VIEW_TYPE_ALL;
+				this.stateIcon = AEStateIconsEnum.VIEW_TYPE_ALL;
 				break;
 
 			case CRAFTABLE:
 				this.tooltipViewType = ButtonToolTips.Craftable.getLocal();
-				this.icon = AEStateIconsEnum.VIEW_TYPE_CRAFT;
+				this.stateIcon = AEStateIconsEnum.VIEW_TYPE_CRAFT;
 				break;
 
 			case STORED:
 				this.tooltipViewType = ButtonToolTips.StoredItems.getLocal();
-				this.icon = AEStateIconsEnum.VIEW_TYPE_STORED;
+				this.stateIcon = AEStateIconsEnum.VIEW_TYPE_STORED;
 				break;
 		}
 	}

@@ -5,13 +5,13 @@ import net.minecraft.util.StatCollector;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import appeng.api.config.SortDir;
 
-public class ButtonSortingDirection
-	extends AbstractAEButton
+public class GuiButtonSortingDirection
+	extends AbstractStateGuiButton
 {
 
-	public ButtonSortingDirection( final int ID, final int xPosition, final int yPosition, final int width, final int height )
+	public GuiButtonSortingDirection( final int ID, final int xPosition, final int yPosition, final int width, final int height )
 	{
-		super( ID, xPosition, yPosition, width, height, AEStateIconsEnum.SORT_DIR_ASC );
+		super( ID, xPosition, yPosition, width, height, AEStateIconsEnum.SORT_DIR_ASC, 0, 0, AEStateIconsEnum.REGULAR_BUTTON );
 	}
 
 	@Override
@@ -26,11 +26,11 @@ public class ButtonSortingDirection
 		switch ( direction )
 		{
 			case ASCENDING:
-				this.icon = AEStateIconsEnum.SORT_DIR_ASC;
+				this.stateIcon = AEStateIconsEnum.SORT_DIR_ASC;
 				break;
 
 			case DESCENDING:
-				this.icon = AEStateIconsEnum.SORT_DIR_DEC;
+				this.stateIcon = AEStateIconsEnum.SORT_DIR_DEC;
 				break;
 		}
 	}

@@ -4,15 +4,15 @@ import java.util.List;
 import net.minecraft.client.gui.GuiButton;
 import thaumicenergistics.util.GuiHelper;
 
-public abstract class AbstractButtonBase
+public abstract class AbstractGuiButtonBase
 	extends GuiButton
 {
-	public AbstractButtonBase( final int ID, final int xPosition, final int yPosition, final int width, final int height, final String text )
+	public AbstractGuiButtonBase( final int ID, final int xPosition, final int yPosition, final int width, final int height, final String text )
 	{
 		super( ID, xPosition, yPosition, width, height, text );
 	}
 
-	public AbstractButtonBase( final int ID, final int xPosition, final int yPosition, final String text )
+	public AbstractGuiButtonBase( final int ID, final int xPosition, final int yPosition, final String text )
 	{
 		super( ID, xPosition, yPosition, text );
 	}

@@ -11,8 +11,8 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
-import thaumicenergistics.gui.buttons.ButtonAETab;
-import thaumicenergistics.gui.buttons.ButtonAllowVoid;
+import thaumicenergistics.gui.buttons.GuiButtonAETab;
+import thaumicenergistics.gui.buttons.GuiButtonAllowVoid;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -248,7 +248,7 @@ public class GuiEssentiaStorageBus
 			this.isVoidAllowed = !this.isVoidAllowed;
 
 			// Update the button
-			( (ButtonAllowVoid)this.buttonList.get( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID ) ).isVoidAllowed = this.isVoidAllowed;
+			( (GuiButtonAllowVoid)this.buttonList.get( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID ) ).isVoidAllowed = this.isVoidAllowed;
 
 			// Update the server
 			new PacketServerEssentiaStorageBus().createRequestSetVoidAllowed( this.player, this.storageBus, this.isVoidAllowed ).sendPacketToServer();
@@ -317,11 +317,11 @@ public class GuiEssentiaStorageBus
 		}
 
 		// Create the priority tab button
-		this.buttonList.add( new ButtonAETab( GuiEssentiaStorageBus.BUTTON_PRIORITY_ID, this.guiLeft +
+		this.buttonList.add( new GuiButtonAETab( GuiEssentiaStorageBus.BUTTON_PRIORITY_ID, this.guiLeft +
 						GuiEssentiaStorageBus.BUTTON_PRIORITY_X_POSITION, this.guiTop, AEStateIconsEnum.WRENCH, "gui.appliedenergistics2.Priority" ) );
 
 		// Create the allow void button
-		this.buttonList.add( new ButtonAllowVoid( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID, this.guiLeft +
+		this.buttonList.add( new GuiButtonAllowVoid( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID, this.guiLeft +
 						GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_X_POS, this.guiTop + GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_Y_POS ) );
 
 		// Request an update
@@ -339,7 +339,7 @@ public class GuiEssentiaStorageBus
 		this.isVoidAllowed = isVoidAllowed;
 
 		// Update the button
-		( (ButtonAllowVoid)this.buttonList.get( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID ) ).isVoidAllowed = this.isVoidAllowed;
+		( (GuiButtonAllowVoid)this.buttonList.get( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID ) ).isVoidAllowed = this.isVoidAllowed;
 	}
 
 	@Override

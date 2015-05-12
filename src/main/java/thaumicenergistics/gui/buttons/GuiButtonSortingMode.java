@@ -8,14 +8,14 @@ import thaumicenergistics.texture.AEStateIconsEnum;
 import appeng.api.config.SortOrder;
 import appeng.core.localization.ButtonToolTips;
 
-public class ButtonSortingMode
-	extends AbstractAEButton
+public class GuiButtonSortingMode
+	extends AbstractStateGuiButton
 {
 	private String tooltipSortBy = "";
 
-	public ButtonSortingMode( final int ID, final int xPosition, final int yPosition, final int width, final int height )
+	public GuiButtonSortingMode( final int ID, final int xPosition, final int yPosition, final int width, final int height )
 	{
-		super( ID, xPosition, yPosition, width, height, AEStateIconsEnum.SORT_MODE_ALPHABETIC );
+		super( ID, xPosition, yPosition, width, height, AEStateIconsEnum.SORT_MODE_ALPHABETIC, 0, 0, AEStateIconsEnum.REGULAR_BUTTON );
 	}
 
 	@Override
@@ -34,12 +34,12 @@ public class ButtonSortingMode
 		switch ( mode )
 		{
 			case MODE_ALPHABETIC:
-				this.icon = AEStateIconsEnum.SORT_MODE_ALPHABETIC;
+				this.stateIcon = AEStateIconsEnum.SORT_MODE_ALPHABETIC;
 				this.tooltipSortBy = ButtonToolTips.ItemName.getLocal();
 				break;
 
 			case MODE_AMOUNT:
-				this.icon = AEStateIconsEnum.SORT_MODE_AMOUNT;
+				this.stateIcon = AEStateIconsEnum.SORT_MODE_AMOUNT;
 				this.tooltipSortBy = ButtonToolTips.NumberOfItems.getLocal();
 				break;
 
@@ -51,22 +51,22 @@ public class ButtonSortingMode
 		switch ( order )
 		{
 			case AMOUNT:
-				this.icon = AEStateIconsEnum.SORT_MODE_AMOUNT;
+				this.stateIcon = AEStateIconsEnum.SORT_MODE_AMOUNT;
 				this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.NumberOfItems" );
 				break;
 
 			case INVTWEAKS:
-				this.icon = AEStateIconsEnum.SORT_MODE_INVTWEAK;
+				this.stateIcon = AEStateIconsEnum.SORT_MODE_INVTWEAK;
 				this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.InventoryTweaks" );
 				break;
 
 			case MOD:
-				this.icon = AEStateIconsEnum.SORT_MODE_MOD;
+				this.stateIcon = AEStateIconsEnum.SORT_MODE_MOD;
 				this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.Mod" );
 				break;
 
 			case NAME:
-				this.icon = AEStateIconsEnum.SORT_MODE_ALPHABETIC;
+				this.stateIcon = AEStateIconsEnum.SORT_MODE_ALPHABETIC;
 				this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.ItemName" );
 				break;
 

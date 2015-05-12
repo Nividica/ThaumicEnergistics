@@ -54,12 +54,12 @@ public class AEPartArcaneCraftingTerminal
 	/**
 	 * Number of slots in the internal inventory
 	 */
-	private static final int MY_INVENTORY_SIZE = 16;
+	private static final int MY_INVENTORY_SIZE = 20;
 
 	/**
 	 * Index of the wand, result, and view slot(s)
 	 */
-	public static final int WAND_SLOT_INDEX = 9, RESULT_SLOT_INDEX = 10, VIEW_SLOT_MIN = 11, VIEW_SLOT_MAX = 15;
+	public static final int WAND_SLOT_INDEX = 9, RESULT_SLOT_INDEX = 10, VIEW_SLOT_MIN = 11, VIEW_SLOT_MAX = 15, ARMOR_SLOT_MIN = 16;
 
 	/**
 	 * Inventory name
@@ -832,6 +832,17 @@ public class AEPartArcaneCraftingTerminal
 		this.viewMode = viewMode;
 
 		this.markDirty();
+	}
+
+	/**
+	 * Swaps the armor stored in the ACT with what the specified player is
+	 * wearing.
+	 * 
+	 * @param player
+	 */
+	public void swapArmor( final EntityPlayer player )
+	{
+		//TODO asdfasdf
 	}
 
 	/**

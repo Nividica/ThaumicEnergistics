@@ -1,4 +1,15 @@
-﻿5/7/2015 0.8.10.0
+﻿5/11/2015 0.8.10.1
+  Adding armor slots to ACT:
+    Done: Add slots
+    Done: Ensure they can only take vis gear
+    Todo: Add shift click support.
+    Todo: Add button, and img
+    Todo: Add button lang
+    Todo: Send packet to swap
+    Todo: NBT Save
+    Todo: Update lore
+
+5/7/2015 0.8.10.0
   Dependency Updated: AE2 rv2 stable 1
   Version numbers simplified.
   Fixes #179: Export Bus now has void jar support.

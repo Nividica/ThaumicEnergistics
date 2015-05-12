@@ -8,7 +8,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.container.ContainerPriority;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
-import thaumicenergistics.gui.buttons.ButtonAETab;
+import thaumicenergistics.gui.buttons.GuiButtonAETab;
 import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.network.packet.server.PacketServerChangeGui;
 import thaumicenergistics.network.packet.server.PacketServerPriority;
@@ -341,7 +341,7 @@ public class GuiPriority
 		Keyboard.enableRepeatEvents( true );
 
 		// Create the part switch button
-		this.buttonList.add( new ButtonAETab( GuiPriority.PART_SWITCH_BUTTON_ID, this.guiLeft + GuiPriority.PART_SWITCH_BUTTON_X_POSITION,
+		this.buttonList.add( new GuiButtonAETab( GuiPriority.PART_SWITCH_BUTTON_ID, this.guiLeft + GuiPriority.PART_SWITCH_BUTTON_X_POSITION,
 						this.guiTop, AEStateIconsEnum.WRENCH, this.part.getUnlocalizedName() ) );
 
 		// Create the adjustment buttons

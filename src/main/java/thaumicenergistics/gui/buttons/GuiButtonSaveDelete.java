@@ -5,15 +5,15 @@ import thaumicenergistics.container.ContainerKnowledgeInscriber.CoreSaveState;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 
-public class ButtonSaveDelete
-	extends AbstractAEButton
+public class GuiButtonSaveDelete
+	extends AbstractStateGuiButton
 {
 	private String cachedTooltip;
 
-	public ButtonSaveDelete( final int ID, final int xPosition, final int yPosition, final CoreSaveState initialState )
+	public GuiButtonSaveDelete( final int ID, final int xPosition, final int yPosition, final CoreSaveState initialState )
 	{
 		// Call super
-		super( ID, xPosition, yPosition, 16, 16, null );
+		super( ID, xPosition, yPosition, 16, 16, null, 0, 0, AEStateIconsEnum.REGULAR_BUTTON );
 
 		// Initial state
 		this.setSaveState( initialState );
@@ -36,31 +36,31 @@ public class ButtonSaveDelete
 		{
 			case Disabled_InvalidRecipe:
 				this.enabled = false;
-				this.icon = null;
+				this.stateIcon = null;
 				this.cachedTooltip = ThEStrings.TooltipButton_InscriberInvalid.getLocalized();
 				break;
 
 			case Disabled_CoreFull:
 				this.enabled = false;
-				this.icon = null;
+				this.stateIcon = null;
 				this.cachedTooltip = ThEStrings.TooltipButton_InscriberFull.getLocalized();
 				break;
 
 			case Enabled_Delete:
 				this.enabled = true;
-				this.icon = AEStateIconsEnum.DELETE;
+				this.stateIcon = AEStateIconsEnum.DELETE;
 				this.cachedTooltip = ThEStrings.TooltipButton_InscriberDelete.getLocalized();
 				break;
 
 			case Enabled_Save:
 				this.enabled = true;
-				this.icon = AEStateIconsEnum.SAVE;
+				this.stateIcon = AEStateIconsEnum.SAVE;
 				this.cachedTooltip = ThEStrings.TooltipButton_InscriberSave.getLocalized();
 				break;
 
 			case Disabled_MissingCore:
 				this.enabled = false;
-				this.icon = null;
+				this.stateIcon = null;
 				this.cachedTooltip = ThEStrings.TooltipButton_InscriberMissing.getLocalized();
 				break;
 

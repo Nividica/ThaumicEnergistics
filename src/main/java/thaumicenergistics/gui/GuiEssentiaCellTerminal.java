@@ -22,7 +22,7 @@ import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.container.ContainerWirelessEssentiaTerminal;
 import thaumicenergistics.container.IAspectSelectorContainer;
 import thaumicenergistics.gui.abstraction.AbstractGuiWithScrollbar;
-import thaumicenergistics.gui.buttons.ButtonSortingMode;
+import thaumicenergistics.gui.buttons.GuiButtonSortingMode;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.gui.widget.WidgetAspectSelector;
@@ -731,7 +731,7 @@ public class GuiEssentiaCellTerminal
 		this.buttonList.clear();
 
 		// Add the sort mode button
-		this.buttonList.add( new ButtonSortingMode( GuiEssentiaCellTerminal.SORT_MODE_BUTTON_ID, this.guiLeft +
+		this.buttonList.add( new GuiButtonSortingMode( GuiEssentiaCellTerminal.SORT_MODE_BUTTON_ID, this.guiLeft +
 						GuiEssentiaCellTerminal.SORT_MODE_BUTTON_POS_X, this.guiTop + GuiEssentiaCellTerminal.SORT_MODE_BUTTON_POS_Y,
 						GuiEssentiaCellTerminal.SORT_MODE_BUTTON_SIZE, GuiEssentiaCellTerminal.SORT_MODE_BUTTON_SIZE ) );
 	}
@@ -790,7 +790,7 @@ public class GuiEssentiaCellTerminal
 		this.sortMode = sortMode;
 
 		// Update the sort button
-		( (ButtonSortingMode)this.buttonList.get( GuiEssentiaCellTerminal.SORT_MODE_BUTTON_ID ) ).setSortMode( sortMode );
+		( (GuiButtonSortingMode)this.buttonList.get( GuiEssentiaCellTerminal.SORT_MODE_BUTTON_ID ) ).setSortMode( sortMode );
 
 		// Resort the list
 		this.sortMatchingList();

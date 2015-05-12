@@ -10,7 +10,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerKnowledgeInscriber;
 import thaumicenergistics.container.ContainerKnowledgeInscriber.CoreSaveState;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
-import thaumicenergistics.gui.buttons.ButtonSaveDelete;
+import thaumicenergistics.gui.buttons.GuiButtonSaveDelete;
 import thaumicenergistics.network.packet.server.PacketServerKnowledgeInscriber;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.GuiTextureManager;
@@ -36,7 +36,7 @@ public class GuiKnowledgeInscriber
 	/**
 	 * Save / Delete button.
 	 */
-	private ButtonSaveDelete saveButton;
+	private GuiButtonSaveDelete saveButton;
 
 	/**
 	 * GUI Title
@@ -140,7 +140,7 @@ public class GuiKnowledgeInscriber
 		this.buttonList.clear();
 
 		// Create the save/delete button
-		this.saveButton = new ButtonSaveDelete( GuiKnowledgeInscriber.BUTTON_SAVE_ID, this.guiLeft + GuiKnowledgeInscriber.BUTTON_SAVE_POS_X,
+		this.saveButton = new GuiButtonSaveDelete( GuiKnowledgeInscriber.BUTTON_SAVE_ID, this.guiLeft + GuiKnowledgeInscriber.BUTTON_SAVE_POS_X,
 						this.guiTop + GuiKnowledgeInscriber.BUTTON_SAVE_POS_Y, this.saveState );
 		this.buttonList.add( this.saveButton );
 

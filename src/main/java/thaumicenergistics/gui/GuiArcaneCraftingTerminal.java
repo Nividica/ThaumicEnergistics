@@ -15,10 +15,10 @@ import thaumcraft.common.config.Config;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
 import thaumicenergistics.gui.abstraction.AbstractGuiConstantsACT;
-import thaumicenergistics.gui.buttons.ButtonClearCraftingGrid;
-import thaumicenergistics.gui.buttons.ButtonSortingDirection;
-import thaumicenergistics.gui.buttons.ButtonSortingMode;
-import thaumicenergistics.gui.buttons.ButtonViewType;
+import thaumicenergistics.gui.buttons.GuiButtonClearCraftingGrid;
+import thaumicenergistics.gui.buttons.GuiButtonSortingDirection;
+import thaumicenergistics.gui.buttons.GuiButtonSortingMode;
+import thaumicenergistics.gui.buttons.GuiButtonViewType;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
 import thaumicenergistics.integration.tc.MEItemAspectBridgeContainer;
@@ -385,13 +385,13 @@ public class GuiArcaneCraftingTerminal
 	private void updateSorting()
 	{
 		// Set the direction icon
-		( (ButtonSortingDirection)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID ) ).setSortingDirection( this.sortingDirection );
+		( (GuiButtonSortingDirection)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID ) ).setSortingDirection( this.sortingDirection );
 
 		// Set the order icon
-		( (ButtonSortingMode)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID ) ).setSortMode( this.sortingOrder );
+		( (GuiButtonSortingMode)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID ) ).setSortMode( this.sortingOrder );
 
 		// Set the view mode
-		( (ButtonViewType)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID ) ).setViewMode( this.viewMode );
+		( (GuiButtonViewType)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID ) ).setViewMode( this.viewMode );
 
 		// Update the repo
 		this.repo.updateView();
@@ -834,23 +834,26 @@ public class GuiArcaneCraftingTerminal
 		this.buttonList.clear();
 
 		// Create the clear grid button
-		this.buttonList.add( new ButtonClearCraftingGrid( AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_ID, this.guiLeft +
+		this.buttonList.add( new GuiButtonClearCraftingGrid( AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_ID, this.guiLeft +
 						AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_POS_Y, 8, 8 ) );
 
 		// Add sort order button
-		this.buttonList.add( new ButtonSortingMode( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID, this.guiLeft +
+		this.buttonList.add( new GuiButtonSortingMode( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID, this.guiLeft +
 						AbstractGuiConstantsACT.BUTTON_SORT_ORDER_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SORT_ORDER_POS_Y,
 						AbstractGuiConstantsACT.AE_BUTTON_SIZE, AbstractGuiConstantsACT.AE_BUTTON_SIZE ) );
 
 		// Add sort direction button
-		this.buttonList.add( new ButtonSortingDirection( AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID, this.guiLeft +
+		this.buttonList.add( new GuiButtonSortingDirection( AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID, this.guiLeft +
 						AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_Y,
 						AbstractGuiConstantsACT.AE_BUTTON_SIZE, AbstractGuiConstantsACT.AE_BUTTON_SIZE ) );
 
 		// Add view type button
-		this.buttonList.add( new ButtonViewType( AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID, this.guiLeft +
+		this.buttonList.add( new GuiButtonViewType( AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID, this.guiLeft +
 						AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_POS_Y,
 						AbstractGuiConstantsACT.AE_BUTTON_SIZE, AbstractGuiConstantsACT.AE_BUTTON_SIZE ) );
+
+		// Add swap armor button
+		//AbstractButtonBase btnArmor = new AbstractButtonBase(4,26,144,"abc");
 
 		// Add the container as a listener
 		( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).registerForUpdates();

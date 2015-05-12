@@ -18,6 +18,7 @@ import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.container.slot.SlotArcaneCraftingResult;
 import thaumicenergistics.container.slot.SlotRestrictive;
+import thaumicenergistics.container.slot.SlotVisDiscountArmor;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.integration.tc.ArcaneRecipeHelper;
 import thaumicenergistics.network.packet.client.PacketClientArcaneCraftingTerminal;
@@ -116,6 +117,11 @@ public class ContainerPartArcaneCraftingTerminal
 	public static int VIEW_SLOT_XPOS = 206, VIEW_SLOT_YPOS = 8;
 
 	/**
+	 * Starting position for armor slots.
+	 */
+	public static int ARMOR_SLOT_X_POS = 8, ARMOR_SLOT_Y_POS = 81, ARMOR_SLOT_COUNT = 4;
+
+	/**
 	 * Width and height of a slot.
 	 */
 	private static int SLOT_SIZE = 18;
@@ -154,6 +160,11 @@ public class ContainerPartArcaneCraftingTerminal
 	 * Slot number of the result.
 	 */
 	private int resultSlotNumber = -1;
+
+	/**
+	 * Slot number of the first swap armor slot
+	 */
+	private int firstArmorSlotNumber = -1;
 
 	/**
 	 * The wand currently in the wand slot.
@@ -279,6 +290,27 @@ public class ContainerPartArcaneCraftingTerminal
 		if( viewSlot != null )
 		{
 			this.lastViewSlotNumber = viewSlot.slotNumber;
+		}
+
+		// Create the armor slots
+		for( int armorIndex = 0; armorIndex < ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_COUNT; ++armorIndex )
+		{
+			// Calculate y position
+			int yPos = ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_Y_POS + ( ContainerPartArcaneCraftingTerminal.SLOT_SIZE * armorIndex );
+
+			// Create the slot
+			SlotVisDiscountArmor armorSlot = new SlotVisDiscountArmor( terminal, AEPartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorIndex,
+							ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_X_POS, yPos, armorIndex );
+
+			// Add to container
+			this.addSlotToContainer( armorSlot );
+
+			// Is this the first slot?
+			if( this.firstArmorSlotNumber == -1 )
+			{
+				this.firstArmorSlotNumber = armorSlot.slotNumber;
+			}
+
 		}
 
 		// Is this server side?

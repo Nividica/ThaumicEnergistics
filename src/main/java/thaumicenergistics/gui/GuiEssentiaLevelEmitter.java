@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
-import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
+import thaumicenergistics.gui.buttons.GuiButtonRedstoneModes;
 import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -422,7 +422,7 @@ public class GuiEssentiaLevelEmitter
 		}
 
 		// Add the redstone mode button
-		this.buttonList.add( new ButtonRedstoneModes( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX, this.guiLeft +
+		this.buttonList.add( new GuiButtonRedstoneModes( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX, this.guiLeft +
 						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_X, this.guiTop + GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_Y,
 						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, RedstoneMode.LOW_SIGNAL, true ) );
 
@@ -447,7 +447,7 @@ public class GuiEssentiaLevelEmitter
 	 */
 	public void onServerUpdateRedstoneMode( final RedstoneMode mode )
 	{
-		( (ButtonRedstoneModes)this.buttonList.get( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX ) ).setRedstoneMode( mode );
+		( (GuiButtonRedstoneModes)this.buttonList.get( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX ) ).setRedstoneMode( mode );
 	}
 
 	/**

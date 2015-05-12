@@ -4,8 +4,8 @@ import java.util.List;
 import net.minecraft.util.StatCollector;
 import thaumicenergistics.texture.AEStateIconsEnum;
 
-public class ButtonClearCellPartitioning
-	extends AbstractAEButton
+public class GuiButtonClearCellPartitioning
+	extends AbstractStateGuiButton
 {
 
 	/**
@@ -22,9 +22,9 @@ public class ButtonClearCellPartitioning
 	 * @param width
 	 * @param height
 	 */
-	public ButtonClearCellPartitioning( final int ID, final int xPosition, final int yPosition )
+	public GuiButtonClearCellPartitioning( final int ID, final int xPosition, final int yPosition )
 	{
-		super( ID, xPosition, yPosition, 16, 16, ButtonClearCellPartitioning.CLEAR_ICON );
+		super( ID, xPosition, yPosition, 16, 16, GuiButtonClearCellPartitioning.CLEAR_ICON, 0, 0, AEStateIconsEnum.REGULAR_BUTTON );
 	}
 
 	@Override

@@ -4,8 +4,8 @@ import java.util.List;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 
-public class ButtonClearCraftingGrid
-	extends AbstractAEButton
+public class GuiButtonClearCraftingGrid
+	extends AbstractStateGuiButton
 {
 	/**
 	 * Clear grid icon
@@ -21,9 +21,9 @@ public class ButtonClearCraftingGrid
 	 * @param width
 	 * @param height
 	 */
-	public ButtonClearCraftingGrid( final int ID, final int xPosition, final int yPosition, final int width, final int height )
+	public GuiButtonClearCraftingGrid( final int ID, final int xPosition, final int yPosition, final int width, final int height )
 	{
-		super( ID, xPosition, yPosition, width, height, ButtonClearCraftingGrid.CLEAR_ICON );
+		super( ID, xPosition, yPosition, width, height, GuiButtonClearCraftingGrid.CLEAR_ICON, 0, 0, AEStateIconsEnum.REGULAR_BUTTON );
 	}
 
 	@Override

@@ -4,8 +4,8 @@ import java.util.List;
 import net.minecraft.util.StatCollector;
 import thaumicenergistics.texture.AEStateIconsEnum;
 
-public class ButtonSetCellPartitioningToCurrent
-	extends AbstractAEButton
+public class GuiButtonSetCellPartitioningToCurrent
+	extends AbstractStateGuiButton
 {
 	/**
 	 * Wrench icon
@@ -21,9 +21,9 @@ public class ButtonSetCellPartitioningToCurrent
 	 * @param width
 	 * @param height
 	 */
-	public ButtonSetCellPartitioningToCurrent( final int ID, final int xPosition, final int yPosition )
+	public GuiButtonSetCellPartitioningToCurrent( final int ID, final int xPosition, final int yPosition )
 	{
-		super( ID, xPosition, yPosition, 16, 16, ButtonSetCellPartitioningToCurrent.WRENCH_ICON );
+		super( ID, xPosition, yPosition, 16, 16, GuiButtonSetCellPartitioningToCurrent.WRENCH_ICON, 0, 0, AEStateIconsEnum.REGULAR_BUTTON );
 	}
 
 	@Override

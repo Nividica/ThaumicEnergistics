@@ -5,8 +5,8 @@ import net.minecraft.util.StatCollector;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import appeng.api.config.RedstoneMode;
 
-public class ButtonRedstoneModes
-	extends AbstractAEButton
+public class GuiButtonRedstoneModes
+	extends AbstractStateGuiButton
 {
 	/**
 	 * Localization header string for tooltips
@@ -33,7 +33,7 @@ public class ButtonRedstoneModes
 	 * @param height
 	 * @param mode
 	 */
-	public ButtonRedstoneModes( final int ID, final int xPos, final int yPos, final int width, final int height, final RedstoneMode mode )
+	public GuiButtonRedstoneModes( final int ID, final int xPos, final int yPos, final int width, final int height, final RedstoneMode mode )
 	{
 		this( ID, xPos, yPos, width, height, mode, false );
 	}
@@ -49,11 +49,11 @@ public class ButtonRedstoneModes
 	 * @param mode
 	 * @param emitter
 	 */
-	public ButtonRedstoneModes( final int ID, final int xPos, final int yPos, final int width, final int height, final RedstoneMode mode,
+	public GuiButtonRedstoneModes( final int ID, final int xPos, final int yPos, final int width, final int height, final RedstoneMode mode,
 								final boolean emitter )
 	{
 		// Call super
-		super( ID, xPos, yPos, width, height, null );
+		super( ID, xPos, yPos, width, height, null, 0, 0, AEStateIconsEnum.REGULAR_BUTTON );
 
 		// Set the if we are attached to an emitter
 		this.emitter = emitter;
@@ -108,19 +108,19 @@ public class ButtonRedstoneModes
 		switch ( this.redstoneMode )
 		{
 			case HIGH_SIGNAL:
-				this.icon = AEStateIconsEnum.REDSTONE_HIGH;
+				this.stateIcon = AEStateIconsEnum.REDSTONE_HIGH;
 				break;
 
 			case IGNORE:
-				this.icon = AEStateIconsEnum.REDSTONE_IGNORE;
+				this.stateIcon = AEStateIconsEnum.REDSTONE_IGNORE;
 				break;
 
 			case LOW_SIGNAL:
-				this.icon = AEStateIconsEnum.REDSTONE_LOW;
+				this.stateIcon = AEStateIconsEnum.REDSTONE_LOW;
 				break;
 
 			case SIGNAL_PULSE:
-				this.icon = AEStateIconsEnum.REDSTONE_PULSE;
+				this.stateIcon = AEStateIconsEnum.REDSTONE_PULSE;
 				break;
 		}
 	}

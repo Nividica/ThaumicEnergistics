@@ -9,8 +9,8 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
-import thaumicenergistics.gui.buttons.ButtonAllowVoid;
-import thaumicenergistics.gui.buttons.ButtonRedstoneModes;
+import thaumicenergistics.gui.buttons.GuiButtonAllowVoid;
+import thaumicenergistics.gui.buttons.GuiButtonRedstoneModes;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -148,12 +148,12 @@ public class GuiEssentiaIO
 	/**
 	 * Shown when the bus is redstone controlled
 	 */
-	private ButtonRedstoneModes redstoneControlButton = null;
+	private GuiButtonRedstoneModes redstoneControlButton = null;
 
 	/**
 	 * Button controlling if voiding is allowed.
 	 */
-	private ButtonAllowVoid voidModeButton = null;
+	private GuiButtonAllowVoid voidModeButton = null;
 
 	/**
 	 * Creates the gui
@@ -373,14 +373,14 @@ public class GuiEssentiaIO
 		}
 
 		// Create the redstone control button
-		this.redstoneControlButton = new ButtonRedstoneModes( GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID, this.guiLeft +
+		this.redstoneControlButton = new GuiButtonRedstoneModes( GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID, this.guiLeft +
 						GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_POS_X, this.guiTop + GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_POS_Y,
 						GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_SIZE, GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_SIZE, this.redstoneMode, false );
 
 		// Create the allow void button if export bus
 		if( this.part instanceof AEPartEssentiaExportBus )
 		{
-			this.voidModeButton = new ButtonAllowVoid( GuiEssentiaIO.ALLOW_VOID_BUTTON_ID, this.guiLeft + GuiEssentiaIO.ALLOW_VOID_BUTTON_POS_X,
+			this.voidModeButton = new GuiButtonAllowVoid( GuiEssentiaIO.ALLOW_VOID_BUTTON_ID, this.guiLeft + GuiEssentiaIO.ALLOW_VOID_BUTTON_POS_X,
 							this.guiTop + GuiEssentiaIO.ALLOW_VOID_BUTTON_POS_Y );
 			this.buttonList.add( this.voidModeButton );
 		}

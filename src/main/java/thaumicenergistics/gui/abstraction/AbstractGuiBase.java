@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import thaumicenergistics.container.ContainerWithNetworkTool;
 import thaumicenergistics.container.slot.SlotNetworkTool;
-import thaumicenergistics.gui.buttons.AbstractButtonBase;
+import thaumicenergistics.gui.buttons.AbstractGuiButtonBase;
 import thaumicenergistics.gui.widget.IWidgetHost;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.util.GuiHelper;
@@ -215,10 +215,10 @@ public abstract class AbstractGuiBase
 		for( Object obj : this.buttonList )
 		{
 			// Is it a base button?
-			if( obj instanceof AbstractButtonBase )
+			if( obj instanceof AbstractGuiButtonBase )
 			{
 				// Cast
-				AbstractButtonBase currentButton = (AbstractButtonBase)obj;
+				AbstractGuiButtonBase currentButton = (AbstractGuiButtonBase)obj;
 
 				// Is the mouse over it?
 				if( currentButton.isMouseOverButton( mouseX, mouseY ) )

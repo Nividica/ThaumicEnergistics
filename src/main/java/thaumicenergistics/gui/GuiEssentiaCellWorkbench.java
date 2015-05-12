@@ -9,8 +9,8 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
-import thaumicenergistics.gui.buttons.ButtonClearCellPartitioning;
-import thaumicenergistics.gui.buttons.ButtonSetCellPartitioningToCurrent;
+import thaumicenergistics.gui.buttons.GuiButtonClearCellPartitioning;
+import thaumicenergistics.gui.buttons.GuiButtonSetCellPartitioningToCurrent;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotGui;
@@ -298,11 +298,11 @@ public class GuiEssentiaCellWorkbench
 		}
 
 		// Create the un-partition button
-		this.buttonList.add( new ButtonSetCellPartitioningToCurrent( GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_ID, this.guiLeft +
+		this.buttonList.add( new GuiButtonSetCellPartitioningToCurrent( GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_ID, this.guiLeft +
 						GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_X, this.guiTop + GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_Y ) );
 
 		// Create the partition to current button
-		this.buttonList.add( new ButtonClearCellPartitioning( GuiEssentiaCellWorkbench.BUTTON_CLEAR_ID, this.guiLeft +
+		this.buttonList.add( new GuiButtonClearCellPartitioning( GuiEssentiaCellWorkbench.BUTTON_CLEAR_ID, this.guiLeft +
 						GuiEssentiaCellWorkbench.BUTTON_CLEAR_X, this.guiTop + GuiEssentiaCellWorkbench.BUTTON_CLEAR_Y ) );
 
 		// Request the list
