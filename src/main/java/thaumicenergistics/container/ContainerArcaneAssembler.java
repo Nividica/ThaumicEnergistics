@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import thaumcraft.api.IVisDiscountGear;
 import thaumicenergistics.blocks.BlockArcaneAssembler;
+import thaumicenergistics.container.slot.SlotArmor;
 import thaumicenergistics.container.slot.SlotRestrictive;
-import thaumicenergistics.container.slot.SlotVisDiscountArmor;
 import thaumicenergistics.items.ItemKnowledgeCore;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
 import thaumicenergistics.util.EffectiveSide;
@@ -72,7 +72,7 @@ public class ContainerArcaneAssembler
 	/**
 	 * Discount armor slots.
 	 */
-	private SlotVisDiscountArmor[] discountSlots = new SlotVisDiscountArmor[4];
+	private SlotArmor[] discountSlots = new SlotArmor[4];
 
 	public ContainerArcaneAssembler( final EntityPlayer player, final World world, final int X, final int Y, final int Z )
 	{
@@ -118,8 +118,9 @@ public class ContainerArcaneAssembler
 		// Add armor slots
 		for( int index = 0; index < ContainerArcaneAssembler.DISCOUNT_ARMOR_COUNT; index++ )
 		{
-			this.discountSlots[index] = new SlotVisDiscountArmor( asmInv, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index,
-							ContainerArcaneAssembler.DISCOUNT_ARMOR_SLOT_X, ContainerArcaneAssembler.DISCOUNT_ARMOR_SLOT_Y + ( index * 18 ), index );
+			this.discountSlots[index] = new SlotArmor( asmInv, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index,
+							ContainerArcaneAssembler.DISCOUNT_ARMOR_SLOT_X, ContainerArcaneAssembler.DISCOUNT_ARMOR_SLOT_Y + ( index * 18 ), index,
+							true );
 
 			this.addSlotToContainer( this.discountSlots[index] );
 		}

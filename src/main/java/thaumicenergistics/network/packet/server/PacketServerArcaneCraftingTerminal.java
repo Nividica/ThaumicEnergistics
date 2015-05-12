@@ -23,6 +23,7 @@ public class PacketServerArcaneCraftingTerminal
 	private static final byte MODE_REQUEST_SET_SORT = 6;
 	private static final byte MODE_REQUEST_SET_GRID = 7;
 	private static final byte MODE_REQUEST_AUTO_CRAFT = 8;
+	private static final byte MODE_REQUEST_SWAP_ARMOR = 9;
 
 	private static final int ITEM_GRID_SIZE = 9;
 
@@ -242,6 +243,17 @@ public class PacketServerArcaneCraftingTerminal
 		return this;
 	}
 
+	public PacketServerArcaneCraftingTerminal createSwapArmorRequest( final EntityPlayer player )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketServerArcaneCraftingTerminal.MODE_REQUEST_SWAP_ARMOR;
+
+		return this;
+	}
+
 	@Override
 	public void execute()
 	{
@@ -291,6 +303,11 @@ public class PacketServerArcaneCraftingTerminal
 				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_AUTO_CRAFT:
 					// Request auto-crafting
 					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestAutoCraft( this.player, this.itemStack );
+					break;
+
+				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SWAP_ARMOR:
+					// Request armor swap
+					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestSwapArmor( this.player );
 					break;
 			}
 		}

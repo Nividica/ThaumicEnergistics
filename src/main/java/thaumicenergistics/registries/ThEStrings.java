@@ -68,6 +68,8 @@ public enum ThEStrings
 		TooltipButton_InscriberDelete ("tooltip.button.inscriber.delete", false),
 		TooltipButton_InscriberSave ("tooltip.button.inscriber.save", false),
 		TooltipButton_InscriberMissing ("tooltip.button.inscriber.missing", false),
+		TooltipButton_SwapArmor ("tooltip.button.swap.armor", false),
+		TooltipButton_SwapArmor_Title ("tooltip.button.swap.armor.title", false),
 
 		// GUI
 		Gui_TitleArcaneCraftingTerminal ("gui.arcane.crafting.terminal.title", false),

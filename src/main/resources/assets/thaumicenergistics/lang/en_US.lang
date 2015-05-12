@@ -57,6 +57,8 @@ thaumicenergistics.tooltip.button.inscriber.full=Knowledge Core Is Full
 thaumicenergistics.tooltip.button.inscriber.delete=Erase Pattern From Knowledge Core
 thaumicenergistics.tooltip.button.inscriber.save=Save Pattern To Knowledge Core
 thaumicenergistics.tooltip.button.inscriber.missing=Requires Knowledge Core
+thaumicenergistics.tooltip.button.swap.armor=Swaps your currently equipped armor with the armor stored in the terminal.
+thaumicenergistics.tooltip.button.swap.armor.title=Swap Armor
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=Arcane Terminal
@@ -96,7 +98,7 @@ thaumicenergistics.research_page.TEIO.2=§lStorage Bus§r<BR>Combining the impor
 # Research Arcane crafting terminal
 tc.research_name.thaumicenergistics.TEARCANETERM=Arcane Crafting Terminal
 tc.research_text.thaumicenergistics.TEARCANETERM=Crafting with magic §oand technology.§r
-thaumicenergistics.research_page.TEARCANETERM.1=You have discovered that using primal aspects to bind a §lTerminal§r to an §lArcane Worktable§r allows you to imbue the terminal with the worktable's ability to craft arcane items.
+thaumicenergistics.research_page.TEARCANETERM.1=You have discovered that using primal aspects to bind a §lTerminal§r to an §lArcane Worktable§r allows you to imbue the terminal with the worktable's ability to craft arcane items.<BR>The terminal retains its ability to access items on the ME network allowing faster and more plentiful crafting, as well as store and swap a set of armor for when you need a quick vis discount.
 
 # Research Essentia terminal
 tc.research_name.thaumicenergistics.TEESSTERM=Essentia Monitoring

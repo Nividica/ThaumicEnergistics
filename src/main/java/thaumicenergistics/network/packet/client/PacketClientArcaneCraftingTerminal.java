@@ -24,7 +24,8 @@ public class PacketClientArcaneCraftingTerminal
 	/**
 	 * Packet modes
 	 */
-	private static final byte MODE_RECEIVE_CHANGE = 0, MODE_RECEIVE_FULL_LIST = 1, MODE_RECEIVE_PLAYER_HOLDING = 2, MODE_RECEIVE_SORTS = 3;
+	private static final byte MODE_RECEIVE_CHANGE = 0, MODE_RECEIVE_FULL_LIST = 1, MODE_RECEIVE_PLAYER_HOLDING = 2, MODE_RECEIVE_SORTS = 3,
+					MODE_UPDATE_COSTS = 4;
 
 	private IAEItemStack changedStack;
 	private IItemList<IAEItemStack> fullList;
@@ -62,6 +63,10 @@ public class PacketClientArcaneCraftingTerminal
 
 				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
 					( (GuiArcaneCraftingTerminal)gui ).onReceiveSorting( this.sortingOrder, this.sortingDirection, this.viewMode );
+					break;
+
+				case PacketClientArcaneCraftingTerminal.MODE_UPDATE_COSTS:
+					( (GuiArcaneCraftingTerminal)gui ).onServerSendForceUpdateCost();
 					break;
 			}
 		}
@@ -156,6 +161,22 @@ public class PacketClientArcaneCraftingTerminal
 		this.sortingDirection = direction;
 		this.sortingOrder = order;
 		this.viewMode = viewMode;
+
+		return this;
+	}
+
+	/**
+	 * Forces the client to re-calculate the displayed aspect costs
+	 * 
+	 * @return
+	 */
+	public PacketClientArcaneCraftingTerminal createUpdateAspectCost( final EntityPlayer player )
+	{
+		// Set the player
+		this.player = player;
+
+		// Set the mode
+		this.mode = PacketClientArcaneCraftingTerminal.MODE_UPDATE_COSTS;
 
 		return this;
 	}

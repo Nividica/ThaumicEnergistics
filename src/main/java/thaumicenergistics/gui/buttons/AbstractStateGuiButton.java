@@ -39,7 +39,7 @@ public abstract class AbstractStateGuiButton
 	 * @param backgroundIcon
 	 */
 	public AbstractStateGuiButton( final int ID, final int xPosition, final int yPosition, final int buttonWidth, final int buttonHeight,
-								final IStateIconTexture icon, final int iconXOffset, final int iconYOffset, final IStateIconTexture backgroundIcon )
+									final IStateIconTexture icon, final int iconXOffset, final int iconYOffset, final IStateIconTexture backgroundIcon )
 	{
 		// Call super
 		super( ID, xPosition, yPosition, buttonWidth, buttonHeight, "" );
@@ -109,7 +109,7 @@ public abstract class AbstractStateGuiButton
 		// Body
 		for( String line : Splitter.fixedLength( 30 ).split( text ) )
 		{
-			tooltip.add( EnumChatFormatting.GRAY + line );
+			tooltip.add( EnumChatFormatting.GRAY + line.trim() );
 		}
 	}
 

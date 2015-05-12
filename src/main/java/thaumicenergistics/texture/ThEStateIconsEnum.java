@@ -11,7 +11,7 @@ public enum ThEStateIconsEnum
 	/**
 	 * Location of the AE states texture
 	 */
-	public static final ResourceLocation THE_STATES_TEXTURE = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/guis/sprite.sheet.png" );
+	public static final ResourceLocation THE_STATES_TEXTURE = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/gui/states.png" );
 
 	/**
 	 * Width and height of standard icons.

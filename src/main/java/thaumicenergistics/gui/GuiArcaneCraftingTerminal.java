@@ -18,6 +18,7 @@ import thaumicenergistics.gui.abstraction.AbstractGuiConstantsACT;
 import thaumicenergistics.gui.buttons.GuiButtonClearCraftingGrid;
 import thaumicenergistics.gui.buttons.GuiButtonSortingDirection;
 import thaumicenergistics.gui.buttons.GuiButtonSortingMode;
+import thaumicenergistics.gui.buttons.GuiButtonSwapArmor;
 import thaumicenergistics.gui.buttons.GuiButtonViewType;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
@@ -416,6 +417,37 @@ public class GuiArcaneCraftingTerminal
 		// Draw the gui image
 		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, AbstractGuiConstantsACT.GUI_WIDTH, AbstractGuiConstantsACT.GUI_HEIGHT );
 
+		/*
+		int extraRows = Math.max( 0, ( this.height - AbstractGuiConstantsACT.GUI_HEIGHT ) / 25 );
+		int yPushDown = 35;
+		this.ySize = AbstractGuiConstantsACT.GUI_HEIGHT + ( extraRows * 18 );
+		this.guiTop = ( this.height - this.ySize ) / 2;
+		// Calculate the scroll max
+		int max = Math.max( 0, ( this.repo.size() / AbstractGuiConstantsACT.ME_COLUMNS ) - 2 );
+		// Update the scroll bar
+		this.scrollBar.setRange( 0, max, 2 );
+
+		this.scrollBar.setHeight( AbstractGuiConstantsACT.SCROLLBAR_HEIGHT + ( extraRows * 18 ) );
+
+		// Draw the upper portion: Label, Search, First row
+		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, AbstractGuiConstantsACT.GUI_WIDTH - 35, yPushDown );
+
+		// Draw extra rows
+		for( int i = 0; i < extraRows; i++ )
+		{
+			this.drawTexturedModalRect( this.guiLeft, this.guiTop + yPushDown, 0, 35, AbstractGuiConstantsACT.GUI_WIDTH - 35, 18 );
+			yPushDown += 18;
+		}
+
+		// Draw the lower portion
+		this.drawTexturedModalRect( this.guiLeft, this.guiTop + yPushDown, 0, 35, AbstractGuiConstantsACT.GUI_WIDTH - 35,
+			AbstractGuiConstantsACT.GUI_HEIGHT - 35 );
+
+		// Draw view cells
+		this.drawTexturedModalRect( this.guiLeft + ( AbstractGuiConstantsACT.GUI_WIDTH - 35 ), this.guiTop, AbstractGuiConstantsACT.GUI_WIDTH - 35,
+			0, 35, 104 );
+		*/
+
 		// Bind the AE states texture
 		Minecraft.getMinecraft().renderEngine.bindTexture( AEStateIconsEnum.AE_STATES_TEXTURE );
 
@@ -452,7 +484,7 @@ public class GuiArcaneCraftingTerminal
 		WidgetAEItem widgetUnderMouse = this.drawItemWidgets( mouseX, mouseY );
 
 		// Get the cost
-		List<ArcaneCrafingCost> craftingCost = ( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).getCraftingCost();
+		List<ArcaneCrafingCost> craftingCost = ( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).getCraftingCost( false );
 
 		// Does the current recipe have costs?
 		if( craftingCost != null )
@@ -709,6 +741,11 @@ public class GuiArcaneCraftingTerminal
 				}
 				sortingChanged = true;
 				break;
+
+			case AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_ID:
+				// Ask the server to swap the armor
+				new PacketServerArcaneCraftingTerminal().createSwapArmorRequest( this.player ).sendPacketToServer();
+				break;
 		}
 
 		// Should we update?
@@ -853,7 +890,8 @@ public class GuiArcaneCraftingTerminal
 						AbstractGuiConstantsACT.AE_BUTTON_SIZE, AbstractGuiConstantsACT.AE_BUTTON_SIZE ) );
 
 		// Add swap armor button
-		//AbstractButtonBase btnArmor = new AbstractButtonBase(4,26,144,"abc");
+		this.buttonList.add( new GuiButtonSwapArmor( AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_ID, this.guiLeft +
+						AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_POS_Y, 8, 8 ) );
 
 		// Add the container as a listener
 		( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).registerForUpdates();
@@ -954,6 +992,15 @@ public class GuiArcaneCraftingTerminal
 
 		// Update
 		this.updateSorting();
+	}
+
+	/**
+	 * Called when the server wants the client to force an update to the aspect
+	 * costs.
+	 */
+	public void onServerSendForceUpdateCost()
+	{
+		( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).getCraftingCost( true );
 	}
 
 	/**

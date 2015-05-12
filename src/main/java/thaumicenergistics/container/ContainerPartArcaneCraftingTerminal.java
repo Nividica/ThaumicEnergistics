@@ -1,7 +1,6 @@
 package thaumicenergistics.container;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -17,8 +16,8 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.container.slot.SlotArcaneCraftingResult;
+import thaumicenergistics.container.slot.SlotArmor;
 import thaumicenergistics.container.slot.SlotRestrictive;
-import thaumicenergistics.container.slot.SlotVisDiscountArmor;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.integration.tc.ArcaneRecipeHelper;
 import thaumicenergistics.network.packet.client.PacketClientArcaneCraftingTerminal;
@@ -162,11 +161,6 @@ public class ContainerPartArcaneCraftingTerminal
 	private int resultSlotNumber = -1;
 
 	/**
-	 * Slot number of the first swap armor slot
-	 */
-	private int firstArmorSlotNumber = -1;
-
-	/**
 	 * The wand currently in the wand slot.
 	 */
 	private ItemStack wand;
@@ -299,17 +293,23 @@ public class ContainerPartArcaneCraftingTerminal
 			int yPos = ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_Y_POS + ( ContainerPartArcaneCraftingTerminal.SLOT_SIZE * armorIndex );
 
 			// Create the slot
-			SlotVisDiscountArmor armorSlot = new SlotVisDiscountArmor( terminal, AEPartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorIndex,
-							ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_X_POS, yPos, armorIndex );
+			SlotArmor armorSlot = new SlotArmor( terminal, AEPartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorIndex,
+							ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_X_POS, yPos, armorIndex, false );
 
 			// Add to container
 			this.addSlotToContainer( armorSlot );
 
-			// Is this the first slot?
-			if( this.firstArmorSlotNumber == -1 )
-			{
-				this.firstArmorSlotNumber = armorSlot.slotNumber;
-			}
+			/**
+			 * Notes about the hidden slots
+			 * I hate this, but I have tried everything I can think of, and the
+			 * equipped armor will not change immediately unless
+			 * the notification comes from the open container, this container.
+			 */
+			// Create the 'hidden'slot
+			armorSlot = new SlotArmor( player.inventory, 36 + ( 3 - armorIndex ), 0, -1000, armorIndex, false );
+
+			// Add to container
+			this.addSlotToContainer( armorSlot );
 
 		}
 
@@ -816,8 +816,14 @@ public class ContainerPartArcaneCraftingTerminal
 	 * 
 	 * @return Null if not an arcane recipe, cost otherwise.
 	 */
-	public List<ArcaneCrafingCost> getCraftingCost()
+	public List<ArcaneCrafingCost> getCraftingCost( final boolean forceUpdate )
 	{
+		if( forceUpdate )
+		{
+			this.craftingCost.clear();
+			this.findMatchingArcaneResult();
+		}
+
 		// Does this recipe have costs?
 		if( this.craftingCost.isEmpty() )
 		{
@@ -825,7 +831,8 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 
 		// Return required and missing
-		return Collections.unmodifiableList( this.craftingCost );
+		//return Collections.unmodifiableList( this.craftingCost );
+		return this.craftingCost;
 	}
 
 	/**
@@ -1218,6 +1225,19 @@ public class ContainerPartArcaneCraftingTerminal
 	{
 		// Inform the terminal
 		this.arcaneCraftingTerminalPart.setSorts( order, dir, viewMode );
+	}
+
+	/**
+	 * Called when a client has requested they swap their equipped armor with
+	 * the stored armor.
+	 * 
+	 * @param player
+	 */
+	public void onClientRequestSwapArmor( final EntityPlayer player )
+	{
+		this.arcaneCraftingTerminalPart.swapStoredArmor( player );
+		this.detectAndSendChanges();
+		new PacketClientArcaneCraftingTerminal().createUpdateAspectCost( player ).sendPacketToPlayer();
 	}
 
 	/**

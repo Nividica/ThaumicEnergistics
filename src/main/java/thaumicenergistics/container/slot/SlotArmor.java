@@ -9,7 +9,7 @@ import thaumcraft.api.IVisDiscountGear;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class SlotVisDiscountArmor
+public class SlotArmor
 	extends Slot
 {
 
@@ -17,6 +17,11 @@ public class SlotVisDiscountArmor
 	 * The armor type.
 	 */
 	private final int armorType;
+
+	/**
+	 * If true will only accept vis discount armor.
+	 */
+	private final boolean restrictToVisArmor;
 
 	/**
 	 * 
@@ -27,13 +32,16 @@ public class SlotVisDiscountArmor
 	 * @param armorType
 	 * 0: Helmet, 1: Chest, 2: Legs, 3: Boots
 	 */
-	public SlotVisDiscountArmor( final IInventory inventory, final int index, final int x, final int y, final int armorType )
+	public SlotArmor( final IInventory inventory, final int index, final int x, final int y, final int armorType, final boolean restrictToVisArmor )
 	{
 		// Call super
 		super( inventory, index, x, y );
 
 		// Set the armor type
 		this.armorType = armorType;
+
+		// Set if the armor is restricted
+		this.restrictToVisArmor = restrictToVisArmor;
 	}
 
 	@Override
@@ -57,7 +65,14 @@ public class SlotVisDiscountArmor
 			return false;
 		}
 
-		return( ( itemStack.getItem() instanceof IVisDiscountGear ) && ( itemStack.getItem().isValidArmor( itemStack, this.armorType, null ) ) );
+		// Vis armor?
+		if( ( this.restrictToVisArmor && !( itemStack.getItem() instanceof IVisDiscountGear ) ) )
+		{
+			return false;
+		}
+
+		// Valid armor for this slot?
+		return itemStack.getItem().isValidArmor( itemStack, this.armorType, null );
 	}
 
 }

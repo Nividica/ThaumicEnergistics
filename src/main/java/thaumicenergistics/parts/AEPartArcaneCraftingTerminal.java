@@ -840,9 +840,27 @@ public class AEPartArcaneCraftingTerminal
 	 * 
 	 * @param player
 	 */
-	public void swapArmor( final EntityPlayer player )
+	public void swapStoredArmor( final EntityPlayer player )
 	{
-		//TODO asdfasdf
+
+		for( int armorSlot = 0; armorSlot < 4; ++armorSlot )
+		{
+			// Get the stored armor
+			ItemStack storedArmor = this.slots[AEPartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorSlot];
+
+			// Get the player armor
+			ItemStack playerArmor = player.inventory.armorInventory[3 - armorSlot];
+
+			// Swap
+			player.inventoryContainer.putStackInSlot( 5 + armorSlot, storedArmor );
+			this.slots[AEPartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorSlot] = playerArmor;
+
+		}
+
+		player.inventoryContainer.detectAndSendChanges();
+
+		// Mark for save
+		this.host.markForSave();
 	}
 
 	/**

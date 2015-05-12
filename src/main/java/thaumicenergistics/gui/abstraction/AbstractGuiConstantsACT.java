@@ -68,6 +68,11 @@ public abstract class AbstractGuiConstantsACT
 					BUTTON_VIEW_TYPE_POS_Y = BUTTON_SORT_DIR_POS_Y + 20;
 
 	/**
+	 * Swap armor button
+	 */
+	protected static final int BUTTON_SWAP_ARMOR_ID = 4, BUTTON_SWAP_ARMOR_POS_X = 26, BUTTON_SWAP_ARMOR_POS_Y = 112;
+
+	/**
 	 * Size of the AE buttons
 	 */
 	protected static final int AE_BUTTON_SIZE = 16;
