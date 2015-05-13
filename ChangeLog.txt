@@ -1,4 +1,9 @@
-﻿5/11/2015 0.8.10.1
+﻿5/12/2015 0.8.10.1
+  Bugfix: ACT search bar retains its contents when viewing NEI recipes.
+  Fixes #75: Added Tall Centered ACT terminal style.
+  Added Search Mode button to ACT.
+
+5/11/2015 0.8.10.1
   Fixes #178: Added armor slots to ACT.
   Updated ACT Lore.
   Started work on 'Tall Centered" ACT terminal style.

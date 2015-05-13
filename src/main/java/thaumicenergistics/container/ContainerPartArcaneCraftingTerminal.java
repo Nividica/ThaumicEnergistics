@@ -812,6 +812,30 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	/**
+	 * Changes the Y offset for all slots, except the view slots, in this
+	 * container.
+	 * 
+	 * @param deltaY
+	 */
+	public void changeSlotsYOffset( final int deltaY )
+	{
+		for( Object slotObj : this.inventorySlots )
+		{
+			// Get the slot
+			Slot slot = (Slot)slotObj;
+
+			// Skip view slots
+			if( ( slot.slotNumber >= this.firstViewSlotNumber ) && ( slot.slotNumber <= this.lastViewSlotNumber ) )
+			{
+				continue;
+			}
+
+			// Adjust Y pos
+			slot.yDisplayPosition += deltaY;
+		}
+	}
+
+	/**
 	 * Gets the aspect cost and how much is missing for the current recipe.
 	 * 
 	 * @return Null if not an arcane recipe, cost otherwise.

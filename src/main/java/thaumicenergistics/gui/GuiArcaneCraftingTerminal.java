@@ -1,5 +1,6 @@
 package thaumicenergistics.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -16,9 +17,11 @@ import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
 import thaumicenergistics.gui.abstraction.AbstractGuiConstantsACT;
 import thaumicenergistics.gui.buttons.GuiButtonClearCraftingGrid;
+import thaumicenergistics.gui.buttons.GuiButtonSearchMode;
 import thaumicenergistics.gui.buttons.GuiButtonSortingDirection;
 import thaumicenergistics.gui.buttons.GuiButtonSortingMode;
 import thaumicenergistics.gui.buttons.GuiButtonSwapArmor;
+import thaumicenergistics.gui.buttons.GuiButtonTerminalStyle;
 import thaumicenergistics.gui.buttons.GuiButtonViewType;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
@@ -29,14 +32,19 @@ import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.GuiHelper;
+import appeng.api.config.SearchBoxMode;
+import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
+import appeng.api.config.TerminalStyle;
 import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.me.ItemRepo;
 import appeng.client.render.AppEngRenderItem;
+import appeng.core.AEConfig;
+import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -62,9 +70,14 @@ public class GuiArcaneCraftingTerminal
 	private String guiTitle;
 
 	/**
+	 * Number of ME widgets
+	 */
+	private int widgetCount = AbstractGuiConstantsACT.ME_DEFAULT_ROWS * AbstractGuiConstantsACT.ME_COLUMNS;
+
+	/**
 	 * Widget 'slots'.
 	 */
-	private WidgetAEItem[] itemWidgets = new WidgetAEItem[AbstractGuiConstantsACT.ME_WIDGET_COUNT];
+	private List<WidgetAEItem> itemWidgets = new ArrayList<WidgetAEItem>();
 
 	/**
 	 * Player viewing the gui.
@@ -97,6 +110,16 @@ public class GuiArcaneCraftingTerminal
 	private ViewItems viewMode = ViewItems.ALL;
 
 	/**
+	 * Is the terminal small or tall?
+	 */
+	private TerminalStyle terminalStyle = TerminalStyle.SMALL;
+
+	/**
+	 * The Y offeset of the lower portion of the terminal.
+	 */
+	private int lowerTerminalYOffset = 0;
+
+	/**
 	 * Tracks mouse movement.
 	 */
 	private int previousMouseX = 0;
@@ -112,7 +135,35 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private long lastTooltipUpdateTime = 0;
 
+	/**
+	 * TODO: Remove this and rework the widgets/slots to be MESlots
+	 */
 	private MEItemAspectBridgeContainer meAspectBridge;
+
+	/**
+	 * The number of rows to use.
+	 */
+	private int numberOfWidgetRows = AbstractGuiConstantsACT.ME_DEFAULT_ROWS;
+
+	/**
+	 * Button to set the sorting mode.
+	 */
+	private GuiButtonSortingMode btnSortingMode;
+
+	/**
+	 * Button to set accending or decending sorting.
+	 */
+	private GuiButtonSortingDirection btnSortingDirection;
+
+	/**
+	 * Button to change what items (regular | crafting) are shown.
+	 */
+	private GuiButtonViewType btnViewType;
+
+	/**
+	 * Button to change the search mode.
+	 */
+	private GuiButtonSearchMode btnSearchMode;
 
 	public GuiArcaneCraftingTerminal( final AEPartArcaneCraftingTerminal part, final EntityPlayer player )
 	{
@@ -129,36 +180,11 @@ public class GuiArcaneCraftingTerminal
 		// Set the title
 		this.guiTitle = ThEStrings.Gui_TitleArcaneCraftingTerminal.getLocalized();
 
-		// Create the aspect bridge
-		try
-		{
-			this.meAspectBridge = new MEItemAspectBridgeContainer( AbstractGuiConstantsACT.ME_WIDGET_COUNT );
-		}
-		catch( Exception e )
-		{
-			this.meAspectBridge = null;
-		}
-
-		// Create the widgets and bridge slots
-		for( int row = 0; row < AbstractGuiConstantsACT.ME_ROWS; row++ )
-		{
-			for( int column = 0; column < AbstractGuiConstantsACT.ME_COLUMNS; column++ )
-			{
-				// Calculate the index and position
-				int index = ( row * AbstractGuiConstantsACT.ME_COLUMNS ) + column;
-				int posX = AbstractGuiConstantsACT.ME_ITEM_POS_X + ( column * AbstractWidget.WIDGET_SIZE );
-				int posY = AbstractGuiConstantsACT.ME_ITEM_POS_Y + ( row * AbstractWidget.WIDGET_SIZE );
-
-				this.itemWidgets[index] = new WidgetAEItem( this, posX, posY, this.aeItemRenderer );
-				if( this.meAspectBridge != null )
-				{
-					this.meAspectBridge.addSlot( index, posX, posY );
-				}
-			}
-		}
-
 		// Create the repo
 		this.repo = new ItemRepo( this.scrollBar, this );
+
+		// Get the terminal style
+		this.terminalStyle = (TerminalStyle)AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE );
 
 	}
 
@@ -176,7 +202,8 @@ public class GuiArcaneCraftingTerminal
 
 		// Is the mouse inside the ME area?
 		if( GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.ME_ITEM_POS_Y, AbstractGuiConstantsACT.ME_ITEM_POS_X,
-			AbstractGuiConstantsACT.ME_GRID_HEIGHT, AbstractGuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+			this.numberOfWidgetRows * AbstractGuiConstantsACT.ME_ROW_HEIGHT, AbstractGuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft,
+			this.guiTop ) )
 		{
 			// Which direction was the scroll?
 			if( deltaZ > 0 )
@@ -204,7 +231,7 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private void drawCraftingAspects( final List<ArcaneCrafingCost> craftingCost )
 	{
-		int posY = AbstractGuiConstantsACT.ASPECT_COST_POS_Y;
+		int posY = AbstractGuiConstantsACT.ASPECT_COST_POS_Y + this.lowerTerminalYOffset;
 		int column = 0;
 
 		// Draw each primal
@@ -253,10 +280,10 @@ public class GuiArcaneCraftingTerminal
 		WidgetAEItem widgetUnderMouse = null;
 
 		// Draw the item widgets
-		for( int index = 0; index < AbstractGuiConstantsACT.ME_WIDGET_COUNT; index++ )
+		for( int index = 0; index < this.widgetCount; ++index )
 		{
 			// Get the widget
-			WidgetAEItem currentWidget = this.itemWidgets[index];
+			WidgetAEItem currentWidget = this.itemWidgets.get( index );
 
 			// Draw the widget
 			currentWidget.drawWidget();
@@ -288,10 +315,10 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private void sendItemWidgetClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
-		for( int index = 0; index < AbstractGuiConstantsACT.ME_WIDGET_COUNT; index++ )
+		for( int index = 0; index < this.widgetCount; ++index )
 		{
 			// Get the widget
-			WidgetAEItem currentWidget = this.itemWidgets[index];
+			WidgetAEItem currentWidget = this.itemWidgets.get( index );
 
 			// Is the mouse over this widget
 			if( currentWidget.isMouseOverWidget( mouseX, mouseY ) )
@@ -329,13 +356,92 @@ public class GuiArcaneCraftingTerminal
 	}
 
 	/**
+	 * Calculates the number of rows needed based on terminal style, and updates
+	 * the gui parameters.
+	 */
+	private void setupTerminalStyle()
+	{
+		int extraRows = 0;
+
+		// Tall?
+		if( this.terminalStyle == TerminalStyle.TALL )
+		{
+			extraRows = Math.max( 0, ( ( this.height - AbstractGuiConstantsACT.GUI_HEIGHT ) / 18 ) - 3 );
+		}
+
+		// Update the size and top of the GUI
+		this.ySize = AbstractGuiConstantsACT.GUI_HEIGHT + ( extraRows * AbstractGuiConstantsACT.ME_ROW_HEIGHT );
+		this.guiTop = ( this.height - this.ySize ) / 2;
+
+		// Update the number of rows
+		this.numberOfWidgetRows = AbstractGuiConstantsACT.ME_DEFAULT_ROWS + extraRows;
+
+		// Update number of widgets
+		this.widgetCount = this.numberOfWidgetRows * AbstractGuiConstantsACT.ME_COLUMNS;
+
+		// Create the aspect bridge
+		try
+		{
+			this.meAspectBridge = new MEItemAspectBridgeContainer( this.widgetCount );
+		}
+		catch( Exception e )
+		{
+			this.meAspectBridge = null;
+		}
+
+		// Clear old widgets
+		this.itemWidgets.clear();
+
+		// Create the widgets and bridge slots
+		for( int row = 0; row < this.numberOfWidgetRows; ++row )
+		{
+			for( int column = 0; column < AbstractGuiConstantsACT.ME_COLUMNS; ++column )
+			{
+				// Calculate the index and position
+				int index = ( row * AbstractGuiConstantsACT.ME_COLUMNS ) + column;
+				int posX = AbstractGuiConstantsACT.ME_ITEM_POS_X + ( column * AbstractWidget.WIDGET_SIZE );
+				int posY = AbstractGuiConstantsACT.ME_ITEM_POS_Y + ( row * AbstractWidget.WIDGET_SIZE );
+
+				// Create the ME slot
+				this.itemWidgets.add( new WidgetAEItem( this, posX, posY, this.aeItemRenderer ) );
+
+				// Add the bridge slot
+				if( this.meAspectBridge != null )
+				{
+					this.meAspectBridge.addSlot( index, posX, posY );
+				}
+			}
+		}
+
+		// Update the scroll bar range
+		this.updateScrollbarRange();
+
+		// Update the scroll bar height
+		this.setScrollBarHeight( AbstractGuiConstantsACT.SCROLLBAR_HEIGHT + ( extraRows * AbstractGuiConstantsACT.ME_ROW_HEIGHT ) );
+
+		// Update the lower terminal portion Y offset
+		int prevYOffset = this.lowerTerminalYOffset;
+		this.lowerTerminalYOffset = ( extraRows * AbstractGuiConstantsACT.ME_ROW_HEIGHT );
+
+		// Update the container
+		if( prevYOffset != this.lowerTerminalYOffset )
+		{
+			( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).changeSlotsYOffset( this.lowerTerminalYOffset - prevYOffset );
+		}
+
+		// Clear any tooltip
+		this.tooltip.clear();
+
+	}
+
+	/**
 	 * Assigns the network items to the widgets
 	 */
 	private void updateMEWidgets()
 	{
 		int repoIndex = 0;
 		// List all items
-		for( int index = 0; index < AbstractGuiConstantsACT.ME_WIDGET_COUNT; index++ )
+		for( int index = 0; index < this.widgetCount; ++index )
 		{
 			IAEItemStack stack = this.repo.getReferenceItem( repoIndex++ );
 
@@ -350,7 +456,7 @@ public class GuiArcaneCraftingTerminal
 				}
 
 				// Set the item
-				this.itemWidgets[index].setItemStack( stack );
+				this.itemWidgets.get( index ).setItemStack( stack );
 				if( this.meAspectBridge != null )
 				{
 					this.meAspectBridge.setSlot( index, stack.getItemStack().copy() );
@@ -359,7 +465,7 @@ public class GuiArcaneCraftingTerminal
 			else
 			{
 				// Set to null
-				this.itemWidgets[index].setItemStack( null );
+				this.itemWidgets.get( index ).setItemStack( null );
 				if( this.meAspectBridge != null )
 				{
 					this.meAspectBridge.setSlot( index, null );
@@ -371,10 +477,13 @@ public class GuiArcaneCraftingTerminal
 	/**
 	 * Updates the scroll bar's range.
 	 */
-	private void updateScrollMaximum()
+	private void updateScrollbarRange()
 	{
-		// Calculate the scroll max
-		int max = Math.max( 0, ( this.repo.size() / AbstractGuiConstantsACT.ME_COLUMNS ) - 2 );
+		// Calculate the total number of rows needed to display ALL items
+		int totalNumberOfRows = (int)Math.ceil( this.repo.size() / (double)AbstractGuiConstantsACT.ME_COLUMNS );
+
+		// Calculate the scroll based on how many rows can be shown
+		int max = Math.max( 0, totalNumberOfRows - this.numberOfWidgetRows );
 
 		// Update the scroll bar
 		this.scrollBar.setRange( 0, max, 2 );
@@ -386,13 +495,13 @@ public class GuiArcaneCraftingTerminal
 	private void updateSorting()
 	{
 		// Set the direction icon
-		( (GuiButtonSortingDirection)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID ) ).setSortingDirection( this.sortingDirection );
+		this.btnSortingDirection.setSortingDirection( this.sortingDirection );
 
 		// Set the order icon
-		( (GuiButtonSortingMode)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID ) ).setSortMode( this.sortingOrder );
+		this.btnSortingMode.setSortMode( this.sortingOrder );
 
 		// Set the view mode
-		( (GuiButtonViewType)this.buttonList.get( AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID ) ).setViewMode( this.viewMode );
+		this.btnViewType.setViewMode( this.viewMode );
 
 		// Update the repo
 		this.repo.updateView();
@@ -414,39 +523,29 @@ public class GuiArcaneCraftingTerminal
 		// Set the texture
 		this.mc.renderEngine.bindTexture( GuiTextureManager.ARCANE_CRAFTING_TERMINAL.getTexture() );
 
-		// Draw the gui image
-		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, AbstractGuiConstantsACT.GUI_WIDTH, AbstractGuiConstantsACT.GUI_HEIGHT );
-
-		/*
-		int extraRows = Math.max( 0, ( this.height - AbstractGuiConstantsACT.GUI_HEIGHT ) / 25 );
-		int yPushDown = 35;
-		this.ySize = AbstractGuiConstantsACT.GUI_HEIGHT + ( extraRows * 18 );
-		this.guiTop = ( this.height - this.ySize ) / 2;
-		// Calculate the scroll max
-		int max = Math.max( 0, ( this.repo.size() / AbstractGuiConstantsACT.ME_COLUMNS ) - 2 );
-		// Update the scroll bar
-		this.scrollBar.setRange( 0, max, 2 );
-
-		this.scrollBar.setHeight( AbstractGuiConstantsACT.SCROLLBAR_HEIGHT + ( extraRows * 18 ) );
-
 		// Draw the upper portion: Label, Search, First row
-		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, AbstractGuiConstantsACT.GUI_WIDTH - 35, yPushDown );
+		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, AbstractGuiConstantsACT.GUI_MAIN_BODY_WIDTH,
+			AbstractGuiConstantsACT.GUI_UPPER_TEXTURE_HEIGHT );
 
-		// Draw extra rows
-		for( int i = 0; i < extraRows; i++ )
+		// Draw the extra rows
+		for( int i = 0; i < ( this.numberOfWidgetRows - AbstractGuiConstantsACT.ME_DEFAULT_ROWS ); ++i )
 		{
-			this.drawTexturedModalRect( this.guiLeft, this.guiTop + yPushDown, 0, 35, AbstractGuiConstantsACT.GUI_WIDTH - 35, 18 );
-			yPushDown += 18;
+			int yPos = this.guiTop + AbstractGuiConstantsACT.GUI_UPPER_TEXTURE_HEIGHT + ( i * AbstractGuiConstantsACT.ME_ROW_HEIGHT );
+
+			// Draw the texture
+			this.drawTexturedModalRect( this.guiLeft, yPos, 0, AbstractGuiConstantsACT.GUI_TEXTURE_ROW_V,
+				AbstractGuiConstantsACT.GUI_MAIN_BODY_WIDTH, AbstractGuiConstantsACT.ME_ROW_HEIGHT );
 		}
 
-		// Draw the lower portion
-		this.drawTexturedModalRect( this.guiLeft, this.guiTop + yPushDown, 0, 35, AbstractGuiConstantsACT.GUI_WIDTH - 35,
-			AbstractGuiConstantsACT.GUI_HEIGHT - 35 );
+		// Draw the lower portion, bottom two rows, crafting grid, player inventory
+		this.drawTexturedModalRect( this.guiLeft, this.guiTop + AbstractGuiConstantsACT.GUI_UPPER_TEXTURE_HEIGHT + this.lowerTerminalYOffset, 0,
+			AbstractGuiConstantsACT.ME_ROW_HEIGHT + 17, AbstractGuiConstantsACT.GUI_MAIN_BODY_WIDTH,
+			AbstractGuiConstantsACT.GUI_TEXTURE_LOWER_HEIGHT + 18 );
 
 		// Draw view cells
-		this.drawTexturedModalRect( this.guiLeft + ( AbstractGuiConstantsACT.GUI_WIDTH - 35 ), this.guiTop, AbstractGuiConstantsACT.GUI_WIDTH - 35,
-			0, 35, 104 );
-		*/
+		this.drawTexturedModalRect( this.guiLeft + AbstractGuiConstantsACT.GUI_MAIN_BODY_WIDTH, this.guiTop,
+			AbstractGuiConstantsACT.GUI_MAIN_BODY_WIDTH, 0, AbstractGuiConstantsACT.GUI_VIEW_CELL_TEXTURE_WIDTH,
+			AbstractGuiConstantsACT.GUI_VIEW_CELL_TEXTURE_HEIGHT );
 
 		// Bind the AE states texture
 		Minecraft.getMinecraft().renderEngine.bindTexture( AEStateIconsEnum.AE_STATES_TEXTURE );
@@ -547,8 +646,11 @@ public class GuiArcaneCraftingTerminal
 	@Override
 	protected ScrollbarParams getScrollbarParameters()
 	{
-		return new ScrollbarParams( AbstractGuiConstantsACT.SCROLLBAR_POS_X, AbstractGuiConstantsACT.SCROLLBAR_POS_Y,
-						AbstractGuiConstantsACT.SCROLLBAR_HEIGHT );
+		return new ScrollbarParams(
+						AbstractGuiConstantsACT.SCROLLBAR_POS_X,
+						AbstractGuiConstantsACT.SCROLLBAR_POS_Y,
+						AbstractGuiConstantsACT.SCROLLBAR_HEIGHT +
+										( ( AbstractGuiConstantsACT.ME_DEFAULT_ROWS - this.numberOfWidgetRows ) * AbstractGuiConstantsACT.ME_ROW_HEIGHT ) );
 	}
 
 	/**
@@ -581,7 +683,7 @@ public class GuiArcaneCraftingTerminal
 				this.repo.updateView();
 
 				// Update the scroll max
-				this.updateScrollMaximum();
+				this.updateScrollbarRange();
 
 				// Update the widgets
 				this.updateMEWidgets();
@@ -602,7 +704,8 @@ public class GuiArcaneCraftingTerminal
 	{
 		// Was the click inside the ME grid?
 		if( GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.ME_ITEM_POS_Y, AbstractGuiConstantsACT.ME_ITEM_POS_X,
-			AbstractGuiConstantsACT.ME_GRID_HEIGHT, AbstractGuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+			this.numberOfWidgetRows * AbstractGuiConstantsACT.ME_ROW_HEIGHT, AbstractGuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft,
+			this.guiTop ) )
 		{
 			// Is the player holding anything?
 			if( this.player.inventory.getItemStack() != null )
@@ -683,11 +786,13 @@ public class GuiArcaneCraftingTerminal
 
 		switch ( button.id )
 		{
+		// Clear grid
 			case AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_ID:
 				// Attempt to clear the grid
 				new PacketServerArcaneCraftingTerminal().createRequestClearGrid( this.player ).sendPacketToServer();
 				break;
 
+			// Sort order
 			case AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID:
 				switch ( this.sortingOrder )
 				{
@@ -709,6 +814,7 @@ public class GuiArcaneCraftingTerminal
 				sortingChanged = true;
 				break;
 
+			// Sorting direction
 			case AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID:
 				switch ( this.sortingDirection )
 				{
@@ -724,6 +830,7 @@ public class GuiArcaneCraftingTerminal
 				sortingChanged = true;
 				break;
 
+			// View type
 			case AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID:
 				switch ( this.viewMode )
 				{
@@ -742,13 +849,58 @@ public class GuiArcaneCraftingTerminal
 				sortingChanged = true;
 				break;
 
+			// Swap armor
 			case AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_ID:
 				// Ask the server to swap the armor
 				new PacketServerArcaneCraftingTerminal().createSwapArmorRequest( this.player ).sendPacketToServer();
 				break;
+
+			// Terminal style
+			case AbstractGuiConstantsACT.BUTTON_TERM_STYLE_ID:
+				switch ( this.terminalStyle )
+				{
+					case SMALL:
+						this.terminalStyle = TerminalStyle.TALL;
+						break;
+
+					case TALL:
+						this.terminalStyle = TerminalStyle.SMALL;
+						break;
+
+					default:
+						this.terminalStyle = TerminalStyle.SMALL;
+						break;
+
+				}
+
+				// Update the AE settings
+				AEConfig.instance.getConfigManager().putSetting( Settings.TERMINAL_STYLE, this.terminalStyle );
+
+				// Reinit
+				this.initGui();
+
+				break;
+
+			// Search mode
+			case AbstractGuiConstantsACT.BUTTON_SEARCH_MODE_ID:
+				// Rotate search mode
+				SearchBoxMode searchBoxMode = (SearchBoxMode)AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+				searchBoxMode = Platform.rotateEnum( searchBoxMode, false, Settings.SEARCH_MODE.getPossibleValues() );
+
+				// Update the settings
+				AEConfig.instance.settings.putSetting( Settings.SEARCH_MODE, searchBoxMode );
+
+				// Update the button
+				this.btnSearchMode.setSearchMode( searchBoxMode );
+
+				// Clear the tooltip
+				this.tooltip.clear();
+				this.lastTooltipUpdateTime = 0;
+
+				break;
 		}
 
-		// Should we update?
+		// Was the sorting mode changed?
 		if( sortingChanged )
 		{
 			// Update the sorting
@@ -813,30 +965,38 @@ public class GuiArcaneCraftingTerminal
 	@Override
 	public void handleMouseInput()
 	{
-		// Call super
-		super.handleMouseInput();
-
 		// Get the delta z for the scroll wheel
 		int deltaZ = Mouse.getEventDWheel();
 
 		// Did it move?
 		if( deltaZ != 0 )
 		{
-			// Is shift being held?
-			if( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) )
-			{
-				// Extract or insert based on the motion of the wheel
-				this.doMEWheelAction( deltaZ );
-			}
-			else
-			{
-				// Inform the scroll bar
-				this.scrollBar.wheel( deltaZ );
 
-				// Update the item widgets
-				this.updateMEWidgets();
+			// Is the mouse inside of, or to the left of, the GUI?
+			int mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
+			if( mouseX <= ( this.guiLeft + AbstractGuiConstantsACT.GUI_WIDTH ) )
+			{
+				// Is shift being held?
+				if( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) )
+				{
+					// Extract or insert based on the motion of the wheel
+					this.doMEWheelAction( deltaZ );
+				}
+				else
+				{
+					// Inform the scroll bar
+					this.scrollBar.wheel( deltaZ );
+
+					// Update the item widgets
+					this.updateMEWidgets();
+				}
+
+				return;
 			}
 		}
+
+		// Call super
+		super.handleMouseInput();
 	}
 
 	/**
@@ -854,44 +1014,68 @@ public class GuiArcaneCraftingTerminal
 		// Enable repeat keys
 		Keyboard.enableRepeatEvents( true );
 
-		// Set up the search bar
-		this.searchField = new GuiTextField( this.fontRendererObj, AbstractGuiConstantsACT.SEARCH_POS_X, AbstractGuiConstantsACT.SEARCH_POS_Y,
-						AbstractGuiConstantsACT.SEARCH_WIDTH, AbstractGuiConstantsACT.SEARCH_HEIGHT );
+		// Calculate row count
+		this.setupTerminalStyle();
 
-		// Set the search field to draw in the foreground
-		this.searchField.setEnableBackgroundDrawing( false );
+		// Get the current search box mode
+		SearchBoxMode searchBoxMode = (SearchBoxMode)AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 
-		// Start focused
-		this.searchField.setFocused( false );
+		if( this.searchField == null )
+		{
+			// Set up the search bar
+			this.searchField = new GuiTextField( this.fontRendererObj, AbstractGuiConstantsACT.SEARCH_POS_X, AbstractGuiConstantsACT.SEARCH_POS_Y,
+							AbstractGuiConstantsACT.SEARCH_WIDTH, AbstractGuiConstantsACT.SEARCH_HEIGHT );
 
-		// Set maximum length
-		this.searchField.setMaxStringLength( AbstractGuiConstantsACT.SEARCH_MAX_CHARS );
+			// Set the search field to draw in the foreground
+			this.searchField.setEnableBackgroundDrawing( false );
+
+			// Set maximum length
+			this.searchField.setMaxStringLength( AbstractGuiConstantsACT.SEARCH_MAX_CHARS );
+		}
+
+		// Start focused?
+		this.searchField.setFocused( ( searchBoxMode == SearchBoxMode.AUTOSEARCH ) || ( searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) );
+
+		// Set the search string
+		this.searchField.setText( this.repo.searchString );
 
 		// Clear any existing buttons
 		this.buttonList.clear();
 
 		// Create the clear grid button
 		this.buttonList.add( new GuiButtonClearCraftingGrid( AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_ID, this.guiLeft +
-						AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_POS_Y, 8, 8 ) );
+						AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_POS_Y +
+						this.lowerTerminalYOffset, 8, 8 ) );
 
 		// Add sort order button
-		this.buttonList.add( new GuiButtonSortingMode( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID, this.guiLeft +
+		this.buttonList.add( this.btnSortingMode = new GuiButtonSortingMode( AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID, this.guiLeft +
 						AbstractGuiConstantsACT.BUTTON_SORT_ORDER_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SORT_ORDER_POS_Y,
-						AbstractGuiConstantsACT.AE_BUTTON_SIZE, AbstractGuiConstantsACT.AE_BUTTON_SIZE ) );
+						AbstractGuiConstantsACT.BUTTON_AE_SIZE, AbstractGuiConstantsACT.BUTTON_AE_SIZE ) );
 
 		// Add sort direction button
-		this.buttonList.add( new GuiButtonSortingDirection( AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID, this.guiLeft +
+		this.buttonList.add( this.btnSortingDirection = new GuiButtonSortingDirection( AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID, this.guiLeft +
 						AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SORT_DIR_POS_Y,
-						AbstractGuiConstantsACT.AE_BUTTON_SIZE, AbstractGuiConstantsACT.AE_BUTTON_SIZE ) );
+						AbstractGuiConstantsACT.BUTTON_AE_SIZE, AbstractGuiConstantsACT.BUTTON_AE_SIZE ) );
 
 		// Add view type button
-		this.buttonList.add( new GuiButtonViewType( AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID, this.guiLeft +
+		this.buttonList.add( this.btnViewType = new GuiButtonViewType( AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID, this.guiLeft +
 						AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_POS_Y,
-						AbstractGuiConstantsACT.AE_BUTTON_SIZE, AbstractGuiConstantsACT.AE_BUTTON_SIZE ) );
+						AbstractGuiConstantsACT.BUTTON_AE_SIZE, AbstractGuiConstantsACT.BUTTON_AE_SIZE ) );
 
 		// Add swap armor button
 		this.buttonList.add( new GuiButtonSwapArmor( AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_ID, this.guiLeft +
-						AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_POS_Y, 8, 8 ) );
+						AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_POS_Y +
+						this.lowerTerminalYOffset, 8, 8 ) );
+
+		// Add search mode button
+		this.buttonList.add( this.btnSearchMode = new GuiButtonSearchMode( AbstractGuiConstantsACT.BUTTON_SEARCH_MODE_ID, this.guiLeft +
+						AbstractGuiConstantsACT.BUTTON_SEARCH_MODE_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_SEARCH_MODE_POS_Y,
+						AbstractGuiConstantsACT.BUTTON_AE_SIZE, AbstractGuiConstantsACT.BUTTON_AE_SIZE, searchBoxMode ) );
+
+		// Add terminal style button
+		this.buttonList.add( new GuiButtonTerminalStyle( AbstractGuiConstantsACT.BUTTON_TERM_STYLE_ID, this.guiLeft +
+						AbstractGuiConstantsACT.BUTTON_TERM_STYLE_POS_X, this.guiTop + AbstractGuiConstantsACT.BUTTON_TERM_STYLE_POS_Y,
+						AbstractGuiConstantsACT.BUTTON_AE_SIZE, AbstractGuiConstantsACT.BUTTON_AE_SIZE, this.terminalStyle ) );
 
 		// Add the container as a listener
 		( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).registerForUpdates();
@@ -926,7 +1110,7 @@ public class GuiArcaneCraftingTerminal
 		this.repo.updateView();
 
 		// Update the scroll bar
-		this.updateScrollMaximum();
+		this.updateScrollbarRange();
 
 		// Update the widgets
 		this.updateMEWidgets();
@@ -948,7 +1132,7 @@ public class GuiArcaneCraftingTerminal
 		this.repo.updateView();
 
 		// Update the scroll bar
-		this.updateScrollMaximum();
+		this.updateScrollbarRange();
 
 		// Update the widgets
 		this.updateMEWidgets();
@@ -1013,7 +1197,7 @@ public class GuiArcaneCraftingTerminal
 
 		// Update the widgets and scrollbar
 		this.updateMEWidgets();
-		this.updateScrollMaximum();
+		this.updateScrollbarRange();
 	}
 
 }

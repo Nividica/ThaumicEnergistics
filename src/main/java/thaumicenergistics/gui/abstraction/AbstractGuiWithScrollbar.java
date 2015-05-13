@@ -53,6 +53,16 @@ public abstract class AbstractGuiWithScrollbar
 		{
 			this.scrollbarPosX = x;
 			this.scrollbarPosY = y;
+			this.setHeight( height );
+		}
+
+		/**
+		 * Sets the height of the scrollbar
+		 * 
+		 * @param height
+		 */
+		void setHeight( final int height )
+		{
 			this.scrollbarHeight = height;
 			this.scrollbarVerticalBound = this.scrollbarHeight + this.scrollbarPosY;
 		}
@@ -184,6 +194,17 @@ public abstract class AbstractGuiWithScrollbar
 	 * Called when the scroll bar has moved.
 	 */
 	protected abstract void onScrollbarMoved();
+
+	/**
+	 * Changes the height of the scroll bar.
+	 * 
+	 * @param newHeight
+	 */
+	protected void setScrollBarHeight( final int newHeight )
+	{
+		this.scrollParams.setHeight( newHeight );
+		this.scrollBar.setHeight( newHeight );
+	}
 
 	@Override
 	public void drawScreen( final int mouseX, final int mouseY, final float mouseBtn )

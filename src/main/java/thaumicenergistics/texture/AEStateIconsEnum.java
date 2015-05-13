@@ -36,6 +36,16 @@ public enum AEStateIconsEnum
 		VIEW_TYPE_ALL (32, 16),
 		VIEW_TYPE_CRAFT (48, 16),
 
+		// Terminal styles
+		TERM_STYLE_TALL (0, 208),
+		TERM_STYLE_SMALL (16, 208),
+
+		// Search modes
+		SEARCH_MODE_AUTO (48, 32),
+		SEARCH_MODE_MANUAL (64, 32),
+		SEARCH_MODE_NEI_AUTO (80, 32),
+		SEARCH_MODE_NEI_MANUAL (96, 32),
+
 		// Misc
 		WRENCH (32, 64),
 		DISABLED (0, 128),

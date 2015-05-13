@@ -73,9 +73,26 @@ public abstract class AbstractGuiConstantsACT
 	protected static final int BUTTON_SWAP_ARMOR_ID = 4, BUTTON_SWAP_ARMOR_POS_X = 26, BUTTON_SWAP_ARMOR_POS_Y = 112;
 
 	/**
+	 * Search mode
+	 */
+	protected static final int BUTTON_SEARCH_MODE_ID = 5, BUTTON_SEARCH_MODE_POS_X = BUTTON_SORT_ORDER_POS_X,
+					BUTTON_SEARCH_MODE_POS_Y = BUTTON_VIEW_TYPE_POS_Y + 20;
+
+	/**
+	 * Terminal style button
+	 */
+	protected static final int BUTTON_TERM_STYLE_ID = 6, BUTTON_TERM_STYLE_POS_X = BUTTON_SORT_ORDER_POS_X,
+					BUTTON_TERM_STYLE_POS_Y = BUTTON_SEARCH_MODE_POS_Y + 20;
+
+	/**
 	 * Size of the AE buttons
 	 */
-	protected static final int AE_BUTTON_SIZE = 16;
+	protected static final int BUTTON_AE_SIZE = 16;
+
+	/**
+	 * Size of the tiny buttons.
+	 */
+	protected static final int BUTTON_TINY_SIZE = 8;
 
 	/**
 	 * The width of the gui
@@ -88,19 +105,39 @@ public abstract class AbstractGuiConstantsACT
 	protected static final int GUI_HEIGHT = 243;
 
 	/**
-	 * Number of rows in the ME inventory grid.
+	 * Width of the view cell texture
 	 */
-	protected static final int ME_ROWS = 3;
+	protected static final int GUI_VIEW_CELL_TEXTURE_WIDTH = 35;
+
+	/**
+	 * Height of the view cell texture
+	 */
+	protected static final int GUI_VIEW_CELL_TEXTURE_HEIGHT = 104;
+
+	/**
+	 * Size of the upper portion of the GUI
+	 */
+	protected static final int GUI_UPPER_TEXTURE_HEIGHT = 35;
+
+	/**
+	 * The V(y) location in the GUI texture to draw extra rows from.
+	 */
+	protected static final int GUI_TEXTURE_ROW_V = 35;
+
+	/**
+	 * Width of the main body of the texture.
+	 */
+	protected static final int GUI_MAIN_BODY_WIDTH = GUI_WIDTH - GUI_VIEW_CELL_TEXTURE_WIDTH;
+
+	/**
+	 * Default number of rows in the ME inventory grid.
+	 */
+	protected static final int ME_DEFAULT_ROWS = 3;
 
 	/**
 	 * Number of columns in the ME inventory grid.
 	 */
 	protected static final int ME_COLUMNS = 9;
-
-	/**
-	 * Total number of item widgets.
-	 */
-	protected static final int ME_WIDGET_COUNT = ME_ROWS * ME_COLUMNS;
 
 	/**
 	 * Starting X position of the items.
@@ -118,9 +155,14 @@ public abstract class AbstractGuiConstantsACT
 	protected static final int ME_GRID_WIDTH = 161;
 
 	/**
-	 * Total height of the ME item grid.
+	 * Height of the extra row texture.
 	 */
-	protected static final int ME_GRID_HEIGHT = 53;
+	protected static final int ME_ROW_HEIGHT = 18;
+
+	/**
+	 * Height of the lower portion of the texture.
+	 */
+	protected static final int GUI_TEXTURE_LOWER_HEIGHT = GUI_HEIGHT - ME_ROW_HEIGHT - GUI_UPPER_TEXTURE_HEIGHT;
 
 	/**
 	 * X position of the scroll bar
