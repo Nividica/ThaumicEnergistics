@@ -55,22 +55,22 @@ public class AEPartEssentiaLevelEmitter
 	/**
 	 * NBT key for the aspect filter.
 	 */
-	private static final String ASPECT_FILTER_NBT_KEY = "aspect";
+	private static final String NBT_KEY_ASPECT_FILTER = "aspect";
 
 	/**
 	 * NBT key for the redstone mode.
 	 */
-	private static final String REDSTONE_MODE_NBT_KEY = "mode";
+	private static final String NBT_KEY_REDSTONE_MODE = "mode";
 
 	/**
 	 * NBT key for the wanted amount.
 	 */
-	private static final String WANTED_AMOUNT_NBT_KEY = "wantedAmount";
+	private static final String NBT_KEY_WANTED_AMOUNT = "wantedAmount";
 
 	/**
 	 * NBT key for if we are emitting.
 	 */
-	private static final String IS_EMITTING_NBT_KEY = "emitting";
+	private static final String NBT_KEY_IS_EMITTING = "emitting";
 
 	/**
 	 * Aspect we are watching.
@@ -85,7 +85,7 @@ public class AEPartEssentiaLevelEmitter
 	/**
 	 * Threshold value
 	 */
-	private long wantedAmount;
+	private long wantedAmount = 0;
 
 	/**
 	 * Current value
@@ -561,16 +561,28 @@ public class AEPartEssentiaLevelEmitter
 		super.readFromNBT( data );
 
 		// Read the filter
-		this.filterAspect = Aspect.aspects.get( data.getString( AEPartEssentiaLevelEmitter.ASPECT_FILTER_NBT_KEY ) );
+		if( data.hasKey( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) )
+		{
+			this.filterAspect = Aspect.aspects.get( data.getString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) );
+		}
 
 		// Read the redstone mode
-		this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( AEPartEssentiaLevelEmitter.REDSTONE_MODE_NBT_KEY )];
+		if( data.hasKey( AEPartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE ) )
+		{
+			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( AEPartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE )];
+		}
 
 		// Read the wanted amount
-		this.wantedAmount = data.getLong( AEPartEssentiaLevelEmitter.WANTED_AMOUNT_NBT_KEY );
+		if( data.hasKey( AEPartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT ) )
+		{
+			this.wantedAmount = data.getLong( AEPartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT );
+		}
 
-		// Read if we are emitting
-		this.isEmitting = data.getBoolean( AEPartEssentiaLevelEmitter.IS_EMITTING_NBT_KEY );
+		// Read if emitting
+		if( data.hasKey( AEPartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING ) )
+		{
+			this.isEmitting = data.getBoolean( AEPartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING );
+		}
 	}
 
 	/**
@@ -582,13 +594,21 @@ public class AEPartEssentiaLevelEmitter
 	@Override
 	public boolean readFromStream( final ByteBuf stream ) throws IOException
 	{
+		boolean redraw = false;
+
+		// Cache the old emitting
+		boolean oldEmit = this.isEmitting;
+
 		// Call super
-		super.readFromStream( stream );
+		redraw |= super.readFromStream( stream );
 
 		// Read the activity state
 		this.isEmitting = stream.readBoolean();
 
-		return true;
+		// Redraw if changed
+		redraw |= ( this.isEmitting != oldEmit );
+
+		return redraw;
 	}
 
 	/**
@@ -630,7 +650,7 @@ public class AEPartEssentiaLevelEmitter
 			helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[1] );
 
 			// Set the brightness
-			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_BRIGHTNESS );
+			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_FACE_BRIGHTNESS );
 
 		}
 		else
@@ -707,22 +727,23 @@ public class AEPartEssentiaLevelEmitter
 		if( this.filterAspect != null )
 		{
 			// Write the name of the aspect
-			data.setString( AEPartEssentiaLevelEmitter.ASPECT_FILTER_NBT_KEY, this.filterAspect.getTag() );
-		}
-		else
-		{
-			// Write an empty string
-			data.setString( AEPartEssentiaLevelEmitter.ASPECT_FILTER_NBT_KEY, "" );
+			data.setString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER, this.filterAspect.getTag() );
 		}
 
 		// Write the redstone mode ordinal
-		data.setInteger( AEPartEssentiaLevelEmitter.REDSTONE_MODE_NBT_KEY, this.redstoneMode.ordinal() );
+		data.setInteger( AEPartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
 
 		// Write the threshold amount
-		data.setLong( AEPartEssentiaLevelEmitter.WANTED_AMOUNT_NBT_KEY, this.wantedAmount );
+		if( this.wantedAmount > 0 )
+		{
+			data.setLong( AEPartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT, this.wantedAmount );
+		}
 
-		// Write if we are emitting
-		data.setBoolean( AEPartEssentiaLevelEmitter.IS_EMITTING_NBT_KEY, this.isEmitting );
+		// Write if emitting
+		if( this.isEmitting && !this.nbtCalledForDrops )
+		{
+			data.setBoolean( AEPartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING, true );
+		}
 	}
 
 	/**

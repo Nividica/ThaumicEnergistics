@@ -164,22 +164,26 @@ public class BlockArcaneAssembler
 		// Get what the player is holding
 		ItemStack playerHolding = player.inventory.getCurrentItem();
 
-		// Are they holding a memory card?
-		if( ( playerHolding != null ) && ( playerHolding.getItem() instanceof IMemoryCard ) )
-		{
-			// Get the tile
-			TileEntity tileAssembler = world.getTileEntity( x, y, z );
+		// Get the tile
+		TileEntity tileAssembler = world.getTileEntity( x, y, z );
 
-			if( tileAssembler instanceof TileArcaneAssembler )
+		if( tileAssembler instanceof TileArcaneAssembler )
+		{
+			// Are they holding a memory card?
+			if( ( playerHolding != null ) && ( playerHolding.getItem() instanceof IMemoryCard ) )
 			{
 				// Inform the tile of the event
 				( (TileArcaneAssembler)tileAssembler ).onMemoryCardActivate( player, (IMemoryCard)playerHolding.getItem(), playerHolding );
 			}
-		}
-		else
-		{
-			// Launch the gui.
-			ThEGuiHandler.launchGui( ThEGuiHandler.ARCANE_ASSEMBLER_ID, player, world, x, y, z );
+			else
+			{
+				// Does the player have permission?
+				if( ( (TileArcaneAssembler)tileAssembler ).canPlayerOpenGUI( player ) )
+				{
+					// Launch the gui.
+					ThEGuiHandler.launchGui( ThEGuiHandler.ARCANE_ASSEMBLER_ID, player, world, x, y, z );
+				}
+			}
 		}
 
 		return true;

@@ -29,14 +29,14 @@ public interface IItemDescription
 	public Item getItem();
 
 	/**
-	 * Gets a stack of the item.
+	 * Gets a stack of size 1.
 	 * 
 	 * @return
 	 */
 	public ItemStack getStack();
 
 	/**
-	 * Gets multiple stacks of the item.
+	 * Gets a stack of the specified size.
 	 * 
 	 * @param amount
 	 * @return

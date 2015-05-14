@@ -14,6 +14,8 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
@@ -149,6 +151,17 @@ public abstract class AbstractHandlerEssentiaStorageBus
 		// Return the tile entity the storage bus is facing.
 		return hostTile.getWorldObj().getTileEntity( hostTile.xCoord + orientation.offsetX, hostTile.yCoord + orientation.offsetY,
 			hostTile.zCoord + orientation.offsetZ );
+	}
+
+	/**
+	 * Gets the part that is facing the essentia storage bus.
+	 * 
+	 * @param partHost
+	 * @return
+	 */
+	protected IPart getFacingPartFromPartHost( final IPartHost partHost )
+	{
+		return partHost.getPart( this.partStorageBus.getSide().getOpposite() );
 	}
 
 	protected boolean hasSecurityPermission()
@@ -345,7 +358,7 @@ public abstract class AbstractHandlerEssentiaStorageBus
 	}
 
 	/**
-	 * Called periodically by AE2.
+	 * Called periodically by the essentia storage bus.
 	 */
 	public abstract void tickingRequest( final IGridNode node, final int TicksSinceLastCall );
 

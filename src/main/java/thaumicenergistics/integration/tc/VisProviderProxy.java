@@ -4,10 +4,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.WorldCoordinates;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.visnet.TileVisNode;
+import thaumcraft.api.visnet.VisNetHandler;
+import thaumcraft.common.tiles.TileVisRelay;
 import thaumicenergistics.parts.AEPartVisInterface;
 import appeng.api.util.DimensionalCoord;
 
-public class SubTileVisProvider
+public class VisProviderProxy
 	extends TileVisNode
 {
 	/**
@@ -25,7 +27,12 @@ public class SubTileVisProvider
 	 */
 	private WorldCoordinates location;
 
-	public SubTileVisProvider( final AEPartVisInterface parent )
+	/**
+	 * What vis 'channel' does this node respond on?
+	 */
+	private byte attunement = -1;
+
+	public VisProviderProxy( final AEPartVisInterface parent )
 	{
 		// Set the interface
 		this.visInterface = parent;
@@ -72,6 +79,15 @@ public class SubTileVisProvider
 	}
 
 	/**
+	 * Gets the attunement for this source.
+	 */
+	@Override
+	public byte getAttunement()
+	{
+		return this.attunement;
+	}
+
+	/**
 	 * Returns the location of the interface
 	 */
 	@Override
@@ -86,7 +102,7 @@ public class SubTileVisProvider
 	@Override
 	public int getRange()
 	{
-		return SubTileVisProvider.VIS_RANGE;
+		return VisProviderProxy.VIS_RANGE;
 	}
 
 	/**
@@ -105,6 +121,45 @@ public class SubTileVisProvider
 	public boolean isSource()
 	{
 		return this.visInterface.isVisProvider();
+	}
+
+	@Override
+	public void updateEntity()
+	{
+		byte relayAttunement = -1;
+
+		// Is there an interface?
+		if( this.visInterface != null )
+		{
+			// Get the relay
+			TileVisRelay relay = this.visInterface.getRelay();
+
+			// Is there a relay?
+			if( relay != null )
+			{
+				// Get it's attunement
+				relayAttunement = relay.getAttunement();
+			}
+		}
+
+		// Has the attunement changed?
+		if( this.attunement != relayAttunement )
+		{
+			// Update our attunement
+			this.attunement = relayAttunement;
+
+			// Remove the node
+			this.removeThisNode();
+
+			// Mark for refresh
+			this.nodeRefresh = true;
+
+			// Re-register the node
+			VisNetHandler.addSource( this.worldObj, this );
+		}
+
+		// Call super
+		super.updateEntity();
 	}
 
 }

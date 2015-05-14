@@ -10,6 +10,8 @@ public class PrivateInventory
 	implements IInventory
 {
 
+	private static final String NBT_KEY_SLOT = "Slot";
+
 	public ItemStack[] slots;
 	public String customName;
 	private int stackLimit;
@@ -147,6 +149,28 @@ public class PrivateInventory
 		return added;
 	}
 
+	/**
+	 * True if the inventory is empty.
+	 * 
+	 * @return
+	 */
+	public boolean isEmpty()
+	{
+		// Loop over the slots
+		for( int index = 0; index < this.slots.length; ++index )
+		{
+			// Is this slot occupied?
+			if( this.slots[index] != null )
+			{
+				// Inventory is not empty
+				return false;
+			}
+		}
+
+		// Checked all slots, inventory is empty.
+		return true;
+	}
+
 	@Override
 	public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
 	{
@@ -184,7 +208,7 @@ public class PrivateInventory
 			NBTTagCompound nbtCompound = invList.getCompoundTagAt( index );
 
 			// Get the slot number
-			int slotIndex = nbtCompound.getByte( "Slot" ) & 0xFF;
+			int slotIndex = nbtCompound.getByte( PrivateInventory.NBT_KEY_SLOT ) & 0xFF;
 
 			// Validate the slot number
 			if( ( slotIndex >= 0 ) && ( slotIndex < this.slots.length ) )
@@ -230,7 +254,7 @@ public class PrivateInventory
 				NBTTagCompound nbtCompound = new NBTTagCompound();
 
 				// Set the slot number
-				nbtCompound.setByte( "Slot", (byte)slotIndex );
+				nbtCompound.setByte( PrivateInventory.NBT_KEY_SLOT, (byte)slotIndex );
 
 				// Save the inventory
 				this.slots[slotIndex].writeToNBT( nbtCompound );
@@ -241,7 +265,10 @@ public class PrivateInventory
 		}
 
 		// Write the list into the data
-		data.setTag( tagName, invList );
+		if( invList.tagCount() > 0 )
+		{
+			data.setTag( tagName, invList );
+		}
 	}
 
 	@Override

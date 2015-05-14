@@ -48,7 +48,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartArcaneCraftingTerminal
-	extends AbstractAEPartBase
+	extends AbstractAEPartRotateable
 	implements IInventory, IGridTickable, ITerminalHost
 {
 	/**
@@ -407,7 +407,7 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public int getLightLevel()
 	{
-		return( this.isActive ? 10 : 0 );
+		return( this.isActive ? AbstractAEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
 	}
 
 	/**
@@ -684,7 +684,10 @@ public class AEPartArcaneCraftingTerminal
 		}
 
 		// Vis source info
-		this.visSourceInfo.readFromNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
+		if( data.hasKey( AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY ) )
+		{
+			this.visSourceInfo.readFromNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
+		}
 	}
 
 	/**
@@ -751,13 +754,21 @@ public class AEPartArcaneCraftingTerminal
 
 		IIcon side = BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[3];
 
-		helper.setTexture( side, side, side, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0], side, side );
+		// Main block
+		helper.setTexture( side, side, side, side, side, side );
 		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
+
+		// Rotate
+		this.rotateRenderer( renderer, false );
+
+		// Face
+		helper.renderFace( x, y, z, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0], ForgeDirection.SOUTH, renderer );
+
 		if( this.isActive() )
 		{
 			// Set brightness
-			tessellator.setBrightness( AbstractAEPartBase.ACTIVE_BRIGHTNESS );
+			tessellator.setBrightness( AbstractAEPartBase.ACTIVE_FACE_BRIGHTNESS );
 
 			// Draw corners
 			helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
@@ -773,6 +784,10 @@ public class AEPartArcaneCraftingTerminal
 
 		}
 
+		// Reset rotation
+		this.rotateRenderer( renderer, true );
+
+		// Cable lights
 		helper.setBounds( 5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F );
 		this.renderStaticBusLights( x, y, z, helper, renderer );
 	}
@@ -962,7 +977,10 @@ public class AEPartArcaneCraftingTerminal
 		}
 
 		// Append the list to the data tag
-		data.setTag( AEPartArcaneCraftingTerminal.INVENTORY_NBT_KEY, nbtList );
+		if( nbtList.tagCount() > 0 )
+		{
+			data.setTag( AEPartArcaneCraftingTerminal.INVENTORY_NBT_KEY, nbtList );
+		}
 
 		// Write direction
 		data.setInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY, this.sortingDirection.ordinal() );
@@ -973,8 +991,12 @@ public class AEPartArcaneCraftingTerminal
 		// Write view mode
 		data.setInteger( AEPartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY, this.viewMode.ordinal() );
 
-		// Write the vis source info
-		this.visSourceInfo.writeToNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
+		// Don't write vis source if dropping.
+		if( !this.nbtCalledForDrops )
+		{
+			// Write the vis source info
+			this.visSourceInfo.writeToNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
+		}
 	}
 
 }

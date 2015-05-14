@@ -774,6 +774,10 @@ public class GuiArcaneCraftingTerminal
 	{
 		// Update the widgets
 		this.updateMEWidgets();
+
+		// Clear the tooltip
+		this.tooltip.clear();
+		this.lastTooltipUpdateTime = 0;
 	}
 
 	/**
@@ -988,7 +992,7 @@ public class GuiArcaneCraftingTerminal
 					this.scrollBar.wheel( deltaZ );
 
 					// Update the item widgets
-					this.updateMEWidgets();
+					this.onScrollbarMoved();
 				}
 
 				return;

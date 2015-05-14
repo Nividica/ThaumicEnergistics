@@ -32,6 +32,7 @@ public enum ThEStrings
 		Part_EssentiaTerminal ("aeparts.essentia.terminal", true),
 		Part_ArcaneCraftingTerminal ("aeparts.arcane.crafting.terminal", true),
 		Part_VisRelayInterface ("aeparts.vis.interface", true),
+		Part_EssentiaStorageMonitor ("aeparts.essentia.storage.monitor", true),
 
 		// Items
 		Item_EssentiaCell_1k ("item.essentia.cell.1k", true),

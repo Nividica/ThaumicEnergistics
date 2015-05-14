@@ -1,4 +1,12 @@
-﻿5/12/2015 0.8.10.1
+﻿5/13/2015 0.8.10.1
+  Essentia Storage Bus supports ME Interface part for subnetworks.
+  Bugfix: The essentia sub-network sync bug ~should be~ fixed.
+  Added AE security to Arcane Assembler GUI.
+  Terminals can be rotated with a wrench.
+  Bugfix: Vis export from the VRI now supports crystal attunement.
+  Fixes #132: Added Essentia Storage Monitor.
+
+5/12/2015 0.8.10.1
   Bugfix: ACT search bar retains its contents when viewing NEI recipes.
   Fixes #75: Added Tall Centered ACT terminal style.
   Added Search Mode button to ACT.

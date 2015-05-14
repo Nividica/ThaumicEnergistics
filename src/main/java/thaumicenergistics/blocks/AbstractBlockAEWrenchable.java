@@ -5,8 +5,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import appeng.api.implementations.items.IAEWrench;
+import appeng.util.Platform;
 
 public abstract class AbstractBlockAEWrenchable
 	extends BlockContainer
@@ -24,16 +23,6 @@ public abstract class AbstractBlockAEWrenchable
 	protected ItemStack onDismantled( final World world, final int x, final int y, final int z )
 	{
 		return null;
-	}
-
-	/**
-	 * Called when the block has been hit with an AE wrench.
-	 * 
-	 * @return True if handled, false otherwise.
-	 */
-	protected boolean onWrenched( final World world, final int x, final int y, final int z, final int side )
-	{
-		return false;
 	}
 
 	/**
@@ -74,51 +63,37 @@ public abstract class AbstractBlockAEWrenchable
 			return false;
 		}
 
-		// Is the player holding a anything?
-		if( player.getHeldItem() != null )
+		// Is the player holding an AE wrench item?
+		if( Platform.isWrench( player, player.getHeldItem(), x, y, z ) )
 		{
-			// Is the player holding an AE wrench item?
-			if( player.getHeldItem().getItem() instanceof IAEWrench )
+			// Is the player sneaking?
+			if( player.isSneaking() )
 			{
-				// Is the player sneaking?
-				if( player.isSneaking() )
+				// Call on dismantled
+				ItemStack representitive = this.onDismantled( world, x, y, z );
+
+				// Call break
+				this.breakBlock( world, x, y, z, this, world.getBlockMetadata( x, y, z ) );
+
+				// Is there an representative itemstack?
+				if( representitive == null )
 				{
-					// Call on dismantled
-					ItemStack representitive = this.onDismantled( world, x, y, z );
-
-					// Call break
-					this.breakBlock( world, x, y, z, this, world.getBlockMetadata( x, y, z ) );
-
-					// Is there an representative itemstack?
-					if( representitive == null )
-					{
-						// Create a basic stack.
-						representitive = new ItemStack( this );
-					}
-
-					// Drop the itemstack
-					this.dropBlockAsItem( world, x, y, z, representitive );
-
-					// Set the block to air
-					world.setBlockToAir( x, y, z );
-
-					return true;
+					// Create a basic stack.
+					representitive = new ItemStack( this );
 				}
 
-				// Let the subclass handle the event
-				//return this.onWrenched( world, x, y, z, side );
-				return true;
+				// Drop the itemstack
+				this.dropBlockAsItem( world, x, y, z, representitive );
+
+				// Set the block to air
+				world.setBlockToAir( x, y, z );
 			}
+
+			return true;
 		}
 
 		return this.onBlockActivated( world, x, y, z, player );
 
-	}
-
-	@Override
-	public boolean rotateBlock( final World world, final int x, final int y, final int z, final ForgeDirection side )
-	{
-		return this.onWrenched( world, x, y, z, side.ordinal() );
 	}
 
 }

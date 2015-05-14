@@ -56,7 +56,12 @@ public abstract class AbstractAEPartBase
 	/**
 	 * Texture brightness when active.
 	 */
-	protected final static int ACTIVE_BRIGHTNESS = 0xD000D0;
+	protected final static int ACTIVE_FACE_BRIGHTNESS = 0xD000D0;
+
+	/**
+	 * Light level of active terminals.
+	 */
+	protected final static int ACTIVE_TERMINAL_LIGHT_LEVEL = 9;
 
 	protected ForgeDirection cableSide;
 
@@ -73,6 +78,12 @@ public abstract class AbstractAEPartBase
 	protected TileEntity hostTile;
 
 	protected boolean redstonePowered;
+
+	/**
+	 * If true, the call to writeNBT() originated from droping the part.
+	 * Allows parts to ignore saving certain aspects.
+	 */
+	protected boolean nbtCalledForDrops = false;
 
 	/**
 	 * AE2 player ID for the owner of this part.
@@ -324,11 +335,30 @@ public abstract class AbstractAEPartBase
 		// Get the itemstack
 		ItemStack itemStack = new ItemStack( ItemEnum.ITEM_AEPART.getItem(), 1, AEPartsEnum.getPartID( this.getClass() ) );
 
+		// Only save NBT data if the part was not forcibly broken.
 		if( partItemStack != PartItemStack.Break )
 		{
+			// Create the item tag
 			NBTTagCompound itemNBT = new NBTTagCompound();
+
+			// Was the part wrenched?
+			if( partItemStack == PartItemStack.Wrench )
+			{
+				// Mark the call is coming from a drop
+				this.nbtCalledForDrops = true;
+			}
+
+			// Write the data
 			this.writeToNBT( itemNBT );
-			itemStack.setTagCompound( itemNBT );
+
+			// Clear the mark
+			this.nbtCalledForDrops = false;
+
+			// Set the tag
+			if( !itemNBT.hasNoTags() )
+			{
+				itemStack.setTagCompound( itemNBT );
+			}
 		}
 
 		return itemStack;
@@ -470,11 +500,18 @@ public abstract class AbstractAEPartBase
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean readFromStream( final ByteBuf data ) throws IOException
+	public boolean readFromStream( final ByteBuf stream ) throws IOException
 	{
-		this.isActive = data.readBoolean();
-		return true;
+		// Cache if we were active
+		boolean oldActive = this.isActive;
+
+		// Read the new active
+		this.isActive = stream.readBoolean();
+
+		// Redraw if they don't match.
+		return( oldActive != this.isActive );
 	}
 
 	@Override
@@ -638,14 +675,18 @@ public abstract class AbstractAEPartBase
 	@Override
 	public void writeToNBT( final NBTTagCompound data )
 	{
-		// Set the owner ID
-		data.setInteger( AbstractAEPartBase.NBT_KEY_OWNER, this.ownerID );
+		// Is this a save or drop?
+		if( !this.nbtCalledForDrops )
+		{
+			// Set the owner ID
+			data.setInteger( AbstractAEPartBase.NBT_KEY_OWNER, this.ownerID );
+		}
 	}
 
 	@Override
-	public void writeToStream( final ByteBuf data ) throws IOException
+	public void writeToStream( final ByteBuf stream ) throws IOException
 	{
-		data.writeBoolean( ( this.node != null ) && ( this.node.isActive() ) );
+		stream.writeBoolean( ( this.node != null ) && ( this.node.isActive() ) );
 	}
 
 }

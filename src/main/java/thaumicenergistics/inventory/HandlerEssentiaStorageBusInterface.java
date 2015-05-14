@@ -5,17 +5,25 @@ import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
+import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IBaseMonitor;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.storage.MEInventoryHandler;
+import appeng.parts.misc.PartInterface;
 import appeng.tile.misc.TileInterface;
 import appeng.util.Platform;
 
@@ -26,7 +34,7 @@ class HandlerEssentiaStorageBusInterface
 	/**
 	 * Interface the storage bus is facing.
 	 */
-	private TileInterface MEInterface = null;
+	private ITileStorageMonitorable MEInterface = null;
 
 	/**
 	 * Handler to the interfaces ME grid.
@@ -43,12 +51,6 @@ class HandlerEssentiaStorageBusInterface
 	 * yeah.
 	 */
 	private boolean canPostUpdate = true;
-
-	/**
-	 * Set when inject or extract is called to prevent the change event from
-	 * posting. Prevents ghost doubles.
-	 */
-	private boolean haltChanges = false;
 
 	/**
 	 * Creates the interface handler.
@@ -90,14 +92,8 @@ class HandlerEssentiaStorageBusInterface
 		{
 			if( this.handler != null )
 			{
-				// Halt the change event
-				this.haltChanges = true;
-
 				// Extract the gas
 				IAEFluidStack extractedGas = this.handler.extractItems( request, mode, source );
-
-				// Resume changes
-				this.haltChanges = false;
 
 				return extractedGas;
 			}
@@ -143,14 +139,8 @@ class HandlerEssentiaStorageBusInterface
 		{
 			if( this.handler != null )
 			{
-				// Halt the change event
-				this.haltChanges = true;
-
 				// Inject the gas
 				IAEFluidStack remainingGas = this.handler.injectItems( input, mode, source );
-
-				// Resume changes
-				this.haltChanges = false;
 
 				return remainingGas;
 			}
@@ -190,11 +180,30 @@ class HandlerEssentiaStorageBusInterface
 	@Override
 	public boolean onNeighborChange()
 	{
+		ITileStorageMonitorable facingInterface = null;
+
 		// Get the tile we are facing
 		TileEntity tileEntity = this.getFaceingTile();
 
+		// Is the tile a part host?
+		if( tileEntity instanceof IPartHost )
+		{
+			// Get the facing part
+			IPart facingPart = this.getFacingPartFromPartHost( (IPartHost)tileEntity );
+
+			if( facingPart instanceof PartInterface )
+			{
+				facingInterface = (ITileStorageMonitorable)facingPart;
+			}
+		}
 		// Is it an interface?
-		if( tileEntity instanceof TileInterface )
+		else if( tileEntity instanceof TileInterface )
+		{
+			facingInterface = (ITileStorageMonitorable)tileEntity;
+		}
+
+		// Is the storage bus facing an interface?
+		if( facingInterface != null )
 		{
 			// Get the tile hashcode
 			int newHandlerHash = Platform.generateTileHash( tileEntity );
@@ -219,28 +228,36 @@ class HandlerEssentiaStorageBusInterface
 			this.handlerHash = newHandlerHash;
 
 			// Set the interface
-			this.MEInterface = (TileInterface)tileEntity;
+			this.MEInterface = facingInterface;
 
 			// Clear the old handler.
 			this.handler = null;
 
-			// Get the fluid inventory
-			IMEInventory inv = this.MEInterface.getFluidInventory();
+			// Get the monitor
+			IStorageMonitorable monitor = this.MEInterface.getMonitorable( this.partStorageBus.getSide().getOpposite(), this.machineSource );
 
-			// Ensure the fluid inventory was retrieved
-			if( inv != null )
+			// Ensure a monitor was retrieved
+			if( monitor != null )
 			{
-				// Create the handler
-				this.handler = new MEInventoryHandler<IAEFluidStack>( inv, StorageChannel.FLUIDS );
+				// Get the fluid inventory
+				IMEInventory inv = monitor.getFluidInventory();
 
-				// Set the handler properties
-				this.handler.setBaseAccess( this.getAccess() );
-				this.handler.setWhitelist( IncludeExclude.WHITELIST );
-				this.handler.setPriority( this.getPriority() );
-
-				if( inv instanceof IMEMonitor )
+				// Ensure the fluid inventory was retrieved
+				if( inv != null )
 				{
-					( (IMEMonitor)inv ).addListener( this, this.handler );
+					// Create the handler
+					this.handler = new MEInventoryHandler<IAEFluidStack>( inv, StorageChannel.FLUIDS );
+
+					// Set the handler properties
+					this.handler.setBaseAccess( this.getAccess() );
+					this.handler.setWhitelist( IncludeExclude.WHITELIST );
+					this.handler.setPriority( this.getPriority() );
+
+					// Add the handler as a listener
+					if( inv instanceof IMEMonitor )
+					{
+						( (IMEMonitor)inv ).addListener( this, this.handler );
+					}
 				}
 			}
 
@@ -267,15 +284,37 @@ class HandlerEssentiaStorageBusInterface
 	@Override
 	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change, final BaseActionSource actionSource )
 	{
-		// Are changes halted?
-		if( this.haltChanges )
+		try
 		{
-			return;
-		}
+			IActionHost actionHost = null;
 
-		// Update the host grid
-		this.postAlterationToHostGrid( change );
-		this.haltChanges = true;
+			// Get the action source
+			if( actionSource instanceof PlayerSource )
+			{
+				// From the player source
+				actionHost = ( (PlayerSource)actionSource ).via;
+			}
+			else if( actionSource instanceof MachineSource )
+			{
+				// From the machine source
+				actionHost = ( (MachineSource)actionSource ).via;
+			}
+
+			// Ensure there is an action host
+			if( actionHost != null )
+			{
+				// Post update if change did not come from host grid, prevents double posting.
+				if( actionHost.getActionableNode().getGrid() != this.partStorageBus.getActionableNode().getGrid() )
+				{
+					// Update the host grid
+					this.postAlterationToHostGrid( change );
+				}
+			}
+		}
+		catch( Exception e )
+		{
+
+		}
 	}
 
 	@Override

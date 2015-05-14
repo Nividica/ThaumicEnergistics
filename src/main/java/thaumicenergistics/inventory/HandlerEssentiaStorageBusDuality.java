@@ -6,8 +6,11 @@ import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
+import appeng.parts.misc.PartInterface;
 import appeng.tile.misc.TileInterface;
 
 /**
@@ -147,12 +150,31 @@ public class HandlerEssentiaStorageBusDuality
 			if( this.interfaceHandler == null )
 			{
 				// Create the handler
-				newHandler = new HandlerEssentiaStorageBusInterface( this.partStorageBus );
+				this.interfaceHandler = new HandlerEssentiaStorageBusInterface( this.partStorageBus );
 			}
 
 			// Set the internal handler to the interface handler
-			this.internalHandler = this.interfaceHandler;
+			newHandler = this.interfaceHandler;
 
+		}
+		else if( tileEntity instanceof IPartHost )
+		{
+			// Get the part
+			IPart facingPart = this.getFacingPartFromPartHost( (IPartHost)tileEntity );
+
+			// Is the part a ME interface?
+			if( facingPart instanceof PartInterface )
+			{
+				// Create the interface handler if needed
+				if( this.interfaceHandler == null )
+				{
+					// Create the handler
+					this.interfaceHandler = new HandlerEssentiaStorageBusInterface( this.partStorageBus );
+				}
+
+				// Set the internal handler to the interface handler
+				newHandler = this.interfaceHandler;
+			}
 		}
 
 		// Has the handler changed?

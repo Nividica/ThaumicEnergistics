@@ -1,7 +1,5 @@
 package thaumicenergistics.parts;
 
-import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
@@ -114,6 +112,12 @@ public abstract class AEPartEssentiaIO
 	protected byte upgradeSpeedCount = 0;
 
 	protected boolean redstoneControlled;
+
+	/**
+	 * NBT Keys
+	 */
+	private static final String NBT_KEY_REDSTONE_MODE = "redstoneMode", NBT_KEY_FILTER_NUMBER = "AspectFilter#",
+					NBT_KEY_UPGRADE_INV = "upgradeInventory";
 
 	public AEPartEssentiaIO( final AEPartsEnum associatedPart )
 	{
@@ -671,27 +675,33 @@ public abstract class AEPartEssentiaIO
 		super.readFromNBT( data );
 
 		// Read redstone mode
-		this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( "redstoneMode" )];
+		if( data.hasKey( AEPartEssentiaIO.NBT_KEY_REDSTONE_MODE ) )
+		{
+			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( AEPartEssentiaIO.NBT_KEY_REDSTONE_MODE )];
+		}
 
+		// Read filters
 		for( int index = 0; index < AEPartEssentiaIO.MAX_FILTER_SIZE; index++ )
 		{
-			String aspectTag = data.getString( "AspectFilter#" + index );
-
-			if( !aspectTag.equals( "" ) )
+			if( data.hasKey( AEPartEssentiaIO.NBT_KEY_FILTER_NUMBER + index ) )
 			{
-				this.filteredAspects.set( index, Aspect.aspects.get( aspectTag ) );
+				String aspectTag = data.getString( AEPartEssentiaIO.NBT_KEY_FILTER_NUMBER + index );
+
+				// TODO: Remove legacy check in a few versions....
+				if( !aspectTag.equals( "" ) )
+				{
+					this.filteredAspects.set( index, Aspect.aspects.get( aspectTag ) );
+				}
 			}
 		}
 
-		this.upgradeInventory.readFromNBT( data, "upgradeInventory" );
+		// Read upgrade inventory
+		if( data.hasKey( AEPartEssentiaIO.NBT_KEY_UPGRADE_INV ) )
+		{
+			this.upgradeInventory.readFromNBT( data, AEPartEssentiaIO.NBT_KEY_UPGRADE_INV );
 
-		this.onInventoryChanged( this.upgradeInventory );
-	}
-
-	@Override
-	public final boolean readFromStream( final ByteBuf stream ) throws IOException
-	{
-		return super.readFromStream( stream );
+			this.onInventoryChanged( this.upgradeInventory );
+		}
 	}
 
 	public void removeListener( final ContainerPartEssentiaIOBus container )
@@ -755,8 +765,9 @@ public abstract class AEPartEssentiaIO
 		super.writeToNBT( data );
 
 		// Write the redstone mode
-		data.setInteger( "redstoneMode", this.redstoneMode.ordinal() );
+		data.setInteger( AEPartEssentiaIO.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
 
+		// Write each filter
 		for( int i = 0; i < AEPartEssentiaIO.MAX_FILTER_SIZE; i++ )
 		{
 			Aspect aspect = this.filteredAspects.get( i );
@@ -767,16 +778,14 @@ public abstract class AEPartEssentiaIO
 				aspectTag = aspect.getTag();
 			}
 
-			data.setString( "AspectFilter#" + i, aspectTag );
+			data.setString( AEPartEssentiaIO.NBT_KEY_FILTER_NUMBER + i, aspectTag );
 		}
 
-		this.upgradeInventory.writeToNBT( data, "upgradeInventory" );
-	}
-
-	@Override
-	public final void writeToStream( final ByteBuf stream ) throws IOException
-	{
-		super.writeToStream( stream );
+		// Write the upgrade inventory
+		if( !this.upgradeInventory.isEmpty() )
+		{
+			this.upgradeInventory.writeToNBT( data, AEPartEssentiaIO.NBT_KEY_UPGRADE_INV );
+		}
 	}
 
 }

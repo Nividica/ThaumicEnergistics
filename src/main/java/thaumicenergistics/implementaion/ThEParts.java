@@ -16,6 +16,7 @@ class ThEParts
 		this.Essentia_StorageBus = new ThEDescription( AEPartsEnum.EssentiaStorageBus.getStack() );
 		this.Essentia_Terminal = new ThEDescription( AEPartsEnum.EssentiaTerminal.getStack() );
 		this.VisRelay_Interface = new ThEDescription( AEPartsEnum.VisInterface.getStack() );
+		this.Essentia_StorageMonitor = new ThEDescription( AEPartsEnum.EssentiaStorageMonitor.getStack() );
 	}
 
 }

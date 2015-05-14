@@ -33,6 +33,7 @@ import thaumicenergistics.util.PrivateInventory;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -45,6 +46,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
@@ -569,6 +571,28 @@ public class TileArcaneAssembler
 
 		// Add vis amounts
 		tooltip.add( strAspects.toString() );
+	}
+
+	/**
+	 * Checks if the player has the security permissions to open the GUI.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public boolean canPlayerOpenGUI( final EntityPlayer player )
+	{
+		try
+		{
+			// Get the security grid
+			ISecurityGrid sGrid = this.gridProxy.getSecurity();
+
+			// Return true if the player has inject and extract permissions
+			return( ( sGrid.hasPermission( player, SecurityPermissions.INJECT ) ) && ( sGrid.hasPermission( player, SecurityPermissions.EXTRACT ) ) );
+		}
+		catch( GridAccessException e )
+		{
+			return true;
+		}
 	}
 
 	@MENetworkEventSubscribe

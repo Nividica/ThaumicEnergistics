@@ -23,6 +23,7 @@ thaumicenergistics.aeparts.essentia.StorageBus.name=Essentia Storage Bus
 thaumicenergistics.aeparts.essentia.terminal.name=Essentia Terminal
 thaumicenergistics.aeparts.arcane.crafting.terminal.name=Arcane Crafting Terminal
 thaumicenergistics.aeparts.vis.interface.name=Vis Relay Interface
+thaumicenergistics.aeparts.essentia.storage.monitor.name=Essentia Storage Monitor
 
 #Items
 thaumicenergistics.item.essentia.cell.1k.name=ME 1k Essentia Storage Cell
@@ -103,7 +104,7 @@ thaumicenergistics.research_page.TEARCANETERM.1=You have discovered that using p
 # Research Essentia terminal
 tc.research_name.thaumicenergistics.TEESSTERM=Essentia Monitoring
 tc.research_text.thaumicenergistics.TEESSTERM=Knowing how much you have.
-thaumicenergistics.research_page.TEESSTERM.1=The §lEssentia Terminal§r and §lWireless Essentia Terminal§r allows you to monitor how much essentia is stored within the network, and provides a way to fill and drain essentia containers within the terminal.<BR>The §lEssentia Level Emitter§r will continuously monitor the levels of essentia on the network, and provides a redstone signal when the appropriate conditions are met.
+thaumicenergistics.research_page.TEESSTERM.1=The §lEssentia Terminal§r and §lWireless Essentia Terminal§r allows you to view how much essentia is stored within the network, and provides a way to fill and drain essentia containers within the terminal.<BR>The §lEssentia Level Emitter§r provides a redstone signal when the appropriate conditions are met.<BR>The §lEssentia Storage Monitor§r allows you to see how much of certain aspect is in the system at a glance.
 
 # Research Essentia Provider
 tc.research_name.thaumicenergistics.TEESSPROV=Essentia Provider

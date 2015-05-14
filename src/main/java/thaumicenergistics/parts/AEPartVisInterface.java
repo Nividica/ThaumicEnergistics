@@ -17,7 +17,7 @@ import thaumcraft.api.visnet.VisNetHandler;
 import thaumcraft.common.tiles.TileVisRelay;
 import thaumicenergistics.integration.tc.DigiVisSourceData;
 import thaumicenergistics.integration.tc.IDigiVisSource;
-import thaumicenergistics.integration.tc.SubTileVisProvider;
+import thaumicenergistics.integration.tc.VisProviderProxy;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import appeng.api.config.Actionable;
@@ -98,7 +98,7 @@ public class AEPartVisInterface
 	/**
 	 * If this end is a provider, this interacts with the vis network.
 	 */
-	private SubTileVisProvider visProviderSubTile = null;
+	private VisProviderProxy visProviderSubTile = null;
 
 	/**
 	 * Creates the interface.
@@ -613,13 +613,21 @@ public class AEPartVisInterface
 	@Override
 	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		boolean redraw = false;
+
 		// Call super
-		super.readFromStream( data );
+		redraw |= super.readFromStream( data );
+
+		// Cache old color
+		int oldColor = this.visDrainingColor;
 
 		// Read the drain color
 		this.visDrainingColor = data.readInt();
 
-		return true;
+		// Redraw if colors changed
+		redraw |= ( this.visDrainingColor != oldColor );
+
+		return redraw;
 
 	}
 
@@ -722,7 +730,7 @@ public class AEPartVisInterface
 				else if( hasRelay && !hasProvider )
 				{
 					// Create the provider
-					this.visProviderSubTile = new SubTileVisProvider( this );
+					this.visProviderSubTile = new VisProviderProxy( this );
 
 					// Register the provider
 					VisNetHandler.addSource( this.hostTile.getWorldObj(), this.visProviderSubTile );
@@ -745,6 +753,12 @@ public class AEPartVisInterface
 	{
 		// Call super
 		super.writeToNBT( data );
+
+		// No need to save anything if dropping.
+		if( this.nbtCalledForDrops )
+		{
+			return;
+		}
 
 		// Write the UID
 		data.setLong( AEPartVisInterface.NBT_KEY_UID, this.UID );

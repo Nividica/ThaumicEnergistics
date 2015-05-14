@@ -40,30 +40,6 @@ public class BlockEssentiaVibrationChamber
 	}
 
 	@Override
-	protected boolean onWrenched( final World world, final int x, final int y, final int z, final int side )
-	{
-		// Get the chamber
-		TileEntity tileChamber = world.getTileEntity( x, y, z );
-
-		// Ensure the chamber is present
-		if( !( tileChamber instanceof TileEssentiaVibrationChamber ) )
-		{
-			return false;
-		}
-
-		int sideIndex = ( (TileEssentiaVibrationChamber)tileChamber ).getForward().ordinal() + 1;
-
-		if( sideIndex >= ForgeDirection.VALID_DIRECTIONS.length )
-		{
-			sideIndex = 0;
-		}
-
-		( (TileEssentiaVibrationChamber)tileChamber ).setOrientation( ForgeDirection.getOrientation( sideIndex ), ForgeDirection.UP );
-
-		return true;
-	}
-
-	@Override
 	public TileEntity createNewTileEntity( final World world, final int metaData )
 	{
 		return new TileEssentiaVibrationChamber().setupChamberTile();
@@ -215,6 +191,30 @@ public class BlockEssentiaVibrationChamber
 	public final void registerBlockIcons( final IIconRegister register )
 	{
 		// Ignored
+	}
+
+	@Override
+	public boolean rotateBlock( final World world, final int x, final int y, final int z, final ForgeDirection side )
+	{
+		// Get the chamber
+		TileEntity tileChamber = world.getTileEntity( x, y, z );
+
+		// Ensure the chamber is present
+		if( !( tileChamber instanceof TileEssentiaVibrationChamber ) )
+		{
+			return false;
+		}
+
+		int sideIndex = ( (TileEssentiaVibrationChamber)tileChamber ).getForward().ordinal() + 1;
+
+		if( sideIndex >= ForgeDirection.VALID_DIRECTIONS.length )
+		{
+			sideIndex = 0;
+		}
+
+		( (TileEssentiaVibrationChamber)tileChamber ).setOrientation( ForgeDirection.getOrientation( sideIndex ), ForgeDirection.UP );
+
+		return true;
 	}
 
 }

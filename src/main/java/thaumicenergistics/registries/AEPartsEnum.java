@@ -12,6 +12,7 @@ import thaumicenergistics.parts.AEPartEssentiaExportBus;
 import thaumicenergistics.parts.AEPartEssentiaImportBus;
 import thaumicenergistics.parts.AEPartEssentiaLevelEmitter;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
+import thaumicenergistics.parts.AEPartEssentiaStorageMonitor;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.parts.AEPartVisInterface;
 import thaumicenergistics.parts.AbstractAEPartBase;
@@ -34,7 +35,9 @@ public enum AEPartsEnum
 
 		ArcaneCraftingTerminal (ThEStrings.Part_ArcaneCraftingTerminal, AEPartArcaneCraftingTerminal.class),
 
-		VisInterface (ThEStrings.Part_VisRelayInterface, AEPartVisInterface.class);
+		VisInterface (ThEStrings.Part_VisRelayInterface, AEPartVisInterface.class),
+
+		EssentiaStorageMonitor (ThEStrings.Part_EssentiaStorageMonitor, AEPartEssentiaStorageMonitor.class);
 
 	private ThEStrings unlocalizedName;
 

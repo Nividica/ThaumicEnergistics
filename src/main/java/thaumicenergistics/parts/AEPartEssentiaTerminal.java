@@ -25,7 +25,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaTerminal
-	extends AbstractAEPartBase
+	extends AbstractAEPartRotateable
 {
 
 	/**
@@ -162,7 +162,7 @@ public class AEPartEssentiaTerminal
 	@Override
 	public int getLightLevel()
 	{
-		return( this.isActive ? 10 : 0 );
+		return( this.isActive ? AbstractAEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
 	}
 
 	@Override
@@ -312,33 +312,46 @@ public class AEPartEssentiaTerminal
 
 		IIcon side = BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[3];
 
+		// Cable connector
 		helper.setTexture( side );
 		helper.setBounds( 4.0F, 4.0F, 13.0F, 12.0F, 12.0F, 14.0F );
 		helper.renderBlock( x, y, z, renderer );
 
+		// Mid-block
 		helper.setTexture( side, side, side, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], side, side );
 		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
 
+		// Light up if active
 		if( this.isActive() )
 		{
-			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_BRIGHTNESS );
+			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_FACE_BRIGHTNESS );
 		}
 
-		ts.setColorOpaque_I( 0xFFFFFF );
+		// Rotate the face texture
+		this.rotateRenderer( renderer, false );
 
+		// Base face
+		ts.setColorOpaque_I( 0xFFFFFF );
 		helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], ForgeDirection.SOUTH, renderer );
 
+		// Dark colored face
 		helper.setBounds( 3.0F, 3.0F, 15.0F, 13.0F, 13.0F, 16.0F );
 		ts.setColorOpaque_I( this.host.getColor().blackVariant );
 		helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0], ForgeDirection.SOUTH, renderer );
 
+		// Standard colored face
 		ts.setColorOpaque_I( this.host.getColor().mediumVariant );
 		helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[1], ForgeDirection.SOUTH, renderer );
 
+		// Light colored face
 		ts.setColorOpaque_I( this.host.getColor().whiteVariant );
 		helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer );
 
+		// Reset rotation
+		this.rotateRenderer( renderer, true );
+
+		// Cable lights
 		helper.setBounds( 5.0F, 5.0F, 12.0F, 11.0F, 11.0F, 13.0F );
 		this.renderStaticBusLights( x, y, z, helper, renderer );
 
@@ -372,7 +385,10 @@ public class AEPartEssentiaTerminal
 		data.setInteger( SORT_MODE_NBT_KEY, this.sortMode.ordinal() );
 
 		// Write inventory
-		this.inventory.saveToNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
+		if( !this.inventory.isEmpty() )
+		{
+			this.inventory.saveToNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
+		}
 	}
 
 }

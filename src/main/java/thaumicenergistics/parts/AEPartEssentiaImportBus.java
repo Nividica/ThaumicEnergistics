@@ -171,7 +171,7 @@ public class AEPartEssentiaImportBus
 
 		if( this.isActive() )
 		{
-			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_BRIGHTNESS );
+			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_FACE_BRIGHTNESS );
 		}
 
 		// Face overlay

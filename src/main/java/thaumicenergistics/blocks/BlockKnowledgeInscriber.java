@@ -39,24 +39,6 @@ public class BlockKnowledgeInscriber
 		this.setCreativeTab( ThaumicEnergistics.ThETab );
 	}
 
-	@Override
-	protected boolean onWrenched( final World world, final int x, final int y, final int z, final int side )
-	{
-		// Get and increment the meta data
-		int metaData = world.getBlockMetadata( x, y, z ) + 1;
-
-		// Bounds check
-		if( metaData >= ForgeDirection.VALID_DIRECTIONS.length )
-		{
-			metaData = 0;
-		}
-
-		// Set the meta data
-		world.setBlockMetadataWithNotify( x, y, z, metaData, 3 );
-
-		return true;
-	}
-
 	/**
 	 * Called when the block is broken.
 	 */
@@ -175,6 +157,24 @@ public class BlockKnowledgeInscriber
 	@Override
 	public final boolean renderAsNormalBlock()
 	{
+		return true;
+	}
+
+	@Override
+	public boolean rotateBlock( final World world, final int x, final int y, final int z, final ForgeDirection side )
+	{
+		// Get and increment the meta data
+		int metaData = world.getBlockMetadata( x, y, z ) + 1;
+
+		// Bounds check
+		if( metaData >= ForgeDirection.VALID_DIRECTIONS.length )
+		{
+			metaData = 0;
+		}
+
+		// Set the meta data
+		world.setBlockMetadataWithNotify( x, y, z, metaData, 3 );
+
 		return true;
 	}
 

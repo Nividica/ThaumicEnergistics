@@ -55,6 +55,7 @@ public class RecipeRegistry
 	public static IArcaneRecipe PART_ARCANE_TERMINAL;
 	public static IArcaneRecipe PART_ESSENTIA_LEVEL_EMITTER;
 	public static IArcaneRecipe PART_VIS_INTERFACE;
+	public static IRecipe PART_ESSENTIA_STORAGE_MONITOR;
 	public static InfusionRecipe BLOCK_INFUSION_PROVIDER;
 	public static InfusionRecipe BLOCK_ESSENTIA_PROVIDER;
 	public static IArcaneRecipe BLOCK_IRONGEARBOX;
@@ -509,6 +510,8 @@ public class RecipeRegistry
 
 		ItemStack WirelessEssentiaTerminal = teItems.WirelessEssentiaTerminal.getStack();
 
+		ItemStack EssentiaStorageMonitor = teParts.Essentia_StorageMonitor.getStack();
+
 		// Import Bus
 		AspectList ioAspectList = new AspectList();
 		ioAspectList.add( Aspect.FIRE, 2 );
@@ -572,6 +575,10 @@ public class RecipeRegistry
 		visInterfaceAspectList.add( Aspect.WATER, 2 );
 		RecipeRegistry.PART_VIS_INTERFACE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.VISINTERFACE.getKey(),
 			VisInterface, visInterfaceAspectList, BallanceShard, MEP2P );
+
+		// Essentia storage monitor
+		RecipeRegistry.PART_ESSENTIA_STORAGE_MONITOR = new ShapelessOreRecipe( EssentiaStorageMonitor, EssentiaLevelEmitter, IlluminatedPanel );
+		GameRegistry.addRecipe( RecipeRegistry.PART_ESSENTIA_STORAGE_MONITOR );
 
 	}
 

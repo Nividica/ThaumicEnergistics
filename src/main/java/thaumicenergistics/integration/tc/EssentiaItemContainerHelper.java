@@ -347,6 +347,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Returns the aspect of whatever essentia is in the container.
+	 * This method supports jar labels.
 	 * 
 	 * @param container
 	 * @return Aspect if container has one, null otherwise.
