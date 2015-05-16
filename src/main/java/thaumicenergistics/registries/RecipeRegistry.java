@@ -56,6 +56,7 @@ public class RecipeRegistry
 	public static IArcaneRecipe PART_ESSENTIA_LEVEL_EMITTER;
 	public static IArcaneRecipe PART_VIS_INTERFACE;
 	public static IRecipe PART_ESSENTIA_STORAGE_MONITOR;
+	public static IRecipe PART_ESSENTIA_CONVERSION_MONITOR;
 	public static InfusionRecipe BLOCK_INFUSION_PROVIDER;
 	public static InfusionRecipe BLOCK_ESSENTIA_PROVIDER;
 	public static IArcaneRecipe BLOCK_IRONGEARBOX;
@@ -512,6 +513,8 @@ public class RecipeRegistry
 
 		ItemStack EssentiaStorageMonitor = teParts.Essentia_StorageMonitor.getStack();
 
+		ItemStack EssentiaConversionMonitor = teParts.Essentia_ConversionMonitor.getStack();
+
 		// Import Bus
 		AspectList ioAspectList = new AspectList();
 		ioAspectList.add( Aspect.FIRE, 2 );
@@ -579,6 +582,11 @@ public class RecipeRegistry
 		// Essentia storage monitor
 		RecipeRegistry.PART_ESSENTIA_STORAGE_MONITOR = new ShapelessOreRecipe( EssentiaStorageMonitor, EssentiaLevelEmitter, IlluminatedPanel );
 		GameRegistry.addRecipe( RecipeRegistry.PART_ESSENTIA_STORAGE_MONITOR );
+
+		// Essentia conversion monitor
+		RecipeRegistry.PART_ESSENTIA_CONVERSION_MONITOR = new ShapelessOreRecipe( EssentiaConversionMonitor, CoalescencenCore,
+						EssentiaStorageMonitor, DiffusionCore );
+		GameRegistry.addRecipe( RecipeRegistry.PART_ESSENTIA_CONVERSION_MONITOR );
 
 	}
 

@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
-import thaumicenergistics.parts.AEPartEssentiaIO;
+import thaumicenergistics.parts.AbstractAEPartEssentiaIOBus;
 import appeng.api.config.RedstoneMode;
 
 /**
@@ -47,7 +47,7 @@ public class ContainerPartEssentiaIOBus
 	/**
 	 * The part associated with this container
 	 */
-	private AEPartEssentiaIO part;
+	private AbstractAEPartEssentiaIOBus part;
 
 	/**
 	 * Player associated with the container
@@ -62,7 +62,7 @@ public class ContainerPartEssentiaIOBus
 	 * @param player
 	 * The owner of the container.
 	 */
-	public ContainerPartEssentiaIOBus( final AEPartEssentiaIO part, final EntityPlayer player )
+	public ContainerPartEssentiaIOBus( final AbstractAEPartEssentiaIOBus part, final EntityPlayer player )
 	{
 		// Set the part
 		this.part = part;

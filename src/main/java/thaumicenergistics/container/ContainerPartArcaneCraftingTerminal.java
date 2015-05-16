@@ -304,6 +304,7 @@ public class ContainerPartArcaneCraftingTerminal
 			 * I hate this, but I have tried everything I can think of, and the
 			 * equipped armor will not change immediately unless
 			 * the notification comes from the open container, this container.
+			 * TODO: *sigh*... player.inventory.markDirty() exists .-.
 			 */
 			// Create the 'hidden'slot
 			armorSlot = new SlotArmor( player.inventory, 36 + ( 3 - armorIndex ), 0, -1000, armorIndex, false );

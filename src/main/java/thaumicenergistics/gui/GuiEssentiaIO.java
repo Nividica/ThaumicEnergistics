@@ -17,7 +17,7 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
 import thaumicenergistics.parts.AEPartEssentiaExportBus;
-import thaumicenergistics.parts.AEPartEssentiaIO;
+import thaumicenergistics.parts.AbstractAEPartEssentiaIOBus;
 import thaumicenergistics.parts.AEPartEssentiaImportBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
@@ -108,7 +108,7 @@ public class GuiEssentiaIO
 	/**
 	 * The part associated with this gui.
 	 */
-	private AEPartEssentiaIO part;
+	private AbstractAEPartEssentiaIOBus part;
 
 	/**
 	 * The player viewing this bus gui.
@@ -161,7 +161,7 @@ public class GuiEssentiaIO
 	 * @param partBus
 	 * @param player
 	 */
-	public GuiEssentiaIO( final AEPartEssentiaIO partBus, final EntityPlayer player )
+	public GuiEssentiaIO( final AbstractAEPartEssentiaIOBus partBus, final EntityPlayer player )
 	{
 		// Call super
 		super( new ContainerPartEssentiaIOBus( partBus, player ) );

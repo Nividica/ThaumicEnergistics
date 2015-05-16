@@ -7,8 +7,6 @@ import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.PlayerSource;
 
 /**
@@ -84,27 +82,7 @@ public class ContainerEssentiaTerminal
 	@Override
 	protected boolean extractPowerForEssentiaTransfer( final int amountOfEssentiaTransfered, final Actionable mode )
 	{
-		try
-		{
-			// Get the energy grid
-			IEnergyGrid eGrid = this.terminal.getGridBlock().getEnergyGrid();
-
-			// Did we get the grid
-			if( eGrid != null )
-			{
-				// Calculate the amount of power to drain
-				double powerRequired = AbstractContainerCellTerminalBase.POWER_PER_TRANSFER * amountOfEssentiaTransfered;
-
-				// Drain power
-				return( eGrid.extractAEPower( powerRequired, mode, PowerMultiplier.CONFIG ) >= powerRequired );
-			}
-		}
-		catch( Exception e )
-		{
-		}
-
-		// Power could not be drained.
-		return false;
+		return this.terminal.extractPowerForEssentiaTransfer( amountOfEssentiaTransfered, mode );
 	}
 
 	/**

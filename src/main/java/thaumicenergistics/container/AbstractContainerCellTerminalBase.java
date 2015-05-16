@@ -96,11 +96,6 @@ public abstract class AbstractContainerCellTerminalBase
 	private static final int ESSENTIA_TRANSFER_PER_WORK_CYCLE = 64;
 
 	/**
-	 * Amount of AE power required per essentia transfered.
-	 */
-	protected static final double POWER_PER_TRANSFER = 0.3;
-
-	/**
 	 * Slot ID for the output
 	 */
 	public static int OUTPUT_SLOT_ID = 1;

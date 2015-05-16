@@ -255,16 +255,6 @@ public class AEPartEssentiaLevelEmitter
 	}
 
 	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	protected boolean canPlayerOpenGui( final int playerID )
-	{
-		// Does the player have build permissions
-		return this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.BUILD );
-	}
-
-	/**
 	 * How far the network cable should extend to meet us.
 	 */
 	@Override
@@ -284,6 +274,16 @@ public class AEPartEssentiaLevelEmitter
 		this.onListUpdate();
 		this.checkRegistration();
 		this.checkEmitting();
+	}
+
+	/**
+	 * Checks if the specified player can open the gui.
+	 */
+	@Override
+	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
+	{
+		// Does the player have build permissions
+		return this.doesPlayerHavePermission( player, SecurityPermissions.BUILD );
 	}
 
 	/**

@@ -5,14 +5,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.network.packet.AbstractPacket;
 import thaumicenergistics.network.packet.AbstractServerPacket;
 import thaumicenergistics.parts.AEPartEssentiaExportBus;
-import thaumicenergistics.parts.AEPartEssentiaIO;
+import thaumicenergistics.parts.AbstractAEPartEssentiaIOBus;
 
 public class PacketServerEssentiaIOBus
 	extends AbstractServerPacket
 {
 	private static final byte MODE_REQUEST_FULL_UPDATE = 0, MODE_REQUEST_CHANGE_REDSTONE_MODE = 1, MODE_REQUEST_CHANGE_VOID_MODE = 2;
 
-	private AEPartEssentiaIO part;
+	private AbstractAEPartEssentiaIOBus part;
 
 	/**
 	 * Sends a request to the server to change the redstone mode.
@@ -21,7 +21,7 @@ public class PacketServerEssentiaIOBus
 	 * @param part
 	 * @return
 	 */
-	public PacketServerEssentiaIOBus createRequestChangeRedstoneMode( final EntityPlayer player, final AEPartEssentiaIO part )
+	public PacketServerEssentiaIOBus createRequestChangeRedstoneMode( final EntityPlayer player, final AbstractAEPartEssentiaIOBus part )
 	{
 		// Set the player
 		this.player = player;
@@ -63,7 +63,7 @@ public class PacketServerEssentiaIOBus
 	 * @param part
 	 * @return
 	 */
-	public PacketServerEssentiaIOBus createRequestFullUpdate( final EntityPlayer player, final AEPartEssentiaIO part )
+	public PacketServerEssentiaIOBus createRequestFullUpdate( final EntityPlayer player, final AbstractAEPartEssentiaIOBus part )
 	{
 		// Set the player
 		this.player = player;
@@ -111,7 +111,7 @@ public class PacketServerEssentiaIOBus
 			case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
 			case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
 				// Read the part
-				this.part = ( (AEPartEssentiaIO)AbstractPacket.readPart( stream ) );
+				this.part = ( (AbstractAEPartEssentiaIOBus)AbstractPacket.readPart( stream ) );
 				break;
 		}
 	}

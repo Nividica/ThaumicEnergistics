@@ -265,15 +265,6 @@ public class AEPartVisInterface
 	}
 
 	/**
-	 * No gui.
-	 */
-	@Override
-	protected boolean canPlayerOpenGui( final int playerID )
-	{
-		return false;
-	}
-
-	/**
 	 * How far to extend the cable.
 	 */
 	@Override

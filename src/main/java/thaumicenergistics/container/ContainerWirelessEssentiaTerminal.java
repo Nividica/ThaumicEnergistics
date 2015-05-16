@@ -9,6 +9,7 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
+import thaumicenergistics.parts.AbstractAEPartBase;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
@@ -146,7 +147,7 @@ public class ContainerWirelessEssentiaTerminal
 	protected boolean extractPowerForEssentiaTransfer( final int amountOfEssentiaTransfered, final Actionable mode )
 	{
 		// Calculate the amount of power to drain
-		double powerRequired = AbstractContainerCellTerminalBase.POWER_PER_TRANSFER * amountOfEssentiaTransfered * this.powerMultipler;
+		double powerRequired = AbstractAEPartBase.POWER_DRAIN_PER_ESSENTIA * amountOfEssentiaTransfered * this.powerMultipler;
 
 		// Drain power
 		return this.handler.extractPower( powerRequired, mode );

@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
@@ -26,6 +27,7 @@ import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.AEApi;
+import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IPartStorageMonitor;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStackWatcher;
@@ -49,7 +51,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaStorageMonitor
 	extends AbstractAEPartBase
-	implements IPartStorageMonitor, IStackWatcherHost
+	implements IPartStorageMonitor, IStackWatcherHost, IPowerChannelState
 {
 	/**
 	 * All the data about what is being tracked.
@@ -57,32 +59,32 @@ public class AEPartEssentiaStorageMonitor
 	 * @author Nividica
 	 * 
 	 */
-	private class TrackingInformation
+	protected class TrackingInformation
 	{
 		/**
 		 * Is there valid data?
 		 */
-		public boolean isValid = false;
+		private boolean isValid = false;
 
 		/**
 		 * Faux itemstack
 		 */
-		public IAEItemStack asItemStack;
+		private IAEItemStack asItemStack;
 
 		/**
 		 * Fluid stack
 		 */
-		public IAEFluidStack asGas;
+		private IAEFluidStack asGas;
 
 		/**
 		 * Aspect
 		 */
-		public Aspect asAspect;
+		private Aspect asAspect;
 
 		/**
 		 * Amount in essentia units.
 		 */
-		public long aspectAmount;
+		private long aspectAmount;
 
 		public TrackingInformation()
 		{
@@ -98,7 +100,7 @@ public class AEPartEssentiaStorageMonitor
 				@Override
 				public String getUnlocalizedName()
 				{
-					return TrackingInformation.this.asAspect.getName();
+					return TrackingInformation.this.getAspect().getName();
 				}
 
 				@Override
@@ -110,6 +112,57 @@ public class AEPartEssentiaStorageMonitor
 
 			// Set the AE item stack
 			this.asItemStack = AEApi.instance().storage().createItemStack( is );
+		}
+
+		/**
+		 * Gets the aspect associated with the essentia.
+		 * 
+		 * @return
+		 */
+		public Aspect getAspect()
+		{
+			return this.asAspect;
+		}
+
+		/**
+		 * Gets the amount stored in the network in Essentia Units.
+		 * 
+		 * @return
+		 */
+		public long getAspectAmount()
+		{
+			return this.aspectAmount;
+		}
+
+		/**
+		 * Gets the essentia gas being tracked.
+		 * 
+		 * @return
+		 */
+		public IAEFluidStack getGas()
+		{
+			return this.asGas;
+		}
+
+		/**
+		 * Gets an itemstack representing the essentia being tracked.
+		 * Note: The only valid methods on the itemstack are the name accessors.
+		 * 
+		 * @return
+		 */
+		public IAEItemStack getItemStack()
+		{
+			return this.asItemStack;
+		}
+
+		/**
+		 * Returns true if their is an essentia being tracked.
+		 * 
+		 * @return
+		 */
+		public boolean isValid()
+		{
+			return this.isValid;
 		}
 
 		/**
@@ -182,7 +235,10 @@ public class AEPartEssentiaStorageMonitor
 	 */
 	private boolean monitorLocked = false;
 
-	private TrackingInformation trackedEssentia = new TrackingInformation();
+	/**
+	 * What is being tracked?
+	 */
+	protected final TrackingInformation trackedEssentia = new TrackingInformation();
 
 	/**
 	 * If true the cached render list needs to be updated.
@@ -196,9 +252,28 @@ public class AEPartEssentiaStorageMonitor
 	@SideOnly(Side.CLIENT)
 	private Integer cachedDisplayList = null;
 
+	CableBusTextures darkCornerTexture;
+	CableBusTextures lightCornerTexture;
+
+	/**
+	 * Constructor for conversion monitor.
+	 * 
+	 * @param subPart
+	 */
+	protected AEPartEssentiaStorageMonitor( final AEPartsEnum subPart )
+	{
+		super( subPart );
+
+		this.lightCornerTexture = CableBusTextures.PartConversionMonitor_Colored;
+		this.darkCornerTexture = CableBusTextures.PartConversionMonitor_Dark;
+	}
+
+	/**
+	 * Default constructor
+	 */
 	public AEPartEssentiaStorageMonitor()
 	{
-		super( AEPartsEnum.EssentiaStorageMonitor );
+		this( AEPartsEnum.EssentiaStorageMonitor );
 	}
 
 	/**
@@ -213,10 +288,10 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Is there an essentia being tracked?
-		if( this.trackedEssentia.isValid )
+		if( this.trackedEssentia.isValid() )
 		{
 			// Configure the watcher
-			this.essentiaWatcher.add( this.trackedEssentia.asGas );
+			this.essentiaWatcher.add( this.trackedEssentia.getGas() );
 
 			// Get the storage grid
 			IStorageGrid storageGrid = this.gridBlock.getStorageGrid();
@@ -237,7 +312,7 @@ public class AEPartEssentiaStorageMonitor
 	 * @param heldItem
 	 * @return
 	 */
-	private boolean didItemChangeLockState( final EntityPlayer player, final ItemStack heldItem )
+	private boolean didActivateChangeLockState( final EntityPlayer player, final ItemStack heldItem )
 	{
 		// Is the item a wrench?
 		if( !player.isSneaking() && Platform.isWrench( player, heldItem, this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord ) )
@@ -266,67 +341,6 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		return false;
-	}
-
-	/**
-	 * Returns true if the tracker was changed.
-	 * 
-	 * @param heldItem
-	 * @return
-	 */
-	private boolean didItemChangeTracker( final ItemStack heldItem )
-	{
-		// Is the players hand empty?
-		if( heldItem == null )
-		{
-			// Clear the tracker
-			this.trackedEssentia.setTracked( null );
-
-			// Update watcher
-			this.configureWatcher();
-
-			// Mark for sync & save
-			this.host.markForUpdate();
-			this.host.markForSave();
-
-			return true;
-		}
-
-		// Is the item an essentia container?
-		if( !EssentiaItemContainerHelper.instance.isContainerOrLabel( heldItem ) )
-		{
-			return false;
-		}
-
-		// Get the aspect
-		Aspect heldAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( heldItem );
-
-		// Ensure there is an aspect
-		if( heldAspect == null )
-		{
-			return false;
-		}
-
-		// Get the essentia gas
-		GaseousEssentia gas = GaseousEssentia.getGasFromAspect( heldAspect );
-
-		// Ensure there is a gas
-		if( gas == null )
-		{
-			return false;
-		}
-
-		// Create an AE fluid stack of size 0, and set it as the tracked gas
-		this.trackedEssentia.setTracked( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( gas, 0 ) );
-
-		// Reconfigure the watcher
-		this.configureWatcher();
-
-		// Mark for sync & save
-		this.host.markForUpdate();
-		this.host.markForSave();
-
-		return true;
 	}
 
 	/**
@@ -487,7 +501,7 @@ public class AEPartEssentiaStorageMonitor
 	private void updateTrackedEssentiaAmount( final IMEMonitor<IAEFluidStack> fluidInventory )
 	{
 		// Ensure there is something to track
-		if( !this.trackedEssentia.isValid )
+		if( !this.trackedEssentia.isValid() )
 		{
 			return;
 		}
@@ -496,7 +510,7 @@ public class AEPartEssentiaStorageMonitor
 		this.trackedEssentia.updateTrackedAmount( 0 );
 
 		// Get the amount in the network
-		IAEFluidStack stored = fluidInventory.getStorageList().findPrecise( this.trackedEssentia.asGas );
+		IAEFluidStack stored = fluidInventory.getStorageList().findPrecise( this.trackedEssentia.getGas() );
 
 		// Was there anything found?
 		if( stored != null )
@@ -507,12 +521,32 @@ public class AEPartEssentiaStorageMonitor
 	}
 
 	/**
-	 * No GUI to open.
+	 * Permission and activation checks.
+	 * 
+	 * @param player
+	 * @return
 	 */
-	@Override
-	protected boolean canPlayerOpenGui( final int playerID )
+	protected boolean activationCheck( final EntityPlayer player )
 	{
-		return false;
+		// Ignore fake players
+		if( player instanceof FakePlayer )
+		{
+			return false;
+		}
+
+		// Is the monitor off?
+		if( !this.isActive() )
+		{
+			return false;
+		}
+
+		// Does the player have permission to interact with this device?
+		if( !Platform.hasPermissions( this.getLocation(), player ) )
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -527,6 +561,83 @@ public class AEPartEssentiaStorageMonitor
 		{
 			GLAllocation.deleteDisplayLists( this.cachedDisplayList );
 		}
+	}
+
+	/**
+	 * Called when the monitor is right-clicked with an empty hand.
+	 * Clears the tracker.
+	 * 
+	 * @return
+	 */
+	protected boolean onActivatedWithEmptyHand()
+	{
+		// Is the monitor locked?
+		if( this.monitorLocked )
+		{
+			return false;
+		}
+
+		// Clear the tracker
+		this.trackedEssentia.setTracked( null );
+
+		// Update watcher
+		this.configureWatcher();
+
+		// Mark for sync & save
+		this.host.markForUpdate();
+		this.host.markForSave();
+
+		return true;
+	}
+
+	/**
+	 * Called when the monitor is right-clicked with an essentia container or
+	 * label.
+	 * Sets the tracker to the items contained aspect, or clears if the
+	 * container is empty.
+	 * 
+	 * @param player
+	 * @param heldItem
+	 * @return
+	 */
+	protected boolean onActivatedWithEssentiaContainerOrLabel( final EntityPlayer player, final ItemStack heldItem )
+	{
+		// Is the monitor locked?
+		if( this.monitorLocked )
+		{
+			return false;
+		}
+
+		// Get the aspect
+		Aspect heldAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( heldItem );
+
+		// Ensure there is an aspect
+		if( heldAspect == null )
+		{
+			// Empty container, clear the tracker
+			return this.onActivatedWithEmptyHand();
+		}
+
+		// Get the essentia gas
+		GaseousEssentia gas = GaseousEssentia.getGasFromAspect( heldAspect );
+
+		// Ensure there is a gas
+		if( gas == null )
+		{
+			return false;
+		}
+
+		// Create an AE fluid stack of size 0, and set it as the tracked gas
+		this.trackedEssentia.setTracked( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( gas, 0 ) );
+
+		// Reconfigure the watcher
+		this.configureWatcher();
+
+		// Mark for sync & save
+		this.host.markForUpdate();
+		this.host.markForSave();
+
+		return true;
 	}
 
 	@Override
@@ -549,7 +660,7 @@ public class AEPartEssentiaStorageMonitor
 	@Override
 	public IIcon getBreakingTexture()
 	{
-		return CableBusTextures.PartMonitor_Colored.IIcon;
+		return BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[3];
 	}
 
 	/**
@@ -558,9 +669,9 @@ public class AEPartEssentiaStorageMonitor
 	@Override
 	public IAEStack<?> getDisplayed()
 	{
-		if( this.trackedEssentia.isValid )
+		if( this.trackedEssentia.isValid() )
 		{
-			return this.trackedEssentia.asItemStack;
+			return this.trackedEssentia.getItemStack();
 		}
 
 		return null;
@@ -608,20 +719,15 @@ public class AEPartEssentiaStorageMonitor
 	@Override
 	public boolean onActivate( final EntityPlayer player, final Vec3 position )
 	{
+
 		// Ignore client side.
 		if( EffectiveSide.isClientSide() )
 		{
 			return true;
 		}
 
-		// Is the monitor off?
-		if( !this.isActive() )
-		{
-			return false;
-		}
-
-		// Does the player have permission to interact with this device?
-		if( !Platform.hasPermissions( this.getLocation(), player ) )
+		// Permission and activation checks
+		if( !activationCheck( player ) )
 		{
 			return false;
 		}
@@ -630,19 +736,24 @@ public class AEPartEssentiaStorageMonitor
 		ItemStack heldItem = player.getCurrentEquippedItem();
 
 		// Was the lock state changed?
-		if( didItemChangeLockState( player, heldItem ) )
+		if( didActivateChangeLockState( player, heldItem ) )
 		{
 			return true;
 		}
 
-		// Is the terminal locked?
-		if( this.monitorLocked )
+		// Is the players hand empty?
+		if( heldItem == null )
 		{
-			return false;
+			return this.onActivatedWithEmptyHand();
 		}
 
-		// Return if the item changes the essentia tracker
-		return didItemChangeTracker( heldItem );
+		// Is the player holding an essentia container?
+		if( EssentiaItemContainerHelper.instance.isContainerOrLabel( heldItem ) )
+		{
+			return this.onActivatedWithEssentiaContainerOrLabel( player, heldItem );
+		}
+
+		return false;
 	}
 
 	/**
@@ -653,7 +764,7 @@ public class AEPartEssentiaStorageMonitor
 								final StorageChannel chan )
 	{
 		// Is there an essentia being tracked?
-		if( !this.trackedEssentia.isValid )
+		if( !this.trackedEssentia.isValid() )
 		{
 			// Not tracking anything
 			return;
@@ -730,7 +841,7 @@ public class AEPartEssentiaStorageMonitor
 			this.trackedEssentia.setTracked( tk );
 
 			// Mark for screen redraw
-			this.updateDisplayList = true;
+			redraw |= this.updateDisplayList = true;
 		}
 		else
 		{
@@ -738,7 +849,7 @@ public class AEPartEssentiaStorageMonitor
 			this.trackedEssentia.setTracked( null );
 
 			// Mark for screen redraw
-			this.updateDisplayList = true;
+			redraw |= this.updateDisplayList = true;
 		}
 
 		return redraw;
@@ -749,7 +860,7 @@ public class AEPartEssentiaStorageMonitor
 	public void renderDynamic( final double x, final double y, final double z, final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		// Skip if nothing to draw
-		if( ( this.isActive == false ) || ( !this.trackedEssentia.isValid ) )
+		if( ( this.isActive == false ) || ( !this.trackedEssentia.isValid() ) )
 		{
 			return;
 		}
@@ -780,7 +891,7 @@ public class AEPartEssentiaStorageMonitor
 			GL11.glNewList( this.cachedDisplayList, GL11.GL_COMPILE_AND_EXECUTE );
 
 			// Add the screen render to the list
-			this.renderScreen( Tessellator.instance, this.trackedEssentia.asAspect, this.trackedEssentia.aspectAmount );
+			this.renderScreen( Tessellator.instance, this.trackedEssentia.getAspect(), this.trackedEssentia.getAspectAmount() );
 
 			// End the list and run it
 			GL11.glEndList();
@@ -808,11 +919,15 @@ public class AEPartEssentiaStorageMonitor
 		// Face bounds
 		helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
 
-		// Edges
-		helper.setInvColor( AEColor.White.whiteVariant );
-		helper.renderInventoryFace( CableBusTextures.PartConversionMonitor_Dark.getIcon(), ForgeDirection.SOUTH, renderer );
+		// Dark corners
+		helper.setInvColor( AEColor.Transparent.blackVariant );
+		helper.renderInventoryFace( this.darkCornerTexture.getIcon(), ForgeDirection.SOUTH, renderer );
 
-		// Conversion icon
+		// Light corners
+		helper.setInvColor( AEColor.Transparent.mediumVariant );
+		helper.renderInventoryFace( this.lightCornerTexture.getIcon(), ForgeDirection.SOUTH, renderer );
+
+		// Main face
 		helper.setInvColor( AEColor.Transparent.whiteVariant );
 		helper.renderInventoryFace( CableBusTextures.PartConversionMonitor_Bright.getIcon(), ForgeDirection.SOUTH, renderer );
 
@@ -845,17 +960,24 @@ public class AEPartEssentiaStorageMonitor
 			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_FACE_BRIGHTNESS );
 		}
 
-		// Dark face
+		// Dark corners
 		tessellator.setColorOpaque_I( this.host.getColor().blackVariant );
-		helper.renderFace( x, y, z, CableBusTextures.PartConversionMonitor_Dark.getIcon(), ForgeDirection.SOUTH, renderer );
+		helper.renderFace( x, y, z, this.darkCornerTexture.getIcon(), ForgeDirection.SOUTH, renderer );
 
-		// Medium face
+		// Light corners
 		tessellator.setColorOpaque_I( this.host.getColor().mediumVariant );
-		helper.renderFace( x, y, z, CableBusTextures.PartConversionMonitor_Colored.getIcon(), ForgeDirection.SOUTH, renderer );
+		helper.renderFace( x, y, z, this.lightCornerTexture.getIcon(), ForgeDirection.SOUTH, renderer );
 
-		// Bright face
+		// Main face
 		tessellator.setColorOpaque_I( this.host.getColor().whiteVariant );
 		helper.renderFace( x, y, z, CableBusTextures.PartConversionMonitor_Bright.getIcon(), ForgeDirection.SOUTH, renderer );
+
+		// Phial
+		if( !this.trackedEssentia.isValid() )
+		{
+			tessellator.setColorOpaque_I( this.host.getColor().mediumVariant );
+			helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0], ForgeDirection.SOUTH, renderer );
+		}
 
 		// Cable lights
 		helper.setBounds( 5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F );
@@ -910,10 +1032,10 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Write tracked data if valid
-		if( this.trackedEssentia.isValid )
+		if( this.trackedEssentia.isValid() )
 		{
 			// Write the aspect
-			data.setString( AEPartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT, this.trackedEssentia.asAspect.getTag() );
+			data.setString( AEPartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT, this.trackedEssentia.getAspect().getTag() );
 		}
 	}
 
@@ -927,12 +1049,12 @@ public class AEPartEssentiaStorageMonitor
 		stream.writeBoolean( this.monitorLocked );
 
 		// Write if valid
-		stream.writeBoolean( this.trackedEssentia.isValid );
+		stream.writeBoolean( this.trackedEssentia.isValid() );
 
-		if( this.trackedEssentia.isValid )
+		if( this.trackedEssentia.isValid() )
 		{
 			// Write the tracker
-			this.trackedEssentia.asGas.writeToPacket( stream );
+			this.trackedEssentia.getGas().writeToPacket( stream );
 		}
 
 	}

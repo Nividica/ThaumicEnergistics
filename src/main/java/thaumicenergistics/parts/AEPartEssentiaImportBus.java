@@ -2,6 +2,7 @@ package thaumicenergistics.parts;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
@@ -15,22 +16,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaImportBus
-	extends AEPartEssentiaIO
+	extends AbstractAEPartEssentiaIOBus
 {
 
 	public AEPartEssentiaImportBus()
 	{
 		super( AEPartsEnum.EssentiaImportBus );
-	}
-
-	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	protected boolean canPlayerOpenGui( final int playerID )
-	{
-		// Does the player have import permissions
-		return this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.INJECT );
 	}
 
 	@Override
@@ -68,6 +59,16 @@ public class AEPartEssentiaImportBus
 	public int cableConnectionRenderTo()
 	{
 		return 5;
+	}
+
+	/**
+	 * Checks if the specified player can open the gui.
+	 */
+	@Override
+	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
+	{
+		// Does the player have import permissions
+		return this.doesPlayerHavePermission( player, SecurityPermissions.INJECT );
 	}
 
 	@Override

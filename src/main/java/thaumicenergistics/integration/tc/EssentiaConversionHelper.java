@@ -148,6 +148,26 @@ public final class EssentiaConversionHelper
 	 * Creates an AE fluid stack from the specified essentia gas. This will
 	 * convert the specified amount from essentia units to fluid units(mb).
 	 * 
+	 * @param Aspect
+	 * @param essentiaAmount
+	 * @return
+	 */
+	public IAEFluidStack createAEFluidStackInEssentiaUnits( final Aspect aspect, final long essentiaAmount )
+	{
+		GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( aspect );
+
+		if( essentiaGas == null )
+		{
+			return null;
+		}
+
+		return this.createAEFluidStackInFluidUnits( essentiaGas, this.convertEssentiaAmountToFluidAmount( essentiaAmount ) );
+	}
+
+	/**
+	 * Creates an AE fluid stack from the specified essentia gas. This will
+	 * convert the specified amount from essentia units to fluid units(mb).
+	 * 
 	 * @param essentiaGas
 	 * @param essentiaAmount
 	 * @return
@@ -167,9 +187,16 @@ public final class EssentiaConversionHelper
 	 */
 	public IAEFluidStack createAEFluidStackInFluidUnits( final GaseousEssentia essentiaGas, final long fluidAmount )
 	{
-		IAEFluidStack ret = AEApi.instance().storage().createFluidStack( new FluidStack( essentiaGas, 1 ) );
+		IAEFluidStack ret = null;
+		try
+		{
+			ret = AEApi.instance().storage().createFluidStack( new FluidStack( essentiaGas, 1 ) );
 
-		ret.setStackSize( fluidAmount );
+			ret.setStackSize( fluidAmount );
+		}
+		catch( Exception e )
+		{
+		}
 
 		return ret;
 	}

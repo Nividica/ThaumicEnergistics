@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
+import thaumicenergistics.parts.AEPartEssentiaConversionMonitor;
 import thaumicenergistics.parts.AEPartEssentiaExportBus;
 import thaumicenergistics.parts.AEPartEssentiaImportBus;
 import thaumicenergistics.parts.AEPartEssentiaLevelEmitter;
@@ -37,7 +38,9 @@ public enum AEPartsEnum
 
 		VisInterface (ThEStrings.Part_VisRelayInterface, AEPartVisInterface.class),
 
-		EssentiaStorageMonitor (ThEStrings.Part_EssentiaStorageMonitor, AEPartEssentiaStorageMonitor.class);
+		EssentiaStorageMonitor (ThEStrings.Part_EssentiaStorageMonitor, AEPartEssentiaStorageMonitor.class),
+
+		EssentiaConversionMonitor (ThEStrings.Part_EssentiaConversionMonitor, AEPartEssentiaConversionMonitor.class);
 
 	private ThEStrings unlocalizedName;
 

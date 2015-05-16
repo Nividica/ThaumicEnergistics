@@ -72,15 +72,6 @@ public class AEPartEssentiaTerminal
 		super( AEPartsEnum.EssentiaTerminal );
 	}
 
-	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	protected boolean canPlayerOpenGui( final int playerID )
-	{
-		return true;
-	}
-
 	public void addListener( final AbstractContainerCellTerminalBase container )
 	{
 		if( container instanceof ContainerEssentiaTerminal )
@@ -93,6 +84,15 @@ public class AEPartEssentiaTerminal
 	public int cableConnectionRenderTo()
 	{
 		return 1;
+	}
+
+	/**
+	 * Checks if the specified player can open the gui.
+	 */
+	@Override
+	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
+	{
+		return true;
 	}
 
 	@Override

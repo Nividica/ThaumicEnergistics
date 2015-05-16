@@ -1,4 +1,8 @@
-﻿5/13/2015 0.8.10.1
+﻿5/16/2015 0.8.10.1
+  Redundant code cleanup.
+  Added Essentia Conversion Monitor.
+
+5/13/2015 0.8.10.1
   Essentia Storage Bus supports ME Interface part for subnetworks.
   Bugfix: The essentia sub-network sync bug ~should be~ fixed.
   Added AE security to Arcane Assembler GUI.

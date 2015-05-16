@@ -24,9 +24,12 @@ import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -63,6 +66,14 @@ public abstract class AbstractAEPartBase
 	 */
 	protected final static int ACTIVE_TERMINAL_LIGHT_LEVEL = 9;
 
+	/**
+	 * The amount of power required to transfer 1 essentia.
+	 */
+	public static final double POWER_DRAIN_PER_ESSENTIA = 0.3;
+
+	/**
+	 * Which side of the cable is the part attached to.
+	 */
 	protected ForgeDirection cableSide;
 
 	protected IGridNode node;
@@ -131,13 +142,6 @@ public abstract class AbstractAEPartBase
 	}
 
 	/**
-	 * Checks with the subclass if a player can open this parts gui.
-	 * 
-	 * @return
-	 */
-	protected abstract boolean canPlayerOpenGui( int playerID );
-
-	/**
 	 * Checks if the specifies player has clearance for the specified
 	 * permission.
 	 * 
@@ -145,7 +149,31 @@ public abstract class AbstractAEPartBase
 	 * @param permission
 	 * @return
 	 */
-	protected boolean doesPlayerHaveSecurityClearance( final int playerID, final SecurityPermissions permission )
+	protected boolean doesPlayerHavePermission( final EntityPlayer player, final SecurityPermissions permission )
+	{
+		// Get the security grid
+		ISecurityGrid sGrid = this.gridBlock.getSecurityGrid();
+
+		// Did we get the grid?
+		if( sGrid == null )
+		{
+			// No security grid to check against.
+			return false;
+		}
+
+		// Return the permission
+		return sGrid.hasPermission( player, permission );
+	}
+
+	/**
+	 * Checks if the specifies player has clearance for the specified
+	 * permission.
+	 * 
+	 * @param playerID
+	 * @param permission
+	 * @return
+	 */
+	protected boolean doesPlayerHavePermission( final int playerID, final SecurityPermissions permission )
 	{
 		// Get the security grid
 		ISecurityGrid sGrid = this.gridBlock.getSecurityGrid();
@@ -178,27 +206,6 @@ public abstract class AbstractAEPartBase
 
 		// Get the tile entity we are facing
 		return world.getTileEntity( x + this.cableSide.offsetX, y + this.cableSide.offsetY, z + this.cableSide.offsetZ );
-	}
-
-	/**
-	 * Checks if the part is active and powered.
-	 * 
-	 * @return
-	 */
-	protected boolean isActive()
-	{
-		// Are we server side?
-		if( EffectiveSide.isServerSide() )
-		{
-			// Do we have a node?
-			if( this.node != null )
-			{
-				// Get it's activity
-				this.isActive = this.node.isActive();
-			}
-		}
-
-		return this.isActive;
 	}
 
 	/**
@@ -245,13 +252,35 @@ public abstract class AbstractAEPartBase
 	 * @param player
 	 * @return
 	 */
-	public final boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
+	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
 	{
-		// Get the player ID
-		int pID = WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
+		return false;
+	}
 
-		// Ensure they have build(make configuration changes) permission.
-		return this.canPlayerOpenGui( pID );
+	/**
+	 * Extracts power from the network proportional to the specified essentia
+	 * amount.
+	 * 
+	 * @param essentiaAmount
+	 * @param mode
+	 * @return
+	 */
+	public boolean extractPowerForEssentiaTransfer( final int essentiaAmount, final Actionable mode )
+	{
+		// Get the energy grid
+		IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
+
+		// Ensure we have a grid
+		if( eGrid == null )
+		{
+			return false;
+		}
+
+		// Calculate amount of power to take
+		double powerDrain = AbstractAEPartBase.POWER_DRAIN_PER_ESSENTIA * essentiaAmount;
+
+		// Extract
+		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
 	}
 
 	@Override
@@ -403,6 +432,27 @@ public abstract class AbstractAEPartBase
 	public String getUnlocalizedName()
 	{
 		return this.associatedItem.getUnlocalizedName() + ".name";
+	}
+
+	/**
+	 * Checks if the part is active and powered.
+	 * 
+	 * @return
+	 */
+	public boolean isActive()
+	{
+		// Are we server side?
+		if( EffectiveSide.isServerSide() )
+		{
+			// Do we have a node?
+			if( this.node != null )
+			{
+				// Get it's activity
+				this.isActive = this.node.isActive();
+			}
+		}
+
+		return this.isActive;
 	}
 
 	@Override

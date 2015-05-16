@@ -137,24 +137,6 @@ public class AEPartEssentiaStorageBus
 	}
 
 	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	protected boolean canPlayerOpenGui( final int playerID )
-	{
-		// Does the player have export & import permissions
-		if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.EXTRACT ) )
-		{
-			if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.INJECT ) )
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * Adds a new filter from the specified itemstack.
 	 * 
 	 * @param player
@@ -220,6 +202,24 @@ public class AEPartEssentiaStorageBus
 	public int cableConnectionRenderTo()
 	{
 		return 3;
+	}
+
+	/**
+	 * Checks if the specified player can open the gui.
+	 */
+	@Override
+	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
+	{
+		// Does the player have export & import permissions
+		if( this.doesPlayerHavePermission( player, SecurityPermissions.EXTRACT ) )
+		{
+			if( this.doesPlayerHavePermission( player, SecurityPermissions.INJECT ) )
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

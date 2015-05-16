@@ -211,24 +211,6 @@ public class AEPartArcaneCraftingTerminal
 	}
 
 	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	protected boolean canPlayerOpenGui( final int playerID )
-	{
-		// Does the player have export & import permissions
-		if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.EXTRACT ) )
-		{
-			if( this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.INJECT ) )
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * Distance cable should extend to meet this block
 	 */
 	@Override
@@ -291,6 +273,24 @@ public class AEPartArcaneCraftingTerminal
 		}
 
 		return returnStack;
+	}
+
+	/**
+	 * Checks if the specified player can open the gui.
+	 */
+	@Override
+	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
+	{
+		// Does the player have export & import permissions
+		if( this.doesPlayerHavePermission( player, SecurityPermissions.EXTRACT ) )
+		{
+			if( this.doesPlayerHavePermission( player, SecurityPermissions.INJECT ) )
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

@@ -15,9 +15,7 @@ import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
@@ -26,11 +24,6 @@ import com.google.common.collect.ImmutableList;
 class HandlerEssentiaStorageBusContainer
 	extends AbstractHandlerEssentiaStorageBus
 {
-	/**
-	 * The amount of power required to transfer 1 essentia.
-	 */
-	private static final double POWER_DRAIN_PER_ESSENTIA = 0.5;
-
 	/**
 	 * Thaumcraft aspect container attracted to the storage bus.
 	 */
@@ -115,31 +108,6 @@ class HandlerEssentiaStorageBusContainer
 		}
 
 		return essentiaList;
-	}
-
-	/**
-	 * Takes power from the AE network.
-	 * 
-	 * @param essentiaAmount
-	 * @param mode
-	 * @return True if power can/was taken. False otherwise.
-	 */
-	private boolean takePowerFromNetwork( final int essentiaAmount, final Actionable mode )
-	{
-		// Get the energy grid
-		IEnergyGrid eGrid = this.partStorageBus.getGridBlock().getEnergyGrid();
-
-		// Ensure we have a grid
-		if( eGrid == null )
-		{
-			return false;
-		}
-
-		// Calculate amount of power to take
-		double powerDrain = HandlerEssentiaStorageBusContainer.POWER_DRAIN_PER_ESSENTIA * essentiaAmount;
-
-		// Extract
-		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
 	}
 
 	@Override
@@ -264,7 +232,7 @@ class HandlerEssentiaStorageBusContainer
 		int drainedAmount_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( drained.amount );
 
 		// Do we have the power to drain this?
-		if( !this.takePowerFromNetwork( drainedAmount_EU, Actionable.SIMULATE ) )
+		if( !this.partStorageBus.extractPowerForEssentiaTransfer( drainedAmount_EU, Actionable.SIMULATE ) )
 		{
 			// Not enough power
 			return null;
@@ -277,7 +245,7 @@ class HandlerEssentiaStorageBusContainer
 			EssentiaTileContainerHelper.instance.extractFromContainer( this.aspectContainer, toDrain, Actionable.MODULATE );
 
 			// Take power
-			this.takePowerFromNetwork( drainedAmount_EU, Actionable.MODULATE );
+			this.partStorageBus.extractPowerForEssentiaTransfer( drainedAmount_EU, Actionable.MODULATE );
 		}
 
 		// Copy the request
@@ -367,7 +335,7 @@ class HandlerEssentiaStorageBusContainer
 		int filled_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( filled_FU );
 
 		// Do we have the power to complete this operation?
-		if( !this.takePowerFromNetwork( filled_EU, Actionable.SIMULATE ) )
+		if( !this.partStorageBus.extractPowerForEssentiaTransfer( filled_EU, Actionable.SIMULATE ) )
 		{
 			// Not enough power
 			return input;
@@ -380,7 +348,7 @@ class HandlerEssentiaStorageBusContainer
 			filled_FU = (int)EssentiaTileContainerHelper.instance.injectIntoContainer( this.aspectContainer, input, Actionable.MODULATE );
 
 			// Take power for as much as we claimed we could take.
-			this.takePowerFromNetwork( filled_EU, Actionable.MODULATE );
+			this.partStorageBus.extractPowerForEssentiaTransfer( filled_EU, Actionable.MODULATE );
 
 			// Convert the actual amount injected into Essentia units.
 			filled_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( filled_FU );

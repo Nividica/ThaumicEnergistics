@@ -17,4 +17,6 @@ public abstract class Parts
 	public IItemDescription VisRelay_Interface;
 
 	public IItemDescription Essentia_StorageMonitor;
+
+	public IItemDescription Essentia_ConversionMonitor;
 }

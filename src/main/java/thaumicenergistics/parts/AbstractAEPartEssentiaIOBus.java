@@ -25,11 +25,9 @@ import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
 import appeng.api.definitions.IMaterials;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -43,7 +41,7 @@ import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class AEPartEssentiaIO
+public abstract class AbstractAEPartEssentiaIOBus
 	extends AbstractAEPartBase
 	implements IGridTickable, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory
 {
@@ -83,16 +81,12 @@ public abstract class AEPartEssentiaIO
 	 */
 	private static final double IDLE_POWER_DRAIN = 0.7;
 
-	/**
-	 * The amount of power required to transfer 1 essentia.
-	 */
-	private static final double POWER_DRAIN_PER_ESSENTIA = 0.5;
-
 	private boolean lastRedstone;
 
-	private int[] availableFilterSlots = { AEPartEssentiaIO.BASE_SLOT_INDEX };
+	private int[] availableFilterSlots = { AbstractAEPartEssentiaIOBus.BASE_SLOT_INDEX };
 
-	private UpgradeInventory upgradeInventory = new StackUpgradeInventory( this.associatedItem, this, AEPartEssentiaIO.UPGRADE_INVENTORY_SIZE );
+	private UpgradeInventory upgradeInventory = new StackUpgradeInventory( this.associatedItem, this,
+					AbstractAEPartEssentiaIOBus.UPGRADE_INVENTORY_SIZE );
 
 	private List<ContainerPartEssentiaIOBus> listeners = new ArrayList<ContainerPartEssentiaIOBus>();
 
@@ -103,7 +97,7 @@ public abstract class AEPartEssentiaIO
 	 */
 	private MachineSource asMachineSource;
 
-	protected List<Aspect> filteredAspects = new ArrayList<Aspect>( AEPartEssentiaIO.MAX_FILTER_SIZE );
+	protected List<Aspect> filteredAspects = new ArrayList<Aspect>( AbstractAEPartEssentiaIOBus.MAX_FILTER_SIZE );
 
 	protected IAspectContainer facingContainer;
 
@@ -119,12 +113,12 @@ public abstract class AEPartEssentiaIO
 	private static final String NBT_KEY_REDSTONE_MODE = "redstoneMode", NBT_KEY_FILTER_NUMBER = "AspectFilter#",
 					NBT_KEY_UPGRADE_INV = "upgradeInventory";
 
-	public AEPartEssentiaIO( final AEPartsEnum associatedPart )
+	public AbstractAEPartEssentiaIOBus( final AEPartsEnum associatedPart )
 	{
 		super( associatedPart );
 
 		// Initialize the list
-		for( int index = 0; index < AEPartEssentiaIO.MAX_FILTER_SIZE; index++ )
+		for( int index = 0; index < AbstractAEPartEssentiaIOBus.MAX_FILTER_SIZE; index++ )
 		{
 			this.filteredAspects.add( null );
 		}
@@ -206,35 +200,35 @@ public abstract class AEPartEssentiaIO
 		this.availableFilterSlots = new int[1 + ( this.filterSize * 4 )];
 
 		// Add the base slot
-		this.availableFilterSlots[0] = AEPartEssentiaIO.BASE_SLOT_INDEX;
+		this.availableFilterSlots[0] = AbstractAEPartEssentiaIOBus.BASE_SLOT_INDEX;
 
 		if( this.filterSize < 2 )
 		{
 			// Reset tier 2 slots
-			for( int i = 0; i < AEPartEssentiaIO.TIER2_INDEXS.length; i++ )
+			for( int i = 0; i < AbstractAEPartEssentiaIOBus.TIER2_INDEXS.length; i++ )
 			{
-				this.filteredAspects.set( AEPartEssentiaIO.TIER2_INDEXS[i], null );
+				this.filteredAspects.set( AbstractAEPartEssentiaIOBus.TIER2_INDEXS[i], null );
 			}
 
 			if( this.filterSize < 1 )
 			{
 				// Reset tier 1 slots
-				for( int i = 0; i < AEPartEssentiaIO.TIER1_INDEXS.length; i++ )
+				for( int i = 0; i < AbstractAEPartEssentiaIOBus.TIER1_INDEXS.length; i++ )
 				{
-					this.filteredAspects.set( AEPartEssentiaIO.TIER1_INDEXS[i], null );
+					this.filteredAspects.set( AbstractAEPartEssentiaIOBus.TIER1_INDEXS[i], null );
 				}
 			}
 			else
 			{
 				// Tier 1 slots
-				System.arraycopy( AEPartEssentiaIO.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
+				System.arraycopy( AbstractAEPartEssentiaIOBus.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
 			}
 		}
 		else
 		{
 			// Add both
-			System.arraycopy( AEPartEssentiaIO.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
-			System.arraycopy( AEPartEssentiaIO.TIER2_INDEXS, 0, this.availableFilterSlots, 5, 4 );
+			System.arraycopy( AbstractAEPartEssentiaIOBus.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
+			System.arraycopy( AbstractAEPartEssentiaIOBus.TIER2_INDEXS, 0, this.availableFilterSlots, 5, 4 );
 		}
 	}
 
@@ -242,10 +236,10 @@ public abstract class AEPartEssentiaIO
 	 * Extracts fluid from the ME network.
 	 * 
 	 * @param toExtract
-	 * @param action
+	 * @param mode
 	 * @return
 	 */
-	protected final IAEFluidStack extractFluid( final IAEFluidStack toExtract, final Actionable action )
+	protected final IAEFluidStack extractFluid( final IAEFluidStack toExtract, final Actionable mode )
 	{
 
 		if( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
@@ -260,9 +254,10 @@ public abstract class AEPartEssentiaIO
 			return null;
 		}
 
-		return monitor.extractItems( toExtract, action, this.asMachineSource );
+		return monitor.extractItems( toExtract, mode, this.asMachineSource );
 	}
 
+	// TODO: Move this to the Import bus
 	protected boolean injectEssentaToNetwork( int amountToDrainFromContainer )
 	{
 		// Get the aspect in the container
@@ -310,14 +305,14 @@ public abstract class AEPartEssentiaIO
 		}
 
 		// Do we have the power to inject?
-		if( !this.takePowerFromNetwork( amountToDrainFromContainer, Actionable.SIMULATE ) )
+		if( !this.extractPowerForEssentiaTransfer( amountToDrainFromContainer, Actionable.SIMULATE ) )
 		{
 			// Not enough power
 			return false;
 		}
 
 		// Take power
-		this.takePowerFromNetwork( amountToDrainFromContainer, Actionable.MODULATE );
+		this.extractPowerForEssentiaTransfer( amountToDrainFromContainer, Actionable.MODULATE );
 
 		// Inject
 		this.injectFluid( toFill, Actionable.MODULATE );
@@ -351,24 +346,6 @@ public abstract class AEPartEssentiaIO
 		}
 
 		return monitor.injectItems( toInject, action, this.asMachineSource );
-	}
-
-	protected boolean takePowerFromNetwork( final int essentiaAmount, final Actionable mode )
-	{
-		// Get the energy grid
-		IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
-
-		// Ensure we have a grid
-		if( eGrid == null )
-		{
-			return false;
-		}
-
-		// Calculate amount of power to take
-		double powerDrain = AEPartEssentiaIO.POWER_DRAIN_PER_ESSENTIA * essentiaAmount;
-
-		// Extract
-		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
 	}
 
 	public boolean addFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
@@ -441,7 +418,7 @@ public abstract class AEPartEssentiaIO
 		}
 
 		// Add upgrades to drops
-		for( int slotIndex = 0; slotIndex < AEPartEssentiaIO.UPGRADE_INVENTORY_SIZE; slotIndex++ )
+		for( int slotIndex = 0; slotIndex < AbstractAEPartEssentiaIOBus.UPGRADE_INVENTORY_SIZE; slotIndex++ )
 		{
 			// Get the upgrade card in this slot
 			ItemStack slotStack = this.upgradeInventory.getStackInSlot( slotIndex );
@@ -462,7 +439,7 @@ public abstract class AEPartEssentiaIO
 	@Override
 	public double getIdlePowerUsage()
 	{
-		return AEPartEssentiaIO.IDLE_POWER_DRAIN;
+		return AbstractAEPartEssentiaIOBus.IDLE_POWER_DRAIN;
 	}
 
 	/**
@@ -675,17 +652,17 @@ public abstract class AEPartEssentiaIO
 		super.readFromNBT( data );
 
 		// Read redstone mode
-		if( data.hasKey( AEPartEssentiaIO.NBT_KEY_REDSTONE_MODE ) )
+		if( data.hasKey( AbstractAEPartEssentiaIOBus.NBT_KEY_REDSTONE_MODE ) )
 		{
-			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( AEPartEssentiaIO.NBT_KEY_REDSTONE_MODE )];
+			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( AbstractAEPartEssentiaIOBus.NBT_KEY_REDSTONE_MODE )];
 		}
 
 		// Read filters
-		for( int index = 0; index < AEPartEssentiaIO.MAX_FILTER_SIZE; index++ )
+		for( int index = 0; index < AbstractAEPartEssentiaIOBus.MAX_FILTER_SIZE; index++ )
 		{
-			if( data.hasKey( AEPartEssentiaIO.NBT_KEY_FILTER_NUMBER + index ) )
+			if( data.hasKey( AbstractAEPartEssentiaIOBus.NBT_KEY_FILTER_NUMBER + index ) )
 			{
-				String aspectTag = data.getString( AEPartEssentiaIO.NBT_KEY_FILTER_NUMBER + index );
+				String aspectTag = data.getString( AbstractAEPartEssentiaIOBus.NBT_KEY_FILTER_NUMBER + index );
 
 				// TODO: Remove legacy check in a few versions....
 				if( !aspectTag.equals( "" ) )
@@ -696,9 +673,9 @@ public abstract class AEPartEssentiaIO
 		}
 
 		// Read upgrade inventory
-		if( data.hasKey( AEPartEssentiaIO.NBT_KEY_UPGRADE_INV ) )
+		if( data.hasKey( AbstractAEPartEssentiaIOBus.NBT_KEY_UPGRADE_INV ) )
 		{
-			this.upgradeInventory.readFromNBT( data, AEPartEssentiaIO.NBT_KEY_UPGRADE_INV );
+			this.upgradeInventory.readFromNBT( data, AbstractAEPartEssentiaIOBus.NBT_KEY_UPGRADE_INV );
 
 			this.onInventoryChanged( this.upgradeInventory );
 		}
@@ -765,10 +742,10 @@ public abstract class AEPartEssentiaIO
 		super.writeToNBT( data );
 
 		// Write the redstone mode
-		data.setInteger( AEPartEssentiaIO.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
+		data.setInteger( AbstractAEPartEssentiaIOBus.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
 
 		// Write each filter
-		for( int i = 0; i < AEPartEssentiaIO.MAX_FILTER_SIZE; i++ )
+		for( int i = 0; i < AbstractAEPartEssentiaIOBus.MAX_FILTER_SIZE; i++ )
 		{
 			Aspect aspect = this.filteredAspects.get( i );
 			String aspectTag = "";
@@ -778,13 +755,13 @@ public abstract class AEPartEssentiaIO
 				aspectTag = aspect.getTag();
 			}
 
-			data.setString( AEPartEssentiaIO.NBT_KEY_FILTER_NUMBER + i, aspectTag );
+			data.setString( AbstractAEPartEssentiaIOBus.NBT_KEY_FILTER_NUMBER + i, aspectTag );
 		}
 
 		// Write the upgrade inventory
 		if( !this.upgradeInventory.isEmpty() )
 		{
-			this.upgradeInventory.writeToNBT( data, AEPartEssentiaIO.NBT_KEY_UPGRADE_INV );
+			this.upgradeInventory.writeToNBT( data, AbstractAEPartEssentiaIOBus.NBT_KEY_UPGRADE_INV );
 		}
 	}
 

@@ -23,7 +23,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaExportBus
-	extends AEPartEssentiaIO
+	extends AbstractAEPartEssentiaIOBus
 {
 
 	private static final String NBT_KEY_VOID = "IsVoidAllowed";
@@ -48,16 +48,6 @@ public class AEPartEssentiaExportBus
 		new PacketClientEssentiaIOBus().createVoidModeUpdate( player, this.isVoidAllowed ).sendPacketToPlayer();
 	}
 
-	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	protected boolean canPlayerOpenGui( final int playerID )
-	{
-		// Does the player have export permissions
-		return this.doesPlayerHaveSecurityClearance( playerID, SecurityPermissions.EXTRACT );
-	}
-
 	@Override
 	public boolean aspectTransferAllowed( final Aspect aspect )
 	{
@@ -68,6 +58,16 @@ public class AEPartEssentiaExportBus
 	public int cableConnectionRenderTo()
 	{
 		return 5;
+	}
+
+	/**
+	 * Checks if the specified player can open the gui.
+	 */
+	@Override
+	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
+	{
+		// Does the player have export permissions
+		return this.doesPlayerHavePermission( player, SecurityPermissions.EXTRACT );
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class AEPartEssentiaExportBus
 
 			// Do we have the power to transfer this amount?
 			filledAmountEU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( filledAmountFU );
-			if( !this.takePowerFromNetwork( filledAmountEU, Actionable.SIMULATE ) )
+			if( !this.extractPowerForEssentiaTransfer( filledAmountEU, Actionable.SIMULATE ) )
 			{
 				// Not enough power, abort
 				return false;
@@ -158,7 +158,7 @@ public class AEPartEssentiaExportBus
 			EssentiaTileContainerHelper.instance.injectIntoContainer( this.facingContainer, extractedStack, Actionable.MODULATE );
 
 			// Take the power required for the filled amount
-			this.takePowerFromNetwork( filledAmountEU, Actionable.MODULATE );
+			this.extractPowerForEssentiaTransfer( filledAmountEU, Actionable.MODULATE );
 
 			// Take essentia from the network
 			this.extractFluid( EssentiaConversionHelper.instance.createAEFluidStackInFluidUnits( essentiaGas, filledAmountFU ), Actionable.MODULATE );

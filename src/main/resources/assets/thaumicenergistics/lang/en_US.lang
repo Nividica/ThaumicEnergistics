@@ -24,6 +24,7 @@ thaumicenergistics.aeparts.essentia.terminal.name=Essentia Terminal
 thaumicenergistics.aeparts.arcane.crafting.terminal.name=Arcane Crafting Terminal
 thaumicenergistics.aeparts.vis.interface.name=Vis Relay Interface
 thaumicenergistics.aeparts.essentia.storage.monitor.name=Essentia Storage Monitor
+thaumicenergistics.aeparts.essentia.conversion.monitor.name=Essentia Conversion Monitor
 
 #Items
 thaumicenergistics.item.essentia.cell.1k.name=ME 1k Essentia Storage Cell
@@ -104,7 +105,8 @@ thaumicenergistics.research_page.TEARCANETERM.1=You have discovered that using p
 # Research Essentia terminal
 tc.research_name.thaumicenergistics.TEESSTERM=Essentia Monitoring
 tc.research_text.thaumicenergistics.TEESSTERM=Knowing how much you have.
-thaumicenergistics.research_page.TEESSTERM.1=The §lEssentia Terminal§r and §lWireless Essentia Terminal§r allows you to view how much essentia is stored within the network, and provides a way to fill and drain essentia containers within the terminal.<BR>The §lEssentia Level Emitter§r provides a redstone signal when the appropriate conditions are met.<BR>The §lEssentia Storage Monitor§r allows you to see how much of certain aspect is in the system at a glance.
+thaumicenergistics.research_page.TEESSTERM.1=The §lEssentia Terminal§r and §lWireless Essentia Terminal§r allows you to view how much essentia is stored within the network, and provides a way to fill and drain essentia containers within the terminal.<BR>The §lEssentia Level Emitter§r provides a redstone signal when the level of essentia in the network falls below or rises above a set amount.
+thaumicenergistics.research_page.TEESSTERM.2=The §lEssentia Storage Monitor§r & §lEssentia Conversion Monitor§r allow you to see how much of an aspect is in the network at a glance. The conversion monitor also allows you to insert and extract essentia from the network.<BR>Right-clicking with a wrench will lock/unlock the monitor.<BR>Right-clicking an unlocked monitor with a label or filled jar or phial will set the displayed aspect, and right-clicking with an empty hand will clear aspect.<BR>Right-clicking a locked conversion monitor will fill jar or phial and Shift-Right-Clicking will empty them.<BR>Shift-Double-Right-Click will empty all essentia from your inventory.
 
 # Research Essentia Provider
 tc.research_name.thaumicenergistics.TEESSPROV=Essentia Provider

@@ -13,6 +13,7 @@ import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.items.ItemEssentiaCell;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
+import thaumicenergistics.parts.AbstractAEPartBase;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
@@ -172,7 +173,7 @@ public class ContainerEssentiaCell
 			if( eGrid != null )
 			{
 				// Calculate the amount of power to drain
-				double powerRequired = AbstractContainerCellTerminalBase.POWER_PER_TRANSFER * amountOfEssentiaTransfered;
+				double powerRequired = AbstractAEPartBase.POWER_DRAIN_PER_ESSENTIA * amountOfEssentiaTransfered;
 
 				// Drain power
 				return( eGrid.extractAEPower( powerRequired, mode, PowerMultiplier.CONFIG ) >= powerRequired );

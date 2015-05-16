@@ -367,9 +367,11 @@ public class ResearchRegistry
 
 		// Set the pages
 		ResearchPage[] etPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 1 ) ),
+						new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 2 ) ),
 						new ResearchPage( RecipeRegistry.PART_ESSENTIA_TERMINAL ), new ResearchPage( RecipeRegistry.WIRELESS_ESSENTIA_TERMINAL ),
 						new ResearchPage( RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER ),
-						new ResearchPage( RecipeRegistry.PART_ESSENTIA_STORAGE_MONITOR ) };
+						new ResearchPage( RecipeRegistry.PART_ESSENTIA_STORAGE_MONITOR ),
+						new ResearchPage( RecipeRegistry.PART_ESSENTIA_CONVERSION_MONITOR ) };
 
 		// Create the IO research
 		ResearchTypes.ESSENTIATERMINAL.createResearchItem( etAspectList, COMPLEXITY_SMALL, etIcon, etPages );
