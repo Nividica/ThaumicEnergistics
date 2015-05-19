@@ -23,7 +23,7 @@ public interface ITransportPermissions
 	 * @param tileClass
 	 * @return True if added to the list or already present, False otherwise.
 	 */
-	public boolean addAspectContainerTileToExtractPermissions( Class<? extends TileEntity> tileClass );
+	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToExtractPermissions( Class<T> tileClass );
 
 	/**
 	 * Adds a tile entity to the inject whitelist.
@@ -32,7 +32,7 @@ public interface ITransportPermissions
 	 * @param tileClass
 	 * @return True if added to the list, False if not.
 	 */
-	public boolean addAspectContainerTileToInjectPermissions( Class<? extends TileEntity> tileClass );
+	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToInjectPermissions( Class<T> tileClass );
 
 	/**
 	 * Adds an item to the whitelist that must match the specified damage

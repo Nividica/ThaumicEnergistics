@@ -62,7 +62,7 @@ public enum AEStateIconsEnum
 	/**
 	 * Width and height of standard icons.
 	 */
-	private static final int STANDARD_ICON_SIZE = 16;
+	public static final int STANDARD_ICON_SIZE = 16;
 
 	/**
 	 * X position in the texture this icon is located at.

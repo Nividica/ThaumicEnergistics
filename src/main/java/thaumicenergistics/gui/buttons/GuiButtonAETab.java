@@ -1,8 +1,11 @@
 package thaumicenergistics.gui.buttons;
 
 import java.util.List;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.StatCollector;
+import org.lwjgl.opengl.GL11;
 import thaumicenergistics.texture.AEStateIconsEnum;
+import thaumicenergistics.texture.IStateIconTexture;
 
 public class GuiButtonAETab
 	extends AbstractStateGuiButton
@@ -28,7 +31,7 @@ public class GuiButtonAETab
 	 */
 	protected AEStateIconsEnum icon;
 
-	public GuiButtonAETab( final int ID, final int xPosition, final int yPosition, final AEStateIconsEnum icon, final String unlocalizedTooltip )
+	public GuiButtonAETab( final int ID, final int xPosition, final int yPosition, final IStateIconTexture icon, final String unlocalizedTooltip )
 	{
 		// Call super
 		super( ID, xPosition, yPosition, GuiButtonAETab.BUTTON_WIDTH, GuiButtonAETab.BUTTON_HEIGHT, icon, GuiButtonAETab.ICON_X_POSITION,
@@ -36,6 +39,24 @@ public class GuiButtonAETab
 
 		// Set the tooltip
 		this.tooltipMessageUnlocalized = unlocalizedTooltip;
+	}
+
+	@Override
+	public void drawButton( final Minecraft minecraftInstance, final int x, final int y )
+	{
+		// Full white
+		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+
+		// Draw the tab background
+		this.drawIcon( minecraftInstance, AEStateIconsEnum.TAB_BUTTON, this.xPosition, this.yPosition, this.width, this.height );
+
+		if( this.stateIcon != null )
+		{
+			// Draw the overlay icon
+			this.drawIcon( minecraftInstance, this.stateIcon, this.xPosition + this.iconXOffset, this.yPosition + this.iconYOffset,
+				AEStateIconsEnum.STANDARD_ICON_SIZE, AEStateIconsEnum.STANDARD_ICON_SIZE );
+		}
+
 	}
 
 	@Override

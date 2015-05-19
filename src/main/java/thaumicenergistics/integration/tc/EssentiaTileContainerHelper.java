@@ -296,6 +296,15 @@ public final class EssentiaTileContainerHelper
 		return stored;
 	}
 
+	/**
+	 * Attempts to inject the fluid into the container.
+	 * Returns the amount that was injected in milibuckets.
+	 * 
+	 * @param container
+	 * @param fluidStack
+	 * @param mode
+	 * @return
+	 */
 	public long injectIntoContainer( final IAspectContainer container, final IAEFluidStack fluidStack, final Actionable mode )
 	{
 		// Do we have an input?
@@ -332,6 +341,16 @@ public final class EssentiaTileContainerHelper
 		return this.injectIntoContainer( container, (int)amountToFill, gasAspect, mode );
 	}
 
+	/**
+	 * Attempts to inject the fluid into the container.
+	 * Returns the amount that was injected in milibuckets.
+	 * 
+	 * @param container
+	 * @param amountToFillInEssentiaUnits
+	 * @param aspectToFill
+	 * @param mode
+	 * @return
+	 */
 	public long injectIntoContainer( final IAspectContainer container, int amountToFillInEssentiaUnits, final Aspect aspectToFill,
 										final Actionable mode )
 	{

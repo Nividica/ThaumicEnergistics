@@ -1,6 +1,8 @@
 package thaumicenergistics.inventory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
@@ -29,36 +31,72 @@ class HandlerEssentiaStorageBusContainer
 	 */
 	private IAspectContainer aspectContainer;
 
+	/**
+	 * Cached contents of the container.
+	 */
+	Hashtable<Aspect, Long> cachedContainerAspects = new Hashtable<Aspect, Long>();
+
 	public HandlerEssentiaStorageBusContainer( final AEPartEssentiaStorageBus part )
 	{
 		super( part );
 	}
 
 	/**
-	 * Returns true if there are no filters.
+	 * Adds a list of aspects stacks to a <Aspect,Long> dictionary.
 	 * 
-	 * @return
+	 * @param essentiaList
 	 */
-	private boolean allowAny()
+	private void addListToDictionary( final List<AspectStack> essentiaList, final Hashtable<Aspect, Long> dictionary )
 	{
-		// Are all filters null?
-		for( Aspect filteredAspect : this.filteredAspects )
+		// Add each essentia
+		if( essentiaList != null )
 		{
-			if( filteredAspect != null )
+			for( AspectStack stack : essentiaList )
 			{
-				// There is a filter
-				return false;
+				dictionary.put( stack.aspect, stack.amount );
 			}
 		}
+	}
 
-		// No filters
-		return true;
+	/**
+	 * Adjusts the cached aspect amount based on the specified delta.
+	 * Positive diff adds to the amount, negative diff removes from the
+	 * amount.
+	 * 
+	 * @param aspect
+	 * @param diff
+	 */
+	private void adjustCache( final Aspect aspect, final long diff )
+	{
+		long cachedAmount = 0;
+
+		// Does the cache have this aspect?
+		if( this.cachedContainerAspects.containsKey( aspect ) )
+		{
+			cachedAmount = this.cachedContainerAspects.get( aspect );
+		}
+
+		// Change the amount
+		long newAmount = cachedAmount + diff;
+
+		// Is there any amount left?
+		if( newAmount > 0 )
+		{
+			// Update the cache
+			this.cachedContainerAspects.put( aspect, newAmount );
+		}
+		// None left, was there some?
+		else if( cachedAmount > 0 )
+		{
+			// Remove from the cache
+			this.cachedContainerAspects.remove( aspect );
+		}
 	}
 
 	/**
 	 * Gets essentia stored in the container.
 	 */
-	private List<AspectStack> getAvailableEssentia()
+	private List<AspectStack> getContainerEssentia()
 	{
 		// Ensure there is a container
 		if( this.aspectContainer == null )
@@ -90,38 +128,24 @@ class HandlerEssentiaStorageBusContainer
 		boolean skipFilterCheck = this.allowAny();
 
 		// Add the essentia
-		for( AspectStack essentia : containerStacks )
+		for( AspectStack essentiaStack : containerStacks )
 		{
 			// Is the aspect in the filter?
-			if( skipFilterCheck || ( this.filteredAspects.contains( essentia.aspect ) ) )
+			if( skipFilterCheck || ( this.filteredAspects.contains( essentiaStack.aspect ) ) )
 			{
 				// Convert to fluid
-				GaseousEssentia gas = GaseousEssentia.getGasFromAspect( essentia.aspect );
+				GaseousEssentia gas = GaseousEssentia.getGasFromAspect( essentiaStack.aspect );
 
 				// Is there a fluid form of the aspect?
 				if( gas != null )
 				{
 					// Add to the list
-					essentiaList.add( new AspectStack( essentia.aspect, essentia.amount ) );
+					essentiaList.add( essentiaStack );
 				}
 			}
 		}
 
 		return essentiaList;
-	}
-
-	@Override
-	protected boolean canTransferGas( final GaseousEssentia essentiaGas )
-	{
-		// Are there no filters set?
-		if( this.allowAny() )
-		{
-			// Allow the storage bus to store anything when no filters set.
-			return true;
-		}
-
-		// Pass to super
-		return super.canTransferGas( essentiaGas );
 	}
 
 	@Override
@@ -246,6 +270,9 @@ class HandlerEssentiaStorageBusContainer
 
 			// Take power
 			this.partStorageBus.extractPowerForEssentiaTransfer( drainedAmount_EU, Actionable.MODULATE );
+
+			// Update cache
+			this.adjustCache( ( (GaseousEssentia)toDrain.getFluid() ).getAspect(), -drainedAmount_EU );
 		}
 
 		// Copy the request
@@ -265,7 +292,12 @@ class HandlerEssentiaStorageBusContainer
 	{
 		if( this.aspectContainer != null )
 		{
-			List<AspectStack> essentiaList = this.getAvailableEssentia();
+			// Get the contents of the container
+			List<AspectStack> essentiaList = this.getContainerEssentia();
+
+			// Update the cache
+			this.cachedContainerAspects.clear();
+			this.addListToDictionary( essentiaList, this.cachedContainerAspects );
 
 			if( essentiaList != null )
 			{
@@ -298,13 +330,6 @@ class HandlerEssentiaStorageBusContainer
 
 		// Get the fluid stack from the input
 		FluidStack toFill = input.getFluidStack();
-
-		// Ensure the bus can transfer the gas.
-		if( !this.canTransferGas( (GaseousEssentia)toFill.getFluid() ) )
-		{
-			// Can not inject this gas.
-			return input;
-		}
 
 		// Is void allowed, and we are attached to a void jar?
 		boolean canVoid = this.isVoidAllowed() && ( this.aspectContainer instanceof TileJarFillableVoid );
@@ -352,6 +377,9 @@ class HandlerEssentiaStorageBusContainer
 
 			// Convert the actual amount injected into Essentia units.
 			filled_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( filled_FU );
+
+			// Update the cache
+			this.adjustCache( ( (GaseousEssentia)toFill.getFluid() ).getAspect(), filled_EU );
 		}
 
 		// Calculate how much was left over
@@ -400,14 +428,26 @@ class HandlerEssentiaStorageBusContainer
 			{
 				// Set the container
 				this.aspectContainer = (IAspectContainer)tileEntity;
+
+				// Clear the cache
+				this.cachedContainerAspects.clear();
+
+				// Container changed
+				return true;
 			}
 
-			return true;
+			return false;
 		}
 
+		// Was the bus facing a container?
 		if( this.aspectContainer != null )
 		{
+			// Clear the reference
 			this.aspectContainer = null;
+
+			// Send one last tick
+			this.tickingRequest( null, 0 );
+
 			return true;
 		}
 
@@ -420,7 +460,80 @@ class HandlerEssentiaStorageBusContainer
 	@Override
 	public void tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
-		// Ignored
+		// Alteration list
+		List<IAEFluidStack> alterations = null;
+
+		// Create the checklist
+		HashSet<Aspect> aspectsToCheck = new HashSet<Aspect>();
+
+		// Get the current contents of the container
+		List<AspectStack> currentContainerContents = this.getContainerEssentia();
+
+		// Convert to dictionary
+		Hashtable<Aspect, Long> currentContainerAspects = new Hashtable<Aspect, Long>();
+		if( currentContainerContents != null )
+		{
+			this.addListToDictionary( currentContainerContents, currentContainerAspects );
+
+			// Add the current aspects to check list
+			aspectsToCheck.addAll( currentContainerAspects.keySet() );
+		}
+
+		// Add the cached aspects to check list
+		aspectsToCheck.addAll( this.cachedContainerAspects.keySet() );
+
+		// Is there anything to check?
+		if( aspectsToCheck.size() == 0 )
+		{
+			// Nothing to check.
+			return;
+		}
+
+		// Compare all amounts
+		for( Aspect aspect : aspectsToCheck )
+		{
+			// Value cached
+			long cachedAmount = 0;
+			if( this.cachedContainerAspects.containsKey( aspect ) )
+			{
+				cachedAmount = this.cachedContainerAspects.get( aspect );
+			}
+
+			// Current value
+			long currentAmount = 0;
+			if( currentContainerAspects.containsKey( aspect ) )
+			{
+				currentAmount = currentContainerAspects.get( aspect );
+			}
+
+			// Calculate the difference
+			long diff = currentAmount - cachedAmount;
+
+			// Do they differ?
+			if( diff != 0 )
+			{
+				// First alteration?
+				if( alterations == null )
+				{
+					// Create the list
+					alterations = new ArrayList<IAEFluidStack>();
+				}
+
+				// Create the alteration
+				alterations.add( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( aspect, diff ) );
+
+				// Update the cache
+				this.adjustCache( aspect, diff );
+			}
+		}
+
+		// Any alterations?
+		if( alterations != null )
+		{
+			// Post the changes
+			this.postAlterationToHostGrid( alterations );
+		}
+
 	}
 
 	/**

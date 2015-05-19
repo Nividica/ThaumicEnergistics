@@ -1,4 +1,13 @@
-﻿5/16/2015 0.8.10.1
+﻿5/19/2015 0.8.10.2
+  Bugfix: Essentia Storage Bus updates AE network if contents are externally changed.
+  Bugfix: Essentia Terminal sync issue if a cell is removed/added while viewing terminal.
+  Bugfix: Essentia Conversion Monitor crash.
+  Bugfix: Essentia Conversion Monitor no longer eats stacks.
+  Essentia Conversion Monitor: When shift-double-rightclicking the monitor only takes essentia matching the input aspect, instead of any essentia in the players inventory.
+  Bugfix: Priority tab icon size corrected.
+  Essentia storage bus can now be attached to a ME Condenser.
+
+5/16/2015 0.8.10.1
   Redundant code cleanup.
   Added Essentia Conversion Monitor.
 

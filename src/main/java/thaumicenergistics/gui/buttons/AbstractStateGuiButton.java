@@ -117,27 +117,24 @@ public abstract class AbstractStateGuiButton
 	 * Draws an icon to the screen.
 	 * 
 	 * @param minecraftInstance
-	 * @param iconSpriteSheet
-	 * @param iconU
-	 * @param iconV
-	 * @param iconWidth
-	 * @param iconHeight
-	 * @param width
-	 * @param height
+	 * @param icon
 	 * @param xPos
 	 * @param yPos
+	 * @param iconWidth
+	 * @param iconHeight
 	 */
-	protected void drawIcon( final Minecraft minecraftInstance, final IStateIconTexture icon, final int xPos, final int yPos )
+	protected void drawIcon( final Minecraft minecraftInstance, final IStateIconTexture icon, final int xPos, final int yPos, final int iconWidth,
+								final int iconHeight )
 	{
 		// Bind the sheet
 		minecraftInstance.getTextureManager().bindTexture( icon.getTexture() );
 
 		// Draw the icon
-		this.drawScaledTexturedModalRect( xPos, yPos, icon.getU(), icon.getV(), this.width, this.height, icon.getWidth(), icon.getHeight() );
+		this.drawScaledTexturedModalRect( xPos, yPos, icon.getU(), icon.getV(), iconWidth, iconHeight, icon.getWidth(), icon.getHeight() );
 	}
 
 	@Override
-	public final void drawButton( final Minecraft minecraftInstance, final int x, final int y )
+	public void drawButton( final Minecraft minecraftInstance, final int x, final int y )
 	{
 		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -145,13 +142,14 @@ public abstract class AbstractStateGuiButton
 		if( this.backgroundIcon != null )
 		{
 			// Draw the background
-			this.drawIcon( minecraftInstance, this.backgroundIcon, this.xPosition, this.yPosition );
+			this.drawIcon( minecraftInstance, this.backgroundIcon, this.xPosition, this.yPosition, this.width, this.height );
 		}
 
 		if( this.stateIcon != null )
 		{
 			// Draw the overlay icon
-			this.drawIcon( minecraftInstance, this.stateIcon, this.xPosition + this.iconXOffset, this.yPosition + this.iconYOffset );
+			this.drawIcon( minecraftInstance, this.stateIcon, this.xPosition + this.iconXOffset, this.yPosition + this.iconYOffset, this.width,
+				this.height );
 		}
 
 	}

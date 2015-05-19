@@ -117,26 +117,6 @@ public class AEPartEssentiaStorageBus
 	}
 
 	/**
-	 * Notifies the grid that the storage bus "contents" have changed.
-	 */
-	private void postGridUpdateEvent()
-	{
-		// Does the storage bus have a grid node?
-		if( this.node != null )
-		{
-			// Get the grid.
-			IGrid grid = this.node.getGrid();
-
-			// Does the grid node have a grid?
-			if( grid != null )
-			{
-				// Post an update to the grid
-				grid.postEvent( new MENetworkCellArrayUpdate() );
-			}
-		}
-	}
-
-	/**
 	 * Adds a new filter from the specified itemstack.
 	 * 
 	 * @param player
@@ -420,6 +400,26 @@ public class AEPartEssentiaStorageBus
 			{
 				// Send the update event
 				this.postGridUpdateEvent();
+			}
+		}
+	}
+
+	/**
+	 * Notifies the grid that the storage bus contents have changed.
+	 */
+	public void postGridUpdateEvent()
+	{
+		// Does the storage bus have a grid node?
+		if( this.node != null )
+		{
+			// Get the grid.
+			IGrid grid = this.node.getGrid();
+
+			// Does the grid node have a grid?
+			if( grid != null )
+			{
+				// Post an update to the grid
+				grid.postEvent( new MENetworkCellArrayUpdate() );
 			}
 		}
 	}

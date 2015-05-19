@@ -11,6 +11,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.parts.misc.PartInterface;
+import appeng.tile.misc.TileCondenser;
 import appeng.tile.misc.TileInterface;
 
 /**
@@ -36,6 +37,11 @@ public class HandlerEssentiaStorageBusDuality
 	 * Handler used when facing an interface.
 	 */
 	private HandlerEssentiaStorageBusInterface interfaceHandler;
+
+	/**
+	 * Handler used when facing a condenser.
+	 */
+	private HandlerEssentiaStorageBusCondenser condenserHandler;
 
 	/**
 	 * Creates the handler.
@@ -176,18 +182,35 @@ public class HandlerEssentiaStorageBusDuality
 				newHandler = this.interfaceHandler;
 			}
 		}
-
-		// Has the handler changed?
-		if( ( this.internalHandler != null ) && ( this.internalHandler != newHandler ) )
+		else if( tileEntity instanceof TileCondenser )
 		{
-			// Let the old handler know the neighbor changed
-			doUpdate |= this.internalHandler.onNeighborChange();
+			// Create the interface if needed
+			if( this.condenserHandler == null )
+			{
+				// Create the handler
+				this.condenserHandler = new HandlerEssentiaStorageBusCondenser( this.partStorageBus );
+			}
+
+			// Set the new handler
+			newHandler = this.condenserHandler;
+
 		}
 
-		// Set the handler
-		this.internalHandler = newHandler;
+		// Has the handler changed?
+		if( this.internalHandler != newHandler )
+		{
+			// Was there a previous handler?
+			if( this.internalHandler != null )
+			{
+				// Let the old handler know the neighbor changed
+				doUpdate |= this.internalHandler.onNeighborChange();
+			}
 
-		// Pass to handler if has one
+			// Set the new handler
+			this.internalHandler = newHandler;
+		}
+
+		// Pass to internal handler
 		if( this.internalHandler != null )
 		{
 			// Update it

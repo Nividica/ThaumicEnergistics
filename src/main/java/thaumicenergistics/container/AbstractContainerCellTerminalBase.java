@@ -967,7 +967,11 @@ public abstract class AbstractContainerCellTerminalBase
 	@Override
 	public final void onListUpdate()
 	{
-		// Ignored.
+		// Update our cached list of aspects
+		this.aspectStackList = EssentiaConversionHelper.instance.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+
+		// Send a full update
+		this.onClientRequestFullUpdate();
 	}
 
 	/**

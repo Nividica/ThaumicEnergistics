@@ -121,52 +121,44 @@ class ThETransportPermissions
 	private final List<Class<? extends TileEntity>> tileInjectWhiteList = new ArrayList<Class<? extends TileEntity>>();
 
 	@Override
-	public boolean addAspectContainerTileToExtractPermissions( final Class<? extends TileEntity> tileClass )
+	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToExtractPermissions( final Class<T> tileClass )
 	{
 		// Ensure we have a tile
 		if( tileClass != null )
 		{
-			// Ensure it is a container
-			if( IAspectContainer.class.isAssignableFrom( tileClass ) )
+			// Is it already registered?
+			if( !this.tileExtractWhiteList.contains( tileClass ) )
 			{
-				// Is it already registered?
-				if( !this.tileExtractWhiteList.contains( tileClass ) )
-				{
-					// Add to the list
-					this.tileExtractWhiteList.add( tileClass );
+				// Add to the list
+				this.tileExtractWhiteList.add( tileClass );
 
-					// Log the addition
-					ThELog.info( "Added %s to extraction whitelist.", tileClass.toString() );
-				}
-
-				return true;
+				// Log the addition
+				ThELog.info( "Added %s to extraction whitelist.", tileClass.toString() );
 			}
+
+			return true;
 		}
 
 		return false;
 	}
 
 	@Override
-	public boolean addAspectContainerTileToInjectPermissions( final Class<? extends TileEntity> tileClass )
+	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToInjectPermissions( final Class<T> tileClass )
 	{
 		// Ensure we have a tile
 		if( tileClass != null )
 		{
-			// Ensure it is a container
-			if( IAspectContainer.class.isAssignableFrom( tileClass ) )
+			// Is it already registered?
+			if( !this.tileInjectWhiteList.contains( tileClass ) )
 			{
-				// Is it already registered?
-				if( !this.tileInjectWhiteList.contains( tileClass ) )
-				{
-					// Add to the list
-					this.tileInjectWhiteList.add( tileClass );
+				// Add to the list
+				this.tileInjectWhiteList.add( tileClass );
 
-					// Log the addition
-					ThELog.info( "Added %s to injection whitelist.", tileClass.toString() );
-				}
-
-				return true;
+				// Log the addition
+				ThELog.info( "Added %s to injection whitelist.", tileClass.toString() );
 			}
+
+			return true;
 		}
 
 		return false;

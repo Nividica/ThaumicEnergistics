@@ -83,6 +83,27 @@ public abstract class AbstractHandlerEssentiaStorageBus
 	}
 
 	/**
+	 * Returns true if there are no filters.
+	 * 
+	 * @return
+	 */
+	protected boolean allowAny()
+	{
+		// Are all filters null?
+		for( Aspect filteredAspect : this.filteredAspects )
+		{
+			if( filteredAspect != null )
+			{
+				// There is a filter
+				return false;
+			}
+		}
+
+		// No filters
+		return true;
+	}
+
+	/**
 	 * Verifies that the requested fluidstack to insert/extract is both an
 	 * Essentia Gas and white-listed, or not black-listed.
 	 * 
@@ -92,6 +113,13 @@ public abstract class AbstractHandlerEssentiaStorageBus
 	 */
 	protected boolean canTransferGas( final GaseousEssentia essentiaGas )
 	{
+		// Can any aspect be transfered?
+		if( this.allowAny() )
+		{
+			// Allow the transfer
+			return true;
+		}
+
 		/*
 		 * Validate based on if the aspect is filtered and the storage bus is
 		 * inverted. See explanation below.
@@ -293,10 +321,10 @@ public abstract class AbstractHandlerEssentiaStorageBus
 	public abstract IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final BaseActionSource source );
 
 	/**
-	 * Checks if the specified fluid is allowed to be transfered.
+	 * Checks if the specified is prioritized.
 	 */
 	@Override
-	public boolean isPrioritized( final IAEFluidStack fluidStack )
+	public final boolean isPrioritized( final IAEFluidStack fluidStack )
 	{
 		// Ensure the fluid stack is an essentia gas
 		if( !this.isFluidEssentiaGas( fluidStack ) )
@@ -305,8 +333,15 @@ public abstract class AbstractHandlerEssentiaStorageBus
 			return false;
 		}
 
-		// Can the bus transfer this gas?
-		return this.canTransferGas( (GaseousEssentia)fluidStack.getFluidStack().getFluid() );
+		// Is the aspect prioritized?
+		try
+		{
+			return this.filteredAspects.contains( ( (GaseousEssentia)fluidStack.getFluidStack().getFluid() ).getAspect() );
+		}
+		catch( Exception e )
+		{
+			return false;
+		}
 	}
 
 	/**

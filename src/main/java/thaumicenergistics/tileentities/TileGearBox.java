@@ -286,6 +286,8 @@ public class TileGearBox
 	 */
 	public boolean crank()
 	{
+		// TODO: Thaumium Gearbox: Should golem strength play a factor here?
+
 		// Don't do work on client side
 		if( EffectiveSide.isClientSide() )
 		{

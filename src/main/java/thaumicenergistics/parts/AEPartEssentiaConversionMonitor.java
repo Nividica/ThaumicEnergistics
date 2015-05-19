@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
@@ -28,11 +29,25 @@ import appeng.util.Platform;
 public class AEPartEssentiaConversionMonitor
 	extends AEPartEssentiaStorageMonitor
 {
+	/**
+	 * The number of ticks considered to be a double click.
+	 */
 	private static long DOUBLE_CLICK_TICKS = 2 * 20;
 
-	private int lastPlayerSneakInteractionID = -1;
+	/**
+	 * The last player ID that deposited essentia
+	 */
+	private int depositedPlayerID = -1;
 
-	private int lastPlayerSneakInteractionTick = 0;
+	/**
+	 * The tick count of the last deposited essentia
+	 */
+	private int depositedTick = 0;
+
+	/**
+	 * The aspect that was last deposited.
+	 */
+	private Aspect depositedAspect = null;
 
 	/**
 	 * Network source representing this part.
@@ -52,9 +67,10 @@ public class AEPartEssentiaConversionMonitor
 	 * 
 	 * @param player
 	 * @param slotIndex
+	 * @param mustMatchAspect
 	 * @return
 	 */
-	private boolean drainEssentiaContainer( final EntityPlayer player, final int slotIndex )
+	private boolean drainEssentiaContainer( final EntityPlayer player, final int slotIndex, final Aspect mustMatchAspect )
 	{
 		// Get the container
 		ItemStack container = player.inventory.getStackInSlot( slotIndex );
@@ -66,6 +82,20 @@ public class AEPartEssentiaConversionMonitor
 		if( request == null )
 		{
 			return false;
+		}
+
+		// Get the aspect
+		Aspect containerAspect = ( (GaseousEssentia)request.getFluid() ).getAspect();
+
+		// Is there a must match aspect?
+		if( mustMatchAspect != null )
+		{
+			// Do the aspects match?
+			if( containerAspect != mustMatchAspect )
+			{
+				// Mismatch
+				return false;
+			}
 		}
 
 		// Calculate how much to take from the container
@@ -82,7 +112,11 @@ public class AEPartEssentiaConversionMonitor
 		IAEFluidStack rejected = this.injectFluid( request, Actionable.MODULATE );
 
 		// How much is left over?
-		int rejectedAmount_E = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( rejected.getStackSize() );
+		int rejectedAmount_E = 0;
+		if( rejected != null )
+		{
+			rejectedAmount_E = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( rejected.getStackSize() );
+		}
 
 		// Update the drain amount
 		drainAmount_E = drainAmount_E - rejectedAmount_E;
@@ -93,14 +127,21 @@ public class AEPartEssentiaConversionMonitor
 			return false;
 		}
 
-		// Extract power
-		this.extractPowerForEssentiaTransfer( drainAmount_E, Actionable.MODULATE );
-
 		// Drain the container
 		ImmutablePair<Integer, ItemStack> drained = EssentiaItemContainerHelper.instance.extractFromContainer( container, drainAmount_E );
 
 		// Update the player inventory
-		player.inventory.setInventorySlotContents( slotIndex, drained.right );
+		player.inventory.decrStackSize( slotIndex, 1 );
+		if( drained != null )
+		{
+			player.inventory.addItemStackToInventory( drained.right );
+		}
+
+		// Extract power
+		this.extractPowerForEssentiaTransfer( drainAmount_E, Actionable.MODULATE );
+
+		// Set the last aspect
+		this.depositedAspect = containerAspect;
 
 		return true;
 
@@ -239,9 +280,38 @@ public class AEPartEssentiaConversionMonitor
 	 */
 	private void insertAllEssentiaIntoNetwork( final EntityPlayer player )
 	{
+		ItemStack tracking = null;
+		int prevStackSize = 0;
+
 		for( int slotIndex = 0; slotIndex < player.inventory.getSizeInventory(); ++slotIndex )
 		{
-			this.drainEssentiaContainer( player, slotIndex );
+			// Get the stack
+			tracking = player.inventory.getStackInSlot( slotIndex );
+
+			// Is it null or empty?
+			if( ( tracking == null ) || ( ( prevStackSize = tracking.stackSize ) == 0 ) )
+			{
+				// Empty slot
+				continue;
+			}
+
+			// Attempt to drain
+			this.drainEssentiaContainer( player, slotIndex, this.depositedAspect );
+
+			// Get the updated stack
+			tracking = player.inventory.getStackInSlot( slotIndex );
+
+			// Is there anything left
+			if( ( tracking != null ) && ( tracking.stackSize > 0 ) )
+			{
+				// Did the stack size change?
+				if( prevStackSize != tracking.stackSize )
+				{
+					// Visit this slot again
+					--slotIndex;
+				}
+			}
+
 		}
 	}
 
@@ -253,10 +323,10 @@ public class AEPartEssentiaConversionMonitor
 	private void markFirstClick( final EntityPlayer player )
 	{
 		// Set the ID
-		this.lastPlayerSneakInteractionID = WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
+		this.depositedPlayerID = WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
 
 		// Set the time
-		this.lastPlayerSneakInteractionTick = MinecraftServer.getServer().getTickCounter();
+		this.depositedTick = MinecraftServer.getServer().getTickCounter();
 	}
 
 	/**
@@ -268,15 +338,14 @@ public class AEPartEssentiaConversionMonitor
 	private boolean wasDoubleClick( final EntityPlayer player )
 	{
 		// Is this the same player that just used the monitor?
-		if( ( this.lastPlayerSneakInteractionID != -1 ) &&
-						( this.lastPlayerSneakInteractionID == WorldSettings.getInstance().getPlayerID( player.getGameProfile() ) ) )
+		if( ( this.depositedPlayerID != -1 ) && ( this.depositedPlayerID == WorldSettings.getInstance().getPlayerID( player.getGameProfile() ) ) )
 		{
 			// Was it a double click?
-			if( MinecraftServer.getServer().getTickCounter() - this.lastPlayerSneakInteractionTick <= AEPartEssentiaConversionMonitor.DOUBLE_CLICK_TICKS )
+			if( MinecraftServer.getServer().getTickCounter() - this.depositedTick <= AEPartEssentiaConversionMonitor.DOUBLE_CLICK_TICKS )
 			{
 				// Reset last interaction trackers
-				this.lastPlayerSneakInteractionID = -1;
-				this.lastPlayerSneakInteractionTick = 0;
+				this.depositedPlayerID = -1;
+				this.depositedTick = 0;
 				return true;
 			}
 		}
@@ -304,7 +373,7 @@ public class AEPartEssentiaConversionMonitor
 		return monitor.extractItems( toExtract, mode, this.asMachineSource );
 	}
 
-	// TODO: This should be generalized
+	// TODO: This should be generalized/abstracted better
 	/**
 	 * Injects fluid into the ME network.
 	 * Returns what was not stored.
@@ -393,7 +462,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Drain the container
-		boolean didDrain = this.drainEssentiaContainer( player, player.inventory.currentItem );
+		boolean didDrain = this.drainEssentiaContainer( player, player.inventory.currentItem, null );
 		if( didDrain )
 		{
 			this.markFirstClick( player );

@@ -33,7 +33,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.8.10.1"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.8.10.2"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -46,12 +46,12 @@ public class ThaumicEnergistics
 	public static CommonProxy proxy;
 
 	/**
-	 * Mod configuration
+	 * Configuration.
 	 */
 	public static IConfig config;
 
 	/**
-	 * Creative tab that displays this mods items
+	 * Creative tab.
 	 */
 	public static CreativeTabs ThETab = new CreativeTabs( "ThaumicEnergistics" )
 	{
@@ -162,8 +162,7 @@ public class ThaumicEnergistics
 		ThELog.endSection( "PreInit", startTime );
 	}
 
-	// TODO: Sync server configs
-	// TODO: Knowledge Inscriber GUI, add particles like focal manipulator
-	// TODO: Use area packets over tile sync when possible
+	// TODO: General: Sync server configs
+	// TODO: General: Use area packets over tile sync when possible
 
 }
