@@ -1,12 +1,11 @@
 package thaumicenergistics.proxy;
 
 import net.minecraftforge.oredict.OreDictionary;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.items.ItemMaterial.MaterialTypes;
 import thaumicenergistics.registries.BlockEnum;
+import thaumicenergistics.registries.FeatureRegistry;
 import thaumicenergistics.registries.ItemEnum;
-import thaumicenergistics.registries.RecipeRegistry;
-import thaumicenergistics.registries.ResearchRegistry;
 import thaumicenergistics.registries.TileEnum;
 import appeng.api.AEApi;
 import appeng.api.movable.IMovableRegistry;
@@ -23,6 +22,14 @@ public class CommonProxy
 		{
 			GameRegistry.registerBlock( block.getBlock(), block.getUnlocalizedName() );
 		}
+	}
+
+	/**
+	 * Registers all ThE features
+	 */
+	public void registerFeatures()
+	{
+		FeatureRegistry.instance().registerFeatures();
 	}
 
 	/**
@@ -44,15 +51,7 @@ public class CommonProxy
 		}
 
 		// Add iron gear to the oredic
-		OreDictionary.registerOre( "gearIron", MaterialTypes.IRON_GEAR.getItemStack() );
-	}
-
-	/**
-	 * Registers recipes with the game.
-	 */
-	public void registerRecipes()
-	{
-		RecipeRegistry.registerRecipies();
+		OreDictionary.registerOre( "gearIron", ThEApi.instance().items().IronGear.getStack() );
 	}
 
 	/**
@@ -64,17 +63,8 @@ public class CommonProxy
 	}
 
 	/**
-	 * Registers research with Thaumcraft.
-	 */
-	public void registerResearch()
-	{
-		ResearchRegistry.registerResearch();
-	}
-
-	/**
 	 * Adds tile entities to the AppEng2 SpatialIO whitelist
 	 */
-	@SuppressWarnings("unchecked")
 	public void registerSpatialIOMovables()
 	{
 		IMovableRegistry movableRegistry = AEApi.instance().registries().movable();
@@ -87,7 +77,6 @@ public class CommonProxy
 	/**
 	 * Registers tile entities with the game.
 	 */
-	@SuppressWarnings("unchecked")
 	public void registerTileEntities()
 	{
 		for( TileEnum tile : TileEnum.values() )

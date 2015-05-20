@@ -56,12 +56,17 @@ public class ThEDescription
 	@Override
 	public ItemStack getStacks( final int amount )
 	{
-		if( this.myItem == null )
+		if( this.myItem != null )
 		{
-			return null;
+			return new ItemStack( this.myItem, amount, this.itemMeta );
+		}
+		else if( this.myBlock != null )
+		{
+			return new ItemStack( this.myBlock, amount, this.itemMeta );
 		}
 
-		return new ItemStack( this.myItem, amount, this.itemMeta );
+		return null;
+
 	}
 
 }

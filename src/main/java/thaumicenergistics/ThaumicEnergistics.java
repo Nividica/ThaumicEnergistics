@@ -108,14 +108,11 @@ public class ThaumicEnergistics
 		EssentiaTileContainerHelper.instance.registerThaumcraftContainers();
 		EssentiaItemContainerHelper.instance.registerThaumcraftContainers();
 
-		// Register recipes
-		ThaumicEnergistics.proxy.registerRecipes();
+		// Register features
+		ThaumicEnergistics.proxy.registerFeatures();
 
 		// Register my tiles with SpatialIO
 		ThaumicEnergistics.proxy.registerSpatialIOMovables();
-
-		// Register TC research
-		ThaumicEnergistics.proxy.registerResearch();
 
 		// Register fluids
 		ThaumicEnergistics.proxy.registerFluids();

@@ -1,5 +1,8 @@
 ﻿5/19/2015 0.8.10.3
   Internal code cleanup.
+  Much more robust checking of disabled AE or TC features.
+  * I have tried to catch every possible issue that can arise from disabling features in either mod, but to say its complex is a bit of an understatement.
+  Essentia provider recipe change: Replaced one of the coalescence cores with a diffusion core.
 
 5/19/2015 0.8.10.2
   Bugfix: Essentia Storage Bus updates AE network if contents are externally changed.
