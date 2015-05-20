@@ -948,8 +948,12 @@ public class TileArcaneAssembler
 			// Load the info
 			this.visSourceInfo.readFromNBT( data );
 
-			// Inform the user
-			memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+			// Ensure there is valid data
+			if( this.visSourceInfo.hasSourceData() )
+			{
+				// Inform the user
+				memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+			}
 
 			// Mark that we need to save
 			this.markDirty();
@@ -1129,7 +1133,7 @@ public class TileArcaneAssembler
 		}
 
 		// Is the assembler linked to a vis relay?
-		if( this.visSourceInfo.getHasData() )
+		if( this.visSourceInfo.hasSourceData() )
 		{
 			// Increment the vis tick counter.
 			this.visTickCounter++ ;

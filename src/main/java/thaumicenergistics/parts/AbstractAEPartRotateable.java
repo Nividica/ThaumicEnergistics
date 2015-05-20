@@ -5,9 +5,11 @@ import java.io.IOException;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.util.EffectiveSide;
+import appeng.api.parts.PartItemStack;
 import appeng.util.Platform;
 
 public abstract class AbstractAEPartRotateable
@@ -47,10 +49,11 @@ public abstract class AbstractAEPartRotateable
 	@Override
 	public boolean onActivate( final EntityPlayer player, final Vec3 position )
 	{
+		// Get the host tile entity
+		TileEntity hte = this.getHostTile();
+
 		// Is the player not sneaking and using a wrench?
-		if( !player.isSneaking() &&
-						Platform.isWrench( player, player.inventory.getCurrentItem(), this.hostTile.xCoord, this.hostTile.yCoord,
-							this.hostTile.zCoord ) )
+		if( !player.isSneaking() && Platform.isWrench( player, player.inventory.getCurrentItem(), hte.xCoord, hte.yCoord, hte.zCoord ) )
 		{
 			if( EffectiveSide.isServerSide() )
 			{
@@ -77,11 +80,9 @@ public abstract class AbstractAEPartRotateable
 						break;
 				}
 
-				// Mark for sync
-				this.host.markForUpdate();
-
-				// Mark for save
-				this.host.markForSave();
+				// Mark for sync & save
+				this.markForUpdate();
+				this.markForSave();
 			}
 			return true;
 		}
@@ -133,16 +134,10 @@ public abstract class AbstractAEPartRotateable
 	 * Saves the rotation
 	 */
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
 	{
 		// Call super
-		super.writeToNBT( data );
-
-		// Don't write anything if the part is dropping.
-		if( this.nbtCalledForDrops )
-		{
-			return;
-		}
+		super.writeToNBT( data, saveType );
 
 		// Write the rotation
 		if( this.renderRotation != 0 )

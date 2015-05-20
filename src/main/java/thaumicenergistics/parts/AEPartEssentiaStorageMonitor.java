@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -35,6 +36,7 @@ import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
@@ -294,7 +296,7 @@ public class AEPartEssentiaStorageMonitor
 			this.essentiaWatcher.add( this.trackedEssentia.getGas() );
 
 			// Get the storage grid
-			IStorageGrid storageGrid = this.gridBlock.getStorageGrid();
+			IStorageGrid storageGrid = this.getGridBlock().getStorageGrid();
 
 			// Ensure there is a grid.
 			if( storageGrid != null )
@@ -314,8 +316,11 @@ public class AEPartEssentiaStorageMonitor
 	 */
 	private boolean didActivateChangeLockState( final EntityPlayer player, final ItemStack heldItem )
 	{
+		// Get the host tile entity
+		TileEntity hte = this.getHostTile();
+
 		// Is the item a wrench?
-		if( !player.isSneaking() && Platform.isWrench( player, heldItem, this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord ) )
+		if( !player.isSneaking() && Platform.isWrench( player, heldItem, hte.xCoord, hte.yCoord, hte.zCoord ) )
 		{
 			// Update the locked state
 			this.monitorLocked = !this.monitorLocked;
@@ -333,8 +338,8 @@ public class AEPartEssentiaStorageMonitor
 			}
 
 			// Mark for sync & save
-			this.host.markForUpdate();
-			this.host.markForSave();
+			this.markForUpdate();
+			this.markForSave();
 
 			return true;
 
@@ -410,11 +415,14 @@ public class AEPartEssentiaStorageMonitor
 		// Push the OpenGL attributes
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
+		// Get the side
+		ForgeDirection side = this.getSide();
+
 		// Adjust position based on cable side
-		GL11.glTranslated( this.cableSide.offsetX * 0.77, this.cableSide.offsetY * 0.77, this.cableSide.offsetZ * 0.77 );
+		GL11.glTranslated( side.offsetX * 0.77, side.offsetY * 0.77, side.offsetZ * 0.77 );
 
 		// Adjust scale and/or rotation based on cable side
-		switch ( this.cableSide )
+		switch ( side )
 		{
 			case DOWN:
 				GL11.glScalef( 1.0f, -1.0f, 1.0f );
@@ -584,8 +592,8 @@ public class AEPartEssentiaStorageMonitor
 		this.configureWatcher();
 
 		// Mark for sync & save
-		this.host.markForUpdate();
-		this.host.markForSave();
+		this.markForUpdate();
+		this.markForSave();
 
 		return true;
 	}
@@ -634,8 +642,8 @@ public class AEPartEssentiaStorageMonitor
 		this.configureWatcher();
 
 		// Mark for sync & save
-		this.host.markForUpdate();
-		this.host.markForSave();
+		this.markForUpdate();
+		this.markForSave();
 
 		return true;
 	}
@@ -783,7 +791,7 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Mark for sync
-		this.host.markForUpdate();
+		this.markForUpdate();
 
 	}
 
@@ -860,7 +868,7 @@ public class AEPartEssentiaStorageMonitor
 	public void renderDynamic( final double x, final double y, final double z, final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
 		// Skip if nothing to draw
-		if( ( this.isActive == false ) || ( !this.trackedEssentia.isValid() ) )
+		if( ( !this.isActive() ) || ( !this.trackedEssentia.isValid() ) )
 		{
 			return;
 		}
@@ -961,21 +969,21 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Dark corners
-		tessellator.setColorOpaque_I( this.host.getColor().blackVariant );
+		tessellator.setColorOpaque_I( this.getHost().getColor().blackVariant );
 		helper.renderFace( x, y, z, this.darkCornerTexture.getIcon(), ForgeDirection.SOUTH, renderer );
 
 		// Light corners
-		tessellator.setColorOpaque_I( this.host.getColor().mediumVariant );
+		tessellator.setColorOpaque_I( this.getHost().getColor().mediumVariant );
 		helper.renderFace( x, y, z, this.lightCornerTexture.getIcon(), ForgeDirection.SOUTH, renderer );
 
 		// Main face
-		tessellator.setColorOpaque_I( this.host.getColor().whiteVariant );
+		tessellator.setColorOpaque_I( this.getHost().getColor().whiteVariant );
 		helper.renderFace( x, y, z, CableBusTextures.PartConversionMonitor_Bright.getIcon(), ForgeDirection.SOUTH, renderer );
 
 		// Phial
 		if( !this.trackedEssentia.isValid() )
 		{
-			tessellator.setColorOpaque_I( this.host.getColor().mediumVariant );
+			tessellator.setColorOpaque_I( this.getHost().getColor().mediumVariant );
 			helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0], ForgeDirection.SOUTH, renderer );
 		}
 
@@ -1014,16 +1022,10 @@ public class AEPartEssentiaStorageMonitor
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
 	{
 		// Call super
-		super.writeToNBT( data );
-
-		// Don't write anything if the monitor is dropping.
-		if( this.nbtCalledForDrops )
-		{
-			return;
-		}
+		super.writeToNBT( data, saveType );
 
 		// Write locked
 		if( this.monitorLocked )

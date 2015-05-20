@@ -11,8 +11,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
 import thaumicenergistics.fluids.GaseousEssentia;
@@ -37,6 +39,7 @@ import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEFluidStack;
@@ -73,6 +76,11 @@ public class AEPartEssentiaLevelEmitter
 	private static final String NBT_KEY_IS_EMITTING = "emitting";
 
 	/**
+	 * Default redstone mode the part starts with.
+	 */
+	private static final RedstoneMode DEFAULT_REDSTONE_MODE = RedstoneMode.HIGH_SIGNAL;
+
+	/**
 	 * Aspect we are watching.
 	 */
 	private Aspect filterAspect;
@@ -80,7 +88,7 @@ public class AEPartEssentiaLevelEmitter
 	/**
 	 * Mode the emitter is in
 	 */
-	private RedstoneMode redstoneMode = RedstoneMode.HIGH_SIGNAL;
+	private RedstoneMode redstoneMode = AEPartEssentiaLevelEmitter.DEFAULT_REDSTONE_MODE;
 
 	/**
 	 * Threshold value
@@ -156,7 +164,7 @@ public class AEPartEssentiaLevelEmitter
 	private void checkRegistration()
 	{
 		// Get the storage grid
-		IStorageGrid storageGrid = this.gridBlock.getStorageGrid();
+		IStorageGrid storageGrid = this.getGridBlock().getStorageGrid();
 
 		// Ensure we got the grid
 		if( storageGrid == null )
@@ -173,7 +181,7 @@ public class AEPartEssentiaLevelEmitter
 		else
 		{
 			// Register
-			storageGrid.getFluidInventory().addListener( this, this.gridBlock.getGrid() );
+			storageGrid.getFluidInventory().addListener( this, this.getGridBlock().getGrid() );
 		}
 	}
 
@@ -185,13 +193,16 @@ public class AEPartEssentiaLevelEmitter
 	private void markAndNotify()
 	{
 		// Mark that we need to be saved and updated
-		this.host.markForSave();
-		this.host.markForUpdate();
+		this.markForSave();
+		this.markForUpdate();
+
+		// Get the host tile entity & side
+		TileEntity hte = this.getHostTile();
+		ForgeDirection side = this.getSide();
 
 		// Update the neighbors
-		this.tile.getWorldObj().notifyBlocksOfNeighborChange( this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, Blocks.air );
-		this.tile.getWorldObj().notifyBlocksOfNeighborChange( this.tile.xCoord + this.cableSide.offsetX, this.tile.yCoord + this.cableSide.offsetX,
-			this.tile.zCoord + this.cableSide.offsetX, Blocks.air );
+		hte.getWorldObj().notifyBlocksOfNeighborChange( hte.xCoord, hte.yCoord, hte.zCoord, Blocks.air );
+		hte.getWorldObj().notifyBlocksOfNeighborChange( hte.xCoord + side.offsetX, hte.yCoord + side.offsetX, hte.zCoord + side.offsetX, Blocks.air );
 	}
 
 	private void onMonitorUpdate( final IMEMonitor<IAEFluidStack> monitor )
@@ -247,7 +258,7 @@ public class AEPartEssentiaLevelEmitter
 			this.currentAmount = amount;
 
 			// Mark that we need to save
-			this.host.markForSave();
+			this.markForSave();
 
 			// Check if we should be emitting
 			this.checkEmitting();
@@ -364,7 +375,7 @@ public class AEPartEssentiaLevelEmitter
 	public boolean isValid( final Object token )
 	{
 		// Get the grid
-		IGrid grid = this.gridBlock.getGrid();
+		IGrid grid = this.getGridBlock().getGrid();
 
 		if( grid != null )
 		{
@@ -408,7 +419,7 @@ public class AEPartEssentiaLevelEmitter
 		}
 
 		// Mark that we need saving
-		this.host.markForSave();
+		this.markForSave();
 
 		// Send validated amount back to the client
 		new PacketClientEssentiaEmitter().createWantedAmountUpdate( this.wantedAmount, player ).sendPacketToPlayer();
@@ -477,7 +488,7 @@ public class AEPartEssentiaLevelEmitter
 		}
 
 		// Get the storage grid
-		IStorageGrid sGrid = this.gridBlock.getStorageGrid();
+		IStorageGrid sGrid = this.getGridBlock().getStorageGrid();
 
 		// Did we get the grid?
 		if( sGrid != null )
@@ -542,10 +553,13 @@ public class AEPartEssentiaLevelEmitter
 		// Are we emitting?
 		if( this.isEmitting )
 		{
+			// Get the side
+			ForgeDirection side = this.getSide();
+
 			// Calculate a new random coordinate
-			double particleX = ( this.cableSide.offsetX * 0.45F ) + ( ( r.nextFloat() - 0.5F ) * 0.2D );
-			double particleY = ( this.cableSide.offsetY * 0.45F ) + ( ( r.nextFloat() - 0.5F ) * 0.2D );
-			double particleZ = ( this.cableSide.offsetZ * 0.45F ) + ( ( r.nextFloat() - 0.5F ) * 0.2D );
+			double particleX = ( side.offsetX * 0.45F ) + ( ( r.nextFloat() - 0.5F ) * 0.2D );
+			double particleY = ( side.offsetY * 0.45F ) + ( ( r.nextFloat() - 0.5F ) * 0.2D );
+			double particleZ = ( side.offsetZ * 0.45F ) + ( ( r.nextFloat() - 0.5F ) * 0.2D );
 
 			world.spawnParticle( "reddust", 0.5D + x + particleX, 0.5D + y + particleY, 0.5D + z + particleZ, 0.0D, 0.0D, 0.0D );
 		}
@@ -718,10 +732,10 @@ public class AEPartEssentiaLevelEmitter
 	 * Writes the state of the emitter to the tag
 	 */
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
 	{
 		// Call super
-		super.writeToNBT( data );
+		super.writeToNBT( data, saveType );
 
 		// Do we have a filter?
 		if( this.filterAspect != null )
@@ -731,7 +745,10 @@ public class AEPartEssentiaLevelEmitter
 		}
 
 		// Write the redstone mode ordinal
-		data.setInteger( AEPartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
+		if( this.redstoneMode != AEPartEssentiaLevelEmitter.DEFAULT_REDSTONE_MODE )
+		{
+			data.setInteger( AEPartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
+		}
 
 		// Write the threshold amount
 		if( this.wantedAmount > 0 )
@@ -740,7 +757,7 @@ public class AEPartEssentiaLevelEmitter
 		}
 
 		// Write if emitting
-		if( this.isEmitting && !this.nbtCalledForDrops )
+		if( saveType != PartItemStack.Wrench && this.isEmitting )
 		{
 			data.setBoolean( AEPartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING, true );
 		}

@@ -72,40 +72,53 @@ public abstract class AbstractAEPartBase
 	public static final double POWER_DRAIN_PER_ESSENTIA = 0.3;
 
 	/**
-	 * Which side of the cable is the part attached to.
+	 * The PartHost attached to.
 	 */
-	protected ForgeDirection cableSide;
-
-	protected IGridNode node;
-
-	protected IPartHost host;
-
-	protected boolean isActive;
-
-	protected AEPartGridBlock gridBlock;
-
-	protected TileEntity tile;
-
-	protected TileEntity hostTile;
-
-	protected boolean redstonePowered;
+	private IPartHost host;
 
 	/**
-	 * If true, the call to writeNBT() originated from droping the part.
-	 * Allows parts to ignore saving certain aspects.
+	 * The PartHost tile entity.
 	 */
-	protected boolean nbtCalledForDrops = false;
+	private TileEntity hostTile;
+
+	/**
+	 * Which side of the cable is the part attached to.
+	 */
+	private ForgeDirection cableSide;
+
+	/**
+	 * Is the part powered and connected?
+	 */
+	private boolean isActive;
+
+	/**
+	 * The parts grid node.
+	 */
+	private IGridNode node;
+
+	/**
+	 * The IGridBlock for this part.
+	 */
+	private AEPartGridBlock gridBlock;
 
 	/**
 	 * AE2 player ID for the owner of this part.
 	 */
 	private int ownerID = -1;
 
+	/**
+	 * Is the part receiving a redstone signal.
+	 */
+	private boolean recevingRedstonePower;
+
+	/**
+	 * The item that represents this part.
+	 */
 	public final ItemStack associatedItem;
 
 	public AbstractAEPartBase( final AEPartsEnum associatedPart )
 	{
-		// Set the associated item 
+		// Set the associated item
 		this.associatedItem = ItemEnum.ITEM_AEPART.getItemStackWithDamage( associatedPart.ordinal() );
 	}
 
@@ -317,6 +330,11 @@ public abstract class AbstractAEPartBase
 		return null;
 	}
 
+	/**
+	 * Gets the parts grid block.
+	 * 
+	 * @return
+	 */
 	public AEPartGridBlock getGridBlock()
 	{
 		return this.gridBlock;
@@ -334,13 +352,13 @@ public abstract class AbstractAEPartBase
 		return this.node;
 	}
 
-	public IPartHost getHost()
+	public final IPartHost getHost()
 	{
 		return this.host;
 	}
 
 	/**
-	 * Get the host tile of this part.
+	 * Gets the host tile entity of this part.
 	 * 
 	 * @return
 	 */
@@ -350,38 +368,24 @@ public abstract class AbstractAEPartBase
 	}
 
 	/**
-	 * Determines how much power the part takes for just
-	 * existing.
+	 * Determines how much power the part takes for just existing.
 	 */
 	public abstract double getIdlePowerUsage();
 
-	/**
-	 * Gets an itemstack that represents the specified part.
-	 */
 	@Override
-	public ItemStack getItemStack( final PartItemStack partItemStack )
+	public ItemStack getItemStack( final PartItemStack type )
 	{
 		// Get the itemstack
-		ItemStack itemStack = new ItemStack( ItemEnum.ITEM_AEPART.getItem(), 1, AEPartsEnum.getPartID( this.getClass() ) );
+		ItemStack itemStack = this.associatedItem.copy();
 
-		// Only save NBT data if the part was not forcibly broken.
-		if( partItemStack != PartItemStack.Break )
+		// Save NBT data if the part was wrenched or creatively picked
+		if( ( type == PartItemStack.Wrench ) || ( type == PartItemStack.Pick ) )
 		{
 			// Create the item tag
 			NBTTagCompound itemNBT = new NBTTagCompound();
 
-			// Was the part wrenched?
-			if( partItemStack == PartItemStack.Wrench )
-			{
-				// Mark the call is coming from a drop
-				this.nbtCalledForDrops = true;
-			}
-
 			// Write the data
-			this.writeToNBT( itemNBT );
-
-			// Clear the mark
-			this.nbtCalledForDrops = false;
+			this.writeToNBT( itemNBT, PartItemStack.Wrench );
 
 			// Set the tag
 			if( !itemNBT.hasNoTags() )
@@ -406,7 +410,7 @@ public abstract class AbstractAEPartBase
 	 */
 	public final DimensionalCoord getLocation()
 	{
-		return new DimensionalCoord( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord );
+		return new DimensionalCoord( this.hostTile.getWorldObj(), this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord );
 	}
 
 	public Object getServerGuiElement( final EntityPlayer player )
@@ -473,10 +477,44 @@ public abstract class AbstractAEPartBase
 		return 0;
 	}
 
+	/**
+	 * Returns true if the part is receiving any level of redstone power.
+	 * 
+	 * @return
+	 */
+	public boolean isReceivingRedstonePower()
+	{
+		return this.recevingRedstonePower;
+	}
+
 	@Override
 	public boolean isSolid()
 	{
 		return false;
+	}
+
+	/**
+	 * Marks that the host tile needs to be saved to disk.
+	 */
+	public final void markForSave()
+	{
+		// Ensure there is a host
+		if( this.host != null )
+		{
+			// Mark
+			this.host.markForSave();
+		}
+	}
+
+	/**
+	 * Marks that clients needs to be updated.
+	 */
+	public final void markForUpdate()
+	{
+		if( this.host != null )
+		{
+			this.host.markForUpdate();
+		}
 	}
 
 	@Override
@@ -517,7 +555,7 @@ public abstract class AbstractAEPartBase
 			int z = this.hostTile.zCoord;
 
 			// Check redstone state
-			this.redstonePowered = world.isBlockIndirectlyGettingPowered( x, y, z );
+			this.recevingRedstonePower = world.isBlockIndirectlyGettingPowered( x, y, z );
 
 		}
 	}
@@ -689,8 +727,6 @@ public abstract class AbstractAEPartBase
 
 		this.host = host;
 
-		this.tile = tile;
-
 		this.hostTile = tile;
 
 	}
@@ -722,15 +758,31 @@ public abstract class AbstractAEPartBase
 		this.updateStatus();
 	}
 
+	/**
+	 * General call to WriteNBT, assumes a world save. DO NOT call this from a
+	 * subclass's writeToNBT method.
+	 */
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public final void writeToNBT( final NBTTagCompound data )
 	{
-		// Is this a save or drop?
-		if( !this.nbtCalledForDrops )
+		// Assume world saving.
+		this.writeToNBT( data, PartItemStack.World );
+	}
+
+	/**
+	 * Saves NBT data specific to the save type.
+	 * 
+	 * @param data
+	 * @param saveType
+	 */
+	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
+	{
+		if( saveType != PartItemStack.Wrench )
 		{
 			// Set the owner ID
 			data.setInteger( AbstractAEPartBase.NBT_KEY_OWNER, this.ownerID );
 		}
+
 	}
 
 	@Override

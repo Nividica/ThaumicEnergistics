@@ -104,7 +104,7 @@ public class DigiVisSourceData
 		this.z = sourceLocation.z;
 
 		// Get the side
-		this.side = digiVisSource.getCableSide();
+		this.side = digiVisSource.getSide();
 
 		// Get the UID
 		this.UID = digiVisSource.getUID();
@@ -234,7 +234,7 @@ public class DigiVisSourceData
 	 * 
 	 * @return
 	 */
-	public boolean getHasData()
+	public boolean hasSourceData()
 	{
 		return this.hasData;
 	}
@@ -246,13 +246,36 @@ public class DigiVisSourceData
 	 */
 	public void readFromNBT( final NBTTagCompound tag )
 	{
-		// Read if we have data
-		this.hasData = tag.getBoolean( DigiVisSourceData.NBT_KEY_HAS_DATA );
+		// Clear all existing data
+		this.clearData();
 
-		if( this.hasData )
+		// Ensure the tag is not null
+		if( tag == null )
 		{
+			return;
+		}
+
+		// Is there data present in the tag?
+		if( tag.getBoolean( DigiVisSourceData.NBT_KEY_HAS_DATA ) )
+		{
+			// Ensure the required tags are present
+			if( !tag.hasKey( DigiVisSourceData.NBT_KEY_UID ) || !tag.hasKey( DigiVisSourceData.NBT_KEY_DATA ) )
+			{
+				// Missing required data
+				return;
+			}
+
 			// Load the info
 			int[] info = tag.getIntArray( DigiVisSourceData.NBT_KEY_DATA );
+
+			// Ensure the info contains the expected number of items
+			if( info.length < 5 )
+			{
+				// Invalid number of items
+				return;
+			}
+
+			// Set each item
 			this.worldID = info[0];
 			this.x = info[1];
 			this.y = info[2];
@@ -262,8 +285,8 @@ public class DigiVisSourceData
 			// Read the uid
 			this.UID = tag.getLong( DigiVisSourceData.NBT_KEY_UID );
 
-			// Erase the cache
-			this.digiVisSource.clear();
+			// Mark there is data
+			this.hasData = true;
 		}
 	}
 
@@ -275,16 +298,7 @@ public class DigiVisSourceData
 	 */
 	public void readFromNBT( final NBTTagCompound data, final String name )
 	{
-		this.clearData();
-
-		// Does the data tag have our data?
-		if( data.hasKey( name ) )
-		{
-			// Read the tag
-			NBTTagCompound tag = data.getCompoundTag( name );
-
-			this.readFromNBT( tag );
-		}
+		this.readFromNBT( data.getCompoundTag( name ) );
 	}
 
 	/**

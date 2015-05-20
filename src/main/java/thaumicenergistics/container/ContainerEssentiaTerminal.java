@@ -30,11 +30,6 @@ public class ContainerEssentiaTerminal
 	private PlayerSource playerSource = null;
 
 	/**
-	 * The player associated with this open container
-	 */
-	private EntityPlayer player;
-
-	/**
 	 * Creates the container
 	 * 
 	 * @param terminal

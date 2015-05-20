@@ -18,6 +18,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
 import appeng.api.storage.data.IAEFluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -327,7 +328,7 @@ public class AEPartEssentiaExportBus
 		helper.renderBlock( x, y, z, renderer );
 
 		// Face overlay
-		ts.setColorOpaque_I( this.host.getColor().blackVariant );
+		ts.setColorOpaque_I( this.getHost().getColor().blackVariant );
 
 		if( this.isActive() )
 		{
@@ -346,13 +347,16 @@ public class AEPartEssentiaExportBus
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
 	{
 		// Call super
-		super.writeToNBT( data );
+		super.writeToNBT( data, saveType );
 
 		// Write void
-		data.setBoolean( AEPartEssentiaExportBus.NBT_KEY_VOID, this.isVoidAllowed );
+		if( this.isVoidAllowed )
+		{
+			data.setBoolean( AEPartEssentiaExportBus.NBT_KEY_VOID, this.isVoidAllowed );
+		}
 	}
 
 }

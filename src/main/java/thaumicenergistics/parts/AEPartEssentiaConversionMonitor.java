@@ -252,10 +252,12 @@ public class AEPartEssentiaConversionMonitor
 		ItemStack rejected = adaptor.addItems( filledContainer.right );
 		if( rejected != null )
 		{
-			TileEntity te = this.tile;
+			// Get the host tile entity and side
+			TileEntity te = this.getHostTile();
+			ForgeDirection side = this.getSide();
+
 			List<ItemStack> list = Collections.singletonList( rejected );
-			Platform.spawnDrops( player.worldObj, te.xCoord + this.cableSide.offsetX, te.yCoord + this.cableSide.offsetY, te.zCoord +
-							this.cableSide.offsetZ, list );
+			Platform.spawnDrops( player.worldObj, te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, list );
 		}
 
 		if( player.openContainer != null )
@@ -363,7 +365,7 @@ public class AEPartEssentiaConversionMonitor
 	 */
 	protected final IAEFluidStack extractFluid( final IAEFluidStack toExtract, final Actionable mode )
 	{
-		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
+		IMEMonitor<IAEFluidStack> monitor = this.getGridBlock().getFluidMonitor();
 
 		if( monitor == null )
 		{
@@ -384,7 +386,7 @@ public class AEPartEssentiaConversionMonitor
 	 */
 	protected final IAEFluidStack injectFluid( final IAEFluidStack toInject, final Actionable mode )
 	{
-		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
+		IMEMonitor<IAEFluidStack> monitor = this.getGridBlock().getFluidMonitor();
 
 		if( monitor == null )
 		{

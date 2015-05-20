@@ -33,6 +33,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
 import appeng.api.storage.ICellContainer;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
@@ -173,6 +174,7 @@ public class AEPartEssentiaStorageBus
 	@Override
 	public void blinkCell( final int slot )
 	{
+		// Ignored
 	}
 
 	/**
@@ -231,7 +233,7 @@ public class AEPartEssentiaStorageBus
 	public List<IMEInventoryHandler> getCellArray( final StorageChannel channel )
 	{
 		// Create a new list
-		List<IMEInventoryHandler> list = new ArrayList();
+		List<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>();
 
 		// Is this the fluid channel?
 		if( channel == StorageChannel.FLUIDS )
@@ -279,8 +281,7 @@ public class AEPartEssentiaStorageBus
 	}
 
 	/**
-	 * Determines how much power the part takes for just
-	 * existing.
+	 * Determines how much power the part takes for just existing.
 	 */
 	@Override
 	public double getIdlePowerUsage()
@@ -383,8 +384,7 @@ public class AEPartEssentiaStorageBus
 	}
 
 	/**
-	 * /**
-	 * Updates the grid and handler that a neighbor has changed.
+	 * /** Updates the grid and handler that a neighbor has changed.
 	 */
 	@Override
 	public void onNeighborChanged()
@@ -410,10 +410,10 @@ public class AEPartEssentiaStorageBus
 	public void postGridUpdateEvent()
 	{
 		// Does the storage bus have a grid node?
-		if( this.node != null )
+		if( this.getActionableNode() != null )
 		{
 			// Get the grid.
-			IGrid grid = this.node.getGrid();
+			IGrid grid = this.getActionableNode().getGrid();
 
 			// Does the grid node have a grid?
 			if( grid != null )
@@ -425,8 +425,7 @@ public class AEPartEssentiaStorageBus
 	}
 
 	/**
-	 * /**
-	 * Reads the part data from NBT
+	 * /** Reads the part data from NBT
 	 */
 	@Override
 	public void readFromNBT( final NBTTagCompound data )
@@ -529,7 +528,7 @@ public class AEPartEssentiaStorageBus
 		helper.setBounds( 1.0F, 1.0F, 15.0F, 15.0F, 15.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
 
-		tessellator.setColorOpaque_I( this.host.getColor().blackVariant );
+		tessellator.setColorOpaque_I( this.getHost().getColor().blackVariant );
 
 		if( this.isActive() )
 		{
@@ -549,7 +548,7 @@ public class AEPartEssentiaStorageBus
 	@Override
 	public void saveChanges()
 	{
-		this.host.markForSave();
+		this.markForSave();
 	}
 
 	/**
@@ -582,7 +581,7 @@ public class AEPartEssentiaStorageBus
 			this.postGridUpdateEvent();
 
 			// Mark for save
-			this.host.markForSave();
+			this.markForSave();
 		}
 	}
 
@@ -601,7 +600,7 @@ public class AEPartEssentiaStorageBus
 		// Update the handler.
 		this.handler.tickingRequest( node, TicksSinceLastCall );
 
-		//Keep chugging along
+		// Keep chugging along
 		return TickRateModulation.SAME;
 	}
 
@@ -609,10 +608,10 @@ public class AEPartEssentiaStorageBus
 	 * Writes the storage busses state to NBT.
 	 */
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
 	{
 		// Call super
-		super.writeToNBT( data );
+		super.writeToNBT( data, saveType );
 
 		// Write the priority
 		if( this.priority > 0 )

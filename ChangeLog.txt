@@ -1,4 +1,7 @@
-﻿5/19/2015 0.8.10.2
+﻿5/19/2015 0.8.10.3
+  Internal code cleanup.
+
+5/19/2015 0.8.10.2
   Bugfix: Essentia Storage Bus updates AE network if contents are externally changed.
   Bugfix: Essentia Terminal sync issue if a cell is removed/added while viewing terminal.
   Bugfix: Essentia Conversion Monitor crash.

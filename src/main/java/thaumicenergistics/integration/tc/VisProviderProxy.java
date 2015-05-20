@@ -41,7 +41,7 @@ public class VisProviderProxy
 		DimensionalCoord aeCoords = this.visInterface.getLocation();
 
 		// Get the direction the interface is facing
-		ForgeDirection face = this.visInterface.getCableSide();
+		ForgeDirection face = this.visInterface.getSide();
 
 		// Set the subtile's position to just infront of the interface.
 		this.xCoord = aeCoords.x + face.offsetX;

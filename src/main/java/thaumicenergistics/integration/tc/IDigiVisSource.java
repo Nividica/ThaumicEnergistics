@@ -17,14 +17,6 @@ public interface IDigiVisSource
 	public int consumeVis( Aspect digiVisAspect, int amount );
 
 	/**
-	 * Gets the side of cable the source part is attached to.
-	 * If this returns UNKNOWN, it is assumed the source is a whole block.
-	 * 
-	 * @return
-	 */
-	public ForgeDirection getCableSide();
-
-	/**
 	 * Get's the AE grid the source is attached to.
 	 * 
 	 * @return
@@ -37,6 +29,14 @@ public interface IDigiVisSource
 	 * @return
 	 */
 	public DimensionalCoord getLocation();
+
+	/**
+	 * Gets the side of cable the source part is attached to.
+	 * If this returns UNKNOWN, it is assumed the source is a whole block.
+	 * 
+	 * @return
+	 */
+	public ForgeDirection getSide();
 
 	/**
 	 * Get's the unique identifier for this source.

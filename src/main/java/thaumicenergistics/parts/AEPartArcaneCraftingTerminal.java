@@ -37,6 +37,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEFluidStack;
@@ -97,6 +98,21 @@ public class AEPartArcaneCraftingTerminal
 	private static final double IDLE_POWER_DRAIN = 0.5D;
 
 	/**
+	 * Default sorting order.
+	 */
+	private static final SortOrder DEFAULT_SORT_ORDER = SortOrder.NAME;
+
+	/**
+	 * Default sorting direction.
+	 */
+	private static final SortDir DEFAULT_SORT_DIR = SortDir.ASCENDING;
+
+	/**
+	 * Default view mode.
+	 */
+	private static final ViewItems DEFAULT_VIEW_MODE = ViewItems.ALL;
+
+	/**
 	 * Inventory slots
 	 */
 	private final ItemStack[] slots = new ItemStack[AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE];
@@ -109,17 +125,17 @@ public class AEPartArcaneCraftingTerminal
 	/**
 	 * How the items are sorted.
 	 */
-	private SortOrder sortingOrder = SortOrder.NAME;
+	private SortOrder sortingOrder = AEPartArcaneCraftingTerminal.DEFAULT_SORT_ORDER;
 
 	/**
 	 * What direction are the items sorted.
 	 */
-	private SortDir sortingDirection = SortDir.ASCENDING;
+	private SortDir sortingDirection = AEPartArcaneCraftingTerminal.DEFAULT_SORT_DIR;
 
 	/**
 	 * What items types are visible.
 	 */
-	private ViewItems viewMode = ViewItems.ALL;
+	private ViewItems viewMode = AEPartArcaneCraftingTerminal.DEFAULT_VIEW_MODE;
 
 	/**
 	 * Data pertaining to the linked digi-vis source
@@ -407,7 +423,7 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public int getLightLevel()
 	{
-		return( this.isActive ? AbstractAEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
+		return( this.isActive() ? AbstractAEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
 	}
 
 	/**
@@ -505,7 +521,7 @@ public class AEPartArcaneCraftingTerminal
 	 */
 	public World getWorldObj()
 	{
-		return this.hostTile.getWorldObj();
+		return this.getHostTile().getWorldObj();
 	}
 
 	/**
@@ -570,8 +586,7 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public void markDirty()
 	{
-		// Mark the host tile
-		this.hostTile.markDirty();
+		this.markForSave();
 	}
 
 	/**
@@ -601,8 +616,12 @@ public class AEPartArcaneCraftingTerminal
 				// Load the info
 				this.visSourceInfo.readFromNBT( data );
 
-				// Inform the user
-				memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+				// Ensure there was valid data
+				if( this.visSourceInfo.hasSourceData() )
+				{
+					// Inform the user
+					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+				}
 
 				// Mark that we need to save
 				this.markDirty();
@@ -772,9 +791,9 @@ public class AEPartArcaneCraftingTerminal
 
 			// Draw corners
 			helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
-			tessellator.setColorOpaque_I( this.host.getColor().blackVariant );
+			tessellator.setColorOpaque_I( this.getHost().getColor().blackVariant );
 			helper.renderFace( x, y, z, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer );
-			tessellator.setColorOpaque_I( this.host.getColor().mediumVariant );
+			tessellator.setColorOpaque_I( this.getHost().getColor().mediumVariant );
 			helper.renderFace( x, y, z, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[1], ForgeDirection.SOUTH, renderer );
 
 			// Draw crafting overlay
@@ -875,7 +894,7 @@ public class AEPartArcaneCraftingTerminal
 		player.inventoryContainer.detectAndSendChanges();
 
 		// Mark for save
-		this.host.markForSave();
+		this.markForSave();
 	}
 
 	/**
@@ -885,9 +904,9 @@ public class AEPartArcaneCraftingTerminal
 	public TickRateModulation tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
 		// Fast exit checks
-		if( ( this.gridBlock == null ) || ( !this.visSourceInfo.getHasData() ) )
+		if( !this.visSourceInfo.hasSourceData() )
 		{
-			// ACT does not have gridblock
+			// No source data.
 			return TickRateModulation.IDLE;
 		}
 
@@ -913,7 +932,7 @@ public class AEPartArcaneCraftingTerminal
 		}
 
 		// Get the source
-		IDigiVisSource visSource = this.visSourceInfo.tryGetSource( this.gridBlock.getGrid() );
+		IDigiVisSource visSource = this.visSourceInfo.tryGetSource( this.getGridBlock().getGrid() );
 
 		// Did we get an active source?
 		if( visSource == null )
@@ -948,10 +967,10 @@ public class AEPartArcaneCraftingTerminal
 	 * Saves part data to NBT tag
 	 */
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
 	{
 		// Call super
-		super.writeToNBT( data );
+		super.writeToNBT( data, saveType );
 
 		// Create a new tag list
 		NBTTagList nbtList = new NBTTagList();
@@ -983,20 +1002,27 @@ public class AEPartArcaneCraftingTerminal
 		}
 
 		// Write direction
-		data.setInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY, this.sortingDirection.ordinal() );
+		if( this.sortingDirection != AEPartArcaneCraftingTerminal.DEFAULT_SORT_DIR )
+		{
+			data.setInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY, this.sortingDirection.ordinal() );
+		}
 
 		// Write order
-		data.setInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY, this.sortingOrder.ordinal() );
+		if( this.sortingOrder != AEPartArcaneCraftingTerminal.DEFAULT_SORT_ORDER )
+		{
+			data.setInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY, this.sortingOrder.ordinal() );
+		}
 
 		// Write view mode
-		data.setInteger( AEPartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY, this.viewMode.ordinal() );
-
-		// Don't write vis source if dropping.
-		if( !this.nbtCalledForDrops )
+		if( this.viewMode != AEPartArcaneCraftingTerminal.DEFAULT_VIEW_MODE )
 		{
-			// Write the vis source info
+			data.setInteger( AEPartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY, this.viewMode.ordinal() );
+		}
+
+		// Write the vis source info
+		if( saveType != PartItemStack.Wrench )
+		{
 			this.visSourceInfo.writeToNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
 		}
 	}
-
 }

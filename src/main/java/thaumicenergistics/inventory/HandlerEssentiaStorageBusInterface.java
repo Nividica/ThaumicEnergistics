@@ -177,6 +177,7 @@ class HandlerEssentiaStorageBusInterface
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onNeighborChange()
 	{

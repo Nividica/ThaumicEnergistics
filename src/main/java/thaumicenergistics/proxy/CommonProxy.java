@@ -74,6 +74,7 @@ public class CommonProxy
 	/**
 	 * Adds tile entities to the AppEng2 SpatialIO whitelist
 	 */
+	@SuppressWarnings("unchecked")
 	public void registerSpatialIOMovables()
 	{
 		IMovableRegistry movableRegistry = AEApi.instance().registries().movable();
@@ -86,6 +87,7 @@ public class CommonProxy
 	/**
 	 * Registers tile entities with the game.
 	 */
+	@SuppressWarnings("unchecked")
 	public void registerTileEntities()
 	{
 		for( TileEnum tile : TileEnum.values() )

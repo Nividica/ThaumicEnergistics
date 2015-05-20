@@ -1,6 +1,5 @@
 package thaumicenergistics.container.slot;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,11 +16,6 @@ public class SlotNetworkTool
 	extends Slot
 {
 	/**
-	 * Inventory of the network tool we are bound to
-	 */
-	IInventory inventory;
-
-	/**
 	 * Creates the slot.
 	 * 
 	 * @param inventory
@@ -37,9 +31,6 @@ public class SlotNetworkTool
 	{
 		// Pass to super
 		super( inventory, slotIndex, xDisplayPosition, yDisplayPosition );
-
-		// Set the inventory
-		this.inventory = inventory;
 
 	}
 

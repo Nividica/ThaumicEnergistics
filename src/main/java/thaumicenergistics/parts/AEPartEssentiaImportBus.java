@@ -161,9 +161,9 @@ public class AEPartEssentiaImportBus
 		helper.setBounds( 4.0F, 4.0F, 15.0F, 12.0F, 12.0F, 16.0F );
 		helper.renderBlock( x, y, z, renderer );
 
-		if( this.host.getColor() != AEColor.Transparent )
+		if( this.getHost().getColor() != AEColor.Transparent )
 		{
-			ts.setColorOpaque_I( this.host.getColor().blackVariant );
+			ts.setColorOpaque_I( this.getHost().getColor().blackVariant );
 		}
 		else
 		{

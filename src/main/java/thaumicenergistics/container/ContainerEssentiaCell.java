@@ -106,6 +106,7 @@ public class ContainerEssentiaCell
 			try
 			{
 				// Get the chest handler
+				@SuppressWarnings("unchecked")
 				IMEInventoryHandler<IAEFluidStack> handler = this.hostChest.getHandler( StorageChannel.FLUIDS );
 
 				// Get the monitor

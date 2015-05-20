@@ -69,7 +69,7 @@ public class PacketClientAspectSlot
 				int size = stream.readInt();
 
 				// Create the list
-				this.filterAspects = new ArrayList( size );
+				this.filterAspects = new ArrayList<Aspect>( size );
 
 				// Read each aspect
 				for( int i = 0; i < size; i++ )

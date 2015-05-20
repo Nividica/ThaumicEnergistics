@@ -121,11 +121,6 @@ public class ContainerPartArcaneCraftingTerminal
 	public static int ARMOR_SLOT_X_POS = 8, ARMOR_SLOT_Y_POS = 81, ARMOR_SLOT_COUNT = 4;
 
 	/**
-	 * Width and height of a slot.
-	 */
-	private static int SLOT_SIZE = 18;
-
-	/**
 	 * Cache the crafting manager instance
 	 */
 	private static CraftingManager CRAFT_MANAGER = CraftingManager.getInstance();
@@ -218,8 +213,8 @@ public class ContainerPartArcaneCraftingTerminal
 
 				// Create the slot
 				craftingSlot = new Slot( terminal, slotIndex, ContainerPartArcaneCraftingTerminal.CRAFTING_SLOT_X_POS +
-								( column * ContainerPartArcaneCraftingTerminal.SLOT_SIZE ), ContainerPartArcaneCraftingTerminal.CRAFTING_SLOT_Y_POS +
-								( row * ContainerPartArcaneCraftingTerminal.SLOT_SIZE ) );
+								( column * ContainerWithPlayerInventory.SLOT_SIZE ), ContainerPartArcaneCraftingTerminal.CRAFTING_SLOT_Y_POS +
+								( row * ContainerWithPlayerInventory.SLOT_SIZE ) );
 
 				// Add the slot
 				this.addSlotToContainer( craftingSlot );
@@ -265,7 +260,7 @@ public class ContainerPartArcaneCraftingTerminal
 		{
 			// Calculate the y position
 			int row = viewSlotID - AEPartArcaneCraftingTerminal.VIEW_SLOT_MIN;
-			int yPos = ContainerPartArcaneCraftingTerminal.VIEW_SLOT_YPOS + ( row * ContainerPartArcaneCraftingTerminal.SLOT_SIZE );
+			int yPos = ContainerPartArcaneCraftingTerminal.VIEW_SLOT_YPOS + ( row * ContainerWithPlayerInventory.SLOT_SIZE );
 
 			// Create the slot
 			viewSlot = new SlotRestrictive( terminal, viewSlotID, ContainerPartArcaneCraftingTerminal.VIEW_SLOT_XPOS, yPos );
@@ -290,7 +285,7 @@ public class ContainerPartArcaneCraftingTerminal
 		for( int armorIndex = 0; armorIndex < ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_COUNT; ++armorIndex )
 		{
 			// Calculate y position
-			int yPos = ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_Y_POS + ( ContainerPartArcaneCraftingTerminal.SLOT_SIZE * armorIndex );
+			int yPos = ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_Y_POS + ( ContainerWithPlayerInventory.SLOT_SIZE * armorIndex );
 
 			// Create the slot
 			SlotArmor armorSlot = new SlotArmor( terminal, AEPartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorIndex,

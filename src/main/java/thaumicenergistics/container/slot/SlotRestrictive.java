@@ -13,11 +13,6 @@ import net.minecraft.item.ItemStack;
 public class SlotRestrictive
 	extends Slot
 {
-	/**
-	 * The inventory we belong to
-	 */
-	private IInventory inventory;
-
 	private int myIndex;
 
 	/**
@@ -36,9 +31,6 @@ public class SlotRestrictive
 	{
 		// Pass to super
 		super( inventory, index, x, y );
-
-		// Set the inventory
-		this.inventory = inventory;
 
 		// Set this index
 		this.myIndex = index;

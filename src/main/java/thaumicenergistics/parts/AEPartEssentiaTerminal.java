@@ -20,6 +20,7 @@ import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
 import appeng.api.util.AEColor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -44,6 +45,11 @@ public class AEPartEssentiaTerminal
 	private static final String INVENTORY_NBT_KEY = "slots";
 
 	/**
+	 * Default sorting mode for the terminal.
+	 */
+	private static final ComparatorMode DEFAULT_SORT_MODE = ComparatorMode.MODE_ALPHABETIC;
+
+	/**
 	 * List of currently opened containers.
 	 */
 	private List<ContainerEssentiaTerminal> listeners = new ArrayList<ContainerEssentiaTerminal>();
@@ -56,7 +62,7 @@ public class AEPartEssentiaTerminal
 	/**
 	 * The sorting mode used to display aspects.
 	 */
-	private ComparatorMode sortMode = ComparatorMode.MODE_ALPHABETIC;
+	private ComparatorMode sortMode = AEPartEssentiaTerminal.DEFAULT_SORT_MODE;
 
 	private PrivateInventory inventory = new PrivateInventory( ThaumicEnergistics.MOD_ID + ".part.aspect.terminal", 2, 64 )
 	{
@@ -162,7 +168,7 @@ public class AEPartEssentiaTerminal
 	@Override
 	public int getLightLevel()
 	{
-		return( this.isActive ? AbstractAEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
+		return( this.isActive() ? AbstractAEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
 	}
 
 	@Override
@@ -236,7 +242,7 @@ public class AEPartEssentiaTerminal
 		this.notifyListenersSortingModeChanged();
 
 		// Mark that we need saving
-		this.host.markForSave();
+		this.markForSave();
 
 	}
 
@@ -337,15 +343,15 @@ public class AEPartEssentiaTerminal
 
 		// Dark colored face
 		helper.setBounds( 3.0F, 3.0F, 15.0F, 13.0F, 13.0F, 16.0F );
-		ts.setColorOpaque_I( this.host.getColor().blackVariant );
+		ts.setColorOpaque_I( this.getHost().getColor().blackVariant );
 		helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0], ForgeDirection.SOUTH, renderer );
 
 		// Standard colored face
-		ts.setColorOpaque_I( this.host.getColor().mediumVariant );
+		ts.setColorOpaque_I( this.getHost().getColor().mediumVariant );
 		helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[1], ForgeDirection.SOUTH, renderer );
 
 		// Light colored face
-		ts.setColorOpaque_I( this.host.getColor().whiteVariant );
+		ts.setColorOpaque_I( this.getHost().getColor().whiteVariant );
 		helper.renderFace( x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer );
 
 		// Reset rotation
@@ -376,13 +382,16 @@ public class AEPartEssentiaTerminal
 	 * Called to save our state
 	 */
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
 	{
 		// Call super
-		super.writeToNBT( data );
+		super.writeToNBT( data, saveType );
 
 		// Write the sorting mode
-		data.setInteger( SORT_MODE_NBT_KEY, this.sortMode.ordinal() );
+		if( this.sortMode != AEPartEssentiaTerminal.DEFAULT_SORT_MODE )
+		{
+			data.setInteger( SORT_MODE_NBT_KEY, this.sortMode.ordinal() );
+		}
 
 		// Write inventory
 		if( !this.inventory.isEmpty() )

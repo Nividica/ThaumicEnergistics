@@ -43,7 +43,7 @@ public abstract class AbstractHandlerEssentiaStorageBus
 	/**
 	 * Filtered aspects
 	 */
-	protected List<Aspect> filteredAspects = new ArrayList();
+	protected List<Aspect> filteredAspects = new ArrayList<Aspect>();
 
 	/**
 	 * When true the filter becomes a blacklist.

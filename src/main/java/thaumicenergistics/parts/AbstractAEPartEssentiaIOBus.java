@@ -32,6 +32,7 @@ import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.PartItemStack;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.parts.automation.StackUpgradeInventory;
@@ -81,6 +82,11 @@ public abstract class AbstractAEPartEssentiaIOBus
 	 */
 	private static final double IDLE_POWER_DRAIN = 0.7;
 
+	/**
+	 * Default redstone mode for the bus.
+	 */
+	private static final RedstoneMode DEFAULT_REDSTONE_MODE = RedstoneMode.IGNORE;
+
 	private boolean lastRedstone;
 
 	private int[] availableFilterSlots = { AbstractAEPartEssentiaIOBus.BASE_SLOT_INDEX };
@@ -90,7 +96,10 @@ public abstract class AbstractAEPartEssentiaIOBus
 
 	private List<ContainerPartEssentiaIOBus> listeners = new ArrayList<ContainerPartEssentiaIOBus>();
 
-	private RedstoneMode redstoneMode = RedstoneMode.IGNORE;
+	/**
+	 * How the bus responds to redstone.
+	 */
+	private RedstoneMode redstoneMode = AbstractAEPartEssentiaIOBus.DEFAULT_REDSTONE_MODE;
 
 	/**
 	 * Network source representing this part.
@@ -136,14 +145,14 @@ public abstract class AbstractAEPartEssentiaIOBus
 			switch ( this.getRedstoneMode() )
 			{
 				case HIGH_SIGNAL:
-					canWork = this.redstonePowered;
+					canWork = this.isReceivingRedstonePower();
 
 					break;
 				case IGNORE:
 					break;
 
 				case LOW_SIGNAL:
-					canWork = !this.redstonePowered;
+					canWork = !this.isReceivingRedstonePower();
 
 					break;
 				case SIGNAL_PULSE:
@@ -242,12 +251,12 @@ public abstract class AbstractAEPartEssentiaIOBus
 	protected final IAEFluidStack extractFluid( final IAEFluidStack toExtract, final Actionable mode )
 	{
 
-		if( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
+		if( this.facingContainer == null )
 		{
 			return null;
 		}
 
-		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
+		IMEMonitor<IAEFluidStack> monitor = this.getGridBlock().getFluidMonitor();
 
 		if( monitor == null )
 		{
@@ -333,12 +342,12 @@ public abstract class AbstractAEPartEssentiaIOBus
 	 */
 	protected final IAEFluidStack injectFluid( final IAEFluidStack toInject, final Actionable action )
 	{
-		if( ( this.gridBlock == null ) || ( this.facingContainer == null ) )
+		if( this.facingContainer == null )
 		{
 			return null;
 		}
 
-		IMEMonitor<IAEFluidStack> monitor = this.gridBlock.getFluidMonitor();
+		IMEMonitor<IAEFluidStack> monitor = this.getGridBlock().getFluidMonitor();
 
 		if( monitor == null )
 		{
@@ -448,7 +457,7 @@ public abstract class AbstractAEPartEssentiaIOBus
 	@Override
 	public int getLightLevel()
 	{
-		return( this.isActive ? 4 : 0 );
+		return( this.isActive() ? 4 : 0 );
 	}
 
 	public RedstoneMode getRedstoneMode()
@@ -606,10 +615,10 @@ public abstract class AbstractAEPartEssentiaIOBus
 		if( this.redstoneMode == RedstoneMode.SIGNAL_PULSE )
 		{
 			// Did the state of the redstone change?
-			if( this.redstonePowered != this.lastRedstone )
+			if( this.isReceivingRedstonePower() != this.lastRedstone )
 			{
 				// Set the previous redstone state
-				this.lastRedstone = this.redstonePowered;
+				this.lastRedstone = this.isReceivingRedstonePower();
 
 				// Do work
 				this.doWork( this.getTransferAmountPerSecond() );
@@ -692,7 +701,7 @@ public abstract class AbstractAEPartEssentiaIOBus
 	@Override
 	public void saveChanges()
 	{
-		this.host.markForSave();
+		this.markForSave();
 	}
 
 	@Override
@@ -736,13 +745,16 @@ public abstract class AbstractAEPartEssentiaIOBus
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
 	{
 		// Call super
-		super.writeToNBT( data );
+		super.writeToNBT( data, saveType );
 
 		// Write the redstone mode
-		data.setInteger( AbstractAEPartEssentiaIOBus.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
+		if( this.redstoneMode != AbstractAEPartEssentiaIOBus.DEFAULT_REDSTONE_MODE )
+		{
+			data.setInteger( AbstractAEPartEssentiaIOBus.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
+		}
 
 		// Write each filter
 		for( int i = 0; i < AbstractAEPartEssentiaIOBus.MAX_FILTER_SIZE; i++ )
@@ -764,5 +776,4 @@ public abstract class AbstractAEPartEssentiaIOBus
 			this.upgradeInventory.writeToNBT( data, AbstractAEPartEssentiaIOBus.NBT_KEY_UPGRADE_INV );
 		}
 	}
-
 }

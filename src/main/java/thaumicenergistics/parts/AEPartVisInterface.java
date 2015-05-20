@@ -32,6 +32,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -129,7 +130,7 @@ public class AEPartVisInterface
 		}
 
 		// Get the power grid
-		IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
+		IEnergyGrid eGrid = this.getGridBlock().getEnergyGrid();
 
 		// Ensure we got the grid
 		if( eGrid == null )
@@ -168,7 +169,7 @@ public class AEPartVisInterface
 	private boolean isP2PSourceValid()
 	{
 		// Is there anything even linked to?
-		if( !this.visP2PSourceInfo.getHasData() )
+		if( !this.visP2PSourceInfo.hasSourceData() )
 		{
 			return false;
 		}
@@ -239,7 +240,7 @@ public class AEPartVisInterface
 		this.visDrainingColor = color;
 
 		// Update
-		this.host.markForUpdate();
+		this.markForUpdate();
 	}
 
 	private void setIsVisProvider( final boolean isProviding )
@@ -284,7 +285,7 @@ public class AEPartVisInterface
 	public int consumeVis( final Aspect digiVisAspect, final int amount )
 	{
 		// Ensure the interface is active
-		if( !this.isActive )
+		if( !this.isActive() )
 		{
 			return 0;
 		}
@@ -342,15 +343,6 @@ public class AEPartVisInterface
 	}
 
 	/**
-	 * Returns the side of the cable the interface is attached to.
-	 */
-	@Override
-	public ForgeDirection getCableSide()
-	{
-		return this.cableSide;
-	}
-
-	/**
 	 * Gets the grid the interface is attached to
 	 * 
 	 * @return
@@ -359,13 +351,13 @@ public class AEPartVisInterface
 	public IGrid getGrid()
 	{
 		// Ensure the interface has a gridblock
-		if( this.gridBlock == null )
+		if( this.getGridBlock() == null )
 		{
 			return null;
 		}
 
 		// Return the grid
-		return this.gridBlock.getGrid();
+		return this.getGridBlock().getGrid();
 	}
 
 	/**
@@ -400,7 +392,7 @@ public class AEPartVisInterface
 		if( tVR != null )
 		{
 			// Ensure it is still there
-			if( tVR == this.hostTile.getWorldObj().getTileEntity( tVR.xCoord, tVR.yCoord, tVR.zCoord ) )
+			if( tVR == this.getHostTile().getWorldObj().getTileEntity( tVR.xCoord, tVR.yCoord, tVR.zCoord ) )
 			{
 				return tVR;
 			}
@@ -492,26 +484,30 @@ public class AEPartVisInterface
 				// Load the info
 				this.visP2PSourceInfo.readFromNBT( data );
 
-				// Can the link be established?
-				if( !this.isP2PSourceValid() )
+				// Ensure there is valid data
+				if( this.visP2PSourceInfo.hasSourceData() )
 				{
-					// Unable to link
-					memoryCard.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
+					// Can the link be established?
+					if( !this.isP2PSourceValid() )
+					{
+						// Unable to link
+						memoryCard.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
 
-					// Clear the source data
-					this.visP2PSourceInfo.clearData();
+						// Clear the source data
+						this.visP2PSourceInfo.clearData();
+					}
+					else
+					{
+						// Mark that we are now a provider
+						this.setIsVisProvider( true );
+
+						// Inform the user
+						memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+					}
 				}
-				else
-				{
-					// Mark that we are now a provider
-					this.setIsVisProvider( true );
 
-					// Inform the user
-					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
-
-					// Mark that we need to save
-					this.getHost().markForSave();
-				}
+				// Mark for a save
+				this.markForSave();
 			}
 			// Is the memory card empty?
 			else if( settingsName.equals( "gui.appliedenergistics2.Blank" ) && this.isProvider )
@@ -523,7 +519,7 @@ public class AEPartVisInterface
 				memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
 
 				// Mark for save
-				this.getHost().markForSave();
+				this.markForSave();
 			}
 
 			return true;
@@ -560,7 +556,7 @@ public class AEPartVisInterface
 			this.setIsVisProvider( false );
 
 			// Mark for save
-			this.getHost().markForSave();
+			this.markForSave();
 
 			return true;
 		}
@@ -724,7 +720,7 @@ public class AEPartVisInterface
 					this.visProviderSubTile = new VisProviderProxy( this );
 
 					// Register the provider
-					VisNetHandler.addSource( this.hostTile.getWorldObj(), this.visProviderSubTile );
+					VisNetHandler.addSource( this.getHostTile().getWorldObj(), this.visProviderSubTile );
 				}
 				else if( hasProvider )
 				{
@@ -740,13 +736,13 @@ public class AEPartVisInterface
 	 * Write the interface data to the tag
 	 */
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
 	{
 		// Call super
-		super.writeToNBT( data );
+		super.writeToNBT( data, saveType );
 
-		// No need to save anything if dropping.
-		if( this.nbtCalledForDrops )
+		// Do not save details if being wrenched.
+		if( saveType == PartItemStack.Wrench )
 		{
 			return;
 		}
