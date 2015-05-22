@@ -1,5 +1,6 @@
 package thaumicenergistics.features;
 
+import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -16,7 +17,6 @@ import thaumicenergistics.registries.ResearchRegistry.ResearchTypes;
 
 public class FeatureInfusionProvider
 	extends AbstractDependencyFeature
-	implements IThaumcraftResearchFeature, ICraftingFeature
 {
 
 	public FeatureInfusionProvider( final FeatureRegistry fr )
@@ -43,19 +43,7 @@ public class FeatureInfusionProvider
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
-	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.INFUSIONPROVIDER.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureEssentiaIOBuses.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public void registerCrafting()
+	protected void registerCrafting()
 	{
 		// Common items
 		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
@@ -81,7 +69,7 @@ public class FeatureInfusionProvider
 	}
 
 	@Override
-	public void registerResearch()
+	protected void registerResearch()
 	{
 		// Set the research aspects
 		AspectList infusionProviderList = new AspectList();
@@ -110,6 +98,24 @@ public class FeatureInfusionProvider
 		ResearchTypes.INFUSIONPROVIDER.researchItem.setParentsHidden( researchKeyMirrorOrJar, "INFUSION" );
 		ResearchTypes.INFUSIONPROVIDER.researchItem.setConcealed().setSpecial();
 		ResearchTypes.INFUSIONPROVIDER.researchItem.registerResearchItem();
+	}
+
+	@Override
+	public String getFirstValidParentKey( final boolean includeSelf )
+	{
+		if( includeSelf && this.isAvailable() )
+		{
+			return ResearchTypes.INFUSIONPROVIDER.getKey();
+		}
+
+		// Pass to parent
+		return FeatureRegistry.instance().featureEssentiaIOBuses.getFirstValidParentKey( true );
+	}
+
+	@Override
+	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
+	{
+		return EnumSet.of( PseudoResearchTypes.INFUSION, ( Config.allowMirrors ? PseudoResearchTypes.MIRROR : PseudoResearchTypes.JAR ) );
 	}
 
 }

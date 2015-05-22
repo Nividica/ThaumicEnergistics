@@ -7,7 +7,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.IEssentiaGas;
+import thaumicenergistics.api.IThEEssentiaGas;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.ThELog;
@@ -20,7 +20,7 @@ import thaumicenergistics.util.ThELog;
  */
 public class GaseousEssentia
 	extends Fluid
-	implements IEssentiaGas
+	implements IThEEssentiaGas
 {
 	/**
 	 * List of all created gasses.

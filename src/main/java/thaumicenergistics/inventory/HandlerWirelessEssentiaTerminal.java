@@ -3,7 +3,7 @@ package thaumicenergistics.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import thaumicenergistics.api.IWirelessEssentiaTerminal;
+import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.items.ItemWirelessEssentiaTerminal;
 import appeng.api.config.Actionable;
@@ -26,7 +26,7 @@ public class HandlerWirelessEssentiaTerminal
 	/**
 	 * Wireless terminal.
 	 */
-	private IWirelessEssentiaTerminal wirelessTerminal;
+	private IThEWirelessEssentiaTerminal wirelessTerminal;
 
 	/**
 	 * Access point used to communicate with the AE network.
@@ -60,7 +60,7 @@ public class HandlerWirelessEssentiaTerminal
 	private ItemStack wirelessItemstack;
 
 	public HandlerWirelessEssentiaTerminal( final EntityPlayer player, final IWirelessAccessPoint accessPoint,
-											final IWirelessEssentiaTerminal wirelessTerminalInterface, final ItemStack wirelessTerminalItemstack )
+											final IThEWirelessEssentiaTerminal wirelessTerminalInterface, final ItemStack wirelessTerminalItemstack )
 	{
 		// Set the player
 		this.player = player;
@@ -128,7 +128,7 @@ public class HandlerWirelessEssentiaTerminal
 	 * @param wirelessTerminal
 	 * @return
 	 */
-	public static boolean isTerminalLinked( final IWirelessEssentiaTerminal wirelessTerminal, final ItemStack wirelessTerminalItemstack )
+	public static boolean isTerminalLinked( final IThEWirelessEssentiaTerminal wirelessTerminal, final ItemStack wirelessTerminalItemstack )
 	{
 		return( !wirelessTerminal.getEncryptionKey( wirelessTerminalItemstack ).isEmpty() );
 	}

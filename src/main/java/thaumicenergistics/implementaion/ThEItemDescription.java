@@ -3,28 +3,28 @@ package thaumicenergistics.implementaion;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import thaumicenergistics.api.IItemDescription;
+import thaumicenergistics.api.IThEItemDescription;
 
-public class ThEDescription
-	implements IItemDescription
+public class ThEItemDescription
+	implements IThEItemDescription
 {
 	private Block myBlock = null;
 	private Item myItem = null;
 	private int itemMeta = 0;
 
-	ThEDescription( final Block block )
+	ThEItemDescription( final Block block )
 	{
 		this( Item.getItemFromBlock( block ), 0 );
 		this.myBlock = block;
 	}
 
-	ThEDescription( final Item item, final int meta )
+	ThEItemDescription( final Item item, final int meta )
 	{
 		this.myItem = item;
 		this.itemMeta = meta;
 	}
 
-	ThEDescription( final ItemStack stack )
+	ThEItemDescription( final ItemStack stack )
 	{
 		this( stack.getItem(), stack.getItemDamage() );
 	}

@@ -10,7 +10,7 @@ import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
-import thaumicenergistics.api.Items;
+import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.util.ThELog;
 import appeng.api.AEApi;
@@ -1064,8 +1064,8 @@ public class AEAspectRegister
 	 */
 	private void registerThEItems()
 	{
-		Items teItems = ThEApi.instance().items();
-		thaumicenergistics.api.Blocks teBlocks = ThEApi.instance().blocks();
+		IThEItems teItems = ThEApi.instance().items();
+		thaumicenergistics.api.IThEBlocks teBlocks = ThEApi.instance().blocks();
 
 		// Get an AE 1K Cell
 		ItemStack aeCell = AEApi.instance().definitions().items().cell1k().maybeStack( 1 ).orNull();

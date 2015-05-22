@@ -2,10 +2,10 @@ package thaumicenergistics;
 
 import java.io.File;
 import net.minecraftforge.common.config.Configuration;
-import thaumicenergistics.api.IConfig;
+import thaumicenergistics.api.IThEConfig;
 
 class ConfigurationHandler
-	implements IConfig
+	implements IThEConfig
 {
 	private static ConfigurationHandler instance;
 
@@ -69,7 +69,7 @@ class ConfigurationHandler
 	 * 
 	 * @param configFile
 	 */
-	public static IConfig loadAndSyncConfigFile( final File configFile )
+	public static IThEConfig loadAndSyncConfigFile( final File configFile )
 	{
 		if( ConfigurationHandler.instance == null )
 		{

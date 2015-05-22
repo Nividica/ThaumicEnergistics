@@ -10,12 +10,12 @@ import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 import thaumcraft.common.blocks.BlockJarItem;
 import thaumcraft.common.blocks.ItemJarFilled;
-import thaumicenergistics.api.IEssentiaContainerPermission;
-import thaumicenergistics.api.ITransportPermissions;
+import thaumicenergistics.api.IThEEssentiaContainerPermission;
+import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.util.ThELog;
 
 class ThETransportPermissions
-	implements ITransportPermissions
+	implements IThETransportPermissions
 {
 	/**
 	 * Collection of ContainerInfo indexed by damage value.
@@ -80,7 +80,7 @@ class ThETransportPermissions
 	 * 
 	 */
 	private class ContainerInfo
-		implements IEssentiaContainerPermission
+		implements IThEEssentiaContainerPermission
 	{
 		private int capacity;
 		private boolean canHoldPartialAmount;
@@ -257,7 +257,7 @@ class ThETransportPermissions
 	}
 
 	@Override
-	public IEssentiaContainerPermission getEssentiaContainerInfo( final Class<? extends Item> itemClass, final int damageValue )
+	public IThEEssentiaContainerPermission getEssentiaContainerInfo( final Class<? extends Item> itemClass, final int damageValue )
 	{
 		// Is the item registered?
 		if( this.itemWhitelist.containsKey( itemClass ) )

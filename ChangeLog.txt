@@ -1,4 +1,9 @@
-﻿5/19/2015 0.8.10.3
+﻿5/21/2015 0.8.10.3
+  Code cleanup.
+  API name changes.
+  Required research no longer shows up for ThE research if the ThE research is disabled.
+
+5/19/2015 0.8.10.3
   Internal code cleanup.
   Much more robust checking of disabled AE or TC features.
   * I have tried to catch every possible issue that can arise from disabling features in either mod, but to say its complex is a bit of an understatement.

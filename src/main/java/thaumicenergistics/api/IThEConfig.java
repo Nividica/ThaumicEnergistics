@@ -1,6 +1,6 @@
 package thaumicenergistics.api;
 
-public interface IConfig
+public interface IThEConfig
 {
 	/**
 	 * Controls if the Essentia Provider is allowed to be crafted.

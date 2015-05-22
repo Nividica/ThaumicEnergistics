@@ -13,7 +13,7 @@ import thaumcraft.api.aspects.IEssentiaContainerItem;
  * @author Nividica
  * 
  */
-public interface ITransportPermissions
+public interface IThETransportPermissions
 {
 
 	/**
@@ -79,5 +79,5 @@ public interface ITransportPermissions
 	 * @param damageValue
 	 * @return Info if was registered, null otherwise.
 	 */
-	public IEssentiaContainerPermission getEssentiaContainerInfo( Class<? extends Item> itemClass, int damageValue );
+	public IThEEssentiaContainerPermission getEssentiaContainerInfo( Class<? extends Item> itemClass, int damageValue );
 }

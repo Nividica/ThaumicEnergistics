@@ -15,8 +15,6 @@ import thaumicenergistics.features.FeatureQuartzDupe;
 import thaumicenergistics.features.FeatureResearchSetup;
 import thaumicenergistics.features.FeatureVisRelayInterface;
 import thaumicenergistics.features.FeatureWrenchFocus;
-import thaumicenergistics.features.ICraftingFeature;
-import thaumicenergistics.features.IThaumcraftResearchFeature;
 
 /**
  * Acts as a safe way to depend on features that can be disabled in both TC and
@@ -42,6 +40,11 @@ public class FeatureRegistry
 	 * True if the dependencies have been built.
 	 */
 	private boolean hasBuiltDependencies = false;
+
+	/**
+	 * Set to true when registerFeatures() is called.
+	 */
+	private boolean hasRegistered = false;
 
 	/**
 	 * Sets up the TC research tab.
@@ -195,6 +198,13 @@ public class FeatureRegistry
 	 */
 	public void registerFeatures()
 	{
+		// Has registration already occurred?
+		if( this.hasRegistered )
+		{
+			// Bail
+			return;
+		}
+
 		// Ensure the dependencies have been built
 		if( !this.hasBuiltDependencies )
 		{
@@ -202,30 +212,25 @@ public class FeatureRegistry
 		}
 
 		// Start with the setup
-		this.featureResearchSetup.registerResearch();
+		this.featureResearchSetup.registerFeature();
 
-		// List of features
+		// Build array of features
 		AbstractBasicFeature[] features = new AbstractBasicFeature[] { this.featureAutoCrafting, this.featureCells, this.featureACT, this.featureVRI,
 						this.featureEssentiaIOBuses, this.featureInfusionProvider, this.featureEssentiaProvider, this.featureEssentiaMonitoring,
 						this.featureConversionCores, this.featureGearbox, this.featureWrenchFocus, this.featureQuartzDupe };
 
+		// Register each feature
 		for( AbstractBasicFeature feature : features )
 		{
-			if( feature.isAvailable() )
-			{
-				// Crafting?
-				if( feature instanceof ICraftingFeature )
-				{
-					( (ICraftingFeature)feature ).registerCrafting();
-				}
-
-				// Research?
-				if( feature instanceof IThaumcraftResearchFeature )
-				{
-					( (IThaumcraftResearchFeature)feature ).registerResearch();
-				}
-			}
+			// Attempt to register the feature
+			feature.registerFeature();
 		}
+
+		// Finish the registration
+		this.featureResearchSetup.finalizeRegistration( features );
+
+		// Mark that registration has occurred.
+		this.hasRegistered = true;
 	}
 
 }

@@ -3,7 +3,7 @@ package thaumicenergistics.api;
 import net.minecraftforge.fluids.Fluid;
 import thaumcraft.api.aspects.Aspect;
 
-public interface IEssentiaGas
+public interface IThEEssentiaGas
 {
 	/**
 	 * Get the aspect this gas is based off of.

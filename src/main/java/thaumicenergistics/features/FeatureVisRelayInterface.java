@@ -1,5 +1,6 @@
 package thaumicenergistics.features;
 
+import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -17,7 +18,6 @@ import appeng.core.features.AEFeature;
 
 public class FeatureVisRelayInterface
 	extends AbstractDependencyFeature
-	implements IThaumcraftResearchFeature, ICraftingFeature
 {
 
 	public FeatureVisRelayInterface( final FeatureRegistry fr )
@@ -44,19 +44,7 @@ public class FeatureVisRelayInterface
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
-	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.VISINTERFACE.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public void registerCrafting()
+	protected void registerCrafting()
 	{
 		// Common items
 		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
@@ -77,7 +65,7 @@ public class FeatureVisRelayInterface
 	}
 
 	@Override
-	public void registerResearch()
+	protected void registerResearch()
 	{
 		// Set the research aspects
 		AspectList vriAspects = new AspectList();
@@ -99,6 +87,24 @@ public class FeatureVisRelayInterface
 		ResearchTypes.VISINTERFACE.researchItem.setParents( this.getFirstValidParentKey( false ), PseudoResearchTypes.VISPOWER.getKey() );
 		ResearchTypes.VISINTERFACE.researchItem.setParentsHidden( "VISPOWER" );
 		ResearchTypes.VISINTERFACE.researchItem.registerResearchItem();
+	}
+
+	@Override
+	public String getFirstValidParentKey( final boolean includeSelf )
+	{
+		if( includeSelf && this.isAvailable() )
+		{
+			return ResearchTypes.VISINTERFACE.getKey();
+		}
+
+		// Pass to parent
+		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
+	}
+
+	@Override
+	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
+	{
+		return EnumSet.of( PseudoResearchTypes.VISPOWER );
 	}
 
 }

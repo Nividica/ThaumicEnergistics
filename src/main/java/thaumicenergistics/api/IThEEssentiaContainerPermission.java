@@ -1,6 +1,6 @@
 package thaumicenergistics.api;
 
-public interface IEssentiaContainerPermission
+public interface IThEEssentiaContainerPermission
 {
 	/**
 	 * Can the container be partially filled?

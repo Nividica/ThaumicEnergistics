@@ -13,8 +13,8 @@ import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.items.ItemEssence;
 import thaumcraft.common.items.ItemResource;
-import thaumicenergistics.api.IEssentiaContainerPermission;
-import thaumicenergistics.api.ITransportPermissions;
+import thaumicenergistics.api.IThEEssentiaContainerPermission;
+import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.aspect.AspectStack;
 
@@ -49,7 +49,7 @@ public final class EssentiaItemContainerHelper
 	/**
 	 * Cache of the item permissions.
 	 */
-	private ITransportPermissions perms;
+	private IThETransportPermissions perms;
 
 	/**
 	 * Private constructor
@@ -192,7 +192,7 @@ public final class EssentiaItemContainerHelper
 		Item containerItem = container.getItem();
 
 		// Get the info about the container
-		IEssentiaContainerPermission info = this.getContainerInfo( containerItem, container.getItemDamage() );
+		IThEEssentiaContainerPermission info = this.getContainerInfo( containerItem, container.getItemDamage() );
 
 		// Ensure we got info
 		if( info == null )
@@ -423,7 +423,7 @@ public final class EssentiaItemContainerHelper
 			Item containerItem = container.getItem();
 
 			// Get the info about the container
-			IEssentiaContainerPermission info = this.getContainerInfo( containerItem, container.getItemDamage() );
+			IThEEssentiaContainerPermission info = this.getContainerInfo( containerItem, container.getItemDamage() );
 
 			// Did we get any info?
 			if( info != null )
@@ -443,7 +443,7 @@ public final class EssentiaItemContainerHelper
 	 * @param metadata
 	 * @return
 	 */
-	public IEssentiaContainerPermission getContainerInfo( final Item item, final int metadata )
+	public IThEEssentiaContainerPermission getContainerInfo( final Item item, final int metadata )
 	{
 		// Is the item not null?
 		if( item != null )
@@ -461,7 +461,7 @@ public final class EssentiaItemContainerHelper
 	 * @param itemstack
 	 * @return
 	 */
-	public IEssentiaContainerPermission getContainerInfo( final ItemStack itemStack )
+	public IThEEssentiaContainerPermission getContainerInfo( final ItemStack itemStack )
 	{
 		// Is the itemstack not null?
 		if( itemStack != null )
@@ -567,7 +567,7 @@ public final class EssentiaItemContainerHelper
 		Item containerItem = container.getItem();
 
 		// Get the info about the container
-		IEssentiaContainerPermission info = this.getContainerInfo( containerItem, container.getItemDamage() );
+		IThEEssentiaContainerPermission info = this.getContainerInfo( containerItem, container.getItemDamage() );
 
 		// Ensure we got the info
 		if( info == null )

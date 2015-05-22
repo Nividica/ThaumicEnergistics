@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map.Entry;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.api.Blocks;
-import thaumicenergistics.api.IConfig;
-import thaumicenergistics.api.IEssentiaGas;
-import thaumicenergistics.api.IInteractionHelper;
-import thaumicenergistics.api.ITransportPermissions;
-import thaumicenergistics.api.Items;
-import thaumicenergistics.api.Parts;
+import thaumicenergistics.api.IThEBlocks;
+import thaumicenergistics.api.IThEConfig;
+import thaumicenergistics.api.IThEEssentiaGas;
+import thaumicenergistics.api.IThEInteractionHelper;
+import thaumicenergistics.api.IThETransportPermissions;
+import thaumicenergistics.api.IThEItems;
+import thaumicenergistics.api.IThEParts;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.fluids.GaseousEssentia;
 import com.google.common.collect.ImmutableList;
@@ -23,7 +23,7 @@ public class API
 	private final ThEBlocks blocks = new ThEBlocks();
 	private final ThEItems items = new ThEItems();
 	private final ThEParts parts = new ThEParts();
-	private final List<IEssentiaGas> essentiaGases = new ArrayList<IEssentiaGas>();
+	private final List<IThEEssentiaGas> essentiaGases = new ArrayList<IThEEssentiaGas>();
 	private final ThETransportPermissions transportPermissions = new ThETransportPermissions();
 	private final ThEInteractionHelper interactionHelper = new ThEInteractionHelper();
 
@@ -40,19 +40,19 @@ public class API
 	}
 
 	@Override
-	public Blocks blocks()
+	public IThEBlocks blocks()
 	{
 		return this.blocks;
 	}
 
 	@Override
-	public IConfig config()
+	public IThEConfig config()
 	{
 		return ThaumicEnergistics.config;
 	}
 
 	@Override
-	public ImmutableList<List<IEssentiaGas>> essentiaGases()
+	public ImmutableList<List<IThEEssentiaGas>> essentiaGases()
 	{
 		// Do we need to update?
 		if( this.essentiaGases.size() != GaseousEssentia.gasList.size() )
@@ -74,25 +74,25 @@ public class API
 	}
 
 	@Override
-	public IInteractionHelper interact()
+	public IThEInteractionHelper interact()
 	{
 		return this.interactionHelper;
 	}
 
 	@Override
-	public Items items()
+	public IThEItems items()
 	{
 		return this.items;
 	}
 
 	@Override
-	public Parts parts()
+	public IThEParts parts()
 	{
 		return this.parts;
 	}
 
 	@Override
-	public ITransportPermissions transportPermissions()
+	public IThETransportPermissions transportPermissions()
 	{
 		return this.transportPermissions;
 	}

@@ -9,8 +9,6 @@ import thaumicenergistics.integration.tc.PseudoResearchItem;
 
 public class ResearchRegistry
 {
-	// TODO: Method for determining parent chain of disabled features.
-
 	// Fake research, serves as placeholder for existing research
 	public static enum PseudoResearchTypes
 	{
@@ -30,6 +28,7 @@ public class ResearchRegistry
 		private int column;
 		private int row;
 		private PseudoResearchItem researchItem;
+		private boolean hasRegistered = false;
 
 		private PseudoResearchTypes( final String key, final String cat, final int column, final int row )
 		{
@@ -46,9 +45,13 @@ public class ResearchRegistry
 
 		public void registerPsudeoResearch()
 		{
-			this.researchItem = PseudoResearchItem.newPseudo( this.getKey(), TERESEARCH_TAB, this.realResearchKey, this.realResearchCategory,
-				this.column, this.row );
-			this.researchItem.registerResearchItem();
+			if( !this.hasRegistered )
+			{
+				this.researchItem = PseudoResearchItem.newPseudo( this.getKey(), TERESEARCH_TAB, this.realResearchKey, this.realResearchCategory,
+					this.column, this.row );
+				this.researchItem.registerResearchItem();
+				this.hasRegistered = true;
+			}
 		}
 	}
 

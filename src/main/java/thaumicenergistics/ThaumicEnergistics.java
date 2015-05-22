@@ -3,7 +3,7 @@ package thaumicenergistics;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import thaumicenergistics.api.IConfig;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.IntegrationCore;
@@ -48,7 +48,7 @@ public class ThaumicEnergistics
 	/**
 	 * Configuration.
 	 */
-	public static IConfig config;
+	public static IThEConfig config;
 
 	/**
 	 * Creative tab.

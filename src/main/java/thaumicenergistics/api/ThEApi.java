@@ -39,38 +39,38 @@ public abstract class ThEApi
 	/**
 	 * Blocks
 	 */
-	public abstract Blocks blocks();
+	public abstract IThEBlocks blocks();
 
 	/**
 	 * Configuration
 	 */
-	public abstract IConfig config();
+	public abstract IThEConfig config();
 
 	/**
 	 * Essentia Gasses
 	 */
-	public abstract ImmutableList<List<IEssentiaGas>> essentiaGases();
+	public abstract ImmutableList<List<IThEEssentiaGas>> essentiaGases();
 
 	/**
 	 * Gets the ThE interaction manager
 	 * 
 	 * @return
 	 */
-	public abstract IInteractionHelper interact();
+	public abstract IThEInteractionHelper interact();
 
 	/**
 	 * Items
 	 */
-	public abstract Items items();
+	public abstract IThEItems items();
 
 	/**
 	 * Cable Parts
 	 */
-	public abstract Parts parts();
+	public abstract IThEParts parts();
 
 	/**
 	 * Transport Permissions.
 	 */
-	public abstract ITransportPermissions transportPermissions();
+	public abstract IThETransportPermissions transportPermissions();
 
 }

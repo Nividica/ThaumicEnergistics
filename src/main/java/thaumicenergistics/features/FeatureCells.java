@@ -1,6 +1,7 @@
 package thaumicenergistics.features;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -12,6 +13,7 @@ import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
 import thaumcraft.api.research.ResearchPage;
 import thaumcraft.common.config.Config;
+import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.registries.FeatureRegistry;
 import thaumicenergistics.registries.RecipeRegistry;
@@ -24,7 +26,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class FeatureCells
 	extends AbstractDependencyFeature
-	implements IThaumcraftResearchFeature, ICraftingFeature
 {
 
 	public FeatureCells( final FeatureRegistry fr )
@@ -32,6 +33,14 @@ public class FeatureCells
 		super( fr );
 	}
 
+	/**
+	 * Helper function to replace a single item with a group of items in a
+	 * recipe.
+	 * 
+	 * @param recipe
+	 * @param ingredient
+	 * @param group
+	 */
 	private void replaceRecipeIngredientWithGroup( final ShapedArcaneRecipe recipe, final ItemStack ingredient, final ArrayList<ItemStack> group )
 	{
 		// Get the input
@@ -75,33 +84,22 @@ public class FeatureCells
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
-	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.STORAGE.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public void registerCrafting()
+	protected void registerCrafting()
 	{
 		// Common items
 		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
 
 		// My items
-		ItemStack EssentiaStorageComponent_1k = ThEApi.instance().items().EssentiaStorageComponent_1k.getStack();
-		ItemStack EssentiaStorageComponent_4k = ThEApi.instance().items().EssentiaStorageComponent_4k.getStack();
-		ItemStack EssentiaStorageComponent_16k = ThEApi.instance().items().EssentiaStorageComponent_16k.getStack();
-		ItemStack EssentiaStorageComponent_64k = ThEApi.instance().items().EssentiaStorageComponent_64k.getStack();
-		ItemStack EssentiaCell_Casing = ThEApi.instance().items().EssentiaCell_Casing.getStack();
-		ItemStack EssentiaCell_1k = ThEApi.instance().items().EssentiaCell_1k.getStack();
-		ItemStack EssentiaCell_4k = ThEApi.instance().items().EssentiaCell_4k.getStack();
-		ItemStack EssentiaCell_16k = ThEApi.instance().items().EssentiaCell_16k.getStack();
-		ItemStack EssentiaCell_64k = ThEApi.instance().items().EssentiaCell_64k.getStack();
+		IThEItems theItems = ThEApi.instance().items();
+		ItemStack EssentiaStorageComponent_1k = theItems.EssentiaStorageComponent_1k.getStack();
+		ItemStack EssentiaStorageComponent_4k = theItems.EssentiaStorageComponent_4k.getStack();
+		ItemStack EssentiaStorageComponent_16k = theItems.EssentiaStorageComponent_16k.getStack();
+		ItemStack EssentiaStorageComponent_64k = theItems.EssentiaStorageComponent_64k.getStack();
+		ItemStack EssentiaCell_Housing = theItems.EssentiaCell_Casing.getStack();
+		ItemStack EssentiaCell_1k = theItems.EssentiaCell_1k.getStack();
+		ItemStack EssentiaCell_4k = theItems.EssentiaCell_4k.getStack();
+		ItemStack EssentiaCell_16k = theItems.EssentiaCell_16k.getStack();
+		ItemStack EssentiaCell_64k = theItems.EssentiaCell_64k.getStack();
 		ItemStack EssentiaCellWorkbench = ThEApi.instance().blocks().EssentiaCellWorkbench.getStack();
 
 		// Item Groups
@@ -110,79 +108,119 @@ public class FeatureCells
 		GroupQuartz.add( cdi.ChargedCertusQuartz );
 		GroupQuartz.add( cdi.PureCertusQuartz );
 
-		// 1K Storage Component
-		AspectList storage1kAspects = new AspectList();
-		storage1kAspects.add( Aspect.FIRE, 3 );
-		storage1kAspects.add( Aspect.ORDER, 1 );
+		// Housing ===============================================
+
+		// Housing recipe
+		Object[] recipeHousing = new Object[] { "WRW", "R R", "TTT", 'W', cdi.WardedGlass, 'R', cdi.RedstoneDust, 'T', cdi.ThaumiumIngot };
+
+		// Register Housing
+		GameRegistry.addRecipe( RecipeRegistry.STORAGE_HOUSING = new ShapedOreRecipe( EssentiaCell_Housing, false, recipeHousing ) );
+
+		// 1K ====================================================
+
+		// 1K Storage aspects
+		AspectList aspects1KStorage = new AspectList();
+		aspects1KStorage.add( Aspect.FIRE, 3 );
+		aspects1KStorage.add( Aspect.ORDER, 1 );
+
+		// 1K Storage recipe
+		Object[] recipe1KStorage = new Object[] { "EQ ", "QPQ", " QE", 'E', cdi.EtheralEssence, 'Q', cdi.CertusQuartz, 'P', cdi.LogicProcessor };
+
+		// 1K Cell recipe
+		Object[] recipe1KCell = new Object[] { "WRW", "RCR", "TTT", 'W', cdi.WardedGlass, 'R', cdi.RedstoneDust, 'T', cdi.ThaumiumIngot, 'C',
+						EssentiaStorageComponent_1k };
+
+		// Register 1K storage
 		RecipeRegistry.STORAGE_COMPONENT_1K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_1k,
-			storage1kAspects, new Object[] { "EQ ", "QPQ", " QE", 'E', cdi.EtheralEssence, 'Q', cdi.CertusQuartz, 'P', cdi.LogicProcessor } );
+			aspects1KStorage, recipe1KStorage );
+
+		// Register 1K cell
+		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_1K_SHAPED = new ShapedOreRecipe( EssentiaCell_1k, false, recipe1KCell ) );
+		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_1K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_1k, EssentiaStorageComponent_1k,
+						EssentiaCell_Housing ) );
+
+		// Replace regular certus quartz with any of the certus quartz variants in the 1K storage component
 		this.replaceRecipeIngredientWithGroup( (ShapedArcaneRecipe)RecipeRegistry.STORAGE_COMPONENT_1K, cdi.CertusQuartz, GroupQuartz );
 
-		// 4K Storage Component
-		AspectList storage4kAspects = new AspectList();
-		storage4kAspects.add( Aspect.FIRE, 3 );
-		storage4kAspects.add( Aspect.ORDER, 2 );
+		// 4K ===================================================
+
+		// 4K Storage aspects
+		AspectList aspects4KStorage = new AspectList();
+		aspects4KStorage.add( Aspect.FIRE, 3 );
+		aspects4KStorage.add( Aspect.ORDER, 2 );
+
+		// 4K Storage recipe
+		Object[] recipe4KStorage = new Object[] { "EPE", "1G1", "E1E", 'E', cdi.EtheralEssence, '1', EssentiaStorageComponent_1k, 'P',
+						cdi.CalculationProcessor, 'G', cdi.QuartzGlass };
+
+		// 4K Cell recipe
+		Object[] recipe4KCell = new Object[] { "WRW", "RCR", "TTT", 'W', cdi.WardedGlass, 'R', cdi.RedstoneDust, 'T', cdi.ThaumiumIngot, 'C',
+						EssentiaStorageComponent_4k };
+
+		// Register 4K storage
 		RecipeRegistry.STORAGE_COMPONENT_4K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_4k,
-			storage4kAspects, new Object[] { "EPE", "1G1", "E1E", 'E', cdi.EtheralEssence, '1', EssentiaStorageComponent_1k, 'P',
-							cdi.CalculationProcessor, 'G', cdi.QuartzGlass } );
+			aspects4KStorage, recipe4KStorage );
 
-		// 16K Storage Component
-		AspectList storage16kAspects = new AspectList();
-		storage16kAspects.add( Aspect.FIRE, 3 );
-		storage16kAspects.add( Aspect.ORDER, 4 );
+		// Register 4K cell
+		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_4K_SHAPED = new ShapedOreRecipe( EssentiaCell_4k, false, recipe4KCell ) );
+		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_4K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_4k, EssentiaStorageComponent_4k,
+						EssentiaCell_Housing ) );
+
+		// 16K ===================================================
+
+		// 16K Storage aspects
+		AspectList aspects16KStorage = new AspectList();
+		aspects16KStorage.add( Aspect.FIRE, 3 );
+		aspects16KStorage.add( Aspect.ORDER, 4 );
+
+		// 16K Storage recipe
+		Object[] recipe16KStorage = new Object[] { "SPE", "4G4", "E4S", 'E', cdi.EtheralEssence, 'S', cdi.SalisMundus, '4',
+						EssentiaStorageComponent_4k, 'P', cdi.EngineeringProcessor, 'G', cdi.QuartzGlass };
+
+		// 16K Cell recipe
+		Object[] recipe16KCell = new Object[] { "WRW", "RCR", "TTT", 'W', cdi.WardedGlass, 'R', cdi.RedstoneDust, 'T', cdi.ThaumiumIngot, 'C',
+						EssentiaStorageComponent_16k };
+
+		// Register 16K storage
 		RecipeRegistry.STORAGE_COMPONENT_16K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_16k,
-			storage16kAspects, new Object[] { "SPE", "4G4", "E4S", 'E', cdi.EtheralEssence, 'S', cdi.SalisMundus, '4', EssentiaStorageComponent_4k,
-							'P', cdi.EngineeringProcessor, 'G', cdi.QuartzGlass } );
+			aspects16KStorage, recipe16KStorage );
 
-		// 16K Storage Component
-		AspectList storage64kAspects = new AspectList();
-		storage64kAspects.add( Aspect.FIRE, 3 );
-		storage64kAspects.add( Aspect.ORDER, 8 );
+		// Register 16K cell
+		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_16K_SHAPED = new ShapedOreRecipe( EssentiaCell_16k, false, recipe16KCell ) );
+		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_16K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_16k, EssentiaStorageComponent_16k,
+						EssentiaCell_Housing ) );
+
+		// 64K ===================================================
+
+		// 64K Storage aspects
+		AspectList aspects64KStorage = new AspectList();
+		aspects64KStorage.add( Aspect.FIRE, 3 );
+		aspects64KStorage.add( Aspect.ORDER, 8 );
+
+		// 64K Storage recipe
+		Object[] recipe64KStorage = new Object[] { "SPS", "6G6", "S6S", 'S', cdi.SalisMundus, '6', EssentiaStorageComponent_16k, 'P',
+						cdi.EngineeringProcessor, 'G', cdi.QuartzGlass };
+
+		// 64K Cell recipe
+		Object[] recipe64KCell = new Object[] { "WRW", "RCR", "TTT", 'W', cdi.WardedGlass, 'R', cdi.RedstoneDust, 'T', cdi.ThaumiumIngot, 'C',
+						EssentiaStorageComponent_64k };
+
+		// Register 64K storage
 		RecipeRegistry.STORAGE_COMPONENT_64K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_64k,
-			storage64kAspects, new Object[] { "SPS", "6G6", "S6S", 'S', cdi.SalisMundus, '6', EssentiaStorageComponent_16k, 'P',
-							cdi.EngineeringProcessor, 'G', cdi.QuartzGlass } );
-
-		// Workbench
-		RecipeRegistry.BLOCK_CELL_WORKBENCH = new ShapelessOreRecipe( EssentiaCellWorkbench, new Object[] { EssentiaStorageComponent_1k,
-						cdi.MECellWorkbench } );
-		GameRegistry.addRecipe( RecipeRegistry.BLOCK_CELL_WORKBENCH );
-
-		// Storage Housing
-		RecipeRegistry.STORAGE_HOUSING = new ShapedOreRecipe( EssentiaCell_Casing, false, new Object[] { "WRW", "R R", "TTT", 'W', cdi.WardedGlass,
-						'R', cdi.RedstoneDust, 'T', cdi.ThaumiumIngot } );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_HOUSING );
-
-		// 1K Storage Cell
-		RecipeRegistry.STORAGE_CELL_1K_SHAPED = new ShapedOreRecipe( EssentiaCell_1k, false, new Object[] { "WRW", "RCR", "TTT", 'W',
-						cdi.WardedGlass, 'R', cdi.RedstoneDust, 'T', cdi.ThaumiumIngot, 'C', EssentiaStorageComponent_1k } );
-		RecipeRegistry.STORAGE_CELL_1K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_1k, EssentiaStorageComponent_1k, EssentiaCell_Casing );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_1K_SHAPED );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_1K_SHAPELESS );
-
-		// 4K Storage Cell
-		RecipeRegistry.STORAGE_CELL_4K_SHAPED = new ShapedOreRecipe( EssentiaCell_4k, false, new Object[] { "WRW", "RCR", "TTT", 'W',
-						cdi.WardedGlass, 'R', cdi.RedstoneDust, 'T', cdi.ThaumiumIngot, 'C', EssentiaStorageComponent_4k } );
-		RecipeRegistry.STORAGE_CELL_4K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_4k, EssentiaStorageComponent_4k, EssentiaCell_Casing );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_4K_SHAPED );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_4K_SHAPELESS );
-
-		// 16K Storage Cell
-		RecipeRegistry.STORAGE_CELL_16K_SHAPED = new ShapedOreRecipe( EssentiaCell_16k, false, new Object[] { "WRW", "RCR", "TTT", 'W',
-						cdi.WardedGlass, 'R', cdi.RedstoneDust, 'T', cdi.ThaumiumIngot, 'C', EssentiaStorageComponent_16k } );
-		RecipeRegistry.STORAGE_CELL_16K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_16k, EssentiaStorageComponent_16k, EssentiaCell_Casing );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_16K_SHAPED );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_16K_SHAPELESS );
+			aspects64KStorage, recipe64KStorage );
 
 		// 64K Storage Cell
-		RecipeRegistry.STORAGE_CELL_64K_SHAPED = new ShapedOreRecipe( EssentiaCell_64k, false, new Object[] { "WRW", "RCR", "TTT", 'W',
-						cdi.WardedGlass, 'R', cdi.RedstoneDust, 'T', cdi.ThaumiumIngot, 'C', EssentiaStorageComponent_64k } );
-		RecipeRegistry.STORAGE_CELL_64K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_64k, EssentiaStorageComponent_64k, EssentiaCell_Casing );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_64K_SHAPED );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_64K_SHAPELESS );
+		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_64K_SHAPED = new ShapedOreRecipe( EssentiaCell_64k, false, recipe64KCell ) );
+		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_64K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_64k, EssentiaStorageComponent_64k,
+						EssentiaCell_Housing ) );
+
+		// Workbench
+		GameRegistry.addRecipe( RecipeRegistry.BLOCK_CELL_WORKBENCH = new ShapelessOreRecipe( EssentiaCellWorkbench, EssentiaStorageComponent_1k,
+						cdi.MECellWorkbench ) );
 	}
 
 	@Override
-	public void registerResearch()
+	protected void registerResearch()
 	{
 		// Set the research aspects
 		AspectList storageAspectList = new AspectList();
@@ -233,6 +271,29 @@ public class FeatureCells
 		ResearchTypes.STORAGE.researchItem.setParents( storageParents );
 		ResearchTypes.STORAGE.researchItem.setParentsHidden( "DISTILESSENTIA" );
 		ResearchTypes.STORAGE.researchItem.registerResearchItem();
+	}
+
+	@Override
+	public String getFirstValidParentKey( final boolean includeSelf )
+	{
+		if( includeSelf && this.isAvailable() )
+		{
+			return ResearchTypes.STORAGE.getKey();
+		}
+
+		// Pass to parent
+		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
+	}
+
+	@Override
+	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
+	{
+		if( Config.wardedStone )
+		{
+			return EnumSet.of( PseudoResearchTypes.WARDED, PseudoResearchTypes.DISTILESSENTIA );
+		}
+
+		return EnumSet.of( PseudoResearchTypes.DISTILESSENTIA );
 	}
 
 }

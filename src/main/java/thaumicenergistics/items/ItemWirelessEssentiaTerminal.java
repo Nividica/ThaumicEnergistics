@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.api.IWirelessEssentiaTerminal;
+import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.registries.ThEStrings;
 import appeng.api.config.AccessRestriction;
@@ -21,7 +21,7 @@ import com.google.common.base.Optional;
 // build path
 public class ItemWirelessEssentiaTerminal
 	extends AEBasePoweredItem
-	implements IWirelessEssentiaTerminal
+	implements IThEWirelessEssentiaTerminal
 {
 	/**
 	 * NBT keys

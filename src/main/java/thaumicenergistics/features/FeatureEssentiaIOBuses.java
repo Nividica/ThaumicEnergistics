@@ -1,6 +1,7 @@
 package thaumicenergistics.features;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -18,7 +19,6 @@ import appeng.core.features.AEFeature;
 
 public class FeatureEssentiaIOBuses
 	extends AbstractDependencyFeature
-	implements IThaumcraftResearchFeature, ICraftingFeature
 {
 
 	private boolean isImportExportEnabled = false;
@@ -44,19 +44,7 @@ public class FeatureEssentiaIOBuses
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
-	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.IO.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureConversionCores.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public void registerCrafting()
+	protected void registerCrafting()
 	{
 		// Common items
 		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
@@ -64,39 +52,53 @@ public class FeatureEssentiaIOBuses
 		// My items
 		ItemStack DiffusionCore = ThEApi.instance().items().DiffusionCore.getStack();
 		ItemStack CoalescenceCore = ThEApi.instance().items().CoalescenceCore.getStack();
+		ItemStack EssentiaStorageBus = ThEApi.instance().parts().Essentia_StorageBus.getStack();
 
+		// Set Storage Bus aspects
+		AspectList storageAspectList = new AspectList();
+		storageAspectList.add( Aspect.FIRE, 3 );
+		storageAspectList.add( Aspect.EARTH, 3 );
+		storageAspectList.add( Aspect.WATER, 1 );
+
+		// Storage Bus recipe
+		Object[] recipeStorageBus = new Object[] { true, "DFC", "IWI", 'D', DiffusionCore, 'C', CoalescenceCore, 'I', cdi.IronIngot, 'F',
+						cdi.FilterTube, 'W', cdi.WardedGlass };
+
+		// Register the storage bus
+		RecipeRegistry.PART_STORAGE_BUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IO.getKey(), EssentiaStorageBus,
+			storageAspectList, recipeStorageBus );
+
+		// Is import and export enabled?
 		if( this.isImportExportEnabled )
 		{
 			// My items
 			ItemStack EssentiaImportBus = ThEApi.instance().parts().Essentia_ImportBus.getStack();
 			ItemStack EssentiaExportBus = ThEApi.instance().parts().Essentia_ExportBus.getStack();
 
-			// Import Bus
+			// Set IO Bus aspects
 			AspectList ioAspectList = new AspectList();
 			ioAspectList.add( Aspect.FIRE, 2 );
 			ioAspectList.add( Aspect.EARTH, 2 );
 			ioAspectList.add( Aspect.WATER, 1 );
+
+			// Import Bus recipe
+			Object[] recipeImportBus = new Object[] { "JDJ", "IFI", 'J', cdi.WardedJar, 'D', DiffusionCore, 'I', cdi.IronIngot, 'F', cdi.FilterTube };
+
+			// Export Bus recipe
+			Object[] recipeExportBus = new Object[] { "JCJ", "IFI", 'J', cdi.WardedJar, 'C', CoalescenceCore, 'I', cdi.IronIngot, 'F', cdi.FilterTube };
+
+			// Register Import Bus
 			RecipeRegistry.PART_IMPORT_BUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IO.getKey(), EssentiaImportBus,
-				ioAspectList, new Object[] { "JDJ", "IFI", 'J', cdi.WardedJar, 'D', DiffusionCore, 'I', cdi.IronIngot, 'F', cdi.FilterTube } );
+				ioAspectList, recipeImportBus );
 
-			// Export Bus
+			// Register Export Bus
 			RecipeRegistry.PART_EXPORT_BUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IO.getKey(), EssentiaExportBus,
-				ioAspectList, new Object[] { "JCJ", "IFI", 'J', cdi.WardedJar, 'C', CoalescenceCore, 'I', cdi.IronIngot, 'F', cdi.FilterTube } );
+				ioAspectList, recipeExportBus );
 		}
-		// My item
-		ItemStack EssentiaStorageBus = ThEApi.instance().parts().Essentia_StorageBus.getStack();
-
-		AspectList storageAspectList = new AspectList();
-		storageAspectList.add( Aspect.FIRE, 3 );
-		storageAspectList.add( Aspect.EARTH, 3 );
-		storageAspectList.add( Aspect.WATER, 1 );
-		RecipeRegistry.PART_STORAGE_BUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IO.getKey(), EssentiaStorageBus,
-			storageAspectList, new Object[] { true, "DFC", "IWI", 'D', DiffusionCore, 'C', CoalescenceCore, 'I', cdi.IronIngot, 'F', cdi.FilterTube,
-							'W', cdi.WardedGlass } );
 	}
 
 	@Override
-	public void registerResearch()
+	protected void registerResearch()
 	{
 		// Set the research aspects
 		AspectList ioAspectList = new AspectList();
@@ -135,5 +137,23 @@ public class FeatureEssentiaIOBuses
 		ResearchTypes.IO.researchItem.setParentsHidden( "TUBEFILTER" );
 		ResearchTypes.IO.researchItem.setConcealed();
 		ResearchTypes.IO.researchItem.registerResearchItem();
+	}
+
+	@Override
+	public String getFirstValidParentKey( final boolean includeSelf )
+	{
+		if( includeSelf && this.isAvailable() )
+		{
+			return ResearchTypes.IO.getKey();
+		}
+
+		// Pass to parent
+		return FeatureRegistry.instance().featureConversionCores.getFirstValidParentKey( true );
+	}
+
+	@Override
+	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
+	{
+		return EnumSet.of( PseudoResearchTypes.TUBEFILTER );
 	}
 }

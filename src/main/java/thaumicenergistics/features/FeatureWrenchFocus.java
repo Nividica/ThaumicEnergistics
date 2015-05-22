@@ -1,5 +1,6 @@
 package thaumicenergistics.features;
 
+import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -16,7 +17,6 @@ import appeng.core.features.AEFeature;
 
 public class FeatureWrenchFocus
 	extends AbstractDependencyFeature
-	implements ICraftingFeature, IThaumcraftResearchFeature
 {
 
 	public FeatureWrenchFocus( final FeatureRegistry fr )
@@ -49,19 +49,7 @@ public class FeatureWrenchFocus
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
-	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.FOCUSWRENCH.getKey();
-		}
-
-		// No parent
-		return "";
-	}
-
-	@Override
-	public void registerCrafting()
+	protected void registerCrafting()
 	{
 		// Common items
 		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
@@ -78,7 +66,7 @@ public class FeatureWrenchFocus
 	}
 
 	@Override
-	public void registerResearch()
+	protected void registerResearch()
 	{
 		// Set the research aspects
 		AspectList focusAspects = new AspectList();
@@ -97,6 +85,24 @@ public class FeatureWrenchFocus
 		ResearchTypes.FOCUSWRENCH.createResearchItem( focusAspects, ResearchRegistry.COMPLEXITY_SMALL, focusIcon, focusPages );
 		ResearchTypes.FOCUSWRENCH.researchItem.setParents( PseudoResearchTypes.FOCUSFIRE.getKey() ).setSecondary();
 		ResearchTypes.FOCUSWRENCH.researchItem.registerResearchItem();
+	}
+
+	@Override
+	public String getFirstValidParentKey( final boolean includeSelf )
+	{
+		if( includeSelf && this.isAvailable() )
+		{
+			return ResearchTypes.FOCUSWRENCH.getKey();
+		}
+
+		// No parent
+		return "";
+	}
+
+	@Override
+	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
+	{
+		return EnumSet.of( PseudoResearchTypes.FOCUSFIRE );
 	}
 
 }

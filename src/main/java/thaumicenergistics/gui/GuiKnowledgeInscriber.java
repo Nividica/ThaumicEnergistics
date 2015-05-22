@@ -15,7 +15,7 @@ import thaumicenergistics.network.packet.server.PacketServerKnowledgeInscriber;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.GuiTextureManager;
 
-// TODO: Knowledge Inscriber GUI: add particles like focal manipulator
+// TODO: QOL: Knowledge Inscriber GUI: add particles like focal manipulator
 
 public class GuiKnowledgeInscriber
 	extends AbstractGuiBase

@@ -275,7 +275,7 @@ public class TileEssentiaVibrationChamber
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		// TODO: Sleep
+		// TODO: Sleep?
 		return new TickingRequest( TileEssentiaVibrationChamber.TICKRATE_URGENT, TileEssentiaVibrationChamber.TICKRATE_IDLE, false, false );
 
 	}
@@ -432,7 +432,7 @@ public class TileEssentiaVibrationChamber
 			// Nothing is stored, keep moving the rotation timer
 			this.suctionRotationTimer += ticksSinceLastCall;
 
-			// TODO: Resume here
+			// TODO: Resume work on vibration chamber here
 			//System.out.println( this.suctionRotationTimer );
 		}
 

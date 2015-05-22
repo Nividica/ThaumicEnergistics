@@ -13,7 +13,7 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
  * @author Nividica
  * 
  */
-public interface IWirelessEssentiaTerminal
+public interface IThEWirelessEssentiaTerminal
 	extends INetworkEncodable, IAEItemPowerStorage
 {
 	/**

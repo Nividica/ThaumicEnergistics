@@ -11,7 +11,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author Nividica
  * 
  */
-public interface IInteractionHelper
+public interface IThEInteractionHelper
 {
 	/**
 	 * Converts an amount of milibuckets to an amount of Essentia.
@@ -39,7 +39,7 @@ public interface IInteractionHelper
 	 * 
 	 * @param player
 	 */
-	public abstract void openWirelessTerminalGui( final EntityPlayer player, final IWirelessEssentiaTerminal terminalInterface );
+	public abstract void openWirelessTerminalGui( final EntityPlayer player, final IThEWirelessEssentiaTerminal terminalInterface );
 
 	/**
 	 * Attempts to set the Arcane Crafting Terminals recipe to the items

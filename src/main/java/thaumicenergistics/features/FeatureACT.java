@@ -16,7 +16,6 @@ import appeng.core.features.AEFeature;
 
 public class FeatureACT
 	extends AbstractDependencyFeature
-	implements IThaumcraftResearchFeature, ICraftingFeature
 {
 
 	public FeatureACT( final FeatureRegistry fr )
@@ -43,19 +42,7 @@ public class FeatureACT
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
-	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.ARCANETERMINAL.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public void registerCrafting()
+	protected void registerCrafting()
 	{
 		// Common items
 		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
@@ -65,18 +52,25 @@ public class FeatureACT
 
 		// Arcane Crafting Terminal
 		AspectList actAspectList = new AspectList();
+
+		// Set aspects
 		actAspectList.add( Aspect.AIR, 10 );
 		actAspectList.add( Aspect.EARTH, 10 );
 		actAspectList.add( Aspect.ENTROPY, 10 );
 		actAspectList.add( Aspect.FIRE, 10 );
 		actAspectList.add( Aspect.ORDER, 10 );
 		actAspectList.add( Aspect.WATER, 10 );
+
+		// Set recipe
+		Object[] actRecipe = new Object[] { cdi.METerminal, cdi.ArcaneWorkTable, cdi.CalculationProcessor };
+
+		// Register
 		RecipeRegistry.PART_ARCANE_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.ARCANETERMINAL.getKey(),
-			ArcaneCraftingTerminal, actAspectList, cdi.METerminal, cdi.ArcaneWorkTable, cdi.CalculationProcessor );
+			ArcaneCraftingTerminal, actAspectList, actRecipe );
 	}
 
 	@Override
-	public void registerResearch()
+	protected void registerResearch()
 	{
 		// Set the research aspects
 		AspectList actAspectList = new AspectList();
@@ -96,5 +90,17 @@ public class FeatureACT
 		ResearchTypes.ARCANETERMINAL.createResearchItem( actAspectList, ResearchRegistry.COMPLEXITY_SMALL, actIcon, actPages );
 		ResearchTypes.ARCANETERMINAL.researchItem.setParents( this.getFirstValidParentKey( false ) );
 		ResearchTypes.ARCANETERMINAL.researchItem.registerResearchItem();
+	}
+
+	@Override
+	public String getFirstValidParentKey( final boolean includeSelf )
+	{
+		if( includeSelf && this.isAvailable() )
+		{
+			return ResearchTypes.ARCANETERMINAL.getKey();
+		}
+
+		// Pass to parent
+		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
 	}
 }

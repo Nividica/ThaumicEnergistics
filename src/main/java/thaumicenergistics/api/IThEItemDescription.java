@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public interface IItemDescription
+public interface IThEItemDescription
 {
 
 	/**

@@ -136,7 +136,8 @@ public class GuiArcaneCraftingTerminal
 	private long lastTooltipUpdateTime = 0;
 
 	/**
-	 * TODO: Remove this and rework the widgets/slots to be MESlots
+	 * TODO: Remove this and rework the widgets/slots to be MESlots. Such fun
+	 * that will be.
 	 */
 	private MEItemAspectBridgeContainer meAspectBridge;
 
@@ -479,6 +480,7 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private void updateScrollbarRange()
 	{
+		// TODO: This needs some work to prevent overscroll
 		// Calculate the total number of rows needed to display ALL items
 		int totalNumberOfRows = (int)Math.ceil( this.repo.size() / (double)AbstractGuiConstantsACT.ME_COLUMNS );
 

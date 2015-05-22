@@ -1,5 +1,6 @@
 package thaumicenergistics.features;
 
+import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -15,7 +16,6 @@ import thaumicenergistics.registries.ResearchRegistry.ResearchTypes;
 
 public class FeatureConversionCores
 	extends AbstractDependencyFeature
-	implements IThaumcraftResearchFeature, ICraftingFeature
 {
 
 	public FeatureConversionCores( final FeatureRegistry fr )
@@ -36,19 +36,7 @@ public class FeatureConversionCores
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
-	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.CORES.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public void registerCrafting()
+	protected void registerCrafting()
 	{
 
 		// Common items
@@ -58,23 +46,27 @@ public class FeatureConversionCores
 		ItemStack DiffusionCore = ThEApi.instance().items().DiffusionCore.getStack();
 		ItemStack CoalescenceCore = ThEApi.instance().items().CoalescenceCore.getStack();
 
-		// Coalescence Core
+		// Set Coalescence Core aspects
 		AspectList coalescenceAspects = new AspectList();
 		coalescenceAspects.add( Aspect.WATER, 2 );
 		coalescenceAspects.add( Aspect.ORDER, 2 );
+
+		// Register Coalescence Core
 		RecipeRegistry.MATERIAL_COALESCENCE_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
 			CoalescenceCore, coalescenceAspects, cdi.QuickSilverDrop, cdi.QuickSilverDrop, cdi.QuickSilverDrop, cdi.OrderShard, cdi.FormationCore );
 
-		// Diffusion Core
+		// Set Diffusion Core aspects
 		AspectList diffusionAspects = new AspectList();
 		diffusionAspects.add( Aspect.WATER, 2 );
 		diffusionAspects.add( Aspect.ENTROPY, 2 );
+
+		// Register Diffusion Core
 		RecipeRegistry.MATERIAL_DIFFUSION_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
 			DiffusionCore, diffusionAspects, cdi.QuickSilverDrop, cdi.QuickSilverDrop, cdi.QuickSilverDrop, cdi.EntropyShard, cdi.AnnihilationCore );
 	}
 
 	@Override
-	public void registerResearch()
+	protected void registerResearch()
 	{
 		// Set the research aspects
 		AspectList coreAspectList = new AspectList();
@@ -96,6 +88,24 @@ public class FeatureConversionCores
 		ResearchTypes.CORES.researchItem.setParents( this.getFirstValidParentKey( false ), PseudoResearchTypes.DISTILESSENTIA.getKey() );
 		ResearchTypes.CORES.researchItem.setParentsHidden( "DISTILESSENTIA" );
 		ResearchTypes.CORES.researchItem.registerResearchItem();
+	}
+
+	@Override
+	public String getFirstValidParentKey( final boolean includeSelf )
+	{
+		if( includeSelf && this.isAvailable() )
+		{
+			return ResearchTypes.CORES.getKey();
+		}
+
+		// Pass to parent
+		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
+	}
+
+	@Override
+	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
+	{
+		return EnumSet.of( PseudoResearchTypes.DISTILESSENTIA );
 	}
 
 }

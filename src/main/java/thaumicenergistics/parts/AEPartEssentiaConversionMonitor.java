@@ -375,7 +375,7 @@ public class AEPartEssentiaConversionMonitor
 		return monitor.extractItems( toExtract, mode, this.asMachineSource );
 	}
 
-	// TODO: This should be generalized/abstracted better
+	// TODO: This should be generalized/abstracted better. This particular functionality is duplicated all over the place and needs to be centralized.
 	/**
 	 * Injects fluid into the ME network.
 	 * Returns what was not stored.

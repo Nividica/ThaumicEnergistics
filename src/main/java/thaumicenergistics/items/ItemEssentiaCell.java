@@ -120,12 +120,10 @@ public class ItemEssentiaCell
 		HandlerItemEssentiaCell cellHandler = (HandlerItemEssentiaCell)handler;
 
 		// Create the bytes tooltip
-		String bytesTip = String.format( ThEStrings.Tooltip_CellBytes.getLocalized(),
-			new Object[] { cellHandler.getUsedBytes(), cellHandler.getTotalBytes() } );
+		String bytesTip = String.format( ThEStrings.Tooltip_CellBytes.getLocalized(), cellHandler.getUsedBytes(), cellHandler.getTotalBytes() );
 
 		// Create the types tooltip
-		String typesTip = String.format( ThEStrings.Tooltip_CellTypes.getLocalized(),
-			new Object[] { cellHandler.getUsedTypes(), cellHandler.getTotalTypes() } );
+		String typesTip = String.format( ThEStrings.Tooltip_CellTypes.getLocalized(), cellHandler.getUsedTypes(), cellHandler.getTotalTypes() );
 
 		// Add the tooltips
 		displayList.add( bytesTip );

@@ -1,5 +1,6 @@
 package thaumicenergistics.features;
 
+import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.api.ThaumcraftApi;
@@ -16,7 +17,6 @@ import appeng.api.AEApi;
 
 public class FeatureQuartzDupe
 	extends AbstractDependencyFeature
-	implements ICraftingFeature, IThaumcraftResearchFeature
 {
 
 	public FeatureQuartzDupe( final FeatureRegistry fr )
@@ -42,19 +42,7 @@ public class FeatureQuartzDupe
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
-	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.CERTUSDUPE.getKey();
-		}
-
-		// No parent
-		return "";
-	}
-
-	@Override
-	public void registerCrafting()
+	protected void registerCrafting()
 	{
 		// Certus
 		String Certus1 = "crystalCertusQuartz";
@@ -87,7 +75,7 @@ public class FeatureQuartzDupe
 	}
 
 	@Override
-	public void registerResearch()
+	protected void registerResearch()
 	{
 		// Set aspects
 		AspectList certusDupeAspects = new AspectList();
@@ -114,5 +102,23 @@ public class FeatureQuartzDupe
 
 		// Register
 		ResearchTypes.CERTUSDUPE.researchItem.registerResearchItem();
+	}
+
+	@Override
+	public String getFirstValidParentKey( final boolean includeSelf )
+	{
+		if( includeSelf && this.isAvailable() )
+		{
+			return ResearchTypes.CERTUSDUPE.getKey();
+		}
+
+		// No parent
+		return "";
+	}
+
+	@Override
+	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
+	{
+		return EnumSet.of( PseudoResearchTypes.DUPE );
 	}
 }

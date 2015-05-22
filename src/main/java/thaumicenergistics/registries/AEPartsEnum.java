@@ -22,15 +22,14 @@ import appeng.api.config.Upgrades;
 public enum AEPartsEnum
 {
 		EssentiaImportBus (ThEStrings.Part_EssentiaImportBus, AEPartEssentiaImportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport",
-			new Pair[] { generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
+			generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 )),
 
 		EssentiaLevelEmitter (ThEStrings.Part_EssentiaLevelEmitter, AEPartEssentiaLevelEmitter.class),
 
-		EssentiaStorageBus (ThEStrings.Part_EssentiaStorageBus, AEPartEssentiaStorageBus.class, null,
-			new Pair[] { generatePair( Upgrades.INVERTER, 1 ) }),
+		EssentiaStorageBus (ThEStrings.Part_EssentiaStorageBus, AEPartEssentiaStorageBus.class, null, generatePair( Upgrades.INVERTER, 1 )),
 
 		EssentiaExportBus (ThEStrings.Part_EssentiaExportBus, AEPartEssentiaExportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport",
-			new Pair[] { generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ) }),
+			generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 )),
 
 		EssentiaTerminal (ThEStrings.Part_EssentiaTerminal, AEPartEssentiaTerminal.class),
 

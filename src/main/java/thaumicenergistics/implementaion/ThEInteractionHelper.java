@@ -5,8 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
-import thaumicenergistics.api.IInteractionHelper;
-import thaumicenergistics.api.IWirelessEssentiaTerminal;
+import thaumicenergistics.api.IThEInteractionHelper;
+import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
@@ -25,7 +25,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ThEInteractionHelper
-	implements IInteractionHelper
+	implements IThEInteractionHelper
 {
 
 	@Override
@@ -48,7 +48,7 @@ public class ThEInteractionHelper
 	}
 
 	@Override
-	public void openWirelessTerminalGui( final EntityPlayer player, final IWirelessEssentiaTerminal terminalInterface )
+	public void openWirelessTerminalGui( final EntityPlayer player, final IThEWirelessEssentiaTerminal terminalInterface )
 	{
 		// Valid player?
 		if( ( player == null ) || ( player instanceof FakePlayer ) )

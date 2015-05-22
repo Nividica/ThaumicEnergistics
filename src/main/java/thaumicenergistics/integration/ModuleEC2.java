@@ -19,7 +19,7 @@ public class ModuleEC2
 			Method ECApi_instance = ECApi_Class.getDeclaredMethod( "instance" );
 
 			// Invoke the 'instance' method
-			Object ECApi = ECApi_instance.invoke( null, new Object[0] );
+			Object ECApi = ECApi_instance.invoke( null );
 
 			// Get the blacklist methods
 			Method addFluidToShowBlacklist = ECApi.getClass().getDeclaredMethod( "addFluidToShowBlacklist", Class.class );

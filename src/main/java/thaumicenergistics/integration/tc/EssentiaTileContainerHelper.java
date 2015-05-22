@@ -14,7 +14,7 @@ import thaumcraft.common.tiles.TileCentrifuge;
 import thaumcraft.common.tiles.TileEssentiaReservoir;
 import thaumcraft.common.tiles.TileJarFillable;
 import thaumcraft.common.tiles.TileTubeBuffer;
-import thaumicenergistics.api.ITransportPermissions;
+import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
@@ -37,7 +37,7 @@ public final class EssentiaTileContainerHelper
 	/**
 	 * Cache the permission class
 	 */
-	public final ITransportPermissions perms = ThEApi.instance().transportPermissions();
+	public final IThETransportPermissions perms = ThEApi.instance().transportPermissions();
 
 	/**
 	 * Extracts essentia from a container based on the specified fluid stack
