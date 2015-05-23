@@ -18,7 +18,8 @@ import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.texture.CableBusTextures;
@@ -48,11 +49,6 @@ public class AEPartEssentiaConversionMonitor
 	 * The aspect that was last deposited.
 	 */
 	private Aspect depositedAspect = null;
-
-	/**
-	 * Network source representing this part.
-	 */
-	private MachineSource asMachineSource = new MachineSource( this );
 
 	public AEPartEssentiaConversionMonitor()
 	{
@@ -109,7 +105,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Inject fluid
-		IAEFluidStack rejected = this.injectFluid( request, Actionable.MODULATE );
+		IAEFluidStack rejected = this.injectFluid( request, Actionable.MODULATE, new PlayerSource( player, this ) );
 
 		// How much is left over?
 		int rejectedAmount_E = 0;
@@ -221,8 +217,11 @@ public class AEPartEssentiaConversionMonitor
 		IAEFluidStack request = EssentiaConversionHelper.INSTANCE
 						.createAEFluidStackInEssentiaUnits( this.trackedEssentia.getAspect(), amountToFill_E );
 
+		// Set the player source
+		PlayerSource playerSource = new PlayerSource( player, this );
+
 		// Request the fluid
-		IAEFluidStack extracted = this.extractFluid( request, Actionable.SIMULATE );
+		IAEFluidStack extracted = this.extractFluid( request, Actionable.SIMULATE, playerSource );
 
 		// Was any extracted?
 		if( ( extracted == null ) || ( extracted.getStackSize() <= 0 ) )
@@ -266,7 +265,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Extract the fluid
-		this.extractFluid( request, Actionable.MODULATE );
+		this.extractFluid( request, Actionable.MODULATE, playerSource );
 
 		// Take power
 		this.extractPowerForEssentiaTransfer( amountToFill_E, Actionable.MODULATE );
@@ -363,7 +362,7 @@ public class AEPartEssentiaConversionMonitor
 	 * @param mode
 	 * @return
 	 */
-	protected final IAEFluidStack extractFluid( final IAEFluidStack toExtract, final Actionable mode )
+	protected final IAEFluidStack extractFluid( final IAEFluidStack toExtract, final Actionable mode, final BaseActionSource source )
 	{
 		IMEMonitor<IAEFluidStack> monitor = this.getGridBlock().getFluidMonitor();
 
@@ -372,7 +371,7 @@ public class AEPartEssentiaConversionMonitor
 			return null;
 		}
 
-		return monitor.extractItems( toExtract, mode, this.asMachineSource );
+		return monitor.extractItems( toExtract, mode, source );
 	}
 
 	// TODO: This should be generalized/abstracted better. This particular functionality is duplicated all over the place and needs to be centralized.
@@ -384,7 +383,7 @@ public class AEPartEssentiaConversionMonitor
 	 * @param mode
 	 * @return
 	 */
-	protected final IAEFluidStack injectFluid( final IAEFluidStack toInject, final Actionable mode )
+	protected final IAEFluidStack injectFluid( final IAEFluidStack toInject, final Actionable mode, final BaseActionSource source )
 	{
 		IMEMonitor<IAEFluidStack> monitor = this.getGridBlock().getFluidMonitor();
 
@@ -393,7 +392,7 @@ public class AEPartEssentiaConversionMonitor
 			return null;
 		}
 
-		return monitor.injectItems( toInject, mode, this.asMachineSource );
+		return monitor.injectItems( toInject, mode, source );
 	}
 
 	/**
