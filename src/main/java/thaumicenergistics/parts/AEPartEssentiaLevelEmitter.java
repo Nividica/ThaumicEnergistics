@@ -225,7 +225,7 @@ public class AEPartEssentiaLevelEmitter
 		}
 
 		// Convert to AE fluid stack
-		IAEFluidStack asGasStack = EssentiaConversionHelper.instance.createAEFluidStackInFluidUnits( aspectGas, 1 );
+		IAEFluidStack asGasStack = EssentiaConversionHelper.INSTANCE.createAEFluidStackInFluidUnits( aspectGas, 1 );
 
 		// Get how much is in the system
 		IAEFluidStack fluidStack = monitor.getStorageList().findPrecise( asGasStack );
@@ -239,7 +239,7 @@ public class AEPartEssentiaLevelEmitter
 		else
 		{
 			// Set the current amount
-			this.setCurrentAmount( EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() ) );
+			this.setCurrentAmount( EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() ) );
 		}
 	}
 
@@ -714,7 +714,7 @@ public class AEPartEssentiaLevelEmitter
 	public boolean setFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
 	{
 		// Get the aspect
-		Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( itemStack );
+		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( itemStack );
 
 		// Ensure we got an aspect
 		if( itemAspect == null )

@@ -10,33 +10,81 @@ import thaumicenergistics.api.IThEBlocks;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.IThEEssentiaGas;
 import thaumicenergistics.api.IThEInteractionHelper;
-import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.IThEParts;
+import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.util.ThELog;
 import com.google.common.collect.ImmutableList;
+import cpw.mods.fml.common.LoaderState;
 
-public class API
+public class ThEAPIImplementation
 	extends ThEApi
 {
-	private final ThEBlocks blocks = new ThEBlocks();
-	private final ThEItems items = new ThEItems();
-	private final ThEParts parts = new ThEParts();
-	private final List<IThEEssentiaGas> essentiaGases = new ArrayList<IThEEssentiaGas>();
-	private final ThETransportPermissions transportPermissions = new ThETransportPermissions();
-	private final ThEInteractionHelper interactionHelper = new ThEInteractionHelper();
+	private final ThEBlocks blocks;
+	private final ThEItems items;
+	private final ThEParts parts;
+	private final List<IThEEssentiaGas> essentiaGases;
+	private final ThETransportPermissions transportPermissions;
+	private final ThEInteractionHelper interactionHelper;
 
 	/**
 	 * Create the API instance.
 	 */
-	public static final API instance = new API();
+	private static ThEAPIImplementation INSTANCE = null;
 
 	/**
 	 * Private constructor
 	 */
-	private API()
+	private ThEAPIImplementation()
 	{
+		this.blocks = new ThEBlocks();
+		this.items = new ThEItems();
+		this.parts = new ThEParts();
+		this.essentiaGases = new ArrayList<IThEEssentiaGas>();
+		this.transportPermissions = new ThETransportPermissions();
+		this.interactionHelper = new ThEInteractionHelper();
+	}
+
+	/**
+	 * Checks if ThE has finished the preinit phase.
+	 * 
+	 * @return
+	 */
+	protected static boolean hasFinishedPreInit()
+	{
+		// Ensure that ThE has finished the PreInit phase
+		if( ThaumicEnergistics.getLoaderState() == LoaderState.NOINIT )
+		{
+			// Invalid state, API can not yet load.
+			ThELog.warning( "API is not available until ThE finishes the PreInit phase." );
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Gets the Thaumic Energistics API.
+	 * Note: Only available after the PREINIT event.
+	 */
+	public static ThEAPIImplementation instance()
+	{
+		// Has the singleton been created?
+		if( ThEAPIImplementation.INSTANCE == null )
+		{
+			// Ensure that preinit has finished.
+			if( !ThEAPIImplementation.hasFinishedPreInit() )
+			{
+				return null;
+			}
+
+			// Create the singleton.
+			ThEAPIImplementation.INSTANCE = new ThEAPIImplementation();
+		}
+
+		return ThEAPIImplementation.INSTANCE;
 	}
 
 	@Override

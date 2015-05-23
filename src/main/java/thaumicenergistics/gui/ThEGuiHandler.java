@@ -146,7 +146,7 @@ public class ThEGuiHandler
 		// Ensure the player is allowed to open the gui
 		if( part.doesPlayerHavePermissionToOpenGui( player ) )
 		{
-			player.openGui( ThaumicEnergistics.instance, part.getSide().ordinal(), world, x, y, z );
+			player.openGui( ThaumicEnergistics.INSTANCE, part.getSide().ordinal(), world, x, y, z );
 		}
 	}
 
@@ -162,7 +162,7 @@ public class ThEGuiHandler
 	 */
 	public static void launchGui( final int ID, final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
-		player.openGui( ThaumicEnergistics.instance, ID + ThEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
+		player.openGui( ThaumicEnergistics.INSTANCE, ID + ThEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
 	}
 
 	/**
@@ -180,7 +180,7 @@ public class ThEGuiHandler
 									final Object[] extraData )
 	{
 		ThEGuiHandler.extraData = extraData;
-		player.openGui( ThaumicEnergistics.instance, ID + ThEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
+		player.openGui( ThaumicEnergistics.INSTANCE, ID + ThEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
 		ThEGuiHandler.extraData = null;
 	}
 

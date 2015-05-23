@@ -159,7 +159,7 @@ public class ContainerEssentiaCellWorkbench
 				if( !didMerge )
 				{
 					// Is the stack an aspect container?
-					Aspect slotAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( slotStack );
+					Aspect slotAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( slotStack );
 					if( slotAspect != null )
 					{
 						// Attempt to add the aspect to the cell partition list

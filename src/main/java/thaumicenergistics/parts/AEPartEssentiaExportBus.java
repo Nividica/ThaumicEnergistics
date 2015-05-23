@@ -96,9 +96,9 @@ public class AEPartEssentiaExportBus
 			}
 
 			// Can we inject any of this into the container
-			if( EssentiaTileContainerHelper.instance.injectIntoContainer( this.facingContainer, 1, filterAspect, Actionable.SIMULATE ) < 1 )
+			if( EssentiaTileContainerHelper.INSTANCE.injectIntoContainer( this.facingContainer, 1, filterAspect, Actionable.SIMULATE ) < 1 )
 			{
-				if( !( ( this.isVoidAllowed ) && ( EssentiaTileContainerHelper.instance.getAspectInContainer( this.facingContainer ) == filterAspect ) ) )
+				if( !( ( this.isVoidAllowed ) && ( EssentiaTileContainerHelper.INSTANCE.getAspectInContainer( this.facingContainer ) == filterAspect ) ) )
 				{
 					// Container will not accept any of this, and cannot void(essentia type wrong)
 					continue;
@@ -115,7 +115,7 @@ public class AEPartEssentiaExportBus
 			}
 
 			// Create the fluid stack
-			IAEFluidStack toExtract = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, amountToFillContainer );
+			IAEFluidStack toExtract = EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, amountToFillContainer );
 
 			// Simulate a network extraction
 			IAEFluidStack extractedStack = this.extractFluid( toExtract, Actionable.SIMULATE );
@@ -137,7 +137,7 @@ public class AEPartEssentiaExportBus
 			{
 
 				// Simulate filling the container
-				filledAmountFU = (int)EssentiaTileContainerHelper.instance.injectIntoContainer( this.facingContainer, extractedStack,
+				filledAmountFU = (int)EssentiaTileContainerHelper.INSTANCE.injectIntoContainer( this.facingContainer, extractedStack,
 					Actionable.SIMULATE );
 			}
 
@@ -148,7 +148,7 @@ public class AEPartEssentiaExportBus
 			}
 
 			// Do we have the power to transfer this amount?
-			filledAmountEU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( filledAmountFU );
+			filledAmountEU = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( filledAmountFU );
 			if( !this.extractPowerForEssentiaTransfer( filledAmountEU, Actionable.SIMULATE ) )
 			{
 				// Not enough power, abort
@@ -156,13 +156,13 @@ public class AEPartEssentiaExportBus
 			}
 
 			// Fill the container
-			EssentiaTileContainerHelper.instance.injectIntoContainer( this.facingContainer, extractedStack, Actionable.MODULATE );
+			EssentiaTileContainerHelper.INSTANCE.injectIntoContainer( this.facingContainer, extractedStack, Actionable.MODULATE );
 
 			// Take the power required for the filled amount
 			this.extractPowerForEssentiaTransfer( filledAmountEU, Actionable.MODULATE );
 
 			// Take essentia from the network
-			this.extractFluid( EssentiaConversionHelper.instance.createAEFluidStackInFluidUnits( essentiaGas, filledAmountFU ), Actionable.MODULATE );
+			this.extractFluid( EssentiaConversionHelper.INSTANCE.createAEFluidStackInFluidUnits( essentiaGas, filledAmountFU ), Actionable.MODULATE );
 
 			// Done
 			return true;

@@ -47,6 +47,29 @@ public enum ItemEnum
 		this.item.setCreativeTab( ThaumicEnergistics.ThETab );
 	}
 
+	/**
+	 * Gets an item stack of size 1 with the specified damage value.
+	 * 
+	 * @param damageValue
+	 * @return
+	 */
+	public ItemStack getDMGStack( final int damageValue )
+	{
+		return this.getDMGStack( damageValue, 1 );
+	}
+
+	/**
+	 * Gets an item stack of the specified size and damage value.
+	 * 
+	 * @param damageValue
+	 * @param size
+	 * @return
+	 */
+	public ItemStack getDMGStack( final int damageValue, final int size )
+	{
+		return new ItemStack( this.item, size, damageValue );
+	}
+
 	public String getInternalName()
 	{
 		return this.internalName;
@@ -57,12 +80,23 @@ public enum ItemEnum
 		return this.item;
 	}
 
-	public ItemStack getItemStackWithDamage( final int damageValue )
+	/**
+	 * Gets an item stack of size 1.
+	 * 
+	 * @return
+	 */
+	public ItemStack getStack()
 	{
-		return new ItemStack( this.item, 1, damageValue );
+		return this.getStack( 1 );
 	}
 
-	public ItemStack getItemStackWithSize( final int size )
+	/**
+	 * Gets an item stack of the specified size.
+	 * 
+	 * @param size
+	 * @return
+	 */
+	public ItemStack getStack( final int size )
 	{
 		return new ItemStack( this.item, size );
 	}

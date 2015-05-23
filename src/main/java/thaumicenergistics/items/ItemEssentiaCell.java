@@ -386,10 +386,10 @@ public class ItemEssentiaCell
 		HandlerItemEssentiaCell cellHandler = (HandlerItemEssentiaCell)handler;
 
 		// If the cell is empty, and the player can hold the casing
-		if( ( cellHandler.getUsedBytes() == 0 ) && ( player.inventory.addItemStackToInventory( ItemEnum.STORAGE_CASING.getItemStackWithSize( 1 ) ) ) )
+		if( ( cellHandler.getUsedBytes() == 0 ) && ( player.inventory.addItemStackToInventory( ItemEnum.STORAGE_CASING.getStack() ) ) )
 		{
 			// Return the storage component
-			return ItemEnum.STORAGE_COMPONENT.getItemStackWithDamage( essentiaCell.getItemDamage() );
+			return ItemEnum.STORAGE_COMPONENT.getDMGStack( essentiaCell.getItemDamage() );
 		}
 
 		// Can not remove storage component, return the current cell as is.

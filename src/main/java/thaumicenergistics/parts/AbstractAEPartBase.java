@@ -20,7 +20,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.grid.AEPartGridBlock;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.registries.AEPartsEnum;
-import thaumicenergistics.registries.ItemEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.AEApi;
@@ -119,7 +118,7 @@ public abstract class AbstractAEPartBase
 	public AbstractAEPartBase( final AEPartsEnum associatedPart )
 	{
 		// Set the associated item
-		this.associatedItem = ItemEnum.ITEM_AEPART.getItemStackWithDamage( associatedPart.ordinal() );
+		this.associatedItem = associatedPart.getStack();
 	}
 
 	private void updateStatus()

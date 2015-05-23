@@ -203,7 +203,7 @@ public class TileEssentiaProvider
 			this.tickRate = TileEssentiaProvider.TICK_RATE_IDLE;
 
 			// Take essentia from the neighbors
-			EssentiaTransportHelper.instance.takeEssentiaFromTransportNeighbors( this, this.worldObj, this.xCoord, this.yCoord, this.zCoord );
+			EssentiaTransportHelper.INSTANCE.takeEssentiaFromTransportNeighbors( this, this.worldObj, this.xCoord, this.yCoord, this.zCoord );
 		}
 	}
 

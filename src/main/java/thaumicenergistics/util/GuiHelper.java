@@ -10,18 +10,16 @@ public final class GuiHelper
 	/**
 	 * Singleton
 	 */
-	public static final GuiHelper instance = new GuiHelper();
+	public static final GuiHelper INSTANCE = new GuiHelper();
 
 	/**
 	 * Maps int -> mouse button
 	 */
-	public static final int MOUSE_BUTTON_LEFT = 0;
+	public static final int MOUSE_BUTTON_LEFT = 0, MOUSE_BUTTON_RIGHT = 1, MOUSE_BUTTON_WHEEL = 2;
 
-	public static final int MOUSE_BUTTON_RIGHT = 1;
-
-	public static final int MOUSE_BUTTON_WHEEL = 2;
-
-	// Special case representing not a click, but a motion of the mouse wheel
+	/**
+	 * Special case representing not a click, but a motion of the mouse wheel
+	 */
 	public static final int MOUSE_WHEEL_MOTION = -2;
 
 	/**

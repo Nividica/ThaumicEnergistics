@@ -267,7 +267,7 @@ public class GuiEssentiaLevelEmitter
 		if( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
 		{
 			// Pass to the widget
-			this.aspectFilterSlot.mouseClicked( EssentiaItemContainerHelper.instance.getAspectInContainer( this.player.inventory.getItemStack() ) );
+			this.aspectFilterSlot.mouseClicked( EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( this.player.inventory.getItemStack() ) );
 		}
 	}
 
@@ -462,7 +462,7 @@ public class GuiEssentiaLevelEmitter
 
 	public boolean setFilteredAspectFromItemstack( final ItemStack itemStack )
 	{
-		Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( itemStack );
+		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( itemStack );
 
 		if( itemAspect != null )
 		{

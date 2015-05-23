@@ -13,7 +13,7 @@ public class ArcaneRecipeHelper
 	/**
 	 * Singleton.
 	 */
-	public static final ArcaneRecipeHelper instance = new ArcaneRecipeHelper();
+	public static final ArcaneRecipeHelper INSTANCE = new ArcaneRecipeHelper();
 
 	/**
 	 * Private constructor.

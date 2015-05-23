@@ -179,7 +179,7 @@ public class ContainerKnowledgeInscriber
 		else
 		{
 			// Get the recipe output
-			ItemStack recipeOutput = ArcaneRecipeHelper.instance.getRecipeOutput( this.inscriber.getInventory(),
+			ItemStack recipeOutput = ArcaneRecipeHelper.INSTANCE.getRecipeOutput( this.inscriber.getInventory(),
 				TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
 
 			// Ensure there is an output
@@ -399,7 +399,7 @@ public class ContainerKnowledgeInscriber
 			}
 
 			// Get the aspect cost
-			AspectList recipeAspects = ArcaneRecipeHelper.instance.getRecipeAspectCost( this.inscriber.getInventory(),
+			AspectList recipeAspects = ArcaneRecipeHelper.INSTANCE.getRecipeAspectCost( this.inscriber.getInventory(),
 				TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
 
 			// Create the pattern
@@ -449,14 +449,14 @@ public class ContainerKnowledgeInscriber
 	public void onCraftMatrixChanged( final IInventory inv )
 	{
 		// Set the active recipe
-		this.activeRecipe = ArcaneRecipeHelper.instance.findMatchingArcaneResult( inv, TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.player );
+		this.activeRecipe = ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult( inv, TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.player );
 
 		ItemStack craftResult = null;
 
 		// Set the result slot
 		if( this.activeRecipe != null )
 		{
-			craftResult = ArcaneRecipeHelper.instance.getRecipeOutput( inv, TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
+			craftResult = ArcaneRecipeHelper.INSTANCE.getRecipeOutput( inv, TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
 		}
 
 		this.resultSlot.putStack( craftResult );

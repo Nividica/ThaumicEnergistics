@@ -12,7 +12,7 @@ import thaumcraft.common.items.wands.ItemWandCasting;
 public class VisCraftingHelper
 {
 
-	public static final VisCraftingHelper instance = new VisCraftingHelper();
+	public static final VisCraftingHelper INSTANCE = new VisCraftingHelper();
 
 	private ItemStack craftingScepter = null;
 

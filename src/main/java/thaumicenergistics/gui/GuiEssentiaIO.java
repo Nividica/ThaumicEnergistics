@@ -246,7 +246,7 @@ public class GuiEssentiaIO
 			if( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the aspect of the currently held item
-				Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( this.player.inventory.getItemStack() );
+				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( this.player.inventory.getItemStack() );
 
 				// Is there an aspect?
 				if( itemAspect != null )

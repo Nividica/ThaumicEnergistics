@@ -408,7 +408,7 @@ public abstract class AbstractGuiBase
 	 */
 	protected boolean isPointWithinSlot( final Slot slot, final int x, final int y )
 	{
-		return GuiHelper.instance.isPointInGuiRegion( slot.yDisplayPosition, slot.xDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
+		return GuiHelper.INSTANCE.isPointInGuiRegion( slot.yDisplayPosition, slot.xDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
 	}
 
 	/**

@@ -17,7 +17,7 @@ public final class EssentiaConversionHelper
 	/**
 	 * Singleton
 	 */
-	public static final EssentiaConversionHelper instance = new EssentiaConversionHelper();
+	public static final EssentiaConversionHelper INSTANCE = new EssentiaConversionHelper();
 
 	/**
 	 * Private constructor
@@ -113,13 +113,13 @@ public final class EssentiaConversionHelper
 		}
 
 		// Is the item a container?
-		if( !EssentiaItemContainerHelper.instance.isContainer( container ) )
+		if( !EssentiaItemContainerHelper.INSTANCE.isContainer( container ) )
 		{
 			return null;
 		}
 
 		// What aspect is in it?
-		Aspect containerAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( container );
+		Aspect containerAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( container );
 
 		// Is there an aspect in it?
 		if( containerAspect == null )
@@ -137,7 +137,7 @@ public final class EssentiaConversionHelper
 		}
 
 		// Get how much is in the container
-		long containerAmount_EU = EssentiaItemContainerHelper.instance.getContainerStoredAmount( container );
+		long containerAmount_EU = EssentiaItemContainerHelper.INSTANCE.getContainerStoredAmount( container );
 
 		// Create and return the stack
 		return this.createAEFluidStackInEssentiaUnits( essentiaGas, containerAmount_EU );

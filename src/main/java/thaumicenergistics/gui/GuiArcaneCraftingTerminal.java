@@ -202,7 +202,7 @@ public class GuiArcaneCraftingTerminal
 		int mouseY = this.height - ( ( Mouse.getEventY() * this.height ) / this.mc.displayHeight ) - 1;
 
 		// Is the mouse inside the ME area?
-		if( GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.ME_ITEM_POS_Y, AbstractGuiConstantsACT.ME_ITEM_POS_X,
+		if( GuiHelper.INSTANCE.isPointInGuiRegion( AbstractGuiConstantsACT.ME_ITEM_POS_Y, AbstractGuiConstantsACT.ME_ITEM_POS_X,
 			this.numberOfWidgetRows * AbstractGuiConstantsACT.ME_ROW_HEIGHT, AbstractGuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft,
 			this.guiTop ) )
 		{
@@ -245,7 +245,7 @@ public class GuiArcaneCraftingTerminal
 			if( !cost.hasEnoughVis )
 			{
 				// Ping-pong the alpha
-				alpha = GuiHelper.instance.pingPongFromTime( AbstractGuiConstantsACT.ASPECT_COST_BLINK_SPEED,
+				alpha = GuiHelper.INSTANCE.pingPongFromTime( AbstractGuiConstantsACT.ASPECT_COST_BLINK_SPEED,
 					AbstractGuiConstantsACT.ASPECT_COST_MIN_ALPHA, AbstractGuiConstantsACT.ASPECT_COST_MAX_ALPHA );
 			}
 
@@ -705,7 +705,7 @@ public class GuiArcaneCraftingTerminal
 	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
 		// Was the click inside the ME grid?
-		if( GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.ME_ITEM_POS_Y, AbstractGuiConstantsACT.ME_ITEM_POS_X,
+		if( GuiHelper.INSTANCE.isPointInGuiRegion( AbstractGuiConstantsACT.ME_ITEM_POS_Y, AbstractGuiConstantsACT.ME_ITEM_POS_X,
 			this.numberOfWidgetRows * AbstractGuiConstantsACT.ME_ROW_HEIGHT, AbstractGuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft,
 			this.guiTop ) )
 		{
@@ -744,7 +744,7 @@ public class GuiArcaneCraftingTerminal
 
 		// Was the mouse right-clicked over the search field?
 		if( ( mouseButton == GuiHelper.MOUSE_BUTTON_RIGHT ) &&
-						GuiHelper.instance.isPointInGuiRegion( AbstractGuiConstantsACT.SEARCH_POS_Y, AbstractGuiConstantsACT.SEARCH_POS_X,
+						GuiHelper.INSTANCE.isPointInGuiRegion( AbstractGuiConstantsACT.SEARCH_POS_Y, AbstractGuiConstantsACT.SEARCH_POS_X,
 							AbstractGuiConstantsACT.SEARCH_HEIGHT, AbstractGuiConstantsACT.SEARCH_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 		{
 			// Clear the search field

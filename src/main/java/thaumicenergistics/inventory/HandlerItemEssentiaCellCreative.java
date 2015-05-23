@@ -68,7 +68,7 @@ public class HandlerItemEssentiaCellCreative
 			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( aspect );
 
 			// Create the AE fluid stack
-			availableList.add( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, 2000000000 ) );
+			availableList.add( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, 2000000000 ) );
 
 		}
 

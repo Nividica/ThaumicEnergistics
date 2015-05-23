@@ -1,5 +1,6 @@
 package thaumicenergistics.api;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 
@@ -8,10 +9,11 @@ import com.google.common.collect.ImmutableList;
  */
 public abstract class ThEApi
 {
-	protected static ThEApi api;
+	protected static ThEApi api = null;
 
 	/**
-	 * Thaumic Energistics API
+	 * Gets the Thaumic Energistics API.
+	 * Note: Only available after the PREINIT event.
 	 */
 	public static ThEApi instance()
 	{
@@ -21,10 +23,13 @@ public abstract class ThEApi
 			try
 			{
 				// Attempt to locate the API implementation
-				Class clazz = Class.forName( "thaumicenergistics.implementaion.API" );
+				Class clazz = Class.forName( "thaumicenergistics.implementaion.ThEAPIImplementation" );
+
+				// Get the instance method
+				Method instanceAccessor = clazz.getMethod( "instance" );
 
 				// Attempt to get the API instance
-				ThEApi.api = (ThEApi)clazz.getField( "instance" ).get( clazz );
+				ThEApi.api = (ThEApi)instanceAccessor.invoke( null );
 			}
 			catch( Throwable e )
 			{

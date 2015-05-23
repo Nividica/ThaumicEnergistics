@@ -102,7 +102,7 @@ public abstract class AbstractAspectWidget
 		this.hasDiscovered = stack.hasPlayerDiscovered( this.player );
 
 		// Get the color bytes
-		this.aspectColorBytes = GuiHelper.instance.convertPackedColorToARGB( aspect.getColor() );
+		this.aspectColorBytes = GuiHelper.INSTANCE.convertPackedColorToARGB( aspect.getColor() );
 
 		// Set full alpha
 		this.aspectColorBytes[0] = (byte)255;

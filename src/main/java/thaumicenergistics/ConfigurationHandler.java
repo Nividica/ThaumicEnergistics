@@ -7,7 +7,7 @@ import thaumicenergistics.api.IThEConfig;
 class ConfigurationHandler
 	implements IThEConfig
 {
-	private static ConfigurationHandler instance;
+	private static ConfigurationHandler INSTANCE;
 
 	/**
 	 * Names of the categories.
@@ -71,12 +71,12 @@ class ConfigurationHandler
 	 */
 	public static IThEConfig loadAndSyncConfigFile( final File configFile )
 	{
-		if( ConfigurationHandler.instance == null )
+		if( ConfigurationHandler.INSTANCE == null )
 		{
-			ConfigurationHandler.instance = new ConfigurationHandler( new Configuration( configFile ) );
+			ConfigurationHandler.INSTANCE = new ConfigurationHandler( new Configuration( configFile ) );
 		}
 
-		return ConfigurationHandler.instance;
+		return ConfigurationHandler.INSTANCE;
 	}
 
 	/**

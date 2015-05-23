@@ -538,7 +538,7 @@ public class GuiEssentiaCellTerminal
 
 		// Was the mouse right-clicked over the search field?
 		if( ( mouseBtn == GuiHelper.MOUSE_BUTTON_RIGHT ) &&
-						GuiHelper.instance.isPointInGuiRegion( GuiEssentiaCellTerminal.SEARCH_Y_OFFSET, GuiEssentiaCellTerminal.SEARCH_X_OFFSET,
+						GuiHelper.INSTANCE.isPointInGuiRegion( GuiEssentiaCellTerminal.SEARCH_Y_OFFSET, GuiEssentiaCellTerminal.SEARCH_X_OFFSET,
 							GuiEssentiaCellTerminal.SEARCH_HEIGHT, GuiEssentiaCellTerminal.SEARCH_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 		{
 			// Clear the search text

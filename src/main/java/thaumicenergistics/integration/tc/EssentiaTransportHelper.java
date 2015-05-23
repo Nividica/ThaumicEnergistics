@@ -12,7 +12,7 @@ public class EssentiaTransportHelper
 	/**
 	 * Instance.
 	 */
-	public static final EssentiaTransportHelper instance = new EssentiaTransportHelper();
+	public static final EssentiaTransportHelper INSTANCE = new EssentiaTransportHelper();
 
 	/**
 	 * Private constructor.

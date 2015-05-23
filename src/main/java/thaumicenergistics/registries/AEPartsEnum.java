@@ -165,7 +165,7 @@ public enum AEPartsEnum
 
 	public ItemStack getStack()
 	{
-		return ItemEnum.ITEM_AEPART.getItemStackWithDamage( this.ordinal() );
+		return ItemEnum.ITEM_AEPART.getDMGStack( this.ordinal() );
 	}
 
 	/**

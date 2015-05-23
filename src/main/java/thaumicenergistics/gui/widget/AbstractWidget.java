@@ -47,7 +47,7 @@ public abstract class AbstractWidget
 
 	public boolean isMouseOverWidget( final int mouseX, final int mouseY )
 	{
-		return GuiHelper.instance.isPointInGuiRegion( this.yPosition, this.xPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE, mouseX,
+		return GuiHelper.INSTANCE.isPointInGuiRegion( this.yPosition, this.xPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE, mouseX,
 			mouseY, this.hostGUI.guiLeft(), this.hostGUI.guiTop() );
 	}
 

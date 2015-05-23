@@ -69,7 +69,7 @@ public class AEPartEssentiaTerminal
 		@Override
 		public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
 		{
-			return EssentiaItemContainerHelper.instance.isContainerOrLabel( itemStack );
+			return EssentiaItemContainerHelper.INSTANCE.isContainerOrLabel( itemStack );
 		}
 	};
 

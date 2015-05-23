@@ -237,7 +237,7 @@ public class TileArcaneAssembler
 		// Prep the discount table
 		for( Aspect primal : TileArcaneAssembler.PRIMALS )
 		{
-			this.visDiscount.put( primal, VisCraftingHelper.instance.getScepterVisModifier( primal ) );
+			this.visDiscount.put( primal, VisCraftingHelper.INSTANCE.getScepterVisModifier( primal ) );
 		}
 	}
 
@@ -275,10 +275,10 @@ public class TileArcaneAssembler
 		for( Aspect primal : TileArcaneAssembler.PRIMALS )
 		{
 			// Get the discount from the scepter
-			discount = VisCraftingHelper.instance.getScepterVisModifier( primal );
+			discount = VisCraftingHelper.INSTANCE.getScepterVisModifier( primal );
 
 			// Factor in the discount armor
-			discount -= VisCraftingHelper.instance.calculateArmorDiscount( this.internalInventory, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX, primal );
+			discount -= VisCraftingHelper.INSTANCE.calculateArmorDiscount( this.internalInventory, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX, primal );
 
 			this.visDiscount.put( primal, discount );
 		}
@@ -287,7 +287,7 @@ public class TileArcaneAssembler
 		this.warpPowerMultiplier = 1.0F;
 
 		// Calculate warp power multiplier
-		this.warpPowerMultiplier += VisCraftingHelper.instance.calculateArmorWarp( this.internalInventory, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX ) *
+		this.warpPowerMultiplier += VisCraftingHelper.INSTANCE.calculateArmorWarp( this.internalInventory, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX ) *
 						TileArcaneAssembler.WARP_POWER_PERCENT;
 	}
 
@@ -555,7 +555,7 @@ public class TileArcaneAssembler
 			Aspect primal = TileArcaneAssembler.PRIMALS[i];
 
 			// Change color
-			strAspects.append( GuiHelper.instance.getAspectChatColor( primal ) );
+			strAspects.append( GuiHelper.INSTANCE.getAspectChatColor( primal ) );
 
 			// Add amount
 			strAspects.append( ( this.storedVis.getAmount( primal ) / (float)TileArcaneAssembler.CVIS_MULTIPLER ) );

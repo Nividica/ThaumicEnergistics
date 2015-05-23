@@ -270,7 +270,7 @@ public abstract class AbstractAEPartEssentiaIOBus
 	protected boolean injectEssentaToNetwork( int amountToDrainFromContainer )
 	{
 		// Get the aspect in the container
-		Aspect aspectToDrain = EssentiaTileContainerHelper.instance.getAspectInContainer( this.facingContainer );
+		Aspect aspectToDrain = EssentiaTileContainerHelper.INSTANCE.getAspectInContainer( this.facingContainer );
 
 		if( ( aspectToDrain == null ) || ( !this.aspectTransferAllowed( aspectToDrain ) ) )
 		{
@@ -278,7 +278,7 @@ public abstract class AbstractAEPartEssentiaIOBus
 		}
 
 		// Simulate a drain from the container
-		FluidStack drained = EssentiaTileContainerHelper.instance.extractFromContainer( this.facingContainer, amountToDrainFromContainer,
+		FluidStack drained = EssentiaTileContainerHelper.INSTANCE.extractFromContainer( this.facingContainer, amountToDrainFromContainer,
 			aspectToDrain, Actionable.SIMULATE );
 
 		// Was any drained?
@@ -306,7 +306,7 @@ public abstract class AbstractAEPartEssentiaIOBus
 			}
 
 			// Convert from fluid units to essentia units
-			amountInjected = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( amountInjected );
+			amountInjected = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( amountInjected );
 
 			// Some was unable to be injected, adjust the drain amounts
 			amountToDrainFromContainer = amountInjected;
@@ -327,7 +327,7 @@ public abstract class AbstractAEPartEssentiaIOBus
 		this.injectFluid( toFill, Actionable.MODULATE );
 
 		// Drain
-		EssentiaTileContainerHelper.instance.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain,
+		EssentiaTileContainerHelper.INSTANCE.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain,
 			Actionable.MODULATE );
 
 		return true;
@@ -359,7 +359,7 @@ public abstract class AbstractAEPartEssentiaIOBus
 
 	public boolean addFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
 	{
-		Aspect itemAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( itemStack );
+		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( itemStack );
 
 		if( itemAspect != null )
 		{

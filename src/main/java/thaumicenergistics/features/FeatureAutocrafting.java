@@ -54,7 +54,7 @@ public class FeatureAutocrafting
 		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
 
 		// Thaumcraft items
-		ItemStack CraftingScepter = VisCraftingHelper.instance.getCraftingScepter();
+		ItemStack CraftingScepter = VisCraftingHelper.INSTANCE.getCraftingScepter();
 
 		// My Items
 		ItemStack KnowledgeCore = ThEApi.instance().items().KnowledgeCore.getStack();

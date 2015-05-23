@@ -21,7 +21,7 @@ public class ModuleWaila
 	/**
 	 * Singleton
 	 */
-	public static ModuleWaila instance;
+	public static ModuleWaila INSTANCE;
 
 	/**
 	 * Attempts to integrate with Waila
@@ -29,7 +29,7 @@ public class ModuleWaila
 	public ModuleWaila()
 	{
 		// Set the singleton
-		ModuleWaila.instance = this;
+		ModuleWaila.INSTANCE = this;
 
 		// Register with Waila
 		FMLInterModComms.sendMessage( "Waila", "register", ModuleWaila.class.getCanonicalName() + ".callbackRegister" );
@@ -43,8 +43,8 @@ public class ModuleWaila
 	public static void callbackRegister( final IWailaRegistrar registrar )
 	{
 		// Register the providers
-		registrar.registerBodyProvider( ModuleWaila.instance, AbstractBlockProviderBase.class );
-		registrar.registerBodyProvider( ModuleWaila.instance, BlockArcaneAssembler.class );
+		registrar.registerBodyProvider( ModuleWaila.INSTANCE, AbstractBlockProviderBase.class );
+		registrar.registerBodyProvider( ModuleWaila.INSTANCE, BlockArcaneAssembler.class );
 	}
 
 	@Override

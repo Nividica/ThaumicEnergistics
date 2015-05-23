@@ -76,7 +76,7 @@ public class FeatureConversionCores
 		coreAspectList.add( Aspect.EXCHANGE, 5 );
 
 		// Set the icon
-		ItemStack coreIcon = ItemMaterial.MaterialTypes.COALESCENCE_CORE.getItemStack();
+		ItemStack coreIcon = ItemMaterial.MaterialTypes.COALESCENCE_CORE.getStack();
 
 		// Set the pages
 		ResearchPage[] corePages = new ResearchPage[] { new ResearchPage( ResearchTypes.CORES.getPageName( 1 ) ),

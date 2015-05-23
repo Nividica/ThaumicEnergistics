@@ -76,7 +76,7 @@ public class AEPartEssentiaConversionMonitor
 		ItemStack container = player.inventory.getStackInSlot( slotIndex );
 
 		// Create request
-		IAEFluidStack request = EssentiaConversionHelper.instance.createAEFluidStackFromItemEssentiaContainer( container );
+		IAEFluidStack request = EssentiaConversionHelper.INSTANCE.createAEFluidStackFromItemEssentiaContainer( container );
 
 		// Is there anything to request?
 		if( request == null )
@@ -99,7 +99,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Calculate how much to take from the container
-		int drainAmount_E = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( request.getStackSize() );
+		int drainAmount_E = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( request.getStackSize() );
 
 		// Is there enough power?
 		if( !this.extractPowerForEssentiaTransfer( drainAmount_E, Actionable.SIMULATE ) )
@@ -115,7 +115,7 @@ public class AEPartEssentiaConversionMonitor
 		int rejectedAmount_E = 0;
 		if( rejected != null )
 		{
-			rejectedAmount_E = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( rejected.getStackSize() );
+			rejectedAmount_E = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( rejected.getStackSize() );
 		}
 
 		// Update the drain amount
@@ -128,7 +128,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Drain the container
-		ImmutablePair<Integer, ItemStack> drained = EssentiaItemContainerHelper.instance.extractFromContainer( container, drainAmount_E );
+		ImmutablePair<Integer, ItemStack> drained = EssentiaItemContainerHelper.INSTANCE.extractFromContainer( container, drainAmount_E );
 
 		// Update the player inventory
 		player.inventory.decrStackSize( slotIndex, 1 );
@@ -157,10 +157,10 @@ public class AEPartEssentiaConversionMonitor
 	private boolean fillEssentiaContainer( final EntityPlayer player, final ItemStack heldItem )
 	{
 		// Is the item being held a label?
-		if( EssentiaItemContainerHelper.instance.isLabel( heldItem ) )
+		if( EssentiaItemContainerHelper.INSTANCE.isLabel( heldItem ) )
 		{
 			// Set the label type
-			EssentiaItemContainerHelper.instance.setLabelAspect( heldItem, this.trackedEssentia.getAspect() );
+			EssentiaItemContainerHelper.INSTANCE.setLabelAspect( heldItem, this.trackedEssentia.getAspect() );
 			return true;
 		}
 
@@ -171,13 +171,13 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Get how much is in the container
-		int containerAmount = EssentiaItemContainerHelper.instance.getContainerStoredAmount( heldItem );
+		int containerAmount = EssentiaItemContainerHelper.INSTANCE.getContainerStoredAmount( heldItem );
 
 		// Is there existing essentia in the container?
 		if( containerAmount > 0 )
 		{
 			// Get the container aspect
-			Aspect containerAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( heldItem );
+			Aspect containerAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( heldItem );
 
 			// Ensure it matches the tracker
 			if( this.trackedEssentia.getAspect() != containerAspect )
@@ -187,7 +187,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Is there a jar label?
-		Aspect jarLabelAspect = EssentiaItemContainerHelper.instance.getJarLabelAspect( heldItem );
+		Aspect jarLabelAspect = EssentiaItemContainerHelper.INSTANCE.getJarLabelAspect( heldItem );
 		if( jarLabelAspect != null )
 		{
 			// Ensure it matches the tracker
@@ -198,7 +198,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Get how much the container can hold
-		int containerCapacity = EssentiaItemContainerHelper.instance.getContainerCapacity( heldItem );
+		int containerCapacity = EssentiaItemContainerHelper.INSTANCE.getContainerCapacity( heldItem );
 
 		// Calculate how much to fill
 		int amountToFill_E = containerCapacity - containerAmount;
@@ -218,7 +218,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Create the fluid stack
-		IAEFluidStack request = EssentiaConversionHelper.instance
+		IAEFluidStack request = EssentiaConversionHelper.INSTANCE
 						.createAEFluidStackInEssentiaUnits( this.trackedEssentia.getAspect(), amountToFill_E );
 
 		// Request the fluid
@@ -232,10 +232,10 @@ public class AEPartEssentiaConversionMonitor
 		}
 		// Update values based on how much was extracted
 		request.setStackSize( extracted.getStackSize() );
-		amountToFill_E = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( request.getStackSize() );
+		amountToFill_E = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( request.getStackSize() );
 
 		// Fill the container
-		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.instance.injectIntoContainer( heldItem, new AspectStack(
+		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.INSTANCE.injectIntoContainer( heldItem, new AspectStack(
 						this.trackedEssentia.getAspect(), amountToFill_E ) );
 
 		// Could the container be filled?
@@ -439,7 +439,7 @@ public class AEPartEssentiaConversionMonitor
 		ItemStack heldItem = player.getCurrentEquippedItem();
 
 		// Is the player holding an essentia container?
-		if( !EssentiaItemContainerHelper.instance.isContainerOrLabel( heldItem ) )
+		if( !EssentiaItemContainerHelper.INSTANCE.isContainerOrLabel( heldItem ) )
 		{
 			// Not holding container
 			return false;
@@ -449,7 +449,7 @@ public class AEPartEssentiaConversionMonitor
 		// Shift-double-right-clicking attempts to insert all essentia in the players inventory into the network.
 
 		// Is the item being held a label?
-		if( EssentiaItemContainerHelper.instance.isLabel( heldItem ) )
+		if( EssentiaItemContainerHelper.INSTANCE.isLabel( heldItem ) )
 		{
 			// Can't do anything with a label.
 			return false;

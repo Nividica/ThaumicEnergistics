@@ -48,7 +48,7 @@ public class WidgetAspectSelector
 		int aspectColor = stack.aspect.getColor();
 
 		// Create the gradient using the aspect color, varying between opacities
-		this.backgroundPulseGradient = GuiHelper.instance
+		this.backgroundPulseGradient = GuiHelper.INSTANCE
 						.createColorGradient( 0x70000000 | aspectColor, 0x20000000 | aspectColor, GRADIENT_COUNT + 1 );
 	}
 

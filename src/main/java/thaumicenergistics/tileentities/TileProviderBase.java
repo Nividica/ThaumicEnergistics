@@ -121,7 +121,7 @@ public abstract class TileProviderBase
 				return 0;
 			}
 
-			IAEFluidStack request = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, wantedAmount );
+			IAEFluidStack request = EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, wantedAmount );
 
 			// Simulate the extraction
 			IAEFluidStack fluidStack = this.monitor.extractItems( request, Actionable.SIMULATE, this.asMachineSource );
@@ -135,7 +135,7 @@ public abstract class TileProviderBase
 			else if( mustMatch )
 			{
 				// Does the amount match how much we want?
-				if( fluidStack.getStackSize() != EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( wantedAmount ) )
+				if( fluidStack.getStackSize() != EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( wantedAmount ) )
 				{
 					// Could not provide enough essentia
 					return 0;
@@ -146,7 +146,7 @@ public abstract class TileProviderBase
 			this.monitor.extractItems( request, Actionable.MODULATE, this.asMachineSource );
 
 			// Return how much was extracted
-			return (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+			return (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
 		}
 
 		return 0;
@@ -215,7 +215,7 @@ public abstract class TileProviderBase
 		// Ensure we have a monitor
 		if( this.getFluidMonitor() )
 		{
-			return EssentiaConversionHelper.instance.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+			return EssentiaConversionHelper.INSTANCE.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
 		}
 
 		return null;
@@ -249,7 +249,7 @@ public abstract class TileProviderBase
 				return 0;
 			}
 
-			IAEFluidStack request = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, amount );
+			IAEFluidStack request = EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, amount );
 
 			// Simulate the injection
 			IAEFluidStack fluidStack = this.monitor.injectItems( request, mode, this.asMachineSource );
@@ -261,7 +261,7 @@ public abstract class TileProviderBase
 			}
 
 			// Return the amount not injected
-			return amount - (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+			return amount - (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
 		}
 
 		// No monitor

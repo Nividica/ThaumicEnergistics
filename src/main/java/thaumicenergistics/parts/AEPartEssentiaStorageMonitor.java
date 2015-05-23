@@ -210,7 +210,7 @@ public class AEPartEssentiaStorageMonitor
 			{
 				// Update amounts
 				this.asGas.setStackSize( fluidAmount );
-				this.aspectAmount = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidAmount );
+				this.aspectAmount = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidAmount );
 			}
 		}
 
@@ -617,7 +617,7 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Get the aspect
-		Aspect heldAspect = EssentiaItemContainerHelper.instance.getAspectInContainer( heldItem );
+		Aspect heldAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( heldItem );
 
 		// Ensure there is an aspect
 		if( heldAspect == null )
@@ -636,7 +636,7 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Create an AE fluid stack of size 0, and set it as the tracked gas
-		this.trackedEssentia.setTracked( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( gas, 0 ) );
+		this.trackedEssentia.setTracked( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( gas, 0 ) );
 
 		// Reconfigure the watcher
 		this.configureWatcher();
@@ -756,7 +756,7 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Is the player holding an essentia container?
-		if( EssentiaItemContainerHelper.instance.isContainerOrLabel( heldItem ) )
+		if( EssentiaItemContainerHelper.INSTANCE.isContainerOrLabel( heldItem ) )
 		{
 			return this.onActivatedWithEssentiaContainerOrLabel( player, heldItem );
 		}
@@ -819,7 +819,7 @@ public class AEPartEssentiaStorageMonitor
 			if( gas != null )
 			{
 				// Create the fluid stack
-				IAEFluidStack fs = EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( gas, 0 );
+				IAEFluidStack fs = EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( gas, 0 );
 
 				// Set the tracker
 				this.trackedEssentia.setTracked( fs );

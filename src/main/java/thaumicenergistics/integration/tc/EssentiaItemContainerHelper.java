@@ -29,7 +29,7 @@ public final class EssentiaItemContainerHelper
 	/**
 	 * Singleton
 	 */
-	public static final EssentiaItemContainerHelper instance = new EssentiaItemContainerHelper();
+	public static final EssentiaItemContainerHelper INSTANCE = new EssentiaItemContainerHelper();
 
 	/**
 	 * NBT key used to get the aspect of a jar's label.

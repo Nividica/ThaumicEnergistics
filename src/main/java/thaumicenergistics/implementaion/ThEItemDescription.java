@@ -60,10 +60,6 @@ public class ThEItemDescription
 		{
 			return new ItemStack( this.myItem, amount, this.itemMeta );
 		}
-		else if( this.myBlock != null )
-		{
-			return new ItemStack( this.myBlock, amount, this.itemMeta );
-		}
 
 		return null;
 

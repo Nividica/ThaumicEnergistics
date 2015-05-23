@@ -31,13 +31,13 @@ public class ThEInteractionHelper
 	@Override
 	public long convertEssentiaAmountToFluidAmount( final long essentiaAmount )
 	{
-		return EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( essentiaAmount );
+		return EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( essentiaAmount );
 	}
 
 	@Override
 	public long convertFluidAmountToEssentiaAmount( final long milibuckets )
 	{
-		return EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( milibuckets );
+		return EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( milibuckets );
 	}
 
 	@Override

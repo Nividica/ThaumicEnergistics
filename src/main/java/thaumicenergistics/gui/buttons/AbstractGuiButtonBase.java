@@ -34,7 +34,7 @@ public abstract class AbstractGuiButtonBase
 	 */
 	public boolean isMouseOverButton( final int mouseX, final int mouseY )
 	{
-		return GuiHelper.instance.isPointInRegion( this.yPosition, this.xPosition, this.height, this.width, mouseX, mouseY );
+		return GuiHelper.INSTANCE.isPointInRegion( this.yPosition, this.xPosition, this.height, this.width, mouseX, mouseY );
 	}
 
 }

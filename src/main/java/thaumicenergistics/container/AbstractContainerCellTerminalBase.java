@@ -208,7 +208,7 @@ public abstract class AbstractContainerCellTerminalBase
 		container.stackSize = 1;
 
 		// Get the fluid stack from the item
-		IAEFluidStack containerFluid = EssentiaConversionHelper.instance.createAEFluidStackFromItemEssentiaContainer( container );
+		IAEFluidStack containerFluid = EssentiaConversionHelper.INSTANCE.createAEFluidStackFromItemEssentiaContainer( container );
 
 		// Get the proposed drain amount.
 		int proposedDrainAmount_FU = (int)containerFluid.getStackSize();
@@ -231,7 +231,7 @@ public abstract class AbstractContainerCellTerminalBase
 		}
 
 		// Convert proposed amount to Essentia units
-		int proposedDrainAmount_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( proposedDrainAmount_FU );
+		int proposedDrainAmount_EU = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( proposedDrainAmount_FU );
 
 		// Is there enough power?
 		if( !this.extractPowerForEssentiaTransfer( proposedDrainAmount_EU, Actionable.SIMULATE ) )
@@ -241,7 +241,7 @@ public abstract class AbstractContainerCellTerminalBase
 		}
 
 		// Attempt to drain the container
-		ImmutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.instance.extractFromContainer( container,
+		ImmutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.INSTANCE.extractFromContainer( container,
 			proposedDrainAmount_EU );
 
 		// Was the drain successful?
@@ -258,7 +258,7 @@ public abstract class AbstractContainerCellTerminalBase
 			proposedDrainAmount_EU = drainedContainer.left;
 
 			// Adjust the amount to inject into the network to the amount that was drained from the container.
-			containerFluid.setStackSize( EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( proposedDrainAmount_EU ) );
+			containerFluid.setStackSize( EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( proposedDrainAmount_EU ) );
 
 			// Inject into the to network
 			this.monitor.injectItems( containerFluid, Actionable.MODULATE, actionSource );
@@ -309,7 +309,7 @@ public abstract class AbstractContainerCellTerminalBase
 		container.stackSize = 1;
 
 		// Get the available capacity of the container, in Essentia Units
-		int containerCapacity_EU = EssentiaItemContainerHelper.instance.getContainerCapacity( container );
+		int containerCapacity_EU = EssentiaItemContainerHelper.INSTANCE.getContainerCapacity( container );
 
 		// Is there any room for more essentia?
 		if( containerCapacity_EU == 0 )
@@ -329,7 +329,7 @@ public abstract class AbstractContainerCellTerminalBase
 
 		// Simulate an extraction from the network
 		IAEFluidStack result = this.monitor.extractItems(
-			EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, containerCapacity_EU ), Actionable.SIMULATE,
+			EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, containerCapacity_EU ), Actionable.SIMULATE,
 			actionSource );
 
 		// Is there anything to extract?
@@ -340,7 +340,7 @@ public abstract class AbstractContainerCellTerminalBase
 		}
 
 		// Get how much can be taken from the network, in Essentia Units
-		int resultAmount_EU = (int)EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( result.getStackSize() );
+		int resultAmount_EU = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( result.getStackSize() );
 
 		// Calculate the proposed amount, based on how much we need and how much
 		// is available
@@ -354,7 +354,7 @@ public abstract class AbstractContainerCellTerminalBase
 		}
 
 		// Create a new container filled to the proposed amount
-		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.instance.injectIntoContainer( container, new AspectStack(
+		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.INSTANCE.injectIntoContainer( container, new AspectStack(
 						this.selectedAspect, proposedFillAmount_EU ) );
 
 		// Was the fill successful?
@@ -371,7 +371,7 @@ public abstract class AbstractContainerCellTerminalBase
 			proposedFillAmount_EU = filledContainer.left;
 
 			// Drain the essentia from the network
-			this.monitor.extractItems( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, proposedFillAmount_EU ),
+			this.monitor.extractItems( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, proposedFillAmount_EU ),
 				Actionable.MODULATE, actionSource );
 
 			// Drain power
@@ -590,14 +590,14 @@ public abstract class AbstractContainerCellTerminalBase
 
 		// Re-validate the label
 		ItemStack label = this.inventory.getStackInSlot( AbstractContainerCellTerminalBase.INPUT_SLOT_ID );
-		if( !EssentiaItemContainerHelper.instance.isLabel( label ) )
+		if( !EssentiaItemContainerHelper.INSTANCE.isLabel( label ) )
 		{
 			// Not a label
 			return;
 		}
 
 		// Set the label
-		EssentiaItemContainerHelper.instance.setLabelAspect( label, this.selectedAspect );
+		EssentiaItemContainerHelper.INSTANCE.setLabelAspect( label, this.selectedAspect );
 		this.inventory.markDirty();
 
 	}
@@ -612,7 +612,7 @@ public abstract class AbstractContainerCellTerminalBase
 			this.monitor.addListener( this, this.monitor.hashCode() );
 
 			// Update our cached list of aspects
-			this.aspectStackList = EssentiaConversionHelper.instance.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+			this.aspectStackList = EssentiaConversionHelper.INSTANCE.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
 		}
 	}
 
@@ -732,10 +732,10 @@ public abstract class AbstractContainerCellTerminalBase
 		}
 
 		// Ensure the input slot is an aspect container item.
-		if( !EssentiaItemContainerHelper.instance.isContainer( inputStack ) )
+		if( !EssentiaItemContainerHelper.INSTANCE.isContainer( inputStack ) )
 		{
 			// Input is not aspect container, is it a label?
-			if( EssentiaItemContainerHelper.instance.isLabel( inputStack ) )
+			if( EssentiaItemContainerHelper.INSTANCE.isLabel( inputStack ) )
 			{
 				this.setLabelAspect();
 			}
@@ -743,7 +743,7 @@ public abstract class AbstractContainerCellTerminalBase
 		}
 
 		// Determine which action to perform
-		if( EssentiaItemContainerHelper.instance.isContainerEmpty( inputStack ) )
+		if( EssentiaItemContainerHelper.INSTANCE.isContainerEmpty( inputStack ) )
 		{
 			// Input is empty, can it be filled?
 			if( ( this.selectedAspect != null ) )
@@ -968,7 +968,7 @@ public abstract class AbstractContainerCellTerminalBase
 	public final void onListUpdate()
 	{
 		// Update our cached list of aspects
-		this.aspectStackList = EssentiaConversionHelper.instance.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+		this.aspectStackList = EssentiaConversionHelper.INSTANCE.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
 
 		// Send a full update
 		this.onClientRequestFullUpdate();
@@ -1087,7 +1087,7 @@ public abstract class AbstractContainerCellTerminalBase
 
 			// Update the client
 			new PacketClientEssentiaCellTerminal().createListChanged( this.player,
-				EssentiaConversionHelper.instance.convertAEFluidStackToAspectStack( change ) ).sendPacketToPlayer();
+				EssentiaConversionHelper.INSTANCE.convertAEFluidStackToAspectStack( change ) ).sendPacketToPlayer();
 		}
 	}
 

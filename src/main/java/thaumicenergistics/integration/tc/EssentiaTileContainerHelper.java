@@ -32,7 +32,7 @@ public final class EssentiaTileContainerHelper
 	/**
 	 * Singleton
 	 */
-	public static final EssentiaTileContainerHelper instance = new EssentiaTileContainerHelper();
+	public static final EssentiaTileContainerHelper INSTANCE = new EssentiaTileContainerHelper();
 
 	/**
 	 * Cache the permission class
@@ -77,7 +77,7 @@ public final class EssentiaTileContainerHelper
 		Aspect gasAspect = ( (GaseousEssentia)fluid ).getAspect();
 
 		// Get the amount to extract
-		long amountToDrain_EU = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( request.amount );
+		long amountToDrain_EU = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( request.amount );
 
 		// Extract
 		return this.extractFromContainer( container, (int)amountToDrain_EU, gasAspect, mode );
@@ -161,7 +161,7 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Return the amount drained with conversion
-		return new FluidStack( essentiaGas, (int)EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( amountToDrain_EU ) );
+		return new FluidStack( essentiaGas, (int)EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( amountToDrain_EU ) );
 
 	}
 
@@ -335,7 +335,7 @@ public final class EssentiaTileContainerHelper
 		Aspect gasAspect = ( (GaseousEssentia)fluid ).getAspect();
 
 		// Get the amount to fill
-		long amountToFill = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+		long amountToFill = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
 
 		// Inject
 		return this.injectIntoContainer( container, (int)amountToFill, gasAspect, mode );
@@ -396,7 +396,7 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Convert to fluid units
-		return EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( amountToFillInEssentiaUnits );
+		return EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( amountToFillInEssentiaUnits );
 	}
 
 	/**

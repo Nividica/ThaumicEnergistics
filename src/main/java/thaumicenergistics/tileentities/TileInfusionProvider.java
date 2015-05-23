@@ -100,7 +100,7 @@ public class TileInfusionProvider
 				this.monitor.addListener( this, grid );
 
 				// Get the list of essentia on the network
-				this.aspectStackList = EssentiaConversionHelper.instance.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+				this.aspectStackList = EssentiaConversionHelper.INSTANCE.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
 
 				// Mark that we need to update the client
 				this.markForUpdate();
@@ -207,7 +207,7 @@ public class TileInfusionProvider
 			if( ( change.getFluid() instanceof GaseousEssentia ) )
 			{
 				// Update the aspect list
-				this.aspectStackList = EssentiaConversionHelper.instance
+				this.aspectStackList = EssentiaConversionHelper.INSTANCE
 								.convertIIAEFluidStackListToAspectStackList( ( (IMEMonitor<IAEFluidStack>)monitor ).getStorageList() );
 
 				// Mark that we need to update the client

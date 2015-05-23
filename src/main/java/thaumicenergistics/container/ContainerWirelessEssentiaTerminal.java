@@ -36,7 +36,7 @@ public class ContainerWirelessEssentiaTerminal
 		@Override
 		public boolean isItemValidForSlot( final int slotID, final ItemStack itemStack )
 		{
-			return EssentiaItemContainerHelper.instance.isContainerOrLabel( itemStack );
+			return EssentiaItemContainerHelper.INSTANCE.isContainerOrLabel( itemStack );
 		}
 	};
 

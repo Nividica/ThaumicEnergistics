@@ -61,9 +61,25 @@ public class ItemMaterial
 			return this.ID;
 		}
 
-		public ItemStack getItemStack()
+		/**
+		 * Gets an item stack of size 1 of the material item.
+		 * 
+		 * @return
+		 */
+		public ItemStack getStack()
 		{
-			return ItemEnum.MATERIAL.getItemStackWithDamage( this.ordinal() );
+			return this.getStack( 1 );
+		}
+
+		/**
+		 * Gets an item stack of the specified size of the material item.
+		 * 
+		 * @param size
+		 * @return
+		 */
+		public ItemStack getStack( final int size )
+		{
+			return ItemEnum.MATERIAL.getDMGStack( this.ordinal(), size );
 		}
 
 		public String getTextureLocation()

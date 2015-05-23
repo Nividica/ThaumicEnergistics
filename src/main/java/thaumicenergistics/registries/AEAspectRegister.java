@@ -16,6 +16,7 @@ import thaumicenergistics.util.ThELog;
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
 import appeng.api.definitions.IParts;
 import appeng.api.features.IGrinderEntry;
@@ -75,7 +76,7 @@ public class AEAspectRegister
 		/**
 		 * Itemstack holding the item.
 		 */
-		public ItemStack itemStack;
+		public ItemStack itemStack = null;
 
 		/**
 		 * The current trial pass.
@@ -89,8 +90,14 @@ public class AEAspectRegister
 		 */
 		public AEItemInfo( final IItemDefinition itemDef )
 		{
+			// Set the definition
 			this.definition = itemDef;
-			this.itemStack = itemDef.maybeStack( 1 ).orNull();
+
+			// Is the def available?
+			if( itemDef.maybeStack( 1 ).isPresent() )
+			{
+				this.itemStack = itemDef.maybeStack( 1 ).get();
+			}
 
 			if( this.itemStack != null )
 			{
@@ -677,41 +684,6 @@ public class AEAspectRegister
 				return finalAspects;
 			}
 
-			/*
-			// Find maximum & minimum
-			int max = 0;
-			int min = Integer.MAX_VALUE;
-			for( Aspect aspect : finalAspects.getAspects() )
-			{
-				int amount = finalAspects.getAmount( aspect );
-
-				max = Math.max( max, amount );
-				min = Math.min( min, amount );
-			}
-
-			// Calculate trim point
-			int trimPoint = max / 5;
-
-			if( trimPoint > min )
-			{
-				// Get the iterator
-				Iterator<Entry<Aspect, Integer>> iterator = finalAspects.aspects.entrySet().iterator();
-
-				while( iterator.hasNext() )
-				{
-					// Get next
-					Entry<Aspect, Integer> entry = iterator.next();
-
-					// Trim?
-					if( entry.getValue() < trimPoint )
-					{
-						// Trim.
-						iterator.remove();
-					}
-				}
-			}
-			*/
-
 			// Can only have 6 aspects
 			if( aspectCount > 6 )
 			{
@@ -807,7 +779,7 @@ public class AEAspectRegister
 	/**
 	 * Instance of the registry.
 	 */
-	public static final AEAspectRegister instance = new AEAspectRegister();
+	public static final AEAspectRegister INSTANCE = new AEAspectRegister();
 
 	/**
 	 * Common aspect amounts
@@ -865,7 +837,7 @@ public class AEAspectRegister
 		IMaterials aeMats = AEApi.instance().definitions().materials();
 		IBlocks aeBlocks = AEApi.instance().definitions().blocks();
 		IParts aeParts = AEApi.instance().definitions().parts();
-		//Items aeItems = AEApi.instance().items();
+		IItems aeItems = AEApi.instance().definitions().items();
 
 		AspectList aspects;
 
@@ -988,7 +960,7 @@ public class AEAspectRegister
 		aspects.add( Aspect.METAL, 1 );
 		this.registerItem( aeParts.cableAnchor(), aspects );
 
-		//P2P tunnels ------------------------------------
+		// P2P tunnels ------------------------------------
 		// Setup base list
 		AspectList p2pAspects = new AspectList();
 		p2pAspects.add( Aspect.METAL, 6 );
@@ -1009,10 +981,32 @@ public class AEAspectRegister
 		aspects = p2pAspects.copy();
 		aspects.add( Aspect.LIGHT, 4 );
 		this.registerItem( aeParts.p2PTunnelLight(), aspects );
-		// Redstone
+		// Redstone & Power
 		aspects = p2pAspects.copy();
 		aspects.add( Aspect.ENERGY, 2 );
 		this.registerItem( aeParts.p2PTunnelRedstone(), aspects );
+		this.registerItem( aeParts.p2PTunnelRF(), aspects );
+		this.registerItem( aeParts.p2PTunnelEU(), aspects );
+
+		// Singularity ------------------------------------
+		aspects = new AspectList();
+		aspects.add( Aspect.DARKNESS, 10 );
+		aspects.add( Aspect.VOID, 10 );
+		aspects.add( Aspect.ENTROPY, 10 );
+		this.registerItem( aeMats.singularity(), aspects );
+		// Entangled
+		aspects = new AspectList();
+		aspects.add( Aspect.ENERGY, 8 );
+		aspects.add( Aspect.EXCHANGE, 8 );
+		aspects.add( Aspect.MOTION, 4 );
+		aspects.add( Aspect.ELDRITCH, 4 );
+		this.registerItem( aeMats.qESingularity(), aspects );
+
+		// Encoded Pattern --------------------------------
+		aspects = new AspectList();
+		aspects.add( Aspect.CRAFT, 3 );
+		aspects.add( Aspect.MIND, 3 );
+		this.registerItem( aeItems.encodedPattern(), aspects );
 
 	}
 

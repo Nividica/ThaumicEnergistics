@@ -423,7 +423,7 @@ public class TileEssentiaVibrationChamber
 		if( this.storedEssentiaAmount < TileEssentiaVibrationChamber.MAX_ESSENTIA_STORED )
 		{
 			// Replenish essentia
-			EssentiaTransportHelper.instance.takeEssentiaFromTransportNeighbors( this, this.worldObj, this.xCoord, this.yCoord, this.zCoord );
+			EssentiaTransportHelper.INSTANCE.takeEssentiaFromTransportNeighbors( this, this.worldObj, this.xCoord, this.yCoord, this.zCoord );
 		}
 
 		// Is there anything stored?

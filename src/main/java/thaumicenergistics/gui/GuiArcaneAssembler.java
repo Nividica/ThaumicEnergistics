@@ -160,11 +160,11 @@ public class GuiArcaneAssembler
 		for( Aspect aspect : TileArcaneAssembler.PRIMALS )
 		{
 			int left = this.visBarPositionMap.get( aspect );
-			if( GuiHelper.instance.isPointInGuiRegion( GuiArcaneAssembler.VIS_EMPTY_Y, left, GuiArcaneAssembler.VIS_BAR_HEIGHT,
+			if( GuiHelper.INSTANCE.isPointInGuiRegion( GuiArcaneAssembler.VIS_EMPTY_Y, left, GuiArcaneAssembler.VIS_BAR_HEIGHT,
 				GuiArcaneAssembler.VIS_BAR_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
 			{
 				// Add the aspect name to the tooltip
-				this.tooltip.add( GuiHelper.instance.getAspectChatColor( aspect ) + StringUtils.capitalize( aspect.getTag() ) );
+				this.tooltip.add( GuiHelper.INSTANCE.getAspectChatColor( aspect ) + StringUtils.capitalize( aspect.getTag() ) );
 
 				// Add the amount
 				int amount = ( (ContainerArcaneAssembler)this.inventorySlots ).assembler.getStoredVis().getAmount( aspect );

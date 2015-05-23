@@ -128,7 +128,7 @@ public class AspectStack
 		// Do we have an aspect?
 		if( this.aspect != null )
 		{
-			return GuiHelper.instance.getAspectChatColor( this.aspect );
+			return GuiHelper.INSTANCE.getAspectChatColor( this.aspect );
 		}
 
 		return "";

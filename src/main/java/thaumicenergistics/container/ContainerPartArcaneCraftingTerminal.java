@@ -518,7 +518,7 @@ public class ContainerPartArcaneCraftingTerminal
 		ItemStack arcaneResult = null;
 
 		// Is there a matching recipe?
-		IArcaneRecipe matchingRecipe = ArcaneRecipeHelper.instance.findMatchingArcaneResult( this.arcaneCraftingTerminalPart, 0,
+		IArcaneRecipe matchingRecipe = ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult( this.arcaneCraftingTerminalPart, 0,
 			ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, this.player );
 
 		if( matchingRecipe != null )
@@ -721,7 +721,7 @@ public class ContainerPartArcaneCraftingTerminal
 		ItemWandCasting wandItem = null;
 
 		// Get the cost
-		this.requiredAspects = ArcaneRecipeHelper.instance.getRecipeAspectCost( this.arcaneCraftingTerminalPart, 0,
+		this.requiredAspects = ArcaneRecipeHelper.INSTANCE.getRecipeAspectCost( this.arcaneCraftingTerminalPart, 0,
 			ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, forRecipe );
 
 		// Ensure there is a cost
@@ -779,7 +779,7 @@ public class ContainerPartArcaneCraftingTerminal
 		if( hasAll )
 		{
 			// Get the result of the recipe.
-			return ArcaneRecipeHelper.instance.getRecipeOutput( this.arcaneCraftingTerminalPart, 0,
+			return ArcaneRecipeHelper.INSTANCE.getRecipeOutput( this.arcaneCraftingTerminalPart, 0,
 				ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, forRecipe );
 		}
 

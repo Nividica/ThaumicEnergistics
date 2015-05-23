@@ -502,7 +502,7 @@ public class HandlerItemEssentiaCell
 		Aspect requestAspect = ( (GaseousEssentia)request.getFluid() ).getAspect();
 
 		// Calculate the amount of essentia to extract
-		long essentiaAmountRequested = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( request.getStackSize() );
+		long essentiaAmountRequested = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( request.getStackSize() );
 
 		// Is the requested amount a whole essentia?
 		if( essentiaAmountRequested == 0 )
@@ -533,7 +533,7 @@ public class HandlerItemEssentiaCell
 		if( !( ( src instanceof MachineSource ) && ( ( (MachineSource)src ).via instanceof TileIOPort ) ) )
 		{
 			// Not IO port, set the actual amount extracted
-			extractedFluid.setStackSize( EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( extractedEssentiaAmount ) );
+			extractedFluid.setStackSize( EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( extractedEssentiaAmount ) );
 		}
 
 		return extractedFluid;
@@ -567,7 +567,7 @@ public class HandlerItemEssentiaCell
 			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( essentiaStack.aspect );
 
 			// Create the AE fluid stack
-			availableList.add( EssentiaConversionHelper.instance.createAEFluidStackInEssentiaUnits( essentiaGas, essentiaStack.amount ) );
+			availableList.add( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, essentiaStack.amount ) );
 
 		}
 
@@ -728,7 +728,7 @@ public class HandlerItemEssentiaCell
 		Aspect essentiaAspect = ( (GaseousEssentia)input.getFluid() ).getAspect();
 
 		// Calculate the amount to store
-		long amountToStore = EssentiaConversionHelper.instance.convertFluidAmountToEssentiaAmount( input.getStackSize() );
+		long amountToStore = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( input.getStackSize() );
 
 		// Is the amount a whole essentia?
 		if( amountToStore == 0 )
@@ -751,7 +751,7 @@ public class HandlerItemEssentiaCell
 		IAEFluidStack result = input.copy();
 
 		// Set the size to how much was left over
-		result.setStackSize( EssentiaConversionHelper.instance.convertEssentiaAmountToFluidAmount( amountNotStored ) );
+		result.setStackSize( EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( amountNotStored ) );
 
 		return result;
 	}
