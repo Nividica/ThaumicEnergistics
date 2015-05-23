@@ -5,6 +5,7 @@
   * Encoded Pattern
   * Singularities
   * EU & RF P2P Tunnels
+  Fixes #188: Crafting result is now updated on both client and server if wand vis levels change.
 
 5/21/2015 0.8.10.3
   Code cleanup.

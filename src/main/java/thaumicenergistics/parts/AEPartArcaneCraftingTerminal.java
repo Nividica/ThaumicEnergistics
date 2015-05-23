@@ -955,6 +955,9 @@ public class AEPartArcaneCraftingTerminal
 			{
 				// Add to the wand
 				wand.addRealVis( stack, vis, amountDrained, true );
+
+				// Inform listeners that wand has changed
+				this.notifyListeners( AEPartArcaneCraftingTerminal.WAND_SLOT_INDEX );
 			}
 
 		}
