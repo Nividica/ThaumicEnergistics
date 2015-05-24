@@ -45,9 +45,12 @@ public class ItemFocusAEWrench
 
 	public ItemFocusAEWrench()
 	{
-		// Set the casting cost
-		ItemFocusAEWrench.castCost.add( Aspect.FIRE, 10 );
-		ItemFocusAEWrench.castCost.add( Aspect.AIR, 10 );
+		if( ItemFocusAEWrench.castCost.size() == 0 )
+		{
+			// Set the casting cost
+			ItemFocusAEWrench.castCost.add( Aspect.FIRE, 10 );
+			ItemFocusAEWrench.castCost.add( Aspect.AIR, 10 );
+		}
 	}
 
 	/**
