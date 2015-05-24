@@ -46,6 +46,47 @@ public class BlockArcaneAssembler
 	}
 
 	/**
+	 * Called when the assembler is right-clicked
+	 * 
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param player
+	 * @return
+	 */
+	@Override
+	protected boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
+	{
+		// Get what the player is holding
+		ItemStack playerHolding = player.inventory.getCurrentItem();
+
+		// Get the tile
+		TileEntity tileAssembler = world.getTileEntity( x, y, z );
+
+		if( tileAssembler instanceof TileArcaneAssembler )
+		{
+			// Are they holding a memory card?
+			if( ( playerHolding != null ) && ( playerHolding.getItem() instanceof IMemoryCard ) )
+			{
+				// Inform the tile of the event
+				( (TileArcaneAssembler)tileAssembler ).onMemoryCardActivate( player, (IMemoryCard)playerHolding.getItem(), playerHolding );
+			}
+			else
+			{
+				// Does the player have permission?
+				if( ( (TileArcaneAssembler)tileAssembler ).canPlayerOpenGUI( player ) )
+				{
+					// Launch the gui.
+					ThEGuiHandler.launchGui( ThEGuiHandler.ARCANE_ASSEMBLER_ID, player, world, x, y, z );
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Called when the assembler is dismantled via wrench.
 	 */
 	@Override
@@ -146,47 +187,6 @@ public class BlockArcaneAssembler
 	public final boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
 	{
 		return false;
-	}
-
-	/**
-	 * Called when the assembler is right-clicked
-	 * 
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param player
-	 * @return
-	 */
-	@Override
-	public boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
-	{
-		// Get what the player is holding
-		ItemStack playerHolding = player.inventory.getCurrentItem();
-
-		// Get the tile
-		TileEntity tileAssembler = world.getTileEntity( x, y, z );
-
-		if( tileAssembler instanceof TileArcaneAssembler )
-		{
-			// Are they holding a memory card?
-			if( ( playerHolding != null ) && ( playerHolding.getItem() instanceof IMemoryCard ) )
-			{
-				// Inform the tile of the event
-				( (TileArcaneAssembler)tileAssembler ).onMemoryCardActivate( player, (IMemoryCard)playerHolding.getItem(), playerHolding );
-			}
-			else
-			{
-				// Does the player have permission?
-				if( ( (TileArcaneAssembler)tileAssembler ).canPlayerOpenGUI( player ) )
-				{
-					// Launch the gui.
-					ThEGuiHandler.launchGui( ThEGuiHandler.ARCANE_ASSEMBLER_ID, player, world, x, y, z );
-				}
-			}
-		}
-
-		return true;
 	}
 
 	@Override

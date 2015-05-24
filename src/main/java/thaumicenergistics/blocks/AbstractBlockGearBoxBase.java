@@ -42,6 +42,19 @@ public abstract class AbstractBlockGearBoxBase
 		this.setHardness( 0.6F );
 	}
 
+	/**
+	 * Crank the gearbox.
+	 */
+	@Override
+	protected boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
+	{
+		// Get the tile
+		TileGearBox gearBox = (TileGearBox)world.getTileEntity( x, y, z );
+
+		// Crank it
+		return gearBox.crankGearbox();
+	}
+
 	@Override
 	public boolean canPlayerInteract( final EntityPlayer player )
 	{
@@ -104,19 +117,6 @@ public abstract class AbstractBlockGearBoxBase
 	public final boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
 	{
 		return ThEApi.instance().config().gearboxModelDisabled();
-	}
-
-	/**
-	 * Crank the gearbox.
-	 */
-	@Override
-	public boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
-	{
-		// Get the tile
-		TileGearBox gearBox = (TileGearBox)world.getTileEntity( x, y, z );
-
-		// Crank it
-		return gearBox.crank();
 	}
 
 	/**

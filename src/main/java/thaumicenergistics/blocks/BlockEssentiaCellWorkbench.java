@@ -44,6 +44,25 @@ public class BlockEssentiaCellWorkbench
 	}
 
 	/**
+	 * Called when the workbench is right-clicked
+	 * 
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param player
+	 * @return
+	 */
+	@Override
+	protected boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
+	{
+		// Launch the gui.
+		ThEGuiHandler.launchGui( ThEGuiHandler.CELL_WORKBENCH_ID, player, world, x, y, z );
+
+		return true;
+	}
+
+	/**
 	 * Called when the block is broken.
 	 */
 	@Override
@@ -129,25 +148,6 @@ public class BlockEssentiaCellWorkbench
 	public final boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
 	{
 		// This is a solid cube
-		return true;
-	}
-
-	/**
-	 * Called when the workbench is right-clicked
-	 * 
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param player
-	 * @return
-	 */
-	@Override
-	public boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
-	{
-		// Launch the gui.
-		ThEGuiHandler.launchGui( ThEGuiHandler.CELL_WORKBENCH_ID, player, world, x, y, z );
-
 		return true;
 	}
 

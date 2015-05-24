@@ -24,6 +24,7 @@ import thaumicenergistics.network.packet.client.PacketClientArcaneCraftingTermin
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.GuiHelper;
+import thaumicenergistics.util.ThEUtils;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SortDir;
@@ -600,7 +601,7 @@ public class ContainerPartArcaneCraftingTerminal
 			}
 
 			// Is the item a valid crafting wand?
-			if( AEPartArcaneCraftingTerminal.isItemValidCraftingWand( wandSlot.getStack() ) )
+			if( ThEUtils.isItemValidWand( wandSlot.getStack(), false ) )
 			{
 				// Set the wand
 				this.wand = wandSlot.getStack();

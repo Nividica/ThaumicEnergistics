@@ -21,7 +21,11 @@ public class FeatureInfusionProvider
 
 	public FeatureInfusionProvider( final FeatureRegistry fr )
 	{
-		super( fr );
+		// Construct super
+		super();
+
+		// Evaluate dependencies
+		this.evaluateDependencies( fr );
 	}
 
 	@Override

@@ -30,7 +30,11 @@ public class FeatureCells
 
 	public FeatureCells( final FeatureRegistry fr )
 	{
-		super( fr );
+		// Construct super
+		super();
+
+		// Evaluate dependencies
+		this.evaluateDependencies( fr );
 	}
 
 	/**

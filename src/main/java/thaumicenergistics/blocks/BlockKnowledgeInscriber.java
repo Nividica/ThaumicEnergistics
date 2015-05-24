@@ -39,6 +39,15 @@ public class BlockKnowledgeInscriber
 		this.setCreativeTab( ThaumicEnergistics.ThETab );
 	}
 
+	@Override
+	protected final boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
+	{
+		// Launch the gui.
+		ThEGuiHandler.launchGui( ThEGuiHandler.KNOWLEDGE_INSCRIBER, player, world, x, y, z );
+
+		return true;
+	}
+
 	/**
 	 * Called when the block is broken.
 	 */
@@ -122,15 +131,6 @@ public class BlockKnowledgeInscriber
 	public final boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
 	{
 		// This is a solid cube
-		return true;
-	}
-
-	@Override
-	public final boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
-	{
-		// Launch the gui.
-		ThEGuiHandler.launchGui( ThEGuiHandler.KNOWLEDGE_INSCRIBER, player, world, x, y, z );
-
 		return true;
 	}
 

@@ -21,7 +21,11 @@ public class FeatureWrenchFocus
 
 	public FeatureWrenchFocus( final FeatureRegistry fr )
 	{
-		super( fr );
+		// Construct super
+		super();
+
+		// Evaluate dependencies
+		this.evaluateDependencies( fr );
 	}
 
 	@Override

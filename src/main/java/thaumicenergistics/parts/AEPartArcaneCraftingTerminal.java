@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -25,6 +24,7 @@ import thaumicenergistics.integration.tc.IDigiVisSource;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.texture.BlockTextureManager;
+import thaumicenergistics.util.ThEUtils;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -149,39 +149,6 @@ public class AEPartArcaneCraftingTerminal
 	{
 		// Call super
 		super( AEPartsEnum.ArcaneCraftingTerminal );
-	}
-
-	public static boolean isItemValidCraftingWand( final ItemStack stack )
-	{
-		// Ensure it is not null
-		if( stack == null )
-		{
-			return false;
-		}
-
-		// Get the item
-		Item item = stack.getItem();
-
-		// Ensure the item is not null
-		if( item == null )
-		{
-			return false;
-		}
-
-		// Ensure it is a casting wand
-		if( !( item instanceof ItemWandCasting ) )
-		{
-			return false;
-		}
-
-		// Ensure it is not a staff
-		if( ( (ItemWandCasting)item ).isStaff( stack ) )
-		{
-			return false;
-		}
-
-		// Valid wand
-		return true;
 	}
 
 	/**
@@ -553,7 +520,7 @@ public class AEPartArcaneCraftingTerminal
 			if( slotIndex == AEPartArcaneCraftingTerminal.WAND_SLOT_INDEX )
 			{
 				// Is the item a wand?
-				return AEPartArcaneCraftingTerminal.isItemValidCraftingWand( proposedStack );
+				return ThEUtils.isItemValidWand( proposedStack, false );
 			}
 			// Is this a view slot?
 			if( ( slotIndex >= AEPartArcaneCraftingTerminal.VIEW_SLOT_MIN ) && ( slotIndex <= AEPartArcaneCraftingTerminal.VIEW_SLOT_MAX ) )
@@ -678,10 +645,25 @@ public class AEPartArcaneCraftingTerminal
 				// Is it in range?
 				if( this.isSlotInRange( slotIndex ) )
 				{
+					// Load the stack
+					ItemStack slotStack = ItemStack.loadItemStackFromNBT( nbtCompound );
+
+					// Is the slot the wand slot?
+					if( slotIndex == AEPartArcaneCraftingTerminal.WAND_SLOT_INDEX )
+					{
+						// Validate the wand
+						if( !ThEUtils.isItemValidWand( slotStack, false ) )
+						{
+							// Invalid wand data
+							slotStack = null;
+						}
+					}
+
 					// Set the slot
-					this.slots[slotIndex] = ItemStack.loadItemStackFromNBT( nbtCompound );
+					this.slots[slotIndex] = slotStack;
 				}
 			}
+
 		}
 
 		// Sort order
@@ -914,7 +896,7 @@ public class AEPartArcaneCraftingTerminal
 		ItemStack stack = this.getStackInSlot( WAND_SLOT_INDEX );
 
 		// Do we have a wand?
-		if( stack == null )
+		if( ( stack == null ) )
 		{
 			// No wand
 			return TickRateModulation.IDLE;

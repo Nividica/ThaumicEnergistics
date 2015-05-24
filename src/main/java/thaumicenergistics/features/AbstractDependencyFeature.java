@@ -12,17 +12,10 @@ import thaumicenergistics.registries.FeatureRegistry;
 public abstract class AbstractDependencyFeature
 	extends AbstractBasicFeature
 {
-	public AbstractDependencyFeature( final FeatureRegistry fr )
+	public AbstractDependencyFeature()
 	{
 		// Inform the super that we are not enabled by default
 		super( false );
-
-		// Ask for the features config settings and required items
-		if( this.checkConfigs() && this.checkItemReqs( this.getItemReqs( fr.getCommonItems() ) ) )
-		{
-			// This feature is enabled
-			this.setAvailable( true );
-		}
 	}
 
 	/**
@@ -31,7 +24,7 @@ public abstract class AbstractDependencyFeature
 	 * @param items
 	 * @return
 	 */
-	private boolean checkItemReqs( final Object[] items )
+	private final boolean checkItemReqs( final Object[] items )
 	{
 		// Are there no item reqs?
 		if( items == null )
@@ -56,6 +49,21 @@ public abstract class AbstractDependencyFeature
 	 * Checks if this feature can be enabled based on ThE, TC and/or AE configs.
 	 */
 	protected abstract boolean checkConfigs();
+
+	/**
+	 * Evaluates the dependencies of the feature and enables it if possible.
+	 * 
+	 * @param fr
+	 */
+	protected final void evaluateDependencies( final FeatureRegistry fr )
+	{
+		// Ask for the features config settings and required items
+		if( this.checkConfigs() && this.checkItemReqs( this.getItemReqs( fr.getCommonItems() ) ) )
+		{
+			// This feature is enabled
+			this.setAvailable( true );
+		}
+	}
 
 	/**
 	 * Gets the features required items.

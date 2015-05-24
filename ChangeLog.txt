@@ -1,4 +1,8 @@
-﻿5/22/2015 0.8.10.3
+﻿5/23/2015 0.8.10.3
+  Bugfix: Feature dependencies resetting to false.
+  Bugfix: Wrench focus calculation errors fixed.
+
+5/22/2015 0.8.10.3
   More API changes.
   Added safety layer to API ensuring it can not be accessed before it is ready.
   Added scanning aspects for:

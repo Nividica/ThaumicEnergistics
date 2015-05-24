@@ -15,6 +15,7 @@ import thaumicenergistics.network.handlers.HandlerServerEssentiaCellTerminal;
 import thaumicenergistics.network.handlers.HandlerServerEssentiaCellWorkbench;
 import thaumicenergistics.network.handlers.HandlerServerKnowledgeInscriber;
 import thaumicenergistics.network.handlers.HandlerServerPriority;
+import thaumicenergistics.network.handlers.HandlerServerWrenchFocus;
 import thaumicenergistics.network.handlers.part.HandlerClientArcaneCraftingTerminal;
 import thaumicenergistics.network.handlers.part.HandlerClientEssentiaIOBus;
 import thaumicenergistics.network.handlers.part.HandlerClientEssentiaLevelEmitter;
@@ -42,6 +43,7 @@ import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
 import thaumicenergistics.network.packet.server.PacketServerKnowledgeInscriber;
 import thaumicenergistics.network.packet.server.PacketServerPriority;
+import thaumicenergistics.network.packet.server.PacketServerWrenchFocus;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -96,6 +98,9 @@ public class ChannelHandler
 
 		// Particle FX
 		wrapper.registerMessage( HandlerAreaParticleFX.class, PacketAreaParticleFX.class, discriminator++ , Side.CLIENT );
+
+		// Wrench Focus
+		wrapper.registerMessage( HandlerServerWrenchFocus.class, PacketServerWrenchFocus.class, discriminator++ , Side.SERVER );
 
 	}
 

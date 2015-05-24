@@ -157,4 +157,4 @@ thaumicenergistics.research_page.TEARCANEASSEMBLER.3=§lVis Discounts§r<BR>Due 
 # Research Wrench Focus
 tc.research_name.thaumicenergistics.TEFOCUSWRENCH=Wand Focus: AE Wrench
 tc.research_text.thaumicenergistics.TEFOCUSWRENCH=Some Assembly Required
-thaumicenergistics.research_page.TEFOCUSWRENCH.1=This wand focus interacts with blocks and machinery as if it were an AE2 wrench.<BR>Sneak + left click: Rotate.<BR>Sneak + right click: Dismantle.<BR>Please note that full support for cable parts is currently work in progress.
+thaumicenergistics.research_page.TEFOCUSWRENCH.1=This wand focus interacts with blocks and machinery as if it were an AE2 wrench.<BR>Sneak + left click: Rotate.<BR>Sneak + right click: Dismantle.

@@ -27,7 +27,11 @@ public class FeatureEssentiaMonitoring
 
 	public FeatureEssentiaMonitoring( final FeatureRegistry fr )
 	{
-		super( fr );
+		// Construct super
+		super();
+
+		// Evaluate dependencies
+		this.evaluateDependencies( fr );
 	}
 
 	@Override

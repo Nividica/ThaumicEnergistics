@@ -17,6 +17,21 @@ public abstract class AbstractBlockAEWrenchable
 	}
 
 	/**
+	 * Called when the block is right-clicked
+	 * 
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param player
+	 * @return
+	 */
+	protected boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
+	{
+		return false;
+	}
+
+	/**
 	 * Called when the block is being removed via AE wrench.
 	 * Return an itemstack that represents the block. Can be null.
 	 */
@@ -33,21 +48,6 @@ public abstract class AbstractBlockAEWrenchable
 	public boolean canPlayerInteract( final EntityPlayer player )
 	{
 		return true;
-	}
-
-	/**
-	 * Called when the block is right-clicked
-	 * 
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param player
-	 * @return
-	 */
-	public boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
-	{
-		return false;
 	}
 
 	/**
