@@ -18,16 +18,6 @@ import appeng.api.AEApi;
 public class FeatureQuartzDupe
 	extends AbstractDependencyFeature
 {
-
-	public FeatureQuartzDupe( final FeatureRegistry fr )
-	{
-		// Construct super
-		super();
-
-		// Evaluate dependencies
-		this.evaluateDependencies( fr );
-	}
-
 	@Override
 	protected boolean checkConfigs()
 	{

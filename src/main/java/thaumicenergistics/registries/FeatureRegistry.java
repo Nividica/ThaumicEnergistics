@@ -1,6 +1,7 @@
 package thaumicenergistics.registries;
 
 import thaumicenergistics.features.AbstractBasicFeature;
+import thaumicenergistics.features.AbstractDependencyFeature;
 import thaumicenergistics.features.CommonDependantItems;
 import thaumicenergistics.features.FeatureACT;
 import thaumicenergistics.features.FeatureAutocrafting;
@@ -37,14 +38,14 @@ public class FeatureRegistry
 	private CommonDependantItems commonItems;
 
 	/**
-	 * True if the dependencies have been built.
-	 */
-	private boolean hasBuiltDependencies = false;
-
-	/**
 	 * Set to true when registerFeatures() is called.
 	 */
 	private boolean hasRegistered = false;
+
+	/**
+	 * All features in a nice compact array.
+	 */
+	private final AbstractBasicFeature[] featuresList;
 
 	/**
 	 * Sets up the TC research tab.
@@ -116,6 +117,52 @@ public class FeatureRegistry
 	 */
 	private FeatureRegistry()
 	{
+		// Build common items
+		this.commonItems = new CommonDependantItems();
+
+		// Build setup
+		this.featureResearchSetup = new FeatureResearchSetup();
+
+		// Build autocrafting
+		this.featureAutoCrafting = new FeatureAutocrafting();
+
+		// Build cells
+		this.featureCells = new FeatureCells();
+
+		// Build ACT
+		this.featureACT = new FeatureACT();
+
+		// Build VRI
+		this.featureVRI = new FeatureVisRelayInterface();
+
+		// Build IO buses
+		this.featureEssentiaIOBuses = new FeatureEssentiaIOBuses();
+
+		// Build infusion provider
+		this.featureInfusionProvider = new FeatureInfusionProvider();
+
+		// Build essentia provider
+		this.featureEssentiaProvider = new FeatureEssentiaProvider();
+
+		// Build monitoring
+		this.featureEssentiaMonitoring = new FeatureEssentiaMonitoring();
+
+		// Build conversion cores
+		this.featureConversionCores = new FeatureConversionCores();
+
+		// Build gearboxes
+		this.featureGearbox = new FeatureGearbox();
+
+		// Build wrench focus
+		this.featureWrenchFocus = new FeatureWrenchFocus();
+
+		// Build quartz dupe
+		this.featureQuartzDupe = new FeatureQuartzDupe();
+
+		// Build array of features
+		this.featuresList = new AbstractBasicFeature[] { this.featureAutoCrafting, this.featureCells, this.featureACT, this.featureVRI,
+						this.featureEssentiaIOBuses, this.featureInfusionProvider, this.featureEssentiaProvider, this.featureEssentiaMonitoring,
+						this.featureConversionCores, this.featureGearbox, this.featureWrenchFocus, this.featureQuartzDupe };
 	}
 
 	/**
@@ -131,56 +178,6 @@ public class FeatureRegistry
 		}
 
 		return FeatureRegistry.instanceFR;
-	}
-
-	/**
-	 * Determines what features can or can not be enabled.
-	 */
-	private void buildDependencies()
-	{
-		// Build common items
-		this.commonItems = new CommonDependantItems();
-
-		// Build setup
-		this.featureResearchSetup = new FeatureResearchSetup();
-
-		// Build autocrafting
-		this.featureAutoCrafting = new FeatureAutocrafting( this );
-
-		// Build cells
-		this.featureCells = new FeatureCells( this );
-
-		// Build ACT
-		this.featureACT = new FeatureACT( this );
-
-		// Build VRI
-		this.featureVRI = new FeatureVisRelayInterface( this );
-
-		// Build IO buses
-		this.featureEssentiaIOBuses = new FeatureEssentiaIOBuses( this );
-
-		// Build infusion provider
-		this.featureInfusionProvider = new FeatureInfusionProvider( this );
-
-		// Build essentia provider
-		this.featureEssentiaProvider = new FeatureEssentiaProvider( this );
-
-		// Build monitoring
-		this.featureEssentiaMonitoring = new FeatureEssentiaMonitoring( this );
-
-		// Build conversion cores
-		this.featureConversionCores = new FeatureConversionCores( this );
-
-		// Build gearboxes
-		this.featureGearbox = new FeatureGearbox();
-
-		// Build wrench focus
-		this.featureWrenchFocus = new FeatureWrenchFocus( this );
-
-		// Build quartz dupe
-		this.featureQuartzDupe = new FeatureQuartzDupe( this );
-
-		this.hasBuiltDependencies = true;
 	}
 
 	/**
@@ -205,29 +202,32 @@ public class FeatureRegistry
 			return;
 		}
 
-		// Ensure the dependencies have been built
-		if( !this.hasBuiltDependencies )
+		// Build common item
+		this.commonItems.buildCommon();
+
+		// Build dependencies
+		for( AbstractBasicFeature feature : this.featuresList )
 		{
-			this.buildDependencies();
+			// Is the feature a dependency feature?
+			if( feature instanceof AbstractDependencyFeature )
+			{
+				// Evaluate the dependencies
+				( (AbstractDependencyFeature)feature ).evaluateDependencies( this );
+			}
 		}
 
 		// Start with the setup
 		this.featureResearchSetup.registerFeature();
 
-		// Build array of features
-		AbstractBasicFeature[] features = new AbstractBasicFeature[] { this.featureAutoCrafting, this.featureCells, this.featureACT, this.featureVRI,
-						this.featureEssentiaIOBuses, this.featureInfusionProvider, this.featureEssentiaProvider, this.featureEssentiaMonitoring,
-						this.featureConversionCores, this.featureGearbox, this.featureWrenchFocus, this.featureQuartzDupe };
-
 		// Register each feature
-		for( AbstractBasicFeature feature : features )
+		for( AbstractBasicFeature feature : this.featuresList )
 		{
 			// Attempt to register the feature
 			feature.registerFeature();
 		}
 
 		// Finish the registration
-		this.featureResearchSetup.finalizeRegistration( features );
+		this.featureResearchSetup.finalizeRegistration( this.featuresList );
 
 		// Mark that registration has occurred.
 		this.hasRegistered = true;

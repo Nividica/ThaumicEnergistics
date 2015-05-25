@@ -18,14 +18,6 @@ import appeng.core.features.AEFeature;
 public class FeatureAutocrafting
 	extends AbstractDependencyFeature
 {
-	public FeatureAutocrafting( final FeatureRegistry fr )
-	{
-		// Construct super
-		super();
-
-		// Evaluate dependencies
-		this.evaluateDependencies( fr );
-	}
 
 	@Override
 	protected boolean checkConfigs()

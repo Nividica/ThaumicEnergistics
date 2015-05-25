@@ -18,15 +18,6 @@ public class FeatureConversionCores
 	extends AbstractDependencyFeature
 {
 
-	public FeatureConversionCores( final FeatureRegistry fr )
-	{
-		// Construct super
-		super();
-
-		// Evaluate dependencies
-		this.evaluateDependencies( fr );
-	}
-
 	@Override
 	protected boolean checkConfigs()
 	{

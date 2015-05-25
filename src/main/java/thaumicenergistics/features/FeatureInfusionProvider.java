@@ -18,16 +18,6 @@ import thaumicenergistics.registries.ResearchRegistry.ResearchTypes;
 public class FeatureInfusionProvider
 	extends AbstractDependencyFeature
 {
-
-	public FeatureInfusionProvider( final FeatureRegistry fr )
-	{
-		// Construct super
-		super();
-
-		// Evaluate dependencies
-		this.evaluateDependencies( fr );
-	}
-
 	@Override
 	protected boolean checkConfigs()
 	{

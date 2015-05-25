@@ -23,15 +23,6 @@ public class FeatureEssentiaIOBuses
 
 	private boolean isImportExportEnabled = false;
 
-	public FeatureEssentiaIOBuses( final FeatureRegistry fr )
-	{
-		// Construct super
-		super();
-
-		// Evaluate dependencies
-		this.evaluateDependencies( fr );
-	}
-
 	@Override
 	protected boolean checkConfigs()
 	{

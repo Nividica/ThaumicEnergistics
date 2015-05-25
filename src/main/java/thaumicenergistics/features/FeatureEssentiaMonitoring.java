@@ -23,16 +23,7 @@ public class FeatureEssentiaMonitoring
 	extends AbstractDependencyFeature
 {
 
-	private boolean isWirelessEnabled = false, isConversionEnabled = false;;
-
-	public FeatureEssentiaMonitoring( final FeatureRegistry fr )
-	{
-		// Construct super
-		super();
-
-		// Evaluate dependencies
-		this.evaluateDependencies( fr );
-	}
+	private boolean isWirelessEnabled = false, isConversionEnabled = false;
 
 	@Override
 	protected boolean checkConfigs()

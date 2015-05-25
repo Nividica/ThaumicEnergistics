@@ -18,16 +18,6 @@ import appeng.core.features.AEFeature;
 public class FeatureWrenchFocus
 	extends AbstractDependencyFeature
 {
-
-	public FeatureWrenchFocus( final FeatureRegistry fr )
-	{
-		// Construct super
-		super();
-
-		// Evaluate dependencies
-		this.evaluateDependencies( fr );
-	}
-
 	@Override
 	protected boolean checkConfigs()
 	{

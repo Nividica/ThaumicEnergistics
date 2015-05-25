@@ -19,16 +19,6 @@ import appeng.core.features.AEFeature;
 public class FeatureVisRelayInterface
 	extends AbstractDependencyFeature
 {
-
-	public FeatureVisRelayInterface( final FeatureRegistry fr )
-	{
-		// Construct super
-		super();
-
-		// Evaluate dependencies
-		this.evaluateDependencies( fr );
-	}
-
 	@Override
 	protected boolean checkConfigs()
 	{

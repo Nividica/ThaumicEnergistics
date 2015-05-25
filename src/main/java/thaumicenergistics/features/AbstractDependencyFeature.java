@@ -51,25 +51,21 @@ public abstract class AbstractDependencyFeature
 	protected abstract boolean checkConfigs();
 
 	/**
-	 * Evaluates the dependencies of the feature and enables it if possible.
-	 * 
-	 * @param fr
-	 */
-	protected final void evaluateDependencies( final FeatureRegistry fr )
-	{
-		// Ask for the features config settings and required items
-		if( this.checkConfigs() && this.checkItemReqs( this.getItemReqs( fr.getCommonItems() ) ) )
-		{
-			// This feature is enabled
-			this.setAvailable( true );
-		}
-	}
-
-	/**
 	 * Gets the features required items.
 	 * 
 	 * @return
 	 */
 	protected abstract Object[] getItemReqs( CommonDependantItems cdi );
+
+	/**
+	 * Evaluates the dependencies of the feature and enables it if possible.
+	 * 
+	 * @param fr
+	 */
+	public final void evaluateDependencies( final FeatureRegistry fr )
+	{
+		// Ask for the features config settings and required items
+		this.setAvailable( this.checkConfigs() && this.checkItemReqs( this.getItemReqs( fr.getCommonItems() ) ) );
+	}
 
 }

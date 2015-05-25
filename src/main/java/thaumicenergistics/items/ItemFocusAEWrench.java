@@ -316,11 +316,18 @@ public class ItemFocusAEWrench
 	@Override
 	public String getUnlocalizedName()
 	{
-		// Is the focus enabled?
-		if( FeatureRegistry.instance().featureWrenchFocus.isAvailable() )
+		try
 		{
-			// Wrench enabled
-			return ThEStrings.Item_FocusAEWrench.getUnlocalized();
+			// Is the focus enabled?
+			if( FeatureRegistry.instance().featureWrenchFocus.isAvailable() )
+			{
+				// Wrench enabled
+				return ThEStrings.Item_FocusAEWrench.getUnlocalized();
+			}
+		}
+		catch( Exception e )
+		{
+
 		}
 
 		// Wrench disabled

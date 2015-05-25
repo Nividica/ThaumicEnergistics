@@ -16,15 +16,6 @@ public class FeatureEssentiaProvider
 	extends AbstractDependencyFeature
 {
 
-	public FeatureEssentiaProvider( final FeatureRegistry fr )
-	{
-		// Construct super
-		super();
-
-		// Evaluate dependencies
-		this.evaluateDependencies( fr );
-	}
-
 	@Override
 	protected boolean checkConfigs()
 	{

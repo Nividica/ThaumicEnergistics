@@ -18,15 +18,6 @@ public class FeatureACT
 	extends AbstractDependencyFeature
 {
 
-	public FeatureACT( final FeatureRegistry fr )
-	{
-		// Construct super
-		super();
-
-		// Evaluate dependencies
-		this.evaluateDependencies( fr );
-	}
-
 	@Override
 	protected boolean checkConfigs()
 	{

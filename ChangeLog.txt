@@ -1,4 +1,7 @@
-﻿5/23/2015 0.8.10.3
+﻿5/25/2015 0.8.10.4
+  Fixes #191: Features should never be null.
+
+5/23/2015 0.8.10.3
   Bugfix: Feature dependencies resetting to false.
   Bugfix: Wrench focus calculation errors fixed.
 
