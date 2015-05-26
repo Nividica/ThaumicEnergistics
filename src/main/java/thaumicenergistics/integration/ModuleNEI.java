@@ -23,57 +23,129 @@ import codechicken.nei.recipe.IRecipeHandler;
  */
 public class ModuleNEI
 {
+
 	/**
-	 * Passes a selected NEI recipe to the server's A.C.T.
+	 * Sends a selected NEI recipe to the open A.C.T on the server.
 	 * 
 	 * @author Nividica
 	 * 
 	 */
 	public class ACTOverlayHandler
-		implements IOverlayHandler
+		extends AbstractBaseOverlayHandler
 	{
 		/**
-		 * Called when the user has shift-clicked the [?] button in NEI
+		 * Reduces regular slot offsets to 0, 1, or 2
 		 */
-		@Override
-		public void overlayRecipe( final GuiContainer gui, final IRecipeHandler recipeHandler, final int recipeIndex, final boolean shift )
+		private static final int REGULAR_SLOT_INDEX_DIVISOR = 18;
+
+		/**
+		 * Reduces arcane slot Y offsets to 0,1, or 2
+		 */
+		private static final int ARCANE_SLOTY_INDEX_DIVISOR = 20;
+
+		/**
+		 * If true incoming ingredients are from ThaumcraftNEIPlugin
+		 */
+		private final boolean isArcaneHandler;
+
+		/**
+		 * Creates the handler.
+		 * 
+		 * @param isArcane
+		 * Set to true for arcane recipes
+		 */
+		public ACTOverlayHandler( final boolean isArcane )
 		{
-			// Ensure the gui is the ACT
-			if( gui instanceof GuiArcaneCraftingTerminal )
+			this.isArcaneHandler = isArcane;
+		}
+
+		/**
+		 * Adds ThaumcraftNEIPlugin ingredients to the ACT crafting grid.
+		 * 
+		 * @return
+		 */
+		private boolean addArcaneCraftingItems( final PositionedStack ingredient, final IAEItemStack[] overlayItems )
+		{
+			// Calculate the slot positions
+			int slotX = (int)Math.round( ingredient.relx / (double)ACTOverlayHandler.REGULAR_SLOT_INDEX_DIVISOR ) - 3;
+			int slotY = (int)Math.round( ingredient.rely / (double)ACTOverlayHandler.ARCANE_SLOTY_INDEX_DIVISOR ) - 2;
+
+			// Ignore the 'aspects'
+			if( slotY >= 3 )
 			{
-				// List of items
-				IAEItemStack[] items = new IAEItemStack[9];
-
-				// Assume there are no items until they are added.
-				boolean hasItems = false;
-
-				// Get the ingredients
-				List<PositionedStack> ingredients = recipeHandler.getIngredientStacks( recipeIndex );
-
-				// Get each item
-				for( PositionedStack ingredient : ingredients )
-				{
-					// Calculate the slot positions
-					int slotX = ( ingredient.relx - ModuleNEI.NEI_SLOT_OFFSET_X ) / ModuleNEI.SLOT_INDEX_DIVISOR;
-					int slotY = ( ingredient.rely - ModuleNEI.NEI_SLOT_OFFSET_Y ) / ModuleNEI.SLOT_INDEX_DIVISOR;
-
-					// Calculate the slot index
-					int slotIndex = slotX + ( slotY * 3 );
-
-					// Add the item to the list
-					items[slotIndex] = AEApi.instance().storage().createItemStack( ingredient.item );
-
-					hasItems = true;
-				}
-
-				// Were any items added?
-				if( hasItems )
-				{
-					// Send the list to the server
-					new PacketServerArcaneCraftingTerminal().createNEIRequestSetCraftingGrid( Minecraft.getMinecraft().thePlayer, items )
-									.sendPacketToServer();
-				}
+				return false;
 			}
+
+			// Roundoff fix
+			if( slotX == 3 )
+			{
+				slotX = 2;
+			}
+
+			// Calculate the slot index
+			int slotIndex = slotX + ( slotY * 3 );
+
+			// Bounds check the index
+			if( ( slotIndex < 0 ) || ( slotIndex > 9 ) )
+			{
+				// Invalid slot
+				return false;
+			}
+
+			// Add the item to the list
+			overlayItems[slotIndex] = AEApi.instance().storage().createItemStack( ingredient.item );
+
+			return true;
+		}
+
+		/**
+		 * Adds NEI ingredients to the ACT crafting grid.
+		 * 
+		 * @param ingredient
+		 * @param overlayItems
+		 * @return
+		 */
+		private boolean addRegularCraftingItems( final PositionedStack ingredient, final IAEItemStack[] overlayItems )
+		{
+			// Calculate the slot positions
+			int slotX = ( ingredient.relx - ModuleNEI.NEI_REGULAR_SLOT_OFFSET_X ) / ACTOverlayHandler.REGULAR_SLOT_INDEX_DIVISOR;
+			int slotY = ( ingredient.rely - ModuleNEI.NEI_REGULAR_SLOT_OFFSET_Y ) / ACTOverlayHandler.REGULAR_SLOT_INDEX_DIVISOR;
+
+			// Calculate the slot index
+			int slotIndex = slotX + ( slotY * 3 );
+
+			// Add the item to the list
+			overlayItems[slotIndex] = AEApi.instance().storage().createItemStack( ingredient.item );
+
+			return true;
+		}
+
+		@Override
+		protected boolean addIngredientToItems( final PositionedStack ingredient, final IAEItemStack[] overlayItems )
+		{
+			// Arcane?
+			if( this.isArcaneHandler )
+			{
+				// Pass to arcane handler
+				return this.addArcaneCraftingItems( ingredient, overlayItems );
+			}
+
+			// Pass to regular handler
+			return this.addRegularCraftingItems( ingredient, overlayItems );
+		}
+
+		@Override
+		protected void addItemsToGUI( final IAEItemStack[] overlayItems )
+		{
+			// Send the list to the server
+			new PacketServerArcaneCraftingTerminal().createNEIRequestSetCraftingGrid( Minecraft.getMinecraft().thePlayer, overlayItems )
+							.sendPacketToServer();
+		}
+
+		@Override
+		protected boolean isCorrectGUI( final GuiContainer gui )
+		{
+			return( gui instanceof GuiArcaneCraftingTerminal );
 		}
 	}
 
@@ -83,7 +155,7 @@ public class ModuleNEI
 	 * @author Nividica
 	 * 
 	 */
-	public class ACTSlotFinder
+	public class ACTSlotPositioner
 		implements IStackPositioner
 	{
 
@@ -97,8 +169,8 @@ public class ModuleNEI
 				if( ps != null )
 				{
 					// Adjust it's position
-					ps.relx += ContainerPartArcaneCraftingTerminal.CRAFTING_SLOT_X_POS - ModuleNEI.NEI_SLOT_OFFSET_X;
-					ps.rely += ContainerPartArcaneCraftingTerminal.CRAFTING_SLOT_Y_POS - ModuleNEI.NEI_SLOT_OFFSET_Y;
+					ps.relx += ContainerPartArcaneCraftingTerminal.CRAFTING_SLOT_X_POS - ModuleNEI.NEI_REGULAR_SLOT_OFFSET_X;
+					ps.rely += ContainerPartArcaneCraftingTerminal.CRAFTING_SLOT_Y_POS - ModuleNEI.NEI_REGULAR_SLOT_OFFSET_Y;
 				}
 			}
 
@@ -108,19 +180,94 @@ public class ModuleNEI
 	}
 
 	/**
+	 * Base class for handling item overlays.
+	 * 
+	 * @author Nividica
+	 * 
+	 */
+	abstract class AbstractBaseOverlayHandler
+		implements IOverlayHandler
+	{
+		/**
+		 * Calls on the subclass to add an ingredient to the items array.
+		 * 
+		 * @param ingredient
+		 * @param overlayItems
+		 */
+		protected abstract boolean addIngredientToItems( PositionedStack ingredient, IAEItemStack[] overlayItems );
+
+		/**
+		 * Called when the items are ready to be placed in the GUI.
+		 * 
+		 * @param overlayItems
+		 */
+		protected abstract void addItemsToGUI( IAEItemStack[] overlayItems );
+
+		/**
+		 * Checks with the subclass to see if this is a GUI it handles.
+		 * 
+		 * @param gui
+		 * @return
+		 */
+		protected abstract boolean isCorrectGUI( GuiContainer gui );
+
+		/**
+		 * Called when the user has shift-clicked the [?] button in NEI
+		 */
+		@Override
+		public final void overlayRecipe( final GuiContainer gui, final IRecipeHandler recipeHandler, final int recipeIndex, final boolean shift )
+		{
+			try
+			{
+				// Ensure the gui is correct
+				if( this.isCorrectGUI( gui ) )
+				{
+					// List of items
+					IAEItemStack[] overlayItems = new IAEItemStack[9];
+
+					// Assume there are no items until they are added.
+					boolean hasItems = false;
+
+					// Get the ingredients
+					List<PositionedStack> ingredients = recipeHandler.getIngredientStacks( recipeIndex );
+
+					// Get each item
+					for( PositionedStack ingredient : ingredients )
+					{
+						// Skip nulls
+						if( ( ingredient == null ) || ( ingredient.item == null ) || ( ingredient.item.getItem() == null ) )
+						{
+							continue;
+						}
+
+						// Pass to subclass
+						hasItems |= this.addIngredientToItems( ingredient, overlayItems );
+					}
+
+					// Were any items added?
+					if( hasItems )
+					{
+						this.addItemsToGUI( overlayItems );
+					}
+				}
+			}
+			catch( Exception e )
+			{
+				// Silently ignored.
+			}
+		}
+
+	}
+
+	/**
 	 * Starting X offset for slots in NEI
 	 */
-	private static final int NEI_SLOT_OFFSET_X = 25;
+	static final int NEI_REGULAR_SLOT_OFFSET_X = 25;
 
 	/**
 	 * Starting Y offset for slots in NEI
 	 */
-	private static final int NEI_SLOT_OFFSET_Y = 6;
-
-	/**
-	 * Reduces slot offset to 0, 1, or 2
-	 */
-	private static final int SLOT_INDEX_DIVISOR = 18;
+	static final int NEI_REGULAR_SLOT_OFFSET_Y = 6;
 
 	/**
 	 * Integrates with Not Enough Items
@@ -129,15 +276,19 @@ public class ModuleNEI
 	 */
 	public ModuleNEI() throws Exception
 	{
+		// Register the ACT overlays
+		API.registerGuiOverlay( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, "crafting", new ACTSlotPositioner() );
 
-		// Register the ACT overlay
-		API.registerGuiOverlay( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, "crafting", new ACTSlotFinder() );
+		// Create the regular overlay handler
+		ACTOverlayHandler craftingOverlayHandler = new ACTOverlayHandler( false );
 
-		// Create the overlay handler
-		ACTOverlayHandler overlayHandler = new ACTOverlayHandler();
+		// Create the arcane overlay handler
+		ACTOverlayHandler arcaneOverlayHandler = new ACTOverlayHandler( true );
 
-		// Register the handler
-		API.registerGuiOverlayHandler( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, overlayHandler, "crafting" );
+		// Register the handlers
+		API.registerGuiOverlayHandler( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, craftingOverlayHandler, "crafting" );
+		API.registerGuiOverlayHandler( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler, "arcaneshapedrecipes" );
+		API.registerGuiOverlayHandler( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler, "arcaneshapelessrecipes" );
 	}
 
 }

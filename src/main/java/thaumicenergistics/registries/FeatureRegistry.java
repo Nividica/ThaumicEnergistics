@@ -202,7 +202,7 @@ public class FeatureRegistry
 			return;
 		}
 
-		// Build common item
+		// Build common items
 		this.commonItems.buildCommon();
 
 		// Build dependencies

@@ -40,7 +40,7 @@ public final class IntegrationCore
 		IntegrationCore.integrateWithVersionChecker();
 
 		// Integrate with NEI
-		IntegrationCore.integrateWithNEI();
+		IntegrationCore.integrateWithMod( IntegrationCore.MODID_NEI );
 
 		// Integrate with Waila
 		IntegrationCore.integrateWithMod( IntegrationCore.MODID_WAILA );
@@ -73,14 +73,6 @@ public final class IntegrationCore
 	}
 
 	/**
-	 * Integrates with NEI
-	 */
-	private static void integrateWithNEI()
-	{
-		IntegrationCore.integrateWithMod( IntegrationCore.MODID_NEI );
-	}
-
-	/**
 	 * Integrates with version checker
 	 */
 	private static void integrateWithVersionChecker()
@@ -110,8 +102,10 @@ public final class IntegrationCore
 		long startTime = ThELog.beginSection( "Integration" );
 		try
 		{
+			// Is client side?
 			if( EffectiveSide.isClientSide() )
 			{
+				// Integrate with client mods
 				IntegrationCore.integrateWithClientMods();
 			}
 

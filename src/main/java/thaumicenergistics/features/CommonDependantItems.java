@@ -186,6 +186,9 @@ public class CommonDependantItems
 		this.QuickSilverDrop = new ItemStack( ConfigItems.itemNugget, 1, 5 );
 	}
 
+	/**
+	 * Populates the common items
+	 */
 	public void buildCommon()
 	{
 		// MC items

@@ -1,4 +1,7 @@
-﻿5/25/2015 0.8.10.4
+﻿5/25/2015 0.8.10.5
+  Fixes #135: Adds support for shift-clicking arcane recipes if ThaumicNEIPlugin is installed.
+
+5/25/2015 0.8.10.4
   Fixes #191: Features should never be null.
 
 5/23/2015 0.8.10.3
