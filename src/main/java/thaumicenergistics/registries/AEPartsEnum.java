@@ -98,7 +98,7 @@ public enum AEPartsEnum
 	public static AEPartsEnum getPartFromDamageValue( final ItemStack itemStack )
 	{
 		// Clamp the damage
-		int clamped = MathHelper.clamp_int( itemStack.getItemDamage(), 0, AEPartsEnum.VALUES.length );
+		int clamped = MathHelper.clamp_int( itemStack.getItemDamage(), 0, AEPartsEnum.VALUES.length - 1 );
 
 		// Get the part
 		return AEPartsEnum.VALUES[clamped];

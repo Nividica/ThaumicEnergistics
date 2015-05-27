@@ -1,4 +1,8 @@
-﻿5/25/2015 0.8.10.5
+﻿5/25/2015 0.8.10.6
+  Potential bugfix: Improper array bounds checking.
+  Potential bugfix: ACT view slots are checked for being null before usage.
+
+5/25/2015 0.8.10.5
   Fixes #135: Adds support for shift-clicking arcane recipes if ThaumicNEIPlugin is installed.
 
 5/25/2015 0.8.10.4

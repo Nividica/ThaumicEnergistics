@@ -111,7 +111,7 @@ public class ItemMaterial
 	@Override
 	public IIcon getIconFromDamage( final int damage )
 	{
-		int index = MathHelper.clamp_int( damage, 0, MaterialTypes.VALUES.length );
+		int index = MathHelper.clamp_int( damage, 0, MaterialTypes.VALUES.length - 1 );
 
 		return this.icons[index];
 	}
@@ -135,7 +135,7 @@ public class ItemMaterial
 	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
-		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, MaterialTypes.VALUES.length );
+		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, MaterialTypes.VALUES.length - 1 );
 
 		return MaterialTypes.VALUES[index].getUnlocalizedName();
 	}

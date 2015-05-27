@@ -188,7 +188,7 @@ public class ItemEssentiaCell
 	@Override
 	public IIcon getIconFromDamage( final int dmg )
 	{
-		int index = MathHelper.clamp_int( dmg, 0, AbstractStorageBase.SIZES.length );
+		int index = MathHelper.clamp_int( dmg, 0, AbstractStorageBase.SIZES.length - 1 );
 
 		return this.icons[index];
 	}
@@ -200,7 +200,7 @@ public class ItemEssentiaCell
 	public EnumRarity getRarity( final ItemStack itemStack )
 	{
 		// Get the index based off of the meta data
-		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, AbstractStorageBase.RARITIES.length );
+		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, AbstractStorageBase.RARITIES.length - 1 );
 
 		// Return the rarity
 		return AbstractStorageBase.RARITIES[index];

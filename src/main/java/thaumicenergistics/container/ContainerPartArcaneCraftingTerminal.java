@@ -672,6 +672,13 @@ public class ContainerPartArcaneCraftingTerminal
 			// Get the slot
 			viewSlot = this.getSlot( viewSlotIndex );
 
+			// Is there a slot?
+			if( viewSlot == null )
+			{
+				// Somehow, there is a null slot
+				continue;
+			}
+
 			// Ensure the slot is empty
 			if( viewSlot.getHasStack() )
 			{
