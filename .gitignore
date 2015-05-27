@@ -6,3 +6,6 @@
 !/README.md
 !/src
 !build.gradle
+!gradlew
+!gradlew.bat
+!gradle

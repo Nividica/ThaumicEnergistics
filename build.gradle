@@ -26,7 +26,24 @@ minecraft {
     runDir = "eclipse/assets"
 }
 
+repositories {
+    maven {
+        name "Mobius Repo"
+        url "http://mobiusstrip.eu/maven"
+    }
+    maven {
+        name "CB Repo"
+        url "http://chickenbones.net/maven"
+    }
+    maven {
+        name "ic2"
+        url "http://maven.ic2.player.to/"
+    }
+}
+
 dependencies {
+    compile "mcp.mobius.waila:Waila:1.5.10_1.7.10"
+    compile "net.industrial-craft:industrialcraft-2:2.2.726-experimental:api"
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
