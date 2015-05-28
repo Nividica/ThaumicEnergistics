@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.aspect.AspectCache;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import appeng.api.AEApi;
@@ -73,8 +74,10 @@ public final class EssentiaConversionHelper
 	 * 
 	 * @param fluidStackList
 	 * @return
+	 * @deprecated Move to using the AspectCache
 	 */
-	public List<AspectStack> convertIIAEFluidStackListToAspectStackList( final IItemList<IAEFluidStack> fluidStackList )
+	@Deprecated
+	public List<AspectStack> convertIAEFluidStackListToAspectStackList( final IItemList<IAEFluidStack> fluidStackList )
 	{
 		List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
 
@@ -201,4 +204,40 @@ public final class EssentiaConversionHelper
 		return ret;
 	}
 
+	/**
+	 * Sets the values in the cache to reflect what is in the fluid stack list.
+	 * If either the cache or list are null the method simply returns.
+	 * 
+	 * @param cache
+	 * @param fluidStackList
+	 * @return The passed AspectCache
+	 */
+	public AspectCache updateCacheToMatchIAEFluidStackList( final AspectCache cache, final IItemList<IAEFluidStack> fluidStackList )
+	{
+		// Validate cache and list
+		if( ( cache == null ) || ( fluidStackList == null ) )
+		{
+			// Invalid
+			return cache;
+		}
+
+		// Reset the cache
+		cache.resetAll();
+
+		// Loop over all fluids
+		for( IAEFluidStack fluidStack : fluidStackList )
+		{
+			// Convert
+			AspectStack aspectStack = this.convertAEFluidStackToAspectStack( fluidStack );
+
+			// Was the fluid an essentia gas?
+			if( aspectStack != null )
+			{
+				// Add to the cache
+				cache.setAspect( aspectStack );
+			}
+		}
+
+		return cache;
+	}
 }

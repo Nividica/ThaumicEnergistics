@@ -1,4 +1,8 @@
-﻿5/25/2015 0.8.10.6
+﻿5/27/2015 0.8.10.6
+  Fixes #195: Shift+Rightclick in the ACT continues to extract 1 item at a time.
+  Added some support for ComputerCraft #194
+
+5/25/2015 0.8.10.6
   Potential bugfix: Improper array bounds checking.
   Potential bugfix: ACT view slots are checked for being null before usage.
 

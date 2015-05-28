@@ -6,7 +6,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.integration.tc.EssentiaTransportHelper;
 import thaumicenergistics.integration.tc.IEssentiaTransportWithSimulate;
 import appeng.api.config.Actionable;
@@ -68,12 +67,6 @@ public class TileEssentiaProvider
 	}
 
 	@Override
-	protected void onChannelUpdate()
-	{
-		// Ignored
-	}
-
-	@Override
 	public int addEssentia( final Aspect aspect, final int amount, final ForgeDirection side )
 	{
 		return this.addEssentia( aspect, amount, side, Actionable.MODULATE );
@@ -123,15 +116,7 @@ public class TileEssentiaProvider
 		// Does the neighbor want anything?
 		if( wantedAspect != null )
 		{
-			// Get the stack from the network
-			AspectStack matchingStack = this.getAspectStackFromNetwork( wantedAspect );
-
-			// Does the network have that aspect?
-			if( matchingStack != null )
-			{
-				// Return the amount we have
-				return (int)matchingStack.amount;
-			}
+			return (int)Math.min( this.getAspectAmountInNetwork( wantedAspect ), Integer.MAX_VALUE );
 		}
 
 		// No match or no request
@@ -148,7 +133,7 @@ public class TileEssentiaProvider
 		if( wantedAspect != null )
 		{
 			// Does the network have that aspect?
-			if( this.getAspectStackFromNetwork( wantedAspect ) != null )
+			if( this.getAspectAmountInNetwork( wantedAspect ) > 0 )
 			{
 				// Return the aspect they want
 				return wantedAspect;

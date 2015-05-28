@@ -33,6 +33,11 @@ public final class IntegrationCore
 	 */
 	private static final String MODID_EC2 = "EC2";
 
+	/**
+	 * Module ID for ComputerCraft
+	 */
+	private static final String MODID_CC = "CC";
+
 	@SideOnly(Side.CLIENT)
 	private static void integrateWithClientMods()
 	{
@@ -114,6 +119,9 @@ public final class IntegrationCore
 			{
 				IntegrationCore.integrateWithMod( IntegrationCore.MODID_EC2 );
 			}
+
+			// Integrate with computer craft
+			IntegrationCore.integrateWithMod( IntegrationCore.MODID_CC );
 		}
 		catch( Throwable e )
 		{

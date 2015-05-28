@@ -612,7 +612,7 @@ public abstract class AbstractContainerCellTerminalBase
 			this.monitor.addListener( this, this.monitor.hashCode() );
 
 			// Update our cached list of aspects
-			this.aspectStackList = EssentiaConversionHelper.INSTANCE.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+			this.aspectStackList = EssentiaConversionHelper.INSTANCE.convertIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
 		}
 	}
 
@@ -968,7 +968,7 @@ public abstract class AbstractContainerCellTerminalBase
 	public final void onListUpdate()
 	{
 		// Update our cached list of aspects
-		this.aspectStackList = EssentiaConversionHelper.INSTANCE.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+		this.aspectStackList = EssentiaConversionHelper.INSTANCE.convertIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
 
 		// Send a full update
 		this.onClientRequestFullUpdate();

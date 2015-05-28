@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.aspect.AspectCache;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.IWailaSource;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
@@ -23,13 +23,17 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.localization.WailaText;
+import appeng.me.GridAccessException;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
@@ -40,13 +44,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class TileProviderBase
 	extends AENetworkTile
-	implements IColorableTile, IWailaSource
+	implements IColorableTile, IWailaSource, IMEMonitorHandlerReceiver<IAEFluidStack>
 {
-	protected static final String NBT_KEY_COLOR = "TEColor";
-
-	protected static final String NBT_KEY_ATTACHMENT = "TEAttachSide";
-
-	protected static final String NBT_KEY_ISCOLORFORCED = "ColorForced";
+	/**
+	 * NBT keys
+	 */
+	protected static final String NBT_KEY_COLOR = "TEColor", NBT_KEY_ATTACHMENT = "TEAttachSide", NBT_KEY_ISCOLORFORCED = "ColorForced";
 
 	/**
 	 * Network source representing the provider.
@@ -73,12 +76,33 @@ public abstract class TileProviderBase
 	 */
 	protected boolean isColorForced = false;
 
+	/**
+	 * Cached aspects in the network.
+	 */
+	private AspectCache aspectCache = new AspectCache();
+
+	/**
+	 * Ensures thread safety on the cache.
+	 */
+	private Object cacheLock = new Object();
+
+	/**
+	 * Contains a cache of the aspects and amounts reported to ComputerCraft.
+	 */
+	private Object[] ccListCache = null;
+
 	public TileProviderBase()
 	{
 		// Create the source
 		this.asMachineSource = new MachineSource( this );
 	}
 
+	/**
+	 * Returns an array with the AE colors of any neighbor tiles.
+	 * Index is side.
+	 * 
+	 * @return
+	 */
 	private AEColor[] getNeighborCableColors()
 	{
 		AEColor[] sideColors = new AEColor[6];
@@ -106,7 +130,14 @@ public abstract class TileProviderBase
 		return sideColors;
 	}
 
-	// Returns how much was extracted
+	/**
+	 * Returns how much was extracted from the network.
+	 * 
+	 * @param wantedAspect
+	 * @param wantedAmount
+	 * @param mustMatch
+	 * @return
+	 */
 	protected int extractEssentiaFromNetwork( final Aspect wantedAspect, final int wantedAmount, final boolean mustMatch )
 	{
 		// Ensure we have a monitor
@@ -153,29 +184,27 @@ public abstract class TileProviderBase
 
 	}
 
-	protected AspectStack getAspectStackFromNetwork( final Aspect searchAspect )
+	/**
+	 * Returns how much of the specified aspect is in the network.
+	 * 
+	 * @param searchAspect
+	 * @return
+	 */
+	protected long getAspectAmountInNetwork( final Aspect searchAspect )
 	{
-		// Get the list from the network
-		List<AspectStack> aspectStackList = this.getNetworkAspects();
-
-		// Ensure we have a list, and that it is not empty
-		if( ( aspectStackList != null ) && ( !aspectStackList.isEmpty() ) )
+		synchronized( this.cacheLock )
 		{
-			// Search all aspects in the list
-			for( AspectStack currentStack : aspectStackList )
-			{
-				// Do the current match the search?
-				if( currentStack.aspect == searchAspect )
-				{
-					// Found it
-					return currentStack;
-				}
-			}
+			return this.aspectCache.getAspectAmount( searchAspect );
 		}
-
-		return null;
 	}
 
+	/**
+	 * Sets the fluid monitor field to the grids fluid monitor if one is
+	 * available.
+	 * Returns true if a monitor was retrieved.
+	 * 
+	 * @return
+	 */
 	protected boolean getFluidMonitor()
 	{
 		// Get the grid node
@@ -199,9 +228,26 @@ public abstract class TileProviderBase
 		// Access the storage grid
 		IStorageGrid storageGrid = (IStorageGrid)grid.getCache( IStorageGrid.class );
 
-		// Set our monitor
-		this.monitor = storageGrid.getFluidInventory();
+		// Get the monitor
+		IMEMonitor<IAEFluidStack> gMonitor = storageGrid.getFluidInventory();
 
+		// Is the previous monitor invalid?
+		if( ( this.monitor != null ) && ( ( gMonitor == null ) || ( !this.monitor.equals( gMonitor ) ) ) )
+		{
+			// Remove the listener
+			this.monitor.removeListener( this );
+
+			// Attach a new listener
+			if( gMonitor != null )
+			{
+				gMonitor.addListener( this, grid );
+			}
+		}
+
+		// Set the monitor
+		this.monitor = gMonitor;
+
+		// Return true if the monitor is not null
 		return( this.monitor != null );
 	}
 
@@ -209,17 +255,6 @@ public abstract class TileProviderBase
 
 	@Override
 	protected abstract ItemStack getItemFromTile( Object obj );
-
-	protected List<AspectStack> getNetworkAspects()
-	{
-		// Ensure we have a monitor
-		if( this.getFluidMonitor() )
-		{
-			return EssentiaConversionHelper.INSTANCE.convertIIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
-		}
-
-		return null;
-	}
 
 	/**
 	 * Injects essentia into the ME network.
@@ -269,10 +304,43 @@ public abstract class TileProviderBase
 
 	}
 
-	/**
-	 * Called when our channel updates.
-	 */
-	protected abstract void onChannelUpdate();
+	protected void onChannelUpdate()
+	{
+		// Is this server side?
+		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
+		{
+			// Remove ourself from any prior listener
+			if( this.monitor != null )
+			{
+				this.monitor.removeListener( this );
+			}
+
+			IGrid grid;
+			try
+			{
+				// Get the grid
+				grid = this.gridProxy.getGrid();
+			}
+			catch( GridAccessException e )
+			{
+				// No grid
+				return;
+			}
+
+			// Get the new monitor
+			if( this.getFluidMonitor() )
+			{
+				// Register this tile as a network monitor
+				this.monitor.addListener( this, grid );
+
+				// Get the list of essentia on the network
+				synchronized( this.cacheLock )
+				{
+					EssentiaConversionHelper.INSTANCE.updateCacheToMatchIAEFluidStackList( this.aspectCache, this.monitor.getStorageList() );
+				}
+			}
+		}
+	}
 
 	/**
 	 * Sets the color of the provider.
@@ -439,6 +507,81 @@ public abstract class TileProviderBase
 		return this.gridProxy.getGridColor();
 	}
 
+	/**
+	 * Gets the aspects in the network and stores them in the object array
+	 * in AspectName-Amount pairs.
+	 * This is included for ComputerCraft integration.
+	 * 
+	 * @param results
+	 */
+	public Object[] getOrderedAspectAmounts()
+	{
+		// Is the provider active?
+		if( !this.isActive() )
+		{
+			// Inactive
+			return null;
+		}
+
+		// Is the cache invalid?
+		if( ( this.ccListCache == null ) || ( this.aspectCache.flagAmountsModified ) || ( this.aspectCache.flagAspectsModified ) )
+		{
+			// Something needs updating
+			synchronized( this.cacheLock )
+			{
+				// Trim empty entries
+				this.aspectCache.removeEmpty();
+
+				// Full update?
+				if( this.aspectCache.flagAspectsModified )
+				{
+					// Get the names
+					String[] tags = this.aspectCache.getOrderedAspectTags();
+
+					// Create the results array
+					this.ccListCache = new Object[tags.length * 2];
+
+					// Add the names to every other index, starting at 0
+					for( int i = 0; i < tags.length; ++i )
+					{
+						this.ccListCache[i * 2] = tags[i];
+					}
+
+					// Mark amounts as invalid
+					this.aspectCache.flagAmountsModified = true;
+				}
+
+				// Amounts?
+				if( this.aspectCache.flagAmountsModified )
+				{
+					// Add the amounts to every other index, starting at 1
+					for( int i = 1; i < this.ccListCache.length; i += 2 )
+					{
+						this.ccListCache[i] = this.aspectCache.getAspectAmount( (String)this.ccListCache[i - 1] );
+					}
+
+					// Mark cache as valid
+					this.aspectCache.flagAmountsModified = false;
+				}
+
+				// If a full update occurred, clean up the names
+				if( this.aspectCache.flagAspectsModified )
+				{
+					for( int i = 0; i < this.ccListCache.length; i += 2 )
+					{
+						this.ccListCache[i] = Aspect.getAspect( (String)this.ccListCache[i] ).getName();
+					}
+
+					// Mark aspects as valid
+					this.aspectCache.flagAspectsModified = false;
+				}
+
+			}
+		}
+
+		return this.ccListCache;
+	}
+
 	public boolean isActive()
 	{
 		// Are we server side?
@@ -453,6 +596,48 @@ public abstract class TileProviderBase
 		}
 
 		return this.isActive;
+	}
+
+	@Override
+	public final boolean isValid( final Object prevGrid )
+	{
+		try
+		{
+			// Get the local grid
+			IGrid localGrid = this.gridProxy.getGrid();
+
+			// Listener is valid only if the grid has not changed.
+			return( localGrid.equals( prevGrid ) );
+		}
+		catch( GridAccessException gE )
+		{
+			// This listener is no longer valid.
+		}
+
+		return false;
+	}
+
+	/**
+	 * Called when our parent block is about to be destroyed.
+	 */
+	public void onBreakBlock()
+	{
+		// Do we have a monitor
+		if( this.monitor != null )
+		{
+			// Unregister
+			this.monitor.removeListener( this );
+		}
+	}
+
+	@Override
+	public final void onListUpdate()
+	{
+		// Update the cache
+		synchronized( this.cacheLock )
+		{
+			EssentiaConversionHelper.INSTANCE.updateCacheToMatchIAEFluidStackList( this.aspectCache, this.monitor.getStorageList() );
+		}
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_READ)
@@ -528,6 +713,34 @@ public abstract class TileProviderBase
 
 		// Write the activity to the stream
 		data.writeBoolean( this.isActive() );
+	}
+
+	/**
+	 * Called by the AE monitor when the network changes.
+	 */
+	@Override
+	public final void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> changes, final BaseActionSource source )
+	{
+		// Ensure there was a change
+		if( changes == null )
+		{
+			return;
+		}
+
+		synchronized( this.cacheLock )
+		{
+			// Search the changes for essentia gas
+			for( IAEFluidStack change : changes )
+			{
+				// Is the change an essentia gas?
+				if( ( change.getFluid() instanceof GaseousEssentia ) )
+				{
+					// Update the cache
+					this.aspectCache.changeAspect( ( (GaseousEssentia)change.getFluid() ).getAspect(),
+						EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( change.getStackSize() ) );
+				}
+			}
+		}
 	}
 
 	@MENetworkEventSubscribe

@@ -31,6 +31,23 @@ public abstract class AbstractBlockProviderBase
 	}
 
 	@Override
+	public void breakBlock( final World world, final int x, final int y, final int z, final Block block, final int metadata )
+	{
+		// Get  tile entity
+		TileEntity tileProvider = world.getTileEntity( x, y, z );
+
+		// Is there still have a tile?
+		if( tileProvider instanceof TileProviderBase )
+		{
+			// Inform it that its going away
+			( (TileProviderBase)tileProvider ).onBreakBlock();
+		}
+
+		// Pass to super
+		super.breakBlock( world, x, y, z, block, metadata );
+	}
+
+	@Override
 	public final boolean canRenderInPass( final int pass )
 	{
 		// Mark the current pass

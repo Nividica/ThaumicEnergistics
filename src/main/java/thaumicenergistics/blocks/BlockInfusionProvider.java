@@ -29,23 +29,6 @@ public class BlockInfusionProvider
 	}
 
 	@Override
-	public void breakBlock( final World world, final int x, final int y, final int z, final Block block, final int metadata )
-	{
-		// Get  tile entity
-		TileEntity tileProvider = world.getTileEntity( x, y, z );
-
-		// Is there still have a tile?
-		if( tileProvider instanceof TileInfusionProvider )
-		{
-			// Inform it that its going away
-			( (TileInfusionProvider)tileProvider ).onBreakBlock();
-		}
-
-		// Pass to super
-		super.breakBlock( world, x, y, z, block, metadata );
-	}
-
-	@Override
 	public TileEntity createNewTileEntity( final World world, final int metaData )
 	{
 		// Create a new provider tile, passing the side to attach to

@@ -709,23 +709,29 @@ public class GuiArcaneCraftingTerminal
 			this.numberOfWidgetRows * AbstractGuiConstantsACT.ME_ROW_HEIGHT, AbstractGuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft,
 			this.guiTop ) )
 		{
-			// Is the player holding anything?
-			if( this.player.inventory.getItemStack() != null )
-			{
-				// Inform the server the user would like to deposit the currently held item into the ME network.
-				new PacketServerArcaneCraftingTerminal().createRequestDeposit( this.player, mouseButton ).sendPacketToServer();
-			}
-			else
+			// Click + empty hand is extract
+			boolean doExtract = ( this.player.inventory.getItemStack() == null );
+
+			// Shift+Right click is extract
+			doExtract |= ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) && ( mouseButton == GuiHelper.MOUSE_BUTTON_RIGHT ) );
+
+			// Extracting?
+			if( doExtract )
 			{
 				// Search for the widget the mouse is over, and send extract request.
 				this.sendItemWidgetClicked( mouseX, mouseY, mouseButton );
+			}
+			else
+			{
+				// Inform the server the user would like to deposit the currently held item into the ME network.
+				new PacketServerArcaneCraftingTerminal().createRequestDeposit( this.player, mouseButton ).sendPacketToServer();
 			}
 
 			// Do not pass to super
 			return;
 		}
 
-		// Is the user holding the space key?
+		// Is the player holding the space key?
 		if( Keyboard.isKeyDown( Keyboard.KEY_SPACE ) )
 		{
 			// Get the slot the mouse is over
