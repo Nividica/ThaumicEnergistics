@@ -5,6 +5,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.aspect.GridEssentiaCache;
+import thaumicenergistics.aspect.IMEEssentiaMonitor;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.IntegrationCore;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -13,6 +15,7 @@ import thaumicenergistics.network.ChannelHandler;
 import thaumicenergistics.proxy.CommonProxy;
 import thaumicenergistics.registries.AEAspectRegister;
 import thaumicenergistics.util.ThELog;
+import appeng.api.AEApi;
 import cpw.mods.fml.common.LoaderState;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -111,6 +114,8 @@ public class ThaumicEnergistics
 
 		// Register integration
 		IntegrationCore.init();
+
+		AEApi.instance().registries().gridCache().registerGridCache( IMEEssentiaMonitor.class, GridEssentiaCache.class );
 
 		// Mark that ThE has finished Init
 		ThELog.endSection( "Load", startTime );

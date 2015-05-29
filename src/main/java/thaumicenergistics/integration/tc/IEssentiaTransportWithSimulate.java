@@ -15,7 +15,7 @@ public interface IEssentiaTransportWithSimulate
 	 * @param amount
 	 * @param side
 	 * @param mode
-	 * @return
+	 * @return Amount that <strong>was</strong> injected.
 	 */
 	public int addEssentia( final Aspect aspect, final int amount, final ForgeDirection side, Actionable mode );
 }

@@ -91,7 +91,7 @@ public class ItemEssentiaCell
 
 				// Build the display string
 				String aspectInfo = String.format( "%s%s%s x %d", aspectChatColor, currentStack.getAspectName( player ),
-					EnumChatFormatting.WHITE.toString(), currentStack.amount );
+					EnumChatFormatting.WHITE.toString(), currentStack.stackSize );
 
 				// Add to the list
 				displayList.add( aspectInfo );

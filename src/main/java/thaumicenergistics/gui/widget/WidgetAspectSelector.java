@@ -42,7 +42,7 @@ public class WidgetAspectSelector
 		super( selectorGui, stack.aspect, xPos, yPos, player );
 
 		// Get the amount
-		this.amount = stack.amount;
+		this.amount = stack.stackSize;
 
 		// Get the aspect color
 		int aspectColor = stack.aspect.getColor();

@@ -415,16 +415,16 @@ public class GuiEssentiaCellTerminal
 		this.drawWidgets( mouseX, mouseY );
 
 		// Do we have a selected aspect?
-		if( ( this.selectedAspectStack != null ) && ( this.selectedAspectStack.amount > 0 ) )
+		if( ( this.selectedAspectStack != null ) && ( this.selectedAspectStack.stackSize > 0 ) )
 		{
 			// Update the display amount?
-			if( this.selectedAspectStack.amount != this.cacheAmountSelected )
+			if( this.selectedAspectStack.stackSize != this.cacheAmountSelected )
 			{
 				// Convert the selected amount into a string
-				this.cacheAmountDisplay = GuiHelper.shortenCount( this.selectedAspectStack.amount );
+				this.cacheAmountDisplay = GuiHelper.shortenCount( this.selectedAspectStack.stackSize );
 
 				// Cache the amount
-				this.cacheAmountSelected = this.selectedAspectStack.amount;
+				this.cacheAmountSelected = this.selectedAspectStack.stackSize;
 			}
 
 			// Get the name of the aspect

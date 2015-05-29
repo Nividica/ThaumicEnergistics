@@ -411,7 +411,7 @@ public abstract class AbstractContainerCellTerminalBase
 			if( potentialChange.aspect == matchingStack.aspect )
 			{
 				// Found a match, determine how much it has changed
-				long changeAmount = potentialChange.amount - matchingStack.amount;
+				long changeAmount = potentialChange.stackSize - matchingStack.stackSize;
 
 				// Create the changed stack
 				AspectStack changedStack = new AspectStack( matchingStack.aspect, changeAmount );
@@ -439,7 +439,7 @@ public abstract class AbstractContainerCellTerminalBase
 		AspectStack changedStack = changeDetails.getRight();
 
 		// Did anything change?
-		if( changedStack.amount == 0 )
+		if( changedStack.stackSize == 0 )
 		{
 			// Nothing changed
 			return false;
@@ -449,7 +449,7 @@ public abstract class AbstractContainerCellTerminalBase
 		if( changedIndex != -1 )
 		{
 			// Get the new amount
-			long newAmount = this.aspectStackList.get( changedIndex ).amount + changedStack.amount;
+			long newAmount = this.aspectStackList.get( changedIndex ).stackSize + changedStack.stackSize;
 
 			// Was the stack drained?
 			if( newAmount <= 0 )
@@ -460,7 +460,7 @@ public abstract class AbstractContainerCellTerminalBase
 			else
 			{
 				// Update the list
-				this.aspectStackList.get( changedIndex ).amount = newAmount;
+				this.aspectStackList.get( changedIndex ).stackSize = newAmount;
 			}
 		}
 		// New addition

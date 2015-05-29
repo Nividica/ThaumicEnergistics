@@ -9,10 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.aspect.AspectCache;
-import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.aspect.IMEEssentiaMonitor;
 import thaumicenergistics.integration.IWailaSource;
-import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.Actionable;
@@ -23,17 +21,10 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.localization.WailaText;
-import appeng.me.GridAccessException;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
@@ -44,7 +35,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class TileProviderBase
 	extends AENetworkTile
-	implements IColorableTile, IWailaSource, IMEMonitorHandlerReceiver<IAEFluidStack>
+	implements IColorableTile, IWailaSource
 {
 	/**
 	 * NBT keys
@@ -62,9 +53,9 @@ public abstract class TileProviderBase
 	protected int attachmentSide;
 
 	/**
-	 * ME monitor that watches for changes in fluids.
+	 * ME monitor that watches for changes in essentia.
 	 */
-	protected IMEMonitor<IAEFluidStack> monitor = null;
+	protected IMEEssentiaMonitor monitor = null;
 
 	/**
 	 * True if the provider is connected and powered.
@@ -75,21 +66,6 @@ public abstract class TileProviderBase
 	 * True when the color applicator has been used on the provider.
 	 */
 	protected boolean isColorForced = false;
-
-	/**
-	 * Cached aspects in the network.
-	 */
-	private AspectCache aspectCache = new AspectCache();
-
-	/**
-	 * Ensures thread safety on the cache.
-	 */
-	private Object cacheLock = new Object();
-
-	/**
-	 * Contains a cache of the aspects and amounts reported to ComputerCraft.
-	 */
-	private Object[] ccListCache = null;
 
 	public TileProviderBase()
 	{
@@ -141,111 +117,71 @@ public abstract class TileProviderBase
 	protected int extractEssentiaFromNetwork( final Aspect wantedAspect, final int wantedAmount, final boolean mustMatch )
 	{
 		// Ensure we have a monitor
-		if( this.getFluidMonitor() )
+		if( this.getEssentiaMonitor() )
 		{
-			// Get the gas version of the aspect
-			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( wantedAspect );
+			// Request the essentia
+			long amountExtracted = this.monitor.extractEssentia( wantedAspect, wantedAmount, Actionable.SIMULATE, this.asMachineSource );
 
-			// Is there a fluid version of the aspect?
-			if( essentiaGas == null )
+			// Was any essentia extracted?
+			if( amountExtracted == 0 )
 			{
+				// Nothing extracted.
 				return 0;
 			}
 
-			IAEFluidStack request = EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, wantedAmount );
-
-			// Simulate the extraction
-			IAEFluidStack fluidStack = this.monitor.extractItems( request, Actionable.SIMULATE, this.asMachineSource );
-
-			// Were we able to extract any?
-			if( fluidStack == null )
-			{
-				return 0;
-			}
 			// Are we in match mode?
 			else if( mustMatch )
 			{
 				// Does the amount match how much we want?
-				if( fluidStack.getStackSize() != EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( wantedAmount ) )
+				if( amountExtracted != wantedAmount )
 				{
 					// Could not provide enough essentia
 					return 0;
 				}
 			}
 
-			// Take from the network
-			this.monitor.extractItems( request, Actionable.MODULATE, this.asMachineSource );
+			// Extract the essentia
+			this.monitor.extractEssentia( wantedAspect, wantedAmount, Actionable.MODULATE, this.asMachineSource );
 
 			// Return how much was extracted
-			return (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+			return (int)amountExtracted;
 		}
 
+		// No monitor
 		return 0;
 
 	}
 
 	/**
-	 * Returns how much of the specified aspect is in the network.
-	 * 
-	 * @param searchAspect
-	 * @return
-	 */
-	protected long getAspectAmountInNetwork( final Aspect searchAspect )
-	{
-		synchronized( this.cacheLock )
-		{
-			return this.aspectCache.getAspectAmount( searchAspect );
-		}
-	}
-
-	/**
-	 * Sets the fluid monitor field to the grids fluid monitor if one is
-	 * available.
+	 * Gets the essentia monitor from the network.
 	 * Returns true if a monitor was retrieved.
 	 * 
 	 * @return
 	 */
-	protected boolean getFluidMonitor()
+	protected boolean getEssentiaMonitor()
 	{
+		IMEEssentiaMonitor essentiaMonitor = null;
+		IGrid grid = null;
+
 		// Get the grid node
 		IGridNode node = this.gridProxy.getNode();
 
 		// Ensure we have the node
-		if( node == null )
+		if( node != null )
 		{
-			return false;
-		}
+			// Get the grid that node is connected to
+			grid = node.getGrid();
 
-		// Get the grid that node is connected to
-		IGrid grid = node.getGrid();
-
-		// Is there a grid?
-		if( grid == null )
-		{
-			return false;
-		}
-
-		// Access the storage grid
-		IStorageGrid storageGrid = (IStorageGrid)grid.getCache( IStorageGrid.class );
-
-		// Get the monitor
-		IMEMonitor<IAEFluidStack> gMonitor = storageGrid.getFluidInventory();
-
-		// Is the previous monitor invalid?
-		if( ( this.monitor != null ) && ( ( gMonitor == null ) || ( !this.monitor.equals( gMonitor ) ) ) )
-		{
-			// Remove the listener
-			this.monitor.removeListener( this );
-
-			// Attach a new listener
-			if( gMonitor != null )
+			// Is there a grid?
+			if( grid != null )
 			{
-				gMonitor.addListener( this, grid );
+				// Get the monitor
+				essentiaMonitor = (IMEEssentiaMonitor)grid.getCache( IMEEssentiaMonitor.class );
 			}
 		}
 
 		// Set the monitor
-		this.monitor = gMonitor;
+		this.monitor = essentiaMonitor;
 
 		// Return true if the monitor is not null
 		return( this.monitor != null );
@@ -255,92 +191,6 @@ public abstract class TileProviderBase
 
 	@Override
 	protected abstract ItemStack getItemFromTile( Object obj );
-
-	/**
-	 * Injects essentia into the ME network.
-	 * 
-	 * @param aspect
-	 * @param amount
-	 * @param mode
-	 * @return
-	 */
-	protected int injectEssentiaIntoNetwork( final Aspect aspect, final int amount, final Actionable mode )
-	{
-		// Ensure there is a request
-		if( amount == 0 )
-		{
-			return 0;
-		}
-
-		// Ensure we have a monitor
-		if( this.getFluidMonitor() )
-		{
-			// Get the gas version of the aspect
-			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( aspect );
-
-			// Is there a fluid version of the aspect?
-			if( essentiaGas == null )
-			{
-				return 0;
-			}
-
-			IAEFluidStack request = EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, amount );
-
-			// Simulate the injection
-			IAEFluidStack fluidStack = this.monitor.injectItems( request, mode, this.asMachineSource );
-
-			// Was all injected?
-			if( fluidStack == null )
-			{
-				return amount;
-			}
-
-			// Return the amount not injected
-			return amount - (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
-		}
-
-		// No monitor
-		return 0;
-
-	}
-
-	protected void onChannelUpdate()
-	{
-		// Is this server side?
-		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
-		{
-			// Remove ourself from any prior listener
-			if( this.monitor != null )
-			{
-				this.monitor.removeListener( this );
-			}
-
-			IGrid grid;
-			try
-			{
-				// Get the grid
-				grid = this.gridProxy.getGrid();
-			}
-			catch( GridAccessException e )
-			{
-				// No grid
-				return;
-			}
-
-			// Get the new monitor
-			if( this.getFluidMonitor() )
-			{
-				// Register this tile as a network monitor
-				this.monitor.addListener( this, grid );
-
-				// Get the list of essentia on the network
-				synchronized( this.cacheLock )
-				{
-					EssentiaConversionHelper.INSTANCE.updateCacheToMatchIAEFluidStackList( this.aspectCache, this.monitor.getStorageList() );
-				}
-			}
-		}
-	}
 
 	/**
 	 * Sets the color of the provider.
@@ -400,8 +250,12 @@ public abstract class TileProviderBase
 		// Check that our color is still valid
 		this.checkGridConnectionColor();
 
-		// Call subclass
-		this.onChannelUpdate();
+		// Is this server side?
+		if( EffectiveSide.isServerSide() )
+		{
+			// Update the monitor
+			this.getEssentiaMonitor();
+		}
 
 		// Mark for update
 		this.markForUpdate();
@@ -487,6 +341,25 @@ public abstract class TileProviderBase
 
 	}
 
+	/**
+	 * Returns how much of the specified aspect is in the network.
+	 * 
+	 * @param searchAspect
+	 * @return
+	 */
+	public long getAspectAmountInNetwork( final Aspect searchAspect )
+	{
+		// Ensure there is a monitor
+		if( this.getEssentiaMonitor() )
+		{
+			// Return the amount in the network
+			return this.monitor.getEssentiaAmount( searchAspect );
+		}
+
+		// No monitor.
+		return 0;
+	}
+
 	@Override
 	public AECableType getCableConnectionType( final ForgeDirection direction )
 	{
@@ -508,78 +381,13 @@ public abstract class TileProviderBase
 	}
 
 	/**
-	 * Gets the aspects in the network and stores them in the object array
-	 * in AspectName-Amount pairs.
-	 * This is included for ComputerCraft integration.
+	 * Gets the machine source for the provider.
 	 * 
-	 * @param results
+	 * @return
 	 */
-	public Object[] getOrderedAspectAmounts()
+	public MachineSource getMachineSource()
 	{
-		// Is the provider active?
-		if( !this.isActive() )
-		{
-			// Inactive
-			return null;
-		}
-
-		// Is the cache invalid?
-		if( ( this.ccListCache == null ) || ( this.aspectCache.flagAmountsModified ) || ( this.aspectCache.flagAspectsModified ) )
-		{
-			// Something needs updating
-			synchronized( this.cacheLock )
-			{
-				// Trim empty entries
-				this.aspectCache.removeEmpty();
-
-				// Full update?
-				if( this.aspectCache.flagAspectsModified )
-				{
-					// Get the names
-					String[] tags = this.aspectCache.getOrderedAspectTags();
-
-					// Create the results array
-					this.ccListCache = new Object[tags.length * 2];
-
-					// Add the names to every other index, starting at 0
-					for( int i = 0; i < tags.length; ++i )
-					{
-						this.ccListCache[i * 2] = tags[i];
-					}
-
-					// Mark amounts as invalid
-					this.aspectCache.flagAmountsModified = true;
-				}
-
-				// Amounts?
-				if( this.aspectCache.flagAmountsModified )
-				{
-					// Add the amounts to every other index, starting at 1
-					for( int i = 1; i < this.ccListCache.length; i += 2 )
-					{
-						this.ccListCache[i] = this.aspectCache.getAspectAmount( (String)this.ccListCache[i - 1] );
-					}
-
-					// Mark cache as valid
-					this.aspectCache.flagAmountsModified = false;
-				}
-
-				// If a full update occurred, clean up the names
-				if( this.aspectCache.flagAspectsModified )
-				{
-					for( int i = 0; i < this.ccListCache.length; i += 2 )
-					{
-						this.ccListCache[i] = Aspect.getAspect( (String)this.ccListCache[i] ).getName();
-					}
-
-					// Mark aspects as valid
-					this.aspectCache.flagAspectsModified = false;
-				}
-
-			}
-		}
-
-		return this.ccListCache;
+		return this.asMachineSource;
 	}
 
 	public boolean isActive()
@@ -598,46 +406,11 @@ public abstract class TileProviderBase
 		return this.isActive;
 	}
 
-	@Override
-	public final boolean isValid( final Object prevGrid )
-	{
-		try
-		{
-			// Get the local grid
-			IGrid localGrid = this.gridProxy.getGrid();
-
-			// Listener is valid only if the grid has not changed.
-			return( localGrid.equals( prevGrid ) );
-		}
-		catch( GridAccessException gE )
-		{
-			// This listener is no longer valid.
-		}
-
-		return false;
-	}
-
 	/**
 	 * Called when our parent block is about to be destroyed.
 	 */
 	public void onBreakBlock()
 	{
-		// Do we have a monitor
-		if( this.monitor != null )
-		{
-			// Unregister
-			this.monitor.removeListener( this );
-		}
-	}
-
-	@Override
-	public final void onListUpdate()
-	{
-		// Update the cache
-		synchronized( this.cacheLock )
-		{
-			EssentiaConversionHelper.INSTANCE.updateCacheToMatchIAEFluidStackList( this.aspectCache, this.monitor.getStorageList() );
-		}
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_READ)
@@ -713,34 +486,6 @@ public abstract class TileProviderBase
 
 		// Write the activity to the stream
 		data.writeBoolean( this.isActive() );
-	}
-
-	/**
-	 * Called by the AE monitor when the network changes.
-	 */
-	@Override
-	public final void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> changes, final BaseActionSource source )
-	{
-		// Ensure there was a change
-		if( changes == null )
-		{
-			return;
-		}
-
-		synchronized( this.cacheLock )
-		{
-			// Search the changes for essentia gas
-			for( IAEFluidStack change : changes )
-			{
-				// Is the change an essentia gas?
-				if( ( change.getFluid() instanceof GaseousEssentia ) )
-				{
-					// Update the cache
-					this.aspectCache.changeAspect( ( (GaseousEssentia)change.getFluid() ).getAspect(),
-						EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( change.getStackSize() ) );
-				}
-			}
-		}
 	}
 
 	@MENetworkEventSubscribe

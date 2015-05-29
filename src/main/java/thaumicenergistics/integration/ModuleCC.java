@@ -1,8 +1,15 @@
 package thaumicenergistics.integration;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.List;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.aspect.IMEEssentiaMonitor;
 import thaumicenergistics.tileentities.TileEssentiaProvider;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -29,6 +36,11 @@ public class ModuleCC
 		implements IPeripheral
 	{
 		/**
+		 * Maps an aspects name to an Aspect.
+		 */
+		private final static Hashtable<String, Aspect> aspectNameReverseMap = new Hashtable<String, Aspect>();
+
+		/**
 		 * What world is the provider in?
 		 */
 		private final WeakReference<World> epWorld;
@@ -37,11 +49,6 @@ public class ModuleCC
 		 * Where in the world is the provider?
 		 */
 		private final int epX, epY, epZ;
-
-		/**
-		 * Reference to the actual provider.
-		 */
-		private WeakReference<TileEssentiaProvider> epReference;
 
 		public EssentiaProviderPeripheral( final World world, final int x, final int y, final int z )
 		{
@@ -55,20 +62,161 @@ public class ModuleCC
 		}
 
 		/**
+		 * Returns how much of an aspect is in the system from its tag.
+		 * 
+		 * @param args
+		 * @return
+		 */
+		private Object[] ccGetAmount( final Object[] args ) throws LuaException, InterruptedException
+		{
+			// Ensure there are arguments
+			if( ( args == null ) || ( args.length == 0 ) )
+			{
+				throw new LuaException( "Expected argument: <string>AspectName" );
+			}
+
+			// Get the provider
+			TileEssentiaProvider provider = this.getProvider();
+
+			// Is the provider active?
+			if( !provider.isActive() )
+			{
+				// Inactive
+				return null;
+			}
+
+			List<Object> results = new ArrayList<Object>();
+
+			// For each argument, attempt to get the aspect
+			for( Object arg : args )
+			{
+				Long amount = null;
+
+				// Ensure the argument is a string
+				if( arg instanceof String )
+				{
+					// The aspect to look up
+					Aspect aspect = null;
+
+					// Get the name, in lowercase
+					String aspectName = ( (String)arg ).toLowerCase();
+
+					// Does the map contain this entry?
+					if( EssentiaProviderPeripheral.aspectNameReverseMap.contains( aspectName ) )
+					{
+						// Get the aspect
+						aspect = EssentiaProviderPeripheral.aspectNameReverseMap.get( aspectName );
+					}
+					else
+					{
+						// Search all aspects
+						for( Aspect searchAspect : Aspect.aspects.values() )
+						{
+							// Do the names match?
+							if( searchAspect.getName().equalsIgnoreCase( aspectName ) )
+							{
+								// Found it
+								aspect = searchAspect;
+
+								// Update the map
+								EssentiaProviderPeripheral.aspectNameReverseMap.put( aspectName, searchAspect );
+
+								// Break the search
+								break;
+							}
+						}
+					}
+
+					// Was an aspect found?
+					if( aspect != null )
+					{
+						// Get the amount
+						amount = provider.getAspectAmountInNetwork( aspect );
+					}
+					else
+					{
+						throw new LuaException( String.format( "Invalid aspect name '%s'", arg ) );
+					}
+				}
+				else
+				{
+					throw new LuaException( String.format( "Invalid argument '%s'", arg ) );
+				}
+
+				// Add the amount to the results
+				results.add( amount );
+			}
+
+			return results.toArray();
+		}
+
+		/**
+		 * Gets the aspects stored in the network the provider is attached to.
+		 * 
+		 * @return
+		 */
+		private Object[] ccGetAspects() throws LuaException, InterruptedException
+		{
+
+			// Attempt to get the monitor
+			IMEEssentiaMonitor monitor;
+			if( ( monitor = this.getProviderMonitor() ) == null )
+			{
+				return null;
+			}
+
+			// Get the list of aspects in the network
+			Collection<AspectStack> essentiaList = monitor.getEssentiaList();
+
+			// Is there any essentia stored?
+			if( essentiaList.size() == 0 )
+			{
+				// No essentia stored
+				return null;
+			}
+
+			// Create the array
+			Object[] ccList = new Object[essentiaList.size() * 2];
+
+			int index = 0;
+			for( AspectStack stack : essentiaList )
+			{
+				// Set the name
+				ccList[index] = stack.getAspectName();
+
+				// Set the amount
+				ccList[index + 1] = stack.stackSize;
+
+				// Inc the index
+				index += 2;
+			}
+
+			return ccList;
+
+		}
+
+		/**
+		 * Returns if the provider is online, or null if the provider is
+		 * invalid.
+		 * 
+		 * @return
+		 */
+		private Object[] ccGetOnline() throws LuaException, InterruptedException
+		{
+			// Get the provider
+			TileEssentiaProvider provider = this.getProvider();
+
+			// Return the providers active state
+			return new Object[] { provider.isActive() };
+		}
+
+		/**
 		 * Attempts to get the Essentia Provider
 		 * 
 		 * @return
 		 */
-		private TileEssentiaProvider getProvider()
+		private TileEssentiaProvider getProvider() throws LuaException, InterruptedException
 		{
-			TileEssentiaProvider provider = null;
-
-			// Is the providers reference still valid?
-			if( ( this.epReference != null ) && ( provider = this.epReference.get() ) != null )
-			{
-				return provider;
-			}
-
 			// Attempt to get the world
 			World world;
 			if( ( this.epWorld == null ) || ( world = this.epWorld.get() ) == null )
@@ -82,53 +230,36 @@ public class ModuleCC
 			// Is the entity a provider?
 			if( te instanceof TileEssentiaProvider )
 			{
-				// Set the return value
-				provider = (TileEssentiaProvider)te;
-
-				// Create a reference
-				this.epReference = new WeakReference<TileEssentiaProvider>( provider );
+				// Return the provider
+				return (TileEssentiaProvider)te;
 			}
 
-			return provider;
+			throw new LuaException( "EssentiaProvider not found" );
+
 		}
 
-		/**
-		 * Gets the aspects stored in the network the provider is attached to.
-		 * 
-		 * @return
-		 */
-		private Object[] lmGetAspects()
+		private IMEEssentiaMonitor getProviderMonitor() throws LuaException, InterruptedException
 		{
-			// Attempt to get the provider
-			TileEssentiaProvider provider;
-			if( ( provider = this.getProvider() ) == null )
+			// Get the provider
+			TileEssentiaProvider provider = this.getProvider();
+
+			// Is the provider active?
+			if( !provider.isActive() )
 			{
-				// Could not get the provider
+				// Inactive
 				return null;
 			}
 
-			// Return the providers active state
-			return provider.getOrderedAspectAmounts();
-		}
-
-		/**
-		 * Returns if the provider is online, or null if the provider is
-		 * invalid.
-		 * 
-		 * @return
-		 */
-		private Object[] lmGetOnline()
-		{
-			// Attempt to get the provider
-			TileEssentiaProvider provider;
-			if( ( provider = this.getProvider() ) == null )
+			// Attempt to get the essentia monitor
+			try
 			{
-				// Could not get the provider
-				return new Object[] { false };
+				return provider.getActionableNode().getGrid().getCache( IMEEssentiaMonitor.class );
 			}
-
-			// Return the providers active state
-			return new Object[] { provider.isActive() };
+			catch( NullPointerException npe )
+			{
+				// Could not get the monitor
+				return null;
+			}
 		}
 
 		@Override
@@ -143,22 +274,18 @@ public class ModuleCC
 		{
 			Object[] results = null;
 
-			try
+			// Determine which method was called.
+			switch ( CCMethods.VALUES[method] )
 			{
-				// Determine which method was called.
-				switch ( CCMethods.VALUES[method] )
-				{
-					case getOnline:
-						results = this.lmGetOnline();
-						break;
-					case getAspects:
-						results = this.lmGetAspects();
-						break;
-				}
-			}
-			catch( Exception e )
-			{
-				// Silently ignore
+				case getOnline:
+					results = this.ccGetOnline();
+					break;
+				case getAspects:
+					results = this.ccGetAspects();
+					break;
+				case getAmount:
+					results = this.ccGetAmount( arguments );
+					break;
 			}
 
 			return results;
@@ -185,7 +312,7 @@ public class ModuleCC
 		@Override
 		public String getType()
 		{
-			return "ThE-EssentiaProvider";
+			return "EssentiaProvider";
 		}
 
 	}
@@ -228,8 +355,32 @@ public class ModuleCC
 
 			/**
 			 * Gets the list of aspects stored in the network.
+			 * Stored in pairs of (name,amount)
 			 */
-			getAspects;
+			getAspects,
+
+			/**
+			 * Gets how much of the specified essentias are in the network.
+			 * Args: Param array of aspect names
+			 */
+			getAmount,
+
+			/**
+			 * TODO: Register for network changes
+			 * Args: aspect names, can be null for all aspects
+			 */
+			register,
+
+			/**
+			 * TODO: Unregister for network changes
+			 * Args: aspect names, can be null for all aspects
+			 */
+			unregister,
+
+			/**
+			 * TODO: Provide a help object.
+			 */
+			help;
 
 		/**
 		 * List of methods.

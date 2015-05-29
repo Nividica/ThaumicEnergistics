@@ -23,7 +23,7 @@ public class AspectStack
 	/**
 	 * The amount this stack contains
 	 */
-	public long amount;
+	public long stackSize;
 
 	/**
 	 * Creates an empty stack
@@ -31,7 +31,7 @@ public class AspectStack
 	public AspectStack()
 	{
 		this.aspect = null;
-		this.amount = 0;
+		this.stackSize = 0;
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class AspectStack
 	{
 		this.aspect = aspect;
 
-		this.amount = amount;
+		this.stackSize = amount;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class AspectStack
 	{
 		this.aspect = source.aspect;
 
-		this.amount = source.amount;
+		this.stackSize = source.stackSize;
 	}
 
 	/**
@@ -97,25 +97,38 @@ public class AspectStack
 	}
 
 	/**
-	 * Gets the display name for the aspect.
+	 * Gets the name of the aspect.<br>
+	 * This method does not take into consideration if the player has yet discovered the aspect.
 	 * 
-	 * @return Aspect name, or empty string if no aspect.
+	 * @return
 	 */
-	public String getAspectName( final EntityPlayer player )
+	public String getAspectName()
 	{
-		// Do we have an aspect?
+		// Ensure there is an aspect
 		if( this.aspect == null )
 		{
 			return "";
 		}
 
-		// Have we researched the aspect?
+		// Return the name of the aspect
+		return this.aspect.getName();
+	}
+
+	/**
+	 * Gets the display name of the aspect for the player.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public String getAspectName( final EntityPlayer player )
+	{
+		// Has the player discovered the aspect?
 		if( !this.hasPlayerDiscovered( player ) )
 		{
 			return StatCollector.translateToLocal( "tc.aspect.unknown" );
 		}
 
-		return this.aspect.getName();
+		return this.getAspectName();
 	}
 
 	/**
@@ -188,7 +201,7 @@ public class AspectStack
 		{
 			nbt.setString( "AspectTag", this.aspect.getTag() );
 
-			nbt.setLong( "Amount", this.amount );
+			nbt.setLong( "Amount", this.stackSize );
 		}
 
 		return nbt;

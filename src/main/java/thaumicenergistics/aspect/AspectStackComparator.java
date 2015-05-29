@@ -54,7 +54,7 @@ public class AspectStackComparator
 
 	private int compareByAmount( final AspectStack left, final AspectStack right )
 	{
-		return (int)( right.amount - left.amount );
+		return (int)( right.stackSize - left.stackSize );
 	}
 
 	private int compareByTag( final AspectStack left, final AspectStack right )

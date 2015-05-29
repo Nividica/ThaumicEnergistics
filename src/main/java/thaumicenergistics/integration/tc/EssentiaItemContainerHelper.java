@@ -219,7 +219,7 @@ public final class EssentiaItemContainerHelper
 		}
 
 		// Copy the amount we want to drain
-		int amountToDrain = (int)aspectStack.amount;
+		int amountToDrain = (int)aspectStack.stackSize;
 
 		// Can this container do partial fills?
 		if( !info.canHoldPartialAmount() )
@@ -587,7 +587,7 @@ public final class EssentiaItemContainerHelper
 		}
 
 		// Set the amount to fill
-		int amountToFill = (int)aspectStack.amount;
+		int amountToFill = (int)aspectStack.stackSize;
 
 		// Can this container do partial fills?
 		if( !info.canHoldPartialAmount() )

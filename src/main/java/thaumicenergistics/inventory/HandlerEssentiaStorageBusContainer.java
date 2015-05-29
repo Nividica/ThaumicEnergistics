@@ -53,7 +53,7 @@ class HandlerEssentiaStorageBusContainer
 		{
 			for( AspectStack stack : essentiaList )
 			{
-				dictionary.put( stack.aspect, stack.amount );
+				dictionary.put( stack.aspect, stack.stackSize );
 			}
 		}
 	}
@@ -307,7 +307,7 @@ class HandlerEssentiaStorageBusContainer
 					GaseousEssentia gas = GaseousEssentia.getGasFromAspect( essentia.aspect );
 
 					// Add to the item list
-					out.add( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( gas, essentia.amount ) );
+					out.add( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( gas, essentia.stackSize ) );
 				}
 			}
 		}

@@ -160,7 +160,7 @@ public class HandlerItemEssentiaCell
 			}
 
 			// Add to the stack
-			stackToAddTo.amount += amountToStore;
+			stackToAddTo.stackSize += amountToStore;
 
 			// Adjust the used amount
 			this.usedEssentiaStorage += amountToStore;
@@ -196,16 +196,16 @@ public class HandlerItemEssentiaCell
 		AspectStack slotToExtractFrom = this.storedEssentia[slotIndex];
 
 		// Calculate the amount to extract
-		long amountToExtract = Math.min( slotToExtractFrom.amount, amount );
+		long amountToExtract = Math.min( slotToExtractFrom.stackSize, amount );
 
 		// Are we modulating?
 		if( mode == Actionable.MODULATE )
 		{
 			// Extract from the slot
-			slotToExtractFrom.amount -= amountToExtract;
+			slotToExtractFrom.stackSize -= amountToExtract;
 
 			// Is the slot now empty?
-			if( slotToExtractFrom.amount == 0 )
+			if( slotToExtractFrom.stackSize == 0 )
 			{
 				// Null it
 				slotToExtractFrom = null;
@@ -285,7 +285,7 @@ public class HandlerItemEssentiaCell
 				if( this.storedEssentia[index] != null )
 				{
 					// Update the stored amount
-					this.usedEssentiaStorage += this.storedEssentia[index].amount;
+					this.usedEssentiaStorage += this.storedEssentia[index].stackSize;
 				}
 			}
 		}
@@ -388,7 +388,7 @@ public class HandlerItemEssentiaCell
 		NBTTagCompound essentiaTag = new NBTTagCompound();
 
 		// Is there data to write?
-		if( ( aspectStack != null ) && ( aspectStack.aspect != null ) && ( aspectStack.amount > 0 ) )
+		if( ( aspectStack != null ) && ( aspectStack.aspect != null ) && ( aspectStack.stackSize > 0 ) )
 		{
 			// Write the essentia to the tag
 			aspectStack.writeToNBT( essentiaTag );
@@ -567,7 +567,7 @@ public class HandlerItemEssentiaCell
 			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( essentiaStack.aspect );
 
 			// Create the AE fluid stack
-			availableList.add( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, essentiaStack.amount ) );
+			availableList.add( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, essentiaStack.stackSize ) );
 
 		}
 

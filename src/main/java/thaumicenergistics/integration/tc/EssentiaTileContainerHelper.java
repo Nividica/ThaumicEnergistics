@@ -130,7 +130,7 @@ public final class EssentiaTileContainerHelper
 			}
 
 			// Get the amount
-			containerAmount = (int)containerStack.amount;
+			containerAmount = (int)containerStack.stackSize;
 		}
 
 		// Is there a fluid form of the essentia?
@@ -207,7 +207,7 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Set the amount
-		aspectStack.amount = aspectList.getAmount( aspectStack.aspect );
+		aspectStack.stackSize = aspectList.getAmount( aspectStack.aspect );
 
 		return aspectStack;
 	}
@@ -288,7 +288,7 @@ public final class EssentiaTileContainerHelper
 			{
 				if( essentia != null )
 				{
-					stored += (int)essentia.amount;
+					stored += (int)essentia.stackSize;
 				}
 			}
 		}

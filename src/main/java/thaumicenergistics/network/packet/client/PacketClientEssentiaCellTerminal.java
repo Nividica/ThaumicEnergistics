@@ -159,7 +159,7 @@ public class PacketClientEssentiaCellTerminal
 				{
 					AbstractPacket.writeAspect( stack.aspect, stream );
 
-					stream.writeLong( stack.amount );
+					stream.writeLong( stack.stackSize );
 				}
 				break;
 
@@ -177,7 +177,7 @@ public class PacketClientEssentiaCellTerminal
 				AbstractPacket.writeAspect( this.change.aspect, stream );
 
 				// Write the amount
-				stream.writeLong( this.change.amount );
+				stream.writeLong( this.change.stackSize );
 		}
 	}
 }

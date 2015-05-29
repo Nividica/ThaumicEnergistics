@@ -75,22 +75,25 @@ public class TileEssentiaProvider
 	@Override
 	public int addEssentia( final Aspect aspect, final int amount, final ForgeDirection side, final Actionable mode )
 	{
-		// Validate amount
-		if( amount <= 0 )
+		// Assume its all rejected
+		long rejectedAmount = amount;
+
+		// Ensure we have a monitor
+		if( this.getEssentiaMonitor() )
 		{
-			// Invalid amount
-			return 0;
+			// Inject essentia
+			rejectedAmount = this.monitor.injectEssentia( aspect, amount, mode, this.getMachineSource() );
 		}
 
-		// Get the amount injected
-		int acceptedAmount = this.injectEssentiaIntoNetwork( aspect, amount, mode );
+		// Calculate the accepted amount
+		long acceptedAmount = amount - rejectedAmount;
 
 		if( ( mode == Actionable.MODULATE ) && ( acceptedAmount > 0 ) )
 		{
 			this.tickRate = TileEssentiaProvider.TICK_RATE_URGENT;
 		}
 
-		return acceptedAmount;
+		return (int)acceptedAmount;
 	}
 
 	@Override
