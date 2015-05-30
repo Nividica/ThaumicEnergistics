@@ -598,11 +598,13 @@ public class TileArcaneAssembler
 	@MENetworkEventSubscribe
 	public final void channelEvent( final MENetworkChannelsChanged event )
 	{
+		/*
 		// Update the grid node
 		if( this.gridProxy.isReady() )
 		{
 			this.gridProxy.getNode().updateState();
 		}
+		*/
 
 		// Mark for update
 		this.markForUpdate();
@@ -1178,12 +1180,6 @@ public class TileArcaneAssembler
 	@MENetworkEventSubscribe
 	public final void powerEvent( final MENetworkPowerStatusChange event )
 	{
-		// Update the grid node
-		if( this.gridProxy.isReady() )
-		{
-			this.gridProxy.getNode().updateState();
-		}
-
 		// Mark for update
 		this.markForUpdate();
 	}

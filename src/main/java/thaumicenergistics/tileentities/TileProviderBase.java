@@ -193,6 +193,15 @@ public abstract class TileProviderBase
 	protected abstract ItemStack getItemFromTile( Object obj );
 
 	/**
+	 * Called when the power goes on or off.
+	 * 
+	 * @param isPowered
+	 */
+	protected void onPowerChange( final boolean isPowered )
+	{
+	}
+
+	/**
 	 * Sets the color of the provider.
 	 * This does not set the isColorForced flag to true.
 	 * 
@@ -206,6 +215,7 @@ public abstract class TileProviderBase
 		// Are we server side?
 		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
 		{
+			/*
 			// Get the grid node
 			IGridNode gridNode = this.gridProxy.getNode();
 
@@ -215,6 +225,7 @@ public abstract class TileProviderBase
 				// Update the grid node
 				this.gridProxy.getNode().updateState();
 			}
+			*/
 
 			// Mark the tile as needing updates and to be saved
 			this.markForUpdate();
@@ -395,11 +406,20 @@ public abstract class TileProviderBase
 		// Are we server side?
 		if( EffectiveSide.isServerSide() )
 		{
+			boolean prevActive = this.isActive;
+
 			// Do we have a proxy and grid node?
 			if( ( this.gridProxy != null ) && ( this.gridProxy.getNode() != null ) )
 			{
 				// Get the grid node activity
 				this.isActive = this.gridProxy.getNode().isActive();
+
+				// Did the power state change?
+				if( prevActive != this.isActive )
+				{
+					// Send event
+					this.onPowerChange( this.isActive );
+				}
 			}
 		}
 

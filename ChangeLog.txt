@@ -1,4 +1,7 @@
-﻿5/29/2015 0.8.10.6
+﻿5/30/2015 0.8.10.6
+  More CC work #194
+
+5/29/2015 0.8.10.6
   Fixes #197: Arcane Assembler no longer eats armor on shift-click.
   Fixes #196: Arcane Assembler requires Sceptre research.
 

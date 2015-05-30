@@ -11,7 +11,7 @@ public interface IMEEssentiaMonitor
 	extends IGridCache
 {
 	/**
-	 * Adds a listener to the aspect grid.
+	 * Adds a listener to the essentia grid.
 	 * 
 	 * @param listener
 	 * @param verificationToken
@@ -40,7 +40,7 @@ public interface IMEEssentiaMonitor
 	public long getEssentiaAmount( final Aspect aspect );
 
 	/**
-	 * Gets the list of aspects in the network.
+	 * Gets the list of essentia in the network.
 	 * 
 	 * @return
 	 */
@@ -59,7 +59,7 @@ public interface IMEEssentiaMonitor
 	public long injectEssentia( Aspect aspect, long amount, Actionable mode, BaseActionSource source );
 
 	/**
-	 * Removes a listener from the aspect grid.
+	 * Removes a listener from the essentia grid.
 	 * 
 	 * @param listener
 	 */

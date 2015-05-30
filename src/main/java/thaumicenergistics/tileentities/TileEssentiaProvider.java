@@ -1,11 +1,15 @@
 package thaumicenergistics.tileentities;
 
+import java.lang.ref.WeakReference;
+import java.util.HashSet;
+import java.util.Set;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.integration.IEssentiaProviderWatcher;
 import thaumicenergistics.integration.tc.EssentiaTransportHelper;
 import thaumicenergistics.integration.tc.IEssentiaTransportWithSimulate;
 import appeng.api.config.Actionable;
@@ -30,6 +34,11 @@ public class TileEssentiaProvider
 	 * How often should the tile tick.
 	 */
 	private int tickRate = TileEssentiaProvider.TICK_RATE_IDLE;
+
+	/**
+	 * Set of watchers that would like to be notified of events.
+	 */
+	private Set<WeakReference<IEssentiaProviderWatcher>> blockWatchers;
 
 	/**
 	 * How much power does this require just to be active?
@@ -64,6 +73,24 @@ public class TileEssentiaProvider
 		}
 
 		return null;
+	}
+
+	@Override
+	protected void onPowerChange( final boolean isPowered )
+	{
+		// Any watchers?
+		if( this.blockWatchers != null )
+		{
+			// Inform each watcher that the provider is about to be broken.
+			for( WeakReference<IEssentiaProviderWatcher> watcherRef : this.blockWatchers )
+			{
+				IEssentiaProviderWatcher watcher = watcherRef.get();
+				if( watcher != null )
+				{
+					watcher.onProviderPowerChange( isPowered );
+				}
+			}
+		}
 	}
 
 	@Override
@@ -175,6 +202,25 @@ public class TileEssentiaProvider
 		return true;
 	}
 
+	@Override
+	public void onBreakBlock()
+	{
+		// Any watchers?
+		if( this.blockWatchers != null )
+		{
+			// Inform each watcher that the provider is about to be broken.
+			for( WeakReference<IEssentiaProviderWatcher> watcherRef : this.blockWatchers )
+			{
+				IEssentiaProviderWatcher watcher = watcherRef.get();
+				if( watcher != null )
+				{
+					watcher.onProviderBroken();
+				}
+			}
+			this.blockWatchers.clear();
+		}
+	}
+
 	/**
 	 * Called during the tileentity update phase.
 	 */
@@ -193,6 +239,18 @@ public class TileEssentiaProvider
 			// Take essentia from the neighbors
 			EssentiaTransportHelper.INSTANCE.takeEssentiaFromTransportNeighbors( this, this.worldObj, this.xCoord, this.yCoord, this.zCoord );
 		}
+	}
+
+	public void registerBlockWatcher( final IEssentiaProviderWatcher watcher )
+	{
+		// Create the set if needed
+		if( this.blockWatchers == null )
+		{
+			this.blockWatchers = new HashSet<WeakReference<IEssentiaProviderWatcher>>();
+		}
+
+		// Add the watcher
+		this.blockWatchers.add( new WeakReference<IEssentiaProviderWatcher>( watcher ) );
 	}
 
 	@Override

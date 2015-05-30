@@ -133,7 +133,7 @@ public abstract class AbstractAEPartBase
 		if( this.node != null )
 		{
 			// Update the node
-			this.node.updateState();
+			//this.node.updateState();
 
 			// Get the active state
 			boolean currentlyActive = this.node.isActive();
@@ -234,6 +234,9 @@ public abstract class AbstractAEPartBase
 
 			// Create the node
 			this.node = AEApi.instance().createGridNode( this.gridBlock );
+
+			// Update state
+			this.node.updateState();
 
 			// Set the player id
 			this.node.setPlayerID( this.ownerID );

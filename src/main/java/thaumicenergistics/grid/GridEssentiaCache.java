@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
@@ -49,7 +49,7 @@ public class GridEssentiaCache
 	/**
 	 * The actual cache of aspects.
 	 */
-	private final Hashtable<Aspect, AspectStack> cache;
+	private final ConcurrentHashMap<Aspect, AspectStack> cache;
 
 	/**
 	 * Grid the cache is part of.
@@ -85,7 +85,7 @@ public class GridEssentiaCache
 	public GridEssentiaCache( final IGrid grid )
 	{
 		// Create the cache
-		this.cache = new Hashtable<Aspect, AspectStack>();
+		this.cache = new ConcurrentHashMap<Aspect, AspectStack>();
 
 		// Set the grid
 		this.internalGrid = grid;
@@ -215,7 +215,7 @@ public class GridEssentiaCache
 			if( entry.getKey().isValid( entry.getValue() ) )
 			{
 				// Valid token
-				entry.getKey().postChange( changeList );
+				entry.getKey().postChange( this, changeList );
 			}
 			else
 			{
@@ -256,7 +256,8 @@ public class GridEssentiaCache
 			{
 				// Create the change trackers
 				aspectChanges = new ArrayList<AspectStack>();
-				previousAspects = new HashSet<Aspect>( this.cache.keySet() );
+				previousAspects = new HashSet<Aspect>();
+				previousAspects.addAll( this.cache.keySet() );
 			}
 			else
 			{
@@ -286,6 +287,9 @@ public class GridEssentiaCache
 				// Are there any listeners?
 				if( hasListeners )
 				{
+					// Remove from the previous mapping
+					previousAspects.remove( aspect );
+
 					// Calculate the difference
 					long diff = ( newAmount - ( prevStack != null ? prevStack.stackSize : 0 ) );
 
@@ -293,9 +297,6 @@ public class GridEssentiaCache
 					{
 						// Add to the changes
 						aspectChanges.add( new AspectStack( aspect, diff ) );
-
-						// Remove from the previous mapping
-						previousAspects.remove( aspect );
 					}
 				}
 			}
