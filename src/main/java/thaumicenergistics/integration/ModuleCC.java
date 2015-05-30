@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.aspect.IMEEssentiaMonitor;
+import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.tileentities.TileEssentiaProvider;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.lua.ILuaContext;

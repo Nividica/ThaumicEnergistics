@@ -1,4 +1,4 @@
-package thaumicenergistics.aspect;
+package thaumicenergistics.grid;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import appeng.api.config.Actionable;

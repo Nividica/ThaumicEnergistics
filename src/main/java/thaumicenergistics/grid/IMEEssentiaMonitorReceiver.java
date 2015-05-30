@@ -1,4 +1,6 @@
-package thaumicenergistics.aspect;
+package thaumicenergistics.grid;
+
+import thaumicenergistics.aspect.AspectStack;
 
 
 public interface IMEEssentiaMonitorReceiver

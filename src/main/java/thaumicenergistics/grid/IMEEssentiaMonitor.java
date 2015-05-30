@@ -1,7 +1,8 @@
-package thaumicenergistics.aspect;
+package thaumicenergistics.grid;
 
 import java.util.Collection;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.aspect.AspectStack;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.security.BaseActionSource;
