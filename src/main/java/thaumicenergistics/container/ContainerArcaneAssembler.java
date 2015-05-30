@@ -142,7 +142,7 @@ public class ContainerArcaneAssembler
 			if( this.discountSlots[index].isItemValid( slotStack ) )
 			{
 				// Is the slot empty?
-				if( this.discountSlots[index].getHasStack() )
+				if( !this.discountSlots[index].getHasStack() )
 				{
 					// Place the item
 					this.discountSlots[index].putStack( slotStack.copy() );
