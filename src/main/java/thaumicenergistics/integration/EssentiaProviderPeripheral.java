@@ -39,7 +39,12 @@ public class EssentiaProviderPeripheral
 			/**
 			 * The provider has powered on or off.
 			 */
-			PowerChange (2);
+			PowerChange (2),
+
+			/**
+			 * The computer has detached from the peripheral, or the peripheral has detached from the provider.
+			 */
+			Detached (3);
 
 		/**
 		 * ID of the event passed into CC
@@ -299,12 +304,8 @@ public class EssentiaProviderPeripheral
 					// Are there computers watching for this specific change?
 					if( ( specificWatchers = this.aspectWatchers.get( change.aspect ) ) != null )
 					{
-						// Has the argument already been created?
-						if( ccChange == null )
-						{
-							// Create the argument
-							ccChange = new Object[] { change.aspect.getName(), change.stackSize };
-						}
+						// Create the argument
+						ccChange = new Object[] { change.aspect.getName(), change.stackSize };
 
 						// Update those watchers
 						for( IComputerAccess computer : specificWatchers )
@@ -703,6 +704,9 @@ public class EssentiaProviderPeripheral
 
 		// Remove the computer from the watcher
 		this.watcher.removeComputerWatcher( computer );
+
+		// Send the detach event
+		this.sendEvent( computer, CCEvents.Detached );
 	}
 
 	@Override
