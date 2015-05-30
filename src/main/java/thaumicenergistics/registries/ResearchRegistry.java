@@ -21,7 +21,8 @@ public class ResearchRegistry
 			COREUSE ("COREUSE", "GOLEMANCY", 4, 3),
 			DUPE ("ALCHEMICALDUPLICATION", "ALCHEMY", -5, -6),
 			WARDED ("WARDEDARCANA", "ARTIFICE", 0, 2),
-			FOCUSFIRE ("FOCUSFIRE", "THAUMATURGY", -4, -7);
+			FOCUSFIRE ("FOCUSFIRE", "THAUMATURGY", -4, -7),
+			SCEPTRE ("SCEPTRE", "THAUMATURGY", 3, -1);
 
 		private String realResearchKey;
 		private String realResearchCategory;

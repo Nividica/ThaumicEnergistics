@@ -1,5 +1,6 @@
 package thaumicenergistics.features;
 
+import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -10,6 +11,7 @@ import thaumicenergistics.integration.tc.VisCraftingHelper;
 import thaumicenergistics.registries.FeatureRegistry;
 import thaumicenergistics.registries.RecipeRegistry;
 import thaumicenergistics.registries.ResearchRegistry;
+import thaumicenergistics.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.registries.ResearchRegistry.ResearchTypes;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
 import appeng.core.AEConfig;
@@ -138,7 +140,7 @@ public class FeatureAutocrafting
 		ResearchTypes.ARCANEASSEMBLER.createResearchItem( assemblerAspectList, ResearchRegistry.COMPLEXITY_LARGE, assemblerIcon, assemblerPages );
 
 		// Set the parents
-		ResearchTypes.ARCANEASSEMBLER.researchItem.setParents( this.getFirstValidParentKey( false ) );
+		ResearchTypes.ARCANEASSEMBLER.researchItem.setParents( this.getFirstValidParentKey( false ), PseudoResearchTypes.SCEPTRE.getKey() );
 		ResearchTypes.ARCANEASSEMBLER.researchItem.setParentsHidden( ResearchTypes.ARCANETERMINAL.getKey() );
 		ResearchTypes.ARCANEASSEMBLER.researchItem.setConcealed();
 
@@ -185,6 +187,12 @@ public class FeatureAutocrafting
 
 		// Pass to parent
 		return FeatureRegistry.instance().featureVRI.getFirstValidParentKey( true );
+	}
+
+	@Override
+	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
+	{
+		return EnumSet.of( PseudoResearchTypes.SCEPTRE );
 	}
 
 }
