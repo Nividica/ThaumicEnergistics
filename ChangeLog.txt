@@ -1,4 +1,7 @@
-﻿5/28/2015 0.8.10.6
+﻿5/29/2015 0.8.10.6
+  Fixes #197: Arcane Assembler no longer eats armor on shift-click.
+
+5/28/2015 0.8.10.6
   Major under-the-hood changes to how devices interact with the network are underway.
   Bugfix: Potential situation where the Essentia Provider would stop accepting essentia.
   More CC work.

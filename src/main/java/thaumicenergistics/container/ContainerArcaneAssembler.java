@@ -141,13 +141,18 @@ public class ContainerArcaneAssembler
 			// Is the item for the slot?
 			if( this.discountSlots[index].isItemValid( slotStack ) )
 			{
-				// Place the item
-				this.discountSlots[index].putStack( slotStack.copy() );
+				// Is the slot empty?
+				if( this.discountSlots[index].getHasStack() )
+				{
+					// Place the item
+					this.discountSlots[index].putStack( slotStack.copy() );
 
-				// Clear the input stack
-				slotStack.stackSize = 0;
+					// Clear the input stack
+					slotStack.stackSize = 0;
 
-				return true;
+					return true;
+				}
+				break;
 			}
 		}
 
