@@ -23,6 +23,8 @@ thaumicenergistics.aeparts.essentia.StorageBus.name=源质储存总线
 thaumicenergistics.aeparts.essentia.terminal.name=源质终端
 thaumicenergistics.aeparts.arcane.crafting.terminal.name=奥术合成终端
 thaumicenergistics.aeparts.vis.interface.name=要素中继接口
+thaumicenergistics.aeparts.essentia.storage.monitor.name=源质储存监控器
+thaumicenergistics.aeparts.essentia.conversion.monitor.name=源质交换监控器
 
 #Items
 thaumicenergistics.item.essentia.cell.1k.name=1k-ME源质存储元件
@@ -41,6 +43,7 @@ thaumicenergistics.item.material.iron.gear.name=铁齿轮
 thaumicenergistics.item.wireless.essentia.terminal.name=无线源质终端
 thaumicenergistics.item.knowledge.core.name=知识核心
 thaumicenergistics.item.focus.aewrench.name=法杖核心: AE扳手
+thaumicenergistics.item.focus.aewrench.disabled.name=法杖核心: AE扳手 - 禁用扳手模式
 
 #Tooltips
 thaumicenergistics.tooltip.essentia.cell.bytes=%d / %d 字节已使用.
@@ -56,6 +59,8 @@ thaumicenergistics.tooltip.button.inscriber.full=知识核心已满
 thaumicenergistics.tooltip.button.inscriber.delete=从核心中除去模板
 thaumicenergistics.tooltip.button.inscriber.save=向核心存入模板
 thaumicenergistics.tooltip.button.inscriber.missing=需要知识核心
+thaumicenergistics.tooltip.button.swap.armor=将你目前装备的护甲与终端中的护甲交换.
+thaumicenergistics.tooltip.button.swap.armor.title=交换护甲
 
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=奥术终端
