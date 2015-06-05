@@ -211,7 +211,7 @@ public class TileGearBox
 		for( int sideIndex = 0; sideIndex < TileGearBox.SIDE_COUNT; sideIndex++ )
 		{
 			// Can this side turn?
-			if( this.canTurn[sideIndex] )
+			if( this.canTurn[sideIndex] && ( this.crankables[sideIndex] != null ) )
 			{
 				// Does it have enough power to turn the grinder?
 				if( ( this.shafts[sideIndex] += powerTransfered ) >= TileGearBox.REQUIRED_POWER )
