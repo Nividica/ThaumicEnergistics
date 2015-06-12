@@ -245,13 +245,11 @@ public class AEPartEssentiaStorageMonitor
 	/**
 	 * If true the cached render list needs to be updated.
 	 */
-	@SideOnly(Side.CLIENT)
 	private boolean updateDisplayList = false;
 
 	/**
 	 * ID of the cached render list.
 	 */
-	@SideOnly(Side.CLIENT)
 	private Integer cachedDisplayList = null;
 
 	CableBusTextures darkCornerTexture;

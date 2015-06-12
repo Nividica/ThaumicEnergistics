@@ -1,4 +1,7 @@
-﻿5/30/2015 0.8.10.6
+﻿6/12/2016 0.8.10.6
+  Fixes #199: Conversion & Storage monitors now placeable in SMP.
+
+5/30/2015 0.8.10.6
   More CC work #194
 
 5/29/2015 0.8.10.6
