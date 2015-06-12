@@ -66,6 +66,26 @@ public class AEPartGridBlock
 	}
 
 	/**
+	 * Returns the essentia monitor for the current grid.
+	 * 
+	 * @return
+	 */
+	public IMEEssentiaMonitor getEssentiaMonitor()
+	{
+		// Get the grid.
+		IGrid grid = this.getGrid();
+
+		// Ensure there is a grid
+		if( grid == null )
+		{
+			return null;
+		}
+
+		// Get the essentia monitor from the cache.
+		return (IMEEssentiaMonitor)grid.getCache( IEssentiaGrid.class );
+	}
+
+	/**
 	 * Return that we require a channel to function.
 	 */
 	@Override
@@ -78,7 +98,10 @@ public class AEPartGridBlock
 	 * Gets the AE fluid monitor for the grid.
 	 * 
 	 * @return Monitor if valid grid, null otherwise.
+	 * 
+	 * @deprecated Use getEssentiaMonitor
 	 */
+	@Deprecated
 	public IMEMonitor<IAEFluidStack> getFluidMonitor()
 	{
 		// Set the storage grid

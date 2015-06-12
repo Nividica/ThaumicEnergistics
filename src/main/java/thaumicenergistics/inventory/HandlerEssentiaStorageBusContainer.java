@@ -346,7 +346,7 @@ class HandlerEssentiaStorageBusContainer
 		else
 		{
 			// Simulate filling the container
-			filled_FU = (int)EssentiaTileContainerHelper.INSTANCE.injectIntoContainer( this.aspectContainer, input, Actionable.SIMULATE );
+			filled_FU = (int)EssentiaTileContainerHelper.INSTANCE.injectFluidIntoContainer( this.aspectContainer, input, Actionable.SIMULATE );
 
 			// Was any filled?
 			if( filled_FU == 0 )
@@ -370,7 +370,7 @@ class HandlerEssentiaStorageBusContainer
 		if( mode == Actionable.MODULATE )
 		{
 			// Inject, and set the actual amount injected
-			filled_FU = (int)EssentiaTileContainerHelper.INSTANCE.injectIntoContainer( this.aspectContainer, input, Actionable.MODULATE );
+			filled_FU = (int)EssentiaTileContainerHelper.INSTANCE.injectFluidIntoContainer( this.aspectContainer, input, Actionable.MODULATE );
 
 			// Take power for as much as we claimed we could take.
 			this.partStorageBus.extractPowerForEssentiaTransfer( filled_EU, Actionable.MODULATE );
@@ -530,6 +530,7 @@ class HandlerEssentiaStorageBusContainer
 		// Any alterations?
 		if( alterations != null )
 		{
+			// TODO: This needs to be updated to use the new EssentiaGrid
 			// Post the changes
 			this.postAlterationToHostGrid( alterations );
 		}

@@ -1,26 +1,166 @@
 package thaumicenergistics.inventory;
 
+import java.util.Set;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.grid.EssentiaPassThroughMonitor;
+import thaumicenergistics.grid.IEssentiaGrid;
+import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.items.ItemWirelessEssentiaTerminal;
 import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
+import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridStorage;
 import appeng.api.networking.IMachineSet;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.PlayerSource;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.tile.networking.TileWireless;
 
 public class HandlerWirelessEssentiaTerminal
 {
+	/**
+	 * Redirects power requests to the wireless terminal.
+	 * 
+	 * @author Nividica
+	 * 
+	 */
+	private class PowerRedirector
+		implements IEnergyGrid
+	{
+
+		public PowerRedirector()
+		{
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void addNode( final IGridNode gridNode, final IGridHost machine )
+		{
+			// Ignored
+		}
+
+		@Override
+		public double extractAEPower( final double amt, final Actionable mode, final PowerMultiplier usePowerMultiplier )
+		{
+			return HandlerWirelessEssentiaTerminal.this.extractPower( amt, mode );
+		}
+
+		@Override
+		public double extractAEPower( final double amt, final Actionable mode, final Set<IEnergyGrid> seen )
+		{
+			return HandlerWirelessEssentiaTerminal.this.extractPower( amt, mode );
+		}
+
+		@Override
+		public double getAvgPowerInjection()
+		{
+			// Ignored
+			return 0;
+		}
+
+		@Override
+		public double getAvgPowerUsage()
+		{
+			// Ignored
+			return 0;
+		}
+
+		@Override
+		public double getEnergyDemand( final double maxRequired )
+		{
+			// Ignored
+			return 0;
+		}
+
+		@Override
+		public double getEnergyDemand( final double d, final Set<IEnergyGrid> seen )
+		{
+			// Ignored
+			return 0;
+		}
+
+		@Override
+		public double getIdlePowerUsage()
+		{
+			// Ignored
+			return 0;
+		}
+
+		@Override
+		public double getMaxStoredPower()
+		{
+			// Ignored
+			return 0;
+		}
+
+		@Override
+		public double getStoredPower()
+		{
+			// Ignored
+			return 0;
+		}
+
+		@Override
+		public double injectAEPower( final double amt, final Actionable mode, final Set<IEnergyGrid> seen )
+		{
+			// Ignored
+			return amt;
+		}
+
+		@Override
+		public double injectPower( final double amt, final Actionable mode )
+		{
+			// Ignored
+			return amt;
+		}
+
+		@Override
+		public boolean isNetworkPowered()
+		{
+			// Ignored
+			return true;
+		}
+
+		@Override
+		public void onJoin( final IGridStorage sourceStorage )
+		{
+			// Ignored
+		}
+
+		@Override
+		public void onSplit( final IGridStorage destinationStorage )
+		{
+			// Ignored
+		}
+
+		@Override
+		public void onUpdateTick()
+		{
+			// Ignored
+		}
+
+		@Override
+		public void populateGridStorage( final IGridStorage destinationStorage )
+		{
+			// Ignored
+		}
+
+		@Override
+		public void removeNode( final IGridNode gridNode, final IGridHost machine )
+		{
+			// Ignored
+		}
+
+	}
+
 	private static final String NBT_KEY_SORTING_MODE = "SortingMode";
 
 	/**
@@ -58,6 +198,11 @@ public class HandlerWirelessEssentiaTerminal
 	 * The itemstack that represents this terminal.
 	 */
 	private ItemStack wirelessItemstack;
+
+	/**
+	 * How much to multiply the required power by.
+	 */
+	private double wirelessPowerMultiplier = 1.0D;
 
 	public HandlerWirelessEssentiaTerminal( final EntityPlayer player, final IWirelessAccessPoint accessPoint,
 											final IThEWirelessEssentiaTerminal wirelessTerminalInterface, final ItemStack wirelessTerminalItemstack )
@@ -168,32 +313,40 @@ public class HandlerWirelessEssentiaTerminal
 	}
 
 	/**
-	 * Uses some of the terminals stored power. This does not take into account
-	 * the
-	 * extra power required for wireless operations.
+	 * Uses some of the terminals stored power. This does take into account the extra power required for wireless operations.
 	 * 
 	 * @param amount
-	 * @return Returns true if the full power was/can be extracted, false
-	 * otherwise.
+	 * @return Returns the amount extracted.
 	 */
-	public boolean extractPower( final double amount, final Actionable mode )
+	public double extractPower( final double amount, final Actionable mode )
 	{
 		// Has power usage been disabled?
 		if( ItemWirelessEssentiaTerminal.GLOBAL_POWER_MULTIPLIER == 0 )
 		{
 			// Lie and say it was taken.
-			return true;
+			return amount;
 		}
 
+		// Adjust by the power multiplier
+		double adjustedAmount = amount * this.wirelessPowerMultiplier;
+
+		double extractedAmount = 0;
 		// Simulation?
 		if( mode == Actionable.SIMULATE )
 		{
-			// Return true if there is enough power to satisfy the request.
-			return( this.wirelessTerminal.getAECurrentPower( this.wirelessItemstack ) >= amount );
+			// Return the amount stored, capped at amount
+			extractedAmount = Math.min( this.wirelessTerminal.getAECurrentPower( this.wirelessItemstack ), adjustedAmount );
+		}
+		else
+		{
+			// Return the amount extracted.
+			extractedAmount = this.wirelessTerminal.extractAEPower( this.wirelessItemstack, adjustedAmount );
 		}
 
-		// Return true if enough power was extracted.
-		return( this.wirelessTerminal.extractAEPower( this.wirelessItemstack, amount ) == amount );
+		// Adjust by the power multiplier
+		extractedAmount /= this.wirelessPowerMultiplier;
+
+		return extractedAmount;
 	}
 
 	/**
@@ -207,15 +360,23 @@ public class HandlerWirelessEssentiaTerminal
 	}
 
 	/**
-	 * Gets the fluid monitor.
+	 * Gets the essentia monitor.
 	 * 
 	 * @return
 	 */
-	public IMEMonitor<IAEFluidStack> getMonitor()
+	public IMEEssentiaMonitor getEssentiaMonitor()
 	{
 		try
 		{
-			return ( (IStorageGrid)this.accessPoint.getGrid().getCache( IStorageGrid.class ) ).getFluidInventory();
+			// Get the network essentia monitor
+			IMEEssentiaMonitor essMonitor = ( (IMEEssentiaMonitor)this.accessPoint.getGrid().getCache( IEssentiaGrid.class ) );
+
+			// Create the power redirector
+			PowerRedirector pr = new PowerRedirector();
+
+			// Create and return the essentia monitor
+			IMEEssentiaMonitor monitor = new EssentiaPassThroughMonitor( essMonitor, pr );
+			return monitor;
 		}
 		catch( Exception e )
 		{
@@ -250,23 +411,6 @@ public class HandlerWirelessEssentiaTerminal
 	public ItemStack getTerminalItem()
 	{
 		return this.wirelessItemstack;
-	}
-
-	/**
-	 * Gets the power multiplier for wireless operations.
-	 * 
-	 * @return
-	 */
-	public double getWirelessPowerMultiplier()
-	{
-		// Get the squared distance
-		double distance = HandlerWirelessEssentiaTerminal.getSquaredPlayerDistanceFromAP( this.locationOfAccessPoint, this.player );
-
-		// Calculate the distance
-		distance = Math.sqrt( distance );
-
-		// Calculate the power multiplier
-		return AEConfig.instance.wireless_getDrainRate( distance );
 	}
 
 	/**
@@ -346,6 +490,23 @@ public class HandlerWirelessEssentiaTerminal
 
 		// Set the sorting mode
 		dataTag.setString( HandlerWirelessEssentiaTerminal.NBT_KEY_SORTING_MODE, mode.name() );
+	}
+
+	/**
+	 * Updates the power multiplier for wireless operations.
+	 * 
+	 * @return
+	 */
+	public void updatePowerMultiplier()
+	{
+		// Get the squared distance
+		double distance = HandlerWirelessEssentiaTerminal.getSquaredPlayerDistanceFromAP( this.locationOfAccessPoint, this.player );
+
+		// Calculate the distance
+		distance = Math.sqrt( distance );
+
+		// Calculate the power multiplier
+		this.wirelessPowerMultiplier = AEConfig.instance.wireless_getDrainRate( distance );
 	}
 
 }

@@ -4,11 +4,9 @@ import java.util.Collection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import appeng.api.config.Actionable;
-import appeng.api.networking.IGridCache;
 import appeng.api.networking.security.BaseActionSource;
 
 public interface IMEEssentiaMonitor
-	extends IGridCache
 {
 	/**
 	 * Adds a listener to the essentia grid.
@@ -20,15 +18,16 @@ public interface IMEEssentiaMonitor
 
 	/**
 	 * Extract the specified essentia from the network.<br>
-	 * This method takes power into consideration.
 	 * 
 	 * @param aspect
 	 * @param amount
 	 * @param mode
 	 * @param source
+	 * @param powered
+	 * If true will take the required power for the extraction, respecting the mode setting.
 	 * @return The amount extracted.
 	 */
-	public long extractEssentia( Aspect aspect, long amount, Actionable mode, BaseActionSource source );
+	public long extractEssentia( Aspect aspect, long amount, Actionable mode, BaseActionSource source, boolean powered );
 
 	/**
 	 * Returns the how much of the specified essentia is in the network.<br>
@@ -48,15 +47,16 @@ public interface IMEEssentiaMonitor
 
 	/**
 	 * Inject the specified essentia into the network.<br>
-	 * This method takes power into consideration.
 	 * 
 	 * @param aspect
 	 * @param amount
 	 * @param mode
 	 * @param source
+	 * @param powered
+	 * If true will take the required power for the injection, respecting the mode setting.
 	 * @return The amount that could <strong>not</strong> be injected.
 	 */
-	public long injectEssentia( Aspect aspect, long amount, Actionable mode, BaseActionSource source );
+	public long injectEssentia( Aspect aspect, long amount, Actionable mode, BaseActionSource source, boolean powered );
 
 	/**
 	 * Removes a listener from the essentia grid.

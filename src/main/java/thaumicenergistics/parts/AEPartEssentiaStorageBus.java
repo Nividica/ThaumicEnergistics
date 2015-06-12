@@ -12,6 +12,7 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.ContainerPartEssentiaStorageBus;
+import thaumicenergistics.grid.EssentiaMonitor;
 import thaumicenergistics.gui.GuiEssentiaStorageBus;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.inventory.AbstractHandlerEssentiaStorageBus;
@@ -24,9 +25,12 @@ import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -202,6 +206,32 @@ public class AEPartEssentiaStorageBus
 		}
 
 		return false;
+	}
+
+	/**
+	 * Extracts power from the network proportional to the specified essentia
+	 * amount.
+	 * 
+	 * @param essentiaAmount
+	 * @param mode
+	 * @return
+	 */
+	public boolean extractPowerForEssentiaTransfer( final int essentiaAmount, final Actionable mode )
+	{
+		// Get the energy grid
+		IEnergyGrid eGrid = this.getGridBlock().getEnergyGrid();
+
+		// Ensure we have a grid
+		if( eGrid == null )
+		{
+			return false;
+		}
+
+		// Calculate amount of power to take
+		double powerDrain = EssentiaMonitor.AE_PER_ESSENTIA * essentiaAmount;
+
+		// Extract
+		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
 	}
 
 	/**

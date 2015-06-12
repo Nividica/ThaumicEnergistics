@@ -8,14 +8,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.gui.GuiEssentiaIO;
-import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
-import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
@@ -24,7 +21,6 @@ import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import appeng.api.AEApi;
-import appeng.api.config.Actionable;
 import appeng.api.config.RedstoneMode;
 import appeng.api.definitions.IMaterials;
 import appeng.api.networking.IGridNode;
@@ -33,8 +29,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.PartItemStack;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -104,7 +98,7 @@ public abstract class AbstractAEPartEssentiaIOBus
 	/**
 	 * Network source representing this part.
 	 */
-	private MachineSource asMachineSource;
+	protected MachineSource asMachineSource;
 
 	protected List<Aspect> filteredAspects = new ArrayList<Aspect>( AbstractAEPartEssentiaIOBus.MAX_FILTER_SIZE );
 
@@ -239,122 +233,6 @@ public abstract class AbstractAEPartEssentiaIOBus
 			System.arraycopy( AbstractAEPartEssentiaIOBus.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
 			System.arraycopy( AbstractAEPartEssentiaIOBus.TIER2_INDEXS, 0, this.availableFilterSlots, 5, 4 );
 		}
-	}
-
-	/**
-	 * Extracts fluid from the ME network.
-	 * 
-	 * @param toExtract
-	 * @param mode
-	 * @return
-	 */
-	protected final IAEFluidStack extractFluid( final IAEFluidStack toExtract, final Actionable mode )
-	{
-
-		if( this.facingContainer == null )
-		{
-			return null;
-		}
-
-		IMEMonitor<IAEFluidStack> monitor = this.getGridBlock().getFluidMonitor();
-
-		if( monitor == null )
-		{
-			return null;
-		}
-
-		return monitor.extractItems( toExtract, mode, this.asMachineSource );
-	}
-
-	// TODO: Move this to the Import bus
-	protected boolean injectEssentaToNetwork( int amountToDrainFromContainer )
-	{
-		// Get the aspect in the container
-		Aspect aspectToDrain = EssentiaTileContainerHelper.INSTANCE.getAspectInContainer( this.facingContainer );
-
-		if( ( aspectToDrain == null ) || ( !this.aspectTransferAllowed( aspectToDrain ) ) )
-		{
-			return false;
-		}
-
-		// Simulate a drain from the container
-		FluidStack drained = EssentiaTileContainerHelper.INSTANCE.extractFromContainer( this.facingContainer, amountToDrainFromContainer,
-			aspectToDrain, Actionable.SIMULATE );
-
-		// Was any drained?
-		if( drained == null )
-		{
-			return false;
-		}
-
-		// Create the fluid stack
-		IAEFluidStack toFill = AEApi.instance().storage().createFluidStack( drained );
-
-		// Simulate inject into the network
-		IAEFluidStack notInjected = this.injectFluid( toFill, Actionable.SIMULATE );
-
-		// Was any not injected?
-		if( notInjected != null )
-		{
-			// Calculate how much was injected into the network
-			int amountInjected = (int)( toFill.getStackSize() - notInjected.getStackSize() );
-
-			// None could be injected
-			if( amountInjected == 0 )
-			{
-				return false;
-			}
-
-			// Convert from fluid units to essentia units
-			amountInjected = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( amountInjected );
-
-			// Some was unable to be injected, adjust the drain amounts
-			amountToDrainFromContainer = amountInjected;
-			toFill.setStackSize( amountInjected );
-		}
-
-		// Do we have the power to inject?
-		if( !this.extractPowerForEssentiaTransfer( amountToDrainFromContainer, Actionable.SIMULATE ) )
-		{
-			// Not enough power
-			return false;
-		}
-
-		// Take power
-		this.extractPowerForEssentiaTransfer( amountToDrainFromContainer, Actionable.MODULATE );
-
-		// Inject
-		this.injectFluid( toFill, Actionable.MODULATE );
-
-		// Drain
-		EssentiaTileContainerHelper.INSTANCE.extractFromContainer( this.facingContainer, amountToDrainFromContainer, aspectToDrain,
-			Actionable.MODULATE );
-
-		return true;
-	}
-
-	/**
-	 * Injects fluid into the ME network.
-	 * 
-	 * @param toInject
-	 * @param action
-	 * @return
-	 */
-	protected final IAEFluidStack injectFluid( final IAEFluidStack toInject, final Actionable action )
-	{
-		if( this.facingContainer == null )
-		{
-			return null;
-		}
-
-		IMEMonitor<IAEFluidStack> monitor = this.getGridBlock().getFluidMonitor();
-
-		if( monitor == null )
-		{
-			return null;
-		}
-
-		return monitor.injectItems( toInject, action, this.asMachineSource );
 	}
 
 	public boolean addFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )

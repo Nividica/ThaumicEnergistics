@@ -9,7 +9,6 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
-import thaumicenergistics.parts.AbstractAEPartBase;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
@@ -17,6 +16,7 @@ import appeng.api.config.Actionable;
 public class ContainerWirelessEssentiaTerminal
 	extends AbstractContainerCellTerminalBase
 {
+
 	/**
 	 * After this many ticks, power will be extracted from the terminal just for
 	 * being open.
@@ -56,11 +56,6 @@ public class ContainerWirelessEssentiaTerminal
 	private int terminalSlotIndex = -1;
 
 	/**
-	 * How much to multiply the required power by.
-	 */
-	private double powerMultipler = 1.0D;
-
-	/**
 	 * 
 	 * @param player
 	 * @param handler
@@ -84,7 +79,7 @@ public class ContainerWirelessEssentiaTerminal
 		if( EffectiveSide.isServerSide() )
 		{
 			// Set the monitor
-			this.monitor = this.handler.getMonitor();
+			this.monitor = this.handler.getEssentiaMonitor();
 
 			// Attach to the monitor
 			this.attachToMonitor();
@@ -112,7 +107,7 @@ public class ContainerWirelessEssentiaTerminal
 			if( !this.wasConnected )
 			{
 				// Re-acquire the monitor
-				this.monitor = this.handler.getMonitor();
+				this.monitor = this.handler.getEssentiaMonitor();
 
 				// Re-attach
 				this.attachToMonitor();
@@ -143,16 +138,6 @@ public class ContainerWirelessEssentiaTerminal
 		}
 	}
 
-	@Override
-	protected boolean extractPowerForEssentiaTransfer( final int amountOfEssentiaTransfered, final Actionable mode )
-	{
-		// Calculate the amount of power to drain
-		double powerRequired = AbstractAEPartBase.POWER_DRAIN_PER_ESSENTIA * amountOfEssentiaTransfered * this.powerMultipler;
-
-		// Drain power
-		return this.handler.extractPower( powerRequired, mode );
-	}
-
 	/**
 	 * Transfers essentia, checks the network connectivity, and drains power.
 	 */
@@ -168,10 +153,10 @@ public class ContainerWirelessEssentiaTerminal
 			this.updateConnectivity();
 
 			// Adjust the power multiplier
-			this.powerMultipler = this.handler.getWirelessPowerMultiplier();
+			this.handler.updatePowerMultiplier();
 
 			// Take power
-			this.handler.extractPower( this.powerMultipler * this.powerTickCounter, Actionable.MODULATE );
+			this.handler.extractPower( this.powerTickCounter, Actionable.MODULATE );
 
 			// Update the item
 			this.player.inventory.mainInventory[this.terminalSlotIndex] = this.handler.getTerminalItem();

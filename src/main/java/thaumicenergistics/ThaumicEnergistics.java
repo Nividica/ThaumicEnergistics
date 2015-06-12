@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.grid.GridEssentiaCache;
-import thaumicenergistics.grid.IMEEssentiaMonitor;
+import thaumicenergistics.grid.IEssentiaGrid;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.IntegrationCore;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -115,7 +115,7 @@ public class ThaumicEnergistics
 		// Register integration
 		IntegrationCore.init();
 
-		AEApi.instance().registries().gridCache().registerGridCache( IMEEssentiaMonitor.class, GridEssentiaCache.class );
+		AEApi.instance().registries().gridCache().registerGridCache( IEssentiaGrid.class, GridEssentiaCache.class );
 
 		// Mark that ThE has finished Init
 		ThELog.endSection( "Load", startTime );

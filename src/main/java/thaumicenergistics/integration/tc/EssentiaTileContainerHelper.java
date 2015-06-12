@@ -50,20 +50,14 @@ public final class EssentiaTileContainerHelper
 	 */
 	public FluidStack extractFromContainer( final IAspectContainer container, final FluidStack request, final Actionable mode )
 	{
-		// Is the container whitelisted?
-		if( !this.perms.canExtractFromAspectContainerTile( container ) )
-		{
-			// Not whitelsited
-			return null;
-		}
-
-		// Do we have a request
+		// Ensure there is a request
 		if( ( request == null ) || ( request.getFluid() == null ) || ( request.amount == 0 ) )
 		{
 			// No request
 			return null;
 		}
 
+		// Get the fluid
 		Fluid fluid = request.getFluid();
 
 		// Ensure it is a gas
@@ -73,98 +67,83 @@ public final class EssentiaTileContainerHelper
 			return null;
 		}
 
-		// Get the gas aspect
+		// Get the gas's aspect
 		Aspect gasAspect = ( (GaseousEssentia)fluid ).getAspect();
 
 		// Get the amount to extract
 		long amountToDrain_EU = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( request.amount );
 
 		// Extract
-		return this.extractFromContainer( container, (int)amountToDrain_EU, gasAspect, mode );
+		long extractedAmount_EU = this.extractFromContainer( container, (int)amountToDrain_EU, gasAspect, mode );
+
+		// Was any extracted?
+		if( extractedAmount_EU <= 0 )
+		{
+			// None extracted
+			return null;
+		}
+
+		// Return the extracted amount
+		return new FluidStack( fluid, (int)EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( extractedAmount_EU ) );
 	}
 
 	/**
-	 * Extracts essentia from a container based on the specified aspect and
-	 * amount.
+	 * Extracts the specified aspect and amount from the container.
 	 * 
 	 * @param container
-	 * @param amountToDrain_EU
+	 * @param amountToDrain
 	 * @param aspectToDrain
 	 * @param mode
-	 * @return
+	 * @return The amount extracted.
 	 */
-	public FluidStack extractFromContainer( final IAspectContainer container, int amountToDrain_EU, final Aspect aspectToDrain, final Actionable mode )
+	public long extractFromContainer( final IAspectContainer container, int amountToDrain, final Aspect aspectToDrain, final Actionable mode )
 	{
+
+		// Is the request empty?
+		if( amountToDrain == 0 )
+		{
+			// Empty request
+			return 0;
+		}
+
 		// Is the container whitelisted?
 		if( !this.perms.canExtractFromAspectContainerTile( container ) )
 		{
 			// Not whitelisted
-			return null;
-		}
-
-		// Is the request empty?
-		if( amountToDrain_EU == 0 )
-		{
-			// Empty request
-			return null;
+			return 0;
 		}
 
 		// Get how much is in the container
-		int containerAmount = 0;
-
-		// Aspect match
-		if( container instanceof TileEssentiaReservoir )
-		{
-			// Get the aspect amount from the reservoir
-			containerAmount = container.getAspects().getAmount( aspectToDrain );
-		}
-		else
-		{
-			// Get what aspect and how much the container is holding
-			AspectStack containerStack = this.getAspectStackFromContainer( container );
-
-			// Is the container holding the correct aspect?
-			if( ( containerStack == null ) || ( aspectToDrain != containerStack.aspect ) )
-			{
-				return null;
-			}
-
-			// Get the amount
-			containerAmount = (int)containerStack.stackSize;
-		}
-
-		// Is there a fluid form of the essentia?
-		GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( aspectToDrain );
-		if( essentiaGas == null )
-		{
-			// Invalid aspect.
-			return null;
-		}
+		int containerAmount = container.getAspects().getAmount( aspectToDrain );
 
 		// Is the container empty?
 		if( containerAmount == 0 )
 		{
-			// Empty container
-			return null;
+			// Empty container, or does not contain the wanted aspect
+			return 0;
 		}
-
 		// Is the drain for more than is in the container?
-		else if( amountToDrain_EU > containerAmount )
+		if( amountToDrain > containerAmount )
 		{
-			amountToDrain_EU = containerAmount;
+			amountToDrain = containerAmount;
 		}
 
 		// Are we really draining, or just simulating?
 		if( mode == Actionable.MODULATE )
 		{
-			container.takeFromContainer( aspectToDrain, amountToDrain_EU );
+			container.takeFromContainer( aspectToDrain, amountToDrain );
 		}
 
-		// Return the amount drained with conversion
-		return new FluidStack( essentiaGas, (int)EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( amountToDrain_EU ) );
-
+		// Return how much was drained
+		return amountToDrain;
 	}
 
+	/**
+	 * Returns the aspect of the essentia in the container.
+	 * 
+	 * @param container
+	 * @return
+	 */
 	public Aspect getAspectInContainer( final IAspectContainer container )
 	{
 		// Get the aspect list from the container
@@ -297,6 +276,62 @@ public final class EssentiaTileContainerHelper
 	}
 
 	/**
+	 * Attempts to inject essentia into the container.
+	 * Returns the amount that was injected.
+	 * 
+	 * @param container
+	 * @param amountToFill
+	 * @param aspectToFill
+	 * @param mode
+	 * @return
+	 */
+	public long injectEssentiaIntoContainer( final IAspectContainer container, int amountToFill, final Aspect aspectToFill, final Actionable mode )
+	{
+		// Is the container whitelisted?
+		if( !this.perms.canInjectToAspectContainerTile( container ) )
+		{
+			// Not whitelisted
+			return 0;
+		}
+
+		// Get the aspect in the container
+		AspectStack storedEssentia = this.getAspectStackFromContainer( container );
+
+		// Match types on jars
+		if( ( storedEssentia != null ) && ( container instanceof TileJarFillable ) )
+		{
+			// Do the aspects match?
+			if( aspectToFill != storedEssentia.aspect )
+			{
+				// Aspects do not match;
+				return 0;
+			}
+		}
+		else if( !( container.doesContainerAccept( aspectToFill ) ) )
+		{
+			// Container will not accept this aspect
+			return 0;
+		}
+
+		// Get how much the container can hold
+		int containerCurrentCapacity = this.getContainerCapacity( container ) - this.getContainerStoredAmount( container );
+
+		// Is there more to fill than the container will hold?
+		if( amountToFill > containerCurrentCapacity )
+		{
+			amountToFill = containerCurrentCapacity;
+		}
+
+		// Are we really filling, or simulating?
+		if( mode == Actionable.MODULATE )
+		{
+			container.addToContainer( aspectToFill, amountToFill );
+		}
+
+		return amountToFill;
+	}
+
+	/**
 	 * Attempts to inject the fluid into the container.
 	 * Returns the amount that was injected in milibuckets.
 	 * 
@@ -305,7 +340,7 @@ public final class EssentiaTileContainerHelper
 	 * @param mode
 	 * @return
 	 */
-	public long injectIntoContainer( final IAspectContainer container, final IAEFluidStack fluidStack, final Actionable mode )
+	public long injectFluidIntoContainer( final IAspectContainer container, final IAEFluidStack fluidStack, final Actionable mode )
 	{
 		// Do we have an input?
 		if( fluidStack == null )
@@ -338,65 +373,9 @@ public final class EssentiaTileContainerHelper
 		long amountToFill = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
 
 		// Inject
-		return this.injectIntoContainer( container, (int)amountToFill, gasAspect, mode );
-	}
+		long injectedAmount_EU = this.injectEssentiaIntoContainer( container, (int)amountToFill, gasAspect, mode );
 
-	/**
-	 * Attempts to inject the fluid into the container.
-	 * Returns the amount that was injected in milibuckets.
-	 * 
-	 * @param container
-	 * @param amountToFillInEssentiaUnits
-	 * @param aspectToFill
-	 * @param mode
-	 * @return
-	 */
-	public long injectIntoContainer( final IAspectContainer container, int amountToFillInEssentiaUnits, final Aspect aspectToFill,
-										final Actionable mode )
-	{
-		// Is the container whitelisted?
-		if( !this.perms.canInjectToAspectContainerTile( container ) )
-		{
-			// Not whitelisted
-			return 0;
-		}
-
-		// Get the aspect in the container
-		AspectStack storedEssentia = this.getAspectStackFromContainer( container );
-
-		// Match types on jars
-		if( ( storedEssentia != null ) && ( container instanceof TileJarFillable ) )
-		{
-			// Do the aspects match?
-			if( aspectToFill != storedEssentia.aspect )
-			{
-				// Aspects do not match;
-				return 0;
-			}
-		}
-		else if( !( container.doesContainerAccept( aspectToFill ) ) )
-		{
-			// Container will not accept this aspect
-			return 0;
-		}
-
-		// Get how much the container can hold
-		int containerCurrentCapacity = this.getContainerCapacity( container ) - this.getContainerStoredAmount( container );
-
-		// Is there more to fill than the container will hold?
-		if( amountToFillInEssentiaUnits > containerCurrentCapacity )
-		{
-			amountToFillInEssentiaUnits = containerCurrentCapacity;
-		}
-
-		// Are we really filling, or simulating?
-		if( mode == Actionable.MODULATE )
-		{
-			container.addToContainer( aspectToFill, amountToFillInEssentiaUnits );
-		}
-
-		// Convert to fluid units
-		return EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( amountToFillInEssentiaUnits );
+		return EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( injectedAmount_EU );
 	}
 
 	/**

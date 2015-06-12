@@ -6,8 +6,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.grid.IMEEssentiaMonitor;
+import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
+import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
@@ -74,12 +77,63 @@ public class AEPartEssentiaImportBus
 	@Override
 	public boolean doWork( final int transferAmount )
 	{
-		if( this.facingContainer != null )
+		if( this.facingContainer == null )
 		{
-			return this.injectEssentaToNetwork( transferAmount );
+			return false;
 		}
 
-		return false;
+		// Get the aspect in the container
+		Aspect aspect = EssentiaTileContainerHelper.INSTANCE.getAspectInContainer( this.facingContainer );
+
+		// Ensure the aspect is allowed to be transfered
+		if( ( aspect == null ) || ( !this.aspectTransferAllowed( aspect ) ) )
+		{
+			return false;
+		}
+
+		// Simulate a drain from the container
+		long drainedAmount = EssentiaTileContainerHelper.INSTANCE.extractFromContainer( this.facingContainer, transferAmount, aspect,
+			Actionable.SIMULATE );
+
+		// Was any drained?
+		if( drainedAmount <= 0 )
+		{
+			return false;
+		}
+
+		// Get the monitor
+		IMEEssentiaMonitor essMonitor = this.getGridBlock().getEssentiaMonitor();
+		if( essMonitor == null )
+		{
+			return false;
+		}
+
+		// Simulate inject into the network
+		long rejectedAmount = essMonitor.injectEssentia( aspect, drainedAmount, Actionable.SIMULATE, this.asMachineSource, true );
+
+		// Was any rejected?
+		if( rejectedAmount > 0 )
+		{
+			// Calculate how much was injected into the network
+			int amountInjected = (int)( drainedAmount - rejectedAmount );
+
+			// None could be injected
+			if( amountInjected <= 0 )
+			{
+				return false;
+			}
+
+			// Some was unable to be injected, adjust the drain amount
+			drainedAmount = amountInjected;
+		}
+
+		// Inject
+		essMonitor.injectEssentia( aspect, drainedAmount, Actionable.MODULATE, this.asMachineSource, true );
+
+		// Drain
+		EssentiaTileContainerHelper.INSTANCE.extractFromContainer( this.facingContainer, transferAmount, aspect, Actionable.MODULATE );
+
+		return true;
 	}
 
 	@Override

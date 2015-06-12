@@ -11,17 +11,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.PlayerSource;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.WorldSettings;
 import appeng.util.InventoryAdaptor;
@@ -72,7 +68,7 @@ public class AEPartEssentiaConversionMonitor
 		ItemStack container = player.inventory.getStackInSlot( slotIndex );
 
 		// Create request
-		IAEFluidStack request = EssentiaConversionHelper.INSTANCE.createAEFluidStackFromItemEssentiaContainer( container );
+		AspectStack request = EssentiaItemContainerHelper.INSTANCE.getAspectStackFromContainer( container );
 
 		// Is there anything to request?
 		if( request == null )
@@ -80,51 +76,38 @@ public class AEPartEssentiaConversionMonitor
 			return false;
 		}
 
-		// Get the aspect
-		Aspect containerAspect = ( (GaseousEssentia)request.getFluid() ).getAspect();
-
 		// Is there a must match aspect?
 		if( mustMatchAspect != null )
 		{
 			// Do the aspects match?
-			if( containerAspect != mustMatchAspect )
+			if( request.aspect != mustMatchAspect )
 			{
 				// Mismatch
 				return false;
 			}
 		}
 
-		// Calculate how much to take from the container
-		int drainAmount_E = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( request.getStackSize() );
-
-		// Is there enough power?
-		if( !this.extractPowerForEssentiaTransfer( drainAmount_E, Actionable.SIMULATE ) )
+		// Get the monitor
+		IMEEssentiaMonitor essMonitor = this.getGridBlock().getEssentiaMonitor();
+		if( essMonitor == null )
 		{
-			// Not enough power.
 			return false;
 		}
 
-		// Inject fluid
-		IAEFluidStack rejected = this.injectFluid( request, Actionable.MODULATE, new PlayerSource( player, this ) );
+		// Inject the essentia
+		long rejected = essMonitor.injectEssentia( request.aspect, request.stackSize, Actionable.MODULATE, new PlayerSource( player, this ), true );
 
-		// How much is left over?
-		int rejectedAmount_E = 0;
-		if( rejected != null )
-		{
-			rejectedAmount_E = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( rejected.getStackSize() );
-		}
+		// Adjust the request
+		request.stackSize -= rejected;
 
-		// Update the drain amount
-		drainAmount_E = drainAmount_E - rejectedAmount_E;
-
-		if( drainAmount_E <= 0 )
+		if( request.stackSize <= 0 )
 		{
 			// Could not inject
 			return false;
 		}
 
 		// Drain the container
-		ImmutablePair<Integer, ItemStack> drained = EssentiaItemContainerHelper.INSTANCE.extractFromContainer( container, drainAmount_E );
+		ImmutablePair<Integer, ItemStack> drained = EssentiaItemContainerHelper.INSTANCE.extractFromContainer( container, request );
 
 		// Update the player inventory
 		player.inventory.decrStackSize( slotIndex, 1 );
@@ -133,11 +116,8 @@ public class AEPartEssentiaConversionMonitor
 			player.inventory.addItemStackToInventory( drained.right );
 		}
 
-		// Extract power
-		this.extractPowerForEssentiaTransfer( drainAmount_E, Actionable.MODULATE );
-
 		// Set the last aspect
-		this.depositedAspect = containerAspect;
+		this.depositedAspect = request.aspect;
 
 		return true;
 
@@ -193,49 +173,44 @@ public class AEPartEssentiaConversionMonitor
 			}
 		}
 
+		// Get the monitor
+		IMEEssentiaMonitor essMonitor = this.getGridBlock().getEssentiaMonitor();
+		if( essMonitor == null )
+		{
+			return false;
+		}
+
 		// Get how much the container can hold
 		int containerCapacity = EssentiaItemContainerHelper.INSTANCE.getContainerCapacity( heldItem );
 
-		// Calculate how much to fill
-		int amountToFill_E = containerCapacity - containerAmount;
+		// Create the request
+		AspectStack fillRequest = new AspectStack( this.trackedEssentia.getAspect(), containerCapacity - containerAmount );
 
 		// Is the container full?
-		if( amountToFill_E <= 0 )
+		if( fillRequest.stackSize <= 0 )
 		{
 			// Container is full
 			return false;
 		}
 
-		// Is there enough power?
-		if( !this.extractPowerForEssentiaTransfer( amountToFill_E, Actionable.SIMULATE ) )
-		{
-			// Not enough power
-			return false;
-		}
-
-		// Create the fluid stack
-		IAEFluidStack request = EssentiaConversionHelper.INSTANCE
-						.createAEFluidStackInEssentiaUnits( this.trackedEssentia.getAspect(), amountToFill_E );
-
 		// Set the player source
 		PlayerSource playerSource = new PlayerSource( player, this );
 
-		// Request the fluid
-		IAEFluidStack extracted = this.extractFluid( request, Actionable.SIMULATE, playerSource );
+		// Simulate the request
+		long extractedAmount = essMonitor.extractEssentia( fillRequest.aspect, fillRequest.stackSize, Actionable.SIMULATE, playerSource, true );
 
 		// Was any extracted?
-		if( ( extracted == null ) || ( extracted.getStackSize() <= 0 ) )
+		if( extractedAmount <= 0 )
 		{
 			// None extracted
 			return false;
 		}
+
 		// Update values based on how much was extracted
-		request.setStackSize( extracted.getStackSize() );
-		amountToFill_E = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( request.getStackSize() );
+		fillRequest.stackSize = extractedAmount;
 
 		// Fill the container
-		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.INSTANCE.injectIntoContainer( heldItem, new AspectStack(
-						this.trackedEssentia.getAspect(), amountToFill_E ) );
+		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.INSTANCE.injectIntoContainer( heldItem, fillRequest );
 
 		// Could the container be filled?
 		if( filledContainer == null )
@@ -248,27 +223,25 @@ public class AEPartEssentiaConversionMonitor
 
 		// Add filled container
 		InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
-		ItemStack rejected = adaptor.addItems( filledContainer.right );
-		if( rejected != null )
+		ItemStack rejectedItem = adaptor.addItems( filledContainer.right );
+		if( rejectedItem != null )
 		{
 			// Get the host tile entity and side
 			TileEntity te = this.getHostTile();
 			ForgeDirection side = this.getSide();
 
-			List<ItemStack> list = Collections.singletonList( rejected );
+			List<ItemStack> list = Collections.singletonList( rejectedItem );
 			Platform.spawnDrops( player.worldObj, te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, list );
 		}
 
+		// Update the client
 		if( player.openContainer != null )
 		{
 			player.openContainer.detectAndSendChanges();
 		}
 
-		// Extract the fluid
-		this.extractFluid( request, Actionable.MODULATE, playerSource );
-
-		// Take power
-		this.extractPowerForEssentiaTransfer( amountToFill_E, Actionable.MODULATE );
+		// Extract the essentia
+		essMonitor.extractEssentia( fillRequest.aspect, fillRequest.stackSize, Actionable.MODULATE, playerSource, true );
 
 		// Done
 		return true;
@@ -353,46 +326,6 @@ public class AEPartEssentiaConversionMonitor
 
 		// Wrong player, or time between clicks to long.
 		return false;
-	}
-
-	/**
-	 * Extracts fluid from the ME network.
-	 * 
-	 * @param toExtract
-	 * @param mode
-	 * @return
-	 */
-	protected final IAEFluidStack extractFluid( final IAEFluidStack toExtract, final Actionable mode, final BaseActionSource source )
-	{
-		IMEMonitor<IAEFluidStack> monitor = this.getGridBlock().getFluidMonitor();
-
-		if( monitor == null )
-		{
-			return null;
-		}
-
-		return monitor.extractItems( toExtract, mode, source );
-	}
-
-	// TODO: This should be generalized/abstracted better. This particular functionality is duplicated all over the place and needs to be centralized.
-	/**
-	 * Injects fluid into the ME network.
-	 * Returns what was not stored.
-	 * 
-	 * @param toInject
-	 * @param mode
-	 * @return
-	 */
-	protected final IAEFluidStack injectFluid( final IAEFluidStack toInject, final Actionable mode, final BaseActionSource source )
-	{
-		IMEMonitor<IAEFluidStack> monitor = this.getGridBlock().getFluidMonitor();
-
-		if( monitor == null )
-		{
-			return null;
-		}
-
-		return monitor.injectItems( toInject, mode, source );
 	}
 
 	/**

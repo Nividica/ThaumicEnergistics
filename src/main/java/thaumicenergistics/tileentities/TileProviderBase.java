@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.grid.IEssentiaGrid;
 import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.integration.IWailaSource;
 import thaumicenergistics.registries.EnumCache;
@@ -120,7 +121,7 @@ public abstract class TileProviderBase
 		if( this.getEssentiaMonitor() )
 		{
 			// Request the essentia
-			long amountExtracted = this.monitor.extractEssentia( wantedAspect, wantedAmount, Actionable.SIMULATE, this.asMachineSource );
+			long amountExtracted = this.monitor.extractEssentia( wantedAspect, wantedAmount, Actionable.SIMULATE, this.asMachineSource, true );
 
 			// Was any essentia extracted?
 			if( amountExtracted == 0 )
@@ -141,7 +142,7 @@ public abstract class TileProviderBase
 			}
 
 			// Extract the essentia
-			this.monitor.extractEssentia( wantedAspect, wantedAmount, Actionable.MODULATE, this.asMachineSource );
+			this.monitor.extractEssentia( wantedAspect, wantedAmount, Actionable.MODULATE, this.asMachineSource, true );
 
 			// Return how much was extracted
 			return (int)amountExtracted;
@@ -176,7 +177,7 @@ public abstract class TileProviderBase
 			if( grid != null )
 			{
 				// Get the monitor
-				essentiaMonitor = (IMEEssentiaMonitor)grid.getCache( IMEEssentiaMonitor.class );
+				essentiaMonitor = (IMEEssentiaMonitor)grid.getCache( IEssentiaGrid.class );
 			}
 		}
 

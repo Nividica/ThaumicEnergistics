@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.grid.IEssentiaGrid;
 import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.grid.IMEEssentiaMonitorReceiver;
 import thaumicenergistics.tileentities.TileEssentiaProvider;
@@ -811,7 +812,7 @@ public class EssentiaProviderPeripheral
 		// Attempt to get the essentia monitor
 		try
 		{
-			return (IMEEssentiaMonitor)provider.getActionableNode().getGrid().getCache( IMEEssentiaMonitor.class );
+			return (IMEEssentiaMonitor)provider.getActionableNode().getGrid().getCache( IEssentiaGrid.class );
 		}
 		catch( NullPointerException npe )
 		{

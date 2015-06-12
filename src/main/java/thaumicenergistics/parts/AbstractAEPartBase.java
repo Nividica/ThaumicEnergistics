@@ -23,12 +23,9 @@ import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -64,11 +61,6 @@ public abstract class AbstractAEPartBase
 	 * Light level of active terminals.
 	 */
 	protected final static int ACTIVE_TERMINAL_LIGHT_LEVEL = 9;
-
-	/**
-	 * The amount of power required to transfer 1 essentia.
-	 */
-	public static final double POWER_DRAIN_PER_ESSENTIA = 0.3;
 
 	/**
 	 * The PartHost attached to.
@@ -272,32 +264,6 @@ public abstract class AbstractAEPartBase
 		return false;
 	}
 
-	/**
-	 * Extracts power from the network proportional to the specified essentia
-	 * amount.
-	 * 
-	 * @param essentiaAmount
-	 * @param mode
-	 * @return
-	 */
-	public boolean extractPowerForEssentiaTransfer( final int essentiaAmount, final Actionable mode )
-	{
-		// Get the energy grid
-		IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
-
-		// Ensure we have a grid
-		if( eGrid == null )
-		{
-			return false;
-		}
-
-		// Calculate amount of power to take
-		double powerDrain = AbstractAEPartBase.POWER_DRAIN_PER_ESSENTIA * essentiaAmount;
-
-		// Extract
-		return( eGrid.extractAEPower( powerDrain, mode, PowerMultiplier.CONFIG ) >= powerDrain );
-	}
-
 	@Override
 	public IGridNode getActionableNode()
 	{
@@ -370,7 +336,7 @@ public abstract class AbstractAEPartBase
 	}
 
 	/**
-	 * Determines how much power the part takes for just existing.
+	 * Determines how much power the part takes for being active.
 	 */
 	public abstract double getIdlePowerUsage();
 

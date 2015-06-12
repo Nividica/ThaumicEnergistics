@@ -6,7 +6,6 @@ import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.util.EffectiveSide;
-import appeng.api.config.Actionable;
 import appeng.api.networking.security.PlayerSource;
 
 /**
@@ -55,7 +54,7 @@ public class ContainerEssentiaTerminal
 		if( EffectiveSide.isServerSide() )
 		{
 			// Get the monitor
-			this.monitor = terminal.getGridBlock().getFluidMonitor();
+			this.monitor = terminal.getGridBlock().getEssentiaMonitor();
 
 			// Attach to the monitor
 			this.attachToMonitor();
@@ -72,12 +71,6 @@ public class ContainerEssentiaTerminal
 
 		// Bind our inventory
 		this.bindToInventory( terminal.getInventory() );
-	}
-
-	@Override
-	protected boolean extractPowerForEssentiaTransfer( final int amountOfEssentiaTransfered, final Actionable mode )
-	{
-		return this.terminal.extractPowerForEssentiaTransfer( amountOfEssentiaTransfered, mode );
 	}
 
 	/**

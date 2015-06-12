@@ -8,17 +8,14 @@ import net.minecraft.world.World;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.grid.EssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.items.ItemEssentiaCell;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
-import thaumicenergistics.parts.AbstractAEPartBase;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.PrivateInventory;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEInventoryHandler;
@@ -26,7 +23,6 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.me.GridAccessException;
 import appeng.tile.storage.TileChest;
 
 /**
@@ -111,8 +107,8 @@ public class ContainerEssentiaCell
 				// Get the monitor
 				if( handler != null )
 				{
-					// Get the cell inventory monitor
-					this.monitor = (IMEMonitor<IAEFluidStack>)handler;
+					// Create the essentia monitor
+					this.monitor = new EssentiaMonitor( (IMEMonitor<IAEFluidStack>)handler, this.hostChest.getProxy().getEnergy(), this );
 
 					// Attach to the monitor
 					this.attachToMonitor();
@@ -159,32 +155,6 @@ public class ContainerEssentiaCell
 
 		// Get the handler
 		return new HandlerItemEssentiaCell( essentiaCell, this.chestSaveProvider );
-	}
-
-	@Override
-	protected boolean extractPowerForEssentiaTransfer( final int amountOfEssentiaTransfered, final Actionable mode )
-	{
-		try
-		{
-			// Get the energy grid
-			IEnergyGrid eGrid = this.hostChest.getProxy().getEnergy();
-
-			// Did we get the grid
-			if( eGrid != null )
-			{
-				// Calculate the amount of power to drain
-				double powerRequired = AbstractAEPartBase.POWER_DRAIN_PER_ESSENTIA * amountOfEssentiaTransfered;
-
-				// Drain power
-				return( eGrid.extractAEPower( powerRequired, mode, PowerMultiplier.CONFIG ) >= powerRequired );
-			}
-		}
-		catch( GridAccessException e )
-		{
-		}
-
-		// Unable to drain power.
-		return false;
 	}
 
 	/**
@@ -246,14 +216,22 @@ public class ContainerEssentiaCell
 	@Override
 	public void onContainerClosed( final EntityPlayer player )
 	{
-		super.onContainerClosed( player );
 
 		if( EffectiveSide.isServerSide() )
 		{
+			// Is there a monitor
+			if( this.monitor != null )
+			{
+				// Ensure it gets detached.
+				( (EssentiaMonitor)this.monitor ).detach();
+			}
+
 			for( int i = 0; i < 2; i++ )
 			{
 				this.player.dropPlayerItemWithRandomChoice( ( (Slot)this.inventorySlots.get( i ) ).getStack(), false );
 			}
 		}
+
+		super.onContainerClosed( player );
 	}
 }

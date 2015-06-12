@@ -16,10 +16,11 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
-import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.grid.IMEEssentiaMonitor;
+import thaumicenergistics.grid.IMEEssentiaMonitorReceiver;
 import thaumicenergistics.gui.GuiEssentiaLevelEmitter;
-import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
@@ -34,21 +35,15 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.data.IAEFluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaLevelEmitter
 	extends AbstractAEPartBase
-	implements IAspectSlotPart, IMEMonitorHandlerReceiver<IAEFluidStack>
+	implements IAspectSlotPart, IMEEssentiaMonitorReceiver
 {
 	/**
 	 * How much AE power is required to keep the part active.
@@ -56,24 +51,10 @@ public class AEPartEssentiaLevelEmitter
 	private static final double IDLE_POWER_DRAIN = 0.3D;
 
 	/**
-	 * NBT key for the aspect filter.
+	 * NBT keys.
 	 */
-	private static final String NBT_KEY_ASPECT_FILTER = "aspect";
-
-	/**
-	 * NBT key for the redstone mode.
-	 */
-	private static final String NBT_KEY_REDSTONE_MODE = "mode";
-
-	/**
-	 * NBT key for the wanted amount.
-	 */
-	private static final String NBT_KEY_WANTED_AMOUNT = "wantedAmount";
-
-	/**
-	 * NBT key for if we are emitting.
-	 */
-	private static final String NBT_KEY_IS_EMITTING = "emitting";
+	private static final String NBT_KEY_ASPECT_FILTER = "aspect", NBT_KEY_REDSTONE_MODE = "mode", NBT_KEY_WANTED_AMOUNT = "wantedAmount",
+					NBT_KEY_IS_EMITTING = "emitting";
 
 	/**
 	 * Default redstone mode the part starts with.
@@ -83,7 +64,7 @@ public class AEPartEssentiaLevelEmitter
 	/**
 	 * Aspect we are watching.
 	 */
-	private Aspect filterAspect;
+	private Aspect trackedAspect;
 
 	/**
 	 * Mode the emitter is in
@@ -114,11 +95,50 @@ public class AEPartEssentiaLevelEmitter
 	}
 
 	/**
-	 * Checks if the emitter is emitting a redstone signal.
+	 * Marks that we are dirty, and that we need to
+	 * send an update to the client. Then updates all
+	 * neighbor blocks.
+	 */
+	private void markAndNotify()
+	{
+		// Mark that we need to be saved and updated
+		this.markForSave();
+		this.markForUpdate();
+
+		// Get the host tile entity & side
+		TileEntity hte = this.getHostTile();
+		ForgeDirection side = this.getSide();
+
+		// Update the neighbors
+		hte.getWorldObj().notifyBlocksOfNeighborChange( hte.xCoord, hte.yCoord, hte.zCoord, Blocks.air );
+		hte.getWorldObj().notifyBlocksOfNeighborChange( hte.xCoord + side.offsetX, hte.yCoord + side.offsetX, hte.zCoord + side.offsetX, Blocks.air );
+	}
+
+	/**
+	 * Sets the current amount in the network, of the aspect
+	 * we are watching/filtering.
+	 * 
+	 * @param amount
+	 */
+	private void setCurrentAmount( final long amount )
+	{
+		// Has the amount changed?
+		if( amount != this.currentAmount )
+		{
+			// Set the current amount
+			this.currentAmount = amount;
+
+			// Check if we should be emitting
+			this.updateEmittingState();
+		}
+	}
+
+	/**
+	 * Checks if the emitter should be emitting a redstone signal.
 	 * 
 	 * @return
 	 */
-	private void checkEmitting()
+	private void updateEmittingState()
 	{
 		boolean emitting = false;
 
@@ -159,109 +179,32 @@ public class AEPartEssentiaLevelEmitter
 
 	/**
 	 * Ensures we are, or are not, registered with the
-	 * network monitor.
+	 * network monitor, and updates the tracked amount.
 	 */
-	private void checkRegistration()
+	private void updateTrackingRegistration()
 	{
-		// Get the storage grid
-		IStorageGrid storageGrid = this.getGridBlock().getStorageGrid();
+		// Get the essentia monitor
+		IMEEssentiaMonitor essMonitor = this.getGridBlock().getEssentiaMonitor();
 
-		// Ensure we got the grid
-		if( storageGrid == null )
+		// Ensure we got the monitor
+		if( essMonitor == null )
 		{
 			return;
 		}
 
-		// Is the filter aspect null?
-		if( this.filterAspect == null )
+		// Is the tracked aspect null?
+		if( this.trackedAspect == null )
 		{
 			// Unregister
-			storageGrid.getFluidInventory().removeListener( this );
+			essMonitor.removeListener( this );
 		}
 		else
 		{
 			// Register
-			storageGrid.getFluidInventory().addListener( this, this.getGridBlock().getGrid() );
-		}
-	}
+			essMonitor.addListener( this, this.getGridBlock().getGrid() );
 
-	/**
-	 * Marks that we are dirty, and that we need to
-	 * send an update to the client. Then updates all
-	 * neighbor blocks.
-	 */
-	private void markAndNotify()
-	{
-		// Mark that we need to be saved and updated
-		this.markForSave();
-		this.markForUpdate();
-
-		// Get the host tile entity & side
-		TileEntity hte = this.getHostTile();
-		ForgeDirection side = this.getSide();
-
-		// Update the neighbors
-		hte.getWorldObj().notifyBlocksOfNeighborChange( hte.xCoord, hte.yCoord, hte.zCoord, Blocks.air );
-		hte.getWorldObj().notifyBlocksOfNeighborChange( hte.xCoord + side.offsetX, hte.yCoord + side.offsetX, hte.zCoord + side.offsetX, Blocks.air );
-	}
-
-	private void onMonitorUpdate( final IMEMonitor<IAEFluidStack> monitor )
-	{
-		// Do we have a filter?
-		if( this.filterAspect == null )
-		{
-			// Set the current amount to 0
-			this.setCurrentAmount( 0 );
-		}
-
-		// Get the gas for the filter aspect
-		GaseousEssentia aspectGas = GaseousEssentia.getGasFromAspect( this.filterAspect );
-
-		// Is there a fluid form of the aspect?
-		if( aspectGas == null )
-		{
-			// Set the current amount to 0
-			this.setCurrentAmount( 0 );
-		}
-
-		// Convert to AE fluid stack
-		IAEFluidStack asGasStack = EssentiaConversionHelper.INSTANCE.createAEFluidStackInFluidUnits( aspectGas, 1 );
-
-		// Get how much is in the system
-		IAEFluidStack fluidStack = monitor.getStorageList().findPrecise( asGasStack );
-
-		// Was there any in the system?
-		if( fluidStack == null )
-		{
-			// Set current amount to zero
-			this.setCurrentAmount( 0 );
-		}
-		else
-		{
-			// Set the current amount
-			this.setCurrentAmount( EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() ) );
-		}
-	}
-
-	/**
-	 * Sets the current amount in the network, of the aspect
-	 * we are watching/filtering.
-	 * 
-	 * @param amount
-	 */
-	private void setCurrentAmount( final long amount )
-	{
-		// Has the amount changed?
-		if( amount != this.currentAmount )
-		{
-			// Set the current amount
-			this.currentAmount = amount;
-
-			// Mark that we need to save
-			this.markForSave();
-
-			// Check if we should be emitting
-			this.checkEmitting();
+			// Get the current amount
+			this.setCurrentAmount( essMonitor.getEssentiaAmount( this.trackedAspect ) );
 		}
 	}
 
@@ -282,9 +225,7 @@ public class AEPartEssentiaLevelEmitter
 	@MENetworkEventSubscribe
 	public void channelChanged( final MENetworkChannelsChanged channelEvent )
 	{
-		this.onListUpdate();
-		this.checkRegistration();
-		this.checkEmitting();
+		this.updateTrackingRegistration();
 	}
 
 	/**
@@ -297,9 +238,6 @@ public class AEPartEssentiaLevelEmitter
 		return this.doesPlayerHavePermission( player, SecurityPermissions.BUILD );
 	}
 
-	/**
-	 * Collision boxes
-	 */
 	@Override
 	public void getBoxes( final IPartCollisionHelper helper )
 	{
@@ -321,10 +259,6 @@ public class AEPartEssentiaLevelEmitter
 		return new GuiEssentiaLevelEmitter( this, player );
 	}
 
-	/**
-	 * Determines how much power the part takes for just
-	 * existing.
-	 */
 	@Override
 	public double getIdlePowerUsage()
 	{
@@ -425,7 +359,7 @@ public class AEPartEssentiaLevelEmitter
 		new PacketClientEssentiaEmitter().createWantedAmountUpdate( this.wantedAmount, player ).sendPacketToPlayer();
 
 		// Check if we should be emitting
-		this.checkEmitting();
+		this.updateEmittingState();
 	}
 
 	/**
@@ -451,7 +385,7 @@ public class AEPartEssentiaLevelEmitter
 		}
 
 		// Check if we should be emitting
-		this.checkEmitting();
+		this.updateEmittingState();
 
 		// Send the new mode to the client
 		new PacketClientEssentiaEmitter().createRedstoneModeUpdate( this.redstoneMode, player ).sendPacketToPlayer();
@@ -470,63 +404,30 @@ public class AEPartEssentiaLevelEmitter
 
 		// Send the filter to the client
 		List<Aspect> filter = new ArrayList<Aspect>();
-		filter.add( this.filterAspect );
+		filter.add( this.trackedAspect );
 		new PacketClientAspectSlot().createFilterListUpdate( filter, player ).sendPacketToPlayer();
 	}
 
 	/**
-	 * Called when a network event changes the state of
-	 * the storage grid.
+	 * Called when essentia levels change.
 	 */
 	@Override
-	public void onListUpdate()
+	public void postChange( final IMEEssentiaMonitor fromMonitor, final Iterable<AspectStack> changes )
 	{
-		// Ensure we have a filter
-		if( this.filterAspect == null )
+		// Ensure there is a filter and changes
+		if( ( this.trackedAspect == null ) || ( changes == null ) )
 		{
 			return;
 		}
 
-		// Get the storage grid
-		IStorageGrid sGrid = this.getGridBlock().getStorageGrid();
-
-		// Did we get the grid?
-		if( sGrid != null )
+		// Check each of the changes
+		for( AspectStack change : changes )
 		{
-			this.onMonitorUpdate( sGrid.getFluidInventory() );
-		}
-
-	}
-
-	/**
-	 * Called when a network event changes the amount
-	 * of something in the storage grid.
-	 */
-	@Override
-	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> changes, final BaseActionSource source )
-	{
-		// Ensure we have a filter
-		if( this.filterAspect == null )
-		{
-			return;
-		}
-
-		// Ensure there was a change
-		if( changes == null )
-		{
-			return;
-		}
-
-		// Ensure one of the changes an essentia gas
-		for( IAEFluidStack change : changes )
-		{
-			if( ( change.getFluid() instanceof GaseousEssentia ) )
+			// Did the filtered aspect change?
+			if( change.aspect == this.trackedAspect )
 			{
-				// Propagate the update
-				this.onMonitorUpdate( (IMEMonitor<IAEFluidStack>)monitor );
-
-				// Stop searching
-				break;
+				// Adjust the amount
+				this.setCurrentAmount( this.currentAmount + change.stackSize );
 			}
 		}
 	}
@@ -539,9 +440,7 @@ public class AEPartEssentiaLevelEmitter
 	@MENetworkEventSubscribe
 	public void powerChanged( final MENetworkPowerStatusChange powerEvent )
 	{
-		this.onListUpdate();
-		this.checkRegistration();
-		this.checkEmitting();
+		this.updateTrackingRegistration();
 	}
 
 	/**
@@ -550,7 +449,7 @@ public class AEPartEssentiaLevelEmitter
 	@Override
 	public void randomDisplayTick( final World world, final int x, final int y, final int z, final Random r )
 	{
-		// Are we emitting?
+		// Is the emitter, emitting?
 		if( this.isEmitting )
 		{
 			// Get the side
@@ -577,7 +476,7 @@ public class AEPartEssentiaLevelEmitter
 		// Read the filter
 		if( data.hasKey( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) )
 		{
-			this.filterAspect = Aspect.aspects.get( data.getString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) );
+			this.trackedAspect = Aspect.aspects.get( data.getString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) );
 		}
 
 		// Read the redstone mode
@@ -685,7 +584,7 @@ public class AEPartEssentiaLevelEmitter
 	public void setAspect( final int index, final Aspect aspect, final EntityPlayer player )
 	{
 		// Set the filtered aspect
-		this.filterAspect = aspect;
+		this.trackedAspect = aspect;
 
 		// Are we client side?
 		if( EffectiveSide.isClientSide() )
@@ -693,10 +592,8 @@ public class AEPartEssentiaLevelEmitter
 			return;
 		}
 
-		this.checkRegistration();
-
-		// Check network amount
-		this.onListUpdate();
+		// Update the tracker
+		this.updateTrackingRegistration();
 
 		// Send the aspect to the client
 		List<Aspect> filter = new ArrayList<Aspect>();
@@ -738,10 +635,10 @@ public class AEPartEssentiaLevelEmitter
 		super.writeToNBT( data, saveType );
 
 		// Do we have a filter?
-		if( this.filterAspect != null )
+		if( this.trackedAspect != null )
 		{
 			// Write the name of the aspect
-			data.setString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER, this.filterAspect.getTag() );
+			data.setString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER, this.trackedAspect.getTag() );
 		}
 
 		// Write the redstone mode ordinal

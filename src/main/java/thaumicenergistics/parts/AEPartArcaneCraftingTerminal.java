@@ -347,7 +347,8 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
-		return this.getGridBlock().getFluidMonitor();
+		// Ignored
+		return null;
 	}
 
 	/**

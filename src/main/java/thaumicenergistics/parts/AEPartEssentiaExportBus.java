@@ -8,8 +8,7 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.tiles.TileJarFillableVoid;
-import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
 import thaumicenergistics.registries.AEPartsEnum;
@@ -19,7 +18,6 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
-import appeng.api.storage.data.IAEFluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -96,7 +94,7 @@ public class AEPartEssentiaExportBus
 			}
 
 			// Can we inject any of this into the container
-			if( EssentiaTileContainerHelper.INSTANCE.injectIntoContainer( this.facingContainer, 1, filterAspect, Actionable.SIMULATE ) < 1 )
+			if( EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer( this.facingContainer, 1, filterAspect, Actionable.SIMULATE ) <= 0 )
 			{
 				if( !( ( this.isVoidAllowed ) && ( EssentiaTileContainerHelper.INSTANCE.getAspectInContainer( this.facingContainer ) == filterAspect ) ) )
 				{
@@ -105,64 +103,49 @@ public class AEPartEssentiaExportBus
 				}
 			}
 
-			// Get the gas form of the essentia
-			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( filterAspect );
-
-			// Is there a fluid form of the aspect?
-			if( essentiaGas == null )
+			// Get the monitor
+			IMEEssentiaMonitor essMonitor = this.getGridBlock().getEssentiaMonitor();
+			if( essMonitor == null )
 			{
-				continue;
+				return false;
 			}
 
-			// Create the fluid stack
-			IAEFluidStack toExtract = EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, amountToFillContainer );
-
 			// Simulate a network extraction
-			IAEFluidStack extractedStack = this.extractFluid( toExtract, Actionable.SIMULATE );
+			long extractedAmount = essMonitor.extractEssentia( filterAspect, amountToFillContainer, Actionable.SIMULATE, this.asMachineSource, true );
 
-			// Were we able to extract any?
-			if( ( extractedStack == null ) || ( extractedStack.getStackSize() <= 0 ) )
+			// Was any extracted?
+			if( extractedAmount <= 0 )
 			{
 				// Unable to extract from network
 				continue;
 			}
 
-			int filledAmountFU, filledAmountEU;
+			long filledAmount = 0;
 			if( this.isVoidAllowed && ( this.facingContainer instanceof TileJarFillableVoid ) )
 			{
 				// In void mode, we don't care if the jar can hold it or not.
-				filledAmountFU = (int)extractedStack.getStackSize();
+				filledAmount = extractedAmount;
 			}
 			else
 			{
-
 				// Simulate filling the container
-				filledAmountFU = (int)EssentiaTileContainerHelper.INSTANCE.injectIntoContainer( this.facingContainer, extractedStack,
-					Actionable.SIMULATE );
+				filledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer( this.facingContainer, (int)extractedAmount,
+					filterAspect, Actionable.SIMULATE );
 			}
 
-			// Were we able to fill the container?
-			if( filledAmountFU == 0 )
+			// Was the container filled?
+			if( filledAmount <= 0 )
 			{
+				// Unable to inject into container
 				continue;
 			}
 
-			// Do we have the power to transfer this amount?
-			filledAmountEU = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( filledAmountFU );
-			if( !this.extractPowerForEssentiaTransfer( filledAmountEU, Actionable.SIMULATE ) )
-			{
-				// Not enough power, abort
-				return false;
-			}
-
 			// Fill the container
-			EssentiaTileContainerHelper.INSTANCE.injectIntoContainer( this.facingContainer, extractedStack, Actionable.MODULATE );
-
-			// Take the power required for the filled amount
-			this.extractPowerForEssentiaTransfer( filledAmountEU, Actionable.MODULATE );
+			EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer( this.facingContainer, (int)filledAmount, filterAspect,
+				Actionable.MODULATE );
 
 			// Take essentia from the network
-			this.extractFluid( EssentiaConversionHelper.INSTANCE.createAEFluidStackInFluidUnits( essentiaGas, filledAmountFU ), Actionable.MODULATE );
+			essMonitor.extractEssentia( filterAspect, filledAmount, Actionable.MODULATE, this.asMachineSource, true );
 
 			// Done
 			return true;

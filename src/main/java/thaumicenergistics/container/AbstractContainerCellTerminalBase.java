@@ -15,8 +15,8 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.slot.SlotRestrictive;
-import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.grid.IMEEssentiaMonitor;
+import thaumicenergistics.grid.IMEEssentiaMonitorReceiver;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
@@ -30,10 +30,6 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.security.PlayerSource;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.data.IAEFluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -45,7 +41,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public abstract class AbstractContainerCellTerminalBase
 	extends ContainerWithPlayerInventory
-	implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAspectSelectorContainer, IInventoryUpdateReceiver
+	implements IMEEssentiaMonitorReceiver, IAspectSelectorContainer, IInventoryUpdateReceiver
 {
 	/**
 	 * X position for the output slot
@@ -106,9 +102,9 @@ public abstract class AbstractContainerCellTerminalBase
 	public static int INPUT_SLOT_ID = 0;
 
 	/**
-	 * AE network monitor
+	 * Essentia network monitor
 	 */
-	protected IMEMonitor<IAEFluidStack> monitor;
+	protected IMEEssentiaMonitor monitor;
 
 	/**
 	 * List of aspects on the network
@@ -208,41 +204,38 @@ public abstract class AbstractContainerCellTerminalBase
 		container.stackSize = 1;
 
 		// Get the fluid stack from the item
-		IAEFluidStack containerFluid = EssentiaConversionHelper.INSTANCE.createAEFluidStackFromItemEssentiaContainer( container );
+		AspectStack containerEssentia = EssentiaItemContainerHelper.INSTANCE.getAspectStackFromContainer( container );
+
+		// Ensure there is something to drain
+		if( ( containerEssentia == null ) || ( containerEssentia.stackSize <= 0 ) )
+		{
+			// Nothing to drain
+			return 0;
+		}
 
 		// Get the proposed drain amount.
-		int proposedDrainAmount_FU = (int)containerFluid.getStackSize();
+		int proposedDrainAmount = (int)containerEssentia.stackSize;
 
 		// Simulate a network injection
-		IAEFluidStack notInjected = this.monitor.injectItems( containerFluid, Actionable.SIMULATE, actionSource );
+		long rejectedAmount = this.monitor.injectEssentia( containerEssentia.aspect, proposedDrainAmount, Actionable.SIMULATE, actionSource, true );
 
 		// Was any rejected?
-		if( notInjected != null )
+		if( rejectedAmount > 0 )
 		{
 			// Decrease the proposed amount
-			proposedDrainAmount_FU -= (int)notInjected.getStackSize();
+			proposedDrainAmount -= (int)rejectedAmount;
 
 			// Can the network accept any?
-			if( proposedDrainAmount_FU <= 0 )
+			if( proposedDrainAmount <= 0 )
 			{
 				// Network is full
 				return 0;
 			}
 		}
 
-		// Convert proposed amount to Essentia units
-		int proposedDrainAmount_EU = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( proposedDrainAmount_FU );
-
-		// Is there enough power?
-		if( !this.extractPowerForEssentiaTransfer( proposedDrainAmount_EU, Actionable.SIMULATE ) )
-		{
-			// Not enough power.
-			return 0;
-		}
-
 		// Attempt to drain the container
 		ImmutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.INSTANCE.extractFromContainer( container,
-			proposedDrainAmount_EU );
+			proposedDrainAmount );
 
 		// Was the drain successful?
 		if( drainedContainer == null )
@@ -255,22 +248,16 @@ public abstract class AbstractContainerCellTerminalBase
 		if( this.mergeContainerWithOutputSlot( drainedContainer.getRight() ) )
 		{
 			// Adjust the drain amount
-			proposedDrainAmount_EU = drainedContainer.left;
-
-			// Adjust the amount to inject into the network to the amount that was drained from the container.
-			containerFluid.setStackSize( EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( proposedDrainAmount_EU ) );
+			proposedDrainAmount = drainedContainer.left;
 
 			// Inject into the to network
-			this.monitor.injectItems( containerFluid, Actionable.MODULATE, actionSource );
-
-			// Drain power
-			this.extractPowerForEssentiaTransfer( proposedDrainAmount_EU, Actionable.MODULATE );
+			this.monitor.injectEssentia( containerEssentia.aspect, proposedDrainAmount, Actionable.MODULATE, actionSource, true );
 
 			// Decrease the input slot
 			inputSlot.decrStackSize( 1 );
 
 			// Container was drained from, and merged with the output slot.
-			return proposedDrainAmount_EU;
+			return proposedDrainAmount;
 		}
 
 		// Unable to merge, nothing changed
@@ -308,54 +295,33 @@ public abstract class AbstractContainerCellTerminalBase
 		ItemStack container = inputSlot.getStack().copy();
 		container.stackSize = 1;
 
-		// Get the available capacity of the container, in Essentia Units
-		int containerCapacity_EU = EssentiaItemContainerHelper.INSTANCE.getContainerCapacity( container );
+		// Get the capacity of the container
+		int containerCapacity = EssentiaItemContainerHelper.INSTANCE.getContainerCapacity( container );
 
-		// Is there any room for more essentia?
-		if( containerCapacity_EU == 0 )
+		// Can the container hold essentia?
+		if( containerCapacity == 0 )
 		{
-			return 0;
-		}
-
-		// Get the gas form of the essentia
-		GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( this.selectedAspect );
-
-		// Is there a fluid form of the aspect?
-		if( essentiaGas == null )
-		{
-			// No gas form of the selected aspect.
+			// Invalid container
 			return 0;
 		}
 
 		// Simulate an extraction from the network
-		IAEFluidStack result = this.monitor.extractItems(
-			EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, containerCapacity_EU ), Actionable.SIMULATE,
-			actionSource );
+		long extractedAmount = this.monitor.extractEssentia( this.selectedAspect, containerCapacity, Actionable.SIMULATE, actionSource, true );
 
-		// Is there anything to extract?
-		if( result == null )
+		// Was anything extracted?
+		if( extractedAmount <= 0 )
 		{
 			// Gas is not present on network.
 			return 0;
 		}
 
-		// Get how much can be taken from the network, in Essentia Units
-		int resultAmount_EU = (int)EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( result.getStackSize() );
-
 		// Calculate the proposed amount, based on how much we need and how much
 		// is available
-		int proposedFillAmount_EU = Math.min( containerCapacity_EU, resultAmount_EU );
-
-		// Is there enough power?
-		if( !this.extractPowerForEssentiaTransfer( proposedFillAmount_EU, Actionable.SIMULATE ) )
-		{
-			// Not enough power.
-			return 0;
-		}
+		int proposedFillAmount = (int)Math.min( containerCapacity, extractedAmount );
 
 		// Create a new container filled to the proposed amount
 		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.INSTANCE.injectIntoContainer( container, new AspectStack(
-						this.selectedAspect, proposedFillAmount_EU ) );
+						this.selectedAspect, proposedFillAmount ) );
 
 		// Was the fill successful?
 		if( filledContainer == null )
@@ -368,20 +334,16 @@ public abstract class AbstractContainerCellTerminalBase
 		if( this.mergeContainerWithOutputSlot( filledContainer.getRight() ) )
 		{
 			// Adjust the fill amount
-			proposedFillAmount_EU = filledContainer.left;
+			proposedFillAmount = filledContainer.left;
 
 			// Drain the essentia from the network
-			this.monitor.extractItems( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, proposedFillAmount_EU ),
-				Actionable.MODULATE, actionSource );
-
-			// Drain power
-			this.extractPowerForEssentiaTransfer( proposedFillAmount_EU, Actionable.MODULATE );
+			this.monitor.extractEssentia( this.selectedAspect, proposedFillAmount, Actionable.MODULATE, actionSource, true );
 
 			// Decrease the input slot
 			inputSlot.decrStackSize( 1 );
 
 			// Container was injected into, and merged with the output slot.
-			return proposedFillAmount_EU;
+			return proposedFillAmount;
 		}
 
 		// Unable to merge, nothing was changed.
@@ -603,7 +565,7 @@ public abstract class AbstractContainerCellTerminalBase
 	}
 
 	/**
-	 * Attach this container to the AE monitor
+	 * Attach this container to the Essentia monitor
 	 */
 	protected void attachToMonitor()
 	{
@@ -612,7 +574,7 @@ public abstract class AbstractContainerCellTerminalBase
 			this.monitor.addListener( this, this.monitor.hashCode() );
 
 			// Update our cached list of aspects
-			this.aspectStackList = EssentiaConversionHelper.INSTANCE.convertIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
+			this.aspectStackList = new ArrayList( this.monitor.getEssentiaList() );
 		}
 	}
 
@@ -680,16 +642,6 @@ public abstract class AbstractContainerCellTerminalBase
 	 * Called periodically so that the container can perform work.
 	 */
 	protected abstract void doWork( int elapsedTicks );
-
-	/**
-	 * Attempts to drain power proportional to the amount of essentia
-	 * transfered.
-	 * 
-	 * @param amountOfEssentiaTransfered
-	 * @param mode
-	 * @return True if the power was drained, false otherwise.
-	 */
-	protected abstract boolean extractPowerForEssentiaTransfer( int amountOfEssentiaTransfered, Actionable mode );
 
 	/**
 	 * Transfers essentia in or out of the system.
@@ -964,16 +916,6 @@ public abstract class AbstractContainerCellTerminalBase
 		}
 	}
 
-	@Override
-	public final void onListUpdate()
-	{
-		// Update our cached list of aspects
-		this.aspectStackList = EssentiaConversionHelper.INSTANCE.convertIAEFluidStackListToAspectStackList( this.monitor.getStorageList() );
-
-		// Send a full update
-		this.onClientRequestFullUpdate();
-	}
-
 	/**
 	 * Called by the gui when the aspect list arrives.
 	 * 
@@ -1068,7 +1010,7 @@ public abstract class AbstractContainerCellTerminalBase
 	 */
 
 	@Override
-	public final void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> changes, final BaseActionSource source )
+	public final void postChange( final IMEEssentiaMonitor fromMonitor, final Iterable<AspectStack> changes )
 	{
 		// Ensure there was a change
 		if( changes == null )
@@ -1077,17 +1019,10 @@ public abstract class AbstractContainerCellTerminalBase
 		}
 
 		// Loop over the changes
-		for( IAEFluidStack change : changes )
+		for( AspectStack change : changes )
 		{
-			// Ensure the fluid is an essentia gas
-			if( !( change.getFluid() instanceof GaseousEssentia ) )
-			{
-				continue;
-			}
-
 			// Update the client
-			new PacketClientEssentiaCellTerminal().createListChanged( this.player,
-				EssentiaConversionHelper.INSTANCE.convertAEFluidStackToAspectStack( change ) ).sendPacketToPlayer();
+			new PacketClientEssentiaCellTerminal().createListChanged( this.player, change ).sendPacketToPlayer();
 		}
 	}
 

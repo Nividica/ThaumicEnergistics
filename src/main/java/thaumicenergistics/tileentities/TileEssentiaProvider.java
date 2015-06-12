@@ -109,7 +109,7 @@ public class TileEssentiaProvider
 		if( this.getEssentiaMonitor() )
 		{
 			// Inject essentia
-			rejectedAmount = this.monitor.injectEssentia( aspect, amount, mode, this.getMachineSource() );
+			rejectedAmount = this.monitor.injectEssentia( aspect, amount, mode, this.getMachineSource(), true );
 		}
 
 		// Calculate the accepted amount

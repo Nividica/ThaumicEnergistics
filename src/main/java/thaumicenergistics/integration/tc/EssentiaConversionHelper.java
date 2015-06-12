@@ -1,8 +1,5 @@
 package thaumicenergistics.integration.tc;
 
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
@@ -10,8 +7,13 @@ import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
 
+/**
+ * TODO Move all conversion operations to the essentia grid cache
+ * 
+ * @author Nividica
+ * 
+ */
 public final class EssentiaConversionHelper
 {
 	/**
@@ -66,82 +68,6 @@ public final class EssentiaConversionHelper
 	public long convertFluidAmountToEssentiaAmount( final long fluidAmount )
 	{
 		return fluidAmount / ThaumicEnergistics.config.conversionMultiplier();
-	}
-
-	/**
-	 * Converts an AE fluidstack list into a list of AspectStacks.
-	 * 
-	 * @param fluidStackList
-	 * @return
-	 */
-	public List<AspectStack> convertIAEFluidStackListToAspectStackList( final IItemList<IAEFluidStack> fluidStackList )
-	{
-		List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
-
-		if( fluidStackList != null )
-		{
-			for( IAEFluidStack fluidStack : fluidStackList )
-			{
-				// Convert
-				AspectStack aspectStack = this.convertAEFluidStackToAspectStack( fluidStack );
-
-				// Was the fluid an essentia gas?
-				if( aspectStack != null )
-				{
-					// Add to the stack
-					aspectStackList.add( aspectStack );
-				}
-
-			}
-		}
-
-		return aspectStackList;
-	}
-
-	/**
-	 * Creates an AE fluidstack from the aspects in the specified contianer.
-	 * 
-	 * @param container
-	 * @return Fluidstack if valid, null otherwise.
-	 */
-	public IAEFluidStack createAEFluidStackFromItemEssentiaContainer( final ItemStack container )
-	{
-		// Do we have an item?
-		if( container == null )
-		{
-			return null;
-		}
-
-		// Is the item a container?
-		if( !EssentiaItemContainerHelper.INSTANCE.isContainer( container ) )
-		{
-			return null;
-		}
-
-		// What aspect is in it?
-		Aspect containerAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( container );
-
-		// Is there an aspect in it?
-		if( containerAspect == null )
-		{
-			return null;
-		}
-
-		// Convert to gas
-		GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( containerAspect );
-
-		// Is there a fluid form of the aspect?
-		if( essentiaGas == null )
-		{
-			return null;
-		}
-
-		// Get how much is in the container
-		long containerAmount_EU = EssentiaItemContainerHelper.INSTANCE.getContainerStoredAmount( container );
-
-		// Create and return the stack
-		return this.createAEFluidStackInEssentiaUnits( essentiaGas, containerAmount_EU );
-
 	}
 
 	/**
