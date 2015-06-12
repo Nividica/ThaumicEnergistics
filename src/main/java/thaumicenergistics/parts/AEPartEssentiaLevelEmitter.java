@@ -16,10 +16,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.ContainerPartEssentiaLevelEmitter;
+import thaumicenergistics.grid.IEssentiaWatcher;
+import thaumicenergistics.grid.IEssentiaWatcherHost;
 import thaumicenergistics.grid.IMEEssentiaMonitor;
-import thaumicenergistics.grid.IMEEssentiaMonitorReceiver;
 import thaumicenergistics.gui.GuiEssentiaLevelEmitter;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotPart;
@@ -31,10 +31,6 @@ import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
@@ -43,7 +39,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaLevelEmitter
 	extends AbstractAEPartBase
-	implements IAspectSlotPart, IMEEssentiaMonitorReceiver
+	implements IAspectSlotPart, IEssentiaWatcherHost
 {
 	/**
 	 * How much AE power is required to keep the part active.
@@ -64,7 +60,7 @@ public class AEPartEssentiaLevelEmitter
 	/**
 	 * Aspect we are watching.
 	 */
-	private Aspect trackedAspect;
+	private Aspect trackedEssentia;
 
 	/**
 	 * Mode the emitter is in
@@ -87,11 +83,45 @@ public class AEPartEssentiaLevelEmitter
 	private boolean isEmitting = false;
 
 	/**
+	 * Watches the for changes in the essentia grid.
+	 */
+	private IEssentiaWatcher essentiaWatcher;
+
+	/**
 	 * Creates the part
 	 */
 	public AEPartEssentiaLevelEmitter()
 	{
 		super( AEPartsEnum.EssentiaLevelEmitter );
+	}
+
+	/**
+	 * Updates the watcher to the tracked essentia.
+	 */
+	private void configureWatcher()
+	{
+		if( this.essentiaWatcher != null )
+		{
+			// Clear any existing watched value
+			this.essentiaWatcher.clear();
+
+			// Is there an essentia being tracked?
+			if( this.trackedEssentia != null )
+			{
+				// Configure the watcher
+				this.essentiaWatcher.add( this.trackedEssentia );
+
+				// Get the essentia monitor
+				IMEEssentiaMonitor essMon = this.getGridBlock().getEssentiaMonitor();
+
+				// Ensure there is a grid.
+				if( essMon != null )
+				{
+					// Update the amount.
+					this.setCurrentAmount( essMon.getEssentiaAmount( this.trackedEssentia ) );
+				}
+			}
+		}
 	}
 
 	/**
@@ -152,13 +182,13 @@ public class AEPartEssentiaLevelEmitter
 		switch ( this.redstoneMode )
 		{
 			case HIGH_SIGNAL:
-				// Is the current amount more than the wanted amount?
+				// Is the current amount more than or equal to the wanted amount?
 				emitting = ( this.currentAmount >= this.wantedAmount );
 				break;
 
 			case LOW_SIGNAL:
 				// Is the current amount less than the wanted amount?
-				emitting = ( this.currentAmount <= this.wantedAmount );
+				emitting = ( this.currentAmount < this.wantedAmount );
 				break;
 
 			case IGNORE:
@@ -178,54 +208,12 @@ public class AEPartEssentiaLevelEmitter
 	}
 
 	/**
-	 * Ensures we are, or are not, registered with the
-	 * network monitor, and updates the tracked amount.
-	 */
-	private void updateTrackingRegistration()
-	{
-		// Get the essentia monitor
-		IMEEssentiaMonitor essMonitor = this.getGridBlock().getEssentiaMonitor();
-
-		// Ensure we got the monitor
-		if( essMonitor == null )
-		{
-			return;
-		}
-
-		// Is the tracked aspect null?
-		if( this.trackedAspect == null )
-		{
-			// Unregister
-			essMonitor.removeListener( this );
-		}
-		else
-		{
-			// Register
-			essMonitor.addListener( this, this.getGridBlock().getGrid() );
-
-			// Get the current amount
-			this.setCurrentAmount( essMonitor.getEssentiaAmount( this.trackedAspect ) );
-		}
-	}
-
-	/**
 	 * How far the network cable should extend to meet us.
 	 */
 	@Override
 	public int cableConnectionRenderTo()
 	{
 		return 8;
-	}
-
-	/**
-	 * Called when we change channels/grids
-	 * 
-	 * @param channelEvent
-	 */
-	@MENetworkEventSubscribe
-	public void channelChanged( final MENetworkChannelsChanged channelEvent )
-	{
-		this.updateTrackingRegistration();
 	}
 
 	/**
@@ -299,24 +287,6 @@ public class AEPartEssentiaLevelEmitter
 	public int isProvidingWeakPower()
 	{
 		return this.isProvidingStrongPower();
-	}
-
-	/**
-	 * Called to see if we should continue monitoring on
-	 * a specific grid.
-	 */
-	@Override
-	public boolean isValid( final Object token )
-	{
-		// Get the grid
-		IGrid grid = this.getGridBlock().getGrid();
-
-		if( grid != null )
-		{
-			return grid == token;
-		}
-
-		return false;
 	}
 
 	/**
@@ -404,7 +374,7 @@ public class AEPartEssentiaLevelEmitter
 
 		// Send the filter to the client
 		List<Aspect> filter = new ArrayList<Aspect>();
-		filter.add( this.trackedAspect );
+		filter.add( this.trackedEssentia );
 		new PacketClientAspectSlot().createFilterListUpdate( filter, player ).sendPacketToPlayer();
 	}
 
@@ -412,35 +382,9 @@ public class AEPartEssentiaLevelEmitter
 	 * Called when essentia levels change.
 	 */
 	@Override
-	public void postChange( final IMEEssentiaMonitor fromMonitor, final Iterable<AspectStack> changes )
+	public void onEssentiaChange( final Aspect aspect, final long storedAmount, final long changeAmount )
 	{
-		// Ensure there is a filter and changes
-		if( ( this.trackedAspect == null ) || ( changes == null ) )
-		{
-			return;
-		}
-
-		// Check each of the changes
-		for( AspectStack change : changes )
-		{
-			// Did the filtered aspect change?
-			if( change.aspect == this.trackedAspect )
-			{
-				// Adjust the amount
-				this.setCurrentAmount( this.currentAmount + change.stackSize );
-			}
-		}
-	}
-
-	/**
-	 * Called when a AE power event occurs
-	 * 
-	 * @param powerEvent
-	 */
-	@MENetworkEventSubscribe
-	public void powerChanged( final MENetworkPowerStatusChange powerEvent )
-	{
-		this.updateTrackingRegistration();
+		this.setCurrentAmount( storedAmount );
 	}
 
 	/**
@@ -476,7 +420,7 @@ public class AEPartEssentiaLevelEmitter
 		// Read the filter
 		if( data.hasKey( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) )
 		{
-			this.trackedAspect = Aspect.aspects.get( data.getString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) );
+			this.trackedEssentia = Aspect.aspects.get( data.getString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) );
 		}
 
 		// Read the redstone mode
@@ -584,7 +528,7 @@ public class AEPartEssentiaLevelEmitter
 	public void setAspect( final int index, final Aspect aspect, final EntityPlayer player )
 	{
 		// Set the filtered aspect
-		this.trackedAspect = aspect;
+		this.trackedEssentia = aspect;
 
 		// Are we client side?
 		if( EffectiveSide.isClientSide() )
@@ -592,8 +536,8 @@ public class AEPartEssentiaLevelEmitter
 			return;
 		}
 
-		// Update the tracker
-		this.updateTrackingRegistration();
+		// Update the watcher
+		this.configureWatcher();
 
 		// Send the aspect to the client
 		List<Aspect> filter = new ArrayList<Aspect>();
@@ -625,6 +569,16 @@ public class AEPartEssentiaLevelEmitter
 		return true;
 	}
 
+	@Override
+	public void updateWatcher( final IEssentiaWatcher newWatcher )
+	{
+		// Set the watcher
+		this.essentiaWatcher = newWatcher;
+
+		// And configure it
+		this.configureWatcher();
+	}
+
 	/**
 	 * Writes the state of the emitter to the tag
 	 */
@@ -635,10 +589,10 @@ public class AEPartEssentiaLevelEmitter
 		super.writeToNBT( data, saveType );
 
 		// Do we have a filter?
-		if( this.trackedAspect != null )
+		if( this.trackedEssentia != null )
 		{
 			// Write the name of the aspect
-			data.setString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER, this.trackedAspect.getTag() );
+			data.setString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER, this.trackedEssentia.getTag() );
 		}
 
 		// Write the redstone mode ordinal

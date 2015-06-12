@@ -15,7 +15,6 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.parts.PartItemStack;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -92,29 +91,6 @@ public class AEPartGridBlock
 	public EnumSet<GridFlags> getFlags()
 	{
 		return EnumSet.of( GridFlags.REQUIRE_CHANNEL );
-	}
-
-	/**
-	 * Gets the AE fluid monitor for the grid.
-	 * 
-	 * @return Monitor if valid grid, null otherwise.
-	 * 
-	 * @deprecated Use getEssentiaMonitor
-	 */
-	@Deprecated
-	public IMEMonitor<IAEFluidStack> getFluidMonitor()
-	{
-		// Set the storage grid
-		IStorageGrid storageGrid = this.getStorageGrid();
-
-		// Do we have a storage grid?
-		if( storageGrid == null )
-		{
-			return null;
-		}
-
-		// Return the storage grid's fluid monitor.
-		return storageGrid.getFluidInventory();
 	}
 
 	public final IGrid getGrid()

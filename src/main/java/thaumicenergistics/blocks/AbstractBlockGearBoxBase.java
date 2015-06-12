@@ -40,6 +40,9 @@ public abstract class AbstractBlockGearBoxBase
 
 		// Set hardness
 		this.setHardness( 0.6F );
+
+		// Set bounding box
+		this.setBlockBounds( 0.23F, 0.23F, 0.23F, 0.77F, 0.77F, 0.77F );
 	}
 
 	/**
@@ -48,6 +51,7 @@ public abstract class AbstractBlockGearBoxBase
 	@Override
 	protected boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
+
 		// Get the tile
 		TileGearBox gearBox = (TileGearBox)world.getTileEntity( x, y, z );
 

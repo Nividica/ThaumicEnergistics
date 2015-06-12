@@ -136,7 +136,7 @@ public class AEPartEssentiaConversionMonitor
 		if( EssentiaItemContainerHelper.INSTANCE.isLabel( heldItem ) )
 		{
 			// Set the label type
-			EssentiaItemContainerHelper.INSTANCE.setLabelAspect( heldItem, this.trackedEssentia.getAspect() );
+			EssentiaItemContainerHelper.INSTANCE.setLabelAspect( heldItem, this.trackedEssentia.getAspectStack().aspect );
 			return true;
 		}
 
@@ -156,7 +156,7 @@ public class AEPartEssentiaConversionMonitor
 			Aspect containerAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( heldItem );
 
 			// Ensure it matches the tracker
-			if( this.trackedEssentia.getAspect() != containerAspect )
+			if( this.trackedEssentia.getAspectStack().aspect != containerAspect )
 			{
 				return false;
 			}
@@ -167,7 +167,7 @@ public class AEPartEssentiaConversionMonitor
 		if( jarLabelAspect != null )
 		{
 			// Ensure it matches the tracker
-			if( this.trackedEssentia.getAspect() != jarLabelAspect )
+			if( this.trackedEssentia.getAspectStack().aspect != jarLabelAspect )
 			{
 				return false;
 			}
@@ -184,7 +184,7 @@ public class AEPartEssentiaConversionMonitor
 		int containerCapacity = EssentiaItemContainerHelper.INSTANCE.getContainerCapacity( heldItem );
 
 		// Create the request
-		AspectStack fillRequest = new AspectStack( this.trackedEssentia.getAspect(), containerCapacity - containerAmount );
+		AspectStack fillRequest = new AspectStack( this.trackedEssentia.getAspectStack().aspect, containerCapacity - containerAmount );
 
 		// Is the container full?
 		if( fillRequest.stackSize <= 0 )

@@ -4,6 +4,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.EnumChatFormatting;
+import org.apache.commons.lang3.text.WordUtils;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.texture.IStateIconTexture;
 import com.google.common.base.Splitter;
@@ -107,7 +108,7 @@ public abstract class AbstractStateGuiButton
 		tooltip.add( EnumChatFormatting.WHITE + title );
 
 		// Body
-		for( String line : Splitter.fixedLength( 30 ).split( text ) )
+		for( String line : Splitter.on( "\n" ).split( WordUtils.wrap( text, 30, "\n", false ) ) )
 		{
 			tooltip.add( EnumChatFormatting.GRAY + line.trim() );
 		}

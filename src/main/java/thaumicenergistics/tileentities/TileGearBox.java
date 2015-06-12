@@ -188,7 +188,7 @@ public class TileGearBox
 			if( this.shaftRotation < 1.0F )
 			{
 				// Add rotation.
-				this.shaftRotation += TileGearBox.FULL_ROTATION;
+				this.shaftRotation += TileGearBox.FULL_ROTATION * 2;
 			}
 		}
 
@@ -450,7 +450,7 @@ public class TileGearBox
 			if( this.shaftRotation != 0 )
 			{
 				// Adjust rotation
-				this.shaftRotation -= 0.15F;
+				this.shaftRotation -= 0.20F;
 
 				// Has the rotation exceeded epsilon?
 				if( this.shaftRotation < 0.001F )

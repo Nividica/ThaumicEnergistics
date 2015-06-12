@@ -6,8 +6,10 @@
   * Updated Essentia Cell
   * Updated Wireless Terminal
   * Updated Level Emitter
+  * Updated Storage Monitor
   Refactored a great deal of code surrounding essentia transfers and power usage.
   Cleaned up redundancies in the wireless terminal code.
+  Reduced gearbox bounding/collision box.
 
 5/30/2015 0.8.10.6
   More CC work #194

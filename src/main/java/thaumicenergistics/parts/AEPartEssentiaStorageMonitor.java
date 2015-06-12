@@ -21,8 +21,10 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.grid.IEssentiaWatcher;
+import thaumicenergistics.grid.IEssentiaWatcherHost;
+import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
@@ -30,30 +32,23 @@ import thaumicenergistics.util.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IPartStorageMonitor;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.storage.IStackWatcher;
-import appeng.api.networking.storage.IStackWatcherHost;
-import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.localization.PlayerMessages;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaStorageMonitor
 	extends AbstractAEPartBase
-	implements IPartStorageMonitor, IStackWatcherHost, IPowerChannelState
+	implements IPartStorageMonitor, IEssentiaWatcherHost, IPowerChannelState
 {
 	/**
 	 * All the data about what is being tracked.
@@ -64,29 +59,14 @@ public class AEPartEssentiaStorageMonitor
 	protected class TrackingInformation
 	{
 		/**
-		 * Is there valid data?
-		 */
-		private boolean isValid = false;
-
-		/**
 		 * Faux itemstack
 		 */
 		private IAEItemStack asItemStack;
 
 		/**
-		 * Fluid stack
+		 * Aspect stack
 		 */
-		private IAEFluidStack asGas;
-
-		/**
-		 * Aspect
-		 */
-		private Aspect asAspect;
-
-		/**
-		 * Amount in essentia units.
-		 */
-		private long aspectAmount;
+		private AspectStack asAspectStack;
 
 		public TrackingInformation()
 		{
@@ -102,7 +82,7 @@ public class AEPartEssentiaStorageMonitor
 				@Override
 				public String getUnlocalizedName()
 				{
-					return TrackingInformation.this.getAspect().getName();
+					return TrackingInformation.this.getAspectStack().getAspectName();
 				}
 
 				@Override
@@ -117,33 +97,13 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		/**
-		 * Gets the aspect associated with the essentia.
+		 * Gets the aspect stack associated with the essentia.
 		 * 
 		 * @return
 		 */
-		public Aspect getAspect()
+		public AspectStack getAspectStack()
 		{
-			return this.asAspect;
-		}
-
-		/**
-		 * Gets the amount stored in the network in Essentia Units.
-		 * 
-		 * @return
-		 */
-		public long getAspectAmount()
-		{
-			return this.aspectAmount;
-		}
-
-		/**
-		 * Gets the essentia gas being tracked.
-		 * 
-		 * @return
-		 */
-		public IAEFluidStack getGas()
-		{
-			return this.asGas;
+			return this.asAspectStack;
 		}
 
 		/**
@@ -164,53 +124,40 @@ public class AEPartEssentiaStorageMonitor
 		 */
 		public boolean isValid()
 		{
-			return this.isValid;
+			return( this.asAspectStack != null );
 		}
 
 		/**
 		 * Sets what is being tracked, or clears the data if null.
 		 * 
-		 * @param fs
+		 * @param as
 		 */
-		public void setTracked( final IAEFluidStack fs )
+		public void setTracked( final AspectStack as )
 		{
-			if( fs != null )
+			if( as != null )
 			{
-				// Set gas
-				this.asGas = fs;
-
 				// Set aspect
-				this.asAspect = ( (GaseousEssentia)fs.getFluid() ).getAspect();
-
-				// Set valid
-				this.isValid = true;
-
-				// Set aspect amount
-				this.updateTrackedAmount( fs.getStackSize() );
+				this.asAspectStack = as;
 			}
 			else
 			{
-				// Clear all and set invalid
-				this.asGas = null;
-				this.asAspect = null;
-				this.aspectAmount = 0;
-				this.isValid = false;
+				// Clear tracker
+				this.asAspectStack = null;
 			}
 		}
 
 		/**
-		 * Updates the fluidstack and aspect amounts.
+		 * Updates the aspect amount.
 		 * 
-		 * @param fluidAmount
+		 * @param aspectAmount
 		 */
-		public void updateTrackedAmount( final long fluidAmount )
+		public void updateTrackedAmount( final long aspectAmount )
 		{
-			// Ensure we are valid
-			if( this.isValid )
+			// Ensure there is a valid tracker
+			if( this.isValid() )
 			{
-				// Update amounts
-				this.asGas.setStackSize( fluidAmount );
-				this.aspectAmount = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidAmount );
+				// Update amount
+				this.asAspectStack.stackSize = aspectAmount;
 			}
 		}
 
@@ -227,9 +174,9 @@ public class AEPartEssentiaStorageMonitor
 	private static final String NBT_KEY_LOCKED = "Locked", NBT_KEY_TRACKED_ASPECT = "TrackedAspect";
 
 	/**
-	 * Watches the ME network for changes.
+	 * Watches the for changes in the essentia grid.
 	 */
-	private IStackWatcher essentiaWatcher;
+	private IEssentiaWatcher essentiaWatcher;
 
 	/**
 	 * True if the monitor is locked, and can not have its tracked essentia
@@ -281,26 +228,26 @@ public class AEPartEssentiaStorageMonitor
 	 */
 	private void configureWatcher()
 	{
-		// Clear any existing watched value
 		if( this.essentiaWatcher != null )
 		{
+			// Clear any existing watched value
 			this.essentiaWatcher.clear();
-		}
 
-		// Is there an essentia being tracked?
-		if( this.trackedEssentia.isValid() )
-		{
-			// Configure the watcher
-			this.essentiaWatcher.add( this.trackedEssentia.getGas() );
-
-			// Get the storage grid
-			IStorageGrid storageGrid = this.getGridBlock().getStorageGrid();
-
-			// Ensure there is a grid.
-			if( storageGrid != null )
+			// Is there an essentia being tracked?
+			if( this.trackedEssentia.isValid() )
 			{
-				// Update the amount.
-				this.updateTrackedEssentiaAmount( storageGrid.getFluidInventory() );
+				// Configure the watcher
+				this.essentiaWatcher.add( this.trackedEssentia.getAspectStack().aspect );
+
+				// Get the essentia monitor
+				IMEEssentiaMonitor essMon = this.getGridBlock().getEssentiaMonitor();
+
+				// Ensure there is a grid.
+				if( essMon != null )
+				{
+					// Update the amount.
+					this.updateTrackedEssentiaAmount( essMon );
+				}
 			}
 		}
 	}
@@ -408,7 +355,7 @@ public class AEPartEssentiaStorageMonitor
 	 * @param aspect
 	 */
 	@SideOnly(Side.CLIENT)
-	private void renderScreen( final Tessellator tessellator, final Aspect aspect, final long aspectAmount )
+	private void renderScreen( final Tessellator tessellator, final AspectStack aspectStack )
 	{
 		// Push the OpenGL attributes
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
@@ -470,7 +417,7 @@ public class AEPartEssentiaStorageMonitor
 			OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, brightnessComponent1 * 0.8F, brightnessComponent2 * 0.8F );
 
 			// Render the aspect
-			this.renderAspect( tessellator, aspect );
+			this.renderAspect( tessellator, aspectStack.aspect );
 		}
 		catch( Exception e )
 		{
@@ -484,7 +431,7 @@ public class AEPartEssentiaStorageMonitor
 		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
 
 		// Convert the amount to a string
-		final String renderedStackSize = ReadableNumberConverter.INSTANCE.toWideReadableForm( aspectAmount );
+		final String renderedStackSize = ReadableNumberConverter.INSTANCE.toWideReadableForm( aspectStack.stackSize );
 
 		// Get the font renderer
 		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
@@ -502,9 +449,9 @@ public class AEPartEssentiaStorageMonitor
 	/**
 	 * Updates the tracked essentia amount.
 	 * 
-	 * @param fluidInventory
+	 * @param essMonitor
 	 */
-	private void updateTrackedEssentiaAmount( final IMEMonitor<IAEFluidStack> fluidInventory )
+	private void updateTrackedEssentiaAmount( final IMEEssentiaMonitor essMonitor )
 	{
 		// Ensure there is something to track
 		if( !this.trackedEssentia.isValid() )
@@ -516,13 +463,13 @@ public class AEPartEssentiaStorageMonitor
 		this.trackedEssentia.updateTrackedAmount( 0 );
 
 		// Get the amount in the network
-		IAEFluidStack stored = fluidInventory.getStorageList().findPrecise( this.trackedEssentia.getGas() );
+		long stored = essMonitor.getEssentiaAmount( this.trackedEssentia.getAspectStack().aspect );
 
 		// Was there anything found?
-		if( stored != null )
+		if( stored > 0 )
 		{
 			// Set the amount
-			this.trackedEssentia.updateTrackedAmount( stored.getStackSize() );
+			this.trackedEssentia.updateTrackedAmount( stored );
 		}
 	}
 
@@ -624,17 +571,8 @@ public class AEPartEssentiaStorageMonitor
 			return this.onActivatedWithEmptyHand();
 		}
 
-		// Get the essentia gas
-		GaseousEssentia gas = GaseousEssentia.getGasFromAspect( heldAspect );
-
-		// Ensure there is a gas
-		if( gas == null )
-		{
-			return false;
-		}
-
-		// Create an AE fluid stack of size 0, and set it as the tracked gas
-		this.trackedEssentia.setTracked( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( gas, 0 ) );
+		// Create an aspect stack of size 0, and set it as the tracked aspect
+		this.trackedEssentia.setTracked( new AspectStack( heldAspect, 0 ) );
 
 		// Reconfigure the watcher
 		this.configureWatcher();
@@ -766,8 +704,7 @@ public class AEPartEssentiaStorageMonitor
 	 * Called by the watcher when the essentia amount changes.
 	 */
 	@Override
-	public void onStackChange( final IItemList o, final IAEStack fullStack, final IAEStack diffStack, final BaseActionSource src,
-								final StorageChannel chan )
+	public void onEssentiaChange( final Aspect aspect, final long storedAmount, final long changeAmount )
 	{
 		// Is there an essentia being tracked?
 		if( !this.trackedEssentia.isValid() )
@@ -776,21 +713,11 @@ public class AEPartEssentiaStorageMonitor
 			return;
 		}
 
-		// Is there any in the system?
-		if( fullStack != null )
-		{
-			// Update the amount
-			this.trackedEssentia.updateTrackedAmount( fullStack.getStackSize() );
-		}
-		else
-		{
-			// None in system, set amount to 0
-			this.trackedEssentia.updateTrackedAmount( 0 );
-		}
+		// Update the amount
+		this.trackedEssentia.updateTrackedAmount( storedAmount );
 
 		// Mark for sync
 		this.markForUpdate();
-
 	}
 
 	@Override
@@ -811,17 +738,8 @@ public class AEPartEssentiaStorageMonitor
 			// Read the aspect
 			Aspect trackedAspect = Aspect.getAspect( data.getString( AEPartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT ) );
 
-			// Get the gas
-			GaseousEssentia gas = GaseousEssentia.getGasFromAspect( trackedAspect );
-
-			if( gas != null )
-			{
-				// Create the fluid stack
-				IAEFluidStack fs = EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( gas, 0 );
-
-				// Set the tracker
-				this.trackedEssentia.setTracked( fs );
-			}
+			// Set the tracker
+			this.trackedEssentia.setTracked( new AspectStack( trackedAspect, 0 ) );
 		}
 	}
 
@@ -840,11 +758,11 @@ public class AEPartEssentiaStorageMonitor
 		// Is there any tracking info to read?
 		if( stream.readBoolean() )
 		{
-			// Read the tracked fluid
-			IAEFluidStack tk = AEApi.instance().storage().readFluidFromPacket( stream );
+			// Read the tracked stack
+			AspectStack as = AspectStack.loadAspectStackFromNBT( ByteBufUtils.readTag( stream ) );
 
 			// Update the tracker
-			this.trackedEssentia.setTracked( tk );
+			this.trackedEssentia.setTracked( as );
 
 			// Mark for screen redraw
 			redraw |= this.updateDisplayList = true;
@@ -897,7 +815,7 @@ public class AEPartEssentiaStorageMonitor
 			GL11.glNewList( this.cachedDisplayList, GL11.GL_COMPILE_AND_EXECUTE );
 
 			// Add the screen render to the list
-			this.renderScreen( Tessellator.instance, this.trackedEssentia.getAspect(), this.trackedEssentia.getAspectAmount() );
+			this.renderScreen( Tessellator.instance, this.trackedEssentia.getAspectStack() );
 
 			// End the list and run it
 			GL11.glEndList();
@@ -1007,10 +925,10 @@ public class AEPartEssentiaStorageMonitor
 	}
 
 	/**
-	 * Called when a new watcher is given to the monitor by the host.
+	 * Called when a new watcher is provided.
 	 */
 	@Override
-	public void updateWatcher( final IStackWatcher newWatcher )
+	public void updateWatcher( final IEssentiaWatcher newWatcher )
 	{
 		// Set the watcher
 		this.essentiaWatcher = newWatcher;
@@ -1035,7 +953,7 @@ public class AEPartEssentiaStorageMonitor
 		if( this.trackedEssentia.isValid() )
 		{
 			// Write the aspect
-			data.setString( AEPartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT, this.trackedEssentia.getAspect().getTag() );
+			data.setString( AEPartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT, this.trackedEssentia.getAspectStack().getTag() );
 		}
 	}
 
@@ -1054,7 +972,7 @@ public class AEPartEssentiaStorageMonitor
 		if( this.trackedEssentia.isValid() )
 		{
 			// Write the tracker
-			this.trackedEssentia.getGas().writeToPacket( stream );
+			ByteBufUtils.writeTag( stream, this.trackedEssentia.getAspectStack().writeToNBT( new NBTTagCompound() ) );
 		}
 
 	}
