@@ -4,7 +4,6 @@ import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.grid.GridEssentiaCache.WatcherManager;
 
@@ -132,7 +131,7 @@ public class EssentiaWatcher
 	@Override
 	public boolean retainAll( final Collection<?> c )
 	{
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

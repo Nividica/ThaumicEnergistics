@@ -267,7 +267,7 @@ public class GuiPriority
 			{
 				newPriority = Integer.parseInt( this.amountField.getText() );
 			}
-			catch( NumberFormatException _ )
+			catch( NumberFormatException e )
 			{
 			}
 
@@ -304,7 +304,7 @@ public class GuiPriority
 			// Send the adjustment to the server
 			new PacketServerPriority().createRequestAdjustPriority( abDef.amount, this.player ).sendPacketToServer();
 		}
-		catch( IndexOutOfBoundsException _ )
+		catch( IndexOutOfBoundsException e )
 		{
 			return;
 		}
