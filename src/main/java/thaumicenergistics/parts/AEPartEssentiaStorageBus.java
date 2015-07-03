@@ -131,7 +131,7 @@ public class AEPartEssentiaStorageBus
 	public boolean addFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
 	{
 		// Get the aspect of the item
-		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( itemStack );
+		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( itemStack );
 
 		// Is there an aspect?
 		if( itemAspect != null )

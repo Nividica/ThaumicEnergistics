@@ -10,6 +10,7 @@ import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.grid.EssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.items.ItemEssentiaCell;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
@@ -59,7 +60,11 @@ public class ContainerEssentiaCell
 		@Override
 		public boolean isItemValidForSlot( final int slotID, final ItemStack itemStack )
 		{
-			return EssentiaItemContainerHelper.INSTANCE.isContainerOrLabel( itemStack );
+			// Get the type
+			AspectItemType iType = EssentiaItemContainerHelper.INSTANCE.getItemType( itemStack );
+
+			// True if jar or jar label
+			return ( iType == AspectItemType.EssentiaContainer ) || ( iType == AspectItemType.JarLabel );
 		}
 	};
 

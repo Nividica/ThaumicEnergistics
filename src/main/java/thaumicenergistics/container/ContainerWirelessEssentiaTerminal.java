@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
@@ -36,7 +37,11 @@ public class ContainerWirelessEssentiaTerminal
 		@Override
 		public boolean isItemValidForSlot( final int slotID, final ItemStack itemStack )
 		{
-			return EssentiaItemContainerHelper.INSTANCE.isContainerOrLabel( itemStack );
+			// Get the type
+			AspectItemType iType = EssentiaItemContainerHelper.INSTANCE.getItemType( itemStack );
+
+			// True if jar or jar label
+			return ( iType == AspectItemType.EssentiaContainer ) || ( iType == AspectItemType.JarLabel );
 		}
 	};
 

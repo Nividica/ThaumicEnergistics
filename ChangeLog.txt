@@ -1,4 +1,8 @@
-﻿6/12/2016 0.8.10.6
+﻿7/2/2015 0.8.10.6
+  Fixes #203: Crystallized Essentia & Wisp Essence can now be used to set filters.
+  Fixes #206: Import bus will no longer crash with redstone card.
+  
+6/12/2016 0.8.10.6
   Fixes #199: Conversion & Storage monitors now placeable in SMP.
   EssentiaGrid:
   * Updated Conversion Monitor

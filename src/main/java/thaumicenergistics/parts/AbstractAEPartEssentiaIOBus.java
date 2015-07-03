@@ -237,7 +237,7 @@ public abstract class AbstractAEPartEssentiaIOBus
 
 	public boolean addFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
 	{
-		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( itemStack );
+		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( itemStack );
 
 		if( itemAspect != null )
 		{

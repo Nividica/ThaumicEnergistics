@@ -18,6 +18,7 @@ import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.grid.IMEEssentiaMonitorReceiver;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
 import thaumicenergistics.util.EffectiveSide;
@@ -552,7 +553,7 @@ public abstract class AbstractContainerCellTerminalBase
 
 		// Re-validate the label
 		ItemStack label = this.inventory.getStackInSlot( AbstractContainerCellTerminalBase.INPUT_SLOT_ID );
-		if( !EssentiaItemContainerHelper.INSTANCE.isLabel( label ) )
+		if( EssentiaItemContainerHelper.INSTANCE.getItemType( label ) != AspectItemType.JarLabel )
 		{
 			// Not a label
 			return;
@@ -683,14 +684,21 @@ public abstract class AbstractContainerCellTerminalBase
 			return;
 		}
 
-		// Ensure the input slot is an aspect container item.
-		if( !EssentiaItemContainerHelper.INSTANCE.isContainer( inputStack ) )
+		// Get the item type
+		AspectItemType iType = EssentiaItemContainerHelper.INSTANCE.getItemType( inputStack );
+
+		// Label?
+		if( iType == AspectItemType.JarLabel )
 		{
-			// Input is not aspect container, is it a label?
-			if( EssentiaItemContainerHelper.INSTANCE.isLabel( inputStack ) )
-			{
-				this.setLabelAspect();
-			}
+			// Set the label
+			this.setLabelAspect();
+			return;
+		}
+
+		// Valid container?
+		if( iType != AspectItemType.EssentiaContainer )
+		{
+			// Invalid container
 			return;
 		}
 

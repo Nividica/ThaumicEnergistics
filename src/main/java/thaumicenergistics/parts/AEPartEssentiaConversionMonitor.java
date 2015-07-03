@@ -13,6 +13,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.Actionable;
@@ -130,14 +131,21 @@ public class AEPartEssentiaConversionMonitor
 	 * @param heldItem
 	 * @return
 	 */
-	private boolean fillEssentiaContainer( final EntityPlayer player, final ItemStack heldItem )
+	private boolean fillEssentiaContainer( final EntityPlayer player, final ItemStack heldItem, final AspectItemType itemType )
 	{
 		// Is the item being held a label?
-		if( EssentiaItemContainerHelper.INSTANCE.isLabel( heldItem ) )
+		if( itemType == AspectItemType.JarLabel )
 		{
 			// Set the label type
 			EssentiaItemContainerHelper.INSTANCE.setLabelAspect( heldItem, this.trackedEssentia.getAspectStack().aspect );
 			return true;
+		}
+
+		// Is the item not a container?
+		if( itemType != AspectItemType.EssentiaContainer )
+		{
+			// Not a container
+			return false;
 		}
 
 		// Does the player have extract permission?
@@ -332,17 +340,17 @@ public class AEPartEssentiaConversionMonitor
 	 * Attempts to fill an essentia container if monitor locked
 	 */
 	@Override
-	protected boolean onActivatedWithEssentiaContainerOrLabel( final EntityPlayer player, final ItemStack heldItem )
+	protected boolean onActivateWithAspectItem( final EntityPlayer player, final ItemStack heldItem, final AspectItemType itemType )
 	{
 		// Is there nothing being tracked, or is the monitor unlocked?
 		if( !this.trackedEssentia.isValid() || !this.isLocked() )
 		{
 			// Pass to super
-			return super.onActivatedWithEssentiaContainerOrLabel( player, heldItem );
+			return super.onActivateWithAspectItem( player, heldItem, itemType );
 		}
 
 		// Fill the container
-		return this.fillEssentiaContainer( player, heldItem );
+		return this.fillEssentiaContainer( player, heldItem, itemType );
 
 	}
 
@@ -371,21 +379,14 @@ public class AEPartEssentiaConversionMonitor
 		ItemStack heldItem = player.getCurrentEquippedItem();
 
 		// Is the player holding an essentia container?
-		if( !EssentiaItemContainerHelper.INSTANCE.isContainerOrLabel( heldItem ) )
+		if( EssentiaItemContainerHelper.INSTANCE.getItemType( heldItem ) != AspectItemType.EssentiaContainer )
 		{
-			// Not holding container
+			// Not holding valid container
 			return false;
 		}
 
 		// Shift-right-clicking attempts to insert the essentia into the network.
 		// Shift-double-right-clicking attempts to insert all essentia in the players inventory into the network.
-
-		// Is the item being held a label?
-		if( EssentiaItemContainerHelper.INSTANCE.isLabel( heldItem ) )
-		{
-			// Can't do anything with a label.
-			return false;
-		}
 
 		// Was it a double click?
 		if( this.wasDoubleClick( player ) )

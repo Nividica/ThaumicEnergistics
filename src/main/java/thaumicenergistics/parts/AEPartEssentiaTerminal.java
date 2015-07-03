@@ -15,6 +15,7 @@ import thaumicenergistics.container.AbstractContainerCellTerminalBase;
 import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.gui.GuiEssentiaCellTerminal;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.PrivateInventory;
@@ -69,7 +70,11 @@ public class AEPartEssentiaTerminal
 		@Override
 		public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
 		{
-			return EssentiaItemContainerHelper.INSTANCE.isContainerOrLabel( itemStack );
+			// Get the type
+			AspectItemType iType = EssentiaItemContainerHelper.INSTANCE.getItemType( itemStack );
+
+			// True if jar or jar label
+			return ( iType == AspectItemType.EssentiaContainer ) || ( iType == AspectItemType.JarLabel );
 		}
 	};
 

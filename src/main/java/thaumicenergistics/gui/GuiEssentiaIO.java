@@ -17,8 +17,8 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotGui;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
 import thaumicenergistics.parts.AEPartEssentiaExportBus;
-import thaumicenergistics.parts.AbstractAEPartEssentiaIOBus;
 import thaumicenergistics.parts.AEPartEssentiaImportBus;
+import thaumicenergistics.parts.AbstractAEPartEssentiaIOBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import appeng.api.config.RedstoneMode;
@@ -246,7 +246,7 @@ public class GuiEssentiaIO
 			if( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the aspect of the currently held item
-				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( this.player.inventory.getItemStack() );
+				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() );
 
 				// Is there an aspect?
 				if( itemAspect != null )
@@ -428,7 +428,10 @@ public class GuiEssentiaIO
 			this.buttonList.add( this.redstoneControlButton );
 
 			// Adjust void mode button Y
-			this.voidModeButton.yPosition += 18;
+			if( this.voidModeButton != null )
+			{
+				this.voidModeButton.yPosition += 18;
+			}
 		}
 		else if( !newRedstoneControled && this.buttonList.contains( this.redstoneControlButton ) )
 		{
@@ -436,7 +439,10 @@ public class GuiEssentiaIO
 			this.buttonList.remove( this.redstoneControlButton );
 
 			// Adjust void mode button Y
-			this.voidModeButton.yPosition -= 18;
+			if( this.voidModeButton != null )
+			{
+				this.voidModeButton.yPosition -= 18;
+			}
 		}
 	}
 

@@ -267,7 +267,7 @@ public class GuiEssentiaLevelEmitter
 		if( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
 		{
 			// Pass to the widget
-			this.aspectFilterSlot.mouseClicked( EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( this.player.inventory.getItemStack() ) );
+			this.aspectFilterSlot.mouseClicked( EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() ) );
 		}
 	}
 
@@ -460,9 +460,15 @@ public class GuiEssentiaLevelEmitter
 		this.amountField.setText( Long.toString( amount ) );
 	}
 
+	/**
+	 * Sets the tracked aspect based on the specified item.
+	 * 
+	 * @param itemStack
+	 * @return
+	 */
 	public boolean setFilteredAspectFromItemstack( final ItemStack itemStack )
 	{
-		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( itemStack );
+		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( itemStack );
 
 		if( itemAspect != null )
 		{

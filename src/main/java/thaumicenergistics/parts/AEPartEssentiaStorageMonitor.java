@@ -26,6 +26,7 @@ import thaumicenergistics.grid.IEssentiaWatcher;
 import thaumicenergistics.grid.IEssentiaWatcherHost;
 import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
@@ -551,9 +552,10 @@ public class AEPartEssentiaStorageMonitor
 	 * 
 	 * @param player
 	 * @param heldItem
+	 * @param itemType
 	 * @return
 	 */
-	protected boolean onActivatedWithEssentiaContainerOrLabel( final EntityPlayer player, final ItemStack heldItem )
+	protected boolean onActivateWithAspectItem( final EntityPlayer player, final ItemStack heldItem, final AspectItemType itemType )
 	{
 		// Is the monitor locked?
 		if( this.monitorLocked )
@@ -562,7 +564,7 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Get the aspect
-		Aspect heldAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( heldItem );
+		Aspect heldAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( heldItem );
 
 		// Ensure there is an aspect
 		if( heldAspect == null )
@@ -691,10 +693,13 @@ public class AEPartEssentiaStorageMonitor
 			return this.onActivatedWithEmptyHand();
 		}
 
-		// Is the player holding an essentia container?
-		if( EssentiaItemContainerHelper.INSTANCE.isContainerOrLabel( heldItem ) )
+		// Get the type
+		AspectItemType itemType = EssentiaItemContainerHelper.INSTANCE.getItemType( heldItem );
+
+		// Is the item valid?
+		if( itemType != AspectItemType.Invalid )
 		{
-			return this.onActivatedWithEssentiaContainerOrLabel( player, heldItem );
+			return this.onActivateWithAspectItem( player, heldItem, itemType );
 		}
 
 		return false;

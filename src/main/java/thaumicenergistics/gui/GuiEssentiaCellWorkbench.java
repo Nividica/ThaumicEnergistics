@@ -173,7 +173,7 @@ public class GuiEssentiaCellWorkbench
 			if( partitionWidget.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the aspect of the currently held item
-				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( this.player.inventory.getItemStack() );
+				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() );
 
 				// Get the aspect of the widget
 				Aspect widgetAspect = partitionWidget.getAspect();

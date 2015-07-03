@@ -11,8 +11,10 @@ import thaumcraft.common.blocks.BlockJarItem;
 import thaumcraft.common.blocks.ItemJarFilled;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
+import thaumcraft.common.items.ItemCrystalEssence;
 import thaumcraft.common.items.ItemEssence;
 import thaumcraft.common.items.ItemResource;
+import thaumcraft.common.items.ItemWispEssence;
 import thaumicenergistics.api.IThEEssentiaContainerPermission;
 import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
@@ -26,6 +28,34 @@ import thaumicenergistics.aspect.AspectStack;
  */
 public final class EssentiaItemContainerHelper
 {
+	public enum AspectItemType
+	{
+			/**
+			 * Unknown item, or non-whitelisted container
+			 */
+			Invalid,
+
+			/**
+			 * Whitelisted container.
+			 */
+			EssentiaContainer,
+
+			/**
+			 * Warded jar label.
+			 */
+			JarLabel,
+
+			/**
+			 * Crystallized essentia.
+			 */
+			CrystallizedEssentia,
+
+			/**
+			 * Wispy Essence.
+			 */
+			WispEssence;
+	}
+
 	/**
 	 * Singleton
 	 */
@@ -57,6 +87,31 @@ public final class EssentiaItemContainerHelper
 	private EssentiaItemContainerHelper()
 	{
 		this.perms = ThEApi.instance().transportPermissions();
+	}
+
+	/**
+	 * Gets the first aspect contained in the IEssentiaContainerItem. Ignores the whitelist.
+	 * 
+	 * @param itemStack
+	 * @return
+	 */
+	private Aspect getAspectFromAnyContainerItem( final ItemStack itemStack )
+	{
+		// Is it a container?
+		if( itemStack.getItem() instanceof IEssentiaContainerItem )
+		{
+			// Get the list of aspects from the container
+			AspectList aspectList = ( (IEssentiaContainerItem)itemStack.getItem() ).getAspects( itemStack );
+
+			// Is there are list?
+			if( aspectList != null )
+			{
+				// Return the aspect contained
+				return aspectList.getAspects()[0];
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -176,14 +231,8 @@ public final class EssentiaItemContainerHelper
 	 */
 	public ImmutablePair<Integer, ItemStack> extractFromContainer( final ItemStack container, final AspectStack aspectStack )
 	{
-		// Ensure we have a valid container
-		if( container == null )
-		{
-			return null;
-		}
-
 		// Ensure it is a container
-		if( !this.isContainer( container ) )
+		if( this.getItemType( container ) != AspectItemType.EssentiaContainer )
 		{
 			return null;
 		}
@@ -324,7 +373,7 @@ public final class EssentiaItemContainerHelper
 	public Aspect getAspectFromLabel( final ItemStack label )
 	{
 		// Ensure the item is a label
-		if( !this.isLabel( label ) )
+		if( this.getItemType( label ) != AspectItemType.JarLabel )
 		{
 			return null;
 		}
@@ -346,39 +395,17 @@ public final class EssentiaItemContainerHelper
 	}
 
 	/**
-	 * Returns the aspect of whatever essentia is in the container.
-	 * This method supports jar labels.
+	 * Returns the aspect in the container, or null if empty or invalid container.
 	 * 
-	 * @param container
-	 * @return Aspect if container has one, null otherwise.
+	 * @param itemStack
+	 * @return
 	 */
-	public Aspect getAspectInContainer( final ItemStack container )
+	public Aspect getAspectInContainer( final ItemStack itemStack )
 	{
-		// Is it a label?
-		if( this.isLabel( container ) )
+		// Ensure the item is a valid container
+		if( this.getItemType( itemStack ) == AspectItemType.EssentiaContainer )
 		{
-			return this.getAspectFromLabel( container );
-		}
-		// Is the itemstack valid?
-		else if( container != null )
-		{
-			// Is it a container?
-			if( container.getItem() instanceof IEssentiaContainerItem )
-			{
-				// Is the container whitelisted?
-				if( this.isContainerWhitelisted( container ) )
-				{
-					// Get the list of aspects from the container
-					AspectList aspectList = ( (IEssentiaContainerItem)container.getItem() ).getAspects( container );
-
-					// Is there are list?
-					if( aspectList != null )
-					{
-						// Return the aspect contained
-						return aspectList.getAspects()[0];
-					}
-				}
-			}
+			return this.getAspectFromAnyContainerItem( itemStack );
 		}
 
 		return null;
@@ -503,6 +530,89 @@ public final class EssentiaItemContainerHelper
 	}
 
 	/**
+	 * Returns the aspect of of the specified item. This method supports jars, jar labels and crystallized essentia.
+	 * This should not be used to validate a container.
+	 * 
+	 * @param itemStack
+	 * @return Aspect if container has one, null otherwise.
+	 */
+	public Aspect getFilterAspectFromItem( final ItemStack itemStack )
+	{
+		// Get the type
+		AspectItemType type = this.getItemType( itemStack );
+
+		switch ( type )
+		{
+			case JarLabel:
+				return this.getAspectFromLabel( itemStack );
+
+			case CrystallizedEssentia:
+			case EssentiaContainer:
+			case WispEssence:
+				return this.getAspectFromAnyContainerItem( itemStack );
+
+			case Invalid:
+				break;
+
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets the aspect type of the item.
+	 * 
+	 * @param itemStack
+	 * @return
+	 */
+	public AspectItemType getItemType( final ItemStack itemStack )
+	{
+		// Ensure the stack is not null
+		if( itemStack != null )
+		{
+			// Get the item
+			Item item = itemStack.getItem();
+
+			// Ensure the item is not null
+			if( item != null )
+			{
+				// IEssentiaContainerItem?
+				if( item instanceof IEssentiaContainerItem )
+				{
+
+					// Valid container?
+					if( this.isContainerWhitelisted( itemStack ) )
+					{
+						return AspectItemType.EssentiaContainer;
+					}
+
+					// Crystallized Essentia?
+					if( item instanceof ItemCrystalEssence )
+					{
+						return AspectItemType.CrystallizedEssentia;
+					}
+
+					// Wisp essence?
+					if( item instanceof ItemWispEssence )
+					{
+						return AspectItemType.WispEssence;
+					}
+				}
+
+				// Label?
+				if( ( item instanceof ItemResource ) && ( itemStack.getItemDamage() == 13 ) )
+				{
+					return AspectItemType.JarLabel;
+				}
+
+			}
+
+		}
+
+		return AspectItemType.Invalid;
+	}
+
+	/**
 	 * Gets the aspect represented by a jar's label.
 	 * 
 	 * @param jar
@@ -539,14 +649,8 @@ public final class EssentiaItemContainerHelper
 	 */
 	public ImmutablePair<Integer, ItemStack> injectIntoContainer( final ItemStack container, final AspectStack aspectStack )
 	{
-		// Is there an item?
-		if( container == null )
-		{
-			return null;
-		}
-
 		// Is the item an essentia container?
-		if( !this.isContainer( container ) )
+		if( this.getItemType( container ) != AspectItemType.EssentiaContainer )
 		{
 			return null;
 		}
@@ -655,24 +759,6 @@ public final class EssentiaItemContainerHelper
 	}
 
 	/**
-	 * Checks if the specified itemstack represents a container we can use
-	 * 
-	 * @param container
-	 * @return
-	 */
-	public boolean isContainer( final ItemStack container )
-	{
-		// Is the container not null?
-		if( container != null )
-		{
-			// Return if the container whitelisted or not.
-			return this.isContainerWhitelisted( container );
-		}
-
-		return false;
-	}
-
-	/**
 	 * Checks if the specified itemstack represents an empty container.
 	 * 
 	 * @param container
@@ -696,17 +782,6 @@ public final class EssentiaItemContainerHelper
 	}
 
 	/**
-	 * True if the item is a container or label
-	 * 
-	 * @param stack
-	 * @return
-	 */
-	public boolean isContainerOrLabel( final ItemStack stack )
-	{
-		return this.isContainer( stack ) || this.isLabel( stack );
-	}
-
-	/**
 	 * Quick check to see if the item is whitelisted.
 	 * 
 	 * @param item
@@ -727,24 +802,6 @@ public final class EssentiaItemContainerHelper
 	public boolean isContainerWhitelisted( final ItemStack container )
 	{
 		return this.getContainerInfo( container ) != null;
-	}
-
-	/**
-	 * True if the itemstack is a jar label.
-	 * 
-	 * @param stack
-	 * @return
-	 */
-	public boolean isLabel( final ItemStack stack )
-	{
-		// Ensure the stack is not null
-		if( stack != null )
-		{
-			// True if resource and meta = 13
-			return( ( stack.getItem() instanceof ItemResource ) && ( stack.getItemDamage() == 13 ) );
-		}
-
-		return false;
 	}
 
 	/**
@@ -789,7 +846,7 @@ public final class EssentiaItemContainerHelper
 			}
 			else
 			{
-				labelAspect = this.getAspectInContainer( jar );
+				labelAspect = this.getFilterAspectFromItem( jar );
 			}
 
 			// Ensure we have an aspect to set
@@ -820,7 +877,7 @@ public final class EssentiaItemContainerHelper
 	public void setLabelAspect( final ItemStack label, final Aspect aspect )
 	{
 		// Ensure the item is a label
-		if( !this.isLabel( label ) )
+		if( this.getItemType( label ) != AspectItemType.JarLabel )
 		{
 			return;
 		}

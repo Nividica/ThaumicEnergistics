@@ -555,7 +555,7 @@ public class AEPartEssentiaLevelEmitter
 	public boolean setFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
 	{
 		// Get the aspect
-		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( itemStack );
+		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( itemStack );
 
 		// Ensure we got an aspect
 		if( itemAspect == null )
