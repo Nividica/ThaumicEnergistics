@@ -1,6 +1,9 @@
 ﻿7/2/2015 0.8.10.6
   Fixes #203: Crystallized Essentia & Wisp Essence can now be used to set filters.
   Fixes #206: Import bus will no longer crash with redstone card.
+  Using the wrench focus on a pedestal no longer spawns wrenches.
+  Fixes #204: ACT search box focus obeys search mode.
+  Fixes #201: ACT GUI less laggy when ME system very busy.
   
 6/12/2016 0.8.10.6
   Fixes #199: Conversion & Storage monitors now placeable in SMP.

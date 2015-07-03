@@ -166,6 +166,11 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private GuiButtonSearchMode btnSearchMode;
 
+	/**
+	 * Tracks if the repo/widgets needs to be updated.
+	 */
+	private boolean viewNeedsUpdate = true;
+
 	public GuiArcaneCraftingTerminal( final AEPartArcaneCraftingTerminal part, final EntityPlayer player )
 	{
 		// Call super
@@ -505,12 +510,27 @@ public class GuiArcaneCraftingTerminal
 		// Set the view mode
 		this.btnViewType.setViewMode( this.viewMode );
 
-		// Update the repo
+		// Repo needs update
+		this.viewNeedsUpdate = true;
+
+	}
+
+	/**
+	 * Updates the repo's view, the scroll bar range, and the widgets.
+	 */
+	private void updateView()
+	{
+		// Mark clean
+		this.viewNeedsUpdate = false;
+
+		// Update repo view
 		this.repo.updateView();
+
+		// Update the scroll bar
+		this.updateScrollbarRange();
 
 		// Update the widgets
 		this.updateMEWidgets();
-
 	}
 
 	/**
@@ -519,6 +539,12 @@ public class GuiArcaneCraftingTerminal
 	@Override
 	protected void drawGuiContainerBackgroundLayer( final float alpha, final int mouseX, final int mouseY )
 	{
+		// Does the view need updating?
+		if( this.viewNeedsUpdate )
+		{
+			this.updateView();
+		}
+
 		// Full white
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
@@ -664,14 +690,19 @@ public class GuiArcaneCraftingTerminal
 		// Did they press the escape key?
 		if( keyID == Keyboard.KEY_ESCAPE )
 		{
-			// Slot the screen.
+			// Close the screen.
 			this.mc.thePlayer.closeScreen();
+			return;
 		}
-		else if( this.searchField.isFocused() )
-		{
-			// Pass the key to the search field.
-			this.searchField.textboxKeyTyped( key, keyID );
 
+		// Prevent only spaces
+		if( ( key == ' ' ) && ( this.searchField.getText().length() == 0 ) )
+		{
+			return;
+		}
+
+		if( this.searchField.textboxKeyTyped( key, keyID ) )
+		{
 			// Get the search query
 			String newSearch = this.searchField.getText().trim().toLowerCase();
 
@@ -681,14 +712,8 @@ public class GuiArcaneCraftingTerminal
 				// Set the search string
 				this.repo.searchString = newSearch;
 
-				// Update the repo
-				this.repo.updateView();
-
-				// Update the scroll max
-				this.updateScrollbarRange();
-
-				// Update the widgets
-				this.updateMEWidgets();
+				// Repo needs update
+				this.viewNeedsUpdate = true;
 			}
 		}
 		else
@@ -758,10 +783,9 @@ public class GuiArcaneCraftingTerminal
 
 			// Update the repo
 			this.repo.searchString = "";
-			this.repo.updateView();
 
-			// Update the widgets
-			this.updateMEWidgets();
+			// Repo needs update
+			this.viewNeedsUpdate = true;
 
 			// Inform search field.
 			this.searchField.mouseClicked( mouseX - this.guiLeft, mouseY - this.guiTop, mouseButton );
@@ -770,8 +794,13 @@ public class GuiArcaneCraftingTerminal
 			return;
 		}
 
-		// Inform search field.
-		this.searchField.mouseClicked( mouseX - this.guiLeft, mouseY - this.guiTop, mouseButton );
+		SearchBoxMode searchBoxMode = (SearchBoxMode)AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+
+		// Inform search field of click if auto mode is not on
+		if( !( searchBoxMode == SearchBoxMode.AUTOSEARCH || searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) )
+		{
+			this.searchField.mouseClicked( mouseX - this.guiLeft, mouseY - this.guiTop, mouseButton );
+		}
 
 		// Pass to super
 		super.mouseClicked( mouseX, mouseY, mouseButton );
@@ -898,6 +927,9 @@ public class GuiArcaneCraftingTerminal
 				// Rotate search mode
 				SearchBoxMode searchBoxMode = (SearchBoxMode)AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 				searchBoxMode = Platform.rotateEnum( searchBoxMode, false, Settings.SEARCH_MODE.getPossibleValues() );
+
+				// Set focus
+				this.searchField.setFocused( ( searchBoxMode == SearchBoxMode.AUTOSEARCH ) || ( searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) );
 
 				// Update the settings
 				AEConfig.instance.settings.putSetting( Settings.SEARCH_MODE, searchBoxMode );
@@ -1119,13 +1151,9 @@ public class GuiArcaneCraftingTerminal
 	{
 		// Update the repository
 		this.repo.postUpdate( change );
-		this.repo.updateView();
 
-		// Update the scroll bar
-		this.updateScrollbarRange();
-
-		// Update the widgets
-		this.updateMEWidgets();
+		// Repo needs update
+		this.viewNeedsUpdate = true;
 	}
 
 	/**
@@ -1141,13 +1169,9 @@ public class GuiArcaneCraftingTerminal
 		{
 			this.repo.postUpdate( stack );
 		}
-		this.repo.updateView();
 
-		// Update the scroll bar
-		this.updateScrollbarRange();
-
-		// Update the widgets
-		this.updateMEWidgets();
+		// Repo needs update
+		this.viewNeedsUpdate = true;
 	}
 
 	/**
@@ -1207,9 +1231,8 @@ public class GuiArcaneCraftingTerminal
 		// Update the repo
 		this.repo.setViewCell( viewCells );
 
-		// Update the widgets and scrollbar
-		this.updateMEWidgets();
-		this.updateScrollbarRange();
+		// Repo needs update
+		this.viewNeedsUpdate = true;
 	}
 
 }

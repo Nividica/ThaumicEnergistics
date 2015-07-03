@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
@@ -17,6 +18,7 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.wands.FocusUpgradeType;
 import thaumcraft.api.wands.ItemFocusBasic;
 import thaumcraft.common.items.wands.ItemWandCasting;
+import thaumcraft.common.tiles.TilePedestal;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.network.packet.client.PacketAreaParticleFX;
 import thaumicenergistics.network.packet.server.PacketServerWrenchFocus;
@@ -200,8 +202,18 @@ public class ItemFocusAEWrench
 			return false;
 		}
 
+		// Get the tile
+		TileEntity te = world.getTileEntity( position.blockX, position.blockY, position.blockZ );
+
+		// Is the entity a pedestal?
+		if( te instanceof TilePedestal )
+		{
+			// Ignore pedestals
+			return false;
+		}
+
 		// Is the block an part host?
-		boolean isPartHost = ( world.getTileEntity( position.blockX, position.blockY, position.blockZ ) instanceof IPartHost );
+		boolean isPartHost = ( te instanceof IPartHost );
 
 		// Was a part host right clicked?
 		if( isPartHost && ( action == Action.RIGHT_CLICK_BLOCK ) )
@@ -248,8 +260,10 @@ public class ItemFocusAEWrench
 
 		try
 		{
+			ItemStack pWrench = ItemFocusAEWrench.getWrench().copy();
+
 			// Set the wrench as what the player is holding
-			player.setCurrentItemOrArmor( 0, ItemFocusAEWrench.getWrench() );
+			player.setCurrentItemOrArmor( 0, pWrench );
 
 			// The sneak state of the player depends on what was clicked
 
@@ -279,6 +293,7 @@ public class ItemFocusAEWrench
 			// Was it handled or is the block gone?
 			if( handled || ( world.getBlock( position.blockX, position.blockY, position.blockZ ) == Blocks.air ) )
 			{
+
 				// Take vis and show beam
 				ItemFocusAEWrench.consumeVisAndSpawnBeam( wand, wandStack, player, position.blockX, position.blockY, position.blockZ );
 			}
