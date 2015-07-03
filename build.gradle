@@ -22,7 +22,7 @@ group= "thaumicenergistics" // http://maven.apache.org/guides/mini/guide-naming-
 archivesBaseName = "thaumicenergistics"
 
 minecraft {
-    version = "1.7.10-10.13.3.1403-1.7.10"
+    version = "1.7.10-10.13.4.1448-1.7.10"
     runDir = "eclipse/assets"
 }
 

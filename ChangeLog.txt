@@ -4,6 +4,7 @@
   Using the wrench focus on a pedestal no longer spawns wrenches.
   Fixes #204: ACT search box focus obeys search mode.
   Fixes #201: ACT GUI less laggy when ME system very busy.
+  Dependency Updated: Forge 10.13.4.1448
   
 6/12/2016 0.8.10.6
   Fixes #199: Conversion & Storage monitors now placeable in SMP.
