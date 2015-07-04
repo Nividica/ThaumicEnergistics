@@ -8,7 +8,6 @@ import java.util.Random;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -34,6 +33,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
+import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -125,26 +125,6 @@ public class AEPartEssentiaLevelEmitter
 	}
 
 	/**
-	 * Marks that we are dirty, and that we need to
-	 * send an update to the client. Then updates all
-	 * neighbor blocks.
-	 */
-	private void markAndNotify()
-	{
-		// Mark that we need to be saved and updated
-		this.markForSave();
-		this.markForUpdate();
-
-		// Get the host tile entity & side
-		TileEntity hte = this.getHostTile();
-		ForgeDirection side = this.getSide();
-
-		// Update the neighbors
-		hte.getWorldObj().notifyBlocksOfNeighborChange( hte.xCoord, hte.yCoord, hte.zCoord, Blocks.air );
-		hte.getWorldObj().notifyBlocksOfNeighborChange( hte.xCoord + side.offsetX, hte.yCoord + side.offsetX, hte.zCoord + side.offsetX, Blocks.air );
-	}
-
-	/**
 	 * Sets the current amount in the network, of the aspect
 	 * we are watching/filtering.
 	 * 
@@ -197,13 +177,23 @@ public class AEPartEssentiaLevelEmitter
 
 		}
 
+		// Did the emitting state change?
 		if( emitting != this.isEmitting )
 		{
 			// Set the new state
 			this.isEmitting = emitting;
 
+			// Mark that we need to be saved and updated
+			this.markForSave();
+			this.markForUpdate();
+
+			// Get the host tile entity & side
+			TileEntity hte = this.getHostTile();
+			ForgeDirection side = this.getSide();
+
 			// Update the neighbors
-			this.markAndNotify();
+			Platform.notifyBlocksOfNeighbors( hte.getWorldObj(), hte.xCoord, hte.yCoord, hte.zCoord );
+			Platform.notifyBlocksOfNeighbors( hte.getWorldObj(), hte.xCoord + side.offsetX, hte.yCoord + side.offsetX, hte.zCoord + side.offsetX );
 		}
 	}
 
