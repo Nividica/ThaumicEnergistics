@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +44,7 @@ public class EssentiaMonitor
 	/**
 	 * The actual cache of aspects.
 	 */
-	private final ConcurrentHashMap<Aspect, AspectStack> cache;
+	private final Map<Aspect, AspectStack> cache;
 
 	/**
 	 * Objects who wish to be notified of any changes.

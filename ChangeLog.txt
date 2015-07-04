@@ -1,5 +1,6 @@
 ﻿7/4/2015 0.8.10.7
   Changed level emitter block update code to match AE emitter.
+  Made the essentia grid cache compatible with Java 1.7 #211
 
 7/2/2015 0.8.10.6
   Fixes #203: Crystallized Essentia & Wisp Essence can now be used to set filters.
