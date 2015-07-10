@@ -64,6 +64,39 @@ public abstract class AbstractBlockProviderBase
 	@Override
 	public abstract IIcon getIcon( int side, int metaData );
 
+	/* Colored Lights Core Test Code
+	@Override
+	public int getLightValue( final IBlockAccess world, final int x, final int y, final int z )
+	{
+		// Get  tile entity
+		TileEntity tileProvider = world.getTileEntity( x, y, z );
+
+		// Is there still have a tile?
+		if( tileProvider instanceof TileProviderBase )
+		{
+
+			float r = 0;
+			float g = 0;
+			float b = 0;
+
+			if( ( (TileProviderBase)tileProvider ).isActive() )
+			{
+				int mv = ( (TileProviderBase)tileProvider ).getColor().mediumVariant;
+
+				r = ( ( mv >> 16 ) & 0xff ) / 255.0F;
+				g = ( ( mv >> 8 ) & 0xff ) / 255.0F;
+				b = ( ( mv ) & 0xff ) / 255.0F;
+				return CLApi.makeRGBLightValue( r, g, b );
+			}
+
+			return 0;
+		}
+
+		return super.getLightValue( world, x, y, z );
+
+	}
+	*/
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public final int getRenderBlockPass()

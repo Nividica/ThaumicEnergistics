@@ -37,12 +37,12 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * Normal button labels
 	 */
-	private static final String[] BUTTON_LABELS = { "-1", "-10", "-100", "+1", "+10", "+100" };
+	private static final String[] BUTTON_LABELS = { "+1", "+10", "+100", "-1", "-10", "-100" };
 
 	/**
 	 * Button labels when shift is being pressed.
 	 */
-	private static final String[] BUTTON_LABELS_SHIFTED = { "-100", "-1000", "-10000", "+100", "+1000", "+10000" };
+	private static final String[] BUTTON_LABELS_SHIFTED = { "+100", "+1000", "+10000", "-100", "-1000", "-10000" };
 
 	/**
 	 * Width of the gui
@@ -402,6 +402,7 @@ public class GuiEssentiaLevelEmitter
 		// Reset the button list
 		this.buttonList.clear();
 
+		// Add adjustment buttons
 		for( int row = 0; row < GuiEssentiaLevelEmitter.BUTTON_ROWS; row++ )
 		{
 			// Calculate the y position of this row

@@ -576,15 +576,15 @@ public final class EssentiaItemContainerHelper
 			// Ensure the item is not null
 			if( item != null )
 			{
-				// IEssentiaContainerItem?
-				if( item instanceof IEssentiaContainerItem )
-				{
 
-					// Valid container?
-					if( this.isContainerWhitelisted( itemStack ) )
-					{
-						return AspectItemType.EssentiaContainer;
-					}
+				// Valid container?
+				if( this.isContainerWhitelisted( itemStack ) )
+				{
+					return AspectItemType.EssentiaContainer;
+				}
+				// IEssentiaContainerItem?
+				else if( item instanceof IEssentiaContainerItem )
+				{
 
 					// Crystallized Essentia?
 					if( item instanceof ItemCrystalEssence )

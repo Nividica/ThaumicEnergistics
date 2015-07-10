@@ -95,17 +95,6 @@ public abstract class AbstractPacket
 	}
 
 	/**
-	 * Reads a Thaumcraft aspect from the stream.
-	 * 
-	 * @param stream
-	 * @return
-	 */
-	protected static Aspect readAspect( final ByteBuf stream )
-	{
-		return Aspect.aspects.get( readString( stream ) );
-	}
-
-	/**
 	 * Reads an itemstack from the stream.
 	 * 
 	 * @param stream
@@ -222,24 +211,6 @@ public abstract class AbstractPacket
 	}
 
 	/**
-	 * Writes a Thaumcraft aspect to the stream.
-	 * 
-	 * @param aspect
-	 * @param stream
-	 */
-	protected static void writeAspect( final Aspect aspect, final ByteBuf stream )
-	{
-		String aspectName = "";
-
-		if( aspect != null )
-		{
-			aspectName = aspect.getTag();
-		}
-
-		writeString( aspectName, stream );
-	}
-
-	/**
 	 * Writes an itemstack into the stream.
 	 * 
 	 * @param stack
@@ -321,6 +292,35 @@ public abstract class AbstractPacket
 	protected static void writeWorld( final World world, final ByteBuf stream )
 	{
 		stream.writeInt( world.provider.dimensionId );
+	}
+
+	/**
+	 * Reads a Thaumcraft aspect from the stream.
+	 * 
+	 * @param stream
+	 * @return
+	 */
+	public static Aspect readAspect( final ByteBuf stream )
+	{
+		return Aspect.aspects.get( readString( stream ) );
+	}
+
+	/**
+	 * Writes a Thaumcraft aspect to the stream.
+	 * 
+	 * @param aspect
+	 * @param stream
+	 */
+	public static void writeAspect( final Aspect aspect, final ByteBuf stream )
+	{
+		String aspectName = "";
+
+		if( aspect != null )
+		{
+			aspectName = aspect.getTag();
+		}
+
+		writeString( aspectName, stream );
 	}
 
 	private void fromCompressedBytes( final ByteBuf packetStream )

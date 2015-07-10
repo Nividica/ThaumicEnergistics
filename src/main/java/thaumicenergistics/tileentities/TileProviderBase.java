@@ -214,7 +214,7 @@ public abstract class TileProviderBase
 		this.gridProxy.myColor = gridColor;
 
 		// Are we server side?
-		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
+		if( EffectiveSide.isServerSide() )
 		{
 			/*
 			// Get the grid node

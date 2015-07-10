@@ -87,6 +87,10 @@ public class AEPartEssentiaLevelEmitter
 	 */
 	private IEssentiaWatcher essentiaWatcher;
 
+	// TODO: Remove debug
+	//private int debugTrackingStage = 0;
+	//private int debugMonID = 0;
+
 	/**
 	 * Creates the part
 	 */
@@ -100,14 +104,22 @@ public class AEPartEssentiaLevelEmitter
 	 */
 	private void configureWatcher()
 	{
+		boolean didSet = false;
+
+		//this.debugTrackingStage = 0;
+		//this.debugMonID = -1;
+
 		if( this.essentiaWatcher != null )
 		{
+			//this.debugTrackingStage = 1;
+
 			// Clear any existing watched value
 			this.essentiaWatcher.clear();
 
 			// Is there an essentia being tracked?
 			if( this.trackedEssentia != null )
 			{
+				//this.debugTrackingStage = 2;
 				// Configure the watcher
 				this.essentiaWatcher.add( this.trackedEssentia );
 
@@ -119,8 +131,19 @@ public class AEPartEssentiaLevelEmitter
 				{
 					// Update the amount.
 					this.setCurrentAmount( essMon.getEssentiaAmount( this.trackedEssentia ) );
+					didSet = true;
+					//this.debugTrackingStage = 3;
+					//this.debugMonID = essMon.hashCode();
+
 				}
 			}
+		}
+
+		// Was the current amount set?
+		if( !didSet )
+		{
+			// Reset
+			this.setCurrentAmount( 0 );
 		}
 	}
 
@@ -377,6 +400,26 @@ public class AEPartEssentiaLevelEmitter
 		this.setCurrentAmount( storedAmount );
 	}
 
+	// TODO: Remove debug code
+	/*
+	@Override
+	public boolean onShiftActivate( final EntityPlayer player, final Vec3 position )
+	{
+		if( EffectiveSide.isClientSide() )
+		{
+			player.addChatMessage( new ChatComponentTranslation( "--", (Object)null ) );
+			player.addChatMessage( new ChatComponentTranslation( "Threshold Amount: " + this.wantedAmount, (Object)null ) );
+			player.addChatMessage( new ChatComponentTranslation( "Aspect: " +
+							( this.trackedEssentia == null ? "None" : this.trackedEssentia.getName() ), (Object)null ) );
+			player.addChatMessage( new ChatComponentTranslation( "Network Amount: " + this.currentAmount, (Object)null ) );
+			player.addChatMessage( new ChatComponentTranslation( "Emitting: " + ( this.isEmitting ? "Yes" : "No" ), (Object)null ) );
+			player.addChatMessage( new ChatComponentTranslation( "Completed Stage: " + this.debugTrackingStage, (Object)null ) );
+			player.addChatMessage( new ChatComponentTranslation( "Monitor ID: " + this.debugMonID, (Object)null ) );
+		}
+		return false;
+	}
+	*/
+
 	/**
 	 * Spawns redstone particles when emitting
 	 */
@@ -452,6 +495,15 @@ public class AEPartEssentiaLevelEmitter
 		// Read the activity state
 		this.isEmitting = stream.readBoolean();
 
+		// TODO: Remove debug code
+		/*
+		this.currentAmount = stream.readLong();
+		this.wantedAmount = stream.readLong();
+		this.trackedEssentia = AbstractPacket.readAspect( stream );
+		this.debugTrackingStage = stream.readInt();
+		this.debugMonID = stream.readInt();
+		*/
+
 		// Redraw if changed
 		redraw |= ( this.isEmitting != oldEmit );
 
@@ -517,22 +569,29 @@ public class AEPartEssentiaLevelEmitter
 	@Override
 	public void setAspect( final int index, final Aspect aspect, final EntityPlayer player )
 	{
-		// Set the filtered aspect
-		this.trackedEssentia = aspect;
-
-		// Are we client side?
-		if( EffectiveSide.isClientSide() )
+		if( this.trackedEssentia != aspect )
 		{
-			return;
+			// Set the filtered aspect
+			this.trackedEssentia = aspect;
+
+			// Are we client side?
+			if( EffectiveSide.isClientSide() )
+			{
+				return;
+			}
+
+			// Mark that we need to be saved and updated
+			this.markForSave();
+			//this.markForUpdate(); // TODO: Remove debug
+
+			// Update the watcher
+			this.configureWatcher();
+
+			// Send the aspect to the client
+			List<Aspect> filter = new ArrayList<Aspect>();
+			filter.add( aspect );
+			new PacketClientAspectSlot().createFilterListUpdate( filter, player ).sendPacketToPlayer();
 		}
-
-		// Update the watcher
-		this.configureWatcher();
-
-		// Send the aspect to the client
-		List<Aspect> filter = new ArrayList<Aspect>();
-		filter.add( aspect );
-		new PacketClientAspectSlot().createFilterListUpdate( filter, player ).sendPacketToPlayer();
 	}
 
 	/**
@@ -617,5 +676,14 @@ public class AEPartEssentiaLevelEmitter
 
 		// Write the activity state
 		stream.writeBoolean( this.isEmitting );
+
+		// TODO: Remove debug code
+		/*
+		stream.writeLong( this.currentAmount );
+		stream.writeLong( this.wantedAmount );
+		AbstractPacket.writeAspect( this.trackedEssentia, stream );
+		stream.writeInt( this.debugTrackingStage );
+		stream.writeInt( this.debugMonID );
+		*/
 	}
 }

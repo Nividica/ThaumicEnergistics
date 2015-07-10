@@ -1,4 +1,8 @@
-﻿7/4/2015 0.8.10.7
+﻿7/10/2015 0.8.10.8
+  Fixes #214: Empty jars can again be filled in Essentia Terminal.
+  Fixes #215: Level Emitter adjustment button placement corrected.
+  
+7/4/2015 0.8.10.7
   Changed level emitter block update code to match AE emitter.
   Made the essentia grid cache compatible with Java 1.7 #211
 
