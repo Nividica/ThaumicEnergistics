@@ -6,6 +6,7 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectSource;
 import thaumcraft.common.Thaumcraft;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.tileentities.abstraction.TileProviderBase;
 
 public class TileInfusionProvider
 	extends TileProviderBase

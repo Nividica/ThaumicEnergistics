@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.registries.Renderers;
 import thaumicenergistics.texture.BlockTextureManager;
-import thaumicenergistics.tileentities.TileProviderBase;
+import thaumicenergistics.tileentities.abstraction.TileProviderBase;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

@@ -62,6 +62,7 @@ thaumicenergistics.tooltip.button.inscriber.missing=Requires Knowledge Core
 thaumicenergistics.tooltip.button.swap.armor=Swaps your currently equipped armor with the armor stored in the terminal.
 thaumicenergistics.tooltip.button.swap.armor.title=Swap Armor
 
+
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=Arcane Terminal
 thaumicenergistics.gui.essentia.cell.title=Essentia Cell
@@ -70,6 +71,8 @@ thaumicenergistics.gui.selected.aspect=Aspect
 thaumicenergistics.gui.digivis.source.name=DigiVis Source
 thaumicenergistics.gui.essentia.cell.workbench.title=Essentia Cell Workbench
 thaumicenergistics.gui.arcane.assembler.title=Arcane Assembler
+thaumicenergistics.gui.vibration.chamber.stored=Stored: %d %s
+thaumicenergistics.gui.vibration.chamber.processing=Processing: %s
 
 #Research Tab
 tc.research_category.thaumicenergistics=Energistics

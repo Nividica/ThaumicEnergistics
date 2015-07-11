@@ -1,113 +1,280 @@
 package thaumicenergistics.tileentities;
 
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import net.minecraft.entity.player.EntityPlayer;
+import java.util.List;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityFurnace;
 import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.api.aspects.IAspectSource;
-import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.integration.IWailaSource;
 import thaumicenergistics.integration.tc.EssentiaTransportHelper;
-import thaumicenergistics.integration.tc.IEssentiaTransportWithSimulate;
+import thaumicenergistics.network.packet.AbstractPacket;
+import thaumicenergistics.registries.ThEStrings;
+import thaumicenergistics.tileentities.abstraction.TileEVCBase;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalCoord;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
-import appeng.tile.grid.AENetworkTile;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import appeng.me.GridAccessException;
 
 public class TileEssentiaVibrationChamber
-	extends AENetworkTile
-	implements IGridTickable, IEssentiaTransportWithSimulate, IAspectSource
+	extends TileEVCBase
+	implements IGridTickable, IWailaSource
 {
-	private static final byte STATE_OFF = 0, STATE_IGNIS = 1, STATE_POTENTIA = 2;
+	private static String NBTKEY_TIME_REMAINING = "TRemain", NBTKEY_PROCESSING_SPEED = "ProcSpeed", NBTKEY_POWER_PER_TICK = "PwrPerTick",
+					NBTKEY_PROCESSING_ASPECT = "ProcAspect";
 
 	/**
-	 * Ticking rates.
+	 * How long it takes coal to burn
 	 */
-	private static final int TICKRATE_IDLE = 40, TICKRATE_URGENT = 10;
+	private static int coalBurnTime = 0;
 
 	/**
-	 * The maximum amount of stored essentia.
+	 * How much power is produced per tick
 	 */
-	private static final int MAX_ESSENTIA_STORED = 64;
+	private static double basePowerProducedPerTick = 5.0;
 
 	/**
-	 * How much essentia is stored.
+	 * Half second.
 	 */
-	private int storedEssentiaAmount = 0;
+	private static int TICKRATE_MIN = 10;
 
 	/**
-	 * The type of essentia that is stored.
+	 * Two seconds.
 	 */
-	private Aspect storedEssentiaAspect = null;
+	private static int TICKRATE_MAX = 40;
 
 	/**
-	 * The rate at which ticks should arrive.
+	 * Min and Max processing speed
 	 */
-	private TickRateModulation tickRate = TickRateModulation.SAME;
+	private static final int PROCESS_SPEED_MAX = 200, PROCESS_SPEED_MIN = 20;
 
 	/**
-	 * 1-100: Ignis, 100-200: Potentia
+	 * How much longer the essentia will be processed.
 	 */
-	private int suctionRotationTimer = 1;
+	private int timeRemaining = 0;
 
-	@Override
-	protected ItemStack getItemFromTile( final Object obj )
+	/**
+	 * How fast processing is occurring.
+	 */
+	private int processingSpeed = 0;
+
+	/**
+	 * How much power is produced per tick.
+	 */
+	private double powerProducedPerProcessingTick = 0;
+
+	/**
+	 * What aspect is currently being processed.
+	 */
+	public Aspect processingAspect = null;
+
+	/**
+	 * Set true when the aspect changed.
+	 */
+	public boolean processingChanged = false;
+
+	/**
+	 * Adjusts processing time and power production based on essentia type.
+	 * 
+	 * @return
+	 */
+	private int adjustProcessingValues()
 	{
-		// Return the itemstack the visually represents this tile
-		return ThEApi.instance().blocks().EssentiaVibrationChamber.getStack();
+		int pTime = 0;
+
+		// Has the burn time of coal been retrieved?
+		if( TileEssentiaVibrationChamber.coalBurnTime == 0 )
+		{
+			// Get the base processing time of coal
+			TileEssentiaVibrationChamber.coalBurnTime = TileEntityFurnace.getItemBurnTime( new ItemStack( Items.coal ) );
+		}
+
+		// What kind of essentia is stored?
+		if( this.storedEssentia.aspect == Aspect.FIRE )
+		{
+			pTime = TileEssentiaVibrationChamber.coalBurnTime / 2;
+			this.powerProducedPerProcessingTick = TileEssentiaVibrationChamber.basePowerProducedPerTick * 1.0D;
+		}
+		else if( this.storedEssentia.aspect == Aspect.ENERGY )
+		{
+			pTime = (int)( TileEssentiaVibrationChamber.coalBurnTime / 1.6F );
+			this.powerProducedPerProcessingTick = TileEssentiaVibrationChamber.basePowerProducedPerTick * 1.6D;
+		}
+
+		return pTime;
+	}
+
+	/**
+	 * Converts an essentia to processing time.
+	 * 
+	 * @return True if essentia was consumed, false otherwise.
+	 */
+	private boolean consumeEssentia()
+	{
+		// Is there anything stored?
+		if( this.hasStoredEssentia() )
+		{
+			// Get the processing time
+			int pTime = this.adjustProcessingValues();
+			if( pTime > 0 )
+			{
+				// Set the type
+				this.processingAspect = this.storedEssentia.aspect;
+				this.processingChanged = true;
+
+				// Take one
+				--this.storedEssentia.stackSize;
+
+				// Mark dirty
+				this.markDirty();
+				this.markForUpdate();
+
+				// Add to processing time
+				this.timeRemaining += pTime;
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Adds power to the network.
+	 * 
+	 * @param ticksSinceLastCall
+	 * @return
+	 */
+	private TickRateModulation doProcessingTick( final int ticksSinceLastCall )
+	{
+		// Is there any processing time remaining?
+		if( this.timeRemaining == 0 )
+		{
+			return TickRateModulation.IDLE;
+		}
+
+		// Bounds check processing speed
+		this.processingSpeed = Math.max( TileEssentiaVibrationChamber.PROCESS_SPEED_MIN,
+			Math.min( TileEssentiaVibrationChamber.PROCESS_SPEED_MAX, this.processingSpeed ) );
+
+		// Calculate dilation
+		double dilation = this.processingSpeed / 100.0;
+
+		// Calculate number of processing ticks
+		double processingTicks = ticksSinceLastCall * dilation;
+
+		// Adjust time remaining
+		this.timeRemaining -= processingTicks;
+
+		// Finished?
+		if( this.timeRemaining <= 0 )
+		{
+			// Adjust processing time
+			processingTicks += this.timeRemaining;
+
+			// Reset time
+			this.timeRemaining = 0;
+
+			// Clear the aspect
+			this.processingAspect = null;
+
+			// Mark dirty
+			this.processingChanged = true;
+			this.markForUpdate();
+			this.markDirty();
+		}
+
+		// Calculate the produced power
+		double producedPower = processingTicks * this.powerProducedPerProcessingTick;
+
+		// Assume slower
+		TickRateModulation rate = TickRateModulation.SLOWER;
+
+		try
+		{
+			// Get the energy grid
+			IEnergyGrid eGrid = this.gridProxy.getEnergy();
+
+			// Get rejected amount, note that any rejected amount is simply lost.
+			double rejectedPower = eGrid.injectPower( producedPower, Actionable.SIMULATE );
+
+			// Was any rejected?
+			if( rejectedPower > 0 )
+			{
+				// Adjust the power
+				producedPower = Math.max( 0, producedPower - rejectedPower );
+
+				// Adjust speed
+				this.processingSpeed -= ticksSinceLastCall;
+			}
+			else
+			{
+				// Increase tickrate
+				rate = TickRateModulation.FASTER;
+
+				// Adjust speed
+				this.processingSpeed += ticksSinceLastCall;
+			}
+
+			// Inject the power
+			if( producedPower > 0 )
+			{
+				eGrid.injectPower( producedPower, Actionable.MODULATE );
+			}
+		}
+		catch( GridAccessException g )
+		{
+			// Silently ignore.
+		}
+
+		return rate;
 
 	}
 
+	/**
+	 * Adds essentia to the buffer.
+	 * 
+	 * @param aspect
+	 * @param amount
+	 * @param mode
+	 * @return
+	 */
 	@Override
-	public int addEssentia( final Aspect aspect, final int amount, final ForgeDirection side )
-	{
-		return this.addEssentia( aspect, amount, side, Actionable.MODULATE );
-	}
-
-	@Override
-	public int addEssentia( final Aspect aspect, final int amount, final ForgeDirection side, final Actionable mode )
+	protected int addEssentia( final Aspect aspect, final int amount, final Actionable mode )
 	{
 		// Validate essentia type
-		if( ( this.storedEssentiaAspect != null ) && ( this.storedEssentiaAspect != aspect ) )
+		if( ( this.hasStoredEssentia() ) && ( this.storedEssentia.aspect != aspect ) )
 		{
 			// Essentia type does not match
 			return 0;
 		}
 
-		// Calculate how much will be stored
-		int addedAmount = Math.min( amount, TileEssentiaVibrationChamber.MAX_ESSENTIA_STORED - this.storedEssentiaAmount );
+		// Get how much is stored, and the aspect
+		int storedAmount = ( this.storedEssentia == null ? 0 : (int)this.storedEssentia.stackSize );
+		Aspect storedAspect = ( this.storedEssentia == null ? null : this.storedEssentia.aspect );
+
+		// Calculate how much to be stored
+		int addedAmount = Math.min( amount, TileEVCBase.MAX_ESSENTIA_STORED - storedAmount );
 
 		if( ( addedAmount > 0 ) && ( mode == Actionable.MODULATE ) )
 		{
-			// Set aspect if needed
-			if( this.storedEssentiaAspect == null )
+			// Create the stack if needed
+			if( storedAspect == null )
 			{
-				this.storedEssentiaAspect = aspect;
-			}
-
-			// Add to the amount
-			this.storedEssentiaAmount += addedAmount;
-
-			// Adjust tick rate
-			if( this.storedEssentiaAmount < 10 )
-			{
-				this.tickRate = TickRateModulation.URGENT;
+				this.storedEssentia = new AspectStack( aspect, 0 );
 			}
 			else
 			{
-				this.tickRate = TickRateModulation.FASTER;
+				this.storedEssentia.aspect = aspect;
 			}
+
+			// Add to the amount
+			this.storedEssentia.stackSize += addedAmount;
 
 			// Mark for update
 			this.markForUpdate();
@@ -117,325 +284,208 @@ public class TileEssentiaVibrationChamber
 		}
 
 		return addedAmount;
-
-	}
-
-	@Override
-	public int addToContainer( final Aspect aspect, final int amount )
-	{
-		return this.addEssentia( aspect, amount, null, Actionable.MODULATE );
-	}
-
-	@Override
-	public boolean canInputFrom( final ForgeDirection side )
-	{
-		return( side != this.getForward() );
 	}
 
 	/**
-	 * Can not output.
+	 * Reads saved data.
+	 * 
+	 * @param data
 	 */
 	@Override
-	public boolean canOutputTo( final ForgeDirection side )
+	protected void NBTRead( final NBTTagCompound data )
 	{
-		return false;
-	}
-
-	@Override
-	public int containerContains( final Aspect aspect )
-	{
-		return( aspect == this.storedEssentiaAspect ? this.storedEssentiaAmount : 0 );
-	}
-
-	@Override
-	public boolean doesContainerAccept( final Aspect aspect )
-	{
-		// Is there stored essentia?
-		if( this.storedEssentiaAspect != null )
+		// Read time remaining
+		if( data.hasKey( TileEssentiaVibrationChamber.NBTKEY_TIME_REMAINING ) )
 		{
-			// Match to stored essentia
-			return aspect == this.storedEssentiaAspect;
+			this.timeRemaining = data.getInteger( TileEssentiaVibrationChamber.NBTKEY_TIME_REMAINING );
 		}
 
-		// Nothing is stored, accepts ignis or potentia
-		return( ( aspect == Aspect.FIRE ) || ( aspect == Aspect.ENERGY ) );
-	}
-
-	@Deprecated
-	@Override
-	public boolean doesContainerContain( final AspectList aspectList )
-	{
-		// Is there stored essentia?
-		if( this.storedEssentiaAspect == null )
+		if( this.timeRemaining > 0 )
 		{
-			return false;
-		}
-
-		return aspectList.aspects.containsKey( this.storedEssentiaAspect );
-	}
-
-	@Override
-	public boolean doesContainerContainAmount( final Aspect aspect, final int amount )
-	{
-		// Does the stored essentia match the aspect?
-		if( ( this.storedEssentiaAspect == null ) || ( this.storedEssentiaAspect != aspect ) )
-		{
-			// Does not match
-			return false;
-		}
-
-		return( this.storedEssentiaAmount >= amount );
-	}
-
-	@Override
-	public AspectList getAspects()
-	{
-		// Create a new list
-		AspectList aspectList = new AspectList();
-
-		// Is there stored essentia?
-		if( this.storedEssentiaAspect != null )
-		{
-			// Add the essentia aspect and amount
-			aspectList.add( this.storedEssentiaAspect, this.storedEssentiaAmount );
-		}
-
-		return aspectList;
-	}
-
-	@Override
-	public AECableType getCableConnectionType( final ForgeDirection dir )
-	{
-		return AECableType.COVERED;
-	}
-
-	/**
-	 * Can not output.
-	 */
-	@Override
-	public int getEssentiaAmount( final ForgeDirection side )
-	{
-		return this.storedEssentiaAmount;
-	}
-
-	@Override
-	public Aspect getEssentiaType( final ForgeDirection side )
-	{
-		return this.storedEssentiaAspect;
-	}
-
-	@Override
-	public DimensionalCoord getLocation()
-	{
-		return new DimensionalCoord( this );
-	}
-
-	/**
-	 * Can not output.
-	 */
-	@Override
-	public int getMinimumSuction()
-	{
-		return 0;
-	}
-
-	@Override
-	public int getSuctionAmount( final ForgeDirection side )
-	{
-		return( this.storedEssentiaAmount < TileEssentiaVibrationChamber.MAX_ESSENTIA_STORED ? 128 : 0 );
-	}
-
-	@Override
-	public Aspect getSuctionType( final ForgeDirection side )
-	{
-		// Is there anything stored?
-		if( this.storedEssentiaAspect != null )
-		{
-			// Suction type must match what is stored
-			return this.storedEssentiaAspect;
-		}
-
-		// Is the timer over 100?
-		if( this.suctionRotationTimer > 100 )
-		{
-			// Does the timer need to be reset?
-			if( this.suctionRotationTimer > 200 )
+			// Read processing speed
+			if( data.hasKey( TileEssentiaVibrationChamber.NBTKEY_PROCESSING_SPEED ) )
 			{
-				this.suctionRotationTimer = 0;
+				this.processingSpeed = data.getInteger( TileEssentiaVibrationChamber.NBTKEY_PROCESSING_SPEED );
 			}
 
-			// Potentia
-			return Aspect.ENERGY;
-		}
+			// Read power per tick
+			if( data.hasKey( TileEssentiaVibrationChamber.NBTKEY_POWER_PER_TICK ) )
+			{
+				this.powerProducedPerProcessingTick = data.getDouble( TileEssentiaVibrationChamber.NBTKEY_POWER_PER_TICK );
+			}
 
-		// Ignis
-		return Aspect.FIRE;
+			// Read aspect
+			if( data.hasKey( TileEssentiaVibrationChamber.NBTKEY_PROCESSING_ASPECT ) )
+			{
+				String aspectTag = data.getString( TileEssentiaVibrationChamber.NBTKEY_PROCESSING_ASPECT );
+				this.processingAspect = Aspect.aspects.get( aspectTag );
+				this.processingChanged = true;
+			}
+
+			// Mark to sync with client
+			this.markForUpdate();
+		}
 	}
 
+	/**
+	 * Saves the data.
+	 * 
+	 * @param data
+	 */
+	@Override
+	protected void NBTWrite( final NBTTagCompound data )
+	{
+		// Write time remaining
+		data.setInteger( TileEssentiaVibrationChamber.NBTKEY_TIME_REMAINING, this.timeRemaining );
+
+		if( this.timeRemaining > 0 )
+		{
+			// Write processing speed
+			data.setInteger( TileEssentiaVibrationChamber.NBTKEY_PROCESSING_SPEED, this.processingSpeed );
+
+			// Write power per tick
+			data.setDouble( TileEssentiaVibrationChamber.NBTKEY_POWER_PER_TICK, this.powerProducedPerProcessingTick );
+
+			// Is there an aspect?
+			if( this.processingAspect != null )
+			{
+				// Write processing aspect
+				data.setString( TileEssentiaVibrationChamber.NBTKEY_PROCESSING_ASPECT, this.processingAspect.getTag() );
+			}
+		}
+	}
+
+	/**
+	 * Reads info from the network.
+	 * 
+	 * @param stream
+	 */
+	@Override
+	protected void networkRead( final ByteBuf stream )
+	{
+		// Change?
+		if( stream.readBoolean() )
+		{
+			// Read aspect
+			this.processingAspect = AbstractPacket.readAspect( stream );
+		}
+
+	}
+
+	/**
+	 * Writes data to the network.
+	 * 
+	 * @param stream
+	 */
+	@Override
+	protected void networkWrite( final ByteBuf stream )
+	{
+		// Write change flag
+		stream.writeBoolean( this.processingChanged );
+
+		if( this.processingChanged )
+		{
+			// Write aspect
+			AbstractPacket.writeAspect( this.processingAspect, stream );
+		}
+
+		this.processingChanged = false;
+	}
+
+	/**
+	 * Adds WAILA tooltip strings.
+	 * 
+	 * @param tooltip
+	 */
+	@Override
+	public void addWailaInformation( final List<String> tooltip )
+	{
+		// Write stored
+		if( this.hasStoredEssentia() )
+		{
+			tooltip.add( String.format( ThEStrings.GUi_VibrationChamber_Stored.getLocalized(), this.storedEssentia.stackSize,
+				this.storedEssentia.aspect.getName() ) );
+		}
+
+		// Write processing
+		if( this.processingAspect != null )
+		{
+			tooltip.add( String.format( ThEStrings.GUi_VibrationChamber_Processing.getLocalized(), this.processingAspect.getName() ) );
+		}
+	}
+
+	/**
+	 * How often to tick?
+	 * 
+	 * @param node
+	 * @return
+	 */
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		// TODO: Sleep?
-		return new TickingRequest( TileEssentiaVibrationChamber.TICKRATE_URGENT, TileEssentiaVibrationChamber.TICKRATE_IDLE, false, false );
+		// Half second, to 2 seconds.
+		return new TickingRequest( TileEssentiaVibrationChamber.TICKRATE_MIN, TileEssentiaVibrationChamber.TICKRATE_MAX, false, false );
 
-	}
-
-	@Override
-	public boolean isConnectable( final ForgeDirection side )
-	{
-		return( side != this.getForward() );
-	}
-
-	@TileEvent(TileEventType.NETWORK_READ)
-	@SideOnly(Side.CLIENT)
-	public boolean onReceiveNetworkData( final ByteBuf stream )
-	{
-		// Read essentia type
-		byte state = stream.readByte();
-
-		// Assign essentia type
-		if( state == TileEssentiaVibrationChamber.STATE_POTENTIA )
-		{
-			this.storedEssentiaAspect = Aspect.ENERGY;
-		}
-		else if( state == TileEssentiaVibrationChamber.STATE_IGNIS )
-		{
-			this.storedEssentiaAspect = Aspect.FIRE;
-		}
-		else
-		{
-			this.storedEssentiaAspect = null;
-		}
-
-		// Read essentia amount
-		this.storedEssentiaAmount = stream.readByte();
-
-		return true;
-	}
-
-	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void onSendNetworkData( final ByteBuf stream ) throws IOException
-	{
-		// Write essentia type
-		if( this.storedEssentiaAspect == Aspect.ENERGY )
-		{
-			// On: Potentia
-			stream.writeByte( TileEssentiaVibrationChamber.STATE_POTENTIA );
-		}
-		else if( this.storedEssentiaAspect == Aspect.FIRE )
-		{
-			// On: Ignis
-			stream.writeByte( TileEssentiaVibrationChamber.STATE_IGNIS );
-		}
-		else
-		{
-			// Off
-			stream.writeByte( TileEssentiaVibrationChamber.STATE_OFF );
-		}
-
-		// Write essentia amount
-		stream.writeByte( (byte)this.storedEssentiaAmount );
 	}
 
 	/**
-	 * Full block, not extension needed.
-	 */
-	@Override
-	public boolean renderExtendedTube()
-	{
-		return false;
-	}
-
-	@Override
-	public void setAspects( final AspectList aspectList )
-	{
-		// Ignored
-	}
-
-	/**
-	 * Sets the owner of this tile.
+	 * Called when the network ticks.
 	 * 
-	 * @param player
-	 */
-	public void setOwner( final EntityPlayer player )
-	{
-		this.gridProxy.setOwner( player );
-	}
-
-	@Override
-	public void setSuction( final Aspect aspect, final int amount )
-	{
-		// Ignored
-	}
-
-	/**
-	 * Sets up the chamber
-	 * 
+	 * @param node
+	 * @param ticksSinceLastCall
 	 * @return
 	 */
-	public TileEssentiaVibrationChamber setupChamberTile()
-	{
-		// Ignored on client side
-		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
-		{
-			// Set idle power usage to zero
-			this.gridProxy.setIdlePowerUsage( 0.0D );
-		}
-
-		return this;
-	}
-
-	/**
-	 * Can not output.
-	 */
-	@Override
-	public int takeEssentia( final Aspect aspect, final int amount, final ForgeDirection side )
-	{
-		return 0;
-	}
-
-	/**
-	 * Can not output.
-	 */
-	@Override
-	public boolean takeFromContainer( final Aspect aspect, final int amount )
-	{
-		return false;
-	}
-
-	/**
-	 * Can not output.
-	 */
-	@Deprecated
-	@Override
-	public boolean takeFromContainer( final AspectList arg0 )
-	{
-		return false;
-	}
-
 	@Override
 	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
-		// Assume slower
-		this.tickRate = TickRateModulation.SLOWER;
+		boolean replenish = false;
+
+		TickRateModulation rate = TickRateModulation.IDLE;
+
+		// Is there any processing time remaining?
+		if( this.timeRemaining > 0 )
+		{
+			// Process the essentia
+			rate = this.doProcessingTick( ticksSinceLastCall );
+		}
+
+		// Is there anything stored?
+		if( this.hasStoredEssentia() )
+		{
+			// Is the chamber idle?
+			if( this.timeRemaining == 0 )
+			{
+				// Can essentia be consumed?
+				if( this.consumeEssentia() )
+				{
+					rate = TickRateModulation.URGENT;
+				}
+			}
+
+			// Is the buffer not full?
+			if( this.storedEssentia.stackSize < TileEVCBase.MAX_ESSENTIA_STORED )
+			{
+				// Replenish if possible
+				replenish = true;
+			}
+		}
+		else
+		{
+			// Nothing is stored, keep moving the rotation timer
+			this.suctionRotationTimer += ticksSinceLastCall;
+
+			// Replenish if possible
+			replenish = true;
+		}
 
 		// Does the essentia need to be replenished?
-		if( this.storedEssentiaAmount < TileEssentiaVibrationChamber.MAX_ESSENTIA_STORED )
+		if( replenish )
 		{
 			// Replenish essentia
 			EssentiaTransportHelper.INSTANCE.takeEssentiaFromTransportNeighbors( this, this.worldObj, this.xCoord, this.yCoord, this.zCoord );
 		}
 
-		// Is there anything stored?
-		if( this.storedEssentiaAspect == null )
-		{
-			// Nothing is stored, keep moving the rotation timer
-			this.suctionRotationTimer += ticksSinceLastCall;
-
-			// TODO: Resume work on vibration chamber here
-			//System.out.println( this.suctionRotationTimer );
-		}
-
-		return this.tickRate;
+		return rate;
 	}
+
 }

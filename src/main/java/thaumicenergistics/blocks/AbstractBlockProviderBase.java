@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.registries.Renderers;
-import thaumicenergistics.tileentities.TileProviderBase;
+import thaumicenergistics.tileentities.abstraction.TileProviderBase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

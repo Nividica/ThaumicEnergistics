@@ -80,7 +80,9 @@ public enum ThEStrings
 		Gui_SelectedAspect ("gui.selected.aspect", false),
 		Gui_DigiVisSource ("gui.digivis.source", true),
 		Gui_TitleEssentiaCellWorkbench ("gui.essentia.cell.workbench.title", false),
-		Gui_TitleArcaneAssembler ("gui.arcane.assembler.title", false);
+		Gui_TitleArcaneAssembler ("gui.arcane.assembler.title", false),
+		GUi_VibrationChamber_Stored ("gui.vibration.chamber.stored", false),
+		GUi_VibrationChamber_Processing ("gui.vibration.chamber.processing", false);
 
 	private String unlocalized;
 	private boolean isDotName;

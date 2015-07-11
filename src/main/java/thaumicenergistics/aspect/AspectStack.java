@@ -1,10 +1,12 @@
 package thaumicenergistics.aspect;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
+import thaumicenergistics.network.packet.AbstractPacket;
 import thaumicenergistics.util.GuiHelper;
 
 /**
@@ -84,6 +86,24 @@ public class AspectStack
 
 		// Return a newly created stack.
 		return new AspectStack( aspect, amount );
+	}
+
+	/**
+	 * Creates an aspect stack from the stream.
+	 * 
+	 * @param stream
+	 * @return
+	 */
+	public static AspectStack loadAspectStackFromStream( final ByteBuf stream )
+	{
+		// Create the stack
+		AspectStack stack = new AspectStack();
+
+		// Read in the values
+		stack.readFromStream( stream );
+
+		// Return the stack
+		return stack;
 	}
 
 	/**
@@ -188,6 +208,30 @@ public class AspectStack
 	}
 
 	/**
+	 * Returns true if the size is not positive.
+	 * 
+	 * @return
+	 */
+	public boolean isEmpty()
+	{
+		return( this.stackSize <= 0 );
+	}
+
+	/**
+	 * Sets this stack to the data in the stream.
+	 * 
+	 * @param stream
+	 */
+	public void readFromStream( final ByteBuf stream )
+	{
+		// Read the aspect
+		this.aspect = AbstractPacket.readAspect( stream );
+
+		// Read the amount
+		this.stackSize = stream.readLong();
+	}
+
+	/**
 	 * Writes this aspect stack to the specified NBT tag
 	 * 
 	 * @param nbt
@@ -205,5 +249,19 @@ public class AspectStack
 		}
 
 		return nbt;
+	}
+
+	/**
+	 * Writes the stack to a bytebuf stream.
+	 * 
+	 * @param stream
+	 */
+	public void writeToStream( final ByteBuf stream )
+	{
+		// Write the aspect
+		AbstractPacket.writeAspect( this.aspect, stream );
+
+		// Write the stored amount
+		stream.writeLong( this.stackSize );
 	}
 }

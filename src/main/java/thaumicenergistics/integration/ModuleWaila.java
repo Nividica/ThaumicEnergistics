@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import thaumicenergistics.blocks.AbstractBlockProviderBase;
 import thaumicenergistics.blocks.BlockArcaneAssembler;
+import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class ModuleWaila
@@ -45,6 +46,9 @@ public class ModuleWaila
 		// Register the providers
 		registrar.registerBodyProvider( ModuleWaila.INSTANCE, AbstractBlockProviderBase.class );
 		registrar.registerBodyProvider( ModuleWaila.INSTANCE, BlockArcaneAssembler.class );
+
+		// Register the vibration chamber
+		registrar.registerBodyProvider( ModuleWaila.INSTANCE, TileEssentiaVibrationChamber.class );
 	}
 
 	@Override

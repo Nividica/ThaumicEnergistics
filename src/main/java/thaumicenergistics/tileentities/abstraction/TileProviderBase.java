@@ -1,4 +1,4 @@
-package thaumicenergistics.tileentities;
+package thaumicenergistics.tileentities.abstraction;
 
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;

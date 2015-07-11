@@ -12,6 +12,7 @@ import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.integration.IEssentiaProviderWatcher;
 import thaumicenergistics.integration.tc.EssentiaTransportHelper;
 import thaumicenergistics.integration.tc.IEssentiaTransportWithSimulate;
+import thaumicenergistics.tileentities.abstraction.TileProviderBase;
 import appeng.api.config.Actionable;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;

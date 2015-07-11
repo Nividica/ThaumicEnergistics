@@ -17,6 +17,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
+import thaumicenergistics.tileentities.abstraction.TileEVCBase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -42,7 +43,7 @@ public class BlockEssentiaVibrationChamber
 	@Override
 	public TileEntity createNewTileEntity( final World world, final int metaData )
 	{
-		return new TileEssentiaVibrationChamber().setupChamberTile();
+		return new TileEssentiaVibrationChamber();
 	}
 
 	/**
@@ -73,7 +74,7 @@ public class BlockEssentiaVibrationChamber
 		if( ( chamber.getForward() != null ) && ( side == chamber.getForward().ordinal() ) )
 		{
 			// Get the aspect in the chamber
-			Aspect aspect = chamber.getEssentiaType( null );
+			Aspect aspect = chamber.processingAspect;
 
 			if( aspect == Aspect.ENERGY )
 			{
@@ -129,7 +130,7 @@ public class BlockEssentiaVibrationChamber
 		TileEntity tileChamber = world.getTileEntity( x, y, z );
 
 		// Ensure the chamber is present
-		if( tileChamber instanceof TileEssentiaVibrationChamber )
+		if( tileChamber instanceof TileEVCBase )
 		{
 			if( itemStack.getTagCompound() != null )
 			{
@@ -140,7 +141,7 @@ public class BlockEssentiaVibrationChamber
 			if( player instanceof EntityPlayer )
 			{
 				// Set the owner
-				( (TileEssentiaVibrationChamber)tileChamber ).setOwner( (EntityPlayer)player );
+				( (TileEVCBase)tileChamber ).setOwner( (EntityPlayer)player );
 			}
 
 			ForgeDirection face = ForgeDirection.NORTH;
@@ -179,7 +180,7 @@ public class BlockEssentiaVibrationChamber
 			}
 
 			// Set the orientation
-			( (TileEssentiaVibrationChamber)tileChamber ).setOrientation( face, ForgeDirection.UP );
+			( (TileEVCBase)tileChamber ).setOrientation( face, ForgeDirection.UP );
 		}
 	}
 
@@ -200,19 +201,22 @@ public class BlockEssentiaVibrationChamber
 		TileEntity tileChamber = world.getTileEntity( x, y, z );
 
 		// Ensure the chamber is present
-		if( !( tileChamber instanceof TileEssentiaVibrationChamber ) )
+		if( !( tileChamber instanceof TileEVCBase ) )
 		{
 			return false;
 		}
 
-		int sideIndex = ( (TileEssentiaVibrationChamber)tileChamber ).getForward().ordinal() + 1;
+		// Increment the direction
+		int sideIndex = ( (TileEVCBase)tileChamber ).getForward().ordinal() + 1;
 
+		// Bounds check direction
 		if( sideIndex >= ForgeDirection.VALID_DIRECTIONS.length )
 		{
 			sideIndex = 0;
 		}
 
-		( (TileEssentiaVibrationChamber)tileChamber ).setOrientation( ForgeDirection.getOrientation( sideIndex ), ForgeDirection.UP );
+		// Apply rotation
+		( (TileEVCBase)tileChamber ).setOrientation( ForgeDirection.getOrientation( sideIndex ), ForgeDirection.UP );
 
 		return true;
 	}
