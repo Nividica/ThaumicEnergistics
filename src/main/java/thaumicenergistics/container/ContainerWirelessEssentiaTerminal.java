@@ -149,6 +149,13 @@ public class ContainerWirelessEssentiaTerminal
 	@Override
 	public void doWork( final int elapsedTicks )
 	{
+		// Validate the handler
+		if( this.handler == null )
+		{
+			// Invalid handler.
+			return;
+		}
+
 		// Increment the tick counter.
 		this.powerTickCounter += elapsedTicks;
 

@@ -72,6 +72,7 @@ public class CommonDependantItems
 	public ItemStack FormationCore;
 	public ItemStack AnnihilationCore;
 	public ItemStack CertusWrench;
+	public ItemStack VibrationChamber;
 
 	/**
 	 * Attempts to get the specified AE item.
@@ -160,6 +161,7 @@ public class CommonDependantItems
 		this.AnnihilationCore = this.getAEItem( aeMaterials.annihilationCore() );
 		this.FormationCore = this.getAEItem( aeMaterials.formationCore() );
 		this.CertusWrench = this.getAEItem( AEApi.instance().definitions().items().certusQuartzWrench() );
+		this.VibrationChamber = this.getAEItem( aeBlocks.vibrationChamber() );
 
 	}
 

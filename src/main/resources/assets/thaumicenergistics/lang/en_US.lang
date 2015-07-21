@@ -161,3 +161,9 @@ thaumicenergistics.research_page.TEARCANEASSEMBLER.3=§lVis Discounts§r<BR>Due 
 tc.research_name.thaumicenergistics.TEFOCUSWRENCH=Wand Focus: AE Wrench
 tc.research_text.thaumicenergistics.TEFOCUSWRENCH=Some Assembly Required
 thaumicenergistics.research_page.TEFOCUSWRENCH.1=This wand focus interacts with blocks and machinery as if it were an AE2 wrench.<BR>Sneak + left click: Rotate.<BR>Sneak + right click: Dismantle.
+
+# Research Essentia Vibration Chamber
+tc.research_name.thaumicenergistics.TEESSVIBCMBR=Vibration Chamber
+tc.research_text.thaumicenergistics.TEESSVIBCMBR=Essentia Powered Network
+thaumicenergistics.research_page.TEESSVIBCMBR.1=Getting power for your network until this point has relied on burning items in the §lVibration Chamber§r. That is about to change!<BR>You have constructed a simple device that unleashes the energies of essentia to fuel the vibration chamber. By using distilled §lIgnis or Potentia§r essentia, you can generate more power than simply burning the item.<BR>Be aware that it has the same regulation behavior as the original chamber: It minimizes wasted power by slowing the reaction if the network is fully powered, but so long as there is essentia to use, it will use it.
+

@@ -92,7 +92,7 @@ public class FeatureVisRelayInterface
 		}
 
 		// Pass to parent
-		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
+		return FeatureRegistry.instance().featureACT.getFirstValidParentKey( true );
 	}
 
 	@Override

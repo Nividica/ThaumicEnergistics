@@ -108,7 +108,7 @@ public class FeatureCells
 		Object[] recipeHousing = new Object[] { "WRW", "R R", "TTT", 'W', cdi.WardedGlass, 'R', cdi.RedstoneDust, 'T', cdi.ThaumiumIngot };
 
 		// Register Housing
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_HOUSING = new ShapedOreRecipe( EssentiaCell_Housing, false, recipeHousing ) );
+		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_HOUSING = new ShapedOreRecipe( EssentiaCell_Housing, false, recipeHousing ) );
 
 		// 1K ====================================================
 
@@ -125,16 +125,16 @@ public class FeatureCells
 						EssentiaStorageComponent_1k };
 
 		// Register 1K storage
-		RecipeRegistry.STORAGE_COMPONENT_1K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_1k,
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_1K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_1k,
 			aspects1KStorage, recipe1KStorage );
 
 		// Register 1K cell
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_1K_SHAPED = new ShapedOreRecipe( EssentiaCell_1k, false, recipe1KCell ) );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_1K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_1k, EssentiaStorageComponent_1k,
+		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_1K_SHAPED = new ShapedOreRecipe( EssentiaCell_1k, false, recipe1KCell ) );
+		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_1K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_1k, EssentiaStorageComponent_1k,
 						EssentiaCell_Housing ) );
 
 		// Replace regular certus quartz with any of the certus quartz variants in the 1K storage component
-		this.replaceRecipeIngredientWithGroup( (ShapedArcaneRecipe)RecipeRegistry.STORAGE_COMPONENT_1K, cdi.CertusQuartz, GroupQuartz );
+		this.replaceRecipeIngredientWithGroup( (ShapedArcaneRecipe)RecipeRegistry.ITEM_STORAGE_COMPONENT_1K, cdi.CertusQuartz, GroupQuartz );
 
 		// 4K ===================================================
 
@@ -152,12 +152,12 @@ public class FeatureCells
 						EssentiaStorageComponent_4k };
 
 		// Register 4K storage
-		RecipeRegistry.STORAGE_COMPONENT_4K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_4k,
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_4K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_4k,
 			aspects4KStorage, recipe4KStorage );
 
 		// Register 4K cell
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_4K_SHAPED = new ShapedOreRecipe( EssentiaCell_4k, false, recipe4KCell ) );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_4K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_4k, EssentiaStorageComponent_4k,
+		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_4K_SHAPED = new ShapedOreRecipe( EssentiaCell_4k, false, recipe4KCell ) );
+		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_4K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_4k, EssentiaStorageComponent_4k,
 						EssentiaCell_Housing ) );
 
 		// 16K ===================================================
@@ -176,12 +176,12 @@ public class FeatureCells
 						EssentiaStorageComponent_16k };
 
 		// Register 16K storage
-		RecipeRegistry.STORAGE_COMPONENT_16K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_16k,
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_16K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_16k,
 			aspects16KStorage, recipe16KStorage );
 
 		// Register 16K cell
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_16K_SHAPED = new ShapedOreRecipe( EssentiaCell_16k, false, recipe16KCell ) );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_16K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_16k, EssentiaStorageComponent_16k,
+		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_16K_SHAPED = new ShapedOreRecipe( EssentiaCell_16k, false, recipe16KCell ) );
+		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_16K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_16k, EssentiaStorageComponent_16k,
 						EssentiaCell_Housing ) );
 
 		// 64K ===================================================
@@ -200,12 +200,12 @@ public class FeatureCells
 						EssentiaStorageComponent_64k };
 
 		// Register 64K storage
-		RecipeRegistry.STORAGE_COMPONENT_64K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_64k,
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_64K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_64k,
 			aspects64KStorage, recipe64KStorage );
 
 		// 64K Storage Cell
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_64K_SHAPED = new ShapedOreRecipe( EssentiaCell_64k, false, recipe64KCell ) );
-		GameRegistry.addRecipe( RecipeRegistry.STORAGE_CELL_64K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_64k, EssentiaStorageComponent_64k,
+		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_64K_SHAPED = new ShapedOreRecipe( EssentiaCell_64k, false, recipe64KCell ) );
+		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_64K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_64k, EssentiaStorageComponent_64k,
 						EssentiaCell_Housing ) );
 
 		// Workbench
@@ -227,21 +227,21 @@ public class FeatureCells
 		ItemStack storageIcon = ThEApi.instance().items().EssentiaCell_64k.getStack();
 
 		// Get the component recipes
-		IArcaneRecipe[] storageComponentRecipes = new IArcaneRecipe[] { RecipeRegistry.STORAGE_COMPONENT_4K, RecipeRegistry.STORAGE_COMPONENT_16K,
-						RecipeRegistry.STORAGE_COMPONENT_64K };
+		IArcaneRecipe[] storageComponentRecipes = new IArcaneRecipe[] { RecipeRegistry.ITEM_STORAGE_COMPONENT_4K, RecipeRegistry.ITEM_STORAGE_COMPONENT_16K,
+						RecipeRegistry.ITEM_STORAGE_COMPONENT_64K };
 
 		// Get the cell shaped recipes
-		IRecipe[] storageCellsShaped = new IRecipe[] { RecipeRegistry.STORAGE_CELL_1K_SHAPED, RecipeRegistry.STORAGE_CELL_4K_SHAPED,
-						RecipeRegistry.STORAGE_CELL_16K_SHAPED, RecipeRegistry.STORAGE_CELL_64K_SHAPED };
+		IRecipe[] storageCellsShaped = new IRecipe[] { RecipeRegistry.ITEM_STORAGE_CELL_1K_SHAPED, RecipeRegistry.ITEM_STORAGE_CELL_4K_SHAPED,
+						RecipeRegistry.ITEM_STORAGE_CELL_16K_SHAPED, RecipeRegistry.ITEM_STORAGE_CELL_64K_SHAPED };
 
 		// Get the cell shapeless recipes
-		IRecipe[] storageCellsShapeless = new IRecipe[] { RecipeRegistry.STORAGE_CELL_1K_SHAPELESS, RecipeRegistry.STORAGE_CELL_4K_SHAPELESS,
-						RecipeRegistry.STORAGE_CELL_16K_SHAPELESS, RecipeRegistry.STORAGE_CELL_64K_SHAPELESS };
+		IRecipe[] storageCellsShapeless = new IRecipe[] { RecipeRegistry.ITEM_STORAGE_CELL_1K_SHAPELESS, RecipeRegistry.ITEM_STORAGE_CELL_4K_SHAPELESS,
+						RecipeRegistry.ITEM_STORAGE_CELL_16K_SHAPELESS, RecipeRegistry.ITEM_STORAGE_CELL_64K_SHAPELESS };
 
 		// Set the pages
 		ResearchPage[] storagePages = new ResearchPage[] { new ResearchPage( ResearchTypes.STORAGE.getPageName( 1 ) ),
-						new ResearchPage( ResearchTypes.STORAGE.getPageName( 2 ) ), new ResearchPage( RecipeRegistry.STORAGE_COMPONENT_1K ),
-						new ResearchPage( storageComponentRecipes ), new ResearchPage( RecipeRegistry.STORAGE_HOUSING ),
+						new ResearchPage( ResearchTypes.STORAGE.getPageName( 2 ) ), new ResearchPage( RecipeRegistry.ITEM_STORAGE_COMPONENT_1K ),
+						new ResearchPage( storageComponentRecipes ), new ResearchPage( RecipeRegistry.ITEM_STORAGE_HOUSING ),
 						new ResearchPage( storageCellsShaped ), new ResearchPage( storageCellsShapeless ),
 						new ResearchPage( RecipeRegistry.BLOCK_CELL_WORKBENCH ) };
 

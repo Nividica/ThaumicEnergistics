@@ -21,6 +21,12 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.me.GridAccessException;
 
+/**
+ * Implements the logical functionality of the E.V.C.
+ * 
+ * @author Nividica
+ * 
+ */
 public class TileEssentiaVibrationChamber
 	extends TileEVCBase
 	implements IGridTickable, IWailaSource

@@ -10,6 +10,7 @@ import thaumicenergistics.features.FeatureConversionCores;
 import thaumicenergistics.features.FeatureEssentiaIOBuses;
 import thaumicenergistics.features.FeatureEssentiaMonitoring;
 import thaumicenergistics.features.FeatureEssentiaProvider;
+import thaumicenergistics.features.FeatureEssentiaVibrationChamber;
 import thaumicenergistics.features.FeatureGearbox;
 import thaumicenergistics.features.FeatureInfusionProvider;
 import thaumicenergistics.features.FeatureQuartzDupe;
@@ -113,6 +114,11 @@ public class FeatureRegistry
 	public FeatureQuartzDupe featureQuartzDupe;
 
 	/**
+	 * Essentia Vibration Chamber
+	 */
+	public FeatureEssentiaVibrationChamber featureEssentiaVibrationChamber;
+
+	/**
 	 * Private constructor
 	 */
 	private FeatureRegistry()
@@ -159,10 +165,14 @@ public class FeatureRegistry
 		// Build quartz dupe
 		this.featureQuartzDupe = new FeatureQuartzDupe();
 
+		// Build essentia vibration chamber
+		this.featureEssentiaVibrationChamber = new FeatureEssentiaVibrationChamber();
+
 		// Build array of features
 		this.featuresList = new AbstractBasicFeature[] { this.featureAutoCrafting, this.featureCells, this.featureACT, this.featureVRI,
 						this.featureEssentiaIOBuses, this.featureInfusionProvider, this.featureEssentiaProvider, this.featureEssentiaMonitoring,
-						this.featureConversionCores, this.featureGearbox, this.featureWrenchFocus, this.featureQuartzDupe };
+						this.featureConversionCores, this.featureGearbox, this.featureWrenchFocus, this.featureQuartzDupe,
+						this.featureEssentiaVibrationChamber };
 	}
 
 	/**

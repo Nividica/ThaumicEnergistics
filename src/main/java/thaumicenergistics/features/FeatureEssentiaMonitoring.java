@@ -73,7 +73,7 @@ public class FeatureEssentiaMonitoring
 			ItemStack WirelessEssentiaTerminal = theItems.WirelessEssentiaTerminal.getStack();
 
 			// Register Wireless Essentia Terminal
-			GameRegistry.addRecipe( RecipeRegistry.WIRELESS_ESSENTIA_TERMINAL = new ShapelessOreRecipe( WirelessEssentiaTerminal,
+			GameRegistry.addRecipe( RecipeRegistry.ITEM_WIRELESS_ESSENTIA_TERMINAL = new ShapelessOreRecipe( WirelessEssentiaTerminal,
 							cdi.WirelessReceiver, EssentiaTerminal, cdi.DenseCell ) );
 		}
 
@@ -124,7 +124,7 @@ public class FeatureEssentiaMonitoring
 		pageList.add( new ResearchPage( RecipeRegistry.PART_ESSENTIA_TERMINAL ) );
 		if( this.isWirelessEnabled )
 		{
-			pageList.add( new ResearchPage( RecipeRegistry.WIRELESS_ESSENTIA_TERMINAL ) );
+			pageList.add( new ResearchPage( RecipeRegistry.ITEM_WIRELESS_ESSENTIA_TERMINAL ) );
 		}
 		pageList.add( new ResearchPage( RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER ) );
 		pageList.add( new ResearchPage( RecipeRegistry.PART_ESSENTIA_STORAGE_MONITOR ) );
