@@ -1,6 +1,6 @@
 ﻿7/21/2015 0.8.10.8
   Added Essentia Vibration Chamber recipe & research.
-  TODO: Add Vibration Chamber GUI.
+  Preliminary work on Vibration Chamber GUI.
   TODO: Add to export whitelist
 
 7/10/2015 0.8.10.8

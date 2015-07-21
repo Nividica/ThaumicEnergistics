@@ -13,7 +13,8 @@ public enum GuiTextureManager
 		PRIORITY ("priority"),
 		CELL_WORKBENCH ("essentia.cell.workbench"),
 		ARCANE_ASSEMBLER ("arcane.assembler"),
-		KNOWLEDGE_INSCRIBER ("knowledge.inscriber");
+		KNOWLEDGE_INSCRIBER ("knowledge.inscriber"),
+		ESSENTIA_VIBRATION_CHAMBER ("essentia.vibration.chamber");
 
 	private ResourceLocation texture;
 

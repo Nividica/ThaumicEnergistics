@@ -7,6 +7,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerArcaneAssembler;
 import thaumicenergistics.container.ContainerEssentiaCell;
 import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
+import thaumicenergistics.container.ContainerEssentiaVibrationChamber;
 import thaumicenergistics.container.ContainerKnowledgeInscriber;
 import thaumicenergistics.container.ContainerPriority;
 import thaumicenergistics.container.ContainerWirelessEssentiaTerminal;
@@ -54,6 +55,11 @@ public class ThEGuiHandler
 	 * ID of the knowledge inscriber gui.
 	 */
 	public static final int KNOWLEDGE_INSCRIBER = 60;
+
+	/**
+	 * ID of the knowledge inscriber gui.
+	 */
+	public static final int ESSENTIA_VIBRATION_CHAMBER = 70;
 
 	/**
 	 * Extra data used for some GUI calls.
@@ -226,28 +232,28 @@ public class ThEGuiHandler
 
 		}
 
+		switch ( ID )
+		{
+
 		// Is this the cell workbench?
-		if( ID == ThEGuiHandler.CELL_WORKBENCH_ID )
-		{
-			return new GuiEssentiaCellWorkbench( player, world, x, y, z );
-		}
+			case ThEGuiHandler.CELL_WORKBENCH_ID:
+				return new GuiEssentiaCellWorkbench( player, world, x, y, z );
 
-		// Is this the wireless gui?
-		if( ID == ThEGuiHandler.WIRELESS_TERMINAL_ID )
-		{
-			return GuiEssentiaCellTerminal.NewWirelessEssentiaTerminalGui( player );
-		}
+				// Is this the wireless gui?
+			case ThEGuiHandler.WIRELESS_TERMINAL_ID:
+				return GuiEssentiaCellTerminal.NewWirelessEssentiaTerminalGui( player );
 
-		// Is this the arcane assembler?
-		if( ID == ThEGuiHandler.ARCANE_ASSEMBLER_ID )
-		{
-			return new GuiArcaneAssembler( player, world, x, y, z );
-		}
+				// Is this the arcane assembler?
+			case ThEGuiHandler.ARCANE_ASSEMBLER_ID:
+				return new GuiArcaneAssembler( player, world, x, y, z );
 
-		// Is this the knowledge inscriber?
-		if( ID == ThEGuiHandler.KNOWLEDGE_INSCRIBER )
-		{
-			return new GuiKnowledgeInscriber( player, world, x, y, z );
+				// Is this the knowledge inscriber?
+			case ThEGuiHandler.KNOWLEDGE_INSCRIBER:
+				return new GuiKnowledgeInscriber( player, world, x, y, z );
+
+				// Vibration chamber?
+			case ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER:
+				return new GuiEssentiaVibrationChamber( player, world, x, y, z );
 		}
 
 		// No matching GUI element found
@@ -297,29 +303,30 @@ public class ThEGuiHandler
 
 		}
 
+		switch ( ID )
+		{
+
 		// Is this the cell workbench?
-		if( ID == ThEGuiHandler.CELL_WORKBENCH_ID )
-		{
-			return new ContainerEssentiaCellWorkbench( player, world, x, y, z );
-		}
+			case ThEGuiHandler.CELL_WORKBENCH_ID:
+				return new ContainerEssentiaCellWorkbench( player, world, x, y, z );
 
-		// Is this the wireless gui?
-		if( ID == ThEGuiHandler.WIRELESS_TERMINAL_ID )
-		{
-			HandlerWirelessEssentiaTerminal handler = (HandlerWirelessEssentiaTerminal)ThEGuiHandler.extraData[0];
-			return new ContainerWirelessEssentiaTerminal( player, handler );
-		}
+				// Is this the wireless gui?
+			case ThEGuiHandler.WIRELESS_TERMINAL_ID:
+				HandlerWirelessEssentiaTerminal handler = (HandlerWirelessEssentiaTerminal)ThEGuiHandler.extraData[0];
+				return new ContainerWirelessEssentiaTerminal( player, handler );
 
-		// Is this the arcane assembler?
-		if( ID == ThEGuiHandler.ARCANE_ASSEMBLER_ID )
-		{
-			return new ContainerArcaneAssembler( player, world, x, y, z );
-		}
+				// Is this the arcane assembler?
+			case ThEGuiHandler.ARCANE_ASSEMBLER_ID:
+				return new ContainerArcaneAssembler( player, world, x, y, z );
 
-		// Is this the knowledge inscriber?
-		if( ID == ThEGuiHandler.KNOWLEDGE_INSCRIBER )
-		{
-			return new ContainerKnowledgeInscriber( player, world, x, y, z );
+				// Is this the knowledge inscriber?
+			case ThEGuiHandler.KNOWLEDGE_INSCRIBER:
+				return new ContainerKnowledgeInscriber( player, world, x, y, z );
+
+				// Vibration chamber?
+			case ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER:
+				return new ContainerEssentiaVibrationChamber( player, world, x, y, z );
+
 		}
 
 		// No matching GUI element found

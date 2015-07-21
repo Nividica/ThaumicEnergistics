@@ -11,9 +11,11 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
@@ -38,6 +40,21 @@ public class BlockEssentiaVibrationChamber
 
 		// Place in the ThE creative tab
 		this.setCreativeTab( ThaumicEnergistics.ThETab );
+	}
+
+	@Override
+	protected boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
+	{
+		// Ignore fake players
+		if( player instanceof FakePlayer )
+		{
+			return false;
+		}
+
+		// Launch the GUI
+		ThEGuiHandler.launchGui( ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER, player, world, x, y, z );
+
+		return true;
 	}
 
 	@Override
