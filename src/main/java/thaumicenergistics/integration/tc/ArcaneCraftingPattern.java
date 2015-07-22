@@ -98,7 +98,8 @@ public class ArcaneCraftingPattern
 	@Override
 	public boolean canSubstitute()
 	{
-		return true;
+		// This needs to be precise Issue #216
+		return false;
 	}
 
 	/**
