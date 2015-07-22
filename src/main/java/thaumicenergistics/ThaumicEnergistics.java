@@ -135,7 +135,7 @@ public class ThaumicEnergistics
 
 		// Register the standard thaumcraft container items and tiles
 		EssentiaTileContainerHelper.INSTANCE.registerDefaultContainers();
-		EssentiaItemContainerHelper.INSTANCE.registerThaumcraftContainers();
+		EssentiaItemContainerHelper.INSTANCE.registerDefaultContainers();
 
 		// Register features
 		ThaumicEnergistics.proxy.registerFeatures();

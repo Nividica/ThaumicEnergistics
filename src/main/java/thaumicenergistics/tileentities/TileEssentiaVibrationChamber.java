@@ -83,7 +83,8 @@ public class TileEssentiaVibrationChamber
 	private int processingSpeed = 0;
 
 	/**
-	 * How much power is produced per tick.
+	 * How much power is produced per processing tick.
+	 * Note: This is not the same as a minecraft tick. Processing ticks are dilated by processing speed.
 	 */
 	private double powerProducedPerProcessingTick = 0;
 
@@ -418,15 +419,15 @@ public class TileEssentiaVibrationChamber
 	@Override
 	protected void NBTWrite( final NBTTagCompound data )
 	{
-		// Write time remaining
-		data.setInteger( TileEssentiaVibrationChamber.NBTKEY_TIME_REMAINING, this.processingTicksRemaining );
-
 		if( this.processingTicksRemaining > 0 )
 		{
+			// Write time remaining
+			data.setInteger( TileEssentiaVibrationChamber.NBTKEY_TIME_REMAINING, this.processingTicksRemaining );
+
 			// Write processing speed
 			data.setInteger( TileEssentiaVibrationChamber.NBTKEY_PROCESSING_SPEED, this.processingSpeed );
 
-			// Write power per tick
+			// Write power per processing tick
 			data.setDouble( TileEssentiaVibrationChamber.NBTKEY_POWER_PER_TICK, this.powerProducedPerProcessingTick );
 
 			// Is there an aspect?
@@ -522,6 +523,28 @@ public class TileEssentiaVibrationChamber
 	}
 
 	/**
+	 * Returns true if there is data that should be saved during a dismantle.
+	 * 
+	 * @return
+	 */
+	public boolean hasSaveDataForDismanle()
+	{
+		// Anything stored?
+		if( ( this.storedEssentia != null ) && ( this.storedEssentia.stackSize > 0 ) )
+		{
+			return true;
+		}
+
+		// Anything being processed?
+		if( this.processingTicksRemaining > 0 )
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Registers a listener with the EVC
 	 * 
 	 * @param listener
@@ -539,6 +562,15 @@ public class TileEssentiaVibrationChamber
 	public void removeListener( final ContainerEssentiaVibrationChamber listener )
 	{
 		this.listeners.remove( listener );
+	}
+
+	/**
+	 * This should only be called when the EVC is being dismantled.
+	 */
+	public void resetForDismantle()
+	{
+		this.processingSpeed = TileEssentiaVibrationChamber.PROCESS_SPEED_MIN;
+		this.processingTicksRemaining = 0;
 	}
 
 	/**

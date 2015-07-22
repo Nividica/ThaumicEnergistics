@@ -2,6 +2,8 @@
   Added E.V.C GUI.
   API Change: Tile whitelist now requires capacity, and includes a dual add method.
   Fixes #216: Arcane crafting patterns can no longer substitute items, must match exactly.
+  More EVC research notes.
+  The Essentia Terminal can be used to drain or fill the EVC.
 
 7/21/2015 0.8.10.8
   Added Essentia Vibration Chamber recipe & research.

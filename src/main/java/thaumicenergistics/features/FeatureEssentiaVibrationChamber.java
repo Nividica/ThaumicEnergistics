@@ -73,7 +73,9 @@ public class FeatureEssentiaVibrationChamber
 
 		// Create the pages
 		ResearchPage[] storagePages = new ResearchPage[] { new ResearchPage( ResearchTypes.ESSENTIAVIBRATIONCHAMBER.getPageName( 1 ) ),
-						new ResearchPage( RecipeRegistry.BLOCK_ESSENTIA_VIBRATION_CHAMBER ) };
+						new ResearchPage( RecipeRegistry.BLOCK_ESSENTIA_VIBRATION_CHAMBER ),
+						new ResearchPage( ResearchTypes.ESSENTIAVIBRATIONCHAMBER.getPageName( 2 ) ),
+						new ResearchPage( ResearchTypes.ESSENTIAVIBRATIONCHAMBER.getPageName( 3 ) ) };
 
 		// Create the research
 		ResearchTypes.ESSENTIAVIBRATIONCHAMBER.createResearchItem( chamberAspects, ResearchRegistry.COMPLEXITY_MEDIUM, chamberIcon, storagePages );

@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
@@ -18,8 +19,8 @@ import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
-import thaumicenergistics.tileentities.abstraction.TileEVCBase;
 import thaumicenergistics.util.EffectiveSide;
+import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -42,6 +43,33 @@ public class BlockEssentiaVibrationChamber
 		this.setCreativeTab( ThaumicEnergistics.ThETab );
 	}
 
+	/**
+	 * Returns the EVC tile entity, if found and is valid.
+	 * 
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	private TileEssentiaVibrationChamber getEVCTile( final IBlockAccess world, final int x, final int y, final int z )
+	{
+		// Ensure the world is not null
+		if( world != null )
+		{
+			// Get the tile entity
+			TileEntity te = world.getTileEntity( x, y, z );
+
+			// Ensure it is an EVC
+			if( te instanceof TileEssentiaVibrationChamber )
+			{
+				return (TileEssentiaVibrationChamber)te;
+			}
+		}
+
+		return null;
+	}
+
 	@Override
 	protected boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
@@ -55,7 +83,7 @@ public class BlockEssentiaVibrationChamber
 		if( EffectiveSide.isServerSide() )
 		{
 			// Is the tile valid?
-			if( world.getTileEntity( x, y, z ) instanceof TileEssentiaVibrationChamber )
+			if( this.getEVCTile( world, x, y, z ) != null )
 			{
 				// Launch the GUI
 				ThEGuiHandler.launchGui( ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER, player, world, x, y, z );
@@ -63,6 +91,50 @@ public class BlockEssentiaVibrationChamber
 		}
 
 		return true;
+	}
+
+	@Override
+	protected ItemStack onDismantled( final World world, final int x, final int y, final int z )
+	{
+		// Ignore client side.
+		if( EffectiveSide.isClientSide() )
+		{
+			return null;
+		}
+
+		// Get the chamber
+		TileEssentiaVibrationChamber chamber = this.getEVCTile( world, x, y, z );
+
+		// Validate
+		if( chamber == null )
+		{
+			// Invalid EVC tile
+			return null;
+		}
+
+		// Anything to save?
+		if( !chamber.hasSaveDataForDismanle() )
+		{
+			// Nothing unique to save
+			return null;
+		}
+
+		// Reset processing speed
+		chamber.resetForDismantle();
+
+		// Create the tag
+		NBTTagCompound tag = new NBTTagCompound();
+
+		// Save into the tag
+		chamber.onNBTSave( tag );
+
+		// Create the stack
+		ItemStack representive = new ItemStack( this );
+
+		// Set the tag
+		representive.setTagCompound( tag );
+
+		return representive;
 	}
 
 	@Override
@@ -86,14 +158,13 @@ public class BlockEssentiaVibrationChamber
 	public IIcon getIcon( final IBlockAccess world, final int x, final int y, final int z, final int side )
 	{
 		// Get the chamber
-		TileEntity tileChamber = world.getTileEntity( x, y, z );
+		TileEssentiaVibrationChamber chamber = this.getEVCTile( world, x, y, z );
 
-		// Ensure the chamber is present
-		if( !( tileChamber instanceof TileEssentiaVibrationChamber ) )
+		// Is the tile valid?
+		if( chamber == null )
 		{
 			return this.getIcon( side, 0 );
 		}
-		TileEssentiaVibrationChamber chamber = ( (TileEssentiaVibrationChamber)tileChamber );
 
 		// Is this side the face?		
 		if( ( chamber.getForward() != null ) && ( side == chamber.getForward().ordinal() ) )
@@ -151,62 +222,66 @@ public class BlockEssentiaVibrationChamber
 	@Override
 	public void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase player, final ItemStack itemStack )
 	{
-		// Get the chamber
-		TileEntity tileChamber = world.getTileEntity( x, y, z );
+		// Get the chamber tile
+		TileEssentiaVibrationChamber chamber = this.getEVCTile( world, x, y, z );
 
-		// Ensure the chamber is present
-		if( tileChamber instanceof TileEVCBase )
+		// Is the tile valid?
+		if( chamber == null )
 		{
-			if( itemStack.getTagCompound() != null )
-			{
-				//TODO: Load the saved data
-				//chamber.onLoadNBT( itemStack.getTagCompound() );
-			}
-
-			if( player instanceof EntityPlayer )
-			{
-				// Set the owner
-				( (TileEVCBase)tileChamber ).setOwner( (EntityPlayer)player );
-			}
-
-			ForgeDirection face = ForgeDirection.NORTH;
-
-			// Is the player looking down?
-			if( player.rotationPitch > 50 )
-			{
-				face = ForgeDirection.UP;
-			}
-			// Is the player looking up?
-			else if( player.rotationPitch < -50 )
-			{
-				face = ForgeDirection.DOWN;
-			}
-
-			else
-			{
-				// Get the side index based on which direction the player is turned
-				int sideIndex = MathHelper.floor_double( ( player.rotationYaw * 4.0F / 360.0F ) + 0.5D ) & 3;
-
-				switch ( sideIndex )
-				{
-					case 0:
-						face = ForgeDirection.NORTH;
-						break;
-					case 1:
-						face = ForgeDirection.EAST;
-						break;
-					case 2:
-						face = ForgeDirection.SOUTH;
-						break;
-					case 3:
-						face = ForgeDirection.WEST;
-						break;
-				}
-			}
-
-			// Set the orientation
-			( (TileEVCBase)tileChamber ).setOrientation( face, ForgeDirection.UP );
+			// Invalid tile
+			return;
 		}
+
+		if( ( itemStack.getTagCompound() != null ) && ( EffectiveSide.isServerSide() ) )
+		{
+			// Load the saved data
+			chamber.onNBTLoad( itemStack.getTagCompound() );
+		}
+
+		if( player instanceof EntityPlayer )
+		{
+			// Set the owner
+			chamber.setOwner( (EntityPlayer)player );
+		}
+
+		ForgeDirection face = ForgeDirection.NORTH;
+
+		// Is the player looking down?
+		if( player.rotationPitch > 50 )
+		{
+			face = ForgeDirection.UP;
+		}
+		// Is the player looking up?
+		else if( player.rotationPitch < -50 )
+		{
+			face = ForgeDirection.DOWN;
+		}
+
+		else
+		{
+			// Get the side index based on which direction the player is turned
+			int sideIndex = MathHelper.floor_double( ( player.rotationYaw * 4.0F / 360.0F ) + 0.5D ) & 3;
+
+			switch ( sideIndex )
+			{
+				case 0:
+					face = ForgeDirection.NORTH;
+					break;
+				case 1:
+					face = ForgeDirection.EAST;
+					break;
+				case 2:
+					face = ForgeDirection.SOUTH;
+					break;
+				case 3:
+					face = ForgeDirection.WEST;
+					break;
+			}
+		}
+
+		// Set the orientation
+		chamber.setOrientation( face, ForgeDirection.UP );
+
 	}
 
 	/**
@@ -220,28 +295,27 @@ public class BlockEssentiaVibrationChamber
 	}
 
 	@Override
-	public boolean rotateBlock( final World world, final int x, final int y, final int z, final ForgeDirection side )
+	public boolean rotateBlock( final World world, final int x, final int y, final int z, final ForgeDirection axis )
 	{
-		// Get the chamber
-		TileEntity tileChamber = world.getTileEntity( x, y, z );
+		// Cast
+		TileEssentiaVibrationChamber chamber = this.getEVCTile( world, x, y, z );
 
-		// Ensure the chamber is present
-		if( !( tileChamber instanceof TileEVCBase ) )
+		// Validate
+		if( chamber == null )
 		{
 			return false;
 		}
 
-		// Increment the direction
-		int sideIndex = ( (TileEVCBase)tileChamber ).getForward().ordinal() + 1;
+		// Get the current facing
+		ForgeDirection forward = chamber.getForward();
+		ForgeDirection up = chamber.getUp();
 
-		// Bounds check direction
-		if( sideIndex >= ForgeDirection.VALID_DIRECTIONS.length )
-		{
-			sideIndex = 0;
-		}
+		// Rotate
+		forward = Platform.rotateAround( forward, axis );
+		up = Platform.rotateAround( up, axis );
 
 		// Apply rotation
-		( (TileEVCBase)tileChamber ).setOrientation( ForgeDirection.getOrientation( sideIndex ), ForgeDirection.UP );
+		chamber.setOrientation( forward, up );
 
 		return true;
 	}

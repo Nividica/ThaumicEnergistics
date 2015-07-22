@@ -1,6 +1,7 @@
 package thaumicenergistics.registries;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
 import thaumicenergistics.blocks.BlockArcaneAssembler;
 import thaumicenergistics.blocks.BlockEssentiaCellWorkbench;
 import thaumicenergistics.blocks.BlockEssentiaProvider;
@@ -9,6 +10,7 @@ import thaumicenergistics.blocks.BlockGearBox;
 import thaumicenergistics.blocks.BlockGolemGearBox;
 import thaumicenergistics.blocks.BlockInfusionProvider;
 import thaumicenergistics.blocks.BlockKnowledgeInscriber;
+import thaumicenergistics.items.ItemBlockEssentiaVibrationChamber;
 
 public enum BlockEnum
 {
@@ -19,18 +21,48 @@ public enum BlockEnum
 		ESSENTIA_CELL_WORKBENCH (ThEStrings.Block_EssentiaCellWorkbench, new BlockEssentiaCellWorkbench()),
 		ARCANE_ASSEMBLER (ThEStrings.Block_ArcaneAssembler, new BlockArcaneAssembler()),
 		KNOWLEDGE_INSCRIBER (ThEStrings.Block_KnowledgeInscriber, new BlockKnowledgeInscriber()),
-		ESSENTIA_VIBRATION_CHAMBER (ThEStrings.Block_EssentiaVibrationChamber, new BlockEssentiaVibrationChamber());
+		ESSENTIA_VIBRATION_CHAMBER (ThEStrings.Block_EssentiaVibrationChamber, new BlockEssentiaVibrationChamber(),
+			ItemBlockEssentiaVibrationChamber.class);
 
-	private Block block;
+	/**
+	 * The block object.
+	 */
+	private final Block block;
 
-	private ThEStrings unlocalizedName;
+	/**
+	 * Unlocalized name of the block.
+	 */
+	private final ThEStrings unlocalizedName;
+
+	/**
+	 * Custom item
+	 */
+	private final Class<? extends ItemBlock> itemBlockClass;
 
 	/**
 	 * Cache of the enum values
 	 */
 	public static final BlockEnum[] VALUES = BlockEnum.values();
 
+	/**
+	 * Constructs the block with the default itemblock.
+	 * 
+	 * @param unlocalizedName
+	 * @param block
+	 */
 	private BlockEnum( final ThEStrings unlocalizedName, final Block block )
+	{
+		this( unlocalizedName, block, ItemBlock.class );
+	}
+
+	/**
+	 * Constructs the block with the specified itemBlock.
+	 * 
+	 * @param unlocalizedName
+	 * @param block
+	 * @param itemBlockClass
+	 */
+	private BlockEnum( final ThEStrings unlocalizedName, final Block block, final Class<? extends ItemBlock> itemBlockClass )
 	{
 		// Set the block
 		this.block = block;
@@ -40,12 +72,20 @@ public enum BlockEnum
 
 		// Set the block's name
 		block.setBlockName( this.unlocalizedName.getUnlocalized() );
+
+		// Set item
+		this.itemBlockClass = itemBlockClass;
 	}
 
 	// Return the block
 	public Block getBlock()
 	{
 		return this.block;
+	}
+
+	public Class<? extends ItemBlock> getItemClass()
+	{
+		return this.itemBlockClass;
 	}
 
 	// Return the name

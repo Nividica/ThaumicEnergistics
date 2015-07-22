@@ -20,7 +20,7 @@ public class CommonProxy
 	{
 		for( BlockEnum block : BlockEnum.VALUES )
 		{
-			GameRegistry.registerBlock( block.getBlock(), block.getUnlocalizedName() );
+			GameRegistry.registerBlock( block.getBlock(), block.getItemClass(), block.getUnlocalizedName() );
 		}
 	}
 

@@ -19,6 +19,8 @@ import thaumicenergistics.api.IThEEssentiaContainerPermission;
 import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.items.ItemBlockEssentiaVibrationChamber;
+import thaumicenergistics.tileentities.abstraction.TileEVCBase;
 
 /**
  * Helper class for working with Thaumcraft item essentia containers.
@@ -330,7 +332,7 @@ public final class EssentiaItemContainerHelper
 			resultStack = container.copy();
 
 			// Reduce the list amount
-			aspectList.reduce( aspectStack.aspect, amountToDrain );
+			aspectList.remove( aspectStack.aspect, amountToDrain );
 
 			// Set the stored amount
 			( (IEssentiaContainerItem)resultStack.getItem() ).setAspects( resultStack, aspectList );
@@ -655,20 +657,38 @@ public final class EssentiaItemContainerHelper
 			return null;
 		}
 
-		// Is the container a labeled jar?
-		if( this.doesJarHaveLabel( container ) )
+		// Get the container item
+		Item containerItem = container.getItem();
+		if( containerItem == null )
 		{
-			// Does the label match the aspect we are going to fill
-			// with?
-			if( aspectStack.aspect != this.getJarLabelAspect( container ) )
+			// Invalid item
+			return null;
+		}
+
+		// Is the container a labeled jar?
+		if( containerItem instanceof ItemJarFilled )
+		{
+			if( this.doesJarHaveLabel( container ) )
 			{
-				// Aspect does not match the jar's label
+				// Does the label match the aspect we are going to fill
+				// with?
+				if( aspectStack.aspect != this.getJarLabelAspect( container ) )
+				{
+					// Aspect does not match the jar's label
+					return null;
+				}
+			}
+		}
+		// Is the container restricted?
+		else if( containerItem instanceof IRestrictedEssentiaContainerItem )
+		{
+			// Ensure the container accepts this essentia
+			if( !( ( (IRestrictedEssentiaContainerItem)containerItem ).acceptsAspect( aspectStack.aspect ) ) )
+			{
+				// Not acceptable
 				return null;
 			}
 		}
-
-		// Get the container item
-		Item containerItem = container.getItem();
 
 		// Get the info about the container
 		IThEEssentiaContainerPermission info = this.getContainerInfo( containerItem, container.getItemDamage() );
@@ -678,6 +698,7 @@ public final class EssentiaItemContainerHelper
 		{
 			return null;
 		}
+
 		// Get how much essentia is in the container
 		int containerAmountStored = this.getContainerStoredAmount( container );
 
@@ -736,20 +757,31 @@ public final class EssentiaItemContainerHelper
 		// Have we already set the result?
 		if( resultStack == null )
 		{
-			// Make a copy of the request
-			resultStack = container.copy();
-
+			// Get the currently stored list.
 			AspectList aspectList = ( (IEssentiaContainerItem)containerItem ).getAspects( container );
 
-			// Did not we get a list?
+			// Is the containers list null?
 			if( aspectList == null )
 			{
 				// Create a new aspect list
 				aspectList = new AspectList();
 			}
+			// Does the list have anything in it?
+			else if( aspectList.size() > 0 )
+			{
+				// Does the stored aspect match the aspect to inject?
+				if( aspectStack.aspect != aspectList.getAspects()[0] )
+				{
+					// Don't mix aspects
+					return null;
+				}
+			}
 
 			// Increase the list amount
 			aspectList.add( aspectStack.aspect, amountToFill );
+
+			// Make a copy of the request
+			resultStack = container.copy();
 
 			// Set the stored amount
 			( (IEssentiaContainerItem)resultStack.getItem() ).setAspects( resultStack, aspectList );
@@ -807,7 +839,7 @@ public final class EssentiaItemContainerHelper
 	/**
 	 * Setup the standard white list
 	 */
-	public void registerThaumcraftContainers()
+	public void registerDefaultContainers()
 	{
 		// Phials
 		this.perms.addEssentiaContainerItemToTransportPermissions( ItemEssence.class, PHIAL_CAPACITY, 0, false );
@@ -819,8 +851,8 @@ public final class EssentiaItemContainerHelper
 		// Void jar
 		this.perms.addEssentiaContainerItemToTransportPermissions( ItemJarFilled.class, JAR_CAPACITY, 3, true );
 
-		// Label
-		//this.emptyJarLabel = new ItemStack( thaumcraft.common.config.ConfigItems.itemResource, 1, 13 );
+		// Vibration chamber
+		this.perms.addEssentiaContainerItemToTransportPermissions( ItemBlockEssentiaVibrationChamber.class, TileEVCBase.MAX_ESSENTIA_STORED, 0, true );
 	}
 
 	/**

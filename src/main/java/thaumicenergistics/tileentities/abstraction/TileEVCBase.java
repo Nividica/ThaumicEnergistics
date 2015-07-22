@@ -34,7 +34,10 @@ public abstract class TileEVCBase
 	extends AENetworkTile
 	implements IEssentiaTransportWithSimulate, IAspectSource
 {
-	private static final String NBTKEY_STORED = "StoredEssentia";
+	/**
+	 * NBT Key for the stored aspect stack.
+	 */
+	public static final String NBTKEY_STORED = "StoredEssentia";
 
 	/**
 	 * The maximum amount of stored essentia.
@@ -45,6 +48,17 @@ public abstract class TileEVCBase
 	 * Stored Essentia
 	 */
 	protected AspectStack storedEssentia = null;
+
+	/**
+	 * Returns true if the EVC accepts the specified aspect.
+	 * 
+	 * @param aspect
+	 * @return
+	 */
+	public static boolean acceptsAspect( final Aspect aspect )
+	{
+		return( ( aspect == Aspect.FIRE ) || ( aspect == Aspect.ENERGY ) );
+	}
 
 	/**
 	 * 1-100: Ignis, 100-200: Potentia
@@ -138,7 +152,7 @@ public abstract class TileEVCBase
 		}
 
 		// Nothing is stored, accepts ignis or potentia
-		return( ( aspect == Aspect.FIRE ) || ( aspect == Aspect.ENERGY ) );
+		return TileEVCBase.acceptsAspect( aspect );
 	}
 
 	@Deprecated
