@@ -11,7 +11,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
@@ -20,6 +19,7 @@ import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
 import thaumicenergistics.tileentities.abstraction.TileEVCBase;
+import thaumicenergistics.util.EffectiveSide;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -45,14 +45,22 @@ public class BlockEssentiaVibrationChamber
 	@Override
 	protected boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
-		// Ignore fake players
-		if( player instanceof FakePlayer )
+		// Ignore if player is sneaking
+		if( player.isSneaking() )
 		{
 			return false;
 		}
 
-		// Launch the GUI
-		ThEGuiHandler.launchGui( ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER, player, world, x, y, z );
+		// Server side?
+		if( EffectiveSide.isServerSide() )
+		{
+			// Is the tile valid?
+			if( world.getTileEntity( x, y, z ) instanceof TileEssentiaVibrationChamber )
+			{
+				// Launch the GUI
+				ThEGuiHandler.launchGui( ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER, player, world, x, y, z );
+			}
+		}
 
 		return true;
 	}
@@ -91,7 +99,7 @@ public class BlockEssentiaVibrationChamber
 		if( ( chamber.getForward() != null ) && ( side == chamber.getForward().ordinal() ) )
 		{
 			// Get the aspect in the chamber
-			Aspect aspect = chamber.processingAspect;
+			Aspect aspect = chamber.getProcessingAspect();
 
 			if( aspect == Aspect.ENERGY )
 			{

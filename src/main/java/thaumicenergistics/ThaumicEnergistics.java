@@ -134,7 +134,7 @@ public class ThaumicEnergistics
 		long startTime = ThELog.beginSection( "PostInit" );
 
 		// Register the standard thaumcraft container items and tiles
-		EssentiaTileContainerHelper.INSTANCE.registerThaumcraftContainers();
+		EssentiaTileContainerHelper.INSTANCE.registerDefaultContainers();
 		EssentiaItemContainerHelper.INSTANCE.registerThaumcraftContainers();
 
 		// Register features

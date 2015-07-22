@@ -1,13 +1,16 @@
 package thaumicenergistics.tileentities;
 
 import io.netty.buffer.ByteBuf;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.container.ContainerEssentiaVibrationChamber;
 import thaumicenergistics.integration.IWailaSource;
 import thaumicenergistics.integration.tc.EssentiaTransportHelper;
 import thaumicenergistics.network.packet.AbstractPacket;
@@ -35,24 +38,19 @@ public class TileEssentiaVibrationChamber
 					NBTKEY_PROCESSING_ASPECT = "ProcAspect";
 
 	/**
-	 * How long it takes coal to burn
-	 */
-	private static int coalBurnTime = 0;
-
-	/**
 	 * How much power is produced per tick
 	 */
-	private static double basePowerProducedPerTick = 5.0;
+	private static final double BASE_POWER_PER_TICK = 5.0;
 
 	/**
 	 * Half second.
 	 */
-	private static int TICKRATE_MIN = 10;
+	private static final int TICKRATE_MIN = 10;
 
 	/**
 	 * Two seconds.
 	 */
-	private static int TICKRATE_MAX = 40;
+	private static final int TICKRATE_MAX = 40;
 
 	/**
 	 * Min and Max processing speed
@@ -60,9 +58,24 @@ public class TileEssentiaVibrationChamber
 	private static final int PROCESS_SPEED_MAX = 200, PROCESS_SPEED_MIN = 20;
 
 	/**
-	 * How much longer the essentia will be processed.
+	 * Adjusts processing speed.
 	 */
-	private int timeRemaining = 0;
+	private static final double DILATATION_DIVISOR = 100;
+
+	/**
+	 * How long it takes coal to burn
+	 */
+	private static int coalBurnTime = 0;
+
+	/**
+	 * Time dilation amount
+	 */
+	private double dilation = 1.0F;
+
+	/**
+	 * How much longer the essentia will be processed, in ticks.
+	 */
+	private int processingTicksRemaining = 0;
 
 	/**
 	 * How fast processing is occurring.
@@ -77,12 +90,29 @@ public class TileEssentiaVibrationChamber
 	/**
 	 * What aspect is currently being processed.
 	 */
-	public Aspect processingAspect = null;
+	private Aspect processingAspect = null;
 
 	/**
 	 * Set true when the aspect changed.
 	 */
-	public boolean processingChanged = false;
+	private boolean processingChanged = false;
+
+	/**
+	 * The total amount of processing ticks for the current aspect.
+	 * Used for GUI.
+	 */
+	private int sync_totalProcessingTicks = 0;
+
+	/**
+	 * How much power is being produced per tick.
+	 * Used for GUI.
+	 */
+	private double sync_powerPerTick = 0;
+
+	/**
+	 * Players who have the GUI open.
+	 */
+	private final Set<ContainerEssentiaVibrationChamber> listeners = new HashSet<ContainerEssentiaVibrationChamber>();
 
 	/**
 	 * Adjusts processing time and power production based on essentia type.
@@ -104,15 +134,27 @@ public class TileEssentiaVibrationChamber
 		if( this.storedEssentia.aspect == Aspect.FIRE )
 		{
 			pTime = TileEssentiaVibrationChamber.coalBurnTime / 2;
-			this.powerProducedPerProcessingTick = TileEssentiaVibrationChamber.basePowerProducedPerTick * 1.0D;
+			this.powerProducedPerProcessingTick = TileEssentiaVibrationChamber.BASE_POWER_PER_TICK * 1.0D;
 		}
 		else if( this.storedEssentia.aspect == Aspect.ENERGY )
 		{
 			pTime = (int)( TileEssentiaVibrationChamber.coalBurnTime / 1.6F );
-			this.powerProducedPerProcessingTick = TileEssentiaVibrationChamber.basePowerProducedPerTick * 1.6D;
+			this.powerProducedPerProcessingTick = TileEssentiaVibrationChamber.BASE_POWER_PER_TICK * 1.6D;
 		}
 
+		// Set the total
+		this.sync_totalProcessingTicks = pTime;
+
 		return pTime;
+	}
+
+	/**
+	 * Clamps the processing speed to the min-max constants.
+	 */
+	private void clampProcessingSpeed()
+	{
+		this.processingSpeed = Math.max( TileEssentiaVibrationChamber.PROCESS_SPEED_MIN,
+			Math.min( TileEssentiaVibrationChamber.PROCESS_SPEED_MAX, this.processingSpeed ) );
 	}
 
 	/**
@@ -141,7 +183,7 @@ public class TileEssentiaVibrationChamber
 				this.markForUpdate();
 
 				// Add to processing time
-				this.timeRemaining += pTime;
+				this.processingTicksRemaining += pTime;
 
 				return true;
 			}
@@ -159,32 +201,34 @@ public class TileEssentiaVibrationChamber
 	private TickRateModulation doProcessingTick( final int ticksSinceLastCall )
 	{
 		// Is there any processing time remaining?
-		if( this.timeRemaining == 0 )
+		if( this.processingTicksRemaining == 0 )
 		{
 			return TickRateModulation.IDLE;
 		}
 
-		// Bounds check processing speed
-		this.processingSpeed = Math.max( TileEssentiaVibrationChamber.PROCESS_SPEED_MIN,
-			Math.min( TileEssentiaVibrationChamber.PROCESS_SPEED_MAX, this.processingSpeed ) );
+		// Clap the processing speed
+		clampProcessingSpeed();
 
 		// Calculate dilation
-		double dilation = this.processingSpeed / 100.0;
+		this.dilation = this.processingSpeed / TileEssentiaVibrationChamber.DILATATION_DIVISOR;
 
 		// Calculate number of processing ticks
-		double processingTicks = ticksSinceLastCall * dilation;
+		double processingTicks = ticksSinceLastCall * this.dilation;
 
 		// Adjust time remaining
-		this.timeRemaining -= processingTicks;
+		this.processingTicksRemaining -= processingTicks;
+
+		// Calculate the goal produced power
+		this.sync_powerPerTick = ( processingTicks * this.powerProducedPerProcessingTick ) / ticksSinceLastCall;
 
 		// Finished?
-		if( this.timeRemaining <= 0 )
+		if( this.processingTicksRemaining <= 0 )
 		{
 			// Adjust processing time
-			processingTicks += this.timeRemaining;
+			processingTicks += this.processingTicksRemaining;
 
 			// Reset time
-			this.timeRemaining = 0;
+			this.processingTicksRemaining = 0;
 
 			// Clear the aspect
 			this.processingAspect = null;
@@ -195,7 +239,7 @@ public class TileEssentiaVibrationChamber
 			this.markDirty();
 		}
 
-		// Calculate the produced power
+		// Calculate the actual produced power
 		double producedPower = processingTicks * this.powerProducedPerProcessingTick;
 
 		// Assume slower
@@ -240,6 +284,39 @@ public class TileEssentiaVibrationChamber
 
 		return rate;
 
+	}
+
+	/**
+	 * Updates all listening containers.
+	 */
+	private void updateListeners()
+	{
+		// Fast exit check
+		if( this.listeners.isEmpty() )
+		{
+			return;
+		}
+
+		// Cast power per tick
+		float powerPerTick = (float)this.sync_powerPerTick;
+
+		// Calculate the maximum power per tick
+		float maxPowerPerTick = (float)( this.powerProducedPerProcessingTick * ( TileEssentiaVibrationChamber.PROCESS_SPEED_MAX / TileEssentiaVibrationChamber.DILATATION_DIVISOR ) );
+
+		// Clamp the processing speed
+		clampProcessingSpeed();
+
+		// Calculate ticks remaining
+		int ticksRemaining = (int)( this.processingTicksRemaining / this.dilation );
+
+		// Calculate total ticks
+		int totalTicks = (int)( this.sync_totalProcessingTicks / this.dilation );
+
+		// Update listeners
+		for( ContainerEssentiaVibrationChamber listener : this.listeners )
+		{
+			listener.onChamberUpdate( powerPerTick, maxPowerPerTick, ticksRemaining, totalTicks );
+		}
 	}
 
 	/**
@@ -303,10 +380,10 @@ public class TileEssentiaVibrationChamber
 		// Read time remaining
 		if( data.hasKey( TileEssentiaVibrationChamber.NBTKEY_TIME_REMAINING ) )
 		{
-			this.timeRemaining = data.getInteger( TileEssentiaVibrationChamber.NBTKEY_TIME_REMAINING );
+			this.processingTicksRemaining = data.getInteger( TileEssentiaVibrationChamber.NBTKEY_TIME_REMAINING );
 		}
 
-		if( this.timeRemaining > 0 )
+		if( this.processingTicksRemaining > 0 )
 		{
 			// Read processing speed
 			if( data.hasKey( TileEssentiaVibrationChamber.NBTKEY_PROCESSING_SPEED ) )
@@ -342,9 +419,9 @@ public class TileEssentiaVibrationChamber
 	protected void NBTWrite( final NBTTagCompound data )
 	{
 		// Write time remaining
-		data.setInteger( TileEssentiaVibrationChamber.NBTKEY_TIME_REMAINING, this.timeRemaining );
+		data.setInteger( TileEssentiaVibrationChamber.NBTKEY_TIME_REMAINING, this.processingTicksRemaining );
 
-		if( this.timeRemaining > 0 )
+		if( this.processingTicksRemaining > 0 )
 		{
 			// Write processing speed
 			data.setInteger( TileEssentiaVibrationChamber.NBTKEY_PROCESSING_SPEED, this.processingSpeed );
@@ -421,6 +498,16 @@ public class TileEssentiaVibrationChamber
 	}
 
 	/**
+	 * Returns what aspect is currently being processed.
+	 * 
+	 * @return
+	 */
+	public Aspect getProcessingAspect()
+	{
+		return this.processingAspect;
+	}
+
+	/**
 	 * How often to tick?
 	 * 
 	 * @param node
@@ -432,6 +519,26 @@ public class TileEssentiaVibrationChamber
 		// Half second, to 2 seconds.
 		return new TickingRequest( TileEssentiaVibrationChamber.TICKRATE_MIN, TileEssentiaVibrationChamber.TICKRATE_MAX, false, false );
 
+	}
+
+	/**
+	 * Registers a listener with the EVC
+	 * 
+	 * @param listener
+	 */
+	public void registerListener( final ContainerEssentiaVibrationChamber listener )
+	{
+		this.listeners.add( listener );
+	}
+
+	/**
+	 * Un-registers a listener with the EVC.
+	 * 
+	 * @param listener
+	 */
+	public void removeListener( final ContainerEssentiaVibrationChamber listener )
+	{
+		this.listeners.remove( listener );
 	}
 
 	/**
@@ -449,17 +556,25 @@ public class TileEssentiaVibrationChamber
 		TickRateModulation rate = TickRateModulation.IDLE;
 
 		// Is there any processing time remaining?
-		if( this.timeRemaining > 0 )
+		if( this.processingTicksRemaining > 0 )
 		{
 			// Process the essentia
 			rate = this.doProcessingTick( ticksSinceLastCall );
+		}
+		else
+		{
+			// No longer producing power
+			this.sync_powerPerTick = 0;
+
+			// Reset speed
+			this.processingSpeed = TileEssentiaVibrationChamber.PROCESS_SPEED_MIN;
 		}
 
 		// Is there anything stored?
 		if( this.hasStoredEssentia() )
 		{
 			// Is the chamber idle?
-			if( this.timeRemaining == 0 )
+			if( this.processingTicksRemaining == 0 )
 			{
 				// Can essentia be consumed?
 				if( this.consumeEssentia() )
@@ -477,9 +592,6 @@ public class TileEssentiaVibrationChamber
 		}
 		else
 		{
-			// Nothing is stored, keep moving the rotation timer
-			this.suctionRotationTimer += ticksSinceLastCall;
-
 			// Replenish if possible
 			replenish = true;
 		}
@@ -490,6 +602,9 @@ public class TileEssentiaVibrationChamber
 			// Replenish essentia
 			EssentiaTransportHelper.INSTANCE.takeEssentiaFromTransportNeighbors( this, this.worldObj, this.xCoord, this.yCoord, this.zCoord );
 		}
+
+		// Update listeners
+		this.updateListeners();
 
 		return rate;
 	}

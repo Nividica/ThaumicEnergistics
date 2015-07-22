@@ -5,6 +5,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -38,7 +39,7 @@ public abstract class TileEVCBase
 	/**
 	 * The maximum amount of stored essentia.
 	 */
-	protected static final int MAX_ESSENTIA_STORED = 64;
+	public static final int MAX_ESSENTIA_STORED = 64;
 
 	/**
 	 * Stored Essentia
@@ -48,7 +49,7 @@ public abstract class TileEVCBase
 	/**
 	 * 1-100: Ignis, 100-200: Potentia
 	 */
-	protected int suctionRotationTimer = 1;
+	//protected int suctionRotationTimer = 1;
 
 	protected abstract int addEssentia( final Aspect aspect, final int amount, final Actionable mode );
 
@@ -220,10 +221,20 @@ public abstract class TileEVCBase
 	{
 		int suction = 0;
 
-		// Not full?
-		if( ( this.storedEssentia == null ) || ( this.storedEssentia.stackSize < TileEVCBase.MAX_ESSENTIA_STORED ) )
+		// Is there anything stored?
+		if( this.storedEssentia != null )
 		{
-			suction = 128;
+			// Not Full?
+			if( this.storedEssentia.stackSize < TileEVCBase.MAX_ESSENTIA_STORED )
+			{
+				// Full suction when stored but not full.
+				suction = 128;
+			}
+		}
+		else
+		{
+			// Less suction when nothing stored.
+			suction = 100;
 		}
 
 		return suction;
@@ -232,28 +243,26 @@ public abstract class TileEVCBase
 	@Override
 	public Aspect getSuctionType( final ForgeDirection side )
 	{
+		// Default to Ignis
+		Aspect suction = Aspect.FIRE;
+
 		// Is there anything stored?
 		if( this.hasStoredEssentia() )
 		{
 			// Suction type must match what is stored
-			return this.storedEssentia.aspect;
+			suction = this.storedEssentia.aspect;
 		}
-
-		// Is the timer over 100?
-		if( this.suctionRotationTimer > 100 )
+		else
 		{
-			// Does the timer need to be reset?
-			if( this.suctionRotationTimer > 200 )
+			// Rotate into Potentia?
+			if( ( MinecraftServer.getServer().getTickCounter() % 200 ) > 100 )
 			{
-				this.suctionRotationTimer = 0;
+				// Set to Potentia
+				suction = Aspect.ENERGY;
 			}
-
-			// Potentia
-			return Aspect.ENERGY;
 		}
 
-		// Ignis
-		return Aspect.FIRE;
+		return suction;
 	}
 
 	@Override

@@ -17,22 +17,34 @@ public interface IThETransportPermissions
 {
 
 	/**
+	 * Adds a tile entity to both inject & extract whitelists.
+	 * The tile must implement the interface {@link IAspectContainer}<br />
+	 * Capacity is required to function properly.
+	 * 
+	 * @param tileClass
+	 * @return True if added to the lists, False if not.
+	 */
+	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToBothPermissions( Class<T> tileClass, int capacity );
+
+	/**
 	 * Adds a tile entity to the extract whitelist.
-	 * The tile must implement the interface {@link IAspectContainer}
+	 * The tile must implement the interface {@link IAspectContainer} <br />
+	 * Note: Capacity can be 0 if the tile doesn't truely 'contain' essentia.
 	 * 
 	 * @param tileClass
 	 * @return True if added to the list or already present, False otherwise.
 	 */
-	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToExtractPermissions( Class<T> tileClass );
+	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToExtractPermissions( Class<T> tileClass, int capacity );
 
 	/**
 	 * Adds a tile entity to the inject whitelist.
-	 * The tile must implement the interface {@link IAspectContainer}
+	 * The tile must implement the interface {@link IAspectContainer}<br />
+	 * Capacity is required to function properly.
 	 * 
 	 * @param tileClass
 	 * @return True if added to the list, False if not.
 	 */
-	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToInjectPermissions( Class<T> tileClass );
+	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToInjectPermissions( Class<T> tileClass, int capacity );
 
 	/**
 	 * Adds an item to the whitelist that must match the specified damage
@@ -61,7 +73,7 @@ public interface IThETransportPermissions
 	 * @param container
 	 * @return
 	 */
-	public boolean canExtractFromAspectContainerTile( IAspectContainer container );
+	public boolean canExtractFromAspectContainerTile( final IAspectContainer container );
 
 	/**
 	 * Checks if the container can be injected into
@@ -70,6 +82,14 @@ public interface IThETransportPermissions
 	 * @return
 	 */
 	public boolean canInjectToAspectContainerTile( IAspectContainer container );
+
+	/**
+	 * Returns the registered capacity of the specified container.
+	 * 
+	 * @param container
+	 * @return Registered capacity, or -1 if not registered.
+	 */
+	public int getAspectContainerTileCapacity( IAspectContainer container );
 
 	/**
 	 * Gets the information about the container as it was registered to the

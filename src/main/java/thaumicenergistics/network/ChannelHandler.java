@@ -7,6 +7,7 @@ import thaumicenergistics.network.handlers.HandlerAreaParticleFX;
 import thaumicenergistics.network.handlers.HandlerClientAspectSlot;
 import thaumicenergistics.network.handlers.HandlerClientEssentiaCellTerminal;
 import thaumicenergistics.network.handlers.HandlerClientEssentiaStorageBus;
+import thaumicenergistics.network.handlers.HandlerClientEssentiaVibrationChamber;
 import thaumicenergistics.network.handlers.HandlerClientKnowledgeInscriber;
 import thaumicenergistics.network.handlers.HandlerClientPriority;
 import thaumicenergistics.network.handlers.HandlerServerAspectSlot;
@@ -31,6 +32,7 @@ import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal
 import thaumicenergistics.network.packet.client.PacketClientEssentiaEmitter;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
 import thaumicenergistics.network.packet.client.PacketClientEssentiaStorageBus;
+import thaumicenergistics.network.packet.client.PacketClientEssentiaVibrationChamber;
 import thaumicenergistics.network.packet.client.PacketClientKnowledgeInscriber;
 import thaumicenergistics.network.packet.client.PacketClientPriority;
 import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
@@ -102,6 +104,9 @@ public class ChannelHandler
 		// Wrench Focus
 		wrapper.registerMessage( HandlerServerWrenchFocus.class, PacketServerWrenchFocus.class, discriminator++ , Side.SERVER );
 
+		// Essentia Vibration Chamber
+		wrapper.registerMessage( HandlerClientEssentiaVibrationChamber.class, PacketClientEssentiaVibrationChamber.class, discriminator++ ,
+			Side.CLIENT );
 	}
 
 	public static void sendPacketToAllAround( final AbstractPacket packet, final int dimension, final double x, final double y, final double z,

@@ -1,8 +1,8 @@
 package thaumicenergistics.implementaion;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -113,27 +113,40 @@ class ThETransportPermissions
 	/**
 	 * Holds a list of tiles that we are allowed to extract from.
 	 */
-	private final List<Class<? extends TileEntity>> tileExtractWhiteList = new ArrayList<Class<? extends TileEntity>>();
+	private final Set<Class<? extends IAspectContainer>> tileExtractWhiteList = new HashSet<Class<? extends IAspectContainer>>();
 
 	/**
 	 * Holds a list of tiles that we are allowed to inject into.
 	 */
-	private final List<Class<? extends TileEntity>> tileInjectWhiteList = new ArrayList<Class<? extends TileEntity>>();
+	private final Set<Class<? extends IAspectContainer>> tileInjectWhiteList = new HashSet<Class<? extends IAspectContainer>>();
+
+	/**
+	 * Holds the capacities for each registered tile.
+	 */
+	private final HashMap<Class<? extends IAspectContainer>, Integer> tileCapacities = new HashMap<Class<? extends IAspectContainer>, Integer>();
 
 	@Override
-	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToExtractPermissions( final Class<T> tileClass )
+	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToBothPermissions( final Class<T> tileClass, final int capacity )
+	{
+		// Add to both
+		return( this.addAspectContainerTileToInjectPermissions( tileClass, capacity ) | this.addAspectContainerTileToExtractPermissions( tileClass,
+			capacity ) );
+	}
+
+	@Override
+	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToExtractPermissions( final Class<T> tileClass, final int capacity )
 	{
 		// Ensure we have a tile
 		if( tileClass != null )
 		{
-			// Is it already registered?
-			if( !this.tileExtractWhiteList.contains( tileClass ) )
-			{
-				// Add to the list
-				this.tileExtractWhiteList.add( tileClass );
+			// Set capacity
+			this.tileCapacities.put( tileClass, capacity );
 
+			// Is it not already registered?
+			if( this.tileExtractWhiteList.add( tileClass ) )
+			{
 				// Log the addition
-				ThELog.info( "Added %s to extraction whitelist.", tileClass.toString() );
+				ThELog.info( "Added %s with capacity %d to extraction whitelist.", tileClass.toString(), capacity );
 			}
 
 			return true;
@@ -143,19 +156,19 @@ class ThETransportPermissions
 	}
 
 	@Override
-	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToInjectPermissions( final Class<T> tileClass )
+	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToInjectPermissions( final Class<T> tileClass, final int capacity )
 	{
 		// Ensure we have a tile
 		if( tileClass != null )
 		{
-			// Is it already registered?
-			if( !this.tileInjectWhiteList.contains( tileClass ) )
-			{
-				// Add to the list
-				this.tileInjectWhiteList.add( tileClass );
+			// Set capacity
+			this.tileCapacities.put( tileClass, capacity );
 
+			// Is it not already registered?
+			if( this.tileInjectWhiteList.add( tileClass ) )
+			{
 				// Log the addition
-				ThELog.info( "Added %s to injection whitelist.", tileClass.toString() );
+				ThELog.info( "Added %s with capacity %d to injection whitelist.", tileClass.toString(), capacity );
 			}
 
 			return true;
@@ -211,49 +224,27 @@ class ThETransportPermissions
 	@Override
 	public boolean canExtractFromAspectContainerTile( final IAspectContainer container )
 	{
-		// Ensure the container is a tile.
-		if( !( container instanceof TileEntity ) )
-		{
-			return false;
-		}
-
-		// Loop over blacklist
-		for( Class<? extends TileEntity> whiteClass : this.tileExtractWhiteList )
-		{
-			// Is the container an instance of this whitelisted class?
-			if( whiteClass.isInstance( container ) )
-			{
-				// Return that we can extract
-				return true;
-			}
-		}
-
-		// Return that we can not extract
-		return false;
+		// Return if it is whitelisted or not
+		return( this.tileExtractWhiteList.contains( container.getClass() ) );
 	}
 
 	@Override
 	public boolean canInjectToAspectContainerTile( final IAspectContainer container )
 	{
-		// Ensure the container is a tile.
-		if( !( container instanceof TileEntity ) )
+		// Return if it is whitelisted or not
+		return( this.tileInjectWhiteList.contains( container.getClass() ) );
+	}
+
+	@Override
+	public int getAspectContainerTileCapacity( final IAspectContainer container )
+	{
+		// Is the capacity registered?
+		if( this.tileCapacities.containsKey( container.getClass() ) )
 		{
-			return false;
+			return this.tileCapacities.get( container.getClass() );
 		}
 
-		// Loop over blacklist
-		for( Class<? extends TileEntity> whiteClass : this.tileInjectWhiteList )
-		{
-			// Is the container an instance of this whitelisted class?
-			if( whiteClass.isInstance( container ) )
-			{
-				// Return that we can inject
-				return true;
-			}
-		}
-
-		// Return that we can not inject
-		return false;
+		return -1;
 	}
 
 	@Override

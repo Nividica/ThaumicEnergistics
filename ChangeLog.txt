@@ -1,7 +1,10 @@
-﻿7/21/2015 0.8.10.8
+﻿7/22/2015 0.8.10.8
+  Added E.V.C GUI.
+  API Change: Tile whitelist now requires capacity, and includes a dual add method.
+
+7/21/2015 0.8.10.8
   Added Essentia Vibration Chamber recipe & research.
   Preliminary work on Vibration Chamber GUI.
-  TODO: Add to export whitelist
 
 7/10/2015 0.8.10.8
   Fixes #214: Empty jars can again be filled in Essentia Terminal.

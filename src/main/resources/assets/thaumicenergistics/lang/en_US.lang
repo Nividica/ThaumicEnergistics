@@ -13,7 +13,7 @@ thaumicenergistics.block.golem.gear.box.name=Thaumium Gear Box
 thaumicenergistics.block.essentia.cell.workbench.name=Essentia Cell Workbench
 thaumicenergistics.block.arcane.assembler.name=Arcane Assembler
 thaumicenergistics.block.knowledge.inscriber.name=Knowledge Inscriber
-thaumicenergistics.block.essentia.vibration.chamber.name=[WIP]Essentia Vibration Chamber
+thaumicenergistics.block.essentia.vibration.chamber.name=Essentia Vibration Chamber
 
 #Cable parts
 thaumicenergistics.aeparts.essentia.ImportBus.name=Essentia Import Bus

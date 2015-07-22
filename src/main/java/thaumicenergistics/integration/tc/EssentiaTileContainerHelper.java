@@ -18,6 +18,8 @@ import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
+import thaumicenergistics.tileentities.abstraction.TileEVCBase;
 import appeng.api.config.Actionable;
 import appeng.api.storage.data.IAEFluidStack;
 
@@ -228,24 +230,15 @@ public final class EssentiaTileContainerHelper
 
 	}
 
+	/**
+	 * Returns the capacity of the specified container.
+	 * 
+	 * @param container
+	 * @return Capacity or -1 if unknown capacity.
+	 */
 	public int getContainerCapacity( final IAspectContainer container )
 	{
-		int capacity = 0;
-
-		if( container instanceof TileJarFillable )
-		{
-			capacity = ( (TileJarFillable)container ).maxAmount;
-		}
-		else if( container instanceof TileAlembic )
-		{
-			capacity = ( (TileAlembic)container ).maxAmount;
-		}
-		else if( container instanceof TileEssentiaReservoir )
-		{
-			capacity = ( (TileEssentiaReservoir)container ).maxAmount;
-		}
-
-		return capacity;
+		return this.perms.getAspectContainerTileCapacity( container );
 	}
 
 	public int getContainerStoredAmount( final IAspectContainer container )
@@ -381,27 +374,28 @@ public final class EssentiaTileContainerHelper
 	/**
 	 * Setup the standard white list
 	 */
-	public void registerThaumcraftContainers()
+	public void registerDefaultContainers()
 	{
 		// Alembic
-		this.perms.addAspectContainerTileToExtractPermissions( TileAlembic.class );
+		this.perms.addAspectContainerTileToExtractPermissions( TileAlembic.class, 32 );
 
 		// Centrifuge
-		this.perms.addAspectContainerTileToExtractPermissions( TileCentrifuge.class );
+		this.perms.addAspectContainerTileToExtractPermissions( TileCentrifuge.class, 0 );
 
 		// Jars
-		this.perms.addAspectContainerTileToExtractPermissions( TileJarFillable.class );
-		this.perms.addAspectContainerTileToInjectPermissions( TileJarFillable.class );
+		this.perms.addAspectContainerTileToBothPermissions( TileJarFillable.class, 64 );
 
 		// Essentia buffer
-		this.perms.addAspectContainerTileToExtractPermissions( TileTubeBuffer.class );
+		this.perms.addAspectContainerTileToExtractPermissions( TileTubeBuffer.class, 8 );
 
 		// Essentia reservoir
-		this.perms.addAspectContainerTileToExtractPermissions( TileEssentiaReservoir.class );
-		this.perms.addAspectContainerTileToInjectPermissions( TileEssentiaReservoir.class );
+		this.perms.addAspectContainerTileToBothPermissions( TileEssentiaReservoir.class, 256 );
 
 		// Advanced alchemical furnace
-		this.perms.addAspectContainerTileToExtractPermissions( TileAlchemyFurnaceAdvancedNozzle.class );
+		this.perms.addAspectContainerTileToExtractPermissions( TileAlchemyFurnaceAdvancedNozzle.class, 0 );
+
+		// Essentia vibration chamber
+		this.perms.addAspectContainerTileToInjectPermissions( TileEssentiaVibrationChamber.class, TileEVCBase.MAX_ESSENTIA_STORED );
 	}
 
 }
