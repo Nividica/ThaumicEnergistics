@@ -241,6 +241,26 @@ public class GuiPriority
 	}
 
 	/**
+	 * Draw the foreground
+	 */
+	@Override
+	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
+	{
+		// Draw the title
+		this.fontRendererObj.drawString( this.title, GuiPriority.TITLE_POS_X, GuiPriority.TITLE_POS_Y, 0 );
+
+		// Draw the text field
+		this.amountField.drawTextBox();
+
+		// Get the tooltip from the buttons
+		if( this.addTooltipFromButtons( mouseX, mouseY ) )
+		{
+			// Draw the tooltip
+			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
+		}
+	}
+
+	/**
 	 * Called when the player types a key
 	 */
 	@Override
@@ -273,61 +293,6 @@ public class GuiPriority
 
 			// Update the server
 			new PacketServerPriority().createRequestSetPriority( newPriority, this.player ).sendPacketToServer();
-		}
-	}
-
-	/**
-	 * Called when a button is clicked.
-	 */
-	@Override
-	public void actionPerformed( final GuiButton button )
-	{
-		// Was the priority button clicked?
-		if( button.id == GuiPriority.PART_SWITCH_BUTTON_ID )
-		{
-			// Get the storage buses host 
-			TileEntity host = this.part.getHostTile();
-
-			// Ask the server to change to the priority gui
-			new PacketServerChangeGui().createChangeGuiRequest( this.part, this.player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord )
-							.sendPacketToServer();
-			return;
-
-		}
-
-		// Assume it was an adjustment button
-		try
-		{
-			// Get the definition
-			AdjustmentButtonDef abDef = GuiPriority.ADJUSTMENT_BUTTONS[button.id - GuiPriority.ADJUSTMENT_BUTTONS_ID];
-
-			// Send the adjustment to the server
-			new PacketServerPriority().createRequestAdjustPriority( abDef.amount, this.player ).sendPacketToServer();
-		}
-		catch( IndexOutOfBoundsException e )
-		{
-			return;
-		}
-
-	}
-
-	/**
-	 * Draw the foreground
-	 */
-	@Override
-	public void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
-	{
-		// Draw the title
-		this.fontRendererObj.drawString( this.title, GuiPriority.TITLE_POS_X, GuiPriority.TITLE_POS_Y, 0 );
-
-		// Draw the text field
-		this.amountField.drawTextBox();
-
-		// Get the tooltip from the buttons
-		if( this.addTooltipFromButtons( mouseX, mouseY ) )
-		{
-			// Draw the tooltip
-			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
 		}
 	}
 
@@ -386,6 +351,41 @@ public class GuiPriority
 
 		// Ask for the priority from the server
 		new PacketServerPriority().createRequestPriority( this.player ).sendPacketToServer();
+	}
+
+	/**
+	 * Called when a button is clicked.
+	 */
+	@Override
+	public void onButtonClicked( final GuiButton button, final int mouseButton )
+	{
+		// Was the priority button clicked?
+		if( button.id == GuiPriority.PART_SWITCH_BUTTON_ID )
+		{
+			// Get the storage buses host 
+			TileEntity host = this.part.getHostTile();
+
+			// Ask the server to change to the priority gui
+			new PacketServerChangeGui().createChangeGuiRequest( this.part, this.player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord )
+							.sendPacketToServer();
+			return;
+
+		}
+
+		// Assume it was an adjustment button
+		try
+		{
+			// Get the definition
+			AdjustmentButtonDef abDef = GuiPriority.ADJUSTMENT_BUTTONS[button.id - GuiPriority.ADJUSTMENT_BUTTONS_ID];
+
+			// Send the adjustment to the server
+			new PacketServerPriority().createRequestAdjustPriority( abDef.amount, this.player ).sendPacketToServer();
+		}
+		catch( IndexOutOfBoundsException e )
+		{
+			return;
+		}
+
 	}
 
 	/**

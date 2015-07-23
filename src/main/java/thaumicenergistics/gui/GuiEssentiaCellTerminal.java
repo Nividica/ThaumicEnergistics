@@ -567,22 +567,6 @@ public class GuiEssentiaCellTerminal
 	}
 
 	/**
-	 * Called when a button is clicked.
-	 */
-	@Override
-	public void actionPerformed( final GuiButton button )
-	{
-		// Is the button the sort mode button?
-		if( button.id == GuiEssentiaCellTerminal.SORT_MODE_BUTTON_ID )
-		{
-			// Request update from server
-			new PacketServerEssentiaCellTerminal().createRequestChangeSortMode( this.player,
-				( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC ) )
-							.sendPacketToServer();
-		}
-	}
-
-	/**
 	 * Draw the widgets
 	 * 
 	 * @param mouseX
@@ -734,6 +718,22 @@ public class GuiEssentiaCellTerminal
 		this.buttonList.add( new GuiButtonSortingMode( GuiEssentiaCellTerminal.SORT_MODE_BUTTON_ID, this.guiLeft +
 						GuiEssentiaCellTerminal.SORT_MODE_BUTTON_POS_X, this.guiTop + GuiEssentiaCellTerminal.SORT_MODE_BUTTON_POS_Y,
 						GuiEssentiaCellTerminal.SORT_MODE_BUTTON_SIZE, GuiEssentiaCellTerminal.SORT_MODE_BUTTON_SIZE ) );
+	}
+
+	/**
+	 * Called when a button is clicked.
+	 */
+	@Override
+	public void onButtonClicked( final GuiButton button, final int mouseButton )
+	{
+		// Is the button the sort mode button?
+		if( button.id == GuiEssentiaCellTerminal.SORT_MODE_BUTTON_ID )
+		{
+			// Request update from server
+			new PacketServerEssentiaCellTerminal().createRequestChangeSortMode( this.player,
+				( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC ) )
+							.sendPacketToServer();
+		}
 	}
 
 	/**

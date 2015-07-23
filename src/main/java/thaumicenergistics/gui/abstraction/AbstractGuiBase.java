@@ -3,7 +3,7 @@ package thaumicenergistics.gui.abstraction;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -82,13 +82,6 @@ public abstract class AbstractGuiBase
 	}
 
 	/**
-	 * Cache the font renderer
-	 * 
-	 * @param container
-	 */
-	private static final FontRenderer FONT_RENDERER = Minecraft.getMinecraft().fontRenderer;
-
-	/**
 	 * Tooltip offset from the mouse.
 	 */
 	private static final int TOOLTIP_OFFSET = 12;
@@ -133,10 +126,10 @@ public abstract class AbstractGuiBase
 	 */
 	private static final int TOOLTIP_BORDER_SIZE = 3;
 
-	private static int upgradeU = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getU();
-	private static int upgradeV = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getV();
-	private static int upgradeWidth = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getWidth();
-	private static int upgradeHeight = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getHeight();
+	private static final int upgradeU = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getU();
+	private static final int upgradeV = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getV();
+	private static final int upgradeWidth = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getWidth();
+	private static final int upgradeHeight = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getHeight();
 
 	/**
 	 * Lines to draw when drawTooltip is called.
@@ -203,13 +196,62 @@ public abstract class AbstractGuiBase
 	}
 
 	/**
+	 * Checks if the specified point is within the bounds of the specified slot.
+	 * 
+	 * @param slot
+	 * @param x
+	 * @param y
+	 * @return True if the point is within the slot, false otherwise.
+	 */
+	private final boolean isPointWithinSlot( final Slot slot, final int x, final int y )
+	{
+		return GuiHelper.INSTANCE.isPointInGuiRegion( slot.yDisplayPosition, slot.xDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
+	}
+
+	/**
+	 * Checks if a not-left-click was on a button.<BR>
+	 * Left click is handled by GuiScreen.mouseClicked()
+	 * 
+	 * @param mouseX
+	 * @param mouseY
+	 * @return True if click was handled.
+	 */
+	private final boolean nonLeftClickHandler_Buttons( final int mouseX, final int mouseY, final int mouseButton )
+	{
+		if( mouseButton != GuiHelper.MOUSE_BUTTON_LEFT )
+		{
+			// Mouse over button?
+			for( Object buttonObj : this.buttonList )
+			{
+				// Cast
+				GuiButton button = (GuiButton)buttonObj;
+
+				// Was mouse over the button?
+				if( button.mousePressed( this.mc, mouseX, mouseY ) )
+				{
+					// Play clicky sound
+					button.func_146113_a( this.mc.getSoundHandler() );
+
+					// Call button click event
+					this.onButtonClicked( button, mouseButton );
+
+					// Handled
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Adds to the tooltip based on which button the mouse is over.
 	 * 
 	 * @param mouseX
 	 * @param mouseY
 	 * @return True when a tooltip was added, false otherwise.
 	 */
-	protected boolean addTooltipFromButtons( final int mouseX, final int mouseY )
+	protected final boolean addTooltipFromButtons( final int mouseX, final int mouseY )
 	{
 		// Is the mouse over any buttons?
 		for( Object obj : this.buttonList )
@@ -235,8 +277,14 @@ public abstract class AbstractGuiBase
 		return false;
 	}
 
-	@Override
-	protected void drawGuiContainerBackgroundLayer( final float alpha, final int mouseX, final int mouseY )
+	/**
+	 * Draws the slot backgrounds for the network tool and upgrade slots.
+	 * 
+	 * @param alpha
+	 * @param mouseX
+	 * @param mouseY
+	 */
+	protected final void drawAEToolAndUpgradeSlots( final float alpha, final int mouseX, final int mouseY )
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture( AEStateIconsEnum.AE_STATES_TEXTURE );
 
@@ -291,7 +339,7 @@ public abstract class AbstractGuiBase
 			for( String string : this.tooltip )
 			{
 				// Get the length of the string
-				int stringLen = AbstractGuiBase.FONT_RENDERER.getStringWidth( string );
+				int stringLen = this.mc.fontRenderer.getStringWidth( string );
 
 				// Is it larger than the previous length?
 				if( stringLen > maxStringLength_px )
@@ -338,7 +386,7 @@ public abstract class AbstractGuiBase
 				String line = this.tooltip.get( index );
 
 				// Draw the line
-				FONT_RENDERER.drawStringWithShadow( line, posX, posY, -1 );
+				this.mc.fontRenderer.drawStringWithShadow( line, posX, posY, -1 );
 
 				// Is this the first line?
 				if( index == 0 )
@@ -378,7 +426,7 @@ public abstract class AbstractGuiBase
 	 * @param y
 	 * @return Slot the point is within, null if point is within no slots.
 	 */
-	protected Slot getSlotAtPosition( final int x, final int y )
+	protected final Slot getSlotAtPosition( final int x, final int y )
 	{
 		// Loop over all slots
 		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ )
@@ -399,25 +447,18 @@ public abstract class AbstractGuiBase
 	}
 
 	/**
-	 * Checks if the specified point is within the bounds of the specified slot.
-	 * 
-	 * @param slot
-	 * @param x
-	 * @param y
-	 * @return True if the point is within the slot, false otherwise.
-	 */
-	protected boolean isPointWithinSlot( final Slot slot, final int x, final int y )
-	{
-		return GuiHelper.INSTANCE.isPointInGuiRegion( slot.yDisplayPosition, slot.xDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop );
-	}
-
-	/**
 	 * Called when the mouse is clicked.
 	 */
 	@Override
 	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
-		// Is our container one that could have a network tool?
+
+		if( nonLeftClickHandler_Buttons( mouseX, mouseY, mouseButton ) )
+		{
+			return;
+		}
+
+		// Is this container one that could have a network tool?
 		if( this.inventorySlots instanceof ContainerWithNetworkTool )
 		{
 			// Do we have a network tool?
@@ -436,8 +477,30 @@ public abstract class AbstractGuiBase
 			}
 		}
 
-		// Call super
+		// Pass to super
 		super.mouseClicked( mouseX, mouseY, mouseButton );
+	}
+
+	/**
+	 * Called when a button is clicked. Includes which button was pressed.
+	 * 
+	 * @param button
+	 * @param mouseButton
+	 */
+	protected void onButtonClicked( final GuiButton button, final int mouseButton )
+	{
+	}
+
+	/**
+	 * Called when a button is left-clicked<BR>
+	 * Note: Do not override, use {@link #onButtonClicked(GuiButton, int) onButtonClicked} instead.
+	 * 
+	 * @see #onButtonClicked(GuiButton, int )
+	 */
+	@Override
+	public final void actionPerformed( final GuiButton button )
+	{
+		this.onButtonClicked( button, GuiHelper.MOUSE_BUTTON_LEFT );
 	}
 
 	/**

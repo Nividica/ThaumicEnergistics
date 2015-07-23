@@ -1,4 +1,9 @@
-﻿7/22/2015 0.8.10.8
+﻿7/23/2015 0.8.10.8
+  Fixes #219: ACT buttons can be right-clicked to go backwards.
+  Cleaned up some GUI code.
+  Really fixed #216.
+
+7/22/2015 0.8.10.8
   Added E.V.C GUI.
   API Change: Tile whitelist now requires capacity, and includes a dual add method.
   Fixes #216: Arcane crafting patterns can no longer substitute items, must match exactly.

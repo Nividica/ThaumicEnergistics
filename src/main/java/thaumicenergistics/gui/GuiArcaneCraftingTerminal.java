@@ -195,6 +195,109 @@ public class GuiArcaneCraftingTerminal
 	}
 
 	/**
+	 * Checks if the click was a region deposit.
+	 * 
+	 * @param mouseX
+	 * @param mouseY
+	 * @return True if click was handled.
+	 */
+	private boolean clickHandler_RegionDeposit( final int mouseX, final int mouseY )
+	{
+		// Is the player holding the space key?
+		if( Keyboard.isKeyDown( Keyboard.KEY_SPACE ) )
+		{
+			// Get the slot the mouse is over
+			Slot slotClicked = this.getSlotAtPosition( mouseX, mouseY );
+
+			// Was there a slot under the mouse?
+			if( slotClicked != null )
+			{
+				// Ask the server to move the inventory
+				new PacketServerArcaneCraftingTerminal().createRequestDepositRegion( this.player, slotClicked.slotNumber ).sendPacketToServer();
+
+				// Do not pass to super
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if the click was inside the search box.
+	 * 
+	 * @param mouseX
+	 * @param mouseY
+	 * @param mouseButton
+	 * @return True if click was handled.
+	 */
+	private boolean clickHandler_SearchBox( final int mouseX, final int mouseY, final int mouseButton )
+	{
+		// Was the mouse right-clicked over the search field?
+		if( ( mouseButton == GuiHelper.MOUSE_BUTTON_RIGHT ) &&
+						GuiHelper.INSTANCE.isPointInGuiRegion( AbstractGuiConstantsACT.SEARCH_POS_Y, AbstractGuiConstantsACT.SEARCH_POS_X,
+							AbstractGuiConstantsACT.SEARCH_HEIGHT, AbstractGuiConstantsACT.SEARCH_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
+		{
+			// Clear the search field
+			this.searchField.setText( "" );
+
+			// Update the repo
+			this.repo.searchString = "";
+
+			// Repo needs update
+			this.viewNeedsUpdate = true;
+
+			// Inform search field.
+			this.searchField.mouseClicked( mouseX - this.guiLeft, mouseY - this.guiTop, mouseButton );
+
+			// Do not pass to super
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if the click was inside the widgets.
+	 * 
+	 * @param mouseX
+	 * @param mouseY
+	 * @param mouseButton
+	 * @return True if click was handled.
+	 */
+	private boolean clickHandler_Widgets( final int mouseX, final int mouseY, final int mouseButton )
+	{
+		// Was the click inside the ME grid?
+		if( GuiHelper.INSTANCE.isPointInGuiRegion( AbstractGuiConstantsACT.ME_ITEM_POS_Y, AbstractGuiConstantsACT.ME_ITEM_POS_X,
+			this.numberOfWidgetRows * AbstractGuiConstantsACT.ME_ROW_HEIGHT, AbstractGuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft,
+			this.guiTop ) )
+		{
+			// Click + empty hand is extract
+			boolean doExtract = ( this.player.inventory.getItemStack() == null );
+
+			// Shift+Right click is extract
+			doExtract |= ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) && ( mouseButton == GuiHelper.MOUSE_BUTTON_RIGHT ) );
+
+			// Extracting?
+			if( doExtract )
+			{
+				// Search for the widget the mouse is over, and send extract request.
+				this.sendItemWidgetClicked( mouseX, mouseY, mouseButton );
+			}
+			else
+			{
+				// Inform the server the user would like to deposit the currently held item into the ME network.
+				new PacketServerArcaneCraftingTerminal().createRequestDeposit( this.player, mouseButton ).sendPacketToServer();
+			}
+
+			// Do not pass to super
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Extracts or inserts an item to/from the player held stack based on the
 	 * direction the mouse wheel was scrolled.
 	 * 
@@ -729,71 +832,25 @@ public class GuiArcaneCraftingTerminal
 	@Override
 	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
-		// Was the click inside the ME grid?
-		if( GuiHelper.INSTANCE.isPointInGuiRegion( AbstractGuiConstantsACT.ME_ITEM_POS_Y, AbstractGuiConstantsACT.ME_ITEM_POS_X,
-			this.numberOfWidgetRows * AbstractGuiConstantsACT.ME_ROW_HEIGHT, AbstractGuiConstantsACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft,
-			this.guiTop ) )
+		// Handled by the widget area?
+		if( clickHandler_Widgets( mouseX, mouseY, mouseButton ) )
 		{
-			// Click + empty hand is extract
-			boolean doExtract = ( this.player.inventory.getItemStack() == null );
-
-			// Shift+Right click is extract
-			doExtract |= ( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) && ( mouseButton == GuiHelper.MOUSE_BUTTON_RIGHT ) );
-
-			// Extracting?
-			if( doExtract )
-			{
-				// Search for the widget the mouse is over, and send extract request.
-				this.sendItemWidgetClicked( mouseX, mouseY, mouseButton );
-			}
-			else
-			{
-				// Inform the server the user would like to deposit the currently held item into the ME network.
-				new PacketServerArcaneCraftingTerminal().createRequestDeposit( this.player, mouseButton ).sendPacketToServer();
-			}
-
-			// Do not pass to super
 			return;
 		}
 
-		// Is the player holding the space key?
-		if( Keyboard.isKeyDown( Keyboard.KEY_SPACE ) )
+		// Handled by region deposit?
+		if( clickHandler_RegionDeposit( mouseX, mouseY ) )
 		{
-			// Get the slot the mouse is over
-			Slot slotClicked = this.getSlotAtPosition( mouseX, mouseY );
-
-			// Was there a slot under the mouse?
-			if( slotClicked != null )
-			{
-				// Ask the server to move the inventory
-				new PacketServerArcaneCraftingTerminal().createRequestDepositRegion( this.player, slotClicked.slotNumber ).sendPacketToServer();
-
-				// Do not pass to super
-				return;
-			}
-		}
-
-		// Was the mouse right-clicked over the search field?
-		if( ( mouseButton == GuiHelper.MOUSE_BUTTON_RIGHT ) &&
-						GuiHelper.INSTANCE.isPointInGuiRegion( AbstractGuiConstantsACT.SEARCH_POS_Y, AbstractGuiConstantsACT.SEARCH_POS_X,
-							AbstractGuiConstantsACT.SEARCH_HEIGHT, AbstractGuiConstantsACT.SEARCH_WIDTH, mouseX, mouseY, this.guiLeft, this.guiTop ) )
-		{
-			// Clear the search field
-			this.searchField.setText( "" );
-
-			// Update the repo
-			this.repo.searchString = "";
-
-			// Repo needs update
-			this.viewNeedsUpdate = true;
-
-			// Inform search field.
-			this.searchField.mouseClicked( mouseX - this.guiLeft, mouseY - this.guiTop, mouseButton );
-
-			// Do not pass to super
 			return;
 		}
 
+		// Handled by search box?
+		if( clickHandler_SearchBox( mouseX, mouseY, mouseButton ) )
+		{
+			return;
+		}
+
+		// Get search mode
 		SearchBoxMode searchBoxMode = (SearchBoxMode)AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 
 		// Inform search field of click if auto mode is not on
@@ -807,23 +864,28 @@ public class GuiArcaneCraftingTerminal
 	}
 
 	@Override
-	protected void onScrollbarMoved()
-	{
-		// Update the widgets
-		this.updateMEWidgets();
-
-		// Clear the tooltip
-		this.tooltip.clear();
-		this.lastTooltipUpdateTime = 0;
-	}
-
-	/**
-	 * Called when a button is clicked.
-	 */
-	@Override
-	public void actionPerformed( final GuiButton button )
+	protected void onButtonClicked( final GuiButton button, final int mouseButton )
 	{
 		boolean sortingChanged = false;
+
+		boolean wasLeftClick = true;
+
+		// Which button was clicked?
+		switch ( mouseButton )
+		{
+			case GuiHelper.MOUSE_BUTTON_LEFT:
+				// Already true
+				break;
+
+			case GuiHelper.MOUSE_BUTTON_RIGHT:
+				// Set to false
+				wasLeftClick = false;
+				break;
+
+			default:
+				// Don't handle any other buttons
+				return;
+		}
 
 		switch ( button.id )
 		{
@@ -838,18 +900,18 @@ public class GuiArcaneCraftingTerminal
 				switch ( this.sortingOrder )
 				{
 					case AMOUNT:
-						this.sortingOrder = SortOrder.MOD;
+						this.sortingOrder = ( wasLeftClick ? SortOrder.MOD : SortOrder.NAME );
 						break;
 
 					case INVTWEAKS:
 						break;
 
 					case MOD:
-						this.sortingOrder = SortOrder.NAME;
+						this.sortingOrder = ( wasLeftClick ? SortOrder.NAME : SortOrder.AMOUNT );
 						break;
 
 					case NAME:
-						this.sortingOrder = SortOrder.AMOUNT;
+						this.sortingOrder = ( wasLeftClick ? SortOrder.AMOUNT : SortOrder.MOD );
 						break;
 				}
 				sortingChanged = true;
@@ -873,20 +935,10 @@ public class GuiArcaneCraftingTerminal
 
 			// View type
 			case AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID:
-				switch ( this.viewMode )
-				{
-					case ALL:
-						this.viewMode = ViewItems.STORED;
-						break;
 
-					case STORED:
-						this.viewMode = ViewItems.CRAFTABLE;
-						break;
+				// Rotate view mode
+				this.viewMode = Platform.rotateEnum( this.viewMode, !wasLeftClick, Settings.VIEW_MODE.getPossibleValues() );
 
-					case CRAFTABLE:
-						this.viewMode = ViewItems.ALL;
-						break;
-				}
 				sortingChanged = true;
 				break;
 
@@ -926,7 +978,7 @@ public class GuiArcaneCraftingTerminal
 			case AbstractGuiConstantsACT.BUTTON_SEARCH_MODE_ID:
 				// Rotate search mode
 				SearchBoxMode searchBoxMode = (SearchBoxMode)AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
-				searchBoxMode = Platform.rotateEnum( searchBoxMode, false, Settings.SEARCH_MODE.getPossibleValues() );
+				searchBoxMode = Platform.rotateEnum( searchBoxMode, !wasLeftClick, Settings.SEARCH_MODE.getPossibleValues() );
 
 				// Set focus
 				this.searchField.setFocused( ( searchBoxMode == SearchBoxMode.AUTOSEARCH ) || ( searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) );
@@ -957,6 +1009,17 @@ public class GuiArcaneCraftingTerminal
 			new PacketServerArcaneCraftingTerminal().createRequestSetSort( this.player, this.sortingOrder, this.sortingDirection, this.viewMode )
 							.sendPacketToServer();
 		}
+	}
+
+	@Override
+	protected void onScrollbarMoved()
+	{
+		// Update the widgets
+		this.updateMEWidgets();
+
+		// Clear the tooltip
+		this.tooltip.clear();
+		this.lastTooltipUpdateTime = 0;
 	}
 
 	/**

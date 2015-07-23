@@ -227,74 +227,11 @@ public class GuiEssentiaIO
 		}
 
 		// Call super
-		super.drawGuiContainerBackgroundLayer( alpha, mouseX, mouseY );
-	}
-
-	/**
-	 * Called when the mouse is clicked.
-	 */
-	@Override
-	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
-	{
-		// Call super
-		super.mouseClicked( mouseX, mouseY, mouseButton );
-
-		// Loop over all widgets
-		for( WidgetAspectSlot aspectSlot : this.aspectSlotList )
-		{
-			// Is the mouse over this widget?
-			if( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
-			{
-				// Get the aspect of the currently held item
-				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() );
-
-				// Is there an aspect?
-				if( itemAspect != null )
-				{
-					// Are we already filtering for this aspect?
-					if( this.filteredAspects.contains( itemAspect ) )
-					{
-						// Ignore
-						return;
-					}
-
-				}
-
-				// Inform the slot it was clicked
-				aspectSlot.mouseClicked( itemAspect );
-
-				// Stop searching
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Called when a button is pressed
-	 */
-	@Override
-	public void actionPerformed( final GuiButton button )
-	{
-		// Call super
-		super.actionPerformed( button );
-
-		// Was the clicked button the redstone mode button?
-		if( button.id == GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID )
-		{
-			new PacketServerEssentiaIOBus().createRequestChangeRedstoneMode( this.player, this.part ).sendPacketToServer();
-		}
-		// Void button?
-		else if( button.id == GuiEssentiaIO.ALLOW_VOID_BUTTON_ID )
-		{
-			if( this.part instanceof AEPartEssentiaExportBus )
-			{
-				new PacketServerEssentiaIOBus().createRequestChangeVoidMode( this.player, (AEPartEssentiaExportBus)this.part ).sendPacketToServer();
-			}
-		}
+		super.drawAEToolAndUpgradeSlots( alpha, mouseX, mouseY );
 	}
 
 	@Override
-	public void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
+	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
 		// Call super
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
@@ -336,6 +273,45 @@ public class GuiEssentiaIO
 
 		// Draw the tooltip
 		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
+	}
+
+	/**
+	 * Called when the mouse is clicked.
+	 */
+	@Override
+	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
+	{
+		// Call super
+		super.mouseClicked( mouseX, mouseY, mouseButton );
+
+		// Loop over all widgets
+		for( WidgetAspectSlot aspectSlot : this.aspectSlotList )
+		{
+			// Is the mouse over this widget?
+			if( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
+			{
+				// Get the aspect of the currently held item
+				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() );
+
+				// Is there an aspect?
+				if( itemAspect != null )
+				{
+					// Are we already filtering for this aspect?
+					if( this.filteredAspects.contains( itemAspect ) )
+					{
+						// Ignore
+						return;
+					}
+
+				}
+
+				// Inform the slot it was clicked
+				aspectSlot.mouseClicked( itemAspect );
+
+				// Stop searching
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -388,6 +364,30 @@ public class GuiEssentiaIO
 		// Request a full update from the server
 		new PacketServerEssentiaIOBus().createRequestFullUpdate( this.player, this.part ).sendPacketToServer();
 
+	}
+
+	/**
+	 * Called when a button is pressed
+	 */
+	@Override
+	public void onButtonClicked( final GuiButton button, final int mouseButton )
+	{
+		// Call super
+		super.actionPerformed( button );
+
+		// Was the clicked button the redstone mode button?
+		if( button.id == GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID )
+		{
+			new PacketServerEssentiaIOBus().createRequestChangeRedstoneMode( this.player, this.part ).sendPacketToServer();
+		}
+		// Void button?
+		else if( button.id == GuiEssentiaIO.ALLOW_VOID_BUTTON_ID )
+		{
+			if( this.part instanceof AEPartEssentiaExportBus )
+			{
+				new PacketServerEssentiaIOBus().createRequestChangeVoidMode( this.player, (AEPartEssentiaExportBus)this.part ).sendPacketToServer();
+			}
+		}
 	}
 
 	/**

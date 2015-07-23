@@ -162,6 +162,52 @@ public class GuiEssentiaCellWorkbench
 
 	}
 
+	/**
+	 * Draw the foreground
+	 */
+	@Override
+	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
+	{
+		// Draw the title
+		this.fontRendererObj.drawString( this.title, GuiEssentiaCellWorkbench.TITLE_POS_X, GuiEssentiaCellWorkbench.TITLE_POS_Y, 0 );
+
+		// Draw the widgets
+		SimpleAspectWidget widgetUnderMouse = null, currentWidget;
+		for( int index = 0; index < GuiEssentiaCellWorkbench.NUMBER_OF_WIDGETS; index++ )
+		{
+			// Get the widget
+			currentWidget = this.partitionWidgets[index];
+
+			// Draw the widget
+			currentWidget.drawWidget();
+
+			// Is the mouse over it?
+			if( ( widgetUnderMouse == null ) && ( currentWidget.isMouseOverWidget( mouseX, mouseY ) ) )
+			{
+				// Mark this widget as the one under the mouse
+				widgetUnderMouse = currentWidget;
+			}
+		}
+
+		// Is there a widget under the mouse?
+		if( widgetUnderMouse != null )
+		{
+			// Get the widgets tooltip
+			widgetUnderMouse.getTooltip( this.tooltip );
+		}
+		else
+		{
+			// Add tooltip from buttons
+			this.addTooltipFromButtons( mouseX, mouseY );
+		}
+
+		// Draw the tooltip
+		if( this.tooltip.size() > 0 )
+		{
+			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
+		}
+	}
+
 	@Override
 	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
@@ -205,74 +251,6 @@ public class GuiEssentiaCellWorkbench
 	}
 
 	@Override
-	public void actionPerformed( final GuiButton button )
-	{
-		// Ensure there is a button
-		if( button == null )
-		{
-			return;
-		}
-
-		// Which button was clicked?
-		switch ( button.id )
-		{
-			case GuiEssentiaCellWorkbench.BUTTON_CLEAR_ID:
-				new PacketServerEssentiaCellWorkbench().createRequestClearPartitioning( this.player, this.workbench ).sendPacketToServer();
-				break;
-
-			case GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_ID:
-				new PacketServerEssentiaCellWorkbench().createRequestPartitionToContents( this.player, this.workbench ).sendPacketToServer();
-				break;
-		}
-	}
-
-	/**
-	 * Draw the foreground
-	 */
-	@Override
-	public void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
-	{
-		// Draw the title
-		this.fontRendererObj.drawString( this.title, GuiEssentiaCellWorkbench.TITLE_POS_X, GuiEssentiaCellWorkbench.TITLE_POS_Y, 0 );
-
-		// Draw the widgets
-		SimpleAspectWidget widgetUnderMouse = null, currentWidget;
-		for( int index = 0; index < GuiEssentiaCellWorkbench.NUMBER_OF_WIDGETS; index++ )
-		{
-			// Get the widget
-			currentWidget = this.partitionWidgets[index];
-
-			// Draw the widget
-			currentWidget.drawWidget();
-
-			// Is the mouse over it?
-			if( ( widgetUnderMouse == null ) && ( currentWidget.isMouseOverWidget( mouseX, mouseY ) ) )
-			{
-				// Mark this widget as the one under the mouse
-				widgetUnderMouse = currentWidget;
-			}
-		}
-
-		// Is there a widget under the mouse?
-		if( widgetUnderMouse != null )
-		{
-			// Get the widgets tooltip
-			widgetUnderMouse.getTooltip( this.tooltip );
-		}
-		else
-		{
-			// Add tooltip from buttons
-			this.addTooltipFromButtons( mouseX, mouseY );
-		}
-
-		// Draw the tooltip
-		if( this.tooltip.size() > 0 )
-		{
-			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
-		}
-	}
-
-	@Override
 	public void initGui()
 	{
 		// Call super
@@ -307,6 +285,22 @@ public class GuiEssentiaCellWorkbench
 
 		// Request the list
 		new PacketServerEssentiaCellWorkbench().createRequestGetPartitionList( this.player, this.workbench ).sendPacketToServer();
+	}
+
+	@Override
+	public void onButtonClicked( final GuiButton button, final int mouseButton )
+	{
+		// Which button was clicked?
+		switch ( button.id )
+		{
+			case GuiEssentiaCellWorkbench.BUTTON_CLEAR_ID:
+				new PacketServerEssentiaCellWorkbench().createRequestClearPartitioning( this.player, this.workbench ).sendPacketToServer();
+				break;
+
+			case GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_ID:
+				new PacketServerEssentiaCellWorkbench().createRequestPartitionToContents( this.player, this.workbench ).sendPacketToServer();
+				break;
+		}
 	}
 
 	/**

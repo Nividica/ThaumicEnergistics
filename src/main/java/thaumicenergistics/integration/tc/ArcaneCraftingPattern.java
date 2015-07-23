@@ -5,7 +5,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
+import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import appeng.api.AEApi;
@@ -98,7 +98,6 @@ public class ArcaneCraftingPattern
 	@Override
 	public boolean canSubstitute()
 	{
-		// This needs to be precise Issue #216
 		return false;
 	}
 
@@ -188,24 +187,48 @@ public class ArcaneCraftingPattern
 	}
 
 	@Override
-	public boolean isValidItemForSlot( final int slotIndex, final ItemStack repStack, final World world )
+	public boolean isValidItemForSlot( final int slotIndex, final ItemStack input, final World world )
 	{
 		// Get the item currently in the slot
 		IAEItemStack ingStack = this.ingredients[slotIndex];
 
 		// Ensure nothing is null
-		if( ( ingStack == null ) || ( ingStack.getItem() == null ) || ( repStack == null ) || ( repStack.getItem() == null ) )
+		if( ( ingStack == null ) || ( ingStack.getItem() == null ) || ( input == null ) || ( input.getItem() == null ) )
 		{
 			// Null detected
 			return false;
 		}
 
+		ItemStack target = ingStack.getItemStack();
+
 		// Does the item directly match?
-		if( ItemStack.areItemStacksEqual( ingStack.getItemStack(), repStack ) )
+		if( ItemStack.areItemStacksEqual( target, input ) )
 		{
 			return true;
 		}
 
+		// Do the items match?
+		if( target.getItem() != input.getItem() )
+		{
+			// Mismatched items
+			return false;
+		}
+
+		// NBT data present?
+		if( target.hasTagCompound() )
+		{
+			// Do the tags match?
+			if( !ThaumcraftApiHelper.areItemStackTagsEqualForCrafting( input, target ) )
+			{
+				// Tags do not match
+				return false;
+			}
+		}
+
+		// Finally check item damage (32767 is some magic number from thaumcraft)
+		return( ( target.getItemDamage() == 32767 ) || ( target.getItemDamage() == input.getItemDamage() ) );
+
+		/* Issue #216 - Do not use replacements.
 		// Does the item via ore dictionary fast match?
 		if( OreDictionary.itemMatches( ingStack.getItemStack(), repStack, false ) )
 		{
@@ -227,6 +250,7 @@ public class ArcaneCraftingPattern
 		}
 
 		return false;
+		*/
 	}
 
 	public void readFromNBT( final NBTTagCompound data )

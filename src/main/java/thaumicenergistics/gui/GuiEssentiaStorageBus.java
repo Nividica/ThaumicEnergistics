@@ -186,78 +186,12 @@ public class GuiEssentiaStorageBus
 		}
 
 		// Call super
-		super.drawGuiContainerBackgroundLayer( alpha, mouseX, mouseY );
+		super.drawAEToolAndUpgradeSlots( alpha, mouseX, mouseY );
 
 	}
 
 	@Override
-	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
-	{
-		// Call super
-		super.mouseClicked( mouseX, mouseY, mouseButton );
-
-		for( WidgetAspectSlot aspectSlot : this.aspectWidgetList )
-		{
-			if( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
-			{
-				// Get the aspect of the currently held item
-				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() );
-
-				// Is there an aspect?
-				if( itemAspect != null )
-				{
-					// Are we already filtering for this aspect?
-					if( this.filteredAspects.contains( itemAspect ) )
-					{
-						// Ignore
-						return;
-					}
-
-				}
-
-				aspectSlot.mouseClicked( itemAspect );
-
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Called when a button is clicked.
-	 */
-	@Override
-	public void actionPerformed( final GuiButton button )
-	{
-		// Was the priority button clicked?
-		if( button.id == GuiEssentiaStorageBus.BUTTON_PRIORITY_ID )
-		{
-			// Get the storage buses host 
-			TileEntity host = this.storageBus.getHostTile();
-
-			// Get the side the storage bus is attached to
-			ForgeDirection side = this.storageBus.getSide();
-
-			// Ask the server to change to the priority gui
-			new PacketServerChangeGui().createChangeGuiRequest( ThEGuiHandler.generatePriorityID( side ), this.player, host.getWorldObj(),
-				host.xCoord, host.yCoord, host.zCoord ).sendPacketToServer();
-
-		}
-		else if( button.id == GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID )
-		{
-			// Toggle the mode
-			this.isVoidAllowed = !this.isVoidAllowed;
-
-			// Update the button
-			( (GuiButtonAllowVoid)this.buttonList.get( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID ) ).isVoidAllowed = this.isVoidAllowed;
-
-			// Update the server
-			new PacketServerEssentiaStorageBus().createRequestSetVoidAllowed( this.player, this.storageBus, this.isVoidAllowed ).sendPacketToServer();
-		}
-
-	}
-
-	@Override
-	public void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
+	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
 		// Call super
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
@@ -300,6 +234,38 @@ public class GuiEssentiaStorageBus
 	}
 
 	@Override
+	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
+	{
+		// Call super
+		super.mouseClicked( mouseX, mouseY, mouseButton );
+
+		for( WidgetAspectSlot aspectSlot : this.aspectWidgetList )
+		{
+			if( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
+			{
+				// Get the aspect of the currently held item
+				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() );
+
+				// Is there an aspect?
+				if( itemAspect != null )
+				{
+					// Are we already filtering for this aspect?
+					if( this.filteredAspects.contains( itemAspect ) )
+					{
+						// Ignore
+						return;
+					}
+
+				}
+
+				aspectSlot.mouseClicked( itemAspect );
+
+				break;
+			}
+		}
+	}
+
+	@Override
 	public void initGui()
 	{
 		super.initGui();
@@ -326,6 +292,40 @@ public class GuiEssentiaStorageBus
 
 		// Request an update
 		new PacketServerEssentiaStorageBus().createRequestFullUpdate( this.player, this.storageBus ).sendPacketToServer();
+	}
+
+	/**
+	 * Called when a button is clicked.
+	 */
+	@Override
+	public void onButtonClicked( final GuiButton button, final int mouseButton )
+	{
+		// Was the priority button clicked?
+		if( button.id == GuiEssentiaStorageBus.BUTTON_PRIORITY_ID )
+		{
+			// Get the storage buses host 
+			TileEntity host = this.storageBus.getHostTile();
+
+			// Get the side the storage bus is attached to
+			ForgeDirection side = this.storageBus.getSide();
+
+			// Ask the server to change to the priority gui
+			new PacketServerChangeGui().createChangeGuiRequest( ThEGuiHandler.generatePriorityID( side ), this.player, host.getWorldObj(),
+				host.xCoord, host.yCoord, host.zCoord ).sendPacketToServer();
+
+		}
+		else if( button.id == GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID )
+		{
+			// Toggle the mode
+			this.isVoidAllowed = !this.isVoidAllowed;
+
+			// Update the button
+			( (GuiButtonAllowVoid)this.buttonList.get( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID ) ).isVoidAllowed = this.isVoidAllowed;
+
+			// Update the server
+			new PacketServerEssentiaStorageBus().createRequestSetVoidAllowed( this.player, this.storageBus, this.isVoidAllowed ).sendPacketToServer();
+		}
+
 	}
 
 	/**

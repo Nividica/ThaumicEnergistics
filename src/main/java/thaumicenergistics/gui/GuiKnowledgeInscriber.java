@@ -71,17 +71,6 @@ public class GuiKnowledgeInscriber
 		this.title = ThEStrings.Block_KnowledgeInscriber.getLocalized();
 	}
 
-	@Override
-	protected void actionPerformed( final GuiButton button )
-	{
-		// Was the clicked button the save button?
-		if( button == this.saveButton )
-		{
-			// Send the request to the server
-			new PacketServerKnowledgeInscriber().createRequestSaveDelete( this.player ).sendPacketToServer();
-		}
-	}
-
 	/**
 	 * Draw background
 	 */
@@ -120,7 +109,7 @@ public class GuiKnowledgeInscriber
 	 * Draw the foreground
 	 */
 	@Override
-	public void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
+	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
 		// Draw the title
 		this.fontRendererObj.drawString( this.title, GuiKnowledgeInscriber.TITLE_POS_X, GuiKnowledgeInscriber.TITLE_POS_Y, 0 );
@@ -130,6 +119,17 @@ public class GuiKnowledgeInscriber
 		{
 			// Draw the tooltip
 			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
+		}
+	}
+
+	@Override
+	protected void onButtonClicked( final GuiButton button, final int mouseButton )
+	{
+		// Was the clicked button the save button?
+		if( button == this.saveButton )
+		{
+			// Send the request to the server
+			new PacketServerKnowledgeInscriber().createRequestSaveDelete( this.player ).sendPacketToServer();
 		}
 	}
 

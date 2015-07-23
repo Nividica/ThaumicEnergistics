@@ -144,7 +144,7 @@ public class GuiArcaneAssembler
 		this.drawVisBar( this.progressAspect, ( (ContainerArcaneAssembler)this.inventorySlots ).assembler.getPercentComplete() );
 
 		// Call super
-		super.drawGuiContainerBackgroundLayer( alpha, mouseX, mouseY );
+		super.drawAEToolAndUpgradeSlots( alpha, mouseX, mouseY );
 	}
 
 	/**

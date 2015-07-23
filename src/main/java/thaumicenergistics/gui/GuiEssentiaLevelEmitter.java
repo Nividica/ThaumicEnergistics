@@ -224,6 +224,45 @@ public class GuiEssentiaLevelEmitter
 	}
 
 	/**
+	 * Draw the foreground
+	 */
+	@Override
+	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
+	{
+		// Draw the title
+		this.fontRendererObj.drawString( AEPartsEnum.EssentiaLevelEmitter.getLocalizedName(), GuiEssentiaLevelEmitter.TITLE_POS_X,
+			GuiEssentiaLevelEmitter.TITLE_POS_Y, 0 );
+
+		// Draw underlay when mouse is over slot.
+		if( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
+		{
+			// Draw underlay
+			this.aspectFilterSlot.drawMouseHoverUnderlay();
+
+			// Get tooltip
+			this.aspectFilterSlot.getTooltip( this.tooltip );
+		}
+
+		// Draw the filter widget
+		this.aspectFilterSlot.drawWidget();
+
+		// Draw the text field
+		this.amountField.drawTextBox();
+
+		if( this.tooltip.size() == 0 )
+		{
+			// Add the tooltip from the buttons
+			this.addTooltipFromButtons( mouseX, mouseY );
+		}
+
+		if( this.tooltip.size() > 0 )
+		{
+			// Draw the tooltip
+			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
+		}
+	}
+
+	/**
 	 * Called when the player types a key
 	 */
 	@Override
@@ -268,77 +307,6 @@ public class GuiEssentiaLevelEmitter
 		{
 			// Pass to the widget
 			this.aspectFilterSlot.mouseClicked( EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() ) );
-		}
-	}
-
-	/**
-	 * Called when a button is clicked.
-	 */
-	@Override
-	public void actionPerformed( final GuiButton button )
-	{
-		// Get the index of the button that was clicked
-		int index = button.id;
-
-		// Was one of the amount buttons pressed?
-		if( ( index >= 0 ) && ( index < GuiEssentiaLevelEmitter.BUTTON_LABELS.length ) )
-		{
-			try
-			{
-				// Read the adjustment
-				int adjustment = Integer.parseInt( button.displayString );
-
-				// Update the server
-				new PacketServerEssentiaEmitter().createWantedAmountAdjustment( adjustment, this.part, this.player ).sendPacketToServer();
-			}
-			catch( NumberFormatException e )
-			{
-			}
-		}
-		// Was the redstone mode button pressed?
-		else if( index == GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX )
-		{
-			// Update the server
-			new PacketServerEssentiaEmitter().createRedstoneModeToggle( this.part, this.player ).sendPacketToServer();
-		}
-	}
-
-	/**
-	 * Draw the foreground
-	 */
-	@Override
-	public void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
-	{
-		// Draw the title
-		this.fontRendererObj.drawString( AEPartsEnum.EssentiaLevelEmitter.getLocalizedName(), GuiEssentiaLevelEmitter.TITLE_POS_X,
-			GuiEssentiaLevelEmitter.TITLE_POS_Y, 0 );
-
-		// Draw underlay when mouse is over slot.
-		if( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
-		{
-			// Draw underlay
-			this.aspectFilterSlot.drawMouseHoverUnderlay();
-
-			// Get tooltip
-			this.aspectFilterSlot.getTooltip( this.tooltip );
-		}
-
-		// Draw the filter widget
-		this.aspectFilterSlot.drawWidget();
-
-		// Draw the text field
-		this.amountField.drawTextBox();
-
-		if( this.tooltip.size() == 0 )
-		{
-			// Add the tooltip from the buttons
-			this.addTooltipFromButtons( mouseX, mouseY );
-		}
-
-		if( this.tooltip.size() > 0 )
-		{
-			// Draw the tooltip
-			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
 		}
 	}
 
@@ -429,6 +397,38 @@ public class GuiEssentiaLevelEmitter
 
 		// Request an update from the server
 		new PacketServerEssentiaEmitter().createUpdateRequest( this.part, this.player ).sendPacketToServer();
+	}
+
+	/**
+	 * Called when a button is clicked.
+	 */
+	@Override
+	public void onButtonClicked( final GuiButton button, final int mouseButton )
+	{
+		// Get the index of the button that was clicked
+		int index = button.id;
+
+		// Was one of the amount buttons pressed?
+		if( ( index >= 0 ) && ( index < GuiEssentiaLevelEmitter.BUTTON_LABELS.length ) )
+		{
+			try
+			{
+				// Read the adjustment
+				int adjustment = Integer.parseInt( button.displayString );
+
+				// Update the server
+				new PacketServerEssentiaEmitter().createWantedAmountAdjustment( adjustment, this.part, this.player ).sendPacketToServer();
+			}
+			catch( NumberFormatException e )
+			{
+			}
+		}
+		// Was the redstone mode button pressed?
+		else if( index == GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX )
+		{
+			// Update the server
+			new PacketServerEssentiaEmitter().createRedstoneModeToggle( this.part, this.player ).sendPacketToServer();
+		}
 	}
 
 	/**
