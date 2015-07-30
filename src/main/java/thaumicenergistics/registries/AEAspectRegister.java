@@ -1,6 +1,7 @@
 package thaumicenergistics.registries;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.item.ItemStack;
@@ -14,13 +15,17 @@ import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.util.ThELog;
 import appeng.api.AEApi;
+import appeng.api.IAppEngApi;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
 import appeng.api.definitions.IParts;
 import appeng.api.features.IGrinderEntry;
+import appeng.api.features.IGrinderRegistry;
 import appeng.api.features.IInscriberRecipe;
+import appeng.api.features.IInscriberRegistry;
+import appeng.api.features.IRegistryContainer;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.features.registries.entries.InscriberRecipe;
@@ -273,14 +278,48 @@ public class AEAspectRegister
 		}
 
 		/**
-		 * Builds the aspects for the item via recipe => ingredients
+		 * Attempts to build the aspects for the item via recipe => ingredients
 		 */
 		private void buildAspects()
 		{
 			// Grinder recipes
-			for( IGrinderEntry recipe : AEAspectRegister.this.GRINDER_RECIPES )
+			if( AEAspectRegister.this.GRINDER_RECIPES != null )
 			{
-				try
+				if( this.buildAspectsFromGrinder() )
+				{
+					return;
+				}
+			}
+
+			// Inscriber recipes
+			if( AEAspectRegister.this.INSCRIBER_RECIPES != null )
+			{
+				if( this.buildAspectsFromInscriber() )
+				{
+					return;
+				}
+			}
+
+			// Regular crafting recipes
+			if( AEAspectRegister.this.NORMAL_RECIPES != null )
+			{
+				if( this.buildAspectsFromNormal() )
+				{
+					return;
+				}
+			}
+		}
+
+		/**
+		 * Attempts to build the aspects for the item via grinder recipes.
+		 * 
+		 * @return
+		 */
+		private boolean buildAspectsFromGrinder()
+		{
+			try
+			{
+				for( IGrinderEntry recipe : AEAspectRegister.this.GRINDER_RECIPES )
 				{
 					ItemStack recipeOutput = recipe.getOutput();
 
@@ -294,48 +333,63 @@ public class AEAspectRegister
 					{
 						if( this.isRecipeUsable( recipe ) )
 						{
-							return;
+							return true;
 						}
 					}
 				}
-				catch( Exception e )
-				{
-				}
+			}
+			catch( Exception e )
+			{
 			}
 
-			// Inscriber recipes
-			if( AEAspectRegister.this.INSCRIBER_RECIPES != null )
+			return false;
+		}
+
+		/**
+		 * Attempts to build the aspects for the item via inscriber recipes.
+		 * 
+		 * @return
+		 */
+		private boolean buildAspectsFromInscriber()
+		{
+			try
 			{
 				for( IInscriberRecipe recipe : AEAspectRegister.this.INSCRIBER_RECIPES )
 				{
-					try
+					ItemStack recipeOutput = recipe.getOutput();
+
+					// Skip null items
+					if( recipeOutput == null || recipeOutput.getItem() == null )
 					{
-						ItemStack recipeOutput = recipe.getOutput();
-
-						// Skip null items
-						if( recipeOutput == null || recipeOutput.getItem() == null )
-						{
-							continue;
-						}
-
-						if( this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
-						{
-							if( this.isRecipeUsable( recipe ) )
-							{
-								return;
-							}
-						}
+						continue;
 					}
-					catch( Exception e )
+
+					if( this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
 					{
+						if( this.isRecipeUsable( recipe ) )
+						{
+							return true;
+						}
 					}
 				}
 			}
-
-			// Regular crafting recipes
-			for( IRecipe recipe : AEAspectRegister.this.NORMAL_RECIPES )
+			catch( Exception e )
 			{
-				try
+			}
+			return false;
+		}
+
+		/**
+		 * Attempts to build the aspects for the item via normal recipes.
+		 * 
+		 * @return
+		 */
+		private boolean buildAspectsFromNormal()
+		{
+
+			try
+			{
+				for( IRecipe recipe : AEAspectRegister.this.NORMAL_RECIPES )
 				{
 					// Get the recipe's result
 					ItemStack recipeOutput = recipe.getRecipeOutput();
@@ -354,14 +408,16 @@ public class AEAspectRegister
 
 					if( this.isRecipeUsable( recipe ) )
 					{
-						return;
+						return true;
 					}
-				}
-				catch( Exception e )
-				{
 				}
 
 			}
+			catch( Exception e )
+			{
+			}
+
+			return false;
 		}
 
 		/**
@@ -816,9 +872,9 @@ public class AEAspectRegister
 	/**
 	 * Recipe caches
 	 */
-	List<IRecipe> NORMAL_RECIPES;
-	List<IGrinderEntry> GRINDER_RECIPES;
-	List<IInscriberRecipe> INSCRIBER_RECIPES;
+	List<IRecipe> NORMAL_RECIPES = null;
+	List<IGrinderEntry> GRINDER_RECIPES = null;
+	List<IInscriberRecipe> INSCRIBER_RECIPES = null;
 
 	/**
 	 * Private constructor.
@@ -826,6 +882,74 @@ public class AEAspectRegister
 	private AEAspectRegister()
 	{
 
+	}
+
+	private boolean getGrinderRecipes()
+	{
+		// Get the AE Api instance
+		IAppEngApi aeApi = AEApi.instance();
+
+		try
+		{
+			// Get registries method signature
+			Method mRegistries = IAppEngApi.class.getDeclaredMethod( "registries" );
+
+			// Get the registries		
+			IRegistryContainer aeRegistries = (IRegistryContainer)mRegistries.invoke( aeApi );
+
+			// Get grinder method signature
+			Method mGrinder = IRegistryContainer.class.getDeclaredMethod( "grinderQQ" );
+
+			// Get the grinder registry
+			IGrinderRegistry aeGrinderRegistry = (IGrinderRegistry)mGrinder.invoke( aeRegistries );
+
+			// Get the recipe method signature
+			Method mRecipes = IGrinderRegistry.class.getDeclaredMethod( "getRecipes" );
+
+			// Get the recipes
+			this.GRINDER_RECIPES = (List<IGrinderEntry>)mRecipes.invoke( aeGrinderRegistry );
+
+			return true;
+		}
+		catch( Exception e )
+		{
+		}
+
+		return false;
+	}
+
+	private boolean getInscriberRecipes()
+	{
+		// Get the AE Api instance
+		IAppEngApi aeApi = AEApi.instance();
+
+		try
+		{
+			// Get registries method signature
+			Method mRegistries = IAppEngApi.class.getDeclaredMethod( "registries" );
+
+			// Get the registries		
+			IRegistryContainer aeRegistries = (IRegistryContainer)mRegistries.invoke( aeApi );
+
+			// Get inscriber method signature
+			Method mInscriber = IRegistryContainer.class.getDeclaredMethod( "inscriberQQ" );
+
+			// Get the grinder registry
+			IInscriberRegistry aeInscriberRegistry = (IInscriberRegistry)mInscriber.invoke( aeRegistries );
+
+			// Get the recipe method signature
+			Method mRecipes = IInscriberRegistry.class.getDeclaredMethod( "getRecipes" );
+
+			// Get the recipes
+			this.INSCRIBER_RECIPES = (List<IInscriberRecipe>)mRecipes.invoke( aeInscriberRegistry );
+
+			return true;
+		}
+		catch( Exception e )
+		{
+		}
+
+		return false;
 	}
 
 	/**
@@ -1132,12 +1256,20 @@ public class AEAspectRegister
 		// Log
 		long sectionStartTime = ThELog.beginSection( "AE Scanables" );
 
-		// Get the current recipes
+		// Get the normal recipes
 		this.NORMAL_RECIPES = CraftingManager.getInstance().getRecipeList();
-		this.GRINDER_RECIPES = AEApi.instance().registries().grinder().getRecipes();
+
+		// Get the grinder recipes
+		if( !this.getGrinderRecipes() )
+		{
+			ThELog.warning( "Unable to load AE2 Grinder recipes, aspect registration will be incomplete" );
+		}
 
 		// Get the inscriber recipes
-		this.INSCRIBER_RECIPES = AEApi.instance().registries().inscriber().getRecipes();
+		if( !this.getInscriberRecipes() )
+		{
+			ThELog.warning( "Unable to load AE2 Inscriber recipes, aspect registration will be incomplete" );
+		}
 
 		// Build the list of items to give aspects to
 		this.getItemsFromAERegistryClass( AEApi.instance().definitions().materials() );
@@ -1172,7 +1304,7 @@ public class AEAspectRegister
 			}
 		}
 
-		// Finally register my cells
+		// Finally register my items
 		this.registerThEItems();
 
 		// Cleanup

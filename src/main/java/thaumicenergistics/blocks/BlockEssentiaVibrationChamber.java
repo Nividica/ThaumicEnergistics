@@ -211,6 +211,23 @@ public class BlockEssentiaVibrationChamber
 	}
 
 	/**
+	 * Bright when active, dark when not.
+	 */
+	@Override
+	public int getLightValue( final IBlockAccess world, final int x, final int y, final int z )
+	{
+		// Get the chamber
+		TileEssentiaVibrationChamber chamber = this.getEVCTile( world, x, y, z );
+		if( chamber != null )
+		{
+			// Return bright if chamber
+			return( chamber.getProcessingAspect() != null ? 12 : 0 );
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Gets the unlocalized name of the block.
 	 */
 	@Override

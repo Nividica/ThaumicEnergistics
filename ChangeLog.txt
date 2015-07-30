@@ -1,4 +1,10 @@
-﻿7/23/2015 0.8.10.8
+﻿7/30/2015 0.8.10.9
+  Fixed #223: Removed recursive call causing stack overflow.
+  Aspect registration is more robust when dealing with AE Api changes.
+  Removed unneeded GL calls from storage monitor.
+  E.V.C. produces light when active.
+
+7/23/2015 0.8.10.8
   Fixes #219: ACT buttons can be right-clicked to go backwards.
   Cleaned up some GUI code.
   Really fixed #216.

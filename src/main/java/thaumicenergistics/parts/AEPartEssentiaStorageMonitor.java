@@ -359,7 +359,7 @@ public class AEPartEssentiaStorageMonitor
 	private void renderScreen( final Tessellator tessellator, final AspectStack aspectStack )
 	{
 		// Push the OpenGL attributes
-		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+		//GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
 		// Get the side
 		ForgeDirection side = this.getSide();
@@ -405,7 +405,7 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Push the OpenGL matrix
-		GL11.glPushMatrix();
+		//GL11.glPushMatrix();
 
 		try
 		{
@@ -425,10 +425,10 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Pop the OpenGL matrix
-		GL11.glPopMatrix();
+		//GL11.glPopMatrix();
 
 		// Move below the screen image
-		GL11.glTranslatef( 0.0f, 0.14f, -0.24f );
+		GL11.glTranslatef( 0.2f, 0.4f, -0.25f );
 		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
 
 		// Convert the amount to a string
@@ -444,7 +444,7 @@ public class AEPartEssentiaStorageMonitor
 		fr.drawString( renderedStackSize, 0, 0, 0 );
 
 		// Pop the OpenGL attributes
-		GL11.glPopAttrib();
+		//GL11.glPopAttrib();
 	}
 
 	/**

@@ -311,6 +311,38 @@ public class GuiEssentiaLevelEmitter
 	}
 
 	/**
+	 * Called when a button is clicked.
+	 */
+	@Override
+	protected void onButtonClicked( final GuiButton button, final int mouseButton )
+	{
+		// Get the index of the button that was clicked
+		int index = button.id;
+
+		// Was one of the amount buttons pressed?
+		if( ( index >= 0 ) && ( index < GuiEssentiaLevelEmitter.BUTTON_LABELS.length ) )
+		{
+			try
+			{
+				// Read the adjustment
+				int adjustment = Integer.parseInt( button.displayString );
+
+				// Update the server
+				new PacketServerEssentiaEmitter().createWantedAmountAdjustment( adjustment, this.part, this.player ).sendPacketToServer();
+			}
+			catch( NumberFormatException e )
+			{
+			}
+		}
+		// Was the redstone mode button pressed?
+		else if( index == GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX )
+		{
+			// Update the server
+			new PacketServerEssentiaEmitter().createRedstoneModeToggle( this.part, this.player ).sendPacketToServer();
+		}
+	}
+
+	/**
 	 * Draws the screen and all the components in it.
 	 */
 	@Override
@@ -397,38 +429,6 @@ public class GuiEssentiaLevelEmitter
 
 		// Request an update from the server
 		new PacketServerEssentiaEmitter().createUpdateRequest( this.part, this.player ).sendPacketToServer();
-	}
-
-	/**
-	 * Called when a button is clicked.
-	 */
-	@Override
-	public void onButtonClicked( final GuiButton button, final int mouseButton )
-	{
-		// Get the index of the button that was clicked
-		int index = button.id;
-
-		// Was one of the amount buttons pressed?
-		if( ( index >= 0 ) && ( index < GuiEssentiaLevelEmitter.BUTTON_LABELS.length ) )
-		{
-			try
-			{
-				// Read the adjustment
-				int adjustment = Integer.parseInt( button.displayString );
-
-				// Update the server
-				new PacketServerEssentiaEmitter().createWantedAmountAdjustment( adjustment, this.part, this.player ).sendPacketToServer();
-			}
-			catch( NumberFormatException e )
-			{
-			}
-		}
-		// Was the redstone mode button pressed?
-		else if( index == GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX )
-		{
-			// Update the server
-			new PacketServerEssentiaEmitter().createRedstoneModeToggle( this.part, this.player ).sendPacketToServer();
-		}
 	}
 
 	/**

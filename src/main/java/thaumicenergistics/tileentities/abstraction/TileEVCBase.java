@@ -61,10 +61,13 @@ public abstract class TileEVCBase
 	}
 
 	/**
-	 * 1-100: Ignis, 100-200: Potentia
+	 * Add essentia to the EVC.
+	 * 
+	 * @param aspect
+	 * @param amount
+	 * @param mode
+	 * @return
 	 */
-	//protected int suctionRotationTimer = 1;
-
 	protected abstract int addEssentia( final Aspect aspect, final int amount, final Actionable mode );
 
 	@Override
@@ -72,7 +75,6 @@ public abstract class TileEVCBase
 	{
 		// Return the itemstack that visually represents this tile
 		return ThEApi.instance().blocks().EssentiaVibrationChamber.getStack();
-
 	}
 
 	/**
@@ -286,7 +288,7 @@ public abstract class TileEVCBase
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void onNBTLoad( final NBTTagCompound data )
+	public final void onNBTLoad( final NBTTagCompound data )
 	{
 		// Is there essentia stored?
 		if( data.hasKey( TileEVCBase.NBTKEY_STORED ) )
@@ -300,7 +302,7 @@ public abstract class TileEVCBase
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void onNBTSave( final NBTTagCompound data )
+	public final void onNBTSave( final NBTTagCompound data )
 	{
 		// Save storage
 		if( this.hasStoredEssentia() )
@@ -319,7 +321,7 @@ public abstract class TileEVCBase
 
 	@TileEvent(TileEventType.NETWORK_READ)
 	@SideOnly(Side.CLIENT)
-	public boolean onNetworkRead( final ByteBuf stream )
+	public final boolean onNetworkRead( final ByteBuf stream )
 	{
 		// Anything stored?
 		if( stream.readBoolean() )
@@ -349,7 +351,7 @@ public abstract class TileEVCBase
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void onNetworkWrite( final ByteBuf stream ) throws IOException
+	public final void onNetworkWrite( final ByteBuf stream ) throws IOException
 	{
 		// Is there anything stored?
 		boolean hasStored = this.storedEssentia != null;
@@ -374,6 +376,7 @@ public abstract class TileEVCBase
 	@Override
 	public void onReady()
 	{
+		// Call super
 		super.onReady();
 
 		// Ignored on client side

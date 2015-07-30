@@ -265,40 +265,11 @@ public class GuiEssentiaStorageBus
 		}
 	}
 
-	@Override
-	public void initGui()
-	{
-		super.initGui();
-
-		// Create the widgets
-		for( int row = 0; row < GuiEssentiaStorageBus.ROWS; row++ )
-		{
-			for( int column = 0; column < GuiEssentiaStorageBus.COLUMNS; column++ )
-			{
-				this.aspectWidgetList.add( new WidgetAspectSlot( this, this.player, this.storageBus,
-								( row * GuiEssentiaStorageBus.COLUMNS ) + column, GuiEssentiaStorageBus.WIDGET_X_POS +
-												( AbstractWidget.WIDGET_SIZE * column ), GuiEssentiaStorageBus.WIDGET_Y_POS +
-												( AbstractWidget.WIDGET_SIZE * row ) ) );
-			}
-		}
-
-		// Create the priority tab button
-		this.buttonList.add( new GuiButtonAETab( GuiEssentiaStorageBus.BUTTON_PRIORITY_ID, this.guiLeft +
-						GuiEssentiaStorageBus.BUTTON_PRIORITY_X_POSITION, this.guiTop, AEStateIconsEnum.WRENCH, "gui.appliedenergistics2.Priority" ) );
-
-		// Create the allow void button
-		this.buttonList.add( new GuiButtonAllowVoid( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID, this.guiLeft +
-						GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_X_POS, this.guiTop + GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_Y_POS ) );
-
-		// Request an update
-		new PacketServerEssentiaStorageBus().createRequestFullUpdate( this.player, this.storageBus ).sendPacketToServer();
-	}
-
 	/**
 	 * Called when a button is clicked.
 	 */
 	@Override
-	public void onButtonClicked( final GuiButton button, final int mouseButton )
+	protected void onButtonClicked( final GuiButton button, final int mouseButton )
 	{
 		// Was the priority button clicked?
 		if( button.id == GuiEssentiaStorageBus.BUTTON_PRIORITY_ID )
@@ -326,6 +297,35 @@ public class GuiEssentiaStorageBus
 			new PacketServerEssentiaStorageBus().createRequestSetVoidAllowed( this.player, this.storageBus, this.isVoidAllowed ).sendPacketToServer();
 		}
 
+	}
+
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+
+		// Create the widgets
+		for( int row = 0; row < GuiEssentiaStorageBus.ROWS; row++ )
+		{
+			for( int column = 0; column < GuiEssentiaStorageBus.COLUMNS; column++ )
+			{
+				this.aspectWidgetList.add( new WidgetAspectSlot( this, this.player, this.storageBus,
+								( row * GuiEssentiaStorageBus.COLUMNS ) + column, GuiEssentiaStorageBus.WIDGET_X_POS +
+												( AbstractWidget.WIDGET_SIZE * column ), GuiEssentiaStorageBus.WIDGET_Y_POS +
+												( AbstractWidget.WIDGET_SIZE * row ) ) );
+			}
+		}
+
+		// Create the priority tab button
+		this.buttonList.add( new GuiButtonAETab( GuiEssentiaStorageBus.BUTTON_PRIORITY_ID, this.guiLeft +
+						GuiEssentiaStorageBus.BUTTON_PRIORITY_X_POSITION, this.guiTop, AEStateIconsEnum.WRENCH, "gui.appliedenergistics2.Priority" ) );
+
+		// Create the allow void button
+		this.buttonList.add( new GuiButtonAllowVoid( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID, this.guiLeft +
+						GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_X_POS, this.guiTop + GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_Y_POS ) );
+
+		// Request an update
+		new PacketServerEssentiaStorageBus().createRequestFullUpdate( this.player, this.storageBus ).sendPacketToServer();
 	}
 
 	/**

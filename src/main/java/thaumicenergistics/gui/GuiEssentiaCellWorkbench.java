@@ -251,6 +251,22 @@ public class GuiEssentiaCellWorkbench
 	}
 
 	@Override
+	protected void onButtonClicked( final GuiButton button, final int mouseButton )
+	{
+		// Which button was clicked?
+		switch ( button.id )
+		{
+			case GuiEssentiaCellWorkbench.BUTTON_CLEAR_ID:
+				new PacketServerEssentiaCellWorkbench().createRequestClearPartitioning( this.player, this.workbench ).sendPacketToServer();
+				break;
+
+			case GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_ID:
+				new PacketServerEssentiaCellWorkbench().createRequestPartitionToContents( this.player, this.workbench ).sendPacketToServer();
+				break;
+		}
+	}
+
+	@Override
 	public void initGui()
 	{
 		// Call super
@@ -285,22 +301,6 @@ public class GuiEssentiaCellWorkbench
 
 		// Request the list
 		new PacketServerEssentiaCellWorkbench().createRequestGetPartitionList( this.player, this.workbench ).sendPacketToServer();
-	}
-
-	@Override
-	public void onButtonClicked( final GuiButton button, final int mouseButton )
-	{
-		// Which button was clicked?
-		switch ( button.id )
-		{
-			case GuiEssentiaCellWorkbench.BUTTON_CLEAR_ID:
-				new PacketServerEssentiaCellWorkbench().createRequestClearPartitioning( this.player, this.workbench ).sendPacketToServer();
-				break;
-
-			case GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_ID:
-				new PacketServerEssentiaCellWorkbench().createRequestPartitionToContents( this.player, this.workbench ).sendPacketToServer();
-				break;
-		}
 	}
 
 	/**

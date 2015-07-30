@@ -314,6 +314,27 @@ public class GuiEssentiaIO
 		}
 	}
 
+	/**
+	 * Called when a button is pressed
+	 */
+	@Override
+	protected void onButtonClicked( final GuiButton button, final int mouseButton )
+	{
+		// Was the clicked button the redstone mode button?
+		if( button.id == GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID )
+		{
+			new PacketServerEssentiaIOBus().createRequestChangeRedstoneMode( this.player, this.part ).sendPacketToServer();
+		}
+		// Void button?
+		else if( button.id == GuiEssentiaIO.ALLOW_VOID_BUTTON_ID )
+		{
+			if( this.part instanceof AEPartEssentiaExportBus )
+			{
+				new PacketServerEssentiaIOBus().createRequestChangeVoidMode( this.player, (AEPartEssentiaExportBus)this.part ).sendPacketToServer();
+			}
+		}
+	}
+
 	@Override
 	public byte getConfigState()
 	{
@@ -364,30 +385,6 @@ public class GuiEssentiaIO
 		// Request a full update from the server
 		new PacketServerEssentiaIOBus().createRequestFullUpdate( this.player, this.part ).sendPacketToServer();
 
-	}
-
-	/**
-	 * Called when a button is pressed
-	 */
-	@Override
-	public void onButtonClicked( final GuiButton button, final int mouseButton )
-	{
-		// Call super
-		super.actionPerformed( button );
-
-		// Was the clicked button the redstone mode button?
-		if( button.id == GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID )
-		{
-			new PacketServerEssentiaIOBus().createRequestChangeRedstoneMode( this.player, this.part ).sendPacketToServer();
-		}
-		// Void button?
-		else if( button.id == GuiEssentiaIO.ALLOW_VOID_BUTTON_ID )
-		{
-			if( this.part instanceof AEPartEssentiaExportBus )
-			{
-				new PacketServerEssentiaIOBus().createRequestChangeVoidMode( this.player, (AEPartEssentiaExportBus)this.part ).sendPacketToServer();
-			}
-		}
 	}
 
 	/**
