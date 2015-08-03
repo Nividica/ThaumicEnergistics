@@ -1,4 +1,7 @@
-﻿7/30/2015 0.8.10.9
+﻿8/3/2015 0.8.10.10
+  Fixed #226: Properly sided E.V.C. packet code.
+
+7/30/2015 0.8.10.9
   Fixed #223: Removed recursive call causing stack overflow.
   Aspect registration is more robust when dealing with AE Api changes.
   Removed unneeded GL calls from storage monitor.

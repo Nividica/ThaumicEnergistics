@@ -42,7 +42,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "0.8.10.9"; // Note: don't forget to change the build.gradle file as well
+	public static final String VERSION = "0.8.10.10"; // Note: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -173,11 +173,11 @@ public class ThaumicEnergistics
 		// Mark that ThE is in PreInit
 		long startTime = ThELog.beginSection( "PreInit" );
 
-		// Sync with config
-		ThaumicEnergistics.config = ConfigurationHandler.loadAndSyncConfigFile( event.getSuggestedConfigurationFile() );
-
 		// Set the instance
 		ThaumicEnergistics.INSTANCE = this;
+
+		// Sync with config
+		ThaumicEnergistics.config = ConfigurationHandler.loadAndSyncConfigFile( event.getSuggestedConfigurationFile() );
 
 		// Register the gui handler
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, new ThEGuiHandler() );

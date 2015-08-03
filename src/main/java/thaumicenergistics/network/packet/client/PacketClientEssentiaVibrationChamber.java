@@ -8,6 +8,8 @@ import net.minecraft.inventory.Container;
 import thaumicenergistics.container.ContainerEssentiaVibrationChamber;
 import thaumicenergistics.gui.GuiEssentiaVibrationChamber;
 import thaumicenergistics.network.packet.AbstractClientPacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketClientEssentiaVibrationChamber
 	extends AbstractClientPacket
@@ -37,6 +39,7 @@ public class PacketClientEssentiaVibrationChamber
 
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	protected void wrappedExecute()
 	{
