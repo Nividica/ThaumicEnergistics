@@ -40,7 +40,6 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.WorldSettings;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -532,7 +531,7 @@ public abstract class AbstractAEPartBase
 	public final void onPlacement( final EntityPlayer player, final ItemStack held, final ForgeDirection side )
 	{
 		// Set the owner
-		this.ownerID = WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
+		this.ownerID = AEApi.instance().registries().players().getID( player.getGameProfile() );
 	}
 
 	@Override

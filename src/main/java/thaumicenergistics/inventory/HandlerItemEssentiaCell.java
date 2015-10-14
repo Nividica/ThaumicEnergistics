@@ -724,6 +724,13 @@ public class HandlerItemEssentiaCell
 			return input.copy();
 		}
 
+		// Ensure the essentia can be accepted
+		if( !this.canAccept( input ) )
+		{
+			// Can not accept this essentia
+			return input.copy();
+		}
+
 		// Get the aspect of the gas
 		Aspect essentiaAspect = ( (GaseousEssentia)input.getFluid() ).getAspect();
 

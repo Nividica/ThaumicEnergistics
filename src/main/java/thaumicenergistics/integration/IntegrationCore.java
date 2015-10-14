@@ -4,6 +4,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.blocks.BlockArcaneAssembler;
+import thaumicenergistics.tileentities.TileEssentiaProvider;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.ThELog;
 import appeng.api.config.Upgrades;
@@ -122,6 +123,10 @@ public final class IntegrationCore
 
 			// Integrate with computer craft
 			IntegrationCore.integrateWithMod( IntegrationCore.MODID_CC );
+
+			// Send a message to Thaumic Tinkerer to blacklist the essentia provider from its CC support
+			FMLInterModComms.sendMessage( "Thaumic Tinkerer", "AddCCBlacklist", TileEssentiaProvider.class.getCanonicalName() );
+
 		}
 		catch( Throwable e )
 		{

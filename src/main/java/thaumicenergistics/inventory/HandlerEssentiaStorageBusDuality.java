@@ -138,7 +138,21 @@ public class HandlerEssentiaStorageBusDuality
 
 		AbstractHandlerEssentiaStorageBus newHandler = null;
 
-		if( tileEntity instanceof IAspectContainer )
+		// These should be ordered most specific to most generic
+		if( tileEntity instanceof TileCondenser )
+		{
+			// Create the interface if needed
+			if( this.condenserHandler == null )
+			{
+				// Create the handler
+				this.condenserHandler = new HandlerEssentiaStorageBusCondenser( this.partStorageBus );
+			}
+
+			// Set the new handler
+			newHandler = this.condenserHandler;
+
+		}
+		else if( tileEntity instanceof IAspectContainer )
 		{
 			// Create the container handler if needed
 			if( this.containerHandler == null )
@@ -149,19 +163,6 @@ public class HandlerEssentiaStorageBusDuality
 
 			// Set internal handler to the container handler
 			newHandler = this.containerHandler;
-		}
-		else if( tileEntity instanceof TileInterface )
-		{
-			// Create the interface handler if needed
-			if( this.interfaceHandler == null )
-			{
-				// Create the handler
-				this.interfaceHandler = new HandlerEssentiaStorageBusInterface( this.partStorageBus );
-			}
-
-			// Set the internal handler to the interface handler
-			newHandler = this.interfaceHandler;
-
 		}
 		else if( tileEntity instanceof IPartHost )
 		{
@@ -182,17 +183,17 @@ public class HandlerEssentiaStorageBusDuality
 				newHandler = this.interfaceHandler;
 			}
 		}
-		else if( tileEntity instanceof TileCondenser )
+		else if( tileEntity instanceof TileInterface )
 		{
-			// Create the interface if needed
-			if( this.condenserHandler == null )
+			// Create the interface handler if needed
+			if( this.interfaceHandler == null )
 			{
 				// Create the handler
-				this.condenserHandler = new HandlerEssentiaStorageBusCondenser( this.partStorageBus );
+				this.interfaceHandler = new HandlerEssentiaStorageBusInterface( this.partStorageBus );
 			}
 
-			// Set the new handler
-			newHandler = this.condenserHandler;
+			// Set the internal handler to the interface handler
+			newHandler = this.interfaceHandler;
 
 		}
 
@@ -203,11 +204,14 @@ public class HandlerEssentiaStorageBusDuality
 			if( this.internalHandler != null )
 			{
 				// Let the old handler know the neighbor changed
-				doUpdate |= this.internalHandler.onNeighborChange();
+				this.internalHandler.onNeighborChange();
 			}
 
 			// Set the new handler
 			this.internalHandler = newHandler;
+
+			// Mark for update
+			doUpdate = true;
 		}
 
 		// Pass to internal handler

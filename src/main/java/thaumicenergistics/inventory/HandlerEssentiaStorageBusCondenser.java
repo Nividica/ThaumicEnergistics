@@ -1,9 +1,11 @@
 package thaumicenergistics.inventory;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.FluidStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
@@ -98,9 +100,9 @@ public class HandlerEssentiaStorageBusCondenser
 		// Inject the fluid
 		this.condenser.fill( this.partStorageBus.getSide().getOpposite(), injectStack.getFluidStack(), ( mode == Actionable.MODULATE ) );
 
-		// Since the fluid is being voided, update the network so it doesn't think its stored
-		injectStack.setStackSize( -input.getStackSize() );
-		this.postAlterationToHostGrid( ImmutableList.of( injectStack ) );
+		// Update the grid so that it doesn't thing we have stored the voided amount.
+		this.postAlterationToHostGrid( ImmutableList.of( AEApi.instance().storage()
+						.createFluidStack( new FluidStack( input.getFluid(), (int) -input.getStackSize() ) ) ) );
 
 		// All fluid accepted.
 		return null;
@@ -132,20 +134,10 @@ public class HandlerEssentiaStorageBusCondenser
 		// Ignored.
 	}
 
-	/**
-	 * Only valid for pass 2
-	 * 
-	 * @return
-	 */
 	@Override
 	public boolean validForPass( final int pass )
 	{
-		if( this.condenser != null )
-		{
-			return pass == 2;
-		}
-
-		return false;
+		return true;
 	}
 
 }

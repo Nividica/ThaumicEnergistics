@@ -1,4 +1,12 @@
-﻿8/3/2015 0.8.10.10
+﻿10/13/2015 0.9.0.0 - Alpha
+  Dependency Updated: AE2-rv3-9
+  Fixes #227: Storage bus void support restored, attaches to network when placed with pre-set filters, and condenser support restored. May address #234
+  Added EssentiaProvider to Thaumic Tinkerer blacklist, will be supported in the next release of Thaumic Tinkerer #228
+  Fixes #229: Storage bus can fully utilize the Essentia Reservoir without setting filters.
+  Fixes #239: Essentia cells obey their filters when used in an IO port.
+  Fixes #240: Added checks to not redraw the essentia storage monitor or send update packets if not needed.
+
+8/3/2015 0.8.10.10
   Fixed #226: Properly sided E.V.C. packet code.
 
 7/30/2015 0.8.10.9

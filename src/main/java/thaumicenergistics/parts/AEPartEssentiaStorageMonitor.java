@@ -132,19 +132,43 @@ public class AEPartEssentiaStorageMonitor
 		 * Sets what is being tracked, or clears the data if null.
 		 * 
 		 * @param as
+		 * @return Returns true if the tracker was changed, false otherwise.
 		 */
-		public void setTracked( final AspectStack as )
+		@SuppressWarnings("null")
+		public Boolean setTracked( final AspectStack as )
 		{
-			if( as != null )
+			Boolean didChange = false;
+			Boolean trackedNull = ( this.asAspectStack == null );
+			Boolean asNull = ( as == null );
+
+			// Are both not null?
+			if( !( trackedNull || asNull ) )
 			{
-				// Set aspect
+				// Check if anything changed
+				didChange = ( ( this.asAspectStack.stackSize != as.stackSize ) || ( this.asAspectStack.aspect != as.aspect ) );
+				if( didChange )
+				{
+					// Update
+					this.asAspectStack.aspect = as.aspect;
+					this.asAspectStack.stackSize = as.stackSize;
+				}
+			}
+			// Is the tracked null, but input not?
+			else if( trackedNull && !asNull )
+			{
+				// Set to the input stack
 				this.asAspectStack = as;
+				didChange = true;
 			}
-			else
+			// Is the input stack null, but tracked not?
+			else if( asNull && !trackedNull )
 			{
-				// Clear tracker
+				// Clear the tracker
 				this.asAspectStack = null;
+				didChange = true;
 			}
+
+			return didChange;
 		}
 
 		/**
@@ -718,11 +742,15 @@ public class AEPartEssentiaStorageMonitor
 			return;
 		}
 
-		// Update the amount
-		this.trackedEssentia.updateTrackedAmount( storedAmount );
+		// Did the amount change?
+		if( this.trackedEssentia.getAspectStack().stackSize != storedAmount )
+		{
+			// Update the amount
+			this.trackedEssentia.updateTrackedAmount( storedAmount );
 
-		// Mark for sync
-		this.markForUpdate();
+			// Mark for sync
+			this.markForUpdate();
+		}
 	}
 
 	@Override
@@ -766,11 +794,12 @@ public class AEPartEssentiaStorageMonitor
 			// Read the tracked stack
 			AspectStack as = AspectStack.loadAspectStackFromNBT( ByteBufUtils.readTag( stream ) );
 
-			// Update the tracker
-			this.trackedEssentia.setTracked( as );
-
-			// Mark for screen redraw
-			redraw |= this.updateDisplayList = true;
+			// Did the stack change?
+			if( this.trackedEssentia.setTracked( as ) )
+			{
+				// Mark for screen redraw
+				redraw |= this.updateDisplayList = true;
+			}
 		}
 		else
 		{

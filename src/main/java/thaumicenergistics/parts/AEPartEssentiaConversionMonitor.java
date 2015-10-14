@@ -16,11 +16,11 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.util.EffectiveSide;
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.security.PlayerSource;
 import appeng.client.texture.CableBusTextures;
-import appeng.core.WorldSettings;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
@@ -305,7 +305,7 @@ public class AEPartEssentiaConversionMonitor
 	private void markFirstClick( final EntityPlayer player )
 	{
 		// Set the ID
-		this.depositedPlayerID = WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
+		this.depositedPlayerID = AEApi.instance().registries().players().getID( player.getGameProfile() );
 
 		// Set the time
 		this.depositedTick = MinecraftServer.getServer().getTickCounter();
@@ -320,7 +320,7 @@ public class AEPartEssentiaConversionMonitor
 	private boolean wasDoubleClick( final EntityPlayer player )
 	{
 		// Is this the same player that just used the monitor?
-		if( ( this.depositedPlayerID != -1 ) && ( this.depositedPlayerID == WorldSettings.getInstance().getPlayerID( player.getGameProfile() ) ) )
+		if( ( this.depositedPlayerID != -1 ) && ( this.depositedPlayerID == AEApi.instance().registries().players().getID( player.getGameProfile() ) ) )
 		{
 			// Was it a double click?
 			if( MinecraftServer.getServer().getTickCounter() - this.depositedTick <= AEPartEssentiaConversionMonitor.DOUBLE_CLICK_TICKS )

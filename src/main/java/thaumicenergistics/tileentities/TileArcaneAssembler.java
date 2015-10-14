@@ -631,7 +631,7 @@ public class TileArcaneAssembler
 	 * @return
 	 */
 	@Override
-	public void getDrops( final World world, final int x, final int y, final int z, final ArrayList<ItemStack> drops )
+	public void getDrops( final World world, final int x, final int y, final int z, final List<ItemStack> drops )
 	{
 		if( !this.wasDismantled )
 		{

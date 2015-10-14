@@ -568,7 +568,7 @@ public class AEAspectRegister
 					{
 						if( ing instanceof Ingredient )
 						{
-							if( ( (Ingredient)ing ).nameSpace.equalsIgnoreCase( "oreDictionary" ) )
+							if( ( (Ingredient)ing ).getNameSpace().equalsIgnoreCase( "oreDictionary" ) )
 							{
 								currentIngredientStack = ( (Ingredient)ing ).getItemStackSet()[0];
 							}

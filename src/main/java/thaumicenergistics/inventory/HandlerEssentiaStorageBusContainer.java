@@ -559,8 +559,8 @@ class HandlerEssentiaStorageBusContainer
 				return( hasFilters || hasStored );
 			}
 
-			// Valid if has no filters and container is empty.
-			return( ( !hasFilters ) && ( !hasStored ) );
+			// Valid if has no filters.
+			return( !hasFilters );
 
 		}
 
