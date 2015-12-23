@@ -1,7 +1,15 @@
 package thaumicenergistics.gui;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.api.config.*;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
+import appeng.client.gui.widgets.ISortSource;
+import appeng.client.me.ItemRepo;
+import appeng.client.render.AppEngRenderItem;
+import appeng.core.AEConfig;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -16,13 +24,7 @@ import thaumcraft.common.config.Config;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
 import thaumicenergistics.gui.abstraction.AbstractGuiConstantsACT;
-import thaumicenergistics.gui.buttons.GuiButtonClearCraftingGrid;
-import thaumicenergistics.gui.buttons.GuiButtonSearchMode;
-import thaumicenergistics.gui.buttons.GuiButtonSortingDirection;
-import thaumicenergistics.gui.buttons.GuiButtonSortingMode;
-import thaumicenergistics.gui.buttons.GuiButtonSwapArmor;
-import thaumicenergistics.gui.buttons.GuiButtonTerminalStyle;
-import thaumicenergistics.gui.buttons.GuiButtonViewType;
+import thaumicenergistics.gui.buttons.*;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
 import thaumicenergistics.integration.tc.MEItemAspectBridgeContainer;
@@ -32,21 +34,9 @@ import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.GuiHelper;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.ViewItems;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.client.gui.widgets.ISortSource;
-import appeng.client.me.ItemRepo;
-import appeng.client.render.AppEngRenderItem;
-import appeng.core.AEConfig;
-import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Gui for the Arcane Crafting Terminal
@@ -242,7 +232,7 @@ public class GuiArcaneCraftingTerminal
 			this.searchField.setText( "" );
 
 			// Update the repo
-			this.repo.searchString = "";
+			this.repo.setSearchString("");
 
 			// Repo needs update
 			this.viewNeedsUpdate = true;
@@ -810,10 +800,10 @@ public class GuiArcaneCraftingTerminal
 			String newSearch = this.searchField.getText().trim().toLowerCase();
 
 			// Has the query changed?
-			if( !newSearch.equals( this.repo.searchString ) )
+			if( !newSearch.equals( this.repo.getSearchString() ) )
 			{
 				// Set the search string
-				this.repo.searchString = newSearch;
+				this.repo.setSearchString(newSearch);
 
 				// Repo needs update
 				this.viewNeedsUpdate = true;
@@ -1144,7 +1134,7 @@ public class GuiArcaneCraftingTerminal
 		this.searchField.setFocused( ( searchBoxMode == SearchBoxMode.AUTOSEARCH ) || ( searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) );
 
 		// Set the search string
-		this.searchField.setText( this.repo.searchString );
+		this.searchField.setText( this.repo.getSearchString() );
 
 		// Clear any existing buttons
 		this.buttonList.clear();

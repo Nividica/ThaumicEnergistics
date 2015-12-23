@@ -22,7 +22,7 @@ group= "thaumicenergistics" // http://maven.apache.org/guides/mini/guide-naming-
 archivesBaseName = "thaumicenergistics"
 
 minecraft {
-    version = "1.7.10-10.13.4.1448-1.7.10"
+    version = "1.7.10-10.13.4.1558-1.7.10"
     runDir = "eclipse/assets"
 }
 
@@ -39,11 +39,16 @@ repositories {
         name "ic2"
         url "http://maven.ic2.player.to/"
     }
+    ivy {
+        name = 'ThaumCraft 4 API'
+        artifactPattern 'https://dl.dropboxusercontent.com/u/47135879/[module](-[classifier])-1.7.10-[revision](.[ext])'
+    }
 }
 
 dependencies {
     compile "mcp.mobius.waila:Waila:1.5.10_1.7.10"
     compile "net.industrial-craft:industrialcraft-2:2.2.726-experimental:api"
+    compile "Azanor:Thaumcraft:4.2.3.5:deobf@jar"
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

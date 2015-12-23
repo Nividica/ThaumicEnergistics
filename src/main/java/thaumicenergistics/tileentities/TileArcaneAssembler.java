@@ -1,35 +1,5 @@
 package thaumicenergistics.tileentities;
 
-import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.common.Thaumcraft;
-import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.blocks.BlockArcaneAssembler;
-import thaumicenergistics.integration.IWailaSource;
-import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
-import thaumicenergistics.integration.tc.DigiVisSourceData;
-import thaumicenergistics.integration.tc.IDigiVisSource;
-import thaumicenergistics.integration.tc.VisCraftingHelper;
-import thaumicenergistics.inventory.HandlerKnowledgeCore;
-import thaumicenergistics.items.ItemKnowledgeCore;
-import thaumicenergistics.util.EffectiveSide;
-import thaumicenergistics.util.GuiHelper;
-import thaumicenergistics.util.IInventoryUpdateReceiver;
-import thaumicenergistics.util.PrivateInventory;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -66,6 +36,37 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.common.Thaumcraft;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.blocks.BlockArcaneAssembler;
+import thaumicenergistics.integration.IWailaSource;
+import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
+import thaumicenergistics.integration.tc.DigiVisSourceData;
+import thaumicenergistics.integration.tc.IDigiVisSource;
+import thaumicenergistics.integration.tc.VisCraftingHelper;
+import thaumicenergistics.inventory.HandlerKnowledgeCore;
+import thaumicenergistics.items.ItemKnowledgeCore;
+import thaumicenergistics.util.EffectiveSide;
+import thaumicenergistics.util.GuiHelper;
+import thaumicenergistics.util.IInventoryUpdateReceiver;
+import thaumicenergistics.util.PrivateInventory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
 public class TileArcaneAssembler
 	extends AENetworkInvTile
@@ -311,7 +312,7 @@ public class TileArcaneAssembler
 			try
 			{
 				// Get the storage grid
-				IStorageGrid storageGrid = this.gridProxy.getStorage();
+				IStorageGrid storageGrid = this.getGridProxy().getStorage();
 
 				// Simulate placing the items
 				IAEItemStack rejected = storageGrid.getItemInventory().injectItems( this.currentPattern.result, Actionable.SIMULATE, this.mySource );
@@ -344,7 +345,7 @@ public class TileArcaneAssembler
 								this.warpPowerMultiplier;
 
 				// Attempt to take power
-				IEnergyGrid eGrid = this.gridProxy.getEnergy();
+				IEnergyGrid eGrid = this.getGridProxy().getEnergy();
 				double powerExtracted = eGrid.extractAEPower( powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
 				if( ( powerExtracted - powerRequired ) <= 0.0D )
@@ -433,7 +434,7 @@ public class TileArcaneAssembler
 		IDigiVisSource visSource = null;
 
 		// Ensure the grid is ready
-		if( !this.gridProxy.isReady() )
+		if( !this.getGridProxy().isReady() )
 		{
 			return;
 		}
@@ -441,7 +442,7 @@ public class TileArcaneAssembler
 		try
 		{
 			// Get the source
-			visSource = this.visSourceInfo.tryGetSource( this.gridProxy.getGrid() );
+			visSource = this.visSourceInfo.tryGetSource( this.getGridProxy().getGrid() );
 		}
 		catch( GridAccessException e )
 		{
@@ -584,7 +585,7 @@ public class TileArcaneAssembler
 		try
 		{
 			// Get the security grid
-			ISecurityGrid sGrid = this.gridProxy.getSecurity();
+			ISecurityGrid sGrid = this.getGridProxy().getSecurity();
 
 			// Return true if the player has inject and extract permissions
 			return( ( sGrid.hasPermission( player, SecurityPermissions.INJECT ) ) && ( sGrid.hasPermission( player, SecurityPermissions.EXTRACT ) ) );
@@ -733,10 +734,10 @@ public class TileArcaneAssembler
 		if( EffectiveSide.isServerSide() )
 		{
 			// Do we have a proxy and grid node?
-			if( ( this.gridProxy != null ) && ( this.gridProxy.getNode() != null ) )
+			if( ( this.getGridProxy() != null ) && ( this.getGridProxy().getNode() != null ) )
 			{
 				// Get the grid node activity
-				this.isActive = this.gridProxy.getNode().isActive();
+				this.isActive = this.getGridProxy().getNode().isActive();
 			}
 		}
 
@@ -755,7 +756,7 @@ public class TileArcaneAssembler
 	public void onBreak()
 	{
 		this.isCrafting = false;
-		this.gridProxy.invalidate();
+		this.getGridProxy().invalidate();
 	}
 
 	/**
@@ -979,7 +980,7 @@ public class TileArcaneAssembler
 	{
 		try
 		{
-			this.gridProxy.onReady();
+			this.getGridProxy().onReady();
 		}
 		catch( GridException e )
 		{
@@ -1119,12 +1120,12 @@ public class TileArcaneAssembler
 		}
 
 		// Are the network patterns stale?
-		if( this.stalePatterns && this.gridProxy.isReady() )
+		if( this.stalePatterns && this.getGridProxy().isReady() )
 		{
 			try
 			{
 				// Inform the network
-				this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.getActionableNode() ) );
+				this.getGridProxy().getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.getActionableNode() ) );
 
 				// Mark they are no longer stale
 				this.stalePatterns = false;
@@ -1246,7 +1247,7 @@ public class TileArcaneAssembler
 	 */
 	public void setOwner( final EntityPlayer player )
 	{
-		this.gridProxy.setOwner( player );
+		this.getGridProxy().setOwner( player );
 	}
 
 	/**
@@ -1258,10 +1259,10 @@ public class TileArcaneAssembler
 		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
 		{
 			// Set idle power usage
-			this.gridProxy.setIdlePowerUsage( TileArcaneAssembler.IDLE_POWER );
+			this.getGridProxy().setIdlePowerUsage( TileArcaneAssembler.IDLE_POWER );
 
 			// Set that we require a channel
-			this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+			this.getGridProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		}
 
 		return this;
