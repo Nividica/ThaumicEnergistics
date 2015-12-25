@@ -246,23 +246,12 @@ public final class EssentiaTileContainerHelper
 	{
 		int stored = 0;
 
-		if( container instanceof TileJarFillable )
+		// Get the essentia list
+		for( AspectStack essentia : this.getAspectStacksFromContainer( container ) )
 		{
-			stored = ( (TileJarFillable)container ).amount;
-		}
-		else if( container instanceof TileAlembic )
-		{
-			stored = ( (TileAlembic)container ).amount;
-		}
-		else if( container instanceof TileEssentiaReservoir )
-		{
-			// Get the essentia list
-			for( AspectStack essentia : this.getAspectStacksFromContainer( container ) )
+			if( essentia != null )
 			{
-				if( essentia != null )
-				{
-					stored += (int)essentia.stackSize;
-				}
+				stored += (int)essentia.stackSize;
 			}
 		}
 
@@ -319,7 +308,11 @@ public final class EssentiaTileContainerHelper
 		// Are we really filling, or simulating?
 		if( mode == Actionable.MODULATE )
 		{
-			container.addToContainer( aspectToFill, amountToFill );
+			// Attempt to inject the full amount
+			int remaining = container.addToContainer( aspectToFill, amountToFill );
+
+			// Subtract any that could not be injected
+			amountToFill -= remaining;
 		}
 
 		return amountToFill;

@@ -125,7 +125,7 @@ public final class IntegrationCore
 			IntegrationCore.integrateWithMod( IntegrationCore.MODID_CC );
 
 			// Send a message to Thaumic Tinkerer to blacklist the essentia provider from its CC support
-			FMLInterModComms.sendMessage( "Thaumic Tinkerer", "AddCCBlacklist", TileEssentiaProvider.class.getCanonicalName() );
+			FMLInterModComms.sendMessage( "ThaumicTinkerer", "AddCCBlacklist", TileEssentiaProvider.class.getName() );
 
 		}
 		catch( Throwable e )

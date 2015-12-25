@@ -141,8 +141,14 @@ public class AEPartEssentiaExportBus
 			}
 
 			// Fill the container
-			EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer( this.facingContainer, (int)filledAmount, filterAspect,
-				Actionable.MODULATE );
+			long actualFilledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer( this.facingContainer, (int)filledAmount,
+				filterAspect, Actionable.MODULATE );
+
+			// Is voiding not allowed?
+			if( !this.isVoidAllowed )
+			{
+				filledAmount = actualFilledAmount;
+			}
 
 			// Take essentia from the network
 			essMonitor.extractEssentia( filterAspect, filledAmount, Actionable.MODULATE, this.asMachineSource, true );
