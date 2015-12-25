@@ -1,8 +1,7 @@
 package thaumicenergistics.gui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
@@ -16,11 +15,7 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
-import thaumicenergistics.container.AbstractContainerCellTerminalBase;
-import thaumicenergistics.container.ContainerEssentiaCell;
-import thaumicenergistics.container.ContainerEssentiaTerminal;
-import thaumicenergistics.container.ContainerWirelessEssentiaTerminal;
-import thaumicenergistics.container.IAspectSelectorContainer;
+import thaumicenergistics.container.*;
 import thaumicenergistics.gui.abstraction.AbstractGuiWithScrollbar;
 import thaumicenergistics.gui.buttons.GuiButtonSortingMode;
 import thaumicenergistics.gui.widget.AbstractWidget;
@@ -32,8 +27,10 @@ import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.GuiHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Essentia terminal, wireless terminal, and cell(ME Chest) Gui.
@@ -346,12 +343,12 @@ public class GuiEssentiaCellTerminal
 		int overflowRows = (int)Math.ceil( overflowWidgets / GuiEssentiaCellTerminal.WIDGETS_PER_ROW );
 
 		// Update if the range has changed
-		if( overflowRows != this.scrollBar.getRange() )
-		{
+		//if( overflowRows != this.scrollBar.getRange() )  TODO: Fix this, too!
+		//{
 			// Update the scroll bar
 			this.scrollBar.setRange( 0, overflowRows, 1 );
 			this.onScrollbarMoved();
-		}
+		//}
 	}
 
 	/**

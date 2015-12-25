@@ -1,13 +1,14 @@
 package thaumicenergistics.gui.widget;
 
-import java.util.List;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.client.render.AppEngRenderItem;
+import appeng.util.item.AEItemStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.client.render.AppEngRenderItem;
-import appeng.util.item.AEItemStack;
+
+import java.util.List;
 
 public class WidgetAEItem
 	extends AbstractWidget
@@ -60,7 +61,7 @@ public class WidgetAEItem
 			this.aeItemRenderer.zLevel = 2.0F;
 
 			// Set the item
-			this.aeItemRenderer.aeStack = this.aeItemStack;
+			this.aeItemRenderer.setAeStack(this.aeItemStack);
 
 			// Draw the item
 			this.aeItemRenderer.renderItemAndEffectIntoGUI( WidgetAEItem.MC.fontRenderer, WidgetAEItem.TEXTURE_MANAGER,

@@ -1,19 +1,5 @@
 package thaumicenergistics.tileentities.abstraction;
 
-import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import java.util.List;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.grid.IEssentiaGrid;
-import thaumicenergistics.grid.IMEEssentiaMonitor;
-import thaumicenergistics.integration.IWailaSource;
-import thaumicenergistics.registries.EnumCache;
-import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.networking.GridFlags;
@@ -33,6 +19,21 @@ import appeng.tile.networking.TileCableBus;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.grid.IEssentiaGrid;
+import thaumicenergistics.grid.IMEEssentiaMonitor;
+import thaumicenergistics.integration.IWailaSource;
+import thaumicenergistics.registries.EnumCache;
+import thaumicenergistics.util.EffectiveSide;
+
+import java.io.IOException;
+import java.util.List;
 
 public abstract class TileProviderBase
 	extends AENetworkTile
@@ -165,7 +166,7 @@ public abstract class TileProviderBase
 		IGrid grid = null;
 
 		// Get the grid node
-		IGridNode node = this.gridProxy.getNode();
+		IGridNode node = this.getProxy().getNode();
 
 		// Ensure we have the node
 		if( node != null )
@@ -195,7 +196,7 @@ public abstract class TileProviderBase
 
 	/**
 	 * Called when the power goes on or off.
-	 * 
+	 *
 	 * @param isPowered
 	 */
 	protected void onPowerChange( final boolean isPowered )
@@ -205,26 +206,26 @@ public abstract class TileProviderBase
 	/**
 	 * Sets the color of the provider.
 	 * This does not set the isColorForced flag to true.
-	 * 
+	 *
 	 * @param gridColor
 	 */
 	protected void setProviderColor( final AEColor gridColor )
 	{
 		// Set our color to match
-		this.gridProxy.myColor = gridColor;
+		this.getProxy().setColor(gridColor);
 
 		// Are we server side?
 		if( EffectiveSide.isServerSide() )
 		{
 			/*
 			// Get the grid node
-			IGridNode gridNode = this.gridProxy.getNode();
+			IGridNode gridNode = this.getProxy().getNode();
 
 			// Do we have a grid node?
 			if( gridNode != null )
 			{
 				// Update the grid node
-				this.gridProxy.getNode().updateState();
+				this.getProxy().getNode().updateState();
 			}
 			*/
 
@@ -293,7 +294,7 @@ public abstract class TileProviderBase
 		AEColor[] sideColors = this.getNeighborCableColors();
 
 		// Get our current color
-		AEColor currentColor = this.gridProxy.myColor;
+		AEColor currentColor = this.getProxy().getColor();
 
 		// Are we attached to a side?
 		if( this.attachmentSide != ForgeDirection.UNKNOWN.ordinal() )
@@ -355,7 +356,7 @@ public abstract class TileProviderBase
 
 	/**
 	 * Returns how much of the specified aspect is in the network.
-	 * 
+	 *
 	 * @param searchAspect
 	 * @return
 	 */
@@ -384,17 +385,17 @@ public abstract class TileProviderBase
 	@Override
 	public AEColor getColor()
 	{
-		return this.gridProxy.myColor;
+		return this.getProxy().getColor();
 	}
 
 	public AEColor getGridColor()
 	{
-		return this.gridProxy.getGridColor();
+		return this.getProxy().getGridColor();
 	}
 
 	/**
 	 * Gets the machine source for the provider.
-	 * 
+	 *
 	 * @return
 	 */
 	public MachineSource getMachineSource()
@@ -410,10 +411,10 @@ public abstract class TileProviderBase
 			boolean prevActive = this.isActive;
 
 			// Do we have a proxy and grid node?
-			if( ( this.gridProxy != null ) && ( this.gridProxy.getNode() != null ) )
+			if( ( this.getProxy() != null ) && ( this.getProxy().getNode() != null ) )
 			{
 				// Get the grid node activity
-				this.isActive = this.gridProxy.getNode().isActive();
+				this.isActive = this.getProxy().getNode().isActive();
 
 				// Did the power state change?
 				if( prevActive != this.isActive )
@@ -533,18 +534,18 @@ public abstract class TileProviderBase
 
 	/**
 	 * Sets the owner of this tile.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void setOwner( final EntityPlayer player )
 	{
-		this.gridProxy.setOwner( player );
+		this.getProxy().setOwner( player );
 	}
 
 	/**
 	 * Configures the provider based on the specified
 	 * attachment side.
-	 * 
+	 *
 	 * @param attachmentSide
 	 */
 	public void setupProvider( final int attachmentSide )
@@ -556,10 +557,10 @@ public abstract class TileProviderBase
 			this.attachmentSide = attachmentSide;
 
 			// Set that we require a channel
-			this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+			this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 
 			// Set the idle power usage
-			this.gridProxy.setIdlePowerUsage( this.getIdlePowerusage() );
+			this.getProxy().setIdlePowerUsage( this.getIdlePowerusage() );
 		}
 	}
 

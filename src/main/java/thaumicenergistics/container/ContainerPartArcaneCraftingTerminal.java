@@ -1,7 +1,22 @@
 package thaumicenergistics.container;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.PlayerSource;
+import appeng.api.networking.storage.IBaseMonitor;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
+import appeng.container.implementations.ContainerCraftAmount;
+import appeng.core.sync.GuiBridge;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,23 +40,9 @@ import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.GuiHelper;
 import thaumicenergistics.util.ThEUtils;
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.PlayerSource;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.container.implementations.ContainerCraftAmount;
-import appeng.core.sync.GuiBridge;
-import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContainerPartArcaneCraftingTerminal
 	extends ContainerWithPlayerInventory
@@ -924,8 +925,8 @@ public class ContainerPartArcaneCraftingTerminal
 		{
 			ContainerCraftAmount cca = (ContainerCraftAmount)this.player.openContainer;
 
-			cca.craftingItem.putStack( result.getItemStack() );
-			cca.whatToMake = result;
+			cca.getCraftingItem().putStack( result.getItemStack() );
+			cca.setItemToCraft(result);
 
 			cca.detectAndSendChanges();
 		}

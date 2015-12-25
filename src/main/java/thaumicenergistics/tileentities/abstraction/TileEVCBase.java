@@ -1,7 +1,14 @@
 package thaumicenergistics.tileentities.abstraction;
 
+import appeng.api.config.Actionable;
+import appeng.api.util.AECableType;
+import appeng.api.util.DimensionalCoord;
+import appeng.tile.TileEvent;
+import appeng.tile.events.TileEventType;
+import appeng.tile.grid.AENetworkTile;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,14 +21,8 @@ import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.integration.tc.IEssentiaTransportWithSimulate;
 import thaumicenergistics.util.EffectiveSide;
-import appeng.api.config.Actionable;
-import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalCoord;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
-import appeng.tile.grid.AENetworkTile;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.io.IOException;
 
 /**
  * Essentia Vibration Chamber Base
@@ -383,7 +384,7 @@ public abstract class TileEVCBase
 		if( EffectiveSide.isServerSide() )
 		{
 			// Set idle power usage to zero
-			this.gridProxy.setIdlePowerUsage( 0.0D );
+			this.getProxy().setIdlePowerUsage( 0.0D );
 		}
 	}
 
@@ -409,7 +410,7 @@ public abstract class TileEVCBase
 	 */
 	public void setOwner( final EntityPlayer player )
 	{
-		this.gridProxy.setOwner( player );
+		this.getProxy().setOwner( player );
 	}
 
 	@Override

@@ -1,6 +1,12 @@
 package thaumicenergistics.container;
 
-import java.util.ArrayList;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.PlayerSource;
+import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.ISaveProvider;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.tile.storage.TileChest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -17,14 +23,8 @@ import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.PrivateInventory;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.PlayerSource;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.tile.storage.TileChest;
+
+import java.util.ArrayList;
 
 /**
  * Inventory container for essentia cells in a ME chest.
@@ -107,13 +107,13 @@ public class ContainerEssentiaCell
 			try
 			{
 				// Get the chest handler
-				IMEInventoryHandler<IAEFluidStack> handler = this.hostChest.getHandler( StorageChannel.FLUIDS );
+				IMEInventoryHandler<IAEFluidStack> handler = null; // this.hostChest.getHandler(StorageChannel.FLUIDS ); TODO: Fix this!
 
 				// Get the monitor
 				if( handler != null )
 				{
 					// Create the essentia monitor
-					this.monitor = new EssentiaMonitor( (IMEMonitor<IAEFluidStack>)handler, this.hostChest.getProxy().getEnergy(), this );
+					this.monitor = new EssentiaMonitor((IMEMonitor<IAEFluidStack>)handler, this.hostChest.getProxy().getEnergy(), this );
 
 					// Attach to the monitor
 					this.attachToMonitor();

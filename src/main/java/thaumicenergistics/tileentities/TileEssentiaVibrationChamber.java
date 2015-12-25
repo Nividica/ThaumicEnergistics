@@ -1,9 +1,13 @@
 package thaumicenergistics.tileentities;
 
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.me.GridAccessException;
 import io.netty.buffer.ByteBuf;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,13 +20,10 @@ import thaumicenergistics.integration.tc.EssentiaTransportHelper;
 import thaumicenergistics.network.packet.AbstractPacket;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.tileentities.abstraction.TileEVCBase;
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.me.GridAccessException;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Implements the logical functionality of the E.V.C.
@@ -249,7 +250,7 @@ public class TileEssentiaVibrationChamber
 		try
 		{
 			// Get the energy grid
-			IEnergyGrid eGrid = this.gridProxy.getEnergy();
+			IEnergyGrid eGrid = this.getProxy().getEnergy();
 
 			// Get rejected amount, note that any rejected amount is simply lost.
 			double rejectedPower = eGrid.injectPower( producedPower, Actionable.SIMULATE );
