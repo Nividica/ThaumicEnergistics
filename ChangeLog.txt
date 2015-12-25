@@ -1,4 +1,11 @@
-﻿10/13/2015 0.9.0.0 - Alpha
+﻿12/24/2015 0.9.0.1 - Alpha
+  Dependency Updated: Forge 10.13.4.1558
+  Dependency Updated: AE2-rv3-13
+  Merged pull request #255 - Keridos
+  Merged pull request #252 - Aquahatsche
+  Fixed #255 TODO's
+  
+10/13/2015 0.9.0.0 - Alpha
   Dependency Updated: AE2-rv3-9
   Fixes #227: Storage bus void support restored, attaches to network when placed with pre-set filters, and condenser support restored. May address #234
   Added EssentiaProvider to Thaumic Tinkerer blacklist, will be supported in the next release of Thaumic Tinkerer #228

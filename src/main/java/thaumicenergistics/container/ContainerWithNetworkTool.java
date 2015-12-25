@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import thaumicenergistics.container.slot.SlotNetworkTool;
 import thaumicenergistics.container.slot.SlotRestrictive;
 import appeng.api.AEApi;
-import appeng.api.definitions.IItemDefinition;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
@@ -115,28 +114,28 @@ public abstract class ContainerWithNetworkTool
 	{
 		//Get the networkTool or null if absent (e.g. disabled in AE's config-file)
 		ItemStack nwTool = AEApi.instance().definitions().items().networkTool().maybeStack( 1 ).orNull();
-		
+
 		//First of all is there a networkTool?
-		if(nwTool != null)
+		if( nwTool != null )
 		{
 			// Check the player inventory for the network tool
 			for( int slotIndex = 0; slotIndex < playerInventory.getSizeInventory(); slotIndex++ )
 			{
 				// Get the item in the current slot
 				ItemStack stack = playerInventory.getStackInSlot( slotIndex );
-	
+
 				// Is it the network tool?
 				if( ( stack != null ) && ( stack.isItemEqual( AEApi.instance().definitions().items().networkTool().maybeStack( 1 ).get() ) ) )
 				{
 					// Get the gui item for the tool
 					IGuiItem guiItem = (IGuiItem)stack.getItem();
-	
+
 					// Get the gui for the tool
 					INetworkTool networkTool = (INetworkTool)guiItem.getGuiObject( stack, partLocation.getWorld(), partLocation.x, partLocation.y,
 						partLocation.z );
-	
+
 					Slot toolSlot = null;
-	
+
 					// Add a slot for each network tool slot
 					for( int column = 0; column < ContainerWithNetworkTool.TOOL_COLUMNS; column++ )
 					{
@@ -144,15 +143,15 @@ public abstract class ContainerWithNetworkTool
 						{
 							// Calculate the tools slot index
 							int slotToolIndex = column + ( row * ContainerWithNetworkTool.TOOL_COLUMNS );
-	
+
 							// Create the slot
 							toolSlot = new SlotNetworkTool( networkTool, slotToolIndex, ContainerWithNetworkTool.TOOL_SLOT_X_OFFSET + slotOffsetX +
 											( column * ContainerWithPlayerInventory.SLOT_SIZE ), ( row * ContainerWithPlayerInventory.SLOT_SIZE ) +
 											ContainerWithNetworkTool.TOOL_SLOT_Y_OFFSET + slotOffsetY );
-	
+
 							// Add the slot
 							this.addSlotToContainer( toolSlot );
-	
+
 							// Check first
 							if( slotToolIndex == 0 )
 							{
@@ -160,16 +159,16 @@ public abstract class ContainerWithNetworkTool
 							}
 						}
 					}
-	
+
 					// Set last
 					if( toolSlot != null )
 					{
 						this.lastToolSlotNumber = toolSlot.slotNumber;
 					}
-	
+
 					// Mark that we have a network tool
 					this.hasNetworkTool = true;
-	
+
 					// Done
 					return;
 				}
