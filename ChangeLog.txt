@@ -1,6 +1,6 @@
-﻿12/24/2015 0.9.1.0 - Alpha
+﻿12/24/2015 0.9.0.4 - Alpha
   Dependency Updated: Forge 10.13.4.1558
-  Dependency Updated: AE2-rv3-13
+  Dependency Updated: AE2-rv3-beta-1
   Merged pull request #255 - Keridos
   Merged pull request #252 - Aquahatsche
   Fixed #255 TODO's
@@ -8,6 +8,7 @@
   Fixes compatibility with Thaumic Tinkerer.
   Fixes #249 - Capacity can be checked on any essentia container, inject now respects essentia the container would not take.
   Fixes issue with Technomancy(and any other mods that use my API) where essentia was voided when mod container is full.
+  Fixes #248 - Focus now interacts with caches properly.
   
 10/13/2015 0.9.0.0 - Alpha
   Dependency Updated: AE2-rv3-9

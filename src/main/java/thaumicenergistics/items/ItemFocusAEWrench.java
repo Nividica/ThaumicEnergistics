@@ -154,7 +154,7 @@ public class ItemFocusAEWrench
 		CommonHelper.proxy.updateRenderMode( player );
 
 		// Set the eye height
-		PartPlacement.setEyeHeight(eyeHeight);
+		PartPlacement.setEyeHeight( eyeHeight );
 
 		// Wrench the target
 		PartPlacement.place( wrench, position.blockX, position.blockY, position.blockZ, position.sideHit, player, player.worldObj,
@@ -210,6 +210,10 @@ public class ItemFocusAEWrench
 		{
 			// Ignore pedestals
 			return false;
+		}
+		else if( te.getClass().getName().contains( "Cache" ) )
+		{
+			player.setSneaking( false );
 		}
 
 		// Is the block an part host?
