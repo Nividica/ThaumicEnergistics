@@ -1450,8 +1450,8 @@ public class ContainerPartArcaneCraftingTerminal
 	{
 		if( ( slotID == this.resultSlotNumber ) && ( button == GuiHelper.MOUSE_BUTTON_RIGHT ) )
 		{
-			// Ignore if result slot is right clicked.
-			return null;
+			// If right clicking on result slot, change it to left click
+			return super.slotClick( slotID, 0, flag, player );
 		}
 
 		// Pass to super
