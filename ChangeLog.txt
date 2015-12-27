@@ -1,4 +1,7 @@
-﻿12/24/2015 0.9.0.4 - Alpha
+﻿12/27/2015 0.9.0.4 - Alpha
+  Fixes #112 - A.C.T can now issue crafting jobs!
+
+12/24/2015 0.9.0.4 - Alpha
   Dependency Updated: Forge 10.13.4.1558
   Dependency Updated: AE2-rv3-beta-1
   Merged pull request #255 - Keridos

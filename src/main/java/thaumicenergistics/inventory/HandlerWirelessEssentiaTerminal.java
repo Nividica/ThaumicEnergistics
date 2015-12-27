@@ -38,7 +38,6 @@ public class HandlerWirelessEssentiaTerminal
 
 		public PowerRedirector()
 		{
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override

@@ -31,7 +31,8 @@ import appeng.core.CommonHelper;
 import appeng.parts.PartPlacement;
 import appeng.parts.PartPlacement.PlaceType;
 
-public class ItemFocusAEWrench extends ItemFocusBasic
+public class ItemFocusAEWrench
+	extends ItemFocusBasic
 {
 
 	/**
@@ -204,13 +205,20 @@ public class ItemFocusAEWrench extends ItemFocusBasic
 		// Get the tile
 		TileEntity te = world.getTileEntity( position.blockX, position.blockY, position.blockZ );
 
+		// Is there a valid tile entity?
+		if( te == null )
+		{
+			// Nothing to do here.
+			return false;
+		}
+
 		// Is the entity a pedestal?
 		if( te instanceof TilePedestal )
 		{
 			// Ignore pedestals
 			return false;
 		}
-		else if( te != null && te.getClass().getName().equals( "cofh.thermalexpansion.block.cache.TileCache" ) && action != Action.LEFT_CLICK_BLOCK )
+		else if( te.getClass().getName().equals( "cofh.thermalexpansion.block.cache.TileCache" ) && action != Action.LEFT_CLICK_BLOCK )
 		{
 			return false;
 		}

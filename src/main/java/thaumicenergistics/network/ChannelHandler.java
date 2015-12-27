@@ -12,6 +12,7 @@ import thaumicenergistics.network.handlers.HandlerClientKnowledgeInscriber;
 import thaumicenergistics.network.handlers.HandlerClientPriority;
 import thaumicenergistics.network.handlers.HandlerServerAspectSlot;
 import thaumicenergistics.network.handlers.HandlerServerChangeGui;
+import thaumicenergistics.network.handlers.HandlerServerConfirmCrafting;
 import thaumicenergistics.network.handlers.HandlerServerEssentiaCellTerminal;
 import thaumicenergistics.network.handlers.HandlerServerEssentiaCellWorkbench;
 import thaumicenergistics.network.handlers.HandlerServerKnowledgeInscriber;
@@ -38,6 +39,7 @@ import thaumicenergistics.network.packet.client.PacketClientPriority;
 import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
 import thaumicenergistics.network.packet.server.PacketServerAspectSlot;
 import thaumicenergistics.network.packet.server.PacketServerChangeGui;
+import thaumicenergistics.network.packet.server.PacketServerConfirmCraftingJob;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaCellWorkbench;
 import thaumicenergistics.network.packet.server.PacketServerEssentiaEmitter;
@@ -107,6 +109,9 @@ public class ChannelHandler
 		// Essentia Vibration Chamber
 		wrapper.registerMessage( HandlerClientEssentiaVibrationChamber.class, PacketClientEssentiaVibrationChamber.class, discriminator++ ,
 			Side.CLIENT );
+
+		// Confirm crafting
+		wrapper.registerMessage( HandlerServerConfirmCrafting.class, PacketServerConfirmCraftingJob.class, discriminator++ , Side.SERVER );
 	}
 
 	public static void sendPacketToAllAround( final AbstractPacket packet, final int dimension, final double x, final double y, final double z,

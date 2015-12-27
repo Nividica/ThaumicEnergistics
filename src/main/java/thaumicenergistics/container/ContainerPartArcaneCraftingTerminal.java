@@ -1,5 +1,32 @@
 package thaumicenergistics.container;
 
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.oredict.OreDictionary;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.api.crafting.IArcaneRecipe;
+import thaumcraft.common.items.wands.ItemWandCasting;
+import thaumicenergistics.container.slot.SlotArcaneCraftingResult;
+import thaumicenergistics.container.slot.SlotArmor;
+import thaumicenergistics.container.slot.SlotRestrictive;
+import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
+import thaumicenergistics.gui.ThEGuiHandler;
+import thaumicenergistics.integration.tc.ArcaneRecipeHelper;
+import thaumicenergistics.network.packet.client.PacketClientArcaneCraftingTerminal;
+import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
+import thaumicenergistics.util.EffectiveSide;
+import thaumicenergistics.util.GuiHelper;
+import thaumicenergistics.util.ThEUtils;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SortDir;
@@ -12,37 +39,10 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCraftAmount;
-import appeng.core.sync.GuiBridge;
-import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraftforge.oredict.OreDictionary;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.api.crafting.IArcaneRecipe;
-import thaumcraft.common.items.wands.ItemWandCasting;
-import thaumicenergistics.container.slot.SlotArcaneCraftingResult;
-import thaumicenergistics.container.slot.SlotArmor;
-import thaumicenergistics.container.slot.SlotRestrictive;
-import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
-import thaumicenergistics.integration.tc.ArcaneRecipeHelper;
-import thaumicenergistics.network.packet.client.PacketClientArcaneCraftingTerminal;
-import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
-import thaumicenergistics.util.EffectiveSide;
-import thaumicenergistics.util.GuiHelper;
-import thaumicenergistics.util.ThEUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ContainerPartArcaneCraftingTerminal
 	extends ContainerWithPlayerInventory
@@ -918,16 +918,34 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	public void onClientRequestAutoCraft( final EntityPlayer player, final IAEItemStack result )
 	{
-		Platform.openGUI( player, this.arcaneCraftingTerminalPart.getHostTile(), this.arcaneCraftingTerminalPart.getSide(),
-			GuiBridge.GUI_CRAFTING_AMOUNT );
+		// Get the host tile
+		TileEntity te = this.arcaneCraftingTerminalPart.getHostTile();
 
+		// Get the sided GUI ID
+		int sidedID = ThEGuiHandler.generateSidedID( ThEGuiHandler.AUTO_CRAFTING_AMOUNT, this.arcaneCraftingTerminalPart.getSide() );
+
+		// Launch the GUI
+		ThEGuiHandler.launchGui( sidedID, player, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
+
+		// Setup the amount container
 		if( player.openContainer instanceof ContainerCraftAmount )
 		{
+			// Get the container
 			ContainerCraftAmount cca = (ContainerCraftAmount)this.player.openContainer;
 
-			cca.getCraftingItem().putStack( result.getItemStack() );
-			cca.setItemToCraft(result);
+			// Create the open context
+			cca.setOpenContext( new ContainerOpenContext( te ) );
+			cca.getOpenContext().setWorld( te.getWorldObj() );
+			cca.getOpenContext().setX( te.xCoord );
+			cca.getOpenContext().setY( te.yCoord );
+			cca.getOpenContext().setZ( te.zCoord );
+			cca.getOpenContext().setSide( this.arcaneCraftingTerminalPart.getSide() );
 
+			// Set the item
+			cca.getCraftingItem().putStack( result.getItemStack() );
+			cca.setItemToCraft( result );
+
+			// Issue update
 			cca.detectAndSendChanges();
 		}
 	}

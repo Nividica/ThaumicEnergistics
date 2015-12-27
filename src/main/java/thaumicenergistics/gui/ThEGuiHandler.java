@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.ICraftingIssuerTerminalHost;
 import thaumicenergistics.container.ContainerArcaneAssembler;
 import thaumicenergistics.container.ContainerEssentiaCell;
 import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
@@ -13,7 +14,10 @@ import thaumicenergistics.container.ContainerPriority;
 import thaumicenergistics.container.ContainerWirelessEssentiaTerminal;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.parts.AbstractAEPartBase;
+import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
+import appeng.container.implementations.ContainerCraftAmount;
+import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.helpers.IPriorityHost;
 import cpw.mods.fml.common.network.IGuiHandler;
 
@@ -23,43 +27,56 @@ public class ThEGuiHandler
 	// ID's between 0 and this number indicate that they are AE parts
 	private static final int DIRECTION_OFFSET = ForgeDirection.values().length;
 
-	// ID's should increase in values of 10
+	// ID's must increase in values of 10
+	private static final int ID_STEP_VALUE = 10;
 
 	/**
 	 * Singular ID of the essentia cell gui
 	 */
-	public static final int ESSENTIA_CELL_ID = 10;
+	public static final int ESSENTIA_CELL_ID = ID_STEP_VALUE * 1;
 
 	/**
 	 * Base ID of the priority gui.
 	 * Add the ForgeDirection's side ordinal to this value.
 	 */
-	private static final int PRIORITY_ID = 20;
+	public static final int PRIORITY_ID = ID_STEP_VALUE * 2;
 
 	/**
 	 * ID of the essentia cell workbench
 	 */
-	public static final int CELL_WORKBENCH_ID = 30;
+	public static final int CELL_WORKBENCH_ID = ID_STEP_VALUE * 3;
 
 	/**
 	 * ID of the wireless terminal gui.
 	 */
-	public static final int WIRELESS_TERMINAL_ID = 40;
+	public static final int WIRELESS_TERMINAL_ID = ID_STEP_VALUE * 4;
 
 	/**
 	 * ID of the arcane assembler gui.
 	 */
-	public static final int ARCANE_ASSEMBLER_ID = 50;
+	public static final int ARCANE_ASSEMBLER_ID = ID_STEP_VALUE * 5;
 
 	/**
 	 * ID of the knowledge inscriber gui.
 	 */
-	public static final int KNOWLEDGE_INSCRIBER = 60;
+	public static final int KNOWLEDGE_INSCRIBER = ID_STEP_VALUE * 6;
 
 	/**
 	 * ID of the knowledge inscriber gui.
 	 */
-	public static final int ESSENTIA_VIBRATION_CHAMBER = 70;
+	public static final int ESSENTIA_VIBRATION_CHAMBER = ID_STEP_VALUE * 7;
+
+	/**
+	 * ID of the auto crafting amount bridge.
+	 * Add the ForgeDirection's side ordinal to this value.
+	 */
+	public static final int AUTO_CRAFTING_AMOUNT = ID_STEP_VALUE * 8;
+
+	/**
+	 * ID of the auto crafting confirm bridge.
+	 * Add the ForgeDirection's side ordinal to this value.
+	 */
+	public static final int AUTO_CRAFTING_CONFIRM = ID_STEP_VALUE * 9;
 
 	/**
 	 * Extra data used for some GUI calls.
@@ -76,7 +93,7 @@ public class ThEGuiHandler
 	 * @param z
 	 * @return
 	 */
-	private static AbstractAEPartBase getPart( final ForgeDirection tileSide, final World world, final int x, final int y, final int z )
+	private static IPart getPart( final ForgeDirection tileSide, final World world, final int x, final int y, final int z )
 	{
 		// Get the host at the specified position
 		IPartHost partHost = (IPartHost)( world.getTileEntity( x, y, z ) );
@@ -88,7 +105,23 @@ public class ThEGuiHandler
 		}
 
 		// Get the part from the host
-		return (AbstractAEPartBase)( partHost.getPart( tileSide ) );
+		return( partHost.getPart( tileSide ) );
+	}
+
+	/**
+	 * Gets the sided part for the GUI ID.
+	 * 
+	 * @param ID
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	private static IPart getPartFromSidedID( final int ID, final World world, final int x, final int y, final int z )
+	{
+		ForgeDirection side = ForgeDirection.getOrientation( ID % ThEGuiHandler.ID_STEP_VALUE );
+		return ThEGuiHandler.getPart( side, world, x, y, z );
 	}
 
 	/**
@@ -107,7 +140,7 @@ public class ThEGuiHandler
 												final int z, final boolean isServerSide )
 	{
 		// Get the part
-		AbstractAEPartBase part = ThEGuiHandler.getPart( tileSide, world, x, y, z );
+		AbstractAEPartBase part = (AbstractAEPartBase)ThEGuiHandler.getPart( tileSide, world, x, y, z );
 
 		// Ensure we got the part
 		if( part == null )
@@ -127,14 +160,28 @@ public class ThEGuiHandler
 	}
 
 	/**
-	 * Helper function to properly generate a priority gui ID
+	 * Returns true if the specified ID is within the base range.
 	 * 
+	 * @param BaseID
+	 * @param ID
+	 * @return
+	 */
+	private static boolean isIDInRange( final int ID, final int BaseID )
+	{
+		return( ( ID >= BaseID ) && ( ID < ( BaseID + ThEGuiHandler.ID_STEP_VALUE ) ) );
+	}
+
+	/**
+	 * Helper function to properly generate a GUI ID that
+	 * includes a forge direction.
+	 * 
+	 * @param ID
 	 * @param side
 	 * @return
 	 */
-	public static int generatePriorityID( final ForgeDirection side )
+	public static int generateSidedID( final int ID, final ForgeDirection side )
 	{
-		return ThEGuiHandler.PRIORITY_ID + side.ordinal();
+		return ID + side.ordinal();
 	}
 
 	/**
@@ -206,36 +253,14 @@ public class ThEGuiHandler
 		// This is not an AE part, adjust the ID
 		ID -= ThEGuiHandler.DIRECTION_OFFSET;
 
-		// Is this the essentia cell?
-		if( ID == ThEGuiHandler.ESSENTIA_CELL_ID )
-		{
-			return GuiEssentiaCellTerminal.NewEssentiaCellGui( player, world, x, y, z );
-		}
-
-		// Is this the priority window?
-		if( ( ID >= ThEGuiHandler.PRIORITY_ID ) && ( ID < ThEGuiHandler.CELL_WORKBENCH_ID ) )
-		{
-			// Get the side
-			side = ForgeDirection.getOrientation( ID - ThEGuiHandler.PRIORITY_ID );
-
-			// Get the part
-			AbstractAEPartBase part = ThEGuiHandler.getPart( side, world, x, y, z );
-
-			// Ensure we got the part, and that it implements IPriortyHost
-			if( ( part == null ) || !( part instanceof IPriorityHost ) )
-			{
-				return null;
-			}
-
-			// Return the gui
-			return new GuiPriority( (IPriorityHost)part, player );
-
-		}
-
+		// Check basic ID's
 		switch ( ID )
 		{
+		// Is this the essentia cell?
+			case ThEGuiHandler.ESSENTIA_CELL_ID:
+				return GuiEssentiaCellTerminal.NewEssentiaCellGui( player, world, x, y, z );
 
-		// Is this the cell workbench?
+				// Is this the cell workbench?
 			case ThEGuiHandler.CELL_WORKBENCH_ID:
 				return new GuiEssentiaCellWorkbench( player, world, x, y, z );
 
@@ -254,6 +279,54 @@ public class ThEGuiHandler
 				// Vibration chamber?
 			case ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER:
 				return new GuiEssentiaVibrationChamber( player, world, x, y, z );
+		}
+
+		// Is this the priority window?
+		if( ThEGuiHandler.isIDInRange( ID, ThEGuiHandler.PRIORITY_ID ) )
+		{
+			// Get the part
+			IPart part = ThEGuiHandler.getPartFromSidedID( ID, world, x, y, z );
+
+			// Ensure we got the part, and that it implements IPriortyHost
+			if( ( part == null ) || !( part instanceof IPriorityHost ) )
+			{
+				return null;
+			}
+
+			// Return the gui
+			return new GuiPriority( (IPriorityHost)part, player );
+		}
+
+		// AE2 Autocrafting Amount?
+		if( ThEGuiHandler.isIDInRange( ID, ThEGuiHandler.AUTO_CRAFTING_AMOUNT ) )
+		{
+			// Get the part
+			IPart part = ThEGuiHandler.getPartFromSidedID( ID, world, x, y, z );
+
+			// Ensure the part, and that it implements ICraftingIssuerTerminalHost
+			if( ( part == null ) || !( part instanceof ICraftingIssuerTerminalHost ) )
+			{
+				return null;
+			}
+
+			// Return the gui
+			return new GuiCraftAmountBridge( player, (ICraftingIssuerTerminalHost)part );
+		}
+
+		// AE2 Autocrafting Confirm?
+		if( ThEGuiHandler.isIDInRange( ID, ThEGuiHandler.AUTO_CRAFTING_CONFIRM ) )
+		{
+			// Get the part
+			IPart part = ThEGuiHandler.getPartFromSidedID( ID, world, x, y, z );
+
+			// Ensure the part, and that it implements ICraftingIssuerTerminalHost
+			if( ( part == null ) || !( part instanceof ICraftingIssuerTerminalHost ) )
+			{
+				return null;
+			}
+
+			// Return the gui
+			return new GuiCraftConfirmBridge( player, (ICraftingIssuerTerminalHost)part );
 		}
 
 		// No matching GUI element found
@@ -277,36 +350,13 @@ public class ThEGuiHandler
 		// This is not an AE part, adjust the ID
 		ID -= ThEGuiHandler.DIRECTION_OFFSET;
 
-		// Is this the essentia cell?
-		if( ID == ThEGuiHandler.ESSENTIA_CELL_ID )
-		{
-			return new ContainerEssentiaCell( player, world, x, y, z );
-		}
-
-		// Is this the priority window?
-		if( ( ID >= ThEGuiHandler.PRIORITY_ID ) && ( ID < ThEGuiHandler.CELL_WORKBENCH_ID ) )
-		{
-			// Get the side
-			side = ForgeDirection.getOrientation( ID - ThEGuiHandler.PRIORITY_ID );
-
-			// Get the part
-			AbstractAEPartBase part = ThEGuiHandler.getPart( side, world, x, y, z );
-
-			// Ensure we got the part, and that it implements IPriortyHost
-			if( ( part == null ) || !( part instanceof IPriorityHost ) )
-			{
-				return null;
-			}
-
-			// Return the container
-			return new ContainerPriority( (IPriorityHost)part, player );
-
-		}
-
 		switch ( ID )
 		{
+		// Is this the essentia cell?
+			case ThEGuiHandler.ESSENTIA_CELL_ID:
+				return new ContainerEssentiaCell( player, world, x, y, z );
 
-		// Is this the cell workbench?
+				// Is this the cell workbench?
 			case ThEGuiHandler.CELL_WORKBENCH_ID:
 				return new ContainerEssentiaCellWorkbench( player, world, x, y, z );
 
@@ -326,6 +376,57 @@ public class ThEGuiHandler
 				// Vibration chamber?
 			case ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER:
 				return new ContainerEssentiaVibrationChamber( player, world, x, y, z );
+
+		}
+
+		// Is this the priority window?
+		if( ThEGuiHandler.isIDInRange( ID, ThEGuiHandler.PRIORITY_ID ) )
+		{
+			// Get the part
+			IPart part = ThEGuiHandler.getPartFromSidedID( ID, world, x, y, z );
+
+			// Ensure we got the part, and that it implements IPriortyHost
+			if( ( part == null ) || !( part instanceof IPriorityHost ) )
+			{
+				return null;
+			}
+
+			// Return the container
+			return new ContainerPriority( (IPriorityHost)part, player );
+
+		}
+
+		// AE2 Autocrafting Amount?
+		if( ThEGuiHandler.isIDInRange( ID, ThEGuiHandler.AUTO_CRAFTING_AMOUNT ) )
+		{
+			// Get the part
+			IPart part = ThEGuiHandler.getPartFromSidedID( ID, world, x, y, z );
+
+			// Ensure the part, and that it implements ICraftingIssuerTerminalHost
+			if( ( part == null ) || !( part instanceof ICraftingIssuerTerminalHost ) )
+			{
+				return null;
+			}
+
+			// Return the container
+			return new ContainerCraftAmount( player.inventory, (ICraftingIssuerTerminalHost)part );
+
+		}
+
+		// AE2 Autocrafting Confirm?
+		if( ThEGuiHandler.isIDInRange( ID, ThEGuiHandler.AUTO_CRAFTING_CONFIRM ) )
+		{
+			// Get the part
+			IPart part = ThEGuiHandler.getPartFromSidedID( ID, world, x, y, z );
+
+			// Ensure the part, and that it implements ICraftingIssuerTerminalHost
+			if( ( part == null ) || !( part instanceof ICraftingIssuerTerminalHost ) )
+			{
+				return null;
+			}
+
+			// Return the container
+			return new ContainerCraftConfirm( player.inventory, (ICraftingIssuerTerminalHost)part );
 
 		}
 

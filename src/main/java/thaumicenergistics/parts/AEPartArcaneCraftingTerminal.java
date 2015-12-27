@@ -9,6 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -17,13 +18,17 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.ICraftingIssuerTerminalHost;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
+import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.tc.DigiVisSourceData;
 import thaumicenergistics.integration.tc.IDigiVisSource;
+import thaumicenergistics.network.packet.server.PacketServerChangeGui;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.texture.BlockTextureManager;
+import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.ThEUtils;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortDir;
@@ -39,7 +44,6 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
@@ -50,7 +54,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartArcaneCraftingTerminal
 	extends AbstractAEPartRotateable
-	implements IInventory, IGridTickable, ITerminalHost
+	implements IInventory, IGridTickable, ICraftingIssuerTerminalHost
 {
 	/**
 	 * Number of slots in the internal inventory
@@ -351,6 +355,12 @@ public class AEPartArcaneCraftingTerminal
 		return null;
 	}
 
+	@Override
+	public ItemStack getIcon()
+	{
+		return this.associatedItem;
+	}
+
 	/**
 	 * Determines how much power the part takes for just
 	 * existing.
@@ -546,6 +556,25 @@ public class AEPartArcaneCraftingTerminal
 	public boolean isUseableByPlayer( final EntityPlayer player )
 	{
 		return true;
+	}
+
+	@Override
+	public void launchGUI( final EntityPlayer player )
+	{
+		TileEntity host = this.getHostTile();
+
+		// Is this server side?
+		if( EffectiveSide.isServerSide() )
+		{
+			// Launch the gui
+			ThEGuiHandler.launchGui( this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
+		}
+		else
+		{
+			// Ask the server to change the GUI
+			new PacketServerChangeGui().createChangeGuiRequest( this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord )
+							.sendPacketToServer();
+		}
 	}
 
 	/**
