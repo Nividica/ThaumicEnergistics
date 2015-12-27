@@ -10,6 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
+import thaumcraft.api.crafting.ShapedArcaneRecipe;
+import thaumcraft.api.crafting.ShapelessArcaneRecipe;
 import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
 import thaumicenergistics.integration.tc.ArcaneRecipeHelper;
@@ -388,14 +390,36 @@ public class ContainerKnowledgeInscriber
 		// Get the current save state
 		CoreSaveState saveState = this.getSaveState();
 
+		int gridSize = ContainerKnowledgeInscriber.CRAFTING_ROWS * ContainerKnowledgeInscriber.CRAFTING_COLS;
+		Object[] inputs = new Object[gridSize];
+
 		if( saveState == CoreSaveState.Enabled_Save )
 		{
 			// Build the ingredient list
-			int gridSize = ContainerKnowledgeInscriber.CRAFTING_ROWS * ContainerKnowledgeInscriber.CRAFTING_COLS;
-			ItemStack[] inputs = new ItemStack[gridSize];
-			for( int index = 0; index < gridSize; index++ )
+
+			// Is the recipe shaped?
+			if( this.activeRecipe instanceof ShapedArcaneRecipe )
 			{
-				inputs[index] = this.craftingSlots[index].getStack();
+				ShapedArcaneRecipe recipe = (ShapedArcaneRecipe)this.activeRecipe;
+				for( int index = 0; index < recipe.input.length; ++index )
+				{
+					inputs[index] = recipe.input[index];
+				}
+			}
+			// Is the recipe shapeless?
+			else if( this.activeRecipe instanceof ShapelessArcaneRecipe )
+			{
+				ShapelessArcaneRecipe recipe = (ShapelessArcaneRecipe)this.activeRecipe;
+				ArrayList ings = recipe.getInput();
+				for( int index = 0; index < ings.size(); ++index )
+				{
+					inputs[index] = ings.get( index );
+				}
+			}
+			else
+			{
+				// Unknown recipe type.
+				return;
 			}
 
 			// Get the aspect cost
@@ -528,7 +552,7 @@ public class ContainerKnowledgeInscriber
 						// Set the slots
 						for( int index = 0; index < this.craftingSlots.length; index++ )
 						{
-							IAEItemStack ingStack = pattern.ingredients[index];
+							IAEItemStack ingStack = pattern.getInputs()[index];
 							if( ingStack != null )
 							{
 								this.craftingSlots[index].putStack( ingStack.getItemStack() );

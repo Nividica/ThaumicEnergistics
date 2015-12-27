@@ -16,7 +16,9 @@ import appeng.util.item.AEItemStack;
 public class ArcaneCraftingPattern
 	implements ICraftingPatternDetails
 {
-	private static final String NBTKEY_INGREDIENT = "input#", NBTKEY_RESULT = "output";
+	private static final String NBTKEY_INGREDIENT_NUM = "input#", NBTKEY_RESULT = "output", NBTKEY_INGREDIENT_TYPE = "ThE_crafting_type",
+					NBTKEY_ARRAY_SIZE = "size";
+	private static final int NBTKEY_ARRAYTYPE = 2, NBTKEY_ITEMTYPE = 1;
 
 	private static final int GRID_SIZE = 9;
 
@@ -28,7 +30,7 @@ public class ArcaneCraftingPattern
 	/**
 	 * Ingredients.
 	 */
-	public IAEItemStack[] ingredients = new IAEItemStack[ArcaneCraftingPattern.GRID_SIZE];
+	public Object[] ingredients = new Object[ArcaneCraftingPattern.GRID_SIZE];
 
 	/**
 	 * Crafting result.
@@ -46,6 +48,11 @@ public class ArcaneCraftingPattern
 	private Aspect[] cachedAspects;
 
 	/**
+	 * Ingredients as AE itemstacks.
+	 */
+	private IAEItemStack[] ingredientsAE;
+
+	/**
 	 * 
 	 * @param knowledgeCore
 	 * @param aspects
@@ -53,7 +60,7 @@ public class ArcaneCraftingPattern
 	 * @param craftingIngredients
 	 */
 	public ArcaneCraftingPattern( final ItemStack knowledgeCore, final AspectList aspects, final ItemStack craftingResult,
-									final ItemStack[] craftingIngredients )
+									final Object[] craftingIngredients )
 	{
 		// Set the core
 		this.knowledgeCoreHost = knowledgeCore;
@@ -65,15 +72,15 @@ public class ArcaneCraftingPattern
 		this.result = AEApi.instance().storage().createItemStack( craftingResult );
 
 		// Set the ingredients
-		for( int index = 0; ( ( index < this.ingredients.length ) && ( index < craftingIngredients.length ) ); index++ )
+		for( int index = 0; ( ( index < this.ingredients.length ) && ( index < craftingIngredients.length ) ); ++index )
 		{
 			// Get the next ingredient
-			ItemStack nextIng = craftingIngredients[index];
+			Object nextIng = craftingIngredients[index];
 
 			// Add to the ingredients if not null
 			if( nextIng != null )
 			{
-				this.ingredients[index] = AEApi.instance().storage().createItemStack( nextIng );
+				this.ingredients[index] = nextIng;
 			}
 		}
 	}
@@ -95,10 +102,83 @@ public class ArcaneCraftingPattern
 		this.readFromNBT( data );
 	}
 
+	/**
+	 * Checks if one item can be substituted for another.
+	 * 
+	 * @param target
+	 * @param input
+	 * @return
+	 */
+	private boolean canSubstitueItem( final ItemStack target, final ItemStack input )
+	{
+		// Do the itemstacks directly match?
+		if( ItemStack.areItemStacksEqual( target, input ) )
+		{
+			return true;
+		}
+
+		// Do the items match?
+		if( target.getItem() != input.getItem() )
+		{
+			// Mismatched items
+			return false;
+		}
+
+		// NBT data present?
+		if( target.hasTagCompound() )
+		{
+			// Do the tags match?
+			if( !ThaumcraftApiHelper.areItemStackTagsEqualForCrafting( input, target ) )
+			{
+				// Tags do not match
+				return false;
+			}
+		}
+
+		// Finally check item damage (32767 is some magic number from thaumcraft)
+		return( ( target.getItemDamage() == 32767 ) || ( target.getItemDamage() == input.getItemDamage() ) );
+	}
+
+	/**
+	 * Converts the itemlist into it's AE counterpart
+	 */
+	private void setupAEIngredientList()
+	{
+		this.ingredientsAE = new AEItemStack[ArcaneCraftingPattern.GRID_SIZE];
+
+		for( int index = 0; index < ArcaneCraftingPattern.GRID_SIZE; ++index )
+		{
+			// Get the ingredient
+			Object ing = this.ingredients[index];
+
+			// Check for null
+			if( ing == null )
+			{
+				this.ingredientsAE[index] = null;
+				continue;
+			}
+
+			// Itemstack?
+			if( ing instanceof ItemStack )
+			{
+				this.ingredientsAE[index] = AEApi.instance().storage().createItemStack( (ItemStack)ing );
+			}
+			// Array
+			else if( ing instanceof ArrayList )
+			{
+				// Use the first ingredient
+				ItemStack firstIng = ( (ArrayList<ItemStack>)ing ).get( 0 );
+
+				this.ingredientsAE[index] = AEApi.instance().storage().createItemStack( firstIng );
+			}
+		}
+	}
+
 	@Override
 	public boolean canSubstitute()
 	{
-		return false;
+		//return false;
+		return true;
 	}
 
 	/**
@@ -122,12 +202,17 @@ public class ArcaneCraftingPattern
 		// Create a temp array
 		ArrayList<IAEItemStack> cond = new ArrayList<IAEItemStack>();
 
-		// Add non-null ingredients
-		for( int index = 0; index < this.ingredients.length; index++ )
+		if( this.ingredientsAE == null )
 		{
-			if( this.ingredients[index] != null )
+			this.setupAEIngredientList();
+		}
+
+		// Add non-null ingredients
+		for( int index = 0; index < this.ingredientsAE.length; index++ )
+		{
+			if( this.ingredientsAE[index] != null )
 			{
-				cond.add( this.ingredients[index] );
+				cond.add( this.ingredientsAE[index] );
 			}
 		}
 
@@ -152,7 +237,12 @@ public class ArcaneCraftingPattern
 	@Override
 	public IAEItemStack[] getInputs()
 	{
-		return this.ingredients;
+		if( this.ingredientsAE == null )
+		{
+			this.setupAEIngredientList();
+		}
+
+		return this.ingredientsAE;
 	}
 
 	@Override
@@ -189,68 +279,41 @@ public class ArcaneCraftingPattern
 	@Override
 	public boolean isValidItemForSlot( final int slotIndex, final ItemStack input, final World world )
 	{
-		// Get the item currently in the slot
-		IAEItemStack ingStack = this.ingredients[slotIndex];
+		// Get the ingredient
+		Object ing = this.ingredients[slotIndex];
 
 		// Ensure nothing is null
-		if( ( ingStack == null ) || ( ingStack.getItem() == null ) || ( input == null ) || ( input.getItem() == null ) )
+		if( ( ing == null ) || ( input == null ) || ( input.getItem() == null ) )
 		{
 			// Null detected
 			return false;
 		}
 
-		ItemStack target = ingStack.getItemStack();
-
-		// Does the item directly match?
-		if( ItemStack.areItemStacksEqual( target, input ) )
+		// What type is the ingredient?
+		if( ing instanceof ItemStack )
 		{
-			return true;
+			// Cast to itemstack
+			ItemStack target = ( (ItemStack)ing );
+			return this.canSubstitueItem( target, input );
 		}
-
-		// Do the items match?
-		if( target.getItem() != input.getItem() )
+		else if( ing instanceof ArrayList )
 		{
-			// Mismatched items
-			return false;
-		}
+			// Cast to list
+			ArrayList<ItemStack> items = (ArrayList<ItemStack>)ing;
 
-		// NBT data present?
-		if( target.hasTagCompound() )
-		{
-			// Do the tags match?
-			if( !ThaumcraftApiHelper.areItemStackTagsEqualForCrafting( input, target ) )
+			// Check each item
+			for( ItemStack target : items )
 			{
-				// Tags do not match
-				return false;
-			}
-		}
-
-		// Finally check item damage (32767 is some magic number from thaumcraft)
-		return( ( target.getItemDamage() == 32767 ) || ( target.getItemDamage() == input.getItemDamage() ) );
-
-		/* Issue #216 - Do not use replacements.
-		// Does the item via ore dictionary fast match?
-		if( OreDictionary.itemMatches( ingStack.getItemStack(), repStack, false ) )
-		{
-			return true;
-		}
-
-		// Crazy stuff with ore dictionary IDs
-		int[] sourceIDs = OreDictionary.getOreIDs( ingStack.getItemStack() );
-		int[] repIDs = OreDictionary.getOreIDs( repStack );
-		for( int i = 0; i < sourceIDs.length; i++ )
-		{
-			for( int j = 0; j < repIDs.length; j++ )
-			{
-				if( sourceIDs[i] == repIDs[j] )
+				if( this.canSubstitueItem( target, input ) )
 				{
 					return true;
 				}
 			}
+
 		}
 
 		return false;
-		*/
+
 	}
 
 	public void readFromNBT( final NBTTagCompound data )
@@ -261,10 +324,60 @@ public class ArcaneCraftingPattern
 		// Read ingredients
 		for( int index = 0; index < ArcaneCraftingPattern.GRID_SIZE; index++ )
 		{
-			if( data.hasKey( ArcaneCraftingPattern.NBTKEY_INGREDIENT + index ) )
+			if( data.hasKey( ArcaneCraftingPattern.NBTKEY_INGREDIENT_NUM + index ) )
 			{
-				NBTTagCompound ingData = data.getCompoundTag( ArcaneCraftingPattern.NBTKEY_INGREDIENT + index );
-				this.ingredients[index] = AEItemStack.loadItemStackFromNBT( ingData );
+				// Get the tag
+				NBTTagCompound ingData = data.getCompoundTag( ArcaneCraftingPattern.NBTKEY_INGREDIENT_NUM + index );
+
+				// What type is the tag?
+				if( ingData.hasKey( ArcaneCraftingPattern.NBTKEY_INGREDIENT_TYPE ) )
+				{
+					int type = ingData.getInteger( ArcaneCraftingPattern.NBTKEY_INGREDIENT_TYPE );
+
+					// Itemstack
+					if( type == ArcaneCraftingPattern.NBTKEY_ITEMTYPE )
+					{
+						this.ingredients[index] = ItemStack.loadItemStackFromNBT( ingData );
+					}
+					// Array
+					else if( type == ArcaneCraftingPattern.NBTKEY_ARRAYTYPE )
+					{
+						// Create the list
+						ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+
+						// Get the count
+						int count = ingData.getInteger( ArcaneCraftingPattern.NBTKEY_ARRAY_SIZE );
+
+						for( int i = 0; i < count; ++i )
+						{
+							// Get the subtag
+							NBTTagCompound subTag = ingData.getCompoundTag( ArcaneCraftingPattern.NBTKEY_INGREDIENT_NUM + i );
+
+							// Get the stack
+							try
+							{
+								ItemStack stack = ItemStack.loadItemStackFromNBT( subTag );
+								if( stack != null )
+								{
+									list.add( stack );
+								}
+							}
+							catch( Exception e )
+							{
+								// Silently ignore invalid items
+							}
+						}
+
+						// Set the ingredient to the list
+						this.ingredients[index] = list;
+					}
+				}
+				else
+				{
+					// Old AE tag
+					IAEItemStack ing = AEItemStack.loadItemStackFromNBT( ingData );
+					this.ingredients[index] = ing.getItemStack();
+				}
 			}
 			else
 			{
@@ -303,14 +416,50 @@ public class ArcaneCraftingPattern
 			// Ensure it is not null
 			if( this.ingredients[index] != null )
 			{
+				// Get the ingredient
+				Object ing = this.ingredients[index];
+
 				// Create the tag
 				NBTTagCompound ingData = new NBTTagCompound();
 
-				// Write the ingredient data
-				this.ingredients[index].writeToNBT( ingData );
+				// What type is the ingredient?
+				if( ing instanceof IAEItemStack )
+				{
+					// Write the ingredient data
+					( (IAEItemStack)ing ).getItemStack().writeToNBT( ingData );
+					ingData.setInteger( ArcaneCraftingPattern.NBTKEY_INGREDIENT_TYPE, ArcaneCraftingPattern.NBTKEY_ITEMTYPE );
+				}
+				else if( ing instanceof ItemStack )
+				{
+					( (ItemStack)ing ).writeToNBT( ingData );
+					ingData.setInteger( ArcaneCraftingPattern.NBTKEY_INGREDIENT_TYPE, ArcaneCraftingPattern.NBTKEY_ITEMTYPE );
+				}
+				else if( ing instanceof ArrayList )
+				{
+					// Cast to array list
+					ArrayList<ItemStack> ingList = (ArrayList<ItemStack>)ing;
+
+					// Set type and count
+					ingData.setInteger( ArcaneCraftingPattern.NBTKEY_INGREDIENT_TYPE, ArcaneCraftingPattern.NBTKEY_ARRAYTYPE );
+					ingData.setInteger( ArcaneCraftingPattern.NBTKEY_ARRAY_SIZE, ingList.size() );
+
+					// Add each item
+					for( int i = 0; i < ingList.size(); ++i )
+					{
+						// Create a new tag
+						NBTTagCompound subTag = new NBTTagCompound();
+
+						// Write the item
+						ingList.get( i ).writeToNBT( subTag );
+
+						// Add the sub tag
+						ingData.setTag( ArcaneCraftingPattern.NBTKEY_INGREDIENT_NUM + i, subTag );
+					}
+
+				}
 
 				// Write into the main data tag
-				data.setTag( ArcaneCraftingPattern.NBTKEY_INGREDIENT + index, ingData );
+				data.setTag( ArcaneCraftingPattern.NBTKEY_INGREDIENT_NUM + index, ingData );
 			}
 		}
 

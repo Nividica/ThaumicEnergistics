@@ -1,5 +1,7 @@
 ﻿12/27/2015 0.9.0.4 - Alpha
   Fixes #112 - A.C.T can now issue crafting jobs!
+  Fixes #230 - Arcane patterns now respect substitutions.
+  Note: This change is NOT retro-active. Knowledge cores must have their patterns re-saved in order for the changes to take effect.
 
 12/24/2015 0.9.0.4 - Alpha
   Dependency Updated: Forge 10.13.4.1558

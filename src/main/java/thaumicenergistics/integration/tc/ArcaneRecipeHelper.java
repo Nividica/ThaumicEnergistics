@@ -75,6 +75,7 @@ public class ArcaneRecipeHelper
 				{
 					// Found a match, stop searching
 					arcaneRecipe = (IArcaneRecipe)currentRecipe;
+
 					break;
 				}
 			}
