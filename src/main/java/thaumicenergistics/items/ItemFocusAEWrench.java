@@ -31,8 +31,7 @@ import appeng.core.CommonHelper;
 import appeng.parts.PartPlacement;
 import appeng.parts.PartPlacement.PlaceType;
 
-public class ItemFocusAEWrench
-	extends ItemFocusBasic
+public class ItemFocusAEWrench extends ItemFocusBasic
 {
 
 	/**
@@ -211,9 +210,9 @@ public class ItemFocusAEWrench
 			// Ignore pedestals
 			return false;
 		}
-		else if( te.getClass().getName().contains( "Cache" ) )
+		else if( te != null && te.getClass().getName().equals( "cofh.thermalexpansion.block.cache.TileCache" ) && action != Action.LEFT_CLICK_BLOCK )
 		{
-			player.setSneaking( false );
+			return false;
 		}
 
 		// Is the block an part host?
