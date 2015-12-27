@@ -1,4 +1,4 @@
-﻿12/27/2015 0.9.0.4 - Alpha
+﻿12/27/2015 0.9.1.0 - Beta
   Fixes #112 - A.C.T can now issue crafting jobs!
   Fixes #230 - Arcane patterns now respect substitutions.
   Note: This change is NOT retro-active. Knowledge cores must have their patterns re-saved in order for the changes to take effect.
