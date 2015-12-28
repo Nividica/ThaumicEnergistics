@@ -308,7 +308,15 @@ public abstract class AbstractPacket
 	 */
 	public static Aspect readAspect( final ByteBuf stream )
 	{
-		return Aspect.aspects.get( readString( stream ) );
+		// Read the name
+		String name = readString( stream );
+		if( name != "" )
+		{
+			// Return the aspect
+			return Aspect.aspects.get( name );
+		}
+
+		return null;
 	}
 
 	/**

@@ -74,7 +74,22 @@ public class HandlerKnowledgeCore
 			// Read in each pattern
 			for( int index = 0; index < plist.tagCount(); index++ )
 			{
-				this.patterns.add( new ArcaneCraftingPattern( this.kCore, plist.getCompoundTagAt( index ) ) );
+				try
+				{
+					// Load the pattern
+					ArcaneCraftingPattern pattern = new ArcaneCraftingPattern( this.kCore, plist.getCompoundTagAt( index ) );
+
+					// Is the pattern valid?
+					if( pattern.isPatternValid() )
+					{
+						// Add the pattern
+						this.patterns.add( pattern );
+					}
+				}
+				catch( Exception e )
+				{
+					// Ignore invalid patterns
+				}
 			}
 		}
 
@@ -94,8 +109,8 @@ public class HandlerKnowledgeCore
 		// Save each pattern
 		for( ArcaneCraftingPattern pattern : this.patterns )
 		{
-			// Ensure the pattern is not null
-			if( pattern == null )
+			// Ensure the pattern is valid
+			if( ( pattern == null ) || ( !pattern.isPatternValid() ) )
 			{
 				continue;
 			}
@@ -116,6 +131,12 @@ public class HandlerKnowledgeCore
 	 */
 	public void addPattern( final ArcaneCraftingPattern pattern )
 	{
+		// Validate the pattern
+		if( ( pattern == null ) || ( !pattern.isPatternValid() ) )
+		{
+			return;
+		}
+
 		// Ensure there is room to store the pattern
 		if( !this.hasRoomToStorePattern() )
 		{
@@ -123,7 +144,7 @@ public class HandlerKnowledgeCore
 		}
 
 		// Check for duplicate patterns
-		ArcaneCraftingPattern existingPattern = this.getPatternForItem( pattern.result.getItemStack() );
+		ArcaneCraftingPattern existingPattern = this.getPatternForItem( pattern.getResult().getItemStack() );
 
 		if( existingPattern == null )
 		{
@@ -157,10 +178,10 @@ public class HandlerKnowledgeCore
 		for( ArcaneCraftingPattern p : this.patterns )
 		{
 			// Does the pattern have a valid output?
-			if( ( p != null ) && ( p.result != null ) )
+			if( ( p != null ) && ( p.getResult() != null ) )
 			{
 				// Is the output equal to the specified result?
-				if( ItemStack.areItemStacksEqual( p.result.getItemStack(), resultStack ) )
+				if( ItemStack.areItemStacksEqual( p.getResult().getItemStack(), resultStack ) )
 				{
 					// Found the pattern
 					return p;
@@ -195,9 +216,9 @@ public class HandlerKnowledgeCore
 		// Add each stored patterns output
 		for( ArcaneCraftingPattern p : this.patterns )
 		{
-			if( ( p != null ) && ( p.result != null ) )
+			if( ( p != null ) && ( p.getResult() != null ) )
 			{
-				results.add( p.result.getItemStack() );
+				results.add( p.getResult().getItemStack() );
 			}
 		}
 

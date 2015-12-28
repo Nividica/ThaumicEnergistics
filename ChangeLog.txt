@@ -1,4 +1,10 @@
-﻿12/27/2015 0.9.1.0 - Beta
+﻿12/28/2015 0.9.1.1 - Beta
+  Added a lot of safety checks to arcane patterns.
+  Updated name of storage components and cells to better match AE2's.
+  Fixes #260 - Players preferred item is now used in arcane patterns.
+  QOL: Essentia terminal aspects are now un-selectable.
+
+12/27/2015 0.9.1.0 - Beta
   Fixes #112 - A.C.T can now issue crafting jobs!
   Fixes #230 - Arcane patterns now respect substitutions.
   Note: This change is NOT retro-active. Knowledge cores must have their patterns re-saved in order for the changes to take effect.

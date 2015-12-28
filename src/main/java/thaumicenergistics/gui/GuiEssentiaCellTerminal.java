@@ -504,40 +504,52 @@ public class GuiEssentiaCellTerminal
 
 		int index = 0;
 
-		// Rows
-		for( int y = 0; y < GuiEssentiaCellTerminal.ROWS_PER_PAGE; y++ )
+		// Is the mouse in the widget area?
+		if( GuiHelper.INSTANCE.isPointInGuiRegion(
+			GuiEssentiaCellTerminal.WIDGET_OFFSET_Y,
+			GuiEssentiaCellTerminal.WIDGET_OFFSET_X,
+			GuiEssentiaCellTerminal.ROWS_PER_PAGE * AbstractWidget.WIDGET_SIZE,
+			GuiEssentiaCellTerminal.WIDGETS_PER_ROW * AbstractWidget.WIDGET_SIZE,
+			mouseX, mouseY, this.guiLeft, this.guiTop ) )
 		{
-			// Columns
-			for( int x = 0; x < GuiEssentiaCellTerminal.WIDGETS_PER_ROW; x++ )
+			// Rows
+			for( int y = 0; y < GuiEssentiaCellTerminal.ROWS_PER_PAGE; y++ )
 			{
-				// Calculate the index
-				index = ( ( y + this.currentScroll ) * GuiEssentiaCellTerminal.WIDGETS_PER_ROW ) + x;
-
-				// Is the index in bounds?
-				if( index < listSize )
+				// Columns
+				for( int x = 0; x < GuiEssentiaCellTerminal.WIDGETS_PER_ROW; x++ )
 				{
-					// Get the widget at this index
-					WidgetAspectSelector currentWidget = this.matchingSearchWidgets.get( index );
+					// Calculate the index
+					index = ( ( y + this.currentScroll ) * GuiEssentiaCellTerminal.WIDGETS_PER_ROW ) + x;
 
-					// Is the mouse over this widget?
-					if( currentWidget.isMouseOverWidget( mouseX, mouseY ) )
+					// Is the index in bounds?
+					if( index < listSize )
 					{
-						// Play clicky sound
-						Minecraft.getMinecraft().getSoundHandler()
-										.playSound( PositionedSoundRecord.func_147674_a( new ResourceLocation( "gui.button.press" ), 1.0F ) );
+						// Get the widget at this index
+						WidgetAspectSelector currentWidget = this.matchingSearchWidgets.get( index );
 
-						// Send the click to the widget
-						currentWidget.mouseClicked();
+						// Is the mouse over this widget?
+						if( currentWidget.isMouseOverWidget( mouseX, mouseY ) )
+						{
+							// Play clicky sound
+							Minecraft.getMinecraft().getSoundHandler().playSound(
+								PositionedSoundRecord.func_147674_a( new ResourceLocation( "gui.button.press" ), 1.0F ) );
 
-						// Stop searching and do not pass to super
-						return;
+							// Send the click to the widget
+							currentWidget.mouseClicked();
+
+							// Stop searching and do not pass to super
+							return;
+						}
 					}
-				}
-				else
-				{
-					// Stop searching
-					y = GuiEssentiaCellTerminal.ROWS_PER_PAGE;
-					break;
+					else
+					{
+						// Unselect
+						this.baseContainer.setSelectedAspect( null );
+
+						// Stop searching
+						y = GuiEssentiaCellTerminal.ROWS_PER_PAGE;
+						break;
+					}
 				}
 			}
 		}

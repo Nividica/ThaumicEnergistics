@@ -1,5 +1,35 @@
 package thaumicenergistics.tileentities;
 
+import io.netty.buffer.ByteBuf;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.common.Thaumcraft;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.blocks.BlockArcaneAssembler;
+import thaumicenergistics.integration.IWailaSource;
+import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
+import thaumicenergistics.integration.tc.DigiVisSourceData;
+import thaumicenergistics.integration.tc.IDigiVisSource;
+import thaumicenergistics.integration.tc.VisCraftingHelper;
+import thaumicenergistics.inventory.HandlerKnowledgeCore;
+import thaumicenergistics.items.ItemKnowledgeCore;
+import thaumicenergistics.util.EffectiveSide;
+import thaumicenergistics.util.GuiHelper;
+import thaumicenergistics.util.IInventoryUpdateReceiver;
+import thaumicenergistics.util.PrivateInventory;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -36,37 +66,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.common.Thaumcraft;
-import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.blocks.BlockArcaneAssembler;
-import thaumicenergistics.integration.IWailaSource;
-import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
-import thaumicenergistics.integration.tc.DigiVisSourceData;
-import thaumicenergistics.integration.tc.IDigiVisSource;
-import thaumicenergistics.integration.tc.VisCraftingHelper;
-import thaumicenergistics.inventory.HandlerKnowledgeCore;
-import thaumicenergistics.items.ItemKnowledgeCore;
-import thaumicenergistics.util.EffectiveSide;
-import thaumicenergistics.util.GuiHelper;
-import thaumicenergistics.util.IInventoryUpdateReceiver;
-import thaumicenergistics.util.PrivateInventory;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
 
 public class TileArcaneAssembler
 	extends AENetworkInvTile
@@ -315,13 +314,14 @@ public class TileArcaneAssembler
 				IStorageGrid storageGrid = this.getGridProxy().getStorage();
 
 				// Simulate placing the items
-				IAEItemStack rejected = storageGrid.getItemInventory().injectItems( this.currentPattern.result, Actionable.SIMULATE, this.mySource );
+				IAEItemStack rejected = storageGrid.getItemInventory().injectItems( this.currentPattern.getResult(), Actionable.SIMULATE,
+					this.mySource );
 
 				// Was all items accepted?
 				if( ( rejected == null ) || ( rejected.getStackSize() == 0 ) )
 				{
 					// Inject into the network
-					storageGrid.getItemInventory().injectItems( this.currentPattern.result.copy(), Actionable.MODULATE, this.mySource );
+					storageGrid.getItemInventory().injectItems( this.currentPattern.getResult().copy(), Actionable.MODULATE, this.mySource );
 
 					// Mark the assembler as no longer crafting
 					this.isCrafting = false;
@@ -386,8 +386,7 @@ public class TileArcaneAssembler
 	 */
 	private int getRequiredAmountForAspect( final Aspect aspect )
 	{
-		return (int)Math.ceil( this.visDiscount.get( aspect ) *
-						( this.currentPattern.aspects.getAmount( aspect ) * TileArcaneAssembler.CVIS_MULTIPLER ) );
+		return (int)Math.ceil( this.visDiscount.get( aspect ) * ( this.currentPattern.getAspectCost( aspect ) * TileArcaneAssembler.CVIS_MULTIPLER ) );
 	}
 
 	private boolean hasEnoughVisForCraft()
@@ -861,21 +860,28 @@ public class TileArcaneAssembler
 	@TileEvent(TileEventType.WORLD_NBT_READ)
 	public void onLoadNBT( final NBTTagCompound data )
 	{
-		// Is there a saved core?
-		if( data.hasKey( TileArcaneAssembler.NBTKEY_KCORE ) )
+		try
 		{
-			// Load the saved core
-			this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX] = ItemStack.loadItemStackFromNBT( data
-							.getCompoundTag( TileArcaneAssembler.NBTKEY_KCORE ) );
+			// Is there a saved core?
+			if( data.hasKey( TileArcaneAssembler.NBTKEY_KCORE ) )
+			{
+				// Load the saved core
+				this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX] = ItemStack.loadItemStackFromNBT( data
+								.getCompoundTag( TileArcaneAssembler.NBTKEY_KCORE ) );
 
-			// Create the handler
-			this.kCoreHandler = new HandlerKnowledgeCore( this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX] );
+				// Create the handler
+				this.kCoreHandler = new HandlerKnowledgeCore( this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX] );
 
-			// Update the pattern slots
-			this.updatePatternSlots();
+				// Update the pattern slots
+				this.updatePatternSlots();
 
-			// Update the network
-			this.stalePatterns = true;
+				// Update the network
+				this.stalePatterns = true;
+
+			}
+		}
+		catch( Exception e )
+		{
 
 		}
 
@@ -1220,7 +1226,7 @@ public class TileArcaneAssembler
 			this.currentPattern = (ArcaneCraftingPattern)patternDetails;
 
 			// Set the target item
-			this.internalInventory.slots[TileArcaneAssembler.TARGET_SLOT_INDEX] = this.currentPattern.result.getItemStack();
+			this.internalInventory.slots[TileArcaneAssembler.TARGET_SLOT_INDEX] = this.currentPattern.getResult().getItemStack();
 
 			// AE effects
 			try
@@ -1228,7 +1234,7 @@ public class TileArcaneAssembler
 				NetworkRegistry.TargetPoint where = new NetworkRegistry.TargetPoint( this.worldObj.provider.dimensionId, this.xCoord, this.yCoord,
 								this.zCoord, 32.0D );
 				appeng.core.sync.network.NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( this.xCoord, this.yCoord,
-								this.zCoord, (byte)( 10 + ( 9 * this.upgradeCount ) ), this.currentPattern.result ), where );
+								this.zCoord, (byte)( 10 + ( 9 * this.upgradeCount ) ), this.currentPattern.getResult() ), where );
 			}
 			catch( IOException e )
 			{

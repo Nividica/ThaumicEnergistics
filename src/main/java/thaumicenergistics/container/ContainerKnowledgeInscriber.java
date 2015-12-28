@@ -275,6 +275,64 @@ public class ContainerKnowledgeInscriber
 		this.patternSlot_last = this.patternSlots[this.patternSlots.length - 1].slotNumber;
 	}
 
+	private void loadPattern( final ArcaneCraftingPattern pattern )
+	{
+		if( ( pattern == null ) || ( !pattern.isPatternValid() ) )
+		{
+			return;
+		}
+		// Set the slots
+		for( int index = 0; index < this.craftingSlots.length; index++ )
+		{
+			IAEItemStack ingStack = pattern.getInputs()[index];
+			if( ingStack != null )
+			{
+				this.craftingSlots[index].putStack( ingStack.getItemStack() );
+			}
+			else
+			{
+				this.craftingSlots[index].putStack( null );
+			}
+		}
+	}
+
+	/**
+	 * Prepares input to a pattern from the current recipe
+	 * 
+	 * @param input
+	 * @param slotNumber
+	 * @return
+	 */
+	private Object preparePatternInput( final Object input, final int slotNumber )
+	{
+		if( input instanceof ArrayList )
+		{
+			// Get the prefered item
+			ItemStack preferedItem = this.craftingSlots[slotNumber].getStack();
+
+			// Create the list
+			ArrayList<ItemStack> ingList = new ArrayList<ItemStack>();
+
+			// Add the prefered item first
+			ingList.add( preferedItem );
+
+			// Add the rest
+			ArrayList<ItemStack> inputList = (ArrayList<ItemStack>)input;
+			for( ItemStack item : inputList )
+			{
+				if( ( item == null ) || ( ItemStack.areItemStacksEqual( preferedItem, item ) ) )
+				{
+					continue;
+				}
+				ingList.add( item );
+			}
+
+			return ingList;
+		}
+
+		return input;
+	}
+
 	/**
 	 * Updates the slots to reflect the stored patterns.
 	 */
@@ -401,9 +459,9 @@ public class ContainerKnowledgeInscriber
 			if( this.activeRecipe instanceof ShapedArcaneRecipe )
 			{
 				ShapedArcaneRecipe recipe = (ShapedArcaneRecipe)this.activeRecipe;
-				for( int index = 0; index < recipe.input.length; ++index )
+				for( int slotNumber = 0; slotNumber < recipe.input.length; ++slotNumber )
 				{
-					inputs[index] = recipe.input[index];
+					inputs[slotNumber] = this.preparePatternInput( recipe.input[slotNumber], slotNumber );
 				}
 			}
 			// Is the recipe shapeless?
@@ -411,9 +469,9 @@ public class ContainerKnowledgeInscriber
 			{
 				ShapelessArcaneRecipe recipe = (ShapelessArcaneRecipe)this.activeRecipe;
 				ArrayList ings = recipe.getInput();
-				for( int index = 0; index < ings.size(); ++index )
+				for( int slotNumber = 0; slotNumber < ings.size(); ++slotNumber )
 				{
-					inputs[index] = ings.get( index );
+					inputs[slotNumber] = this.preparePatternInput( ings.get( slotNumber ), slotNumber );
 				}
 			}
 			else
@@ -434,6 +492,7 @@ public class ContainerKnowledgeInscriber
 
 			// Update the slots
 			this.updatePatternSlots();
+			this.loadPattern( pattern );
 
 			// Update the client
 			this.onClientRequestFullUpdate( player );
@@ -547,21 +606,7 @@ public class ContainerKnowledgeInscriber
 					if( clickedSlot.getHasStack() )
 					{
 						// Load the pattern
-						ArcaneCraftingPattern pattern = this.kCoreHandler.getPatternForItem( clickedSlot.getStack() );
-
-						// Set the slots
-						for( int index = 0; index < this.craftingSlots.length; index++ )
-						{
-							IAEItemStack ingStack = pattern.getInputs()[index];
-							if( ingStack != null )
-							{
-								this.craftingSlots[index].putStack( ingStack.getItemStack() );
-							}
-							else
-							{
-								this.craftingSlots[index].putStack( null );
-							}
-						}
+						loadPattern( this.kCoreHandler.getPatternForItem( clickedSlot.getStack() ) );
 
 						// Update the matrix
 						this.onCraftMatrixChanged( clickedSlot.inventory );

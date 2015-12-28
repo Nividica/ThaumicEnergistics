@@ -4,6 +4,7 @@ import java.util.List;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
+import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.util.GuiHelper;
 
@@ -220,10 +221,18 @@ public class WidgetAspectSelector
 	@Override
 	public void mouseClicked()
 	{
-		if( this.getAspect() != null )
+		Aspect selected = null;
+
+		// Get the selected aspect
+		AspectStack selectedStack = ( (IAspectSelectorGui)this.hostGUI ).getSelectedAspect();
+
+		// Does the selected aspect not match?
+		if( ( selectedStack == null ) || ( selectedStack.aspect != this.getAspect() ) )
 		{
-			( (IAspectSelectorGui)this.hostGUI ).getContainer().setSelectedAspect( this.getAspect() );
+			selected = this.getAspect();
 		}
+
+		( (IAspectSelectorGui)this.hostGUI ).getContainer().setSelectedAspect( selected );
 	}
 
 	/**
