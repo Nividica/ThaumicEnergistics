@@ -345,7 +345,7 @@ public class TileArcaneAssembler
 								this.warpPowerMultiplier;
 
 				// Attempt to take power
-				IEnergyGrid eGrid = this.getGridProxy().getEnergy();
+				IEnergyGrid eGrid = this.getProxy().getEnergy();
 				double powerExtracted = eGrid.extractAEPower( powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
 				if( ( powerExtracted - powerRequired ) <= 0.0D )
@@ -433,7 +433,7 @@ public class TileArcaneAssembler
 		IDigiVisSource visSource = null;
 
 		// Ensure the grid is ready
-		if( !this.getGridProxy().isReady() )
+		if( !this.getProxy().isReady() )
 		{
 			return;
 		}
@@ -441,7 +441,7 @@ public class TileArcaneAssembler
 		try
 		{
 			// Get the source
-			visSource = this.visSourceInfo.tryGetSource( this.getGridProxy().getGrid() );
+			visSource = this.visSourceInfo.tryGetSource( this.getProxy().getGrid() );
 		}
 		catch( GridAccessException e )
 		{
@@ -584,7 +584,7 @@ public class TileArcaneAssembler
 		try
 		{
 			// Get the security grid
-			ISecurityGrid sGrid = this.getGridProxy().getSecurity();
+			ISecurityGrid sGrid = this.getProxy().getSecurity();
 
 			// Return true if the player has inject and extract permissions
 			return( ( sGrid.hasPermission( player, SecurityPermissions.INJECT ) ) && ( sGrid.hasPermission( player, SecurityPermissions.EXTRACT ) ) );
@@ -733,10 +733,10 @@ public class TileArcaneAssembler
 		if( EffectiveSide.isServerSide() )
 		{
 			// Do we have a proxy and grid node?
-			if( ( this.getGridProxy() != null ) && ( this.getGridProxy().getNode() != null ) )
+			if( ( this.getProxy() != null ) && ( this.getProxy().getNode() != null ) )
 			{
 				// Get the grid node activity
-				this.isActive = this.getGridProxy().getNode().isActive();
+				this.isActive = this.getProxy().getNode().isActive();
 			}
 		}
 
@@ -755,7 +755,7 @@ public class TileArcaneAssembler
 	public void onBreak()
 	{
 		this.isCrafting = false;
-		this.getGridProxy().invalidate();
+		this.getProxy().invalidate();
 	}
 
 	/**
@@ -986,7 +986,7 @@ public class TileArcaneAssembler
 	{
 		try
 		{
-			this.getGridProxy().onReady();
+			this.getProxy().onReady();
 		}
 		catch( GridException e )
 		{
@@ -1126,12 +1126,12 @@ public class TileArcaneAssembler
 		}
 
 		// Are the network patterns stale?
-		if( this.stalePatterns && this.getGridProxy().isReady() )
+		if( this.stalePatterns && this.getProxy().isReady() )
 		{
 			try
 			{
 				// Inform the network
-				this.getGridProxy().getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.getActionableNode() ) );
+				this.getProxy().getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.getActionableNode() ) );
 
 				// Mark they are no longer stale
 				this.stalePatterns = false;
@@ -1253,7 +1253,7 @@ public class TileArcaneAssembler
 	 */
 	public void setOwner( final EntityPlayer player )
 	{
-		this.getGridProxy().setOwner( player );
+		this.getProxy().setOwner( player );
 	}
 
 	/**
@@ -1265,10 +1265,10 @@ public class TileArcaneAssembler
 		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
 		{
 			// Set idle power usage
-			this.getGridProxy().setIdlePowerUsage( TileArcaneAssembler.IDLE_POWER );
+			this.getProxy().setIdlePowerUsage( TileArcaneAssembler.IDLE_POWER );
 
 			// Set that we require a channel
-			this.getGridProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
+			this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		}
 
 		return this;
