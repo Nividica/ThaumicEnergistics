@@ -324,7 +324,7 @@ public class AEAspectRegister
 					ItemStack recipeOutput = recipe.getOutput();
 
 					// Skip null items
-					if( recipeOutput == null || recipeOutput.getItem() == null )
+					if( ( recipeOutput == null ) || ( recipeOutput.getItem() == null ) )
 					{
 						continue;
 					}
@@ -359,7 +359,7 @@ public class AEAspectRegister
 					ItemStack recipeOutput = recipe.getOutput();
 
 					// Skip null items
-					if( recipeOutput == null || recipeOutput.getItem() == null )
+					if( ( recipeOutput == null ) || ( recipeOutput.getItem() == null ) )
 					{
 						continue;
 					}
@@ -395,7 +395,7 @@ public class AEAspectRegister
 					ItemStack recipeOutput = recipe.getRecipeOutput();
 
 					// Skip null items
-					if( recipeOutput == null || recipeOutput.getItem() == null )
+					if( ( recipeOutput == null ) || ( recipeOutput.getItem() == null ) )
 					{
 						continue;
 					}
@@ -714,7 +714,9 @@ public class AEAspectRegister
 				for( Aspect aspect : this.ingredientAspects.getAspects() )
 				{
 					if( aspect == null )
+					{
 						continue;
+					}
 
 					finalAspects.add( aspect, this.ingredientAspects.getAmount( aspect ) );
 				}
@@ -726,7 +728,9 @@ public class AEAspectRegister
 				for( Aspect aspect : this.bonusAspects.getAspects() )
 				{
 					if( aspect == null )
+					{
 						continue;
+					}
 
 					finalAspects.add( aspect, this.bonusAspects.getAmount( aspect ) );
 				}

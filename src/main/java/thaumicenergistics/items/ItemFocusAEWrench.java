@@ -218,7 +218,7 @@ public class ItemFocusAEWrench
 			// Ignore pedestals
 			return false;
 		}
-		else if( te.getClass().getName().equals( "cofh.thermalexpansion.block.cache.TileCache" ) && action != Action.LEFT_CLICK_BLOCK )
+		else if( te.getClass().getName().equals( "cofh.thermalexpansion.block.cache.TileCache" ) && ( action != Action.LEFT_CLICK_BLOCK ) )
 		{
 			return false;
 		}

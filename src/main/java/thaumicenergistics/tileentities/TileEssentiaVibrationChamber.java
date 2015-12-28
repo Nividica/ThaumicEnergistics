@@ -1,13 +1,9 @@
 package thaumicenergistics.tileentities;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.me.GridAccessException;
 import io.netty.buffer.ByteBuf;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,10 +16,13 @@ import thaumicenergistics.integration.tc.EssentiaTransportHelper;
 import thaumicenergistics.network.packet.AbstractPacket;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.tileentities.abstraction.TileEVCBase;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.me.GridAccessException;
 
 /**
  * Implements the logical functionality of the E.V.C.
@@ -209,7 +208,7 @@ public class TileEssentiaVibrationChamber
 		}
 
 		// Clap the processing speed
-		clampProcessingSpeed();
+		this.clampProcessingSpeed();
 
 		// Calculate dilation
 		this.dilation = this.processingSpeed / TileEssentiaVibrationChamber.DILATATION_DIVISOR;
@@ -306,7 +305,7 @@ public class TileEssentiaVibrationChamber
 		float maxPowerPerTick = (float)( this.powerProducedPerProcessingTick * ( TileEssentiaVibrationChamber.PROCESS_SPEED_MAX / TileEssentiaVibrationChamber.DILATATION_DIVISOR ) );
 
 		// Clamp the processing speed
-		clampProcessingSpeed();
+		this.clampProcessingSpeed();
 
 		// Calculate ticks remaining
 		int ticksRemaining = (int)( this.processingTicksRemaining / this.dilation );

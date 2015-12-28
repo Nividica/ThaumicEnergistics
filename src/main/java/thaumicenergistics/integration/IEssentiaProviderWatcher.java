@@ -9,12 +9,12 @@ package thaumicenergistics.integration;
 public interface IEssentiaProviderWatcher
 {
 	/**
-	 * Called when the providers power state changes.
-	 */
-	public void onProviderPowerChange( boolean isOnline );
-
-	/**
 	 * Called when the provider is broken.
 	 */
 	public void onProviderBroken();
+
+	/**
+	 * Called when the providers power state changes.
+	 */
+	public void onProviderPowerChange( boolean isOnline );
 }

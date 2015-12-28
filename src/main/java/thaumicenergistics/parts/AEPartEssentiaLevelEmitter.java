@@ -184,19 +184,19 @@ public class AEPartEssentiaLevelEmitter
 
 		switch ( this.redstoneMode )
 		{
-			case HIGH_SIGNAL:
-				// Is the current amount more than or equal to the wanted amount?
-				emitting = ( this.currentAmount >= this.wantedAmount );
-				break;
+		case HIGH_SIGNAL:
+			// Is the current amount more than or equal to the wanted amount?
+			emitting = ( this.currentAmount >= this.wantedAmount );
+			break;
 
-			case LOW_SIGNAL:
-				// Is the current amount less than the wanted amount?
-				emitting = ( this.currentAmount < this.wantedAmount );
-				break;
+		case LOW_SIGNAL:
+			// Is the current amount less than the wanted amount?
+			emitting = ( this.currentAmount < this.wantedAmount );
+			break;
 
-			case IGNORE:
-			case SIGNAL_PULSE:
-				break;
+		case IGNORE:
+		case SIGNAL_PULSE:
+			break;
 
 		}
 
@@ -354,17 +354,17 @@ public class AEPartEssentiaLevelEmitter
 	{
 		switch ( this.redstoneMode )
 		{
-			case HIGH_SIGNAL:
-				this.redstoneMode = RedstoneMode.LOW_SIGNAL;
-				break;
+		case HIGH_SIGNAL:
+			this.redstoneMode = RedstoneMode.LOW_SIGNAL;
+			break;
 
-			case LOW_SIGNAL:
-				this.redstoneMode = RedstoneMode.HIGH_SIGNAL;
-				break;
+		case LOW_SIGNAL:
+			this.redstoneMode = RedstoneMode.HIGH_SIGNAL;
+			break;
 
-			case IGNORE:
-			case SIGNAL_PULSE:
-				break;
+		case IGNORE:
+		case SIGNAL_PULSE:
+			break;
 		}
 
 		// Check if we should be emitting
@@ -657,7 +657,7 @@ public class AEPartEssentiaLevelEmitter
 		}
 
 		// Write if emitting
-		if( saveType != PartItemStack.Wrench && this.isEmitting )
+		if( ( saveType != PartItemStack.Wrench ) && this.isEmitting )
 		{
 			data.setBoolean( AEPartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING, true );
 		}

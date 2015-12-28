@@ -70,51 +70,51 @@ public abstract class RenderBlockProviderBase
 
 			switch ( face )
 			{
-				case DOWN:
-					tessellator.addVertexWithUV( x, y, z, minU, maxV );
-					tessellator.addVertexWithUV( x1, y, z, maxU, maxV );
-					tessellator.addVertexWithUV( x1, y, z1, maxU, minV );
-					tessellator.addVertexWithUV( x, y, z1, minU, minV );
-					break;
+			case DOWN:
+				tessellator.addVertexWithUV( x, y, z, minU, maxV );
+				tessellator.addVertexWithUV( x1, y, z, maxU, maxV );
+				tessellator.addVertexWithUV( x1, y, z1, maxU, minV );
+				tessellator.addVertexWithUV( x, y, z1, minU, minV );
+				break;
 
-				case EAST:
-					tessellator.addVertexWithUV( x1, y, z, maxU, maxV );
-					tessellator.addVertexWithUV( x1, y1, z, maxU, minV );
-					tessellator.addVertexWithUV( x1, y1, z1, minU, minV );
-					tessellator.addVertexWithUV( x1, y, z1, minU, maxV );
-					break;
+			case EAST:
+				tessellator.addVertexWithUV( x1, y, z, maxU, maxV );
+				tessellator.addVertexWithUV( x1, y1, z, maxU, minV );
+				tessellator.addVertexWithUV( x1, y1, z1, minU, minV );
+				tessellator.addVertexWithUV( x1, y, z1, minU, maxV );
+				break;
 
-				case NORTH:
-					tessellator.addVertexWithUV( x, y, z1, minU, maxV );
-					tessellator.addVertexWithUV( x1, y, z1, maxU, maxV );
-					tessellator.addVertexWithUV( x1, y1, z1, maxU, minV );
-					tessellator.addVertexWithUV( x, y1, z1, minU, minV );
-					break;
+			case NORTH:
+				tessellator.addVertexWithUV( x, y, z1, minU, maxV );
+				tessellator.addVertexWithUV( x1, y, z1, maxU, maxV );
+				tessellator.addVertexWithUV( x1, y1, z1, maxU, minV );
+				tessellator.addVertexWithUV( x, y1, z1, minU, minV );
+				break;
 
-				case SOUTH:
-					tessellator.addVertexWithUV( x, y1, z, maxU, minV );
-					tessellator.addVertexWithUV( x1, y1, z, minU, minV );
-					tessellator.addVertexWithUV( x1, y, z, minU, maxV );
-					tessellator.addVertexWithUV( x, y, z, maxU, maxV );
-					break;
+			case SOUTH:
+				tessellator.addVertexWithUV( x, y1, z, maxU, minV );
+				tessellator.addVertexWithUV( x1, y1, z, minU, minV );
+				tessellator.addVertexWithUV( x1, y, z, minU, maxV );
+				tessellator.addVertexWithUV( x, y, z, maxU, maxV );
+				break;
 
-				case UP:
-					tessellator.addVertexWithUV( x, y1, z1, maxU, minV );
-					tessellator.addVertexWithUV( x1, y1, z1, minU, minV );
-					tessellator.addVertexWithUV( x1, y1, z, minU, maxV );
-					tessellator.addVertexWithUV( x, y1, z, maxU, maxV );
-					break;
+			case UP:
+				tessellator.addVertexWithUV( x, y1, z1, maxU, minV );
+				tessellator.addVertexWithUV( x1, y1, z1, minU, minV );
+				tessellator.addVertexWithUV( x1, y1, z, minU, maxV );
+				tessellator.addVertexWithUV( x, y1, z, maxU, maxV );
+				break;
 
-				case WEST:
-					tessellator.addVertexWithUV( x, y, z1, maxU, maxV );
-					tessellator.addVertexWithUV( x, y1, z1, maxU, minV );
-					tessellator.addVertexWithUV( x, y1, z, minU, minV );
-					tessellator.addVertexWithUV( x, y, z, minU, maxV );
-					break;
+			case WEST:
+				tessellator.addVertexWithUV( x, y, z1, maxU, maxV );
+				tessellator.addVertexWithUV( x, y1, z1, maxU, minV );
+				tessellator.addVertexWithUV( x, y1, z, minU, minV );
+				tessellator.addVertexWithUV( x, y, z, minU, maxV );
+				break;
 
-				default:
-					// Invalid side.
-					break;
+			default:
+				// Invalid side.
+				break;
 			}
 		}
 	}

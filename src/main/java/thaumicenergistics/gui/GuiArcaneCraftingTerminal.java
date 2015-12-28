@@ -825,19 +825,19 @@ public class GuiArcaneCraftingTerminal
 	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
 		// Handled by the widget area?
-		if( clickHandler_Widgets( mouseX, mouseY, mouseButton ) )
+		if( this.clickHandler_Widgets( mouseX, mouseY, mouseButton ) )
 		{
 			return;
 		}
 
 		// Handled by region deposit?
-		if( clickHandler_RegionDeposit( mouseX, mouseY ) )
+		if( this.clickHandler_RegionDeposit( mouseX, mouseY ) )
 		{
 			return;
 		}
 
 		// Handled by search box?
-		if( clickHandler_SearchBox( mouseX, mouseY, mouseButton ) )
+		if( this.clickHandler_SearchBox( mouseX, mouseY, mouseButton ) )
 		{
 			return;
 		}
@@ -846,7 +846,7 @@ public class GuiArcaneCraftingTerminal
 		SearchBoxMode searchBoxMode = (SearchBoxMode)AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 
 		// Inform search field of click if auto mode is not on
-		if( !( searchBoxMode == SearchBoxMode.AUTOSEARCH || searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) )
+		if( !( ( searchBoxMode == SearchBoxMode.AUTOSEARCH ) || ( searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) ) )
 		{
 			this.searchField.mouseClicked( mouseX - this.guiLeft, mouseY - this.guiTop, mouseButton );
 		}
@@ -865,127 +865,127 @@ public class GuiArcaneCraftingTerminal
 		// Which button was clicked?
 		switch ( mouseButton )
 		{
-			case GuiHelper.MOUSE_BUTTON_LEFT:
-				// Already true
-				break;
+		case GuiHelper.MOUSE_BUTTON_LEFT:
+			// Already true
+			break;
 
-			case GuiHelper.MOUSE_BUTTON_RIGHT:
-				// Set to false
-				wasLeftClick = false;
-				break;
+		case GuiHelper.MOUSE_BUTTON_RIGHT:
+			// Set to false
+			wasLeftClick = false;
+			break;
 
-			default:
-				// Don't handle any other buttons
-				return;
+		default:
+			// Don't handle any other buttons
+			return;
 		}
 
 		switch ( button.id )
 		{
 		// Clear grid
-			case AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_ID:
-				// Attempt to clear the grid
-				new PacketServerArcaneCraftingTerminal().createRequestClearGrid( this.player ).sendPacketToServer();
+		case AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_ID:
+			// Attempt to clear the grid
+			new PacketServerArcaneCraftingTerminal().createRequestClearGrid( this.player ).sendPacketToServer();
+			break;
+
+		// Sort order
+		case AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID:
+			switch ( this.sortingOrder )
+			{
+			case AMOUNT:
+				this.sortingOrder = ( wasLeftClick ? SortOrder.MOD : SortOrder.NAME );
 				break;
 
-			// Sort order
-			case AbstractGuiConstantsACT.BUTTON_SORT_ORDER_ID:
-				switch ( this.sortingOrder )
-				{
-					case AMOUNT:
-						this.sortingOrder = ( wasLeftClick ? SortOrder.MOD : SortOrder.NAME );
-						break;
-
-					case INVTWEAKS:
-						break;
-
-					case MOD:
-						this.sortingOrder = ( wasLeftClick ? SortOrder.NAME : SortOrder.AMOUNT );
-						break;
-
-					case NAME:
-						this.sortingOrder = ( wasLeftClick ? SortOrder.AMOUNT : SortOrder.MOD );
-						break;
-				}
-				sortingChanged = true;
+			case INVTWEAKS:
 				break;
 
-			// Sorting direction
-			case AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID:
-				switch ( this.sortingDirection )
-				{
-					case ASCENDING:
-						this.sortingDirection = SortDir.DESCENDING;
-						break;
-
-					case DESCENDING:
-						this.sortingDirection = SortDir.ASCENDING;
-						break;
-
-				}
-				sortingChanged = true;
+			case MOD:
+				this.sortingOrder = ( wasLeftClick ? SortOrder.NAME : SortOrder.AMOUNT );
 				break;
 
-			// View type
-			case AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID:
+			case NAME:
+				this.sortingOrder = ( wasLeftClick ? SortOrder.AMOUNT : SortOrder.MOD );
+				break;
+			}
+			sortingChanged = true;
+			break;
 
-				// Rotate view mode
-				this.viewMode = Platform.rotateEnum( this.viewMode, !wasLeftClick, Settings.VIEW_MODE.getPossibleValues() );
-
-				sortingChanged = true;
+		// Sorting direction
+		case AbstractGuiConstantsACT.BUTTON_SORT_DIR_ID:
+			switch ( this.sortingDirection )
+			{
+			case ASCENDING:
+				this.sortingDirection = SortDir.DESCENDING;
 				break;
 
-			// Swap armor
-			case AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_ID:
-				// Ask the server to swap the armor
-				new PacketServerArcaneCraftingTerminal().createSwapArmorRequest( this.player ).sendPacketToServer();
+			case DESCENDING:
+				this.sortingDirection = SortDir.ASCENDING;
 				break;
 
-			// Terminal style
-			case AbstractGuiConstantsACT.BUTTON_TERM_STYLE_ID:
-				switch ( this.terminalStyle )
-				{
-					case SMALL:
-						this.terminalStyle = TerminalStyle.TALL;
-						break;
+			}
+			sortingChanged = true;
+			break;
 
-					case TALL:
-						this.terminalStyle = TerminalStyle.SMALL;
-						break;
+		// View type
+		case AbstractGuiConstantsACT.BUTTON_VIEW_TYPE_ID:
 
-					default:
-						this.terminalStyle = TerminalStyle.SMALL;
-						break;
+			// Rotate view mode
+			this.viewMode = Platform.rotateEnum( this.viewMode, !wasLeftClick, Settings.VIEW_MODE.getPossibleValues() );
 
-				}
+			sortingChanged = true;
+			break;
 
-				// Update the AE settings
-				AEConfig.instance.getConfigManager().putSetting( Settings.TERMINAL_STYLE, this.terminalStyle );
+		// Swap armor
+		case AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_ID:
+			// Ask the server to swap the armor
+			new PacketServerArcaneCraftingTerminal().createSwapArmorRequest( this.player ).sendPacketToServer();
+			break;
 
-				// Reinit
-				this.initGui();
-
+		// Terminal style
+		case AbstractGuiConstantsACT.BUTTON_TERM_STYLE_ID:
+			switch ( this.terminalStyle )
+			{
+			case SMALL:
+				this.terminalStyle = TerminalStyle.TALL;
 				break;
 
-			// Search mode
-			case AbstractGuiConstantsACT.BUTTON_SEARCH_MODE_ID:
-				// Rotate search mode
-				SearchBoxMode searchBoxMode = (SearchBoxMode)AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
-				searchBoxMode = Platform.rotateEnum( searchBoxMode, !wasLeftClick, Settings.SEARCH_MODE.getPossibleValues() );
-
-				// Set focus
-				this.searchField.setFocused( ( searchBoxMode == SearchBoxMode.AUTOSEARCH ) || ( searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) );
-
-				// Update the settings
-				AEConfig.instance.settings.putSetting( Settings.SEARCH_MODE, searchBoxMode );
-
-				// Update the button
-				this.btnSearchMode.setSearchMode( searchBoxMode );
-
-				// Clear the tooltip
-				this.tooltip.clear();
-				this.lastTooltipUpdateTime = 0;
-
+			case TALL:
+				this.terminalStyle = TerminalStyle.SMALL;
 				break;
+
+			default:
+				this.terminalStyle = TerminalStyle.SMALL;
+				break;
+
+			}
+
+			// Update the AE settings
+			AEConfig.instance.getConfigManager().putSetting( Settings.TERMINAL_STYLE, this.terminalStyle );
+
+			// Reinit
+			this.initGui();
+
+			break;
+
+		// Search mode
+		case AbstractGuiConstantsACT.BUTTON_SEARCH_MODE_ID:
+			// Rotate search mode
+			SearchBoxMode searchBoxMode = (SearchBoxMode)AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+			searchBoxMode = Platform.rotateEnum( searchBoxMode, !wasLeftClick, Settings.SEARCH_MODE.getPossibleValues() );
+
+			// Set focus
+			this.searchField.setFocused( ( searchBoxMode == SearchBoxMode.AUTOSEARCH ) || ( searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) );
+
+			// Update the settings
+			AEConfig.instance.settings.putSetting( Settings.SEARCH_MODE, searchBoxMode );
+
+			// Update the button
+			this.btnSearchMode.setSearchMode( searchBoxMode );
+
+			// Clear the tooltip
+			this.tooltip.clear();
+			this.lastTooltipUpdateTime = 0;
+
+			break;
 		}
 
 		// Was the sorting mode changed?
@@ -1072,7 +1072,7 @@ public class GuiArcaneCraftingTerminal
 		{
 
 			// Is the mouse inside of, or to the left of, the GUI?
-			int mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
+			int mouseX = ( Mouse.getX() * this.width ) / this.mc.displayWidth;
 			if( mouseX <= ( this.guiLeft + AbstractGuiConstantsACT.GUI_WIDTH ) )
 			{
 				// Is shift being held?

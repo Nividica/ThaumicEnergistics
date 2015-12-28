@@ -67,22 +67,22 @@ public class AspectStackComparator
 	{
 		switch ( this.mode )
 		{
-			case MODE_ALPHABETIC:
+		case MODE_ALPHABETIC:
+			// Compare tags
+			return this.compareByTag( left, right );
+
+		case MODE_AMOUNT:
+			// Compare amounts
+			int comparedAmounts = this.compareByAmount( left, right );
+
+			// Are the amounts equal?
+			if( comparedAmounts == 0 )
+			{
 				// Compare tags
-				return this.compareByTag( left, right );
+				comparedAmounts = this.compareByTag( left, right );
+			}
 
-			case MODE_AMOUNT:
-				// Compare amounts
-				int comparedAmounts = this.compareByAmount( left, right );
-
-				// Are the amounts equal?
-				if( comparedAmounts == 0 )
-				{
-					// Compare tags
-					comparedAmounts = this.compareByTag( left, right );
-				}
-
-				return comparedAmounts;
+			return comparedAmounts;
 		}
 
 		return 0;

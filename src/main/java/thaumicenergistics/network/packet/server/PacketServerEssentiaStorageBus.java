@@ -52,15 +52,15 @@ public class PacketServerEssentiaStorageBus
 	{
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaStorageBus.MODE_REQUEST_FULL_UPDATE:
-				// Request a full update
-				this.part.onClientRequestFullUpdate( this.player );
-				break;
+		case PacketServerEssentiaStorageBus.MODE_REQUEST_FULL_UPDATE:
+			// Request a full update
+			this.part.onClientRequestFullUpdate( this.player );
+			break;
 
-			case PacketServerEssentiaStorageBus.MODE_REQUEST_SET_VOID:
-				// Request set void
-				this.part.onClientRequestSetVoidMode( this.player, this.isVoidAllowed );
-				break;
+		case PacketServerEssentiaStorageBus.MODE_REQUEST_SET_VOID:
+			// Request set void
+			this.part.onClientRequestSetVoidMode( this.player, this.isVoidAllowed );
+			break;
 		}
 	}
 
@@ -69,17 +69,17 @@ public class PacketServerEssentiaStorageBus
 	{
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaStorageBus.MODE_REQUEST_FULL_UPDATE:
-				// Read the part
-				this.part = ( (AEPartEssentiaStorageBus)AbstractPacket.readPart( stream ) );
-				break;
+		case PacketServerEssentiaStorageBus.MODE_REQUEST_FULL_UPDATE:
+			// Read the part
+			this.part = ( (AEPartEssentiaStorageBus)AbstractPacket.readPart( stream ) );
+			break;
 
-			case PacketServerEssentiaStorageBus.MODE_REQUEST_SET_VOID:
-				// Read the part
-				this.part = ( (AEPartEssentiaStorageBus)AbstractPacket.readPart( stream ) );
-				// Read void
-				this.isVoidAllowed = stream.readBoolean();
-				break;
+		case PacketServerEssentiaStorageBus.MODE_REQUEST_SET_VOID:
+			// Read the part
+			this.part = ( (AEPartEssentiaStorageBus)AbstractPacket.readPart( stream ) );
+			// Read void
+			this.isVoidAllowed = stream.readBoolean();
+			break;
 		}
 	}
 
@@ -88,17 +88,17 @@ public class PacketServerEssentiaStorageBus
 	{
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaStorageBus.MODE_REQUEST_FULL_UPDATE:
-				// Write the part
-				AbstractPacket.writePart( this.part, stream );
-				break;
+		case PacketServerEssentiaStorageBus.MODE_REQUEST_FULL_UPDATE:
+			// Write the part
+			AbstractPacket.writePart( this.part, stream );
+			break;
 
-			case PacketServerEssentiaStorageBus.MODE_REQUEST_SET_VOID:
-				// Write the part
-				AbstractPacket.writePart( this.part, stream );
-				// Write void
-				stream.writeBoolean( this.isVoidAllowed );
-				break;
+		case PacketServerEssentiaStorageBus.MODE_REQUEST_SET_VOID:
+			// Write the part
+			AbstractPacket.writePart( this.part, stream );
+			// Write void
+			stream.writeBoolean( this.isVoidAllowed );
+			break;
 		}
 	}
 

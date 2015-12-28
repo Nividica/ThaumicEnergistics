@@ -1180,7 +1180,7 @@ public class TileArcaneAssembler
 		if( this.isCrafting )
 		{
 			// Tick crafting
-			craftingTick();
+			this.craftingTick();
 		}
 	}
 

@@ -453,7 +453,7 @@ public abstract class AbstractGuiBase
 	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseButton )
 	{
 
-		if( nonLeftClickHandler_Buttons( mouseX, mouseY, mouseButton ) )
+		if( this.nonLeftClickHandler_Buttons( mouseX, mouseY, mouseButton ) )
 		{
 			return;
 		}

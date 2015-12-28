@@ -37,21 +37,21 @@ public class PacketClientEssentiaEmitter
 
 			switch ( this.mode )
 			{
-				case PacketClientEssentiaEmitter.MODE_FULL_UPDATE:
-					// Full update
-					( (GuiEssentiaLevelEmitter)gui ).onServerUpdateWantedAmount( this.wantedAmount );
-					( (GuiEssentiaLevelEmitter)gui ).onServerUpdateRedstoneMode( this.redstoneMode );
-					break;
+			case PacketClientEssentiaEmitter.MODE_FULL_UPDATE:
+				// Full update
+				( (GuiEssentiaLevelEmitter)gui ).onServerUpdateWantedAmount( this.wantedAmount );
+				( (GuiEssentiaLevelEmitter)gui ).onServerUpdateRedstoneMode( this.redstoneMode );
+				break;
 
-				case PacketClientEssentiaEmitter.MODE_UPDATE_WANTED:
-					// Update wanted amount
-					( (GuiEssentiaLevelEmitter)gui ).onServerUpdateWantedAmount( this.wantedAmount );
-					break;
+			case PacketClientEssentiaEmitter.MODE_UPDATE_WANTED:
+				// Update wanted amount
+				( (GuiEssentiaLevelEmitter)gui ).onServerUpdateWantedAmount( this.wantedAmount );
+				break;
 
-				case PacketClientEssentiaEmitter.MODE_UPDATE_REDSTONE:
-					// Update redstone mode
-					( (GuiEssentiaLevelEmitter)gui ).onServerUpdateRedstoneMode( this.redstoneMode );
-					break;
+			case PacketClientEssentiaEmitter.MODE_UPDATE_REDSTONE:
+				// Update redstone mode
+				( (GuiEssentiaLevelEmitter)gui ).onServerUpdateRedstoneMode( this.redstoneMode );
+				break;
 			}
 		}
 	}
@@ -121,23 +121,23 @@ public class PacketClientEssentiaEmitter
 	{
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaEmitter.MODE_FULL_UPDATE:
-				// Read the redstone mode ordinal
-				this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readInt()];
+		case PacketClientEssentiaEmitter.MODE_FULL_UPDATE:
+			// Read the redstone mode ordinal
+			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readInt()];
 
-				// Read the wanted amount
-				this.wantedAmount = stream.readLong();
-				break;
+			// Read the wanted amount
+			this.wantedAmount = stream.readLong();
+			break;
 
-			case PacketClientEssentiaEmitter.MODE_UPDATE_WANTED:
-				// Read the wanted amount
-				this.wantedAmount = stream.readLong();
-				break;
+		case PacketClientEssentiaEmitter.MODE_UPDATE_WANTED:
+			// Read the wanted amount
+			this.wantedAmount = stream.readLong();
+			break;
 
-			case PacketClientEssentiaEmitter.MODE_UPDATE_REDSTONE:
-				// Read the redstone mode ordinal
-				this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readInt()];
-				break;
+		case PacketClientEssentiaEmitter.MODE_UPDATE_REDSTONE:
+			// Read the redstone mode ordinal
+			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readInt()];
+			break;
 		}
 	}
 
@@ -146,24 +146,24 @@ public class PacketClientEssentiaEmitter
 	{
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaEmitter.MODE_FULL_UPDATE:
-				// Write the redstone mode ordinal
-				stream.writeInt( this.redstoneMode.ordinal() );
+		case PacketClientEssentiaEmitter.MODE_FULL_UPDATE:
+			// Write the redstone mode ordinal
+			stream.writeInt( this.redstoneMode.ordinal() );
 
-				// Write the wanted amount
-				stream.writeLong( this.wantedAmount );
-				break;
+			// Write the wanted amount
+			stream.writeLong( this.wantedAmount );
+			break;
 
-			case PacketClientEssentiaEmitter.MODE_UPDATE_WANTED:
-				// Write the wanted amount
-				stream.writeLong( this.wantedAmount );
-				break;
+		case PacketClientEssentiaEmitter.MODE_UPDATE_WANTED:
+			// Write the wanted amount
+			stream.writeLong( this.wantedAmount );
+			break;
 
-			case PacketClientEssentiaEmitter.MODE_UPDATE_REDSTONE:
-				// Write the redstone mode ordinal
-				stream.writeInt( this.redstoneMode.ordinal() );
+		case PacketClientEssentiaEmitter.MODE_UPDATE_REDSTONE:
+			// Write the redstone mode ordinal
+			stream.writeInt( this.redstoneMode.ordinal() );
 
-				break;
+			break;
 		}
 	}
 }

@@ -297,23 +297,23 @@ public class ItemEssentiaCell
 	{
 		switch ( itemStack.getItemDamage() )
 		{
-			case 0:
-				return ThEStrings.Item_EssentiaCell_1k.getUnlocalized();
+		case 0:
+			return ThEStrings.Item_EssentiaCell_1k.getUnlocalized();
 
-			case 1:
-				return ThEStrings.Item_EssentiaCell_4k.getUnlocalized();
+		case 1:
+			return ThEStrings.Item_EssentiaCell_4k.getUnlocalized();
 
-			case 2:
-				return ThEStrings.Item_EssentiaCell_16k.getUnlocalized();
+		case 2:
+			return ThEStrings.Item_EssentiaCell_16k.getUnlocalized();
 
-			case 3:
-				return ThEStrings.Item_EssentiaCell_64k.getUnlocalized();
+		case 3:
+			return ThEStrings.Item_EssentiaCell_64k.getUnlocalized();
 
-			case 4:
-				return ThEStrings.Item_EssentiaCell_Creative.getUnlocalized();
+		case 4:
+			return ThEStrings.Item_EssentiaCell_Creative.getUnlocalized();
 
-			default:
-				return "";
+		default:
+			return "";
 
 		}
 	}

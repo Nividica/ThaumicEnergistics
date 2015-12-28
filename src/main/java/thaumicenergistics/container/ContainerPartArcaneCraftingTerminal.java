@@ -1124,36 +1124,36 @@ public class ContainerPartArcaneCraftingTerminal
 		int amountToExtract = 0;
 		switch ( mouseButton )
 		{
-			case GuiHelper.MOUSE_BUTTON_LEFT:
-				// Full amount up to maxStackSize
-				amountToExtract = (int)Math.min( maxStackSize, requestedStack.getStackSize() );
-				break;
+		case GuiHelper.MOUSE_BUTTON_LEFT:
+			// Full amount up to maxStackSize
+			amountToExtract = (int)Math.min( maxStackSize, requestedStack.getStackSize() );
+			break;
 
-			case GuiHelper.MOUSE_BUTTON_RIGHT:
-				// Is shift being held?
-				if( isShiftHeld )
-				{
-					// Extract 1
-					amountToExtract = 1;
-				}
-				else
-				{
-					// Half amount up to half of maxStackSize
-					double halfRequest = requestedStack.getStackSize() / 2.0D;
-					double halfMax = maxStackSize / 2.0D;
-					halfRequest = Math.ceil( halfRequest );
-					halfMax = Math.ceil( halfMax );
-					amountToExtract = (int)Math.min( halfMax, halfRequest );
-				}
-				break;
+		case GuiHelper.MOUSE_BUTTON_RIGHT:
+			// Is shift being held?
+			if( isShiftHeld )
+			{
+				// Extract 1
+				amountToExtract = 1;
+			}
+			else
+			{
+				// Half amount up to half of maxStackSize
+				double halfRequest = requestedStack.getStackSize() / 2.0D;
+				double halfMax = maxStackSize / 2.0D;
+				halfRequest = Math.ceil( halfRequest );
+				halfMax = Math.ceil( halfMax );
+				amountToExtract = (int)Math.min( halfMax, halfRequest );
+			}
+			break;
 
-			case GuiHelper.MOUSE_WHEEL_MOTION:
-				// Shift must be held
-				if( isShiftHeld )
-				{
-					// Extract 1
-					amountToExtract = 1;
-				}
+		case GuiHelper.MOUSE_WHEEL_MOTION:
+			// Shift must be held
+			if( isShiftHeld )
+			{
+				// Extract 1
+				amountToExtract = 1;
+			}
 		}
 
 		// Ensure we have some amount to extract
@@ -1470,7 +1470,7 @@ public class ContainerPartArcaneCraftingTerminal
 		if( ( slotID == this.resultSlotNumber ) && ( button == GuiHelper.MOUSE_BUTTON_RIGHT ) )
 		{
 			// If right clicking on result slot, change it to left click
-			return super.slotClick( slotID, 0, flag, player );
+			return super.slotClick( slotID, GuiHelper.MOUSE_BUTTON_LEFT, flag, player );
 		}
 
 		// Pass to super

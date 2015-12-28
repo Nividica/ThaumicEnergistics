@@ -125,7 +125,8 @@ public class FeatureCells
 						EssentiaStorageComponent_1k };
 
 		// Register 1K storage
-		RecipeRegistry.ITEM_STORAGE_COMPONENT_1K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_1k,
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_1K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(),
+			EssentiaStorageComponent_1k,
 			aspects1KStorage, recipe1KStorage );
 
 		// Register 1K cell
@@ -152,7 +153,8 @@ public class FeatureCells
 						EssentiaStorageComponent_4k };
 
 		// Register 4K storage
-		RecipeRegistry.ITEM_STORAGE_COMPONENT_4K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_4k,
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_4K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(),
+			EssentiaStorageComponent_4k,
 			aspects4KStorage, recipe4KStorage );
 
 		// Register 4K cell
@@ -176,12 +178,14 @@ public class FeatureCells
 						EssentiaStorageComponent_16k };
 
 		// Register 16K storage
-		RecipeRegistry.ITEM_STORAGE_COMPONENT_16K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_16k,
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_16K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(),
+			EssentiaStorageComponent_16k,
 			aspects16KStorage, recipe16KStorage );
 
 		// Register 16K cell
 		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_16K_SHAPED = new ShapedOreRecipe( EssentiaCell_16k, false, recipe16KCell ) );
-		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_16K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_16k, EssentiaStorageComponent_16k,
+		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_16K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_16k,
+						EssentiaStorageComponent_16k,
 						EssentiaCell_Housing ) );
 
 		// 64K ===================================================
@@ -200,12 +204,14 @@ public class FeatureCells
 						EssentiaStorageComponent_64k };
 
 		// Register 64K storage
-		RecipeRegistry.ITEM_STORAGE_COMPONENT_64K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(), EssentiaStorageComponent_64k,
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_64K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(),
+			EssentiaStorageComponent_64k,
 			aspects64KStorage, recipe64KStorage );
 
 		// 64K Storage Cell
 		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_64K_SHAPED = new ShapedOreRecipe( EssentiaCell_64k, false, recipe64KCell ) );
-		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_64K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_64k, EssentiaStorageComponent_64k,
+		GameRegistry.addRecipe( RecipeRegistry.ITEM_STORAGE_CELL_64K_SHAPELESS = new ShapelessOreRecipe( EssentiaCell_64k,
+						EssentiaStorageComponent_64k,
 						EssentiaCell_Housing ) );
 
 		// Workbench
@@ -227,7 +233,8 @@ public class FeatureCells
 		ItemStack storageIcon = ThEApi.instance().items().EssentiaCell_64k.getStack();
 
 		// Get the component recipes
-		IArcaneRecipe[] storageComponentRecipes = new IArcaneRecipe[] { RecipeRegistry.ITEM_STORAGE_COMPONENT_4K, RecipeRegistry.ITEM_STORAGE_COMPONENT_16K,
+		IArcaneRecipe[] storageComponentRecipes = new IArcaneRecipe[] { RecipeRegistry.ITEM_STORAGE_COMPONENT_4K,
+						RecipeRegistry.ITEM_STORAGE_COMPONENT_16K,
 						RecipeRegistry.ITEM_STORAGE_COMPONENT_64K };
 
 		// Get the cell shaped recipes
@@ -235,7 +242,8 @@ public class FeatureCells
 						RecipeRegistry.ITEM_STORAGE_CELL_16K_SHAPED, RecipeRegistry.ITEM_STORAGE_CELL_64K_SHAPED };
 
 		// Get the cell shapeless recipes
-		IRecipe[] storageCellsShapeless = new IRecipe[] { RecipeRegistry.ITEM_STORAGE_CELL_1K_SHAPELESS, RecipeRegistry.ITEM_STORAGE_CELL_4K_SHAPELESS,
+		IRecipe[] storageCellsShapeless = new IRecipe[] { RecipeRegistry.ITEM_STORAGE_CELL_1K_SHAPELESS,
+						RecipeRegistry.ITEM_STORAGE_CELL_4K_SHAPELESS,
 						RecipeRegistry.ITEM_STORAGE_CELL_16K_SHAPELESS, RecipeRegistry.ITEM_STORAGE_CELL_64K_SHAPELESS };
 
 		// Set the pages

@@ -38,36 +38,36 @@ public class PacketClientEssentiaIOBus
 
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_CONTROLLED:
-				// Set redstone controlled
-				( (GuiEssentiaIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
-				break;
+		case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_CONTROLLED:
+			// Set redstone controlled
+			( (GuiEssentiaIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_MODE:
-				// Set redstone mode
-				( (GuiEssentiaIO)gui ).onReceiveRedstoneMode( this.redstoneMode );
-				break;
+		case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_MODE:
+			// Set redstone mode
+			( (GuiEssentiaIO)gui ).onReceiveRedstoneMode( this.redstoneMode );
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SET_FILTER_SIZE:
-				// Set filter size
-				( (GuiEssentiaIO)gui ).onReceiveFilterSize( this.filterSize );
-				break;
+		case PacketClientEssentiaIOBus.MODE_SET_FILTER_SIZE:
+			// Set filter size
+			( (GuiEssentiaIO)gui ).onReceiveFilterSize( this.filterSize );
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
-				// Set redstone mode
-				( (GuiEssentiaIO)gui ).onReceiveRedstoneMode( this.redstoneMode );
+		case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
+			// Set redstone mode
+			( (GuiEssentiaIO)gui ).onReceiveRedstoneMode( this.redstoneMode );
 
-				// Set redstone controlled
-				( (GuiEssentiaIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
+			// Set redstone controlled
+			( (GuiEssentiaIO)gui ).onReceiveRedstoneControlled( this.redstoneControlled );
 
-				// Set filter size
-				( (GuiEssentiaIO)gui ).onReceiveFilterSize( this.filterSize );
-				break;
+			// Set filter size
+			( (GuiEssentiaIO)gui ).onReceiveFilterSize( this.filterSize );
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SEND_VOID_MODE:
-				// Set void mode
-				( (GuiEssentiaIO)gui ).onServerSendVoidMode( this.isVoidAllowed );
-				break;
+		case PacketClientEssentiaIOBus.MODE_SEND_VOID_MODE:
+			// Set void mode
+			( (GuiEssentiaIO)gui ).onServerSendVoidMode( this.isVoidAllowed );
+			break;
 		}
 	}
 
@@ -182,36 +182,36 @@ public class PacketClientEssentiaIOBus
 	{
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_CONTROLLED:
-				// Read redstone controlled
-				this.redstoneControlled = stream.readBoolean();
-				break;
+		case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_CONTROLLED:
+			// Read redstone controlled
+			this.redstoneControlled = stream.readBoolean();
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_MODE:
-				// Read the redstone mode ordinal
-				this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readByte()];
-				break;
+		case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_MODE:
+			// Read the redstone mode ordinal
+			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readByte()];
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SET_FILTER_SIZE:
-				// Read the filter size
-				this.filterSize = stream.readByte();
-				break;
+		case PacketClientEssentiaIOBus.MODE_SET_FILTER_SIZE:
+			// Read the filter size
+			this.filterSize = stream.readByte();
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
-				// Read redstone controlled
-				this.redstoneControlled = stream.readBoolean();
+		case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
+			// Read redstone controlled
+			this.redstoneControlled = stream.readBoolean();
 
-				// Read the redstone mode ordinal
-				this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readByte()];
+			// Read the redstone mode ordinal
+			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[stream.readByte()];
 
-				// Read the filter size
-				this.filterSize = stream.readByte();
-				break;
+			// Read the filter size
+			this.filterSize = stream.readByte();
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SEND_VOID_MODE:
-				// Read void mode
-				this.isVoidAllowed = stream.readBoolean();
-				break;
+		case PacketClientEssentiaIOBus.MODE_SEND_VOID_MODE:
+			// Read void mode
+			this.isVoidAllowed = stream.readBoolean();
+			break;
 		}
 	}
 
@@ -220,36 +220,36 @@ public class PacketClientEssentiaIOBus
 	{
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_CONTROLLED:
-				// Write redstone controlled
-				stream.writeBoolean( this.redstoneControlled );
-				break;
+		case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_CONTROLLED:
+			// Write redstone controlled
+			stream.writeBoolean( this.redstoneControlled );
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_MODE:
-				// Write the redstone mode ordinal
-				stream.writeByte( (byte)this.redstoneMode.ordinal() );
-				break;
+		case PacketClientEssentiaIOBus.MODE_SET_REDSTONE_MODE:
+			// Write the redstone mode ordinal
+			stream.writeByte( (byte)this.redstoneMode.ordinal() );
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SET_FILTER_SIZE:
-				// Write the filter size
-				stream.writeByte( this.filterSize );
-				break;
+		case PacketClientEssentiaIOBus.MODE_SET_FILTER_SIZE:
+			// Write the filter size
+			stream.writeByte( this.filterSize );
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
-				// Write redstone controlled
-				stream.writeBoolean( this.redstoneControlled );
+		case PacketClientEssentiaIOBus.MODE_SEND_FULL_UPDATE:
+			// Write redstone controlled
+			stream.writeBoolean( this.redstoneControlled );
 
-				// Write the redstone mode ordinal
-				stream.writeByte( (byte)this.redstoneMode.ordinal() );
+			// Write the redstone mode ordinal
+			stream.writeByte( (byte)this.redstoneMode.ordinal() );
 
-				// Write the filter size
-				stream.writeByte( this.filterSize );
-				break;
+			// Write the filter size
+			stream.writeByte( this.filterSize );
+			break;
 
-			case PacketClientEssentiaIOBus.MODE_SEND_VOID_MODE:
-				// Write void mode
-				stream.writeBoolean( this.isVoidAllowed );
-				break;
+		case PacketClientEssentiaIOBus.MODE_SEND_VOID_MODE:
+			// Write void mode
+			stream.writeBoolean( this.isVoidAllowed );
+			break;
 
 		}
 	}

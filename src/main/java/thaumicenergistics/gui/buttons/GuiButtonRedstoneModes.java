@@ -50,7 +50,7 @@ public class GuiButtonRedstoneModes
 	 * @param emitter
 	 */
 	public GuiButtonRedstoneModes( final int ID, final int xPos, final int yPos, final int width, final int height, final RedstoneMode mode,
-								final boolean emitter )
+									final boolean emitter )
 	{
 		// Call super
 		super( ID, xPos, yPos, width, height, null, 0, 0, AEStateIconsEnum.REGULAR_BUTTON );
@@ -69,23 +69,23 @@ public class GuiButtonRedstoneModes
 		String explanation = "";
 		switch ( this.redstoneMode )
 		{
-			case HIGH_SIGNAL:
-				explanation = StatCollector.translateToLocal( this.emitter ? TOOLTIP_LOC_HEADER + "EmitLevelAbove" : TOOLTIP_LOC_HEADER +
-								"ActiveWithSignal" );
-				break;
+		case HIGH_SIGNAL:
+			explanation = StatCollector.translateToLocal( this.emitter ? TOOLTIP_LOC_HEADER + "EmitLevelAbove" : TOOLTIP_LOC_HEADER +
+							"ActiveWithSignal" );
+			break;
 
-			case IGNORE:
-				explanation = StatCollector.translateToLocal( TOOLTIP_LOC_HEADER + "AlwaysActive" );
-				break;
+		case IGNORE:
+			explanation = StatCollector.translateToLocal( TOOLTIP_LOC_HEADER + "AlwaysActive" );
+			break;
 
-			case LOW_SIGNAL:
-				explanation = StatCollector.translateToLocal( this.emitter ? TOOLTIP_LOC_HEADER + "EmitLevelsBelow" : TOOLTIP_LOC_HEADER +
-								"ActiveWithoutSignal" );
-				break;
+		case LOW_SIGNAL:
+			explanation = StatCollector.translateToLocal( this.emitter ? TOOLTIP_LOC_HEADER + "EmitLevelsBelow" : TOOLTIP_LOC_HEADER +
+							"ActiveWithoutSignal" );
+			break;
 
-			case SIGNAL_PULSE:
-				explanation = StatCollector.translateToLocal( TOOLTIP_LOC_HEADER + "ActiveOnPulse" );
-				break;
+		case SIGNAL_PULSE:
+			explanation = StatCollector.translateToLocal( TOOLTIP_LOC_HEADER + "ActiveOnPulse" );
+			break;
 
 		}
 
@@ -107,21 +107,21 @@ public class GuiButtonRedstoneModes
 		// Set the icon
 		switch ( this.redstoneMode )
 		{
-			case HIGH_SIGNAL:
-				this.stateIcon = AEStateIconsEnum.REDSTONE_HIGH;
-				break;
+		case HIGH_SIGNAL:
+			this.stateIcon = AEStateIconsEnum.REDSTONE_HIGH;
+			break;
 
-			case IGNORE:
-				this.stateIcon = AEStateIconsEnum.REDSTONE_IGNORE;
-				break;
+		case IGNORE:
+			this.stateIcon = AEStateIconsEnum.REDSTONE_IGNORE;
+			break;
 
-			case LOW_SIGNAL:
-				this.stateIcon = AEStateIconsEnum.REDSTONE_LOW;
-				break;
+		case LOW_SIGNAL:
+			this.stateIcon = AEStateIconsEnum.REDSTONE_LOW;
+			break;
 
-			case SIGNAL_PULSE:
-				this.stateIcon = AEStateIconsEnum.REDSTONE_PULSE;
-				break;
+		case SIGNAL_PULSE:
+			this.stateIcon = AEStateIconsEnum.REDSTONE_PULSE;
+			break;
 		}
 	}
 }

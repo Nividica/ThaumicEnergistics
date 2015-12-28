@@ -323,7 +323,7 @@ public class AEPartEssentiaConversionMonitor
 		if( ( this.depositedPlayerID != -1 ) && ( this.depositedPlayerID == AEApi.instance().registries().players().getID( player.getGameProfile() ) ) )
 		{
 			// Was it a double click?
-			if( MinecraftServer.getServer().getTickCounter() - this.depositedTick <= AEPartEssentiaConversionMonitor.DOUBLE_CLICK_TICKS )
+			if( ( MinecraftServer.getServer().getTickCounter() - this.depositedTick ) <= AEPartEssentiaConversionMonitor.DOUBLE_CLICK_TICKS )
 			{
 				// Reset last interaction trackers
 				this.depositedPlayerID = -1;
@@ -364,7 +364,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Permission and activation checks
-		if( !activationCheck( player ) )
+		if( !this.activationCheck( player ) )
 		{
 			return false;
 		}

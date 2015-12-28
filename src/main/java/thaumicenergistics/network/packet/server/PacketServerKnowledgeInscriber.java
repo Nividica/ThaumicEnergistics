@@ -53,15 +53,15 @@ public class PacketServerKnowledgeInscriber
 		{
 			switch ( this.mode )
 			{
-				case PacketServerKnowledgeInscriber.MODE_FULL_UPDATE:
-					// Request full update
-					( (ContainerKnowledgeInscriber)this.player.openContainer ).onClientRequestFullUpdate( this.player );
-					break;
+			case PacketServerKnowledgeInscriber.MODE_FULL_UPDATE:
+				// Request full update
+				( (ContainerKnowledgeInscriber)this.player.openContainer ).onClientRequestFullUpdate( this.player );
+				break;
 
-				case PacketServerKnowledgeInscriber.MODE_SAVEDELETE:
-					// Request save/delete
-					( (ContainerKnowledgeInscriber)this.player.openContainer ).onClientRequestSaveOrDelete( this.player );
-					break;
+			case PacketServerKnowledgeInscriber.MODE_SAVEDELETE:
+				// Request save/delete
+				( (ContainerKnowledgeInscriber)this.player.openContainer ).onClientRequestSaveOrDelete( this.player );
+				break;
 			}
 		}
 	}

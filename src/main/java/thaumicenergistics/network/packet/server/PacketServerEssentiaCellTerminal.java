@@ -62,25 +62,25 @@ public class PacketServerEssentiaCellTerminal
 	{
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaCellTerminal.MODE_SELECTED_ASPECT:
-				if( ( this.player != null ) && ( this.player.openContainer instanceof AbstractContainerCellTerminalBase ) )
-				{
-					( (AbstractContainerCellTerminalBase)this.player.openContainer ).onReceivedSelectedAspect( this.currentAspect );
-				}
-				break;
+		case PacketServerEssentiaCellTerminal.MODE_SELECTED_ASPECT:
+			if( ( this.player != null ) && ( this.player.openContainer instanceof AbstractContainerCellTerminalBase ) )
+			{
+				( (AbstractContainerCellTerminalBase)this.player.openContainer ).onReceivedSelectedAspect( this.currentAspect );
+			}
+			break;
 
-			case PacketServerEssentiaCellTerminal.MODE_FULL_UPDATE:
-				if( ( this.player != null ) && ( this.player.openContainer instanceof AbstractContainerCellTerminalBase ) )
-				{
-					( (AbstractContainerCellTerminalBase)this.player.openContainer ).onClientRequestFullUpdate();
-				}
-				break;
+		case PacketServerEssentiaCellTerminal.MODE_FULL_UPDATE:
+			if( ( this.player != null ) && ( this.player.openContainer instanceof AbstractContainerCellTerminalBase ) )
+			{
+				( (AbstractContainerCellTerminalBase)this.player.openContainer ).onClientRequestFullUpdate();
+			}
+			break;
 
-			case PacketServerEssentiaCellTerminal.MODE_SORT_CHANGE:
-				if( ( this.player != null ) && ( this.player.openContainer instanceof AbstractContainerCellTerminalBase ) )
-				{
-					( (AbstractContainerCellTerminalBase)this.player.openContainer ).onClientRequestSortModeChange( this.sortMode, this.player );
-				}
+		case PacketServerEssentiaCellTerminal.MODE_SORT_CHANGE:
+			if( ( this.player != null ) && ( this.player.openContainer instanceof AbstractContainerCellTerminalBase ) )
+			{
+				( (AbstractContainerCellTerminalBase)this.player.openContainer ).onClientRequestSortModeChange( this.sortMode, this.player );
+			}
 		}
 
 	}
@@ -92,14 +92,14 @@ public class PacketServerEssentiaCellTerminal
 		switch ( this.mode )
 		{
 
-			case PacketServerEssentiaCellTerminal.MODE_SELECTED_ASPECT:
-				this.currentAspect = AbstractPacket.readAspect( stream );
-				break;
+		case PacketServerEssentiaCellTerminal.MODE_SELECTED_ASPECT:
+			this.currentAspect = AbstractPacket.readAspect( stream );
+			break;
 
-			case PacketServerEssentiaCellTerminal.MODE_SORT_CHANGE:
-				// Read the mode ordinal
-				this.sortMode = ComparatorMode.VALUES[stream.readInt()];
-				break;
+		case PacketServerEssentiaCellTerminal.MODE_SORT_CHANGE:
+			// Read the mode ordinal
+			this.sortMode = ComparatorMode.VALUES[stream.readInt()];
+			break;
 		}
 	}
 
@@ -110,14 +110,14 @@ public class PacketServerEssentiaCellTerminal
 		switch ( this.mode )
 		{
 
-			case PacketServerEssentiaCellTerminal.MODE_SELECTED_ASPECT:
-				AbstractPacket.writeAspect( this.currentAspect, stream );
-				break;
+		case PacketServerEssentiaCellTerminal.MODE_SELECTED_ASPECT:
+			AbstractPacket.writeAspect( this.currentAspect, stream );
+			break;
 
-			case PacketServerEssentiaCellTerminal.MODE_SORT_CHANGE:
-				// Write the mode ordinal
-				stream.writeInt( this.sortMode.ordinal() );
-				break;
+		case PacketServerEssentiaCellTerminal.MODE_SORT_CHANGE:
+			// Write the mode ordinal
+			stream.writeInt( this.sortMode.ordinal() );
+			break;
 		}
 	}
 }

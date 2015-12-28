@@ -256,13 +256,13 @@ public class GuiEssentiaCellWorkbench
 		// Which button was clicked?
 		switch ( button.id )
 		{
-			case GuiEssentiaCellWorkbench.BUTTON_CLEAR_ID:
-				new PacketServerEssentiaCellWorkbench().createRequestClearPartitioning( this.player, this.workbench ).sendPacketToServer();
-				break;
+		case GuiEssentiaCellWorkbench.BUTTON_CLEAR_ID:
+			new PacketServerEssentiaCellWorkbench().createRequestClearPartitioning( this.player, this.workbench ).sendPacketToServer();
+			break;
 
-			case GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_ID:
-				new PacketServerEssentiaCellWorkbench().createRequestPartitionToContents( this.player, this.workbench ).sendPacketToServer();
-				break;
+		case GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_ID:
+			new PacketServerEssentiaCellWorkbench().createRequestPartitionToContents( this.player, this.workbench ).sendPacketToServer();
+			break;
 		}
 	}
 

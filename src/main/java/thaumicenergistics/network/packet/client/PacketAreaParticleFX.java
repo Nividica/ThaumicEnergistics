@@ -52,16 +52,16 @@ public class PacketAreaParticleFX
 
 		switch ( this.mode )
 		{
-			case PacketAreaParticleFX.MODE_WRENCH_FX:
+		case PacketAreaParticleFX.MODE_WRENCH_FX:
 
-				// Read the destination
-				this.dX = stream.readFloat();
-				this.dY = stream.readFloat();
-				this.dZ = stream.readFloat();
+			// Read the destination
+			this.dX = stream.readFloat();
+			this.dY = stream.readFloat();
+			this.dZ = stream.readFloat();
 
-				// Read the color
-				this.aspectColor = stream.readInt();
-				break;
+			// Read the color
+			this.aspectColor = stream.readInt();
+			break;
 		}
 
 	}
@@ -74,15 +74,15 @@ public class PacketAreaParticleFX
 
 		switch ( this.mode )
 		{
-			case PacketAreaParticleFX.MODE_WRENCH_FX:
-				// Write the destination
-				stream.writeFloat( this.dX );
-				stream.writeFloat( this.dY );
-				stream.writeFloat( this.dZ );
+		case PacketAreaParticleFX.MODE_WRENCH_FX:
+			// Write the destination
+			stream.writeFloat( this.dX );
+			stream.writeFloat( this.dY );
+			stream.writeFloat( this.dZ );
 
-				// Write the color
-				stream.writeInt( this.aspectColor );
-				break;
+			// Write the color
+			stream.writeInt( this.aspectColor );
+			break;
 		}
 	}
 
@@ -143,9 +143,9 @@ public class PacketAreaParticleFX
 
 		switch ( this.mode )
 		{
-			case PacketAreaParticleFX.MODE_WRENCH_FX:
-				this.addWrenchFX();
-				break;
+		case PacketAreaParticleFX.MODE_WRENCH_FX:
+			this.addWrenchFX();
+			break;
 		}
 	}
 }

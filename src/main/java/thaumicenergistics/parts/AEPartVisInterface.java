@@ -306,7 +306,7 @@ public class AEPartVisInterface
 		}
 		else
 		{
-			amountReceived = consumeVisFromVisNetwork( digiVisAspect, amount );
+			amountReceived = this.consumeVisFromVisNetwork( digiVisAspect, amount );
 		}
 
 		// Was any vis received?

@@ -46,28 +46,28 @@ public class PacketClientArcaneCraftingTerminal
 		{
 			switch ( this.mode )
 			{
-				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST:
-					// Set the item list
-					( (GuiArcaneCraftingTerminal)gui ).onReceiveFullList( this.fullList );
-					break;
+			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST:
+				// Set the item list
+				( (GuiArcaneCraftingTerminal)gui ).onReceiveFullList( this.fullList );
+				break;
 
-				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_CHANGE:
-					// Update the item list
-					( (GuiArcaneCraftingTerminal)gui ).onReceiveChange( this.changedStack );
-					break;
+			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_CHANGE:
+				// Update the item list
+				( (GuiArcaneCraftingTerminal)gui ).onReceiveChange( this.changedStack );
+				break;
 
-				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
-					// Set the held item
-					( (GuiArcaneCraftingTerminal)gui ).onReceivePlayerHeld( this.changedStack );
-					break;
+			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
+				// Set the held item
+				( (GuiArcaneCraftingTerminal)gui ).onReceivePlayerHeld( this.changedStack );
+				break;
 
-				case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
-					( (GuiArcaneCraftingTerminal)gui ).onReceiveSorting( this.sortingOrder, this.sortingDirection, this.viewMode );
-					break;
+			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
+				( (GuiArcaneCraftingTerminal)gui ).onReceiveSorting( this.sortingOrder, this.sortingDirection, this.viewMode );
+				break;
 
-				case PacketClientArcaneCraftingTerminal.MODE_UPDATE_COSTS:
-					( (GuiArcaneCraftingTerminal)gui ).onServerSendForceUpdateCost();
-					break;
+			case PacketClientArcaneCraftingTerminal.MODE_UPDATE_COSTS:
+				( (GuiArcaneCraftingTerminal)gui ).onServerSendForceUpdateCost();
+				break;
 			}
 		}
 	}
@@ -187,66 +187,66 @@ public class PacketClientArcaneCraftingTerminal
 
 		switch ( this.mode )
 		{
-			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST:
-				// Create a new list
-				this.fullList = AEApi.instance().storage().createItemList();
+		case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST:
+			// Create a new list
+			this.fullList = AEApi.instance().storage().createItemList();
 
-				// Read how many items there are
-				int count = stream.readInt();
+			// Read how many items there are
+			int count = stream.readInt();
 
-				for( int i = 0; i < count; i++ )
+			for( int i = 0; i < count; i++ )
+			{
+				// Also ensure there are bytes to read
+				if( stream.readableBytes() <= 0 )
 				{
-					// Also ensure there are bytes to read
-					if( stream.readableBytes() <= 0 )
-					{
-						break;
-					}
-
-					// Read the itemstack
-					IAEItemStack itemStack = AbstractPacket.readAEItemStack( stream );
-
-					// Ensure it is not null
-					if( itemStack != null )
-					{
-						// Add to the list
-						this.fullList.add( itemStack );
-					}
+					break;
 				}
-				break;
 
-			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_CHANGE:
-				// Read the change amount
-				int changeAmount = stream.readInt();
+				// Read the itemstack
+				IAEItemStack itemStack = AbstractPacket.readAEItemStack( stream );
 
-				// Read the item
+				// Ensure it is not null
+				if( itemStack != null )
+				{
+					// Add to the list
+					this.fullList.add( itemStack );
+				}
+			}
+			break;
+
+		case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_CHANGE:
+			// Read the change amount
+			int changeAmount = stream.readInt();
+
+			// Read the item
+			this.changedStack = AbstractPacket.readAEItemStack( stream );
+
+			// Adjust it's size
+			this.changedStack.setStackSize( changeAmount );
+
+			break;
+
+		case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
+			// Read if the itemstack is empty
+			this.isHeldEmpty = stream.readBoolean();
+
+			// Is it not empty?
+			if( !this.isHeldEmpty )
+			{
 				this.changedStack = AbstractPacket.readAEItemStack( stream );
+			}
+			else
+			{
+				this.changedStack = null;
+			}
+			break;
 
-				// Adjust it's size
-				this.changedStack.setStackSize( changeAmount );
-
-				break;
-
-			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
-				// Read if the itemstack is empty
-				this.isHeldEmpty = stream.readBoolean();
-
-				// Is it not empty?
-				if( !this.isHeldEmpty )
-				{
-					this.changedStack = AbstractPacket.readAEItemStack( stream );
-				}
-				else
-				{
-					this.changedStack = null;
-				}
-				break;
-
-			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
-				// Read sorts
-				this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[stream.readInt()];
-				this.sortingOrder = EnumCache.AE_SORT_ORDERS[stream.readInt()];
-				this.viewMode = EnumCache.AE_VIEW_ITEMS[stream.readInt()];
-				break;
+		case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
+			// Read sorts
+			this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[stream.readInt()];
+			this.sortingOrder = EnumCache.AE_SORT_ORDERS[stream.readInt()];
+			this.viewMode = EnumCache.AE_VIEW_ITEMS[stream.readInt()];
+			break;
 		}
 	}
 
@@ -255,55 +255,55 @@ public class PacketClientArcaneCraftingTerminal
 	{
 		switch ( this.mode )
 		{
-			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST:
-				// Is the list null?
-				if( this.fullList == null )
-				{
-					// No items
-					stream.writeInt( 0 );
-					return;
-				}
+		case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST:
+			// Is the list null?
+			if( this.fullList == null )
+			{
+				// No items
+				stream.writeInt( 0 );
+				return;
+			}
 
-				// Write how many items there are
-				stream.writeInt( this.fullList.size() );
+			// Write how many items there are
+			stream.writeInt( this.fullList.size() );
 
-				// Get the iterator
-				Iterator<IAEItemStack> listIterator = this.fullList.iterator();
+			// Get the iterator
+			Iterator<IAEItemStack> listIterator = this.fullList.iterator();
 
-				// Write each item
-				while( listIterator.hasNext() )
-				{
-					AbstractPacket.writeAEItemStack( listIterator.next(), stream );
-				}
-				break;
+			// Write each item
+			while( listIterator.hasNext() )
+			{
+				AbstractPacket.writeAEItemStack( listIterator.next(), stream );
+			}
+			break;
 
-			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_CHANGE:
-				// Write the change amount
-				stream.writeInt( (int)this.changedStack.getStackSize() );
+		case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_CHANGE:
+			// Write the change amount
+			stream.writeInt( (int)this.changedStack.getStackSize() );
 
-				// Write the change
+			// Write the change
+			AbstractPacket.writeAEItemStack( this.changedStack, stream );
+			break;
+
+		case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
+			// Write if the held item is empty
+			stream.writeBoolean( this.isHeldEmpty );
+
+			// Is it not empty?
+			if( !this.isHeldEmpty )
+			{
+				// Write the stack
 				AbstractPacket.writeAEItemStack( this.changedStack, stream );
-				break;
+			}
 
-			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
-				// Write if the held item is empty
-				stream.writeBoolean( this.isHeldEmpty );
+			break;
 
-				// Is it not empty?
-				if( !this.isHeldEmpty )
-				{
-					// Write the stack
-					AbstractPacket.writeAEItemStack( this.changedStack, stream );
-				}
-
-				break;
-
-			case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
-				// Write the sorts
-				stream.writeInt( this.sortingDirection.ordinal() );
-				stream.writeInt( this.sortingOrder.ordinal() );
-				stream.writeInt( this.viewMode.ordinal() );
-				break;
+		case PacketClientArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
+			// Write the sorts
+			stream.writeInt( this.sortingDirection.ordinal() );
+			stream.writeInt( this.sortingOrder.ordinal() );
+			stream.writeInt( this.viewMode.ordinal() );
+			break;
 		}
 
 	}

@@ -104,42 +104,42 @@ public class EssentiaProviderPeripheral
 				// Determine which method was called.
 				switch ( CCMethods.VALUES[method] )
 				{
-					case isOnline:
-						helpText = "\nNo arguments.\n" + "Returns true if the provider is powered on and connected, false otherwise.\n"
-										+ "\nExample:\n" + "if( ep.isOnline() ) then\n";
-						break;
+				case isOnline:
+					helpText = "\nNo arguments.\n" + "Returns true if the provider is powered on and connected, false otherwise.\n"
+									+ "\nExample:\n" + "if( ep.isOnline() ) then\n";
+					break;
 
-					case getAspects:
-						helpText = "\nNo arguments.\n" + "Returns the name then the amount of each essentia type stored.\n"
-										+ "Note: You will probably want to wrap the results into a table.\n" + "\nExample:\n"
-										+ "essTable = {ep.getAspects()}\n" + "name = essTable[1]\n" + "amount = essTable[2]\n";
-						break;
+				case getAspects:
+					helpText = "\nNo arguments.\n" + "Returns the name then the amount of each essentia type stored.\n"
+									+ "Note: You will probably want to wrap the results into a table.\n" + "\nExample:\n"
+									+ "essTable = {ep.getAspects()}\n" + "name = essTable[1]\n" + "amount = essTable[2]\n";
+					break;
 
-					case getAmount:
-						helpText = "\nArguments: AspectName1, AspectName2, ...\n"
-										+ "Returns the amount(s) of essentia stored in the system for the specified aspect(s).\n" + "\nExample:\n"
-										+ "ordoAmt = ep.getAmount(\"ordo\")\n" + "ordoAmt, metoAmt = ep.getAmount(\"ordo\",\"meto\")\n";
-						break;
+				case getAmount:
+					helpText = "\nArguments: AspectName1, AspectName2, ...\n"
+									+ "Returns the amount(s) of essentia stored in the system for the specified aspect(s).\n" + "\nExample:\n"
+									+ "ordoAmt = ep.getAmount(\"ordo\")\n" + "ordoAmt, metoAmt = ep.getAmount(\"ordo\",\"meto\")\n";
+					break;
 
-					case registerAsWatcher:
-						helpText = "\nOptional Arguments: AspectName1, AspectName2, ...\n"
-										+ "Registers this computer for essentia events. When essentia amounts on the network changes, this computer will receive a notification event.\n"
-										+ "If aspect arguments are provided, only events for those aspects will be generated. If no arguments are provided, any change will generate an event.\n"
-										+ "Note: Run help.events() for details about the events.\n" + "\nExamples:\n" + "ep.registerAsWatcher()\n"
-										+ "ep.registerAsWatcher(\"ordo\")\n" + "ep.registerAsWatcher(\"ordo\",\"meto\")\n";
-						break;
+				case registerAsWatcher:
+					helpText = "\nOptional Arguments: AspectName1, AspectName2, ...\n"
+									+ "Registers this computer for essentia events. When essentia amounts on the network changes, this computer will receive a notification event.\n"
+									+ "If aspect arguments are provided, only events for those aspects will be generated. If no arguments are provided, any change will generate an event.\n"
+									+ "Note: Run help.events() for details about the events.\n" + "\nExamples:\n" + "ep.registerAsWatcher()\n"
+									+ "ep.registerAsWatcher(\"ordo\")\n" + "ep.registerAsWatcher(\"ordo\",\"meto\")\n";
+					break;
 
-					case unregisterAsWatcher:
-						helpText = "\nOptional Arguments: AspectName1, AspectName2, ...\n"
-										+ "Unregisters this computer for essentia events.\n"
-										+ "If aspect arguments are provided, only unregister for those aspects. If no arguments are provided, unregister for all.\n"
-										+ "\nExamples:\n" + "ep.unregisterAsWatcher()\n" + "ep.unregisterAsWatcher(\"ordo\")\n"
-										+ "ep.unregisterAsWatcher(\"meto\",\"ordo\")\n";
-						break;
+				case unregisterAsWatcher:
+					helpText = "\nOptional Arguments: AspectName1, AspectName2, ...\n"
+									+ "Unregisters this computer for essentia events.\n"
+									+ "If aspect arguments are provided, only unregister for those aspects. If no arguments are provided, unregister for all.\n"
+									+ "\nExamples:\n" + "ep.unregisterAsWatcher()\n" + "ep.unregisterAsWatcher(\"ordo\")\n"
+									+ "ep.unregisterAsWatcher(\"meto\",\"ordo\")\n";
+					break;
 
-					case help:
-						helpText = "\nDisplays help for the following:\n" + String.join( "()\n", this.getMethodNames() ) + "()\n";
-						break;
+				case help:
+					helpText = "\nDisplays help for the following:\n" + String.join( "()\n", this.getMethodNames() ) + "()\n";
+					break;
 				}
 			}
 
@@ -781,29 +781,29 @@ public class EssentiaProviderPeripheral
 		// Determine which method was called.
 		switch ( CCMethods.VALUES[method] )
 		{
-			case isOnline:
-				results = this.ccGetOnline();
-				break;
+		case isOnline:
+			results = this.ccGetOnline();
+			break;
 
-			case getAspects:
-				results = this.ccGetAspects();
-				break;
+		case getAspects:
+			results = this.ccGetAspects();
+			break;
 
-			case getAmount:
-				results = this.ccGetAmount( arguments );
-				break;
+		case getAmount:
+			results = this.ccGetAmount( arguments );
+			break;
 
-			case registerAsWatcher:
-				results = new Object[] { this.ccRegisterAsWatcher( computer, arguments ) };
-				break;
+		case registerAsWatcher:
+			results = new Object[] { this.ccRegisterAsWatcher( computer, arguments ) };
+			break;
 
-			case unregisterAsWatcher:
-				this.watcher.removeComputerWatcher( computer );
-				results = new Object[] { true };
-				break;
-			case help:
-				results = new Object[] { CCHelpObject.Instance() };
-				break;
+		case unregisterAsWatcher:
+			this.watcher.removeComputerWatcher( computer );
+			results = new Object[] { true };
+			break;
+		case help:
+			results = new Object[] { CCHelpObject.Instance() };
+			break;
 		}
 
 		return results;
@@ -875,7 +875,7 @@ public class EssentiaProviderPeripheral
 	{
 		// Attempt to get the world
 		World world;
-		if( ( this.epWorld == null ) || ( world = this.epWorld.get() ) == null )
+		if( ( this.epWorld == null ) || ( ( world = this.epWorld.get() ) == null ) )
 		{
 			return null;
 		}

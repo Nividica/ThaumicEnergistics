@@ -35,7 +35,7 @@ public class HandlerEssentiaStorageBusCondenser
 		}
 
 		// Ensure the bus has security access
-		if( !hasSecurityPermission() )
+		if( !this.hasSecurityPermission() )
 		{
 			// The bus does not have security access.
 			return false;

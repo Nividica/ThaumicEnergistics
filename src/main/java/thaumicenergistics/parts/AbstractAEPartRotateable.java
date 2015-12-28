@@ -66,18 +66,18 @@ public abstract class AbstractAEPartRotateable
 				// Rotate
 				switch ( this.renderRotation )
 				{
-					case 0:
-						this.renderRotation = 1;
-						break;
-					case 1:
-						this.renderRotation = 3;
-						break;
-					case 2:
-						this.renderRotation = 0;
-						break;
-					case 3:
-						this.renderRotation = 2;
-						break;
+				case 0:
+					this.renderRotation = 1;
+					break;
+				case 1:
+					this.renderRotation = 3;
+					break;
+				case 2:
+					this.renderRotation = 0;
+					break;
+				case 3:
+					this.renderRotation = 2;
+					break;
 				}
 
 				// Mark for sync & save

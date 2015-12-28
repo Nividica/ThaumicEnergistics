@@ -116,25 +116,25 @@ public class PacketServerEssentiaEmitter
 	{
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaEmitter.MODE_REQUEST_UPDATE:
-				// Request the full update
-				this.part.onClientUpdateRequest( this.player );
-				break;
+		case PacketServerEssentiaEmitter.MODE_REQUEST_UPDATE:
+			// Request the full update
+			this.part.onClientUpdateRequest( this.player );
+			break;
 
-			case PacketServerEssentiaEmitter.MODE_SEND_WANTED:
-				// Set the wanted amount
-				this.part.onClientSetWantedAmount( this.wantedAmount, this.player );
-				break;
+		case PacketServerEssentiaEmitter.MODE_SEND_WANTED:
+			// Set the wanted amount
+			this.part.onClientSetWantedAmount( this.wantedAmount, this.player );
+			break;
 
-			case PacketServerEssentiaEmitter.MODE_ADJUST_WANTED:
-				// Set the adjustment amount
-				this.part.onClientAdjustWantedAmount( this.adjustmentAmount, this.player );
-				break;
+		case PacketServerEssentiaEmitter.MODE_ADJUST_WANTED:
+			// Set the adjustment amount
+			this.part.onClientAdjustWantedAmount( this.adjustmentAmount, this.player );
+			break;
 
-			case PacketServerEssentiaEmitter.MODE_TOGGLE_REDSTONE:
-				// Toggle the redstone mode
-				this.part.onClientToggleRedstoneMode( this.player );
-				break;
+		case PacketServerEssentiaEmitter.MODE_TOGGLE_REDSTONE:
+			// Toggle the redstone mode
+			this.part.onClientToggleRedstoneMode( this.player );
+			break;
 		}
 	}
 
@@ -143,31 +143,31 @@ public class PacketServerEssentiaEmitter
 	{
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaEmitter.MODE_REQUEST_UPDATE:
-				// Read the part
-				this.part = (AEPartEssentiaLevelEmitter)AbstractPacket.readPart( stream );
-				break;
+		case PacketServerEssentiaEmitter.MODE_REQUEST_UPDATE:
+			// Read the part
+			this.part = (AEPartEssentiaLevelEmitter)AbstractPacket.readPart( stream );
+			break;
 
-			case PacketServerEssentiaEmitter.MODE_SEND_WANTED:
-				// Read the part
-				this.part = (AEPartEssentiaLevelEmitter)AbstractPacket.readPart( stream );
+		case PacketServerEssentiaEmitter.MODE_SEND_WANTED:
+			// Read the part
+			this.part = (AEPartEssentiaLevelEmitter)AbstractPacket.readPart( stream );
 
-				// Read the wanted amount
-				this.wantedAmount = stream.readLong();
-				break;
+			// Read the wanted amount
+			this.wantedAmount = stream.readLong();
+			break;
 
-			case PacketServerEssentiaEmitter.MODE_ADJUST_WANTED:
-				// Read the part
-				this.part = (AEPartEssentiaLevelEmitter)AbstractPacket.readPart( stream );
+		case PacketServerEssentiaEmitter.MODE_ADJUST_WANTED:
+			// Read the part
+			this.part = (AEPartEssentiaLevelEmitter)AbstractPacket.readPart( stream );
 
-				// Read the adjustment amount
-				this.adjustmentAmount = stream.readInt();
-				break;
+			// Read the adjustment amount
+			this.adjustmentAmount = stream.readInt();
+			break;
 
-			case PacketServerEssentiaEmitter.MODE_TOGGLE_REDSTONE:
-				// Read the part
-				this.part = (AEPartEssentiaLevelEmitter)AbstractPacket.readPart( stream );
-				break;
+		case PacketServerEssentiaEmitter.MODE_TOGGLE_REDSTONE:
+			// Read the part
+			this.part = (AEPartEssentiaLevelEmitter)AbstractPacket.readPart( stream );
+			break;
 		}
 	}
 
@@ -176,31 +176,31 @@ public class PacketServerEssentiaEmitter
 	{
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaEmitter.MODE_REQUEST_UPDATE:
-				// Write the part
-				AbstractPacket.writePart( this.part, stream );
-				break;
+		case PacketServerEssentiaEmitter.MODE_REQUEST_UPDATE:
+			// Write the part
+			AbstractPacket.writePart( this.part, stream );
+			break;
 
-			case PacketServerEssentiaEmitter.MODE_SEND_WANTED:
-				// Write the part
-				AbstractPacket.writePart( this.part, stream );
+		case PacketServerEssentiaEmitter.MODE_SEND_WANTED:
+			// Write the part
+			AbstractPacket.writePart( this.part, stream );
 
-				// Write wanted amount
-				stream.writeLong( this.wantedAmount );
-				break;
+			// Write wanted amount
+			stream.writeLong( this.wantedAmount );
+			break;
 
-			case PacketServerEssentiaEmitter.MODE_ADJUST_WANTED:
-				// Write the part
-				AbstractPacket.writePart( this.part, stream );
+		case PacketServerEssentiaEmitter.MODE_ADJUST_WANTED:
+			// Write the part
+			AbstractPacket.writePart( this.part, stream );
 
-				// Write the adjustment amount
-				stream.writeInt( this.adjustmentAmount );
-				break;
+			// Write the adjustment amount
+			stream.writeInt( this.adjustmentAmount );
+			break;
 
-			case PacketServerEssentiaEmitter.MODE_TOGGLE_REDSTONE:
-				// Write the part
-				AbstractPacket.writePart( this.part, stream );
-				break;
+		case PacketServerEssentiaEmitter.MODE_TOGGLE_REDSTONE:
+			// Write the part
+			AbstractPacket.writePart( this.part, stream );
+			break;
 		}
 	}
 

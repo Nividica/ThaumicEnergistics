@@ -159,7 +159,7 @@ class HandlerEssentiaStorageBusContainer
 		}
 
 		// Ensure the bus has security access
-		if( !hasSecurityPermission() )
+		if( !this.hasSecurityPermission() )
 		{
 			// The bus does not have security access.
 			return false;
@@ -418,7 +418,7 @@ class HandlerEssentiaStorageBusContainer
 	public boolean onNeighborChange()
 	{
 		// Get the tile we are facing
-		TileEntity tileEntity = getFaceingTile();
+		TileEntity tileEntity = this.getFaceingTile();
 
 		// Are we facing an essentia container?
 		if( tileEntity instanceof IAspectContainer )

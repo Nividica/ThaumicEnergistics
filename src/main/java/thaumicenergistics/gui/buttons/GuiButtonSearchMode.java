@@ -34,25 +34,25 @@ public class GuiButtonSearchMode
 	{
 		switch ( mode )
 		{
-			case AUTOSEARCH:
-				this.tooltipMode = ButtonToolTips.SearchMode_Auto.getLocal();
-				this.stateIcon = AEStateIconsEnum.SEARCH_MODE_AUTO;
-				break;
+		case AUTOSEARCH:
+			this.tooltipMode = ButtonToolTips.SearchMode_Auto.getLocal();
+			this.stateIcon = AEStateIconsEnum.SEARCH_MODE_AUTO;
+			break;
 
-			case MANUAL_SEARCH:
-				this.tooltipMode = ButtonToolTips.SearchMode_Standard.getLocal();
-				this.stateIcon = AEStateIconsEnum.SEARCH_MODE_MANUAL;
-				break;
+		case MANUAL_SEARCH:
+			this.tooltipMode = ButtonToolTips.SearchMode_Standard.getLocal();
+			this.stateIcon = AEStateIconsEnum.SEARCH_MODE_MANUAL;
+			break;
 
-			case NEI_AUTOSEARCH:
-				this.tooltipMode = ButtonToolTips.SearchMode_NEIAuto.getLocal();
-				this.stateIcon = AEStateIconsEnum.SEARCH_MODE_NEI_AUTO;
-				break;
+		case NEI_AUTOSEARCH:
+			this.tooltipMode = ButtonToolTips.SearchMode_NEIAuto.getLocal();
+			this.stateIcon = AEStateIconsEnum.SEARCH_MODE_NEI_AUTO;
+			break;
 
-			case NEI_MANUAL_SEARCH:
-				this.tooltipMode = ButtonToolTips.SearchMode_NEIStandard.getLocal();
-				this.stateIcon = AEStateIconsEnum.SEARCH_MODE_NEI_MANUAL;
-				break;
+		case NEI_MANUAL_SEARCH:
+			this.tooltipMode = ButtonToolTips.SearchMode_NEIStandard.getLocal();
+			this.stateIcon = AEStateIconsEnum.SEARCH_MODE_NEI_MANUAL;
+			break;
 
 		}
 	}

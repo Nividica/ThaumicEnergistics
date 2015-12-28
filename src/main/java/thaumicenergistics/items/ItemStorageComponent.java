@@ -76,20 +76,20 @@ public class ItemStorageComponent
 	{
 		switch ( itemStack.getItemDamage() )
 		{
-			case 0:
-				return ThEStrings.Item_StorageComponent_1k.getUnlocalized();
+		case 0:
+			return ThEStrings.Item_StorageComponent_1k.getUnlocalized();
 
-			case 1:
-				return ThEStrings.Item_StorageComponent_4k.getUnlocalized();
+		case 1:
+			return ThEStrings.Item_StorageComponent_4k.getUnlocalized();
 
-			case 2:
-				return ThEStrings.Item_StorageComponent_16k.getUnlocalized();
+		case 2:
+			return ThEStrings.Item_StorageComponent_16k.getUnlocalized();
 
-			case 3:
-				return ThEStrings.Item_StorageComponent_64k.getUnlocalized();
+		case 3:
+			return ThEStrings.Item_StorageComponent_64k.getUnlocalized();
 
-			default:
-				return "";
+		default:
+			return "";
 
 		}
 	}

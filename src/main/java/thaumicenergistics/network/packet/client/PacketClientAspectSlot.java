@@ -35,9 +35,9 @@ public class PacketClientAspectSlot
 
 		switch ( this.mode )
 		{
-			case PacketClientAspectSlot.MODE_LIST_UPDATE:
-				( (IAspectSlotGui)gui ).updateAspects( this.filterAspects );
-				break;
+		case PacketClientAspectSlot.MODE_LIST_UPDATE:
+			( (IAspectSlotGui)gui ).updateAspects( this.filterAspects );
+			break;
 		}
 
 	}
@@ -64,19 +64,19 @@ public class PacketClientAspectSlot
 	{
 		switch ( this.mode )
 		{
-			case PacketClientAspectSlot.MODE_LIST_UPDATE:
-				// Read the size
-				int size = stream.readInt();
+		case PacketClientAspectSlot.MODE_LIST_UPDATE:
+			// Read the size
+			int size = stream.readInt();
 
-				// Create the list
-				this.filterAspects = new ArrayList<Aspect>( size );
+			// Create the list
+			this.filterAspects = new ArrayList<Aspect>( size );
 
-				// Read each aspect
-				for( int i = 0; i < size; i++ )
-				{
-					this.filterAspects.add( AbstractPacket.readAspect( stream ) );
-				}
-				break;
+			// Read each aspect
+			for( int i = 0; i < size; i++ )
+			{
+				this.filterAspects.add( AbstractPacket.readAspect( stream ) );
+			}
+			break;
 		}
 	}
 
@@ -85,16 +85,16 @@ public class PacketClientAspectSlot
 	{
 		switch ( this.mode )
 		{
-			case PacketClientAspectSlot.MODE_LIST_UPDATE:
-				// Write the size of the list
-				stream.writeInt( this.filterAspects.size() );
+		case PacketClientAspectSlot.MODE_LIST_UPDATE:
+			// Write the size of the list
+			stream.writeInt( this.filterAspects.size() );
 
-				// Write each aspect
-				for( int index = 0; index < this.filterAspects.size(); index++ )
-				{
-					AbstractPacket.writeAspect( this.filterAspects.get( index ), stream );
-				}
-				break;
+			// Write each aspect
+			for( int index = 0; index < this.filterAspects.size(); index++ )
+			{
+				AbstractPacket.writeAspect( this.filterAspects.get( index ), stream );
+			}
+			break;
 		}
 	}
 

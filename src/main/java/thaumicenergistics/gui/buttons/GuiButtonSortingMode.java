@@ -33,15 +33,15 @@ public class GuiButtonSortingMode
 	{
 		switch ( mode )
 		{
-			case MODE_ALPHABETIC:
-				this.stateIcon = AEStateIconsEnum.SORT_MODE_ALPHABETIC;
-				this.tooltipSortBy = ButtonToolTips.ItemName.getLocal();
-				break;
+		case MODE_ALPHABETIC:
+			this.stateIcon = AEStateIconsEnum.SORT_MODE_ALPHABETIC;
+			this.tooltipSortBy = ButtonToolTips.ItemName.getLocal();
+			break;
 
-			case MODE_AMOUNT:
-				this.stateIcon = AEStateIconsEnum.SORT_MODE_AMOUNT;
-				this.tooltipSortBy = ButtonToolTips.NumberOfItems.getLocal();
-				break;
+		case MODE_AMOUNT:
+			this.stateIcon = AEStateIconsEnum.SORT_MODE_AMOUNT;
+			this.tooltipSortBy = ButtonToolTips.NumberOfItems.getLocal();
+			break;
 
 		}
 	}
@@ -50,25 +50,25 @@ public class GuiButtonSortingMode
 	{
 		switch ( order )
 		{
-			case AMOUNT:
-				this.stateIcon = AEStateIconsEnum.SORT_MODE_AMOUNT;
-				this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.NumberOfItems" );
-				break;
+		case AMOUNT:
+			this.stateIcon = AEStateIconsEnum.SORT_MODE_AMOUNT;
+			this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.NumberOfItems" );
+			break;
 
-			case INVTWEAKS:
-				this.stateIcon = AEStateIconsEnum.SORT_MODE_INVTWEAK;
-				this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.InventoryTweaks" );
-				break;
+		case INVTWEAKS:
+			this.stateIcon = AEStateIconsEnum.SORT_MODE_INVTWEAK;
+			this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.InventoryTweaks" );
+			break;
 
-			case MOD:
-				this.stateIcon = AEStateIconsEnum.SORT_MODE_MOD;
-				this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.Mod" );
-				break;
+		case MOD:
+			this.stateIcon = AEStateIconsEnum.SORT_MODE_MOD;
+			this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.Mod" );
+			break;
 
-			case NAME:
-				this.stateIcon = AEStateIconsEnum.SORT_MODE_ALPHABETIC;
-				this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.ItemName" );
-				break;
+		case NAME:
+			this.stateIcon = AEStateIconsEnum.SORT_MODE_ALPHABETIC;
+			this.tooltipSortBy = StatCollector.translateToLocal( "gui.tooltips.appliedenergistics2.ItemName" );
+			break;
 
 		}
 	}

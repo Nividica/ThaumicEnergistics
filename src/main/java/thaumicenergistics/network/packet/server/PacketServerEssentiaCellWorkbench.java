@@ -28,19 +28,19 @@ public class PacketServerEssentiaCellWorkbench
 
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_ADD_ASPECT:
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REMOVE_ASPECT:
-				// Read the aspect
-				this.arAspect = AbstractPacket.readAspect( stream );
-				break;
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_ADD_ASPECT:
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REMOVE_ASPECT:
+			// Read the aspect
+			this.arAspect = AbstractPacket.readAspect( stream );
+			break;
 
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REPLACE_ASPECT:
-				// Read the original aspect
-				this.arAspect = AbstractPacket.readAspect( stream );
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REPLACE_ASPECT:
+			// Read the original aspect
+			this.arAspect = AbstractPacket.readAspect( stream );
 
-				// Read the replacement aspect
-				this.replaceAspect = AbstractPacket.readAspect( stream );
-				break;
+			// Read the replacement aspect
+			this.replaceAspect = AbstractPacket.readAspect( stream );
+			break;
 		}
 	}
 
@@ -52,19 +52,19 @@ public class PacketServerEssentiaCellWorkbench
 
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_ADD_ASPECT:
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REMOVE_ASPECT:
-				// Write the aspect
-				AbstractPacket.writeAspect( this.arAspect, stream );
-				break;
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_ADD_ASPECT:
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REMOVE_ASPECT:
+			// Write the aspect
+			AbstractPacket.writeAspect( this.arAspect, stream );
+			break;
 
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REPLACE_ASPECT:
-				// Write the original aspect
-				AbstractPacket.writeAspect( this.arAspect, stream );
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REPLACE_ASPECT:
+			// Write the original aspect
+			AbstractPacket.writeAspect( this.arAspect, stream );
 
-				// Write the replacement aspect
-				AbstractPacket.writeAspect( this.replaceAspect, stream );
-				break;
+			// Write the replacement aspect
+			AbstractPacket.writeAspect( this.replaceAspect, stream );
+			break;
 		}
 
 	}
@@ -171,34 +171,34 @@ public class PacketServerEssentiaCellWorkbench
 	{
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_ADD_ASPECT:
-				// Request the aspect be added
-				this.workbench.onClientRequestAddAspectToPartitionList( this.player, this.arAspect );
-				break;
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_ADD_ASPECT:
+			// Request the aspect be added
+			this.workbench.onClientRequestAddAspectToPartitionList( this.player, this.arAspect );
+			break;
 
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REMOVE_ASPECT:
-				// Request the aspect be removed
-				this.workbench.onClientRequestRemoveAspectFromPartitionList( this.player, this.arAspect );
-				break;
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REMOVE_ASPECT:
+			// Request the aspect be removed
+			this.workbench.onClientRequestRemoveAspectFromPartitionList( this.player, this.arAspect );
+			break;
 
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REPLACE_ASPECT:
-				// Request the aspect be replaced
-				this.workbench.onClientRequestReplaceAspectFromPartitionList( this.player, this.arAspect, this.replaceAspect );
-				break;
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_REPLACE_ASPECT:
+			// Request the aspect be replaced
+			this.workbench.onClientRequestReplaceAspectFromPartitionList( this.player, this.arAspect, this.replaceAspect );
+			break;
 
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_FULL_LIST:
-				// Request the full list
-				this.workbench.onClientRequestPartitionList( this.player );
-				break;
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_FULL_LIST:
+			// Request the full list
+			this.workbench.onClientRequestPartitionList( this.player );
+			break;
 
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_CLEAR:
-				// Request the clear
-				this.workbench.onClientRequestClearPartitioning( this.player );
-				break;
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_CLEAR:
+			// Request the clear
+			this.workbench.onClientRequestClearPartitioning( this.player );
+			break;
 
-			case PacketServerEssentiaCellWorkbench.MODE_REQUEST_PARITION_CONTENTS:
-				this.workbench.onClientRequestPartitionToContents( this.player );
-				break;
+		case PacketServerEssentiaCellWorkbench.MODE_REQUEST_PARITION_CONTENTS:
+			this.workbench.onClientRequestPartitionToContents( this.player );
+			break;
 		}
 	}
 

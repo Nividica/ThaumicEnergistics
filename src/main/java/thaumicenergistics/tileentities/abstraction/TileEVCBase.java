@@ -1,14 +1,7 @@
 package thaumicenergistics.tileentities.abstraction;
 
-import appeng.api.config.Actionable;
-import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalCoord;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
-import appeng.tile.grid.AENetworkTile;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,8 +14,14 @@ import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.integration.tc.IEssentiaTransportWithSimulate;
 import thaumicenergistics.util.EffectiveSide;
-
-import java.io.IOException;
+import appeng.api.config.Actionable;
+import appeng.api.util.AECableType;
+import appeng.api.util.DimensionalCoord;
+import appeng.tile.TileEvent;
+import appeng.tile.events.TileEventType;
+import appeng.tile.grid.AENetworkTile;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Essentia Vibration Chamber Base

@@ -19,11 +19,11 @@ public class PacketServerPriority
 	{
 		switch ( this.mode )
 		{
-			case PacketServerPriority.MODE_SET:
-			case PacketServerPriority.MODE_ADJUST:
-				// Read the priority
-				this.priority = stream.readInt();
-				break;
+		case PacketServerPriority.MODE_SET:
+		case PacketServerPriority.MODE_ADJUST:
+			// Read the priority
+			this.priority = stream.readInt();
+			break;
 		}
 	}
 
@@ -32,11 +32,11 @@ public class PacketServerPriority
 	{
 		switch ( this.mode )
 		{
-			case PacketServerPriority.MODE_SET:
-			case PacketServerPriority.MODE_ADJUST:
-				// Write the priority
-				stream.writeInt( this.priority );
-				break;
+		case PacketServerPriority.MODE_SET:
+		case PacketServerPriority.MODE_ADJUST:
+			// Write the priority
+			stream.writeInt( this.priority );
+			break;
 		}
 
 	}
@@ -111,20 +111,20 @@ public class PacketServerPriority
 
 		switch ( this.mode )
 		{
-			case PacketServerPriority.MODE_SET:
-				// Set the priority
-				( (ContainerPriority)this.player.openContainer ).onClientRequestSetPriority( this.priority );
-				break;
+		case PacketServerPriority.MODE_SET:
+			// Set the priority
+			( (ContainerPriority)this.player.openContainer ).onClientRequestSetPriority( this.priority );
+			break;
 
-			case PacketServerPriority.MODE_ADJUST:
-				// Adjust the priority
-				( (ContainerPriority)this.player.openContainer ).onClientRequestAdjustPriority( this.priority );
-				break;
+		case PacketServerPriority.MODE_ADJUST:
+			// Adjust the priority
+			( (ContainerPriority)this.player.openContainer ).onClientRequestAdjustPriority( this.priority );
+			break;
 
-			case PacketServerPriority.MODE_REQUEST:
-				// Request the priority
-				( (ContainerPriority)this.player.openContainer ).onClientRequestPriority();
-				break;
+		case PacketServerPriority.MODE_REQUEST:
+			// Request the priority
+			( (ContainerPriority)this.player.openContainer ).onClientRequestPriority();
+			break;
 		}
 	}
 

@@ -25,13 +25,13 @@ public class GuiButtonSortingDirection
 	{
 		switch ( direction )
 		{
-			case ASCENDING:
-				this.stateIcon = AEStateIconsEnum.SORT_DIR_ASC;
-				break;
+		case ASCENDING:
+			this.stateIcon = AEStateIconsEnum.SORT_DIR_ASC;
+			break;
 
-			case DESCENDING:
-				this.stateIcon = AEStateIconsEnum.SORT_DIR_DEC;
-				break;
+		case DESCENDING:
+			this.stateIcon = AEStateIconsEnum.SORT_DIR_DEC;
+			break;
 		}
 	}
 }

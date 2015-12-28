@@ -34,35 +34,35 @@ public class GuiButtonSaveDelete
 	{
 		switch ( saveState )
 		{
-			case Disabled_InvalidRecipe:
-				this.enabled = false;
-				this.stateIcon = null;
-				this.cachedTooltip = ThEStrings.TooltipButton_InscriberInvalid.getLocalized();
-				break;
+		case Disabled_InvalidRecipe:
+			this.enabled = false;
+			this.stateIcon = null;
+			this.cachedTooltip = ThEStrings.TooltipButton_InscriberInvalid.getLocalized();
+			break;
 
-			case Disabled_CoreFull:
-				this.enabled = false;
-				this.stateIcon = null;
-				this.cachedTooltip = ThEStrings.TooltipButton_InscriberFull.getLocalized();
-				break;
+		case Disabled_CoreFull:
+			this.enabled = false;
+			this.stateIcon = null;
+			this.cachedTooltip = ThEStrings.TooltipButton_InscriberFull.getLocalized();
+			break;
 
-			case Enabled_Delete:
-				this.enabled = true;
-				this.stateIcon = AEStateIconsEnum.DELETE;
-				this.cachedTooltip = ThEStrings.TooltipButton_InscriberDelete.getLocalized();
-				break;
+		case Enabled_Delete:
+			this.enabled = true;
+			this.stateIcon = AEStateIconsEnum.DELETE;
+			this.cachedTooltip = ThEStrings.TooltipButton_InscriberDelete.getLocalized();
+			break;
 
-			case Enabled_Save:
-				this.enabled = true;
-				this.stateIcon = AEStateIconsEnum.SAVE;
-				this.cachedTooltip = ThEStrings.TooltipButton_InscriberSave.getLocalized();
-				break;
+		case Enabled_Save:
+			this.enabled = true;
+			this.stateIcon = AEStateIconsEnum.SAVE;
+			this.cachedTooltip = ThEStrings.TooltipButton_InscriberSave.getLocalized();
+			break;
 
-			case Disabled_MissingCore:
-				this.enabled = false;
-				this.stateIcon = null;
-				this.cachedTooltip = ThEStrings.TooltipButton_InscriberMissing.getLocalized();
-				break;
+		case Disabled_MissingCore:
+			this.enabled = false;
+			this.stateIcon = null;
+			this.cachedTooltip = ThEStrings.TooltipButton_InscriberMissing.getLocalized();
+			break;
 
 		}
 	}

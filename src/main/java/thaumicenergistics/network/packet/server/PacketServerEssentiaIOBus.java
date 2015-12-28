@@ -82,23 +82,23 @@ public class PacketServerEssentiaIOBus
 	{
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
-				// Request a full update
-				this.part.onClientRequestFullUpdate( this.player );
-				break;
+		case PacketServerEssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
+			// Request a full update
+			this.part.onClientRequestFullUpdate( this.player );
+			break;
 
-			case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
-				// Request a redstone mode change
-				this.part.onClientRequestChangeRedstoneMode( this.player );
-				break;
+		case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
+			// Request a redstone mode change
+			this.part.onClientRequestChangeRedstoneMode( this.player );
+			break;
 
-			case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
-				// Request a void mode change
-				if( this.part instanceof AEPartEssentiaExportBus )
-				{
-					( (AEPartEssentiaExportBus)this.part ).onClientRequestChangeVoidMode( this.player );
-				}
-				break;
+		case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
+			// Request a void mode change
+			if( this.part instanceof AEPartEssentiaExportBus )
+			{
+				( (AEPartEssentiaExportBus)this.part ).onClientRequestChangeVoidMode( this.player );
+			}
+			break;
 		}
 	}
 
@@ -107,12 +107,12 @@ public class PacketServerEssentiaIOBus
 	{
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
-			case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
-			case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
-				// Read the part
-				this.part = ( (AbstractAEPartEssentiaIOBus)AbstractPacket.readPart( stream ) );
-				break;
+		case PacketServerEssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
+		case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
+		case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
+			// Read the part
+			this.part = ( (AbstractAEPartEssentiaIOBus)AbstractPacket.readPart( stream ) );
+			break;
 		}
 	}
 
@@ -121,12 +121,12 @@ public class PacketServerEssentiaIOBus
 	{
 		switch ( this.mode )
 		{
-			case PacketServerEssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
-			case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
-			case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
-				// Write the part
-				AbstractPacket.writePart( this.part, stream );
-				break;
+		case PacketServerEssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
+		case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
+		case PacketServerEssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
+			// Write the part
+			AbstractPacket.writePart( this.part, stream );
+			break;
 		}
 	}
 

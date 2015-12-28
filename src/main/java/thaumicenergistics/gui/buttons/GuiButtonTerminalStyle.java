@@ -30,18 +30,18 @@ public class GuiButtonTerminalStyle
 	{
 		switch ( style )
 		{
-			case SMALL:
-				this.stateIcon = AEStateIconsEnum.TERM_STYLE_SMALL;
-				this.tooltipStyle = ButtonToolTips.TerminalStyle_Small.getLocal();
-				break;
+		case SMALL:
+			this.stateIcon = AEStateIconsEnum.TERM_STYLE_SMALL;
+			this.tooltipStyle = ButtonToolTips.TerminalStyle_Small.getLocal();
+			break;
 
-			case TALL:
-				this.stateIcon = AEStateIconsEnum.TERM_STYLE_TALL;
-				this.tooltipStyle = ButtonToolTips.TerminalStyle_Tall.getLocal();
-				break;
+		case TALL:
+			this.stateIcon = AEStateIconsEnum.TERM_STYLE_TALL;
+			this.tooltipStyle = ButtonToolTips.TerminalStyle_Tall.getLocal();
+			break;
 
-			default:
-				break;
+		default:
+			break;
 
 		}
 	}

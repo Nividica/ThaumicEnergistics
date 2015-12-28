@@ -65,7 +65,9 @@ public final class GuiHelper
 
 		// Are there at least 1000?
 		if( count < unit )
+		{
 			return Long.toString( count );
+		}
 
 		// Calculate the exponential
 		int exponential = (int)( Math.log( count ) / Math.log( unit ) );

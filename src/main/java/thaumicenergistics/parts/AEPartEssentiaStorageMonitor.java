@@ -394,37 +394,37 @@ public class AEPartEssentiaStorageMonitor
 		// Adjust scale and/or rotation based on cable side
 		switch ( side )
 		{
-			case DOWN:
-				GL11.glScalef( 1.0f, -1.0f, 1.0f );
-				GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
-				break;
+		case DOWN:
+			GL11.glScalef( 1.0f, -1.0f, 1.0f );
+			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
+			break;
 
-			case EAST:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
-				break;
+		case EAST:
+			GL11.glScalef( -1.0f, -1.0f, -1.0f );
+			GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
+			break;
 
-			case NORTH:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				break;
+		case NORTH:
+			GL11.glScalef( -1.0f, -1.0f, -1.0f );
+			break;
 
-			case SOUTH:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
-				break;
+		case SOUTH:
+			GL11.glScalef( -1.0f, -1.0f, -1.0f );
+			GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
+			break;
 
-			case UP:
-				GL11.glScalef( 1.0f, -1.0f, 1.0f );
-				GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-				break;
+		case UP:
+			GL11.glScalef( 1.0f, -1.0f, 1.0f );
+			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
+			break;
 
-			case WEST:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
-				break;
+		case WEST:
+			GL11.glScalef( -1.0f, -1.0f, -1.0f );
+			GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
+			break;
 
-			default:
-				break;
+		default:
+			break;
 
 		}
 
@@ -434,7 +434,7 @@ public class AEPartEssentiaStorageMonitor
 		try
 		{
 			// Calculate the brightness for the lightmap
-			int brightness = 16 << 20 | 16 << 4;
+			int brightness = ( 16 << 20 ) | ( 16 << 4 );
 			int brightnessComponent1 = brightness % 65536;
 			int brightnessComponent2 = brightness / 65536;
 
@@ -697,7 +697,7 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Permission and activation checks
-		if( !activationCheck( player ) )
+		if( !this.activationCheck( player ) )
 		{
 			return false;
 		}
@@ -706,7 +706,7 @@ public class AEPartEssentiaStorageMonitor
 		ItemStack heldItem = player.getCurrentEquippedItem();
 
 		// Was the lock state changed?
-		if( didActivateChangeLockState( player, heldItem ) )
+		if( this.didActivateChangeLockState( player, heldItem ) )
 		{
 			return true;
 		}

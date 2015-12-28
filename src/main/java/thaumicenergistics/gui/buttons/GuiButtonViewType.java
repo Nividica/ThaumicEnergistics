@@ -44,20 +44,20 @@ public class GuiButtonViewType
 	{
 		switch ( mode )
 		{
-			case ALL:
-				this.tooltipViewType = ButtonToolTips.StoredCraftable.getLocal();
-				this.stateIcon = AEStateIconsEnum.VIEW_TYPE_ALL;
-				break;
+		case ALL:
+			this.tooltipViewType = ButtonToolTips.StoredCraftable.getLocal();
+			this.stateIcon = AEStateIconsEnum.VIEW_TYPE_ALL;
+			break;
 
-			case CRAFTABLE:
-				this.tooltipViewType = ButtonToolTips.Craftable.getLocal();
-				this.stateIcon = AEStateIconsEnum.VIEW_TYPE_CRAFT;
-				break;
+		case CRAFTABLE:
+			this.tooltipViewType = ButtonToolTips.Craftable.getLocal();
+			this.stateIcon = AEStateIconsEnum.VIEW_TYPE_CRAFT;
+			break;
 
-			case STORED:
-				this.tooltipViewType = ButtonToolTips.StoredItems.getLocal();
-				this.stateIcon = AEStateIconsEnum.VIEW_TYPE_STORED;
-				break;
+		case STORED:
+			this.tooltipViewType = ButtonToolTips.StoredItems.getLocal();
+			this.stateIcon = AEStateIconsEnum.VIEW_TYPE_STORED;
+			break;
 		}
 	}
 

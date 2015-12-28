@@ -545,16 +545,16 @@ public final class EssentiaItemContainerHelper
 
 		switch ( type )
 		{
-			case JarLabel:
-				return this.getAspectFromLabel( itemStack );
+		case JarLabel:
+			return this.getAspectFromLabel( itemStack );
 
-			case CrystallizedEssentia:
-			case EssentiaContainer:
-			case WispEssence:
-				return this.getAspectFromAnyContainerItem( itemStack );
+		case CrystallizedEssentia:
+		case EssentiaContainer:
+		case WispEssence:
+			return this.getAspectFromAnyContainerItem( itemStack );
 
-			case Invalid:
-				break;
+		case Invalid:
+			break;
 
 		}
 

@@ -262,53 +262,53 @@ public class PacketServerArcaneCraftingTerminal
 		{
 			switch ( this.mode )
 			{
-				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_FULL_LIST:
-					// Request the full list
-					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestFullUpdate( this.player );
-					break;
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_FULL_LIST:
+				// Request the full list
+				( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestFullUpdate( this.player );
+				break;
 
-				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_EXTRACTION:
-					// Request extraction
-					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestExtract( this.player, this.itemStack,
-						this.mouseButton, this.isShiftHeld );
-					break;
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_EXTRACTION:
+				// Request extraction
+				( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestExtract( this.player, this.itemStack,
+					this.mouseButton, this.isShiftHeld );
+				break;
 
-				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
-					// Request deposit
-					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestDeposit( this.player, this.mouseButton );
-					break;
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
+				// Request deposit
+				( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestDeposit( this.player, this.mouseButton );
+				break;
 
-				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_CLEAR_GRID:
-					// Request clear grid
-					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestClearCraftingGrid( this.player );
-					break;
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_CLEAR_GRID:
+				// Request clear grid
+				( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestClearCraftingGrid( this.player );
+				break;
 
-				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
-					// Request deposit region
-					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestDepositRegion( this.player, this.slotNumber );
-					break;
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
+				// Request deposit region
+				( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestDepositRegion( this.player, this.slotNumber );
+				break;
 
-				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
-					// Request set sort
-					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestSetSort( this.sortingOrder,
-						this.sortingDirection, this.viewMode );
-					break;
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
+				// Request set sort
+				( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestSetSort( this.sortingOrder,
+					this.sortingDirection, this.viewMode );
+				break;
 
-				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
-					// Request set grid
-					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer )
-									.onClientNEIRequestSetCraftingGrid( this.player, this.gridItems );
-					break;
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
+				// Request set grid
+				( (ContainerPartArcaneCraftingTerminal)this.player.openContainer )
+								.onClientNEIRequestSetCraftingGrid( this.player, this.gridItems );
+				break;
 
-				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_AUTO_CRAFT:
-					// Request auto-crafting
-					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestAutoCraft( this.player, this.itemStack );
-					break;
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_AUTO_CRAFT:
+				// Request auto-crafting
+				( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestAutoCraft( this.player, this.itemStack );
+				break;
 
-				case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SWAP_ARMOR:
-					// Request armor swap
-					( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestSwapArmor( this.player );
-					break;
+			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SWAP_ARMOR:
+				// Request armor swap
+				( (ContainerPartArcaneCraftingTerminal)this.player.openContainer ).onClientRequestSwapArmor( this.player );
+				break;
 			}
 		}
 	}
@@ -318,54 +318,54 @@ public class PacketServerArcaneCraftingTerminal
 	{
 		switch ( this.mode )
 		{
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_EXTRACTION:
-				// Read the item
-				this.itemStack = AbstractPacket.readAEItemStack( stream );
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_EXTRACTION:
+			// Read the item
+			this.itemStack = AbstractPacket.readAEItemStack( stream );
 
-				// Read the mouse button
-				this.mouseButton = stream.readInt();
+			// Read the mouse button
+			this.mouseButton = stream.readInt();
 
-				// Read the shift status
-				this.isShiftHeld = stream.readBoolean();
-				break;
+			// Read the shift status
+			this.isShiftHeld = stream.readBoolean();
+			break;
 
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
-				// Read the mouse button
-				this.mouseButton = stream.readInt();
-				break;
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
+			// Read the mouse button
+			this.mouseButton = stream.readInt();
+			break;
 
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
-				// Read the slot number
-				this.slotNumber = stream.readInt();
-				break;
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
+			// Read the slot number
+			this.slotNumber = stream.readInt();
+			break;
 
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
-				// Read sorts
-				this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[stream.readInt()];
-				this.sortingOrder = EnumCache.AE_SORT_ORDERS[stream.readInt()];
-				this.viewMode = EnumCache.AE_VIEW_ITEMS[stream.readInt()];
-				break;
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
+			// Read sorts
+			this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[stream.readInt()];
+			this.sortingOrder = EnumCache.AE_SORT_ORDERS[stream.readInt()];
+			this.viewMode = EnumCache.AE_VIEW_ITEMS[stream.readInt()];
+			break;
 
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
-				// Init the items
-				this.gridItems = new IAEItemStack[PacketServerArcaneCraftingTerminal.ITEM_GRID_SIZE];
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
+			// Init the items
+			this.gridItems = new IAEItemStack[PacketServerArcaneCraftingTerminal.ITEM_GRID_SIZE];
 
-				// Read the items
-				for( int slotIndex = 0; slotIndex < 9; slotIndex++ )
+			// Read the items
+			for( int slotIndex = 0; slotIndex < 9; slotIndex++ )
+			{
+				// Do we have an item to read?
+				if( stream.readBoolean() )
 				{
-					// Do we have an item to read?
-					if( stream.readBoolean() )
-					{
-						// Set the item
-						this.gridItems[slotIndex] = AbstractPacket.readAEItemStack( stream );
-					}
+					// Set the item
+					this.gridItems[slotIndex] = AbstractPacket.readAEItemStack( stream );
 				}
-				break;
+			}
+			break;
 
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_AUTO_CRAFT:
-				// Read the requested item
-				this.itemStack = AbstractPacket.readAEItemStack( stream );
-				break;
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_AUTO_CRAFT:
+			// Read the requested item
+			this.itemStack = AbstractPacket.readAEItemStack( stream );
+			break;
 		}
 
 	}
@@ -375,57 +375,57 @@ public class PacketServerArcaneCraftingTerminal
 	{
 		switch ( this.mode )
 		{
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_EXTRACTION:
-				// Write the itemstack
-				AbstractPacket.writeAEItemStack( this.itemStack, stream );
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_EXTRACTION:
+			// Write the itemstack
+			AbstractPacket.writeAEItemStack( this.itemStack, stream );
 
-				// Write the mouse button
-				stream.writeInt( this.mouseButton );
+			// Write the mouse button
+			stream.writeInt( this.mouseButton );
 
-				// Write the shift status
-				stream.writeBoolean( this.isShiftHeld );
-				break;
+			// Write the shift status
+			stream.writeBoolean( this.isShiftHeld );
+			break;
 
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
-				// Write the mouse button
-				stream.writeInt( this.mouseButton );
-				break;
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT:
+			// Write the mouse button
+			stream.writeInt( this.mouseButton );
+			break;
 
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
-				// Write the slot number to the stream
-				stream.writeInt( this.slotNumber );
-				break;
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_DEPOSIT_REGION:
+			// Write the slot number to the stream
+			stream.writeInt( this.slotNumber );
+			break;
 
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
-				// Write the sorts
-				stream.writeInt( this.sortingDirection.ordinal() );
-				stream.writeInt( this.sortingOrder.ordinal() );
-				stream.writeInt( this.viewMode.ordinal() );
-				break;
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_SORT:
+			// Write the sorts
+			stream.writeInt( this.sortingDirection.ordinal() );
+			stream.writeInt( this.sortingOrder.ordinal() );
+			stream.writeInt( this.viewMode.ordinal() );
+			break;
 
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
-				// Write each non-null item
-				for( int slotIndex = 0; slotIndex < PacketServerArcaneCraftingTerminal.ITEM_GRID_SIZE; slotIndex++ )
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_SET_GRID:
+			// Write each non-null item
+			for( int slotIndex = 0; slotIndex < PacketServerArcaneCraftingTerminal.ITEM_GRID_SIZE; slotIndex++ )
+			{
+				// Get the item
+				IAEItemStack slotItem = this.gridItems[slotIndex];
+
+				// Write if the slot is not null
+				boolean hasItem = slotItem != null;
+				stream.writeBoolean( hasItem );
+
+				if( hasItem )
 				{
-					// Get the item
-					IAEItemStack slotItem = this.gridItems[slotIndex];
-
-					// Write if the slot is not null
-					boolean hasItem = slotItem != null;
-					stream.writeBoolean( hasItem );
-
-					if( hasItem )
-					{
-						// Write the item
-						AbstractPacket.writeAEItemStack( slotItem, stream );
-					}
+					// Write the item
+					AbstractPacket.writeAEItemStack( slotItem, stream );
 				}
-				break;
+			}
+			break;
 
-			case PacketServerArcaneCraftingTerminal.MODE_REQUEST_AUTO_CRAFT:
-				// Write the requested item
-				AbstractPacket.writeAEItemStack( this.itemStack, stream );
-				break;
+		case PacketServerArcaneCraftingTerminal.MODE_REQUEST_AUTO_CRAFT:
+			// Write the requested item
+			AbstractPacket.writeAEItemStack( this.itemStack, stream );
+			break;
 		}
 	}
 

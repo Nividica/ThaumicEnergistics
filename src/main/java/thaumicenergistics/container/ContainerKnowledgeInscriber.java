@@ -606,7 +606,7 @@ public class ContainerKnowledgeInscriber
 					if( clickedSlot.getHasStack() )
 					{
 						// Load the pattern
-						loadPattern( this.kCoreHandler.getPatternForItem( clickedSlot.getStack() ) );
+						this.loadPattern( this.kCoreHandler.getPatternForItem( clickedSlot.getStack() ) );
 
 						// Update the matrix
 						this.onCraftMatrixChanged( clickedSlot.inventory );

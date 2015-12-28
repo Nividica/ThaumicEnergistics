@@ -77,7 +77,8 @@ public class GuiCraftConfirmBridge
 		}
 
 		// Create a new cancel button
-		this.buttonList.add( this.buttonCancel = new GuiButton( 0, this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.getLocal() ) );
+		this.buttonList.add( this.buttonCancel = new GuiButton( 0, this.guiLeft + 6, ( this.guiTop + this.ySize ) - 25, 50, 20, GuiText.Cancel
+						.getLocal() ) );
 
 	}
 

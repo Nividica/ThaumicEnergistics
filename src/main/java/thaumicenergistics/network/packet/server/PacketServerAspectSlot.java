@@ -44,10 +44,10 @@ public class PacketServerAspectSlot
 	{
 		switch ( this.mode )
 		{
-			case PacketServerAspectSlot.MODE_SET_ASPECT:
-				// Inform the part of the aspect change
-				this.part.setAspect( this.index, this.aspect, this.player );
-				break;
+		case PacketServerAspectSlot.MODE_SET_ASPECT:
+			// Inform the part of the aspect change
+			this.part.setAspect( this.index, this.aspect, this.player );
+			break;
 		}
 	}
 
@@ -56,16 +56,16 @@ public class PacketServerAspectSlot
 	{
 		switch ( this.mode )
 		{
-			case PacketServerAspectSlot.MODE_SET_ASPECT:
-				// Read the part
-				this.part = ( (IAspectSlotPart)AbstractPacket.readPart( stream ) );
+		case PacketServerAspectSlot.MODE_SET_ASPECT:
+			// Read the part
+			this.part = ( (IAspectSlotPart)AbstractPacket.readPart( stream ) );
 
-				// Read the index
-				this.index = stream.readInt();
+			// Read the index
+			this.index = stream.readInt();
 
-				// Read the aspect
-				this.aspect = AbstractPacket.readAspect( stream );
-				break;
+			// Read the aspect
+			this.aspect = AbstractPacket.readAspect( stream );
+			break;
 		}
 	}
 
@@ -74,16 +74,16 @@ public class PacketServerAspectSlot
 	{
 		switch ( this.mode )
 		{
-			case PacketServerAspectSlot.MODE_SET_ASPECT:
-				// Write the part
-				AbstractPacket.writePart( (AbstractAEPartBase)this.part, stream );
+		case PacketServerAspectSlot.MODE_SET_ASPECT:
+			// Write the part
+			AbstractPacket.writePart( (AbstractAEPartBase)this.part, stream );
 
-				// Write the index
-				stream.writeInt( this.index );
+			// Write the index
+			stream.writeInt( this.index );
 
-				// Write the aspect
-				AbstractPacket.writeAspect( this.aspect, stream );
-				break;
+			// Write the aspect
+			AbstractPacket.writeAspect( this.aspect, stream );
+			break;
 		}
 	}
 

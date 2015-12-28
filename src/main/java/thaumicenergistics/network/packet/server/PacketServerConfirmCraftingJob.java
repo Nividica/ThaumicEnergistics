@@ -88,7 +88,7 @@ public class PacketServerConfirmCraftingJob
 				}
 
 				final IGrid g = gn.getGrid();
-				if( g == null || cca.getItemToCraft() == null )
+				if( ( g == null ) || ( cca.getItemToCraft() == null ) )
 				{
 					return;
 				}

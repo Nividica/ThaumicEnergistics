@@ -138,20 +138,20 @@ public abstract class AbstractAEPartEssentiaIOBus
 		{
 			switch ( this.getRedstoneMode() )
 			{
-				case HIGH_SIGNAL:
-					canWork = this.isReceivingRedstonePower();
+			case HIGH_SIGNAL:
+				canWork = this.isReceivingRedstonePower();
 
-					break;
-				case IGNORE:
-					break;
+				break;
+			case IGNORE:
+				break;
 
-				case LOW_SIGNAL:
-					canWork = !this.isReceivingRedstonePower();
+			case LOW_SIGNAL:
+				canWork = !this.isReceivingRedstonePower();
 
-					break;
-				case SIGNAL_PULSE:
-					canWork = false;
-					break;
+				break;
+			case SIGNAL_PULSE:
+				canWork = false;
+				break;
 			}
 		}
 

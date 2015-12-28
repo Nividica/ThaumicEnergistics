@@ -45,21 +45,21 @@ public class TileAsItemRenderer
 		// Adjust position based on render type
 		switch ( type )
 		{
-			case ENTITY:
-				GL11.glTranslatef( -0.5F, -0.5F, -0.5F );
-				break;
+		case ENTITY:
+			GL11.glTranslatef( -0.5F, -0.5F, -0.5F );
+			break;
 
-			case EQUIPPED_FIRST_PERSON:
-				GL11.glTranslatef( 0.5F, 0.2F, 0.0F );
-				break;
+		case EQUIPPED_FIRST_PERSON:
+			GL11.glTranslatef( 0.5F, 0.2F, 0.0F );
+			break;
 
-			case INVENTORY:
-				GL11.glTranslatef( -0.5F, -0.5F, -0.5F );
-				break;
+		case INVENTORY:
+			GL11.glTranslatef( -0.5F, -0.5F, -0.5F );
+			break;
 
-			case FIRST_PERSON_MAP:
-			case EQUIPPED:
-				break;
+		case FIRST_PERSON_MAP:
+		case EQUIPPED:
+			break;
 		}
 
 		// Render the entity

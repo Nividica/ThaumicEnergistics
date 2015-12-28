@@ -21,10 +21,10 @@ public class PacketClientEssentiaStorageBus
 	{
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaStorageBus.MODE_SET_VOID:
-				// Read void mode
-				this.isVoidAllowed = stream.readBoolean();
-				break;
+		case PacketClientEssentiaStorageBus.MODE_SET_VOID:
+			// Read void mode
+			this.isVoidAllowed = stream.readBoolean();
+			break;
 		}
 	}
 
@@ -43,10 +43,10 @@ public class PacketClientEssentiaStorageBus
 
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaStorageBus.MODE_SET_VOID:
-				// Set void mode
-				( (GuiEssentiaStorageBus)gui ).onServerSentVoidMode( this.isVoidAllowed );
-				break;
+		case PacketClientEssentiaStorageBus.MODE_SET_VOID:
+			// Set void mode
+			( (GuiEssentiaStorageBus)gui ).onServerSentVoidMode( this.isVoidAllowed );
+			break;
 		}
 
 	}
@@ -56,10 +56,10 @@ public class PacketClientEssentiaStorageBus
 	{
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaStorageBus.MODE_SET_VOID:
-				// Write void mode
-				stream.writeBoolean( this.isVoidAllowed );
-				break;
+		case PacketClientEssentiaStorageBus.MODE_SET_VOID:
+			// Write void mode
+			stream.writeBoolean( this.isVoidAllowed );
+			break;
 		}
 	}
 

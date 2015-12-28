@@ -277,22 +277,22 @@ public class BlockEssentiaVibrationChamber
 		else
 		{
 			// Get the side index based on which direction the player is turned
-			int sideIndex = MathHelper.floor_double( ( player.rotationYaw * 4.0F / 360.0F ) + 0.5D ) & 3;
+			int sideIndex = MathHelper.floor_double( ( ( player.rotationYaw * 4.0F ) / 360.0F ) + 0.5D ) & 3;
 
 			switch ( sideIndex )
 			{
-				case 0:
-					face = ForgeDirection.NORTH;
-					break;
-				case 1:
-					face = ForgeDirection.EAST;
-					break;
-				case 2:
-					face = ForgeDirection.SOUTH;
-					break;
-				case 3:
-					face = ForgeDirection.WEST;
-					break;
+			case 0:
+				face = ForgeDirection.NORTH;
+				break;
+			case 1:
+				face = ForgeDirection.EAST;
+				break;
+			case 2:
+				face = ForgeDirection.SOUTH;
+				break;
+			case 3:
+				face = ForgeDirection.WEST;
+				break;
 			}
 		}
 

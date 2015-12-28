@@ -38,23 +38,23 @@ public class PacketClientEssentiaCellTerminal
 		{
 			switch ( this.mode )
 			{
-				case PacketClientEssentiaCellTerminal.MODE_FULL_LIST:
-					( (GuiEssentiaCellTerminal)gui ).onReceiveAspectList( this.aspectStackList );
-					break;
+			case PacketClientEssentiaCellTerminal.MODE_FULL_LIST:
+				( (GuiEssentiaCellTerminal)gui ).onReceiveAspectList( this.aspectStackList );
+				break;
 
-				case PacketClientEssentiaCellTerminal.MODE_SELECTED_ASPECT:
-					( (GuiEssentiaCellTerminal)gui ).onReceiveSelectedAspect( this.selectedAspect );
-					break;
+			case PacketClientEssentiaCellTerminal.MODE_SELECTED_ASPECT:
+				( (GuiEssentiaCellTerminal)gui ).onReceiveSelectedAspect( this.selectedAspect );
+				break;
 
-				case PacketClientEssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
-					// Update the sorting mode
-					( (GuiEssentiaCellTerminal)gui ).onSortModeChanged( this.sortMode );
-					break;
+			case PacketClientEssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
+				// Update the sorting mode
+				( (GuiEssentiaCellTerminal)gui ).onSortModeChanged( this.sortMode );
+				break;
 
-				case PacketClientEssentiaCellTerminal.MODE_LIST_CHANGED:
-					// Update the list
-					( (GuiEssentiaCellTerminal)gui ).onReceiveAspectListChange( this.change );
-					break;
+			case PacketClientEssentiaCellTerminal.MODE_LIST_CHANGED:
+				// Update the list
+				( (GuiEssentiaCellTerminal)gui ).onReceiveAspectListChange( this.change );
+				break;
 			}
 		}
 	}
@@ -124,27 +124,27 @@ public class PacketClientEssentiaCellTerminal
 
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaCellTerminal.MODE_FULL_LIST:
-				this.aspectStackList = new ArrayList<AspectStack>();
+		case PacketClientEssentiaCellTerminal.MODE_FULL_LIST:
+			this.aspectStackList = new ArrayList<AspectStack>();
 
-				while( stream.readableBytes() > 0 )
-				{
-					this.aspectStackList.add( new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() ) );
-				}
-				break;
+			while( stream.readableBytes() > 0 )
+			{
+				this.aspectStackList.add( new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() ) );
+			}
+			break;
 
-			case PacketClientEssentiaCellTerminal.MODE_SELECTED_ASPECT:
-				this.selectedAspect = AbstractPacket.readAspect( stream );
-				break;
+		case PacketClientEssentiaCellTerminal.MODE_SELECTED_ASPECT:
+			this.selectedAspect = AbstractPacket.readAspect( stream );
+			break;
 
-			case PacketClientEssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
-				// Read the mode ordinal
-				this.sortMode = ComparatorMode.VALUES[stream.readInt()];
-				break;
+		case PacketClientEssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
+			// Read the mode ordinal
+			this.sortMode = ComparatorMode.VALUES[stream.readInt()];
+			break;
 
-			case PacketClientEssentiaCellTerminal.MODE_LIST_CHANGED:
-				// Read the stack
-				this.change = new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() );
+		case PacketClientEssentiaCellTerminal.MODE_LIST_CHANGED:
+			// Read the stack
+			this.change = new AspectStack( AbstractPacket.readAspect( stream ), stream.readLong() );
 		}
 	}
 
@@ -154,30 +154,30 @@ public class PacketClientEssentiaCellTerminal
 
 		switch ( this.mode )
 		{
-			case PacketClientEssentiaCellTerminal.MODE_FULL_LIST:
-				for( AspectStack stack : this.aspectStackList )
-				{
-					AbstractPacket.writeAspect( stack.aspect, stream );
+		case PacketClientEssentiaCellTerminal.MODE_FULL_LIST:
+			for( AspectStack stack : this.aspectStackList )
+			{
+				AbstractPacket.writeAspect( stack.aspect, stream );
 
-					stream.writeLong( stack.stackSize );
-				}
-				break;
+				stream.writeLong( stack.stackSize );
+			}
+			break;
 
-			case PacketClientEssentiaCellTerminal.MODE_SELECTED_ASPECT:
-				AbstractPacket.writeAspect( this.selectedAspect, stream );
-				break;
+		case PacketClientEssentiaCellTerminal.MODE_SELECTED_ASPECT:
+			AbstractPacket.writeAspect( this.selectedAspect, stream );
+			break;
 
-			case PacketClientEssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
-				// Write the mode ordinal
-				stream.writeInt( this.sortMode.ordinal() );
-				break;
+		case PacketClientEssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
+			// Write the mode ordinal
+			stream.writeInt( this.sortMode.ordinal() );
+			break;
 
-			case PacketClientEssentiaCellTerminal.MODE_LIST_CHANGED:
-				// Write the aspect
-				AbstractPacket.writeAspect( this.change.aspect, stream );
+		case PacketClientEssentiaCellTerminal.MODE_LIST_CHANGED:
+			// Write the aspect
+			AbstractPacket.writeAspect( this.change.aspect, stream );
 
-				// Write the amount
-				stream.writeLong( this.change.stackSize );
+			// Write the amount
+			stream.writeLong( this.change.stackSize );
 		}
 	}
 }
