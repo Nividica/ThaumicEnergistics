@@ -24,7 +24,7 @@ import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.tc.DigiVisSourceData;
 import thaumicenergistics.integration.tc.IDigiVisSource;
-import thaumicenergistics.network.packet.server.PacketServerChangeGui;
+import thaumicenergistics.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.texture.BlockTextureManager;
@@ -572,8 +572,7 @@ public class AEPartArcaneCraftingTerminal
 		else
 		{
 			// Ask the server to change the GUI
-			new PacketServerChangeGui().createChangeGuiRequest( this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord )
-							.sendPacketToServer();
+			Packet_S_ChangeGui.sendGuiChange( this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
 		}
 	}
 

@@ -14,7 +14,7 @@ import thaumicenergistics.gui.buttons.GuiButtonSetCellPartitioningToCurrent;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotGui;
-import thaumicenergistics.network.packet.server.PacketServerEssentiaCellWorkbench;
+import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellWorkbench;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
@@ -227,20 +227,18 @@ public class GuiEssentiaCellWorkbench
 				// Add?
 				if( ( widgetAspect == null ) && ( itemAspect != null ) )
 				{
-					new PacketServerEssentiaCellWorkbench().createRequestAddAspect( this.player, this.workbench, itemAspect ).sendPacketToServer();
+					Packet_S_EssentiaCellWorkbench.sendAddAspect( this.player, this.workbench, itemAspect );
 				}
 				// Remove?
 				else if( ( widgetAspect != null ) && ( itemAspect == null ) )
 				{
-					new PacketServerEssentiaCellWorkbench().createRequestRemoveAspect( this.player, this.workbench, widgetAspect )
-									.sendPacketToServer();
+					Packet_S_EssentiaCellWorkbench.sendRemoveAspect( this.player, this.workbench, widgetAspect );
 
 				}
 				// Replace?
 				else if( ( widgetAspect != null ) && ( itemAspect != null ) )
 				{
-					new PacketServerEssentiaCellWorkbench().createRequestReplaceAspect( this.player, this.workbench, widgetAspect, itemAspect )
-									.sendPacketToServer();
+					Packet_S_EssentiaCellWorkbench.sendReplaceAspect( this.player, this.workbench, widgetAspect, itemAspect );
 
 				}
 
@@ -257,11 +255,11 @@ public class GuiEssentiaCellWorkbench
 		switch ( button.id )
 		{
 		case GuiEssentiaCellWorkbench.BUTTON_CLEAR_ID:
-			new PacketServerEssentiaCellWorkbench().createRequestClearPartitioning( this.player, this.workbench ).sendPacketToServer();
+			Packet_S_EssentiaCellWorkbench.sendClearPartitioning( this.player, this.workbench );
 			break;
 
 		case GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_ID:
-			new PacketServerEssentiaCellWorkbench().createRequestPartitionToContents( this.player, this.workbench ).sendPacketToServer();
+			Packet_S_EssentiaCellWorkbench.sendPartitionToContents( this.player, this.workbench );
 			break;
 		}
 	}
@@ -300,7 +298,7 @@ public class GuiEssentiaCellWorkbench
 						GuiEssentiaCellWorkbench.BUTTON_CLEAR_X, this.guiTop + GuiEssentiaCellWorkbench.BUTTON_CLEAR_Y ) );
 
 		// Request the list
-		new PacketServerEssentiaCellWorkbench().createRequestGetPartitionList( this.player, this.workbench ).sendPacketToServer();
+		Packet_S_EssentiaCellWorkbench.sendGetPartitionList( this.player, this.workbench );
 	}
 
 	/**

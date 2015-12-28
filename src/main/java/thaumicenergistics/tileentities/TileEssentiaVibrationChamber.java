@@ -13,7 +13,7 @@ import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.ContainerEssentiaVibrationChamber;
 import thaumicenergistics.integration.IWailaSource;
 import thaumicenergistics.integration.tc.EssentiaTransportHelper;
-import thaumicenergistics.network.packet.AbstractPacket;
+import thaumicenergistics.network.packet.ThEBasePacket;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.tileentities.abstraction.TileEVCBase;
 import appeng.api.config.Actionable;
@@ -451,7 +451,7 @@ public class TileEssentiaVibrationChamber
 		if( stream.readBoolean() )
 		{
 			// Read aspect
-			this.processingAspect = AbstractPacket.readAspect( stream );
+			this.processingAspect = ThEBasePacket.readAspect( stream );
 		}
 
 	}
@@ -470,7 +470,7 @@ public class TileEssentiaVibrationChamber
 		if( this.processingChanged )
 		{
 			// Write aspect
-			AbstractPacket.writeAspect( this.processingAspect, stream );
+			ThEBasePacket.writeAspect( this.processingAspect, stream );
 		}
 
 		this.processingChanged = false;

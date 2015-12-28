@@ -27,7 +27,7 @@ import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.gui.widget.WidgetAspectSelector;
 import thaumicenergistics.gui.widget.WidgetAspectSelectorComparator;
-import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
+import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.GuiTextureManager;
@@ -588,9 +588,8 @@ public class GuiEssentiaCellTerminal
 		if( button.id == GuiEssentiaCellTerminal.SORT_MODE_BUTTON_ID )
 		{
 			// Request update from server
-			new PacketServerEssentiaCellTerminal().createRequestChangeSortMode( this.player,
-				( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC ) )
-							.sendPacketToServer();
+			Packet_S_EssentiaCellTerminal.sendSortMode( this.player,
+				( this.sortMode == ComparatorMode.MODE_ALPHABETIC ? ComparatorMode.MODE_AMOUNT : ComparatorMode.MODE_ALPHABETIC ) );
 		}
 	}
 

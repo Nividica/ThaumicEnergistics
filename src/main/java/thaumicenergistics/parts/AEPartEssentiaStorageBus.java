@@ -18,8 +18,8 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.inventory.AbstractHandlerEssentiaStorageBus;
 import thaumicenergistics.inventory.HandlerEssentiaStorageBusDuality;
 import thaumicenergistics.network.IAspectSlotPart;
-import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaStorageBus;
+import thaumicenergistics.network.packet.client.Packet_C_AspectSlot;
+import thaumicenergistics.network.packet.client.Packet_C_EssentiaStorageBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import thaumicenergistics.util.EffectiveSide;
@@ -383,10 +383,10 @@ public class AEPartEssentiaStorageBus
 	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
 		// Send the void mode
-		new PacketClientEssentiaStorageBus().createSetIsVoidAllowed( player, this.handler.isVoidAllowed() ).sendPacketToPlayer();
+		Packet_C_EssentiaStorageBus.sendIsVoidAllowed( player, this.handler.isVoidAllowed() );
 
 		// Send the filter
-		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
+		Packet_C_AspectSlot.setFilterList( this.filteredAspects, player );
 	}
 
 	/**

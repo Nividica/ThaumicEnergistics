@@ -5,8 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
+import thaumicenergistics.network.packet.client.Packet_C_AspectSlot;
+import thaumicenergistics.network.packet.client.Packet_C_EssentiaIOBus;
 import thaumicenergistics.parts.AbstractAEPartEssentiaIOBus;
 import appeng.api.config.RedstoneMode;
 
@@ -111,22 +111,22 @@ public class ContainerPartEssentiaIOBus
 
 	public void setFilteredAspect( final List<Aspect> filteredAspects )
 	{
-		new PacketClientAspectSlot().createFilterListUpdate( filteredAspects, this.player ).sendPacketToPlayer();
+		Packet_C_AspectSlot.setFilterList( filteredAspects, this.player );
 	}
 
 	public void setFilterSize( final byte filterSize )
 	{
-		new PacketClientEssentiaIOBus().createSetFilterSize( this.player, filterSize ).sendPacketToPlayer();
+		Packet_C_EssentiaIOBus.sendFilterSize( this.player, filterSize );
 	}
 
 	public void setRedstoneControlled( final boolean isRedstoneControlled )
 	{
-		new PacketClientEssentiaIOBus().createSetRedstoneControlled( this.player, isRedstoneControlled ).sendPacketToPlayer();
+		Packet_C_EssentiaIOBus.sendRedstoneControlled( this.player, isRedstoneControlled );
 	}
 
 	public void setRedstoneMode( final RedstoneMode redstoneMode )
 	{
-		new PacketClientEssentiaIOBus().createSetRedstoneMode( this.player, redstoneMode ).sendPacketToPlayer();
+		Packet_C_EssentiaIOBus.sendRedstoneMode( this.player, redstoneMode );
 	}
 
 	/**

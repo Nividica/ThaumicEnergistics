@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
+import thaumicenergistics.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 
 public class ContainerPartEssentiaStorageBus
@@ -79,7 +79,7 @@ public class ContainerPartEssentiaStorageBus
 
 	public void setFilteredAspects( final List<Aspect> filteredAspects )
 	{
-		new PacketClientAspectSlot().createFilterListUpdate( filteredAspects, this.player ).sendPacketToPlayer();
+		Packet_C_AspectSlot.setFilterList( filteredAspects, this.player );
 	}
 
 	@Override

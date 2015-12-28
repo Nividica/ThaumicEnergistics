@@ -2,8 +2,8 @@ package thaumicenergistics.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
-import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
+import thaumicenergistics.network.packet.client.Packet_C_EssentiaCellTerminal;
+import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.networking.security.PlayerSource;
@@ -65,7 +65,7 @@ public class ContainerEssentiaTerminal
 		else
 		{
 			// Ask for a list update
-			new PacketServerEssentiaCellTerminal().createFullUpdateRequest( this.player ).sendPacketToServer();
+			Packet_S_EssentiaCellTerminal.sendFullUpdateRequest( this.player );
 			this.hasRequested = true;
 		}
 
@@ -96,7 +96,7 @@ public class ContainerEssentiaTerminal
 		// Send the aspect list
 		if( this.monitor != null )
 		{
-			new PacketClientEssentiaCellTerminal().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
+			Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.aspectStackList );
 		}
 	}
 
@@ -126,7 +126,7 @@ public class ContainerEssentiaTerminal
 	public void onSortingModeChanged( final ComparatorMode sortingMode )
 	{
 		// Inform the client
-		new PacketClientEssentiaCellTerminal().createSortModeUpdate( this.player, sortingMode ).sendPacketToPlayer();
+		Packet_C_EssentiaCellTerminal.setSortMode( this.player, sortingMode );
 	}
 
 }

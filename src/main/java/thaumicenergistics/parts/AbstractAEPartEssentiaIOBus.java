@@ -14,8 +14,8 @@ import thaumicenergistics.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.gui.GuiEssentiaIO;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotPart;
-import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
+import thaumicenergistics.network.packet.client.Packet_C_AspectSlot;
+import thaumicenergistics.network.packet.client.Packet_C_EssentiaIOBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.util.EffectiveSide;
@@ -410,10 +410,10 @@ public abstract class AbstractAEPartEssentiaIOBus
 	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
 		// Set the filter list
-		new PacketClientAspectSlot().createFilterListUpdate( this.filteredAspects, player ).sendPacketToPlayer();
+		Packet_C_AspectSlot.setFilterList( this.filteredAspects, player );
 
 		// Set the state of the bus
-		new PacketClientEssentiaIOBus().createFullUpdate( player, this.redstoneMode, this.filterSize, this.redstoneControlled ).sendPacketToPlayer();
+		Packet_C_EssentiaIOBus.sendBusState( player, this.redstoneMode, this.filterSize, this.redstoneControlled );
 	}
 
 	@Override

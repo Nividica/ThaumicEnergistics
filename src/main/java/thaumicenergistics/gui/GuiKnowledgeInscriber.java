@@ -11,7 +11,7 @@ import thaumicenergistics.container.ContainerKnowledgeInscriber;
 import thaumicenergistics.container.ContainerKnowledgeInscriber.CoreSaveState;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
 import thaumicenergistics.gui.buttons.GuiButtonSaveDelete;
-import thaumicenergistics.network.packet.server.PacketServerKnowledgeInscriber;
+import thaumicenergistics.network.packet.server.Packet_S_KnowledgeInscriber;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.GuiTextureManager;
 
@@ -129,7 +129,7 @@ public class GuiKnowledgeInscriber
 		if( button == this.saveButton )
 		{
 			// Send the request to the server
-			new PacketServerKnowledgeInscriber().createRequestSaveDelete( this.player ).sendPacketToServer();
+			Packet_S_KnowledgeInscriber.sendSaveDelete( this.player );
 		}
 	}
 
@@ -147,7 +147,7 @@ public class GuiKnowledgeInscriber
 		this.buttonList.add( this.saveButton );
 
 		// Request full update
-		new PacketServerKnowledgeInscriber().createRequestFullUpdate( this.player ).sendPacketToServer();
+		Packet_S_KnowledgeInscriber.sendFullUpdateRequest( this.player );
 	}
 
 	/**

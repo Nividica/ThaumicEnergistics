@@ -1,4 +1,7 @@
-﻿12/28/2015 0.9.1.1 - Beta
+﻿12/28/2015 0.9.1.2 - Beta
+  Complete network code overhaul.
+
+12/28/2015 0.9.1.1 - Beta
   Added a lot of safety checks to arcane patterns.
   Updated name of storage components and cells to better match AE2's.
   Fixes #260 - Players preferred item is now used in arcane patterns.

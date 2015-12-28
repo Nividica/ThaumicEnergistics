@@ -5,7 +5,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.api.ICraftingIssuerTerminalHost;
-import thaumicenergistics.network.packet.server.PacketServerConfirmCraftingJob;
+import thaumicenergistics.network.packet.server.Packet_S_ConfirmCraftingJob;
 import appeng.client.gui.implementations.GuiCraftAmount;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
@@ -67,7 +67,7 @@ public class GuiCraftAmountBridge
 				long amount = Long.parseLong( this.amountToCraft.getText() );
 
 				// Ask server to show confirm gui
-				new PacketServerConfirmCraftingJob().createRequestConfirmAutoCraft( this.player, amount, isShiftKeyDown() ).sendPacketToServer();
+				Packet_S_ConfirmCraftingJob.sendConfirmAutoCraft( this.player, amount, isShiftKeyDown() );
 			}
 			catch( final NumberFormatException e )
 			{

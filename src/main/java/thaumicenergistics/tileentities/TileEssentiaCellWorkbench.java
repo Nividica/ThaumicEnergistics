@@ -12,7 +12,7 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.items.ItemEssentiaCell;
-import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
+import thaumicenergistics.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.ISaveProvider;
@@ -224,7 +224,7 @@ public class TileEssentiaCellWorkbench
 		}
 
 		// Send to client
-		new PacketClientAspectSlot().createFilterListUpdate( partitionList, player ).sendPacketToPlayer();
+		Packet_C_AspectSlot.setFilterList( partitionList, player );
 	}
 
 	/**

@@ -14,8 +14,8 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.items.ItemEssentiaCell;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
-import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
+import thaumicenergistics.network.packet.client.Packet_C_EssentiaCellTerminal;
+import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.networking.security.IActionHost;
@@ -134,7 +134,7 @@ public class ContainerEssentiaCell
 		else
 		{
 			// Request a full update from the server
-			new PacketServerEssentiaCellTerminal().createFullUpdateRequest( player ).sendPacketToServer();
+			Packet_S_EssentiaCellTerminal.sendFullUpdateRequest( player );
 			this.hasRequested = true;
 		}
 
@@ -194,17 +194,17 @@ public class ContainerEssentiaCell
 		if( cellHandler != null )
 		{
 			// Send the sorting mode
-			new PacketClientEssentiaCellTerminal().createSortModeUpdate( this.player, cellHandler.getSortingMode() ).sendPacketToPlayer();
+			Packet_C_EssentiaCellTerminal.setSortMode( this.player, cellHandler.getSortingMode() );
 		}
 
 		// Send the list
 		if( ( this.monitor != null ) && ( this.hostChest.isPowered() ) )
 		{
-			new PacketClientEssentiaCellTerminal().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
+			Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.aspectStackList );
 		}
 		else
 		{
-			new PacketClientEssentiaCellTerminal().createUpdateFullList( this.player, new ArrayList<AspectStack>() ).sendPacketToPlayer();
+			Packet_C_EssentiaCellTerminal.sendFullList( this.player, new ArrayList<AspectStack>() );
 
 		}
 	}
@@ -219,7 +219,7 @@ public class ContainerEssentiaCell
 		cellHandler.setSortingMode( sortingMode );
 
 		// Send confirmation back to client
-		new PacketClientEssentiaCellTerminal().createSortModeUpdate( player, sortingMode ).sendPacketToPlayer();
+		Packet_C_EssentiaCellTerminal.setSortMode( player, sortingMode );
 	}
 
 	/**

@@ -17,7 +17,7 @@ import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
 import thaumicenergistics.integration.tc.ArcaneRecipeHelper;
 import thaumicenergistics.inventory.HandlerKnowledgeCore;
 import thaumicenergistics.items.ItemKnowledgeCore;
-import thaumicenergistics.network.packet.client.PacketClientKnowledgeInscriber;
+import thaumicenergistics.network.packet.client.Packet_C_KnowledgeInscriber;
 import thaumicenergistics.tileentities.TileKnowledgeInscriber;
 import thaumicenergistics.util.EffectiveSide;
 import appeng.api.storage.data.IAEItemStack;
@@ -435,7 +435,7 @@ public class ContainerKnowledgeInscriber
 	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
 		// Update the client
-		new PacketClientKnowledgeInscriber().createSendSaveState( player, this.getSaveState() ).sendPacketToPlayer();
+		Packet_C_KnowledgeInscriber.sendSaveState( player, this.getSaveState() );
 	}
 
 	/**

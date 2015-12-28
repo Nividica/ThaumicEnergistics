@@ -8,8 +8,8 @@ import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
-import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
+import thaumicenergistics.network.packet.client.Packet_C_EssentiaCellTerminal;
+import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.config.Actionable;
@@ -92,7 +92,7 @@ public class ContainerWirelessEssentiaTerminal
 		else
 		{
 			// Request a full update from the server
-			new PacketServerEssentiaCellTerminal().createFullUpdateRequest( player ).sendPacketToServer();
+			Packet_S_EssentiaCellTerminal.sendFullUpdateRequest( player );
 			this.hasRequested = true;
 		}
 	}
@@ -185,10 +185,10 @@ public class ContainerWirelessEssentiaTerminal
 	public void onClientRequestFullUpdate()
 	{
 		// Send the sorting mode
-		new PacketClientEssentiaCellTerminal().createSortModeUpdate( this.player, this.handler.getSortingMode() ).sendPacketToPlayer();
+		Packet_C_EssentiaCellTerminal.setSortMode( this.player, this.handler.getSortingMode() );
 
 		// Send the list
-		new PacketClientEssentiaCellTerminal().createUpdateFullList( this.player, this.aspectStackList ).sendPacketToPlayer();
+		Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.aspectStackList );
 	}
 
 	@Override
@@ -198,7 +198,7 @@ public class ContainerWirelessEssentiaTerminal
 		this.handler.setSortingMode( sortingMode );
 
 		// Send confirmation back to client
-		new PacketClientEssentiaCellTerminal().createSortModeUpdate( player, sortingMode ).sendPacketToPlayer();
+		Packet_C_EssentiaCellTerminal.setSortMode( player, sortingMode );
 	}
 
 	/**

@@ -2,7 +2,7 @@ package thaumicenergistics.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import thaumicenergistics.network.packet.client.PacketClientPriority;
+import thaumicenergistics.network.packet.client.Packet_C_Priority;
 import appeng.helpers.IPriorityHost;
 
 public class ContainerPriority
@@ -34,7 +34,7 @@ public class ContainerPriority
 	private void sendPriorityToClient()
 	{
 		// Send the priority to the client
-		new PacketClientPriority().createSendPriority( this.host.getPriority(), this.player ).sendPacketToPlayer();
+		Packet_C_Priority.sendPriority( this.host.getPriority(), this.player );
 	}
 
 	/**

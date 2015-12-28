@@ -22,7 +22,7 @@ import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.tc.ArcaneRecipeHelper;
-import thaumicenergistics.network.packet.client.PacketClientArcaneCraftingTerminal;
+import thaumicenergistics.network.packet.client.Packet_C_ArcaneCraftingTerminal;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.GuiHelper;
@@ -1027,7 +1027,7 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 
 		// Send the update to the client
-		new PacketClientArcaneCraftingTerminal().createPlayerHoldingUpdate( player, leftOverStack ).sendPacketToPlayer();
+		Packet_C_ArcaneCraftingTerminal.setPlayerHeldItem( player, leftOverStack );
 	}
 
 	/**
@@ -1234,8 +1234,8 @@ public class ContainerPartArcaneCraftingTerminal
 			this.monitor.extractItems( toExtract, Actionable.MODULATE, this.playerSource );
 
 			// Send the update to the client
-			new PacketClientArcaneCraftingTerminal().createPlayerHoldingUpdate( player,
-				AEApi.instance().storage().createItemStack( player.inventory.getItemStack() ) ).sendPacketToPlayer();
+			Packet_C_ArcaneCraftingTerminal.setPlayerHeldItem( player,
+				AEApi.instance().storage().createItemStack( player.inventory.getItemStack() ) );
 		}
 
 	}
@@ -1248,8 +1248,8 @@ public class ContainerPartArcaneCraftingTerminal
 	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
 		// Send the sorting info
-		new PacketClientArcaneCraftingTerminal().createSortingUpdate( player, this.arcaneCraftingTerminalPart.getSortingOrder(),
-			this.arcaneCraftingTerminalPart.getSortingDirection(), this.arcaneCraftingTerminalPart.getViewMode() ).sendPacketToPlayer();
+		Packet_C_ArcaneCraftingTerminal.sendModeChange( player, this.arcaneCraftingTerminalPart.getSortingOrder(),
+			this.arcaneCraftingTerminalPart.getSortingDirection(), this.arcaneCraftingTerminalPart.getViewMode() );
 
 		// Ensure we have a monitor
 		if( this.monitor != null )
@@ -1258,7 +1258,7 @@ public class ContainerPartArcaneCraftingTerminal
 			IItemList<IAEItemStack> fullList = this.monitor.getStorageList();
 
 			// Send to the client
-			new PacketClientArcaneCraftingTerminal().createFullListUpdate( player, fullList ).sendPacketToPlayer();
+			Packet_C_ArcaneCraftingTerminal.sendAllNetworkItems( player, fullList );
 		}
 	}
 
@@ -1284,7 +1284,7 @@ public class ContainerPartArcaneCraftingTerminal
 	{
 		this.arcaneCraftingTerminalPart.swapStoredArmor( player );
 		this.detectAndSendChanges();
-		new PacketClientArcaneCraftingTerminal().createUpdateAspectCost( player ).sendPacketToPlayer();
+		Packet_C_ArcaneCraftingTerminal.updateAspectCost( player );
 	}
 
 	/**
@@ -1391,7 +1391,7 @@ public class ContainerPartArcaneCraftingTerminal
 			}
 
 			// Send the change to the client
-			new PacketClientArcaneCraftingTerminal().createChangeUpdate( this.player, newAmount ).sendPacketToPlayer();
+			Packet_C_ArcaneCraftingTerminal.stackAmountChanged( this.player, newAmount );
 		}
 	}
 

@@ -10,8 +10,8 @@ import thaumicenergistics.container.ContainerPriority;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
 import thaumicenergistics.gui.buttons.GuiButtonAETab;
 import thaumicenergistics.gui.widget.DigitTextField;
-import thaumicenergistics.network.packet.server.PacketServerChangeGui;
-import thaumicenergistics.network.packet.server.PacketServerPriority;
+import thaumicenergistics.network.packet.server.Packet_S_ChangeGui;
+import thaumicenergistics.network.packet.server.Packet_S_Priority;
 import thaumicenergistics.parts.AbstractAEPartBase;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
@@ -292,7 +292,7 @@ public class GuiPriority
 			}
 
 			// Update the server
-			new PacketServerPriority().createRequestSetPriority( newPriority, this.player ).sendPacketToServer();
+			Packet_S_Priority.sendPriority( newPriority, this.player );
 		}
 	}
 
@@ -309,8 +309,7 @@ public class GuiPriority
 			TileEntity host = this.part.getHostTile();
 
 			// Ask the server to change to the priority gui
-			new PacketServerChangeGui().createChangeGuiRequest( this.part, this.player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord )
-							.sendPacketToServer();
+			Packet_S_ChangeGui.sendGuiChange( this.part, this.player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
 			return;
 
 		}
@@ -322,7 +321,7 @@ public class GuiPriority
 			AdjustmentButtonDef abDef = GuiPriority.ADJUSTMENT_BUTTONS[button.id - GuiPriority.ADJUSTMENT_BUTTONS_ID];
 
 			// Send the adjustment to the server
-			new PacketServerPriority().createRequestAdjustPriority( abDef.amount, this.player ).sendPacketToServer();
+			Packet_S_Priority.sendPriorityDelta( abDef.amount, this.player );
 		}
 		catch( IndexOutOfBoundsException e )
 		{
@@ -385,7 +384,7 @@ public class GuiPriority
 		this.amountField.setTextColor( 0xFFFFFFFF );
 
 		// Ask for the priority from the server
-		new PacketServerPriority().createRequestPriority( this.player ).sendPacketToServer();
+		Packet_S_Priority.sendPriorityRequest( this.player );
 	}
 
 	/**

@@ -17,8 +17,8 @@ import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotGui;
-import thaumicenergistics.network.packet.server.PacketServerChangeGui;
-import thaumicenergistics.network.packet.server.PacketServerEssentiaStorageBus;
+import thaumicenergistics.network.packet.server.Packet_S_ChangeGui;
+import thaumicenergistics.network.packet.server.Packet_S_EssentiaStorageBus;
 import thaumicenergistics.parts.AEPartEssentiaStorageBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.AEStateIconsEnum;
@@ -281,8 +281,8 @@ public class GuiEssentiaStorageBus
 			ForgeDirection side = this.storageBus.getSide();
 
 			// Ask the server to change to the priority gui
-			new PacketServerChangeGui().createChangeGuiRequest( ThEGuiHandler.generateSidedID( ThEGuiHandler.PRIORITY_ID, side ), this.player,
-				host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord ).sendPacketToServer();
+			Packet_S_ChangeGui.sendGuiChange( ThEGuiHandler.generateSidedID( ThEGuiHandler.PRIORITY_ID, side ), this.player,
+				host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
 
 		}
 		else if( button.id == GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID )
@@ -294,7 +294,7 @@ public class GuiEssentiaStorageBus
 			( (GuiButtonAllowVoid)this.buttonList.get( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID ) ).isVoidAllowed = this.isVoidAllowed;
 
 			// Update the server
-			new PacketServerEssentiaStorageBus().createRequestSetVoidAllowed( this.player, this.storageBus, this.isVoidAllowed ).sendPacketToServer();
+			Packet_S_EssentiaStorageBus.setVoidAllowed( this.player, this.storageBus, this.isVoidAllowed );
 		}
 
 	}
@@ -325,7 +325,7 @@ public class GuiEssentiaStorageBus
 						GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_X_POS, this.guiTop + GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_Y_POS ) );
 
 		// Request an update
-		new PacketServerEssentiaStorageBus().createRequestFullUpdate( this.player, this.storageBus ).sendPacketToServer();
+		Packet_S_EssentiaStorageBus.sendFullUpdateRequest( this.player, this.storageBus );
 	}
 
 	/**

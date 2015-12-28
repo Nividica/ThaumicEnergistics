@@ -10,7 +10,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.tiles.TileJarFillableVoid;
 import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaIOBus;
+import thaumicenergistics.network.packet.client.Packet_C_EssentiaIOBus;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;
 import appeng.api.config.Actionable;
@@ -44,7 +44,7 @@ public class AEPartEssentiaExportBus
 	 */
 	private void sendVoidModeToClient( final EntityPlayer player )
 	{
-		new PacketClientEssentiaIOBus().createVoidModeUpdate( player, this.isVoidAllowed ).sendPacketToPlayer();
+		Packet_C_EssentiaIOBus.sendVoidMode( player, this.isVoidAllowed );
 	}
 
 	@Override

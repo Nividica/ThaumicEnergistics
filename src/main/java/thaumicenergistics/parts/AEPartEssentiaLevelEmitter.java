@@ -22,8 +22,8 @@ import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.gui.GuiEssentiaLevelEmitter;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotPart;
-import thaumicenergistics.network.packet.client.PacketClientAspectSlot;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaEmitter;
+import thaumicenergistics.network.packet.client.Packet_C_AspectSlot;
+import thaumicenergistics.network.packet.client.Packet_C_EssentiaEmitter;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.texture.BlockTextureManager;
@@ -339,7 +339,7 @@ public class AEPartEssentiaLevelEmitter
 		this.markForSave();
 
 		// Send validated amount back to the client
-		new PacketClientEssentiaEmitter().createWantedAmountUpdate( this.wantedAmount, player ).sendPacketToPlayer();
+		Packet_C_EssentiaEmitter.setWantedAmount( this.wantedAmount, player );
 
 		// Check if we should be emitting
 		this.updateEmittingState();
@@ -371,7 +371,7 @@ public class AEPartEssentiaLevelEmitter
 		this.updateEmittingState();
 
 		// Send the new mode to the client
-		new PacketClientEssentiaEmitter().createRedstoneModeUpdate( this.redstoneMode, player ).sendPacketToPlayer();
+		Packet_C_EssentiaEmitter.sendRedstoneMode( this.redstoneMode, player );
 
 	}
 
@@ -383,12 +383,12 @@ public class AEPartEssentiaLevelEmitter
 	public void onClientUpdateRequest( final EntityPlayer player )
 	{
 		// Send the full update to the client
-		new PacketClientEssentiaEmitter().createFullUpdate( this.redstoneMode, this.wantedAmount, player ).sendPacketToPlayer();
+		Packet_C_EssentiaEmitter.sendEmitterState( this.redstoneMode, this.wantedAmount, player );
 
 		// Send the filter to the client
 		List<Aspect> filter = new ArrayList<Aspect>();
 		filter.add( this.trackedEssentia );
-		new PacketClientAspectSlot().createFilterListUpdate( filter, player ).sendPacketToPlayer();
+		Packet_C_AspectSlot.setFilterList( filter, player );
 	}
 
 	/**
@@ -399,26 +399,6 @@ public class AEPartEssentiaLevelEmitter
 	{
 		this.setCurrentAmount( storedAmount );
 	}
-
-	// TODO: Remove debug code
-	/*
-	@Override
-	public boolean onShiftActivate( final EntityPlayer player, final Vec3 position )
-	{
-		if( EffectiveSide.isClientSide() )
-		{
-			player.addChatMessage( new ChatComponentTranslation( "--", (Object)null ) );
-			player.addChatMessage( new ChatComponentTranslation( "Threshold Amount: " + this.wantedAmount, (Object)null ) );
-			player.addChatMessage( new ChatComponentTranslation( "Aspect: " +
-							( this.trackedEssentia == null ? "None" : this.trackedEssentia.getName() ), (Object)null ) );
-			player.addChatMessage( new ChatComponentTranslation( "Network Amount: " + this.currentAmount, (Object)null ) );
-			player.addChatMessage( new ChatComponentTranslation( "Emitting: " + ( this.isEmitting ? "Yes" : "No" ), (Object)null ) );
-			player.addChatMessage( new ChatComponentTranslation( "Completed Stage: " + this.debugTrackingStage, (Object)null ) );
-			player.addChatMessage( new ChatComponentTranslation( "Monitor ID: " + this.debugMonID, (Object)null ) );
-		}
-		return false;
-	}
-	*/
 
 	/**
 	 * Spawns redstone particles when emitting
@@ -590,7 +570,7 @@ public class AEPartEssentiaLevelEmitter
 			// Send the aspect to the client
 			List<Aspect> filter = new ArrayList<Aspect>();
 			filter.add( aspect );
-			new PacketClientAspectSlot().createFilterListUpdate( filter, player ).sendPacketToPlayer();
+			Packet_C_AspectSlot.setFilterList( filter, player );
 		}
 	}
 

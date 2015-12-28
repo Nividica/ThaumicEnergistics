@@ -26,7 +26,7 @@ import thaumicenergistics.gui.buttons.GuiButtonViewType;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
 import thaumicenergistics.integration.tc.MEItemAspectBridgeContainer;
-import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
+import thaumicenergistics.network.packet.server.Packet_S_ArcaneCraftingTerminal;
 import thaumicenergistics.parts.AEPartArcaneCraftingTerminal;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
@@ -213,7 +213,7 @@ public class GuiArcaneCraftingTerminal
 			if( slotClicked != null )
 			{
 				// Ask the server to move the inventory
-				new PacketServerArcaneCraftingTerminal().createRequestDepositRegion( this.player, slotClicked.slotNumber ).sendPacketToServer();
+				Packet_S_ArcaneCraftingTerminal.sendDepositRegion( this.player, slotClicked.slotNumber );
 
 				// Do not pass to super
 				return true;
@@ -287,7 +287,7 @@ public class GuiArcaneCraftingTerminal
 			else
 			{
 				// Inform the server the user would like to deposit the currently held item into the ME network.
-				new PacketServerArcaneCraftingTerminal().createRequestDeposit( this.player, mouseButton ).sendPacketToServer();
+				Packet_S_ArcaneCraftingTerminal.sendDeposit( this.player, mouseButton );
 			}
 
 			// Do not pass to super
@@ -321,7 +321,7 @@ public class GuiArcaneCraftingTerminal
 				if( this.player.inventory.getItemStack() != null )
 				{
 					// Inform the server the user would like to deposit 1 of the currently held items into the ME network.
-					new PacketServerArcaneCraftingTerminal().createRequestDeposit( this.player, GuiHelper.MOUSE_WHEEL_MOTION ).sendPacketToServer();
+					Packet_S_ArcaneCraftingTerminal.sendDeposit( this.player, GuiHelper.MOUSE_WHEEL_MOTION );
 				}
 			}
 			else
@@ -443,7 +443,7 @@ public class GuiArcaneCraftingTerminal
 					{
 						if( ( widgetStack.isCraftable() ) && ( mouseButton != GuiHelper.MOUSE_BUTTON_RIGHT ) )
 						{
-							new PacketServerArcaneCraftingTerminal().createRequestAutoCraft( this.player, widgetStack ).sendPacketToServer();
+							Packet_S_ArcaneCraftingTerminal.sendAutoCraft( this.player, widgetStack );
 						}
 					}
 					else
@@ -452,8 +452,7 @@ public class GuiArcaneCraftingTerminal
 						boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
 
 						// Let the server know the user is requesting an itemstack.
-						new PacketServerArcaneCraftingTerminal().createRequestExtract( this.player, widgetStack, mouseButton, isShiftHeld )
-										.sendPacketToServer();
+						Packet_S_ArcaneCraftingTerminal.sendExtract( this.player, widgetStack, mouseButton, isShiftHeld );
 					}
 				}
 
@@ -884,7 +883,7 @@ public class GuiArcaneCraftingTerminal
 		// Clear grid
 		case AbstractGuiConstantsACT.BUTTON_CLEAR_GRID_ID:
 			// Attempt to clear the grid
-			new PacketServerArcaneCraftingTerminal().createRequestClearGrid( this.player ).sendPacketToServer();
+			Packet_S_ArcaneCraftingTerminal.sendClearGrid( this.player );
 			break;
 
 		// Sort order
@@ -937,7 +936,7 @@ public class GuiArcaneCraftingTerminal
 		// Swap armor
 		case AbstractGuiConstantsACT.BUTTON_SWAP_ARMOR_ID:
 			// Ask the server to swap the armor
-			new PacketServerArcaneCraftingTerminal().createSwapArmorRequest( this.player ).sendPacketToServer();
+			Packet_S_ArcaneCraftingTerminal.sendSwapArmor( this.player );
 			break;
 
 		// Terminal style
@@ -998,8 +997,7 @@ public class GuiArcaneCraftingTerminal
 			this.lastTooltipUpdateTime = 0;
 
 			// Send to server
-			new PacketServerArcaneCraftingTerminal().createRequestSetSort( this.player, this.sortingOrder, this.sortingDirection, this.viewMode )
-							.sendPacketToServer();
+			Packet_S_ArcaneCraftingTerminal.sendMode( this.player, this.sortingOrder, this.sortingDirection, this.viewMode );
 		}
 	}
 
@@ -1180,7 +1178,7 @@ public class GuiArcaneCraftingTerminal
 		( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).registerForUpdates();
 
 		// Request a full update from the server
-		new PacketServerArcaneCraftingTerminal().createRequestFullList( this.player ).sendPacketToServer();
+		Packet_S_ArcaneCraftingTerminal.sendFullListRequest( this.player );
 
 	}
 

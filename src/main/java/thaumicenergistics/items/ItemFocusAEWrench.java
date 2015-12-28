@@ -20,8 +20,8 @@ import thaumcraft.api.wands.ItemFocusBasic;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumcraft.common.tiles.TilePedestal;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.network.packet.client.PacketAreaParticleFX;
-import thaumicenergistics.network.packet.server.PacketServerWrenchFocus;
+import thaumicenergistics.network.packet.client.Packet_R_ParticleFX;
+import thaumicenergistics.network.packet.server.Packet_S_WrenchFocus;
 import thaumicenergistics.registries.FeatureRegistry;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.util.ThEUtils;
@@ -73,8 +73,9 @@ public class ItemFocusAEWrench
 		wand.consumeAllVis( wandStack, player, ItemFocusAEWrench.castCost, true, false );
 
 		// Spawn beam
-		new PacketAreaParticleFX().createWrenchFX( player.worldObj, player.posX, player.posY, player.posZ, beamX, beamY, beamZ, Aspect.ENERGY )
-						.sendToAllAround( 20 );
+		Packet_R_ParticleFX.createWrenchFX(
+			player.worldObj, player.posX, player.posY, player.posZ,
+			beamX, beamY, beamZ, Aspect.ENERGY, 20 );
 	}
 
 	private static ItemStack getWrench()
@@ -232,7 +233,7 @@ public class ItemFocusAEWrench
 			// Send packet if client side
 			if( world.isRemote )
 			{
-				new PacketServerWrenchFocus().createWrenchFocusRequest( player, position ).sendPacketToServer();
+				Packet_S_WrenchFocus.sendWrenchFocusRequest( player, position );
 			}
 
 			return true;

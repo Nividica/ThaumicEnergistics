@@ -15,7 +15,7 @@ import thaumicenergistics.gui.widget.DigitTextField;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotGui;
-import thaumicenergistics.network.packet.server.PacketServerEssentiaEmitter;
+import thaumicenergistics.network.packet.server.Packet_S_EssentiaEmitter;
 import thaumicenergistics.parts.AEPartEssentiaLevelEmitter;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
@@ -289,7 +289,7 @@ public class GuiEssentiaLevelEmitter
 			}
 
 			// Update the server
-			new PacketServerEssentiaEmitter().createWantedAmountUpdate( wantedAmount, this.part, this.player ).sendPacketToServer();
+			Packet_S_EssentiaEmitter.sendWantedAmount( wantedAmount, this.part, this.player );
 		}
 	}
 
@@ -328,7 +328,7 @@ public class GuiEssentiaLevelEmitter
 				int adjustment = Integer.parseInt( button.displayString );
 
 				// Update the server
-				new PacketServerEssentiaEmitter().createWantedAmountAdjustment( adjustment, this.part, this.player ).sendPacketToServer();
+				Packet_S_EssentiaEmitter.sendWantedAmountDelta( adjustment, this.part, this.player );
 			}
 			catch( NumberFormatException e )
 			{
@@ -338,7 +338,7 @@ public class GuiEssentiaLevelEmitter
 		else if( index == GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX )
 		{
 			// Update the server
-			new PacketServerEssentiaEmitter().createRedstoneModeToggle( this.part, this.player ).sendPacketToServer();
+			Packet_S_EssentiaEmitter.sendRedstoneModeToggle( this.part, this.player );
 		}
 	}
 
@@ -428,7 +428,7 @@ public class GuiEssentiaLevelEmitter
 						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, RedstoneMode.LOW_SIGNAL, true ) );
 
 		// Request an update from the server
-		new PacketServerEssentiaEmitter().createUpdateRequest( this.part, this.player ).sendPacketToServer();
+		Packet_S_EssentiaEmitter.sendUpdateRequest( this.part, this.player );
 	}
 
 	/**

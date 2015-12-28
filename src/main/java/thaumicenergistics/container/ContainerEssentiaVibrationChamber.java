@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaVibrationChamber;
+import thaumicenergistics.network.packet.client.Packet_C_EssentiaVibrationChamber;
 import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
 import thaumicenergistics.tileentities.abstraction.TileEVCBase;
 import thaumicenergistics.util.EffectiveSide;
@@ -179,8 +179,9 @@ public class ContainerEssentiaVibrationChamber
 		if( EffectiveSide.isServerSide() )
 		{
 			// Send update packet
-			PacketClientEssentiaVibrationChamber updatePacket = new PacketClientEssentiaVibrationChamber();
-			updatePacket.createUpdatePacket( this.player, powerPerTick, maxPowerPerTick, ticksRemaining, totalTicks ).sendPacketToPlayer();
+			Packet_C_EssentiaVibrationChamber.sendUpdate(
+				this.player, powerPerTick,
+				maxPowerPerTick, ticksRemaining, totalTicks );
 		}
 		else
 		{

@@ -11,7 +11,7 @@ import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
-import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
+import thaumicenergistics.network.packet.server.Packet_S_ArcaneCraftingTerminal;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.IGrid;
@@ -195,8 +195,7 @@ public class ThEInteractionHelper
 			// Send the list to the server
 			if( hasItems )
 			{
-				new PacketServerArcaneCraftingTerminal().createNEIRequestSetCraftingGrid( Minecraft.getMinecraft().thePlayer, items )
-								.sendPacketToServer();
+				Packet_S_ArcaneCraftingTerminal.sendSetCrafting_NEI( Minecraft.getMinecraft().thePlayer, items );
 			}
 		}
 		catch( Exception e )

@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
-import thaumicenergistics.network.packet.server.PacketServerArcaneCraftingTerminal;
+import thaumicenergistics.network.packet.server.Packet_S_ArcaneCraftingTerminal;
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import codechicken.nei.PositionedStack;
@@ -138,8 +138,7 @@ public class ModuleNEI
 		protected void addItemsToGUI( final IAEItemStack[] overlayItems )
 		{
 			// Send the list to the server
-			new PacketServerArcaneCraftingTerminal().createNEIRequestSetCraftingGrid( Minecraft.getMinecraft().thePlayer, overlayItems )
-							.sendPacketToServer();
+			Packet_S_ArcaneCraftingTerminal.sendSetCrafting_NEI( Minecraft.getMinecraft().thePlayer, overlayItems );
 		}
 
 		@Override

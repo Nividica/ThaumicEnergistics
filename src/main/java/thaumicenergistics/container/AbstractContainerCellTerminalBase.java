@@ -19,8 +19,8 @@ import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.grid.IMEEssentiaMonitorReceiver;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
-import thaumicenergistics.network.packet.client.PacketClientEssentiaCellTerminal;
-import thaumicenergistics.network.packet.server.PacketServerEssentiaCellTerminal;
+import thaumicenergistics.network.packet.client.Packet_C_EssentiaCellTerminal;
+import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import thaumicenergistics.util.PrivateInventory;
@@ -1009,7 +1009,7 @@ public abstract class AbstractContainerCellTerminalBase
 		if( EffectiveSide.isServerSide() )
 		{
 			// Send the change back to the client
-			new PacketClientEssentiaCellTerminal().createSelectedAspectUpdate( this.player, this.selectedAspect ).sendPacketToPlayer();
+			Packet_C_EssentiaCellTerminal.setSelectedAspect( this.player, this.selectedAspect );
 		}
 	}
 
@@ -1030,7 +1030,7 @@ public abstract class AbstractContainerCellTerminalBase
 		for( AspectStack change : changes )
 		{
 			// Update the client
-			new PacketClientEssentiaCellTerminal().createListChanged( this.player, change ).sendPacketToPlayer();
+			Packet_C_EssentiaCellTerminal.setAspectAmount( this.player, change );
 		}
 	}
 
@@ -1041,7 +1041,7 @@ public abstract class AbstractContainerCellTerminalBase
 	@Override
 	public void setSelectedAspect( final Aspect selectedAspect )
 	{
-		new PacketServerEssentiaCellTerminal().createUpdateSelectedAspect( this.player, selectedAspect ).sendPacketToServer();
+		Packet_S_EssentiaCellTerminal.sendSelectedAspect( this.player, selectedAspect );
 	}
 
 	@Override

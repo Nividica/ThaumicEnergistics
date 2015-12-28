@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.network.IAspectSlotPart;
-import thaumicenergistics.network.packet.server.PacketServerAspectSlot;
+import thaumicenergistics.network.packet.server.Packet_S_AspectSlot;
 import thaumicenergistics.texture.GuiTextureManager;
 
 public class WidgetAspectSlot
@@ -111,6 +111,6 @@ public class WidgetAspectSlot
 	{
 		this.setAspect( withAspect );
 
-		new PacketServerAspectSlot().createUpdatePartAspect( this.part, this.id, this.getAspect(), this.player ).sendPacketToServer();
+		Packet_S_AspectSlot.sendAspectChange( this.part, this.id, this.getAspect(), this.player );
 	}
 }

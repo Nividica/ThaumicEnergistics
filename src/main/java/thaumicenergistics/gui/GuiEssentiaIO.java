@@ -15,7 +15,7 @@ import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.network.IAspectSlotGui;
-import thaumicenergistics.network.packet.server.PacketServerEssentiaIOBus;
+import thaumicenergistics.network.packet.server.Packet_S_EssentiaIOBus;
 import thaumicenergistics.parts.AEPartEssentiaExportBus;
 import thaumicenergistics.parts.AEPartEssentiaImportBus;
 import thaumicenergistics.parts.AbstractAEPartEssentiaIOBus;
@@ -323,14 +323,14 @@ public class GuiEssentiaIO
 		// Was the clicked button the redstone mode button?
 		if( button.id == GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_ID )
 		{
-			new PacketServerEssentiaIOBus().createRequestChangeRedstoneMode( this.player, this.part ).sendPacketToServer();
+			Packet_S_EssentiaIOBus.sendRedstoneModeChange( this.player, this.part );
 		}
 		// Void button?
 		else if( button.id == GuiEssentiaIO.ALLOW_VOID_BUTTON_ID )
 		{
 			if( this.part instanceof AEPartEssentiaExportBus )
 			{
-				new PacketServerEssentiaIOBus().createRequestChangeVoidMode( this.player, (AEPartEssentiaExportBus)this.part ).sendPacketToServer();
+				Packet_S_EssentiaIOBus.sendVoidModeChange( this.player, (AEPartEssentiaExportBus)this.part );
 			}
 		}
 	}
@@ -383,7 +383,7 @@ public class GuiEssentiaIO
 		}
 
 		// Request a full update from the server
-		new PacketServerEssentiaIOBus().createRequestFullUpdate( this.player, this.part ).sendPacketToServer();
+		Packet_S_EssentiaIOBus.sendFullUpdateRequest( this.player, this.part );
 
 	}
 

@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
-import thaumicenergistics.network.packet.AbstractPacket;
+import thaumicenergistics.network.packet.ThEBasePacket;
 import thaumicenergistics.util.GuiHelper;
 
 /**
@@ -225,7 +225,7 @@ public class AspectStack
 	public void readFromStream( final ByteBuf stream )
 	{
 		// Read the aspect
-		this.aspect = AbstractPacket.readAspect( stream );
+		this.aspect = ThEBasePacket.readAspect( stream );
 
 		// Read the amount
 		this.stackSize = stream.readLong();
@@ -259,7 +259,7 @@ public class AspectStack
 	public void writeToStream( final ByteBuf stream )
 	{
 		// Write the aspect
-		AbstractPacket.writeAspect( this.aspect, stream );
+		ThEBasePacket.writeAspect( this.aspect, stream );
 
 		// Write the stored amount
 		stream.writeLong( this.stackSize );
