@@ -311,7 +311,7 @@ public class TileArcaneAssembler
 			try
 			{
 				// Get the storage grid
-				IStorageGrid storageGrid = this.getGridProxy().getStorage();
+				IStorageGrid storageGrid = this.getProxy().getStorage();
 
 				// Simulate placing the items
 				IAEItemStack rejected = storageGrid.getItemInventory().injectItems( this.currentPattern.getResult(), Actionable.SIMULATE,
