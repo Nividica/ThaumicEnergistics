@@ -2,16 +2,27 @@ package thaumicenergistics.grid;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.items.ItemCraftingAspect;
+import thaumicenergistics.registries.ItemEnum;
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
+import appeng.api.networking.crafting.ICraftingCPU;
+import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPostCacheConstruction;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Creates an essentia monitor for the attached grid.
@@ -207,6 +218,11 @@ public class GridEssentiaCache
 	 */
 	private final WatcherManager watcherManger;
 
+	/**
+	 * The 'result' of essentia crafting operations.
+	 */
+	private final ItemStack aspectItem;
+
 	public GridEssentiaCache( final IGrid grid )
 	{
 		// Set the grid
@@ -214,6 +230,9 @@ public class GridEssentiaCache
 
 		// Create the watcher manager
 		this.watcherManger = new WatcherManager();
+
+		// Set the aspect item
+		this.aspectItem = ItemEnum.CRAFTING_ASPECT.getStack();
 	}
 
 	@Override
@@ -234,6 +253,73 @@ public class GridEssentiaCache
 			// Inform the host it has a watcher
 			host.updateWatcher( watcher );
 		}
+	}
+
+	@Override
+	public long injectEssentia( final Aspect aspect, final long amount, final Actionable mode, final BaseActionSource source, final boolean powered )
+	{
+		// Call super
+		long amountRejected = super.injectEssentia( aspect, amount, mode, source, powered );
+
+		if( ( mode == Actionable.MODULATE ) && ( amountRejected < amount ) )
+		{
+			// Get the crafting grid
+			ICraftingGrid craftingGrid = this.internalGrid.getCache( ICraftingGrid.class );
+
+			// Get the CPU list
+			ImmutableSet<ICraftingCPU> cpus = craftingGrid.getCpus();
+
+			// Are there any crafting CPU's?
+			if( cpus.size() > 0 )
+			{
+				// Set the aspect
+				ItemCraftingAspect.setAspect( this.aspectItem, aspect );
+
+				// Delay creating this as long as possible
+				IAEItemStack aspectAEItem = null;
+
+				// Set the amounts
+				long amountToInject = amount - amountRejected;
+
+				// Are any CPU's waiting for this?
+				for( ICraftingCPU cpu : cpus )
+				{
+					// Is the cpu crafting, and is it a cluster?
+					if( cpu.isBusy() && ( cpu instanceof CraftingCPUCluster ) )
+					{
+						if( aspectAEItem == null )
+						{
+							// Create AE version
+							aspectAEItem = AEApi.instance().storage().createItemStack( this.aspectItem );
+							aspectAEItem.setStackSize( 1 );
+						}
+
+						// Cast
+						CraftingCPUCluster cluster = (CraftingCPUCluster)cpu;
+
+						// Is the cluster waiting for an aspect item?
+						if( cluster.isMaking( aspectAEItem ) )
+						{
+							// Not a fan of the loop, but inject items doesn't return anything useful
+							for( ; ( amountToInject > 0 ) && ( cluster.isBusy() ); --amountToInject )
+							{
+								// Inject the aspect item
+								cluster.injectItems( aspectAEItem, mode, source );
+							}
+
+							// Has everything been accounted for?
+							if( amountToInject == 0 )
+							{
+								// All done
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return amountRejected;
 	}
 
 	@MENetworkEventSubscribe

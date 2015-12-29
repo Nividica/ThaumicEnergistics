@@ -1,4 +1,8 @@
-﻿12/29/2015 0.9.1.2 - Beta
+﻿12/29/2015 0.10.0.0 - Beta
+  Began integrating essentia into crafting system.
+  Added "Essentia" item.
+
+12/29/2015 0.9.1.2 - Beta
   Fixed #261 AE2-RV3-Beta-2 issue
   Added particle effects to Knowledge Inscriber.
 

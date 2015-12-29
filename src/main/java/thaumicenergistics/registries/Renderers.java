@@ -6,6 +6,7 @@ import thaumicenergistics.render.RenderBlockEssentiaProvider;
 import thaumicenergistics.render.RenderBlockInfusionProvider;
 import thaumicenergistics.render.RenderTileArcaneAssembler;
 import thaumicenergistics.render.RenderTileGearbox;
+import thaumicenergistics.render.RendererItemCraftingAspect;
 import thaumicenergistics.render.TileAsItemRenderer;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
 import thaumicenergistics.tileentities.TileGearBox;
@@ -58,6 +59,9 @@ public class Renderers
 		// Register arcane assembler item renderer
 		MinecraftForgeClient.registerItemRenderer( ThEApi.instance().blocks().ArcaneAssembler.getItem(), new TileAsItemRenderer(
 						new RenderTileArcaneAssembler(), new TileArcaneAssembler() ) );
+
+		// Register crafting aspect item renderer
+		MinecraftForgeClient.registerItemRenderer( ItemEnum.CRAFTING_ASPECT.getItem(), new RendererItemCraftingAspect() );
 
 	}
 }

@@ -3,9 +3,11 @@ package thaumicenergistics.gui.widget;
 import java.util.List;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.util.GuiHelper;
 
 public class WidgetAspectSelector
@@ -208,10 +210,13 @@ public class WidgetAspectSelector
 		{
 
 			// Add the name
-			tooltip.add( this.aspectName );
+			tooltip.add( ThEStrings.Gui_SelectedAspect.getLocalized() + ": " + this.aspectName );
 
 			// Add the amount
-			tooltip.add( Long.toString( this.amount ) );
+			tooltip.add( ThEStrings.Gui_SelectedAmount.getLocalized() + ": " + Long.toString( this.amount ) );
+
+			// Add aspect info
+			tooltip.add( EnumChatFormatting.GRAY.toString() + this.getAspect().getLocalizedDescription() );
 		}
 	}
 
