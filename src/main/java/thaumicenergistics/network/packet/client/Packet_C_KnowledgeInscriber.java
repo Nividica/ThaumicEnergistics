@@ -21,7 +21,9 @@ public class Packet_C_KnowledgeInscriber
 
 	private CoreSaveState saveState;
 
-	public static void sendSaveState( final EntityPlayer player, final CoreSaveState saveState )
+	private boolean justSaved;
+
+	public static void sendSaveState( final EntityPlayer player, final CoreSaveState saveState, final boolean justSaved )
 	{
 		Packet_C_KnowledgeInscriber packet = new Packet_C_KnowledgeInscriber();
 
@@ -33,6 +35,7 @@ public class Packet_C_KnowledgeInscriber
 
 		// Set the state
 		packet.saveState = saveState;
+		packet.justSaved = justSaved;
 
 		// Send it
 		NetworkHandler.sendPacketToClient( packet );
@@ -42,6 +45,7 @@ public class Packet_C_KnowledgeInscriber
 	protected void readData( final ByteBuf stream )
 	{
 		this.saveState = Packet_C_KnowledgeInscriber.SAVE_STATES[stream.readInt()];
+		this.justSaved = stream.readBoolean();
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -54,7 +58,7 @@ public class Packet_C_KnowledgeInscriber
 		// Ensure it is the knowledge inscriber
 		if( gui instanceof GuiKnowledgeInscriber )
 		{
-			( (GuiKnowledgeInscriber)gui ).onReceiveSaveState( this.saveState );
+			( (GuiKnowledgeInscriber)gui ).onReceiveSaveState( this.saveState, this.justSaved );
 		}
 
 	}
@@ -63,6 +67,7 @@ public class Packet_C_KnowledgeInscriber
 	protected void writeData( final ByteBuf stream )
 	{
 		stream.writeInt( this.saveState.ordinal() );
+		stream.writeBoolean( this.justSaved );
 	}
 
 }

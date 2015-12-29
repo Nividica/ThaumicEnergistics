@@ -87,10 +87,6 @@ public class AEPartEssentiaLevelEmitter
 	 */
 	private IEssentiaWatcher essentiaWatcher;
 
-	// TODO: Remove debug
-	//private int debugTrackingStage = 0;
-	//private int debugMonID = 0;
-
 	/**
 	 * Creates the part
 	 */
@@ -475,15 +471,6 @@ public class AEPartEssentiaLevelEmitter
 		// Read the activity state
 		this.isEmitting = stream.readBoolean();
 
-		// TODO: Remove debug code
-		/*
-		this.currentAmount = stream.readLong();
-		this.wantedAmount = stream.readLong();
-		this.trackedEssentia = AbstractPacket.readAspect( stream );
-		this.debugTrackingStage = stream.readInt();
-		this.debugMonID = stream.readInt();
-		*/
-
 		// Redraw if changed
 		redraw |= ( this.isEmitting != oldEmit );
 
@@ -562,7 +549,6 @@ public class AEPartEssentiaLevelEmitter
 
 			// Mark that we need to be saved and updated
 			this.markForSave();
-			//this.markForUpdate(); // TODO: Remove debug
 
 			// Update the watcher
 			this.configureWatcher();
@@ -656,14 +642,5 @@ public class AEPartEssentiaLevelEmitter
 
 		// Write the activity state
 		stream.writeBoolean( this.isEmitting );
-
-		// TODO: Remove debug code
-		/*
-		stream.writeLong( this.currentAmount );
-		stream.writeLong( this.wantedAmount );
-		AbstractPacket.writeAspect( this.trackedEssentia, stream );
-		stream.writeInt( this.debugTrackingStage );
-		stream.writeInt( this.debugMonID );
-		*/
 	}
 }

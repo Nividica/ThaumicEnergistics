@@ -1,4 +1,8 @@
-﻿12/28/2015 0.9.1.2 - Beta
+﻿12/29/2015 0.9.1.2 - Beta
+  Fixed #261 AE2-RV3-Beta-2 issue
+  Added particle effects to Knowledge Inscriber.
+
+12/28/2015 0.9.1.2 - Beta
   Complete network code overhaul.
 
 12/28/2015 0.9.1.1 - Beta

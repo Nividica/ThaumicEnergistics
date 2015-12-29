@@ -51,7 +51,7 @@ public class ContainerKnowledgeInscriber
 	/**
 	 * Knowledge core slot.
 	 */
-	private static final int KCORE_SLOT_X = 186, KCORE_SLOT_Y = 8;
+	public static final int KCORE_SLOT_X = 186, KCORE_SLOT_Y = 8;
 
 	/**
 	 * Pattern slots.
@@ -61,7 +61,7 @@ public class ContainerKnowledgeInscriber
 	/**
 	 * Crafting slots
 	 */
-	private static final int CRAFTING_SLOT_X = 26, CRAFTING_SLOT_Y = 90, CRAFTING_ROWS = 3, CRAFTING_COLS = 3, CRAFTING_SLOT_SPACING = 18;
+	public static final int CRAFTING_SLOT_X = 26, CRAFTING_SLOT_Y = 90, CRAFTING_ROWS = 3, CRAFTING_COLS = 3, CRAFTING_SLOT_SPACING = 18;
 
 	/**
 	 * Maximum number of patterns.
@@ -418,7 +418,7 @@ public class ContainerKnowledgeInscriber
 			this.updatePatternSlots();
 
 			// Update the client
-			this.onClientRequestFullUpdate( this.player );
+			this.onClientRequestFullUpdate( this.player, false );
 
 			// Mark the inscriber as dirty
 			this.inscriber.markDirty();
@@ -432,10 +432,10 @@ public class ContainerKnowledgeInscriber
 	/**
 	 * Sends the save-state to the client.
 	 */
-	public void onClientRequestFullUpdate( final EntityPlayer player )
+	public void onClientRequestFullUpdate( final EntityPlayer player, final boolean justSaved )
 	{
 		// Update the client
-		Packet_C_KnowledgeInscriber.sendSaveState( player, this.getSaveState() );
+		Packet_C_KnowledgeInscriber.sendSaveState( player, this.getSaveState(), justSaved );
 	}
 
 	/**
@@ -495,7 +495,7 @@ public class ContainerKnowledgeInscriber
 			this.loadPattern( pattern );
 
 			// Update the client
-			this.onClientRequestFullUpdate( player );
+			this.onClientRequestFullUpdate( player, true );
 
 			// Mark the inscriber as dirty
 			this.inscriber.markDirty();
@@ -515,7 +515,7 @@ public class ContainerKnowledgeInscriber
 				this.updatePatternSlots();
 
 				// Update the client
-				this.onClientRequestFullUpdate( player );
+				this.onClientRequestFullUpdate( player, false );
 
 				// Mark the inscriber as dirty
 				this.inscriber.markDirty();
@@ -547,7 +547,7 @@ public class ContainerKnowledgeInscriber
 		// Update the client
 		if( EffectiveSide.isServerSide() )
 		{
-			this.onClientRequestFullUpdate( this.player );
+			this.onClientRequestFullUpdate( this.player, false );
 		}
 
 		// Sync

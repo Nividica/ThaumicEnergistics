@@ -26,7 +26,7 @@ public class GuiEssentiaVibrationChamber
 	/**
 	 * Dimensions and location of the power bar.
 	 */
-	private static final int POWER_POS_X = 96, POWER_POS_Y = 32, POWER_TEX_X = 51, POWER_TEX_Y = 83, POWER_WIDTH = 6, POWER_HEIGHT = 18;
+	private static final int POWER_POS_X = 96, POWER_POS_Y = 32, POWER_TEX_U = 51, POWER_TEX_V = 83, POWER_WIDTH = 6, POWER_HEIGHT = 18;
 
 	/**
 	 * Dimensions and location of the essentia storage level bar.
@@ -116,9 +116,12 @@ public class GuiEssentiaVibrationChamber
 		int powerBarHeightOffset = (int)( GuiEssentiaVibrationChamber.POWER_HEIGHT * this.container.getPowerPercent() );
 
 		// Draw the power bar
-		this.drawTexturedModalRect( this.guiLeft + GuiEssentiaVibrationChamber.POWER_POS_X, this.guiTop + GuiEssentiaVibrationChamber.POWER_POS_Y +
-						powerBarHeightOffset, GuiEssentiaVibrationChamber.POWER_TEX_X,
-			GuiEssentiaVibrationChamber.POWER_TEX_Y + powerBarHeightOffset, GuiEssentiaVibrationChamber.POWER_WIDTH,
+		this.drawTexturedModalRect(
+			this.guiLeft + GuiEssentiaVibrationChamber.POWER_POS_X,
+			this.guiTop + GuiEssentiaVibrationChamber.POWER_POS_Y + powerBarHeightOffset,
+			GuiEssentiaVibrationChamber.POWER_TEX_U,
+			GuiEssentiaVibrationChamber.POWER_TEX_V + powerBarHeightOffset,
+			GuiEssentiaVibrationChamber.POWER_WIDTH,
 			GuiEssentiaVibrationChamber.POWER_HEIGHT - powerBarHeightOffset );
 
 	}

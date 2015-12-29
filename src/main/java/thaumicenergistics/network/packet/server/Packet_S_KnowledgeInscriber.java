@@ -62,7 +62,7 @@ public class Packet_S_KnowledgeInscriber
 			{
 			case Packet_S_KnowledgeInscriber.MODE_FULL_UPDATE:
 				// Request full update
-				( (ContainerKnowledgeInscriber)this.player.openContainer ).onClientRequestFullUpdate( this.player );
+				( (ContainerKnowledgeInscriber)this.player.openContainer ).onClientRequestFullUpdate( this.player, false );
 				break;
 
 			case Packet_S_KnowledgeInscriber.MODE_SAVEDELETE:

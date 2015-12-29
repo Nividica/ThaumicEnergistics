@@ -549,13 +549,17 @@ public abstract class AbstractAEPartEssentiaIOBus
 		{
 			if( data.hasKey( AbstractAEPartEssentiaIOBus.NBT_KEY_FILTER_NUMBER + index ) )
 			{
-				String aspectTag = data.getString( AbstractAEPartEssentiaIOBus.NBT_KEY_FILTER_NUMBER + index );
+				Aspect filterAspect = null;
 
-				// TODO: Remove legacy check in a few versions....
+				// Get the name of the aspect
+				String aspectTag = data.getString( AbstractAEPartEssentiaIOBus.NBT_KEY_FILTER_NUMBER + index );
 				if( !aspectTag.equals( "" ) )
 				{
-					this.filteredAspects.set( index, Aspect.aspects.get( aspectTag ) );
+					filterAspect = Aspect.aspects.get( aspectTag );
+
 				}
+
+				this.filteredAspects.set( index, filterAspect );
 			}
 		}
 
