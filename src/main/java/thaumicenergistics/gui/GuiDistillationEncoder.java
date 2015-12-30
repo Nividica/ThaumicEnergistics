@@ -7,7 +7,10 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.container.ContainerDistillationEncoder;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;
+import thaumicenergistics.gui.buttons.GuiButtonEncodePattern;
+import thaumicenergistics.network.packet.server.Packet_S_DistillationEncoder;
 import thaumicenergistics.registries.ThEStrings;
+import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 
 public class GuiDistillationEncoder
@@ -24,9 +27,19 @@ public class GuiDistillationEncoder
 	private static final int TITLE_POS_X = 6, TITLE_POS_Y = 6;
 
 	/**
+	 * Position of the encode button
+	 */
+	private static final int BUTTON_ENCODE_POS_X = 146, BUTTON_ENCODE_POS_Y = 94;
+
+	/**
 	 * Title of the gui.
 	 */
 	private final String title;
+
+	/**
+	 * The encode button.
+	 */
+	private GuiButtonEncodePattern buttonEncode;
 
 	public GuiDistillationEncoder( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
@@ -71,7 +84,11 @@ public class GuiDistillationEncoder
 	@Override
 	protected void onButtonClicked( final GuiButton button, final int mouseButton )
 	{
-
+		if( button == this.buttonEncode )
+		{
+			Packet_S_DistillationEncoder.sendEncodePattern(
+							( (ContainerDistillationEncoder)this.inventorySlots ).getPlayer() );
+		}
 	}
 
 	@Override
@@ -79,5 +96,11 @@ public class GuiDistillationEncoder
 	{
 		// Call super
 		super.initGui();
+
+		// Create the encode button
+		this.buttonEncode = new GuiButtonEncodePattern( 0, BUTTON_ENCODE_POS_X + this.guiLeft, BUTTON_ENCODE_POS_Y + this.guiTop,
+						AEStateIconsEnum.STANDARD_ICON_SIZE,
+						AEStateIconsEnum.STANDARD_ICON_SIZE );
+		this.buttonList.add( this.buttonEncode );
 	}
 }

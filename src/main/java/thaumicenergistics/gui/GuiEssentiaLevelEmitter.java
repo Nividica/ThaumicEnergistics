@@ -248,18 +248,6 @@ public class GuiEssentiaLevelEmitter
 
 		// Draw the text field
 		this.amountField.drawTextBox();
-
-		if( this.tooltip.size() == 0 )
-		{
-			// Add the tooltip from the buttons
-			this.addTooltipFromButtons( mouseX, mouseY );
-		}
-
-		if( this.tooltip.size() > 0 )
-		{
-			// Draw the tooltip
-			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
-		}
 	}
 
 	/**

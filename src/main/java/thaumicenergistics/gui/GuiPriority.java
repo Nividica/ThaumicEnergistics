@@ -251,13 +251,6 @@ public class GuiPriority
 
 		// Draw the text field
 		this.amountField.drawTextBox();
-
-		// Get the tooltip from the buttons
-		if( this.addTooltipFromButtons( mouseX, mouseY ) )
-		{
-			// Draw the tooltip
-			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
-		}
 	}
 
 	/**

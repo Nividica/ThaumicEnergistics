@@ -174,9 +174,6 @@ public class GuiArcaneAssembler
 				float discount = ( (ContainerArcaneAssembler)this.inventorySlots ).assembler.getVisDiscountForAspect( aspect );
 				this.tooltip.add( String.format( "%.0f%% %s", ( discount * 100.0F ), StatCollector.translateToLocal( "tc.vis.costavg" ) ) );
 
-				// Draw the tooltip
-				this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
-
 				// Stop searching
 				break;
 			}

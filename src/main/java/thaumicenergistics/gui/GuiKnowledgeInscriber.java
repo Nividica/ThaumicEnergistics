@@ -235,13 +235,6 @@ public class GuiKnowledgeInscriber
 		// Draw the title
 		this.fontRendererObj.drawString( this.title, GuiKnowledgeInscriber.TITLE_POS_X, GuiKnowledgeInscriber.TITLE_POS_Y, 0 );
 
-		// Get the tooltip from the buttons
-		if( this.addTooltipFromButtons( mouseX, mouseY ) )
-		{
-			// Draw the tooltip
-			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
-		}
-
 		// Any particles to draw?
 		if( this.hasParticlesToDraw )
 		{

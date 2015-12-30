@@ -3,6 +3,7 @@ package thaumicenergistics.items;
 import java.util.List;
 import javax.annotation.Nonnull;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -68,6 +69,8 @@ public class ItemCraftingAspect
 		// Null check
 		if( aspect == null )
 		{
+			// Clear the aspect
+			stack.setTagCompound( null );
 			return;
 		}
 
@@ -177,5 +180,12 @@ public class ItemCraftingAspect
 		// Show unknown
 		return StatCollector.translateToLocal( "tc.aspect.unknown" );
 
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void registerIcons( final IIconRegister par1IconRegister )
+	{
+		// Handled by special renderer
 	}
 }

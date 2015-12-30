@@ -52,7 +52,8 @@ public enum AEStateIconsEnum
 		ENABLED (16, 128),
 		SAVE (0, 176),
 		DELETE (0, 192),
-		CLEAR_GRID (96, 0);
+		CLEAR_GRID (96, 0),
+		ARROW_DOWN (128, 0);
 
 	/**
 	 * Location of the AE states texture

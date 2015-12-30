@@ -16,11 +16,7 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
-import thaumicenergistics.container.AbstractContainerCellTerminalBase;
-import thaumicenergistics.container.ContainerEssentiaCell;
-import thaumicenergistics.container.ContainerEssentiaTerminal;
-import thaumicenergistics.container.ContainerWirelessEssentiaTerminal;
-import thaumicenergistics.container.IAspectSelectorContainer;
+import thaumicenergistics.container.*;
 import thaumicenergistics.gui.abstraction.AbstractGuiWithScrollbar;
 import thaumicenergistics.gui.buttons.GuiButtonSortingMode;
 import thaumicenergistics.gui.widget.AbstractWidget;
@@ -444,15 +440,6 @@ public class GuiEssentiaCellTerminal
 			this.fontRendererObj.drawString( this.selectedInfoAmountPrefix + this.cacheAmountDisplay, GuiEssentiaCellTerminal.SELECTED_INFO_POS_X,
 				GuiEssentiaCellTerminal.SELECTED_INFO_AMOUNT_POS_Y, 0 );
 		}
-
-		// Get the tooltip from the buttons
-		if( this.tooltip.isEmpty() )
-		{
-			this.addTooltipFromButtons( mouseX, mouseY );
-		}
-
-		// Draw the tooltip
-		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
 	}
 
 	@Override

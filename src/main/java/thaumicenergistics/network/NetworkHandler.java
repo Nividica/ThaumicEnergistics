@@ -3,35 +3,9 @@ package thaumicenergistics.network;
 import java.util.HashMap;
 import net.minecraft.entity.player.EntityPlayerMP;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.network.packet.ThEAreaPacket;
-import thaumicenergistics.network.packet.ThEBasePacket;
-import thaumicenergistics.network.packet.ThEClientPacket;
-import thaumicenergistics.network.packet.ThEServerPacket;
-import thaumicenergistics.network.packet.WrapperPacket;
-import thaumicenergistics.network.packet.client.Packet_C_ArcaneCraftingTerminal;
-import thaumicenergistics.network.packet.client.Packet_C_AspectSlot;
-import thaumicenergistics.network.packet.client.Packet_C_EssentiaCellTerminal;
-import thaumicenergistics.network.packet.client.Packet_C_EssentiaEmitter;
-import thaumicenergistics.network.packet.client.Packet_C_EssentiaIOBus;
-import thaumicenergistics.network.packet.client.Packet_C_EssentiaStorageBus;
-import thaumicenergistics.network.packet.client.Packet_C_EssentiaVibrationChamber;
-import thaumicenergistics.network.packet.client.Packet_C_KnowledgeInscriber;
-import thaumicenergistics.network.packet.client.Packet_C_Priority;
-import thaumicenergistics.network.packet.client.Packet_R_ParticleFX;
-import thaumicenergistics.network.packet.client.WrapperPacket_C;
-import thaumicenergistics.network.packet.server.Packet_S_ArcaneCraftingTerminal;
-import thaumicenergistics.network.packet.server.Packet_S_AspectSlot;
-import thaumicenergistics.network.packet.server.Packet_S_ChangeGui;
-import thaumicenergistics.network.packet.server.Packet_S_ConfirmCraftingJob;
-import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellTerminal;
-import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellWorkbench;
-import thaumicenergistics.network.packet.server.Packet_S_EssentiaEmitter;
-import thaumicenergistics.network.packet.server.Packet_S_EssentiaIOBus;
-import thaumicenergistics.network.packet.server.Packet_S_EssentiaStorageBus;
-import thaumicenergistics.network.packet.server.Packet_S_KnowledgeInscriber;
-import thaumicenergistics.network.packet.server.Packet_S_Priority;
-import thaumicenergistics.network.packet.server.Packet_S_WrenchFocus;
-import thaumicenergistics.network.packet.server.WrapperPacket_S;
+import thaumicenergistics.network.packet.*;
+import thaumicenergistics.network.packet.client.*;
+import thaumicenergistics.network.packet.server.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -153,6 +127,9 @@ public class NetworkHandler
 
 		// Confirm crafting
 		registerPacket( Packet_S_ConfirmCraftingJob.class );
+
+		// Distillation encoder
+		registerPacket( Packet_S_DistillationEncoder.class );
 	}
 
 	public static void sendAreaPacketToClients( final ThEAreaPacket areaPacket, final int range )

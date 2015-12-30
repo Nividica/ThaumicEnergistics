@@ -192,9 +192,6 @@ public class GuiEssentiaVibrationChamber
 			// Add the power per tick
 			this.tooltip.add( String.format( "%.0f AE/t", this.container.getPowerPerTick() ) );
 		}
-
-		// Draw the tooltip
-		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import thaumicenergistics.items.ItemCraftingAspect;
 import thaumicenergistics.util.IInventoryUpdateReceiver;
 import thaumicenergistics.util.PrivateInventory;
-import appeng.items.misc.ItemEncodedPattern;
+import appeng.api.AEApi;
 
 public class TileDistillationEncoder
 	extends TileEntity
@@ -22,18 +22,18 @@ public class TileDistillationEncoder
 	 * Slot counts
 	 */
 	public static int SLOT_SOURCE_ASPECTS_COUNT = 6,
-					SLOT_SAVED_ASPECT_COUNT = 1,
+					SLOT_SELECTED_ASPECT_COUNT = 1,
 					SLOT_PATTERNS_COUNT = 2,
-					SLOT_INPUT_ITEM_COUNT = 1,
-					SLOT_TOTAL_COUNT = SLOT_INPUT_ITEM_COUNT + SLOT_SOURCE_ASPECTS_COUNT + SLOT_SAVED_ASPECT_COUNT + SLOT_PATTERNS_COUNT;
+					SLOT_SOURCE_ITEM_COUNT = 1,
+					SLOT_TOTAL_COUNT = SLOT_SOURCE_ITEM_COUNT + SLOT_SOURCE_ASPECTS_COUNT + SLOT_SELECTED_ASPECT_COUNT + SLOT_PATTERNS_COUNT;
 	/**
 	 * Slot ID's
 	 */
 	public static int SLOT_SOURCE_ITEM = 0,
-					SLOT_EMPTY_PATTERNS = 1,
+					SLOT_BLANK_PATTERNS = 1,
 					SLOT_ENCODED_PATTERN = 2,
 					SLOT_SOURCE_ASPECTS = 3,
-					SLOT_SAVED_ASPECT = SLOT_SOURCE_ASPECTS + SLOT_SOURCE_ASPECTS_COUNT;
+					SLOT_SELECTED_ASPECT = SLOT_SOURCE_ASPECTS + SLOT_SOURCE_ASPECTS_COUNT;
 
 	/**
 	 * Stores the inventory for this tile.
@@ -50,19 +50,19 @@ public class TileDistillationEncoder
 			}
 
 			// Empty pattern slot?
-			if( slotId == SLOT_EMPTY_PATTERNS )
+			if( slotId == SLOT_BLANK_PATTERNS )
 			{
-				return( itemStack.getItem() instanceof ItemEncodedPattern );
+				return AEApi.instance().definitions().materials().blankPattern().isSameAs( itemStack );
 			}
 
 			// Encoded pattern slot?
 			if( slotId == SLOT_ENCODED_PATTERN )
 			{
-				return( itemStack.getItem() instanceof ItemEncodedPattern );
+				return AEApi.instance().definitions().items().encodedPattern().isSameAs( itemStack );
 			}
 
 			// Aspect slot?
-			if( ( slotId >= SLOT_SOURCE_ASPECTS ) && ( slotId <= SLOT_SAVED_ASPECT ) )
+			if( ( slotId >= SLOT_SOURCE_ASPECTS ) && ( slotId <= SLOT_SELECTED_ASPECT ) )
 			{
 				return( itemStack.getItem() instanceof ItemCraftingAspect );
 			}
@@ -97,7 +97,7 @@ public class TileDistillationEncoder
 	{
 		// Is there anything in the pattern slots?
 		return( ( this.internalInventory.slots[SLOT_ENCODED_PATTERN] != null )
-		|| ( this.internalInventory.slots[SLOT_EMPTY_PATTERNS] != null ) );
+		|| ( this.internalInventory.slots[SLOT_BLANK_PATTERNS] != null ) );
 
 	}
 

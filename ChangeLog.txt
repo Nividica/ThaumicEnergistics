@@ -1,7 +1,9 @@
 ﻿12/30/2015 0.10.0.0 - Beta
   Added Distillation Encoder
   Added pattern handler
-  Working on GUI
+  Implemented Distillation Encoder GUI
+  Cleaned up tooltip code, and fixed underdraw issue.
+  
 
 12/29/2015 0.10.0.0 - Beta
   Began integrating essentia into crafting system.

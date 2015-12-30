@@ -195,17 +195,6 @@ public class GuiEssentiaCellWorkbench
 			// Get the widgets tooltip
 			widgetUnderMouse.getTooltip( this.tooltip );
 		}
-		else
-		{
-			// Add tooltip from buttons
-			this.addTooltipFromButtons( mouseX, mouseY );
-		}
-
-		// Draw the tooltip
-		if( this.tooltip.size() > 0 )
-		{
-			this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
-		}
 	}
 
 	@Override

@@ -126,6 +126,7 @@ public abstract class ContainerWithPlayerInventory
 	 */
 	public final void bindPlayerInventory( final IInventory playerInventory, final int inventoryOffsetY, final int hotbarPositionY )
 	{
+		// TODO: Make the argument offsets on x an y.
 
 		// Hot-bar ID's 0-8
 		Slot hotbarSlot = null;

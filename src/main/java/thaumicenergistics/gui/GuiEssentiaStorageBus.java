@@ -223,14 +223,6 @@ public class GuiEssentiaStorageBus
 			// Add the tooltip from the widget
 			slotUnderMouse.getTooltip( this.tooltip );
 		}
-		else
-		{
-			// Add the tooltip from the buttons
-			this.addTooltipFromButtons( mouseX, mouseY );
-		}
-
-		// Draw the tooltip
-		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, true );
 	}
 
 	@Override

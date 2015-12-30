@@ -16,13 +16,7 @@ import thaumcraft.common.config.Config;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
 import thaumicenergistics.gui.abstraction.AbstractGuiConstantsACT;
-import thaumicenergistics.gui.buttons.GuiButtonClearCraftingGrid;
-import thaumicenergistics.gui.buttons.GuiButtonSearchMode;
-import thaumicenergistics.gui.buttons.GuiButtonSortingDirection;
-import thaumicenergistics.gui.buttons.GuiButtonSortingMode;
-import thaumicenergistics.gui.buttons.GuiButtonSwapArmor;
-import thaumicenergistics.gui.buttons.GuiButtonTerminalStyle;
-import thaumicenergistics.gui.buttons.GuiButtonViewType;
+import thaumicenergistics.gui.buttons.*;
 import thaumicenergistics.gui.widget.AbstractWidget;
 import thaumicenergistics.gui.widget.WidgetAEItem;
 import thaumicenergistics.integration.tc.MEItemAspectBridgeContainer;
@@ -32,12 +26,7 @@ import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import thaumicenergistics.texture.GuiTextureManager;
 import thaumicenergistics.util.GuiHelper;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.ISortSource;
@@ -170,6 +159,11 @@ public class GuiArcaneCraftingTerminal
 	 * Tracks if the repo/widgets needs to be updated.
 	 */
 	private boolean viewNeedsUpdate = true;
+
+	/**
+	 * Holds the cached tooltip of an item.
+	 */
+	private ArrayList<String> cachedItemTooltip = new ArrayList<String>();
 
 	public GuiArcaneCraftingTerminal( final AEPartArcaneCraftingTerminal part, final EntityPlayer player )
 	{
@@ -537,7 +531,7 @@ public class GuiArcaneCraftingTerminal
 		}
 
 		// Clear any tooltip
-		this.tooltip.clear();
+		this.cachedItemTooltip.clear();
 
 	}
 
@@ -727,25 +721,14 @@ public class GuiArcaneCraftingTerminal
 				if( forceTooltipUpdate || ( widgetUnderMouse != this.previousWidgetUnderMouse ) )
 				{
 					// Clear the tooltip
-					this.tooltip.clear();
+					this.cachedItemTooltip.clear();
 
 					// Get the tooltip from the widget
-					widgetUnderMouse.getTooltip( this.tooltip );
+					widgetUnderMouse.getTooltip( this.cachedItemTooltip );
 
 					// Set the time
 					this.lastTooltipUpdateTime = System.currentTimeMillis();
 				}
-			}
-			else
-			{
-				// Clear the tooltip
-				this.tooltip.clear();
-
-				// Set the time
-				this.lastTooltipUpdateTime = System.currentTimeMillis();
-
-				// Get the tooltip from the buttons
-				this.addTooltipFromButtons( mouseX, mouseY );
 			}
 
 			// Set the previous position
@@ -756,8 +739,11 @@ public class GuiArcaneCraftingTerminal
 			this.previousWidgetUnderMouse = widgetUnderMouse;
 		}
 
-		// Draw the tooltip
-		this.drawTooltip( mouseX - this.guiLeft, mouseY - this.guiTop, false );
+		// Add cached tooltip
+		if( !this.cachedItemTooltip.isEmpty() )
+		{
+			this.tooltip.addAll( this.cachedItemTooltip );
+		}
 	}
 
 	/**
@@ -981,7 +967,7 @@ public class GuiArcaneCraftingTerminal
 			this.btnSearchMode.setSearchMode( searchBoxMode );
 
 			// Clear the tooltip
-			this.tooltip.clear();
+			this.cachedItemTooltip.clear();
 			this.lastTooltipUpdateTime = 0;
 
 			break;
@@ -1008,7 +994,7 @@ public class GuiArcaneCraftingTerminal
 		this.updateMEWidgets();
 
 		// Clear the tooltip
-		this.tooltip.clear();
+		this.cachedItemTooltip.clear();
 		this.lastTooltipUpdateTime = 0;
 	}
 

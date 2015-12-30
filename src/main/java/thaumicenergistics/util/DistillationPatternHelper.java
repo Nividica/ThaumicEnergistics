@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
+import thaumicenergistics.items.ItemCraftingAspect;
 
 public class DistillationPatternHelper
 {
@@ -19,67 +20,21 @@ public class DistillationPatternHelper
 	 * Output of the pattern.
 	 * Must be ItemCraftingAspect patterns.
 	 */
-	public ItemStack output = null;
+	protected ItemStack output = null;
 
 	/**
 	 * Input of the pattern.
 	 */
-	public ItemStack input = null;
+	protected ItemStack input = null;
 
-	/**
-	 * Loads the values from the pattern
-	 * 
-	 * @param pattern
-	 */
-	public void loadFromPattern( final ItemStack pattern )
+	public void encodePattern( final ItemStack pattern )
 	{
-		// Reset
-		this.reset();
-
-		if( !pattern.hasTagCompound() )
+		// Valid pattern?
+		if( pattern == null )
 		{
-			// Nothing to load
 			return;
 		}
 
-		// Get the NBT tag
-		NBTTagCompound data = pattern.getTagCompound();
-
-		// Get the input and output list
-		NBTTagList inTags = data.getTagList( NBTKEY_AE_IN, NBT.TAG_COMPOUND );
-		NBTTagList outTags = data.getTagList( NBTKEY_AE_OUT, NBT.TAG_COMPOUND );
-
-		// Empty check
-		if( ( outTags.tagCount() < 1 ) || ( inTags.tagCount() < 1 ) )
-		{
-			// Nothing to load.
-			return;
-		}
-
-		// Read the input and output
-		this.output = ItemStack.loadItemStackFromNBT( outTags.getCompoundTagAt( 0 ) );
-		this.input = ItemStack.loadItemStackFromNBT( inTags.getCompoundTagAt( 0 ) );
-
-		// Null check
-		if( ( this.input == null ) || ( this.output == null ) )
-		{
-			this.reset();
-			return;
-		}
-
-	}
-
-	/**
-	 * Resets the helper.
-	 */
-	public void reset()
-	{
-		this.output = null;
-		this.input = null;
-	}
-
-	public void writeToPattern( final ItemStack pattern )
-	{
 		// Check the input & output
 		if( ( this.input == null ) || ( this.output == null ) )
 		{
@@ -109,5 +64,139 @@ public class DistillationPatternHelper
 		// Save into the item
 		pattern.setTagCompound( data );
 
+	}
+
+	/**
+	 * Returns the input of the pattern.
+	 * May be null.
+	 * 
+	 * @return
+	 */
+	public ItemStack getInput()
+	{
+		return this.input;
+	}
+
+	/**
+	 * Returns the output of the pattern.
+	 * May be null.
+	 * 
+	 * @return
+	 */
+	public ItemStack getOutput()
+	{
+		return this.output;
+	}
+
+	/**
+	 * Returns true if the current items are valid.
+	 * 
+	 * @return
+	 */
+	public boolean isValid()
+	{
+		return( ( this.output != null ) && ( this.input != null ) );
+	}
+
+	/**
+	 * Loads the values from the pattern
+	 * 
+	 * @param pattern
+	 */
+	public void readPattern( final ItemStack pattern )
+	{
+		// Reset
+		this.reset();
+
+		// Valid pattern?
+		if( pattern == null )
+		{
+			return;
+		}
+
+		if( !pattern.hasTagCompound() )
+		{
+			// Nothing to load
+			return;
+		}
+
+		// Get the NBT tag
+		NBTTagCompound data = pattern.getTagCompound();
+
+		// Get the input and output list
+		NBTTagList inTags = data.getTagList( NBTKEY_AE_IN, NBT.TAG_COMPOUND );
+		NBTTagList outTags = data.getTagList( NBTKEY_AE_OUT, NBT.TAG_COMPOUND );
+
+		// Empty check
+		if( ( outTags.tagCount() < 1 ) || ( inTags.tagCount() < 1 ) )
+		{
+			// Nothing to load.
+			return;
+		}
+
+		// Read the input and output
+		this.setOutputItem( ItemStack.loadItemStackFromNBT( outTags.getCompoundTagAt( 0 ) ) );
+		this.setInputItem( ItemStack.loadItemStackFromNBT( inTags.getCompoundTagAt( 0 ) ) );
+
+		// Null check
+		if( ( this.input == null ) || ( this.output == null ) )
+		{
+			this.reset();
+			return;
+		}
+
+	}
+
+	/**
+	 * Resets the helper.
+	 */
+	public void reset()
+	{
+		this.output = null;
+		this.input = null;
+	}
+
+	/**
+	 * Sets the input.
+	 * 
+	 * @param inputItem
+	 */
+	public void setInputItem( final ItemStack inputItem )
+	{
+		this.input = inputItem;
+	}
+
+	/**
+	 * Sets the output.
+	 * Must be a crafting aspect.
+	 * 
+	 * @param outputItem
+	 */
+	public void setOutputItem( final ItemStack outputItem )
+	{
+		// Crafting aspect?
+		if( ( outputItem != null ) && !( outputItem.getItem() instanceof ItemCraftingAspect ) )
+		{
+			this.output = null;
+		}
+		else
+		{
+			this.output = outputItem;
+		}
+	}
+
+	/**
+	 * Sets the input and output items.
+	 * Returns if the recipe is valid or not.
+	 * 
+	 * @param inputItem
+	 * @param outputItem
+	 * @return
+	 */
+	public boolean setPatternItems( final ItemStack inputItem, final ItemStack outputItem )
+	{
+		this.setInputItem( inputItem );
+		this.setOutputItem( outputItem );
+		return this.isValid();
 	}
 }
