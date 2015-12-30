@@ -2,6 +2,7 @@ package thaumicenergistics.registries;
 
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
+import thaumicenergistics.tileentities.TileDistillationEncoder;
 import thaumicenergistics.tileentities.TileEssentiaCellWorkbench;
 import thaumicenergistics.tileentities.TileEssentiaProvider;
 import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
@@ -17,7 +18,8 @@ public enum TileEnum
 		CellWorkbench ("TileEssentiaCellWorkbench", TileEssentiaCellWorkbench.class),
 		ArcaneAssembler ("TileArcaneAssembler", TileArcaneAssembler.class),
 		KnowledgeInscriber ("TileKnowledgeInscriber", TileKnowledgeInscriber.class),
-		EssentiaVibrationChamber ("TileEssentiaVibrationChamber", TileEssentiaVibrationChamber.class);
+		EssentiaVibrationChamber ("TileEssentiaVibrationChamber", TileEssentiaVibrationChamber.class),
+		DistillationInscriber ("TileDistillationInscriber", TileDistillationEncoder.class);
 
 	/**
 	 * Unique ID of the tile entity

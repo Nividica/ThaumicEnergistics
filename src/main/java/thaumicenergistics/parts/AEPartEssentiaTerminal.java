@@ -269,7 +269,7 @@ public class AEPartEssentiaTerminal
 		// Read inventory
 		if( data.hasKey( AEPartEssentiaTerminal.INVENTORY_NBT_KEY ) )
 		{
-			this.inventory.loadFromNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
+			this.inventory.readFromNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
 		}
 	}
 
@@ -401,7 +401,7 @@ public class AEPartEssentiaTerminal
 		// Write inventory
 		if( !this.inventory.isEmpty() )
 		{
-			this.inventory.saveToNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
+			this.inventory.writeToNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
 		}
 	}
 

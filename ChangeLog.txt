@@ -1,4 +1,9 @@
-﻿12/29/2015 0.10.0.0 - Beta
+﻿12/30/2015 0.10.0.0 - Beta
+  Added Distillation Encoder
+  Added pattern handler
+  Working on GUI
+
+12/29/2015 0.10.0.0 - Beta
   Began integrating essentia into crafting system.
   Added "Essentia" item.
 

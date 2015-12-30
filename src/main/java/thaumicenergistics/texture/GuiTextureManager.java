@@ -14,7 +14,8 @@ public enum GuiTextureManager
 		CELL_WORKBENCH ("essentia.cell.workbench"),
 		ARCANE_ASSEMBLER ("arcane.assembler"),
 		KNOWLEDGE_INSCRIBER ("knowledge.inscriber"),
-		ESSENTIA_VIBRATION_CHAMBER ("essentia.vibration.chamber");
+		ESSENTIA_VIBRATION_CHAMBER ("essentia.vibration.chamber"),
+		DISTILLATION_ENCODER ("distillation.encoder");
 
 	private ResourceLocation texture;
 

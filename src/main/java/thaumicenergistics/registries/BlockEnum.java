@@ -3,6 +3,7 @@ package thaumicenergistics.registries;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import thaumicenergistics.blocks.BlockArcaneAssembler;
+import thaumicenergistics.blocks.BlockDistillationEncoder;
 import thaumicenergistics.blocks.BlockEssentiaCellWorkbench;
 import thaumicenergistics.blocks.BlockEssentiaProvider;
 import thaumicenergistics.blocks.BlockEssentiaVibrationChamber;
@@ -22,7 +23,8 @@ public enum BlockEnum
 		ARCANE_ASSEMBLER (ThEStrings.Block_ArcaneAssembler, new BlockArcaneAssembler()),
 		KNOWLEDGE_INSCRIBER (ThEStrings.Block_KnowledgeInscriber, new BlockKnowledgeInscriber()),
 		ESSENTIA_VIBRATION_CHAMBER (ThEStrings.Block_EssentiaVibrationChamber, new BlockEssentiaVibrationChamber(),
-			ItemBlockEssentiaVibrationChamber.class);
+			ItemBlockEssentiaVibrationChamber.class),
+		DISTILLATION_ENCODER (ThEStrings.Block_DistillationEncoder, new BlockDistillationEncoder());
 
 	/**
 	 * The block object.

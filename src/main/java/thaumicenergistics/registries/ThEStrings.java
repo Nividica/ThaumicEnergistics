@@ -23,6 +23,7 @@ public enum ThEStrings
 		Block_ArcaneAssembler ("block.arcane.assembler", true),
 		Block_KnowledgeInscriber ("block.knowledge.inscriber", true),
 		Block_EssentiaVibrationChamber ("block.essentia.vibration.chamber", true),
+		Block_DistillationEncoder ("block.distillation.encoder", true),
 
 		// Parts
 		Part_EssentiaImportBus ("aeparts.essentia.ImportBus", true),

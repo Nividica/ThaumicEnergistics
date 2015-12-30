@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -16,15 +15,14 @@ import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;
-import thaumicenergistics.tileentities.TileKnowledgeInscriber;
-import thaumicenergistics.util.EffectiveSide;
+import thaumicenergistics.tileentities.TileDistillationEncoder;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockKnowledgeInscriber
+public class BlockDistillationEncoder
 	extends AbstractBlockAEWrenchable
 {
-	public BlockKnowledgeInscriber()
+	public BlockDistillationEncoder()
 	{
 		// Call super with material machine (iron) 
 		super( Material.iron );
@@ -43,44 +41,18 @@ public class BlockKnowledgeInscriber
 	protected final boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player )
 	{
 		// Launch the gui.
-		ThEGuiHandler.launchGui( ThEGuiHandler.KNOWLEDGE_INSCRIBER, player, world, x, y, z );
+		ThEGuiHandler.launchGui( ThEGuiHandler.DISTILLATION_ENCODER, player, world, x, y, z );
 
 		return true;
 	}
 
 	/**
-	 * Called when the block is broken.
+	 * Creates the tile entity associated with the block.
 	 */
-	@Override
-	public void breakBlock( final World world, final int x, final int y, final int z, final Block block, final int metaData )
-	{
-		// Is this server side?
-		if( EffectiveSide.isServerSide() )
-		{
-			// Get the tile
-			TileEntity tile = world.getTileEntity( x, y, z );
-
-			if( tile instanceof TileKnowledgeInscriber )
-			{
-				TileKnowledgeInscriber tileKI = (TileKnowledgeInscriber)tile;
-				// Does the inscriber have a cell?
-				if( tileKI.hasKCore() )
-				{
-					// Spawn the core as an item entity.
-					world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, tileKI.getInventory().getStackInSlot(
-						TileKnowledgeInscriber.KCORE_SLOT ) ) );
-				}
-			}
-		}
-
-		// Call super
-		super.breakBlock( world, x, y, z, block, metaData );
-	}
-
 	@Override
 	public TileEntity createNewTileEntity( final World world, final int metaData )
 	{
-		return new TileKnowledgeInscriber();
+		return new TileDistillationEncoder();
 	}
 
 	/**
@@ -94,7 +66,7 @@ public class BlockKnowledgeInscriber
 		if( side == ForgeDirection.OPPOSITES[meta] )
 		{
 			// Face texture
-			return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTextures()[1];
+			return BlockTextureManager.DISTILLATION_ENCODER.getTextures()[1];
 		}
 
 		// Top or bottom?
@@ -102,12 +74,12 @@ public class BlockKnowledgeInscriber
 						|| ( ForgeDirection.VALID_DIRECTIONS[side] == ForgeDirection.DOWN ) )
 		{
 			// Bottom texture
-			return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTextures()[2];
+			return BlockTextureManager.DISTILLATION_ENCODER.getTextures()[2];
 
 		}
 
 		// Sides
-		return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTextures()[0];
+		return BlockTextureManager.DISTILLATION_ENCODER.getTextures()[0];
 	}
 
 	/**
@@ -116,7 +88,7 @@ public class BlockKnowledgeInscriber
 	@Override
 	public String getUnlocalizedName()
 	{
-		return BlockEnum.KNOWLEDGE_INSCRIBER.getUnlocalizedName();
+		return BlockEnum.DISTILLATION_ENCODER.getUnlocalizedName();
 	}
 
 	/**

@@ -6,6 +6,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.ICraftingIssuerTerminalHost;
 import thaumicenergistics.container.ContainerArcaneAssembler;
+import thaumicenergistics.container.ContainerDistillationEncoder;
 import thaumicenergistics.container.ContainerEssentiaCell;
 import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
 import thaumicenergistics.container.ContainerEssentiaVibrationChamber;
@@ -77,6 +78,11 @@ public class ThEGuiHandler
 	 * Add the ForgeDirection's side ordinal to this value.
 	 */
 	public static final int AUTO_CRAFTING_CONFIRM = ID_STEP_VALUE * 9;
+
+	/**
+	 * ID of the distillation encoder.
+	 */
+	public static final int DISTILLATION_ENCODER = ID_STEP_VALUE * 10;
 
 	/**
 	 * Extra data used for some GUI calls.
@@ -279,6 +285,10 @@ public class ThEGuiHandler
 			// Vibration chamber?
 		case ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER:
 			return new GuiEssentiaVibrationChamber( player, world, x, y, z );
+
+			// Distillation encoder?
+		case ThEGuiHandler.DISTILLATION_ENCODER:
+			return new GuiDistillationEncoder( player, world, x, y, z );
 		}
 
 		// Is this the priority window?
@@ -376,6 +386,10 @@ public class ThEGuiHandler
 			// Vibration chamber?
 		case ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER:
 			return new ContainerEssentiaVibrationChamber( player, world, x, y, z );
+
+			// Distillation encoder?
+		case ThEGuiHandler.DISTILLATION_ENCODER:
+			return new ContainerDistillationEncoder( player, world, x, y, z );
 
 		}
 

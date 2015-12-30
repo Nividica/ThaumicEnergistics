@@ -184,7 +184,7 @@ public class PrivateInventory
 		return true;
 	}
 
-	public final void loadFromNBT( final NBTTagCompound data, final String tagName )
+	public final void readFromNBT( final NBTTagCompound data, final String tagName )
 	{
 		// Ensure there is a data tag
 		if( data == null )
@@ -233,7 +233,7 @@ public class PrivateInventory
 	{
 	}
 
-	public final void saveToNBT( final NBTTagCompound data, final String tagName )
+	public final void writeToNBT( final NBTTagCompound data, final String tagName )
 	{
 		// Ensure there is a data tag
 		if( data == null )

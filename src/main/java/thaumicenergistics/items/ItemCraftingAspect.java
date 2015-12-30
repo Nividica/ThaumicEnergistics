@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
@@ -20,8 +19,6 @@ public class ItemCraftingAspect
 	extends Item
 {
 	private static final String NBTKEY_ASPECT = "Aspect";
-
-	public IIcon icon;
 
 	public ItemCraftingAspect()
 	{
