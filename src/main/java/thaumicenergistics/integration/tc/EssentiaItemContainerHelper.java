@@ -18,6 +18,7 @@ import thaumcraft.common.items.ItemWispEssence;
 import thaumicenergistics.api.IThEEssentiaContainerPermission;
 import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.items.IRestrictedEssentiaContainerItem;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.items.ItemBlockEssentiaVibrationChamber;

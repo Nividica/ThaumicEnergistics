@@ -1,4 +1,4 @@
-package thaumicenergistics.api.storage;
+package thaumicenergistics.api.networking;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

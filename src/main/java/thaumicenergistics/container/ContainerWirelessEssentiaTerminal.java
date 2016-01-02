@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.storage.ICraftingIssuerHost;
+import thaumicenergistics.api.networking.ICraftingIssuerHost;
 import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.gui.ThEGuiHandler;

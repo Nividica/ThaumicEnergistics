@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
+import thaumicenergistics.api.networking.IDigiVisSource;
 import thaumicenergistics.registries.ThEStrings;
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPart;

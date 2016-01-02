@@ -1,5 +1,6 @@
 package thaumicenergistics.util;
 
+import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-import thaumicenergistics.api.storage.ICraftingIssuerHost;
+import thaumicenergistics.api.networking.ICraftingIssuerHost;
 import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.container.AbstractContainerCellTerminalBase;

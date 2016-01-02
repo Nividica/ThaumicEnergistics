@@ -2,7 +2,7 @@ package thaumicenergistics.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import thaumicenergistics.api.storage.ICraftingIssuerHost;
+import thaumicenergistics.api.networking.ICraftingIssuerHost;
 import appeng.client.gui.implementations.GuiCraftConfirm;
 import appeng.core.localization.GuiText;
 

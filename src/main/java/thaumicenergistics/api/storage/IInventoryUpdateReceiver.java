@@ -1,4 +1,4 @@
-package thaumicenergistics.util;
+package thaumicenergistics.api.storage;
 
 import net.minecraft.inventory.IInventory;
 

@@ -1,4 +1,4 @@
-package thaumicenergistics.integration.tc;
+package thaumicenergistics.api.networking;
 
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;

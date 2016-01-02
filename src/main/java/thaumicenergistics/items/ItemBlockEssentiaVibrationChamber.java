@@ -10,9 +10,9 @@ import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import thaumicenergistics.api.items.IRestrictedEssentiaContainerItem;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.integration.tc.IRestrictedEssentiaContainerItem;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.tileentities.abstraction.TileEVCBase;
 

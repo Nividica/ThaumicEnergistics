@@ -1,4 +1,4 @@
-package thaumicenergistics.container;
+package thaumicenergistics.api.gui;
 
 import thaumcraft.api.aspects.Aspect;
 

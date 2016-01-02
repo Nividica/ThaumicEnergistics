@@ -5,6 +5,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
+import thaumicenergistics.api.tiles.IEssentiaTransportWithSimulate;
 import appeng.api.config.Actionable;
 
 public class EssentiaTransportHelper

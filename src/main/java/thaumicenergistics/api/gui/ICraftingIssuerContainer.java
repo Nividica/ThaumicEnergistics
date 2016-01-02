@@ -1,4 +1,6 @@
-package thaumicenergistics.api.storage;
+package thaumicenergistics.api.gui;
+
+import thaumicenergistics.api.networking.ICraftingIssuerHost;
 
 public interface ICraftingIssuerContainer
 {

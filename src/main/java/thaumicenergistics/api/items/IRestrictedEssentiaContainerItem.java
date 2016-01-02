@@ -1,4 +1,4 @@
-package thaumicenergistics.integration.tc;
+package thaumicenergistics.api.items;
 
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaContainerItem;

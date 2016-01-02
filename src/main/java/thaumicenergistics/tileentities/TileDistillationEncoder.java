@@ -4,8 +4,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
 import thaumicenergistics.items.ItemCraftingAspect;
-import thaumicenergistics.util.IInventoryUpdateReceiver;
 import thaumicenergistics.util.PrivateInventory;
 import appeng.api.AEApi;
 

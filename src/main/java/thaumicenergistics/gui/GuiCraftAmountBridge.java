@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import thaumicenergistics.api.storage.ICraftingIssuerHost;
+import thaumicenergistics.api.networking.ICraftingIssuerHost;
 import thaumicenergistics.network.packet.server.Packet_S_ConfirmCraftingJob;
 import appeng.client.gui.implementations.GuiCraftAmount;
 import appeng.client.gui.widgets.GuiNumberBox;

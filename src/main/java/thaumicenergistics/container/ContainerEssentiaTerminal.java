@@ -3,7 +3,7 @@ package thaumicenergistics.container;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.storage.ICraftingIssuerHost;
+import thaumicenergistics.api.networking.ICraftingIssuerHost;
 import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.items.ItemCraftingAspect;

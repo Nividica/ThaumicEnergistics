@@ -15,6 +15,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
+import thaumicenergistics.api.gui.IAspectSelectorContainer;
 import thaumicenergistics.api.gui.IAspectSelectorGui;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStackComparator;
