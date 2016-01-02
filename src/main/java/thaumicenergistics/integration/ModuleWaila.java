@@ -10,9 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import thaumicenergistics.blocks.AbstractBlockProviderBase;
-import thaumicenergistics.blocks.BlockArcaneAssembler;
-import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
+import thaumicenergistics.common.blocks.AbstractBlockProviderBase;
+import thaumicenergistics.common.blocks.BlockArcaneAssembler;
+import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class ModuleWaila

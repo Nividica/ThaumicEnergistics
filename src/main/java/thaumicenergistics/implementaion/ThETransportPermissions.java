@@ -12,7 +12,7 @@ import thaumcraft.common.blocks.BlockJarItem;
 import thaumcraft.common.blocks.ItemJarFilled;
 import thaumicenergistics.api.IThEEssentiaContainerPermission;
 import thaumicenergistics.api.IThETransportPermissions;
-import thaumicenergistics.util.ThELog;
+import thaumicenergistics.common.utils.ThELog;
 
 class ThETransportPermissions
 	implements IThETransportPermissions

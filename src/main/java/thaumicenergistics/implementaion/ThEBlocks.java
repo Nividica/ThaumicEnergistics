@@ -1,7 +1,7 @@
 package thaumicenergistics.implementaion;
 
 import thaumicenergistics.api.IThEBlocks;
-import thaumicenergistics.registries.BlockEnum;
+import thaumicenergistics.common.registries.BlockEnum;
 
 class ThEBlocks
 	extends IThEBlocks

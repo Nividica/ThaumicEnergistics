@@ -10,7 +10,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.client.lib.ClientTickEventsFML;
-import thaumicenergistics.util.PrivateInventory;
+import thaumicenergistics.common.inventory.PrivateInventory;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.eventhandler.EventBus;

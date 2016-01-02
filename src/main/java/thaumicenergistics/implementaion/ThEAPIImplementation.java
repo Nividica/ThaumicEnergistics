@@ -14,8 +14,8 @@ import thaumicenergistics.api.IThEParts;
 import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.util.ThELog;
+import thaumicenergistics.common.fluids.GaseousEssentia;
+import thaumicenergistics.common.utils.ThELog;
 import com.google.common.collect.ImmutableList;
 import cpw.mods.fml.common.LoaderState;
 

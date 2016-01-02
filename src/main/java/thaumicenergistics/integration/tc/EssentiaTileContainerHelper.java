@@ -12,10 +12,10 @@ import thaumcraft.common.tiles.*;
 import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAspectStack;
-import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.fluids.GaseousEssentia;
-import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
-import thaumicenergistics.tileentities.abstraction.TileEVCBase;
+import thaumicenergistics.common.fluids.GaseousEssentia;
+import thaumicenergistics.common.storage.AspectStack;
+import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
+import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
 import appeng.api.config.Actionable;
 import appeng.api.storage.data.IAEFluidStack;
 

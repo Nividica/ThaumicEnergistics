@@ -6,7 +6,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.visnet.TileVisNode;
 import thaumcraft.api.visnet.VisNetHandler;
 import thaumcraft.common.tiles.TileVisRelay;
-import thaumicenergistics.parts.AEPartVisInterface;
+import thaumicenergistics.common.parts.AEPartVisInterface;
 import appeng.api.util.DimensionalCoord;
 
 public class VisProviderProxy

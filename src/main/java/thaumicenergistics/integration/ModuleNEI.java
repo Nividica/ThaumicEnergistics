@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
-import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
-import thaumicenergistics.network.packet.server.Packet_S_ArcaneCraftingTerminal;
+import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
+import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
+import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import codechicken.nei.PositionedStack;
@@ -276,7 +276,7 @@ public class ModuleNEI
 	public ModuleNEI() throws Exception
 	{
 		// Register the ACT overlays
-		API.registerGuiOverlay( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, "crafting", new ACTSlotPositioner() );
+		API.registerGuiOverlay( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, "crafting", new ACTSlotPositioner() );
 
 		// Create the regular overlay handler
 		ACTOverlayHandler craftingOverlayHandler = new ACTOverlayHandler( false );
@@ -285,9 +285,9 @@ public class ModuleNEI
 		ACTOverlayHandler arcaneOverlayHandler = new ACTOverlayHandler( true );
 
 		// Register the handlers
-		API.registerGuiOverlayHandler( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, craftingOverlayHandler, "crafting" );
-		API.registerGuiOverlayHandler( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler, "arcaneshapedrecipes" );
-		API.registerGuiOverlayHandler( thaumicenergistics.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler, "arcaneshapelessrecipes" );
+		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, craftingOverlayHandler, "crafting" );
+		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler, "arcaneshapedrecipes" );
+		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler, "arcaneshapelessrecipes" );
 	}
 
 }

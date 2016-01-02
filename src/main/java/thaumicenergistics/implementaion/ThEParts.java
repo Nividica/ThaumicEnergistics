@@ -1,7 +1,7 @@
 package thaumicenergistics.implementaion;
 
 import thaumicenergistics.api.IThEParts;
-import thaumicenergistics.registries.AEPartsEnum;
+import thaumicenergistics.common.registries.AEPartsEnum;
 
 class ThEParts
 	extends IThEParts

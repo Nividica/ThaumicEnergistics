@@ -20,9 +20,9 @@ import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.items.IRestrictedEssentiaContainerItem;
 import thaumicenergistics.api.storage.IAspectStack;
-import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.items.ItemBlockEssentiaVibrationChamber;
-import thaumicenergistics.tileentities.abstraction.TileEVCBase;
+import thaumicenergistics.common.items.ItemBlockEssentiaVibrationChamber;
+import thaumicenergistics.common.storage.AspectStack;
+import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
 
 /**
  * Helper class for working with Thaumcraft item essentia containers.

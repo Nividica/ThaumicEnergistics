@@ -2,7 +2,7 @@ package thaumicenergistics.integration;
 
 import java.lang.reflect.Method;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.fluids.GaseousEssentia;
+import thaumicenergistics.common.fluids.GaseousEssentia;
 
 public class ModuleEC2
 {

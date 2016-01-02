@@ -5,16 +5,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.api.networking.IEssentiaGrid;
-import thaumicenergistics.grid.GridEssentiaCache;
-import thaumicenergistics.gui.ThEGuiHandler;
+import thaumicenergistics.api.grid.IEssentiaGrid;
+import thaumicenergistics.common.grid.GridEssentiaCache;
+import thaumicenergistics.common.network.NetworkHandler;
+import thaumicenergistics.common.registries.AEAspectRegister;
+import thaumicenergistics.common.utils.ThELog;
 import thaumicenergistics.integration.IntegrationCore;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
-import thaumicenergistics.network.NetworkHandler;
-import thaumicenergistics.proxy.CommonProxy;
-import thaumicenergistics.registries.AEAspectRegister;
-import thaumicenergistics.util.ThELog;
 import appeng.api.AEApi;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -49,7 +47,7 @@ public class ThaumicEnergistics
 	public static ThaumicEnergistics INSTANCE;
 
 	// Says where the client and server 'proxy' code is loaded.
-	@SidedProxy(clientSide = "thaumicenergistics.proxy.ClientProxy", serverSide = "thaumicenergistics.proxy.CommonProxy")
+	@SidedProxy(clientSide = "thaumicenergistics.client.ClientProxy", serverSide = "thaumicenergistics.common.CommonProxy")
 	public static CommonProxy proxy;
 
 	/**
