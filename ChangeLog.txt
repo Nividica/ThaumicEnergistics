@@ -1,9 +1,17 @@
-﻿12/30/2015 0.10.0.0 - Beta
+﻿01/01/2016 0.10.0.0 - Beta
+  Essentia subsystem now supports craftable aspects.
+  Essentia terminals now shows craftable essentia.
+  Reworked some terrible GUI code.
+  Fixed sort-by-name in the Essentia Terminals.
+  Fixed a bug where some parts would not be aware of neighboring blocks when placed.
+  Fixes #53: :D
+  Todo: Lore, recipe, texture.
+
+12/30/2015 0.10.0.0 - Beta
   Added Distillation Encoder
   Added pattern handler
   Implemented Distillation Encoder GUI
-  Cleaned up tooltip code, and fixed underdraw issue.
-  
+  Cleaned up tooltip code, and fixed underdraw issue.  
 
 12/29/2015 0.10.0.0 - Beta
   Began integrating essentia into crafting system.

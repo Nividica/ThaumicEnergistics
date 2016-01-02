@@ -1,7 +1,9 @@
 package thaumicenergistics.util;
 
 import java.util.HashMap;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.EnumChatFormatting;
+import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 
 public final class GuiHelper
@@ -52,6 +54,42 @@ public final class GuiHelper
 
 	}
 
+	public static final void drawScaledText( final FontRenderer fontRenderer, final String text, final float scale, final float posX, final float posY )
+	{
+		// Disable lighting
+		GL11.glDisable( GL11.GL_LIGHTING );
+
+		// Disable depth testing
+		GL11.glDisable( GL11.GL_DEPTH_TEST );
+
+		// Push the current matrix
+		GL11.glPushMatrix();
+
+		// Scale the GUI
+		GL11.glScaled( scale, scale, scale );
+
+		// Calculate inverse scale
+		float inverseScale = 1.0f / scale;
+
+		// Calculate final X position
+		final int X = (int)( ( posX - ( fontRenderer.getStringWidth( text ) * scale ) ) * inverseScale );
+
+		// Calculate final Y position
+		final int Y = (int)( ( posY - ( 7.0f * scale ) ) * inverseScale );
+
+		// Render
+		fontRenderer.drawStringWithShadow( text, X, Y, 16777215 );
+
+		// Pop the matrix
+		GL11.glPopMatrix();
+
+		// Enable lighting
+		GL11.glEnable( GL11.GL_LIGHTING );
+
+		// Enable depth testing
+		GL11.glEnable( GL11.GL_DEPTH_TEST );
+	}
+
 	/**
 	 * Changes a large number into a binary postfixed version.
 	 * For example: 10,500 -> 10.5K
@@ -59,7 +97,7 @@ public final class GuiHelper
 	 * @param count
 	 * @return
 	 */
-	public static String shortenCount( final long count )
+	public static final String shortenCount( final long count )
 	{
 		int unit = 1000;
 
@@ -73,7 +111,7 @@ public final class GuiHelper
 		int exponential = (int)( Math.log( count ) / Math.log( unit ) );
 
 		// Get the posfix char
-		char postfix = "KMBT".charAt( exponential - 1 );
+		char postfix = "KMGTPE".charAt( exponential - 1 );
 
 		return String.format( "%.1f%c", ( count / Math.pow( unit, exponential ) ), postfix );
 	}

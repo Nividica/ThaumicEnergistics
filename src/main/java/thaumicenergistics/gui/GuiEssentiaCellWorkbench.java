@@ -302,7 +302,7 @@ public class GuiEssentiaCellWorkbench
 		// Set the aspects
 		for( int index = 0; index < count; index++ )
 		{
-			this.partitionWidgets[index].setAspect( aspectList.get( index ) );
+			this.partitionWidgets[index].setAspect( aspectList.get( index ), 1, false );
 		}
 
 		// Clear the rest

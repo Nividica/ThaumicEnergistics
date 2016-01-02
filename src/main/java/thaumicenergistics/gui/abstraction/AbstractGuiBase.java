@@ -3,6 +3,7 @@ package thaumicenergistics.gui.abstraction;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
@@ -259,6 +260,12 @@ public abstract class AbstractGuiBase
 			// Clear the tooltip
 			this.tooltip.clear();
 		}
+	}
+
+	@Override
+	public final FontRenderer getFontRenderer()
+	{
+		return this.fontRendererObj;
 	}
 
 	/**

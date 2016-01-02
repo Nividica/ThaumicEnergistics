@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.grid.GridEssentiaCache.WatcherManager;
+import thaumicenergistics.api.networking.IEssentiaWatcher;
+import thaumicenergistics.api.networking.IEssentiaWatcherHost;
+import thaumicenergistics.grid.GridEssentiaCache.EssentiaWatcherManager;
 
 public class EssentiaWatcher
 	implements IEssentiaWatcher
@@ -19,14 +21,14 @@ public class EssentiaWatcher
 	/**
 	 * The manager for the cache.
 	 */
-	private final WatcherManager manager;
+	private final EssentiaWatcherManager manager;
 
 	/**
 	 * Whom this watcher belongs to.
 	 */
 	private final WeakReference<IEssentiaWatcherHost> host;
 
-	public EssentiaWatcher( final WatcherManager manager, final IEssentiaWatcherHost host )
+	public EssentiaWatcher( final EssentiaWatcherManager manager, final IEssentiaWatcherHost host )
 	{
 		this.manager = manager;
 		this.trackedAspects = new HashSet<Aspect>();

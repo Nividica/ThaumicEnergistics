@@ -3,16 +3,27 @@ package thaumicenergistics.container;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.api.storage.ICraftingIssuerHost;
+import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
+import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
+import thaumicenergistics.items.ItemCraftingAspect;
 import thaumicenergistics.network.packet.client.Packet_C_EssentiaCellTerminal;
 import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.PrivateInventory;
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
+import appeng.api.config.ViewItems;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerCraftAmount;
+import appeng.util.Platform;
 
 public class ContainerWirelessEssentiaTerminal
 	extends AbstractContainerCellTerminalBase
@@ -64,7 +75,6 @@ public class ContainerWirelessEssentiaTerminal
 	 * 
 	 * @param player
 	 * @param handler
-	 * Null on client side.
 	 */
 	public ContainerWirelessEssentiaTerminal( final EntityPlayer player, final HandlerWirelessEssentiaTerminal handler )
 	{
@@ -182,23 +192,82 @@ public class ContainerWirelessEssentiaTerminal
 	}
 
 	@Override
-	public void onClientRequestFullUpdate()
+	public ICraftingIssuerHost getCraftingHost()
 	{
-		// Send the sorting mode
-		Packet_C_EssentiaCellTerminal.setSortMode( this.player, this.handler.getSortingMode() );
-
-		// Send the list
-		Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.aspectStackList );
+		return this.handler;
 	}
 
 	@Override
-	public void onClientRequestSortModeChange( final ComparatorMode sortingMode, final EntityPlayer player )
+	public void onClientRequestAutoCraft( final EntityPlayer player, final Aspect aspect )
 	{
+		// Launch the GUI
+		ThEGuiHandler.launchGui( ThEGuiHandler.AUTO_CRAFTING_AMOUNT, player, player.worldObj, 0, 0, 0 );
+
+		// Setup the amount container
+		if( player.openContainer instanceof ContainerCraftAmount )
+		{
+			// Get the container
+			ContainerCraftAmount cca = (ContainerCraftAmount)this.player.openContainer;
+
+			// Create the open context
+			cca.setOpenContext( new ContainerOpenContext( this.handler ) );
+			cca.getOpenContext().setWorld( player.worldObj );
+
+			// Create the result item
+			IAEItemStack result = AEApi.instance().storage().createItemStack( ItemCraftingAspect.createStackForAspect( aspect, 1 ) );
+
+			// Set the item
+			cca.getCraftingItem().putStack( result.getItemStack() );
+			cca.setItemToCraft( result );
+
+			// Issue update
+			cca.detectAndSendChanges();
+		}
+
+	}
+
+	@Override
+	public void onClientRequestFullUpdate()
+	{
+		// Send the sorting mode
+		Packet_C_EssentiaCellTerminal.sendViewingModes( this.player, this.handler.getSortingMode(), this.handler.getViewMode() );
+
+		// Send the list
+		Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.repo.getAll() );
+	}
+
+	@Override
+	public void onClientRequestSortModeChange( final EntityPlayer player, final boolean backwards )
+	{
+		// Change the sorting mode
+		AspectStackComparatorMode sortingMode;
+		if( backwards )
+		{
+			sortingMode = this.handler.getSortingMode().previousMode();
+		}
+		else
+		{
+			sortingMode = this.handler.getSortingMode().nextMode();
+		}
+
 		// Set the sorting mode.
 		this.handler.setSortingMode( sortingMode );
 
 		// Send confirmation back to client
-		Packet_C_EssentiaCellTerminal.setSortMode( player, sortingMode );
+		Packet_C_EssentiaCellTerminal.sendViewingModes( player, sortingMode, this.handler.getViewMode() );
+	}
+
+	@Override
+	public void onClientRequestViewModeChange( final EntityPlayer player, final boolean backwards )
+	{
+		// Change the view mode
+		ViewItems viewMode = Platform.rotateEnum( this.handler.getViewMode(), backwards, Settings.VIEW_MODE.getPossibleValues() );
+
+		// Inform the handler of the change
+		this.handler.setViewMode( viewMode );
+
+		// Send confirmation back to client
+		Packet_C_EssentiaCellTerminal.sendViewingModes( player, this.handler.getSortingMode(), viewMode );
 	}
 
 	/**

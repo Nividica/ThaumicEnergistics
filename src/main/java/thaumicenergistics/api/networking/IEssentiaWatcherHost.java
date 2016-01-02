@@ -1,4 +1,4 @@
-package thaumicenergistics.grid;
+package thaumicenergistics.api.networking;
 
 import thaumcraft.api.aspects.Aspect;
 

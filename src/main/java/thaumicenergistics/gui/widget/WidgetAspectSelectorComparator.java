@@ -2,8 +2,9 @@ package thaumicenergistics.gui.widget;
 
 import java.util.Comparator;
 import thaumicenergistics.aspect.AspectStackComparator;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 
+@Deprecated
 public class WidgetAspectSelectorComparator
 	implements Comparator<WidgetAspectSelector>
 {
@@ -14,7 +15,7 @@ public class WidgetAspectSelectorComparator
 	 */
 	public WidgetAspectSelectorComparator()
 	{
-		this( ComparatorMode.MODE_ALPHABETIC );
+		this( AspectStackComparatorMode.MODE_ALPHABETIC );
 	}
 
 	/**
@@ -24,7 +25,7 @@ public class WidgetAspectSelectorComparator
 	 * @param mode
 	 * Mode to sort by.
 	 */
-	public WidgetAspectSelectorComparator( final ComparatorMode mode )
+	public WidgetAspectSelectorComparator( final AspectStackComparatorMode mode )
 	{
 		// Create the internal comparator
 		this.internalComparator = new AspectStackComparator( mode );
@@ -34,7 +35,7 @@ public class WidgetAspectSelectorComparator
 	public int compare( final WidgetAspectSelector left, final WidgetAspectSelector right )
 	{
 		// Compare
-		return this.internalComparator.compare( left.getAspectStackRepresentation(), right.getAspectStackRepresentation() );
+		return this.internalComparator.compare( left.getStack(), right.getStack() );
 	}
 
 }

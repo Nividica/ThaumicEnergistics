@@ -16,7 +16,7 @@ public interface IMEEssentiaMonitorReceiver
 	 * Called when a change to the stored essentia occurs.
 	 * 
 	 * @param fromMonitor
-	 * @param change
+	 * @param changes
 	 */
 	void postChange( IMEEssentiaMonitor fromMonitor, Iterable<AspectStack> changes );
 }

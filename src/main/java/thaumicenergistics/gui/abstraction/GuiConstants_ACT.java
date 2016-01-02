@@ -11,7 +11,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 
  */
 @SideOnly(Side.CLIENT)
-public abstract class AbstractGuiConstantsACT
+public abstract class GuiConstants_ACT
 	extends AbstractGuiWithScrollbar
 {
 
@@ -51,20 +51,20 @@ public abstract class AbstractGuiConstantsACT
 	protected static final int BUTTON_CLEAR_GRID_ID = 0, BUTTON_CLEAR_GRID_POS_X = 98, BUTTON_CLEAR_GRID_POS_Y = 89;
 
 	/**
-	 * Sort order button
+	 * Sort mode button
 	 */
-	protected static final int BUTTON_SORT_ORDER_ID = 1, BUTTON_SORT_ORDER_POS_X = -18, BUTTON_SORT_ORDER_POS_Y = 8;
+	protected static final int BUTTON_SORT_MODE_ID = 1, BUTTON_SORT_MODE_POS_X = -18, BUTTON_SORT_MODE_POS_Y = 8;
 
 	/**
 	 * Sort direction button
 	 */
-	protected static final int BUTTON_SORT_DIR_ID = 2, BUTTON_SORT_DIR_POS_X = BUTTON_SORT_ORDER_POS_X,
-					BUTTON_SORT_DIR_POS_Y = BUTTON_SORT_ORDER_POS_Y + 20;
+	protected static final int BUTTON_SORT_DIR_ID = 2, BUTTON_SORT_DIR_POS_X = BUTTON_SORT_MODE_POS_X,
+					BUTTON_SORT_DIR_POS_Y = BUTTON_SORT_MODE_POS_Y + 20;
 
 	/**
 	 * View type button
 	 */
-	protected static final int BUTTON_VIEW_TYPE_ID = 3, BUTTON_VIEW_TYPE_POS_X = BUTTON_SORT_ORDER_POS_X,
+	protected static final int BUTTON_VIEW_TYPE_ID = 3, BUTTON_VIEW_TYPE_POS_X = BUTTON_SORT_MODE_POS_X,
 					BUTTON_VIEW_TYPE_POS_Y = BUTTON_SORT_DIR_POS_Y + 20;
 
 	/**
@@ -75,13 +75,13 @@ public abstract class AbstractGuiConstantsACT
 	/**
 	 * Search mode
 	 */
-	protected static final int BUTTON_SEARCH_MODE_ID = 5, BUTTON_SEARCH_MODE_POS_X = BUTTON_SORT_ORDER_POS_X,
+	protected static final int BUTTON_SEARCH_MODE_ID = 5, BUTTON_SEARCH_MODE_POS_X = BUTTON_SORT_MODE_POS_X,
 					BUTTON_SEARCH_MODE_POS_Y = BUTTON_VIEW_TYPE_POS_Y + 20;
 
 	/**
 	 * Terminal style button
 	 */
-	protected static final int BUTTON_TERM_STYLE_ID = 6, BUTTON_TERM_STYLE_POS_X = BUTTON_SORT_ORDER_POS_X,
+	protected static final int BUTTON_TERM_STYLE_ID = 6, BUTTON_TERM_STYLE_POS_X = BUTTON_SORT_MODE_POS_X,
 					BUTTON_TERM_STYLE_POS_Y = BUTTON_SEARCH_MODE_POS_Y + 20;
 
 	/**
@@ -219,7 +219,7 @@ public abstract class AbstractGuiConstantsACT
 	 */
 	protected static final long WIDGET_TOOLTIP_UPDATE_INTERVAL = 3000L;
 
-	public AbstractGuiConstantsACT( final Container container )
+	public GuiConstants_ACT( final Container container )
 	{
 		super( container );
 	}

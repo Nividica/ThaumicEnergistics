@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.networking.IEssentiaGrid;
+import thaumicenergistics.api.networking.IEssentiaWatcher;
+import thaumicenergistics.api.networking.IEssentiaWatcherHost;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.items.ItemCraftingAspect;
 import thaumicenergistics.registries.ItemEnum;
@@ -19,8 +22,12 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPostCacheConstruction;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import com.google.common.collect.ImmutableSet;
 
@@ -34,7 +41,45 @@ public class GridEssentiaCache
 	extends EssentiaMonitor
 	implements IEssentiaGrid
 {
-	public class WatcherManager
+	private class AspectCraftingWatcher
+		implements IMEMonitorHandlerReceiver<IAEItemStack>
+	{
+
+		public AspectCraftingWatcher()
+		{
+		}
+
+		@Override
+		public boolean isValid( final Object verificationToken )
+		{
+			return GridEssentiaCache.this.internalGrid == verificationToken;
+		}
+
+		@Override
+		public void onListUpdate()
+		{
+			// Ignored
+		}
+
+		@Override
+		public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final BaseActionSource actionSource )
+		{
+			for( IAEItemStack stack : change )
+			{
+				// Is the stack craftable, has NBT tag, and is a crafting aspect?
+				if( stack.isCraftable()
+								&& stack.hasTagCompound()
+								&& ( stack.getItem() instanceof ItemCraftingAspect ) )
+				{
+					GridEssentiaCache.this.markForUpdate();
+					break;
+				}
+			}
+		}
+
+	}
+
+	public class EssentiaWatcherManager
 		implements IMEEssentiaMonitorReceiver
 	{
 		/**
@@ -211,17 +256,22 @@ public class GridEssentiaCache
 	/**
 	 * Grid the cache is part of.
 	 */
-	private final IGrid internalGrid;
+	final IGrid internalGrid;
 
 	/**
 	 * Manages the watchers
 	 */
-	private final WatcherManager watcherManger;
+	private final EssentiaWatcherManager essentiaWatcherManger;
 
 	/**
 	 * The 'result' of essentia crafting operations.
 	 */
 	private final ItemStack aspectItem;
+
+	/**
+	 * Watches the item network for essentia related events.
+	 */
+	private AspectCraftingWatcher craftingWatcher;
 
 	public GridEssentiaCache( final IGrid grid )
 	{
@@ -229,10 +279,68 @@ public class GridEssentiaCache
 		this.internalGrid = grid;
 
 		// Create the watcher manager
-		this.watcherManger = new WatcherManager();
+		this.essentiaWatcherManger = new EssentiaWatcherManager();
 
 		// Set the aspect item
 		this.aspectItem = ItemEnum.CRAFTING_ASPECT.getStack();
+
+		// Create the crafting watcher
+		this.craftingWatcher = new AspectCraftingWatcher();
+	}
+
+	/**
+	 * Add in any craftable aspects
+	 */
+	@Override
+	protected void updateCacheToMatchNetwork()
+	{
+		// Call super
+		super.updateCacheToMatchNetwork();
+
+		// Get the item monitor
+		IStorageGrid storage = (IStorageGrid)this.internalGrid.getCache( IStorageGrid.class );
+		IMEMonitor<IAEItemStack> itemMonitor = storage.getItemInventory();
+
+		// Get stored items
+		IItemList<IAEItemStack> storedItems = itemMonitor.getStorageList();
+		if( ( storedItems == null ) || ( storedItems.size() == 0 ) )
+		{
+			return;
+		}
+
+		// Create the aspect list
+		HashSet<Aspect> craftableAspects = new HashSet<Aspect>();
+
+		// Check each item for craftability and type
+		for( IAEItemStack stack : storedItems )
+		{
+			if( stack == null )
+			{
+				continue;
+			}
+
+			// Is the stack craftable, has NBT tag, and is a crafting aspect?
+			if( stack.isCraftable()
+							&& stack.hasTagCompound()
+							&& ( stack.getItem() instanceof ItemCraftingAspect ) )
+			{
+				// Get the aspect
+				Aspect aspect = ItemCraftingAspect.getAspect( stack.getTagCompound().getNBTTagCompoundCopy() );
+				if( aspect != null )
+				{
+					// Add the aspect
+					craftableAspects.add( aspect );
+				}
+
+			}
+		}
+
+		// Anything added?
+		if( craftableAspects.size() > 0 )
+		{
+			this.setCraftableAspects( craftableAspects );
+		}
+
 	}
 
 	@Override
@@ -245,10 +353,10 @@ public class GridEssentiaCache
 			IEssentiaWatcherHost host = (IEssentiaWatcherHost)machine;
 
 			// Create the watcher
-			EssentiaWatcher watcher = new EssentiaWatcher( this.watcherManger, host );
+			EssentiaWatcher watcher = new EssentiaWatcher( this.essentiaWatcherManger, host );
 
 			// Add to the watcher manager
-			this.watcherManger.addWatcher( gridNode, watcher );
+			this.essentiaWatcherManger.addWatcher( gridNode, watcher );
 
 			// Inform the host it has a watcher
 			host.updateWatcher( watcher );
@@ -330,6 +438,9 @@ public class GridEssentiaCache
 
 		// Wrap
 		this.wrap( storage.getFluidInventory(), (IEnergyGrid)this.internalGrid.getCache( IEnergyGrid.class ), this.internalGrid );
+
+		// Set the crafting watcher
+		storage.getItemInventory().addListener( this.craftingWatcher, this.internalGrid );
 	}
 
 	@Override
@@ -377,8 +488,15 @@ public class GridEssentiaCache
 		// Was the node an essentia watcher?
 		if( machine instanceof IEssentiaWatcherHost )
 		{
-			this.watcherManger.removeWatcher( gridNode );
+			this.essentiaWatcherManger.removeWatcher( gridNode );
 		}
 	}
 
+	/**
+	 * Called by the crafting watcher when an update is needed.
+	 */
+	void markForUpdate()
+	{
+		this.cacheNeedsUpdate = true;
+	}
 }

@@ -6,9 +6,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.storage.ICraftingIssuerHost;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.grid.EssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
@@ -18,6 +20,8 @@ import thaumicenergistics.network.packet.client.Packet_C_EssentiaCellTerminal;
 import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.PrivateInventory;
+import appeng.api.config.Settings;
+import appeng.api.config.ViewItems;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEInventoryHandler;
@@ -26,6 +30,7 @@ import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.tile.storage.TileChest;
+import appeng.util.Platform;
 
 /**
  * Inventory container for essentia cells in a ME chest.
@@ -179,6 +184,19 @@ public class ContainerEssentiaCell
 		this.transferEssentia( this.playerSource );
 	}
 
+	@Override
+	public ICraftingIssuerHost getCraftingHost()
+	{
+		// Can't craft.
+		return null;
+	}
+
+	@Override
+	public void onClientRequestAutoCraft( final EntityPlayer player, final Aspect aspect )
+	{
+		// Ignored, can't issue, or even see, craftable essentia from here.
+	}
+
 	/**
 	 * Gets the current list from the AE monitor and sends
 	 * it to the client.
@@ -186,21 +204,20 @@ public class ContainerEssentiaCell
 	@Override
 	public void onClientRequestFullUpdate()
 	{
-
 		// Get the handler
 		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
 
 		// Did we get the handler?
 		if( cellHandler != null )
 		{
-			// Send the sorting mode
-			Packet_C_EssentiaCellTerminal.setSortMode( this.player, cellHandler.getSortingMode() );
+			// Send the viewing mode
+			Packet_C_EssentiaCellTerminal.sendViewingModes( this.player, cellHandler.getSortingMode(), cellHandler.getViewMode() );
 		}
 
 		// Send the list
 		if( ( this.monitor != null ) && ( this.hostChest.isPowered() ) )
 		{
-			Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.aspectStackList );
+			Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.repo.getAll() );
 		}
 		else
 		{
@@ -210,16 +227,43 @@ public class ContainerEssentiaCell
 	}
 
 	@Override
-	public void onClientRequestSortModeChange( final ComparatorMode sortingMode, final EntityPlayer player )
+	public void onClientRequestSortModeChange( final EntityPlayer player, final boolean backwards )
 	{
 		// Get the handler
 		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
+
+		// Change the sorting mode
+		AspectStackComparatorMode sortingMode;
+		if( backwards )
+		{
+			sortingMode = cellHandler.getSortingMode().previousMode();
+		}
+		else
+		{
+			sortingMode = cellHandler.getSortingMode().nextMode();
+		}
 
 		// Inform the handler of the change
 		cellHandler.setSortingMode( sortingMode );
 
 		// Send confirmation back to client
-		Packet_C_EssentiaCellTerminal.setSortMode( player, sortingMode );
+		Packet_C_EssentiaCellTerminal.sendViewingModes( player, sortingMode, cellHandler.getViewMode() );
+	}
+
+	@Override
+	public void onClientRequestViewModeChange( final EntityPlayer player, final boolean backwards )
+	{
+		// Get the handler
+		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
+
+		// Change the view mode
+		ViewItems viewMode = Platform.rotateEnum( cellHandler.getViewMode(), backwards, Settings.VIEW_MODE.getPossibleValues() );
+
+		// Inform the handler of the change
+		cellHandler.setViewMode( viewMode );
+
+		// Send confirmation back to client
+		Packet_C_EssentiaCellTerminal.sendViewingModes( player, cellHandler.getSortingMode(), viewMode );
 	}
 
 	/**

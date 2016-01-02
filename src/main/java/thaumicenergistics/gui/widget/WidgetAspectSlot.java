@@ -102,14 +102,14 @@ public class WidgetAspectSlot
 	}
 
 	@Override
-	public void mouseClicked()
+	public void onMouseClicked()
 	{
 		// Ignored
 	}
 
 	public void mouseClicked( final Aspect withAspect )
 	{
-		this.setAspect( withAspect );
+		this.setAspect( withAspect, 1, false );
 
 		Packet_S_AspectSlot.sendAspectChange( this.part, this.id, this.getAspect(), this.player );
 	}

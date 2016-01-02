@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import thaumicenergistics.api.ICraftingIssuerTerminalHost;
+import thaumicenergistics.api.storage.ICraftingIssuerHost;
 import thaumicenergistics.network.packet.server.Packet_S_ConfirmCraftingJob;
 import appeng.client.gui.implementations.GuiCraftAmount;
 import appeng.client.gui.widgets.GuiNumberBox;
@@ -17,7 +17,7 @@ public class GuiCraftAmountBridge
 	/**
 	 * AE Part that is issued the crafting request.
 	 */
-	protected ICraftingIssuerTerminalHost terminalHost;
+	protected ICraftingIssuerHost host;
 
 	/**
 	 * Button that returns to the terminal's GUI.
@@ -39,13 +39,13 @@ public class GuiCraftAmountBridge
 	 */
 	protected GuiNumberBox amountToCraft;
 
-	public GuiCraftAmountBridge( final EntityPlayer player, final ICraftingIssuerTerminalHost te )
+	public GuiCraftAmountBridge( final EntityPlayer player, final ICraftingIssuerHost craftingHost )
 	{
 		// Call super
-		super( player.inventory, te );
+		super( player.inventory, craftingHost );
 
-		// Set the terminal host
-		this.terminalHost = te;
+		// Set the host
+		this.host = craftingHost;
 
 		// Set the player
 		this.player = player;
@@ -56,8 +56,8 @@ public class GuiCraftAmountBridge
 	{
 		if( btn == this.buttonReturnToTerminalHost )
 		{
-			// Change back to terminal GUI
-			this.terminalHost.launchGUI( this.player );
+			// Change back to host GUI
+			this.host.launchGUI( this.player );
 		}
 		else if( btn == this.buttonNext )
 		{
@@ -88,8 +88,8 @@ public class GuiCraftAmountBridge
 		// Call super
 		super.initGui();
 
-		// Get the icon of the terminal
-		ItemStack myIcon = this.terminalHost.getIcon();
+		// Get the icon of the host
+		ItemStack myIcon = this.host.getIcon();
 
 		// Create the return button
 		this.buttonReturnToTerminalHost = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), itemRender );

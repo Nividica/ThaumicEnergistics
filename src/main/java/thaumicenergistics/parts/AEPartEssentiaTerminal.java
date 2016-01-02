@@ -7,27 +7,42 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.api.storage.ICraftingIssuerHost;
+import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.container.AbstractContainerCellTerminalBase;
 import thaumicenergistics.container.ContainerEssentiaTerminal;
 import thaumicenergistics.gui.GuiEssentiaCellTerminal;
+import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
+import thaumicenergistics.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.registries.AEPartsEnum;
+import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.texture.BlockTextureManager;
+import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.PrivateInventory;
+import appeng.api.config.Settings;
+import appeng.api.config.ViewItems;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
+import appeng.api.util.IConfigManager;
+import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartEssentiaTerminal
 	extends AbstractAEPartRotateable
+	implements ICraftingIssuerHost, ITerminalHost
 {
 
 	/**
@@ -36,19 +51,19 @@ public class AEPartEssentiaTerminal
 	private static final double IDLE_POWER_DRAIN = 0.5D;
 
 	/**
-	 * Key used to read and write sorting mode from/to NBT.
+	 * NBT Keys
 	 */
-	private static final String SORT_MODE_NBT_KEY = "sortMode";
-
-	/**
-	 * Key used to read and write inventory from/to NBT.
-	 */
-	private static final String INVENTORY_NBT_KEY = "slots";
+	private static final String NBT_KEY_SORT_MODE = "sortMode", NBT_KEY_INVENTORY = "slots", NBT_KEY_VIEW_MODE = "ViewMode";
 
 	/**
 	 * Default sorting mode for the terminal.
 	 */
-	private static final ComparatorMode DEFAULT_SORT_MODE = ComparatorMode.MODE_ALPHABETIC;
+	private static final AspectStackComparatorMode DEFAULT_SORT_MODE = AspectStackComparatorMode.MODE_ALPHABETIC;
+
+	/**
+	 * Default view mode for the terminal.
+	 */
+	private static final ViewItems DEFAULT_VIEW_MODE = ViewItems.ALL;
 
 	/**
 	 * List of currently opened containers.
@@ -56,14 +71,14 @@ public class AEPartEssentiaTerminal
 	private List<ContainerEssentiaTerminal> listeners = new ArrayList<ContainerEssentiaTerminal>();
 
 	/**
-	 * Tracks if the inventory has been locked for work.
-	 */
-	private boolean inventoryLocked = false;
-
-	/**
 	 * The sorting mode used to display aspects.
 	 */
-	private ComparatorMode sortMode = AEPartEssentiaTerminal.DEFAULT_SORT_MODE;
+	private AspectStackComparatorMode sortMode = DEFAULT_SORT_MODE;
+
+	/**
+	 * The viewing mode used to display aspects.
+	 */
+	private ViewItems viewMode = DEFAULT_VIEW_MODE;
 
 	private PrivateInventory inventory = new PrivateInventory( ThaumicEnergistics.MOD_ID + ".part.aspect.terminal", 2, 64 )
 	{
@@ -129,6 +144,13 @@ public class AEPartEssentiaTerminal
 	}
 
 	@Override
+	public IConfigManager getConfigManager()
+	{
+		// NOTE: Ignored, should it be? No, not it should not. Could use this to store all the terminal settings.
+		return null;
+	}
+
+	@Override
 	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 		// Inventory is saved when wrenched.
@@ -152,6 +174,19 @@ public class AEPartEssentiaTerminal
 		}
 	}
 
+	@Override
+	public IMEMonitor<IAEFluidStack> getFluidInventory()
+	{
+		// Ignored
+		return null;
+	}
+
+	@Override
+	public ItemStack getIcon()
+	{
+		return this.associatedItem;
+	}
+
 	/**
 	 * Determines how much power the part takes for just
 	 * existing.
@@ -165,6 +200,12 @@ public class AEPartEssentiaTerminal
 	public PrivateInventory getInventory()
 	{
 		return this.inventory;
+	}
+
+	@Override
+	public IMEMonitor<IAEItemStack> getItemInventory()
+	{
+		return this.getGridBlock().getItemMonitor();
 	}
 
 	/**
@@ -187,49 +228,48 @@ public class AEPartEssentiaTerminal
 	 * 
 	 * @return
 	 */
-	public ComparatorMode getSortingMode()
+	public AspectStackComparatorMode getSortingMode()
 	{
 		return this.sortMode;
 	}
 
 	/**
-	 * Attempts to lock the terminal's inventory so that
-	 * changes can be made.
+	 * Gets the view mode.
 	 * 
-	 * @return True if the lock was acquired, false otherwise.
+	 * @return
 	 */
-	@Deprecated
-	public boolean lockInventoryForWork()
+	public ViewItems getViewMode()
 	{
-		boolean gotLock = false;
+		return this.viewMode;
+	}
 
-		// Ensure only 1 thread can access the lock at a time
-		synchronized( this.inventory )
+	@Override
+	public void launchGUI( final EntityPlayer player )
+	{
+		TileEntity host = this.getHostTile();
+
+		// Is this server side?
+		if( EffectiveSide.isServerSide() )
 		{
-			// Is the inventory not locked?
-			if( !this.inventoryLocked )
-			{
-				// Mark it is now locked
-				this.inventoryLocked = true;
-
-				// Mark that this thread got the lock
-				gotLock = true;
-			}
+			// Launch the gui
+			ThEGuiHandler.launchGui( this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
 		}
-
-		// Return if this thread got the lock or not
-		return gotLock;
+		else
+		{
+			// Ask the server to change the GUI
+			Packet_S_ChangeGui.sendGuiChangeToPart( this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
+		}
 	}
 
 	/**
 	 * Informs all open containers to update their respective clients
-	 * that the sorting mode has changed.
+	 * that the mode has changed.
 	 */
-	public void notifyListenersSortingModeChanged()
+	public void notifyListenersOfModeChanged()
 	{
 		for( ContainerEssentiaTerminal listener : this.listeners )
 		{
-			listener.onSortingModeChanged( this.sortMode );
+			listener.onModeChanged( this.sortMode, this.viewMode );
 		}
 	}
 
@@ -238,17 +278,39 @@ public class AEPartEssentiaTerminal
 	 * 
 	 * @param sortMode
 	 */
-	public void onClientRequestSortingModeChange( final ComparatorMode sortMode )
+	public void onClientRequestSortingModeChange( final boolean backwards )
 	{
-		// Set the sort mode
-		this.sortMode = sortMode;
+		// Change the sorting mode
+		if( backwards )
+		{
+			this.sortMode = this.sortMode.previousMode();
+		}
+		else
+		{
+			this.sortMode = this.sortMode.nextMode();
+		}
 
 		// Update clients
-		this.notifyListenersSortingModeChanged();
+		this.notifyListenersOfModeChanged();
 
 		// Mark that we need saving
 		this.markForSave();
 
+	}
+
+	/**
+	 * Called when a player has changed viewing modes.
+	 */
+	public void onClientRequestViewModeChange( final boolean backwards )
+	{
+		// Change the view mode
+		this.viewMode = Platform.rotateEnum( this.viewMode, backwards, Settings.VIEW_MODE.getPossibleValues() );
+
+		// Update clients
+		this.notifyListenersOfModeChanged();
+
+		// Mark for save
+		this.markForSave();
 	}
 
 	/**
@@ -261,15 +323,21 @@ public class AEPartEssentiaTerminal
 		super.readFromNBT( data );
 
 		// Read the sorting mode
-		if( data.hasKey( SORT_MODE_NBT_KEY ) )
+		if( data.hasKey( NBT_KEY_SORT_MODE ) )
 		{
-			this.sortMode = ComparatorMode.VALUES[data.getInteger( SORT_MODE_NBT_KEY )];
+			this.sortMode = AspectStackComparatorMode.VALUES[data.getInteger( NBT_KEY_SORT_MODE )];
 		}
 
 		// Read inventory
-		if( data.hasKey( AEPartEssentiaTerminal.INVENTORY_NBT_KEY ) )
+		if( data.hasKey( AEPartEssentiaTerminal.NBT_KEY_INVENTORY ) )
 		{
-			this.inventory.readFromNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
+			this.inventory.readFromNBT( data, AEPartEssentiaTerminal.NBT_KEY_INVENTORY );
+		}
+
+		// Read view mode
+		if( data.hasKey( NBT_KEY_VIEW_MODE ) )
+		{
+			this.viewMode = EnumCache.AE_VIEW_ITEMS[data.getInteger( NBT_KEY_VIEW_MODE )];
 		}
 	}
 
@@ -369,21 +437,6 @@ public class AEPartEssentiaTerminal
 	}
 
 	/**
-	 * Unlocks the terminal so that other threads can
-	 * perform work. This should only be called from
-	 * a thread that owns the lock.
-	 */
-	@Deprecated
-	public void unlockInventory()
-	{
-		// Ensure only 1 thread can access the lock at a time
-		synchronized( this.inventory )
-		{
-			this.inventoryLocked = false;
-		}
-	}
-
-	/**
 	 * Called to save our state
 	 */
 	@Override
@@ -393,15 +446,21 @@ public class AEPartEssentiaTerminal
 		super.writeToNBT( data, saveType );
 
 		// Write the sorting mode
-		if( this.sortMode != AEPartEssentiaTerminal.DEFAULT_SORT_MODE )
+		if( this.sortMode != DEFAULT_SORT_MODE )
 		{
-			data.setInteger( SORT_MODE_NBT_KEY, this.sortMode.ordinal() );
+			data.setInteger( NBT_KEY_SORT_MODE, this.sortMode.ordinal() );
 		}
 
 		// Write inventory
 		if( !this.inventory.isEmpty() )
 		{
-			this.inventory.writeToNBT( data, AEPartEssentiaTerminal.INVENTORY_NBT_KEY );
+			this.inventory.writeToNBT( data, NBT_KEY_INVENTORY );
+		}
+
+		// Write view mode
+		if( this.viewMode != DEFAULT_VIEW_MODE )
+		{
+			data.setInteger( NBT_KEY_VIEW_MODE, this.viewMode.ordinal() );
 		}
 	}
 

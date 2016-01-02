@@ -18,7 +18,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.api.ICraftingIssuerTerminalHost;
+import thaumicenergistics.api.storage.ICraftingIssuerHost;
 import thaumicenergistics.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.gui.ThEGuiHandler;
@@ -44,6 +44,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
@@ -54,7 +55,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEPartArcaneCraftingTerminal
 	extends AbstractAEPartRotateable
-	implements IInventory, IGridTickable, ICraftingIssuerTerminalHost
+	implements IInventory, IGridTickable, ICraftingIssuerHost, ITerminalHost
 {
 	/**
 	 * Number of slots in the internal inventory
@@ -309,7 +310,7 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		// NOTE: Ignored
+		// NOTE: Ignored, should it be?
 		return null;
 	}
 
@@ -572,7 +573,7 @@ public class AEPartArcaneCraftingTerminal
 		else
 		{
 			// Ask the server to change the GUI
-			Packet_S_ChangeGui.sendGuiChange( this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
+			Packet_S_ChangeGui.sendGuiChangeToPart( this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
 		}
 	}
 

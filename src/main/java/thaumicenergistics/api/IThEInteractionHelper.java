@@ -36,10 +36,11 @@ public interface IThEInteractionHelper
 	/**
 	 * Opens the wireless gui for the specified player.
 	 * The item the player is holding is used for the settings and power.
+	 * Must be called from the server side.
 	 * 
 	 * @param player
 	 */
-	public abstract void openWirelessTerminalGui( final EntityPlayer player, final IThEWirelessEssentiaTerminal terminalInterface );
+	public abstract void openWirelessTerminalGui( final EntityPlayer player );
 
 	/**
 	 * Attempts to set the Arcane Crafting Terminals recipe to the items

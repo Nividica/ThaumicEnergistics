@@ -1,12 +1,22 @@
 package thaumicenergistics.container;
 
 import net.minecraft.entity.player.EntityPlayer;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import net.minecraft.tileentity.TileEntity;
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.storage.ICraftingIssuerHost;
+import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
+import thaumicenergistics.gui.ThEGuiHandler;
+import thaumicenergistics.items.ItemCraftingAspect;
 import thaumicenergistics.network.packet.client.Packet_C_EssentiaCellTerminal;
 import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.parts.AEPartEssentiaTerminal;
 import thaumicenergistics.util.EffectiveSide;
+import appeng.api.AEApi;
+import appeng.api.config.ViewItems;
 import appeng.api.networking.security.PlayerSource;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerCraftAmount;
 
 /**
  * Inventory container for the essentia terminal.
@@ -83,6 +93,47 @@ public class ContainerEssentiaTerminal
 		this.transferEssentia( this.playerSource );
 	}
 
+	@Override
+	public ICraftingIssuerHost getCraftingHost()
+	{
+		return this.terminal;
+	}
+
+	@Override
+	public void onClientRequestAutoCraft( final EntityPlayer player, final Aspect aspect )
+	{
+		// Get the host tile
+		TileEntity te = this.terminal.getHostTile();
+
+		// Launch the GUI
+		ThEGuiHandler.launchGui( ThEGuiHandler.AUTO_CRAFTING_AMOUNT, player, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
+
+		// Setup the amount container
+		if( player.openContainer instanceof ContainerCraftAmount )
+		{
+			// Get the container
+			ContainerCraftAmount cca = (ContainerCraftAmount)this.player.openContainer;
+
+			// Create the open context
+			cca.setOpenContext( new ContainerOpenContext( te ) );
+			cca.getOpenContext().setWorld( te.getWorldObj() );
+			cca.getOpenContext().setX( te.xCoord );
+			cca.getOpenContext().setY( te.yCoord );
+			cca.getOpenContext().setZ( te.zCoord );
+			cca.getOpenContext().setSide( this.terminal.getSide() );
+
+			// Create the result item
+			IAEItemStack result = AEApi.instance().storage().createItemStack( ItemCraftingAspect.createStackForAspect( aspect, 1 ) );
+
+			// Set the item
+			cca.getCraftingItem().putStack( result.getItemStack() );
+			cca.setItemToCraft( result );
+
+			// Issue update
+			cca.detectAndSendChanges();
+		}
+	}
+
 	/**
 	 * Gets the current list from the AE monitor, as well as the current
 	 * sorting mode, and sends it to the client.
@@ -91,19 +142,25 @@ public class ContainerEssentiaTerminal
 	public void onClientRequestFullUpdate()
 	{
 		// Send the sorting mode
-		this.onSortingModeChanged( this.terminal.getSortingMode() );
+		this.onModeChanged( this.terminal.getSortingMode(), this.terminal.getViewMode() );
 
 		// Send the aspect list
 		if( this.monitor != null )
 		{
-			Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.aspectStackList );
+			Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.repo.getAll() );
 		}
 	}
 
 	@Override
-	public void onClientRequestSortModeChange( final ComparatorMode sortingMode, final EntityPlayer player )
+	public void onClientRequestSortModeChange( final EntityPlayer player, final boolean backwards )
 	{
-		this.terminal.onClientRequestSortingModeChange( sortingMode );
+		this.terminal.onClientRequestSortingModeChange( backwards );
+	}
+
+	@Override
+	public void onClientRequestViewModeChange( final EntityPlayer player, final boolean backwards )
+	{
+		this.terminal.onClientRequestViewModeChange( backwards );
 	}
 
 	/**
@@ -121,12 +178,12 @@ public class ContainerEssentiaTerminal
 	}
 
 	/**
-	 * Called from the terminal when it's sorting mode has changed
+	 * Called from the terminal when it's mode has changed
 	 */
-	public void onSortingModeChanged( final ComparatorMode sortingMode )
+	public void onModeChanged( final AspectStackComparatorMode sortingMode, final ViewItems viewMode )
 	{
 		// Inform the client
-		Packet_C_EssentiaCellTerminal.setSortMode( this.player, sortingMode );
+		Packet_C_EssentiaCellTerminal.sendViewingModes( this.player, sortingMode, viewMode );
 	}
 
 }

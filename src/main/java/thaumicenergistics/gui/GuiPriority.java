@@ -302,7 +302,7 @@ public class GuiPriority
 			TileEntity host = this.part.getHostTile();
 
 			// Ask the server to change to the priority gui
-			Packet_S_ChangeGui.sendGuiChange( this.part, this.player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
+			Packet_S_ChangeGui.sendGuiChangeToPart( this.part, this.player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
 			return;
 
 		}

@@ -48,7 +48,7 @@ public class ThEInteractionHelper
 	}
 
 	@Override
-	public void openWirelessTerminalGui( final EntityPlayer player, final IThEWirelessEssentiaTerminal terminalInterface )
+	public void openWirelessTerminalGui( final EntityPlayer player )
 	{
 		// Valid player?
 		if( ( player == null ) || ( player instanceof FakePlayer ) )
@@ -71,6 +71,16 @@ public class ThEInteractionHelper
 			// Invalid terminal
 			return;
 		}
+
+		// Ensure the stack's item implements the wireless interface
+		if( !( wirelessTerminal.getItem() instanceof IThEWirelessEssentiaTerminal ) )
+		{
+			// Invalid item.
+			return;
+		}
+
+		// Get the interface
+		IThEWirelessEssentiaTerminal terminalInterface = (IThEWirelessEssentiaTerminal)wirelessTerminal.getItem();
 
 		// Ensure the terminal has power
 		if( terminalInterface.getAECurrentPower( wirelessTerminal ) == 0 )

@@ -1,10 +1,10 @@
-package thaumicenergistics.api;
+package thaumicenergistics.api.storage;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import appeng.api.storage.ITerminalHost;
 
-public interface ICraftingIssuerTerminalHost
+public interface ICraftingIssuerHost
 	extends ITerminalHost
 {
 	/**

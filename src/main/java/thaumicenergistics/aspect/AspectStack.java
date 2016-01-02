@@ -17,6 +17,8 @@ import thaumicenergistics.util.GuiHelper;
  */
 public class AspectStack
 {
+	private static final String NBTKEY_ASPECT_TAG = "AspectTag", NBTKEY_ASPECT_AMOUNT = "Amount", NBTKEY_CRAFTABLE = "Craftable";
+
 	/**
 	 * The aspect this stack contains.
 	 */
@@ -28,16 +30,21 @@ public class AspectStack
 	public long stackSize;
 
 	/**
+	 * True if the aspect is craftable.
+	 */
+	public boolean isCraftable;
+
+	/**
 	 * Creates an empty stack
 	 */
 	public AspectStack()
 	{
-		this.aspect = null;
-		this.stackSize = 0;
+		this( null, 0, false );
 	}
 
 	/**
 	 * Creates a stack using the specified aspect and amount.
+	 * Defaults to not craftable.
 	 * 
 	 * @param aspect
 	 * What aspect this stack will have.
@@ -46,46 +53,79 @@ public class AspectStack
 	 */
 	public AspectStack( final Aspect aspect, final long amount )
 	{
-		this.aspect = aspect;
-
-		this.stackSize = amount;
+		this( aspect, amount, false );
 	}
 
 	/**
-	 * Sets this stacks values to match that of the specified stack.
+	 * Creates a stack using the specified aspect and amount, and
+	 * sets if it is craftable.
+	 * 
+	 * @param aspect
+	 * What aspect this stack will have.
+	 * @param amount
+	 * How much this stack will have.
+	 * @param isCraftable
+	 * Is the stack craftable.
+	 */
+	public AspectStack( final Aspect aspect, final long amount, final boolean isCraftable )
+	{
+		// Set the aspect
+		this.aspect = aspect;
+
+		// Set the stack size
+		this.stackSize = amount;
+
+		// Set craftable
+		this.isCraftable = isCraftable;
+	}
+
+	/**
+	 * Creates a new stack from the passed stack.
+	 * If a new stack is not needed you can also use copyFrom().
 	 * 
 	 * @param source
 	 */
-	public AspectStack( final AspectStack source )
+	public AspectStack( final AspectStack stack )
 	{
-		this.aspect = source.aspect;
-
-		this.stackSize = source.stackSize;
+		this.copyFrom( stack );
 	}
 
 	/**
 	 * Creates an aspect stack from a NBT compound tag.
 	 * 
-	 * @param nbt
+	 * @param data
 	 * Tag to load from
 	 * @return Created stack, or null.
 	 */
-	public static AspectStack loadAspectStackFromNBT( final NBTTagCompound nbt )
+	public static AspectStack loadAspectStackFromNBT( final NBTTagCompound data )
 	{
-		// Attempt to get the aspect
-		Aspect aspect = Aspect.aspects.get( nbt.getString( "AspectTag" ) );
+		Aspect aspect = null;
 
-		// Did we get an aspect?
+		// Does the tag have the tag?
+		if( data.hasKey( NBTKEY_ASPECT_TAG ) )
+		{
+			// Attempt to get the aspect
+			aspect = Aspect.aspects.get( data.getString( NBTKEY_ASPECT_TAG ) );
+		}
+
+		// Is there an aspect?
 		if( aspect == null )
 		{
 			return null;
 		}
 
 		// Load the amount
-		long amount = nbt.getLong( "Amount" );
+		long amount = 0;
+		if( data.hasKey( NBTKEY_ASPECT_AMOUNT ) )
+		{
+			amount = data.getLong( NBTKEY_ASPECT_AMOUNT );
+		}
+
+		// Load crafting
+		boolean craftable = data.hasKey( NBTKEY_CRAFTABLE );
 
 		// Return a newly created stack.
-		return new AspectStack( aspect, amount );
+		return new AspectStack( aspect, amount, craftable );
 	}
 
 	/**
@@ -114,6 +154,22 @@ public class AspectStack
 	public AspectStack copy()
 	{
 		return new AspectStack( this );
+	}
+
+	/**
+	 * Sets the values of this stack to match the passed stack.
+	 * Unchanged if stack is null.
+	 * 
+	 * @param stack
+	 */
+	public void copyFrom( final AspectStack stack )
+	{
+		if( stack != null )
+		{
+			this.aspect = stack.aspect;
+			this.stackSize = stack.stackSize;
+			this.isCraftable = stack.isCraftable;
+		}
 	}
 
 	/**
@@ -191,20 +247,14 @@ public class AspectStack
 	 */
 	public boolean hasPlayerDiscovered( final EntityPlayer player )
 	{
-		boolean hasDiscovered = false;
-
-		// Ensure we have a player
-		if( player != null )
+		// Ensure we have a player & aspect
+		if( ( player != null ) && ( this.aspect != null ) )
 		{
-			// Ensure we have an aspect
-			if( this.aspect != null )
-			{
-				// Ask Thaumcraft if the player has discovered the aspect
-				hasDiscovered = Thaumcraft.proxy.getPlayerKnowledge().hasDiscoveredAspect( player.getCommandSenderName(), this.aspect );
-			}
+			// Ask Thaumcraft if the player has discovered the aspect
+			return Thaumcraft.proxy.getPlayerKnowledge().hasDiscoveredAspect( player.getCommandSenderName(), this.aspect );
 		}
 
-		return hasDiscovered;
+		return false;
 	}
 
 	/**
@@ -229,26 +279,41 @@ public class AspectStack
 
 		// Read the amount
 		this.stackSize = stream.readLong();
+
+		// Read craftable
+		this.isCraftable = stream.readBoolean();
 	}
 
 	/**
 	 * Writes this aspect stack to the specified NBT tag
 	 * 
-	 * @param nbt
+	 * @param data
 	 * The tag to write to
 	 * @return The nbt tag.
 	 */
-	public NBTTagCompound writeToNBT( final NBTTagCompound nbt )
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
-		// Do we have an aspect?
+		// Is there an aspect?
 		if( this.aspect != null )
 		{
-			nbt.setString( "AspectTag", this.aspect.getTag() );
+			// Write the tag
+			data.setString( NBTKEY_ASPECT_TAG, this.aspect.getTag() );
 
-			nbt.setLong( "Amount", this.stackSize );
+			// Write the amount
+			if( this.stackSize > 0 )
+			{
+				data.setLong( NBTKEY_ASPECT_AMOUNT, this.stackSize );
+			}
+
+			// Craftable?
+			if( this.isCraftable )
+			{
+				// Write craftable
+				data.setBoolean( NBTKEY_CRAFTABLE, true );
+			}
 		}
 
-		return nbt;
+		return data;
 	}
 
 	/**
@@ -263,5 +328,8 @@ public class AspectStack
 
 		// Write the stored amount
 		stream.writeLong( this.stackSize );
+
+		// Write if craftable
+		stream.writeBoolean( this.isCraftable );
 	}
 }

@@ -16,6 +16,8 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.common.items.wands.ItemWandCasting;
+import thaumicenergistics.api.storage.ICraftingIssuerContainer;
+import thaumicenergistics.api.storage.ICraftingIssuerHost;
 import thaumicenergistics.container.slot.SlotArcaneCraftingResult;
 import thaumicenergistics.container.slot.SlotArmor;
 import thaumicenergistics.container.slot.SlotRestrictive;
@@ -46,7 +48,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerPartArcaneCraftingTerminal
 	extends ContainerWithPlayerInventory
-	implements IMEMonitorHandlerReceiver<IAEItemStack>
+	implements IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingIssuerContainer
 {
 	/**
 	 * Holds a single aspect cost for the current recipe.
@@ -864,6 +866,12 @@ public class ContainerPartArcaneCraftingTerminal
 		return this.craftingCost;
 	}
 
+	@Override
+	public ICraftingIssuerHost getCraftingHost()
+	{
+		return this.arcaneCraftingTerminalPart;
+	}
+
 	/**
 	 * Called by the monitor to ensure we still want updates
 	 */
@@ -921,11 +929,8 @@ public class ContainerPartArcaneCraftingTerminal
 		// Get the host tile
 		TileEntity te = this.arcaneCraftingTerminalPart.getHostTile();
 
-		// Get the sided GUI ID
-		int sidedID = ThEGuiHandler.generateSidedID( ThEGuiHandler.AUTO_CRAFTING_AMOUNT, this.arcaneCraftingTerminalPart.getSide() );
-
 		// Launch the GUI
-		ThEGuiHandler.launchGui( sidedID, player, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
+		ThEGuiHandler.launchGui( ThEGuiHandler.AUTO_CRAFTING_AMOUNT, player, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
 
 		// Setup the amount container
 		if( player.openContainer instanceof ContainerCraftAmount )

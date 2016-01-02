@@ -8,13 +8,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.items.ItemEssentiaCell;
+import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.registries.ItemEnum;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.config.ViewItems;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEInventoryHandler;
@@ -31,13 +33,27 @@ public class HandlerItemEssentiaCell
 	/**
 	 * NBT Keys
 	 */
-	private static final String NBT_ESSENTIA_NUMBER_KEY = "Essentia#", NBT_SORT_KEY = "SortMode", NBT_PARTITION_KEY = "Partitions",
-					NBT_PARTITION_COUNT_KEY = "PartitionCount", NBT_PARTITION_NUMBER_KEY = "Partition#";
+	private static final String NBT_ESSENTIA_NUMBER_KEY = "Essentia#",
+					NBT_SORT_KEY = "SortMode",
+					NBT_PARTITION_KEY = "Partitions",
+					NBT_PARTITION_COUNT_KEY = "PartitionCount",
+					NBT_PARTITION_NUMBER_KEY = "Partition#",
+					NBT_KEY_VIEW_MODE = "ViewMode";
 
 	/**
 	 * Controls how many essentia can fit in a single byte.
 	 */
 	private static final long ESSENTIA_PER_BYTE = 2;
+
+	/**
+	 * Default sort mode.
+	 */
+	private static final AspectStackComparatorMode DEFAULT_SORT_MODE = AspectStackComparatorMode.MODE_ALPHABETIC;
+
+	/**
+	 * Default view mode.
+	 */
+	private static final ViewItems DEFAULT_VIEW_MODE = ViewItems.ALL;
 
 	/**
 	 * Stores cell data
@@ -72,7 +88,12 @@ public class HandlerItemEssentiaCell
 	/**
 	 * Sorting mode when used in ME chest.
 	 */
-	private ComparatorMode sortMode;
+	private AspectStackComparatorMode sortMode = DEFAULT_SORT_MODE;
+
+	/**
+	 * View mode.
+	 */
+	private ViewItems viewMode = DEFAULT_VIEW_MODE;
 
 	/**
 	 * Who do we tell we have changed?
@@ -293,11 +314,13 @@ public class HandlerItemEssentiaCell
 		// Load the sort mode
 		if( this.cellData.hasKey( HandlerItemEssentiaCell.NBT_SORT_KEY ) )
 		{
-			this.sortMode = ComparatorMode.VALUES[this.cellData.getInteger( HandlerItemEssentiaCell.NBT_SORT_KEY )];
+			this.sortMode = AspectStackComparatorMode.VALUES[this.cellData.getInteger( NBT_SORT_KEY )];
 		}
-		else
+
+		// Load view mode
+		if( this.cellData.hasKey( NBT_KEY_VIEW_MODE ) )
 		{
-			this.sortMode = ComparatorMode.MODE_ALPHABETIC;
+			this.viewMode = EnumCache.AE_VIEW_ITEMS[this.cellData.getInteger( NBT_KEY_VIEW_MODE )];
 		}
 
 		// Load partition list
@@ -623,7 +646,7 @@ public class HandlerItemEssentiaCell
 	 * 
 	 * @return
 	 */
-	public ComparatorMode getSortingMode()
+	public AspectStackComparatorMode getSortingMode()
 	{
 		return this.sortMode;
 	}
@@ -701,6 +724,16 @@ public class HandlerItemEssentiaCell
 
 		// Return the count
 		return typeCount;
+	}
+
+	/**
+	 * Gets the view mode.
+	 * 
+	 * @return
+	 */
+	public ViewItems getViewMode()
+	{
+		return this.viewMode;
 	}
 
 	/**
@@ -892,13 +925,33 @@ public class HandlerItemEssentiaCell
 	 * 
 	 * @param sortMode
 	 */
-	public void setSortingMode( final ComparatorMode sortMode )
+	public void setSortingMode( final AspectStackComparatorMode sortMode )
 	{
-		// Store the mode
-		this.cellData.setInteger( HandlerItemEssentiaCell.NBT_SORT_KEY, sortMode.ordinal() );
-
 		// Set the mode
 		this.sortMode = sortMode;
+
+		// Store the mode
+		if( this.sortMode != DEFAULT_SORT_MODE )
+		{
+			this.cellData.setInteger( NBT_SORT_KEY, sortMode.ordinal() );
+		}
+	}
+
+	/**
+	 * Sets the view mode.
+	 * 
+	 * @param viewMode
+	 */
+	public void setViewMode( final ViewItems viewMode )
+	{
+		// Set the mode
+		this.viewMode = viewMode;
+
+		// Store the mode
+		if( this.viewMode != DEFAULT_VIEW_MODE )
+		{
+			this.cellData.setInteger( NBT_KEY_VIEW_MODE, this.viewMode.ordinal() );
+		}
 	}
 
 	/**

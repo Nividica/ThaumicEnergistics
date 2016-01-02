@@ -209,9 +209,6 @@ public abstract class AbstractGuiWithScrollbar
 	@Override
 	public void drawScreen( final int mouseX, final int mouseY, final float mouseBtn )
 	{
-		// Call super
-		super.drawScreen( mouseX, mouseY, mouseBtn );
-
 		// Is the mouse holding the scroll bar?
 		if( this.isScrollBarHeld )
 		{
@@ -255,7 +252,7 @@ public abstract class AbstractGuiWithScrollbar
 					this.scrollBar.wheel( 1 );
 				}
 
-				// Inform the subclass the scrollbar has moved //
+				// Inform the subclass the scrollbar has moved
 				this.onScrollbarMoved();
 			}
 			else
@@ -264,6 +261,9 @@ public abstract class AbstractGuiWithScrollbar
 				this.isScrollBarHeld = false;
 			}
 		}
+
+		// Call super
+		super.drawScreen( mouseX, mouseY, mouseBtn );
 
 	}
 

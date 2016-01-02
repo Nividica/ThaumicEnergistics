@@ -1,6 +1,7 @@
 package thaumicenergistics.container;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -12,9 +13,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.storage.ICraftingIssuerContainer;
+import thaumicenergistics.api.storage.ICraftingIssuerHost;
+import thaumicenergistics.api.storage.IEssentiaRepo;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
 import thaumicenergistics.container.slot.SlotRestrictive;
+import thaumicenergistics.grid.EssentiaRepo;
 import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.grid.IMEEssentiaMonitorReceiver;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -42,7 +46,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public abstract class AbstractContainerCellTerminalBase
 	extends ContainerWithPlayerInventory
-	implements IMEEssentiaMonitorReceiver, IAspectSelectorContainer, IInventoryUpdateReceiver
+	implements IMEEssentiaMonitorReceiver, IAspectSelectorContainer, IInventoryUpdateReceiver, ICraftingIssuerContainer
 {
 	/**
 	 * X position for the output slot
@@ -110,7 +114,8 @@ public abstract class AbstractContainerCellTerminalBase
 	/**
 	 * List of aspects on the network
 	 */
-	protected List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
+	//protected List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
+	protected final IEssentiaRepo repo;
 
 	/**
 	 * The aspect the user has selected.
@@ -180,6 +185,9 @@ public abstract class AbstractContainerCellTerminalBase
 		{
 			this.hasRequested = true;
 		}
+
+		// Create the reop
+		this.repo = new EssentiaRepo();
 	}
 
 	/**
@@ -352,91 +360,6 @@ public abstract class AbstractContainerCellTerminalBase
 	}
 
 	/**
-	 * Determines if the specified aspect stack is a different from an existing
-	 * stack in the specified list.
-	 * 
-	 * @param potentialChange
-	 * @return
-	 * If a match is found: Pair <ExistingIndex, ChangedStack>
-	 * If the item is new: Pair <-1, potentialChange>
-	 * 
-	 */
-	private ImmutablePair<Integer, AspectStack> isChange( final AspectStack potentialChange, final List<AspectStack> comparedAgainst )
-	{
-		AspectStack matchingStack = null;
-
-		for( int index = 0; index < comparedAgainst.size(); index++ )
-		{
-			// Tenativly set the matching stack
-			matchingStack = comparedAgainst.get( index );
-
-			// Check if it is a match
-			if( potentialChange.aspect == matchingStack.aspect )
-			{
-				// Found a match, determine how much it has changed
-				long changeAmount = potentialChange.stackSize - matchingStack.stackSize;
-
-				// Create the changed stack
-				AspectStack changedStack = new AspectStack( matchingStack.aspect, changeAmount );
-
-				return new ImmutablePair<Integer, AspectStack>( index, changedStack );
-			}
-		}
-
-		// No match change is new item
-		return new ImmutablePair<Integer, AspectStack>( -1, potentialChange );
-	}
-
-	/**
-	 * Merges a change with the cached aspect list
-	 * 
-	 * @param changeDetails
-	 * @return
-	 */
-	private boolean mergeAspectChangeWithCache( final ImmutablePair<Integer, AspectStack> changeDetails )
-	{
-		// Get the index that changed
-		int changedIndex = changeDetails.getLeft();
-
-		// Get the stack that changed
-		AspectStack changedStack = changeDetails.getRight();
-
-		// Did anything change?
-		if( changedStack.stackSize == 0 )
-		{
-			// Nothing changed
-			return false;
-		}
-
-		// Was there a match?
-		if( changedIndex != -1 )
-		{
-			// Get the new amount
-			long newAmount = this.aspectStackList.get( changedIndex ).stackSize + changedStack.stackSize;
-
-			// Was the stack drained?
-			if( newAmount <= 0 )
-			{
-				// Remove from list
-				this.aspectStackList.remove( changedIndex );
-			}
-			else
-			{
-				// Update the list
-				this.aspectStackList.get( changedIndex ).stackSize = newAmount;
-			}
-		}
-		// New addition
-		else
-		{
-			this.aspectStackList.add( changedStack );
-		}
-
-		// List updated.
-		return true;
-	}
-
-	/**
 	 * Merges the specified stack with the output slot.
 	 * 
 	 * @param stackToMerge
@@ -575,7 +498,8 @@ public abstract class AbstractContainerCellTerminalBase
 			this.monitor.addListener( this, this.monitor.hashCode() );
 
 			// Update our cached list of aspects
-			this.aspectStackList = new ArrayList( this.monitor.getEssentiaList() );
+			this.repo.copyFrom( this.monitor.getEssentiaList() );
+
 		}
 	}
 
@@ -633,8 +557,8 @@ public abstract class AbstractContainerCellTerminalBase
 				// Null the monitor
 				this.monitor = null;
 
-				// Clear the list
-				this.aspectStackList.clear();
+				// Clear the repo
+				this.repo.clear();
 			}
 		}
 	}
@@ -818,10 +742,13 @@ public abstract class AbstractContainerCellTerminalBase
 	 * 
 	 * @return
 	 */
-	public List<AspectStack> getAspectStackList()
+	public Collection<AspectStack> getAspectStackList()
 	{
-		return this.aspectStackList;
+		return this.repo.getAll();
 	}
+
+	@Override
+	public abstract ICraftingIssuerHost getCraftingHost();
 
 	/**
 	 * Get the player that owns this container
@@ -863,29 +790,18 @@ public abstract class AbstractContainerCellTerminalBase
 
 		// No longer valid
 		this.monitor = null;
-		this.aspectStackList.clear();
+		this.repo.clear();
 
 		return false;
 	}
 
 	/**
-	 * Merges a change with the cached aspect list
+	 * Called when a client has clicked on a craftable aspect.
 	 * 
-	 * @param change
-	 * @return
+	 * @param player
+	 * @param result
 	 */
-	public boolean mergeChange( final AspectStack change )
-	{
-		// Get the index of the change
-		int index = this.isChange( change, this.aspectStackList ).getLeft();
-
-		// Create the change
-		ImmutablePair<Integer, AspectStack> changeDetails = new ImmutablePair<Integer, AspectStack>( index, change );
-
-		// Attempt the merger
-		return this.mergeAspectChangeWithCache( changeDetails );
-
-	}
+	public abstract void onClientRequestAutoCraft( final EntityPlayer player, final Aspect aspect );
 
 	/**
 	 * Called when a client requests the state of the container.
@@ -894,11 +810,18 @@ public abstract class AbstractContainerCellTerminalBase
 	public abstract void onClientRequestFullUpdate();
 
 	/**
-	 * Called when a client sends a sorting mode request.
+	 * Called when a client sends a sorting mode change request.
 	 * 
 	 * @param sortingMode
 	 */
-	public abstract void onClientRequestSortModeChange( final ComparatorMode sortingMode, final EntityPlayer player );
+	public abstract void onClientRequestSortModeChange( final EntityPlayer player, boolean backwards );
+
+	/**
+	 * Called when a client sends a view mode change request.
+	 * 
+	 * @param player
+	 */
+	public abstract void onClientRequestViewModeChange( final EntityPlayer player, boolean backwards );
 
 	/**
 	 * Unregister this container from the monitor.
@@ -929,13 +852,13 @@ public abstract class AbstractContainerCellTerminalBase
 	 * 
 	 * @param aspectStackList
 	 */
-	public void onReceivedAspectList( final List<AspectStack> aspectStackList )
+	public void onReceivedAspectList( final Collection<AspectStack> aspectStackList )
 	{
 		// Set the aspect list
-		this.aspectStackList = aspectStackList;
+		this.repo.copyFrom( aspectStackList );
 
 		// Check pending changes
-		if( ( this.aspectStackList != null ) && ( !this.pendingChanges.isEmpty() ) )
+		if( ( aspectStackList != null ) && ( !this.pendingChanges.isEmpty() ) )
 		{
 			// Update list with pending changes
 			for( int index = 0; index < this.pendingChanges.size(); index++ )
@@ -952,7 +875,7 @@ public abstract class AbstractContainerCellTerminalBase
 	 * Called by the gui when a change arrives.
 	 * 
 	 * @param change
-	 * @return
+	 * @return True if the repo is prepared to be displayed.
 	 */
 	public boolean onReceivedAspectListChange( final AspectStack change )
 	{
@@ -974,25 +897,19 @@ public abstract class AbstractContainerCellTerminalBase
 			return false;
 		}
 
-		// Do we have a list?
-		if( this.aspectStackList == null )
+		// Has the full list been received?
+		if( this.repo.isEmpty() )
 		{
 			// Not yet received full list, add to pending
 			this.pendingChanges.add( change );
 			return false;
 		}
 
-		// Can we merge this change with the list?
-		if( this.mergeChange( change ) )
-		{
-			// Tell the gui to update
-			if( this.pendingChanges.isEmpty() )
-			{
-				return true;
-			}
-		}
+		// Post the change
+		this.repo.postChange( change );
 
-		return false;
+		// The GUI can update if there are no pending changes
+		return this.pendingChanges.isEmpty();
 	}
 
 	/**
@@ -1014,7 +931,7 @@ public abstract class AbstractContainerCellTerminalBase
 	}
 
 	/**
-	 * Called by the AE monitor when the network changes.
+	 * Called by the Essentia monitor when the network changes.
 	 */
 
 	@Override

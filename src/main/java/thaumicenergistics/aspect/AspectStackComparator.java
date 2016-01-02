@@ -12,7 +12,13 @@ public class AspectStackComparator
 	implements Comparator<AspectStack>
 {
 
-	public enum ComparatorMode
+	/**
+	 * Modes of comparison
+	 * 
+	 * @author Nividica
+	 * 
+	 */
+	public enum AspectStackComparatorMode
 	{
 			/**
 			 * Compare based on name
@@ -27,17 +33,40 @@ public class AspectStackComparator
 		/**
 		 * Cache of the enum values
 		 */
-		public static final ComparatorMode[] VALUES = ComparatorMode.values();
+		public static final AspectStackComparatorMode[] VALUES = AspectStackComparatorMode.values();
+
+		/**
+		 * Returns the next mode of comparison.
+		 * 
+		 * @return
+		 */
+		public AspectStackComparatorMode nextMode()
+		{
+			return( VALUES[( this.ordinal() + 1 ) % VALUES.length] );
+		}
+
+		/**
+		 * Returns the previous mode of comparison.
+		 * 
+		 * @return
+		 */
+		public AspectStackComparatorMode previousMode()
+		{
+			return( VALUES[( this.ordinal() + ( VALUES.length - 1 ) ) % VALUES.length] );
+		}
 	}
 
-	private ComparatorMode mode;
+	/**
+	 * The set mode of comparison
+	 */
+	private AspectStackComparatorMode mode;
 
 	/**
 	 * Creates the comparator with sorting mode alphabetic.
 	 */
 	public AspectStackComparator()
 	{
-		this( ComparatorMode.MODE_ALPHABETIC );
+		this.setMode( AspectStackComparatorMode.MODE_ALPHABETIC );
 	}
 
 	/**
@@ -47,21 +76,38 @@ public class AspectStackComparator
 	 * @param mode
 	 * Mode to sort by.
 	 */
-	public AspectStackComparator( final ComparatorMode mode )
+	public AspectStackComparator( final AspectStackComparatorMode mode )
 	{
-		this.mode = mode;
+		this.setMode( mode );
 	}
 
+	/**
+	 * Compares the two stacks by amount.
+	 * 
+	 * @param left
+	 * @param right
+	 * @return
+	 */
 	private int compareByAmount( final AspectStack left, final AspectStack right )
 	{
 		return (int)( right.stackSize - left.stackSize );
 	}
 
-	private int compareByTag( final AspectStack left, final AspectStack right )
+	/**
+	 * Compares the two stacks by name
+	 * 
+	 * @param left
+	 * @param right
+	 * @return
+	 */
+	private int compareByName( final AspectStack left, final AspectStack right )
 	{
-		return left.aspect.getTag().compareTo( right.aspect.getTag() );
+		return left.aspect.getName().compareTo( right.aspect.getName() );
 	}
 
+	/**
+	 * Compares two aspect stacks by the selected mode.
+	 */
 	@Override
 	public int compare( final AspectStack left, final AspectStack right )
 	{
@@ -69,7 +115,7 @@ public class AspectStackComparator
 		{
 		case MODE_ALPHABETIC:
 			// Compare tags
-			return this.compareByTag( left, right );
+			return this.compareByName( left, right );
 
 		case MODE_AMOUNT:
 			// Compare amounts
@@ -79,13 +125,23 @@ public class AspectStackComparator
 			if( comparedAmounts == 0 )
 			{
 				// Compare tags
-				comparedAmounts = this.compareByTag( left, right );
+				comparedAmounts = this.compareByName( left, right );
 			}
 
 			return comparedAmounts;
 		}
 
 		return 0;
+	}
+
+	/**
+	 * Sets the mode of comparison.
+	 * 
+	 * @param mode
+	 */
+	public void setMode( final AspectStackComparatorMode mode )
+	{
+		this.mode = mode;
 	}
 
 }

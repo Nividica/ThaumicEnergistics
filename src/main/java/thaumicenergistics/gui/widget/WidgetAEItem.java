@@ -126,7 +126,7 @@ public class WidgetAEItem
 	}
 
 	@Override
-	public void mouseClicked()
+	public void onMouseClicked()
 	{
 		// Unused
 	}

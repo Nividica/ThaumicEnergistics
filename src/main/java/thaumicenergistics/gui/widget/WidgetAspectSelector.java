@@ -1,15 +1,22 @@
 package thaumicenergistics.gui.widget;
 
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.util.GuiHelper;
+import appeng.core.AEConfig;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class WidgetAspectSelector
 	extends AbstractAspectWidget
 {
@@ -34,25 +41,16 @@ public class WidgetAspectSelector
 	private int[] backgroundPulseGradient;
 
 	/**
-	 * The essentia amount for our aspect.
+	 * If true the amount will not be drawn, also if the stack is craftable
+	 * it will show the crafting text.
 	 */
-	private long amount = 0;
+	protected boolean hideAmount = false;
 
 	public WidgetAspectSelector( final IAspectSelectorGui selectorGui, final AspectStack stack, final int xPos, final int yPos,
 									final EntityPlayer player )
 	{
 		// Call super
-		super( selectorGui, stack.aspect, xPos, yPos, player );
-
-		// Get the amount
-		this.amount = stack.stackSize;
-
-		// Get the aspect color
-		int aspectColor = stack.aspect.getColor();
-
-		// Create the gradient using the aspect color, varying between opacities
-		this.backgroundPulseGradient = GuiHelper.INSTANCE
-						.createColorGradient( 0x70000000 | aspectColor, 0x20000000 | aspectColor, GRADIENT_COUNT + 1 );
+		super( selectorGui, stack, xPos, yPos, player );
 	}
 
 	/**
@@ -136,17 +134,33 @@ public class WidgetAspectSelector
 		return this.backgroundPulseGradient[index];
 	}
 
+	@Override
+	protected void onStackChanged()
+	{
+		// Call super
+		super.onStackChanged();
+
+		if( !this.hasAspect() )
+		{
+			return;
+		}
+
+		// Get the aspect color
+		int aspectColor = this.getStack().aspect.getColor();
+
+		// Create the gradient using the aspect color, varying between opacities
+		this.backgroundPulseGradient = GuiHelper.INSTANCE
+						.createColorGradient( 0x70000000 | aspectColor, 0x20000000 | aspectColor, GRADIENT_COUNT + 1 );
+	}
+
 	/**
 	 * Draws the aspect icon and selector border if it is selected.
 	 */
 	@Override
 	public void drawWidget()
 	{
-		// Bind the block master texture
-		//Minecraft.getMinecraft().renderEngine.bindTexture( TextureMap.locationBlocksTexture );
-
-		// Ensure we have an aspect
-		if( this.getAspect() == null )
+		// Is the widget empty?
+		if( !this.hasAspect() )
 		{
 			return;
 		}
@@ -159,21 +173,78 @@ public class WidgetAspectSelector
 		// Set the blending mode to blend alpha
 		GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
 
-		// Full white
+		// No tint
 		GL11.glColor3f( 1.0F, 1.0F, 1.0F );
 
 		// Get the selected aspect
-		AspectStack selectedStack = ( (IAspectSelectorGui)this.hostGUI ).getSelectedAspect();
+		Aspect selectedAspect = ( (IAspectSelectorGui)this.hostGUI ).getSelectedAspect();
 
-		// Is there a selectedStack, and does it match ours?
-		if( ( selectedStack != null ) && ( selectedStack.aspect == this.getAspect() ) )
+		// Does the selected aspect match the widgets?
+		if( selectedAspect == this.getAspect() )
 		{
-			this.drawHollowRectWithCorners( this.xPosition, this.yPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE,
+			// Draw the selection box 
+			this.drawHollowRectWithCorners( this.xPosition, this.yPosition,
+				AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE,
 				this.getBackgroundColor(), WidgetAspectSelector.borderThickness );
 		}
 
 		// Draw the aspect
 		this.drawAspect();
+
+		// Get the amount and crafting
+		long stackSize = this.getAmount();
+
+		// Is there anything to draw?
+		if( ( ( stackSize > 0 ) && !this.hideAmount ) || this.getCraftable() )
+		{
+			// Text to draw
+			String text;
+
+			// Get the font renderer
+			final FontRenderer fontRenderer = this.hostGUI.getFontRenderer();
+
+			// Disable unicode if enabled
+			final boolean unicodeFlag = fontRenderer.getUnicodeFlag();
+			fontRenderer.setUnicodeFlag( false );
+
+			// Is the terminal using a large font?
+			boolean largeFont = AEConfig.instance.useTerminalUseLargeFont();
+
+			// Set the scale
+			float scale = largeFont ? 0.85f : 0.5f;
+
+			// Set the position offset
+			float positionOffset = largeFont ? 0 : -1.0f;
+
+			// Calculate position
+			float posX = this.xPosition + positionOffset + AbstractWidget.WIDGET_SIZE;
+			float posY = this.yPosition + positionOffset + AbstractWidget.WIDGET_SIZE - 1;
+
+			// Has amount to draw?
+			if( ( ( stackSize > 0 ) && !this.hideAmount ) )
+			{
+				text = GuiHelper.shortenCount( stackSize );
+			}
+			// Crafting
+			else
+			{
+				// Get the "craftable" text from AE2
+				if( largeFont )
+				{
+					text = appeng.core.localization.GuiText.LargeFontCraft.getLocal();
+				}
+				else
+				{
+					text = appeng.core.localization.GuiText.SmallFontCraft.getLocal();
+				}
+			}
+
+			// Draw it
+			GuiHelper.drawScaledText( fontRenderer, text, scale, posX, posY );
+
+			// Reset unicode status
+			fontRenderer.setUnicodeFlag( unicodeFlag );
+		}
 
 		// Enable lighting
 		GL11.glEnable( GL11.GL_LIGHTING );
@@ -183,71 +254,78 @@ public class WidgetAspectSelector
 	}
 
 	/**
-	 * Gets the essentia amount for our aspect.
-	 * 
-	 * @return
-	 */
-	public long getAmount()
-	{
-		return this.amount;
-	}
-
-	/**
-	 * Gets an aspect stack matching our aspect and amount
-	 */
-	public AspectStack getAspectStackRepresentation()
-	{
-		return new AspectStack( this.getAspect(), this.amount );
-	}
-
-	/**
 	 * Draws the aspect name and amount
 	 */
 	@Override
 	public void getTooltip( final List<String> tooltip )
 	{
-		if( ( this.getAspect() != null ) && ( this.amount > 0L ) )
+		if( this.hasAspect() )
 		{
-
 			// Add the name
-			tooltip.add( ThEStrings.Gui_SelectedAspect.getLocalized() + ": " + this.aspectName );
-
-			// Add the amount
-			tooltip.add( ThEStrings.Gui_SelectedAmount.getLocalized() + ": " + Long.toString( this.amount ) );
+			tooltip.add( this.aspectName );
 
 			// Add aspect info
-			tooltip.add( EnumChatFormatting.GRAY.toString() + this.getAspect().getLocalizedDescription() );
+			tooltip.add( EnumChatFormatting.GRAY.toString() + this.aspectDescription );
+
+			// Add footnote
+			tooltip.add( EnumChatFormatting.BLUE.toString() + EnumChatFormatting.ITALIC.toString() + this.aspectFootnote );
 		}
 	}
 
 	/**
-	 * Called when we are clicked
+	 * Called when the widget is clicked.
 	 */
 	@Override
-	public void mouseClicked()
+	public void onMouseClicked()
 	{
-		Aspect selected = null;
+		// Get this aspect
+		Aspect widgetAspect = this.getAspect();
 
 		// Get the selected aspect
-		AspectStack selectedStack = ( (IAspectSelectorGui)this.hostGUI ).getSelectedAspect();
+		Aspect selectedAspect = ( (IAspectSelectorGui)this.hostGUI ).getSelectedAspect();
 
-		// Does the selected aspect not match?
-		if( ( selectedStack == null ) || ( selectedStack.aspect != this.getAspect() ) )
+		// Did the selected aspect change?
+		boolean changed = false;
+
+		// Are both aspects the same?
+		if( widgetAspect == selectedAspect )
 		{
-			selected = this.getAspect();
+			// Is something selected?
+			if( selectedAspect != null )
+			{
+				// Unselect
+				selectedAspect = null;
+				changed = true;
+			}
+		}
+		else
+		{
+			// Set to the widget aspect
+			selectedAspect = widgetAspect;
+			changed = true;
 		}
 
-		( (IAspectSelectorGui)this.hostGUI ).getContainer().setSelectedAspect( selected );
+		// Was the selected aspect changed?
+		if( changed )
+		{
+			// Play clicky sound
+			Minecraft.getMinecraft().getSoundHandler().playSound(
+				PositionedSoundRecord.func_147674_a( new ResourceLocation( "gui.button.press" ), 1.0F ) );
+
+			// Set the selected aspect
+			( (IAspectSelectorGui)this.hostGUI ).getContainer().setSelectedAspect( selectedAspect );
+		}
 	}
 
 	/**
-	 * Sets the essentia amount for our aspect.
+	 * Sets whether or not to show the amount.
 	 * 
-	 * @param amount
+	 * @param hide
+	 * @return
 	 */
-	public void setAmount( final long amount )
+	public void setHideAmount( final boolean hide )
 	{
-		this.amount = amount;
+		this.hideAmount = hide;
 	}
 
 }

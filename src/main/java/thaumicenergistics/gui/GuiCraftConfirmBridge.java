@@ -2,7 +2,7 @@ package thaumicenergistics.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import thaumicenergistics.api.ICraftingIssuerTerminalHost;
+import thaumicenergistics.api.storage.ICraftingIssuerHost;
 import appeng.client.gui.implementations.GuiCraftConfirm;
 import appeng.core.localization.GuiText;
 
@@ -23,18 +23,18 @@ public class GuiCraftConfirmBridge
 	/**
 	 * Host part.
 	 */
-	protected ICraftingIssuerTerminalHost host;
+	protected ICraftingIssuerHost host;
 
-	public GuiCraftConfirmBridge( final EntityPlayer player, final ICraftingIssuerTerminalHost terminalHost )
+	public GuiCraftConfirmBridge( final EntityPlayer player, final ICraftingIssuerHost craftingHost )
 	{
 		// Call super
-		super( player.inventory, terminalHost );
+		super( player.inventory, craftingHost );
 
 		// Set the player
 		this.player = player;
 
 		// Set the host
-		this.host = terminalHost;
+		this.host = craftingHost;
 	}
 
 	@Override

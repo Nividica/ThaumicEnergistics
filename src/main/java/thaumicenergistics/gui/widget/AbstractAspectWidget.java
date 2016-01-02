@@ -3,28 +3,57 @@ package thaumicenergistics.gui.widget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.util.GuiHelper;
 
 public abstract class AbstractAspectWidget
 	extends AbstractWidget
 {
+	/**
+	 * Icon to display if the aspect is unknown to the player
+	 */
 	private static final ResourceLocation UNKNOWN_TEXTURE = new ResourceLocation( "thaumcraft", "textures/aspects/_unknown.png" );
 
-	private Aspect aspect;
+	private final AspectStack aspectStack;
 
-	private boolean hasDiscovered = false;
+	/**
+	 * True if the player has discovered the aspect.
+	 */
+	protected boolean hasDiscovered = false;
 
+	/**
+	 * Cached aspect name.
+	 */
 	protected String aspectName = "";
 
+	/**
+	 * Cached description of the aspect.
+	 */
+	protected String aspectDescription = "";
+
+	/**
+	 * Cached footnote of the aspect.
+	 * NOTE: One day I hope to put the mod the aspect is from here,
+	 * not just its primallity.
+	 */
+	protected String aspectFootnote = "";
+
+	/**
+	 * The current player.
+	 */
 	private EntityPlayer player;
 
+	/**
+	 * Color of the aspect as ARGB.
+	 */
 	private byte[] aspectColorBytes;
 
-	public AbstractAspectWidget( final IWidgetHost hostGui, final Aspect aspect, final int xPos, final int yPos, final EntityPlayer player )
+	public AbstractAspectWidget( final IWidgetHost hostGui, final AspectStack stack, final int xPos, final int yPos, final EntityPlayer player )
 	{
 		// Call super
 		super( hostGui, xPos, yPos );
@@ -32,8 +61,32 @@ public abstract class AbstractAspectWidget
 		// Set the player
 		this.player = player;
 
+		// Create the aspect stack
+		this.aspectStack = new AspectStack();
+
 		// Set the aspect
-		this.setAspect( aspect );
+		this.setAspect( stack );
+	}
+
+	/**
+	 * Clears the stack and optionally fires the on stack changed event.
+	 * 
+	 * @param doUpdate
+	 */
+	protected void clearStack( final boolean doUpdate )
+	{
+		this.aspectStack.aspect = null;
+		this.aspectStack.stackSize = 0;
+		this.aspectStack.isCraftable = false;
+		this.aspectName = "";
+		this.aspectDescription = "";
+		this.aspectFootnote = "";
+		this.hasDiscovered = false;
+
+		if( doUpdate )
+		{
+			this.onStackChanged();
+		}
 	}
 
 	/**
@@ -42,7 +95,7 @@ public abstract class AbstractAspectWidget
 	protected void drawAspect()
 	{
 		// Ensure there is an aspect to draw
-		if( this.aspect == null )
+		if( this.aspectStack.aspect == null )
 		{
 			return;
 		}
@@ -51,7 +104,7 @@ public abstract class AbstractAspectWidget
 		if( this.hasDiscovered )
 		{
 			// Ask Thaumcraft to draw the aspect
-			UtilsFX.drawTag( this.xPosition + 1, this.yPosition + 1, this.aspect, 0, 0, this.zLevel );
+			UtilsFX.drawTag( this.xPosition + 1, this.yPosition + 1, this.aspectStack.aspect, 0, 0, this.zLevel );
 		}
 		// Draw the question mark
 		else
@@ -76,35 +129,138 @@ public abstract class AbstractAspectWidget
 		}
 	}
 
-	public Aspect getAspect()
+	/**
+	 * Called when the stack changes.
+	 */
+	protected void onStackChanged()
 	{
-		return this.aspect;
+		// Is there an aspect?
+		if( this.aspectStack.aspect != null )
+		{
+			// Get the aspect name
+			this.aspectName = this.aspectStack.getAspectName( this.player );
+
+			// Get if the player has discovered this aspect
+			this.hasDiscovered = this.aspectStack.hasPlayerDiscovered( this.player );
+			if( this.hasDiscovered )
+			{
+				// Get the description
+				this.aspectDescription = this.aspectStack.aspect.getLocalizedDescription();
+
+				// Set footnote
+				if( this.aspectStack.aspect.isPrimal() )
+				{
+					this.aspectFootnote = StatCollector.translateToLocal( "tc.aspect.primal" );
+				}
+				else
+				{
+					this.aspectFootnote = ThEStrings.Gui_SelectedAspect.getLocalized();
+				}
+			}
+			else
+			{
+				this.aspectDescription = this.aspectName;
+				this.aspectFootnote = this.aspectName;
+			}
+
+			// Get the color bytes
+			this.aspectColorBytes = GuiHelper.INSTANCE.convertPackedColorToARGB( this.aspectStack.aspect.getColor() );
+
+			// Set full alpha
+			this.aspectColorBytes[0] = (byte)255;
+		}
+		else
+		{
+			// Clear the info
+			this.clearStack( false );
+		}
 	}
 
-	public void setAspect( final Aspect aspect )
+	/**
+	 * Clears the stack.
+	 */
+	public void clearWidget()
+	{
+		this.clearStack( true );
+	}
+
+	/**
+	 * Gets the stack size.
+	 * 
+	 * @return
+	 */
+	public long getAmount()
+	{
+		return this.aspectStack.stackSize;
+	}
+
+	/**
+	 * Gets the aspect stack for this widget.
+	 * 
+	 * @return
+	 */
+	public Aspect getAspect()
+	{
+		return this.aspectStack.aspect;
+	}
+
+	/**
+	 * Gets whether or not the stack is craftable.
+	 * 
+	 * @return
+	 */
+	public boolean getCraftable()
+	{
+		return this.aspectStack.isCraftable;
+	}
+
+	/**
+	 * Returns the aspect stack.
+	 * 
+	 * @return
+	 */
+	public AspectStack getStack()
+	{
+		return this.aspectStack;
+	}
+
+	/**
+	 * Returns true if the widget has an aspect.
+	 * 
+	 * @return
+	 */
+	public boolean hasAspect()
+	{
+		return( this.aspectStack.aspect != null );
+	}
+
+	/**
+	 * Set's the aspect stack based on the passed values.
+	 * 
+	 * @param aspect
+	 * @param amount
+	 * @param isCraftable
+	 */
+	public void setAspect( final Aspect aspect, final long amount, final boolean isCraftable )
 	{
 		// Set the aspect
-		this.aspect = aspect;
+		this.aspectStack.aspect = aspect;
+		this.aspectStack.stackSize = amount;
+		this.aspectStack.isCraftable = isCraftable;
 
-		// Ensure there is an aspect
-		if( aspect == null )
-		{
-			return;
-		}
+		this.onStackChanged();
+	}
 
-		// Convert to stack
-		AspectStack stack = new AspectStack( aspect, 1 );
+	/**
+	 * Sets the aspect based on the stack
+	 * 
+	 * @param stack
+	 */
+	public void setAspect( final AspectStack stack )
+	{
+		// Copy the values
+		this.aspectStack.copyFrom( stack );
 
-		// Get the aspect name
-		this.aspectName = stack.getAspectName( this.player );
-
-		// Get if the player has discovered this aspect
-		this.hasDiscovered = stack.hasPlayerDiscovered( this.player );
-
-		// Get the color bytes
-		this.aspectColorBytes = GuiHelper.INSTANCE.convertPackedColorToARGB( aspect.getColor() );
-
-		// Set full alpha
-		this.aspectColorBytes[0] = (byte)255;
+		this.onStackChanged();
 	}
 }

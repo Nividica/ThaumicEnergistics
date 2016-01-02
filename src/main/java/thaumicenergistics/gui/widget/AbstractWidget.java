@@ -47,11 +47,17 @@ public abstract class AbstractWidget
 
 	public boolean isMouseOverWidget( final int mouseX, final int mouseY )
 	{
-		return GuiHelper.INSTANCE.isPointInGuiRegion( this.yPosition, this.xPosition, AbstractWidget.WIDGET_SIZE, AbstractWidget.WIDGET_SIZE, mouseX,
-			mouseY, this.hostGUI.guiLeft(), this.hostGUI.guiTop() );
+		return GuiHelper.INSTANCE.isPointInGuiRegion(
+			this.yPosition, this.xPosition,
+			WIDGET_SIZE - 1, WIDGET_SIZE - 1,
+			mouseX, mouseY,
+			this.hostGUI.guiLeft(), this.hostGUI.guiTop() );
 	}
 
-	public abstract void mouseClicked();
+	/**
+	 * Called when the mouse is clicked on the widget.
+	 */
+	public abstract void onMouseClicked();
 
 	public void setPosition( final int xPos, final int yPos )
 	{

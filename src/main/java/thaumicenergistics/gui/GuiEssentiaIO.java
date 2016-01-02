@@ -468,7 +468,7 @@ public class GuiEssentiaIO
 
 		for( int i = 0; i < count; i++ )
 		{
-			this.aspectSlotList.get( i ).setAspect( aspectList.get( i ) );
+			this.aspectSlotList.get( i ).setAspect( aspectList.get( i ), 1, false );
 		}
 
 		this.filteredAspects = aspectList;

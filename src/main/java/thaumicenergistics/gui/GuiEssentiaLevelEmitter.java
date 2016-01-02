@@ -461,7 +461,7 @@ public class GuiEssentiaLevelEmitter
 
 		if( itemAspect != null )
 		{
-			this.aspectFilterSlot.setAspect( itemAspect );
+			this.aspectFilterSlot.setAspect( itemAspect, 1, false );
 
 			return true;
 		}
@@ -481,7 +481,7 @@ public class GuiEssentiaLevelEmitter
 		}
 		else
 		{
-			this.aspectFilterSlot.setAspect( aspectList.get( 0 ) );
+			this.aspectFilterSlot.setAspect( aspectList.get( 0 ), 1, false );
 		}
 	}
 

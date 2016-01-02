@@ -1,6 +1,6 @@
 package thaumicenergistics.gui.widget;
 
-import thaumicenergistics.aspect.AspectStack;
+import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.IAspectSelectorContainer;
 
 public interface IAspectSelectorGui
@@ -8,6 +8,6 @@ public interface IAspectSelectorGui
 {
 	public IAspectSelectorContainer getContainer();
 
-	public AspectStack getSelectedAspect();
+	public Aspect getSelectedAspect();
 
 }

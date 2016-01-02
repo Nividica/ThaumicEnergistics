@@ -4,14 +4,23 @@ import java.util.Set;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.networking.IEssentiaGrid;
+import thaumicenergistics.api.storage.ICraftingIssuerHost;
+import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.grid.EssentiaPassThroughMonitor;
-import thaumicenergistics.grid.IEssentiaGrid;
 import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.items.ItemWirelessEssentiaTerminal;
+import thaumicenergistics.network.packet.server.Packet_S_ChangeGui;
+import thaumicenergistics.registries.EnumCache;
+import thaumicenergistics.registries.ItemEnum;
+import thaumicenergistics.util.EffectiveSide;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.ViewItems;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -19,12 +28,21 @@ import appeng.api.networking.IGridStorage;
 import appeng.api.networking.IMachineSet;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.PlayerSource;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
+import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
 import appeng.tile.networking.TileWireless;
 
 public class HandlerWirelessEssentiaTerminal
+	implements IActionHost, ICraftingIssuerHost, ITerminalHost, IGuiItemObject
 {
 	/**
 	 * Redirects power requests to the wireless terminal.
@@ -160,12 +178,15 @@ public class HandlerWirelessEssentiaTerminal
 
 	}
 
-	private static final String NBT_KEY_SORTING_MODE = "SortingMode";
+	/**
+	 * NBT Keys
+	 */
+	private static final String NBT_KEY_SORTING_MODE = "SortingMode2", NBT_KEY_VIEW_MODE = "ViewMode";
 
 	/**
 	 * Wireless terminal.
 	 */
-	private IThEWirelessEssentiaTerminal wirelessTerminal;
+	private final IThEWirelessEssentiaTerminal wirelessTerminal;
 
 	/**
 	 * Access point used to communicate with the AE network.
@@ -196,7 +217,7 @@ public class HandlerWirelessEssentiaTerminal
 	/**
 	 * The itemstack that represents this terminal.
 	 */
-	private ItemStack wirelessItemstack;
+	final private ItemStack wirelessItemstack;
 
 	/**
 	 * How much to multiply the required power by.
@@ -204,7 +225,8 @@ public class HandlerWirelessEssentiaTerminal
 	private double wirelessPowerMultiplier = 1.0D;
 
 	public HandlerWirelessEssentiaTerminal( final EntityPlayer player, final IWirelessAccessPoint accessPoint,
-											final IThEWirelessEssentiaTerminal wirelessTerminalInterface, final ItemStack wirelessTerminalItemstack )
+											final IThEWirelessEssentiaTerminal wirelessTerminalInterface,
+											final ItemStack wirelessTerminalItemstack )
 	{
 		// Set the player
 		this.player = player;
@@ -284,8 +306,12 @@ public class HandlerWirelessEssentiaTerminal
 	 */
 	private boolean isAPInRangeAndActive()
 	{
-		return( ( this.accessPoint.isActive() ) && ( HandlerWirelessEssentiaTerminal.isAPInRangeOfPlayer( this.locationOfAccessPoint,
-			this.rangeOfAccessPoint, this.player ) ) );
+		if( this.accessPoint != null )
+		{
+			return( ( this.accessPoint.isActive() ) && ( HandlerWirelessEssentiaTerminal.isAPInRangeOfPlayer( this.locationOfAccessPoint,
+				this.rangeOfAccessPoint, this.player ) ) );
+		}
+		return false;
 	}
 
 	/**
@@ -297,6 +323,11 @@ public class HandlerWirelessEssentiaTerminal
 	{
 		// Set the access point
 		this.accessPoint = accessPoint;
+		if( accessPoint == null )
+		{
+			// Most likely on the client side.
+			return;
+		}
 
 		// Get the range of the access point
 		this.rangeOfAccessPoint = this.accessPoint.getRange();
@@ -348,6 +379,16 @@ public class HandlerWirelessEssentiaTerminal
 		return extractedAmount;
 	}
 
+	@Override
+	public IGridNode getActionableNode()
+	{
+		if( this.accessPoint != null )
+		{
+			return this.accessPoint.getActionableNode();
+		}
+		return null;
+	}
+
 	/**
 	 * Gets the the player source used when interacting with the network.
 	 * 
@@ -358,6 +399,19 @@ public class HandlerWirelessEssentiaTerminal
 		return this.playerSource;
 	}
 
+	@Override
+	public AECableType getCableConnectionType( final ForgeDirection dir )
+	{
+		return AECableType.NONE;
+	}
+
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		// Ignored.
+		return null;
+	}
+
 	/**
 	 * Gets the essentia monitor.
 	 * 
@@ -365,6 +419,11 @@ public class HandlerWirelessEssentiaTerminal
 	 */
 	public IMEEssentiaMonitor getEssentiaMonitor()
 	{
+		if( this.accessPoint == null )
+		{
+			return null;
+		}
+
 		try
 		{
 			// Get the network essentia monitor
@@ -383,23 +442,89 @@ public class HandlerWirelessEssentiaTerminal
 		}
 	}
 
+	@Override
+	public IMEMonitor<IAEFluidStack> getFluidInventory()
+	{
+		if( this.accessPoint == null )
+		{
+			return null;
+		}
+
+		try
+		{
+			// Get the storage grid
+			IStorageGrid storageGrid = this.accessPoint.getActionableNode().getGrid().getCache( IStorageGrid.class );
+
+			// Return the monitor
+			return storageGrid.getFluidInventory();
+		}
+		catch( Exception e )
+		{
+			// Ignored
+		}
+
+		return null;
+	}
+
+	@Override
+	public IGridNode getGridNode( final ForgeDirection dir )
+	{
+		return this.getActionableNode();
+	}
+
+	@Override
+	public ItemStack getIcon()
+	{
+		return ItemEnum.WIRELESS_TERMINAL.getStack();
+	}
+
+	@Override
+	public IMEMonitor<IAEItemStack> getItemInventory()
+	{
+		if( this.accessPoint == null )
+		{
+			return null;
+		}
+
+		try
+		{
+			// Get the storage grid
+			IStorageGrid storageGrid = this.accessPoint.getActionableNode().getGrid().getCache( IStorageGrid.class );
+
+			// Return the monitor
+			return storageGrid.getItemInventory();
+		}
+		catch( Exception e )
+		{
+			// Ignored
+		}
+
+		return null;
+	}
+
+	@Override
+	public ItemStack getItemStack()
+	{
+		return this.wirelessItemstack;
+	}
+
 	/**
 	 * Gets the terminals sorting mode.
 	 * 
 	 * @return
 	 */
-	public ComparatorMode getSortingMode()
+	public AspectStackComparatorMode getSortingMode()
 	{
 		// Get the data tag
 		NBTTagCompound dataTagCompound = this.wirelessTerminal.getWETerminalTag( this.wirelessItemstack );
 
-		// Does the tag have the sorting mode stored?
-		if( dataTagCompound.hasKey( HandlerWirelessEssentiaTerminal.NBT_KEY_SORTING_MODE ) )
+		// Does the tag have the mode stored?
+		if( dataTagCompound.hasKey( NBT_KEY_SORTING_MODE ) )
 		{
-			return ComparatorMode.valueOf( dataTagCompound.getString( HandlerWirelessEssentiaTerminal.NBT_KEY_SORTING_MODE ) );
+			return AspectStackComparatorMode.VALUES[dataTagCompound.getInteger( NBT_KEY_SORTING_MODE )];
 		}
 
-		return ComparatorMode.MODE_ALPHABETIC;
+		return AspectStackComparatorMode.MODE_ALPHABETIC;
 	}
 
 	/**
@@ -410,6 +535,21 @@ public class HandlerWirelessEssentiaTerminal
 	public ItemStack getTerminalItem()
 	{
 		return this.wirelessItemstack;
+	}
+
+	public ViewItems getViewMode()
+	{
+		// Get the data tag
+		NBTTagCompound dataTagCompound = this.wirelessTerminal.getWETerminalTag( this.wirelessItemstack );
+
+		// Does the tag have the mode stored?
+		if( dataTagCompound.hasKey( NBT_KEY_VIEW_MODE ) )
+		{
+			return EnumCache.AE_VIEW_ITEMS[dataTagCompound.getInteger( NBT_KEY_VIEW_MODE )];
+		}
+
+		return ViewItems.ALL;
+
 	}
 
 	/**
@@ -429,6 +569,11 @@ public class HandlerWirelessEssentiaTerminal
 	 */
 	public boolean isConnected()
 	{
+		if( this.accessPoint == null )
+		{
+			return false;
+		}
+
 		// Does the terminal have power?
 		if( !this.hasPower() )
 		{
@@ -477,18 +622,47 @@ public class HandlerWirelessEssentiaTerminal
 		return false;
 	}
 
+	@Override
+	public void launchGUI( final EntityPlayer player )
+	{
+		if( EffectiveSide.isClientSide() )
+		{
+			// Ask server to change GUI's
+			Packet_S_ChangeGui.sendGuiChangeToWirelessTerminal( player );
+		}
+		else
+		{
+			// Open the gui
+			ThEApi.instance().interact().openWirelessTerminalGui( player );
+		}
+	}
+
+	@Override
+	public void securityBreak()
+	{
+	}
+
 	/**
 	 * Sets the terminals sorting mode.
 	 * 
 	 * @param mode
 	 */
-	public void setSortingMode( final ComparatorMode mode )
+	public void setSortingMode( final AspectStackComparatorMode mode )
 	{
 		// Get the data tag
 		NBTTagCompound dataTag = this.wirelessTerminal.getWETerminalTag( this.wirelessItemstack );
 
 		// Set the sorting mode
-		dataTag.setString( HandlerWirelessEssentiaTerminal.NBT_KEY_SORTING_MODE, mode.name() );
+		dataTag.setInteger( NBT_KEY_SORTING_MODE, mode.ordinal() );
+	}
+
+	public void setViewMode( final ViewItems viewMode )
+	{
+		// Get the data tag
+		NBTTagCompound dataTag = this.wirelessTerminal.getWETerminalTag( this.wirelessItemstack );
+
+		// Set the viewing mode
+		dataTag.setInteger( NBT_KEY_VIEW_MODE, viewMode.ordinal() );
 	}
 
 	/**

@@ -13,6 +13,7 @@ import net.minecraft.util.StatCollector;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.registries.ItemEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -43,27 +44,60 @@ public class ItemCraftingAspect
 	}
 
 	/**
-	 * Gets the aspect associated with the item
+	 * Creates a new crafting aspect stack with the specified amount.
 	 * 
-	 * @param itemstack
+	 * @param aspect
+	 * @param amount
 	 * @return
 	 */
-	public static Aspect getAspect( final ItemStack itemstack )
+	public static ItemStack createStackForAspect( final Aspect aspect, final int amount )
 	{
-		if( itemstack.hasTagCompound() )
-		{
-			// Get the tag
-			NBTTagCompound tag = itemstack.getTagCompound();
+		// Create the stack
+		ItemStack stack = ItemEnum.CRAFTING_ASPECT.getStack( amount );
 
-			if( tag.hasKey( NBTKEY_ASPECT ) )
-			{
-				// Get the aspect
-				return Aspect.getAspect( tag.getString( NBTKEY_ASPECT ) );
-			}
+		// Set the aspect
+		setAspect( stack, aspect );
+
+		return stack;
+	}
+
+	/**
+	 * Gets the aspect associated with the item.
+	 * 
+	 * @param itemStack
+	 * @return
+	 */
+	public static Aspect getAspect( final ItemStack itemStack )
+	{
+		if( itemStack == null )
+		{
+			return null;
+		}
+		return getAspect( itemStack.getTagCompound() );
+	}
+
+	/**
+	 * Gets the aspect stored in the crafting items tag.
+	 * 
+	 * @param tag
+	 * @return
+	 */
+	public static Aspect getAspect( final NBTTagCompound tag )
+	{
+		if( ( tag != null ) && tag.hasKey( NBTKEY_ASPECT ) )
+		{
+			// Get the aspect
+			return Aspect.getAspect( tag.getString( NBTKEY_ASPECT ) );
 		}
 		return null;
 	}
 
+	/**
+	 * Sets the aspect of the item stack.
+	 * 
+	 * @param stack
+	 * @param aspect
+	 */
 	public static void setAspect( final ItemStack stack, final Aspect aspect )
 	{
 		// Null check

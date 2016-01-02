@@ -341,7 +341,7 @@ public class GuiEssentiaStorageBus
 
 		for( int i = 0; i < count; i++ )
 		{
-			this.aspectWidgetList.get( i ).setAspect( aspectList.get( i ) );
+			this.aspectWidgetList.get( i ).setAspect( aspectList.get( i ), 1, false );
 		}
 
 		this.filteredAspects = aspectList;

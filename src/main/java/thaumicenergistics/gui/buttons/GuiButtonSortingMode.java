@@ -3,7 +3,7 @@ package thaumicenergistics.gui.buttons;
 import java.util.List;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.texture.AEStateIconsEnum;
 import appeng.api.config.SortOrder;
 import appeng.core.localization.ButtonToolTips;
@@ -29,7 +29,7 @@ public class GuiButtonSortingMode
 	 * 
 	 * @param mode
 	 */
-	public void setSortMode( final ComparatorMode mode )
+	public void setSortMode( final AspectStackComparatorMode mode )
 	{
 		switch ( mode )
 		{

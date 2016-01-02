@@ -2,17 +2,19 @@ package thaumicenergistics.network.packet.client;
 
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.aspect.AspectStackComparator.ComparatorMode;
+import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.gui.GuiEssentiaCellTerminal;
 import thaumicenergistics.network.NetworkHandler;
 import thaumicenergistics.network.packet.ThEBasePacket;
 import thaumicenergistics.network.packet.ThEClientPacket;
+import thaumicenergistics.registries.EnumCache;
+import appeng.api.config.ViewItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -21,13 +23,14 @@ public class Packet_C_EssentiaCellTerminal
 {
 	private static final byte MODE_FULL_LIST = 0;
 	private static final byte MODE_SELECTED_ASPECT = 1;
-	private static final byte MODE_SORT_MODE_CHANGED = 2;
+	private static final byte MODE_VIEWING_CHANGED = 2;
 	private static final byte MODE_LIST_CHANGED = 3;
 
-	private List<AspectStack> aspectStackList;
+	private Collection<AspectStack> aspectStackList;
 	private Aspect selectedAspect;
-	private ComparatorMode sortMode;
+	private AspectStackComparatorMode sortMode;
 	private AspectStack change;
+	private ViewItems viewMode;
 
 	/**
 	 * Creates the packet
@@ -54,7 +57,7 @@ public class Packet_C_EssentiaCellTerminal
 	 * @param player
 	 * @param list
 	 */
-	public static void sendFullList( final EntityPlayer player, final List<AspectStack> list )
+	public static void sendFullList( final EntityPlayer player, final Collection<AspectStack> list )
 	{
 		Packet_C_EssentiaCellTerminal packet = newPacket( player, MODE_FULL_LIST );
 		// Set the player
@@ -64,6 +67,26 @@ public class Packet_C_EssentiaCellTerminal
 
 		// Set the list
 		packet.aspectStackList = list;
+
+		// Send it
+		NetworkHandler.sendPacketToClient( packet );
+	}
+
+	/**
+	 * Sends the viewing modes.
+	 * 
+	 * @param player
+	 * @param sortMode
+	 */
+	public static void sendViewingModes( final EntityPlayer player, final AspectStackComparatorMode sortMode, final ViewItems viewMode )
+	{
+		Packet_C_EssentiaCellTerminal packet = newPacket( player, MODE_VIEWING_CHANGED );
+
+		// Set the sort mode
+		packet.sortMode = sortMode;
+
+		// Set the view mode
+		packet.viewMode = viewMode;
 
 		// Send it
 		NetworkHandler.sendPacketToClient( packet );
@@ -103,23 +126,6 @@ public class Packet_C_EssentiaCellTerminal
 		NetworkHandler.sendPacketToClient( packet );
 	}
 
-	/**
-	 * Sends the sorting mode.
-	 * 
-	 * @param player
-	 * @param sortMode
-	 */
-	public static void setSortMode( final EntityPlayer player, final ComparatorMode sortMode )
-	{
-		Packet_C_EssentiaCellTerminal packet = newPacket( player, MODE_SORT_MODE_CHANGED );
-
-		// Set the sort mode
-		packet.sortMode = sortMode;
-
-		// Send it
-		NetworkHandler.sendPacketToClient( packet );
-	}
-
 	@SideOnly(Side.CLIENT)
 	@Override
 	protected void wrappedExecute()
@@ -138,9 +144,9 @@ public class Packet_C_EssentiaCellTerminal
 				( (GuiEssentiaCellTerminal)gui ).onReceiveSelectedAspect( this.selectedAspect );
 				break;
 
-			case Packet_C_EssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
-				// Update the sorting mode
-				( (GuiEssentiaCellTerminal)gui ).onSortModeChanged( this.sortMode );
+			case Packet_C_EssentiaCellTerminal.MODE_VIEWING_CHANGED:
+				// Update the modes
+				( (GuiEssentiaCellTerminal)gui ).onViewingModesChanged( this.sortMode, this.viewMode );
 				break;
 
 			case Packet_C_EssentiaCellTerminal.MODE_LIST_CHANGED:
@@ -160,24 +166,27 @@ public class Packet_C_EssentiaCellTerminal
 		case Packet_C_EssentiaCellTerminal.MODE_FULL_LIST:
 			this.aspectStackList = new ArrayList<AspectStack>();
 
+			// Read each stack
 			while( stream.readableBytes() > 0 )
 			{
-				this.aspectStackList.add( new AspectStack( ThEBasePacket.readAspect( stream ), stream.readLong() ) );
+				this.aspectStackList.add( AspectStack.loadAspectStackFromStream( stream ) );
 			}
 			break;
 
 		case Packet_C_EssentiaCellTerminal.MODE_SELECTED_ASPECT:
+			// Read aspect
 			this.selectedAspect = ThEBasePacket.readAspect( stream );
 			break;
 
-		case Packet_C_EssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
-			// Read the mode ordinal
-			this.sortMode = ComparatorMode.VALUES[stream.readInt()];
+		case Packet_C_EssentiaCellTerminal.MODE_VIEWING_CHANGED:
+			// Read the mode ordinals
+			this.sortMode = AspectStackComparatorMode.VALUES[stream.readInt()];
+			this.viewMode = EnumCache.AE_VIEW_ITEMS[stream.readInt()];
 			break;
 
 		case Packet_C_EssentiaCellTerminal.MODE_LIST_CHANGED:
 			// Read the stack
-			this.change = new AspectStack( ThEBasePacket.readAspect( stream ), stream.readLong() );
+			this.change = AspectStack.loadAspectStackFromStream( stream );
 		}
 	}
 
@@ -188,29 +197,27 @@ public class Packet_C_EssentiaCellTerminal
 		switch ( this.mode )
 		{
 		case Packet_C_EssentiaCellTerminal.MODE_FULL_LIST:
+			// Write each stack
 			for( AspectStack stack : this.aspectStackList )
 			{
-				ThEBasePacket.writeAspect( stack.aspect, stream );
-
-				stream.writeLong( stack.stackSize );
+				stack.writeToStream( stream );
 			}
 			break;
 
 		case Packet_C_EssentiaCellTerminal.MODE_SELECTED_ASPECT:
+			// Write aspect
 			ThEBasePacket.writeAspect( this.selectedAspect, stream );
 			break;
 
-		case Packet_C_EssentiaCellTerminal.MODE_SORT_MODE_CHANGED:
-			// Write the mode ordinal
+		case Packet_C_EssentiaCellTerminal.MODE_VIEWING_CHANGED:
+			// Write the mode ordinals
 			stream.writeInt( this.sortMode.ordinal() );
+			stream.writeInt( this.viewMode.ordinal() );
 			break;
 
 		case Packet_C_EssentiaCellTerminal.MODE_LIST_CHANGED:
-			// Write the aspect
-			ThEBasePacket.writeAspect( this.change.aspect, stream );
-
-			// Write the amount
-			stream.writeLong( this.change.stackSize );
+			// Write the stack
+			this.change.writeToStream( stream );
 		}
 	}
 }

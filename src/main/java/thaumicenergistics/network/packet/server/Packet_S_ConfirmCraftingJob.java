@@ -3,7 +3,6 @@ package thaumicenergistics.network.packet.server;
 import io.netty.buffer.ByteBuf;
 import java.util.concurrent.Future;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.network.NetworkHandler;
@@ -108,12 +107,10 @@ public class Packet_S_ConfirmCraftingJob
 					final ContainerOpenContext context = cca.getOpenContext();
 					if( context != null )
 					{
-						final TileEntity te = context.getTile();
+						// Begin Thaumic Energistics Changes ===============================
 
-						// Begin Thaumic Energistics Changes ===============================						
-						int GUI_ID = ThEGuiHandler.generateSidedID( ThEGuiHandler.AUTO_CRAFTING_CONFIRM, context.getSide() );
+						ThEGuiHandler.launchGui( ThEGuiHandler.AUTO_CRAFTING_CONFIRM, this.player, this.player.worldObj, 0, 0, 0 );
 
-						ThEGuiHandler.launchGui( GUI_ID, this.player, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
 						// End Thaumic Energistics Changes ===============================
 
 						if( this.player.openContainer instanceof ContainerCraftConfirm )

@@ -4,19 +4,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.api.ICraftingIssuerTerminalHost;
-import thaumicenergistics.container.ContainerArcaneAssembler;
-import thaumicenergistics.container.ContainerDistillationEncoder;
-import thaumicenergistics.container.ContainerEssentiaCell;
-import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
-import thaumicenergistics.container.ContainerEssentiaVibrationChamber;
-import thaumicenergistics.container.ContainerKnowledgeInscriber;
-import thaumicenergistics.container.ContainerPriority;
-import thaumicenergistics.container.ContainerWirelessEssentiaTerminal;
+import thaumicenergistics.api.storage.ICraftingIssuerContainer;
+import thaumicenergistics.api.storage.ICraftingIssuerHost;
+import thaumicenergistics.container.*;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.parts.AbstractAEPartBase;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
+import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.helpers.IPriorityHost;
@@ -69,13 +64,15 @@ public class ThEGuiHandler
 
 	/**
 	 * ID of the auto crafting amount bridge.
-	 * Add the ForgeDirection's side ordinal to this value.
+	 * When calling this make sure the current container implements ICraftingIssuerContainer,
+	 * or extends AEBaseContainer with the target set to an ICraftingIssuerHost.
 	 */
 	public static final int AUTO_CRAFTING_AMOUNT = ID_STEP_VALUE * 8;
 
 	/**
 	 * ID of the auto crafting confirm bridge.
-	 * Add the ForgeDirection's side ordinal to this value.
+	 * When calling this make sure the current container extends
+	 * AEBaseContainer with the target set to an ICraftingIssuerHost.
 	 */
 	public static final int AUTO_CRAFTING_CONFIRM = ID_STEP_VALUE * 9;
 
@@ -88,6 +85,37 @@ public class ThEGuiHandler
 	 * Extra data used for some GUI calls.
 	 */
 	private static Object[] extraData = null;
+
+	/**
+	 * Gets the crafting issuer host or null.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	private static ICraftingIssuerHost getCraftingIssuerHost( final EntityPlayer player )
+	{
+		// Is the currently opened container a crafting issuer container?
+		if( player.openContainer instanceof ICraftingIssuerContainer )
+		{
+			// Return the issuer
+			return ( (ICraftingIssuerContainer)player.openContainer ).getCraftingHost();
+		}
+
+		// Is the currently opened container an AE base container?
+		if( player.openContainer instanceof AEBaseContainer )
+		{
+			// Get the target
+			Object target = ( (AEBaseContainer)player.openContainer ).getTarget();
+
+			// Is the target an ICraftingIssuerHost?
+			if( target instanceof ICraftingIssuerHost )
+			{
+				return (ICraftingIssuerHost)target;
+			}
+		}
+
+		return null;
+	}
 
 	/**
 	 * Gets the AE part at the specified location.
@@ -289,6 +317,25 @@ public class ThEGuiHandler
 			// Distillation encoder?
 		case ThEGuiHandler.DISTILLATION_ENCODER:
 			return new GuiDistillationEncoder( player, world, x, y, z );
+
+			// AE2 Autocrafting Amount?
+		case ThEGuiHandler.AUTO_CRAFTING_AMOUNT:
+			ICraftingIssuerHost amountHost = ThEGuiHandler.getCraftingIssuerHost( player );
+			if( amountHost != null )
+			{
+				return new GuiCraftAmountBridge( player, amountHost );
+			}
+			return null;
+
+			// AE2 Autocrafting Confirm?
+		case ThEGuiHandler.AUTO_CRAFTING_CONFIRM:
+			ICraftingIssuerHost confirmHost = ThEGuiHandler.getCraftingIssuerHost( player );
+			if( confirmHost != null )
+			{
+				return new GuiCraftConfirmBridge( player, confirmHost );
+			}
+			return null;
+
 		}
 
 		// Is this the priority window?
@@ -305,38 +352,6 @@ public class ThEGuiHandler
 
 			// Return the gui
 			return new GuiPriority( (IPriorityHost)part, player );
-		}
-
-		// AE2 Autocrafting Amount?
-		if( ThEGuiHandler.isIDInRange( ID, ThEGuiHandler.AUTO_CRAFTING_AMOUNT ) )
-		{
-			// Get the part
-			IPart part = ThEGuiHandler.getPartFromSidedID( ID, world, x, y, z );
-
-			// Ensure the part, and that it implements ICraftingIssuerTerminalHost
-			if( ( part == null ) || !( part instanceof ICraftingIssuerTerminalHost ) )
-			{
-				return null;
-			}
-
-			// Return the gui
-			return new GuiCraftAmountBridge( player, (ICraftingIssuerTerminalHost)part );
-		}
-
-		// AE2 Autocrafting Confirm?
-		if( ThEGuiHandler.isIDInRange( ID, ThEGuiHandler.AUTO_CRAFTING_CONFIRM ) )
-		{
-			// Get the part
-			IPart part = ThEGuiHandler.getPartFromSidedID( ID, world, x, y, z );
-
-			// Ensure the part, and that it implements ICraftingIssuerTerminalHost
-			if( ( part == null ) || !( part instanceof ICraftingIssuerTerminalHost ) )
-			{
-				return null;
-			}
-
-			// Return the gui
-			return new GuiCraftConfirmBridge( player, (ICraftingIssuerTerminalHost)part );
 		}
 
 		// No matching GUI element found
@@ -391,6 +406,24 @@ public class ThEGuiHandler
 		case ThEGuiHandler.DISTILLATION_ENCODER:
 			return new ContainerDistillationEncoder( player, world, x, y, z );
 
+			// AE2 Autocrafting Amount?
+		case ThEGuiHandler.AUTO_CRAFTING_AMOUNT:
+			ICraftingIssuerHost amountHost = ThEGuiHandler.getCraftingIssuerHost( player );
+			if( amountHost != null )
+			{
+				return new ContainerCraftAmount( player.inventory, amountHost );
+			}
+			return null;
+
+			// AE2 Autocrafting Confirm?
+		case ThEGuiHandler.AUTO_CRAFTING_CONFIRM:
+			ICraftingIssuerHost confirmHost = ThEGuiHandler.getCraftingIssuerHost( player );
+			if( confirmHost != null )
+			{
+				return new ContainerCraftConfirm( player.inventory, confirmHost );
+			}
+			return null;
+
 		}
 
 		// Is this the priority window?
@@ -407,40 +440,6 @@ public class ThEGuiHandler
 
 			// Return the container
 			return new ContainerPriority( (IPriorityHost)part, player );
-
-		}
-
-		// AE2 Autocrafting Amount?
-		if( ThEGuiHandler.isIDInRange( ID, ThEGuiHandler.AUTO_CRAFTING_AMOUNT ) )
-		{
-			// Get the part
-			IPart part = ThEGuiHandler.getPartFromSidedID( ID, world, x, y, z );
-
-			// Ensure the part, and that it implements ICraftingIssuerTerminalHost
-			if( ( part == null ) || !( part instanceof ICraftingIssuerTerminalHost ) )
-			{
-				return null;
-			}
-
-			// Return the container
-			return new ContainerCraftAmount( player.inventory, (ICraftingIssuerTerminalHost)part );
-
-		}
-
-		// AE2 Autocrafting Confirm?
-		if( ThEGuiHandler.isIDInRange( ID, ThEGuiHandler.AUTO_CRAFTING_CONFIRM ) )
-		{
-			// Get the part
-			IPart part = ThEGuiHandler.getPartFromSidedID( ID, world, x, y, z );
-
-			// Ensure the part, and that it implements ICraftingIssuerTerminalHost
-			if( ( part == null ) || !( part instanceof ICraftingIssuerTerminalHost ) )
-			{
-				return null;
-			}
-
-			// Return the container
-			return new ContainerCraftConfirm( player.inventory, (ICraftingIssuerTerminalHost)part );
 
 		}
 

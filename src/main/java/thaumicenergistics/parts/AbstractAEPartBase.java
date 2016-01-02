@@ -31,12 +31,7 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.parts.BusSupport;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.PartItemStack;
+import appeng.api.parts.*;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -123,9 +118,6 @@ public abstract class AbstractAEPartBase
 		// Do we have a node?
 		if( this.node != null )
 		{
-			// Update the node
-			//this.node.updateState();
-
 			// Get the active state
 			boolean currentlyActive = this.node.isActive();
 
@@ -135,13 +127,13 @@ public abstract class AbstractAEPartBase
 				// Set our active state
 				this.isActive = currentlyActive;
 
-				// Fire the neighbor changed event
-				this.onNeighborChanged();
-
 				// Mark the host for an update
 				this.host.markForUpdate();
 			}
 		}
+
+		// Fire the neighbor changed event
+		this.onNeighborChanged();
 	}
 
 	/**

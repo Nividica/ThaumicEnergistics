@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.grid.IEssentiaGrid;
+import thaumicenergistics.api.networking.IEssentiaGrid;
 import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.integration.IWailaSource;
 import thaumicenergistics.registries.EnumCache;

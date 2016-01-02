@@ -1,18 +1,10 @@
 package thaumicenergistics.grid;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.storage.IEssentiaRepo;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
@@ -42,11 +34,6 @@ public class EssentiaMonitor
 	public static final double AE_PER_ESSENTIA = 0.3;
 
 	/**
-	 * The actual cache of aspects.
-	 */
-	private final Map<Aspect, AspectStack> cache;
-
-	/**
 	 * Objects who wish to be notified of any changes.
 	 */
 	protected final HashMap<IMEEssentiaMonitorReceiver, Object> listeners;
@@ -73,6 +60,11 @@ public class EssentiaMonitor
 	private WeakReference<Object> token;
 
 	/**
+	 * Cache of essentia.
+	 */
+	private final IEssentiaRepo cache;
+
+	/**
 	 * When true the full storage list needs to be pulled to update the cache.
 	 */
 	protected boolean cacheNeedsUpdate = false;
@@ -80,7 +72,7 @@ public class EssentiaMonitor
 	public EssentiaMonitor()
 	{
 		// Create the cache
-		this.cache = new ConcurrentHashMap<Aspect, AspectStack>();
+		this.cache = new EssentiaRepo();
 
 		// Create the listeners table
 		this.listeners = new HashMap<IMEEssentiaMonitorReceiver, Object>();
@@ -103,66 +95,6 @@ public class EssentiaMonitor
 
 		// Call wrap
 		this.wrap( fluidMonitor, energyGrid, validationToken );
-	}
-
-	/**
-	 * Changes the amount in the cache by the specified difference amount.<br>
-	 * If {@code aspect} is null, no changes will be made. Returns 0.<br>
-	 * If {@code diff} is positive and {@code aspect} stored, the resulting amount will be stored. Returns amount added.<br>
-	 * If {@code diff} is positive and {@code aspect} is not stored, {@code aspect} will be stored with the value of {@code diff}. Returns
-	 * {@code diff}<br>
-	 * If {@code diff} is negative and {@code aspect} is stored, {@code aspect} will be removed if the resulting amount is <= 0. Returns amount
-	 * removed.<br>
-	 * If {@code diff} is negative and {@code aspect} is not stored, no changes will be made. Returns 0<br>
-	 * 
-	 * @param aspect
-	 * @param diff
-	 * @return Amount removed or added.
-	 */
-	private long changeAspectAmount( final Aspect aspect, final long diff )
-	{
-		// Is the aspect null?
-		if( aspect == null )
-		{
-			// No changes
-			return 0;
-		}
-
-		// Get the current amount
-		AspectStack prevStack = this.cache.get( aspect );
-
-		if( prevStack == null )
-		{
-			// If the current amount is null the diff must be positive
-			if( diff > 0 )
-			{
-				// Add the aspect
-				this.cache.put( aspect, new AspectStack( aspect, diff ) );
-				return diff;
-			}
-
-			// No changes
-			return 0;
-		}
-
-		// Calculate the new amount
-		long prevAmount = prevStack.stackSize;
-		long newAmount = Math.max( 0L, prevAmount + diff );
-
-		// Is there any left?
-		if( newAmount > 0 )
-		{
-			// Update the amount
-			prevStack.stackSize = newAmount;
-		}
-		else
-		{
-			// Remove the aspect
-			this.cache.remove( aspect );
-		}
-
-		return newAmount - prevAmount;
-
 	}
 
 	/**
@@ -235,6 +167,104 @@ public class EssentiaMonitor
 		}
 	}
 
+	private boolean setAspectCraftability( final Aspect aspect, final boolean isCraftable, final boolean doNotify )
+	{
+		// Get the aspect stack
+		AspectStack stack = this.cache.getOrDefault( aspect, null );
+
+		boolean changesMade = false;
+
+		// Not stored?
+		if( stack == null )
+		{
+			// If the cache doesn't have this aspect, and its not craftable then there is nothing to do
+			if( isCraftable )
+			{
+				// Put it in the cache
+				this.cache.postChange( aspect, 0, true );
+
+				// Set changes made
+				changesMade = true;
+			}
+		}
+		else
+		{
+			// Is stored, but is stack size 0 and setting to not craftable?
+			if( ( stack.stackSize <= 0 ) && ( !isCraftable ) )
+			{
+				// Remove the stack
+				this.cache.remove( aspect );
+
+				// Set changes made
+				changesMade = true;
+			}
+			// Is it changing?
+			else if( stack.isCraftable != isCraftable )
+			{
+				// Set craftability
+				stack.isCraftable = isCraftable;
+
+				// Set changes made
+				changesMade = true;
+			}
+		}
+
+		// Do notify?
+		if( doNotify && changesMade && ( this.listeners.size() > 0 ) )
+		{
+			// Create the change
+			ArrayList<AspectStack> changes = new ArrayList<AspectStack>();
+
+			// Add the aspect
+			changes.add( new AspectStack( aspect, 0, isCraftable ) );
+
+			// Notify
+			this.notifyListeners( changes );
+		}
+
+		return changesMade;
+	}
+
+	/**
+	 * Sets if the aspect is craftable.
+	 * 
+	 * @param aspect
+	 * @param isCraftable
+	 */
+	protected void setAspectCraftability( final Aspect aspect, final boolean isCraftable )
+	{
+		this.setAspectCraftability( aspect, isCraftable, true );
+	}
+
+	/**
+	 * Sets each aspect as craftable.
+	 * 
+	 * @param aspects
+	 */
+	protected void setCraftableAspects( final HashSet<Aspect> aspects )
+	{
+		// Create the changes
+		ArrayList<AspectStack> changes = new ArrayList<AspectStack>();
+
+		// Set each aspect
+		for( Aspect aspect : aspects )
+		{
+			// Was the crafting status changed?
+			if( this.setAspectCraftability( aspect, true, false ) )
+			{
+				// Add the aspect
+				changes.add( new AspectStack( aspect, 0, true ) );
+			}
+		}
+
+		// Notify listeners?
+		if( ( changes.size() > 0 ) && ( this.listeners.size() > 0 ) )
+		{
+			// Notify
+			this.notifyListeners( changes );
+		}
+	}
+
 	/**
 	 * Updates the cache to match the contents of the network and updates any
 	 * listeners of the changes.
@@ -242,91 +272,89 @@ public class EssentiaMonitor
 	@SuppressWarnings("null")
 	protected void updateCacheToMatchNetwork()
 	{
-		synchronized( this.cache )
+		// Get the list of fluids in the network
+		IItemList<IAEFluidStack> fluidStackList;
+
+		// Validate the list
+		if( ( fluidStackList = this.fluidMonitor.getStorageList() ) == null )
 		{
-			// Get the list of fluids in the network
-			IItemList<IAEFluidStack> fluidStackList;
-
-			// Validate the list
-			if( ( fluidStackList = this.fluidMonitor.getStorageList() ) == null )
-			{
-				// Invalid list
-				return;
-			}
-
-			// Changes made to the cache
-			List<AspectStack> aspectChanges = null;
-
-			// The currently stored aspects
-			Set<Aspect> previousAspects = null;
-
-			// Are there any listeners?
-			boolean hasListeners = ( this.listeners.size() > 0 );
-			if( hasListeners )
-			{
-				// Create the change trackers
-				aspectChanges = new ArrayList<AspectStack>();
-				previousAspects = new HashSet<Aspect>();
-				previousAspects.addAll( this.cache.keySet() );
-			}
-			else
-			{
-				// Can safely clear the cache
-				this.cache.clear();
-			}
-
-			// Loop over all fluids
-			for( IAEFluidStack fluidStack : fluidStackList )
-			{
-				// Ensure the fluid is an essentia gas
-				if( !( fluidStack.getFluid() instanceof GaseousEssentia ) )
-				{
-					// Not an essentia gas.
-					continue;
-				}
-
-				// Get the gas aspect
-				Aspect aspect = ( (GaseousEssentia)fluidStack.getFluid() ).getAspect();
-
-				// Calculate the new amount
-				Long newAmount = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
-
-				// Update the cache
-				AspectStack prevStack = this.cache.put( aspect, new AspectStack( aspect, newAmount ) );
-
-				// Are there any listeners?
-				if( hasListeners )
-				{
-					// Remove from the previous mapping
-					previousAspects.remove( aspect );
-
-					// Calculate the difference
-					long diff = ( newAmount - ( prevStack != null ? prevStack.stackSize : 0 ) );
-
-					if( diff != 0 )
-					{
-						// Add to the changes
-						aspectChanges.add( new AspectStack( aspect, diff ) );
-					}
-				}
-			}
-
-			// Are there any listeners?
-			if( hasListeners )
-			{
-				// Anything left in the previous mapping is no longer present in the network
-				for( Aspect aspect : previousAspects )
-				{
-					aspectChanges.add( new AspectStack( aspect, -this.cache.remove( aspect ).stackSize ) );
-				}
-
-				// Notify listeners
-				this.notifyListeners( aspectChanges );
-			}
-
-			// Mark the cache as valid
-			this.cacheNeedsUpdate = false;
+			// Invalid list
+			return;
 		}
+
+		// Changes made to the cache
+		List<AspectStack> aspectChanges = null;
+
+		// The currently stored aspects
+		Set<Aspect> previousAspects = null;
+
+		// Are there any listeners?
+		boolean hasListeners = ( this.listeners.size() > 0 );
+		if( hasListeners )
+		{
+			// Create the change trackers
+			aspectChanges = new ArrayList<AspectStack>();
+			previousAspects = new HashSet<Aspect>();
+			previousAspects.addAll( this.cache.aspectSet() );
+		}
+		else
+		{
+			// Can safely clear the cache
+			this.cache.clear();
+		}
+
+		// Loop over all fluids
+		for( IAEFluidStack fluidStack : fluidStackList )
+		{
+			// Ensure the fluid is an essentia gas
+			if( !( fluidStack.getFluid() instanceof GaseousEssentia ) )
+			{
+				// Not an essentia gas.
+				continue;
+			}
+
+			// Get the gas aspect
+			Aspect aspect = ( (GaseousEssentia)fluidStack.getFluid() ).getAspect();
+
+			// Calculate the new amount
+			Long newAmount = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+
+			// Update the cache
+			AspectStack prevStack = this.cache.setAspect( aspect, newAmount, false );
+
+			// Are there any listeners?
+			if( hasListeners )
+			{
+				// Remove from the previous mapping
+				previousAspects.remove( aspect );
+
+				// Calculate the difference
+				long diff = ( newAmount - ( prevStack != null ? prevStack.stackSize : 0 ) );
+
+				if( diff != 0 )
+				{
+					// Add to the changes
+					aspectChanges.add( new AspectStack( aspect, diff ) );
+				}
+			}
+		}
+
+		// Are there any listeners?
+		if( hasListeners )
+		{
+			// Anything left in the previous mapping is no longer present in the network
+			for( Aspect aspect : previousAspects )
+			{
+				aspectChanges.add( new AspectStack( aspect, -this.cache.remove( aspect ).stackSize ) );
+			}
+
+			// Notify listeners
+			this.notifyListeners( aspectChanges );
+		}
+
+		// Mark the cache as valid
+		this.cacheNeedsUpdate = false;
+
 	}
 
 	@Override
@@ -429,14 +457,14 @@ public class EssentiaMonitor
 			this.updateCacheToMatchNetwork();
 		}
 
-		// Does the cache have this key?
-		if( this.cache.containsKey( aspect ) )
+		// Does the cache have this aspect?
+		if( this.cache.containsAspect( aspect ) )
 		{
 			// Return the amount
 			return this.cache.get( aspect ).stackSize;
 		}
 
-		// Invalid aspect
+		// Aspect not stored
 		return 0;
 	}
 
@@ -457,7 +485,7 @@ public class EssentiaMonitor
 		// Does the view need to be created?
 		if( this.cacheView == null )
 		{
-			this.cacheView = Collections.unmodifiableCollection( this.cache.values() );
+			this.cacheView = Collections.unmodifiableCollection( this.cache.getAll() );
 		}
 
 		return this.cacheView;
@@ -586,10 +614,10 @@ public class EssentiaMonitor
 				Aspect aspect = ( (GaseousEssentia)change.getFluid() ).getAspect();
 
 				// Calculate the difference
-				long diff = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( change.getStackSize() );
+				long changeAmount = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( change.getStackSize() );
 
 				// Update the cache
-				diff = this.changeAspectAmount( aspect, diff );
+				AspectStack previous = this.cache.postChange( aspect, changeAmount, null );
 
 				// Add to the changes
 				if( hasListeners )
@@ -600,8 +628,23 @@ public class EssentiaMonitor
 						aspectChanges = new ArrayList<AspectStack>();
 					}
 
+					// Was there a previous stack?
+					AspectStack changeStack;
+					if( previous != null )
+					{
+						// Re-use it, as it is no longer associated with anything
+						// Plus, it carries the crafting info.
+						changeStack = previous;
+						previous.stackSize = changeAmount;
+					}
+					else
+					{
+						// Create a new stack
+						changeStack = new AspectStack( aspect, changeAmount );
+					}
+
 					// Add the change
-					aspectChanges.add( new AspectStack( aspect, diff ) );
+					aspectChanges.add( changeStack );
 				}
 			}
 		}
