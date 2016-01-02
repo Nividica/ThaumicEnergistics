@@ -2,7 +2,7 @@ package thaumicenergistics.network;
 
 import java.util.HashMap;
 import net.minecraft.entity.player.EntityPlayerMP;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.network.packet.*;
 import thaumicenergistics.network.packet.client.*;
 import thaumicenergistics.network.packet.server.*;

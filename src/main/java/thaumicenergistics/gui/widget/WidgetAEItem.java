@@ -1,6 +1,7 @@
 package thaumicenergistics.gui.widget;
 
 import java.util.List;
+import thaumicenergistics.api.gui.IWidgetHost;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;

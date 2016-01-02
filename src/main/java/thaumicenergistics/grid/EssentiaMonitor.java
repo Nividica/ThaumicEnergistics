@@ -4,6 +4,9 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.Map.Entry;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.networking.IMEEssentiaMonitor;
+import thaumicenergistics.api.networking.IMEEssentiaMonitorReceiver;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.api.storage.IEssentiaRepo;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
@@ -52,7 +55,7 @@ public class EssentiaMonitor
 	 * Collection backed by the cache that shows the essentia amounts in the network. Is created the first time it is needed.<br>
 	 * Any changes to the cache are reflected in the view.
 	 */
-	private Collection<AspectStack> cacheView;
+	private Collection<IAspectStack> cacheView;
 
 	/**
 	 * Used to validate the state of the fluid listener, can not be null
@@ -139,10 +142,10 @@ public class EssentiaMonitor
 	 * 
 	 * @param changes
 	 */
-	private void notifyListeners( final List<AspectStack> changes )
+	private void notifyListeners( final List<IAspectStack> changes )
 	{
 		// Get an immutable copy
-		ImmutableList<AspectStack> changeList = ImmutableList.copyOf( changes );
+		ImmutableList<IAspectStack> changeList = ImmutableList.copyOf( changes );
 
 		// Get the listener iterator
 		Iterator<Entry<IMEEssentiaMonitorReceiver, Object>> entryIterator = this.listeners.entrySet().iterator();
@@ -170,7 +173,7 @@ public class EssentiaMonitor
 	private boolean setAspectCraftability( final Aspect aspect, final boolean isCraftable, final boolean doNotify )
 	{
 		// Get the aspect stack
-		AspectStack stack = this.cache.getOrDefault( aspect, null );
+		IAspectStack stack = this.cache.getOrDefault( aspect, null );
 
 		boolean changesMade = false;
 
@@ -190,7 +193,7 @@ public class EssentiaMonitor
 		else
 		{
 			// Is stored, but is stack size 0 and setting to not craftable?
-			if( ( stack.stackSize <= 0 ) && ( !isCraftable ) )
+			if( stack.isEmpty() && ( !isCraftable ) )
 			{
 				// Remove the stack
 				this.cache.remove( aspect );
@@ -199,10 +202,10 @@ public class EssentiaMonitor
 				changesMade = true;
 			}
 			// Is it changing?
-			else if( stack.isCraftable != isCraftable )
+			else if( stack.getCraftable() != isCraftable )
 			{
 				// Set craftability
-				stack.isCraftable = isCraftable;
+				stack.setCraftable( isCraftable );
 
 				// Set changes made
 				changesMade = true;
@@ -213,7 +216,7 @@ public class EssentiaMonitor
 		if( doNotify && changesMade && ( this.listeners.size() > 0 ) )
 		{
 			// Create the change
-			ArrayList<AspectStack> changes = new ArrayList<AspectStack>();
+			ArrayList<IAspectStack> changes = new ArrayList<IAspectStack>();
 
 			// Add the aspect
 			changes.add( new AspectStack( aspect, 0, isCraftable ) );
@@ -244,7 +247,7 @@ public class EssentiaMonitor
 	protected void setCraftableAspects( final HashSet<Aspect> aspects )
 	{
 		// Create the changes
-		ArrayList<AspectStack> changes = new ArrayList<AspectStack>();
+		ArrayList<IAspectStack> changes = new ArrayList<IAspectStack>();
 
 		// Set each aspect
 		for( Aspect aspect : aspects )
@@ -283,7 +286,7 @@ public class EssentiaMonitor
 		}
 
 		// Changes made to the cache
-		List<AspectStack> aspectChanges = null;
+		List<IAspectStack> aspectChanges = null;
 
 		// The currently stored aspects
 		Set<Aspect> previousAspects = null;
@@ -293,7 +296,7 @@ public class EssentiaMonitor
 		if( hasListeners )
 		{
 			// Create the change trackers
-			aspectChanges = new ArrayList<AspectStack>();
+			aspectChanges = new ArrayList<IAspectStack>();
 			previousAspects = new HashSet<Aspect>();
 			previousAspects.addAll( this.cache.aspectSet() );
 		}
@@ -320,7 +323,7 @@ public class EssentiaMonitor
 			Long newAmount = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
 
 			// Update the cache
-			AspectStack prevStack = this.cache.setAspect( aspect, newAmount, false );
+			IAspectStack prevStack = this.cache.setAspect( aspect, newAmount, false );
 
 			// Are there any listeners?
 			if( hasListeners )
@@ -329,7 +332,7 @@ public class EssentiaMonitor
 				previousAspects.remove( aspect );
 
 				// Calculate the difference
-				long diff = ( newAmount - ( prevStack != null ? prevStack.stackSize : 0 ) );
+				long diff = ( newAmount - ( prevStack != null ? prevStack.getStackSize() : 0 ) );
 
 				if( diff != 0 )
 				{
@@ -345,7 +348,7 @@ public class EssentiaMonitor
 			// Anything left in the previous mapping is no longer present in the network
 			for( Aspect aspect : previousAspects )
 			{
-				aspectChanges.add( new AspectStack( aspect, -this.cache.remove( aspect ).stackSize ) );
+				aspectChanges.add( new AspectStack( aspect, -this.cache.remove( aspect ).getStackSize() ) );
 			}
 
 			// Notify listeners
@@ -461,7 +464,7 @@ public class EssentiaMonitor
 		if( this.cache.containsAspect( aspect ) )
 		{
 			// Return the amount
-			return this.cache.get( aspect ).stackSize;
+			return this.cache.get( aspect ).getStackSize();
 		}
 
 		// Aspect not stored
@@ -469,11 +472,11 @@ public class EssentiaMonitor
 	}
 
 	@Override
-	public Collection<AspectStack> getEssentiaList()
+	public Collection<IAspectStack> getEssentiaList()
 	{
 		if( !this.energyGrid.isNetworkPowered() )
 		{
-			return new ArrayList<AspectStack>();
+			return new ArrayList<IAspectStack>();
 		}
 
 		// Does the cache need to be updated?
@@ -602,7 +605,7 @@ public class EssentiaMonitor
 		boolean hasListeners = ( this.listeners.size() > 0 );
 
 		// Changes made to the cache.
-		List<AspectStack> aspectChanges = null;
+		List<IAspectStack> aspectChanges = null;
 
 		// Search the changes for essentia gas
 		for( IAEFluidStack change : fluidChanges )
@@ -617,7 +620,7 @@ public class EssentiaMonitor
 				long changeAmount = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( change.getStackSize() );
 
 				// Update the cache
-				AspectStack previous = this.cache.postChange( aspect, changeAmount, null );
+				IAspectStack previous = this.cache.postChange( aspect, changeAmount, null );
 
 				// Add to the changes
 				if( hasListeners )
@@ -625,17 +628,17 @@ public class EssentiaMonitor
 					// Create the change list if needed
 					if( aspectChanges == null )
 					{
-						aspectChanges = new ArrayList<AspectStack>();
+						aspectChanges = new ArrayList<IAspectStack>();
 					}
 
 					// Was there a previous stack?
-					AspectStack changeStack;
+					IAspectStack changeStack;
 					if( previous != null )
 					{
 						// Re-use it, as it is no longer associated with anything
 						// Plus, it carries the crafting info.
 						changeStack = previous;
-						previous.stackSize = changeAmount;
+						previous.setStackSize( changeAmount );
 					}
 					else
 					{

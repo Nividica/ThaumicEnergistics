@@ -2,16 +2,8 @@ package thaumicenergistics.registries;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.items.ItemAEPart;
-import thaumicenergistics.items.ItemCraftingAspect;
-import thaumicenergistics.items.ItemEssentiaCell;
-import thaumicenergistics.items.ItemFocusAEWrench;
-import thaumicenergistics.items.ItemKnowledgeCore;
-import thaumicenergistics.items.ItemMaterial;
-import thaumicenergistics.items.ItemStorageCasing;
-import thaumicenergistics.items.ItemStorageComponent;
-import thaumicenergistics.items.ItemWirelessEssentiaTerminal;
+import thaumicenergistics.common.ThaumicEnergistics;
+import thaumicenergistics.items.*;
 
 public enum ItemEnum
 {

@@ -10,7 +10,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.common.tiles.TileEssentiaReservoir;
 import thaumcraft.common.tiles.TileJarFillableVoid;
-import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
@@ -46,14 +46,14 @@ class HandlerEssentiaStorageBusContainer
 	 * 
 	 * @param essentiaList
 	 */
-	private void addListToDictionary( final List<AspectStack> essentiaList, final Hashtable<Aspect, Long> dictionary )
+	private void addListToDictionary( final List<IAspectStack> essentiaList, final Hashtable<Aspect, Long> dictionary )
 	{
 		// Add each essentia
 		if( essentiaList != null )
 		{
-			for( AspectStack stack : essentiaList )
+			for( IAspectStack stack : essentiaList )
 			{
-				dictionary.put( stack.aspect, stack.stackSize );
+				dictionary.put( stack.getAspect(), stack.getStackSize() );
 			}
 		}
 	}
@@ -96,7 +96,7 @@ class HandlerEssentiaStorageBusContainer
 	/**
 	 * Gets essentia stored in the container.
 	 */
-	private List<AspectStack> getContainerEssentia()
+	private List<IAspectStack> getContainerEssentia()
 	{
 		// Ensure there is a container
 		if( this.aspectContainer == null )
@@ -113,7 +113,7 @@ class HandlerEssentiaStorageBusContainer
 		}
 
 		// Get the essentia and amounts in the container
-		List<AspectStack> containerStacks = EssentiaTileContainerHelper.INSTANCE.getAspectStacksFromContainer( this.aspectContainer );
+		List<IAspectStack> containerStacks = EssentiaTileContainerHelper.INSTANCE.getAspectStacksFromContainer( this.aspectContainer );
 
 		// Ensure there is essentia in the container
 		if( ( containerStacks == null ) || containerStacks.isEmpty() )
@@ -122,19 +122,19 @@ class HandlerEssentiaStorageBusContainer
 			return null;
 		}
 
-		List<AspectStack> essentiaList = new ArrayList<AspectStack>();
+		List<IAspectStack> essentiaList = new ArrayList<IAspectStack>();
 
 		// Skipping the filter check?
 		boolean skipFilterCheck = this.allowAny();
 
 		// Add the essentia
-		for( AspectStack essentiaStack : containerStacks )
+		for( IAspectStack essentiaStack : containerStacks )
 		{
 			// Is the aspect in the filter?
-			if( skipFilterCheck || ( this.filteredAspects.contains( essentiaStack.aspect ) ) )
+			if( skipFilterCheck || ( this.filteredAspects.contains( essentiaStack.getAspect() ) ) )
 			{
 				// Convert to fluid
-				GaseousEssentia gas = GaseousEssentia.getGasFromAspect( essentiaStack.aspect );
+				GaseousEssentia gas = GaseousEssentia.getGasFromAspect( essentiaStack.getAspect() );
 
 				// Is there a fluid form of the aspect?
 				if( gas != null )
@@ -196,7 +196,7 @@ class HandlerEssentiaStorageBusContainer
 		}
 
 		// Get the essentia, if any, in the container
-		AspectStack containerStack = EssentiaTileContainerHelper.INSTANCE.getAspectStackFromContainer( this.aspectContainer );
+		IAspectStack containerStack = EssentiaTileContainerHelper.INSTANCE.getAspectStackFromContainer( this.aspectContainer );
 
 		// Is the container empty?
 		if( containerStack == null )
@@ -209,7 +209,7 @@ class HandlerEssentiaStorageBusContainer
 		Aspect gasAspect = ( (GaseousEssentia)fluidStack.getFluid() ).getAspect();
 
 		// Does the aspect in the container match the gas aspect?
-		return gasAspect == containerStack.aspect;
+		return gasAspect == containerStack.getAspect();
 	}
 
 	/**
@@ -293,7 +293,7 @@ class HandlerEssentiaStorageBusContainer
 		if( this.aspectContainer != null )
 		{
 			// Get the contents of the container
-			List<AspectStack> essentiaList = this.getContainerEssentia();
+			List<IAspectStack> essentiaList = this.getContainerEssentia();
 
 			// Update the cache
 			this.cachedContainerAspects.clear();
@@ -301,13 +301,13 @@ class HandlerEssentiaStorageBusContainer
 
 			if( essentiaList != null )
 			{
-				for( AspectStack essentia : essentiaList )
+				for( IAspectStack essentia : essentiaList )
 				{
 					// Convert to fluid
-					GaseousEssentia gas = GaseousEssentia.getGasFromAspect( essentia.aspect );
+					GaseousEssentia gas = GaseousEssentia.getGasFromAspect( essentia.getAspect() );
 
 					// Add to the item list
-					out.add( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( gas, essentia.stackSize ) );
+					out.add( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( gas, essentia.getStackSize() ) );
 				}
 			}
 		}
@@ -467,7 +467,7 @@ class HandlerEssentiaStorageBusContainer
 		HashSet<Aspect> aspectsToCheck = new HashSet<Aspect>();
 
 		// Get the current contents of the container
-		List<AspectStack> currentContainerContents = this.getContainerEssentia();
+		List<IAspectStack> currentContainerContents = this.getContainerEssentia();
 
 		// Convert to dictionary
 		Hashtable<Aspect, Long> currentContainerAspects = new Hashtable<Aspect, Long>();

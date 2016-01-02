@@ -10,7 +10,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.util.ThELog;
 import appeng.api.AEApi;

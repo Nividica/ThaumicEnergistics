@@ -10,6 +10,7 @@ import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.integration.tc.IRestrictedEssentiaContainerItem;
 import thaumicenergistics.registries.ThEStrings;
@@ -30,7 +31,7 @@ public class ItemBlockEssentiaVibrationChamber
 	 * @param evcStack
 	 * @return AspectStack or null
 	 */
-	private AspectStack getStoredAspectStack( final ItemStack evcStack )
+	private IAspectStack getStoredAspectStack( final ItemStack evcStack )
 	{
 		// Get the tag
 		NBTTagCompound data = evcStack.getTagCompound();
@@ -44,7 +45,7 @@ public class ItemBlockEssentiaVibrationChamber
 		return AspectStack.loadAspectStackFromNBT( data.getCompoundTag( TileEVCBase.NBTKEY_STORED ) );
 	}
 
-	private void setStoredAspectStack( final ItemStack evcStack, final AspectStack aspectStack )
+	private void setStoredAspectStack( final ItemStack evcStack, final IAspectStack aspectStack )
 	{
 		// Get the tag
 		NBTTagCompound data = evcStack.getTagCompound();
@@ -102,12 +103,12 @@ public class ItemBlockEssentiaVibrationChamber
 		{
 
 			// Load the stack
-			AspectStack storedEssentia = this.getStoredAspectStack( evcStack );
+			IAspectStack storedEssentia = this.getStoredAspectStack( evcStack );
 
 			// Add stored info
 			if( storedEssentia != null )
 			{
-				displayList.add( String.format( "%s x %d", storedEssentia.aspect.getName(), storedEssentia.stackSize ) );
+				displayList.add( String.format( "%s x %d", storedEssentia.getAspectName(), storedEssentia.getStackSize() ) );
 			}
 		}
 		else
@@ -128,11 +129,11 @@ public class ItemBlockEssentiaVibrationChamber
 		if( evcStack.hasTagCompound() )
 		{
 			// Get the stored aspect
-			AspectStack stored = this.getStoredAspectStack( evcStack );
-			if( ( stored != null ) && ( stored.stackSize > 0 ) )
+			IAspectStack stored = this.getStoredAspectStack( evcStack );
+			if( ( stored != null ) && !stored.isEmpty() )
 			{
 				// Add it
-				list.add( stored.aspect, (int)stored.stackSize );
+				list.add( stored.getAspect(), (int)stored.getStackSize() );
 			}
 
 		}
@@ -143,7 +144,7 @@ public class ItemBlockEssentiaVibrationChamber
 	@Override
 	public void setAspects( final ItemStack evcStack, final AspectList list )
 	{
-		AspectStack aspectStack = null;
+		IAspectStack aspectStack = null;
 
 		if( list.size() > 0 )
 		{

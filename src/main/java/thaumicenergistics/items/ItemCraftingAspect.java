@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.registries.ItemEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

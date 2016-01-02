@@ -1,4 +1,4 @@
-package thaumicenergistics;
+package thaumicenergistics.common;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -16,11 +16,9 @@ import thaumicenergistics.proxy.CommonProxy;
 import thaumicenergistics.registries.AEAspectRegister;
 import thaumicenergistics.util.ThELog;
 import appeng.api.AEApi;
-import cpw.mods.fml.common.LoaderState;
-import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -115,6 +113,7 @@ public class ThaumicEnergistics
 		// Register integration
 		IntegrationCore.init();
 
+		// Register the essentia grid cache
 		AEApi.instance().registries().gridCache().registerGridCache( IEssentiaGrid.class, GridEssentiaCache.class );
 
 		// Mark that ThE has finished Init

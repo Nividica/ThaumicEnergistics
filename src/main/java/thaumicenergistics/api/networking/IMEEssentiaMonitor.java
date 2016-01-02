@@ -1,8 +1,8 @@
-package thaumicenergistics.grid;
+package thaumicenergistics.api.networking;
 
 import java.util.Collection;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.api.storage.IAspectStack;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 
@@ -43,7 +43,7 @@ public interface IMEEssentiaMonitor
 	 * 
 	 * @return
 	 */
-	public Collection<AspectStack> getEssentiaList();
+	public Collection<IAspectStack> getEssentiaList();
 
 	/**
 	 * Inject the specified essentia into the network.<br>

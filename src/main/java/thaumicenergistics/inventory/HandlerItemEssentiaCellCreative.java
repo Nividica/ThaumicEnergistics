@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
@@ -88,10 +89,10 @@ public class HandlerItemEssentiaCellCreative
 	 * 'Stored' essentia based on partition table.
 	 */
 	@Override
-	public List<AspectStack> getStoredEssentia()
+	public List<IAspectStack> getStoredEssentia()
 	{
 		// Make the list
-		List<AspectStack> storedList = new ArrayList<AspectStack>( this.partitionAspects.size() );
+		List<IAspectStack> storedList = new ArrayList<IAspectStack>( this.partitionAspects.size() );
 
 		for( Aspect aspect : this.partitionAspects )
 		{

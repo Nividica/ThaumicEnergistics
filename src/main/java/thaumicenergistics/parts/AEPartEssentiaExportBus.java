@@ -8,7 +8,7 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.tiles.TileJarFillableVoid;
-import thaumicenergistics.grid.IMEEssentiaMonitor;
+import thaumicenergistics.api.networking.IMEEssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.network.packet.client.Packet_C_EssentiaIOBus;
 import thaumicenergistics.registries.AEPartsEnum;

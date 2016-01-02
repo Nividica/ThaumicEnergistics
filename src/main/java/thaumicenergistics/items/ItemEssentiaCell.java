@@ -15,9 +15,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
-import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStackComparator;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.inventory.HandlerItemEssentiaCellCreative;
@@ -28,12 +28,7 @@ import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.networking.security.PlayerSource;
-import appeng.api.storage.ICellHandler;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.*;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.localization.GuiText;
 
@@ -70,12 +65,12 @@ public class ItemEssentiaCell
 	private void addContentsToCellDescription( final HandlerItemEssentiaCell cellHandler, final List displayList, final EntityPlayer player )
 	{
 		// Get the list of stored aspects
-		List<AspectStack> cellAspects = cellHandler.getStoredEssentia();
+		List<IAspectStack> cellAspects = cellHandler.getStoredEssentia();
 
 		// Sort the list
 		Collections.sort( cellAspects, new AspectStackComparator() );
 
-		for( AspectStack currentStack : cellAspects )
+		for( IAspectStack currentStack : cellAspects )
 		{
 			if( currentStack != null )
 			{
@@ -91,7 +86,7 @@ public class ItemEssentiaCell
 
 				// Build the display string
 				String aspectInfo = String.format( "%s%s%s x %d", aspectChatColor, currentStack.getAspectName( player ),
-					EnumChatFormatting.WHITE.toString(), currentStack.stackSize );
+					EnumChatFormatting.WHITE.toString(), currentStack.getStackSize() );
 
 				// Add to the list
 				displayList.add( aspectInfo );

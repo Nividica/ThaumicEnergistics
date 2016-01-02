@@ -11,6 +11,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectSource;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.integration.tc.IEssentiaTransportWithSimulate;
 import thaumicenergistics.util.EffectiveSide;
@@ -47,7 +48,7 @@ public abstract class TileEVCBase
 	/**
 	 * Stored Essentia
 	 */
-	protected AspectStack storedEssentia = null;
+	protected IAspectStack storedEssentia = null;
 
 	/**
 	 * Returns true if the EVC accepts the specified aspect.
@@ -135,9 +136,9 @@ public abstract class TileEVCBase
 		int storedAmount = 0;
 
 		// Is the aspect stored?
-		if( ( this.hasStoredEssentia() ) && ( this.storedEssentia.aspect == aspect ) )
+		if( ( this.hasStoredEssentia() ) && ( this.storedEssentia.getAspect() == aspect ) )
 		{
-			storedAmount = (int)this.storedEssentia.stackSize;
+			storedAmount = (int)this.storedEssentia.getStackSize();
 		}
 
 		return storedAmount;
@@ -150,7 +151,7 @@ public abstract class TileEVCBase
 		if( this.hasStoredEssentia() )
 		{
 			// Match to stored essentia
-			return aspect == this.storedEssentia.aspect;
+			return aspect == this.storedEssentia.getAspect();
 		}
 
 		// Nothing is stored, accepts ignis or potentia
@@ -167,20 +168,20 @@ public abstract class TileEVCBase
 			return false;
 		}
 
-		return aspectList.aspects.containsKey( this.storedEssentia.aspect );
+		return aspectList.aspects.containsKey( this.storedEssentia.getAspect() );
 	}
 
 	@Override
 	public boolean doesContainerContainAmount( final Aspect aspect, final int amount )
 	{
 		// Does the stored essentia match the aspect?
-		if( ( this.storedEssentia == null ) || ( this.storedEssentia.aspect != aspect ) )
+		if( ( this.storedEssentia == null ) || ( this.storedEssentia.getAspect() != aspect ) )
 		{
 			// Does not match
 			return false;
 		}
 
-		return( this.storedEssentia.stackSize >= amount );
+		return( this.storedEssentia.getStackSize() >= amount );
 	}
 
 	@Override
@@ -193,7 +194,7 @@ public abstract class TileEVCBase
 		if( this.hasStoredEssentia() )
 		{
 			// Add the essentia aspect and amount
-			aspectList.add( this.storedEssentia.aspect, (int)this.storedEssentia.stackSize );
+			aspectList.add( this.storedEssentia.getAspect(), (int)this.storedEssentia.getStackSize() );
 		}
 
 		return aspectList;
@@ -208,13 +209,13 @@ public abstract class TileEVCBase
 	@Override
 	public int getEssentiaAmount( final ForgeDirection side )
 	{
-		return( this.hasStoredEssentia() ? (int)this.storedEssentia.stackSize : 0 );
+		return( this.hasStoredEssentia() ? (int)this.storedEssentia.getStackSize() : 0 );
 	}
 
 	@Override
 	public Aspect getEssentiaType( final ForgeDirection side )
 	{
-		return( this.hasStoredEssentia() ? this.storedEssentia.aspect : null );
+		return( this.hasStoredEssentia() ? this.storedEssentia.getAspect() : null );
 	}
 
 	@Override
@@ -241,7 +242,7 @@ public abstract class TileEVCBase
 		if( this.storedEssentia != null )
 		{
 			// Not Full?
-			if( this.storedEssentia.stackSize < TileEVCBase.MAX_ESSENTIA_STORED )
+			if( this.storedEssentia.getStackSize() < TileEVCBase.MAX_ESSENTIA_STORED )
 			{
 				// Full suction when stored but not full.
 				suction = 128;
@@ -266,7 +267,7 @@ public abstract class TileEVCBase
 		if( this.hasStoredEssentia() )
 		{
 			// Suction type must match what is stored
-			suction = this.storedEssentia.aspect;
+			suction = this.storedEssentia.getAspect();
 		}
 		else
 		{

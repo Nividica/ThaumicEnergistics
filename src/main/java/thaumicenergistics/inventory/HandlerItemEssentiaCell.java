@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.fluids.GaseousEssentia;
@@ -63,7 +64,7 @@ public class HandlerItemEssentiaCell
 	/**
 	 * Essentia stored on the cell.
 	 */
-	private AspectStack[] storedEssentia;
+	private IAspectStack[] storedEssentia;
 
 	/**
 	 * Total number of essentia types the cell can store.
@@ -127,7 +128,7 @@ public class HandlerItemEssentiaCell
 		this.totalEssentiaStorage = this.totalBytes * HandlerItemEssentiaCell.ESSENTIA_PER_BYTE;
 
 		// Setup the storage
-		this.storedEssentia = new AspectStack[this.totalTypes];
+		this.storedEssentia = new IAspectStack[this.totalTypes];
 
 		// Set the save provider
 		this.saveProvider = saveProvider;
@@ -168,7 +169,7 @@ public class HandlerItemEssentiaCell
 		if( mode == Actionable.MODULATE )
 		{
 			// Get the slot
-			AspectStack stackToAddTo = this.storedEssentia[slotIndex];
+			IAspectStack stackToAddTo = this.storedEssentia[slotIndex];
 
 			// Is the slot null?
 			if( stackToAddTo == null )
@@ -181,7 +182,7 @@ public class HandlerItemEssentiaCell
 			}
 
 			// Add to the stack
-			stackToAddTo.stackSize += amountToStore;
+			stackToAddTo.adjustStackSize( amountToStore );
 
 			// Adjust the used amount
 			this.usedEssentiaStorage += amountToStore;
@@ -214,19 +215,19 @@ public class HandlerItemEssentiaCell
 		}
 
 		// Get the slot
-		AspectStack slotToExtractFrom = this.storedEssentia[slotIndex];
+		IAspectStack slotToExtractFrom = this.storedEssentia[slotIndex];
 
 		// Calculate the amount to extract
-		long amountToExtract = Math.min( slotToExtractFrom.stackSize, amount );
+		long amountToExtract = Math.min( slotToExtractFrom.getStackSize(), amount );
 
 		// Are we modulating?
 		if( mode == Actionable.MODULATE )
 		{
 			// Extract from the slot
-			slotToExtractFrom.stackSize -= amountToExtract;
+			slotToExtractFrom.adjustStackSize( -amountToExtract );
 
 			// Is the slot now empty?
-			if( slotToExtractFrom.stackSize == 0 )
+			if( slotToExtractFrom.isEmpty() )
 			{
 				// Null it
 				slotToExtractFrom = null;
@@ -260,7 +261,7 @@ public class HandlerItemEssentiaCell
 		for( int index = 0; index < this.totalTypes; index++ )
 		{
 			// Get the stack
-			AspectStack internalStack = this.storedEssentia[index];
+			IAspectStack internalStack = this.storedEssentia[index];
 
 			// Is the slot empty?
 			if( internalStack == null )
@@ -275,7 +276,7 @@ public class HandlerItemEssentiaCell
 			}
 
 			// Do the aspects match?
-			if( internalStack.aspect == aspect )
+			if( internalStack.getAspect() == aspect )
 			{
 				// Found a match
 				slot = index;
@@ -306,7 +307,7 @@ public class HandlerItemEssentiaCell
 				if( this.storedEssentia[index] != null )
 				{
 					// Update the stored amount
-					this.usedEssentiaStorage += this.storedEssentia[index].stackSize;
+					this.usedEssentiaStorage += this.storedEssentia[index].getStackSize();
 				}
 			}
 		}
@@ -405,13 +406,13 @@ public class HandlerItemEssentiaCell
 	 * @param slotIndex
 	 * @param fluidStack
 	 */
-	private void writeStorageChanges( final int slotIndex, final AspectStack aspectStack )
+	private void writeStorageChanges( final int slotIndex, final IAspectStack aspectStack )
 	{
 		// Create a new NBT
 		NBTTagCompound essentiaTag = new NBTTagCompound();
 
 		// Is there data to write?
-		if( ( aspectStack != null ) && ( aspectStack.aspect != null ) && ( aspectStack.stackSize > 0 ) )
+		if( ( aspectStack != null ) && aspectStack.hasAspect() && !aspectStack.isEmpty() )
 		{
 			// Write the essentia to the tag
 			aspectStack.writeToNBT( essentiaTag );
@@ -578,7 +579,7 @@ public class HandlerItemEssentiaCell
 	@Override
 	public IItemList<IAEFluidStack> getAvailableItems( final IItemList<IAEFluidStack> availableList )
 	{
-		for( AspectStack essentiaStack : this.storedEssentia )
+		for( IAspectStack essentiaStack : this.storedEssentia )
 		{
 			// Skip if null
 			if( essentiaStack == null )
@@ -587,10 +588,10 @@ public class HandlerItemEssentiaCell
 			}
 
 			// Get the gas
-			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( essentiaStack.aspect );
+			GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect( essentiaStack.getAspect() );
 
 			// Create the AE fluid stack
-			availableList.add( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, essentiaStack.stackSize ) );
+			availableList.add( EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits( essentiaGas, essentiaStack.getStackSize() ) );
 
 		}
 
@@ -656,13 +657,13 @@ public class HandlerItemEssentiaCell
 	 * 
 	 * @return
 	 */
-	public List<AspectStack> getStoredEssentia()
+	public List<IAspectStack> getStoredEssentia()
 	{
 		// Make the list
-		List<AspectStack> storedList = new ArrayList<AspectStack>( this.totalTypes );
+		List<IAspectStack> storedList = new ArrayList<IAspectStack>( this.totalTypes );
 
 		// Add each non-null stack
-		for( AspectStack stack : this.storedEssentia )
+		for( IAspectStack stack : this.storedEssentia )
 		{
 			if( stack != null )
 			{
@@ -714,7 +715,7 @@ public class HandlerItemEssentiaCell
 		int typeCount = 0;
 
 		// Count the number of valid types
-		for( AspectStack stack : this.storedEssentia )
+		for( IAspectStack stack : this.storedEssentia )
 		{
 			if( stack != null )
 			{
@@ -867,7 +868,7 @@ public class HandlerItemEssentiaCell
 			if( this.storedEssentia[slotIndex] != null )
 			{
 				// Add to the partition list
-				this.partitionAspects.add( this.storedEssentia[slotIndex].aspect );
+				this.partitionAspects.add( this.storedEssentia[slotIndex].getAspect() );
 			}
 		}
 

@@ -1,11 +1,13 @@
 package thaumicenergistics.aspect;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.network.packet.ThEBasePacket;
 import thaumicenergistics.util.GuiHelper;
 
@@ -16,23 +18,25 @@ import thaumicenergistics.util.GuiHelper;
  * 
  */
 public class AspectStack
+	implements IAspectStack
 {
 	private static final String NBTKEY_ASPECT_TAG = "AspectTag", NBTKEY_ASPECT_AMOUNT = "Amount", NBTKEY_CRAFTABLE = "Craftable";
 
 	/**
 	 * The aspect this stack contains.
 	 */
-	public Aspect aspect;
+	@Nullable
+	protected Aspect aspect;
 
 	/**
 	 * The amount this stack contains
 	 */
-	public long stackSize;
+	protected long stackSize;
 
 	/**
 	 * True if the aspect is craftable.
 	 */
-	public boolean isCraftable;
+	protected boolean isCraftable;
 
 	/**
 	 * Creates an empty stack
@@ -62,21 +66,14 @@ public class AspectStack
 	 * 
 	 * @param aspect
 	 * What aspect this stack will have.
-	 * @param amount
+	 * @param size
 	 * How much this stack will have.
-	 * @param isCraftable
+	 * @param craftable
 	 * Is the stack craftable.
 	 */
-	public AspectStack( final Aspect aspect, final long amount, final boolean isCraftable )
+	public AspectStack( final Aspect aspect, final long size, final boolean craftable )
 	{
-		// Set the aspect
-		this.aspect = aspect;
-
-		// Set the stack size
-		this.stackSize = amount;
-
-		// Set craftable
-		this.isCraftable = isCraftable;
+		this.setAll( aspect, size, craftable );
 	}
 
 	/**
@@ -87,7 +84,7 @@ public class AspectStack
 	 */
 	public AspectStack( final AspectStack stack )
 	{
-		this.copyFrom( stack );
+		this.setAll( stack );
 	}
 
 	/**
@@ -146,38 +143,40 @@ public class AspectStack
 		return stack;
 	}
 
-	/**
-	 * Creates a copy of this stack and returns it.
-	 * 
-	 * @return Copy of the stack.
-	 */
-	public AspectStack copy()
+	@Override
+	public long adjustStackSize( final long delta )
+	{
+		this.stackSize += delta;
+		return this.stackSize;
+	}
+
+	@Override
+	public IAspectStack copy()
 	{
 		return new AspectStack( this );
 	}
 
-	/**
-	 * Sets the values of this stack to match the passed stack.
-	 * Unchanged if stack is null.
-	 * 
-	 * @param stack
-	 */
-	public void copyFrom( final AspectStack stack )
+	@Override
+	public Aspect getAspect()
 	{
-		if( stack != null )
-		{
-			this.aspect = stack.aspect;
-			this.stackSize = stack.stackSize;
-			this.isCraftable = stack.isCraftable;
-		}
+		return this.aspect;
 	}
 
-	/**
-	 * Gets the name of the aspect.<br>
-	 * This method does not take into consideration if the player has yet discovered the aspect.
-	 * 
-	 * @return
-	 */
+	@Override
+	public String getAspectDescription()
+	{
+		// Is there an aspect?
+		if( this.aspect != null )
+		{
+			// Return it's description
+			return this.aspect.getLocalizedDescription();
+		}
+
+		// Return empty string
+		return "";
+	}
+
+	@Override
 	public String getAspectName()
 	{
 		// Ensure there is an aspect
@@ -190,12 +189,7 @@ public class AspectStack
 		return this.aspect.getName();
 	}
 
-	/**
-	 * Gets the display name of the aspect for the player.
-	 * 
-	 * @param player
-	 * @return
-	 */
+	@Override
 	public String getAspectName( final EntityPlayer player )
 	{
 		// Has the player discovered the aspect?
@@ -207,11 +201,19 @@ public class AspectStack
 		return this.getAspectName();
 	}
 
-	/**
-	 * The chat color associated with this aspect.
-	 * 
-	 * @return Chat prefix string, or empty string if no aspect.
-	 */
+	@Override
+	public String getAspectTag()
+	{
+		// Do we have an aspect?
+		if( this.aspect != null )
+		{
+			return this.aspect.getTag();
+		}
+
+		return "";
+	}
+
+	@Override
 	public String getChatColor()
 	{
 		// Do we have an aspect?
@@ -223,28 +225,25 @@ public class AspectStack
 		return "";
 	}
 
-	/**
-	 * Gets the Thaumcraft tag for the aspect
-	 * 
-	 * @return Thaumcraft tag, or empty string if no aspect.
-	 */
-	public String getTag()
+	@Override
+	public boolean getCraftable()
 	{
-		// Do we have an aspect?
-		if( this.aspect != null )
-		{
-			return this.aspect.getTag();
-		}
-
-		return "";
+		return this.isCraftable;
 	}
 
-	/**
-	 * Checks if the player has discovered this aspect.
-	 * 
-	 * @param player
-	 * @return
-	 */
+	@Override
+	public long getStackSize()
+	{
+		return this.stackSize;
+	}
+
+	@Override
+	public boolean hasAspect()
+	{
+		return( this.aspect != null );
+	}
+
+	@Override
 	public boolean hasPlayerDiscovered( final EntityPlayer player )
 	{
 		// Ensure we have a player & aspect
@@ -257,21 +256,13 @@ public class AspectStack
 		return false;
 	}
 
-	/**
-	 * Returns true if the size is not positive.
-	 * 
-	 * @return
-	 */
+	@Override
 	public boolean isEmpty()
 	{
 		return( this.stackSize <= 0 );
 	}
 
-	/**
-	 * Sets this stack to the data in the stream.
-	 * 
-	 * @param stream
-	 */
+	@Override
 	public void readFromStream( final ByteBuf stream )
 	{
 		// Read the aspect
@@ -284,13 +275,44 @@ public class AspectStack
 		this.isCraftable = stream.readBoolean();
 	}
 
-	/**
-	 * Writes this aspect stack to the specified NBT tag
-	 * 
-	 * @param data
-	 * The tag to write to
-	 * @return The nbt tag.
-	 */
+	@Override
+	public void setAll( final Aspect aspect, final long size, final boolean craftable )
+	{
+		this.aspect = aspect;
+		this.stackSize = size;
+		this.isCraftable = craftable;
+	}
+
+	@Override
+	public void setAll( final IAspectStack stack )
+	{
+		if( stack != null )
+		{
+			this.aspect = stack.getAspect();
+			this.stackSize = stack.getStackSize();
+			this.isCraftable = stack.getCraftable();
+		}
+	}
+
+	@Override
+	public void setAspect( final Aspect aspect )
+	{
+		this.aspect = aspect;
+	}
+
+	@Override
+	public void setCraftable( final boolean craftable )
+	{
+		this.isCraftable = craftable;
+	}
+
+	@Override
+	public void setStackSize( final long size )
+	{
+		this.stackSize = size;
+	}
+
+	@Override
 	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
 		// Is there an aspect?
@@ -316,11 +338,7 @@ public class AspectStack
 		return data;
 	}
 
-	/**
-	 * Writes the stack to a bytebuf stream.
-	 * 
-	 * @param stream
-	 */
+	@Override
 	public void writeToStream( final ByteBuf stream )
 	{
 		// Write the aspect

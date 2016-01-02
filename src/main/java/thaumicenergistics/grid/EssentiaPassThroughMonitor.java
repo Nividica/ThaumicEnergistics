@@ -2,7 +2,9 @@ package thaumicenergistics.grid;
 
 import java.util.Collection;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.api.networking.IMEEssentiaMonitor;
+import thaumicenergistics.api.networking.IMEEssentiaMonitorReceiver;
+import thaumicenergistics.api.storage.IAspectStack;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -73,7 +75,7 @@ public class EssentiaPassThroughMonitor
 	}
 
 	@Override
-	public Collection<AspectStack> getEssentiaList()
+	public Collection<IAspectStack> getEssentiaList()
 	{
 		return this.internalMonitor.getEssentiaList();
 	}

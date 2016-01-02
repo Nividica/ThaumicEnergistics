@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.api.research.ResearchPage;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.integration.tc.PseudoResearchItem;
 
 public class ResearchRegistry

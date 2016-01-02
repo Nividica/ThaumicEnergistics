@@ -2,7 +2,7 @@ package thaumicenergistics.texture;
 
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 
 public enum BlockTextureManager
 {

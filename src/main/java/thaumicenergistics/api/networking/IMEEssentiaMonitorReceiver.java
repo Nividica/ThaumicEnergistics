@@ -1,6 +1,6 @@
-package thaumicenergistics.grid;
+package thaumicenergistics.api.networking;
 
-import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.api.storage.IAspectStack;
 
 public interface IMEEssentiaMonitorReceiver
 {
@@ -18,5 +18,5 @@ public interface IMEEssentiaMonitorReceiver
 	 * @param fromMonitor
 	 * @param changes
 	 */
-	void postChange( IMEEssentiaMonitor fromMonitor, Iterable<AspectStack> changes );
+	void postChange( IMEEssentiaMonitor fromMonitor, Iterable<IAspectStack> changes );
 }

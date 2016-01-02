@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.networking.IEssentiaGrid;
-import thaumicenergistics.grid.IMEEssentiaMonitor;
+import thaumicenergistics.api.networking.IMEEssentiaMonitor;
 import thaumicenergistics.integration.IWailaSource;
 import thaumicenergistics.registries.EnumCache;
 import thaumicenergistics.util.EffectiveSide;

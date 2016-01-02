@@ -18,6 +18,7 @@ import thaumcraft.common.items.ItemWispEssence;
 import thaumicenergistics.api.IThEEssentiaContainerPermission;
 import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.items.ItemBlockEssentiaVibrationChamber;
 import thaumicenergistics.tileentities.abstraction.TileEVCBase;
@@ -231,7 +232,7 @@ public final class EssentiaItemContainerHelper
 	 * @param aspectStack
 	 * @return
 	 */
-	public ImmutablePair<Integer, ItemStack> extractFromContainer( final ItemStack container, final AspectStack aspectStack )
+	public ImmutablePair<Integer, ItemStack> extractFromContainer( final ItemStack container, final IAspectStack aspectStack )
 	{
 		// Ensure it is a container
 		if( this.getItemType( container ) != AspectItemType.EssentiaContainer )
@@ -255,13 +256,13 @@ public final class EssentiaItemContainerHelper
 		AspectList aspectList = ( (IEssentiaContainerItem)containerItem ).getAspects( container );
 
 		// Does the container have the aspect we are wanting to extract?
-		if( aspectStack.aspect != aspectList.getAspects()[0] )
+		if( aspectStack.getAspect() != aspectList.getAspects()[0] )
 		{
 			return null;
 		}
 
 		// Get how much is stored in the container
-		int containerAmountStored = aspectList.getAmount( aspectStack.aspect );
+		int containerAmountStored = aspectList.getAmount( aspectStack.getAspect() );
 
 		// Is there any stored in the container?
 		if( containerAmountStored <= 0 )
@@ -270,7 +271,7 @@ public final class EssentiaItemContainerHelper
 		}
 
 		// Copy the amount we want to drain
-		int amountToDrain = (int)aspectStack.stackSize;
+		int amountToDrain = (int)aspectStack.getStackSize();
 
 		// Can this container do partial fills?
 		if( !info.canHoldPartialAmount() )
@@ -314,7 +315,7 @@ public final class EssentiaItemContainerHelper
 				if( this.doesJarHaveLabel( container ) )
 				{
 					// Create an empty labeled jar
-					resultStack = this.createFilledJar( aspectStack.aspect, 0, container.getItemDamage(), true );
+					resultStack = this.createFilledJar( aspectStack.getAspect(), 0, container.getItemDamage(), true );
 				}
 				else
 				{
@@ -332,7 +333,7 @@ public final class EssentiaItemContainerHelper
 			resultStack = container.copy();
 
 			// Reduce the list amount
-			aspectList.remove( aspectStack.aspect, amountToDrain );
+			aspectList.remove( aspectStack.getAspect(), amountToDrain );
 
 			// Set the stored amount
 			( (IEssentiaContainerItem)resultStack.getItem() ).setAspects( resultStack, aspectList );
@@ -359,7 +360,7 @@ public final class EssentiaItemContainerHelper
 		}
 
 		// Create an aspect stack based on whats in the container
-		AspectStack stack = new AspectStack( this.getAspectInContainer( container ), drainAmount_EU );
+		IAspectStack stack = new AspectStack( this.getAspectInContainer( container ), drainAmount_EU );
 
 		// Extract
 		return this.extractFromContainer( container, stack );
@@ -420,7 +421,7 @@ public final class EssentiaItemContainerHelper
 	 * @param container
 	 * @return AspectStack can read container, null otherwise.
 	 */
-	public AspectStack getAspectStackFromContainer( final ItemStack container )
+	public IAspectStack getAspectStackFromContainer( final ItemStack container )
 	{
 		// Get the aspect of the essentia in the container
 		Aspect aspect = this.getAspectInContainer( container );
@@ -649,7 +650,7 @@ public final class EssentiaItemContainerHelper
 	 * @param aspectStack
 	 * @return The amount that was inject, and the new container.
 	 */
-	public ImmutablePair<Integer, ItemStack> injectIntoContainer( final ItemStack container, final AspectStack aspectStack )
+	public ImmutablePair<Integer, ItemStack> injectIntoContainer( final ItemStack container, final IAspectStack aspectStack )
 	{
 		// Is the item an essentia container?
 		if( this.getItemType( container ) != AspectItemType.EssentiaContainer )
@@ -672,7 +673,7 @@ public final class EssentiaItemContainerHelper
 			{
 				// Does the label match the aspect we are going to fill
 				// with?
-				if( aspectStack.aspect != this.getJarLabelAspect( container ) )
+				if( aspectStack.getAspect() != this.getJarLabelAspect( container ) )
 				{
 					// Aspect does not match the jar's label
 					return null;
@@ -683,7 +684,7 @@ public final class EssentiaItemContainerHelper
 		else if( containerItem instanceof IRestrictedEssentiaContainerItem )
 		{
 			// Ensure the container accepts this essentia
-			if( !( ( (IRestrictedEssentiaContainerItem)containerItem ).acceptsAspect( aspectStack.aspect ) ) )
+			if( !( ( (IRestrictedEssentiaContainerItem)containerItem ).acceptsAspect( aspectStack.getAspect() ) ) )
 			{
 				// Not acceptable
 				return null;
@@ -712,7 +713,7 @@ public final class EssentiaItemContainerHelper
 		}
 
 		// Set the amount to fill
-		int amountToFill = (int)aspectStack.stackSize;
+		int amountToFill = (int)aspectStack.getStackSize();
 
 		// Can this container do partial fills?
 		if( !info.canHoldPartialAmount() )
@@ -745,13 +746,13 @@ public final class EssentiaItemContainerHelper
 		if( containerItem instanceof ItemEssence )
 		{
 			// Create a new phial
-			resultStack = this.createFilledPhial( aspectStack.aspect );
+			resultStack = this.createFilledPhial( aspectStack.getAspect() );
 		}
 		// Is it an empty jar?
 		else if( containerItem instanceof BlockJarItem )
 		{
 			// Create a fillable jar
-			resultStack = this.createFilledJar( aspectStack.aspect, amountToFill, container.getItemDamage(), false );
+			resultStack = this.createFilledJar( aspectStack.getAspect(), amountToFill, container.getItemDamage(), false );
 		}
 
 		// Have we already set the result?
@@ -770,7 +771,7 @@ public final class EssentiaItemContainerHelper
 			else if( aspectList.size() > 0 )
 			{
 				// Does the stored aspect match the aspect to inject?
-				if( aspectStack.aspect != aspectList.getAspects()[0] )
+				if( aspectStack.getAspect() != aspectList.getAspects()[0] )
 				{
 					// Don't mix aspects
 					return null;
@@ -778,7 +779,7 @@ public final class EssentiaItemContainerHelper
 			}
 
 			// Increase the list amount
-			aspectList.add( aspectStack.aspect, amountToFill );
+			aspectList.add( aspectStack.getAspect(), amountToFill );
 
 			// Make a copy of the request
 			resultStack = container.copy();

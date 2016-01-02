@@ -3,7 +3,7 @@ package thaumicenergistics.items;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.registries.ThEStrings;
 
 public class ItemStorageCasing

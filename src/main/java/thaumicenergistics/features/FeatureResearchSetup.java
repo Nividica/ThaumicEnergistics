@@ -5,7 +5,7 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.api.research.ResearchPage;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.registries.ResearchRegistry;
 import thaumicenergistics.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.registries.ResearchRegistry.ResearchTypes;

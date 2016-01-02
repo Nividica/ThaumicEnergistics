@@ -13,14 +13,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.networking.IMEEssentiaMonitor;
+import thaumicenergistics.api.networking.IMEEssentiaMonitorReceiver;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.api.storage.ICraftingIssuerContainer;
 import thaumicenergistics.api.storage.ICraftingIssuerHost;
 import thaumicenergistics.api.storage.IEssentiaRepo;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.container.slot.SlotRestrictive;
 import thaumicenergistics.grid.EssentiaRepo;
-import thaumicenergistics.grid.IMEEssentiaMonitor;
-import thaumicenergistics.grid.IMEEssentiaMonitorReceiver;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.network.packet.client.Packet_C_EssentiaCellTerminal;
@@ -156,7 +157,7 @@ public abstract class AbstractContainerCellTerminalBase
 	 * Holds a list of changes sent to the gui before the
 	 * full list is sent.
 	 */
-	private List<AspectStack> pendingChanges = new ArrayList<AspectStack>();
+	private List<IAspectStack> pendingChanges = new ArrayList<IAspectStack>();
 
 	/**
 	 * Tracks the number of ticks
@@ -213,20 +214,21 @@ public abstract class AbstractContainerCellTerminalBase
 		container.stackSize = 1;
 
 		// Get the fluid stack from the item
-		AspectStack containerEssentia = EssentiaItemContainerHelper.INSTANCE.getAspectStackFromContainer( container );
+		IAspectStack containerEssentia = EssentiaItemContainerHelper.INSTANCE.getAspectStackFromContainer( container );
 
 		// Ensure there is something to drain
-		if( ( containerEssentia == null ) || ( containerEssentia.stackSize <= 0 ) )
+		if( ( containerEssentia == null ) || containerEssentia.isEmpty() )
 		{
 			// Nothing to drain
 			return 0;
 		}
 
 		// Get the proposed drain amount.
-		int proposedDrainAmount = (int)containerEssentia.stackSize;
+		int proposedDrainAmount = (int)containerEssentia.getStackSize();
 
 		// Simulate a network injection
-		long rejectedAmount = this.monitor.injectEssentia( containerEssentia.aspect, proposedDrainAmount, Actionable.SIMULATE, actionSource, true );
+		long rejectedAmount = this.monitor.injectEssentia( containerEssentia.getAspect(), proposedDrainAmount, Actionable.SIMULATE, actionSource,
+			true );
 
 		// Was any rejected?
 		if( rejectedAmount > 0 )
@@ -260,7 +262,7 @@ public abstract class AbstractContainerCellTerminalBase
 			proposedDrainAmount = drainedContainer.left;
 
 			// Inject into the to network
-			this.monitor.injectEssentia( containerEssentia.aspect, proposedDrainAmount, Actionable.MODULATE, actionSource, true );
+			this.monitor.injectEssentia( containerEssentia.getAspect(), proposedDrainAmount, Actionable.MODULATE, actionSource, true );
 
 			// Decrease the input slot
 			inputSlot.decrStackSize( 1 );
@@ -742,7 +744,7 @@ public abstract class AbstractContainerCellTerminalBase
 	 * 
 	 * @return
 	 */
-	public Collection<AspectStack> getAspectStackList()
+	public Collection<IAspectStack> getAspectStackList()
 	{
 		return this.repo.getAll();
 	}
@@ -852,7 +854,7 @@ public abstract class AbstractContainerCellTerminalBase
 	 * 
 	 * @param aspectStackList
 	 */
-	public void onReceivedAspectList( final Collection<AspectStack> aspectStackList )
+	public void onReceivedAspectList( final Collection<IAspectStack> aspectStackList )
 	{
 		// Set the aspect list
 		this.repo.copyFrom( aspectStackList );
@@ -877,7 +879,7 @@ public abstract class AbstractContainerCellTerminalBase
 	 * @param change
 	 * @return True if the repo is prepared to be displayed.
 	 */
-	public boolean onReceivedAspectListChange( final AspectStack change )
+	public boolean onReceivedAspectListChange( final IAspectStack change )
 	{
 		// Ignored server side
 		if( EffectiveSide.isServerSide() )
@@ -935,7 +937,7 @@ public abstract class AbstractContainerCellTerminalBase
 	 */
 
 	@Override
-	public final void postChange( final IMEEssentiaMonitor fromMonitor, final Iterable<AspectStack> changes )
+	public final void postChange( final IMEEssentiaMonitor fromMonitor, final Iterable<IAspectStack> changes )
 	{
 		// Ensure there was a change
 		if( changes == null )
@@ -944,7 +946,7 @@ public abstract class AbstractContainerCellTerminalBase
 		}
 
 		// Loop over the changes
-		for( AspectStack change : changes )
+		for( IAspectStack change : changes )
 		{
 			// Update the client
 			Packet_C_EssentiaCellTerminal.setAspectAmount( this.player, change );

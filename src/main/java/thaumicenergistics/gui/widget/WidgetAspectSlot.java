@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.gui.IWidgetHost;
 import thaumicenergistics.network.IAspectSlotPart;
 import thaumicenergistics.network.packet.server.Packet_S_AspectSlot;
 import thaumicenergistics.texture.GuiTextureManager;

@@ -10,8 +10,9 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.networking.IMEEssentiaMonitor;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.registries.AEPartsEnum;
@@ -69,7 +70,7 @@ public class AEPartEssentiaConversionMonitor
 		ItemStack container = player.inventory.getStackInSlot( slotIndex );
 
 		// Create request
-		AspectStack request = EssentiaItemContainerHelper.INSTANCE.getAspectStackFromContainer( container );
+		IAspectStack request = EssentiaItemContainerHelper.INSTANCE.getAspectStackFromContainer( container );
 
 		// Is there anything to request?
 		if( request == null )
@@ -81,7 +82,7 @@ public class AEPartEssentiaConversionMonitor
 		if( mustMatchAspect != null )
 		{
 			// Do the aspects match?
-			if( request.aspect != mustMatchAspect )
+			if( request.getAspect() != mustMatchAspect )
 			{
 				// Mismatch
 				return false;
@@ -96,12 +97,13 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Inject the essentia
-		long rejected = essMonitor.injectEssentia( request.aspect, request.stackSize, Actionable.MODULATE, new PlayerSource( player, this ), true );
+		long rejected = essMonitor.injectEssentia( request.getAspect(), request.getStackSize(), Actionable.MODULATE,
+			new PlayerSource( player, this ), true );
 
 		// Adjust the request
-		request.stackSize -= rejected;
+		request.adjustStackSize( -rejected );
 
-		if( request.stackSize <= 0 )
+		if( request.isEmpty() )
 		{
 			// Could not inject
 			return false;
@@ -118,7 +120,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Set the last aspect
-		this.depositedAspect = request.aspect;
+		this.depositedAspect = request.getAspect();
 
 		return true;
 
@@ -137,7 +139,7 @@ public class AEPartEssentiaConversionMonitor
 		if( itemType == AspectItemType.JarLabel )
 		{
 			// Set the label type
-			EssentiaItemContainerHelper.INSTANCE.setLabelAspect( heldItem, this.trackedEssentia.getAspectStack().aspect );
+			EssentiaItemContainerHelper.INSTANCE.setLabelAspect( heldItem, this.trackedEssentia.getAspectStack().getAspect() );
 			return true;
 		}
 
@@ -164,7 +166,7 @@ public class AEPartEssentiaConversionMonitor
 			Aspect containerAspect = EssentiaItemContainerHelper.INSTANCE.getAspectInContainer( heldItem );
 
 			// Ensure it matches the tracker
-			if( this.trackedEssentia.getAspectStack().aspect != containerAspect )
+			if( this.trackedEssentia.getAspectStack().getAspect() != containerAspect )
 			{
 				return false;
 			}
@@ -175,7 +177,7 @@ public class AEPartEssentiaConversionMonitor
 		if( jarLabelAspect != null )
 		{
 			// Ensure it matches the tracker
-			if( this.trackedEssentia.getAspectStack().aspect != jarLabelAspect )
+			if( this.trackedEssentia.getAspectStack().getAspect() != jarLabelAspect )
 			{
 				return false;
 			}
@@ -192,10 +194,10 @@ public class AEPartEssentiaConversionMonitor
 		int containerCapacity = EssentiaItemContainerHelper.INSTANCE.getContainerCapacity( heldItem );
 
 		// Create the request
-		AspectStack fillRequest = new AspectStack( this.trackedEssentia.getAspectStack().aspect, containerCapacity - containerAmount );
+		IAspectStack fillRequest = new AspectStack( this.trackedEssentia.getAspectStack().getAspect(), containerCapacity - containerAmount );
 
 		// Is the container full?
-		if( fillRequest.stackSize <= 0 )
+		if( fillRequest.isEmpty() )
 		{
 			// Container is full
 			return false;
@@ -205,7 +207,8 @@ public class AEPartEssentiaConversionMonitor
 		PlayerSource playerSource = new PlayerSource( player, this );
 
 		// Simulate the request
-		long extractedAmount = essMonitor.extractEssentia( fillRequest.aspect, fillRequest.stackSize, Actionable.SIMULATE, playerSource, true );
+		long extractedAmount = essMonitor.extractEssentia( fillRequest.getAspect(), fillRequest.getStackSize(), Actionable.SIMULATE, playerSource,
+			true );
 
 		// Was any extracted?
 		if( extractedAmount <= 0 )
@@ -215,7 +218,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Update values based on how much was extracted
-		fillRequest.stackSize = extractedAmount;
+		fillRequest.setStackSize( extractedAmount );
 
 		// Fill the container
 		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.INSTANCE.injectIntoContainer( heldItem, fillRequest );
@@ -249,7 +252,7 @@ public class AEPartEssentiaConversionMonitor
 		}
 
 		// Extract the essentia
-		essMonitor.extractEssentia( fillRequest.aspect, fillRequest.stackSize, Actionable.MODULATE, playerSource, true );
+		essMonitor.extractEssentia( fillRequest.getAspect(), fillRequest.getStackSize(), Actionable.MODULATE, playerSource, true );
 
 		// Done
 		return true;

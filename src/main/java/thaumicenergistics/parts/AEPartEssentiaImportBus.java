@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.grid.IMEEssentiaMonitor;
+import thaumicenergistics.api.networking.IMEEssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.registries.AEPartsEnum;
 import thaumicenergistics.texture.BlockTextureManager;

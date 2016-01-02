@@ -1,20 +1,14 @@
 package thaumicenergistics.integration;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.networking.IEssentiaGrid;
-import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.grid.IMEEssentiaMonitor;
-import thaumicenergistics.grid.IMEEssentiaMonitorReceiver;
+import thaumicenergistics.api.networking.IMEEssentiaMonitor;
+import thaumicenergistics.api.networking.IMEEssentiaMonitorReceiver;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.tileentities.TileEssentiaProvider;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
@@ -360,7 +354,7 @@ public class EssentiaProviderPeripheral
 		}
 
 		@Override
-		public void postChange( final IMEEssentiaMonitor fromMonitor, final Iterable<AspectStack> changes )
+		public void postChange( final IMEEssentiaMonitor fromMonitor, final Iterable<IAspectStack> changes )
 		{
 			// Ensure the provider is there and active
 			TileEssentiaProvider provider = EssentiaProviderPeripheral.this.getProvider();
@@ -384,13 +378,13 @@ public class EssentiaProviderPeripheral
 				Object[] ccChange = null;
 
 				// For each change
-				for( AspectStack change : changes )
+				for( IAspectStack change : changes )
 				{
 					// Are there computers watching for any change?
 					if( this.anyWatchers.size() > 0 )
 					{
 						// Create the argument
-						ccChange = new Object[] { change.aspect.getName(), change.stackSize };
+						ccChange = new Object[] { change.getAspectName(), change.getStackSize() };
 
 						for( IComputerAccess computer : this.anyWatchers )
 						{
@@ -412,10 +406,10 @@ public class EssentiaProviderPeripheral
 					}
 
 					// Are there computers watching for this specific change?
-					if( ( specificWatchers = this.aspectWatchers.get( change.aspect ) ) != null )
+					if( ( specificWatchers = this.aspectWatchers.get( change.getAspect() ) ) != null )
 					{
 						// Create the argument
-						ccChange = new Object[] { change.aspect.getName(), change.stackSize };
+						ccChange = new Object[] { change.getAspectName(), change.getStackSize() };
 
 						// Update those watchers
 						for( IComputerAccess computer : specificWatchers )
@@ -597,7 +591,7 @@ public class EssentiaProviderPeripheral
 		}
 
 		// Get the list of aspects in the network
-		Collection<AspectStack> essentiaList = monitor.getEssentiaList();
+		Collection<IAspectStack> essentiaList = monitor.getEssentiaList();
 
 		// Is there any essentia stored?
 		if( essentiaList.size() == 0 )
@@ -610,13 +604,13 @@ public class EssentiaProviderPeripheral
 		Object[] ccList = new Object[essentiaList.size() * 2];
 
 		int index = 0;
-		for( AspectStack stack : essentiaList )
+		for( IAspectStack stack : essentiaList )
 		{
 			// Set the name
 			ccList[index] = stack.getAspectName();
 
 			// Set the amount
-			ccList[index + 1] = stack.stackSize;
+			ccList[index + 1] = stack.getStackSize();
 
 			// Inc the index
 			index += 2;

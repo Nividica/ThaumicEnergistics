@@ -2,8 +2,8 @@ package thaumicenergistics.integration.tc;
 
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.fluids.GaseousEssentia;
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEFluidStack;

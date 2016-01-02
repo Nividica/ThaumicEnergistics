@@ -10,9 +10,11 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.api.gui.IAspectSelectorGui;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.util.GuiHelper;
 import appeng.core.AEConfig;
+import appeng.util.ReadableNumberConverter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -46,7 +48,7 @@ public class WidgetAspectSelector
 	 */
 	protected boolean hideAmount = false;
 
-	public WidgetAspectSelector( final IAspectSelectorGui selectorGui, final AspectStack stack, final int xPos, final int yPos,
+	public WidgetAspectSelector( final IAspectSelectorGui selectorGui, final IAspectStack stack, final int xPos, final int yPos,
 									final EntityPlayer player )
 	{
 		// Call super
@@ -146,7 +148,7 @@ public class WidgetAspectSelector
 		}
 
 		// Get the aspect color
-		int aspectColor = this.getStack().aspect.getColor();
+		int aspectColor = this.getStack().getAspect().getColor();
 
 		// Create the gradient using the aspect color, varying between opacities
 		this.backgroundPulseGradient = GuiHelper.INSTANCE
@@ -223,7 +225,14 @@ public class WidgetAspectSelector
 			// Has amount to draw?
 			if( ( ( stackSize > 0 ) && !this.hideAmount ) )
 			{
-				text = GuiHelper.shortenCount( stackSize );
+				if( largeFont )
+				{
+					text = ReadableNumberConverter.INSTANCE.toWideReadableForm( stackSize );
+				}
+				else
+				{
+					text = ReadableNumberConverter.INSTANCE.toSlimReadableForm( stackSize );
+				}
 			}
 			// Crafting
 			else

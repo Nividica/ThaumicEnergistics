@@ -3,6 +3,7 @@ package thaumicenergistics.gui.widget;
 import java.util.List;
 import net.minecraft.client.gui.Gui;
 import org.lwjgl.opengl.GL11;
+import thaumicenergistics.api.gui.IWidgetHost;
 import thaumicenergistics.util.GuiHelper;
 
 public abstract class AbstractWidget

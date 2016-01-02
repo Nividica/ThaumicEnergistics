@@ -19,7 +19,7 @@ import thaumcraft.api.wands.FocusUpgradeType;
 import thaumcraft.api.wands.ItemFocusBasic;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumcraft.common.tiles.TilePedestal;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.network.packet.client.Packet_R_ParticleFX;
 import thaumicenergistics.network.packet.server.Packet_S_WrenchFocus;
 import thaumicenergistics.registries.FeatureRegistry;

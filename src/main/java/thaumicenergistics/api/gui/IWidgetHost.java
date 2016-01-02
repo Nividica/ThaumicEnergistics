@@ -1,4 +1,4 @@
-package thaumicenergistics.gui.widget;
+package thaumicenergistics.api.gui;
 
 import net.minecraft.client.gui.FontRenderer;
 

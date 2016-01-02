@@ -1,7 +1,7 @@
 package thaumicenergistics.registries;
 
 import net.minecraft.util.StatCollector;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 
 /**
  * Houses all used localization strings.

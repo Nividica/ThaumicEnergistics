@@ -91,12 +91,9 @@ public final class GuiHelper
 	}
 
 	/**
-	 * Changes a large number into a binary postfixed version.
-	 * For example: 10,500 -> 10.5K
-	 * 
-	 * @param count
-	 * @return
+	 * Use AE2's ReadableNumberConverter.INSTANCE.
 	 */
+	@Deprecated
 	public static final String shortenCount( final long count )
 	{
 		int unit = 1000;

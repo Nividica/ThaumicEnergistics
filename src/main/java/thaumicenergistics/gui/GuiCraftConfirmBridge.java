@@ -21,7 +21,7 @@ public class GuiCraftConfirmBridge
 	protected EntityPlayer player;
 
 	/**
-	 * Host part.
+	 * The thing that issued the crafting request.
 	 */
 	protected ICraftingIssuerHost host;
 

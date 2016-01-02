@@ -15,7 +15,7 @@ public class GuiCraftAmountBridge
 	extends GuiCraftAmount
 {
 	/**
-	 * AE Part that is issued the crafting request.
+	 * The thing that issued the crafting request.
 	 */
 	protected ICraftingIssuerHost host;
 

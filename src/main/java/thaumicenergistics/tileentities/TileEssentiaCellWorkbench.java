@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerEssentiaCellWorkbench;
 import thaumicenergistics.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.items.ItemEssentiaCell;

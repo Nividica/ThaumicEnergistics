@@ -1,4 +1,4 @@
-package thaumicenergistics.gui.widget;
+package thaumicenergistics.api.gui;
 
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.container.IAspectSelectorContainer;

@@ -1,6 +1,7 @@
 package thaumicenergistics.aspect;
 
 import java.util.Comparator;
+import thaumicenergistics.api.storage.IAspectStack;
 
 /**
  * Compares one aspect stack against another.
@@ -9,7 +10,7 @@ import java.util.Comparator;
  * 
  */
 public class AspectStackComparator
-	implements Comparator<AspectStack>
+	implements Comparator<IAspectStack>
 {
 
 	/**
@@ -88,9 +89,9 @@ public class AspectStackComparator
 	 * @param right
 	 * @return
 	 */
-	private int compareByAmount( final AspectStack left, final AspectStack right )
+	private int compareByAmount( final IAspectStack left, final IAspectStack right )
 	{
-		return (int)( right.stackSize - left.stackSize );
+		return (int)( right.getStackSize() - left.getStackSize() );
 	}
 
 	/**
@@ -100,16 +101,16 @@ public class AspectStackComparator
 	 * @param right
 	 * @return
 	 */
-	private int compareByName( final AspectStack left, final AspectStack right )
+	private int compareByName( final IAspectStack left, final IAspectStack right )
 	{
-		return left.aspect.getName().compareTo( right.aspect.getName() );
+		return left.getAspectName().compareTo( right.getAspectName() );
 	}
 
 	/**
 	 * Compares two aspect stacks by the selected mode.
 	 */
 	@Override
-	public int compare( final AspectStack left, final AspectStack right )
+	public int compare( final IAspectStack left, final IAspectStack right )
 	{
 		switch ( this.mode )
 		{

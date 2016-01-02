@@ -8,15 +8,10 @@ import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectContainer;
-import thaumcraft.common.tiles.TileAlchemyFurnaceAdvancedNozzle;
-import thaumcraft.common.tiles.TileAlembic;
-import thaumcraft.common.tiles.TileCentrifuge;
-import thaumcraft.common.tiles.TileEssentiaReservoir;
-import thaumcraft.common.tiles.TileJarFillable;
-import thaumcraft.common.tiles.TileJarFillableVoid;
-import thaumcraft.common.tiles.TileTubeBuffer;
+import thaumcraft.common.tiles.*;
 import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.fluids.GaseousEssentia;
 import thaumicenergistics.tileentities.TileEssentiaVibrationChamber;
@@ -150,7 +145,7 @@ public final class EssentiaTileContainerHelper
 	public Aspect getAspectInContainer( final IAspectContainer container )
 	{
 		// Get the aspect list from the container
-		AspectStack containerStack = this.getAspectStackFromContainer( container );
+		IAspectStack containerStack = this.getAspectStackFromContainer( container );
 
 		// Did we get a stack?
 		if( containerStack == null )
@@ -158,10 +153,10 @@ public final class EssentiaTileContainerHelper
 			return null;
 		}
 
-		return containerStack.aspect;
+		return containerStack.getAspect();
 	}
 
-	public AspectStack getAspectStackFromContainer( final IAspectContainer container )
+	public IAspectStack getAspectStackFromContainer( final IAspectContainer container )
 	{
 		// Ensure we have a container
 		if( container == null )
@@ -178,18 +173,18 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Create the stack
-		AspectStack aspectStack = new AspectStack();
+		IAspectStack aspectStack = new AspectStack();
 
 		// Set the aspect
-		aspectStack.aspect = aspectList.getAspectsSortedAmount()[0];
+		aspectStack.setAspect( aspectList.getAspectsSortedAmount()[0] );
 
-		if( aspectStack.aspect == null )
+		if( !aspectStack.hasAspect() )
 		{
 			return null;
 		}
 
 		// Set the amount
-		aspectStack.stackSize = aspectList.getAmount( aspectStack.aspect );
+		aspectStack.setStackSize( aspectList.getAmount( aspectStack.getAspect() ) );
 
 		return aspectStack;
 	}
@@ -200,9 +195,9 @@ public final class EssentiaTileContainerHelper
 	 * @param container
 	 * @return
 	 */
-	public List<AspectStack> getAspectStacksFromContainer( final IAspectContainer container )
+	public List<IAspectStack> getAspectStacksFromContainer( final IAspectContainer container )
 	{
-		List<AspectStack> stacks = new ArrayList<AspectStack>();
+		List<IAspectStack> stacks = new ArrayList<IAspectStack>();
 
 		// Ensure we have a container
 		if( container == null )
@@ -247,11 +242,11 @@ public final class EssentiaTileContainerHelper
 		int stored = 0;
 
 		// Get the essentia list
-		for( AspectStack essentia : this.getAspectStacksFromContainer( container ) )
+		for( IAspectStack essentia : this.getAspectStacksFromContainer( container ) )
 		{
 			if( essentia != null )
 			{
-				stored += (int)essentia.stackSize;
+				stored += (int)essentia.getStackSize();
 			}
 		}
 
@@ -278,13 +273,13 @@ public final class EssentiaTileContainerHelper
 		}
 
 		// Get the aspect in the container
-		AspectStack storedEssentia = this.getAspectStackFromContainer( container );
+		IAspectStack storedEssentia = this.getAspectStackFromContainer( container );
 
 		// Match types on jars
 		if( ( storedEssentia != null ) && ( container instanceof TileJarFillable ) )
 		{
 			// Do the aspects match?
-			if( aspectToFill != storedEssentia.aspect )
+			if( aspectToFill != storedEssentia.getAspect() )
 			{
 				// Aspects do not match;
 				return 0;

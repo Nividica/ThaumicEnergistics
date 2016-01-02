@@ -1,4 +1,7 @@
-﻿01/01/2016 0.10.0.0 - Beta
+﻿01/02/2016 0.10.0.0 - Beta
+  File restructure & code refactor.
+
+01/01/2016 0.10.0.0 - Beta
   Essentia subsystem now supports craftable aspects.
   Essentia terminals now shows craftable essentia.
   Reworked some terrible GUI code.

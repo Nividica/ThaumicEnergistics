@@ -7,6 +7,8 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.client.lib.UtilsFX;
+import thaumicenergistics.api.gui.IWidgetHost;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.registries.ThEStrings;
 import thaumicenergistics.util.GuiHelper;
@@ -19,7 +21,10 @@ public abstract class AbstractAspectWidget
 	 */
 	private static final ResourceLocation UNKNOWN_TEXTURE = new ResourceLocation( "thaumcraft", "textures/aspects/_unknown.png" );
 
-	private final AspectStack aspectStack;
+	/**
+	 * Stack this widget represents.
+	 */
+	private final IAspectStack aspectStack;
 
 	/**
 	 * True if the player has discovered the aspect.
@@ -53,7 +58,7 @@ public abstract class AbstractAspectWidget
 	 */
 	private byte[] aspectColorBytes;
 
-	public AbstractAspectWidget( final IWidgetHost hostGui, final AspectStack stack, final int xPos, final int yPos, final EntityPlayer player )
+	public AbstractAspectWidget( final IWidgetHost hostGui, final IAspectStack stack, final int xPos, final int yPos, final EntityPlayer player )
 	{
 		// Call super
 		super( hostGui, xPos, yPos );
@@ -75,9 +80,7 @@ public abstract class AbstractAspectWidget
 	 */
 	protected void clearStack( final boolean doUpdate )
 	{
-		this.aspectStack.aspect = null;
-		this.aspectStack.stackSize = 0;
-		this.aspectStack.isCraftable = false;
+		this.aspectStack.setAll( null, 0, false );
 		this.aspectName = "";
 		this.aspectDescription = "";
 		this.aspectFootnote = "";
@@ -95,7 +98,7 @@ public abstract class AbstractAspectWidget
 	protected void drawAspect()
 	{
 		// Ensure there is an aspect to draw
-		if( this.aspectStack.aspect == null )
+		if( !this.aspectStack.hasAspect() )
 		{
 			return;
 		}
@@ -104,7 +107,7 @@ public abstract class AbstractAspectWidget
 		if( this.hasDiscovered )
 		{
 			// Ask Thaumcraft to draw the aspect
-			UtilsFX.drawTag( this.xPosition + 1, this.yPosition + 1, this.aspectStack.aspect, 0, 0, this.zLevel );
+			UtilsFX.drawTag( this.xPosition + 1, this.yPosition + 1, this.aspectStack.getAspect(), 0, 0, this.zLevel );
 		}
 		// Draw the question mark
 		else
@@ -135,7 +138,7 @@ public abstract class AbstractAspectWidget
 	protected void onStackChanged()
 	{
 		// Is there an aspect?
-		if( this.aspectStack.aspect != null )
+		if( this.aspectStack.hasAspect() )
 		{
 			// Get the aspect name
 			this.aspectName = this.aspectStack.getAspectName( this.player );
@@ -145,10 +148,10 @@ public abstract class AbstractAspectWidget
 			if( this.hasDiscovered )
 			{
 				// Get the description
-				this.aspectDescription = this.aspectStack.aspect.getLocalizedDescription();
+				this.aspectDescription = this.aspectStack.getAspectDescription();
 
 				// Set footnote
-				if( this.aspectStack.aspect.isPrimal() )
+				if( this.aspectStack.getAspect().isPrimal() )
 				{
 					this.aspectFootnote = StatCollector.translateToLocal( "tc.aspect.primal" );
 				}
@@ -164,7 +167,7 @@ public abstract class AbstractAspectWidget
 			}
 
 			// Get the color bytes
-			this.aspectColorBytes = GuiHelper.INSTANCE.convertPackedColorToARGB( this.aspectStack.aspect.getColor() );
+			this.aspectColorBytes = GuiHelper.INSTANCE.convertPackedColorToARGB( this.aspectStack.getAspect().getColor() );
 
 			// Set full alpha
 			this.aspectColorBytes[0] = (byte)255;
@@ -191,7 +194,7 @@ public abstract class AbstractAspectWidget
 	 */
 	public long getAmount()
 	{
-		return this.aspectStack.stackSize;
+		return this.aspectStack.getStackSize();
 	}
 
 	/**
@@ -201,7 +204,7 @@ public abstract class AbstractAspectWidget
 	 */
 	public Aspect getAspect()
 	{
-		return this.aspectStack.aspect;
+		return this.aspectStack.getAspect();
 	}
 
 	/**
@@ -211,7 +214,7 @@ public abstract class AbstractAspectWidget
 	 */
 	public boolean getCraftable()
 	{
-		return this.aspectStack.isCraftable;
+		return this.aspectStack.getCraftable();
 	}
 
 	/**
@@ -219,7 +222,7 @@ public abstract class AbstractAspectWidget
 	 * 
 	 * @return
 	 */
-	public AspectStack getStack()
+	public IAspectStack getStack()
 	{
 		return this.aspectStack;
 	}
@@ -231,7 +234,7 @@ public abstract class AbstractAspectWidget
 	 */
 	public boolean hasAspect()
 	{
-		return( this.aspectStack.aspect != null );
+		return this.aspectStack.hasAspect();
 	}
 
 	/**
@@ -244,9 +247,7 @@ public abstract class AbstractAspectWidget
 	public void setAspect( final Aspect aspect, final long amount, final boolean isCraftable )
 	{
 		// Set the aspect
-		this.aspectStack.aspect = aspect;
-		this.aspectStack.stackSize = amount;
-		this.aspectStack.isCraftable = isCraftable;
+		this.aspectStack.setAll( aspect, amount, isCraftable );
 
 		this.onStackChanged();
 	}
@@ -256,10 +257,10 @@ public abstract class AbstractAspectWidget
 	 * 
 	 * @param stack
 	 */
-	public void setAspect( final AspectStack stack )
+	public void setAspect( final IAspectStack stack )
 	{
 		// Copy the values
-		this.aspectStack.copyFrom( stack );
+		this.aspectStack.setAll( stack );
 
 		this.onStackChanged();
 	}

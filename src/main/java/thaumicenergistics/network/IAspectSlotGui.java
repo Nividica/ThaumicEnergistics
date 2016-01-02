@@ -2,7 +2,7 @@ package thaumicenergistics.network;
 
 import java.util.List;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.gui.widget.IWidgetHost;
+import thaumicenergistics.api.gui.IWidgetHost;
 
 public interface IAspectSlotGui
 	extends IWidgetHost

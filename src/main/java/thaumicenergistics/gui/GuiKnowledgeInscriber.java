@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.container.ContainerKnowledgeInscriber;
 import thaumicenergistics.container.ContainerKnowledgeInscriber.CoreSaveState;
 import thaumicenergistics.gui.abstraction.AbstractGuiBase;

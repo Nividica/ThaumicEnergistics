@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.gui.GuiEssentiaCellTerminal;
@@ -26,10 +27,10 @@ public class Packet_C_EssentiaCellTerminal
 	private static final byte MODE_VIEWING_CHANGED = 2;
 	private static final byte MODE_LIST_CHANGED = 3;
 
-	private Collection<AspectStack> aspectStackList;
+	private Collection<IAspectStack> aspectStackList;
 	private Aspect selectedAspect;
 	private AspectStackComparatorMode sortMode;
-	private AspectStack change;
+	private IAspectStack change;
 	private ViewItems viewMode;
 
 	/**
@@ -57,7 +58,7 @@ public class Packet_C_EssentiaCellTerminal
 	 * @param player
 	 * @param list
 	 */
-	public static void sendFullList( final EntityPlayer player, final Collection<AspectStack> list )
+	public static void sendFullList( final EntityPlayer player, final Collection<IAspectStack> list )
 	{
 		Packet_C_EssentiaCellTerminal packet = newPacket( player, MODE_FULL_LIST );
 		// Set the player
@@ -98,7 +99,7 @@ public class Packet_C_EssentiaCellTerminal
 	 * @param player
 	 * @param change
 	 */
-	public static void setAspectAmount( final EntityPlayer player, final AspectStack change )
+	public static void setAspectAmount( final EntityPlayer player, final IAspectStack change )
 	{
 		Packet_C_EssentiaCellTerminal packet = newPacket( player, MODE_LIST_CHANGED );
 
@@ -164,7 +165,7 @@ public class Packet_C_EssentiaCellTerminal
 		switch ( this.mode )
 		{
 		case Packet_C_EssentiaCellTerminal.MODE_FULL_LIST:
-			this.aspectStackList = new ArrayList<AspectStack>();
+			this.aspectStackList = new ArrayList<IAspectStack>();
 
 			// Read each stack
 			while( stream.readableBytes() > 0 )
@@ -198,7 +199,7 @@ public class Packet_C_EssentiaCellTerminal
 		{
 		case Packet_C_EssentiaCellTerminal.MODE_FULL_LIST:
 			// Write each stack
-			for( AspectStack stack : this.aspectStackList )
+			for( IAspectStack stack : this.aspectStackList )
 			{
 				stack.writeToStream( stream );
 			}

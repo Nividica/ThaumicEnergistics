@@ -15,7 +15,8 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
-import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.api.gui.IAspectSelectorGui;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStackComparator;
 import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.container.*;
@@ -23,7 +24,6 @@ import thaumicenergistics.gui.abstraction.GuiConstants_ECT;
 import thaumicenergistics.gui.buttons.GuiButtonSortingMode;
 import thaumicenergistics.gui.buttons.GuiButtonViewType;
 import thaumicenergistics.gui.widget.AbstractWidget;
-import thaumicenergistics.gui.widget.IAspectSelectorGui;
 import thaumicenergistics.gui.widget.WidgetAspectSelector;
 import thaumicenergistics.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.network.packet.server.Packet_S_EssentiaCellTerminal;
@@ -85,7 +85,7 @@ public class GuiEssentiaCellTerminal
 	/**
 	 * Aspect stacks that match the search term.
 	 */
-	protected ArrayList<AspectStack> matchingSearchStacks = new ArrayList<AspectStack>();
+	protected ArrayList<IAspectStack> matchingSearchStacks = new ArrayList<IAspectStack>();
 
 	/**
 	 * What the user is searching for
@@ -145,7 +145,7 @@ public class GuiEssentiaCellTerminal
 	/**
 	 * The currently selected aspect
 	 */
-	public AspectStack selectedAspectStack;
+	public IAspectStack selectedAspectStack;
 
 	/**
 	 * Creates the gui.
@@ -311,24 +311,24 @@ public class GuiEssentiaCellTerminal
 		this.matchingSearchStacks.clear();
 
 		// Get the full list
-		Collection<AspectStack> stacks = this.baseContainer.getAspectStackList();
+		Collection<IAspectStack> stacks = this.baseContainer.getAspectStackList();
 
 		boolean hideCraftable = ( this.viewMode == ViewItems.STORED );
 		boolean hideStored = ( this.viewMode == ViewItems.CRAFTABLE );
 
 		// Examine each of the possible aspects
-		for( AspectStack stack : stacks )
+		for( IAspectStack stack : stacks )
 		{
 			// Is this stack valid for the current view mode?
-			if( ( hideStored && !stack.isCraftable ) || ( hideCraftable && ( stack.stackSize < 1 ) ) )
+			if( ( hideStored && !stack.getCraftable() ) || ( hideCraftable && stack.isEmpty() ) )
 			{
 				continue;
 			}
 
 			// Is the search term in this aspects tag or name?
 			if( ( this.searchTerm == "" )
-							|| ( stack.aspect.getName().contains( this.searchTerm ) )
-							|| ( stack.aspect.getTag().contains( this.searchTerm ) ) )
+							|| ( stack.getAspectName().contains( this.searchTerm ) )
+							|| ( stack.getAspectTag().contains( this.searchTerm ) ) )
 			{
 				this.matchingSearchStacks.add( stack );
 			}
@@ -423,13 +423,13 @@ public class GuiEssentiaCellTerminal
 		if( this.selectedAspectStack != null )
 		{
 			// Update the display amount?
-			if( this.selectedAspectStack.stackSize != this.cacheAmountSelected )
+			if( this.selectedAspectStack.getStackSize() != this.cacheAmountSelected )
 			{
 				// Convert the selected amount into a string
-				this.cacheAmountDisplay = Long.toString( this.selectedAspectStack.stackSize );
+				this.cacheAmountDisplay = Long.toString( this.selectedAspectStack.getStackSize() );
 
 				// Cache the amount
-				this.cacheAmountSelected = this.selectedAspectStack.stackSize;
+				this.cacheAmountSelected = this.selectedAspectStack.getStackSize();
 			}
 
 			// Get the name of the aspect
@@ -658,7 +658,7 @@ public class GuiEssentiaCellTerminal
 	@Override
 	public Aspect getSelectedAspect()
 	{
-		return( this.selectedAspectStack != null ? this.selectedAspectStack.aspect : null );
+		return( this.selectedAspectStack != null ? this.selectedAspectStack.getAspect() : null );
 	}
 
 	/**
@@ -751,7 +751,7 @@ public class GuiEssentiaCellTerminal
 	 * 
 	 * @param aspectStackList
 	 */
-	public void onReceiveAspectList( final Collection<AspectStack> aspectStackList )
+	public void onReceiveAspectList( final Collection<IAspectStack> aspectStackList )
 	{
 		// Update the container
 		this.baseContainer.onReceivedAspectList( aspectStackList );
@@ -765,7 +765,7 @@ public class GuiEssentiaCellTerminal
 	 * 
 	 * @param change
 	 */
-	public void onReceiveAspectListChange( final AspectStack change )
+	public void onReceiveAspectListChange( final IAspectStack change )
 	{
 		// Update the container
 		if( this.baseContainer.onReceivedAspectListChange( change ) )
@@ -850,10 +850,10 @@ public class GuiEssentiaCellTerminal
 		this.selectedAspectStack = null;
 
 		// Check all aspects
-		for( AspectStack aspectStack : this.baseContainer.getAspectStackList() )
+		for( IAspectStack aspectStack : this.baseContainer.getAspectStackList() )
 		{
 			// Does this match?
-			if( aspectStack.aspect == this.baseContainer.getSelectedAspect() )
+			if( aspectStack.getAspect() == this.baseContainer.getSelectedAspect() )
 			{
 				// Set our selection
 				this.selectedAspectStack = aspectStack;

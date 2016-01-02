@@ -1,6 +1,6 @@
 package thaumicenergistics.registries;
 
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.tileentities.TileArcaneAssembler;
 import thaumicenergistics.tileentities.TileDistillationEncoder;
 import thaumicenergistics.tileentities.TileEssentiaCellWorkbench;

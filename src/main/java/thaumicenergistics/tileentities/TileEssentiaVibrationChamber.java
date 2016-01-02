@@ -132,12 +132,12 @@ public class TileEssentiaVibrationChamber
 		}
 
 		// What kind of essentia is stored?
-		if( this.storedEssentia.aspect == Aspect.FIRE )
+		if( this.storedEssentia.getAspect() == Aspect.FIRE )
 		{
 			pTime = TileEssentiaVibrationChamber.coalBurnTime / 2;
 			this.powerProducedPerProcessingTick = TileEssentiaVibrationChamber.BASE_POWER_PER_TICK * 1.0D;
 		}
-		else if( this.storedEssentia.aspect == Aspect.ENERGY )
+		else if( this.storedEssentia.getAspect() == Aspect.ENERGY )
 		{
 			pTime = (int)( TileEssentiaVibrationChamber.coalBurnTime / 1.6F );
 			this.powerProducedPerProcessingTick = TileEssentiaVibrationChamber.BASE_POWER_PER_TICK * 1.6D;
@@ -173,11 +173,11 @@ public class TileEssentiaVibrationChamber
 			if( pTime > 0 )
 			{
 				// Set the type
-				this.processingAspect = this.storedEssentia.aspect;
+				this.processingAspect = this.storedEssentia.getAspect();
 				this.processingChanged = true;
 
 				// Take one
-				--this.storedEssentia.stackSize;
+				this.storedEssentia.adjustStackSize( -1 );
 
 				// Mark dirty
 				this.markDirty();
@@ -332,15 +332,15 @@ public class TileEssentiaVibrationChamber
 	protected int addEssentia( final Aspect aspect, final int amount, final Actionable mode )
 	{
 		// Validate essentia type
-		if( ( this.hasStoredEssentia() ) && ( this.storedEssentia.aspect != aspect ) )
+		if( ( this.hasStoredEssentia() ) && ( this.storedEssentia.getAspect() != aspect ) )
 		{
 			// Essentia type does not match
 			return 0;
 		}
 
 		// Get how much is stored, and the aspect
-		int storedAmount = ( this.storedEssentia == null ? 0 : (int)this.storedEssentia.stackSize );
-		Aspect storedAspect = ( this.storedEssentia == null ? null : this.storedEssentia.aspect );
+		int storedAmount = ( this.storedEssentia == null ? 0 : (int)this.storedEssentia.getStackSize() );
+		Aspect storedAspect = ( this.storedEssentia == null ? null : this.storedEssentia.getAspect() );
 
 		// Calculate how much to be stored
 		int addedAmount = Math.min( amount, TileEVCBase.MAX_ESSENTIA_STORED - storedAmount );
@@ -354,11 +354,11 @@ public class TileEssentiaVibrationChamber
 			}
 			else
 			{
-				this.storedEssentia.aspect = aspect;
+				this.storedEssentia.setAspect( aspect );
 			}
 
 			// Add to the amount
-			this.storedEssentia.stackSize += addedAmount;
+			this.storedEssentia.adjustStackSize( addedAmount );
 
 			// Mark for update
 			this.markForUpdate();
@@ -487,8 +487,8 @@ public class TileEssentiaVibrationChamber
 		// Write stored
 		if( this.hasStoredEssentia() )
 		{
-			tooltip.add( String.format( ThEStrings.GUi_VibrationChamber_Stored.getLocalized(), this.storedEssentia.stackSize,
-				this.storedEssentia.aspect.getName() ) );
+			tooltip.add( String.format( ThEStrings.GUi_VibrationChamber_Stored.getLocalized(), this.storedEssentia.getStackSize(),
+				this.storedEssentia.getAspectName() ) );
 		}
 
 		// Write processing
@@ -530,7 +530,7 @@ public class TileEssentiaVibrationChamber
 	public boolean hasSaveDataForDismanle()
 	{
 		// Anything stored?
-		if( ( this.storedEssentia != null ) && ( this.storedEssentia.stackSize > 0 ) )
+		if( ( this.storedEssentia != null ) && !this.storedEssentia.isEmpty() )
 		{
 			return true;
 		}
@@ -616,7 +616,7 @@ public class TileEssentiaVibrationChamber
 			}
 
 			// Is the buffer not full?
-			if( this.storedEssentia.stackSize < TileEVCBase.MAX_ESSENTIA_STORED )
+			if( this.storedEssentia.getStackSize() < TileEVCBase.MAX_ESSENTIA_STORED )
 			{
 				// Replenish if possible
 				replenish = true;

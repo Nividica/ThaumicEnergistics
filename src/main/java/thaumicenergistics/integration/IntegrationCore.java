@@ -1,9 +1,9 @@
 package thaumicenergistics.integration;
 
 import net.minecraft.nbt.NBTTagCompound;
-import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.blocks.BlockArcaneAssembler;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.tileentities.TileEssentiaProvider;
 import thaumicenergistics.util.EffectiveSide;
 import thaumicenergistics.util.ThELog;

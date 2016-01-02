@@ -1,7 +1,7 @@
 package thaumicenergistics.texture;
 
 import net.minecraft.util.ResourceLocation;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 
 public enum GuiTextureManager
 {

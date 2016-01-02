@@ -11,7 +11,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.gui.ThEGuiHandler;
 import thaumicenergistics.registries.BlockEnum;
 import thaumicenergistics.texture.BlockTextureManager;

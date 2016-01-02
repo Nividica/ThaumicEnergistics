@@ -7,10 +7,10 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.api.storage.ICraftingIssuerHost;
-import thaumicenergistics.aspect.AspectStack;
 import thaumicenergistics.aspect.AspectStackComparator.AspectStackComparatorMode;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.grid.EssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
@@ -221,7 +221,7 @@ public class ContainerEssentiaCell
 		}
 		else
 		{
-			Packet_C_EssentiaCellTerminal.sendFullList( this.player, new ArrayList<AspectStack>() );
+			Packet_C_EssentiaCellTerminal.sendFullList( this.player, new ArrayList<IAspectStack>() );
 
 		}
 	}

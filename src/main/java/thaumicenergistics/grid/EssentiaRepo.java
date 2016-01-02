@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.api.storage.IEssentiaRepo;
 import thaumicenergistics.aspect.AspectStack;
 
@@ -14,7 +15,7 @@ public class EssentiaRepo
 	/**
 	 * The actual cache of aspects.
 	 */
-	private final Map<Aspect, AspectStack> cache;
+	private final Map<Aspect, IAspectStack> cache;
 
 	/**
 	 * Creates the repository.
@@ -22,7 +23,7 @@ public class EssentiaRepo
 	public EssentiaRepo()
 	{
 		// Create the cache
-		this.cache = new ConcurrentHashMap<Aspect, AspectStack>();
+		this.cache = new ConcurrentHashMap<Aspect, IAspectStack>();
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class EssentiaRepo
 	}
 
 	@Override
-	public void copyFrom( final Collection<AspectStack> stacks )
+	public void copyFrom( final Collection<IAspectStack> stacks )
 	{
 		// Clear
 		this.clear();
@@ -56,26 +57,26 @@ public class EssentiaRepo
 		}
 
 		// Add each
-		for( AspectStack stack : stacks )
+		for( IAspectStack stack : stacks )
 		{
-			this.cache.put( stack.aspect, stack.copy() );
+			this.cache.put( stack.getAspect(), stack.copy() );
 		}
 	}
 
 	@Override
-	public AspectStack get( final Aspect aspect )
+	public IAspectStack get( final Aspect aspect )
 	{
 		return this.cache.getOrDefault( aspect, null );
 	}
 
 	@Override
-	public Collection<AspectStack> getAll()
+	public Collection<IAspectStack> getAll()
 	{
 		return this.cache.values();
 	}
 
 	@Override
-	public AspectStack getOrDefault( final Aspect aspect, final AspectStack defaultValue )
+	public IAspectStack getOrDefault( final Aspect aspect, final IAspectStack defaultValue )
 	{
 		return this.cache.getOrDefault( aspect, defaultValue );
 	}
@@ -87,7 +88,7 @@ public class EssentiaRepo
 	}
 
 	@Override
-	public AspectStack postChange( final Aspect aspect, final long change, final Boolean isCraftableNullable )
+	public IAspectStack postChange( final Aspect aspect, final long change, final Boolean isCraftableNullable )
 	{
 		// Is the aspect null?
 		if( aspect == null )
@@ -99,13 +100,13 @@ public class EssentiaRepo
 		boolean isCraftable;
 
 		// Get the current stack
-		AspectStack current = this.cache.get( aspect );
+		IAspectStack current = this.cache.get( aspect );
 
 		// Is their nothing currently stored?
 		if( current == null )
 		{
 			// Create a new stack
-			AspectStack newStack = null;
+			IAspectStack newStack = null;
 
 			// Set craftability
 			isCraftable = ( isCraftableNullable == null ? false : isCraftableNullable );
@@ -127,7 +128,7 @@ public class EssentiaRepo
 			if( newStack != null )
 			{
 				// Add the stack
-				this.cache.put( newStack.aspect, newStack );
+				this.cache.put( newStack.getAspect(), newStack );
 			}
 
 			// Done
@@ -135,13 +136,13 @@ public class EssentiaRepo
 		}
 
 		// There is something currently stored
-		AspectStack previous = current.copy();
+		IAspectStack previous = current.copy();
 
 		// Set craftability
-		isCraftable = ( isCraftableNullable == null ? previous.isCraftable : isCraftableNullable );
+		isCraftable = ( isCraftableNullable == null ? previous.getCraftable() : isCraftableNullable );
 
 		// Calculate the new amount
-		long previousAmount = previous.stackSize;
+		long previousAmount = previous.getStackSize();
 		long newAmount = Math.max( 0L, previousAmount + change );
 
 		// Stack drained and is not craftable?
@@ -153,8 +154,8 @@ public class EssentiaRepo
 		else
 		{
 			// Update the amount & craftability
-			current.stackSize = newAmount;
-			current.isCraftable = isCraftable;
+			current.setStackSize( newAmount );
+			current.setCraftable( isCraftable );
 		}
 
 		// Return the previous stack
@@ -162,7 +163,7 @@ public class EssentiaRepo
 	}
 
 	@Override
-	public AspectStack postChange( final AspectStack change )
+	public IAspectStack postChange( final IAspectStack change )
 	{
 		// Null check
 		if( change == null )
@@ -170,17 +171,17 @@ public class EssentiaRepo
 			return null;
 		}
 
-		return this.postChange( change.aspect, change.stackSize, change.isCraftable );
+		return this.postChange( change.getAspect(), change.getStackSize(), change.getCraftable() );
 	}
 
 	@Override
-	public AspectStack remove( final Aspect aspect )
+	public IAspectStack remove( final Aspect aspect )
 	{
 		return this.cache.remove( aspect );
 	}
 
 	@Override
-	public AspectStack setAspect( final Aspect aspect, final long amount, final boolean isCraftable )
+	public IAspectStack setAspect( final Aspect aspect, final long amount, final boolean isCraftable )
 	{
 		if( aspect == null )
 		{
@@ -193,7 +194,7 @@ public class EssentiaRepo
 	}
 
 	@Override
-	public AspectStack setAspect( final AspectStack stack )
+	public IAspectStack setAspect( final IAspectStack stack )
 	{
 		// Null check
 		if( stack == null )
@@ -201,7 +202,7 @@ public class EssentiaRepo
 			return null;
 		}
 
-		return this.setAspect( stack.aspect, stack.stackSize, stack.isCraftable );
+		return this.setAspect( stack.getAspect(), stack.getStackSize(), stack.getCraftable() );
 	}
 
 	@Override

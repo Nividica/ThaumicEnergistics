@@ -23,8 +23,9 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.networking.IEssentiaWatcher;
 import thaumicenergistics.api.networking.IEssentiaWatcherHost;
+import thaumicenergistics.api.networking.IMEEssentiaMonitor;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.aspect.AspectStack;
-import thaumicenergistics.grid.IMEEssentiaMonitor;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.registries.AEPartsEnum;
@@ -67,7 +68,7 @@ public class AEPartEssentiaStorageMonitor
 		/**
 		 * Aspect stack
 		 */
-		private AspectStack asAspectStack;
+		private IAspectStack asAspectStack;
 
 		public TrackingInformation()
 		{
@@ -102,7 +103,7 @@ public class AEPartEssentiaStorageMonitor
 		 * 
 		 * @return
 		 */
-		public AspectStack getAspectStack()
+		public IAspectStack getAspectStack()
 		{
 			return this.asAspectStack;
 		}
@@ -135,7 +136,7 @@ public class AEPartEssentiaStorageMonitor
 		 * @return Returns true if the tracker was changed, false otherwise.
 		 */
 		@SuppressWarnings("null")
-		public Boolean setTracked( final AspectStack as )
+		public Boolean setTracked( final IAspectStack as )
 		{
 			Boolean didChange = false;
 			Boolean trackedNull = ( this.asAspectStack == null );
@@ -145,12 +146,11 @@ public class AEPartEssentiaStorageMonitor
 			if( !( trackedNull || asNull ) )
 			{
 				// Check if anything changed
-				didChange = ( ( this.asAspectStack.stackSize != as.stackSize ) || ( this.asAspectStack.aspect != as.aspect ) );
+				didChange = ( ( this.asAspectStack.getStackSize() != as.getStackSize() ) || ( this.asAspectStack.getAspect() != as.getAspect() ) );
 				if( didChange )
 				{
 					// Update
-					this.asAspectStack.aspect = as.aspect;
-					this.asAspectStack.stackSize = as.stackSize;
+					this.asAspectStack.setAll( as );
 				}
 			}
 			// Is the tracked null, but input not?
@@ -182,7 +182,7 @@ public class AEPartEssentiaStorageMonitor
 			if( this.isValid() )
 			{
 				// Update amount
-				this.asAspectStack.stackSize = aspectAmount;
+				this.asAspectStack.setStackSize( aspectAmount );
 			}
 		}
 
@@ -262,7 +262,7 @@ public class AEPartEssentiaStorageMonitor
 			if( this.trackedEssentia.isValid() )
 			{
 				// Configure the watcher
-				this.essentiaWatcher.add( this.trackedEssentia.getAspectStack().aspect );
+				this.essentiaWatcher.add( this.trackedEssentia.getAspectStack().getAspect() );
 
 				// Get the essentia monitor
 				IMEEssentiaMonitor essMon = this.getGridBlock().getEssentiaMonitor();
@@ -380,7 +380,7 @@ public class AEPartEssentiaStorageMonitor
 	 * @param aspect
 	 */
 	@SideOnly(Side.CLIENT)
-	private void renderScreen( final Tessellator tessellator, final AspectStack aspectStack )
+	private void renderScreen( final Tessellator tessellator, final IAspectStack aspectStack )
 	{
 		// Push the OpenGL attributes
 		//GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
@@ -442,7 +442,7 @@ public class AEPartEssentiaStorageMonitor
 			OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, brightnessComponent1 * 0.8F, brightnessComponent2 * 0.8F );
 
 			// Render the aspect
-			this.renderAspect( tessellator, aspectStack.aspect );
+			this.renderAspect( tessellator, aspectStack.getAspect() );
 		}
 		catch( Exception e )
 		{
@@ -456,7 +456,7 @@ public class AEPartEssentiaStorageMonitor
 		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
 
 		// Convert the amount to a string
-		final String renderedStackSize = ReadableNumberConverter.INSTANCE.toWideReadableForm( aspectStack.stackSize );
+		final String renderedStackSize = ReadableNumberConverter.INSTANCE.toWideReadableForm( aspectStack.getStackSize() );
 
 		// Get the font renderer
 		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
@@ -488,7 +488,7 @@ public class AEPartEssentiaStorageMonitor
 		this.trackedEssentia.updateTrackedAmount( 0 );
 
 		// Get the amount in the network
-		long stored = essMonitor.getEssentiaAmount( this.trackedEssentia.getAspectStack().aspect );
+		long stored = essMonitor.getEssentiaAmount( this.trackedEssentia.getAspectStack().getAspect() );
 
 		// Was there anything found?
 		if( stored > 0 )
@@ -743,7 +743,7 @@ public class AEPartEssentiaStorageMonitor
 		}
 
 		// Did the amount change?
-		if( this.trackedEssentia.getAspectStack().stackSize != storedAmount )
+		if( this.trackedEssentia.getAspectStack().getStackSize() != storedAmount )
 		{
 			// Update the amount
 			this.trackedEssentia.updateTrackedAmount( storedAmount );
@@ -792,7 +792,7 @@ public class AEPartEssentiaStorageMonitor
 		if( stream.readBoolean() )
 		{
 			// Read the tracked stack
-			AspectStack as = AspectStack.loadAspectStackFromNBT( ByteBufUtils.readTag( stream ) );
+			IAspectStack as = AspectStack.loadAspectStackFromNBT( ByteBufUtils.readTag( stream ) );
 
 			// Did the stack change?
 			if( this.trackedEssentia.setTracked( as ) )
@@ -987,7 +987,7 @@ public class AEPartEssentiaStorageMonitor
 		if( this.trackedEssentia.isValid() )
 		{
 			// Write the aspect
-			data.setString( AEPartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT, this.trackedEssentia.getAspectStack().getTag() );
+			data.setString( AEPartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT, this.trackedEssentia.getAspectStack().getAspectTag() );
 		}
 	}
 

@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.networking.IEssentiaGrid;
-import thaumicenergistics.api.networking.IEssentiaWatcher;
-import thaumicenergistics.api.networking.IEssentiaWatcherHost;
-import thaumicenergistics.aspect.AspectStack;
+import thaumicenergistics.api.networking.*;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.items.ItemCraftingAspect;
 import thaumicenergistics.registries.ItemEnum;
 import appeng.api.AEApi;
@@ -186,7 +184,7 @@ public class GridEssentiaCache
 		}
 
 		@Override
-		public void postChange( final IMEEssentiaMonitor fromMonitor, final Iterable<AspectStack> changes )
+		public void postChange( final IMEEssentiaMonitor fromMonitor, final Iterable<IAspectStack> changes )
 		{
 			// Fast bail
 			if( this.watchedAspects.isEmpty() )
@@ -195,16 +193,16 @@ public class GridEssentiaCache
 			}
 
 			// Loop over all changes
-			for( AspectStack change : changes )
+			for( IAspectStack change : changes )
 			{
 				// Is the change being watched for?
-				if( this.watchedAspects.containsKey( change.aspect ) )
+				if( this.watchedAspects.containsKey( change.getAspect() ) )
 				{
 					// Get the set
-					HashSet<IEssentiaWatcher> watcherSet = this.watchedAspects.get( change.aspect );
+					HashSet<IEssentiaWatcher> watcherSet = this.watchedAspects.get( change.getAspect() );
 
 					// Get the full amount in the system
-					long fullAmount = GridEssentiaCache.this.getEssentiaAmount( change.aspect );
+					long fullAmount = GridEssentiaCache.this.getEssentiaAmount( change.getAspect() );
 
 					// Update each watcher
 					for( IEssentiaWatcher watcher : watcherSet )
@@ -215,7 +213,7 @@ public class GridEssentiaCache
 						// Update the host
 						if( host != null )
 						{
-							host.onEssentiaChange( change.aspect, fullAmount, change.stackSize );
+							host.onEssentiaChange( change.getAspect(), fullAmount, change.getStackSize() );
 						}
 					}
 				}
