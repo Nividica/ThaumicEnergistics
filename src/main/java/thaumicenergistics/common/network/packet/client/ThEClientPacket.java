@@ -1,7 +1,8 @@
 package thaumicenergistics.common.network.packet.client;
 
+import net.minecraft.client.Minecraft;
 import thaumicenergistics.common.network.ThEBasePacket;
-import cpw.mods.fml.common.FMLCommonHandler;
+import thaumicenergistics.common.utils.EffectiveSide;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -20,15 +21,12 @@ public abstract class ThEClientPacket
 	@Override
 	public final void execute()
 	{
-		// Ensure we have a player
-		if( this.player == null )
-		{
-			return;
-		}
-
 		// Ensure this is client side
-		if( FMLCommonHandler.instance().getEffectiveSide().isClient() )
+		if( EffectiveSide.isClientSide() )
 		{
+			// Get the player
+			this.player = Minecraft.getMinecraft().thePlayer;
+
 			this.wrappedExecute();
 		}
 	}

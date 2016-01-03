@@ -21,7 +21,7 @@ public abstract class GuiConstants_ECT
 	/**
 	 * Size of the gui.
 	 */
-	protected static final int GUI_SIZE_X = 195, GUI_SIZE_Y = 204;
+	protected static final int GUI_WIDTH = 195, GUI_HEIGHT = 204;
 
 	/**
 	 * Offset from the top of the screen to draw the gui at.

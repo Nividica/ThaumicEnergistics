@@ -3,6 +3,7 @@ package thaumicenergistics.common.container;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +25,7 @@ import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
 import thaumicenergistics.common.inventory.PrivateInventory;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaCellTerminal;
+import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.storage.EssentiaRepo;
@@ -46,7 +48,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author Nividica
  * 
  */
-public abstract class AbstractContainerCellTerminalBase
+public abstract class ContainerEssentiaCellTerminalBase
 	extends ContainerWithPlayerInventory
 	implements IMEEssentiaMonitorReceiver, IAspectSelectorContainer, IInventoryUpdateReceiver, ICraftingIssuerContainer
 {
@@ -99,14 +101,9 @@ public abstract class AbstractContainerCellTerminalBase
 	private static final int ESSENTIA_TRANSFER_PER_WORK_CYCLE = 64;
 
 	/**
-	 * Slot ID for the output
+	 * Inventory indices for the input and output
 	 */
-	public static int OUTPUT_SLOT_ID = 1;
-
-	/**
-	 * Slot ID for the input
-	 */
-	public static int INPUT_SLOT_ID = 0;
+	private static int OUTPUT_INV_INDEX = 1, INPUT_INV_INDEX = 0;
 
 	/**
 	 * Essentia network monitor
@@ -116,7 +113,6 @@ public abstract class AbstractContainerCellTerminalBase
 	/**
 	 * List of aspects on the network
 	 */
-	//protected List<AspectStack> aspectStackList = new ArrayList<AspectStack>();
 	protected final IEssentiaRepo repo;
 
 	/**
@@ -137,22 +133,12 @@ public abstract class AbstractContainerCellTerminalBase
 	/**
 	 * The last known stack size stored in the export slot
 	 */
-	private int lastInventorySecondSlotCount = 0;
+	private int audioStackSizeTracker = 0;
 
 	/**
-	 * The last time, in ms, the splashy sound played
+	 * The last time, in ms, the transfer sound played
 	 */
 	private long lastSoundPlaytime = 0;
-
-	/**
-	 * Slot number of the input slot
-	 */
-	private int inputSlotNumber = -1;
-
-	/**
-	 * Slot number of the output slot
-	 */
-	private int outputSlotNumber = -1;
 
 	/**
 	 * Holds a list of changes sent to the gui before the
@@ -166,6 +152,21 @@ public abstract class AbstractContainerCellTerminalBase
 	private int tickCounter = 0;
 
 	/**
+	 * Tracks the amount of work performed.
+	 */
+	private int workCounter = 0;
+
+	/**
+	 * Work slots
+	 */
+	private Slot inputSlot, outputSlot;
+
+	/**
+	 * Location of the transfer audio
+	 */
+	private ResourceLocation transferSound = null;
+
+	/**
 	 * Set to true once a full list request is sent to the server.
 	 */
 	protected boolean hasRequested = false;
@@ -175,13 +176,14 @@ public abstract class AbstractContainerCellTerminalBase
 	 * 
 	 * @param player
 	 */
-	public AbstractContainerCellTerminalBase( final EntityPlayer player )
+	public ContainerEssentiaCellTerminalBase( final EntityPlayer player )
 	{
 		this.player = player;
 
 		if( EffectiveSide.isClientSide() )
 		{
 			this.lastSoundPlaytime = System.currentTimeMillis();
+			this.transferSound = new ResourceLocation( "game.neutral.swim" );
 		}
 		else
 		{
@@ -193,26 +195,111 @@ public abstract class AbstractContainerCellTerminalBase
 	}
 
 	/**
-	 * Drains the container in the output slot and places it in the output slot.
+	 * Returns true if the specified stack can be merged into the output slot.
 	 * 
-	 * @param actionSource
-	 * @return Amount of essentia transfered.
+	 * @param stackToMerge
+	 * @return True if the slot is empty,
+	 * or if can be merged by increasing the slots stacksize by the specified stacks stacksize.
 	 */
-	private final int drainContainerAndMoveToOutput( final BaseActionSource actionSource )
+	private boolean canMergeWithOutputSlot( final ItemStack stackToMerge )
 	{
-		// Get the input slot
-		Slot inputSlot = this.getSlot( AbstractContainerCellTerminalBase.INPUT_SLOT_ID );
-
-		// Ensure the input slot has a stack
-		if( !inputSlot.getHasStack() )
+		// Ensure the stack is not null.
+		if( stackToMerge == null )
 		{
-			// No input stack
-			return 0;
+			// Invalid itemstack
+			return false;
 		}
 
-		// Create a copy of the container.
-		ItemStack container = inputSlot.getStack().copy();
-		container.stackSize = 1;
+		// Is the slot empty?
+		if( !this.outputSlot.getHasStack() )
+		{
+			return true;
+		}
+
+		// Get the slot stack
+		ItemStack slotStack = this.outputSlot.getStack();
+
+		// Get the stack size
+		int slotStackSize = slotStack.stackSize;
+
+		// Is the slot full?
+		if( slotStack.getMaxStackSize() == slotStackSize )
+		{
+			return false;
+		}
+
+		// Will adding the stack cause the slot to be over full?
+		if( ( slotStackSize + stackToMerge.stackSize ) > slotStack.getMaxStackSize() )
+		{
+			return false;
+		}
+
+		// Do the stacks match?
+		// Compare ignoring stack size
+		ItemStack o = slotStack.copy();
+		ItemStack n = stackToMerge.copy();
+		o.stackSize = 1;
+		n.stackSize = 1;
+		return ItemStack.areItemStacksEqual( o, n );
+	}
+
+	/**
+	 * Returns if the player has the requested permission or not.
+	 * 
+	 * @param perm
+	 * @param actionSource
+	 * @return
+	 */
+	private boolean checkSecurityPermission( final SecurityPermissions perm, final BaseActionSource actionSource )
+	{
+
+		// Ensure there is an action source.
+		if( actionSource == null )
+		{
+			return false;
+		}
+
+		// Get the source node
+		IGridNode sourceNode = null;
+		if( actionSource instanceof MachineSource )
+		{
+			sourceNode = ( (MachineSource)actionSource ).via.getActionableNode();
+		}
+		else if( actionSource instanceof PlayerSource )
+		{
+			sourceNode = ( (PlayerSource)actionSource ).via.getActionableNode();
+		}
+
+		// Ensure there is a node
+		if( sourceNode == null )
+		{
+			return false;
+		}
+
+		// Get the security grid for the node.
+		ISecurityGrid sGrid = sourceNode.getGrid().getCache( ISecurityGrid.class );
+
+		// Return the permission.
+		return sGrid.hasPermission( this.player, perm );
+	}
+
+	/**
+	 * Drains an essentia container item.
+	 * 
+	 * @param container
+	 * @param actionSource
+	 * @param mode
+	 * @return The result of the drain. <AmountDrained, NewContainer>
+	 */
+	@Nullable
+	private ImmutablePair<Integer, ItemStack> drainContainer( final ItemStack container, final BaseActionSource actionSource,
+																final Actionable mode )
+	{
+		// Ensure there is a container
+		if( container == null )
+		{
+			return null;
+		}
 
 		// Get the fluid stack from the item
 		IAspectStack containerEssentia = EssentiaItemContainerHelper.INSTANCE.getAspectStackFromContainer( container );
@@ -221,14 +308,14 @@ public abstract class AbstractContainerCellTerminalBase
 		if( ( containerEssentia == null ) || containerEssentia.isEmpty() )
 		{
 			// Nothing to drain
-			return 0;
+			return null;
 		}
 
 		// Get the proposed drain amount.
 		int proposedDrainAmount = (int)containerEssentia.getStackSize();
 
-		// Simulate a network injection
-		long rejectedAmount = this.monitor.injectEssentia( containerEssentia.getAspect(), proposedDrainAmount, Actionable.SIMULATE, actionSource,
+		// Do a network injection
+		long rejectedAmount = this.monitor.injectEssentia( containerEssentia.getAspect(), proposedDrainAmount, mode, actionSource,
 			true );
 
 		// Was any rejected?
@@ -241,71 +328,38 @@ public abstract class AbstractContainerCellTerminalBase
 			if( proposedDrainAmount <= 0 )
 			{
 				// Network is full
-				return 0;
+				return null;
 			}
 		}
 
+		// Adjust work counter
+		if( mode == Actionable.MODULATE )
+		{
+			this.workCounter += proposedDrainAmount;
+		}
+
 		// Attempt to drain the container
-		ImmutablePair<Integer, ItemStack> drainedContainer = EssentiaItemContainerHelper.INSTANCE.extractFromContainer( container,
-			proposedDrainAmount );
-
-		// Was the drain successful?
-		if( drainedContainer == null )
-		{
-			// Unable to drain anything from the container.
-			return 0;
-		}
-
-		// Merge the drained container with the output slot.
-		if( this.mergeContainerWithOutputSlot( drainedContainer.getRight() ) )
-		{
-			// Adjust the drain amount
-			proposedDrainAmount = drainedContainer.left;
-
-			// Inject into the to network
-			this.monitor.injectEssentia( containerEssentia.getAspect(), proposedDrainAmount, Actionable.MODULATE, actionSource, true );
-
-			// Decrease the input slot
-			inputSlot.decrStackSize( 1 );
-
-			// Container was drained from, and merged with the output slot.
-			return proposedDrainAmount;
-		}
-
-		// Unable to merge, nothing changed
-		return 0;
+		return EssentiaItemContainerHelper.INSTANCE.extractFromContainer( container, proposedDrainAmount );
 	}
 
 	/**
-	 * Fills the container in the input slot with the selected aspect's gas.
-	 * If filled, the container will be placed in the output slot.
+	 * Fills an essentia container item.
 	 * 
-	 * @param actionSource
+	 * @param withAspect
 	 * @param container
-	 * @return Amount of essentia transfered.
+	 * @param actionSource
+	 * @param mode
+	 * @return The result of the fill. <AmountFilled, NewContainer>
 	 */
-	private int fillContainerAndMoveToOutput( final BaseActionSource actionSource )
+	@Nullable
+	private ImmutablePair<Integer, ItemStack> fillContainer( final Aspect withAspect, final ItemStack container,
+																final BaseActionSource actionSource, final Actionable mode )
 	{
-		// Is there an aspect selected?
-		if( this.selectedAspect == null )
+		// Ensure there is an aspect
+		if( withAspect == null )
 		{
-			// No aspect is selected
-			return 0;
+			return null;
 		}
-
-		// Get the input slot
-		Slot inputSlot = this.getSlot( AbstractContainerCellTerminalBase.INPUT_SLOT_ID );
-
-		// Ensure the input slot has a stack
-		if( !inputSlot.getHasStack() )
-		{
-			// No input stack
-			return 0;
-		}
-
-		// Create a copy of the container.
-		ItemStack container = inputSlot.getStack().copy();
-		container.stackSize = 1;
 
 		// Get the capacity of the container
 		int containerCapacity = EssentiaItemContainerHelper.INSTANCE.getContainerCapacity( container );
@@ -314,181 +368,42 @@ public abstract class AbstractContainerCellTerminalBase
 		if( containerCapacity == 0 )
 		{
 			// Invalid container
-			return 0;
+			return null;
 		}
 
-		// Simulate an extraction from the network
-		long extractedAmount = this.monitor.extractEssentia( this.selectedAspect, containerCapacity, Actionable.SIMULATE, actionSource, true );
+		// Do an extraction from the network
+		long extractedAmount = this.monitor.extractEssentia( withAspect, containerCapacity, mode, actionSource, true );
 
 		// Was anything extracted?
 		if( extractedAmount <= 0 )
 		{
 			// Gas is not present on network.
-			return 0;
+			return null;
 		}
 
 		// Calculate the proposed amount, based on how much we need and how much
 		// is available
 		int proposedFillAmount = (int)Math.min( containerCapacity, extractedAmount );
 
+		// Adjust work counter
+		if( mode == Actionable.MODULATE )
+		{
+			this.workCounter += proposedFillAmount;
+		}
+
 		// Create a new container filled to the proposed amount
-		ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.INSTANCE.injectIntoContainer( container, new AspectStack(
-						this.selectedAspect, proposedFillAmount ) );
-
-		// Was the fill successful?
-		if( filledContainer == null )
-		{
-			// Unable to inject into container.
-			return 0;
-		}
-
-		// Can the new container be merged with the output slot?
-		if( this.mergeContainerWithOutputSlot( filledContainer.getRight() ) )
-		{
-			// Adjust the fill amount
-			proposedFillAmount = filledContainer.left;
-
-			// Drain the essentia from the network
-			this.monitor.extractEssentia( this.selectedAspect, proposedFillAmount, Actionable.MODULATE, actionSource, true );
-
-			// Decrease the input slot
-			inputSlot.decrStackSize( 1 );
-
-			// Container was injected into, and merged with the output slot.
-			return proposedFillAmount;
-		}
-
-		// Unable to merge, nothing was changed.
-		return 0;
+		return EssentiaItemContainerHelper.INSTANCE.injectIntoContainer( container,
+			new AspectStack( withAspect, proposedFillAmount ) );
 	}
 
 	/**
-	 * Merges the specified stack with the output slot.
-	 * 
-	 * @param stackToMerge
-	 * @return
+	 * Plays the transfer sound.
 	 */
-	private boolean mergeContainerWithOutputSlot( final ItemStack stackToMerge )
-	{
-		// Ensure the stack is not null.
-		if( stackToMerge == null )
-		{
-			// Invalid itemstack
-			return false;
-		}
-
-		// Get the output slot
-		Slot outputSlot = this.getSlot( AbstractContainerCellTerminalBase.OUTPUT_SLOT_ID );
-
-		// Ensure the slot is valid
-		if( outputSlot == null )
-		{
-			// Invalid output slot
-			return false;
-		}
-
-		// Is the slot empty?
-		if( !outputSlot.getHasStack() )
-		{
-			// Set the output
-			outputSlot.putStack( stackToMerge );
-
-			// Output was set.
-			return true;
-		}
-
-		// Can the item be merged?
-
-		// Compare ignoring stack size
-		ItemStack o = outputSlot.getStack().copy();
-		ItemStack n = stackToMerge.copy();
-		o.stackSize = 1;
-		n.stackSize = 1;
-
-		if( ItemStack.areItemStacksEqual( o, n ) )
-		{
-			// Get the amount that was merged
-			int amountMerged = this.inventory.incrStackSize( AbstractContainerCellTerminalBase.OUTPUT_SLOT_ID, stackToMerge.stackSize );
-
-			if( amountMerged > 0 )
-			{
-				// Decrease the merge stack size.
-				stackToMerge.stackSize -= amountMerged;
-
-				// Stack was merged
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	@SideOnly(Side.CLIENT)
-	private void playTransferAudio()
+	private void playTransferSound()
 	{
-		// Get the itemstack in the output slot
-		ItemStack itemStack = this.inventory.getStackInSlot( AbstractContainerCellTerminalBase.OUTPUT_SLOT_ID );
-
-		// Is there anything in the second slot?
-		if( itemStack != null )
-		{
-			// Has the count changed?
-			if( this.lastInventorySecondSlotCount != itemStack.stackSize )
-			{
-				// Has enough time passed to play the sound again?
-				if( ( System.currentTimeMillis() - this.lastSoundPlaytime ) > AbstractContainerCellTerminalBase.MINIMUM_SOUND_WAIT )
-				{
-					// Play swimy sound
-					Minecraft.getMinecraft().getSoundHandler()
-									.playSound( PositionedSoundRecord.func_147674_a( new ResourceLocation( "game.neutral.swim" ), 1.0F ) );
-
-					// Set the playtime
-					this.lastSoundPlaytime = System.currentTimeMillis();
-				}
-
-				// Set the count
-				this.lastInventorySecondSlotCount = itemStack.stackSize;
-			}
-		}
-		else
-		{
-			// Reset the count
-			this.lastInventorySecondSlotCount = 0;
-		}
-	}
-
-	/**
-	 * Set's the labels aspect to the currently selected aspect
-	 */
-	private void setLabelAspect()
-	{
-		// Is there a selected aspect?
-		if( this.selectedAspect == null )
-		{
-			// Nothing to set
-			return;
-		}
-
-		// Ensure the output slot is not full
-		Slot outputSlot = this.getSlot( AbstractContainerCellTerminalBase.OUTPUT_SLOT_ID );
-		if( ( outputSlot.getHasStack() ) && ( outputSlot.getStack().stackSize == 64 ) )
-		{
-			// Output full
-			return;
-		}
-
-		// Re-validate the label
-		ItemStack label = this.inventory.getStackInSlot( AbstractContainerCellTerminalBase.INPUT_SLOT_ID );
-		if( EssentiaItemContainerHelper.INSTANCE.getItemType( label ) != AspectItemType.JarLabel )
-		{
-			// Not a label
-			return;
-		}
-
-		// Set the label
-		EssentiaItemContainerHelper.INSTANCE.setLabelAspect( label, this.selectedAspect );
-		this.inventory.markDirty();
-
+		Minecraft.getMinecraft().getSoundHandler()
+						.playSound( PositionedSoundRecord.func_147674_a( this.transferSound, 1.0F ) );
 	}
 
 	/**
@@ -520,28 +435,18 @@ public abstract class AbstractContainerCellTerminalBase
 		this.inventory.setReceiver( this );
 
 		// Create the input slot
-		Slot workSlot = new SlotRestrictive( inventory, AbstractContainerCellTerminalBase.INPUT_SLOT_ID,
-						AbstractContainerCellTerminalBase.INPUT_POSITION_X, AbstractContainerCellTerminalBase.INPUT_POSITION_Y );
-
-		// Add the input slot
-		this.addSlotToContainer( workSlot );
-
-		// Set the input slot number
-		this.inputSlotNumber = workSlot.slotNumber;
+		this.inputSlot = new SlotRestrictive( inventory, ContainerEssentiaCellTerminalBase.INPUT_INV_INDEX,
+						ContainerEssentiaCellTerminalBase.INPUT_POSITION_X, ContainerEssentiaCellTerminalBase.INPUT_POSITION_Y );
+		this.addSlotToContainer( this.inputSlot );
 
 		// Create the output slot
-		workSlot = new SlotFurnace( this.player, inventory, AbstractContainerCellTerminalBase.OUTPUT_SLOT_ID,
-						AbstractContainerCellTerminalBase.OUTPUT_POSITION_X, AbstractContainerCellTerminalBase.OUTPUT_POSITION_Y );
-
-		// Add the output slot
-		this.addSlotToContainer( workSlot );
-
-		// Set the output slot number
-		this.outputSlotNumber = workSlot.slotNumber;
+		this.outputSlot = new SlotFurnace( this.player, inventory, ContainerEssentiaCellTerminalBase.OUTPUT_INV_INDEX,
+						ContainerEssentiaCellTerminalBase.OUTPUT_POSITION_X, ContainerEssentiaCellTerminalBase.OUTPUT_POSITION_Y );
+		this.addSlotToContainer( this.outputSlot );
 
 		// Bind to the player's inventory
-		this.bindPlayerInventory( this.player.inventory, AbstractContainerCellTerminalBase.PLAYER_INV_POSITION_Y,
-			AbstractContainerCellTerminalBase.HOTBAR_INV_POSITION_Y );
+		this.bindPlayerInventory( this.player.inventory, ContainerEssentiaCellTerminalBase.PLAYER_INV_POSITION_Y,
+			ContainerEssentiaCellTerminalBase.HOTBAR_INV_POSITION_Y );
 
 	}
 
@@ -572,27 +477,105 @@ public abstract class AbstractContainerCellTerminalBase
 	protected abstract void doWork( int elapsedTicks );
 
 	/**
-	 * Transfers essentia in or out of the system.
+	 * Gets the action source.
 	 * 
-	 * @param actionSource
+	 * @return
 	 */
-	protected void transferEssentia( final BaseActionSource actionSource )
+	protected abstract BaseActionSource getActionSource();
+
+	/**
+	 * Fills, drains, or sets label aspect.
+	 * 
+	 * @param stack
+	 * This is not modified during the course of this function.
+	 * @param aspect
+	 * Ignored when draining
+	 * @param actionSource
+	 * @param mode
+	 * @return The new stack if changes made, the original stack otherwise.
+	 */
+	protected ItemStack transferEssentia( final ItemStack stack, final Aspect aspect, final BaseActionSource actionSource, final Actionable mode )
 	{
-		// Permissions
-		boolean allowedToExtract = false, allowedToInject = false;
-
-		// Action to perform
-		boolean doFill = false, doDrain = false;
-
-		// Ensure the monitor and inventory are valid.
-		if( ( this.monitor == null ) || ( this.inventory == null ) )
+		// Ensure the stack & monitor are not null
+		if( ( stack == null ) || ( this.monitor == null ) )
 		{
-			// Invalid monitor or inventory.
+			return stack;
+		}
+
+		// Get the item type
+		AspectItemType iType = EssentiaItemContainerHelper.INSTANCE.getItemType( stack );
+
+		// Label?
+		if( iType == AspectItemType.JarLabel )
+		{
+			// Copy the stack
+			ItemStack label = stack.copy();
+
+			// Set the label
+			EssentiaItemContainerHelper.INSTANCE.setLabelAspect( label, aspect );
+
+			// Update work performed
+			++this.workCounter;
+
+			// Return the label
+			return label;
+		}
+
+		// Valid container?
+		if( iType != AspectItemType.EssentiaContainer )
+		{
+			// Invalid container
+			return stack;
+		}
+
+		// Result of the operation
+		ImmutablePair<Integer, ItemStack> result = null;
+
+		// Filling?
+		if( EssentiaItemContainerHelper.INSTANCE.isContainerEmpty( stack ) )
+		{
+			// Check extract permission
+			if( this.checkSecurityPermission( SecurityPermissions.EXTRACT, actionSource ) )
+			{
+				// Attempt to fill the container
+				result = this.fillContainer( aspect, stack, actionSource, mode );
+			}
+		}
+		// Draining
+		else
+		{
+			// Check inject permission
+			if( this.checkSecurityPermission( SecurityPermissions.INJECT, actionSource ) )
+			{
+				// Attempt to drain the container
+				result = this.drainContainer( stack, actionSource, mode );
+			}
+		}
+
+		// Is there any result?
+		if( result != null )
+		{
+			// Return the new stack.
+			return result.right;
+		}
+
+		// No result
+		return stack;
+	}
+
+	/**
+	 * Transfers essentia in or out of the system using the input and output slots.
+	 */
+	protected void transferEssentiaFromWorkSlots()
+	{
+		// Ensure the inventory is valid
+		if( this.inventory == null )
+		{
 			return;
 		}
 
 		// Get the input stack
-		ItemStack inputStack = this.inventory.getStackInSlot( AbstractContainerCellTerminalBase.INPUT_SLOT_ID );
+		final ItemStack inputStack = this.inventory.getStackInSlot( ContainerEssentiaCellTerminalBase.INPUT_INV_INDEX );
 
 		// Ensure the input stack is not empty
 		if( ( inputStack == null ) )
@@ -601,111 +584,70 @@ public abstract class AbstractContainerCellTerminalBase
 			return;
 		}
 
-		// Get the output stack
-		ItemStack outputStack = this.inventory.getStackInSlot( AbstractContainerCellTerminalBase.OUTPUT_SLOT_ID );
-
-		// Is the output slot valid and not full?
-		if( ( outputStack != null ) && ( outputStack.stackSize >= 64 ) )
+		// Is the output slot full?
+		if( this.outputSlot.getHasStack() )
 		{
-			// Output slot is full.
-			return;
-		}
-
-		// Get the item type
-		AspectItemType iType = EssentiaItemContainerHelper.INSTANCE.getItemType( inputStack );
-
-		// Label?
-		if( iType == AspectItemType.JarLabel )
-		{
-			// Set the label
-			this.setLabelAspect();
-			return;
-		}
-
-		// Valid container?
-		if( iType != AspectItemType.EssentiaContainer )
-		{
-			// Invalid container
-			return;
-		}
-
-		// Determine which action to perform
-		if( EssentiaItemContainerHelper.INSTANCE.isContainerEmpty( inputStack ) )
-		{
-			// Input is empty, can it be filled?
-			if( ( this.selectedAspect != null ) )
+			ItemStack outputStack = this.outputSlot.getStack();
+			if( outputStack.stackSize >= outputStack.getMaxStackSize() )
 			{
-				// Fill the container
-				doFill = true;
+				// Output slot is full.
+				return;
+			}
+		}
+
+		// Reset the work counter
+		this.workCounter = 0;
+
+		// Get the action source
+		final BaseActionSource actionSource = this.getActionSource();
+
+		// Copy the input
+		final ItemStack container = inputStack.copy();
+		container.stackSize = 1;
+
+		// Loop while maximum work has not been performed, there is input, and the operation did not fail.
+		ItemStack result;
+		do
+		{
+			// Simulate the work
+			result = this.transferEssentia( container, this.selectedAspect, actionSource, Actionable.SIMULATE );
+
+			// Did anything change?
+			if( ( result == null ) || ( result == container ) )
+			{
+				// No work to perform
+				break;
+			}
+
+			// Can the result not be merged with the output stack?
+			if( !this.canMergeWithOutputSlot( result ) )
+			{
+				// Unable to merge
+				break;
+			}
+
+			// Perform the work
+			result = this.transferEssentia( container, this.selectedAspect, actionSource, Actionable.MODULATE );
+
+			// Merge the result
+			if( this.outputSlot.getHasStack() )
+			{
+				// Can just increment here because canMergeWithOutputSlot explicitly checks that
+				++this.outputSlot.getStack().stackSize;
 			}
 			else
 			{
-				// Container is empty, and no aspect is selected.
-				return;
+				this.outputSlot.putStack( result );
+			}
+
+			// Is the input drained?
+			if( ( --inputStack.stackSize ) == 0 )
+			{
+				this.inputSlot.putStack( null );
+				break;
 			}
 		}
-		else
-		{
-			// Drain the container
-			doDrain = true;
-		}
-
-		// Do we have a source?
-		if( actionSource != null )
-		{
-			// Get the source node
-			IGridNode sourceNode = null;
-			if( actionSource instanceof MachineSource )
-			{
-				sourceNode = ( (MachineSource)actionSource ).via.getActionableNode();
-			}
-			else if( actionSource instanceof PlayerSource )
-			{
-				sourceNode = ( (PlayerSource)actionSource ).via.getActionableNode();
-			}
-
-			// Ensure there is a node
-			if( sourceNode == null )
-			{
-				return;
-			}
-
-			// Get the security grid for the node.
-			ISecurityGrid sGrid = sourceNode.getGrid().getCache( ISecurityGrid.class );
-
-			// Get permissions
-			allowedToExtract = sGrid.hasPermission( this.player, SecurityPermissions.EXTRACT );
-			allowedToInject = sGrid.hasPermission( this.player, SecurityPermissions.INJECT );
-		}
-
-		// Validate permissions
-		if( ( doFill && !allowedToExtract ) || ( doDrain && !allowedToInject ) )
-		{
-			// Player does not have required permissions to perform the action
-			return;
-		}
-
-		// Total amount of essentia transfered this cycle.
-		int totalTransfered = 0, tmp = 0;
-
-		// Loop while operation is successful and cap has not been hit
-		do
-		{
-			// Filling?
-			if( doFill )
-			{
-				// Attempt to fill the container.
-				tmp = this.fillContainerAndMoveToOutput( actionSource );
-
-			}
-			// Draining?
-			else if( doDrain )
-			{
-				// Attempt to drain the container.
-				tmp = this.drainContainerAndMoveToOutput( actionSource );
-			}
-		}
-		while( ( tmp > 0 ) && ( ( totalTransfered += tmp ) < AbstractContainerCellTerminalBase.ESSENTIA_TRANSFER_PER_WORK_CYCLE ) );
+		while( this.workCounter < ESSENTIA_TRANSFER_PER_WORK_CYCLE );
 	}
 
 	/**
@@ -730,7 +672,7 @@ public abstract class AbstractContainerCellTerminalBase
 		// Inc tick tracker
 		this.tickCounter += 1;
 
-		if( this.tickCounter > AbstractContainerCellTerminalBase.WORK_TICK_RATE )
+		if( this.tickCounter > ContainerEssentiaCellTerminalBase.WORK_TICK_RATE )
 		{
 			// Do work
 			this.doWork( this.tickCounter );
@@ -838,6 +780,75 @@ public abstract class AbstractContainerCellTerminalBase
 	}
 
 	/**
+	 * Called when a player clicked on an aspect while holding an item.
+	 * 
+	 * @param player
+	 * @param aspect
+	 */
+	public void onInteractWithHeldItem( final EntityPlayer player, final Aspect aspect )
+	{
+		// Sanity check
+		if( ( player == null || ( player.inventory.getItemStack() == null ) ) )
+		{
+			return;
+		}
+
+		// Get the item
+		ItemStack sourceStack = player.inventory.getItemStack();
+
+		// Create a new stack
+		final ItemStack takeFrom = sourceStack.copy();
+		takeFrom.stackSize = 1;
+
+		// Get the action source
+		final BaseActionSource actionSource = this.getActionSource();
+
+		// Simulate the transfer
+		ItemStack resultStack = this.transferEssentia( takeFrom, aspect, actionSource, Actionable.SIMULATE );
+
+		// Was any work performed?
+		if( ( resultStack == null ) || ( resultStack == takeFrom ) )
+		{
+			// Nothing to do.
+			return;
+		}
+
+		// If the source stack size is > 1, the result will need to be put into the player inventory
+		if( sourceStack.stackSize > 1 )
+		{
+			// Attempt to merge
+			if( !this.mergeSlotWithHotbarInventory( resultStack ) )
+			{
+				if( !this.mergeSlotWithPlayerInventory( resultStack ) )
+				{
+					// Could not merge
+					return;
+				}
+			}
+
+			// Decrement the source stack
+			--sourceStack.stackSize;
+		}
+		else
+		{
+			// Set the source stack to the result
+			sourceStack = resultStack;
+		}
+
+		// Perform the work
+		this.transferEssentia( takeFrom, aspect, actionSource, Actionable.MODULATE );
+
+		// Set what the player is holding
+		player.inventory.setItemStack( sourceStack );
+
+		// Update
+		Packet_C_Sync.sendPlayerHeldItem( player, sourceStack );
+		this.detectAndSendChanges();
+		this.playTransferSound( player, false );
+
+	}
+
+	/**
 	 * Called when the list of fluids on the ME network changes.
 	 */
 	@Override
@@ -846,7 +857,7 @@ public abstract class AbstractContainerCellTerminalBase
 		// Is this client side?
 		if( EffectiveSide.isClientSide() )
 		{
-			this.playTransferAudio();
+			this.playTransferSound( null, true );
 		}
 	}
 
@@ -934,6 +945,68 @@ public abstract class AbstractContainerCellTerminalBase
 	}
 
 	/**
+	 * Checks if the transfer sound should play.
+	 * 
+	 * @param player
+	 * @param checkWorkSlots
+	 */
+
+	public void playTransferSound( final EntityPlayer player, final boolean checkWorkSlots )
+	{
+		if( checkWorkSlots )
+		{
+			// Get the itemstack in the output slot
+			ItemStack itemStack = this.outputSlot.getStack();
+
+			// Is there anything in the second slot?
+			if( itemStack != null )
+			{
+
+				// Is the item a label?
+				if( EssentiaItemContainerHelper.INSTANCE.getItemType( itemStack ) == AspectItemType.JarLabel )
+				{
+					// TODO: Special sound for labels?
+					return;
+				}
+
+				// Has the count changed?
+				if( this.audioStackSizeTracker == itemStack.stackSize )
+				{
+					// Nothing changed
+					return;
+				}
+
+				// Set the count
+				this.audioStackSizeTracker = itemStack.stackSize;
+
+			}
+			else
+			{
+				// Reset the count
+				this.audioStackSizeTracker = 0;
+				return;
+			}
+
+		}
+
+		// Has enough time passed to play the sound again?
+		if( ( System.currentTimeMillis() - this.lastSoundPlaytime ) > MINIMUM_SOUND_WAIT )
+		{
+			if( EffectiveSide.isClientSide() )
+			{
+				this.playTransferSound();
+			}
+			else
+			{
+				Packet_C_EssentiaCellTerminal.sendPlayTransferAudio( player );
+			}
+
+			// Set the playtime
+			this.lastSoundPlaytime = System.currentTimeMillis();
+		}
+	}
+
+	/**
 	 * Called by the Essentia monitor when the network changes.
 	 */
 
@@ -979,7 +1052,7 @@ public abstract class AbstractContainerCellTerminalBase
 			ItemStack slotStack = slot.getStack();
 
 			// Was the slot clicked the input slot or output slot?
-			if( ( slotNumber == this.inputSlotNumber ) || ( slotNumber == this.outputSlotNumber ) )
+			if( ( slot == this.inputSlot ) || ( slot == this.outputSlot ) )
 			{
 				// Attempt to merge with the player inventory
 				didMerge = this.mergeSlotWithPlayerInventory( slotStack );
@@ -988,10 +1061,10 @@ public abstract class AbstractContainerCellTerminalBase
 			else if( this.slotClickedWasInPlayerInventory( slotNumber ) || this.slotClickedWasInHotbarInventory( slotNumber ) )
 			{
 				// Is the item valid for the input slot?
-				if( ( (Slot)this.inventorySlots.get( this.inputSlotNumber ) ).isItemValid( slotStack ) )
+				if( this.inputSlot.isItemValid( slotStack ) )
 				{
 					// Attempt to merge with the input slot
-					didMerge = this.mergeItemStack( slotStack, this.inputSlotNumber, this.inputSlotNumber + 1, false );
+					didMerge = this.mergeItemStack( slotStack, this.inputSlot.slotNumber, this.inputSlot.slotNumber + 1, false );
 				}
 
 				// Did we merge?

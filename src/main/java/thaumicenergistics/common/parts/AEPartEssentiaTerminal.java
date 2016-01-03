@@ -15,7 +15,7 @@ import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.container.AbstractContainerCellTerminalBase;
+import thaumicenergistics.common.container.ContainerEssentiaCellTerminalBase;
 import thaumicenergistics.common.container.ContainerEssentiaTerminal;
 import thaumicenergistics.common.inventory.PrivateInventory;
 import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
@@ -98,7 +98,7 @@ public class AEPartEssentiaTerminal
 		super( AEPartsEnum.EssentiaTerminal );
 	}
 
-	public void addListener( final AbstractContainerCellTerminalBase container )
+	public void addListener( final ContainerEssentiaCellTerminalBase container )
 	{
 		if( container instanceof ContainerEssentiaTerminal )
 		{

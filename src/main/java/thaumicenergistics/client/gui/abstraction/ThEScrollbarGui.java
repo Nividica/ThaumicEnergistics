@@ -191,6 +191,15 @@ public abstract class ThEScrollbarGui
 	}
 
 	/**
+	 * Called when the mouse wheel is scrolled.
+	 * 
+	 * @param deltaZ
+	 * @param mouseX
+	 * @param mouseY
+	 */
+	protected abstract void onMouseWheel( int deltaZ, int mouseX, int mouseY );
+
+	/**
 	 * Called when the scroll bar has moved.
 	 */
 	protected abstract void onScrollbarMoved();
@@ -265,6 +274,27 @@ public abstract class ThEScrollbarGui
 		// Call super
 		super.drawScreen( mouseX, mouseY, mouseBtn );
 
+	}
+
+	@Override
+	public void handleMouseInput()
+	{
+		// Call super
+		super.handleMouseInput();
+
+		// Get the delta z for the scroll wheel
+		int deltaZ = Mouse.getEventDWheel();
+
+		// Did it move?
+		if( deltaZ != 0 )
+		{
+			// Get the mouse position
+			int mouseX = ( Mouse.getEventX() * this.width ) / this.mc.displayWidth;
+			int mouseY = this.height - ( ( Mouse.getEventY() * this.height ) / this.mc.displayHeight ) - 1;
+
+			// Call event
+			this.onMouseWheel( deltaZ, mouseX, mouseY );
+		}
 	}
 
 	/**

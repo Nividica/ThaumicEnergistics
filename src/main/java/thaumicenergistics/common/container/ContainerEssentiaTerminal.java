@@ -13,6 +13,7 @@ import thaumicenergistics.common.storage.AspectStackComparator.AspectStackCompar
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.config.ViewItems;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerOpenContext;
@@ -25,7 +26,7 @@ import appeng.container.implementations.ContainerCraftAmount;
  * 
  */
 public class ContainerEssentiaTerminal
-	extends AbstractContainerCellTerminalBase
+	extends ContainerEssentiaCellTerminalBase
 {
 	/**
 	 * The terminal this is associated with.
@@ -83,6 +84,12 @@ public class ContainerEssentiaTerminal
 		this.bindToInventory( terminal.getInventory() );
 	}
 
+	@Override
+	protected BaseActionSource getActionSource()
+	{
+		return this.playerSource;
+	}
+
 	/**
 	 * Transfers essentia.
 	 */
@@ -90,7 +97,7 @@ public class ContainerEssentiaTerminal
 	public void doWork( final int elapsedTicks )
 	{
 		// Transfer essentia if needed.
-		this.transferEssentia( this.playerSource );
+		this.transferEssentiaFromWorkSlots();
 	}
 
 	@Override

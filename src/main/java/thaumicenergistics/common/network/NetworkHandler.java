@@ -129,6 +129,9 @@ public class NetworkHandler
 
 		// Distillation encoder
 		registerPacket( Packet_S_DistillationEncoder.class );
+
+		// Sync packet
+		registerPacket( Packet_C_Sync.class );
 	}
 
 	public static void sendAreaPacketToClients( final ThEAreaPacket areaPacket, final int range )

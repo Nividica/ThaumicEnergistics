@@ -515,6 +515,7 @@ public abstract class ThEBasePacket
 		stream.writeByte( this.mode );
 
 		// Write the player
+		// TODO: This isn't needed for client packets.
 		ThEBasePacket.writePlayer( this.player, stream );
 
 		// Write if there is a compressed sub-stream.

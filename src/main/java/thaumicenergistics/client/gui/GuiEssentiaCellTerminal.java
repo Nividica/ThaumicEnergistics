@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -24,7 +25,10 @@ import thaumicenergistics.client.gui.buttons.GuiButtonViewType;
 import thaumicenergistics.client.gui.widget.ThEWidget;
 import thaumicenergistics.client.gui.widget.WidgetAspectSelector;
 import thaumicenergistics.client.textures.GuiTextureManager;
-import thaumicenergistics.common.container.*;
+import thaumicenergistics.common.container.ContainerEssentiaCellTerminalBase;
+import thaumicenergistics.common.container.ContainerEssentiaCell;
+import thaumicenergistics.common.container.ContainerEssentiaTerminal;
+import thaumicenergistics.common.container.ContainerWirelessEssentiaTerminal;
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.common.parts.AEPartEssentiaTerminal;
@@ -95,7 +99,7 @@ public class GuiEssentiaCellTerminal
 	/**
 	 * The container associated with this gui
 	 */
-	protected AbstractContainerCellTerminalBase baseContainer;
+	protected ContainerEssentiaCellTerminalBase baseContainer;
 
 	/**
 	 * Mode used to sort the aspects
@@ -155,7 +159,7 @@ public class GuiEssentiaCellTerminal
 	 * @param container
 	 * Container associated with the gui.
 	 */
-	protected GuiEssentiaCellTerminal( final EntityPlayer player, final AbstractContainerCellTerminalBase container, final String title )
+	protected GuiEssentiaCellTerminal( final EntityPlayer player, final ContainerEssentiaCellTerminalBase container, final String title )
 	{
 		// Call super
 		super( container );
@@ -167,10 +171,10 @@ public class GuiEssentiaCellTerminal
 		this.player = player;
 
 		// Set the X size
-		this.xSize = GUI_SIZE_X;
+		this.xSize = GUI_WIDTH;
 
 		// Set the Y size
-		this.ySize = GUI_SIZE_Y;
+		this.ySize = GUI_HEIGHT;
 
 		// Set the title
 		this.guiTitle = title;
@@ -276,6 +280,22 @@ public class GuiEssentiaCellTerminal
 		// Create the gui
 		return new GuiEssentiaCellTerminal( player, new ContainerWirelessEssentiaTerminal( player, handler ),
 						ThEStrings.Part_EssentiaTerminal.getLocalized() );
+	}
+
+	/**
+	 * True if the mouse is over the widget area
+	 * 
+	 * @param mouseX
+	 * @param mouseY
+	 * @return
+	 */
+	private boolean isMouseOverWidgetArea( final int mouseX, final int mouseY )
+	{
+		return ThEGuiHelper.INSTANCE.isPointInGuiRegion(
+			WIDGET_OFFSET_Y, WIDGET_OFFSET_X,
+			WIDGET_ROWS_PER_PAGE * ThEWidget.WIDGET_SIZE,
+			WIDGETS_PER_ROW * ThEWidget.WIDGET_SIZE,
+			mouseX, mouseY, this.guiLeft, this.guiTop );
 	}
 
 	/**
@@ -488,16 +508,18 @@ public class GuiEssentiaCellTerminal
 	@Override
 	protected void mouseClicked( final int mouseX, final int mouseY, final int mouseBtn )
 	{
-		boolean mouseOverElement;
+		// Boolean trackers for cleaner code
+		final boolean isLeftClick = ( mouseBtn == ThEGuiHelper.MOUSE_BUTTON_LEFT );
+		final boolean isRightClick = ( mouseBtn == ThEGuiHelper.MOUSE_BUTTON_RIGHT );
+		final boolean isMiddleClick = ( mouseBtn == ThEGuiHelper.MOUSE_BUTTON_WHEEL );
 
-		// Is the mouse in the widget area?
-		mouseOverElement = ThEGuiHelper.INSTANCE.isPointInGuiRegion(
-			WIDGET_OFFSET_Y, WIDGET_OFFSET_X,
-			WIDGET_ROWS_PER_PAGE * ThEWidget.WIDGET_SIZE,
-			WIDGETS_PER_ROW * ThEWidget.WIDGET_SIZE,
-			mouseX, mouseY, this.guiLeft, this.guiTop );
-		if( mouseOverElement )
+		if( this.isMouseOverWidgetArea( mouseX, mouseY ) )
 		{
+			// Is the view mode crafting?
+			boolean viewingCraftable = ( this.viewMode == ViewItems.CRAFTABLE );
+
+			// Is the player holding anything?
+			boolean playerHoldingItem = ( this.player.inventory.getItemStack() != null );
 
 			// Check each widget
 			for( WidgetAspectSelector widget : this.aspectWidgets )
@@ -505,18 +527,27 @@ public class GuiEssentiaCellTerminal
 				// Is the mouse over this widget?
 				if( widget.isMouseOverWidget( mouseX, mouseY ) )
 				{
-					// Send crafting request if
-					//  Only Craftable or Craftable and ( ( LeftClick and 0 ) or ( MiddleClick ) )
-					if( ( this.viewMode == ViewItems.CRAFTABLE ) || widget.getCraftable() && (
-									( mouseBtn == ThEGuiHelper.MOUSE_BUTTON_WHEEL ) ) ||
-									( ( mouseBtn == ThEGuiHelper.MOUSE_BUTTON_LEFT ) && ( widget.getAmount() == 0 ) ) )
+					// Is the player holding something?
+					if( playerHoldingItem )
 					{
-						// Send request
-						Packet_S_EssentiaCellTerminal.sendAutoCraft( this.player, widget.getAspect() );
+						// Inform the server
+						Packet_S_EssentiaCellTerminal.sendInteractWithHeldItem( this.player, widget.getAspect() );
 					}
+					else
+					{
+						// Check if the aspect is to be crafted
+						if( ( !isRightClick && widget.hasAspect() && widget.getCraftable() ) &&
+										( viewingCraftable
+										|| ( isMiddleClick || ( isLeftClick && ( widget.getAmount() == 0 ) ) ) ) )
+						{
+							// Send request
+							Packet_S_EssentiaCellTerminal.sendAutoCraft( this.player, widget.getAspect() );
 
-					// Send the click
-					widget.onMouseClicked();
+						}
+
+						// Send the click
+						widget.onMouseClicked();
+					}
 
 					// Stop searching
 					return;
@@ -525,14 +556,14 @@ public class GuiEssentiaCellTerminal
 		}
 
 		// Is the mouse over the search bar?
-		mouseOverElement = mouseX >= this.searchBar.xPosition
+		boolean mouseOverSearchBar = mouseX >= this.searchBar.xPosition
 						&& mouseX < this.searchBar.xPosition + this.searchBar.width
 						&& mouseY >= this.searchBar.yPosition
 						&& mouseY < this.searchBar.yPosition + this.searchBar.height;
-		if( mouseOverElement )
+		if( mouseOverSearchBar )
 		{
 			// Left click?
-			if( mouseBtn == ThEGuiHelper.MOUSE_BUTTON_LEFT )
+			if( isLeftClick )
 			{
 				// Pass to search field.
 				this.searchBar.mouseClicked( mouseX, mouseY, mouseBtn );
@@ -542,7 +573,7 @@ public class GuiEssentiaCellTerminal
 
 			}
 			// Right click?
-			else if( mouseBtn == ThEGuiHelper.MOUSE_BUTTON_RIGHT )
+			else if( isRightClick )
 			{
 				// Clear the search text
 				this.searchTerm = "";
@@ -584,6 +615,26 @@ public class GuiEssentiaCellTerminal
 			// Request update from server
 			Packet_S_EssentiaCellTerminal.sendChangeView( this.player, ( mouseButton == ThEGuiHelper.MOUSE_BUTTON_RIGHT ) );
 		}
+	}
+
+	@Override
+	protected void onMouseWheel( final int deltaZ, final int mouseX, final int mouseY )
+	{
+		// Is the mouse inside of, or to the left of, the GUI?
+		if( mouseX > ( this.guiLeft + GUI_WIDTH ) )
+		{
+			// Mouse is to the right of the gui
+			return;
+		}
+
+		// Is shift not being held down?
+		if( !GuiScreen.isShiftKeyDown() )
+		{
+			// Inform the scroll bar
+			this.scrollBar.wheel( deltaZ );
+			this.onScrollbarMoved();
+		}
+
 	}
 
 	@Override
@@ -659,27 +710,6 @@ public class GuiEssentiaCellTerminal
 	public Aspect getSelectedAspect()
 	{
 		return( this.selectedAspectStack != null ? this.selectedAspectStack.getAspect() : null );
-	}
-
-	/**
-	 * If the mouse wheel moves, updates the scrollbar
-	 */
-	@Override
-	public void handleMouseInput()
-	{
-		// Call super
-		super.handleMouseInput();
-
-		// Get the delta z for the scroll wheel
-		int deltaZ = Mouse.getEventDWheel();
-
-		// Did the wheel move?
-		if( deltaZ != 0 )
-		{
-			// Inform the scroll bar
-			this.scrollBar.wheel( deltaZ );
-			this.onScrollbarMoved();
-		}
 	}
 
 	/**

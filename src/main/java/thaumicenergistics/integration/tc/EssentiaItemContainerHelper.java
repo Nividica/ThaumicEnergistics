@@ -906,6 +906,7 @@ public final class EssentiaItemContainerHelper
 	 * Sets a labels aspect
 	 * 
 	 * @param label
+	 * The itemstack is modified.
 	 * @param aspect
 	 */
 	public void setLabelAspect( final ItemStack label, final Aspect aspect )

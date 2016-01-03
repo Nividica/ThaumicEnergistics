@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
+import thaumicenergistics.common.container.ContainerEssentiaCellTerminalBase;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.registries.EnumCache;
@@ -21,10 +22,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class Packet_C_EssentiaCellTerminal
 	extends ThEClientPacket
 {
-	private static final byte MODE_FULL_LIST = 0;
-	private static final byte MODE_SELECTED_ASPECT = 1;
-	private static final byte MODE_VIEWING_CHANGED = 2;
-	private static final byte MODE_LIST_CHANGED = 3;
+	/**
+	 * Modes
+	 */
+	private static final byte MODE_FULL_LIST = 0,
+					MODE_SELECTED_ASPECT = 1,
+					MODE_VIEWING_CHANGED = 2,
+					MODE_LIST_CHANGED = 3,
+					MODE_PLAY_SOUND = 4;
 
 	private Collection<IAspectStack> aspectStackList;
 	private Aspect selectedAspect;
@@ -60,13 +65,25 @@ public class Packet_C_EssentiaCellTerminal
 	public static void sendFullList( final EntityPlayer player, final Collection<IAspectStack> list )
 	{
 		Packet_C_EssentiaCellTerminal packet = newPacket( player, MODE_FULL_LIST );
-		// Set the player
 
 		// Mark to use compression
 		packet.useCompression = true;
 
 		// Set the list
 		packet.aspectStackList = list;
+
+		// Send it
+		NetworkHandler.sendPacketToClient( packet );
+	}
+
+	/**
+	 * Asks the client to play the transfer audio.
+	 * 
+	 * @param player
+	 */
+	public static void sendPlayTransferAudio( final EntityPlayer player )
+	{
+		Packet_C_EssentiaCellTerminal packet = newPacket( player, MODE_PLAY_SOUND );
 
 		// Send it
 		NetworkHandler.sendPacketToClient( packet );
@@ -136,22 +153,27 @@ public class Packet_C_EssentiaCellTerminal
 		{
 			switch ( this.mode )
 			{
-			case Packet_C_EssentiaCellTerminal.MODE_FULL_LIST:
+			case MODE_FULL_LIST:
 				( (GuiEssentiaCellTerminal)gui ).onReceiveAspectList( this.aspectStackList );
 				break;
 
-			case Packet_C_EssentiaCellTerminal.MODE_SELECTED_ASPECT:
+			case MODE_SELECTED_ASPECT:
 				( (GuiEssentiaCellTerminal)gui ).onReceiveSelectedAspect( this.selectedAspect );
 				break;
 
-			case Packet_C_EssentiaCellTerminal.MODE_VIEWING_CHANGED:
+			case MODE_VIEWING_CHANGED:
 				// Update the modes
 				( (GuiEssentiaCellTerminal)gui ).onViewingModesChanged( this.sortMode, this.viewMode );
 				break;
 
-			case Packet_C_EssentiaCellTerminal.MODE_LIST_CHANGED:
+			case MODE_LIST_CHANGED:
 				// Update the list
 				( (GuiEssentiaCellTerminal)gui ).onReceiveAspectListChange( this.change );
+				break;
+
+			case MODE_PLAY_SOUND:
+				// Play the sound!
+				( (ContainerEssentiaCellTerminalBase)this.player.openContainer ).playTransferSound( this.player, false );
 				break;
 			}
 		}

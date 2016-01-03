@@ -3,7 +3,7 @@ package thaumicenergistics.common.network.packet.server;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.common.container.AbstractContainerCellTerminalBase;
+import thaumicenergistics.common.container.ContainerEssentiaCellTerminalBase;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 
@@ -17,7 +17,8 @@ public class Packet_S_EssentiaCellTerminal
 					MODE_FULL_UPDATE = 1,
 					MODE_SORT_CHANGE = 2,
 					MODE_AUTO_CRAFT = 3,
-					MODE_VIEW_CHANGE = 4;
+					MODE_VIEW_CHANGE = 4,
+					MODE_HELD_ITEM = 5;
 
 	/**
 	 * The aspect.
@@ -115,6 +116,25 @@ public class Packet_S_EssentiaCellTerminal
 	}
 
 	/**
+	 * Informs the server when an aspect has been clicked on and the player
+	 * is holding an item.
+	 * 
+	 * @param player
+	 * @param aspect
+	 */
+	public static void sendInteractWithHeldItem( final EntityPlayer player, final Aspect aspect )
+	{
+		// Create the packet
+		Packet_S_EssentiaCellTerminal packet = newPacket( player, MODE_HELD_ITEM );
+
+		// Set the aspect
+		packet.selectedAspect = aspect;
+
+		// Send it
+		NetworkHandler.sendPacketToServer( packet );
+	}
+
+	/**
 	 * Informs the server the player has (un)selected an aspect.
 	 * 
 	 * @param player
@@ -136,7 +156,7 @@ public class Packet_S_EssentiaCellTerminal
 	public void execute()
 	{
 		// Sanity checks
-		if( ( this.player == null ) || !( this.player.openContainer instanceof AbstractContainerCellTerminalBase ) )
+		if( ( this.player == null ) || !( this.player.openContainer instanceof ContainerEssentiaCellTerminalBase ) )
 		{
 			return;
 		}
@@ -144,23 +164,27 @@ public class Packet_S_EssentiaCellTerminal
 		switch ( this.mode )
 		{
 		case MODE_SELECTED_ASPECT:
-			( (AbstractContainerCellTerminalBase)this.player.openContainer ).onReceivedSelectedAspect( this.selectedAspect );
+			( (ContainerEssentiaCellTerminalBase)this.player.openContainer ).onReceivedSelectedAspect( this.selectedAspect );
 			break;
 
 		case MODE_FULL_UPDATE:
-			( (AbstractContainerCellTerminalBase)this.player.openContainer ).onClientRequestFullUpdate();
+			( (ContainerEssentiaCellTerminalBase)this.player.openContainer ).onClientRequestFullUpdate();
 			break;
 
 		case MODE_SORT_CHANGE:
-			( (AbstractContainerCellTerminalBase)this.player.openContainer ).onClientRequestSortModeChange( this.player, this.flag );
+			( (ContainerEssentiaCellTerminalBase)this.player.openContainer ).onClientRequestSortModeChange( this.player, this.flag );
 			break;
 
 		case MODE_AUTO_CRAFT:
-			( (AbstractContainerCellTerminalBase)this.player.openContainer ).onClientRequestAutoCraft( this.player, this.selectedAspect );
+			( (ContainerEssentiaCellTerminalBase)this.player.openContainer ).onClientRequestAutoCraft( this.player, this.selectedAspect );
 			break;
 
 		case MODE_VIEW_CHANGE:
-			( (AbstractContainerCellTerminalBase)this.player.openContainer ).onClientRequestViewModeChange( this.player, this.flag );
+			( (ContainerEssentiaCellTerminalBase)this.player.openContainer ).onClientRequestViewModeChange( this.player, this.flag );
+			break;
+
+		case MODE_HELD_ITEM:
+			( (ContainerEssentiaCellTerminalBase)this.player.openContainer ).onInteractWithHeldItem( this.player, this.selectedAspect );
 			break;
 		}
 
@@ -173,12 +197,14 @@ public class Packet_S_EssentiaCellTerminal
 		{
 		case MODE_SELECTED_ASPECT:
 		case MODE_AUTO_CRAFT:
+		case MODE_HELD_ITEM:
 			// Read the aspect
 			this.selectedAspect = ThEBasePacket.readAspect( stream );
 			break;
 
 		case MODE_SORT_CHANGE:
 		case MODE_VIEW_CHANGE:
+			// Read the flag
 			this.flag = stream.readBoolean();
 			break;
 		}
@@ -191,6 +217,7 @@ public class Packet_S_EssentiaCellTerminal
 		{
 		case MODE_SELECTED_ASPECT:
 		case MODE_AUTO_CRAFT:
+		case MODE_HELD_ITEM:
 			// Write the aspect
 			ThEBasePacket.writeAspect( this.selectedAspect, stream );
 			break;

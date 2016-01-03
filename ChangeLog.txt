@@ -1,11 +1,16 @@
-﻿01/02/2016 0.10.0.0 - Beta
+﻿01/03/2016 0.10.0.0 - Beta
+  Essentia terminal can fill/drain containers when they are dragged and clicked over an aspect.
+
+01/02/2016 0.10.0.0 - Beta
   File restructure & code refactor.
+  Added mult-mouse-button support to essentia terminal.
+  Fixed ACT scroll bug issue with NEI.
 
 01/01/2016 0.10.0.0 - Beta
   Essentia subsystem now supports craftable aspects.
-  Essentia terminals now shows craftable essentia.
+  Essentia terminal now shows craftable essentia.
   Reworked some terrible GUI code.
-  Fixed sort-by-name in the Essentia Terminals.
+  Fixed sort-by-name in the Essentia Terminal.
   Fixed a bug where some parts would not be aware of neighboring blocks when placed.
   Fixes #53: :D
   Todo: Lore, recipe, texture.

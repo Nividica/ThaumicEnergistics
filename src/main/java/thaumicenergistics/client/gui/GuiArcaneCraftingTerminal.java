@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -297,16 +298,12 @@ public class GuiArcaneCraftingTerminal
 	 * 
 	 * @param deltaZ
 	 */
-	private void doMEWheelAction( final int deltaZ )
+	private void doMEWheelAction( final int deltaZ, final int mouseX, final int mouseY )
 	{
-		// Get the mouse position
-		int mouseX = ( Mouse.getEventX() * this.width ) / this.mc.displayWidth;
-		int mouseY = this.height - ( ( Mouse.getEventY() * this.height ) / this.mc.displayHeight ) - 1;
-
 		// Is the mouse inside the ME area?
-		if( ThEGuiHelper.INSTANCE.isPointInGuiRegion( GuiConstants_ACT.ME_ITEM_POS_Y, GuiConstants_ACT.ME_ITEM_POS_X,
-			this.numberOfWidgetRows * GuiConstants_ACT.ME_ROW_HEIGHT, GuiConstants_ACT.ME_GRID_WIDTH, mouseX, mouseY, this.guiLeft,
-			this.guiTop ) )
+		if( ThEGuiHelper.INSTANCE.isPointInGuiRegion( ME_ITEM_POS_Y, ME_ITEM_POS_X,
+			this.numberOfWidgetRows * ME_ROW_HEIGHT, ME_GRID_WIDTH,
+			mouseX, mouseY, this.guiLeft, this.guiTop ) )
 		{
 			// Which direction was the scroll?
 			if( deltaZ > 0 )
@@ -442,11 +439,8 @@ public class GuiArcaneCraftingTerminal
 					}
 					else
 					{
-						// Get the state of the shift keys
-						boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
-
 						// Let the server know the user is requesting an itemstack.
-						Packet_S_ArcaneCraftingTerminal.sendExtract( this.player, widgetStack, mouseButton, isShiftHeld );
+						Packet_S_ArcaneCraftingTerminal.sendExtract( this.player, widgetStack, mouseButton, GuiScreen.isShiftKeyDown() );
 					}
 				}
 
@@ -573,7 +567,7 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private void updateScrollbarRange()
 	{
-		// TODO: This needs some work to prevent overscroll
+		// TODO: Is there still overscroll?
 		// Calculate the total number of rows needed to display ALL items
 		int totalNumberOfRows = (int)Math.ceil( this.repo.size() / (double)GuiConstants_ACT.ME_COLUMNS );
 
@@ -993,6 +987,32 @@ public class GuiArcaneCraftingTerminal
 	}
 
 	@Override
+	protected void onMouseWheel( final int deltaZ, final int mouseX, final int mouseY )
+	{
+		// Is the mouse inside of, or to the left of, the GUI?
+		if( mouseX > ( this.guiLeft + GUI_WIDTH ) )
+		{
+			// Mouse is to the right of the gui
+			return;
+		}
+
+		// Is shift being held?
+		if( GuiScreen.isShiftKeyDown() )
+		{
+			// Extract or insert based on the motion of the wheel
+			this.doMEWheelAction( deltaZ, mouseX, mouseY );
+		}
+		else
+		{
+			// Inform the scroll bar
+			this.scrollBar.wheel( deltaZ );
+
+			// Update the item widgets
+			this.onScrollbarMoved();
+		}
+	}
+
+	@Override
 	protected void onScrollbarMoved()
 	{
 		// Update the widgets
@@ -1045,46 +1065,6 @@ public class GuiArcaneCraftingTerminal
 	public Enum getSortDisplay()
 	{
 		return this.viewMode;
-	}
-
-	/**
-	 * If the mouse wheel has moved, passes the data to the scrollbar
-	 */
-	@Override
-	public void handleMouseInput()
-	{
-		// Get the delta z for the scroll wheel
-		int deltaZ = Mouse.getEventDWheel();
-
-		// Did it move?
-		if( deltaZ != 0 )
-		{
-
-			// Is the mouse inside of, or to the left of, the GUI?
-			int mouseX = ( Mouse.getX() * this.width ) / this.mc.displayWidth;
-			if( mouseX <= ( this.guiLeft + GuiConstants_ACT.GUI_WIDTH ) )
-			{
-				// Is shift being held?
-				if( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) )
-				{
-					// Extract or insert based on the motion of the wheel
-					this.doMEWheelAction( deltaZ );
-				}
-				else
-				{
-					// Inform the scroll bar
-					this.scrollBar.wheel( deltaZ );
-
-					// Update the item widgets
-					this.onScrollbarMoved();
-				}
-
-				return;
-			}
-		}
-
-		// Call super
-		super.handleMouseInput();
 	}
 
 	/**
@@ -1216,25 +1196,6 @@ public class GuiArcaneCraftingTerminal
 
 		// Repo needs update
 		this.viewNeedsUpdate = true;
-	}
-
-	/**
-	 * Called to update what the player is holding.
-	 * 
-	 * @param heldItemstack
-	 */
-	public void onReceivePlayerHeld( final IAEItemStack heldItemstack )
-	{
-		ItemStack itemStack = null;
-
-		// Get the stack
-		if( heldItemstack != null )
-		{
-			itemStack = heldItemstack.getItemStack();
-		}
-
-		// Set what the player is holding
-		this.player.inventory.setItemStack( itemStack );
 	}
 
 	/**

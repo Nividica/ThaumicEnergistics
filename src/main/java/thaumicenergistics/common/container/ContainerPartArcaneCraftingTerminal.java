@@ -25,6 +25,7 @@ import thaumicenergistics.common.container.slot.SlotArcaneCraftingResult;
 import thaumicenergistics.common.container.slot.SlotArmor;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
 import thaumicenergistics.common.network.packet.client.Packet_C_ArcaneCraftingTerminal;
+import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
 import thaumicenergistics.common.parts.AEPartArcaneCraftingTerminal;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
@@ -303,7 +304,6 @@ public class ContainerPartArcaneCraftingTerminal
 			 * I hate this, but I have tried everything I can think of, and the
 			 * equipped armor will not change immediately unless
 			 * the notification comes from the open container, this container.
-			 * TODO: *sigh*... player.inventory.markDirty() exists .-.
 			 */
 			// Create the 'hidden'slot
 			armorSlot = new SlotArmor( player.inventory, 36 + ( 3 - armorIndex ), 0, -1000, armorIndex, false );
@@ -1032,7 +1032,7 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 
 		// Send the update to the client
-		Packet_C_ArcaneCraftingTerminal.setPlayerHeldItem( player, leftOverStack );
+		Packet_C_Sync.sendPlayerHeldItem( player, ( leftOverStack == null ? null : leftOverStack.getItemStack() ) );
 	}
 
 	/**
@@ -1239,8 +1239,7 @@ public class ContainerPartArcaneCraftingTerminal
 			this.monitor.extractItems( toExtract, Actionable.MODULATE, this.playerSource );
 
 			// Send the update to the client
-			Packet_C_ArcaneCraftingTerminal.setPlayerHeldItem( player,
-				AEApi.instance().storage().createItemStack( player.inventory.getItemStack() ) );
+			Packet_C_Sync.sendPlayerHeldItem( player, player.inventory.getItemStack() );
 		}
 
 	}

@@ -22,6 +22,7 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import appeng.api.config.Settings;
 import appeng.api.config.ViewItems;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEInventoryHandler;
@@ -39,7 +40,7 @@ import appeng.util.Platform;
  * 
  */
 public class ContainerEssentiaCell
-	extends AbstractContainerCellTerminalBase
+	extends ContainerEssentiaCellTerminalBase
 {
 	/**
 	 * The ME chest the cell is stored in.
@@ -174,6 +175,12 @@ public class ContainerEssentiaCell
 		return new HandlerItemEssentiaCell( essentiaCell, this.chestSaveProvider );
 	}
 
+	@Override
+	protected BaseActionSource getActionSource()
+	{
+		return this.playerSource;
+	}
+
 	/**
 	 * Transfers essentia.
 	 */
@@ -181,7 +188,7 @@ public class ContainerEssentiaCell
 	public void doWork( final int elapsedTicks )
 	{
 		// Transfer essentia if needed.
-		this.transferEssentia( this.playerSource );
+		this.transferEssentiaFromWorkSlots();
 	}
 
 	@Override

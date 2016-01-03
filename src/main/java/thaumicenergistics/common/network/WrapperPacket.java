@@ -37,7 +37,7 @@ public abstract class WrapperPacket
 		if( id == -1 )
 		{
 			// Invalid packet
-			ThELog.warning( "Invalid packet ID detected" );
+			ThELog.warning( "Unknown packet detected" );
 			return;
 		}
 

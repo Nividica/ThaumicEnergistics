@@ -26,13 +26,11 @@ public class Packet_C_ArcaneCraftingTerminal
 	 */
 	private static final byte MODE_RECEIVE_CHANGE = 0,
 					MODE_RECEIVE_FULL_LIST = 1,
-					MODE_RECEIVE_PLAYER_HOLDING = 2,
 					MODE_RECEIVE_SORTS = 3,
 					MODE_UPDATE_COSTS = 4;
 
 	private IAEItemStack changedStack;
 	private IItemList<IAEItemStack> fullList;
-	private boolean isHeldEmpty;
 	private SortOrder sortingOrder;
 	private SortDir sortingDirection;
 	private ViewItems viewMode;
@@ -102,28 +100,6 @@ public class Packet_C_ArcaneCraftingTerminal
 	}
 
 	/**
-	 * Creates a packet with an update to what itemstack the player is holding.
-	 * 
-	 * @param player
-	 * @param heldItem
-	 * @return
-	 */
-	public static void setPlayerHeldItem( final EntityPlayer player, final IAEItemStack heldItem )
-	{
-		// Create the packet
-		Packet_C_ArcaneCraftingTerminal packet = newPacket( player, Packet_C_ArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING );
-
-		// Set the held item
-		packet.changedStack = heldItem;
-
-		// Is the player holding anything?
-		packet.isHeldEmpty = ( heldItem == null );
-
-		// Send it
-		NetworkHandler.sendPacketToClient( packet );
-	}
-
-	/**
 	 * Creates a packet with a changed network stack amount
 	 * 
 	 * @param player
@@ -175,11 +151,6 @@ public class Packet_C_ArcaneCraftingTerminal
 			case Packet_C_ArcaneCraftingTerminal.MODE_RECEIVE_CHANGE:
 				// Update the item list
 				( (GuiArcaneCraftingTerminal)gui ).onReceiveChange( this.changedStack );
-				break;
-
-			case Packet_C_ArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
-				// Set the held item
-				( (GuiArcaneCraftingTerminal)gui ).onReceivePlayerHeld( this.changedStack );
 				break;
 
 			case Packet_C_ArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
@@ -238,21 +209,6 @@ public class Packet_C_ArcaneCraftingTerminal
 
 			break;
 
-		case Packet_C_ArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
-			// Read if the itemstack is empty
-			this.isHeldEmpty = stream.readBoolean();
-
-			// Is it not empty?
-			if( !this.isHeldEmpty )
-			{
-				this.changedStack = ThEBasePacket.readAEItemStack( stream );
-			}
-			else
-			{
-				this.changedStack = null;
-			}
-			break;
-
 		case Packet_C_ArcaneCraftingTerminal.MODE_RECEIVE_SORTS:
 			// Read sorts
 			this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[stream.readInt()];
@@ -295,19 +251,6 @@ public class Packet_C_ArcaneCraftingTerminal
 
 			// Write the change
 			ThEBasePacket.writeAEItemStack( this.changedStack, stream );
-			break;
-
-		case Packet_C_ArcaneCraftingTerminal.MODE_RECEIVE_PLAYER_HOLDING:
-			// Write if the held item is empty
-			stream.writeBoolean( this.isHeldEmpty );
-
-			// Is it not empty?
-			if( !this.isHeldEmpty )
-			{
-				// Write the stack
-				ThEBasePacket.writeAEItemStack( this.changedStack, stream );
-			}
-
 			break;
 
 		case Packet_C_ArcaneCraftingTerminal.MODE_RECEIVE_SORTS:

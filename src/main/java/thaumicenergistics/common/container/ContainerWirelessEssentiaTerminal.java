@@ -20,13 +20,14 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.ViewItems;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.util.Platform;
 
 public class ContainerWirelessEssentiaTerminal
-	extends AbstractContainerCellTerminalBase
+	extends ContainerEssentiaCellTerminalBase
 {
 
 	/**
@@ -153,6 +154,12 @@ public class ContainerWirelessEssentiaTerminal
 		}
 	}
 
+	@Override
+	protected BaseActionSource getActionSource()
+	{
+		return this.handler.getActionHost();
+	}
+
 	/**
 	 * Transfers essentia, checks the network connectivity, and drains power.
 	 */
@@ -188,7 +195,7 @@ public class ContainerWirelessEssentiaTerminal
 		}
 
 		// Transfer essentia if needed
-		this.transferEssentia( this.handler.getActionHost() );
+		this.transferEssentiaFromWorkSlots();
 	}
 
 	@Override
