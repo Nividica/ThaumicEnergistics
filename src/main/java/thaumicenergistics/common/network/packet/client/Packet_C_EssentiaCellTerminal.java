@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
-import thaumicenergistics.common.container.ContainerEssentiaCellTerminalBase;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.registries.EnumCache;
@@ -28,8 +27,7 @@ public class Packet_C_EssentiaCellTerminal
 	private static final byte MODE_FULL_LIST = 0,
 					MODE_SELECTED_ASPECT = 1,
 					MODE_VIEWING_CHANGED = 2,
-					MODE_LIST_CHANGED = 3,
-					MODE_PLAY_SOUND = 4;
+					MODE_LIST_CHANGED = 3;
 
 	private Collection<IAspectStack> aspectStackList;
 	private Aspect selectedAspect;
@@ -71,19 +69,6 @@ public class Packet_C_EssentiaCellTerminal
 
 		// Set the list
 		packet.aspectStackList = list;
-
-		// Send it
-		NetworkHandler.sendPacketToClient( packet );
-	}
-
-	/**
-	 * Asks the client to play the transfer audio.
-	 * 
-	 * @param player
-	 */
-	public static void sendPlayTransferAudio( final EntityPlayer player )
-	{
-		Packet_C_EssentiaCellTerminal packet = newPacket( player, MODE_PLAY_SOUND );
 
 		// Send it
 		NetworkHandler.sendPacketToClient( packet );
@@ -169,11 +154,6 @@ public class Packet_C_EssentiaCellTerminal
 			case MODE_LIST_CHANGED:
 				// Update the list
 				( (GuiEssentiaCellTerminal)gui ).onReceiveAspectListChange( this.change );
-				break;
-
-			case MODE_PLAY_SOUND:
-				// Play the sound!
-				( (ContainerEssentiaCellTerminalBase)this.player.openContainer ).playTransferSound( this.player, false );
 				break;
 			}
 		}

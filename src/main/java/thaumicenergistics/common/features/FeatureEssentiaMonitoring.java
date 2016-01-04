@@ -10,10 +10,7 @@ import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.IThEParts;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.common.registries.AEPartsEnum;
-import thaumicenergistics.common.registries.FeatureRegistry;
-import thaumicenergistics.common.registries.RecipeRegistry;
-import thaumicenergistics.common.registries.ResearchRegistry;
+import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
@@ -126,7 +123,9 @@ public class FeatureEssentiaMonitoring
 		{
 			pageList.add( new ResearchPage( RecipeRegistry.ITEM_WIRELESS_ESSENTIA_TERMINAL ) );
 		}
+		pageList.add( new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 3 ) ) );
 		pageList.add( new ResearchPage( RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER ) );
+		pageList.add( new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 4 ) ) );
 		pageList.add( new ResearchPage( RecipeRegistry.PART_ESSENTIA_STORAGE_MONITOR ) );
 		if( this.isConversionEnabled )
 		{

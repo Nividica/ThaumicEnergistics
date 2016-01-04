@@ -1,4 +1,11 @@
-﻿01/03/2016 0.10.0.0 - Beta
+﻿01/04/2016 0.10.0.0 - Beta
+  Essentia terminal player different sounds depending on item.
+  Added debug level to logger.
+  Updated essentia terminal lore.
+  Updated essentia terminal gui.
+  Todo: Lore, recipe, texture for Distilation Encoder.
+
+01/03/2016 0.10.0.0 - Beta
   Essentia terminal can fill/drain containers when they are dragged and clicked over an aspect.
 
 01/02/2016 0.10.0.0 - Beta
@@ -13,7 +20,6 @@
   Fixed sort-by-name in the Essentia Terminal.
   Fixed a bug where some parts would not be aware of neighboring blocks when placed.
   Fixes #53: :D
-  Todo: Lore, recipe, texture.
 
 12/30/2015 0.10.0.0 - Beta
   Added Distillation Encoder

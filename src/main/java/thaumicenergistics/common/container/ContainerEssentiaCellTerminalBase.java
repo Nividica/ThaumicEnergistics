@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
@@ -30,6 +27,7 @@ import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerm
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.storage.EssentiaRepo;
 import thaumicenergistics.common.utils.EffectiveSide;
+import thaumicenergistics.common.utils.ThEUtils;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import appeng.api.config.Actionable;
@@ -39,8 +37,6 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.security.PlayerSource;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base class for cell and terminal inventory containers
@@ -162,9 +158,14 @@ public abstract class ContainerEssentiaCellTerminalBase
 	private Slot inputSlot, outputSlot;
 
 	/**
-	 * Location of the transfer audio
+	 * Location of the splash sound
 	 */
-	private ResourceLocation transferSound = null;
+	private final String soundLocation_Splash = "game.neutral.swim";
+
+	/**
+	 * Location of the paper sound
+	 */
+	private final String soundLocation_Paper = "thaumcraft:page";
 
 	/**
 	 * Set to true once a full list request is sent to the server.
@@ -182,8 +183,8 @@ public abstract class ContainerEssentiaCellTerminalBase
 
 		if( EffectiveSide.isClientSide() )
 		{
+			// Set the sound time
 			this.lastSoundPlaytime = System.currentTimeMillis();
-			this.transferSound = new ResourceLocation( "game.neutral.swim" );
 		}
 		else
 		{
@@ -394,16 +395,6 @@ public abstract class ContainerEssentiaCellTerminalBase
 		// Create a new container filled to the proposed amount
 		return EssentiaItemContainerHelper.INSTANCE.injectIntoContainer( container,
 			new AspectStack( withAspect, proposedFillAmount ) );
-	}
-
-	/**
-	 * Plays the transfer sound.
-	 */
-	@SideOnly(Side.CLIENT)
-	private void playTransferSound()
-	{
-		Minecraft.getMinecraft().getSoundHandler()
-						.playSound( PositionedSoundRecord.func_147674_a( this.transferSound, 1.0F ) );
 	}
 
 	/**
@@ -844,7 +835,8 @@ public abstract class ContainerEssentiaCellTerminalBase
 		// Update
 		Packet_C_Sync.sendPlayerHeldItem( player, sourceStack );
 		this.detectAndSendChanges();
-		this.playTransferSound( player, false );
+		this.playTransferSound( player, false,
+			( EssentiaItemContainerHelper.INSTANCE.getItemType( sourceStack ) == AspectItemType.JarLabel ? 1 : 0 ) );
 
 	}
 
@@ -857,7 +849,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 		// Is this client side?
 		if( EffectiveSide.isClientSide() )
 		{
-			this.playTransferSound( null, true );
+			this.playTransferSound( null, true, 0 );
 		}
 	}
 
@@ -946,12 +938,15 @@ public abstract class ContainerEssentiaCellTerminalBase
 
 	/**
 	 * Checks if the transfer sound should play.
+	 * if checkWorkSlots is true the type will be automatically determined.
 	 * 
 	 * @param player
 	 * @param checkWorkSlots
+	 * @param type
+	 * 0 = splash, 1 = paper
 	 */
 
-	public void playTransferSound( final EntityPlayer player, final boolean checkWorkSlots )
+	public void playTransferSound( final EntityPlayer player, final boolean checkWorkSlots, int type )
 	{
 		if( checkWorkSlots )
 		{
@@ -965,8 +960,11 @@ public abstract class ContainerEssentiaCellTerminalBase
 				// Is the item a label?
 				if( EssentiaItemContainerHelper.INSTANCE.getItemType( itemStack ) == AspectItemType.JarLabel )
 				{
-					// TODO: Special sound for labels?
-					return;
+					type = 1;
+				}
+				else
+				{
+					type = 0;
 				}
 
 				// Has the count changed?
@@ -992,13 +990,13 @@ public abstract class ContainerEssentiaCellTerminalBase
 		// Has enough time passed to play the sound again?
 		if( ( System.currentTimeMillis() - this.lastSoundPlaytime ) > MINIMUM_SOUND_WAIT )
 		{
-			if( EffectiveSide.isClientSide() )
+			if( type == 0 )
 			{
-				this.playTransferSound();
+				ThEUtils.playClientSound( this.player, this.soundLocation_Splash );
 			}
-			else
+			else if( type == 1 )
 			{
-				Packet_C_EssentiaCellTerminal.sendPlayTransferAudio( player );
+				ThEUtils.playClientSound( this.player, this.soundLocation_Paper );
 			}
 
 			// Set the playtime

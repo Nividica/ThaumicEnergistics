@@ -1,8 +1,16 @@
 package thaumicenergistics.common.utils;
 
+import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import thaumcraft.common.items.wands.ItemWandCasting;
+import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Houses commonly used methods.
@@ -12,6 +20,15 @@ import thaumcraft.common.items.wands.ItemWandCasting;
  */
 public final class ThEUtils
 {
+	/**
+	 * Plays a sound for this player.
+	 */
+	@SideOnly(Side.CLIENT)
+	private static final void playLocalSound( final ResourceLocation sound )
+	{
+		Minecraft.getMinecraft().getSoundHandler()
+						.playSound( PositionedSoundRecord.func_147674_a( sound, 1.0F ) );
+	}
 
 	/**
 	 * Returns true if the item stack is a wand, scepter, or staff if they are
@@ -21,7 +38,7 @@ public final class ThEUtils
 	 * @param allowStaves
 	 * @return
 	 */
-	public static boolean isItemValidWand( final ItemStack stack, final boolean allowStaves )
+	public static final boolean isItemValidWand( final ItemStack stack, final boolean allowStaves )
 	{
 		Item potentialWand;
 
@@ -104,4 +121,36 @@ public final class ThEUtils
 		return minValue + rangePercentage;
 	}
 
+	/**
+	 * Plays a sound only the specified player can hear.
+	 * 
+	 * @param player
+	 * Can be null on client side.
+	 * @param soundLocation
+	 */
+	public static final void playClientSound( @Nullable final EntityPlayer player, final String soundLocation )
+	{
+		// Ensure there is a sound
+		if( ( soundLocation == null ) || ( soundLocation == "" ) )
+		{
+			return;
+		}
+
+		if( EffectiveSide.isClientSide() )
+		{
+			// Create the resource
+			ResourceLocation sound = new ResourceLocation( soundLocation );
+
+			// Play the sound
+			playLocalSound( sound );
+		}
+		else
+		{
+			// Send to the player
+			if( player != null )
+			{
+				Packet_C_Sync.sendPlaySound( player, soundLocation );
+			}
+		}
+	}
 }

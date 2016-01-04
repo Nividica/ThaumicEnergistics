@@ -17,6 +17,17 @@ public class ThELog
 	}
 
 	/**
+	 * Logs a debug statement.
+	 * 
+	 * @param format
+	 * @param data
+	 */
+	public static void debug( final String format, final Object ... data )
+	{
+		log.debug( String.format( format, data ) );
+	}
+
+	/**
 	 * Displays the section footer.
 	 */
 	public static void endSection( final String section, final long sectionStartTime )

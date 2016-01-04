@@ -5,9 +5,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
+import thaumicenergistics.common.utils.ThEUtils;
 
 /**
- * Packed used to send misc. sync events to the client.
+ * Packed used to send miscellaneous events to the client.
  * 
  * @author Nividica
  * 
@@ -18,11 +19,14 @@ public class Packet_C_Sync
 	/**
 	 * Packet modes.
 	 */
-	private static final byte MODE_PLAYER_HELD = 1;
+	private static final byte MODE_PLAYER_HELD = 1,
+					MODE_SOUND = 2;
 
-	private ItemStack itemStack;
+	private ItemStack syncStack;
 
-	private boolean flag;
+	private boolean syncFlag;
+
+	private String syncString;
 
 	/**
 	 * Creates the packet
@@ -56,10 +60,28 @@ public class Packet_C_Sync
 		Packet_C_Sync packet = newPacket( player, MODE_PLAYER_HELD );
 
 		// Set the held item
-		packet.itemStack = heldItem;
+		packet.syncStack = heldItem;
 
 		// Is the player holding anything?
-		packet.flag = ( heldItem != null );
+		packet.syncFlag = ( heldItem != null );
+
+		// Send it
+		NetworkHandler.sendPacketToClient( packet );
+	}
+
+	/**
+	 * Sends a sound to the player to play.
+	 * 
+	 * @param player
+	 * @param soundLocation
+	 */
+	public static void sendPlaySound( final EntityPlayer player, final String soundLocation )
+	{
+		// Create the packet
+		Packet_C_Sync packet = newPacket( player, MODE_SOUND );
+
+		// Set the sound location
+		packet.syncString = soundLocation;
 
 		// Send it
 		NetworkHandler.sendPacketToClient( packet );
@@ -72,17 +94,21 @@ public class Packet_C_Sync
 		{
 		case MODE_PLAYER_HELD:
 			// Read if the item is null
-			this.flag = stream.readBoolean();
-			if( this.flag )
+			this.syncFlag = stream.readBoolean();
+			if( this.syncFlag )
 			{
 				// Read stack
-				this.itemStack = ThEBasePacket.readItemstack( stream );
+				this.syncStack = ThEBasePacket.readItemstack( stream );
 			}
 			else
 			{
-				this.itemStack = null;
+				this.syncStack = null;
 			}
+			break;
 
+		case MODE_SOUND:
+			// Read the sound location
+			this.syncString = ThEBasePacket.readString( stream );
 			break;
 		}
 	}
@@ -94,8 +120,11 @@ public class Packet_C_Sync
 		{
 		case MODE_PLAYER_HELD:
 			// Set what the player is holding.
-			this.player.inventory.setItemStack( this.itemStack );
+			this.player.inventory.setItemStack( this.syncStack );
 			break;
+		case MODE_SOUND:
+			// Play the sound
+			ThEUtils.playClientSound( null, this.syncString );
 		}
 	}
 
@@ -106,13 +135,16 @@ public class Packet_C_Sync
 		{
 		case MODE_PLAYER_HELD:
 			// Write if the held item is null
-			stream.writeBoolean( this.flag );
-			if( this.flag )
+			stream.writeBoolean( this.syncFlag );
+			if( this.syncFlag )
 			{
 				// Write the stack
-				ThEBasePacket.writeItemstack( this.itemStack, stream );
+				ThEBasePacket.writeItemstack( this.syncStack, stream );
 			}
-
+			break;
+		case MODE_SOUND:
+			// Write the sound location
+			ThEBasePacket.writeString( this.syncString, stream );
 			break;
 		}
 	}

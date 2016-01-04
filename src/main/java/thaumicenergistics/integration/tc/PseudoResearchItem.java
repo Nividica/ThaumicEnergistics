@@ -28,8 +28,8 @@ public class PseudoResearchItem
 		// Call super and create the research item
 		super( key, category, new AspectList(), column, row, 1, icon );
 
-		// Set as a hidden stub
-		this.setHidden().setStub();
+		// Set as a stub
+		this.setStub().setHidden();
 	}
 
 	/**
@@ -46,8 +46,8 @@ public class PseudoResearchItem
 		// Call super and create the research item
 		super( key, category, new AspectList(), column, row, 1, icon );
 
-		// Set as a hidden stub
-		this.setHidden().setStub();
+		// Set as a stub
+		this.setStub().setHidden();
 	}
 
 	/**
