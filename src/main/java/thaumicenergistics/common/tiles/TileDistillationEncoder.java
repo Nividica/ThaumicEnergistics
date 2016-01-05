@@ -1,5 +1,6 @@
 package thaumicenergistics.common.tiles;
 
+import java.util.ArrayList;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -79,6 +80,28 @@ public class TileDistillationEncoder
 	}
 
 	/**
+	 * Returns a list of items to drop when broken.
+	 * 
+	 * @return
+	 */
+	public ArrayList<ItemStack> getDrops( final ArrayList<ItemStack> drops )
+	{
+		// Add encoded
+		if( ( this.internalInventory.slots[SLOT_ENCODED_PATTERN] != null ) )
+		{
+			drops.add( this.internalInventory.slots[SLOT_ENCODED_PATTERN] );
+		}
+
+		// Add blank
+		if( ( this.internalInventory.slots[SLOT_BLANK_PATTERNS] != null ) )
+		{
+			drops.add( this.internalInventory.slots[SLOT_BLANK_PATTERNS] );
+		}
+
+		return drops;
+	}
+
+	/**
 	 * Gets the inscriber's inventory.
 	 * 
 	 * @return
@@ -93,7 +116,7 @@ public class TileDistillationEncoder
 	 * 
 	 * @return
 	 */
-	public boolean hasPattern()
+	public boolean hasPatterns()
 	{
 		// Is there anything in the pattern slots?
 		return( ( this.internalInventory.slots[SLOT_ENCODED_PATTERN] != null )

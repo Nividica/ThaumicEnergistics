@@ -3,7 +3,10 @@
   Added debug level to logger.
   Updated essentia terminal lore.
   Updated essentia terminal gui.
-  Todo: Lore, recipe, texture for Distilation Encoder.
+  Created block texture for DPE.
+  Fixed DPE not dropping patterns on breaking.
+  Enhancing DPE gui.
+  Todo: Lore, recipe for distillation pattern Encoder.
 
 01/03/2016 0.10.0.0 - Beta
   Essentia terminal can fill/drain containers when they are dragged and clicked over an aspect.
@@ -22,9 +25,9 @@
   Fixes #53: :D
 
 12/30/2015 0.10.0.0 - Beta
-  Added Distillation Encoder
+  Added Distillation Pattern Encoder
   Added pattern handler
-  Implemented Distillation Encoder GUI
+  Implemented Distillation Pattern Encoder GUI
   Cleaned up tooltip code, and fixed underdraw issue.  
 
 12/29/2015 0.10.0.0 - Beta

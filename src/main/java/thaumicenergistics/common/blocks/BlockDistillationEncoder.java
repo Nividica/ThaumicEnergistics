@@ -1,9 +1,11 @@
 package thaumicenergistics.common.blocks;
 
+import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -16,6 +18,7 @@ import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.BlockEnum;
 import thaumicenergistics.common.tiles.TileDistillationEncoder;
+import thaumicenergistics.common.utils.EffectiveSide;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -44,6 +47,41 @@ public class BlockDistillationEncoder
 		ThEGuiHandler.launchGui( ThEGuiHandler.DISTILLATION_ENCODER, player, world, x, y, z );
 
 		return true;
+	}
+
+	/**
+	 * Called when the block is broken.
+	 */
+	@Override
+	public void breakBlock( final World world, final int x, final int y, final int z, final Block block, final int metaData )
+	{
+		// Is this server side?
+		if( EffectiveSide.isServerSide() )
+		{
+			// Get the tile
+			TileEntity tile = world.getTileEntity( x, y, z );
+
+			if( tile instanceof TileDistillationEncoder )
+			{
+				// Cast
+				TileDistillationEncoder tileDE = (TileDistillationEncoder)tile;
+
+				// Does it have patterns?
+				if( tileDE.hasPatterns() )
+				{
+					// Get the drops
+					ArrayList<ItemStack> drops = tileDE.getDrops( new ArrayList<ItemStack>() );
+					for( ItemStack drop : drops )
+					{
+						// Spawn in the world
+						world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, drop ) );
+					}
+				}
+			}
+		}
+
+		// Call super
+		super.breakBlock( world, x, y, z, block, metaData );
 	}
 
 	/**

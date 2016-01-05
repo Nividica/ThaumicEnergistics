@@ -12,6 +12,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.Thaumcraft;
 import thaumcraft.common.lib.research.ScanManager;
+import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
 import thaumicenergistics.common.items.ItemCraftingAspect;
 import thaumicenergistics.common.registries.ItemEnum;
@@ -32,7 +33,7 @@ public class ContainerDistillationEncoder
 	/**
 	 * Position of the source item slot
 	 */
-	private static final int SLOT_SOURCE_ITEM_POS_X = 15, SLOT_SOURCE_ITEM_POS_Y = 69;
+	public static final int SLOT_SOURCE_ITEM_POS_X = 15, SLOT_SOURCE_ITEM_POS_Y = 69;
 
 	/**
 	 * Starting position of the source aspect slots
@@ -67,12 +68,12 @@ public class ContainerDistillationEncoder
 	/**
 	 * Slot holding the source item.
 	 */
-	protected SlotFake slotSourceItem;
+	public final SlotFake slotSourceItem;
 
 	/**
 	 * Slots holding the source item's aspects.
 	 */
-	protected SlotFake[] slotSourceAspects = new SlotFake[TileDistillationEncoder.SLOT_SOURCE_ASPECTS_COUNT];
+	public final SlotFake[] slotSourceAspects = new SlotFake[TileDistillationEncoder.SLOT_SOURCE_ASPECTS_COUNT];
 
 	/**
 	 * Slot holding the selected aspect.
@@ -93,6 +94,11 @@ public class ContainerDistillationEncoder
 	 * Pattern helper
 	 */
 	protected DistillationPatternHelper patternHelper;
+
+	/**
+	 * Who/what to send updates to when slots change.
+	 */
+	public IInventoryUpdateReceiver slotUpdateReceiver;
 
 	/**
 	 * Constructor.
@@ -374,6 +380,19 @@ public class ContainerDistillationEncoder
 	}
 
 	@Override
+	public void putStackInSlot( final int slotNumber, final ItemStack stack )
+	{
+		// Call super
+		super.putStackInSlot( slotNumber, stack );
+
+		// Call receiver
+		if( EffectiveSide.isClientSide() && ( this.slotUpdateReceiver != null ) )
+		{
+			this.slotUpdateReceiver.onInventoryChanged( this.getSlot( slotNumber ).inventory );
+		}
+	}
+
+	@Override
 	public ItemStack slotClick( final int slotNumber, final int buttonPressed, final int flag, final EntityPlayer player )
 	{
 		// Source item slot?
@@ -438,6 +457,13 @@ public class ContainerDistillationEncoder
 					return null;
 				}
 			}
+		}
+
+		// Selected aspect?
+		if( this.slotSelectedAspect.slotNumber == slotNumber )
+		{
+			// No interaction
+			return null;
 		}
 
 		return super.slotClick( slotNumber, buttonPressed, flag, player );

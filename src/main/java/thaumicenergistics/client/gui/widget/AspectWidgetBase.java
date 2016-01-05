@@ -170,7 +170,7 @@ public abstract class AspectWidgetBase
 			}
 
 			// Get the color bytes
-			this.aspectColorBytes = ThEGuiHelper.INSTANCE.convertPackedColorToARGB( this.aspectStack.getAspect().getColor() );
+			this.aspectColorBytes = ThEGuiHelper.INSTANCE.convertPackedColorToARGBb( this.aspectStack.getAspect().getColor() );
 
 			// Set full alpha
 			this.aspectColorBytes[0] = (byte)255;

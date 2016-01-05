@@ -51,6 +51,7 @@ public class CommonDependantItems
 	public ItemStack EssentiaMirror;
 	public ItemStack VisFilter;
 	public ItemStack QuickSilverDrop;
+	public ItemStack Thaumometer;
 
 	// AE Items =========================
 	public Object VibrantGlass;
@@ -186,6 +187,7 @@ public class CommonDependantItems
 		this.EssentiaMirror = (ItemStack)this.getItemOrAlt( Config.allowMirrors, new ItemStack( ConfigBlocks.blockMirror, 1, 6 ), this.WardedJar );
 		this.VisFilter = new ItemStack( ConfigItems.itemResource, 1, 8 );
 		this.QuickSilverDrop = new ItemStack( ConfigItems.itemNugget, 1, 5 );
+		this.Thaumometer = new ItemStack( ConfigItems.itemThaumometer );
 	}
 
 	/**

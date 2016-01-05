@@ -1,18 +1,16 @@
 package thaumicenergistics.client.gui.widget;
 
 import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSelectorGui;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.ThEGuiHelper;
+import thaumicenergistics.common.utils.ThEUtils;
 import appeng.core.AEConfig;
 import appeng.util.ReadableNumberConverter;
 import cpw.mods.fml.relauncher.Side;
@@ -318,8 +316,7 @@ public class WidgetAspectSelector
 		if( changed )
 		{
 			// Play clicky sound
-			Minecraft.getMinecraft().getSoundHandler().playSound(
-				PositionedSoundRecord.func_147674_a( new ResourceLocation( "gui.button.press" ), 1.0F ) );
+			ThEUtils.playClientSound( null, "gui.button.press" );
 
 			// Set the selected aspect
 			( (IAspectSelectorGui)this.hostGUI ).getContainer().setSelectedAspect( selectedAspect );

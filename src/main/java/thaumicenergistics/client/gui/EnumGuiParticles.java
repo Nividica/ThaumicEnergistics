@@ -8,7 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public enum GuiParticle
+public enum EnumGuiParticles
 {
 		Orb (thaumcraft.client.fx.ParticleEngine.particleTexture, 0, 128, 16, 16, 16, 0, 16),
 		Rune (thaumcraft.client.fx.ParticleEngine.particleTexture, 0, 96, 16, 16, 16, 0, 16),
@@ -36,7 +36,7 @@ public enum GuiParticle
 	 */
 	private ResourceLocation texture;
 
-	private GuiParticle( final ResourceLocation textureLocation, final int U, final int V, final int width, final int height,
+	private EnumGuiParticles( final ResourceLocation textureLocation, final int U, final int V, final int width, final int height,
 							final int UStep, final int VStep, final int Frames )
 	{
 		this.texture = textureLocation;
@@ -100,7 +100,7 @@ public enum GuiParticle
 
 		if( needsPrepare )
 		{
-			GuiParticle.finishDraw();
+			EnumGuiParticles.finishDraw();
 		}
 	}
 

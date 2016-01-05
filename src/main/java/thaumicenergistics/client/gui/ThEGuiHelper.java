@@ -93,7 +93,7 @@ public final class ThEGuiHelper
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 	}
 
-	public final byte[] convertPackedColorToARGB( final int color )
+	public final byte[] convertPackedColorToARGBb( final int color )
 	{
 		byte[] colorBytes = new byte[COLOR_ARRAY_SIZE];
 
@@ -105,6 +105,20 @@ public final class ThEGuiHelper
 		}
 
 		return colorBytes;
+	}
+
+	public final float[] convertPackedColorToARGBf( final int color )
+	{
+		float[] colorFloats = new float[COLOR_ARRAY_SIZE];
+
+		// Extract bytes
+		for( int i = 0; i < COLOR_ARRAY_SIZE; i++ )
+		{
+			// Get floats
+			colorFloats[COLOR_ARRAY_SIZE - 1 - i] = ( ( color >> this.COLOR_SHIFT_AMOUNT[i] ) & 0xFF ) / 255.0f;
+		}
+
+		return colorFloats;
 	}
 
 	public final int[] createColorGradient( final int fromColor, final int toColor, final int iterations )

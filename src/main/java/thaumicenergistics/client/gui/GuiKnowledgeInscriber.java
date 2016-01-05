@@ -22,6 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiKnowledgeInscriber
 	extends ThEBaseGui
 {
+	// TODO: Either subclass guiparticleanimator or move to it completely.
 	private class SaveParticle
 	{
 		private int startX, startY;
@@ -78,7 +79,7 @@ public class GuiKnowledgeInscriber
 			int Y = this.startY + (int)( this.distY * this.percent );
 
 			// Draw
-			GuiParticle.Knowledge.drawParticle( gui, X, Y, frame, 0.2f, 0.5f, 1.0f, false );
+			EnumGuiParticles.Knowledge.drawParticle( gui, X, Y, frame, 0.2f, 0.5f, 1.0f, false );
 		}
 
 		/**
@@ -183,7 +184,7 @@ public class GuiKnowledgeInscriber
 		// Assume all particles are drawn
 		this.hasParticlesToDraw = false;
 
-		GuiParticle.Knowledge.prepareDraw();
+		EnumGuiParticles.Knowledge.prepareDraw();
 		for( int index = 0; index < this.particles.length; ++index )
 		{
 			// Draw the particle
@@ -192,7 +193,7 @@ public class GuiKnowledgeInscriber
 			// Is the particle not done?
 			this.hasParticlesToDraw |= this.particles[index].notFinished();
 		}
-		GuiParticle.finishDraw();
+		EnumGuiParticles.finishDraw();
 	}
 
 	/**
