@@ -17,7 +17,7 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureVisRelayInterface
-	extends AbstractDependencyFeature
+	extends ThEDependencyFeatureBase
 {
 	@Override
 	protected boolean checkConfigs()
@@ -54,7 +54,7 @@ public class FeatureVisRelayInterface
 		visInterfaceAspectList.add( Aspect.FIRE, 2 );
 		visInterfaceAspectList.add( Aspect.ORDER, 2 );
 		visInterfaceAspectList.add( Aspect.WATER, 2 );
-		RecipeRegistry.PART_VIS_INTERFACE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.VISINTERFACE.getKey(),
+		RecipeRegistry.PART_VIS_INTERFACE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.VIS_RELAY_INTERFACE.getKey(),
 			VisInterface, visInterfaceAspectList, cdi.BallanceShard, cdi.MEP2P );
 	}
 
@@ -72,15 +72,15 @@ public class FeatureVisRelayInterface
 		ItemStack vriIcon = AEPartsEnum.VisInterface.getStack();
 
 		// Set the pages
-		ResearchPage[] vriPages = new ResearchPage[] { new ResearchPage( ResearchTypes.VISINTERFACE.getPageName( 1 ) ),
-						new ResearchPage( RecipeRegistry.PART_VIS_INTERFACE ), new ResearchPage( ResearchTypes.VISINTERFACE.getPageName( 2 ) ),
-						new ResearchPage( ResearchTypes.VISINTERFACE.getPageName( 3 ) ) };
+		ResearchPage[] vriPages = new ResearchPage[] { new ResearchPage( ResearchTypes.VIS_RELAY_INTERFACE.getPageName( 1 ) ),
+						new ResearchPage( RecipeRegistry.PART_VIS_INTERFACE ), new ResearchPage( ResearchTypes.VIS_RELAY_INTERFACE.getPageName( 2 ) ),
+						new ResearchPage( ResearchTypes.VIS_RELAY_INTERFACE.getPageName( 3 ) ) };
 
 		// Create the vis relay interface research
-		ResearchTypes.VISINTERFACE.createResearchItem( vriAspects, ResearchRegistry.COMPLEXITY_MEDIUM, vriIcon, vriPages );
-		ResearchTypes.VISINTERFACE.researchItem.setParents( this.getFirstValidParentKey( false ), PseudoResearchTypes.VISPOWER.getKey() );
-		ResearchTypes.VISINTERFACE.researchItem.setParentsHidden( "VISPOWER" );
-		ResearchTypes.VISINTERFACE.researchItem.registerResearchItem();
+		ResearchTypes.VIS_RELAY_INTERFACE.createResearchItem( vriAspects, ResearchRegistry.COMPLEXITY_MEDIUM, vriIcon, vriPages );
+		ResearchTypes.VIS_RELAY_INTERFACE.researchItem.setParents( this.getFirstValidParentKey( false ), PseudoResearchTypes.VISPOWER.getKey() );
+		ResearchTypes.VIS_RELAY_INTERFACE.researchItem.setParentsHidden( "VISPOWER" );
+		ResearchTypes.VIS_RELAY_INTERFACE.researchItem.registerResearchItem();
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class FeatureVisRelayInterface
 	{
 		if( includeSelf && this.isAvailable() )
 		{
-			return ResearchTypes.VISINTERFACE.getKey();
+			return ResearchTypes.VIS_RELAY_INTERFACE.getKey();
 		}
 
 		// Pass to parent

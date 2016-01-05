@@ -11,7 +11,7 @@ import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
 public class FeatureResearchSetup
-	extends AbstractBasicFeature
+	extends ThEFeatureBase
 {
 
 	/**
@@ -58,7 +58,7 @@ public class FeatureResearchSetup
 	 * 
 	 * @param featureList
 	 */
-	public void finalizeRegistration( final AbstractBasicFeature[] featureList )
+	public void finalizeRegistration( final ThEFeatureBase[] featureList )
 	{
 		if( this.hasFinalizedResearch )
 		{
@@ -66,7 +66,7 @@ public class FeatureResearchSetup
 		}
 
 		// Loop over all features
-		for( AbstractBasicFeature feature : featureList )
+		for( ThEFeatureBase feature : featureList )
 		{
 			// Is the feature available?
 			if( feature.isAvailable() )

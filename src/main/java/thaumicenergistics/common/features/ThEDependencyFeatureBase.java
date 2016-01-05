@@ -9,10 +9,10 @@ import thaumicenergistics.common.registries.FeatureRegistry;
  * @author Nividica
  * 
  */
-public abstract class AbstractDependencyFeature
-	extends AbstractBasicFeature
+public abstract class ThEDependencyFeatureBase
+	extends ThEFeatureBase
 {
-	public AbstractDependencyFeature()
+	public ThEDependencyFeatureBase()
 	{
 		// Inform the super that we are not enabled by default
 		super( false );

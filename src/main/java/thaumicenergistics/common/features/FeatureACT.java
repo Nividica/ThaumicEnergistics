@@ -15,7 +15,7 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureACT
-	extends AbstractDependencyFeature
+	extends ThEDependencyFeatureBase
 {
 
 	@Override
@@ -60,7 +60,7 @@ public class FeatureACT
 		Object[] actRecipe = new Object[] { cdi.METerminal, cdi.ArcaneWorkTable, cdi.CalculationProcessor };
 
 		// Register
-		RecipeRegistry.PART_ARCANE_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.ARCANETERMINAL.getKey(),
+		RecipeRegistry.PART_ARCANE_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.ARCANE_TERMINAL.getKey(),
 			ArcaneCraftingTerminal, actAspectList, actRecipe );
 	}
 
@@ -78,13 +78,13 @@ public class FeatureACT
 		ItemStack actIcon = AEPartsEnum.ArcaneCraftingTerminal.getStack();
 
 		// Set the pages
-		ResearchPage[] actPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ARCANETERMINAL.getPageName( 1 ) ),
+		ResearchPage[] actPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ARCANE_TERMINAL.getPageName( 1 ) ),
 						new ResearchPage( RecipeRegistry.PART_ARCANE_TERMINAL ) };
 
 		// Create the IO research
-		ResearchTypes.ARCANETERMINAL.createResearchItem( actAspectList, ResearchRegistry.COMPLEXITY_SMALL, actIcon, actPages );
-		ResearchTypes.ARCANETERMINAL.researchItem.setParents( this.getFirstValidParentKey( false ) );
-		ResearchTypes.ARCANETERMINAL.researchItem.registerResearchItem();
+		ResearchTypes.ARCANE_TERMINAL.createResearchItem( actAspectList, ResearchRegistry.COMPLEXITY_SMALL, actIcon, actPages );
+		ResearchTypes.ARCANE_TERMINAL.researchItem.setParents( this.getFirstValidParentKey( false ) );
+		ResearchTypes.ARCANE_TERMINAL.researchItem.registerResearchItem();
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class FeatureACT
 	{
 		if( includeSelf && this.isAvailable() )
 		{
-			return ResearchTypes.ARCANETERMINAL.getKey();
+			return ResearchTypes.ARCANE_TERMINAL.getKey();
 		}
 
 		// Pass to parent

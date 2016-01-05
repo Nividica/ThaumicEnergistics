@@ -14,7 +14,7 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureEssentiaVibrationChamber
-	extends AbstractDependencyFeature
+	extends ThEDependencyFeatureBase
 {
 	@Override
 	protected boolean checkConfigs()
@@ -54,7 +54,7 @@ public class FeatureEssentiaVibrationChamber
 
 		// Register Chamber
 		RecipeRegistry.BLOCK_ESSENTIA_VIBRATION_CHAMBER = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
-			ResearchTypes.ESSENTIAVIBRATIONCHAMBER.getKey(), EssVibrationChamber, chamberAspects, cdi.VibrationChamber, DiffusionCore, cdi.WardedJar );
+			ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getKey(), EssVibrationChamber, chamberAspects, cdi.VibrationChamber, DiffusionCore, cdi.WardedJar );
 	}
 
 	@Override
@@ -72,22 +72,22 @@ public class FeatureEssentiaVibrationChamber
 		ItemStack chamberIcon = ThEApi.instance().blocks().EssentiaVibrationChamber.getStack();
 
 		// Create the pages
-		ResearchPage[] storagePages = new ResearchPage[] { new ResearchPage( ResearchTypes.ESSENTIAVIBRATIONCHAMBER.getPageName( 1 ) ),
+		ResearchPage[] storagePages = new ResearchPage[] { new ResearchPage( ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getPageName( 1 ) ),
 						new ResearchPage( RecipeRegistry.BLOCK_ESSENTIA_VIBRATION_CHAMBER ),
-						new ResearchPage( ResearchTypes.ESSENTIAVIBRATIONCHAMBER.getPageName( 2 ) ),
-						new ResearchPage( ResearchTypes.ESSENTIAVIBRATIONCHAMBER.getPageName( 3 ) ) };
+						new ResearchPage( ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getPageName( 2 ) ),
+						new ResearchPage( ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getPageName( 3 ) ) };
 
 		// Create the research
-		ResearchTypes.ESSENTIAVIBRATIONCHAMBER.createResearchItem( chamberAspects, ResearchRegistry.COMPLEXITY_MEDIUM, chamberIcon, storagePages );
+		ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.createResearchItem( chamberAspects, ResearchRegistry.COMPLEXITY_MEDIUM, chamberIcon, storagePages );
 
 		// Set the parent to the cores
-		ResearchTypes.ESSENTIAVIBRATIONCHAMBER.researchItem.setParents( this.getFirstValidParentKey( false ) );
+		ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.researchItem.setParents( this.getFirstValidParentKey( false ) );
 
 		// Hide until the parent has been researched
-		ResearchTypes.ESSENTIAVIBRATIONCHAMBER.researchItem.setConcealed();
+		ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.researchItem.setConcealed();
 
 		// Register
-		ResearchTypes.ESSENTIAVIBRATIONCHAMBER.researchItem.registerResearchItem();
+		ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.researchItem.registerResearchItem();
 
 	}
 
@@ -96,7 +96,7 @@ public class FeatureEssentiaVibrationChamber
 	{
 		if( includeSelf && this.isAvailable() )
 		{
-			return ResearchTypes.ESSENTIAVIBRATIONCHAMBER.getKey();
+			return ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getKey();
 		}
 
 		// Pass to parent

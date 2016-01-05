@@ -16,5 +16,6 @@ class ThEBlocks
 		this.ArcaneAssembler = new ThEItemDescription( BlockEnum.ARCANE_ASSEMBLER.getBlock() );
 		this.KnowledgeInscriber = new ThEItemDescription( BlockEnum.KNOWLEDGE_INSCRIBER.getBlock() );
 		this.EssentiaVibrationChamber = new ThEItemDescription( BlockEnum.ESSENTIA_VIBRATION_CHAMBER.getBlock() );
+		this.DistillationPatternEncoder = new ThEItemDescription( BlockEnum.DISTILLATION_ENCODER.getBlock() );
 	}
 }

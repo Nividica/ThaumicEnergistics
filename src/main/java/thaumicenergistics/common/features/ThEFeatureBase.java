@@ -9,7 +9,7 @@ import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes
  * @author Nividica
  * 
  */
-public abstract class AbstractBasicFeature
+public abstract class ThEFeatureBase
 {
 
 	/**
@@ -27,7 +27,7 @@ public abstract class AbstractBasicFeature
 	 * 
 	 * @param initiallyAvailable
 	 */
-	public AbstractBasicFeature( final boolean initiallyAvailable )
+	public ThEFeatureBase( final boolean initiallyAvailable )
 	{
 		this.setAvailable( initiallyAvailable );
 	}

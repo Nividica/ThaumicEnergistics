@@ -1,8 +1,8 @@
 package thaumicenergistics.common.registries;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -15,17 +15,9 @@ import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.utils.ThELog;
 import appeng.api.AEApi;
-import appeng.api.IAppEngApi;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IItems;
-import appeng.api.definitions.IMaterials;
-import appeng.api.definitions.IParts;
+import appeng.api.definitions.*;
 import appeng.api.features.IGrinderEntry;
-import appeng.api.features.IGrinderRegistry;
 import appeng.api.features.IInscriberRecipe;
-import appeng.api.features.IInscriberRegistry;
-import appeng.api.features.IRegistryContainer;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.features.registries.entries.InscriberRecipe;
@@ -878,7 +870,7 @@ public class AEAspectRegister
 	 */
 	List<IRecipe> NORMAL_RECIPES = null;
 	List<IGrinderEntry> GRINDER_RECIPES = null;
-	List<IInscriberRecipe> INSCRIBER_RECIPES = null;
+	Collection<IInscriberRecipe> INSCRIBER_RECIPES = null;
 
 	/**
 	 * Private constructor.
@@ -890,70 +882,18 @@ public class AEAspectRegister
 
 	private boolean getGrinderRecipes()
 	{
-		// Get the AE Api instance
-		IAppEngApi aeApi = AEApi.instance();
+		// Get the recipes
+		this.GRINDER_RECIPES = AEApi.instance().registries().grinder().getRecipes();
 
-		try
-		{
-			// Get registries method signature
-			Method mRegistries = IAppEngApi.class.getDeclaredMethod( "registries" );
-
-			// Get the registries		
-			IRegistryContainer aeRegistries = (IRegistryContainer)mRegistries.invoke( aeApi );
-
-			// Get grinder method signature
-			Method mGrinder = IRegistryContainer.class.getDeclaredMethod( "grinderQQ" );
-
-			// Get the grinder registry
-			IGrinderRegistry aeGrinderRegistry = (IGrinderRegistry)mGrinder.invoke( aeRegistries );
-
-			// Get the recipe method signature
-			Method mRecipes = IGrinderRegistry.class.getDeclaredMethod( "getRecipes" );
-
-			// Get the recipes
-			this.GRINDER_RECIPES = (List<IGrinderEntry>)mRecipes.invoke( aeGrinderRegistry );
-
-			return true;
-		}
-		catch( Exception e )
-		{
-		}
-
-		return false;
+		return( ( this.GRINDER_RECIPES != null ) && !this.GRINDER_RECIPES.isEmpty() );
 	}
 
 	private boolean getInscriberRecipes()
 	{
-		// Get the AE Api instance
-		IAppEngApi aeApi = AEApi.instance();
+		// Get the recipes
+		this.INSCRIBER_RECIPES = AEApi.instance().registries().inscriber().getRecipes();
 
-		try
-		{
-			// Get registries method signature
-			Method mRegistries = IAppEngApi.class.getDeclaredMethod( "registries" );
-
-			// Get the registries		
-			IRegistryContainer aeRegistries = (IRegistryContainer)mRegistries.invoke( aeApi );
-
-			// Get inscriber method signature
-			Method mInscriber = IRegistryContainer.class.getDeclaredMethod( "inscriberQQ" );
-
-			// Get the grinder registry
-			IInscriberRegistry aeInscriberRegistry = (IInscriberRegistry)mInscriber.invoke( aeRegistries );
-
-			// Get the recipe method signature
-			Method mRecipes = IInscriberRegistry.class.getDeclaredMethod( "getRecipes" );
-
-			// Get the recipes
-			this.INSCRIBER_RECIPES = (List<IInscriberRecipe>)mRecipes.invoke( aeInscriberRegistry );
-
-			return true;
-		}
-		catch( Exception e )
-		{
-		}
-
-		return false;
+		return( ( this.INSCRIBER_RECIPES != null ) && !this.INSCRIBER_RECIPES.isEmpty() );
 	}
 
 	/**

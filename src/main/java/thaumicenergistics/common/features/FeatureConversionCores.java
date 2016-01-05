@@ -15,7 +15,7 @@ import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
 public class FeatureConversionCores
-	extends AbstractDependencyFeature
+	extends ThEDependencyFeatureBase
 {
 
 	@Override

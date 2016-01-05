@@ -15,6 +15,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class ThEClientPacket
 	extends ThEBasePacket
 {
+	@Override
+	protected final boolean includePlayerInStream()
+	{
+		return false;
+	}
+
 	@SideOnly(Side.CLIENT)
 	protected abstract void wrappedExecute();
 
@@ -27,6 +33,7 @@ public abstract class ThEClientPacket
 			// Get the player
 			this.player = Minecraft.getMinecraft().thePlayer;
 
+			// Execute the packet
 			this.wrappedExecute();
 		}
 	}

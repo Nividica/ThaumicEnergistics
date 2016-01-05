@@ -25,7 +25,7 @@ import appeng.core.features.AEFeature;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class FeatureCells
-	extends AbstractDependencyFeature
+	extends ThEDependencyFeatureBase
 {
 	/**
 	 * Helper function to replace a single item with a group of items in a

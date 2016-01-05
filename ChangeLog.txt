@@ -1,4 +1,8 @@
-﻿01/04/2016 0.10.0.0 - Beta
+﻿01/05/2016 0.10.0.0 - Beta
+  Added recipe and Thaumonomicon entry for DPE.
+  Reduced client packet overhead.
+
+01/04/2016 0.10.0.0 - Beta
   Essentia terminal player different sounds depending on item.
   Added debug level to logger.
   Updated essentia terminal lore.
@@ -6,7 +10,6 @@
   Created block texture for DPE.
   Fixed DPE not dropping patterns on breaking.
   Enhancing DPE gui.
-  Todo: Lore, recipe for distillation pattern Encoder.
 
 01/03/2016 0.10.0.0 - Beta
   Essentia terminal can fill/drain containers when they are dragged and clicked over an aspect.

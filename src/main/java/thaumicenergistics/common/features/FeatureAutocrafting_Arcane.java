@@ -7,9 +7,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.common.registries.FeatureRegistry;
-import thaumicenergistics.common.registries.RecipeRegistry;
-import thaumicenergistics.common.registries.ResearchRegistry;
+import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
@@ -17,8 +15,8 @@ import thaumicenergistics.integration.tc.VisCraftingHelper;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
-public class FeatureAutocrafting
-	extends AbstractDependencyFeature
+public class FeatureAutocrafting_Arcane
+	extends ThEDependencyFeatureBase
 {
 
 	@Override
@@ -73,7 +71,7 @@ public class FeatureAutocrafting
 						cdi.CalculationProcessor };
 
 		// Register KC
-		RecipeRegistry.ITEM_KNOWLEDGE_CORE = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.KNOWLEDGEINSCRIBER.getKey(),
+		RecipeRegistry.ITEM_KNOWLEDGE_CORE = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.KNOWLEDGE_INSCRIBER.getKey(),
 			KnowledgeCore, kCoreAspects, kCoreRecipe );
 
 		// Knowledge Inscriber
@@ -92,7 +90,8 @@ public class FeatureAutocrafting
 						cdi.LogicProcessor };
 
 		// Register KI
-		RecipeRegistry.BLOCK_KNOWLEDGE_INSCRIBER = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.KNOWLEDGEINSCRIBER.getKey(),
+		RecipeRegistry.BLOCK_KNOWLEDGE_INSCRIBER = ThaumcraftApi.addArcaneCraftingRecipe(
+			ResearchRegistry.ResearchTypes.KNOWLEDGE_INSCRIBER.getKey(),
 			KnowledgeInscriber, kiAspects, kiRecipe );
 
 		// Arcane Assembler
@@ -111,7 +110,7 @@ public class FeatureAutocrafting
 						cdi.EntropyShard, cdi.FireShard };
 
 		// Register Assembler
-		RecipeRegistry.BLOCK_ARCANE_ASSEMBLER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ARCANEASSEMBLER.getKey(),
+		RecipeRegistry.BLOCK_ARCANE_ASSEMBLER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ARCANE_ASSEMBLER.getKey(),
 			ArcaneAssembler, 7, assemblerAspects, cdi.MolecularAssembler, assemblerRecipe );
 	}
 
@@ -131,24 +130,21 @@ public class FeatureAutocrafting
 		ItemStack assemblerIcon = ThEApi.instance().blocks().ArcaneAssembler.getStack();
 
 		// Set the pages
-		ResearchPage[] assemblerPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ARCANEASSEMBLER.getPageName( 1 ) ),
+		ResearchPage[] assemblerPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ARCANE_ASSEMBLER.getPageName( 1 ) ),
 						new ResearchPage( RecipeRegistry.BLOCK_ARCANE_ASSEMBLER ),
-						new ResearchPage( ResearchTypes.ARCANEASSEMBLER.getPageName( 2 ) ),
-						new ResearchPage( ResearchTypes.ARCANEASSEMBLER.getPageName( 3 ) ) };
+						new ResearchPage( ResearchTypes.ARCANE_ASSEMBLER.getPageName( 2 ) ),
+						new ResearchPage( ResearchTypes.ARCANE_ASSEMBLER.getPageName( 3 ) ) };
 
 		// Create the assembler research
-		ResearchTypes.ARCANEASSEMBLER.createResearchItem( assemblerAspectList, ResearchRegistry.COMPLEXITY_LARGE, assemblerIcon, assemblerPages );
+		ResearchTypes.ARCANE_ASSEMBLER.createResearchItem( assemblerAspectList, ResearchRegistry.COMPLEXITY_LARGE, assemblerIcon, assemblerPages );
 
 		// Set the parents
-		ResearchTypes.ARCANEASSEMBLER.researchItem.setParents( this.getFirstValidParentKey( false ), PseudoResearchTypes.SCEPTRE.getKey() );
-		ResearchTypes.ARCANEASSEMBLER.researchItem.setParentsHidden( ResearchTypes.ARCANETERMINAL.getKey() );
-		ResearchTypes.ARCANEASSEMBLER.researchItem.setConcealed();
-
-		// Trigger when MAC is scanned.
-		ResearchTypes.ARCANEASSEMBLER.researchItem.setItemTriggers( FeatureRegistry.instance().getCommonItems().MolecularAssembler );
+		ResearchTypes.ARCANE_ASSEMBLER.researchItem.setParents( this.getFirstValidParentKey( false ), PseudoResearchTypes.SCEPTRE.getKey() );
+		ResearchTypes.ARCANE_ASSEMBLER.researchItem.setParentsHidden( FeatureRegistry.instance().featureACT.getFirstValidParentKey( true ) );
+		ResearchTypes.ARCANE_ASSEMBLER.researchItem.setConcealed();
 
 		// Register the research
-		ResearchTypes.ARCANEASSEMBLER.researchItem.registerResearchItem();
+		ResearchTypes.ARCANE_ASSEMBLER.researchItem.registerResearchItem();
 
 		// Set Knowledge Inscriber research aspects
 		AspectList kiAspectList = new AspectList();
@@ -161,20 +157,20 @@ public class FeatureAutocrafting
 		ItemStack kiIcon = ThEApi.instance().blocks().KnowledgeInscriber.getStack();
 
 		// Set the pages
-		ResearchPage[] kiPages = new ResearchPage[] { new ResearchPage( ResearchTypes.KNOWLEDGEINSCRIBER.getPageName( 1 ) ),
+		ResearchPage[] kiPages = new ResearchPage[] { new ResearchPage( ResearchTypes.KNOWLEDGE_INSCRIBER.getPageName( 1 ) ),
 						new ResearchPage( RecipeRegistry.ITEM_KNOWLEDGE_CORE ), new ResearchPage( RecipeRegistry.BLOCK_KNOWLEDGE_INSCRIBER ),
-						new ResearchPage( ResearchTypes.KNOWLEDGEINSCRIBER.getPageName( 2 ) ) };
+						new ResearchPage( ResearchTypes.KNOWLEDGE_INSCRIBER.getPageName( 2 ) ) };
 
 		// Create the KI research
-		ResearchTypes.KNOWLEDGEINSCRIBER.createResearchItem( kiAspectList, ResearchRegistry.COMPLEXITY_SMALL, kiIcon, kiPages );
-		ResearchTypes.KNOWLEDGEINSCRIBER.researchItem.setSecondary();
+		ResearchTypes.KNOWLEDGE_INSCRIBER.createResearchItem( kiAspectList, ResearchRegistry.COMPLEXITY_SMALL, kiIcon, kiPages );
+		ResearchTypes.KNOWLEDGE_INSCRIBER.researchItem.setSecondary();
 
 		// Set the parent
-		ResearchTypes.KNOWLEDGEINSCRIBER.researchItem.setParents( ResearchTypes.ARCANEASSEMBLER.getKey() );
-		ResearchTypes.KNOWLEDGEINSCRIBER.researchItem.setConcealed();
+		ResearchTypes.KNOWLEDGE_INSCRIBER.researchItem.setParents( ResearchTypes.ARCANE_ASSEMBLER.getKey() );
+		ResearchTypes.KNOWLEDGE_INSCRIBER.researchItem.setConcealed();
 
 		// Register the research
-		ResearchTypes.KNOWLEDGEINSCRIBER.researchItem.registerResearchItem();
+		ResearchTypes.KNOWLEDGE_INSCRIBER.researchItem.registerResearchItem();
 	}
 
 	@Override
@@ -182,7 +178,7 @@ public class FeatureAutocrafting
 	{
 		if( includeSelf && this.isAvailable() )
 		{
-			return ResearchTypes.ARCANEASSEMBLER.getKey();
+			return ResearchTypes.ARCANE_ASSEMBLER.getKey();
 		}
 
 		// Pass to parent

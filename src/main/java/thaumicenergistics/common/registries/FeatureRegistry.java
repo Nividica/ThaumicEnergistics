@@ -20,7 +20,12 @@ public class FeatureRegistry
 	/**
 	 * Commonly used dependency items.
 	 */
-	private CommonDependantItems commonItems;
+	private final CommonDependantItems commonItems;
+
+	/**
+	 * All features in a nice compact array.
+	 */
+	private final ThEFeatureBase[] featuresList;
 
 	/**
 	 * Set to true when registerFeatures() is called.
@@ -28,79 +33,79 @@ public class FeatureRegistry
 	private boolean hasRegistered = false;
 
 	/**
-	 * All features in a nice compact array.
-	 */
-	private final AbstractBasicFeature[] featuresList;
-
-	/**
 	 * Sets up the TC research tab.
 	 */
-	public FeatureResearchSetup featureResearchSetup;
+	public final FeatureResearchSetup featureResearchSetup;
 
 	/**
 	 * Autocrafting.
 	 */
-	public FeatureAutocrafting featureAutoCrafting;
+	public final FeatureAutocrafting_Arcane featureAutoCrafting_Arcane;
 
 	/**
 	 * Essentia storage cells.
 	 */
-	public FeatureCells featureCells;
+	public final FeatureCells featureCells;
 
 	/**
 	 * Arcane Crafting Terminal.
 	 */
-	public FeatureACT featureACT;
+	public final FeatureACT featureACT;
 
 	/**
 	 * Vis Relay Interface.
 	 */
-	public FeatureVisRelayInterface featureVRI;
+	public final FeatureVisRelayInterface featureVRI;
 
 	/**
 	 * Essentia IO buses.
 	 */
-	public FeatureEssentiaIOBuses featureEssentiaIOBuses;
+	public final FeatureEssentiaIOBuses featureEssentiaIOBuses;
 
 	/**
 	 * Infusion provider.
 	 */
-	public FeatureInfusionProvider featureInfusionProvider;
+	public final FeatureInfusionProvider featureInfusionProvider;
 
 	/**
 	 * Essentia Provider.
 	 */
-	public FeatureEssentiaProvider featureEssentiaProvider;
+	public final FeatureEssentiaProvider featureEssentiaProvider;
 
 	/**
 	 * Terminal, wireless terminal, level emitter, and storage monitors.
 	 */
-	public FeatureEssentiaMonitoring featureEssentiaMonitoring;
+	public final FeatureEssentiaMonitoring featureEssentiaMonitoring;
 
 	/**
 	 * Conversion cores.
 	 */
-	public FeatureConversionCores featureConversionCores;
+	public final FeatureConversionCores featureConversionCores;
 
 	/**
 	 * Gearboxes.
 	 */
-	public FeatureGearbox featureGearbox;
+	public final FeatureGearbox featureGearbox;
 
 	/**
 	 * Wrench focus.
 	 */
-	public FeatureWrenchFocus featureWrenchFocus;
+	public final FeatureWrenchFocus featureWrenchFocus;
 
 	/**
-	 * Quartz duplication
+	 * Quartz duplication.
 	 */
-	public FeatureQuartzDupe featureQuartzDupe;
+	public final FeatureQuartzDupe featureQuartzDupe;
 
 	/**
-	 * Essentia Vibration Chamber
+	 * Essentia Vibration Chamber.
 	 */
-	public FeatureEssentiaVibrationChamber featureEssentiaVibrationChamber;
+	public final FeatureEssentiaVibrationChamber featureEssentiaVibrationChamber;
+
+	/**
+	 * Distillation Pattern Encoder.
+	 */
+	public final FeatureAutocrafting_Essentia featureAutocrafting_Essentia;
 
 	/**
 	 * Private constructor
@@ -114,7 +119,7 @@ public class FeatureRegistry
 		this.featureResearchSetup = new FeatureResearchSetup();
 
 		// Build autocrafting
-		this.featureAutoCrafting = new FeatureAutocrafting();
+		this.featureAutoCrafting_Arcane = new FeatureAutocrafting_Arcane();
 
 		// Build cells
 		this.featureCells = new FeatureCells();
@@ -152,11 +157,14 @@ public class FeatureRegistry
 		// Build essentia vibration chamber
 		this.featureEssentiaVibrationChamber = new FeatureEssentiaVibrationChamber();
 
+		// Build distillation pattern encoder
+		this.featureAutocrafting_Essentia = new FeatureAutocrafting_Essentia();
+
 		// Build array of features
-		this.featuresList = new AbstractBasicFeature[] { this.featureAutoCrafting, this.featureCells, this.featureACT, this.featureVRI,
+		this.featuresList = new ThEFeatureBase[] { this.featureAutoCrafting_Arcane, this.featureCells, this.featureACT, this.featureVRI,
 						this.featureEssentiaIOBuses, this.featureInfusionProvider, this.featureEssentiaProvider, this.featureEssentiaMonitoring,
 						this.featureConversionCores, this.featureGearbox, this.featureWrenchFocus, this.featureQuartzDupe,
-						this.featureEssentiaVibrationChamber };
+						this.featureEssentiaVibrationChamber, this.featureAutocrafting_Essentia };
 	}
 
 	/**
@@ -200,13 +208,13 @@ public class FeatureRegistry
 		this.commonItems.buildCommon();
 
 		// Build dependencies
-		for( AbstractBasicFeature feature : this.featuresList )
+		for( ThEFeatureBase feature : this.featuresList )
 		{
 			// Is the feature a dependency feature?
-			if( feature instanceof AbstractDependencyFeature )
+			if( feature instanceof ThEDependencyFeatureBase )
 			{
 				// Evaluate the dependencies
-				( (AbstractDependencyFeature)feature ).evaluateDependencies( this );
+				( (ThEDependencyFeatureBase)feature ).evaluateDependencies( this );
 			}
 		}
 
@@ -214,7 +222,7 @@ public class FeatureRegistry
 		this.featureResearchSetup.registerFeature();
 
 		// Register each feature
-		for( AbstractBasicFeature feature : this.featuresList )
+		for( ThEFeatureBase feature : this.featuresList )
 		{
 			// Attempt to register the feature
 			feature.registerFeature();

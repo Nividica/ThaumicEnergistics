@@ -16,7 +16,7 @@ import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
 public class FeatureGearbox
-	extends AbstractBasicFeature
+	extends ThEFeatureBase
 {
 
 	public FeatureGearbox()
@@ -55,7 +55,7 @@ public class FeatureGearbox
 		Object[] recipeIronGear = new Object[] { " I ", " W ", "I I", 'I', cdi.IronIngot, 'W', WoodGear };
 
 		// Register Iron Gear
-		RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRONGEARBOX.getKey(), ThEIronGear,
+		RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRON_GEARBOX.getKey(), ThEIronGear,
 			ironGearAspects, recipeIronGear );
 
 		// Set Iron Gear Box aspects
@@ -66,7 +66,7 @@ public class FeatureGearbox
 		// Iron Gear Box recipe
 		Object[] recipeIronGearBox = new Object[] { "SGS", "GGG", "SGS", 'S', cdi.Cobblestone, 'G', IronGear };
 
-		RecipeRegistry.BLOCK_IRONGEARBOX = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRONGEARBOX.getKey(), IronGearBox,
+		RecipeRegistry.BLOCK_IRONGEARBOX = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRON_GEARBOX.getKey(), IronGearBox,
 			igbAspects, recipeIronGearBox );
 
 		// Set Thaumium Gear Box aspects
@@ -75,7 +75,7 @@ public class FeatureGearbox
 		tgbAspects.add( Aspect.MAGIC, 16 );
 
 		// Register Thaumium Gear Box
-		RecipeRegistry.BLOCK_THAUMIUMGEARBOX = ThaumcraftApi.addCrucibleRecipe( ResearchRegistry.ResearchTypes.THAUMIUMGEARBOX.getKey(),
+		RecipeRegistry.BLOCK_THAUMIUMGEARBOX = ThaumcraftApi.addCrucibleRecipe( ResearchRegistry.ResearchTypes.THAUMIUM_GEARBOX.getKey(),
 			ThaumiumGearBox, IronGearBox, tgbAspects );
 	}
 
@@ -92,15 +92,15 @@ public class FeatureGearbox
 		ItemStack igbIcon = ThEApi.instance().items().IronGear.getStack();
 
 		// Set the pages for the Iron Gear Box
-		ResearchPage[] igbPages = new ResearchPage[] { new ResearchPage( ResearchTypes.IRONGEARBOX.getPageName( 1 ) ),
-						new ResearchPage( ResearchTypes.IRONGEARBOX.getPageName( 2 ) ), new ResearchPage( RecipeRegistry.MATERIAL_IRON_GEAR ),
+		ResearchPage[] igbPages = new ResearchPage[] { new ResearchPage( ResearchTypes.IRON_GEARBOX.getPageName( 1 ) ),
+						new ResearchPage( ResearchTypes.IRON_GEARBOX.getPageName( 2 ) ), new ResearchPage( RecipeRegistry.MATERIAL_IRON_GEAR ),
 						new ResearchPage( RecipeRegistry.BLOCK_IRONGEARBOX ) };
 
 		// Create the research for the Iron Gear Box
-		ResearchTypes.IRONGEARBOX.createResearchItem( igbAspects, ResearchRegistry.COMPLEXITY_SMALL, igbIcon, igbPages );
+		ResearchTypes.IRON_GEARBOX.createResearchItem( igbAspects, ResearchRegistry.COMPLEXITY_SMALL, igbIcon, igbPages );
 
 		// Set as secondary and register
-		ResearchTypes.IRONGEARBOX.researchItem.setSecondary().registerResearchItem();
+		ResearchTypes.IRON_GEARBOX.researchItem.setSecondary().registerResearchItem();
 
 		// Set the research aspects for the Thaumium Gear Box
 		AspectList tgbAspects = new AspectList();
@@ -112,18 +112,18 @@ public class FeatureGearbox
 		ItemStack tgbIcon = ThEApi.instance().blocks().ThaumiumGearBox.getStack();
 
 		// Set the pages for the Thaumium Gear Box
-		ResearchPage[] tgbPages = new ResearchPage[] { new ResearchPage( ResearchTypes.THAUMIUMGEARBOX.getPageName( 1 ) ),
+		ResearchPage[] tgbPages = new ResearchPage[] { new ResearchPage( ResearchTypes.THAUMIUM_GEARBOX.getPageName( 1 ) ),
 						new ResearchPage( RecipeRegistry.BLOCK_THAUMIUMGEARBOX ) };
 
 		// Create the item for the Thaumium Gear Box
-		ResearchTypes.THAUMIUMGEARBOX.createResearchItem( tgbAspects, ResearchRegistry.COMPLEXITY_SMALL, tgbIcon, tgbPages );
+		ResearchTypes.THAUMIUM_GEARBOX.createResearchItem( tgbAspects, ResearchRegistry.COMPLEXITY_SMALL, tgbIcon, tgbPages );
 
 		// Set parents for the Thaumium Gear Box
-		ResearchTypes.THAUMIUMGEARBOX.researchItem.setParents( this.getFirstValidParentKey( true ), PseudoResearchTypes.COREUSE.getKey() );
-		ResearchTypes.THAUMIUMGEARBOX.researchItem.setParentsHidden( "COREUSE" );
+		ResearchTypes.THAUMIUM_GEARBOX.researchItem.setParents( this.getFirstValidParentKey( true ), PseudoResearchTypes.COREUSE.getKey() );
+		ResearchTypes.THAUMIUM_GEARBOX.researchItem.setParentsHidden( "COREUSE" );
 
 		// Set as secondary and register
-		ResearchTypes.THAUMIUMGEARBOX.researchItem.setSecondary().registerResearchItem();
+		ResearchTypes.THAUMIUM_GEARBOX.researchItem.setSecondary().registerResearchItem();
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class FeatureGearbox
 	{
 		if( includeSelf && this.isAvailable() )
 		{
-			return ResearchTypes.IRONGEARBOX.getKey();
+			return ResearchTypes.IRON_GEARBOX.getKey();
 		}
 
 		// No parent to pass to

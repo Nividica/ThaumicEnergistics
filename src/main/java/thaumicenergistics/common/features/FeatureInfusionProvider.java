@@ -16,7 +16,7 @@ import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
 public class FeatureInfusionProvider
-	extends AbstractDependencyFeature
+	extends ThEDependencyFeatureBase
 {
 	@Override
 	protected boolean checkConfigs()
@@ -58,7 +58,7 @@ public class FeatureInfusionProvider
 						cdi.SalisMundus, CoalescenceCore, cdi.AirShard };
 
 		// Create the infusion provider recipe
-		RecipeRegistry.BLOCK_INFUSION_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.INFUSIONPROVIDER.getKey(),
+		RecipeRegistry.BLOCK_INFUSION_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.INFUSION_PROVIDER.getKey(),
 			InfusionProvider, 4, infusionProviderList, cdi.MEInterface, infusionProviderRecipeItems );
 	}
 
@@ -77,7 +77,7 @@ public class FeatureInfusionProvider
 		ItemStack infusionProviderIcon = new ItemStack( BlockEnum.INFUSION_PROVIDER.getBlock(), 1 );
 
 		// Set the pages
-		ResearchPage[] infusionProviderPages = new ResearchPage[] { new ResearchPage( ResearchTypes.INFUSIONPROVIDER.getPageName( 1 ) ),
+		ResearchPage[] infusionProviderPages = new ResearchPage[] { new ResearchPage( ResearchTypes.INFUSION_PROVIDER.getPageName( 1 ) ),
 						new ResearchPage( RecipeRegistry.BLOCK_INFUSION_PROVIDER ) };
 
 		// Are mirrors allowed?
@@ -85,13 +85,13 @@ public class FeatureInfusionProvider
 		String pseudoKeyMirrorOrJar = ( Config.allowMirrors ? PseudoResearchTypes.MIRROR.getKey() : PseudoResearchTypes.JAR.getKey() );
 
 		// Create the infusion provider research
-		ResearchTypes.INFUSIONPROVIDER.createResearchItem( infusionProviderList, ResearchRegistry.COMPLEXITY_LARGE, infusionProviderIcon,
+		ResearchTypes.INFUSION_PROVIDER.createResearchItem( infusionProviderList, ResearchRegistry.COMPLEXITY_LARGE, infusionProviderIcon,
 			infusionProviderPages );
-		ResearchTypes.INFUSIONPROVIDER.researchItem.setParents( this.getFirstValidParentKey( false ), pseudoKeyMirrorOrJar,
+		ResearchTypes.INFUSION_PROVIDER.researchItem.setParents( this.getFirstValidParentKey( false ), pseudoKeyMirrorOrJar,
 			PseudoResearchTypes.INFUSION.getKey() );
-		ResearchTypes.INFUSIONPROVIDER.researchItem.setParentsHidden( researchKeyMirrorOrJar, "INFUSION" );
-		ResearchTypes.INFUSIONPROVIDER.researchItem.setConcealed().setSpecial();
-		ResearchTypes.INFUSIONPROVIDER.researchItem.registerResearchItem();
+		ResearchTypes.INFUSION_PROVIDER.researchItem.setParentsHidden( researchKeyMirrorOrJar, "INFUSION" );
+		ResearchTypes.INFUSION_PROVIDER.researchItem.setConcealed().setSpecial();
+		ResearchTypes.INFUSION_PROVIDER.researchItem.registerResearchItem();
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class FeatureInfusionProvider
 	{
 		if( includeSelf && this.isAvailable() )
 		{
-			return ResearchTypes.INFUSIONPROVIDER.getKey();
+			return ResearchTypes.INFUSION_PROVIDER.getKey();
 		}
 
 		// Pass to parent

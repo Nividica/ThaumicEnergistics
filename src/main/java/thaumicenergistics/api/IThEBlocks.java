@@ -17,4 +17,6 @@ public abstract class IThEBlocks
 	public IThEItemDescription KnowledgeInscriber;
 
 	public IThEItemDescription EssentiaVibrationChamber;
+
+	public IThEItemDescription DistillationPatternEncoder;
 }

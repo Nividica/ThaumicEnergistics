@@ -13,7 +13,7 @@ import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
 public class FeatureEssentiaProvider
-	extends AbstractDependencyFeature
+	extends ThEDependencyFeatureBase
 {
 
 	@Override
@@ -57,7 +57,7 @@ public class FeatureEssentiaProvider
 						DiffusionCore, cdi.WaterShard };
 
 		// Register Essentia Provider
-		RecipeRegistry.BLOCK_ESSENTIA_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ESSENTIAPROVIDER.getKey(),
+		RecipeRegistry.BLOCK_ESSENTIA_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ESSENTIA_PROVIDER.getKey(),
 			EssentiaProvider, 3, essentiaProviderList, cdi.MEInterface, recipeEssentiaProvider );
 	}
 
@@ -75,16 +75,16 @@ public class FeatureEssentiaProvider
 		ItemStack essentiaProviderIcon = new ItemStack( BlockEnum.ESSENTIA_PROVIDER.getBlock(), 1 );
 
 		// Set research pages
-		ResearchPage[] essentiaProviderPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ESSENTIAPROVIDER.getPageName( 1 ) ),
+		ResearchPage[] essentiaProviderPages = new ResearchPage[] { new ResearchPage( ResearchTypes.ESSENTIA_PROVIDER.getPageName( 1 ) ),
 						new ResearchPage( RecipeRegistry.BLOCK_ESSENTIA_PROVIDER ) };
 
 		// Create the research
-		ResearchTypes.ESSENTIAPROVIDER.createResearchItem( essentiaProviderList, ResearchRegistry.COMPLEXITY_LARGE, essentiaProviderIcon,
+		ResearchTypes.ESSENTIA_PROVIDER.createResearchItem( essentiaProviderList, ResearchRegistry.COMPLEXITY_LARGE, essentiaProviderIcon,
 			essentiaProviderPages );
-		ResearchTypes.ESSENTIAPROVIDER.researchItem.setParents( this.getFirstValidParentKey( false ) );
-		ResearchTypes.ESSENTIAPROVIDER.researchItem.setParentsHidden( "INFUSION", "TUBEFILTER" );
-		ResearchTypes.ESSENTIAPROVIDER.researchItem.setConcealed();
-		ResearchTypes.ESSENTIAPROVIDER.researchItem.registerResearchItem();
+		ResearchTypes.ESSENTIA_PROVIDER.researchItem.setParents( this.getFirstValidParentKey( false ) );
+		ResearchTypes.ESSENTIA_PROVIDER.researchItem.setParentsHidden( "INFUSION", "TUBEFILTER" );
+		ResearchTypes.ESSENTIA_PROVIDER.researchItem.setConcealed();
+		ResearchTypes.ESSENTIA_PROVIDER.researchItem.registerResearchItem();
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class FeatureEssentiaProvider
 	{
 		if( includeSelf && this.isAvailable() )
 		{
-			return ResearchTypes.ESSENTIAPROVIDER.getKey();
+			return ResearchTypes.ESSENTIA_PROVIDER.getKey();
 		}
 
 		// Pass to parent

@@ -39,7 +39,7 @@ public abstract class ThEBasePacket
 	/**
 	 * Starting size of buffers compressed buffers, 1 Megabyte
 	 */
-	private static final int COMPRESSED_BUFFER_SIZE = 1048576;
+	private static final int COMPRESSED_BUFFER_SIZE = ( 1024 * 1024 ) * 1;
 
 	/**
 	 * Player entity
@@ -465,6 +465,13 @@ public abstract class ThEBasePacket
 	}
 
 	/**
+	 * Return true if the player should be included in the data stream.
+	 * 
+	 * @return
+	 */
+	protected abstract boolean includePlayerInStream();
+
+	/**
 	 * Allows subclasses to read data from the specified stream.
 	 * 
 	 * @param stream
@@ -489,8 +496,16 @@ public abstract class ThEBasePacket
 	@Override
 	public void fromBytes( final ByteBuf stream )
 	{
+		// Read mode
 		this.mode = stream.readByte();
-		this.player = ThEBasePacket.readPlayer( stream );
+
+		// Read player
+		if( this.includePlayerInStream() )
+		{
+			this.player = ThEBasePacket.readPlayer( stream );
+		}
+
+		// Read compression
 		this.useCompression = stream.readBoolean();
 
 		// Is there a compressed substream?
@@ -515,8 +530,10 @@ public abstract class ThEBasePacket
 		stream.writeByte( this.mode );
 
 		// Write the player
-		// TODO: This isn't needed for client packets.
-		ThEBasePacket.writePlayer( this.player, stream );
+		if( this.includePlayerInStream() )
+		{
+			ThEBasePacket.writePlayer( this.player, stream );
+		}
 
 		// Write if there is a compressed sub-stream.
 		stream.writeBoolean( this.useCompression );

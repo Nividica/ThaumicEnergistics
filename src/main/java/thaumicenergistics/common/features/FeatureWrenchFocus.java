@@ -16,7 +16,7 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureWrenchFocus
-	extends AbstractDependencyFeature
+	extends ThEDependencyFeatureBase
 {
 	@Override
 	protected boolean checkConfigs()
@@ -55,7 +55,7 @@ public class FeatureWrenchFocus
 		AspectList wrenchAspects = new AspectList();
 		wrenchAspects.add( Aspect.AIR, 10 );
 		wrenchAspects.add( Aspect.FIRE, 10 );
-		RecipeRegistry.ITEM_WRENCH_FOCUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.FOCUSWRENCH.getKey(), WrenchFocus,
+		RecipeRegistry.ITEM_WRENCH_FOCUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.FOCUS_WRENCH.getKey(), WrenchFocus,
 			wrenchAspects, new Object[] { "ANF", "NWN", "FNA", 'A', cdi.AirShard, 'F', cdi.FireShard, 'N', cdi.NetherQuartz, 'W', cdi.CertusWrench } );
 	}
 
@@ -72,13 +72,13 @@ public class FeatureWrenchFocus
 		ItemStack focusIcon = ThEApi.instance().items().WandFocusAEWrench.getStack();
 
 		// Set the pages
-		ResearchPage[] focusPages = new ResearchPage[] { new ResearchPage( ResearchTypes.FOCUSWRENCH.getPageName( 1 ) ),
+		ResearchPage[] focusPages = new ResearchPage[] { new ResearchPage( ResearchTypes.FOCUS_WRENCH.getPageName( 1 ) ),
 						new ResearchPage( RecipeRegistry.ITEM_WRENCH_FOCUS ) };
 
 		// Create the research
-		ResearchTypes.FOCUSWRENCH.createResearchItem( focusAspects, ResearchRegistry.COMPLEXITY_SMALL, focusIcon, focusPages );
-		ResearchTypes.FOCUSWRENCH.researchItem.setParents( PseudoResearchTypes.FOCUSFIRE.getKey() ).setSecondary();
-		ResearchTypes.FOCUSWRENCH.researchItem.registerResearchItem();
+		ResearchTypes.FOCUS_WRENCH.createResearchItem( focusAspects, ResearchRegistry.COMPLEXITY_SMALL, focusIcon, focusPages );
+		ResearchTypes.FOCUS_WRENCH.researchItem.setParents( PseudoResearchTypes.FOCUSFIRE.getKey() ).setSecondary();
+		ResearchTypes.FOCUS_WRENCH.researchItem.registerResearchItem();
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class FeatureWrenchFocus
 	{
 		if( includeSelf && this.isAvailable() )
 		{
-			return ResearchTypes.FOCUSWRENCH.getKey();
+			return ResearchTypes.FOCUS_WRENCH.getKey();
 		}
 
 		// No parent

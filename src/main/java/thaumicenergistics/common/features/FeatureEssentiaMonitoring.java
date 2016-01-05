@@ -17,7 +17,7 @@ import appeng.core.features.AEFeature;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class FeatureEssentiaMonitoring
-	extends AbstractDependencyFeature
+	extends ThEDependencyFeatureBase
 {
 
 	private boolean isWirelessEnabled = false, isConversionEnabled = false;
@@ -61,7 +61,7 @@ public class FeatureEssentiaMonitoring
 
 		// Register Essentia Terminal
 		RecipeRegistry.PART_ESSENTIA_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
-			ResearchRegistry.ResearchTypes.ESSENTIATERMINAL.getKey(), EssentiaTerminal, etAspectList, cdi.IlluminatedPanel, DiffusionCore,
+			ResearchRegistry.ResearchTypes.ESSENTIA_TERMINAL.getKey(), EssentiaTerminal, etAspectList, cdi.IlluminatedPanel, DiffusionCore,
 			CoalescenceCore, cdi.LogicProcessor, cdi.VisFilter );
 
 		// Is wireless term enabled?
@@ -83,7 +83,7 @@ public class FeatureEssentiaMonitoring
 
 		// Register Essentia Level Emitter
 		RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
-			ResearchRegistry.ResearchTypes.ESSENTIATERMINAL.getKey(), EssentiaLevelEmitter, emitterAspectList, cdi.CalculationProcessor,
+			ResearchRegistry.ResearchTypes.ESSENTIA_TERMINAL.getKey(), EssentiaLevelEmitter, emitterAspectList, cdi.CalculationProcessor,
 			cdi.RedstoneTorch, cdi.SalisMundus );
 
 		// Register Essentia Storage Monitor
@@ -116,16 +116,16 @@ public class FeatureEssentiaMonitoring
 
 		// Setup pages
 		ArrayList<ResearchPage> pageList = new ArrayList<ResearchPage>();
-		pageList.add( new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 1 ) ) );
-		pageList.add( new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 2 ) ) );
+		pageList.add( new ResearchPage( ResearchTypes.ESSENTIA_TERMINAL.getPageName( 1 ) ) );
+		pageList.add( new ResearchPage( ResearchTypes.ESSENTIA_TERMINAL.getPageName( 2 ) ) );
 		pageList.add( new ResearchPage( RecipeRegistry.PART_ESSENTIA_TERMINAL ) );
 		if( this.isWirelessEnabled )
 		{
 			pageList.add( new ResearchPage( RecipeRegistry.ITEM_WIRELESS_ESSENTIA_TERMINAL ) );
 		}
-		pageList.add( new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 3 ) ) );
+		pageList.add( new ResearchPage( ResearchTypes.ESSENTIA_TERMINAL.getPageName( 3 ) ) );
 		pageList.add( new ResearchPage( RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER ) );
-		pageList.add( new ResearchPage( ResearchTypes.ESSENTIATERMINAL.getPageName( 4 ) ) );
+		pageList.add( new ResearchPage( ResearchTypes.ESSENTIA_TERMINAL.getPageName( 4 ) ) );
 		pageList.add( new ResearchPage( RecipeRegistry.PART_ESSENTIA_STORAGE_MONITOR ) );
 		if( this.isConversionEnabled )
 		{
@@ -136,11 +136,11 @@ public class FeatureEssentiaMonitoring
 		ResearchPage[] etPages = pageList.toArray( new ResearchPage[pageList.size()] );
 
 		// Create the IO research
-		ResearchTypes.ESSENTIATERMINAL.createResearchItem( etAspectList, ResearchRegistry.COMPLEXITY_SMALL, etIcon, etPages );
-		ResearchTypes.ESSENTIATERMINAL.researchItem.setParents( this.getFirstValidParentKey( false ) );
-		ResearchTypes.ESSENTIATERMINAL.researchItem.setConcealed();
-		ResearchTypes.ESSENTIATERMINAL.researchItem.setSecondary();
-		ResearchTypes.ESSENTIATERMINAL.researchItem.registerResearchItem();
+		ResearchTypes.ESSENTIA_TERMINAL.createResearchItem( etAspectList, ResearchRegistry.COMPLEXITY_SMALL, etIcon, etPages );
+		ResearchTypes.ESSENTIA_TERMINAL.researchItem.setParents( this.getFirstValidParentKey( false ) );
+		ResearchTypes.ESSENTIA_TERMINAL.researchItem.setConcealed();
+		ResearchTypes.ESSENTIA_TERMINAL.researchItem.setSecondary();
+		ResearchTypes.ESSENTIA_TERMINAL.researchItem.registerResearchItem();
 	}
 
 	@Override
@@ -148,7 +148,7 @@ public class FeatureEssentiaMonitoring
 	{
 		if( includeSelf && this.isAvailable() )
 		{
-			return ResearchTypes.ESSENTIATERMINAL.getKey();
+			return ResearchTypes.ESSENTIA_TERMINAL.getKey();
 		}
 
 		// Pass to parent

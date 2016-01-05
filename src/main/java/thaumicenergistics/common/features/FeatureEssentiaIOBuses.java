@@ -18,7 +18,7 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureEssentiaIOBuses
-	extends AbstractDependencyFeature
+	extends ThEDependencyFeatureBase
 {
 
 	private boolean isImportExportEnabled = false;

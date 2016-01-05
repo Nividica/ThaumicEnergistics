@@ -16,7 +16,7 @@ import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import appeng.api.AEApi;
 
 public class FeatureQuartzDupe
-	extends AbstractDependencyFeature
+	extends ThEDependencyFeatureBase
 {
 	@Override
 	protected boolean checkConfigs()
@@ -54,7 +54,7 @@ public class FeatureQuartzDupe
 			AspectList certusAspects = new AspectList();
 			certusAspects.add( Aspect.CRYSTAL, 4 );
 			certusAspects.add( Aspect.WATER, 2 );
-			RecipeRegistry.DUPE_CERTUS = ThaumcraftApi.addCrucibleRecipe( ResearchRegistry.ResearchTypes.CERTUSDUPE.getKey(), Certus2, Certus1,
+			RecipeRegistry.DUPE_CERTUS = ThaumcraftApi.addCrucibleRecipe( ResearchRegistry.ResearchTypes.CERTUS_DUPE.getKey(), Certus2, Certus1,
 				certusAspects );
 		}
 
@@ -63,7 +63,7 @@ public class FeatureQuartzDupe
 		nQAspects.add( Aspect.CRYSTAL, 4 );
 		nQAspects.add( Aspect.WATER, 2 );
 		nQAspects.add( Aspect.ENERGY, 2 );
-		RecipeRegistry.DUPE_NETHER_QUARTZ = ThaumcraftApi.addCrucibleRecipe( ResearchRegistry.ResearchTypes.CERTUSDUPE.getKey(), NetherQuartz2,
+		RecipeRegistry.DUPE_NETHER_QUARTZ = ThaumcraftApi.addCrucibleRecipe( ResearchRegistry.ResearchTypes.CERTUS_DUPE.getKey(), NetherQuartz2,
 			NetherQuartz1, nQAspects );
 
 	}
@@ -79,23 +79,23 @@ public class FeatureQuartzDupe
 		ItemStack certusDupeIcon = AEApi.instance().definitions().materials().certusQuartzCrystal().maybeStack( 1 ).get();
 
 		// Set pages
-		ResearchPage[] certusDupePages = new ResearchPage[] { new ResearchPage( ResearchTypes.CERTUSDUPE.getPageName( 1 ) ),
+		ResearchPage[] certusDupePages = new ResearchPage[] { new ResearchPage( ResearchTypes.CERTUS_DUPE.getPageName( 1 ) ),
 						new ResearchPage( RecipeRegistry.DUPE_CERTUS ), new ResearchPage( RecipeRegistry.DUPE_NETHER_QUARTZ ) };
 		// Create the item
-		ResearchTypes.CERTUSDUPE.createResearchItem( certusDupeAspects, ResearchRegistry.COMPLEXITY_SMALL, certusDupeIcon, certusDupePages );
+		ResearchTypes.CERTUS_DUPE.createResearchItem( certusDupeAspects, ResearchRegistry.COMPLEXITY_SMALL, certusDupeIcon, certusDupePages );
 
 		// Set parents
-		ResearchTypes.CERTUSDUPE.researchItem.setParents( PseudoResearchTypes.DUPE.getKey() );
-		ResearchTypes.CERTUSDUPE.researchItem.setParentsHidden( "ALCHEMICALDUPLICATION" );
+		ResearchTypes.CERTUS_DUPE.researchItem.setParents( PseudoResearchTypes.DUPE.getKey() );
+		ResearchTypes.CERTUS_DUPE.researchItem.setParentsHidden( "ALCHEMICALDUPLICATION" );
 
 		// Set secondary and concealed
-		ResearchTypes.CERTUSDUPE.researchItem.setSecondary().setConcealed();
+		ResearchTypes.CERTUS_DUPE.researchItem.setSecondary().setConcealed();
 
 		// Trigger when certus is scanned
-		ResearchTypes.CERTUSDUPE.researchItem.setItemTriggers( certusDupeIcon );
+		ResearchTypes.CERTUS_DUPE.researchItem.setItemTriggers( certusDupeIcon );
 
 		// Register
-		ResearchTypes.CERTUSDUPE.researchItem.registerResearchItem();
+		ResearchTypes.CERTUS_DUPE.researchItem.registerResearchItem();
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class FeatureQuartzDupe
 	{
 		if( includeSelf && this.isAvailable() )
 		{
-			return ResearchTypes.CERTUSDUPE.getKey();
+			return ResearchTypes.CERTUS_DUPE.getKey();
 		}
 
 		// No parent
