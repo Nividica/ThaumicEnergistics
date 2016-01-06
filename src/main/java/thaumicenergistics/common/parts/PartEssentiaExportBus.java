@@ -21,8 +21,8 @@ import appeng.api.parts.PartItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class AEPartEssentiaExportBus
-	extends AbstractAEPartEssentiaIOBus
+public class PartEssentiaExportBus
+	extends ThEPartEssentiaIOBus_Base
 {
 
 	private static final String NBT_KEY_VOID = "IsVoidAllowed";
@@ -32,7 +32,7 @@ public class AEPartEssentiaExportBus
 	 */
 	private boolean isVoidAllowed = false;
 
-	public AEPartEssentiaExportBus()
+	public PartEssentiaExportBus()
 	{
 		super( AEPartsEnum.EssentiaExportBus );
 	}
@@ -208,9 +208,9 @@ public class AEPartEssentiaExportBus
 		super.readFromNBT( data );
 
 		// Read void
-		if( data.hasKey( AEPartEssentiaExportBus.NBT_KEY_VOID ) )
+		if( data.hasKey( PartEssentiaExportBus.NBT_KEY_VOID ) )
 		{
-			this.isVoidAllowed = data.getBoolean( AEPartEssentiaExportBus.NBT_KEY_VOID );
+			this.isVoidAllowed = data.getBoolean( PartEssentiaExportBus.NBT_KEY_VOID );
 		}
 	}
 
@@ -256,7 +256,7 @@ public class AEPartEssentiaExportBus
 		helper.renderInventoryBox( renderer );
 
 		// Face overlay
-		helper.setInvColor( AbstractAEPartBase.INVENTORY_OVERLAY_COLOR );
+		helper.setInvColor( ThEPartBase.INVENTORY_OVERLAY_COLOR );
 		ts.setBrightness( 0xF000F0 );
 		IIcon faceOverlayTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[1];
 		helper.renderInventoryFace( faceOverlayTexture, ForgeDirection.UP, renderer );
@@ -321,7 +321,7 @@ public class AEPartEssentiaExportBus
 
 		if( this.isActive() )
 		{
-			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_FACE_BRIGHTNESS );
+			Tessellator.instance.setBrightness( ThEPartBase.ACTIVE_FACE_BRIGHTNESS );
 		}
 
 		IIcon faceOverlayTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[1];
@@ -344,7 +344,7 @@ public class AEPartEssentiaExportBus
 		// Write void
 		if( this.isVoidAllowed )
 		{
-			data.setBoolean( AEPartEssentiaExportBus.NBT_KEY_VOID, this.isVoidAllowed );
+			data.setBoolean( PartEssentiaExportBus.NBT_KEY_VOID, this.isVoidAllowed );
 		}
 	}
 

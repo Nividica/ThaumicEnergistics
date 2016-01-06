@@ -178,7 +178,7 @@ public class ItemCraftingAspect
 	@SideOnly(Side.CLIENT)
 	public void getSubItems( final Item item, final CreativeTabs par2CreativeTabs, final List itemList )
 	{
-		// Note: Don't show these
+		// NOTE: Don't show these
 		/*
 		for( Aspect aspect : Aspect.aspects.values() )
 		{

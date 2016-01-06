@@ -1,6 +1,7 @@
 ﻿01/05/2016 0.10.0.0 - Beta
   Added recipe and Thaumonomicon entry for DPE.
   Reduced client packet overhead.
+  More cleanup.
 
 01/04/2016 0.10.0.0 - Beta
   Essentia terminal player different sounds depending on item.

@@ -8,7 +8,7 @@ import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.items.ItemCraftingAspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaCellTerminal;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
-import thaumicenergistics.common.parts.AEPartEssentiaTerminal;
+import thaumicenergistics.common.parts.PartEssentiaTerminal;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
@@ -31,7 +31,7 @@ public class ContainerEssentiaTerminal
 	/**
 	 * The terminal this is associated with.
 	 */
-	private AEPartEssentiaTerminal terminal = null;
+	private PartEssentiaTerminal terminal = null;
 
 	/**
 	 * Network source representing the player who is interacting with the
@@ -47,7 +47,7 @@ public class ContainerEssentiaTerminal
 	 * @param player
 	 * Player that owns this container.
 	 */
-	public ContainerEssentiaTerminal( final AEPartEssentiaTerminal terminal, final EntityPlayer player )
+	public ContainerEssentiaTerminal( final PartEssentiaTerminal terminal, final EntityPlayer player )
 	{
 		// Call the super
 		super( player );

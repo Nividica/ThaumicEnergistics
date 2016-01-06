@@ -14,7 +14,7 @@ import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerPriority;
 import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.network.packet.server.Packet_S_Priority;
-import thaumicenergistics.common.parts.AbstractAEPartBase;
+import thaumicenergistics.common.parts.ThEPartBase;
 import appeng.core.localization.GuiText;
 import appeng.helpers.IPriorityHost;
 import cpw.mods.fml.relauncher.Side;
@@ -185,7 +185,7 @@ public class GuiPriority
 	/**
 	 * The part we are adjusting the priority of
 	 */
-	private final AbstractAEPartBase part;
+	private final ThEPartBase part;
 
 	/**
 	 * The player viewing the gui.
@@ -214,7 +214,7 @@ public class GuiPriority
 		super( new ContainerPriority( host, player ) );
 
 		// Get the part
-		this.part = (AbstractAEPartBase)host;
+		this.part = (ThEPartBase)host;
 
 		// Set the player
 		this.player = player;

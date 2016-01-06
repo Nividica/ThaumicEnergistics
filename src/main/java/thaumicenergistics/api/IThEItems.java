@@ -14,6 +14,8 @@ public abstract class IThEItems
 
 	public IThEItemDescription EssentiaCell_64k;
 
+	public IThEItemDescription EssentiaCell_Creative;
+
 	public IThEItemDescription EssentiaCell_Casing;
 
 	public IThEItemDescription EssentiaStorageComponent_16k;

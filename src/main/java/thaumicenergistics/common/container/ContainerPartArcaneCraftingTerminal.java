@@ -26,7 +26,7 @@ import thaumicenergistics.common.container.slot.SlotArmor;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
 import thaumicenergistics.common.network.packet.client.Packet_C_ArcaneCraftingTerminal;
 import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
-import thaumicenergistics.common.parts.AEPartArcaneCraftingTerminal;
+import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
 import thaumicenergistics.integration.tc.ArcaneRecipeHelper;
@@ -133,7 +133,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * The arcane crafting terminal associated with the container.
 	 */
-	private AEPartArcaneCraftingTerminal arcaneCraftingTerminalPart;
+	private PartArcaneCraftingTerminal arcaneCraftingTerminalPart;
 
 	/**
 	 * The player associated with this container.
@@ -192,7 +192,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * @param terminal
 	 * @param player
 	 */
-	public ContainerPartArcaneCraftingTerminal( final AEPartArcaneCraftingTerminal terminal, final EntityPlayer player )
+	public ContainerPartArcaneCraftingTerminal( final PartArcaneCraftingTerminal terminal, final EntityPlayer player )
 	{
 		// Set the part
 		this.arcaneCraftingTerminalPart = terminal;
@@ -240,7 +240,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 		// Create the result slot
 		SlotArcaneCraftingResult resultSlot = new SlotArcaneCraftingResult( player, this, terminal, terminal,
-						AEPartArcaneCraftingTerminal.RESULT_SLOT_INDEX, ContainerPartArcaneCraftingTerminal.RESULT_SLOT_X_POS,
+						PartArcaneCraftingTerminal.RESULT_SLOT_INDEX, ContainerPartArcaneCraftingTerminal.RESULT_SLOT_X_POS,
 						ContainerPartArcaneCraftingTerminal.RESULT_SLOT_Y_POS );
 
 		// Add the result slot
@@ -250,7 +250,7 @@ public class ContainerPartArcaneCraftingTerminal
 		this.resultSlotNumber = resultSlot.slotNumber;
 
 		// Create the wand slot
-		SlotRestrictive wandSlot = new SlotRestrictive( terminal, AEPartArcaneCraftingTerminal.WAND_SLOT_INDEX,
+		SlotRestrictive wandSlot = new SlotRestrictive( terminal, PartArcaneCraftingTerminal.WAND_SLOT_INDEX,
 						ContainerPartArcaneCraftingTerminal.WAND_SLOT_XPOS, ContainerPartArcaneCraftingTerminal.WAND_SLOT_YPOS );
 
 		// Add the wand slot
@@ -261,10 +261,10 @@ public class ContainerPartArcaneCraftingTerminal
 
 		// Create the view slots
 		SlotRestrictive viewSlot = null;
-		for( int viewSlotID = AEPartArcaneCraftingTerminal.VIEW_SLOT_MIN; viewSlotID <= AEPartArcaneCraftingTerminal.VIEW_SLOT_MAX; viewSlotID++ )
+		for( int viewSlotID = PartArcaneCraftingTerminal.VIEW_SLOT_MIN; viewSlotID <= PartArcaneCraftingTerminal.VIEW_SLOT_MAX; viewSlotID++ )
 		{
 			// Calculate the y position
-			int row = viewSlotID - AEPartArcaneCraftingTerminal.VIEW_SLOT_MIN;
+			int row = viewSlotID - PartArcaneCraftingTerminal.VIEW_SLOT_MIN;
 			int yPos = ContainerPartArcaneCraftingTerminal.VIEW_SLOT_YPOS + ( row * ContainerWithPlayerInventory.SLOT_SIZE );
 
 			// Create the slot
@@ -293,7 +293,7 @@ public class ContainerPartArcaneCraftingTerminal
 			int yPos = ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_Y_POS + ( ContainerWithPlayerInventory.SLOT_SIZE * armorIndex );
 
 			// Create the slot
-			SlotArmor armorSlot = new SlotArmor( terminal, AEPartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorIndex,
+			SlotArmor armorSlot = new SlotArmor( terminal, PartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorIndex,
 							ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_X_POS, yPos, armorIndex, false );
 
 			// Add to container
@@ -664,7 +664,7 @@ public class ContainerPartArcaneCraftingTerminal
 	private boolean mergeWithViewCells( final ItemStack itemStack )
 	{
 		// Ensure the item a view cell
-		if( !this.arcaneCraftingTerminalPart.isItemValidForSlot( AEPartArcaneCraftingTerminal.VIEW_SLOT_MIN, itemStack ) )
+		if( !this.arcaneCraftingTerminalPart.isItemValidForSlot( PartArcaneCraftingTerminal.VIEW_SLOT_MIN, itemStack ) )
 		{
 			return false;
 		}
@@ -1346,7 +1346,7 @@ public class ContainerPartArcaneCraftingTerminal
 		resultSlot.setWand( this.wand );
 
 		// Set the result
-		this.arcaneCraftingTerminalPart.setInventorySlotContentsWithoutNotify( AEPartArcaneCraftingTerminal.RESULT_SLOT_INDEX, craftResult );
+		this.arcaneCraftingTerminalPart.setInventorySlotContentsWithoutNotify( PartArcaneCraftingTerminal.RESULT_SLOT_INDEX, craftResult );
 
 	}
 

@@ -1,26 +1,34 @@
 package thaumicenergistics.implementaion;
 
 import thaumicenergistics.api.IThEItems;
-import thaumicenergistics.common.items.EssentiaStorageBase;
 import thaumicenergistics.common.items.ItemMaterial.MaterialTypes;
 import thaumicenergistics.common.registries.ItemEnum;
+import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
 
 class ThEItems
 	extends IThEItems
 {
 	ThEItems()
 	{
+		// Cores
 		this.CoalescenceCore = new ThEItemDescription( MaterialTypes.COALESCENCE_CORE.getStack() );
 		this.DiffusionCore = new ThEItemDescription( MaterialTypes.DIFFUSION_CORE.getStack() );
-		this.EssentiaCell_16k = new ThEItemDescription( ItemEnum.ESSENTIA_CELL.getDMGStack( EssentiaStorageBase.INDEX_16K ) );
-		this.EssentiaCell_1k = new ThEItemDescription( ItemEnum.ESSENTIA_CELL.getDMGStack( EssentiaStorageBase.INDEX_1K ) );
-		this.EssentiaCell_4k = new ThEItemDescription( ItemEnum.ESSENTIA_CELL.getDMGStack( EssentiaStorageBase.INDEX_4K ) );
-		this.EssentiaCell_64k = new ThEItemDescription( ItemEnum.ESSENTIA_CELL.getDMGStack( EssentiaStorageBase.INDEX_64K ) );
+
+		// Cells
+		this.EssentiaCell_1k = new ThEItemDescription( EnumEssentiaStorageTypes.Type_1K.getCell() );
+		this.EssentiaCell_4k = new ThEItemDescription( EnumEssentiaStorageTypes.Type_4K.getCell() );
+		this.EssentiaCell_16k = new ThEItemDescription( EnumEssentiaStorageTypes.Type_16K.getCell() );
+		this.EssentiaCell_64k = new ThEItemDescription( EnumEssentiaStorageTypes.Type_64K.getCell() );
+		this.EssentiaCell_Creative = new ThEItemDescription( EnumEssentiaStorageTypes.Type_Creative.getCell() );
 		this.EssentiaCell_Casing = new ThEItemDescription( ItemEnum.STORAGE_CASING.getStack() );
-		this.EssentiaStorageComponent_16k = new ThEItemDescription( ItemEnum.STORAGE_COMPONENT.getDMGStack( EssentiaStorageBase.INDEX_16K ) );
-		this.EssentiaStorageComponent_1k = new ThEItemDescription( ItemEnum.STORAGE_COMPONENT.getDMGStack( EssentiaStorageBase.INDEX_1K ) );
-		this.EssentiaStorageComponent_4k = new ThEItemDescription( ItemEnum.STORAGE_COMPONENT.getDMGStack( EssentiaStorageBase.INDEX_4K ) );
-		this.EssentiaStorageComponent_64k = new ThEItemDescription( ItemEnum.STORAGE_COMPONENT.getDMGStack( EssentiaStorageBase.INDEX_64K ) );
+
+		// Components
+		this.EssentiaStorageComponent_1k = new ThEItemDescription( EnumEssentiaStorageTypes.Type_1K.getComponent( 1 ) );
+		this.EssentiaStorageComponent_4k = new ThEItemDescription( EnumEssentiaStorageTypes.Type_4K.getComponent( 1 ) );
+		this.EssentiaStorageComponent_16k = new ThEItemDescription( EnumEssentiaStorageTypes.Type_16K.getComponent( 1 ) );
+		this.EssentiaStorageComponent_64k = new ThEItemDescription( EnumEssentiaStorageTypes.Type_64K.getComponent( 1 ) );
+
+		// Misc
 		this.IronGear = new ThEItemDescription( MaterialTypes.IRON_GEAR.getStack() );
 		this.WirelessEssentiaTerminal = new ThEItemDescription( ItemEnum.WIRELESS_TERMINAL.getStack() );
 		this.KnowledgeCore = new ThEItemDescription( ItemEnum.KNOWLEDGE_CORE.getStack() );

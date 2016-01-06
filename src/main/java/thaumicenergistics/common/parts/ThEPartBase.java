@@ -39,7 +39,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class AbstractAEPartBase
+public abstract class ThEPartBase
 	implements IPart, IGridHost, IActionHost
 {
 	private final static String NBT_KEY_OWNER = "Owner";
@@ -101,7 +101,7 @@ public abstract class AbstractAEPartBase
 	 */
 	public final ItemStack associatedItem;
 
-	public AbstractAEPartBase( final AEPartsEnum associatedPart )
+	public ThEPartBase( final AEPartsEnum associatedPart )
 	{
 		// Set the associated item
 		this.associatedItem = associatedPart.getStack();
@@ -541,9 +541,9 @@ public abstract class AbstractAEPartBase
 	public void readFromNBT( final NBTTagCompound data )
 	{
 		// Read the owner
-		if( data.hasKey( AbstractAEPartBase.NBT_KEY_OWNER ) )
+		if( data.hasKey( ThEPartBase.NBT_KEY_OWNER ) )
 		{
-			this.ownerID = data.getInteger( AbstractAEPartBase.NBT_KEY_OWNER );
+			this.ownerID = data.getInteger( ThEPartBase.NBT_KEY_OWNER );
 		}
 	}
 
@@ -739,7 +739,7 @@ public abstract class AbstractAEPartBase
 		if( saveType != PartItemStack.Wrench )
 		{
 			// Set the owner ID
-			data.setInteger( AbstractAEPartBase.NBT_KEY_OWNER, this.ownerID );
+			data.setInteger( ThEPartBase.NBT_KEY_OWNER, this.ownerID );
 		}
 
 	}

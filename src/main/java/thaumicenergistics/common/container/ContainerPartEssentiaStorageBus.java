@@ -6,7 +6,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
-import thaumicenergistics.common.parts.AEPartEssentiaStorageBus;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
 public class ContainerPartEssentiaStorageBus
 	extends ContainerWithNetworkTool
@@ -31,11 +31,11 @@ public class ContainerPartEssentiaStorageBus
 	 */
 	private static int HOTBAR_INV_POSITION_Y = 160;
 
-	private AEPartEssentiaStorageBus part;
+	private PartEssentiaStorageBus part;
 
 	private EntityPlayer player;
 
-	public ContainerPartEssentiaStorageBus( final AEPartEssentiaStorageBus part, final EntityPlayer player )
+	public ContainerPartEssentiaStorageBus( final PartEssentiaStorageBus part, final EntityPlayer player )
 	{
 		// Set the player
 		this.player = player;

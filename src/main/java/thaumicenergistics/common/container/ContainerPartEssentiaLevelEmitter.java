@@ -3,7 +3,7 @@ package thaumicenergistics.common.container;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import thaumicenergistics.common.parts.AEPartEssentiaLevelEmitter;
+import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
 
 /**
  * Inventory container for essentia emitter.
@@ -27,7 +27,7 @@ public class ContainerPartEssentiaLevelEmitter
 	/**
 	 * The AE part associated with this container.
 	 */
-	private AEPartEssentiaLevelEmitter part;
+	private PartEssentiaLevelEmitter part;
 
 	/**
 	 * Create the container.
@@ -35,7 +35,7 @@ public class ContainerPartEssentiaLevelEmitter
 	 * @param player
 	 * The owner of this container.
 	 */
-	public ContainerPartEssentiaLevelEmitter( final AEPartEssentiaLevelEmitter part, final EntityPlayer player )
+	public ContainerPartEssentiaLevelEmitter( final PartEssentiaLevelEmitter part, final EntityPlayer player )
 	{
 		// Set the part
 		this.part = part;

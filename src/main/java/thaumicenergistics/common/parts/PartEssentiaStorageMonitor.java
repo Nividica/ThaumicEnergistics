@@ -48,8 +48,8 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class AEPartEssentiaStorageMonitor
-	extends AbstractAEPartBase
+public class PartEssentiaStorageMonitor
+	extends ThEPartBase
 	implements IPartStorageMonitor, IEssentiaWatcherHost, IPowerChannelState
 {
 	/**
@@ -232,7 +232,7 @@ public class AEPartEssentiaStorageMonitor
 	 * 
 	 * @param subPart
 	 */
-	protected AEPartEssentiaStorageMonitor( final AEPartsEnum subPart )
+	protected PartEssentiaStorageMonitor( final AEPartsEnum subPart )
 	{
 		super( subPart );
 
@@ -243,7 +243,7 @@ public class AEPartEssentiaStorageMonitor
 	/**
 	 * Default constructor
 	 */
-	public AEPartEssentiaStorageMonitor()
+	public PartEssentiaStorageMonitor()
 	{
 		this( AEPartsEnum.EssentiaStorageMonitor );
 	}
@@ -653,7 +653,7 @@ public class AEPartEssentiaStorageMonitor
 	@Override
 	public double getIdlePowerUsage()
 	{
-		return AEPartEssentiaStorageMonitor.IDLE_DRAIN;
+		return PartEssentiaStorageMonitor.IDLE_DRAIN;
 	}
 
 	/**
@@ -662,7 +662,7 @@ public class AEPartEssentiaStorageMonitor
 	@Override
 	public int getLightLevel()
 	{
-		return( this.isActive() ? AbstractAEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
+		return( this.isActive() ? ThEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
 	}
 
 	/**
@@ -760,16 +760,16 @@ public class AEPartEssentiaStorageMonitor
 		super.readFromNBT( data );
 
 		// Read locked
-		if( data.hasKey( AEPartEssentiaStorageMonitor.NBT_KEY_LOCKED ) )
+		if( data.hasKey( PartEssentiaStorageMonitor.NBT_KEY_LOCKED ) )
 		{
-			this.monitorLocked = data.getBoolean( AEPartEssentiaStorageMonitor.NBT_KEY_LOCKED );
+			this.monitorLocked = data.getBoolean( PartEssentiaStorageMonitor.NBT_KEY_LOCKED );
 		}
 
 		// Read tracked
-		if( data.hasKey( AEPartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT ) )
+		if( data.hasKey( PartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT ) )
 		{
 			// Read the aspect
-			Aspect trackedAspect = Aspect.getAspect( data.getString( AEPartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT ) );
+			Aspect trackedAspect = Aspect.getAspect( data.getString( PartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT ) );
 
 			// Set the tracker
 			this.trackedEssentia.setTracked( new AspectStack( trackedAspect, 0 ) );
@@ -915,7 +915,7 @@ public class AEPartEssentiaStorageMonitor
 		// Light up if active
 		if( this.isActive() )
 		{
-			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_FACE_BRIGHTNESS );
+			Tessellator.instance.setBrightness( ThEPartBase.ACTIVE_FACE_BRIGHTNESS );
 		}
 
 		// Dark corners
@@ -980,14 +980,14 @@ public class AEPartEssentiaStorageMonitor
 		// Write locked
 		if( this.monitorLocked )
 		{
-			data.setBoolean( AEPartEssentiaStorageMonitor.NBT_KEY_LOCKED, this.monitorLocked );
+			data.setBoolean( PartEssentiaStorageMonitor.NBT_KEY_LOCKED, this.monitorLocked );
 		}
 
 		// Write tracked data if valid
 		if( this.trackedEssentia.isValid() )
 		{
 			// Write the aspect
-			data.setString( AEPartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT, this.trackedEssentia.getAspectStack().getAspectTag() );
+			data.setString( PartEssentiaStorageMonitor.NBT_KEY_TRACKED_ASPECT, this.trackedEssentia.getAspectStack().getAspectTag() );
 		}
 	}
 

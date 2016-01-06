@@ -23,7 +23,7 @@ import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
 import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
-import thaumicenergistics.common.parts.AEPartArcaneCraftingTerminal;
+import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.utils.ThEUtils;
 import thaumicenergistics.integration.tc.MEItemAspectBridgeContainer;
@@ -166,7 +166,7 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private ArrayList<String> cachedItemTooltip = new ArrayList<String>();
 
-	public GuiArcaneCraftingTerminal( final AEPartArcaneCraftingTerminal part, final EntityPlayer player )
+	public GuiArcaneCraftingTerminal( final PartArcaneCraftingTerminal part, final EntityPlayer player )
 	{
 		// Call super
 		super( new ContainerPartArcaneCraftingTerminal( part, player ) );

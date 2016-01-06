@@ -6,7 +6,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.visnet.TileVisNode;
 import thaumcraft.api.visnet.VisNetHandler;
 import thaumcraft.common.tiles.TileVisRelay;
-import thaumicenergistics.common.parts.AEPartVisInterface;
+import thaumicenergistics.common.parts.PartVisInterface;
 import appeng.api.util.DimensionalCoord;
 
 public class VisProviderProxy
@@ -20,7 +20,7 @@ public class VisProviderProxy
 	/**
 	 * The interface associated with this source.
 	 */
-	private AEPartVisInterface visInterface;
+	private PartVisInterface visInterface;
 
 	/**
 	 * Where in the world this provider is.
@@ -32,7 +32,7 @@ public class VisProviderProxy
 	 */
 	private byte attunement = -1;
 
-	public VisProviderProxy( final AEPartVisInterface parent )
+	public VisProviderProxy( final PartVisInterface parent )
 	{
 		// Set the interface
 		this.visInterface = parent;

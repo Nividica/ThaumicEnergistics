@@ -7,61 +7,64 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.registries.ThEStrings;
+import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
 import appeng.api.implementations.items.IStorageComponent;
 
 public class ItemStorageComponent
-	extends EssentiaStorageBase
+	extends Item
 	implements IStorageComponent
 {
 
+	/**
+	 * Component icons.
+	 */
 	private IIcon[] icons;
 
 	public ItemStorageComponent()
 	{
+		// No damage
 		this.setMaxDamage( 0 );
+
+		// Has subtypes
 		this.setHasSubtypes( true );
+
+		// Goes in ThE's creative tab.
 		this.setCreativeTab( ThaumicEnergistics.ThETab );
 	}
 
 	@Override
 	public int getBytes( final ItemStack itemStack )
 	{
-		return EssentiaStorageBase.SIZES[itemStack.getItemDamage()];
+		return EnumEssentiaStorageTypes.fromIndex[itemStack.getItemDamage()].capacity;
 	}
 
 	@Override
 	public IIcon getIconFromDamage( final int damage )
 	{
-		int index = MathHelper.clamp_int( damage, 0, EssentiaStorageBase.SIZES.length - 1 );
-
-		return this.icons[index];
+		// Return icon
+		return this.icons[damage];
 	}
 
 	@Override
 	public EnumRarity getRarity( final ItemStack itemStack )
 	{
-		// Get the index based off of the meta data
-		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, EssentiaStorageBase.RARITIES.length - 1 );
-
 		// Return the rarity
-		return EssentiaStorageBase.RARITIES[index];
+		return EnumEssentiaStorageTypes.fromIndex[itemStack.getItemDamage()].rarity;
 	}
 
 	@Override
 	public void getSubItems( final Item item, final CreativeTabs creativeTab, final List itemList )
 	{
-		for( int i = 0; i < EssentiaStorageBase.SIZES.length; i++ )
+		for( EnumEssentiaStorageTypes type : EnumEssentiaStorageTypes.fromIndex )
 		{
-			// Skip the creative cell
-			if( i == EssentiaStorageBase.INDEX_CREATIVE )
+			// Skip the creative cell, it has no component
+			if( type == EnumEssentiaStorageTypes.Type_Creative )
 			{
 				continue;
 			}
+			itemList.add( type.getComponent( 1 ) );
 
-			itemList.add( new ItemStack( item, 1, i ) );
 		}
 	}
 
@@ -74,24 +77,7 @@ public class ItemStorageComponent
 	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
-		switch ( itemStack.getItemDamage() )
-		{
-		case 0:
-			return ThEStrings.Item_StorageComponent_1k.getUnlocalized();
-
-		case 1:
-			return ThEStrings.Item_StorageComponent_4k.getUnlocalized();
-
-		case 2:
-			return ThEStrings.Item_StorageComponent_16k.getUnlocalized();
-
-		case 3:
-			return ThEStrings.Item_StorageComponent_64k.getUnlocalized();
-
-		default:
-			return "";
-
-		}
+		return EnumEssentiaStorageTypes.fromIndex[itemStack.getItemDamage()].componentName.getUnlocalized();
 	}
 
 	@Override
@@ -103,17 +89,14 @@ public class ItemStorageComponent
 	@Override
 	public void registerIcons( final IIconRegister iconRegister )
 	{
-		this.icons = new IIcon[EssentiaStorageBase.SUFFIXES.length];
+		// Create the icon array
+		this.icons = new IIcon[EnumEssentiaStorageTypes.fromIndex.length];
 
-		for( int i = 0; i < EssentiaStorageBase.SUFFIXES.length; i++ )
+		// Add each type
+		for( int i = 0; i < this.icons.length; i++ )
 		{
-			// Skip the creative cell
-			if( i == EssentiaStorageBase.INDEX_CREATIVE )
-			{
-				continue;
-			}
-
-			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":storage.component." + EssentiaStorageBase.SUFFIXES[i] );
+			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":storage.component." +
+							EnumEssentiaStorageTypes.fromIndex[i].suffix );
 		}
 	}
 

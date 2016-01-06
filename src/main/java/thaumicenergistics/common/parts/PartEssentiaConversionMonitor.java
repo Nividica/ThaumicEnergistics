@@ -25,8 +25,8 @@ import appeng.client.texture.CableBusTextures;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
-public class AEPartEssentiaConversionMonitor
-	extends AEPartEssentiaStorageMonitor
+public class PartEssentiaConversionMonitor
+	extends PartEssentiaStorageMonitor
 {
 	/**
 	 * The number of ticks considered to be a double click.
@@ -48,7 +48,7 @@ public class AEPartEssentiaConversionMonitor
 	 */
 	private Aspect depositedAspect = null;
 
-	public AEPartEssentiaConversionMonitor()
+	public PartEssentiaConversionMonitor()
 	{
 		super( AEPartsEnum.EssentiaConversionMonitor );
 
@@ -326,7 +326,7 @@ public class AEPartEssentiaConversionMonitor
 		if( ( this.depositedPlayerID != -1 ) && ( this.depositedPlayerID == AEApi.instance().registries().players().getID( player.getGameProfile() ) ) )
 		{
 			// Was it a double click?
-			if( ( MinecraftServer.getServer().getTickCounter() - this.depositedTick ) <= AEPartEssentiaConversionMonitor.DOUBLE_CLICK_TICKS )
+			if( ( MinecraftServer.getServer().getTickCounter() - this.depositedTick ) <= PartEssentiaConversionMonitor.DOUBLE_CLICK_TICKS )
 			{
 				// Reset last interaction trackers
 				this.depositedPlayerID = -1;

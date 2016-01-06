@@ -21,7 +21,7 @@ import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.container.ContainerPartEssentiaStorageBus;
 import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaStorageBus;
-import thaumicenergistics.common.parts.AEPartEssentiaStorageBus;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -122,7 +122,7 @@ public class GuiEssentiaStorageBus
 	/**
 	 * Storage bus associated with this gui
 	 */
-	private AEPartEssentiaStorageBus storageBus;
+	private PartEssentiaStorageBus storageBus;
 
 	/**
 	 * Title of the gui
@@ -144,7 +144,7 @@ public class GuiEssentiaStorageBus
 	 * @param container
 	 * The inventory container.
 	 */
-	public GuiEssentiaStorageBus( final AEPartEssentiaStorageBus storageBus, final EntityPlayer player )
+	public GuiEssentiaStorageBus( final PartEssentiaStorageBus storageBus, final EntityPlayer player )
 	{
 		// Call super
 		super( new ContainerPartEssentiaStorageBus( storageBus, player ) );

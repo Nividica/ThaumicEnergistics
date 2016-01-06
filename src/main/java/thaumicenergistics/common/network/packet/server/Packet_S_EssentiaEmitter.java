@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
-import thaumicenergistics.common.parts.AEPartEssentiaLevelEmitter;
+import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
 
 public class Packet_S_EssentiaEmitter
 	extends ThEServerPacket
@@ -17,7 +17,7 @@ public class Packet_S_EssentiaEmitter
 
 	private static final byte MODE_TOGGLE_REDSTONE = 3;
 
-	private AEPartEssentiaLevelEmitter part;
+	private PartEssentiaLevelEmitter part;
 
 	private long wantedAmount;
 
@@ -42,7 +42,7 @@ public class Packet_S_EssentiaEmitter
 		return packet;
 	}
 
-	public static void sendRedstoneModeToggle( final AEPartEssentiaLevelEmitter part, final EntityPlayer player )
+	public static void sendRedstoneModeToggle( final PartEssentiaLevelEmitter part, final EntityPlayer player )
 	{
 		Packet_S_EssentiaEmitter packet = newPacket( player, MODE_TOGGLE_REDSTONE );
 
@@ -61,7 +61,7 @@ public class Packet_S_EssentiaEmitter
 	 * @param player
 	 * @return
 	 */
-	public static void sendUpdateRequest( final AEPartEssentiaLevelEmitter part, final EntityPlayer player )
+	public static void sendUpdateRequest( final PartEssentiaLevelEmitter part, final EntityPlayer player )
 	{
 		Packet_S_EssentiaEmitter packet = newPacket( player, MODE_REQUEST_UPDATE );
 
@@ -80,7 +80,7 @@ public class Packet_S_EssentiaEmitter
 	 * @param player
 	 * @return
 	 */
-	public static void sendWantedAmount( final long wantedAmount, final AEPartEssentiaLevelEmitter part,
+	public static void sendWantedAmount( final long wantedAmount, final PartEssentiaLevelEmitter part,
 											final EntityPlayer player )
 	{
 		Packet_S_EssentiaEmitter packet = newPacket( player, MODE_SEND_WANTED );
@@ -103,7 +103,7 @@ public class Packet_S_EssentiaEmitter
 	 * @param player
 	 * @return
 	 */
-	public static void sendWantedAmountDelta( final int adjustmentAmount, final AEPartEssentiaLevelEmitter part,
+	public static void sendWantedAmountDelta( final int adjustmentAmount, final PartEssentiaLevelEmitter part,
 												final EntityPlayer player )
 	{
 		Packet_S_EssentiaEmitter packet = newPacket( player, MODE_ADJUST_WANTED );
@@ -152,12 +152,12 @@ public class Packet_S_EssentiaEmitter
 		{
 		case Packet_S_EssentiaEmitter.MODE_REQUEST_UPDATE:
 			// Read the part
-			this.part = (AEPartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
+			this.part = (PartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
 			break;
 
 		case Packet_S_EssentiaEmitter.MODE_SEND_WANTED:
 			// Read the part
-			this.part = (AEPartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
+			this.part = (PartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
 
 			// Read the wanted amount
 			this.wantedAmount = stream.readLong();
@@ -165,7 +165,7 @@ public class Packet_S_EssentiaEmitter
 
 		case Packet_S_EssentiaEmitter.MODE_ADJUST_WANTED:
 			// Read the part
-			this.part = (AEPartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
+			this.part = (PartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
 
 			// Read the adjustment amount
 			this.adjustmentAmount = stream.readInt();
@@ -173,7 +173,7 @@ public class Packet_S_EssentiaEmitter
 
 		case Packet_S_EssentiaEmitter.MODE_TOGGLE_REDSTONE:
 			// Read the part
-			this.part = (AEPartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
+			this.part = (PartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
 			break;
 		}
 	}

@@ -12,7 +12,7 @@ import thaumcraft.common.tiles.TileEssentiaReservoir;
 import thaumcraft.common.tiles.TileJarFillableVoid;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.common.fluids.GaseousEssentia;
-import thaumicenergistics.common.parts.AEPartEssentiaStorageBus;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import appeng.api.AEApi;
@@ -36,7 +36,7 @@ class HandlerEssentiaStorageBusContainer
 	 */
 	Hashtable<Aspect, Long> cachedContainerAspects = new Hashtable<Aspect, Long>();
 
-	public HandlerEssentiaStorageBusContainer( final AEPartEssentiaStorageBus part )
+	public HandlerEssentiaStorageBusContainer( final PartEssentiaStorageBus part )
 	{
 		super( part );
 	}

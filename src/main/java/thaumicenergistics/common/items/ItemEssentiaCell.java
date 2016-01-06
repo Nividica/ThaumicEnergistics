@@ -24,6 +24,7 @@ import thaumicenergistics.common.inventory.HandlerItemEssentiaCellCreative;
 import thaumicenergistics.common.registries.ItemEnum;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.storage.AspectStackComparator;
+import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.implementations.tiles.IMEChest;
@@ -33,25 +34,31 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.localization.GuiText;
 
 public class ItemEssentiaCell
-	extends EssentiaStorageBase
+	extends Item
 	implements ICellHandler
 {
-	private static final double[] IDLE_DRAIN_AMOUNTS = { 0.5D, 1.0D, 1.5D, 2.0D, 0.0D };
-
-	private static final int MAX_TYPES = 12, CREATIVE_MAX_TYPES = 63;
-
+	/**
+	 * Status of the cell.
+	 */
 	private static final int CELL_STATUS_MISSING = 0, CELL_STATUS_HAS_ROOM = 1, CELL_STATUS_TYPES_FULL = 2, CELL_STATUS_FULL = 3;
 
+	/**
+	 * Icons for each type.
+	 */
 	private IIcon[] icons;
 
 	public ItemEssentiaCell()
 	{
+		// Add the handler to AE2
 		AEApi.instance().registries().cell().addCellHandler( this );
 
+		// Set max stack size to 1
 		this.setMaxStackSize( 1 );
 
+		// No damage
 		this.setMaxDamage( 0 );
 
+		// Has sub-types
 		this.setHasSubtypes( true );
 	}
 
@@ -155,7 +162,7 @@ public class ItemEssentiaCell
 	@Override
 	public double cellIdleDrain( final ItemStack itemStack, final IMEInventory handler )
 	{
-		return ItemEssentiaCell.IDLE_DRAIN_AMOUNTS[itemStack.getItemDamage()];
+		return EnumEssentiaStorageTypes.fromIndex[itemStack.getItemDamage()].idleAEPowerDrain;
 	}
 
 	/**
@@ -164,16 +171,20 @@ public class ItemEssentiaCell
 	@Override
 	public IMEInventoryHandler getCellInventory( final ItemStack essentiaCell, final ISaveProvider saveProvider, final StorageChannel channel )
 	{
-		if( ( channel != StorageChannel.FLUIDS ) || ( essentiaCell.getItem() != this ) )
+		// Ensure the channel is fluid and there is an appropriate item.
+		if( ( channel != StorageChannel.FLUIDS ) || !( essentiaCell.getItem() instanceof ItemEssentiaCell ) )
 		{
 			return null;
 		}
 
-		if( essentiaCell.getItemDamage() == EssentiaStorageBase.INDEX_CREATIVE )
+		// Is the type creative?
+		if( essentiaCell.getItemDamage() == EnumEssentiaStorageTypes.Type_Creative.index )
 		{
+			// Return a creative handler.
 			return new HandlerItemEssentiaCellCreative( essentiaCell, saveProvider );
 		}
 
+		// Return a standard handler.
 		return new HandlerItemEssentiaCell( essentiaCell, saveProvider );
 	}
 
@@ -183,8 +194,10 @@ public class ItemEssentiaCell
 	@Override
 	public IIcon getIconFromDamage( final int dmg )
 	{
-		int index = MathHelper.clamp_int( dmg, 0, EssentiaStorageBase.SIZES.length - 1 );
+		// Clamp the index
+		int index = MathHelper.clamp_int( dmg, 0, EnumEssentiaStorageTypes.fromIndex.length - 1 );
 
+		// Return the icon
 		return this.icons[index];
 	}
 
@@ -195,10 +208,10 @@ public class ItemEssentiaCell
 	public EnumRarity getRarity( final ItemStack itemStack )
 	{
 		// Get the index based off of the meta data
-		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, EssentiaStorageBase.RARITIES.length - 1 );
+		int index = MathHelper.clamp_int( itemStack.getItemDamage(), 0, EnumEssentiaStorageTypes.fromIndex.length - 1 );
 
 		// Return the rarity
-		return EssentiaStorageBase.RARITIES[index];
+		return EnumEssentiaStorageTypes.fromIndex[index].rarity;
 	}
 
 	/**
@@ -245,9 +258,9 @@ public class ItemEssentiaCell
 	@Override
 	public void getSubItems( final Item item, final CreativeTabs creativeTab, final List listSubItems )
 	{
-		for( int i = 0; i < EssentiaStorageBase.SIZES.length; i++ )
+		for( EnumEssentiaStorageTypes type : EnumEssentiaStorageTypes.fromIndex )
 		{
-			listSubItems.add( new ItemStack( item, 1, i ) );
+			listSubItems.add( type.getCell() );
 		}
 	}
 
@@ -290,27 +303,7 @@ public class ItemEssentiaCell
 	@Override
 	public String getUnlocalizedName( final ItemStack itemStack )
 	{
-		switch ( itemStack.getItemDamage() )
-		{
-		case 0:
-			return ThEStrings.Item_EssentiaCell_1k.getUnlocalized();
-
-		case 1:
-			return ThEStrings.Item_EssentiaCell_4k.getUnlocalized();
-
-		case 2:
-			return ThEStrings.Item_EssentiaCell_16k.getUnlocalized();
-
-		case 3:
-			return ThEStrings.Item_EssentiaCell_64k.getUnlocalized();
-
-		case 4:
-			return ThEStrings.Item_EssentiaCell_Creative.getUnlocalized();
-
-		default:
-			return "";
-
-		}
+		return EnumEssentiaStorageTypes.fromIndex[itemStack.getItemDamage()].cellName.getUnlocalized();
 	}
 
 	/**
@@ -330,7 +323,7 @@ public class ItemEssentiaCell
 	 */
 	public int maxStorage( final ItemStack essentiaCell )
 	{
-		return EssentiaStorageBase.SIZES[Math.max( 0, essentiaCell.getItemDamage() )];
+		return EnumEssentiaStorageTypes.fromIndex[essentiaCell.getItemDamage()].capacity;
 	}
 
 	/**
@@ -341,16 +334,11 @@ public class ItemEssentiaCell
 	 */
 	public int maxTypes( final ItemStack essentiaCell )
 	{
-		if( essentiaCell.getItemDamage() == EssentiaStorageBase.INDEX_CREATIVE )
-		{
-			return ItemEssentiaCell.CREATIVE_MAX_TYPES;
-		}
-
-		return ItemEssentiaCell.MAX_TYPES;
+		return EnumEssentiaStorageTypes.fromIndex[essentiaCell.getItemDamage()].maxStoredTypes;
 	}
 
 	/**
-	 * Attempts to remove the storage element.
+	 * Attempts to remove the storage component.
 	 */
 	@Override
 	public ItemStack onItemRightClick( final ItemStack essentiaCell, final World world, final EntityPlayer player )
@@ -362,7 +350,7 @@ public class ItemEssentiaCell
 		}
 
 		// Ensure this is not a creative cell
-		if( essentiaCell.getItemDamage() == EssentiaStorageBase.INDEX_CREATIVE )
+		if( essentiaCell.getItemDamage() == EnumEssentiaStorageTypes.Type_Creative.index )
 		{
 			return essentiaCell;
 		}
@@ -384,7 +372,7 @@ public class ItemEssentiaCell
 		if( ( cellHandler.getUsedBytes() == 0 ) && ( player.inventory.addItemStackToInventory( ItemEnum.STORAGE_CASING.getStack() ) ) )
 		{
 			// Return the storage component
-			return ItemEnum.STORAGE_COMPONENT.getDMGStack( essentiaCell.getItemDamage() );
+			return EnumEssentiaStorageTypes.fromIndex[essentiaCell.getItemDamage()].getComponent( 1 );
 		}
 
 		// Can not remove storage component, return the current cell as is.
@@ -427,11 +415,13 @@ public class ItemEssentiaCell
 	@Override
 	public void registerIcons( final IIconRegister iconRegister )
 	{
-		this.icons = new IIcon[EssentiaStorageBase.SUFFIXES.length];
+		// Create the icon array
+		this.icons = new IIcon[EnumEssentiaStorageTypes.fromIndex.length];
 
-		for( int i = 0; i < EssentiaStorageBase.SUFFIXES.length; i++ )
+		// Add each type
+		for( int i = 0; i < this.icons.length; i++ )
 		{
-			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":essentia.cell." + EssentiaStorageBase.SUFFIXES[i] );
+			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":essentia.cell." + EnumEssentiaStorageTypes.fromIndex[i].suffix );
 		}
 	}
 

@@ -36,8 +36,8 @@ import appeng.api.parts.PartItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class AEPartVisInterface
-	extends AbstractAEPartBase
+public class PartVisInterface
+	extends ThEPartBase
 	implements IGridTickable, IDigiVisSource
 {
 	/**
@@ -104,7 +104,7 @@ public class AEPartVisInterface
 	/**
 	 * Creates the interface.
 	 */
-	public AEPartVisInterface()
+	public PartVisInterface()
 	{
 		super( AEPartsEnum.VisInterface );
 
@@ -139,10 +139,10 @@ public class AEPartVisInterface
 		}
 
 		// Simulate a power drain
-		double drainedPower = eGrid.extractAEPower( AEPartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+		double drainedPower = eGrid.extractAEPower( PartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.SIMULATE, PowerMultiplier.CONFIG );
 
 		// Ensure we got the power we need
-		if( drainedPower < AEPartVisInterface.POWER_PER_REQUESTED_VIS )
+		if( drainedPower < PartVisInterface.POWER_PER_REQUESTED_VIS )
 		{
 			return 0;
 		}
@@ -154,7 +154,7 @@ public class AEPartVisInterface
 		if( amountReceived > 0 )
 		{
 			// Drain the power
-			eGrid.extractAEPower( AEPartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.MODULATE, PowerMultiplier.CONFIG );
+			eGrid.extractAEPower( PartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.MODULATE, PowerMultiplier.CONFIG );
 		}
 
 		// Return the amount we received
@@ -184,7 +184,7 @@ public class AEPartVisInterface
 		}
 
 		// Source must be a vis interface
-		if( !( p2pSource instanceof AEPartVisInterface ) )
+		if( !( p2pSource instanceof PartVisInterface ) )
 		{
 			return false;
 		}
@@ -196,7 +196,7 @@ public class AEPartVisInterface
 		}
 
 		// Source must not be a provider
-		if( ( (AEPartVisInterface)p2pSource ).isVisProvider() )
+		if( ( (PartVisInterface)p2pSource ).isVisProvider() )
 		{
 			return false;
 		}
@@ -226,7 +226,7 @@ public class AEPartVisInterface
 			}
 
 			// Has the alloted time passed for a change?
-			if( ( System.currentTimeMillis() - this.lastColorUpdate ) <= ( AEPartVisInterface.TIME_TO_CLEAR / 2 ) )
+			if( ( System.currentTimeMillis() - this.lastColorUpdate ) <= ( PartVisInterface.TIME_TO_CLEAR / 2 ) )
 			{
 				return;
 			}
@@ -574,22 +574,22 @@ public class AEPartVisInterface
 		super.readFromNBT( data );
 
 		// Does it contain the UID?
-		if( data.hasKey( AEPartVisInterface.NBT_KEY_UID ) )
+		if( data.hasKey( PartVisInterface.NBT_KEY_UID ) )
 		{
 			// Read the UID
-			this.UID = data.getLong( AEPartVisInterface.NBT_KEY_UID );
+			this.UID = data.getLong( PartVisInterface.NBT_KEY_UID );
 		}
 
 		// Is there provider data?
-		if( data.hasKey( AEPartVisInterface.NBT_KEY_IS_PROVIDER ) )
+		if( data.hasKey( PartVisInterface.NBT_KEY_IS_PROVIDER ) )
 		{
 			// Set provider status
-			this.isProvider = data.getBoolean( AEPartVisInterface.NBT_KEY_IS_PROVIDER );
+			this.isProvider = data.getBoolean( PartVisInterface.NBT_KEY_IS_PROVIDER );
 
 			// Read source information
-			if( data.hasKey( AEPartVisInterface.NBT_KEY_PROVIDER_SOURCE ) )
+			if( data.hasKey( PartVisInterface.NBT_KEY_PROVIDER_SOURCE ) )
 			{
-				this.visP2PSourceInfo.readFromNBT( data, AEPartVisInterface.NBT_KEY_PROVIDER_SOURCE );
+				this.visP2PSourceInfo.readFromNBT( data, PartVisInterface.NBT_KEY_PROVIDER_SOURCE );
 			}
 		}
 	}
@@ -681,7 +681,7 @@ public class AEPartVisInterface
 	{
 		if( this.visDrainingColor != 0 )
 		{
-			if( ( System.currentTimeMillis() - this.lastColorUpdate ) > AEPartVisInterface.TIME_TO_CLEAR )
+			if( ( System.currentTimeMillis() - this.lastColorUpdate ) > PartVisInterface.TIME_TO_CLEAR )
 			{
 				this.setDrainColor( 0 );
 			}
@@ -748,15 +748,15 @@ public class AEPartVisInterface
 		}
 
 		// Write the UID
-		data.setLong( AEPartVisInterface.NBT_KEY_UID, this.UID );
+		data.setLong( PartVisInterface.NBT_KEY_UID, this.UID );
 
 		if( this.isProvider )
 		{
 			// Write provider status
-			data.setBoolean( AEPartVisInterface.NBT_KEY_IS_PROVIDER, this.isProvider );
+			data.setBoolean( PartVisInterface.NBT_KEY_IS_PROVIDER, this.isProvider );
 
 			// Write source data
-			this.visP2PSourceInfo.writeToNBT( data, AEPartVisInterface.NBT_KEY_PROVIDER_SOURCE );
+			this.visP2PSourceInfo.writeToNBT( data, PartVisInterface.NBT_KEY_PROVIDER_SOURCE );
 		}
 
 	}

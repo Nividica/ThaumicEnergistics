@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
-import thaumicenergistics.common.parts.AEPartEssentiaStorageBus;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
 public class Packet_S_EssentiaStorageBus
 	extends ThEServerPacket
@@ -12,7 +12,7 @@ public class Packet_S_EssentiaStorageBus
 	private static final byte MODE_REQUEST_FULL_UPDATE = 0;
 	private static final byte MODE_REQUEST_SET_VOID = 1;
 
-	private AEPartEssentiaStorageBus part;
+	private PartEssentiaStorageBus part;
 	private boolean isVoidAllowed;
 
 	/**
@@ -22,7 +22,7 @@ public class Packet_S_EssentiaStorageBus
 	 * @param mode
 	 * @return
 	 */
-	private static Packet_S_EssentiaStorageBus newPacket( final EntityPlayer player, final byte mode, final AEPartEssentiaStorageBus part )
+	private static Packet_S_EssentiaStorageBus newPacket( final EntityPlayer player, final byte mode, final PartEssentiaStorageBus part )
 	{
 		// Create the packet
 		Packet_S_EssentiaStorageBus packet = new Packet_S_EssentiaStorageBus();
@@ -35,7 +35,7 @@ public class Packet_S_EssentiaStorageBus
 		return packet;
 	}
 
-	public static void sendFullUpdateRequest( final EntityPlayer player, final AEPartEssentiaStorageBus part )
+	public static void sendFullUpdateRequest( final EntityPlayer player, final PartEssentiaStorageBus part )
 	{
 		Packet_S_EssentiaStorageBus packet = newPacket( player, MODE_REQUEST_FULL_UPDATE, part );
 
@@ -43,7 +43,7 @@ public class Packet_S_EssentiaStorageBus
 		NetworkHandler.sendPacketToServer( packet );
 	}
 
-	public static void setVoidAllowed( final EntityPlayer player, final AEPartEssentiaStorageBus part,
+	public static void setVoidAllowed( final EntityPlayer player, final PartEssentiaStorageBus part,
 										final boolean isVoidAllowed )
 	{
 		Packet_S_EssentiaStorageBus packet = newPacket( player, MODE_REQUEST_SET_VOID, part );
@@ -79,12 +79,12 @@ public class Packet_S_EssentiaStorageBus
 		{
 		case Packet_S_EssentiaStorageBus.MODE_REQUEST_FULL_UPDATE:
 			// Read the part
-			this.part = ( (AEPartEssentiaStorageBus)ThEBasePacket.readPart( stream ) );
+			this.part = ( (PartEssentiaStorageBus)ThEBasePacket.readPart( stream ) );
 			break;
 
 		case Packet_S_EssentiaStorageBus.MODE_REQUEST_SET_VOID:
 			// Read the part
-			this.part = ( (AEPartEssentiaStorageBus)ThEBasePacket.readPart( stream ) );
+			this.part = ( (PartEssentiaStorageBus)ThEBasePacket.readPart( stream ) );
 			// Read void
 			this.isVoidAllowed = stream.readBoolean();
 			break;

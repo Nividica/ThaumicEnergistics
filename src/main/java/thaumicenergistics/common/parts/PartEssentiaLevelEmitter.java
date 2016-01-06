@@ -37,8 +37,8 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class AEPartEssentiaLevelEmitter
-	extends AbstractAEPartBase
+public class PartEssentiaLevelEmitter
+	extends ThEPartBase
 	implements IAspectSlotPart, IEssentiaWatcherHost
 {
 	/**
@@ -65,7 +65,7 @@ public class AEPartEssentiaLevelEmitter
 	/**
 	 * Mode the emitter is in
 	 */
-	private RedstoneMode redstoneMode = AEPartEssentiaLevelEmitter.DEFAULT_REDSTONE_MODE;
+	private RedstoneMode redstoneMode = PartEssentiaLevelEmitter.DEFAULT_REDSTONE_MODE;
 
 	/**
 	 * Threshold value
@@ -90,7 +90,7 @@ public class AEPartEssentiaLevelEmitter
 	/**
 	 * Creates the part
 	 */
-	public AEPartEssentiaLevelEmitter()
+	public PartEssentiaLevelEmitter()
 	{
 		super( AEPartsEnum.EssentiaLevelEmitter );
 	}
@@ -259,7 +259,7 @@ public class AEPartEssentiaLevelEmitter
 	@Override
 	public double getIdlePowerUsage()
 	{
-		return AEPartEssentiaLevelEmitter.IDLE_POWER_DRAIN;
+		return PartEssentiaLevelEmitter.IDLE_POWER_DRAIN;
 	}
 
 	/**
@@ -427,27 +427,27 @@ public class AEPartEssentiaLevelEmitter
 		super.readFromNBT( data );
 
 		// Read the filter
-		if( data.hasKey( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) )
+		if( data.hasKey( PartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) )
 		{
-			this.trackedEssentia = Aspect.aspects.get( data.getString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) );
+			this.trackedEssentia = Aspect.aspects.get( data.getString( PartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) );
 		}
 
 		// Read the redstone mode
-		if( data.hasKey( AEPartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE ) )
+		if( data.hasKey( PartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE ) )
 		{
-			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( AEPartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE )];
+			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( PartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE )];
 		}
 
 		// Read the wanted amount
-		if( data.hasKey( AEPartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT ) )
+		if( data.hasKey( PartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT ) )
 		{
-			this.wantedAmount = data.getLong( AEPartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT );
+			this.wantedAmount = data.getLong( PartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT );
 		}
 
 		// Read if emitting
-		if( data.hasKey( AEPartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING ) )
+		if( data.hasKey( PartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING ) )
 		{
-			this.isEmitting = data.getBoolean( AEPartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING );
+			this.isEmitting = data.getBoolean( PartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING );
 		}
 	}
 
@@ -516,7 +516,7 @@ public class AEPartEssentiaLevelEmitter
 			helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[1] );
 
 			// Set the brightness
-			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_FACE_BRIGHTNESS );
+			Tessellator.instance.setBrightness( ThEPartBase.ACTIVE_FACE_BRIGHTNESS );
 
 		}
 		else
@@ -607,25 +607,25 @@ public class AEPartEssentiaLevelEmitter
 		if( this.trackedEssentia != null )
 		{
 			// Write the name of the aspect
-			data.setString( AEPartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER, this.trackedEssentia.getTag() );
+			data.setString( PartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER, this.trackedEssentia.getTag() );
 		}
 
 		// Write the redstone mode ordinal
-		if( this.redstoneMode != AEPartEssentiaLevelEmitter.DEFAULT_REDSTONE_MODE )
+		if( this.redstoneMode != PartEssentiaLevelEmitter.DEFAULT_REDSTONE_MODE )
 		{
-			data.setInteger( AEPartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
+			data.setInteger( PartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
 		}
 
 		// Write the threshold amount
 		if( this.wantedAmount > 0 )
 		{
-			data.setLong( AEPartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT, this.wantedAmount );
+			data.setLong( PartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT, this.wantedAmount );
 		}
 
 		// Write if emitting
 		if( ( saveType != PartItemStack.Wrench ) && this.isEmitting )
 		{
-			data.setBoolean( AEPartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING, true );
+			data.setBoolean( PartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING, true );
 		}
 	}
 

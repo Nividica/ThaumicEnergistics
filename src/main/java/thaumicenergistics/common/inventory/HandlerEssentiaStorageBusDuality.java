@@ -2,7 +2,7 @@ package thaumicenergistics.common.inventory;
 
 import net.minecraft.tileentity.TileEntity;
 import thaumcraft.api.aspects.IAspectContainer;
-import thaumicenergistics.common.parts.AEPartEssentiaStorageBus;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
@@ -48,7 +48,7 @@ public class HandlerEssentiaStorageBusDuality
 	 * 
 	 * @param part
 	 */
-	public HandlerEssentiaStorageBusDuality( final AEPartEssentiaStorageBus part )
+	public HandlerEssentiaStorageBusDuality( final PartEssentiaStorageBus part )
 	{
 		super( part );
 	}

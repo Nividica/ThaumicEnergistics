@@ -36,8 +36,8 @@ import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class AbstractAEPartEssentiaIOBus
-	extends AbstractAEPartBase
+public abstract class ThEPartEssentiaIOBus_Base
+	extends ThEPartBase
 	implements IGridTickable, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory
 {
 	/**
@@ -83,24 +83,24 @@ public abstract class AbstractAEPartEssentiaIOBus
 
 	private boolean lastRedstone;
 
-	private int[] availableFilterSlots = { AbstractAEPartEssentiaIOBus.BASE_SLOT_INDEX };
+	private int[] availableFilterSlots = { ThEPartEssentiaIOBus_Base.BASE_SLOT_INDEX };
 
 	private UpgradeInventory upgradeInventory = new StackUpgradeInventory( this.associatedItem, this,
-					AbstractAEPartEssentiaIOBus.UPGRADE_INVENTORY_SIZE );
+					ThEPartEssentiaIOBus_Base.UPGRADE_INVENTORY_SIZE );
 
 	private List<ContainerPartEssentiaIOBus> listeners = new ArrayList<ContainerPartEssentiaIOBus>();
 
 	/**
 	 * How the bus responds to redstone.
 	 */
-	private RedstoneMode redstoneMode = AbstractAEPartEssentiaIOBus.DEFAULT_REDSTONE_MODE;
+	private RedstoneMode redstoneMode = ThEPartEssentiaIOBus_Base.DEFAULT_REDSTONE_MODE;
 
 	/**
 	 * Network source representing this part.
 	 */
 	protected MachineSource asMachineSource;
 
-	protected List<Aspect> filteredAspects = new ArrayList<Aspect>( AbstractAEPartEssentiaIOBus.MAX_FILTER_SIZE );
+	protected List<Aspect> filteredAspects = new ArrayList<Aspect>( ThEPartEssentiaIOBus_Base.MAX_FILTER_SIZE );
 
 	protected IAspectContainer facingContainer;
 
@@ -116,12 +116,12 @@ public abstract class AbstractAEPartEssentiaIOBus
 	private static final String NBT_KEY_REDSTONE_MODE = "redstoneMode", NBT_KEY_FILTER_NUMBER = "AspectFilter#",
 					NBT_KEY_UPGRADE_INV = "upgradeInventory";
 
-	public AbstractAEPartEssentiaIOBus( final AEPartsEnum associatedPart )
+	public ThEPartEssentiaIOBus_Base( final AEPartsEnum associatedPart )
 	{
 		super( associatedPart );
 
 		// Initialize the list
-		for( int index = 0; index < AbstractAEPartEssentiaIOBus.MAX_FILTER_SIZE; index++ )
+		for( int index = 0; index < ThEPartEssentiaIOBus_Base.MAX_FILTER_SIZE; index++ )
 		{
 			this.filteredAspects.add( null );
 		}
@@ -203,35 +203,35 @@ public abstract class AbstractAEPartEssentiaIOBus
 		this.availableFilterSlots = new int[1 + ( this.filterSize * 4 )];
 
 		// Add the base slot
-		this.availableFilterSlots[0] = AbstractAEPartEssentiaIOBus.BASE_SLOT_INDEX;
+		this.availableFilterSlots[0] = ThEPartEssentiaIOBus_Base.BASE_SLOT_INDEX;
 
 		if( this.filterSize < 2 )
 		{
 			// Reset tier 2 slots
-			for( int i = 0; i < AbstractAEPartEssentiaIOBus.TIER2_INDEXS.length; i++ )
+			for( int i = 0; i < ThEPartEssentiaIOBus_Base.TIER2_INDEXS.length; i++ )
 			{
-				this.filteredAspects.set( AbstractAEPartEssentiaIOBus.TIER2_INDEXS[i], null );
+				this.filteredAspects.set( ThEPartEssentiaIOBus_Base.TIER2_INDEXS[i], null );
 			}
 
 			if( this.filterSize < 1 )
 			{
 				// Reset tier 1 slots
-				for( int i = 0; i < AbstractAEPartEssentiaIOBus.TIER1_INDEXS.length; i++ )
+				for( int i = 0; i < ThEPartEssentiaIOBus_Base.TIER1_INDEXS.length; i++ )
 				{
-					this.filteredAspects.set( AbstractAEPartEssentiaIOBus.TIER1_INDEXS[i], null );
+					this.filteredAspects.set( ThEPartEssentiaIOBus_Base.TIER1_INDEXS[i], null );
 				}
 			}
 			else
 			{
 				// Tier 1 slots
-				System.arraycopy( AbstractAEPartEssentiaIOBus.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
+				System.arraycopy( ThEPartEssentiaIOBus_Base.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
 			}
 		}
 		else
 		{
 			// Add both
-			System.arraycopy( AbstractAEPartEssentiaIOBus.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
-			System.arraycopy( AbstractAEPartEssentiaIOBus.TIER2_INDEXS, 0, this.availableFilterSlots, 5, 4 );
+			System.arraycopy( ThEPartEssentiaIOBus_Base.TIER1_INDEXS, 0, this.availableFilterSlots, 1, 4 );
+			System.arraycopy( ThEPartEssentiaIOBus_Base.TIER2_INDEXS, 0, this.availableFilterSlots, 5, 4 );
 		}
 	}
 
@@ -305,7 +305,7 @@ public abstract class AbstractAEPartEssentiaIOBus
 		}
 
 		// Add upgrades to drops
-		for( int slotIndex = 0; slotIndex < AbstractAEPartEssentiaIOBus.UPGRADE_INVENTORY_SIZE; slotIndex++ )
+		for( int slotIndex = 0; slotIndex < ThEPartEssentiaIOBus_Base.UPGRADE_INVENTORY_SIZE; slotIndex++ )
 		{
 			// Get the upgrade card in this slot
 			ItemStack slotStack = this.upgradeInventory.getStackInSlot( slotIndex );
@@ -326,7 +326,7 @@ public abstract class AbstractAEPartEssentiaIOBus
 	@Override
 	public double getIdlePowerUsage()
 	{
-		return AbstractAEPartEssentiaIOBus.IDLE_POWER_DRAIN;
+		return ThEPartEssentiaIOBus_Base.IDLE_POWER_DRAIN;
 	}
 
 	/**
@@ -539,20 +539,20 @@ public abstract class AbstractAEPartEssentiaIOBus
 		super.readFromNBT( data );
 
 		// Read redstone mode
-		if( data.hasKey( AbstractAEPartEssentiaIOBus.NBT_KEY_REDSTONE_MODE ) )
+		if( data.hasKey( ThEPartEssentiaIOBus_Base.NBT_KEY_REDSTONE_MODE ) )
 		{
-			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( AbstractAEPartEssentiaIOBus.NBT_KEY_REDSTONE_MODE )];
+			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( ThEPartEssentiaIOBus_Base.NBT_KEY_REDSTONE_MODE )];
 		}
 
 		// Read filters
-		for( int index = 0; index < AbstractAEPartEssentiaIOBus.MAX_FILTER_SIZE; index++ )
+		for( int index = 0; index < ThEPartEssentiaIOBus_Base.MAX_FILTER_SIZE; index++ )
 		{
-			if( data.hasKey( AbstractAEPartEssentiaIOBus.NBT_KEY_FILTER_NUMBER + index ) )
+			if( data.hasKey( ThEPartEssentiaIOBus_Base.NBT_KEY_FILTER_NUMBER + index ) )
 			{
 				Aspect filterAspect = null;
 
 				// Get the name of the aspect
-				String aspectTag = data.getString( AbstractAEPartEssentiaIOBus.NBT_KEY_FILTER_NUMBER + index );
+				String aspectTag = data.getString( ThEPartEssentiaIOBus_Base.NBT_KEY_FILTER_NUMBER + index );
 				if( !aspectTag.equals( "" ) )
 				{
 					filterAspect = Aspect.aspects.get( aspectTag );
@@ -564,9 +564,9 @@ public abstract class AbstractAEPartEssentiaIOBus
 		}
 
 		// Read upgrade inventory
-		if( data.hasKey( AbstractAEPartEssentiaIOBus.NBT_KEY_UPGRADE_INV ) )
+		if( data.hasKey( ThEPartEssentiaIOBus_Base.NBT_KEY_UPGRADE_INV ) )
 		{
-			this.upgradeInventory.readFromNBT( data, AbstractAEPartEssentiaIOBus.NBT_KEY_UPGRADE_INV );
+			this.upgradeInventory.readFromNBT( data, ThEPartEssentiaIOBus_Base.NBT_KEY_UPGRADE_INV );
 
 			this.onInventoryChanged( this.upgradeInventory );
 		}
@@ -633,13 +633,13 @@ public abstract class AbstractAEPartEssentiaIOBus
 		super.writeToNBT( data, saveType );
 
 		// Write the redstone mode
-		if( this.redstoneMode != AbstractAEPartEssentiaIOBus.DEFAULT_REDSTONE_MODE )
+		if( this.redstoneMode != ThEPartEssentiaIOBus_Base.DEFAULT_REDSTONE_MODE )
 		{
-			data.setInteger( AbstractAEPartEssentiaIOBus.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
+			data.setInteger( ThEPartEssentiaIOBus_Base.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
 		}
 
 		// Write each filter
-		for( int i = 0; i < AbstractAEPartEssentiaIOBus.MAX_FILTER_SIZE; i++ )
+		for( int i = 0; i < ThEPartEssentiaIOBus_Base.MAX_FILTER_SIZE; i++ )
 		{
 			Aspect aspect = this.filteredAspects.get( i );
 			String aspectTag = "";
@@ -649,13 +649,13 @@ public abstract class AbstractAEPartEssentiaIOBus
 				aspectTag = aspect.getTag();
 			}
 
-			data.setString( AbstractAEPartEssentiaIOBus.NBT_KEY_FILTER_NUMBER + i, aspectTag );
+			data.setString( ThEPartEssentiaIOBus_Base.NBT_KEY_FILTER_NUMBER + i, aspectTag );
 		}
 
 		// Write the upgrade inventory
 		if( !this.upgradeInventory.isEmpty() )
 		{
-			this.upgradeInventory.writeToNBT( data, AbstractAEPartEssentiaIOBus.NBT_KEY_UPGRADE_INV );
+			this.upgradeInventory.writeToNBT( data, ThEPartEssentiaIOBus_Base.NBT_KEY_UPGRADE_INV );
 		}
 	}
 }

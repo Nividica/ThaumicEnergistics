@@ -31,7 +31,7 @@ import thaumicenergistics.common.container.ContainerEssentiaTerminal;
 import thaumicenergistics.common.container.ContainerWirelessEssentiaTerminal;
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
-import thaumicenergistics.common.parts.AEPartEssentiaTerminal;
+import thaumicenergistics.common.parts.PartEssentiaTerminal;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.storage.AspectStackComparator;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
@@ -234,7 +234,7 @@ public class GuiEssentiaCellTerminal
 	 * @param player
 	 * @return
 	 */
-	public static GuiEssentiaCellTerminal NewEssentiaTerminalGui( final AEPartEssentiaTerminal terminal, final EntityPlayer player )
+	public static GuiEssentiaCellTerminal NewEssentiaTerminalGui( final PartEssentiaTerminal terminal, final EntityPlayer player )
 	{
 		return new GuiEssentiaCellTerminal( player, new ContainerEssentiaTerminal( terminal, player ),
 						ThEStrings.Part_EssentiaTerminal.getLocalized() );

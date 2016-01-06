@@ -7,7 +7,7 @@ import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
-import thaumicenergistics.common.parts.AbstractAEPartBase;
+import thaumicenergistics.common.parts.ThEPartBase;
 
 public class Packet_S_ChangeGui
 	extends ThEServerPacket
@@ -20,7 +20,7 @@ public class Packet_S_ChangeGui
 					MODE_WIRELESS = 2;
 
 	private int guiID;
-	private AbstractAEPartBase part;
+	private ThEPartBase part;
 	private World world;
 	private int x;
 	private int y;
@@ -65,7 +65,7 @@ public class Packet_S_ChangeGui
 		NetworkHandler.sendPacketToServer( packet );
 	}
 
-	public static void sendGuiChangeToPart( final AbstractAEPartBase part, final EntityPlayer player, final World world, final int x,
+	public static void sendGuiChangeToPart( final ThEPartBase part, final EntityPlayer player, final World world, final int x,
 											final int y, final int z )
 	{
 		Packet_S_ChangeGui packet = newPacket( player, MODE_PART );

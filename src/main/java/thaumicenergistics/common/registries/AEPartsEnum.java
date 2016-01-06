@@ -12,29 +12,29 @@ import appeng.api.config.Upgrades;
 
 public enum AEPartsEnum
 {
-		EssentiaImportBus (ThEStrings.Part_EssentiaImportBus, AEPartEssentiaImportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport",
+		EssentiaImportBus (ThEStrings.Part_EssentiaImportBus, PartEssentiaImportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport",
 			generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 )),
 
-		EssentiaLevelEmitter (ThEStrings.Part_EssentiaLevelEmitter, AEPartEssentiaLevelEmitter.class),
+		EssentiaLevelEmitter (ThEStrings.Part_EssentiaLevelEmitter, PartEssentiaLevelEmitter.class),
 
-		EssentiaStorageBus (ThEStrings.Part_EssentiaStorageBus, AEPartEssentiaStorageBus.class, null, generatePair( Upgrades.INVERTER, 1 )),
+		EssentiaStorageBus (ThEStrings.Part_EssentiaStorageBus, PartEssentiaStorageBus.class, null, generatePair( Upgrades.INVERTER, 1 )),
 
-		EssentiaExportBus (ThEStrings.Part_EssentiaExportBus, AEPartEssentiaExportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport",
+		EssentiaExportBus (ThEStrings.Part_EssentiaExportBus, PartEssentiaExportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport",
 			generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 )),
 
-		EssentiaTerminal (ThEStrings.Part_EssentiaTerminal, AEPartEssentiaTerminal.class),
+		EssentiaTerminal (ThEStrings.Part_EssentiaTerminal, PartEssentiaTerminal.class),
 
-		ArcaneCraftingTerminal (ThEStrings.Part_ArcaneCraftingTerminal, AEPartArcaneCraftingTerminal.class),
+		ArcaneCraftingTerminal (ThEStrings.Part_ArcaneCraftingTerminal, PartArcaneCraftingTerminal.class),
 
-		VisInterface (ThEStrings.Part_VisRelayInterface, AEPartVisInterface.class),
+		VisInterface (ThEStrings.Part_VisRelayInterface, PartVisInterface.class),
 
-		EssentiaStorageMonitor (ThEStrings.Part_EssentiaStorageMonitor, AEPartEssentiaStorageMonitor.class),
+		EssentiaStorageMonitor (ThEStrings.Part_EssentiaStorageMonitor, PartEssentiaStorageMonitor.class),
 
-		EssentiaConversionMonitor (ThEStrings.Part_EssentiaConversionMonitor, AEPartEssentiaConversionMonitor.class);
+		EssentiaConversionMonitor (ThEStrings.Part_EssentiaConversionMonitor, PartEssentiaConversionMonitor.class);
 
 	private ThEStrings unlocalizedName;
 
-	private Class<? extends AbstractAEPartBase> partClass;
+	private Class<? extends ThEPartBase> partClass;
 
 	private String groupName;
 
@@ -45,12 +45,12 @@ public enum AEPartsEnum
 	 */
 	public static final AEPartsEnum[] VALUES = AEPartsEnum.values();
 
-	private AEPartsEnum( final ThEStrings unlocalizedName, final Class<? extends AbstractAEPartBase> partClass )
+	private AEPartsEnum( final ThEStrings unlocalizedName, final Class<? extends ThEPartBase> partClass )
 	{
 		this( unlocalizedName, partClass, null );
 	}
 
-	private AEPartsEnum( final ThEStrings unlocalizedName, final Class<? extends AbstractAEPartBase> partClass, final String groupName )
+	private AEPartsEnum( final ThEStrings unlocalizedName, final Class<? extends ThEPartBase> partClass, final String groupName )
 	{
 		// Set the localization string
 		this.unlocalizedName = unlocalizedName;
@@ -62,7 +62,7 @@ public enum AEPartsEnum
 		this.groupName = groupName;
 	}
 
-	private AEPartsEnum( final ThEStrings unlocalizedName, final Class<? extends AbstractAEPartBase> partClass, final String groupName,
+	private AEPartsEnum( final ThEStrings unlocalizedName, final Class<? extends ThEPartBase> partClass, final String groupName,
 							final Pair<Upgrades, Integer> ... upgrades )
 	{
 		this( unlocalizedName, partClass, groupName );
@@ -95,7 +95,7 @@ public enum AEPartsEnum
 		return AEPartsEnum.VALUES[clamped];
 	}
 
-	public static int getPartID( final Class<? extends AbstractAEPartBase> partClass )
+	public static int getPartID( final Class<? extends ThEPartBase> partClass )
 	{
 		int id = -1;
 
@@ -116,10 +116,10 @@ public enum AEPartsEnum
 
 	}
 
-	public AbstractAEPartBase createPartInstance( final ItemStack itemStack ) throws InstantiationException, IllegalAccessException
+	public ThEPartBase createPartInstance( final ItemStack itemStack ) throws InstantiationException, IllegalAccessException
 	{
 		// Create a new instance of the part
-		AbstractAEPartBase part = this.partClass.newInstance();
+		ThEPartBase part = this.partClass.newInstance();
 
 		// Setup based on the itemStack
 		part.setupPartFromItem( itemStack );
@@ -149,7 +149,7 @@ public enum AEPartsEnum
 	 * 
 	 * @return
 	 */
-	public Class<? extends AbstractAEPartBase> getPartClass()
+	public Class<? extends ThEPartBase> getPartClass()
 	{
 		return this.partClass;
 	}

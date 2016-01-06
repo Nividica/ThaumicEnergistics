@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.api.grid.IEssentiaGrid;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
-import thaumicenergistics.common.parts.AbstractAEPartBase;
+import thaumicenergistics.common.parts.ThEPartBase;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
@@ -33,14 +33,14 @@ public class AEPartGridBlock
 	/**
 	 * The part using this gridblock.
 	 */
-	protected AbstractAEPartBase part;
+	protected ThEPartBase part;
 
 	/**
 	 * Create the gridblock for the specified part.
 	 * 
 	 * @param part
 	 */
-	public AEPartGridBlock( final AbstractAEPartBase part )
+	public AEPartGridBlock( final ThEPartBase part )
 	{
 		this.part = part;
 	}

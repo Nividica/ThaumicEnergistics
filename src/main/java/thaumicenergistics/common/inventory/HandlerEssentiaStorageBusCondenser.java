@@ -3,7 +3,7 @@ package thaumicenergistics.common.inventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import thaumicenergistics.common.fluids.GaseousEssentia;
-import thaumicenergistics.common.parts.AEPartEssentiaStorageBus;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -20,7 +20,7 @@ public class HandlerEssentiaStorageBusCondenser
 
 	private TileCondenser condenser = null;
 
-	public HandlerEssentiaStorageBusCondenser( final AEPartEssentiaStorageBus part )
+	public HandlerEssentiaStorageBusCondenser( final PartEssentiaStorageBus part )
 	{
 		super( part );
 	}

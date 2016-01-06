@@ -93,7 +93,7 @@ thaumicenergistics.research_page.TECORES.2=§lDiffusion Core§r<BR>The relativel
 tc.research_name.thaumicenergistics.TESTORAGE=Digi-sentia Storage
 tc.research_text.thaumicenergistics.TESTORAGE=Can this thing really store essentia?
 thaumicenergistics.research_page.TESTORAGE.1=Upon inspecting existing digital storage mediums you have concluded that you can in-fact store digitized essentia.<BR>By infusing §lCertus Quartz§r with concentrated essence, it will gain the ability to store the essentia, which remains remarkably active even in digital form.<BR>You conclude that the higher the concentration of essence, the more it should be able to store, although there are inherit limits as to how much the quartz itself can store.
-thaumicenergistics.research_page.TESTORAGE.2=§lComponents§r<BR>Stores the essentia in its digital format. Non-operational unless a cell casing is used to interface with a digital network.<BR>§lCell Casing§r<BR>Provides an interface and protects a storage component.<BR>§lEssentia Cell Workbench§r<BR>The cell workbench allows you to partition a cell, specifying what essentia types are allowed to be stored.
+thaumicenergistics.research_page.TESTORAGE.2=§lComponents§r<BR>Stores the essentia in its digital format. Non-operational unless a cell housing is used to interface with a digital network.<BR>§lCell Housing§r<BR>Provides an interface and protects a storage component.<BR>§lEssentia Cell Workbench§r<BR>The cell workbench allows you to partition a cell, specifying what essentia types are allowed to be stored.
 
 # Research IO
 tc.research_name.thaumicenergistics.TEIO=Digi-sentia Transportation

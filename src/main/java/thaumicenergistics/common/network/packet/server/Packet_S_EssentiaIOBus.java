@@ -4,15 +4,15 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
-import thaumicenergistics.common.parts.AEPartEssentiaExportBus;
-import thaumicenergistics.common.parts.AbstractAEPartEssentiaIOBus;
+import thaumicenergistics.common.parts.PartEssentiaExportBus;
+import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
 
 public class Packet_S_EssentiaIOBus
 	extends ThEServerPacket
 {
 	private static final byte MODE_REQUEST_FULL_UPDATE = 0, MODE_REQUEST_CHANGE_REDSTONE_MODE = 1, MODE_REQUEST_CHANGE_VOID_MODE = 2;
 
-	private AbstractAEPartEssentiaIOBus part;
+	private ThEPartEssentiaIOBus_Base part;
 
 	/**
 	 * Creates the packet
@@ -21,7 +21,7 @@ public class Packet_S_EssentiaIOBus
 	 * @param mode
 	 * @return
 	 */
-	private static Packet_S_EssentiaIOBus newPacket( final EntityPlayer player, final byte mode, final AbstractAEPartEssentiaIOBus part )
+	private static Packet_S_EssentiaIOBus newPacket( final EntityPlayer player, final byte mode, final ThEPartEssentiaIOBus_Base part )
 	{
 		// Create the packet
 		Packet_S_EssentiaIOBus packet = new Packet_S_EssentiaIOBus();
@@ -41,7 +41,7 @@ public class Packet_S_EssentiaIOBus
 	 * @param part
 	 * @return
 	 */
-	public static void sendFullUpdateRequest( final EntityPlayer player, final AbstractAEPartEssentiaIOBus part )
+	public static void sendFullUpdateRequest( final EntityPlayer player, final ThEPartEssentiaIOBus_Base part )
 	{
 		Packet_S_EssentiaIOBus packet = newPacket( player, MODE_REQUEST_FULL_UPDATE, part );
 
@@ -56,7 +56,7 @@ public class Packet_S_EssentiaIOBus
 	 * @param part
 	 * @return
 	 */
-	public static void sendRedstoneModeChange( final EntityPlayer player, final AbstractAEPartEssentiaIOBus part )
+	public static void sendRedstoneModeChange( final EntityPlayer player, final ThEPartEssentiaIOBus_Base part )
 	{
 		Packet_S_EssentiaIOBus packet = newPacket( player, MODE_REQUEST_CHANGE_REDSTONE_MODE, part );
 
@@ -71,7 +71,7 @@ public class Packet_S_EssentiaIOBus
 	 * @param part
 	 * @return
 	 */
-	public static void sendVoidModeChange( final EntityPlayer player, final AEPartEssentiaExportBus part )
+	public static void sendVoidModeChange( final EntityPlayer player, final PartEssentiaExportBus part )
 	{
 		Packet_S_EssentiaIOBus packet = newPacket( player, MODE_REQUEST_CHANGE_VOID_MODE, part );
 
@@ -96,9 +96,9 @@ public class Packet_S_EssentiaIOBus
 
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
 			// Request a void mode change
-			if( this.part instanceof AEPartEssentiaExportBus )
+			if( this.part instanceof PartEssentiaExportBus )
 			{
-				( (AEPartEssentiaExportBus)this.part ).onClientRequestChangeVoidMode( this.player );
+				( (PartEssentiaExportBus)this.part ).onClientRequestChangeVoidMode( this.player );
 			}
 			break;
 		}
@@ -113,7 +113,7 @@ public class Packet_S_EssentiaIOBus
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
 			// Read the part
-			this.part = ( (AbstractAEPartEssentiaIOBus)ThEBasePacket.readPart( stream ) );
+			this.part = ( (ThEPartEssentiaIOBus_Base)ThEBasePacket.readPart( stream ) );
 			break;
 		}
 	}

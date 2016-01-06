@@ -40,8 +40,8 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class AEPartEssentiaTerminal
-	extends AbstractAEPartRotateable
+public class PartEssentiaTerminal
+	extends ThERotateablePart
 	implements ICraftingIssuerHost, ITerminalHost
 {
 
@@ -93,7 +93,7 @@ public class AEPartEssentiaTerminal
 		}
 	};
 
-	public AEPartEssentiaTerminal()
+	public PartEssentiaTerminal()
 	{
 		super( AEPartsEnum.EssentiaTerminal );
 	}
@@ -194,7 +194,7 @@ public class AEPartEssentiaTerminal
 	@Override
 	public double getIdlePowerUsage()
 	{
-		return AEPartEssentiaTerminal.IDLE_POWER_DRAIN;
+		return PartEssentiaTerminal.IDLE_POWER_DRAIN;
 	}
 
 	public PrivateInventory getInventory()
@@ -214,7 +214,7 @@ public class AEPartEssentiaTerminal
 	@Override
 	public int getLightLevel()
 	{
-		return( this.isActive() ? AbstractAEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
+		return( this.isActive() ? ThEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
 	}
 
 	@Override
@@ -329,9 +329,9 @@ public class AEPartEssentiaTerminal
 		}
 
 		// Read inventory
-		if( data.hasKey( AEPartEssentiaTerminal.NBT_KEY_INVENTORY ) )
+		if( data.hasKey( PartEssentiaTerminal.NBT_KEY_INVENTORY ) )
 		{
-			this.inventory.readFromNBT( data, AEPartEssentiaTerminal.NBT_KEY_INVENTORY );
+			this.inventory.readFromNBT( data, PartEssentiaTerminal.NBT_KEY_INVENTORY );
 		}
 
 		// Read view mode
@@ -404,7 +404,7 @@ public class AEPartEssentiaTerminal
 		// Light up if active
 		if( this.isActive() )
 		{
-			Tessellator.instance.setBrightness( AbstractAEPartBase.ACTIVE_FACE_BRIGHTNESS );
+			Tessellator.instance.setBrightness( ThEPartBase.ACTIVE_FACE_BRIGHTNESS );
 		}
 
 		// Rotate the face texture

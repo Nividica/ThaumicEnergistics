@@ -50,8 +50,8 @@ import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class AEPartEssentiaStorageBus
-	extends AbstractAEPartBase
+public class PartEssentiaStorageBus
+	extends ThEPartBase
 	implements IGridTickable, ICellContainer, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory, IPriorityHost
 {
 	/**
@@ -83,7 +83,7 @@ public class AEPartEssentiaStorageBus
 	/**
 	 * Filter list
 	 */
-	private List<Aspect> filteredAspects = new ArrayList<Aspect>( AEPartEssentiaStorageBus.FILTER_SIZE );
+	private List<Aspect> filteredAspects = new ArrayList<Aspect>( PartEssentiaStorageBus.FILTER_SIZE );
 
 	/**
 	 * Upgrade inventory
@@ -98,13 +98,13 @@ public class AEPartEssentiaStorageBus
 	/**
 	 * Creates the bus
 	 */
-	public AEPartEssentiaStorageBus()
+	public PartEssentiaStorageBus()
 	{
 		// Call super
 		super( AEPartsEnum.EssentiaStorageBus );
 
 		// Pre-fill the list with nulls
-		for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
+		for( int index = 0; index < PartEssentiaStorageBus.FILTER_SIZE; index++ )
 		{
 			this.filteredAspects.add( null );
 		}
@@ -143,7 +143,7 @@ public class AEPartEssentiaStorageBus
 			}
 
 			// Add to the first open slot
-			for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
+			for( int index = 0; index < PartEssentiaStorageBus.FILTER_SIZE; index++ )
 			{
 				// Is this space empty?
 				if( this.filteredAspects.get( index ) == null )
@@ -316,7 +316,7 @@ public class AEPartEssentiaStorageBus
 	@Override
 	public double getIdlePowerUsage()
 	{
-		return AEPartEssentiaStorageBus.IDLE_POWER_DRAIN;
+		return PartEssentiaStorageBus.IDLE_POWER_DRAIN;
 	}
 
 	/**
@@ -464,17 +464,17 @@ public class AEPartEssentiaStorageBus
 		super.readFromNBT( data );
 
 		// Read the priority
-		if( data.hasKey( AEPartEssentiaStorageBus.NBT_KEY_PRIORITY ) )
+		if( data.hasKey( PartEssentiaStorageBus.NBT_KEY_PRIORITY ) )
 		{
-			this.priority = data.getInteger( AEPartEssentiaStorageBus.NBT_KEY_PRIORITY );
+			this.priority = data.getInteger( PartEssentiaStorageBus.NBT_KEY_PRIORITY );
 		}
 
 		// Read the filter list
-		for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
+		for( int index = 0; index < PartEssentiaStorageBus.FILTER_SIZE; index++ )
 		{
-			if( data.hasKey( AEPartEssentiaStorageBus.NBT_KEY_FILTER + index ) )
+			if( data.hasKey( PartEssentiaStorageBus.NBT_KEY_FILTER + index ) )
 			{
-				this.filteredAspects.set( index, Aspect.aspects.get( data.getString( AEPartEssentiaStorageBus.NBT_KEY_FILTER + index ) ) );
+				this.filteredAspects.set( index, Aspect.aspects.get( data.getString( PartEssentiaStorageBus.NBT_KEY_FILTER + index ) ) );
 			}
 			else
 			{
@@ -483,18 +483,18 @@ public class AEPartEssentiaStorageBus
 		}
 
 		// Read the upgrade inventory
-		if( data.hasKey( AEPartEssentiaStorageBus.NBT_KEY_UPGRADES ) )
+		if( data.hasKey( PartEssentiaStorageBus.NBT_KEY_UPGRADES ) )
 		{
-			this.upgradeInventory.readFromNBT( data, AEPartEssentiaStorageBus.NBT_KEY_UPGRADES );
+			this.upgradeInventory.readFromNBT( data, PartEssentiaStorageBus.NBT_KEY_UPGRADES );
 
 			// Update the handler inverted
 			this.onInventoryChanged( this.upgradeInventory );
 		}
 
 		// Read void
-		if( data.hasKey( AEPartEssentiaStorageBus.NBT_KEY_VOID ) )
+		if( data.hasKey( PartEssentiaStorageBus.NBT_KEY_VOID ) )
 		{
-			this.handler.setVoidAllowed( data.getBoolean( AEPartEssentiaStorageBus.NBT_KEY_VOID ) );
+			this.handler.setVoidAllowed( data.getBoolean( PartEssentiaStorageBus.NBT_KEY_VOID ) );
 		}
 
 		// Update the handler filter list
@@ -533,7 +533,7 @@ public class AEPartEssentiaStorageBus
 
 		// Color overlay
 		helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
-		helper.setInvColor( AbstractAEPartBase.INVENTORY_OVERLAY_COLOR );
+		helper.setInvColor( ThEPartBase.INVENTORY_OVERLAY_COLOR );
 		ts.setBrightness( 0xF000F0 );
 		helper.renderInventoryFace( BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[1], ForgeDirection.SOUTH, renderer );
 
@@ -562,7 +562,7 @@ public class AEPartEssentiaStorageBus
 
 		if( this.isActive() )
 		{
-			tessellator.setBrightness( AbstractAEPartBase.ACTIVE_FACE_BRIGHTNESS );
+			tessellator.setBrightness( ThEPartBase.ACTIVE_FACE_BRIGHTNESS );
 		}
 
 		// Mid
@@ -646,30 +646,30 @@ public class AEPartEssentiaStorageBus
 		// Write the priority
 		if( this.priority > 0 )
 		{
-			data.setInteger( AEPartEssentiaStorageBus.NBT_KEY_PRIORITY, this.priority );
+			data.setInteger( PartEssentiaStorageBus.NBT_KEY_PRIORITY, this.priority );
 		}
 
 		// Write the filters
-		for( int index = 0; index < AEPartEssentiaStorageBus.FILTER_SIZE; index++ )
+		for( int index = 0; index < PartEssentiaStorageBus.FILTER_SIZE; index++ )
 		{
 			Aspect aspect = this.filteredAspects.get( index );
 
 			if( aspect != null )
 			{
-				data.setString( AEPartEssentiaStorageBus.NBT_KEY_FILTER + index, aspect.getTag() );
+				data.setString( PartEssentiaStorageBus.NBT_KEY_FILTER + index, aspect.getTag() );
 			}
 		}
 
 		// Write upgrades
 		if( !this.upgradeInventory.isEmpty() )
 		{
-			this.upgradeInventory.writeToNBT( data, AEPartEssentiaStorageBus.NBT_KEY_UPGRADES );
+			this.upgradeInventory.writeToNBT( data, PartEssentiaStorageBus.NBT_KEY_UPGRADES );
 		}
 
 		// Write void
 		if( this.handler.isVoidAllowed() )
 		{
-			data.setBoolean( AEPartEssentiaStorageBus.NBT_KEY_VOID, this.handler.isVoidAllowed() );
+			data.setBoolean( PartEssentiaStorageBus.NBT_KEY_VOID, this.handler.isVoidAllowed() );
 		}
 	}
 

@@ -12,8 +12,8 @@ import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.parts.PartItemStack;
 import appeng.util.Platform;
 
-public abstract class AbstractAEPartRotateable
-	extends AbstractAEPartBase
+public abstract class ThERotateablePart
+	extends ThEPartBase
 {
 	/**
 	 * NBT keys
@@ -26,7 +26,7 @@ public abstract class AbstractAEPartRotateable
 	 */
 	private byte renderRotation = 0;
 
-	public AbstractAEPartRotateable( final AEPartsEnum associatedPart )
+	public ThERotateablePart( final AEPartsEnum associatedPart )
 	{
 		super( associatedPart );
 	}
@@ -100,9 +100,9 @@ public abstract class AbstractAEPartRotateable
 		super.readFromNBT( data );
 
 		// Read rotation
-		if( data.hasKey( AbstractAEPartRotateable.NBT_KEY_ROT_DIR ) )
+		if( data.hasKey( ThERotateablePart.NBT_KEY_ROT_DIR ) )
 		{
-			this.renderRotation = data.getByte( AbstractAEPartRotateable.NBT_KEY_ROT_DIR );
+			this.renderRotation = data.getByte( ThERotateablePart.NBT_KEY_ROT_DIR );
 		}
 	}
 
@@ -142,7 +142,7 @@ public abstract class AbstractAEPartRotateable
 		// Write the rotation
 		if( this.renderRotation != 0 )
 		{
-			data.setByte( AbstractAEPartRotateable.NBT_KEY_ROT_DIR, this.renderRotation );
+			data.setByte( ThERotateablePart.NBT_KEY_ROT_DIR, this.renderRotation );
 		}
 	}
 

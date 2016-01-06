@@ -8,7 +8,7 @@ import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.fluids.GaseousEssentia;
-import thaumicenergistics.common.parts.AEPartEssentiaStorageBus;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
@@ -33,7 +33,7 @@ public abstract class HandlerEssentiaStorageBusBase
 	/**
 	 * Storage bus associated with this handler.
 	 */
-	protected AEPartEssentiaStorageBus partStorageBus;
+	protected PartEssentiaStorageBus partStorageBus;
 
 	/**
 	 * Controls what operations this bus is allowed to perform.
@@ -67,7 +67,7 @@ public abstract class HandlerEssentiaStorageBusBase
 	 * 
 	 * @param part
 	 */
-	public HandlerEssentiaStorageBusBase( final AEPartEssentiaStorageBus part )
+	public HandlerEssentiaStorageBusBase( final PartEssentiaStorageBus part )
 	{
 		// Set the part
 		this.partStorageBus = part;

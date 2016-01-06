@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.common.parts.AbstractAEPartBase;
+import thaumicenergistics.common.parts.ThEPartBase;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
@@ -117,13 +117,13 @@ public abstract class ThEBasePacket
 	 * @param stream
 	 * @return
 	 */
-	protected static AbstractAEPartBase readPart( final ByteBuf stream )
+	protected static ThEPartBase readPart( final ByteBuf stream )
 	{
 		ForgeDirection side = ForgeDirection.getOrientation( stream.readInt() );
 
 		IPartHost host = (IPartHost)ThEBasePacket.readTileEntity( stream );
 
-		return (AbstractAEPartBase)host.getPart( side );
+		return (ThEPartBase)host.getPart( side );
 	}
 
 	/**
@@ -233,7 +233,7 @@ public abstract class ThEBasePacket
 	 * @param part
 	 * @param stream
 	 */
-	protected static void writePart( final AbstractAEPartBase part, final ByteBuf stream )
+	protected static void writePart( final ThEPartBase part, final ByteBuf stream )
 	{
 		stream.writeInt( part.getSide().ordinal() );
 

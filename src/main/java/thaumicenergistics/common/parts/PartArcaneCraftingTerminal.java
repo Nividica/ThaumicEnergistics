@@ -53,8 +53,8 @@ import appeng.items.storage.ItemViewCell;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class AEPartArcaneCraftingTerminal
-	extends AbstractAEPartRotateable
+public class PartArcaneCraftingTerminal
+	extends ThERotateablePart
 	implements IInventory, IGridTickable, ICraftingIssuerHost, ITerminalHost
 {
 	/**
@@ -120,7 +120,7 @@ public class AEPartArcaneCraftingTerminal
 	/**
 	 * Inventory slots
 	 */
-	private final ItemStack[] slots = new ItemStack[AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE];
+	private final ItemStack[] slots = new ItemStack[PartArcaneCraftingTerminal.MY_INVENTORY_SIZE];
 
 	/**
 	 * Containers wishing to be notified on inventory changes
@@ -130,17 +130,17 @@ public class AEPartArcaneCraftingTerminal
 	/**
 	 * How the items are sorted.
 	 */
-	private SortOrder sortingOrder = AEPartArcaneCraftingTerminal.DEFAULT_SORT_ORDER;
+	private SortOrder sortingOrder = PartArcaneCraftingTerminal.DEFAULT_SORT_ORDER;
 
 	/**
 	 * What direction are the items sorted.
 	 */
-	private SortDir sortingDirection = AEPartArcaneCraftingTerminal.DEFAULT_SORT_DIR;
+	private SortDir sortingDirection = PartArcaneCraftingTerminal.DEFAULT_SORT_DIR;
 
 	/**
 	 * What items types are visible.
 	 */
-	private ViewItems viewMode = AEPartArcaneCraftingTerminal.DEFAULT_VIEW_MODE;
+	private ViewItems viewMode = PartArcaneCraftingTerminal.DEFAULT_VIEW_MODE;
 
 	/**
 	 * Data pertaining to the linked digi-vis source
@@ -150,7 +150,7 @@ public class AEPartArcaneCraftingTerminal
 	/**
 	 * Creates the terminal
 	 */
-	public AEPartArcaneCraftingTerminal()
+	public PartArcaneCraftingTerminal()
 	{
 		// Call super
 		super( AEPartsEnum.ArcaneCraftingTerminal );
@@ -165,7 +165,7 @@ public class AEPartArcaneCraftingTerminal
 	private boolean isSlotInRange( final int slotIndex )
 	{
 		// Is the slot in range?
-		return( ( slotIndex >= 0 ) && ( slotIndex < AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE ) );
+		return( ( slotIndex >= 0 ) && ( slotIndex < PartArcaneCraftingTerminal.MY_INVENTORY_SIZE ) );
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class AEPartArcaneCraftingTerminal
 	private void notifyListeners( final int slotIndex )
 	{
 		// Did the crafting slots, wand, or results slot change?
-		boolean notifyCrafting = ( slotIndex <= AEPartArcaneCraftingTerminal.RESULT_SLOT_INDEX );
+		boolean notifyCrafting = ( slotIndex <= PartArcaneCraftingTerminal.RESULT_SLOT_INDEX );
 
 		// Loop over all listeners
 		for( ContainerPartArcaneCraftingTerminal listener : this.listeners )
@@ -329,10 +329,10 @@ public class AEPartArcaneCraftingTerminal
 		}
 
 		// Loop over inventory
-		for( int slotIndex = 0; slotIndex < AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE; slotIndex++ )
+		for( int slotIndex = 0; slotIndex < PartArcaneCraftingTerminal.MY_INVENTORY_SIZE; slotIndex++ )
 		{
 			// Skip if this is the output slot
-			if( slotIndex == AEPartArcaneCraftingTerminal.RESULT_SLOT_INDEX )
+			if( slotIndex == PartArcaneCraftingTerminal.RESULT_SLOT_INDEX )
 			{
 				continue;
 			}
@@ -369,7 +369,7 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public double getIdlePowerUsage()
 	{
-		return AEPartArcaneCraftingTerminal.IDLE_POWER_DRAIN;
+		return PartArcaneCraftingTerminal.IDLE_POWER_DRAIN;
 	}
 
 	/**
@@ -402,7 +402,7 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public int getLightLevel()
 	{
-		return( this.isActive() ? AbstractAEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
+		return( this.isActive() ? ThEPartBase.ACTIVE_TERMINAL_LIGHT_LEVEL : 0 );
 	}
 
 	/**
@@ -420,7 +420,7 @@ public class AEPartArcaneCraftingTerminal
 	@Override
 	public int getSizeInventory()
 	{
-		return AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE;
+		return PartArcaneCraftingTerminal.MY_INVENTORY_SIZE;
 	}
 
 	/**
@@ -529,13 +529,13 @@ public class AEPartArcaneCraftingTerminal
 			}
 
 			// Is this the wand slot?
-			if( slotIndex == AEPartArcaneCraftingTerminal.WAND_SLOT_INDEX )
+			if( slotIndex == PartArcaneCraftingTerminal.WAND_SLOT_INDEX )
 			{
 				// Is the item a wand?
 				return ThEUtils.isItemValidWand( proposedStack, false );
 			}
 			// Is this a view slot?
-			if( ( slotIndex >= AEPartArcaneCraftingTerminal.VIEW_SLOT_MIN ) && ( slotIndex <= AEPartArcaneCraftingTerminal.VIEW_SLOT_MAX ) )
+			if( ( slotIndex >= PartArcaneCraftingTerminal.VIEW_SLOT_MIN ) && ( slotIndex <= PartArcaneCraftingTerminal.VIEW_SLOT_MAX ) )
 			{
 				// Is the stack a view slot?
 				return( proposedStack.getItem() instanceof ItemViewCell );
@@ -659,10 +659,10 @@ public class AEPartArcaneCraftingTerminal
 		super.readFromNBT( data );
 
 		// Does the data tag have the list?
-		if( data.hasKey( AEPartArcaneCraftingTerminal.INVENTORY_NBT_KEY ) )
+		if( data.hasKey( PartArcaneCraftingTerminal.INVENTORY_NBT_KEY ) )
 		{
 			// Get the list
-			NBTTagList nbtTagList = (NBTTagList)data.getTag( AEPartArcaneCraftingTerminal.INVENTORY_NBT_KEY );
+			NBTTagList nbtTagList = (NBTTagList)data.getTag( PartArcaneCraftingTerminal.INVENTORY_NBT_KEY );
 
 			for( int listIndex = 0; listIndex < nbtTagList.tagCount(); listIndex++ )
 			{
@@ -670,7 +670,7 @@ public class AEPartArcaneCraftingTerminal
 				NBTTagCompound nbtCompound = nbtTagList.getCompoundTagAt( listIndex );
 
 				// Get the slot list
-				int slotIndex = nbtCompound.getByte( AEPartArcaneCraftingTerminal.SLOT_NBT_KEY );
+				int slotIndex = nbtCompound.getByte( PartArcaneCraftingTerminal.SLOT_NBT_KEY );
 
 				// Is it in range?
 				if( this.isSlotInRange( slotIndex ) )
@@ -679,7 +679,7 @@ public class AEPartArcaneCraftingTerminal
 					ItemStack slotStack = ItemStack.loadItemStackFromNBT( nbtCompound );
 
 					// Is the slot the wand slot?
-					if( slotIndex == AEPartArcaneCraftingTerminal.WAND_SLOT_INDEX )
+					if( slotIndex == PartArcaneCraftingTerminal.WAND_SLOT_INDEX )
 					{
 						// Validate the wand
 						if( !ThEUtils.isItemValidWand( slotStack, false ) )
@@ -697,27 +697,27 @@ public class AEPartArcaneCraftingTerminal
 		}
 
 		// Sort order
-		if( data.hasKey( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY ) )
+		if( data.hasKey( PartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY ) )
 		{
-			this.sortingOrder = EnumCache.AE_SORT_ORDERS[data.getInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY )];
+			this.sortingOrder = EnumCache.AE_SORT_ORDERS[data.getInteger( PartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY )];
 		}
 
 		// Sort direction
-		if( data.hasKey( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY ) )
+		if( data.hasKey( PartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY ) )
 		{
-			this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[data.getInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY )];
+			this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[data.getInteger( PartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY )];
 		}
 
 		// View mode
-		if( data.hasKey( AEPartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY ) )
+		if( data.hasKey( PartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY ) )
 		{
-			this.viewMode = EnumCache.AE_VIEW_ITEMS[data.getInteger( AEPartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY )];
+			this.viewMode = EnumCache.AE_VIEW_ITEMS[data.getInteger( PartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY )];
 		}
 
 		// Vis source info
-		if( data.hasKey( AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY ) )
+		if( data.hasKey( PartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY ) )
 		{
-			this.visSourceInfo.readFromNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
+			this.visSourceInfo.readFromNBT( data, PartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
 		}
 	}
 
@@ -764,7 +764,7 @@ public class AEPartArcaneCraftingTerminal
 		helper.renderInventoryBox( renderer );
 
 		helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
-		ts.setColorOpaque_I( AbstractAEPartBase.INVENTORY_OVERLAY_COLOR );
+		ts.setColorOpaque_I( ThEPartBase.INVENTORY_OVERLAY_COLOR );
 		helper.renderInventoryFace( BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer );
 
 		ts.setColorOpaque_I( AEColor.Black.mediumVariant );
@@ -799,7 +799,7 @@ public class AEPartArcaneCraftingTerminal
 		if( this.isActive() )
 		{
 			// Set brightness
-			tessellator.setBrightness( AbstractAEPartBase.ACTIVE_FACE_BRIGHTNESS );
+			tessellator.setBrightness( ThEPartBase.ACTIVE_FACE_BRIGHTNESS );
 
 			// Draw corners
 			helper.setBounds( 2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F );
@@ -892,14 +892,14 @@ public class AEPartArcaneCraftingTerminal
 		for( int armorSlot = 0; armorSlot < 4; ++armorSlot )
 		{
 			// Get the stored armor
-			ItemStack storedArmor = this.slots[AEPartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorSlot];
+			ItemStack storedArmor = this.slots[PartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorSlot];
 
 			// Get the player armor
 			ItemStack playerArmor = player.inventory.armorInventory[3 - armorSlot];
 
 			// Swap
 			player.inventoryContainer.putStackInSlot( 5 + armorSlot, storedArmor );
-			this.slots[AEPartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorSlot] = playerArmor;
+			this.slots[PartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorSlot] = playerArmor;
 
 		}
 
@@ -969,7 +969,7 @@ public class AEPartArcaneCraftingTerminal
 				wand.addRealVis( stack, vis, amountDrained, true );
 
 				// Inform listeners that wand has changed
-				this.notifyListeners( AEPartArcaneCraftingTerminal.WAND_SLOT_INDEX );
+				this.notifyListeners( PartArcaneCraftingTerminal.WAND_SLOT_INDEX );
 			}
 
 		}
@@ -991,7 +991,7 @@ public class AEPartArcaneCraftingTerminal
 		NBTTagList nbtList = new NBTTagList();
 
 		// Loop over the slots
-		for( int slotId = 0; slotId < AEPartArcaneCraftingTerminal.MY_INVENTORY_SIZE; slotId++ )
+		for( int slotId = 0; slotId < PartArcaneCraftingTerminal.MY_INVENTORY_SIZE; slotId++ )
 		{
 			// Is the slot not null?
 			if( this.slots[slotId] != null )
@@ -1000,7 +1000,7 @@ public class AEPartArcaneCraftingTerminal
 				NBTTagCompound nbtCompound = new NBTTagCompound();
 
 				// Set the slot ID
-				nbtCompound.setByte( AEPartArcaneCraftingTerminal.SLOT_NBT_KEY, (byte)slotId );
+				nbtCompound.setByte( PartArcaneCraftingTerminal.SLOT_NBT_KEY, (byte)slotId );
 
 				// Write the stack into the tag
 				this.slots[slotId].writeToNBT( nbtCompound );
@@ -1013,31 +1013,31 @@ public class AEPartArcaneCraftingTerminal
 		// Append the list to the data tag
 		if( nbtList.tagCount() > 0 )
 		{
-			data.setTag( AEPartArcaneCraftingTerminal.INVENTORY_NBT_KEY, nbtList );
+			data.setTag( PartArcaneCraftingTerminal.INVENTORY_NBT_KEY, nbtList );
 		}
 
 		// Write direction
-		if( this.sortingDirection != AEPartArcaneCraftingTerminal.DEFAULT_SORT_DIR )
+		if( this.sortingDirection != PartArcaneCraftingTerminal.DEFAULT_SORT_DIR )
 		{
-			data.setInteger( AEPartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY, this.sortingDirection.ordinal() );
+			data.setInteger( PartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY, this.sortingDirection.ordinal() );
 		}
 
 		// Write order
-		if( this.sortingOrder != AEPartArcaneCraftingTerminal.DEFAULT_SORT_ORDER )
+		if( this.sortingOrder != PartArcaneCraftingTerminal.DEFAULT_SORT_ORDER )
 		{
-			data.setInteger( AEPartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY, this.sortingOrder.ordinal() );
+			data.setInteger( PartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY, this.sortingOrder.ordinal() );
 		}
 
 		// Write view mode
-		if( this.viewMode != AEPartArcaneCraftingTerminal.DEFAULT_VIEW_MODE )
+		if( this.viewMode != PartArcaneCraftingTerminal.DEFAULT_VIEW_MODE )
 		{
-			data.setInteger( AEPartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY, this.viewMode.ordinal() );
+			data.setInteger( PartArcaneCraftingTerminal.VIEW_MODE_NBT_KEY, this.viewMode.ordinal() );
 		}
 
 		// Write the vis source info
 		if( saveType != PartItemStack.Wrench )
 		{
-			this.visSourceInfo.writeToNBT( data, AEPartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
+			this.visSourceInfo.writeToNBT( data, PartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
 		}
 	}
 }

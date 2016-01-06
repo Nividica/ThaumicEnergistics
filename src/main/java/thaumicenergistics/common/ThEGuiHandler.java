@@ -8,7 +8,7 @@ import thaumicenergistics.api.gui.ICraftingIssuerContainer;
 import thaumicenergistics.client.gui.*;
 import thaumicenergistics.common.container.*;
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
-import thaumicenergistics.common.parts.AbstractAEPartBase;
+import thaumicenergistics.common.parts.ThEPartBase;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.container.AEBaseContainer;
@@ -174,7 +174,7 @@ public class ThEGuiHandler
 												final int z, final boolean isServerSide )
 	{
 		// Get the part
-		AbstractAEPartBase part = (AbstractAEPartBase)ThEGuiHandler.getPart( tileSide, world, x, y, z );
+		ThEPartBase part = (ThEPartBase)ThEGuiHandler.getPart( tileSide, world, x, y, z );
 
 		// Ensure we got the part
 		if( part == null )
@@ -228,7 +228,7 @@ public class ThEGuiHandler
 	 * @param y
 	 * @param z
 	 */
-	public static void launchGui( final AbstractAEPartBase part, final EntityPlayer player, final World world, final int x, final int y, final int z )
+	public static void launchGui( final ThEPartBase part, final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
 		// Ensure the player is allowed to open the gui
 		if( part.doesPlayerHavePermissionToOpenGui( player ) )

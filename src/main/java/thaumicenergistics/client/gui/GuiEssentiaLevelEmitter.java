@@ -16,7 +16,7 @@ import thaumicenergistics.client.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerPartEssentiaLevelEmitter;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaEmitter;
-import thaumicenergistics.common.parts.AEPartEssentiaLevelEmitter;
+import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
 import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import appeng.api.config.RedstoneMode;
@@ -167,7 +167,7 @@ public class GuiEssentiaLevelEmitter
 	/**
 	 * AE part associated with the gui.
 	 */
-	private AEPartEssentiaLevelEmitter part;
+	private PartEssentiaLevelEmitter part;
 
 	/**
 	 * Player viewing the gui.
@@ -187,7 +187,7 @@ public class GuiEssentiaLevelEmitter
 	 * @param player
 	 * Player viewing the gui.
 	 */
-	public GuiEssentiaLevelEmitter( final AEPartEssentiaLevelEmitter part, final EntityPlayer player )
+	public GuiEssentiaLevelEmitter( final PartEssentiaLevelEmitter part, final EntityPlayer player )
 	{
 		// Call super
 		super( new ContainerPartEssentiaLevelEmitter( part, player ) );

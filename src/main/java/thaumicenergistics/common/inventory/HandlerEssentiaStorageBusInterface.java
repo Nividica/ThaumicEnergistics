@@ -1,7 +1,7 @@
 package thaumicenergistics.common.inventory;
 
 import net.minecraft.tileentity.TileEntity;
-import thaumicenergistics.common.parts.AEPartEssentiaStorageBus;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
@@ -57,7 +57,7 @@ class HandlerEssentiaStorageBusInterface
 	 * 
 	 * @param part
 	 */
-	public HandlerEssentiaStorageBusInterface( final AEPartEssentiaStorageBus part )
+	public HandlerEssentiaStorageBusInterface( final PartEssentiaStorageBus part )
 	{
 		super( part );
 	}

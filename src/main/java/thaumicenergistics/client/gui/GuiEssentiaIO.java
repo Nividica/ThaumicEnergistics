@@ -16,9 +16,9 @@ import thaumicenergistics.client.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaIOBus;
-import thaumicenergistics.common.parts.AEPartEssentiaExportBus;
-import thaumicenergistics.common.parts.AEPartEssentiaImportBus;
-import thaumicenergistics.common.parts.AbstractAEPartEssentiaIOBus;
+import thaumicenergistics.common.parts.PartEssentiaExportBus;
+import thaumicenergistics.common.parts.PartEssentiaImportBus;
+import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
 import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import appeng.api.config.RedstoneMode;
@@ -108,7 +108,7 @@ public class GuiEssentiaIO
 	/**
 	 * The part associated with this gui.
 	 */
-	private AbstractAEPartEssentiaIOBus part;
+	private ThEPartEssentiaIOBus_Base part;
 
 	/**
 	 * The player viewing this bus gui.
@@ -161,7 +161,7 @@ public class GuiEssentiaIO
 	 * @param partBus
 	 * @param player
 	 */
-	public GuiEssentiaIO( final AbstractAEPartEssentiaIOBus partBus, final EntityPlayer player )
+	public GuiEssentiaIO( final ThEPartEssentiaIOBus_Base partBus, final EntityPlayer player )
 	{
 		// Call super
 		super( new ContainerPartEssentiaIOBus( partBus, player ) );
@@ -182,12 +182,12 @@ public class GuiEssentiaIO
 		this.ySize = GuiEssentiaIO.GUI_HEIGHT;
 
 		// Set the title
-		if( partBus instanceof AEPartEssentiaImportBus )
+		if( partBus instanceof PartEssentiaImportBus )
 		{
 			// Import
 			this.guiTitle = AEPartsEnum.EssentiaImportBus.getLocalizedName();
 		}
-		else if( partBus instanceof AEPartEssentiaExportBus )
+		else if( partBus instanceof PartEssentiaExportBus )
 		{
 			// Export
 			this.guiTitle = AEPartsEnum.EssentiaExportBus.getLocalizedName();
@@ -320,9 +320,9 @@ public class GuiEssentiaIO
 		// Void button?
 		else if( button.id == GuiEssentiaIO.ALLOW_VOID_BUTTON_ID )
 		{
-			if( this.part instanceof AEPartEssentiaExportBus )
+			if( this.part instanceof PartEssentiaExportBus )
 			{
-				Packet_S_EssentiaIOBus.sendVoidModeChange( this.player, (AEPartEssentiaExportBus)this.part );
+				Packet_S_EssentiaIOBus.sendVoidModeChange( this.player, (PartEssentiaExportBus)this.part );
 			}
 		}
 	}
@@ -367,7 +367,7 @@ public class GuiEssentiaIO
 						GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_SIZE, GuiEssentiaIO.REDSTONE_CONTROL_BUTTON_SIZE, this.redstoneMode, false );
 
 		// Create the allow void button if export bus
-		if( this.part instanceof AEPartEssentiaExportBus )
+		if( this.part instanceof PartEssentiaExportBus )
 		{
 			this.voidModeButton = new GuiButtonAllowVoid( GuiEssentiaIO.ALLOW_VOID_BUTTON_ID, this.guiLeft + GuiEssentiaIO.ALLOW_VOID_BUTTON_POS_X,
 							this.guiTop + GuiEssentiaIO.ALLOW_VOID_BUTTON_POS_Y );

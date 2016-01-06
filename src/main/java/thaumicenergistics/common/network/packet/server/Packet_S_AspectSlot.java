@@ -6,7 +6,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.IAspectSlotPart;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
-import thaumicenergistics.common.parts.AbstractAEPartBase;
+import thaumicenergistics.common.parts.ThEPartBase;
 
 public class Packet_S_AspectSlot
 	extends ThEServerPacket
@@ -79,7 +79,7 @@ public class Packet_S_AspectSlot
 		{
 		case Packet_S_AspectSlot.MODE_SET_ASPECT:
 			// Write the part
-			ThEBasePacket.writePart( (AbstractAEPartBase)this.part, stream );
+			ThEBasePacket.writePart( (ThEPartBase)this.part, stream );
 
 			// Write the index
 			stream.writeInt( this.index );
