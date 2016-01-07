@@ -19,11 +19,10 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.Thaumcraft;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.grid.IDigiVisSource;
-import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
 import thaumicenergistics.client.gui.ThEGuiHelper;
 import thaumicenergistics.common.blocks.BlockArcaneAssembler;
 import thaumicenergistics.common.inventory.HandlerKnowledgeCore;
-import thaumicenergistics.common.inventory.PrivateInventory;
+import thaumicenergistics.common.inventory.TheInternalInventory;
 import thaumicenergistics.common.items.ItemKnowledgeCore;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.integration.IWailaSource;
@@ -55,7 +54,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.localization.WailaText;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.me.GridAccessException;
-import appeng.me.GridException;
 import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.TileEvent;
@@ -69,39 +67,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileArcaneAssembler
 	extends AENetworkInvTile
-	implements ICraftingProvider, IInventoryUpdateReceiver, IWailaSource
+	implements ICraftingProvider, IWailaSource
 {
-	private class AssemblerInventory
-		extends PrivateInventory
-	{
-
-		public AssemblerInventory()
-		{
-			super( "ArcaneAssemblerInventory", TileArcaneAssembler.SLOT_COUNT, 64, TileArcaneAssembler.this );
-		}
-
-		@Override
-		public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
-		{
-			// Is the slot being assigned the knowledge core slot?
-			if( slotId == TileArcaneAssembler.KCORE_SLOT_INDEX )
-			{
-				// Ensure the item is a knowledge core.
-				return( ( itemStack == null ) || ( itemStack.getItem() instanceof ItemKnowledgeCore ) );
-			}
-
-			// Assume it is not valid
-			return false;
-		}
-
-	}
-
 	/**
 	 * NBT Keys
 	 */
-	private static final String NBTKEY_KCORE = "kcore", NBTKEY_VIS_INTERFACE = "vis_interface", NBTKEY_STORED_VIS = "stored_vis",
+	private static final String NBTKEY_VIS_INTERFACE = "vis_interface",
 					NBTKEY_UPGRADES = "upgradeCount", NBTKEY_UPGRADEINV = "upgrades", NBTKEY_CRAFTING = "isCrafting",
-					NBTKEY_CRAFTING_PATTERN = "pattern", NBTKEY_DISCOUNT_ARMOR = "discount_armor#";
+					NBTKEY_CRAFTING_PATTERN = "pattern";
+
+	/**
+	 * NBT Key for stored vis.
+	 */
+	public static final String NBTKEY_STORED_VIS = "stored_vis";
 
 	/**
 	 * Used to simulate floating point amounts of vis.
@@ -142,7 +120,7 @@ public class TileArcaneAssembler
 	/**
 	 * Holds the patterns and the kcore
 	 */
-	private AssemblerInventory internalInventory;
+	private final TheInternalInventory internalInventory;
 
 	/**
 	 * Holds the upgrades
@@ -200,11 +178,6 @@ public class TileArcaneAssembler
 	private int upgradeCount = 0;
 
 	/**
-	 * Set to true when being dismantled by a wrench.
-	 */
-	private boolean wasDismantled = false;
-
-	/**
 	 * How much discount each aspect is receiving.
 	 */
 	private Hashtable<Aspect, Float> visDiscount = new Hashtable<Aspect, Float>();
@@ -220,12 +193,17 @@ public class TileArcaneAssembler
 	private boolean delayedUpdate = false;
 
 	/**
+	 * Set true when the tile is ready.
+	 */
+	private boolean isReady = false;
+
+	/**
 	 * Creates the assembler and it's inventory.
 	 */
 	public TileArcaneAssembler()
 	{
-		// Create the inventory
-		this.internalInventory = new AssemblerInventory();
+		// Create the internal inventory
+		this.internalInventory = new TheInternalInventory( "ArcaneAssemblerInventory", TileArcaneAssembler.SLOT_COUNT, 64 );
 
 		// Create the upgrade inventory
 		this.upgradeInventory = new BlockUpgradeInventory( ThEApi.instance().blocks().ArcaneAssembler.getBlock(), this,
@@ -325,7 +303,7 @@ public class TileArcaneAssembler
 
 					// Mark the assembler as no longer crafting
 					this.isCrafting = false;
-					this.internalInventory.slots[TileArcaneAssembler.TARGET_SLOT_INDEX] = null;
+					this.internalInventory.clearSlot( TARGET_SLOT_INDEX );
 					this.currentPattern = null;
 
 					// Mark for network update
@@ -418,6 +396,27 @@ public class TileArcaneAssembler
 	}
 
 	/**
+	 * Returns true if the tile is connected to the AE network and active.
+	 * 
+	 * @return
+	 */
+	private boolean isActive()
+	{
+		// Are we server side?
+		if( EffectiveSide.isServerSide() )
+		{
+			// Do we have a proxy and grid node?
+			if( ( this.getProxy() != null ) && ( this.getProxy().getNode() != null ) )
+			{
+				// Get the grid node activity
+				this.isActive = this.getProxy().getNode().isActive();
+			}
+		}
+
+		return this.isActive;
+	}
+
+	/**
 	 * Marks the tile for a delayed update.
 	 */
 	private void markForDelayedUpdate()
@@ -479,6 +478,22 @@ public class TileArcaneAssembler
 	}
 
 	/**
+	 * Configures the Assembler.
+	 */
+	private void setupAssemblerTile()
+	{
+		// Ignored on client side
+		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
+		{
+			// Set idle power usage
+			this.getProxy().setIdlePowerUsage( TileArcaneAssembler.IDLE_POWER );
+
+			// Set that we require a channel
+			this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
+		}
+	}
+
+	/**
 	 * The number of ticks required to craft an item.
 	 */
 	private int ticksPerCraft()
@@ -506,12 +521,12 @@ public class TileArcaneAssembler
 			if( ( pIterator != null ) && ( pIterator.hasNext() ) )
 			{
 				// Set to pattern result
-				this.internalInventory.slots[index] = pIterator.next();
+				this.internalInventory.setInventorySlotContents( index, pIterator.next() );
 			}
 			else
 			{
 				// Clear slot
-				this.internalInventory.slots[index] = null;
+				this.internalInventory.clearSlot( index );
 			}
 		}
 	}
@@ -540,10 +555,10 @@ public class TileArcaneAssembler
 		}
 
 		// Is the assembler crafting anything?
-		if( ( this.isCrafting ) && ( this.internalInventory.slots[TileArcaneAssembler.TARGET_SLOT_INDEX] != null ) )
+		if( ( this.isCrafting ) && this.internalInventory.getHasStack( TARGET_SLOT_INDEX ) )
 		{
 			// Add what is being crafted and the percent it is complete
-			tooltip.add( String.format( "%s, %.0f%%", this.internalInventory.slots[TileArcaneAssembler.TARGET_SLOT_INDEX].getDisplayName(),
+			tooltip.add( String.format( "%s, %.0f%%", this.internalInventory.getStackInSlot( TARGET_SLOT_INDEX ).getDisplayName(),
 				( ( this.getPercentComplete() * 100.0F ) ) ) );
 		}
 
@@ -573,39 +588,9 @@ public class TileArcaneAssembler
 		tooltip.add( strAspects.toString() );
 	}
 
-	/**
-	 * Checks if the player has the security permissions to open the GUI.
-	 * 
-	 * @param player
-	 * @return
-	 */
-	public boolean canPlayerOpenGUI( final EntityPlayer player )
-	{
-		try
-		{
-			// Get the security grid
-			ISecurityGrid sGrid = this.getProxy().getSecurity();
-
-			// Return true if the player has inject and extract permissions
-			return( ( sGrid.hasPermission( player, SecurityPermissions.INJECT ) ) && ( sGrid.hasPermission( player, SecurityPermissions.EXTRACT ) ) );
-		}
-		catch( GridAccessException e )
-		{
-			return true;
-		}
-	}
-
 	@MENetworkEventSubscribe
 	public final void channelEvent( final MENetworkChannelsChanged event )
 	{
-		/*
-		// Update the grid node
-		if( this.gridProxy.isReady() )
-		{
-			this.gridProxy.getNode().updateState();
-		}
-		*/
-
 		// Mark for update
 		this.markForUpdate();
 	}
@@ -633,37 +618,33 @@ public class TileArcaneAssembler
 	@Override
 	public void getDrops( final World world, final int x, final int y, final int z, final List<ItemStack> drops )
 	{
-		if( !this.wasDismantled )
+		// Add the kCore
+		ItemStack kCore = this.internalInventory.getStackInSlot( TileArcaneAssembler.KCORE_SLOT_INDEX );
+		if( kCore != null )
 		{
-			// Add the kCore
-			ItemStack kCore = this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX];
-			if( kCore != null )
+			drops.add( kCore );
+		}
+
+		// Add upgrades
+		for( int i = 0; i < this.upgradeInventory.getSizeInventory(); i++ )
+		{
+			ItemStack upgrade = this.upgradeInventory.getStackInSlot( i );
+
+			if( upgrade != null )
 			{
-				drops.add( kCore );
+				drops.add( upgrade );
 			}
+		}
 
-			// Add upgrades
-			for( int i = 0; i < this.upgradeInventory.getSizeInventory(); i++ )
+		// Add armor
+		for( int i = 0; i < 4; i++ )
+		{
+			ItemStack armor = this.internalInventory.getStackInSlot( TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + i );
+
+			if( armor != null )
 			{
-				ItemStack upgrade = this.upgradeInventory.getStackInSlot( i );
-
-				if( upgrade != null )
-				{
-					drops.add( upgrade );
-				}
+				drops.add( armor );
 			}
-
-			// Add armor
-			for( int i = 0; i < 4; i++ )
-			{
-				ItemStack armor = this.internalInventory.slots[TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + i];
-
-				if( armor != null )
-				{
-					drops.add( armor );
-				}
-			}
-
 		}
 	}
 
@@ -689,6 +670,11 @@ public class TileArcaneAssembler
 		return new DimensionalCoord( this );
 	}
 
+	/**
+	 * Returns the percent the current crafting job is complete.
+	 * 
+	 * @return
+	 */
 	public float getPercentComplete()
 	{
 		float percent = 0.0F;
@@ -727,86 +713,69 @@ public class TileArcaneAssembler
 		return this.visDiscount.get( aspect );
 	}
 
-	public boolean isActive()
-	{
-		// Are we server side?
-		if( EffectiveSide.isServerSide() )
-		{
-			// Do we have a proxy and grid node?
-			if( ( this.getProxy() != null ) && ( this.getProxy().getNode() != null ) )
-			{
-				// Get the grid node activity
-				this.isActive = this.getProxy().getNode().isActive();
-			}
-		}
-
-		return this.isActive;
-	}
-
 	@Override
 	public boolean isBusy()
 	{
 		return this.isCrafting;
 	}
 
-	/**
-	 * Called when the tile entity is about to be destroyed by a block break.
-	 */
-	public void onBreak()
-	{
-		this.isCrafting = false;
-		this.getProxy().invalidate();
-	}
-
-	/**
-	 * Called when the upgrade inventory changes
-	 */
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
+	public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
 	{
-		// Reset the upgrade count
-		this.upgradeCount = 0;
-
-		IMaterials aeMaterals = AEApi.instance().definitions().materials();
-
-		// Look for speed cards
-		for( int i = 0; i < this.upgradeInventory.getSizeInventory(); i++ )
+		// Is the slot being assigned the knowledge core slot?
+		if( slotId == KCORE_SLOT_INDEX )
 		{
-			ItemStack slotStack = this.upgradeInventory.getStackInSlot( i );
-
-			if( slotStack != null )
-			{
-				if( aeMaterals.cardSpeed().isSameAs( slotStack ) )
-				{
-					this.upgradeCount++ ;
-				}
-			}
+			// Ensure the item is a knowledge core.
+			return( ( itemStack == null ) || ( itemStack.getItem() instanceof ItemKnowledgeCore ) );
 		}
 
-		if( EffectiveSide.isServerSide() )
-		{
-			// Mark for save
-			this.markDirty();
+		// Assume it is not valid
+		return false;
+	}
 
-			// Mark for network update
-			this.markForUpdate();
+	@Override
+	public boolean isUseableByPlayer( final EntityPlayer player )
+	{
+		if( EffectiveSide.isClientSide() )
+		{
+			// Ignored on the client side.
+			return false;
+		}
+
+		// Check basic usability
+		if( !this.internalInventory.isUseableByPlayer( player, this ) )
+		{
+			return false;
+		}
+
+		// Check the security grid
+		try
+		{
+			// Get the security grid
+			ISecurityGrid sGrid = this.getProxy().getSecurity();
+
+			// Return true if the player has inject and extract permissions
+			return( ( sGrid.hasPermission( player, SecurityPermissions.INJECT ) ) && ( sGrid.hasPermission( player, SecurityPermissions.EXTRACT ) ) );
+		}
+		catch( GridAccessException e )
+		{
+			return false;
 		}
 	}
 
-	/**
-	 * Called when being dismantled.
-	 */
-	public void onDismantled()
-	{
-		this.wasDismantled = true;
-	}
-
-	/**
-	 * Called when the internal inventory changes.
-	 */
 	@Override
-	public void onInventoryChanged( final IInventory sourceInventory )
+	public void markDirty()
 	{
+		// Call super
+		super.markDirty();
+
+		// Is the tile ready?
+		if( !this.isReady )
+		{
+			// Still in setup phase.
+			return;
+		}
+
 		// Is there a kcore?
 		ItemStack kCore = this.internalInventory.getStackInSlot( TileArcaneAssembler.KCORE_SLOT_INDEX );
 		if( kCore != null )
@@ -849,92 +818,49 @@ public class TileArcaneAssembler
 
 		//Recalculate the vis discount.
 		this.calculateVisDiscounts();
+	}
+
+	/**
+	 * Called when the tile entity is about to be destroyed by a block break.
+	 */
+	public void onBreak()
+	{
+		this.isCrafting = false;
+	}
+
+	/**
+	 * Called when the upgrade inventory changes
+	 */
+	@Override
+	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
+	{
+		// Reset the upgrade count
+		this.upgradeCount = 0;
+
+		IMaterials aeMaterals = AEApi.instance().definitions().materials();
+
+		// Look for speed cards
+		for( int i = 0; i < this.upgradeInventory.getSizeInventory(); i++ )
+		{
+			ItemStack slotStack = this.upgradeInventory.getStackInSlot( i );
+
+			if( slotStack != null )
+			{
+				if( aeMaterals.cardSpeed().isSameAs( slotStack ) )
+				{
+					this.upgradeCount++ ;
+				}
+			}
+		}
 
 		if( EffectiveSide.isServerSide() )
 		{
-			// Mark for save.
+			// Mark for save
 			this.markDirty();
+
+			// Mark for network update
+			this.markForUpdate();
 		}
-	}
-
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void onLoadNBT( final NBTTagCompound data )
-	{
-		try
-		{
-			// Is there a saved core?
-			if( data.hasKey( TileArcaneAssembler.NBTKEY_KCORE ) )
-			{
-				// Load the saved core
-				this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX] = ItemStack.loadItemStackFromNBT( data
-								.getCompoundTag( TileArcaneAssembler.NBTKEY_KCORE ) );
-
-				// Create the handler
-				this.kCoreHandler = new HandlerKnowledgeCore( this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX] );
-
-				// Update the pattern slots
-				this.updatePatternSlots();
-
-				// Update the network
-				this.stalePatterns = true;
-
-			}
-		}
-		catch( Exception e )
-		{
-
-		}
-
-		// Is there relay info?
-		if( data.hasKey( TileArcaneAssembler.NBTKEY_VIS_INTERFACE ) )
-		{
-			this.visSourceInfo.readFromNBT( data, TileArcaneAssembler.NBTKEY_VIS_INTERFACE );
-		}
-
-		// Is there stored vis info?
-		if( data.hasKey( TileArcaneAssembler.NBTKEY_STORED_VIS ) )
-		{
-			this.storedVis.readFromNBT( data, TileArcaneAssembler.NBTKEY_STORED_VIS );
-		}
-
-		// Read upgrade count
-		if( data.hasKey( TileArcaneAssembler.NBTKEY_UPGRADES ) )
-		{
-			this.upgradeCount = data.getInteger( TileArcaneAssembler.NBTKEY_UPGRADES );
-		}
-
-		// Read upgrade inventory
-		this.upgradeInventory.readFromNBT( data, TileArcaneAssembler.NBTKEY_UPGRADEINV );
-
-		// Read the crafting status
-		if( data.hasKey( TileArcaneAssembler.NBTKEY_CRAFTING ) )
-		{
-			this.isCrafting = data.getBoolean( TileArcaneAssembler.NBTKEY_CRAFTING );
-		}
-
-		// Read the pattern
-		if( data.hasKey( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN ) )
-		{
-			this.currentPattern = new ArcaneCraftingPattern( this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX],
-							data.getCompoundTag( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN ) );
-		}
-
-		// Read the armor
-		for( int index = 0; index < 4; index++ )
-		{
-			if( data.hasKey( TileArcaneAssembler.NBTKEY_DISCOUNT_ARMOR + index ) )
-			{
-				this.internalInventory.slots[TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index] = ItemStack.loadItemStackFromNBT( data
-								.getCompoundTag( TileArcaneAssembler.NBTKEY_DISCOUNT_ARMOR + index ) );
-			}
-		}
-
-		// Setup the assembler
-		this.setupAssemblerTile();
-
-		// Recalculate the vis discounts
-		this.calculateVisDiscounts();
-
 	}
 
 	/**
@@ -984,16 +910,43 @@ public class TileArcaneAssembler
 	@Override
 	public void onReady()
 	{
-		try
+		// Call super
+		super.onReady();
+
+		// Is there a knowledge core?
+		if( this.internalInventory.getHasStack( KCORE_SLOT_INDEX ) )
 		{
-			this.getProxy().onReady();
+			// Is there a pattern?
+			if( this.currentPattern != null )
+			{
+				// Set the core
+				this.currentPattern.setKnowledgeCore( this.internalInventory.getStackInSlot( KCORE_SLOT_INDEX ) );
+			}
+
+			// Create the handler
+			this.kCoreHandler = new HandlerKnowledgeCore( this.internalInventory.getStackInSlot( KCORE_SLOT_INDEX ) );
+
+			// Update the pattern slots
+			this.updatePatternSlots();
+
+			// Update the network
+			this.stalePatterns = true;
 		}
-		catch( GridException e )
+		else if( this.currentPattern != null )
 		{
-			// Figure out the root cause of this when it happens
-			// Unable to reproduce so far.
-			this.isActive = false;
+			// Clear the pattern
+			this.isCrafting = false;
+			this.currentPattern = null;
 		}
+
+		// Setup the assembler
+		this.setupAssemblerTile();
+
+		// Recalculate the vis discounts
+		this.calculateVisDiscounts();
+
+		// Set ready
+		this.isReady = true;
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
@@ -1031,53 +984,6 @@ public class TileArcaneAssembler
 		this.upgradeCount = stream.readInt();
 
 		return true;
-	}
-
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void onSaveNBT( final NBTTagCompound data )
-	{
-		// Get the kcore
-		ItemStack kCore = this.internalInventory.slots[TileArcaneAssembler.KCORE_SLOT_INDEX];
-		if( kCore != null )
-		{
-			// Write the kcore
-			data.setTag( TileArcaneAssembler.NBTKEY_KCORE, kCore.writeToNBT( new NBTTagCompound() ) );
-		}
-
-		// Write the vis interface
-		this.visSourceInfo.writeToNBT( data, TileArcaneAssembler.NBTKEY_VIS_INTERFACE );
-
-		// Write the stored vis
-		this.storedVis.writeToNBT( data, TileArcaneAssembler.NBTKEY_STORED_VIS );
-
-		// Write the number of upgrades
-		data.setInteger( TileArcaneAssembler.NBTKEY_UPGRADES, this.upgradeCount );
-
-		// Write the upgrade inventory
-		this.upgradeInventory.writeToNBT( data, TileArcaneAssembler.NBTKEY_UPGRADEINV );
-
-		// Write the crafting state
-		data.setBoolean( TileArcaneAssembler.NBTKEY_CRAFTING, this.isCrafting );
-
-		// Write the current pattern
-		if( this.currentPattern != null )
-		{
-			data.setTag( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN, this.currentPattern.writeToNBT( new NBTTagCompound() ) );
-		}
-
-		// Write the discount armors
-		for( int index = 0; index < 4; index++ )
-		{
-			// Get the armor
-			ItemStack armor = this.internalInventory.slots[TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index];
-
-			if( armor != null )
-			{
-				// Write the armor
-				data.setTag( TileArcaneAssembler.NBTKEY_DISCOUNT_ARMOR + index, armor.writeToNBT( new NBTTagCompound() ) );
-			}
-		}
-
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
@@ -1226,7 +1132,7 @@ public class TileArcaneAssembler
 			this.currentPattern = (ArcaneCraftingPattern)patternDetails;
 
 			// Set the target item
-			this.internalInventory.slots[TileArcaneAssembler.TARGET_SLOT_INDEX] = this.currentPattern.getResult().getItemStack();
+			this.internalInventory.setInventorySlotContents( TARGET_SLOT_INDEX, this.currentPattern.getResult().getItemStack() );
 
 			// AE effects
 			try
@@ -1246,6 +1152,54 @@ public class TileArcaneAssembler
 		return false;
 	}
 
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_ArcaneAssembler( final NBTTagCompound data )
+	{
+		// Is there relay info?
+		if( data.hasKey( TileArcaneAssembler.NBTKEY_VIS_INTERFACE ) )
+		{
+			this.visSourceInfo.readFromNBT( data, TileArcaneAssembler.NBTKEY_VIS_INTERFACE );
+		}
+
+		// Read vis levels
+		this.readVisLevelsFromNBT( data );
+
+		// Read upgrade count
+		if( data.hasKey( TileArcaneAssembler.NBTKEY_UPGRADES ) )
+		{
+			this.upgradeCount = data.getInteger( TileArcaneAssembler.NBTKEY_UPGRADES );
+		}
+
+		// Read upgrade inventory
+		this.upgradeInventory.readFromNBT( data, TileArcaneAssembler.NBTKEY_UPGRADEINV );
+
+		// Read the crafting status
+		if( data.hasKey( TileArcaneAssembler.NBTKEY_CRAFTING ) )
+		{
+			this.isCrafting = data.getBoolean( TileArcaneAssembler.NBTKEY_CRAFTING );
+		}
+
+		// Read the pattern
+		if( data.hasKey( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN ) )
+		{
+			this.currentPattern = new ArcaneCraftingPattern( null, data.getCompoundTag( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN ) );
+		}
+
+	}
+
+	/**
+	 * Reads the stored vis levels.
+	 * 
+	 * @param data
+	 */
+	public void readVisLevelsFromNBT( final NBTTagCompound data )
+	{
+		if( data.hasKey( TileArcaneAssembler.NBTKEY_STORED_VIS ) )
+		{
+			this.storedVis.readFromNBT( data, TileArcaneAssembler.NBTKEY_STORED_VIS );
+		}
+	}
+
 	/**
 	 * Sets the owner of this tile.
 	 * 
@@ -1256,22 +1210,43 @@ public class TileArcaneAssembler
 		this.getProxy().setOwner( player );
 	}
 
-	/**
-	 * Configures the Assembler.
-	 */
-	public TileArcaneAssembler setupAssemblerTile()
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_ArcaneAssembler( final NBTTagCompound data )
 	{
-		// Ignored on client side
-		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
-		{
-			// Set idle power usage
-			this.getProxy().setIdlePowerUsage( TileArcaneAssembler.IDLE_POWER );
+		// Write the vis interface
+		this.visSourceInfo.writeToNBT( data, TileArcaneAssembler.NBTKEY_VIS_INTERFACE );
 
-			// Set that we require a channel
-			this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
+		// Write the stored vis
+		this.writeVisLevelsToNBT( data );
+
+		// Write the number of upgrades
+		data.setInteger( TileArcaneAssembler.NBTKEY_UPGRADES, this.upgradeCount );
+
+		// Write the upgrade inventory
+		this.upgradeInventory.writeToNBT( data, TileArcaneAssembler.NBTKEY_UPGRADEINV );
+
+		// Write the crafting state
+		data.setBoolean( TileArcaneAssembler.NBTKEY_CRAFTING, this.isCrafting );
+
+		// Write the current pattern
+		if( this.currentPattern != null )
+		{
+			data.setTag( TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN, this.currentPattern.writeToNBT( new NBTTagCompound() ) );
 		}
 
-		return this;
+	}
+
+	/**
+	 * Writes the stored vis levels.
+	 * 
+	 * @param data
+	 */
+	public void writeVisLevelsToNBT( final NBTTagCompound data )
+	{
+		if( this.storedVis.size() > 0 )
+		{
+			this.storedVis.writeToNBT( data, TileArcaneAssembler.NBTKEY_STORED_VIS );
+		}
 	}
 
 }

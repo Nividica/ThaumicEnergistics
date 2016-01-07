@@ -1,35 +1,65 @@
 package thaumicenergistics.common.inventory;
 
-import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
+import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import thaumicenergistics.common.parts.ThEPartBase;
+import appeng.api.parts.IPartHost;
 
-public class PrivateInventory
+public class TheInternalInventory
 	implements IInventory
 {
-
+	/**
+	 * NBT keys
+	 */
 	private static final String NBT_KEY_SLOT = "Slot";
 
-	public ItemStack[] slots;
-	public String customName;
-	private int stackLimit;
-	private IInventoryUpdateReceiver receiver = null;
+	/**
+	 * The squared reach distance.
+	 */
+	private static final double SQUARED_REACH = 64.0D;
 
-	public PrivateInventory( final String customName, final int size, final int stackLimit )
+	/**
+	 * Stack size limit.
+	 */
+	private final int stackLimit;
+
+	/**
+	 * The inventory slots.
+	 */
+	private final ItemStack[] slots;
+
+	/**
+	 * Name of the inventory.
+	 */
+	private final String customName;
+
+	/**
+	 * Creates the inventory.
+	 * 
+	 * @param customName
+	 * @param size
+	 * @param stackLimit
+	 */
+	public TheInternalInventory( final String customName, final int size, final int stackLimit )
 	{
 		this.slots = new ItemStack[size];
 		this.customName = customName;
 		this.stackLimit = stackLimit;
 	}
 
-	public PrivateInventory( final String customName, final int size, final int stackLimit, final IInventoryUpdateReceiver receiver )
+	/**
+	 * Clears the specified slot.
+	 * 
+	 * @param slotIndex
+	 */
+	public void clearSlot( final int slotIndex )
 	{
-		this( customName, size, stackLimit );
-
-		this.receiver = receiver;
+		this.slots[slotIndex] = null;
 	}
 
 	@Override
@@ -38,10 +68,10 @@ public class PrivateInventory
 	}
 
 	@Override
-	public ItemStack decrStackSize( final int slotId, final int amount )
+	public ItemStack decrStackSize( final int slotIndex, final int amount )
 	{
 		// Get the stack
-		ItemStack slotStack = this.slots[slotId];
+		ItemStack slotStack = this.slots[slotIndex];
 		ItemStack resultStack = null;
 
 		// Is the slot empty?
@@ -60,11 +90,11 @@ public class PrivateInventory
 		// Is there anything remaining in the slot?
 		if( remAmount > 0 )
 		{
-			this.slots[slotId].stackSize = remAmount;
+			this.slots[slotIndex].stackSize = remAmount;
 		}
 		else
 		{
-			this.slots[slotId] = null;
+			this.slots[slotIndex] = null;
 		}
 
 		// Was any amount gotten?
@@ -77,6 +107,17 @@ public class PrivateInventory
 		this.markDirty();
 
 		return resultStack;
+	}
+
+	/**
+	 * Returns true if there is a stack in the specified slot.
+	 * 
+	 * @param slotIndex
+	 * @return
+	 */
+	public boolean getHasStack( final int slotIndex )
+	{
+		return this.slots[slotIndex] != null;
 	}
 
 	@Override
@@ -98,15 +139,15 @@ public class PrivateInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot( final int index )
+	public ItemStack getStackInSlot( final int slotIndex )
 	{
-		return this.slots[index];
+		return this.slots[slotIndex];
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing( final int slotId )
+	public ItemStack getStackInSlotOnClosing( final int slotIndex )
 	{
-		return this.slots[slotId];
+		return this.slots[slotIndex];
 	}
 
 	@Override
@@ -119,14 +160,14 @@ public class PrivateInventory
 	 * Increases the stack size of the specified slot, and marks the inventory
 	 * as dirty.
 	 * 
-	 * @param slotId
+	 * @param slotIndex
 	 * @param amount
 	 * @return The amount that was added.
 	 */
-	public int incrStackSize( final int slotId, final int amount )
+	public int incrStackSize( final int slotIndex, final int amount )
 	{
 		// Get the stack
-		ItemStack slotStack = this.slots[slotId];
+		ItemStack slotStack = this.slots[slotIndex];
 
 		// Assume none was added
 		int added = 0;
@@ -142,7 +183,7 @@ public class PrivateInventory
 			// Can any be added?
 			if( added > 0 )
 			{
-				this.slots[slotId].stackSize += added;
+				this.slots[slotIndex].stackSize += added;
 				this.markDirty();
 			}
 		}
@@ -172,17 +213,68 @@ public class PrivateInventory
 		return true;
 	}
 
+	/**
+	 * Must override, always return false.
+	 */
 	@Override
-	public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
+	public boolean isItemValidForSlot( final int slotIndex, final ItemStack itemStack )
 	{
 		// Assume it is not valid
 		return false;
 	}
 
+	/**
+	 * Always returns true.
+	 */
 	@Override
+	@Deprecated
 	public boolean isUseableByPlayer( final EntityPlayer player )
 	{
 		return true;
+	}
+
+	// TODO: Is this ever even used?
+	public boolean isUseableByPlayer( @Nonnull final EntityPlayer player, @Nonnull final ThEPartBase part )
+	{
+		// Get and check the host
+		TileEntity tile = part.getHostTile();
+		if( ( tile == null ) || !( tile instanceof IPartHost ) )
+		{
+			return false;
+		}
+		IPartHost host = (IPartHost)tile;
+
+		// Is the part still attached?
+		if( host.getPart( part.getSide() ) != part )
+		{
+			return false;
+		}
+
+		// Perform reach and tile checks.
+		return this.isUseableByPlayer( player, tile );
+	}
+
+	/**
+	 * Returns true if the tile still exists and the player is within reach range.
+	 * 
+	 * @param player
+	 * @param tile
+	 * @return
+	 */
+	public boolean isUseableByPlayer( @Nonnull final EntityPlayer player, @Nonnull final TileEntity tile )
+	{
+		return ( tile.getWorldObj().getTileEntity( tile.xCoord, tile.yCoord, tile.zCoord ) == tile )
+						&& ( player.getDistanceSq( tile.xCoord + 0.5D, tile.yCoord + 0.5D, tile.zCoord + 0.5D ) <= SQUARED_REACH );
+	}
+
+	@Override
+	public void markDirty()
+	{
+	}
+
+	@Override
+	public void openInventory()
+	{
 	}
 
 	public final void readFromNBT( final NBTTagCompound data, final String tagName )
@@ -209,7 +301,7 @@ public class PrivateInventory
 			NBTTagCompound nbtCompound = invList.getCompoundTagAt( index );
 
 			// Get the slot number
-			int slotIndex = nbtCompound.getByte( PrivateInventory.NBT_KEY_SLOT ) & 0xFF;
+			int slotIndex = nbtCompound.getByte( TheInternalInventory.NBT_KEY_SLOT ) & 0xFF;
 
 			// Validate the slot number
 			if( ( slotIndex >= 0 ) && ( slotIndex < this.slots.length ) )
@@ -221,17 +313,17 @@ public class PrivateInventory
 	}
 
 	@Override
-	public void markDirty()
+	public void setInventorySlotContents( final int slotIndex, final ItemStack itemStack )
 	{
-		if( this.receiver != null )
+		// Is the stack size too large?
+		if( ( itemStack != null ) && ( itemStack.stackSize > this.getInventoryStackLimit() ) )
 		{
-			this.receiver.onInventoryChanged( this );
+			itemStack.stackSize = this.getInventoryStackLimit();
 		}
-	}
 
-	@Override
-	public void openInventory()
-	{
+		this.slots[slotIndex] = itemStack;
+
+		this.markDirty();
 	}
 
 	public final void writeToNBT( final NBTTagCompound data, final String tagName )
@@ -255,7 +347,7 @@ public class PrivateInventory
 				NBTTagCompound nbtCompound = new NBTTagCompound();
 
 				// Set the slot number
-				nbtCompound.setByte( PrivateInventory.NBT_KEY_SLOT, (byte)slotIndex );
+				nbtCompound.setByte( TheInternalInventory.NBT_KEY_SLOT, (byte)slotIndex );
 
 				// Save the inventory
 				this.slots[slotIndex].writeToNBT( nbtCompound );
@@ -270,25 +362,6 @@ public class PrivateInventory
 		{
 			data.setTag( tagName, invList );
 		}
-	}
-
-	@Override
-	public void setInventorySlotContents( final int slotId, final ItemStack itemStack )
-	{
-		// Is the stack size too large?
-		if( ( itemStack != null ) && ( itemStack.stackSize > this.getInventoryStackLimit() ) )
-		{
-			itemStack.stackSize = this.getInventoryStackLimit();
-		}
-
-		this.slots[slotId] = itemStack;
-
-		this.markDirty();
-	}
-
-	public void setReceiver( final IInventoryUpdateReceiver receiver )
-	{
-		this.receiver = receiver;
 	}
 
 }

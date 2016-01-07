@@ -10,7 +10,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
-import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
 import thaumicenergistics.client.gui.GuiEssentiaIO;
 import thaumicenergistics.common.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.common.network.IAspectSlotPart;
@@ -38,7 +37,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ThEPartEssentiaIOBus_Base
 	extends ThEPartBase
-	implements IGridTickable, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory
+	implements IGridTickable, IAspectSlotPart, IAEAppEngInventory
 {
 	/**
 	 * How much essentia can be transfered per second.
@@ -235,6 +234,54 @@ public abstract class ThEPartEssentiaIOBus_Base
 		}
 	}
 
+	private void updateUpgradeState()
+	{
+		int oldFilterSize = this.filterSize;
+
+		this.filterSize = 0;
+		this.redstoneControlled = false;
+		this.upgradeSpeedCount = 0;
+
+		IMaterials aeMaterals = AEApi.instance().definitions().materials();
+
+		for( int i = 0; i < this.upgradeInventory.getSizeInventory(); i++ )
+		{
+			ItemStack slotStack = this.upgradeInventory.getStackInSlot( i );
+
+			if( slotStack != null )
+			{
+				if( aeMaterals.cardCapacity().isSameAs( slotStack ) )
+				{
+					this.filterSize++ ;
+				}
+				else if( aeMaterals.cardRedstone().isSameAs( slotStack ) )
+				{
+					this.redstoneControlled = true;
+				}
+				else if( aeMaterals.cardSpeed().isSameAs( slotStack ) )
+				{
+					this.upgradeSpeedCount++ ;
+				}
+			}
+		}
+
+		// Did the filter size change?
+		if( oldFilterSize != this.filterSize )
+		{
+			this.resizeAvailableArray();
+		}
+
+		// Is this client side?
+		if( EffectiveSide.isClientSide() )
+		{
+			return;
+		}
+
+		this.notifyListenersOfFilterSizeChange();
+
+		this.notifyListenersOfRedstoneControlledChange();
+	}
+
 	public boolean addFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
 	{
 		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( itemStack );
@@ -365,7 +412,7 @@ public abstract class ThEPartEssentiaIOBus_Base
 	{
 		boolean activated = super.onActivate( player, position );
 
-		this.onInventoryChanged( null );
+		this.updateUpgradeState();
 
 		return activated;
 	}
@@ -375,7 +422,7 @@ public abstract class ThEPartEssentiaIOBus_Base
 	{
 		if( inv == this.upgradeInventory )
 		{
-			this.onInventoryChanged( inv );
+			this.updateUpgradeState();
 		}
 	}
 
@@ -414,55 +461,6 @@ public abstract class ThEPartEssentiaIOBus_Base
 
 		// Set the state of the bus
 		Packet_C_EssentiaIOBus.sendBusState( player, this.redstoneMode, this.filterSize, this.redstoneControlled );
-	}
-
-	@Override
-	public void onInventoryChanged( final IInventory sourceInventory )
-	{
-		int oldFilterSize = this.filterSize;
-
-		this.filterSize = 0;
-		this.redstoneControlled = false;
-		this.upgradeSpeedCount = 0;
-
-		IMaterials aeMaterals = AEApi.instance().definitions().materials();
-
-		for( int i = 0; i < this.upgradeInventory.getSizeInventory(); i++ )
-		{
-			ItemStack slotStack = this.upgradeInventory.getStackInSlot( i );
-
-			if( slotStack != null )
-			{
-				if( aeMaterals.cardCapacity().isSameAs( slotStack ) )
-				{
-					this.filterSize++ ;
-				}
-				else if( aeMaterals.cardRedstone().isSameAs( slotStack ) )
-				{
-					this.redstoneControlled = true;
-				}
-				else if( aeMaterals.cardSpeed().isSameAs( slotStack ) )
-				{
-					this.upgradeSpeedCount++ ;
-				}
-			}
-		}
-
-		// Did the filter size change?
-		if( oldFilterSize != this.filterSize )
-		{
-			this.resizeAvailableArray();
-		}
-
-		// Is this client side?
-		if( EffectiveSide.isClientSide() )
-		{
-			return;
-		}
-
-		this.notifyListenersOfFilterSizeChange();
-
-		this.notifyListenersOfRedstoneControlledChange();
 	}
 
 	@Override
@@ -568,7 +566,7 @@ public abstract class ThEPartEssentiaIOBus_Base
 		{
 			this.upgradeInventory.readFromNBT( data, ThEPartEssentiaIOBus_Base.NBT_KEY_UPGRADE_INV );
 
-			this.onInventoryChanged( this.upgradeInventory );
+			this.updateUpgradeState();
 		}
 	}
 

@@ -1,18 +1,14 @@
 package thaumicenergistics.common.tiles;
 
 import java.util.ArrayList;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
-import thaumicenergistics.common.inventory.PrivateInventory;
 import thaumicenergistics.common.items.ItemCraftingAspect;
+import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
 import appeng.api.AEApi;
 
 public class TileDistillationEncoder
-	extends TileEntity
-	implements IInventoryUpdateReceiver
+	extends ThETileInventory
 {
 	/**
 	 * NBT Keys
@@ -37,46 +33,11 @@ public class TileDistillationEncoder
 					SLOT_SELECTED_ASPECT = SLOT_SOURCE_ASPECTS + SLOT_SOURCE_ASPECTS_COUNT;
 
 	/**
-	 * Stores the inventory for this tile.
-	 */
-	private PrivateInventory internalInventory = new PrivateInventory( "distillation.inscriber", SLOT_TOTAL_COUNT, 64, this )
-	{
-		@Override
-		public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
-		{
-			// Can always clear a slot
-			if( itemStack == null )
-			{
-				return true;
-			}
-
-			// Empty pattern slot?
-			if( slotId == SLOT_BLANK_PATTERNS )
-			{
-				return AEApi.instance().definitions().materials().blankPattern().isSameAs( itemStack );
-			}
-
-			// Encoded pattern slot?
-			if( slotId == SLOT_ENCODED_PATTERN )
-			{
-				return AEApi.instance().definitions().items().encodedPattern().isSameAs( itemStack );
-			}
-
-			// Aspect slot?
-			if( ( slotId >= SLOT_SOURCE_ASPECTS ) && ( slotId <= SLOT_SELECTED_ASPECT ) )
-			{
-				return( itemStack.getItem() instanceof ItemCraftingAspect );
-			}
-
-			return true;
-		}
-	};
-
-	/**
 	 * Default constructor.
 	 */
 	public TileDistillationEncoder()
 	{
+		super( "distillation.inscriber", SLOT_TOTAL_COUNT, 64 );
 	}
 
 	/**
@@ -87,28 +48,18 @@ public class TileDistillationEncoder
 	public ArrayList<ItemStack> getDrops( final ArrayList<ItemStack> drops )
 	{
 		// Add encoded
-		if( ( this.internalInventory.slots[SLOT_ENCODED_PATTERN] != null ) )
+		if( this.internalInventory.getHasStack( SLOT_ENCODED_PATTERN ) )
 		{
-			drops.add( this.internalInventory.slots[SLOT_ENCODED_PATTERN] );
+			drops.add( this.internalInventory.getStackInSlot( SLOT_ENCODED_PATTERN ) );
 		}
 
 		// Add blank
-		if( ( this.internalInventory.slots[SLOT_BLANK_PATTERNS] != null ) )
+		if( this.internalInventory.getHasStack( SLOT_BLANK_PATTERNS ) )
 		{
-			drops.add( this.internalInventory.slots[SLOT_BLANK_PATTERNS] );
+			drops.add( this.internalInventory.getStackInSlot( SLOT_BLANK_PATTERNS ) );
 		}
 
 		return drops;
-	}
-
-	/**
-	 * Gets the inscriber's inventory.
-	 * 
-	 * @return
-	 */
-	public IInventory getInventory()
-	{
-		return this.internalInventory;
 	}
 
 	/**
@@ -119,19 +70,39 @@ public class TileDistillationEncoder
 	public boolean hasPatterns()
 	{
 		// Is there anything in the pattern slots?
-		return( ( this.internalInventory.slots[SLOT_ENCODED_PATTERN] != null )
-		|| ( this.internalInventory.slots[SLOT_BLANK_PATTERNS] != null ) );
+		return this.internalInventory.getHasStack( SLOT_ENCODED_PATTERN )
+						|| this.internalInventory.getHasStack( SLOT_BLANK_PATTERNS );
 
 	}
 
-	/**
-	 * Called when the internal inventory changes
-	 */
 	@Override
-	public void onInventoryChanged( final IInventory sourceInventory )
+	public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
 	{
-		// Mark the tile dirty
-		this.markDirty();
+		// Can always clear a slot
+		if( itemStack == null )
+		{
+			return true;
+		}
+
+		// Empty pattern slot?
+		if( slotId == SLOT_BLANK_PATTERNS )
+		{
+			return AEApi.instance().definitions().materials().blankPattern().isSameAs( itemStack );
+		}
+
+		// Encoded pattern slot?
+		if( slotId == SLOT_ENCODED_PATTERN )
+		{
+			return AEApi.instance().definitions().items().encodedPattern().isSameAs( itemStack );
+		}
+
+		// Aspect slot?
+		if( ( slotId >= SLOT_SOURCE_ASPECTS ) && ( slotId <= SLOT_SELECTED_ASPECT ) )
+		{
+			return( itemStack.getItem() instanceof ItemCraftingAspect );
+		}
+
+		return true;
 	}
 
 	/**

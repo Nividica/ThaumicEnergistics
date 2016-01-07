@@ -18,9 +18,7 @@ import thaumicenergistics.api.gui.IAspectSelectorContainer;
 import thaumicenergistics.api.gui.ICraftingIssuerContainer;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.api.storage.IEssentiaRepo;
-import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
-import thaumicenergistics.common.inventory.PrivateInventory;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaCellTerminal;
 import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
@@ -46,7 +44,7 @@ import appeng.api.networking.security.PlayerSource;
  */
 public abstract class ContainerEssentiaCellTerminalBase
 	extends ContainerWithPlayerInventory
-	implements IMEEssentiaMonitorReceiver, IAspectSelectorContainer, IInventoryUpdateReceiver, ICraftingIssuerContainer
+	implements IMEEssentiaMonitorReceiver, IAspectSelectorContainer, ICraftingIssuerContainer
 {
 	/**
 	 * X position for the output slot
@@ -124,7 +122,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 	/**
 	 * Import and export inventory
 	 */
-	protected PrivateInventory inventory;
+	protected IInventory inventory;
 
 	/**
 	 * The last known stack size stored in the export slot
@@ -417,13 +415,10 @@ public abstract class ContainerEssentiaCellTerminalBase
 	 * 
 	 * @param inventory
 	 */
-	protected void bindToInventory( final PrivateInventory inventory )
+	protected void bindToInventory( final IInventory inventory )
 	{
 		// Set the inventory
 		this.inventory = inventory;
-
-		// Register the container as an update receiver
-		this.inventory.setReceiver( this );
 
 		// Create the input slot
 		this.inputSlot = new SlotRestrictive( inventory, ContainerEssentiaCellTerminalBase.INPUT_INV_INDEX,
@@ -841,19 +836,6 @@ public abstract class ContainerEssentiaCellTerminalBase
 	}
 
 	/**
-	 * Called when the list of fluids on the ME network changes.
-	 */
-	@Override
-	public void onInventoryChanged( final IInventory sourceInventory )
-	{
-		// Is this client side?
-		if( EffectiveSide.isClientSide() )
-		{
-			this.playTransferSound( null, true, 0 );
-		}
-	}
-
-	/**
 	 * Called by the gui when the aspect list arrives.
 	 * 
 	 * @param aspectStackList
@@ -1022,6 +1004,19 @@ public abstract class ContainerEssentiaCellTerminalBase
 		{
 			// Update the client
 			Packet_C_EssentiaCellTerminal.setAspectAmount( this.player, change );
+		}
+	}
+
+	@Override
+	public void putStackInSlot( final int slotNumber, final ItemStack stack )
+	{
+		// Call super
+		super.putStackInSlot( slotNumber, stack );
+
+		// Is this client side?
+		if( ( this.outputSlot.slotNumber == slotNumber ) && EffectiveSide.isClientSide() )
+		{
+			this.playTransferSound( null, true, 0 );
 		}
 	}
 

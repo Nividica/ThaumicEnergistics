@@ -2,7 +2,6 @@ package thaumicenergistics.common.container;
 
 import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -63,7 +62,7 @@ public class ContainerDistillationEncoder
 	/**
 	 * Host encoder.
 	 */
-	protected TileDistillationEncoder hostTile;
+	protected TileDistillationEncoder encoder;
 
 	/**
 	 * Slot holding the source item.
@@ -96,7 +95,7 @@ public class ContainerDistillationEncoder
 	protected DistillationPatternHelper patternHelper;
 
 	/**
-	 * Who/what to send updates to when slots change.
+	 * Gui to send updates to when slots change.
 	 */
 	public IInventoryUpdateReceiver slotUpdateReceiver;
 
@@ -115,13 +114,10 @@ public class ContainerDistillationEncoder
 		this.player = player;
 
 		// Get the encoder
-		this.hostTile = (TileDistillationEncoder)world.getTileEntity( x, y, z );
-
-		// Get the encoder's inventory
-		IInventory hostInv = this.hostTile.getInventory();
+		this.encoder = (TileDistillationEncoder)world.getTileEntity( x, y, z );
 
 		// Add the source item slot
-		this.slotSourceItem = new SlotFake( hostInv, TileDistillationEncoder.SLOT_SOURCE_ITEM, SLOT_SOURCE_ITEM_POS_X, SLOT_SOURCE_ITEM_POS_Y );
+		this.slotSourceItem = new SlotFake( this.encoder, TileDistillationEncoder.SLOT_SOURCE_ITEM, SLOT_SOURCE_ITEM_POS_X, SLOT_SOURCE_ITEM_POS_Y );
 		this.addSlotToContainer( this.slotSourceItem );
 
 		// Add the source aspect slots
@@ -131,7 +127,8 @@ public class ContainerDistillationEncoder
 			int posY = SLOT_SOURCE_ASPECTS_POS_Y + ( index * 18 );
 
 			// Create the slot
-			this.slotSourceAspects[index] = new SlotFake( hostInv, TileDistillationEncoder.SLOT_SOURCE_ASPECTS + index, SLOT_SOURCE_ASPECTS_POS_X,
+			this.slotSourceAspects[index] = new SlotFake( this.encoder, TileDistillationEncoder.SLOT_SOURCE_ASPECTS + index,
+							SLOT_SOURCE_ASPECTS_POS_X,
 							posY );
 
 			// Add it
@@ -139,17 +136,17 @@ public class ContainerDistillationEncoder
 		}
 
 		// Add the selected aspect slot
-		this.slotSelectedAspect = new SlotFake( hostInv, TileDistillationEncoder.SLOT_SELECTED_ASPECT, SLOT_SELECTED_ASPECT_POS_X,
+		this.slotSelectedAspect = new SlotFake( this.encoder, TileDistillationEncoder.SLOT_SELECTED_ASPECT, SLOT_SELECTED_ASPECT_POS_X,
 						SLOT_SELECTED_ASPECT_POS_Y );
 		this.addSlotToContainer( this.slotSelectedAspect );
 
 		// Add blank pattern slot
-		this.slotPatternsBlank = new SlotRestrictive( hostInv, TileDistillationEncoder.SLOT_BLANK_PATTERNS,
+		this.slotPatternsBlank = new SlotRestrictive( this.encoder, TileDistillationEncoder.SLOT_BLANK_PATTERNS,
 						SLOT_PATTERNS_BLANK_POS_X, SLOT_PATTERNS_BLANK_POS_Y );
 		this.addSlotToContainer( this.slotPatternsBlank );
 
 		// Add encoded pattern slot
-		this.slotPatternEncoded = new SlotRestrictive( hostInv, TileDistillationEncoder.SLOT_ENCODED_PATTERN,
+		this.slotPatternEncoded = new SlotRestrictive( this.encoder, TileDistillationEncoder.SLOT_ENCODED_PATTERN,
 						SLOT_PATTERN_ENCODED_POS_X, SLOT_PATTERN_ENCODED_POS_Y );
 		this.addSlotToContainer( this.slotPatternEncoded );
 

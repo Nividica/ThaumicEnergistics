@@ -162,7 +162,14 @@ public class ContainerArcaneAssembler
 	@Override
 	public boolean canInteractWith( final EntityPlayer player )
 	{
-		return true;
+		// Ensure there is an assembler
+		if( this.assembler != null )
+		{
+			// Ask it if this player can interact
+			return this.assembler.isUseableByPlayer( player );
+		}
+
+		return false;
 	}
 
 	/**

@@ -47,9 +47,9 @@ thaumicenergistics.item.focus.aewrench.name=Wand Focus: AE Wrench
 thaumicenergistics.item.focus.aewrench.disabled.name=Wand Focus: AE Wrench - Wrench Mode Disabled
 
 #Tooltips
+thaumicenergistics.tooltip.itemstack.details=Hold §eshift§f for details.
 thaumicenergistics.tooltip.essentia.cell.bytes=%d of %d bytes used.
 thaumicenergistics.tooltip.essentia.cell.types=%d of %d essentia types stored.
-thaumicenergistics.tooltip.essentia.cell.details=Hold §eshift§f for details.
 thaumicenergistics.tooltip.button.clear.crafting=Deposit Crafting Grid
 thaumicenergistics.tooltip.button.void=Allow Void?
 thaumicenergistics.tooltip.button.void.disabled=Do not void essentia
@@ -62,6 +62,7 @@ thaumicenergistics.tooltip.button.inscriber.save=Save Pattern To Knowledge Core
 thaumicenergistics.tooltip.button.inscriber.missing=Requires Knowledge Core
 thaumicenergistics.tooltip.button.swap.armor=Swaps your currently equipped armor with the armor stored in the terminal.
 thaumicenergistics.tooltip.button.swap.armor.title=Swap Armor
+thaumicenergistics.tooltip.arcane.assembler.hasVis=Contains Stored Vis
 
 
 #GUI

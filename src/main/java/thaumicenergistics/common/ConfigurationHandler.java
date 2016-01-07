@@ -17,8 +17,11 @@ class ConfigurationHandler
 	/**
 	 * Default values.
 	 */
-	private static final int DEFAULT_CONVERSION = 250;
-	private static final boolean DEFAULT_ESSENTIAPROVIDER = true, DEFAULT_INFUSIONPROVIDER = true, DEFAULT_QUARTZ = true, DEFAULT_GEARBOX = false,
+	private static final int DEFAULT_CONVERSION_EXPONENT = 7;
+	private static final boolean DEFAULT_ESSENTIAPROVIDER = true,
+					DEFAULT_INFUSIONPROVIDER = true,
+					DEFAULT_QUARTZ = true,
+					DEFAULT_GEARBOX_DISABLED = false,
 					DEFAULT_EXTRACELLS_BLIST = true;
 
 	/**
@@ -30,33 +33,33 @@ class ConfigurationHandler
 	 * Controls the conversion ratio of essentia/fluid. <BR>
 	 * 1 essentia unit is converted to this many mb's of fluid.
 	 */
-	private int conversionMultiplier = 250;
+	private int conversionMultiplier = (int)Math.pow( 2, DEFAULT_CONVERSION_EXPONENT );
 
 	/**
 	 * Controls if the Essentia Provider is allowed to be crafted.
 	 */
-	private boolean allowEssentiaProvider = true;
+	private boolean allowEssentiaProvider = DEFAULT_ESSENTIAPROVIDER;
 
 	/**
 	 * Controls if the Infusion Provider is allowed to be crafted.
 	 */
-	private boolean allowInfusionProvider = true;
+	private boolean allowInfusionProvider = DEFAULT_INFUSIONPROVIDER;
 
 	/**
 	 * Controls if Certus Quartz can be duped in the crucible.
 	 */
-	private boolean allowCertusDupe = true;
+	private boolean allowCertusDupe = DEFAULT_QUARTZ;
 
 	/**
 	 * Controls if the iron and thaumium gearbox's will be rendered as a
 	 * standard block.
 	 */
-	private boolean gearboxModelDisabled = false;
+	private boolean gearboxModelDisabled = DEFAULT_GEARBOX_DISABLED;
 
 	/**
 	 * Controls if essentia gas is blacklisted
 	 */
-	private boolean extracellsBlacklist = true;
+	private boolean extracellsBlacklist = DEFAULT_EXTRACELLS_BLIST;
 
 	private ConfigurationHandler( final Configuration config )
 	{
@@ -85,16 +88,17 @@ class ConfigurationHandler
 	private void synchronizeConfigFile()
 	{
 		// Sync the essentia fluid conversion ratio
-		this.conversionMultiplier = this.configSettings
+		int fluidPow = this.configSettings
 						.getInt(
-							"Essentia Fluid Ratio",
+							"Essentia Fluid Ratio Exponent",
 							Configuration.CATEGORY_GENERAL,
-							ConfigurationHandler.DEFAULT_CONVERSION,
+							ConfigurationHandler.DEFAULT_CONVERSION_EXPONENT,
 							1,
-							10000,
-							"Controls the conversion ratio of essentia/fluid. 1 essentia is converted to this many milibuckets of fluid. "
+							11,
+							"Controls the conversion ratio of essentia/fluid. 1 essentia is converted to (2^this) milibuckets of fluid. "
 											+ "Please be aware that this value effects how much fluid is transferred through the AE system, which also effects transfer speed and power consumption. "
-											+ "Very high values may make it impossible to use fluid transfer devices such as the ME IO Port, or anything from EC2." );
+											+ "Values above 11 make it impossible to use fluid transfer devices such as the ME IO Port, or anything from EC2." );
+		this.conversionMultiplier = (int)Math.pow( 2, Math.min( fluidPow, 11 ) );
 
 		// Sync essentia provider
 		this.allowEssentiaProvider = this.configSettings.getBoolean( "Allow Crafting Essentia Provider", ConfigurationHandler.CATEGORY_CRAFTING,
@@ -110,7 +114,7 @@ class ConfigurationHandler
 
 		// Gearbox model
 		this.gearboxModelDisabled = this.configSettings.getBoolean( "Disable Gearbox Model", ConfigurationHandler.CATEGORY_CLIENT,
-			ConfigurationHandler.DEFAULT_GEARBOX, "The iron and thaumium gearboxes will be rendered as a standard block." );
+			ConfigurationHandler.DEFAULT_GEARBOX_DISABLED, "The iron and thaumium gearboxes will be rendered as a standard block." );
 
 		// Extra cells blacklist
 		this.extracellsBlacklist = this.configSettings.getBoolean( "ExtraCells Blacklist", ConfigurationHandler.CATEGORY_INTEGRATION,

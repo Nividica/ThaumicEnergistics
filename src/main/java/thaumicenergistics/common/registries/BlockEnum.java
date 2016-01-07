@@ -3,6 +3,7 @@ package thaumicenergistics.common.registries;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import thaumicenergistics.common.blocks.*;
+import thaumicenergistics.common.items.ItemBlockArcaneAssembler;
 import thaumicenergistics.common.items.ItemBlockEssentiaVibrationChamber;
 
 public enum BlockEnum
@@ -12,7 +13,7 @@ public enum BlockEnum
 		IRON_GEAR_BOX (ThEStrings.Block_IronGearbox, new BlockGearBox()),
 		THAUMIUM_GEAR_BOX (ThEStrings.Block_ThaumiumGearbox, new BlockGolemGearBox()),
 		ESSENTIA_CELL_WORKBENCH (ThEStrings.Block_EssentiaCellWorkbench, new BlockEssentiaCellWorkbench()),
-		ARCANE_ASSEMBLER (ThEStrings.Block_ArcaneAssembler, new BlockArcaneAssembler()),
+		ARCANE_ASSEMBLER (ThEStrings.Block_ArcaneAssembler, new BlockArcaneAssembler(), ItemBlockArcaneAssembler.class),
 		KNOWLEDGE_INSCRIBER (ThEStrings.Block_KnowledgeInscriber, new BlockKnowledgeInscriber()),
 		ESSENTIA_VIBRATION_CHAMBER (ThEStrings.Block_EssentiaVibrationChamber, new BlockEssentiaVibrationChamber(),
 			ItemBlockEssentiaVibrationChamber.class),
@@ -31,7 +32,7 @@ public enum BlockEnum
 	/**
 	 * Custom item
 	 */
-	private final Class<? extends ItemBlock> itemBlockClass;
+	public final Class<? extends ItemBlock> itemBlockClass;
 
 	/**
 	 * Cache of the enum values
@@ -75,11 +76,6 @@ public enum BlockEnum
 	public Block getBlock()
 	{
 		return this.block;
-	}
-
-	public Class<? extends ItemBlock> getItemClass()
-	{
-		return this.itemBlockClass;
 	}
 
 	// Return the name

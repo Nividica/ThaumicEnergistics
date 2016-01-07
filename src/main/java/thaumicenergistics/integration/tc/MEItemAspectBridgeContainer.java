@@ -10,7 +10,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.client.lib.ClientTickEventsFML;
-import thaumicenergistics.common.inventory.PrivateInventory;
+import thaumicenergistics.common.inventory.TheInternalInventory;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.eventhandler.EventBus;
@@ -38,7 +38,7 @@ public class MEItemAspectBridgeContainer
 	/**
 	 * Internal inventory that mirrors the ME items displayed by the A.C.T
 	 */
-	private PrivateInventory internalInventory;
+	private TheInternalInventory internalInventory;
 
 	/**
 	 * Constructs a pseudo container that TC can use to 'see' the items in the
@@ -52,7 +52,7 @@ public class MEItemAspectBridgeContainer
 	public MEItemAspectBridgeContainer( final int inventorySize ) throws Exception
 	{
 		// Create the inventory
-		this.internalInventory = new PrivateInventory( "TC Inventory Bridge", inventorySize, 1 );
+		this.internalInventory = new TheInternalInventory( "TC Inventory Bridge", inventorySize, 1 );
 
 		// Have we hooked to TC's event handler?
 		if( thaumcraftClientEvents.get() == null )

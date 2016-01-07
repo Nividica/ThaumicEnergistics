@@ -56,9 +56,10 @@ public enum ThEStrings
 		Item_FocusAEWrench_Disabled ("item.focus.aewrench.disabled", true),
 
 		// Tooltips
+		Tooltip_ItemStackDetails ("tooltip.itemstack.details", false),
 		Tooltip_CellBytes ("tooltip.essentia.cell.bytes", false),
 		Tooltip_CellTypes ("tooltip.essentia.cell.types", false),
-		Tooltip_CellDetails ("tooltip.essentia.cell.details", false),
+		Tooltip_ArcaneAssemblerHasVis ("tooltip.arcane.assembler.hasVis", false),
 
 		// Button Tooltips
 		TooltipButton_DepositCraftingGrid ("tooltip.button.clear.crafting", false),

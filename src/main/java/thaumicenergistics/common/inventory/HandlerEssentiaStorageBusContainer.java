@@ -460,9 +460,6 @@ class HandlerEssentiaStorageBusContainer
 	@Override
 	public void tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
-		// Alteration list
-		List<IAEFluidStack> alterations = null;
-
 		// Create the checklist
 		HashSet<Aspect> aspectsToCheck = new HashSet<Aspect>();
 
@@ -488,6 +485,9 @@ class HandlerEssentiaStorageBusContainer
 			// Nothing to check.
 			return;
 		}
+
+		// Alteration list
+		List<IAEFluidStack> alterations = null;
 
 		// Compare all amounts
 		for( Aspect aspect : aspectsToCheck )
@@ -530,7 +530,6 @@ class HandlerEssentiaStorageBusContainer
 		// Any alterations?
 		if( alterations != null )
 		{
-			// TODO: This needs to be updated to use the new EssentiaGrid
 			// Post the changes
 			this.postAlterationToHostGrid( alterations );
 		}

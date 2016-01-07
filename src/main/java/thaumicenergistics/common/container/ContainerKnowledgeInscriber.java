@@ -119,22 +119,19 @@ public class ContainerKnowledgeInscriber
 		// Get the inscriber
 		this.inscriber = (TileKnowledgeInscriber)world.getTileEntity( x, y, z );
 
-		// Get the inscriber's inventory
-		IInventory inscriberInventory = this.inscriber.getInventory();
-
 		// Create the Kcore slot
-		this.kCoreSlot = new SlotRestrictive( inscriberInventory, TileKnowledgeInscriber.KCORE_SLOT, ContainerKnowledgeInscriber.KCORE_SLOT_X,
+		this.kCoreSlot = new SlotRestrictive( this.inscriber, TileKnowledgeInscriber.KCORE_SLOT, ContainerKnowledgeInscriber.KCORE_SLOT_X,
 						ContainerKnowledgeInscriber.KCORE_SLOT_Y );
 		this.addSlotToContainer( this.kCoreSlot );
 
 		// Create pattern slots
-		this.initPatternSlots( inscriberInventory );
+		this.initPatternSlots();
 
 		// Create crafting slots
-		this.initCraftingSlots( inscriberInventory );
+		this.initCraftingSlots();
 
 		// Create the result slot
-		this.resultSlot = new SlotFake( inscriberInventory, TileKnowledgeInscriber.CRAFTING_RESULT_SLOT, 116, 108 );
+		this.resultSlot = new SlotFake( this.inscriber, TileKnowledgeInscriber.CRAFTING_RESULT_SLOT, 116, 108 );
 		this.addSlotToContainer( this.resultSlot );
 
 		// Perform server side only setup
@@ -154,7 +151,7 @@ public class ContainerKnowledgeInscriber
 			this.updatePatternSlots();
 
 			// Update the result
-			this.onCraftMatrixChanged( inscriberInventory );
+			this.onCraftMatrixChanged( this.inscriber );
 		}
 
 	}
@@ -181,7 +178,7 @@ public class ContainerKnowledgeInscriber
 		else
 		{
 			// Get the recipe output
-			ItemStack recipeOutput = ArcaneRecipeHelper.INSTANCE.getRecipeOutput( this.inscriber.getInventory(),
+			ItemStack recipeOutput = ArcaneRecipeHelper.INSTANCE.getRecipeOutput( this.inscriber,
 				TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
 
 			// Ensure there is an output
@@ -220,7 +217,7 @@ public class ContainerKnowledgeInscriber
 		return saveState;
 	}
 
-	private void initCraftingSlots( final IInventory inscriberInventory )
+	private void initCraftingSlots()
 	{
 		int slotIndex;
 		// Create the crafting slots
@@ -237,7 +234,7 @@ public class ContainerKnowledgeInscriber
 				int posY = ContainerKnowledgeInscriber.CRAFTING_SLOT_Y + ( ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING * row );
 
 				// Add to the array
-				this.craftingSlots[index] = new SlotFakeCraftingMatrix( inscriberInventory, slotIndex++ , posX, posY );
+				this.craftingSlots[index] = new SlotFakeCraftingMatrix( this.inscriber, slotIndex++ , posX, posY );
 
 				// Add the slot
 				this.addSlotToContainer( this.craftingSlots[index] );
@@ -248,7 +245,7 @@ public class ContainerKnowledgeInscriber
 		this.craftingSlot_last = this.craftingSlots[this.craftingSlots.length - 1].slotNumber;
 	}
 
-	private void initPatternSlots( final IInventory inscriberInventory )
+	private void initPatternSlots()
 	{
 		int slotIndex;
 		// Create the pattern slots
@@ -265,7 +262,7 @@ public class ContainerKnowledgeInscriber
 				int posY = ContainerKnowledgeInscriber.PATTERN_SLOT_Y + ( ContainerKnowledgeInscriber.PATTERN_SLOT_SPACING * row );
 
 				// Add to the array
-				this.patternSlots[index] = new SlotInaccessible( inscriberInventory, slotIndex++ , posX, posY );
+				this.patternSlots[index] = new SlotInaccessible( this.inscriber, slotIndex++ , posX, posY );
 
 				// Add the slot
 				this.addSlotToContainer( this.patternSlots[index] );
@@ -379,7 +376,11 @@ public class ContainerKnowledgeInscriber
 	@Override
 	public boolean canInteractWith( final EntityPlayer player )
 	{
-		return true;
+		if( this.inscriber != null )
+		{
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -481,7 +482,7 @@ public class ContainerKnowledgeInscriber
 			}
 
 			// Get the aspect cost
-			AspectList recipeAspects = ArcaneRecipeHelper.INSTANCE.getRecipeAspectCost( this.inscriber.getInventory(),
+			AspectList recipeAspects = ArcaneRecipeHelper.INSTANCE.getRecipeAspectCost( this.inscriber,
 				TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
 
 			// Create the pattern

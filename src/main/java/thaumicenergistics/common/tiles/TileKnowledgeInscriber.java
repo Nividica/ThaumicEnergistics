@@ -1,15 +1,13 @@
 package thaumicenergistics.common.tiles;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import thaumicenergistics.common.inventory.HandlerKnowledgeCore;
-import thaumicenergistics.common.inventory.PrivateInventory;
 import thaumicenergistics.common.items.ItemKnowledgeCore;
+import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
 
 public class TileKnowledgeInscriber
-	extends TileEntity
+	extends ThETileInventory
 {
 	public static final int KCORE_SLOT = 0;
 	public static final int PATTERN_SLOT = KCORE_SLOT + 1;
@@ -18,37 +16,9 @@ public class TileKnowledgeInscriber
 
 	private static final String NBTKEY_KCORE = "kcore";
 
-	private PrivateInventory internalInventory = new PrivateInventory( "knowledge.inscriber", 32, 64 )
-	{
-		@Override
-		public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
-		{
-			if( itemStack == null )
-			{
-				return true;
-			}
-
-			if( slotId == TileKnowledgeInscriber.KCORE_SLOT )
-			{
-				return( itemStack.getItem() instanceof ItemKnowledgeCore );
-			}
-
-			return true;
-		}
-	};
-
 	public TileKnowledgeInscriber()
 	{
-	}
-
-	/**
-	 * Gets the inscriber's inventory.
-	 * 
-	 * @return
-	 */
-	public IInventory getInventory()
-	{
-		return this.internalInventory;
+		super( "knowledge.inscriber", 32, 64 );
 	}
 
 	/**
@@ -58,7 +28,26 @@ public class TileKnowledgeInscriber
 	 */
 	public boolean hasKCore()
 	{
-		return( this.internalInventory.slots[TileKnowledgeInscriber.KCORE_SLOT] != null );
+		return this.internalInventory.getHasStack( KCORE_SLOT );
+	}
+
+	@Override
+	public boolean isItemValidForSlot( final int slotIndex, final ItemStack itemStack )
+	{
+		// Null is always allowed
+		if( itemStack == null )
+		{
+			return true;
+		}
+
+		// KCORE slot?
+		if( slotIndex == KCORE_SLOT )
+		{
+			// Ensure the item is a KCORE
+			return( itemStack.getItem() instanceof ItemKnowledgeCore );
+		}
+
+		return true;
 	}
 
 	@Override
@@ -68,11 +57,11 @@ public class TileKnowledgeInscriber
 		super.readFromNBT( data );
 
 		// Is there a saved core?
-		if( data.hasKey( TileKnowledgeInscriber.NBTKEY_KCORE ) )
+		if( data.hasKey( NBTKEY_KCORE ) )
 		{
 			// Load the saved core
-			this.internalInventory.slots[TileKnowledgeInscriber.KCORE_SLOT] = ItemStack.loadItemStackFromNBT( data
-							.getCompoundTag( TileKnowledgeInscriber.NBTKEY_KCORE ) );
+			this.internalInventory.setInventorySlotContents( KCORE_SLOT,
+				ItemStack.loadItemStackFromNBT( data.getCompoundTag( NBTKEY_KCORE ) ) );
 		}
 	}
 
@@ -83,11 +72,11 @@ public class TileKnowledgeInscriber
 		super.writeToNBT( data );
 
 		// Get the kcore
-		ItemStack kCore = this.internalInventory.slots[TileKnowledgeInscriber.KCORE_SLOT];
+		ItemStack kCore = this.internalInventory.getStackInSlot( KCORE_SLOT );
 		if( kCore != null )
 		{
 			// Write the kcore
-			data.setTag( TileKnowledgeInscriber.NBTKEY_KCORE, kCore.writeToNBT( new NBTTagCompound() ) );
+			data.setTag( NBTKEY_KCORE, kCore.writeToNBT( new NBTTagCompound() ) );
 		}
 	}
 }

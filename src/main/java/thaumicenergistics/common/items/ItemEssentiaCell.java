@@ -32,6 +32,8 @@ import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.*;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.localization.GuiText;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemEssentiaCell
 	extends Item
@@ -150,7 +152,7 @@ public class ItemEssentiaCell
 			{
 				// Let the user know they can hold shift
 				displayList.add( EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString() +
-								ThEStrings.Tooltip_CellDetails.getLocalized() );
+								ThEStrings.Tooltip_ItemStackDetails.getLocalized() );
 			}
 		}
 
@@ -268,6 +270,7 @@ public class ItemEssentiaCell
 	 * ME Chest icon
 	 */
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getTopTexture_Dark()
 	{
 		return BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0];
@@ -277,6 +280,7 @@ public class ItemEssentiaCell
 	 * ME Chest icon
 	 */
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getTopTexture_Light()
 	{
 		return BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[2];
@@ -286,6 +290,7 @@ public class ItemEssentiaCell
 	 * ME Chest icon
 	 */
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getTopTexture_Medium()
 	{
 		return BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[1];

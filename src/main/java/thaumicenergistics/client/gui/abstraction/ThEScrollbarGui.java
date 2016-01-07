@@ -218,6 +218,9 @@ public abstract class ThEScrollbarGui
 	@Override
 	public void drawScreen( final int mouseX, final int mouseY, final float mouseBtn )
 	{
+		// Call super
+		super.drawScreen( mouseX, mouseY, mouseBtn );
+
 		// Is the mouse holding the scroll bar?
 		if( this.isScrollBarHeld )
 		{
@@ -270,9 +273,6 @@ public abstract class ThEScrollbarGui
 				this.isScrollBarHeld = false;
 			}
 		}
-
-		// Call super
-		super.drawScreen( mouseX, mouseY, mouseBtn );
 
 	}
 

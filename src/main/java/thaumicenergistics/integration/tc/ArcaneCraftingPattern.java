@@ -1,6 +1,7 @@
 package thaumicenergistics.integration.tc;
 
 import java.util.ArrayList;
+import javax.annotation.Nullable;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -100,7 +101,7 @@ public class ArcaneCraftingPattern
 	 * @param knowledgeCore
 	 * @param data
 	 */
-	public ArcaneCraftingPattern( final ItemStack knowledgeCore, final NBTTagCompound data )
+	public ArcaneCraftingPattern( @Nullable final ItemStack knowledgeCore, final NBTTagCompound data )
 	{
 		// Set the host
 		this.knowledgeCoreHost = knowledgeCore;
@@ -577,6 +578,16 @@ public class ArcaneCraftingPattern
 				return;
 			}
 		}
+	}
+
+	/**
+	 * Sets the knowledge core.
+	 * 
+	 * @param knowledgeCore
+	 */
+	public void setKnowledgeCore( final ItemStack knowledgeCore )
+	{
+		this.knowledgeCoreHost = knowledgeCore;
 	}
 
 	@Override

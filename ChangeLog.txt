@@ -1,4 +1,9 @@
 ﻿01/05/2016 0.10.0.0 - Beta
+  Fixes #263: Replaced flawed conversion amount config item. Essentia cells should work correctly in the IO Port.
+  Removed redundant tile entity code.
+  Cleaned up inventory processing.
+
+01/05/2016 0.10.0.0 - Beta
   Added recipe and Thaumonomicon entry for DPE.
   Reduced client packet overhead.
   More cleanup.

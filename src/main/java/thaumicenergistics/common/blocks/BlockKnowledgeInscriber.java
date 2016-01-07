@@ -67,8 +67,8 @@ public class BlockKnowledgeInscriber
 				if( tileKI.hasKCore() )
 				{
 					// Spawn the core as an item entity.
-					world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, tileKI.getInventory().getStackInSlot(
-						TileKnowledgeInscriber.KCORE_SLOT ) ) );
+					world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, tileKI.getStackInSlot(
+									TileKnowledgeInscriber.KCORE_SLOT ) ) );
 				}
 			}
 		}

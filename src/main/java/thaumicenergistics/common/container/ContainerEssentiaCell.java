@@ -12,7 +12,7 @@ import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.grid.EssentiaMonitor;
 import thaumicenergistics.common.inventory.HandlerItemEssentiaCell;
-import thaumicenergistics.common.inventory.PrivateInventory;
+import thaumicenergistics.common.inventory.TheInternalInventory;
 import thaumicenergistics.common.items.ItemEssentiaCell;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaCellTerminal;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
@@ -62,7 +62,7 @@ public class ContainerEssentiaCell
 	/**
 	 * Import and export inventory slots.
 	 */
-	private PrivateInventory privateInventory = new PrivateInventory( ThaumicEnergistics.MOD_ID + ".item.essentia.cell.inventory", 2, 64 )
+	private TheInternalInventory privateInventory = new TheInternalInventory( ThaumicEnergistics.MOD_ID + ".item.essentia.cell.inventory", 2, 64 )
 	{
 		@Override
 		public boolean isItemValidForSlot( final int slotID, final ItemStack itemStack )

@@ -95,8 +95,16 @@ public class ItemStorageComponent
 		// Add each type
 		for( int i = 0; i < this.icons.length; i++ )
 		{
-			this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":storage.component." +
-							EnumEssentiaStorageTypes.fromIndex[i].suffix );
+			// Skip creative
+			if( i == EnumEssentiaStorageTypes.Type_Creative.index )
+			{
+				this.icons[i] = null;
+			}
+			else
+			{
+				this.icons[i] = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":storage.component." +
+								EnumEssentiaStorageTypes.fromIndex[i].suffix );
+			}
 		}
 	}
 

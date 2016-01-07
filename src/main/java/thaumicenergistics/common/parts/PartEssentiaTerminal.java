@@ -17,7 +17,7 @@ import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.container.ContainerEssentiaCellTerminalBase;
 import thaumicenergistics.common.container.ContainerEssentiaTerminal;
-import thaumicenergistics.common.inventory.PrivateInventory;
+import thaumicenergistics.common.inventory.TheInternalInventory;
 import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.registries.EnumCache;
@@ -31,7 +31,6 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
@@ -42,7 +41,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartEssentiaTerminal
 	extends ThERotateablePart
-	implements ICraftingIssuerHost, ITerminalHost
+	implements ICraftingIssuerHost
 {
 
 	/**
@@ -80,7 +79,7 @@ public class PartEssentiaTerminal
 	 */
 	private ViewItems viewMode = DEFAULT_VIEW_MODE;
 
-	private PrivateInventory inventory = new PrivateInventory( ThaumicEnergistics.MOD_ID + ".part.aspect.terminal", 2, 64 )
+	private TheInternalInventory inventory = new TheInternalInventory( ThaumicEnergistics.MOD_ID + ".part.aspect.terminal", 2, 64 )
 	{
 		@Override
 		public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
@@ -96,6 +95,18 @@ public class PartEssentiaTerminal
 	public PartEssentiaTerminal()
 	{
 		super( AEPartsEnum.EssentiaTerminal );
+	}
+
+	/**
+	 * Informs all open containers to update their respective clients
+	 * that the mode has changed.
+	 */
+	private void notifyListenersOfModeChanged()
+	{
+		for( ContainerEssentiaTerminal listener : this.listeners )
+		{
+			listener.onModeChanged( this.sortMode, this.viewMode );
+		}
 	}
 
 	public void addListener( final ContainerEssentiaCellTerminalBase container )
@@ -197,7 +208,7 @@ public class PartEssentiaTerminal
 		return PartEssentiaTerminal.IDLE_POWER_DRAIN;
 	}
 
-	public PrivateInventory getInventory()
+	public TheInternalInventory getInventory()
 	{
 		return this.inventory;
 	}
@@ -258,18 +269,6 @@ public class PartEssentiaTerminal
 		{
 			// Ask the server to change the GUI
 			Packet_S_ChangeGui.sendGuiChangeToPart( this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
-		}
-	}
-
-	/**
-	 * Informs all open containers to update their respective clients
-	 * that the mode has changed.
-	 */
-	public void notifyListenersOfModeChanged()
-	{
-		for( ContainerEssentiaTerminal listener : this.listeners )
-		{
-			listener.onModeChanged( this.sortMode, this.viewMode );
 		}
 	}
 

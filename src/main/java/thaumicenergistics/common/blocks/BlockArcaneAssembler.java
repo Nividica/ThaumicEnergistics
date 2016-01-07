@@ -74,8 +74,8 @@ public class BlockArcaneAssembler
 			}
 			else
 			{
-				// Does the player have permission?
-				if( ( (TileArcaneAssembler)tileAssembler ).canPlayerOpenGUI( player ) )
+				// Can the player interact with the assembler?
+				if( ( (TileArcaneAssembler)tileAssembler ).isUseableByPlayer( player ) )
 				{
 					// Launch the gui.
 					ThEGuiHandler.launchGui( ThEGuiHandler.ARCANE_ASSEMBLER_ID, player, world, x, y, z );
@@ -103,14 +103,14 @@ public class BlockArcaneAssembler
 			// Create a compound tag
 			NBTTagCompound data = new NBTTagCompound();
 
-			// Save the tile entity state
-			( (TileArcaneAssembler)tileAssembler ).onSaveNBT( data );
+			// Save the vis levels
+			( (TileArcaneAssembler)tileAssembler ).writeVisLevelsToNBT( data );
 
 			// Set the itemstack tag
-			itemStack.setTagCompound( data );
-
-			// Set that it was dismantled
-			( (TileArcaneAssembler)tileAssembler ).onDismantled();
+			if( !data.hasNoTags() )
+			{
+				itemStack.setTagCompound( data );
+			}
 		}
 
 		return itemStack;
@@ -154,7 +154,7 @@ public class BlockArcaneAssembler
 	@Override
 	public TileEntity createNewTileEntity( final World world, final int metadata )
 	{
-		return new TileArcaneAssembler().setupAssemblerTile();
+		return new TileArcaneAssembler();
 	}
 
 	/**
@@ -197,10 +197,10 @@ public class BlockArcaneAssembler
 
 		if( tileAssembler instanceof TileArcaneAssembler )
 		{
-			if( itemStack.getTagCompound() != null )
+			if( itemStack.hasTagCompound() )
 			{
-				// Load the saved data
-				( (TileArcaneAssembler)tileAssembler ).onLoadNBT( itemStack.getTagCompound() );
+				// Load the vis data
+				( (TileArcaneAssembler)tileAssembler ).readVisLevelsFromNBT( itemStack.getTagCompound() );
 			}
 
 			if( player instanceof EntityPlayer )

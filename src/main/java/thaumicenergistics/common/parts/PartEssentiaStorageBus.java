@@ -11,7 +11,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
 import thaumicenergistics.client.gui.GuiEssentiaStorageBus;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.container.ContainerPartEssentiaStorageBus;
@@ -52,7 +51,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartEssentiaStorageBus
 	extends ThEPartBase
-	implements IGridTickable, ICellContainer, IInventoryUpdateReceiver, IAspectSlotPart, IAEAppEngInventory, IPriorityHost
+	implements IGridTickable, ICellContainer, IAspectSlotPart, IAEAppEngInventory, IPriorityHost
 {
 	/**
 	 * Number of filtered aspects we can have
@@ -119,6 +118,15 @@ public class PartEssentiaStorageBus
 		{
 			listner.setFilteredAspects( this.filteredAspects );
 		}
+	}
+
+	/**
+	 * Updates the handler on the inverted state.
+	 */
+	private void updateInverterState()
+	{
+		boolean inverted = AEApi.instance().definitions().materials().cardInverter().isSameAs( this.upgradeInventory.getStackInSlot( 0 ) );
+		this.handler.setInverted( inverted );
 	}
 
 	/**
@@ -372,7 +380,7 @@ public class PartEssentiaStorageBus
 	@Override
 	public void onChangeInventory( final IInventory inv, final int arg1, final InvOperation arg2, final ItemStack arg3, final ItemStack arg4 )
 	{
-		this.onInventoryChanged( inv );
+		this.updateInverterState();
 	}
 
 	/**
@@ -401,16 +409,6 @@ public class PartEssentiaStorageBus
 		this.handler.setVoidAllowed( isVoidAllowed );
 
 		this.saveChanges();
-	}
-
-	/**
-	 * Updates the handler on the inverted state.
-	 */
-	@Override
-	public void onInventoryChanged( final IInventory sourceInventory )
-	{
-		boolean inverted = AEApi.instance().definitions().materials().cardInverter().isSameAs( this.upgradeInventory.getStackInSlot( 0 ) );
-		this.handler.setInverted( inverted );
 	}
 
 	/**
@@ -488,7 +486,7 @@ public class PartEssentiaStorageBus
 			this.upgradeInventory.readFromNBT( data, PartEssentiaStorageBus.NBT_KEY_UPGRADES );
 
 			// Update the handler inverted
-			this.onInventoryChanged( this.upgradeInventory );
+			this.updateInverterState();
 		}
 
 		// Read void

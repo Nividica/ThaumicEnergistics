@@ -19,13 +19,11 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.ViewItems;
 import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
-import appeng.tile.storage.TileIOPort;
 
 public class HandlerItemEssentiaCell
 	implements IMEInventoryHandler<IAEFluidStack>
@@ -548,18 +546,8 @@ public class HandlerItemEssentiaCell
 		// Copy the request
 		IAEFluidStack extractedFluid = request.copy();
 
-		/*
-		 * NOTE: I don't like this 'fix'
-		 * If the machine requesting the extraction is the IO port, lie and say that the full request
-		 * was extracted. If I report the actual amount extracted, it gets hung in an infinite loop and
-		 * suddenly the network thinks we only have 6mb of essentia gas stored.
-		*/
-		if( !( ( src instanceof MachineSource ) && ( ( (MachineSource)src ).via instanceof TileIOPort ) ) )
-		{
-			// Not IO port, set the actual amount extracted
-			extractedFluid.setStackSize( EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( extractedEssentiaAmount ) );
-		}
-
+		// Set the amount extracted
+		extractedFluid.setStackSize( EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( extractedEssentiaAmount ) );
 		return extractedFluid;
 
 	}

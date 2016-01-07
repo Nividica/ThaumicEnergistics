@@ -115,7 +115,7 @@ public class ItemBlockEssentiaVibrationChamber
 		{
 			// Let the user know they can hold shift
 			displayList.add( EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString() +
-							ThEStrings.Tooltip_CellDetails.getLocalized() );
+							ThEStrings.Tooltip_ItemStackDetails.getLocalized() );
 		}
 
 	}
