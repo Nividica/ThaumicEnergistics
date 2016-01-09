@@ -22,10 +22,13 @@ import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.grid.AEPartGridBlock;
 import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.utils.EffectiveSide;
+import thaumicenergistics.common.utils.ThEUtils;
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -40,7 +43,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ThEPartBase
-	implements IPart, IGridHost, IActionHost
+	implements IPart, IGridHost, IActionHost, IPowerChannelState
 {
 	private final static String NBT_KEY_OWNER = "Owner";
 
@@ -55,6 +58,11 @@ public abstract class ThEPartBase
 	 * Light level of active terminals.
 	 */
 	protected final static int ACTIVE_TERMINAL_LIGHT_LEVEL = 9;
+
+	/**
+	 * Permission levels required to interact with the part.
+	 */
+	private final SecurityPermissions[] interactionPermissions;
 
 	/**
 	 * The PartHost attached to.
@@ -75,6 +83,11 @@ public abstract class ThEPartBase
 	 * Is the part powered and connected?
 	 */
 	private boolean isActive;
+
+	/**
+	 * Is the network powered?
+	 */
+	private boolean isPowered;
 
 	/**
 	 * The parts grid node.
@@ -101,10 +114,27 @@ public abstract class ThEPartBase
 	 */
 	public final ItemStack associatedItem;
 
-	public ThEPartBase( final AEPartsEnum associatedPart )
+	/**
+	 * Creates the part.
+	 * 
+	 * @param associatedPart
+	 * @param interactionPermissions
+	 * Permissions required to interact with the part.
+	 */
+	public ThEPartBase( final AEPartsEnum associatedPart, final SecurityPermissions ... interactionPermissions )
 	{
 		// Set the associated item
 		this.associatedItem = associatedPart.getStack();
+
+		// Set clearance
+		if( ( interactionPermissions != null ) && ( interactionPermissions.length > 0 ) )
+		{
+			this.interactionPermissions = interactionPermissions;
+		}
+		else
+		{
+			this.interactionPermissions = null;
+		}
 	}
 
 	private void updateStatus()
@@ -244,17 +274,6 @@ public abstract class ThEPartBase
 		return false;
 	}
 
-	/**
-	 * Called before a gui is shown to ensure a player has permission to do so.
-	 * 
-	 * @param player
-	 * @return
-	 */
-	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
-	{
-		return false;
-	}
-
 	@Override
 	public IGridNode getActionableNode()
 	{
@@ -337,8 +356,8 @@ public abstract class ThEPartBase
 		// Get the itemstack
 		ItemStack itemStack = this.associatedItem.copy();
 
-		// Save NBT data if the part was wrenched or creatively picked
-		if( ( type == PartItemStack.Wrench ) || ( type == PartItemStack.Pick ) )
+		// Save NBT data if the part was wrenched
+		if( type == PartItemStack.Wrench )
 		{
 			// Create the item tag
 			NBTTagCompound itemNBT = new NBTTagCompound();
@@ -402,6 +421,7 @@ public abstract class ThEPartBase
 	 * 
 	 * @return
 	 */
+	@Override
 	public boolean isActive()
 	{
 		// Are we server side?
@@ -413,6 +433,10 @@ public abstract class ThEPartBase
 				// Get it's activity
 				this.isActive = this.node.isActive();
 			}
+			else
+			{
+				this.isActive = false;
+			}
 		}
 
 		return this.isActive;
@@ -422,6 +446,27 @@ public abstract class ThEPartBase
 	public boolean isLadder( final EntityLivingBase entity )
 	{
 		return false;
+	}
+
+	@Override
+	public boolean isPowered()
+	{
+		// Server side?
+		if( EffectiveSide.isServerSide() )
+		{
+			// Get the energy grid
+			IEnergyGrid eGrid = this.gridBlock.getEnergyGrid();
+			if( eGrid != null )
+			{
+				this.isPowered = eGrid.isNetworkPowered();
+			}
+			else
+			{
+				this.isPowered = false;
+			}
+		}
+
+		return this.isPowered;
 	}
 
 	@Override
@@ -450,6 +495,56 @@ public abstract class ThEPartBase
 	public boolean isSolid()
 	{
 		return false;
+	}
+
+	/**
+	 * Called the player interact with this part?
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public final boolean isUseableByPlayer( final EntityPlayer player )
+	{
+		// Null check host
+		if( ( this.hostTile == null ) || ( this.host == null ) )
+		{
+			return false;
+		}
+
+		// Does the host still exist in the world and the player in range of it?
+		if( !ThEUtils.canPlayerInteractWith( player, this.hostTile ) )
+		{
+			return false;
+		}
+
+		// Is the part still attached?
+		if( this.host.getPart( this.cableSide ) != this )
+		{
+			return false;
+		}
+
+		// Are there any permissions to check?
+		if( this.interactionPermissions != null )
+		{
+			// Get the security grid
+			ISecurityGrid sGrid = this.gridBlock.getSecurityGrid();
+			if( sGrid == null )
+			{
+				// Security grid was unaccessible.
+				return false;
+			}
+
+			// Check each permission
+			for( SecurityPermissions perm : this.interactionPermissions )
+			{
+				if( !sGrid.hasPermission( player, perm ) )
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -551,14 +646,16 @@ public abstract class ThEPartBase
 	@Override
 	public boolean readFromStream( final ByteBuf stream ) throws IOException
 	{
-		// Cache if we were active
+		// Cache old values
 		boolean oldActive = this.isActive;
+		boolean oldPowered = this.isPowered;
 
-		// Read the new active
+		// Read the new values
 		this.isActive = stream.readBoolean();
+		this.isPowered = stream.readBoolean();
 
 		// Redraw if they don't match.
-		return( oldActive != this.isActive );
+		return( ( oldActive != this.isActive ) || ( oldPowered != this.isPowered ) );
 	}
 
 	@Override
@@ -736,7 +833,7 @@ public abstract class ThEPartBase
 	 */
 	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
 	{
-		if( saveType != PartItemStack.Wrench )
+		if( saveType == PartItemStack.World )
 		{
 			// Set the owner ID
 			data.setInteger( ThEPartBase.NBT_KEY_OWNER, this.ownerID );
@@ -747,7 +844,11 @@ public abstract class ThEPartBase
 	@Override
 	public void writeToStream( final ByteBuf stream ) throws IOException
 	{
-		stream.writeBoolean( ( this.node != null ) && ( this.node.isActive() ) );
+		// Write active
+		stream.writeBoolean( this.isActive() );
+
+		// Write powered
+		stream.writeBoolean( this.isPowered() );
 	}
 
 }

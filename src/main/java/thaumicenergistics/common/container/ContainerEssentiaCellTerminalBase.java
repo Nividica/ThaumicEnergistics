@@ -100,29 +100,14 @@ public abstract class ContainerEssentiaCellTerminalBase
 	private static int OUTPUT_INV_INDEX = 1, INPUT_INV_INDEX = 0;
 
 	/**
-	 * Essentia network monitor
+	 * Location of the splash sound
 	 */
-	protected IMEEssentiaMonitor monitor;
+	private final String soundLocation_Splash = "game.neutral.swim";
 
 	/**
-	 * List of aspects on the network
+	 * Location of the paper sound
 	 */
-	protected final IEssentiaRepo repo;
-
-	/**
-	 * The aspect the user has selected.
-	 */
-	protected Aspect selectedAspect;
-
-	/**
-	 * The player that owns this container.
-	 */
-	protected EntityPlayer player;
-
-	/**
-	 * Import and export inventory
-	 */
-	protected IInventory inventory;
+	private final String soundLocation_Paper = "thaumcraft:page";
 
 	/**
 	 * The last known stack size stored in the export slot
@@ -130,15 +115,35 @@ public abstract class ContainerEssentiaCellTerminalBase
 	private int audioStackSizeTracker = 0;
 
 	/**
+	 * Work slots
+	 */
+	private Slot inputSlot;
+
+	/**
+	 * Import and export inventory
+	 */
+	private IInventory inventory;
+
+	/**
 	 * The last time, in ms, the transfer sound played
 	 */
 	private long lastSoundPlaytime = 0;
+
+	/**
+	 * Work slots
+	 */
+	private Slot outputSlot;
 
 	/**
 	 * Holds a list of changes sent to the gui before the
 	 * full list is sent.
 	 */
 	private List<IAspectStack> pendingChanges = new ArrayList<IAspectStack>();
+
+	/**
+	 * The aspect the user has selected.
+	 */
+	private Aspect selectedAspect;
 
 	/**
 	 * Tracks the number of ticks
@@ -151,19 +156,19 @@ public abstract class ContainerEssentiaCellTerminalBase
 	private int workCounter = 0;
 
 	/**
-	 * Work slots
+	 * List of aspects on the network
 	 */
-	private Slot inputSlot, outputSlot;
+	protected final IEssentiaRepo repo;
 
 	/**
-	 * Location of the splash sound
+	 * The player that owns this container.
 	 */
-	private final String soundLocation_Splash = "game.neutral.swim";
+	protected final EntityPlayer player;
 
 	/**
-	 * Location of the paper sound
+	 * Essentia network monitor
 	 */
-	private final String soundLocation_Paper = "thaumcraft:page";
+	protected IMEEssentiaMonitor monitor;
 
 	/**
 	 * Set to true once a full list request is sent to the server.
@@ -470,6 +475,21 @@ public abstract class ContainerEssentiaCellTerminalBase
 	protected abstract BaseActionSource getActionSource();
 
 	/**
+	 * Return the selected aspect stored in the host.
+	 * 
+	 * @return
+	 */
+	@Nullable
+	protected abstract Aspect getHostSelectedAspect();
+
+	/**
+	 * Sets the hosts selected aspect.
+	 * 
+	 * @param aspect
+	 */
+	protected abstract void setHostSelectedAspect( @Nullable Aspect aspect );
+
+	/**
 	 * Fills, drains, or sets label aspect.
 	 * 
 	 * @param stack
@@ -637,15 +657,6 @@ public abstract class ContainerEssentiaCellTerminalBase
 	}
 
 	/**
-	 * Who can interact with the container?
-	 */
-	@Override
-	public boolean canInteractWith( final EntityPlayer player )
-	{
-		return true;
-	}
-
-	/**
 	 * Checks if there is any work to perform.
 	 * If there is it does so.
 	 */
@@ -665,6 +676,16 @@ public abstract class ContainerEssentiaCellTerminalBase
 
 			// Reset the tick counter
 			this.tickCounter = 0;
+		}
+
+		// Compare selected aspects
+		if( this.getHostSelectedAspect() != this.selectedAspect )
+		{
+			// Update the selected aspect
+			this.selectedAspect = this.getHostSelectedAspect();
+
+			// Send the change back to the client
+			Packet_C_EssentiaCellTerminal.setSelectedAspect( this.player, this.selectedAspect );
 		}
 	}
 
@@ -907,14 +928,14 @@ public abstract class ContainerEssentiaCellTerminalBase
 	 */
 	public void onReceivedSelectedAspect( final Aspect selectedAspect )
 	{
-		// Set the selected aspect
-		this.selectedAspect = selectedAspect;
-
 		// Is this server side?
 		if( EffectiveSide.isServerSide() )
 		{
-			// Send the change back to the client
-			Packet_C_EssentiaCellTerminal.setSelectedAspect( this.player, this.selectedAspect );
+			this.setHostSelectedAspect( selectedAspect );
+		}
+		else
+		{
+			this.selectedAspect = selectedAspect;
 		}
 	}
 

@@ -14,6 +14,7 @@ import thaumcraft.api.crafting.ShapedArcaneRecipe;
 import thaumcraft.api.crafting.ShapelessArcaneRecipe;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
 import thaumicenergistics.common.inventory.HandlerKnowledgeCore;
+import thaumicenergistics.common.inventory.TheInternalInventory;
 import thaumicenergistics.common.items.ItemKnowledgeCore;
 import thaumicenergistics.common.network.packet.client.Packet_C_KnowledgeInscriber;
 import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
@@ -44,6 +45,11 @@ public class ContainerKnowledgeInscriber
 	}
 
 	/**
+	 * Maximum number of patterns.
+	 */
+	private static final int MAXIMUM_PATTERNS = HandlerKnowledgeCore.MAXIMUM_STORED_PATTERNS;
+
+	/**
 	 * Y position for the player and hotbar inventory.
 	 */
 	private static final int PLAYER_INV_POSITION_Y = 162, HOTBAR_INV_POSITION_Y = PLAYER_INV_POSITION_Y + 58;
@@ -56,25 +62,22 @@ public class ContainerKnowledgeInscriber
 	/**
 	 * Pattern slots.
 	 */
-	private static final int PATTERN_SLOT_X = 26, PATTERN_SLOT_Y = 18, PATTERN_ROWS = 3, PATTERN_COLS = 7, PATTERN_SLOT_SPACING = 18;
+	private static final int PATTERN_SLOT = 0, PATTERN_SLOT_X = 26, PATTERN_SLOT_Y = 18,
+					PATTERN_ROWS = 3, PATTERN_COLS = 7, PATTERN_SLOT_SPACING = 18;
 
 	/**
 	 * Crafting slots
 	 */
-	public static final int CRAFTING_SLOT_X = 26, CRAFTING_SLOT_Y = 90, CRAFTING_ROWS = 3, CRAFTING_COLS = 3, CRAFTING_SLOT_SPACING = 18;
-
-	/**
-	 * Maximum number of patterns.
-	 */
-	private static final int MAXIMUM_PATTERNS = HandlerKnowledgeCore.MAXIMUM_STORED_PATTERNS;
+	public static final int CRAFTING_MATRIX_SLOT = MAXIMUM_PATTERNS + PATTERN_SLOT, CRAFTING_SLOT_X = 26,
+					CRAFTING_SLOT_Y = 90, CRAFTING_ROWS = 3, CRAFTING_COLS = 3,
+					CRAFTING_SLOT_SPACING = 18, CRAFTING_RESULT_SLOT = CRAFTING_MATRIX_SLOT + ( CRAFTING_ROWS * CRAFTING_COLS );
 
 	/**
 	 * Slots
 	 */
 	private SlotRestrictive kCoreSlot;
-	private SlotInaccessible[] patternSlots = new SlotInaccessible[ContainerKnowledgeInscriber.MAXIMUM_PATTERNS];
-	private SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[ContainerKnowledgeInscriber.CRAFTING_ROWS *
-					ContainerKnowledgeInscriber.CRAFTING_COLS];
+	private SlotInaccessible[] patternSlots = new SlotInaccessible[MAXIMUM_PATTERNS];
+	private SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[CRAFTING_ROWS * CRAFTING_COLS];
 	private SlotFake resultSlot;
 
 	/**
@@ -107,6 +110,11 @@ public class ContainerKnowledgeInscriber
 	 */
 	private TileKnowledgeInscriber inscriber;
 
+	/**
+	 * Inventory for the patterns and crafting matrix
+	 */
+	private final TheInternalInventory internalInventory;
+
 	public ContainerKnowledgeInscriber( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
 		// Set the player
@@ -124,6 +132,9 @@ public class ContainerKnowledgeInscriber
 						ContainerKnowledgeInscriber.KCORE_SLOT_Y );
 		this.addSlotToContainer( this.kCoreSlot );
 
+		// Setup the internal inventory
+		this.internalInventory = new TheInternalInventory( "cki", CRAFTING_RESULT_SLOT + 1, 64 );
+
 		// Create pattern slots
 		this.initPatternSlots();
 
@@ -131,7 +142,7 @@ public class ContainerKnowledgeInscriber
 		this.initCraftingSlots();
 
 		// Create the result slot
-		this.resultSlot = new SlotFake( this.inscriber, TileKnowledgeInscriber.CRAFTING_RESULT_SLOT, 116, 108 );
+		this.resultSlot = new SlotFake( this.internalInventory, CRAFTING_RESULT_SLOT, 116, 108 );
 		this.addSlotToContainer( this.resultSlot );
 
 		// Perform server side only setup
@@ -151,7 +162,7 @@ public class ContainerKnowledgeInscriber
 			this.updatePatternSlots();
 
 			// Update the result
-			this.onCraftMatrixChanged( this.inscriber );
+			this.onCraftMatrixChanged( this.internalInventory );
 		}
 
 	}
@@ -178,8 +189,8 @@ public class ContainerKnowledgeInscriber
 		else
 		{
 			// Get the recipe output
-			ItemStack recipeOutput = ArcaneRecipeHelper.INSTANCE.getRecipeOutput( this.inscriber,
-				TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
+			ItemStack recipeOutput = ArcaneRecipeHelper.INSTANCE.getRecipeOutput( this.internalInventory,
+				CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
 
 			// Ensure there is an output
 			if( recipeOutput == null )
@@ -221,7 +232,7 @@ public class ContainerKnowledgeInscriber
 	{
 		int slotIndex;
 		// Create the crafting slots
-		slotIndex = TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT;
+		slotIndex = CRAFTING_MATRIX_SLOT;
 		for( int row = 0; row < ContainerKnowledgeInscriber.CRAFTING_ROWS; row++ )
 		{
 			for( int column = 0; column < ContainerKnowledgeInscriber.CRAFTING_COLS; column++ )
@@ -234,7 +245,7 @@ public class ContainerKnowledgeInscriber
 				int posY = ContainerKnowledgeInscriber.CRAFTING_SLOT_Y + ( ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING * row );
 
 				// Add to the array
-				this.craftingSlots[index] = new SlotFakeCraftingMatrix( this.inscriber, slotIndex++ , posX, posY );
+				this.craftingSlots[index] = new SlotFakeCraftingMatrix( this.internalInventory, slotIndex++ , posX, posY );
 
 				// Add the slot
 				this.addSlotToContainer( this.craftingSlots[index] );
@@ -249,7 +260,7 @@ public class ContainerKnowledgeInscriber
 	{
 		int slotIndex;
 		// Create the pattern slots
-		slotIndex = TileKnowledgeInscriber.PATTERN_SLOT;
+		slotIndex = PATTERN_SLOT;
 		for( int row = 0; row < ContainerKnowledgeInscriber.PATTERN_ROWS; row++ )
 		{
 			for( int column = 0; column < ContainerKnowledgeInscriber.PATTERN_COLS; column++ )
@@ -262,7 +273,7 @@ public class ContainerKnowledgeInscriber
 				int posY = ContainerKnowledgeInscriber.PATTERN_SLOT_Y + ( ContainerKnowledgeInscriber.PATTERN_SLOT_SPACING * row );
 
 				// Add to the array
-				this.patternSlots[index] = new SlotInaccessible( this.inscriber, slotIndex++ , posX, posY );
+				this.patternSlots[index] = new SlotInaccessible( this.internalInventory, slotIndex++ , posX, posY );
 
 				// Add the slot
 				this.addSlotToContainer( this.patternSlots[index] );
@@ -378,7 +389,7 @@ public class ContainerKnowledgeInscriber
 	{
 		if( this.inscriber != null )
 		{
-			return true;
+			return this.inscriber.isUseableByPlayer( player );
 		}
 		return false;
 	}
@@ -418,8 +429,8 @@ public class ContainerKnowledgeInscriber
 			// Update the slots
 			this.updatePatternSlots();
 
-			// Update the client
-			this.onClientRequestFullUpdate( this.player, false );
+			// Update the save state
+			this.sendSaveState( false );
 
 			// Mark the inscriber as dirty
 			this.inscriber.markDirty();
@@ -430,13 +441,16 @@ public class ContainerKnowledgeInscriber
 
 	}
 
-	/**
-	 * Sends the save-state to the client.
-	 */
-	public void onClientRequestFullUpdate( final EntityPlayer player, final boolean justSaved )
+	public void onClientRequestClearGrid()
 	{
-		// Update the client
-		Packet_C_KnowledgeInscriber.sendSaveState( player, this.getSaveState(), justSaved );
+		// Clear the grid
+		for( int index = 0; index < ( CRAFTING_COLS * CRAFTING_ROWS ); ++index )
+		{
+			this.internalInventory.setInventorySlotContents( index + CRAFTING_MATRIX_SLOT, null );
+		}
+
+		// Update the matrix
+		this.onCraftMatrixChanged( this.internalInventory );
 	}
 
 	/**
@@ -482,8 +496,8 @@ public class ContainerKnowledgeInscriber
 			}
 
 			// Get the aspect cost
-			AspectList recipeAspects = ArcaneRecipeHelper.INSTANCE.getRecipeAspectCost( this.inscriber,
-				TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
+			AspectList recipeAspects = ArcaneRecipeHelper.INSTANCE.getRecipeAspectCost( this.internalInventory,
+				CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
 
 			// Create the pattern
 			ArcaneCraftingPattern pattern = new ArcaneCraftingPattern( this.kCoreSlot.getStack(), recipeAspects, this.resultSlot.getStack(), inputs );
@@ -495,8 +509,8 @@ public class ContainerKnowledgeInscriber
 			this.updatePatternSlots();
 			this.loadPattern( pattern );
 
-			// Update the client
-			this.onClientRequestFullUpdate( player, true );
+			// Update the save state
+			this.sendSaveState( true );
 
 			// Mark the inscriber as dirty
 			this.inscriber.markDirty();
@@ -515,13 +529,25 @@ public class ContainerKnowledgeInscriber
 				// Update the slots
 				this.updatePatternSlots();
 
-				// Update the client
-				this.onClientRequestFullUpdate( player, false );
+				// Update the save state
+				this.sendSaveState( false );
 
 				// Mark the inscriber as dirty
 				this.inscriber.markDirty();
 			}
 		}
+	}
+
+	/**
+	 * A client has requested the save state.
+	 * 
+	 * @param player
+	 * @param justSaved
+	 */
+	public void onClientRequestSaveState()
+	{
+		// Update the client
+		this.sendSaveState( false );
 	}
 
 	/**
@@ -533,26 +559,34 @@ public class ContainerKnowledgeInscriber
 	public void onCraftMatrixChanged( final IInventory inv )
 	{
 		// Set the active recipe
-		this.activeRecipe = ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult( inv, TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.player );
+		this.activeRecipe = ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult( inv, CRAFTING_MATRIX_SLOT, 9, this.player );
 
 		ItemStack craftResult = null;
 
 		// Set the result slot
 		if( this.activeRecipe != null )
 		{
-			craftResult = ArcaneRecipeHelper.INSTANCE.getRecipeOutput( inv, TileKnowledgeInscriber.CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
+			craftResult = ArcaneRecipeHelper.INSTANCE.getRecipeOutput( inv, CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
 		}
 
 		this.resultSlot.putStack( craftResult );
 
-		// Update the client
+		// Update the save state
 		if( EffectiveSide.isServerSide() )
 		{
-			this.onClientRequestFullUpdate( this.player, false );
+			this.sendSaveState( false );
 		}
 
 		// Sync
 		this.detectAndSendChanges();
+	}
+
+	/**
+	 * Sends the save-state to the client.
+	 */
+	public void sendSaveState( final boolean justSaved )
+	{
+		Packet_C_KnowledgeInscriber.sendSaveState( this.player, this.getSaveState(), justSaved );
 	}
 
 	/**

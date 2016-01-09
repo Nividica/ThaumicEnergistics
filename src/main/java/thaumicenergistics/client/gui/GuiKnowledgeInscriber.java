@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
+import thaumicenergistics.client.gui.buttons.GuiButtonClearCraftingGrid;
 import thaumicenergistics.client.gui.buttons.GuiButtonSaveDelete;
 import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.ThaumicEnergistics;
@@ -108,9 +109,14 @@ public class GuiKnowledgeInscriber
 	private static final int GUI_WIDTH = 210, GUI_HEIGHT = 244;
 
 	/**
-	 * Save/Delete button.
+	 * Save/Delete button position.
 	 */
-	private static final int BUTTON_SAVE_ID = 0, BUTTON_SAVE_POS_X = 141, BUTTON_SAVE_POS_Y = 109;
+	private static final int BUTTON_SAVE_POS_X = 141, BUTTON_SAVE_POS_Y = 109;
+
+	/**
+	 * Clear button position.
+	 */
+	private static final int BUTTON_CLEAR_POS_X = 80, BUTTON_CLEAR_POS_Y = 89;
 
 	/**
 	 * Position of the title string.
@@ -120,7 +126,12 @@ public class GuiKnowledgeInscriber
 	/**
 	 * Save / Delete button.
 	 */
-	private GuiButtonSaveDelete saveButton;
+	private GuiButtonSaveDelete buttonSave;
+
+	/**
+	 * Clear grid button.
+	 */
+	private GuiButtonClearCraftingGrid buttonClear;
 
 	/**
 	 * GUI Title
@@ -250,10 +261,15 @@ public class GuiKnowledgeInscriber
 	protected void onButtonClicked( final GuiButton button, final int mouseButton )
 	{
 		// Was the clicked button the save button?
-		if( button == this.saveButton )
+		if( button == this.buttonSave )
 		{
 			// Send the request to the server
 			Packet_S_KnowledgeInscriber.sendSaveDelete( this.player );
+		}
+		else if( button == this.buttonClear )
+		{
+			// Send the request to the server
+			Packet_S_KnowledgeInscriber.sendClearGrid( this.player );
 		}
 	}
 
@@ -266,9 +282,14 @@ public class GuiKnowledgeInscriber
 		this.buttonList.clear();
 
 		// Create the save/delete button
-		this.saveButton = new GuiButtonSaveDelete( GuiKnowledgeInscriber.BUTTON_SAVE_ID, this.guiLeft + GuiKnowledgeInscriber.BUTTON_SAVE_POS_X,
-						this.guiTop + GuiKnowledgeInscriber.BUTTON_SAVE_POS_Y, this.saveState );
-		this.buttonList.add( this.saveButton );
+		this.buttonSave = new GuiButtonSaveDelete( 0, this.guiLeft + BUTTON_SAVE_POS_X,
+						this.guiTop + BUTTON_SAVE_POS_Y, this.saveState );
+		this.buttonList.add( this.buttonSave );
+
+		// Create the clear grid button
+		this.buttonClear = new GuiButtonClearCraftingGrid( 1, this.guiLeft + BUTTON_CLEAR_POS_X,
+						this.guiTop + BUTTON_CLEAR_POS_Y, 8, 8, false );
+		this.buttonList.add( this.buttonClear );
 
 		// Request full update
 		Packet_S_KnowledgeInscriber.sendFullUpdateRequest( this.player );
@@ -287,9 +308,9 @@ public class GuiKnowledgeInscriber
 		this.saveState = saveState;
 
 		// Update the button
-		if( this.saveButton != null )
+		if( this.buttonSave != null )
 		{
-			this.saveButton.setSaveState( saveState );
+			this.buttonSave.setSaveState( saveState );
 		}
 
 		// Was a pattern just saved?

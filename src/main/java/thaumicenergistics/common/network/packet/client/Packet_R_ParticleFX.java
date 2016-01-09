@@ -42,7 +42,7 @@ public class Packet_R_ParticleFX
 	 */
 	public static void createWrenchFX( final World world, final double sourceX, final double sourceY, final double sourceZ,
 										final double destinationX, final double destinationY, final double destinationZ,
-										final Aspect aspectColor, final int range )
+										final Aspect aspectColor, final float range )
 	{
 		Packet_R_ParticleFX packet = new Packet_R_ParticleFX();
 

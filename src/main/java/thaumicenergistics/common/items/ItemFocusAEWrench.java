@@ -75,7 +75,7 @@ public class ItemFocusAEWrench
 		// Spawn beam
 		Packet_R_ParticleFX.createWrenchFX(
 			player.worldObj, player.posX, player.posY, player.posZ,
-			beamX, beamY, beamZ, Aspect.ENERGY, 20 );
+			beamX, beamY, beamZ, Aspect.ENERGY, 20.0f );
 	}
 
 	private static ItemStack getWrench()

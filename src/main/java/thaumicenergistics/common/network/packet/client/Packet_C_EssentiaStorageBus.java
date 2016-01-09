@@ -12,7 +12,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class Packet_C_EssentiaStorageBus
 	extends ThEClientPacket
 {
-	private static final byte MODE_SET_VOID = 0;
+	/**
+	 * Packet modes.
+	 */
+	private static final byte MODE_SET_VOID = 1;
 
 	private boolean isVoidAllowed;
 

@@ -2,9 +2,8 @@ package thaumicenergistics.common.parts;
 
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
+import javax.annotation.Nullable;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,8 +21,6 @@ import thaumicenergistics.client.gui.GuiEssentiaLevelEmitter;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.container.ContainerPartEssentiaLevelEmitter;
 import thaumicenergistics.common.network.IAspectSlotPart;
-import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
-import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaEmitter;
 import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.utils.EffectiveSide;
@@ -60,7 +57,7 @@ public class PartEssentiaLevelEmitter
 	/**
 	 * Aspect we are watching.
 	 */
-	private Aspect trackedEssentia;
+	private Aspect trackedAspect;
 
 	/**
 	 * Mode the emitter is in
@@ -70,12 +67,12 @@ public class PartEssentiaLevelEmitter
 	/**
 	 * Threshold value
 	 */
-	private long wantedAmount = 0;
+	private long thresholdLevel = 0;
 
 	/**
 	 * Current value
 	 */
-	private long currentAmount;
+	private long currentLevel;
 
 	/**
 	 * True if the emitter is emitting a redstone signal.
@@ -92,7 +89,7 @@ public class PartEssentiaLevelEmitter
 	 */
 	public PartEssentiaLevelEmitter()
 	{
-		super( AEPartsEnum.EssentiaLevelEmitter );
+		super( AEPartsEnum.EssentiaLevelEmitter, SecurityPermissions.BUILD );
 	}
 
 	/**
@@ -113,11 +110,11 @@ public class PartEssentiaLevelEmitter
 			this.essentiaWatcher.clear();
 
 			// Is there an essentia being tracked?
-			if( this.trackedEssentia != null )
+			if( this.trackedAspect != null )
 			{
 				//this.debugTrackingStage = 2;
 				// Configure the watcher
-				this.essentiaWatcher.add( this.trackedEssentia );
+				this.essentiaWatcher.add( this.trackedAspect );
 
 				// Get the essentia monitor
 				IMEEssentiaMonitor essMon = this.getGridBlock().getEssentiaMonitor();
@@ -126,7 +123,7 @@ public class PartEssentiaLevelEmitter
 				if( essMon != null )
 				{
 					// Update the amount.
-					this.setCurrentAmount( essMon.getEssentiaAmount( this.trackedEssentia ) );
+					this.setCurrentLevel( essMon.getEssentiaAmount( this.trackedAspect ) );
 					didSet = true;
 					//this.debugTrackingStage = 3;
 					//this.debugMonID = essMon.hashCode();
@@ -139,7 +136,7 @@ public class PartEssentiaLevelEmitter
 		if( !didSet )
 		{
 			// Reset
-			this.setCurrentAmount( 0 );
+			this.setCurrentLevel( 0 );
 		}
 	}
 
@@ -149,13 +146,13 @@ public class PartEssentiaLevelEmitter
 	 * 
 	 * @param amount
 	 */
-	private void setCurrentAmount( final long amount )
+	private void setCurrentLevel( final long amount )
 	{
 		// Has the amount changed?
-		if( amount != this.currentAmount )
+		if( amount != this.currentLevel )
 		{
 			// Set the current amount
-			this.currentAmount = amount;
+			this.currentLevel = amount;
 
 			// Check if we should be emitting
 			this.updateEmittingState();
@@ -182,12 +179,12 @@ public class PartEssentiaLevelEmitter
 		{
 		case HIGH_SIGNAL:
 			// Is the current amount more than or equal to the wanted amount?
-			emitting = ( this.currentAmount >= this.wantedAmount );
+			emitting = ( this.currentLevel >= this.thresholdLevel );
 			break;
 
 		case LOW_SIGNAL:
 			// Is the current amount less than the wanted amount?
-			emitting = ( this.currentAmount < this.wantedAmount );
+			emitting = ( this.currentLevel < this.thresholdLevel );
 			break;
 
 		case IGNORE:
@@ -223,16 +220,6 @@ public class PartEssentiaLevelEmitter
 	public int cableConnectionRenderTo()
 	{
 		return 8;
-	}
-
-	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
-	{
-		// Does the player have build permissions
-		return this.doesPlayerHavePermission( player, SecurityPermissions.BUILD );
 	}
 
 	@Override
@@ -272,12 +259,43 @@ public class PartEssentiaLevelEmitter
 	}
 
 	/**
+	 * Returns the redstone mode.
+	 * 
+	 * @return
+	 */
+	public RedstoneMode getRedstoneMode()
+	{
+		return this.redstoneMode;
+	}
+
+	/**
 	 * Gets the emitter container
 	 */
 	@Override
 	public Object getServerGuiElement( final EntityPlayer player )
 	{
 		return new ContainerPartEssentiaLevelEmitter( this, player );
+	}
+
+	/**
+	 * Returns the threshold level.
+	 * 
+	 * @return
+	 */
+	public long getThresholdLevel()
+	{
+		return this.thresholdLevel;
+	}
+
+	/**
+	 * Returns the aspect being tracked.
+	 * 
+	 * @return
+	 */
+	@Nullable
+	public Aspect getTrackedAspect()
+	{
+		return this.trackedAspect;
 	}
 
 	/**
@@ -305,40 +323,9 @@ public class PartEssentiaLevelEmitter
 	 * @param adjustmentAmount
 	 * @param player
 	 */
-	public void onClientAdjustWantedAmount( final int adjustmentAmount, final EntityPlayer player )
+	public void onAdjustThresholdLevel( final int adjustmentAmount, final EntityPlayer player )
 	{
-		this.onClientSetWantedAmount( this.wantedAmount + adjustmentAmount, player );
-	}
-
-	/**
-	 * Called when a player has changed the wanted amount
-	 * 
-	 * @param wantedAmount
-	 * @param player
-	 */
-	public void onClientSetWantedAmount( final long wantedAmount, final EntityPlayer player )
-	{
-		// Set the wanted amount
-		this.wantedAmount = wantedAmount;
-
-		// Bounds check it
-		if( this.wantedAmount < 0L )
-		{
-			this.wantedAmount = 0L;
-		}
-		else if( this.wantedAmount > 9999999999L )
-		{
-			this.wantedAmount = 9999999999L;
-		}
-
-		// Mark that we need saving
-		this.markForSave();
-
-		// Send validated amount back to the client
-		Packet_C_EssentiaEmitter.setWantedAmount( this.wantedAmount, player );
-
-		// Check if we should be emitting
-		this.updateEmittingState();
+		this.onSetThresholdLevel( this.thresholdLevel + adjustmentAmount, player );
 	}
 
 	/**
@@ -366,25 +353,6 @@ public class PartEssentiaLevelEmitter
 		// Check if we should be emitting
 		this.updateEmittingState();
 
-		// Send the new mode to the client
-		Packet_C_EssentiaEmitter.sendRedstoneMode( this.redstoneMode, player );
-
-	}
-
-	/**
-	 * Called when the a client has requested a full update.
-	 * 
-	 * @param player
-	 */
-	public void onClientUpdateRequest( final EntityPlayer player )
-	{
-		// Send the full update to the client
-		Packet_C_EssentiaEmitter.sendEmitterState( this.redstoneMode, this.wantedAmount, player );
-
-		// Send the filter to the client
-		List<Aspect> filter = new ArrayList<Aspect>();
-		filter.add( this.trackedEssentia );
-		Packet_C_AspectSlot.setFilterList( filter, player );
 	}
 
 	/**
@@ -393,7 +361,35 @@ public class PartEssentiaLevelEmitter
 	@Override
 	public void onEssentiaChange( final Aspect aspect, final long storedAmount, final long changeAmount )
 	{
-		this.setCurrentAmount( storedAmount );
+		this.setCurrentLevel( storedAmount );
+	}
+
+	/**
+	 * Called when a player has changed the wanted amount
+	 * 
+	 * @param threshold
+	 * @param player
+	 */
+	public void onSetThresholdLevel( final long threshold, final EntityPlayer player )
+	{
+		// Set the wanted amount
+		this.thresholdLevel = threshold;
+
+		// Bounds check it
+		if( this.thresholdLevel < 0L )
+		{
+			this.thresholdLevel = 0L;
+		}
+		else if( this.thresholdLevel > 9999999999L )
+		{
+			this.thresholdLevel = 9999999999L;
+		}
+
+		// Mark that we need saving
+		this.markForSave();
+
+		// Check if we should be emitting
+		this.updateEmittingState();
 	}
 
 	/**
@@ -429,7 +425,7 @@ public class PartEssentiaLevelEmitter
 		// Read the filter
 		if( data.hasKey( PartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) )
 		{
-			this.trackedEssentia = Aspect.aspects.get( data.getString( PartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) );
+			this.trackedAspect = Aspect.aspects.get( data.getString( PartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER ) );
 		}
 
 		// Read the redstone mode
@@ -441,7 +437,7 @@ public class PartEssentiaLevelEmitter
 		// Read the wanted amount
 		if( data.hasKey( PartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT ) )
 		{
-			this.wantedAmount = data.getLong( PartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT );
+			this.thresholdLevel = data.getLong( PartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT );
 		}
 
 		// Read if emitting
@@ -536,10 +532,10 @@ public class PartEssentiaLevelEmitter
 	@Override
 	public void setAspect( final int index, final Aspect aspect, final EntityPlayer player )
 	{
-		if( this.trackedEssentia != aspect )
+		if( this.trackedAspect != aspect )
 		{
 			// Set the filtered aspect
-			this.trackedEssentia = aspect;
+			this.trackedAspect = aspect;
 
 			// Are we client side?
 			if( EffectiveSide.isClientSide() )
@@ -552,11 +548,6 @@ public class PartEssentiaLevelEmitter
 
 			// Update the watcher
 			this.configureWatcher();
-
-			// Send the aspect to the client
-			List<Aspect> filter = new ArrayList<Aspect>();
-			filter.add( aspect );
-			Packet_C_AspectSlot.setFilterList( filter, player );
 		}
 	}
 
@@ -603,30 +594,41 @@ public class PartEssentiaLevelEmitter
 		// Call super
 		super.writeToNBT( data, saveType );
 
-		// Do we have a filter?
-		if( this.trackedEssentia != null )
+		// Only write NBT data if saving, or wrenched.
+		if( ( saveType != PartItemStack.World ) && ( saveType != PartItemStack.Wrench ) )
+		{
+			return;
+		}
+
+		// Is there a filter?
+		if( this.trackedAspect != null )
 		{
 			// Write the name of the aspect
-			data.setString( PartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER, this.trackedEssentia.getTag() );
+			data.setString( PartEssentiaLevelEmitter.NBT_KEY_ASPECT_FILTER, this.trackedAspect.getTag() );
 		}
 
-		// Write the redstone mode ordinal
-		if( this.redstoneMode != PartEssentiaLevelEmitter.DEFAULT_REDSTONE_MODE )
+		// Only save the rest on world save, or if there is a tracked aspect
+		if( ( saveType == PartItemStack.World ) || this.trackedAspect != null )
 		{
-			data.setInteger( PartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
-		}
+			// Write the redstone mode ordinal
+			if( this.redstoneMode != PartEssentiaLevelEmitter.DEFAULT_REDSTONE_MODE )
+			{
+				data.setInteger( PartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
+			}
 
-		// Write the threshold amount
-		if( this.wantedAmount > 0 )
-		{
-			data.setLong( PartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT, this.wantedAmount );
+			// Write the threshold amount
+			if( this.thresholdLevel > 0 )
+			{
+				data.setLong( PartEssentiaLevelEmitter.NBT_KEY_WANTED_AMOUNT, this.thresholdLevel );
+			}
 		}
 
 		// Write if emitting
-		if( ( saveType != PartItemStack.Wrench ) && this.isEmitting )
+		if( ( saveType == PartItemStack.World ) && this.isEmitting )
 		{
 			data.setBoolean( PartEssentiaLevelEmitter.NBT_KEY_IS_EMITTING, true );
 		}
+
 	}
 
 	/**

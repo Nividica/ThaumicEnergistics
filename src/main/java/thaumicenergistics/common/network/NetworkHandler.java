@@ -20,17 +20,17 @@ public class NetworkHandler
 	/**
 	 * Next packet ID.
 	 */
-	private static int nextID = 0;
+	private static short nextID = 0;
 
 	/**
 	 * Maps a class to a unique id.
 	 */
-	private static HashMap<Class, Integer> ClassToID = new HashMap<Class, Integer>();
+	private static HashMap<Class, Short> ClassToID = new HashMap<Class, Short>();
 
 	/**
 	 * Maps a unique id to a class.
 	 */
-	private static HashMap<Integer, Class> IDToClass = new HashMap<Integer, Class>();
+	private static HashMap<Short, Class> IDToClass = new HashMap<Short, Class>();
 
 	/**
 	 * Registers a packet.
@@ -50,7 +50,7 @@ public class NetworkHandler
 	 * @param id
 	 * @return
 	 */
-	public static Class getPacketClassFromID( final Integer id )
+	public static Class getPacketClassFromID( final Short id )
 	{
 		return NetworkHandler.IDToClass.getOrDefault( id, null );
 	}
@@ -61,9 +61,9 @@ public class NetworkHandler
 	 * @param packet
 	 * @return
 	 */
-	public static int getPacketID( final ThEBasePacket packet )
+	public static short getPacketID( final ThEBasePacket packet )
 	{
-		return NetworkHandler.ClassToID.getOrDefault( packet.getClass(), -1 );
+		return NetworkHandler.ClassToID.getOrDefault( packet.getClass(), (short) -1 );
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class NetworkHandler
 		registerPacket( Packet_C_Sync.class );
 	}
 
-	public static void sendAreaPacketToClients( final ThEAreaPacket areaPacket, final int range )
+	public static void sendAreaPacketToClients( final ThEAreaPacket areaPacket, final float range )
 	{
 		// Create the wrapper packet
 		WrapperPacket wrapper = new WrapperPacket_C( areaPacket );

@@ -4,12 +4,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.FakePlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaVibrationChamber;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
 import thaumicenergistics.common.utils.EffectiveSide;
+import thaumicenergistics.common.utils.ThEUtils;
 
 public class ContainerEssentiaVibrationChamber
 	extends Container
@@ -68,7 +68,11 @@ public class ContainerEssentiaVibrationChamber
 	@Override
 	public boolean canInteractWith( final EntityPlayer player )
 	{
-		return !( player instanceof FakePlayer );
+		if( this.chamber != null )
+		{
+			return ThEUtils.canPlayerInteractWith( player, this.chamber );
+		}
+		return false;
 	}
 
 	/**

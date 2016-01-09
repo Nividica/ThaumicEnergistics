@@ -9,7 +9,9 @@ import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 public class Packet_S_EssentiaStorageBus
 	extends ThEServerPacket
 {
-	private static final byte MODE_REQUEST_FULL_UPDATE = 0;
+	/**
+	 * Packet modes
+	 */
 	private static final byte MODE_REQUEST_SET_VOID = 1;
 
 	private PartEssentiaStorageBus part;
@@ -35,14 +37,6 @@ public class Packet_S_EssentiaStorageBus
 		return packet;
 	}
 
-	public static void sendFullUpdateRequest( final EntityPlayer player, final PartEssentiaStorageBus part )
-	{
-		Packet_S_EssentiaStorageBus packet = newPacket( player, MODE_REQUEST_FULL_UPDATE, part );
-
-		// Send it
-		NetworkHandler.sendPacketToServer( packet );
-	}
-
 	public static void setVoidAllowed( final EntityPlayer player, final PartEssentiaStorageBus part,
 										final boolean isVoidAllowed )
 	{
@@ -60,11 +54,6 @@ public class Packet_S_EssentiaStorageBus
 	{
 		switch ( this.mode )
 		{
-		case Packet_S_EssentiaStorageBus.MODE_REQUEST_FULL_UPDATE:
-			// Request a full update
-			this.part.onClientRequestFullUpdate( this.player );
-			break;
-
 		case Packet_S_EssentiaStorageBus.MODE_REQUEST_SET_VOID:
 			// Request set void
 			this.part.onClientRequestSetVoidMode( this.player, this.isVoidAllowed );
@@ -77,11 +66,6 @@ public class Packet_S_EssentiaStorageBus
 	{
 		switch ( this.mode )
 		{
-		case Packet_S_EssentiaStorageBus.MODE_REQUEST_FULL_UPDATE:
-			// Read the part
-			this.part = ( (PartEssentiaStorageBus)ThEBasePacket.readPart( stream ) );
-			break;
-
 		case Packet_S_EssentiaStorageBus.MODE_REQUEST_SET_VOID:
 			// Read the part
 			this.part = ( (PartEssentiaStorageBus)ThEBasePacket.readPart( stream ) );
@@ -96,11 +80,6 @@ public class Packet_S_EssentiaStorageBus
 	{
 		switch ( this.mode )
 		{
-		case Packet_S_EssentiaStorageBus.MODE_REQUEST_FULL_UPDATE:
-			// Write the part
-			ThEBasePacket.writePart( this.part, stream );
-			break;
-
 		case Packet_S_EssentiaStorageBus.MODE_REQUEST_SET_VOID:
 			// Write the part
 			ThEBasePacket.writePart( this.part, stream );

@@ -1,11 +1,13 @@
 package thaumicenergistics.common.container;
 
+import java.util.ArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
+import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -65,23 +67,27 @@ public class ContainerEssentiaCellWorkbench
 		// Register with the workbench
 		if( EffectiveSide.isServerSide() )
 		{
-			this.workbench.registerContainer( this );
+			this.workbench.registerListener( this );
 		}
 	}
 
 	@Override
 	public boolean canInteractWith( final EntityPlayer player )
 	{
-		return true;
+		if( this.workbench != null )
+		{
+			return this.workbench.isUseableByPlayer( player );
+		}
+
+		return false;
 	}
 
 	/**
-	 * Called when the cell in the workbench changes.
+	 * Called when a client has requested the full list.
 	 */
-	public void onCellChanged()
+	public void onClientRequestPartitionList()
 	{
-		// Update the client.
-		this.workbench.onClientRequestPartitionList( this.player );
+		this.onPartitionChanged( this.workbench.getPartitionList() );
 	}
 
 	@Override
@@ -92,7 +98,7 @@ public class ContainerEssentiaCellWorkbench
 
 		if( EffectiveSide.isServerSide() )
 		{
-			this.workbench.removeContainer( this );
+			this.workbench.removeListener( this );
 		}
 	}
 
@@ -103,6 +109,15 @@ public class ContainerEssentiaCellWorkbench
 	{
 		this.getSlot( this.cellSlotIndex ).onSlotChanged();
 		this.detectAndSendChanges();
+	}
+
+	/**
+	 * Called when the partition list changes.
+	 */
+	public void onPartitionChanged( final ArrayList<Aspect> partitionList )
+	{
+		// Send to client
+		Packet_C_AspectSlot.setFilterList( partitionList, this.player );
 	}
 
 	@Override
@@ -163,7 +178,7 @@ public class ContainerEssentiaCellWorkbench
 					if( slotAspect != null )
 					{
 						// Attempt to add the aspect to the cell partition list
-						didMerge = this.workbench.onClientRequestAddAspectToPartitionList( player, slotAspect );
+						didMerge = this.workbench.addAspectToPartition( slotAspect );
 					}
 
 					// Did we merge?

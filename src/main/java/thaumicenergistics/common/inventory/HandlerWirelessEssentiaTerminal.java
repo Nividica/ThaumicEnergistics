@@ -196,12 +196,12 @@ public class HandlerWirelessEssentiaTerminal
 	/**
 	 * Cached value of the range of the access point, squared.
 	 */
-	private double rangeOfAccessPoint;
+	private double apTransmitRange;
 
 	/**
 	 * Where in the world is the access point.
 	 */
-	private DimensionalCoord locationOfAccessPoint;
+	private DimensionalCoord apLocation;
 
 	/**
 	 * Player who is using the wireless terminal.
@@ -308,8 +308,8 @@ public class HandlerWirelessEssentiaTerminal
 	{
 		if( this.accessPoint != null )
 		{
-			return( ( this.accessPoint.isActive() ) && ( HandlerWirelessEssentiaTerminal.isAPInRangeOfPlayer( this.locationOfAccessPoint,
-				this.rangeOfAccessPoint, this.player ) ) );
+			return( ( this.accessPoint.isActive() ) && ( HandlerWirelessEssentiaTerminal.isAPInRangeOfPlayer( this.apLocation,
+				this.apTransmitRange, this.player ) ) );
 		}
 		return false;
 	}
@@ -330,10 +330,10 @@ public class HandlerWirelessEssentiaTerminal
 		}
 
 		// Get the range of the access point
-		this.rangeOfAccessPoint = this.accessPoint.getRange();
+		this.apTransmitRange = this.accessPoint.getRange();
 
 		// Get the location of the access point
-		this.locationOfAccessPoint = this.accessPoint.getLocation();
+		this.apLocation = this.accessPoint.getLocation();
 
 		// Create the action source
 		if( this.player != null )
@@ -673,7 +673,7 @@ public class HandlerWirelessEssentiaTerminal
 	public void updatePowerMultiplier()
 	{
 		// Get the squared distance
-		double distance = HandlerWirelessEssentiaTerminal.getSquaredPlayerDistanceFromAP( this.locationOfAccessPoint, this.player );
+		double distance = HandlerWirelessEssentiaTerminal.getSquaredPlayerDistanceFromAP( this.apLocation, this.player );
 
 		// Calculate the distance
 		distance = Math.sqrt( distance );

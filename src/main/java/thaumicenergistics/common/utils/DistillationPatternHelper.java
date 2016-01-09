@@ -174,8 +174,13 @@ public class DistillationPatternHelper
 	 */
 	public void setOutputItem( final ItemStack outputItem )
 	{
-		// Crafting aspect?
+		// Not valid crafting aspect?
 		if( ( outputItem != null ) && !( outputItem.getItem() instanceof ItemCraftingAspect ) )
+		{
+			this.output = null;
+		}
+		// Aspect null?
+		else if( ItemCraftingAspect.getAspect( outputItem ) == null )
 		{
 			this.output = null;
 		}

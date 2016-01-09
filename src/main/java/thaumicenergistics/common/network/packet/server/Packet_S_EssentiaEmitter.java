@@ -9,18 +9,12 @@ import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
 public class Packet_S_EssentiaEmitter
 	extends ThEServerPacket
 {
-	private static final byte MODE_REQUEST_UPDATE = 0;
-
-	private static final byte MODE_SEND_WANTED = 1;
-
-	private static final byte MODE_ADJUST_WANTED = 2;
-
-	private static final byte MODE_TOGGLE_REDSTONE = 3;
+	private static final byte MODE_SEND_WANTED = 1,
+					MODE_ADJUST_WANTED = 2,
+					MODE_TOGGLE_REDSTONE = 3;
 
 	private PartEssentiaLevelEmitter part;
-
 	private long wantedAmount;
-
 	private int adjustmentAmount;
 
 	/**
@@ -45,25 +39,6 @@ public class Packet_S_EssentiaEmitter
 	public static void sendRedstoneModeToggle( final PartEssentiaLevelEmitter part, final EntityPlayer player )
 	{
 		Packet_S_EssentiaEmitter packet = newPacket( player, MODE_TOGGLE_REDSTONE );
-
-		// Set the part
-		packet.part = part;
-
-		// Send it
-		NetworkHandler.sendPacketToServer( packet );
-	}
-
-	/**
-	 * Creates a packet to let the server know a client would like a full
-	 * update.
-	 * 
-	 * @param part
-	 * @param player
-	 * @return
-	 */
-	public static void sendUpdateRequest( final PartEssentiaLevelEmitter part, final EntityPlayer player )
-	{
-		Packet_S_EssentiaEmitter packet = newPacket( player, MODE_REQUEST_UPDATE );
 
 		// Set the part
 		packet.part = part;
@@ -121,24 +96,25 @@ public class Packet_S_EssentiaEmitter
 	@Override
 	public void execute()
 	{
+		// Null check
+		if( this.part == null )
+		{
+			return;
+		}
+
 		switch ( this.mode )
 		{
-		case Packet_S_EssentiaEmitter.MODE_REQUEST_UPDATE:
-			// Request the full update
-			this.part.onClientUpdateRequest( this.player );
-			break;
-
-		case Packet_S_EssentiaEmitter.MODE_SEND_WANTED:
+		case MODE_SEND_WANTED:
 			// Set the wanted amount
-			this.part.onClientSetWantedAmount( this.wantedAmount, this.player );
+			this.part.onSetThresholdLevel( this.wantedAmount, this.player );
 			break;
 
-		case Packet_S_EssentiaEmitter.MODE_ADJUST_WANTED:
+		case MODE_ADJUST_WANTED:
 			// Set the adjustment amount
-			this.part.onClientAdjustWantedAmount( this.adjustmentAmount, this.player );
+			this.part.onAdjustThresholdLevel( this.adjustmentAmount, this.player );
 			break;
 
-		case Packet_S_EssentiaEmitter.MODE_TOGGLE_REDSTONE:
+		case MODE_TOGGLE_REDSTONE:
 			// Toggle the redstone mode
 			this.part.onClientToggleRedstoneMode( this.player );
 			break;
@@ -150,12 +126,12 @@ public class Packet_S_EssentiaEmitter
 	{
 		switch ( this.mode )
 		{
-		case Packet_S_EssentiaEmitter.MODE_REQUEST_UPDATE:
+		case MODE_TOGGLE_REDSTONE:
 			// Read the part
 			this.part = (PartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
 			break;
 
-		case Packet_S_EssentiaEmitter.MODE_SEND_WANTED:
+		case MODE_SEND_WANTED:
 			// Read the part
 			this.part = (PartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
 
@@ -163,17 +139,12 @@ public class Packet_S_EssentiaEmitter
 			this.wantedAmount = stream.readLong();
 			break;
 
-		case Packet_S_EssentiaEmitter.MODE_ADJUST_WANTED:
+		case MODE_ADJUST_WANTED:
 			// Read the part
 			this.part = (PartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
 
 			// Read the adjustment amount
 			this.adjustmentAmount = stream.readInt();
-			break;
-
-		case Packet_S_EssentiaEmitter.MODE_TOGGLE_REDSTONE:
-			// Read the part
-			this.part = (PartEssentiaLevelEmitter)ThEBasePacket.readPart( stream );
 			break;
 		}
 	}
@@ -183,12 +154,12 @@ public class Packet_S_EssentiaEmitter
 	{
 		switch ( this.mode )
 		{
-		case Packet_S_EssentiaEmitter.MODE_REQUEST_UPDATE:
+		case MODE_TOGGLE_REDSTONE:
 			// Write the part
 			ThEBasePacket.writePart( this.part, stream );
 			break;
 
-		case Packet_S_EssentiaEmitter.MODE_SEND_WANTED:
+		case MODE_SEND_WANTED:
 			// Write the part
 			ThEBasePacket.writePart( this.part, stream );
 
@@ -196,17 +167,12 @@ public class Packet_S_EssentiaEmitter
 			stream.writeLong( this.wantedAmount );
 			break;
 
-		case Packet_S_EssentiaEmitter.MODE_ADJUST_WANTED:
+		case MODE_ADJUST_WANTED:
 			// Write the part
 			ThEBasePacket.writePart( this.part, stream );
 
 			// Write the adjustment amount
 			stream.writeInt( this.adjustmentAmount );
-			break;
-
-		case Packet_S_EssentiaEmitter.MODE_TOGGLE_REDSTONE:
-			// Write the part
-			ThEBasePacket.writePart( this.part, stream );
 			break;
 		}
 	}

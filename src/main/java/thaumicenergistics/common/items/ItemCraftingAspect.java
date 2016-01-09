@@ -196,23 +196,21 @@ public class ItemCraftingAspect
 		Aspect aspect = ItemCraftingAspect.getAspect( stack );
 
 		// Null check
-		if( ( stack == null ) || ( aspect == null ) )
+		if( aspect != null )
 		{
-			return "";
-		}
+			// Get the player
+			EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
-		// Get the player
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-
-		// Has the player discovered the aspect?
-		if( ( player != null ) && ItemCraftingAspect.canPlayerSeeAspect( player, aspect ) )
-		{
-			// Show name
-			return aspect.getName();
+			// Has the player discovered the aspect?
+			if( ItemCraftingAspect.canPlayerSeeAspect( player, aspect ) )
+			{
+				// Show name
+				return aspect.getName();
+			}
 		}
 
 		// Show unknown
-		return StatCollector.translateToLocal( "tc.aspect.unknown" );
+		return "tc.aspect.unknown";
 
 	}
 

@@ -3,6 +3,7 @@ package thaumicenergistics.common.network.packet.server;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.common.container.ContainerEssentiaCellWorkbench;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
@@ -170,35 +171,44 @@ public class Packet_S_EssentiaCellWorkbench
 	@Override
 	public void execute()
 	{
+		// Sanity check
+		if( this.workbench == null )
+		{
+			return;
+		}
+
 		switch ( this.mode )
 		{
 		case Packet_S_EssentiaCellWorkbench.MODE_REQUEST_ADD_ASPECT:
 			// Request the aspect be added
-			this.workbench.onClientRequestAddAspectToPartitionList( this.player, this.arAspect );
+			this.workbench.addAspectToPartition( this.arAspect );
 			break;
 
 		case Packet_S_EssentiaCellWorkbench.MODE_REQUEST_REMOVE_ASPECT:
 			// Request the aspect be removed
-			this.workbench.onClientRequestRemoveAspectFromPartitionList( this.player, this.arAspect );
+			this.workbench.removeAspectFromPartition( this.arAspect );
 			break;
 
 		case Packet_S_EssentiaCellWorkbench.MODE_REQUEST_REPLACE_ASPECT:
 			// Request the aspect be replaced
-			this.workbench.onClientRequestReplaceAspectFromPartitionList( this.player, this.arAspect, this.replaceAspect );
+			this.workbench.swapPartitionedAspect( this.arAspect, this.replaceAspect );
 			break;
 
 		case Packet_S_EssentiaCellWorkbench.MODE_REQUEST_FULL_LIST:
 			// Request the full list
-			this.workbench.onClientRequestPartitionList( this.player );
+			if( this.player.openContainer instanceof ContainerEssentiaCellWorkbench )
+			{
+				( (ContainerEssentiaCellWorkbench)this.player.openContainer ).onClientRequestPartitionList();
+			}
 			break;
 
 		case Packet_S_EssentiaCellWorkbench.MODE_REQUEST_CLEAR:
 			// Request the clear
-			this.workbench.onClientRequestClearPartitioning( this.player );
+			this.workbench.clearAllPartitioning();
 			break;
 
 		case Packet_S_EssentiaCellWorkbench.MODE_REQUEST_PARITION_CONTENTS:
-			this.workbench.onClientRequestPartitionToContents( this.player );
+			this.workbench.partitionToCellContents();
 			break;
 		}
 	}

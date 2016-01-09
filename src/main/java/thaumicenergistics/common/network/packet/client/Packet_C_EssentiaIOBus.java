@@ -14,7 +14,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class Packet_C_EssentiaIOBus
 	extends ThEClientPacket
 {
-	private static final byte MODE_SET_REDSTONE_CONTROLLED = 0, MODE_SET_REDSTONE_MODE = 1, MODE_SET_FILTER_SIZE = 2, MODE_SEND_FULL_UPDATE = 3,
+	/**
+	 * Packet modes.
+	 */
+	private static final byte MODE_SET_REDSTONE_CONTROLLED = 0,
+					MODE_SET_REDSTONE_MODE = 1,
+					MODE_SET_FILTER_SIZE = 2,
+					MODE_SEND_FULL_UPDATE = 3,
 					MODE_SEND_VOID_MODE = 4;
 
 	private RedstoneMode redstoneMode;

@@ -2,7 +2,6 @@ package thaumicenergistics.common.parts;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
@@ -24,7 +23,7 @@ public class PartEssentiaImportBus
 
 	public PartEssentiaImportBus()
 	{
-		super( AEPartsEnum.EssentiaImportBus );
+		super( AEPartsEnum.EssentiaImportBus, SecurityPermissions.INJECT );
 	}
 
 	@Override
@@ -62,16 +61,6 @@ public class PartEssentiaImportBus
 	public int cableConnectionRenderTo()
 	{
 		return 5;
-	}
-
-	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
-	{
-		// Does the player have import permissions
-		return this.doesPlayerHavePermission( player, SecurityPermissions.INJECT );
 	}
 
 	@Override

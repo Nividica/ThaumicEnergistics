@@ -133,7 +133,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * The arcane crafting terminal associated with the container.
 	 */
-	private PartArcaneCraftingTerminal arcaneCraftingTerminalPart;
+	private PartArcaneCraftingTerminal terminal;
 
 	/**
 	 * The player associated with this container.
@@ -195,7 +195,7 @@ public class ContainerPartArcaneCraftingTerminal
 	public ContainerPartArcaneCraftingTerminal( final PartArcaneCraftingTerminal terminal, final EntityPlayer player )
 	{
 		// Set the part
-		this.arcaneCraftingTerminalPart = terminal;
+		this.terminal = terminal;
 
 		// Set the player
 		this.player = player;
@@ -522,7 +522,7 @@ public class ContainerPartArcaneCraftingTerminal
 		ItemStack arcaneResult = null;
 
 		// Is there a matching recipe?
-		IArcaneRecipe matchingRecipe = ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult( this.arcaneCraftingTerminalPart, 0,
+		IArcaneRecipe matchingRecipe = ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult( this.terminal, 0,
 			ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, this.player );
 
 		if( matchingRecipe != null )
@@ -550,11 +550,11 @@ public class ContainerPartArcaneCraftingTerminal
 		for( int slotIndex = 0; slotIndex < ( ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE ); slotIndex++ )
 		{
 			// Set the slot
-			craftingInventory.setInventorySlotContents( slotIndex, this.arcaneCraftingTerminalPart.getStackInSlot( slotIndex ) );
+			craftingInventory.setInventorySlotContents( slotIndex, this.terminal.getStackInSlot( slotIndex ) );
 		}
 
 		// Return the result
-		return CRAFT_MANAGER.findMatchingRecipe( craftingInventory, this.arcaneCraftingTerminalPart.getWorldObj() );
+		return CRAFT_MANAGER.findMatchingRecipe( craftingInventory, this.terminal.getWorldObj() );
 	}
 
 	/**
@@ -664,7 +664,7 @@ public class ContainerPartArcaneCraftingTerminal
 	private boolean mergeWithViewCells( final ItemStack itemStack )
 	{
 		// Ensure the item a view cell
-		if( !this.arcaneCraftingTerminalPart.isItemValidForSlot( PartArcaneCraftingTerminal.VIEW_SLOT_MIN, itemStack ) )
+		if( !this.terminal.isItemValidForSlot( PartArcaneCraftingTerminal.VIEW_SLOT_MIN, itemStack ) )
 		{
 			return false;
 		}
@@ -732,7 +732,7 @@ public class ContainerPartArcaneCraftingTerminal
 		ItemWandCasting wandItem = null;
 
 		// Get the cost
-		this.requiredAspects = ArcaneRecipeHelper.INSTANCE.getRecipeAspectCost( this.arcaneCraftingTerminalPart, 0,
+		this.requiredAspects = ArcaneRecipeHelper.INSTANCE.getRecipeAspectCost( this.terminal, 0,
 			ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, forRecipe );
 
 		// Ensure there is a cost
@@ -790,7 +790,7 @@ public class ContainerPartArcaneCraftingTerminal
 		if( hasAll )
 		{
 			// Get the result of the recipe.
-			return ArcaneRecipeHelper.INSTANCE.getRecipeOutput( this.arcaneCraftingTerminalPart, 0,
+			return ArcaneRecipeHelper.INSTANCE.getRecipeOutput( this.terminal, 0,
 				ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, forRecipe );
 		}
 
@@ -809,13 +809,14 @@ public class ContainerPartArcaneCraftingTerminal
 		return ( slotNumber >= this.firstCraftingSlotNumber ) && ( slotNumber <= this.lastCraftingSlotNumber );
 	}
 
-	/**
-	 * Who can interact with this?
-	 */
 	@Override
 	public boolean canInteractWith( final EntityPlayer player )
 	{
-		return true;
+		if( this.terminal != null )
+		{
+			return this.terminal.isUseableByPlayer( player );
+		}
+		return false;
 	}
 
 	/**
@@ -869,7 +870,7 @@ public class ContainerPartArcaneCraftingTerminal
 	@Override
 	public ICraftingIssuerHost getCraftingHost()
 	{
-		return this.arcaneCraftingTerminalPart;
+		return this.terminal;
 	}
 
 	/**
@@ -927,7 +928,7 @@ public class ContainerPartArcaneCraftingTerminal
 	public void onClientRequestAutoCraft( final EntityPlayer player, final IAEItemStack result )
 	{
 		// Get the host tile
-		TileEntity te = this.arcaneCraftingTerminalPart.getHostTile();
+		TileEntity te = this.terminal.getHostTile();
 
 		// Launch the GUI
 		ThEGuiHandler.launchGui( ThEGuiHandler.AUTO_CRAFTING_AMOUNT, player, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
@@ -944,7 +945,7 @@ public class ContainerPartArcaneCraftingTerminal
 			cca.getOpenContext().setX( te.xCoord );
 			cca.getOpenContext().setY( te.yCoord );
 			cca.getOpenContext().setZ( te.zCoord );
-			cca.getOpenContext().setSide( this.arcaneCraftingTerminalPart.getSide() );
+			cca.getOpenContext().setSide( this.terminal.getSide() );
 
 			// Set the item
 			cca.getCraftingItem().putStack( result.getItemStack() );
@@ -1252,11 +1253,11 @@ public class ContainerPartArcaneCraftingTerminal
 	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
 		// Send the sorting info
-		Packet_C_ArcaneCraftingTerminal.sendModeChange( player, this.arcaneCraftingTerminalPart.getSortingOrder(),
-			this.arcaneCraftingTerminalPart.getSortingDirection(), this.arcaneCraftingTerminalPart.getViewMode() );
+		Packet_C_ArcaneCraftingTerminal.sendModeChange( player, this.terminal.getSortingOrder(),
+			this.terminal.getSortingDirection(), this.terminal.getViewMode() );
 
-		// Ensure we have a monitor
-		if( this.monitor != null )
+		// Ensure we have a monitor & the terminal is active
+		if( ( this.monitor != null ) && ( this.terminal.isActive() ) )
 		{
 			// Get the full list
 			IItemList<IAEItemStack> fullList = this.monitor.getStorageList();
@@ -1275,7 +1276,7 @@ public class ContainerPartArcaneCraftingTerminal
 	public void onClientRequestSetSort( final SortOrder order, final SortDir dir, final ViewItems viewMode )
 	{
 		// Inform the terminal
-		this.arcaneCraftingTerminalPart.setSorts( order, dir, viewMode );
+		this.terminal.setSorts( order, dir, viewMode );
 	}
 
 	/**
@@ -1286,7 +1287,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	public void onClientRequestSwapArmor( final EntityPlayer player )
 	{
-		this.arcaneCraftingTerminalPart.swapStoredArmor( player );
+		this.terminal.swapStoredArmor( player );
 		this.detectAndSendChanges();
 		Packet_C_ArcaneCraftingTerminal.updateAspectCost( player );
 	}
@@ -1300,9 +1301,9 @@ public class ContainerPartArcaneCraftingTerminal
 		// Pass to super
 		super.onContainerClosed( player );
 
-		if( this.arcaneCraftingTerminalPart != null )
+		if( this.terminal != null )
 		{
-			this.arcaneCraftingTerminalPart.removeListener( this );
+			this.terminal.removeListener( this );
 		}
 
 		// Is this server side?
@@ -1346,7 +1347,7 @@ public class ContainerPartArcaneCraftingTerminal
 		resultSlot.setWand( this.wand );
 
 		// Set the result
-		this.arcaneCraftingTerminalPart.setInventorySlotContentsWithoutNotify( PartArcaneCraftingTerminal.RESULT_SLOT_INDEX, craftResult );
+		this.terminal.setInventorySlotContentsWithoutNotify( PartArcaneCraftingTerminal.RESULT_SLOT_INDEX, craftResult );
 
 	}
 
@@ -1357,7 +1358,12 @@ public class ContainerPartArcaneCraftingTerminal
 	@Override
 	public void onListUpdate()
 	{
-		// Ignored
+		// Is the terminal no longer active?
+		if( !this.terminal.isActive() )
+		{
+			// Send empty list to client
+			Packet_C_ArcaneCraftingTerminal.sendAllNetworkItems( this.player, AEApi.instance().storage().createItemList() );
+		}
 	}
 
 	/**
@@ -1405,7 +1411,7 @@ public class ContainerPartArcaneCraftingTerminal
 	public void registerForUpdates()
 	{
 		// Register the container with terminal
-		this.arcaneCraftingTerminalPart.registerListener( this );
+		this.terminal.registerListener( this );
 	}
 
 	/**

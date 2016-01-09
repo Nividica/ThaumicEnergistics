@@ -2,6 +2,7 @@ package thaumicenergistics.common.parts;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,8 +19,6 @@ import thaumicenergistics.common.grid.EssentiaMonitor;
 import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusBase;
 import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusDuality;
 import thaumicenergistics.common.network.IAspectSlotPart;
-import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
-import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaStorageBus;
 import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
@@ -70,29 +69,24 @@ public class PartEssentiaStorageBus
 					NBT_KEY_VOID = "IsVoidAllowed";
 
 	/**
-	 * Storage bus priority
-	 */
-	private int priority = 0;
-
-	/**
 	 * "Cell" handler for the storage bus.
 	 */
-	private HandlerEssentiaStorageBusBase handler = new HandlerEssentiaStorageBusDuality( this );
+	private final HandlerEssentiaStorageBusBase handler = new HandlerEssentiaStorageBusDuality( this );
 
 	/**
 	 * Filter list
 	 */
-	private List<Aspect> filteredAspects = new ArrayList<Aspect>( PartEssentiaStorageBus.FILTER_SIZE );
+	private final ArrayList<Aspect> filteredAspects = new ArrayList<Aspect>( FILTER_SIZE );
 
 	/**
 	 * Upgrade inventory
 	 */
-	private UpgradeInventory upgradeInventory = new StackUpgradeInventory( this.associatedItem, this, 1 );
+	private final UpgradeInventory upgradeInventory = new StackUpgradeInventory( this.associatedItem, this, 1 );
 
 	/**
-	 * Containers listening for events
+	 * Storage bus priority
 	 */
-	private List<ContainerPartEssentiaStorageBus> listeners = new ArrayList<ContainerPartEssentiaStorageBus>();
+	private int priority = 0;
 
 	/**
 	 * Creates the bus
@@ -100,23 +94,12 @@ public class PartEssentiaStorageBus
 	public PartEssentiaStorageBus()
 	{
 		// Call super
-		super( AEPartsEnum.EssentiaStorageBus );
+		super( AEPartsEnum.EssentiaStorageBus, SecurityPermissions.EXTRACT, SecurityPermissions.INJECT );
 
 		// Pre-fill the list with nulls
 		for( int index = 0; index < PartEssentiaStorageBus.FILTER_SIZE; index++ )
 		{
 			this.filteredAspects.add( null );
-		}
-	}
-
-	/**
-	 * Notifies all listening containers that the filter list changed.
-	 */
-	private void notifyListenersOfFilteredAspectsChange()
-	{
-		for( ContainerPartEssentiaStorageBus listner : this.listeners )
-		{
-			listner.setFilteredAspects( this.filteredAspects );
 		}
 	}
 
@@ -168,19 +151,6 @@ public class PartEssentiaStorageBus
 	}
 
 	/**
-	 * Adds a listener for events.
-	 * 
-	 * @param listener
-	 */
-	public void addListener( final ContainerPartEssentiaStorageBus listener )
-	{
-		if( !this.listeners.contains( listener ) )
-		{
-			this.listeners.add( listener );
-		}
-	}
-
-	/**
 	 * Ignored
 	 */
 	@Override
@@ -196,24 +166,6 @@ public class PartEssentiaStorageBus
 	public int cableConnectionRenderTo()
 	{
 		return 3;
-	}
-
-	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
-	{
-		// Does the player have export & import permissions
-		if( this.doesPlayerHavePermission( player, SecurityPermissions.EXTRACT ) )
-		{
-			if( this.doesPlayerHavePermission( player, SecurityPermissions.INJECT ) )
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**
@@ -300,13 +252,6 @@ public class PartEssentiaStorageBus
 	@Override
 	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
-		// Were we wrenched?
-		if( wrenched )
-		{
-			// No drops
-			return;
-		}
-
 		// Get the upgrade card
 		ItemStack slotStack = this.upgradeInventory.getStackInSlot( 0 );
 
@@ -316,6 +261,17 @@ public class PartEssentiaStorageBus
 			// Add to the drops
 			drops.add( slotStack );
 		}
+	}
+
+	/**
+	 * Returns the aspect in the filter slot.
+	 * 
+	 * @return
+	 */
+	@Nullable
+	public Aspect getFilteredAspect( final int slotIndex )
+	{
+		return this.filteredAspects.get( slotIndex );
 	}
 
 	/**
@@ -375,26 +331,22 @@ public class PartEssentiaStorageBus
 	}
 
 	/**
+	 * Is voiding of essentia allowed?
+	 * 
+	 * @return
+	 */
+	public boolean isVoidAllowed()
+	{
+		return this.handler.isVoidAllowed();
+	}
+
+	/**
 	 * Called when the upgrade inventory changes.
 	 */
 	@Override
 	public void onChangeInventory( final IInventory inv, final int arg1, final InvOperation arg2, final ItemStack arg3, final ItemStack arg4 )
 	{
 		this.updateInverterState();
-	}
-
-	/**
-	 * Called when a client is requesting a full update
-	 * 
-	 * @param player
-	 */
-	public void onClientRequestFullUpdate( final EntityPlayer player )
-	{
-		// Send the void mode
-		Packet_C_EssentiaStorageBus.sendIsVoidAllowed( player, this.handler.isVoidAllowed() );
-
-		// Send the filter
-		Packet_C_AspectSlot.setFilterList( this.filteredAspects, player );
 	}
 
 	/**
@@ -485,6 +437,7 @@ public class PartEssentiaStorageBus
 		{
 			this.upgradeInventory.readFromNBT( data, PartEssentiaStorageBus.NBT_KEY_UPGRADES );
 
+			// TODO: Is this needed or will onChange be called?
 			// Update the handler inverted
 			this.updateInverterState();
 		}
@@ -497,16 +450,6 @@ public class PartEssentiaStorageBus
 
 		// Update the handler filter list
 		this.handler.setPrioritizedAspects( this.filteredAspects );
-	}
-
-	/**
-	 * Removes a listener
-	 * 
-	 * @param listener
-	 */
-	public void removeListener( final ContainerPartEssentiaStorageBus listener )
-	{
-		this.listeners.remove( listener );
 	}
 
 	/**
@@ -602,9 +545,6 @@ public class PartEssentiaStorageBus
 			// Update the handler
 			this.handler.setPrioritizedAspects( this.filteredAspects );
 
-			// Update the clients
-			this.notifyListenersOfFilteredAspectsChange();
-
 			// Update the grid
 			this.postGridUpdateEvent();
 
@@ -641,13 +581,14 @@ public class PartEssentiaStorageBus
 		// Call super
 		super.writeToNBT( data, saveType );
 
-		// Write the priority
-		if( this.priority > 0 )
+		// Only write NBT data if saving, or wrenched.
+		if( ( saveType != PartItemStack.World ) && ( saveType != PartItemStack.Wrench ) )
 		{
-			data.setInteger( PartEssentiaStorageBus.NBT_KEY_PRIORITY, this.priority );
+			return;
 		}
 
 		// Write the filters
+		boolean hasFilters = false;
 		for( int index = 0; index < PartEssentiaStorageBus.FILTER_SIZE; index++ )
 		{
 			Aspect aspect = this.filteredAspects.get( index );
@@ -655,20 +596,32 @@ public class PartEssentiaStorageBus
 			if( aspect != null )
 			{
 				data.setString( PartEssentiaStorageBus.NBT_KEY_FILTER + index, aspect.getTag() );
+				hasFilters = true;
+			}
+		}
+
+		// Only save the rest if filters are set, or world save
+		if( hasFilters || ( saveType == PartItemStack.World ) )
+		{
+			// Write the priority
+			if( this.priority > 0 )
+			{
+				data.setInteger( PartEssentiaStorageBus.NBT_KEY_PRIORITY, this.priority );
+			}
+
+			// Write void
+			if( this.handler.isVoidAllowed() )
+			{
+				data.setBoolean( PartEssentiaStorageBus.NBT_KEY_VOID, this.handler.isVoidAllowed() );
 			}
 		}
 
 		// Write upgrades
-		if( !this.upgradeInventory.isEmpty() )
+		if( ( saveType == PartItemStack.World ) && !this.upgradeInventory.isEmpty() )
 		{
 			this.upgradeInventory.writeToNBT( data, PartEssentiaStorageBus.NBT_KEY_UPGRADES );
 		}
 
-		// Write void
-		if( this.handler.isVoidAllowed() )
-		{
-			data.setBoolean( PartEssentiaStorageBus.NBT_KEY_VOID, this.handler.isVoidAllowed() );
-		}
 	}
 
 }

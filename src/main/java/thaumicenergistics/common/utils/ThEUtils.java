@@ -1,11 +1,13 @@
 package thaumicenergistics.common.utils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
@@ -21,6 +23,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public final class ThEUtils
 {
 	/**
+	 * The squared reach distance.
+	 */
+	private static final double SQUARED_REACH = 64.0D;
+
+	/**
 	 * Plays a sound for this player.
 	 */
 	@SideOnly(Side.CLIENT)
@@ -28,6 +35,20 @@ public final class ThEUtils
 	{
 		Minecraft.getMinecraft().getSoundHandler()
 						.playSound( PositionedSoundRecord.func_147674_a( sound, 1.0F ) );
+	}
+
+	/**
+	 * Returns true if the tile still exists and the player is within reach range.
+	 * 
+	 * @param player
+	 * @param tile
+	 * @return
+	 */
+	public static final boolean canPlayerInteractWith( @Nonnull final EntityPlayer player, @Nonnull final TileEntity tile )
+	{
+		return ( tile.getWorldObj().getTileEntity( tile.xCoord, tile.yCoord, tile.zCoord ) == tile )
+						&& ( player.getDistanceSq( tile.xCoord + 0.5D, tile.yCoord + 0.5D, tile.zCoord + 0.5D ) <= SQUARED_REACH );
+
 	}
 
 	/**

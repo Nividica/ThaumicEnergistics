@@ -46,7 +46,7 @@ public abstract class AspectWidgetBase
 
 	/**
 	 * Cached footnote of the aspect.
-	 * NOTE: One day I hope to put the mod the aspect is from here,
+	 * NOTE: One day I hope to put what mod the aspect is from here,
 	 * not just its primallity.
 	 */
 	protected String aspectFootnote = "";

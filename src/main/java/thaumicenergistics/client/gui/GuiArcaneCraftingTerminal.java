@@ -1113,7 +1113,7 @@ public class GuiArcaneCraftingTerminal
 		// Create the clear grid button
 		this.buttonList.add( new GuiButtonClearCraftingGrid( GuiConstants_ACT.BUTTON_CLEAR_GRID_ID, this.guiLeft +
 						GuiConstants_ACT.BUTTON_CLEAR_GRID_POS_X, this.guiTop + GuiConstants_ACT.BUTTON_CLEAR_GRID_POS_Y +
-						this.lowerTerminalYOffset, 8, 8 ) );
+						this.lowerTerminalYOffset, 8, 8, true ) );
 
 		// Add sort order button
 		this.buttonList.add( this.btnSortingMode = new GuiButtonSortingMode( GuiConstants_ACT.BUTTON_SORT_MODE_ID, this.guiLeft +
@@ -1188,6 +1188,9 @@ public class GuiArcaneCraftingTerminal
 	 */
 	public void onReceiveFullList( final IItemList<IAEItemStack> itemList )
 	{
+		// Clear the repo
+		this.repo.clear();
+
 		// Update the repository
 		for( IAEItemStack stack : itemList )
 		{

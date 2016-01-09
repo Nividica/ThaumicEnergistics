@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.PartItemStack;
 import appeng.util.Platform;
 
@@ -26,9 +27,9 @@ public abstract class ThERotateablePart
 	 */
 	private byte renderRotation = 0;
 
-	public ThERotateablePart( final AEPartsEnum associatedPart )
+	public ThERotateablePart( final AEPartsEnum associatedPart, final SecurityPermissions ... interactionPermissions )
 	{
-		super( associatedPart );
+		super( associatedPart, interactionPermissions );
 	}
 
 	/**
@@ -140,7 +141,7 @@ public abstract class ThERotateablePart
 		super.writeToNBT( data, saveType );
 
 		// Write the rotation
-		if( this.renderRotation != 0 )
+		if( ( saveType == PartItemStack.World ) && ( this.renderRotation != 0 ) )
 		{
 			data.setByte( ThERotateablePart.NBT_KEY_ROT_DIR, this.renderRotation );
 		}

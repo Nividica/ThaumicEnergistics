@@ -21,6 +21,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import appeng.api.AEApi;
 import appeng.api.config.RedstoneMode;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IMaterials;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.MachineSource;
@@ -115,9 +116,9 @@ public abstract class ThEPartEssentiaIOBus_Base
 	private static final String NBT_KEY_REDSTONE_MODE = "redstoneMode", NBT_KEY_FILTER_NUMBER = "AspectFilter#",
 					NBT_KEY_UPGRADE_INV = "upgradeInventory";
 
-	public ThEPartEssentiaIOBus_Base( final AEPartsEnum associatedPart )
+	public ThEPartEssentiaIOBus_Base( final AEPartsEnum associatedPart, final SecurityPermissions ... interactionPermissions )
 	{
-		super( associatedPart );
+		super( associatedPart, interactionPermissions );
 
 		// Initialize the list
 		for( int index = 0; index < ThEPartEssentiaIOBus_Base.MAX_FILTER_SIZE; index++ )
@@ -344,13 +345,6 @@ public abstract class ThEPartEssentiaIOBus_Base
 	@Override
 	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
-		// Were we wrenched?
-		if( wrenched )
-		{
-			// No drops
-			return;
-		}
-
 		// Add upgrades to drops
 		for( int slotIndex = 0; slotIndex < ThEPartEssentiaIOBus_Base.UPGRADE_INVENTORY_SIZE; slotIndex++ )
 		{
@@ -407,6 +401,11 @@ public abstract class ThEPartEssentiaIOBus_Base
 		return this.upgradeInventory;
 	}
 
+	public boolean isVoidAllowed()
+	{
+		return false;
+	}
+
 	@Override
 	public boolean onActivate( final EntityPlayer player, final Vec3 position )
 	{
@@ -454,7 +453,7 @@ public abstract class ThEPartEssentiaIOBus_Base
 	 * 
 	 * @param player
 	 */
-	public void onClientRequestFullUpdate( final EntityPlayer player )
+	public void onClientRequestFilterList( final EntityPlayer player )
 	{
 		// Set the filter list
 		Packet_C_AspectSlot.setFilterList( this.filteredAspects, player );
@@ -537,27 +536,18 @@ public abstract class ThEPartEssentiaIOBus_Base
 		super.readFromNBT( data );
 
 		// Read redstone mode
-		if( data.hasKey( ThEPartEssentiaIOBus_Base.NBT_KEY_REDSTONE_MODE ) )
+		if( data.hasKey( NBT_KEY_REDSTONE_MODE ) )
 		{
-			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( ThEPartEssentiaIOBus_Base.NBT_KEY_REDSTONE_MODE )];
+			this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data.getInteger( NBT_KEY_REDSTONE_MODE )];
 		}
 
 		// Read filters
-		for( int index = 0; index < ThEPartEssentiaIOBus_Base.MAX_FILTER_SIZE; index++ )
+		for( int index = 0; index < MAX_FILTER_SIZE; index++ )
 		{
-			if( data.hasKey( ThEPartEssentiaIOBus_Base.NBT_KEY_FILTER_NUMBER + index ) )
+			if( data.hasKey( NBT_KEY_FILTER_NUMBER + index ) )
 			{
-				Aspect filterAspect = null;
-
-				// Get the name of the aspect
-				String aspectTag = data.getString( ThEPartEssentiaIOBus_Base.NBT_KEY_FILTER_NUMBER + index );
-				if( !aspectTag.equals( "" ) )
-				{
-					filterAspect = Aspect.aspects.get( aspectTag );
-
-				}
-
-				this.filteredAspects.set( index, filterAspect );
+				// Get the aspect
+				this.filteredAspects.set( index, Aspect.aspects.get( data.getString( NBT_KEY_FILTER_NUMBER + index ) ) );
 			}
 		}
 
@@ -630,30 +620,32 @@ public abstract class ThEPartEssentiaIOBus_Base
 		// Call super
 		super.writeToNBT( data, saveType );
 
-		// Write the redstone mode
-		if( this.redstoneMode != ThEPartEssentiaIOBus_Base.DEFAULT_REDSTONE_MODE )
+		if( ( saveType == PartItemStack.World ) || ( saveType == PartItemStack.Wrench ) )
 		{
-			data.setInteger( ThEPartEssentiaIOBus_Base.NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
-		}
-
-		// Write each filter
-		for( int i = 0; i < ThEPartEssentiaIOBus_Base.MAX_FILTER_SIZE; i++ )
-		{
-			Aspect aspect = this.filteredAspects.get( i );
-			String aspectTag = "";
-
-			if( aspect != null )
+			// Write each filter
+			for( int i = 0; i < MAX_FILTER_SIZE; i++ )
 			{
-				aspectTag = aspect.getTag();
+				Aspect aspect = this.filteredAspects.get( i );
+				if( aspect != null )
+				{
+					data.setString( NBT_KEY_FILTER_NUMBER + i, aspect.getTag() );
+				}
 			}
 
-			data.setString( ThEPartEssentiaIOBus_Base.NBT_KEY_FILTER_NUMBER + i, aspectTag );
-		}
+			if( saveType == PartItemStack.World )
+			{
+				// Write the redstone mode
+				if( this.redstoneMode != DEFAULT_REDSTONE_MODE )
+				{
+					data.setInteger( NBT_KEY_REDSTONE_MODE, this.redstoneMode.ordinal() );
+				}
 
-		// Write the upgrade inventory
-		if( !this.upgradeInventory.isEmpty() )
-		{
-			this.upgradeInventory.writeToNBT( data, ThEPartEssentiaIOBus_Base.NBT_KEY_UPGRADE_INV );
+				// Write the upgrade inventory
+				if( !this.upgradeInventory.isEmpty() )
+				{
+					this.upgradeInventory.writeToNBT( data, NBT_KEY_UPGRADE_INV );
+				}
+			}
 		}
 	}
 }

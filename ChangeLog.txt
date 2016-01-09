@@ -1,7 +1,18 @@
-﻿01/05/2016 0.10.0.0 - Beta
+﻿01/02/2016 0.10.0.0
+  Fixed crafting aspect item display name.
+  More Multiplayer gui sync fixes.
+  Slightly reduced size of all packets.
+
+01/08/2016 0.10.0.0
+  More Multiplayer gui sync fixes.
+  
+01/06/2016 0.10.0.0 - Beta
   Fixes #263: Replaced flawed conversion amount config item. Essentia cells should work correctly in the IO Port.
   Removed redundant tile entity code.
   Cleaned up inventory processing.
+  Cleaned up the NBT save code for parts.
+  Fixes #264 - ACT clears all items on network power loss.
+  Multiplayer gui sync fixes.
 
 01/05/2016 0.10.0.0 - Beta
   Added recipe and Thaumonomicon entry for DPE.

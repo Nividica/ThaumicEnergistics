@@ -977,6 +977,12 @@ public class PartEssentiaStorageMonitor
 		// Call super
 		super.writeToNBT( data, saveType );
 
+		// Only save on world
+		if( saveType != PartItemStack.World )
+		{
+			return;
+		}
+
 		// Write locked
 		if( this.monitorLocked )
 		{

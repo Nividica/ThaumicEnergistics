@@ -7,8 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import thaumicenergistics.common.parts.ThEPartBase;
-import appeng.api.parts.IPartHost;
+import thaumicenergistics.common.utils.ThEUtils;
 
 public class TheInternalInventory
 	implements IInventory
@@ -17,11 +16,6 @@ public class TheInternalInventory
 	 * NBT keys
 	 */
 	private static final String NBT_KEY_SLOT = "Slot";
-
-	/**
-	 * The squared reach distance.
-	 */
-	private static final double SQUARED_REACH = 64.0D;
 
 	/**
 	 * Stack size limit.
@@ -50,16 +44,6 @@ public class TheInternalInventory
 		this.slots = new ItemStack[size];
 		this.customName = customName;
 		this.stackLimit = stackLimit;
-	}
-
-	/**
-	 * Clears the specified slot.
-	 * 
-	 * @param slotIndex
-	 */
-	public void clearSlot( final int slotIndex )
-	{
-		this.slots[slotIndex] = null;
 	}
 
 	@Override
@@ -233,38 +217,9 @@ public class TheInternalInventory
 		return true;
 	}
 
-	// TODO: Is this ever even used?
-	public boolean isUseableByPlayer( @Nonnull final EntityPlayer player, @Nonnull final ThEPartBase part )
-	{
-		// Get and check the host
-		TileEntity tile = part.getHostTile();
-		if( ( tile == null ) || !( tile instanceof IPartHost ) )
-		{
-			return false;
-		}
-		IPartHost host = (IPartHost)tile;
-
-		// Is the part still attached?
-		if( host.getPart( part.getSide() ) != part )
-		{
-			return false;
-		}
-
-		// Perform reach and tile checks.
-		return this.isUseableByPlayer( player, tile );
-	}
-
-	/**
-	 * Returns true if the tile still exists and the player is within reach range.
-	 * 
-	 * @param player
-	 * @param tile
-	 * @return
-	 */
 	public boolean isUseableByPlayer( @Nonnull final EntityPlayer player, @Nonnull final TileEntity tile )
 	{
-		return ( tile.getWorldObj().getTileEntity( tile.xCoord, tile.yCoord, tile.zCoord ) == tile )
-						&& ( player.getDistanceSq( tile.xCoord + 0.5D, tile.yCoord + 0.5D, tile.zCoord + 0.5D ) <= SQUARED_REACH );
+		return ThEUtils.canPlayerInteractWith( player, tile );
 	}
 
 	@Override

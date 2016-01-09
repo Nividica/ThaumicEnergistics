@@ -53,6 +53,7 @@ import appeng.items.storage.ItemViewCell;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+// TODO: convert inventory to internal inventory
 public class PartArcaneCraftingTerminal
 	extends ThERotateablePart
 	implements IInventory, IGridTickable, ICraftingIssuerHost, ITerminalHost
@@ -153,7 +154,7 @@ public class PartArcaneCraftingTerminal
 	public PartArcaneCraftingTerminal()
 	{
 		// Call super
-		super( AEPartsEnum.ArcaneCraftingTerminal );
+		super( AEPartsEnum.ArcaneCraftingTerminal, SecurityPermissions.EXTRACT, SecurityPermissions.INJECT );
 	}
 
 	/**
@@ -261,24 +262,6 @@ public class PartArcaneCraftingTerminal
 		}
 
 		return returnStack;
-	}
-
-	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
-	{
-		// Does the player have export & import permissions
-		if( this.doesPlayerHavePermission( player, SecurityPermissions.EXTRACT ) )
-		{
-			if( this.doesPlayerHavePermission( player, SecurityPermissions.INJECT ) )
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**
@@ -548,15 +531,6 @@ public class PartArcaneCraftingTerminal
 
 		// Out of range
 		return false;
-	}
-
-	/**
-	 * Who can use this?
-	 */
-	@Override
-	public boolean isUseableByPlayer( final EntityPlayer player )
-	{
-		return true;
 	}
 
 	@Override
@@ -987,6 +961,12 @@ public class PartArcaneCraftingTerminal
 		// Call super
 		super.writeToNBT( data, saveType );
 
+		// Only write NBT data if saving, or wrenched.
+		if( ( saveType != PartItemStack.World ) && ( saveType != PartItemStack.Wrench ) )
+		{
+			return;
+		}
+
 		// Create a new tag list
 		NBTTagList nbtList = new NBTTagList();
 
@@ -1035,7 +1015,7 @@ public class PartArcaneCraftingTerminal
 		}
 
 		// Write the vis source info
-		if( saveType != PartItemStack.Wrench )
+		if( saveType == PartItemStack.World )
 		{
 			this.visSourceInfo.writeToNBT( data, PartArcaneCraftingTerminal.VIS_INTERFACE_NBT_KEY );
 		}

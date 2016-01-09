@@ -17,7 +17,7 @@ import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.BlockEnum;
-import thaumicenergistics.common.tiles.TileDistillationEncoder;
+import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
 import thaumicenergistics.common.utils.EffectiveSide;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -61,10 +61,10 @@ public class BlockDistillationEncoder
 			// Get the tile
 			TileEntity tile = world.getTileEntity( x, y, z );
 
-			if( tile instanceof TileDistillationEncoder )
+			if( tile instanceof TileDistillationPatternEncoder )
 			{
 				// Cast
-				TileDistillationEncoder tileDE = (TileDistillationEncoder)tile;
+				TileDistillationPatternEncoder tileDE = (TileDistillationPatternEncoder)tile;
 
 				// Does it have patterns?
 				if( tileDE.hasPatterns() )
@@ -90,7 +90,7 @@ public class BlockDistillationEncoder
 	@Override
 	public TileEntity createNewTileEntity( final World world, final int metaData )
 	{
-		return new TileDistillationEncoder();
+		return new TileDistillationPatternEncoder();
 	}
 
 	/**

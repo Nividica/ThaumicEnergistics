@@ -1,8 +1,9 @@
 package thaumicenergistics.client.gui.buttons;
 
 import java.util.List;
+import net.minecraft.util.EnumChatFormatting;
 import thaumicenergistics.client.textures.AEStateIconsEnum;
-import thaumicenergistics.common.registries.ThEStrings;
+import appeng.core.localization.ButtonToolTips;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -15,6 +16,8 @@ public class GuiButtonClearCraftingGrid
 	 */
 	private static final AEStateIconsEnum CLEAR_ICON = AEStateIconsEnum.CLEAR_GRID;
 
+	private final boolean showTooltip;
+
 	/**
 	 * Creates the button
 	 * 
@@ -24,16 +27,24 @@ public class GuiButtonClearCraftingGrid
 	 * @param width
 	 * @param height
 	 */
-	public GuiButtonClearCraftingGrid( final int ID, final int xPosition, final int yPosition, final int width, final int height )
+	public GuiButtonClearCraftingGrid( final int ID, final int xPosition, final int yPosition, final int width, final int height,
+										final boolean showTooltip )
 	{
+		// Call super
 		super( ID, xPosition, yPosition, width, height, GuiButtonClearCraftingGrid.CLEAR_ICON, 0, 0, AEStateIconsEnum.REGULAR_BUTTON );
+
+		// Set if the tooltip is shown or not
+		this.showTooltip = showTooltip;
 	}
 
 	@Override
 	public void getTooltip( final List<String> tooltip )
 	{
-		// Add the tooltip text
-		tooltip.add( ThEStrings.TooltipButton_DepositCraftingGrid.getLocalized() );
+		if( this.showTooltip )
+		{
+			this.addAboutToTooltip( tooltip, ButtonToolTips.Stash.getLocal(),
+				EnumChatFormatting.GRAY.toString() + ButtonToolTips.StashDesc.getLocal() );
+		}
 	}
 
 }

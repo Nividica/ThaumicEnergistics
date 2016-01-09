@@ -741,8 +741,8 @@ public class PartVisInterface
 		// Call super
 		super.writeToNBT( data, saveType );
 
-		// Do not save details if being wrenched.
-		if( saveType == PartItemStack.Wrench )
+		// Only write NBT if world save
+		if( saveType != PartItemStack.World )
 		{
 			return;
 		}

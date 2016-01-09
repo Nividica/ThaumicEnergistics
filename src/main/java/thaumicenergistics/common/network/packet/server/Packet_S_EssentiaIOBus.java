@@ -41,7 +41,7 @@ public class Packet_S_EssentiaIOBus
 	 * @param part
 	 * @return
 	 */
-	public static void sendFullUpdateRequest( final EntityPlayer player, final ThEPartEssentiaIOBus_Base part )
+	public static void sendRequestFilterList( final EntityPlayer player, final ThEPartEssentiaIOBus_Base part )
 	{
 		Packet_S_EssentiaIOBus packet = newPacket( player, MODE_REQUEST_FULL_UPDATE, part );
 
@@ -86,7 +86,7 @@ public class Packet_S_EssentiaIOBus
 		{
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
 			// Request a full update
-			this.part.onClientRequestFullUpdate( this.player );
+			this.part.onClientRequestFilterList( this.player );
 			break;
 
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
@@ -98,7 +98,7 @@ public class Packet_S_EssentiaIOBus
 			// Request a void mode change
 			if( this.part instanceof PartEssentiaExportBus )
 			{
-				( (PartEssentiaExportBus)this.part ).onClientRequestChangeVoidMode( this.player );
+				( (PartEssentiaExportBus)this.part ).toggleVoidMode( this.player );
 			}
 			break;
 		}

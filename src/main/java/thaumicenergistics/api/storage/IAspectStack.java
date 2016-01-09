@@ -129,7 +129,7 @@ public interface IAspectStack
 
 	/**
 	 * Sets the values of this stack to match the passed stack.
-	 * Unchanged if stack is null.
+	 * If the stack is null, all values are reset.
 	 * 
 	 * @param stack
 	 */

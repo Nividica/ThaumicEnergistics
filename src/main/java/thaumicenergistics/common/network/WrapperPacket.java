@@ -16,11 +16,19 @@ public abstract class WrapperPacket
 	{
 	}
 
+	/**
+	 * Constructs the wrapper, wrapping the specified packet.
+	 * 
+	 * @param packet
+	 */
 	public WrapperPacket( final ThEBasePacket packet )
 	{
 		this.embeddedPacket = packet;
 	}
 
+	/**
+	 * Executes the packet.
+	 */
 	public void execute()
 	{
 		if( this.embeddedPacket != null )
@@ -33,7 +41,7 @@ public abstract class WrapperPacket
 	public void fromBytes( final ByteBuf stream )
 	{
 		// Read the id
-		int id = stream.readInt();
+		short id = stream.readShort();
 		if( id == -1 )
 		{
 			// Invalid packet
@@ -69,8 +77,8 @@ public abstract class WrapperPacket
 		if( this.embeddedPacket != null )
 		{
 			// Write the id
-			int id = NetworkHandler.getPacketID( this.embeddedPacket );
-			stream.writeInt( id );
+			short id = NetworkHandler.getPacketID( this.embeddedPacket );
+			stream.writeShort( id );
 
 			// Call embedded
 			this.embeddedPacket.toBytes( stream );
@@ -78,7 +86,7 @@ public abstract class WrapperPacket
 		else
 		{
 			// Write -1
-			stream.writeInt( -1 );
+			stream.writeShort( -1 );
 		}
 	}
 

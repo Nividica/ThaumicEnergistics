@@ -41,6 +41,8 @@ public class ContainerWirelessEssentiaTerminal
 	 */
 	private final HandlerWirelessEssentiaTerminal handler;
 
+	private Aspect tmpSelectedAspect;
+
 	/**
 	 * Import and export inventory slots.
 	 */
@@ -56,11 +58,6 @@ public class ContainerWirelessEssentiaTerminal
 			return ( iType == AspectItemType.EssentiaContainer ) || ( iType == AspectItemType.JarLabel );
 		}
 	};
-
-	/**
-	 * Tracks if the terminal was connected last tick.
-	 */
-	private boolean wasConnected = true;
 
 	/**
 	 * Tracks the number of ticks elapsed.
@@ -108,56 +105,32 @@ public class ContainerWirelessEssentiaTerminal
 		}
 	}
 
-	/**
-	 * Checks if the terminal is in range of the AP, and updates the network
-	 * monitor accordingly.
-	 */
-	private void updateConnectivity()
-	{
-		// Is the terminal connected?
-		if( this.handler.isConnected() )
-		{
-			// Terminal is in range and powered
-
-			// Was the terminal disconnected last tick?
-			if( !this.wasConnected )
-			{
-				// Re-acquire the monitor
-				this.monitor = this.handler.getEssentiaMonitor();
-
-				// Re-attach
-				this.attachToMonitor();
-
-				// Send the list
-				this.onClientRequestFullUpdate();
-			}
-		}
-		else
-		{
-			// Terminal is out of power, or out of range.
-
-			// Was the terminal connected last tick?
-			if( this.wasConnected )
-			{
-				// Disconnect from the monitor
-				this.detachFromMonitor();
-
-				// Send the empty list
-				this.onClientRequestFullUpdate();
-
-				// Close the gui.
-				this.player.closeScreen();
-			}
-
-			// Set as no longer connected
-			this.wasConnected = false;
-		}
-	}
-
 	@Override
 	protected BaseActionSource getActionSource()
 	{
 		return this.handler.getActionHost();
+	}
+
+	@Override
+	protected Aspect getHostSelectedAspect()
+	{
+		return this.tmpSelectedAspect;
+	}
+
+	@Override
+	protected void setHostSelectedAspect( final Aspect aspect )
+	{
+		this.tmpSelectedAspect = aspect;
+	}
+
+	@Override
+	public boolean canInteractWith( final EntityPlayer p_75145_1_ )
+	{
+		if( this.handler != null )
+		{
+			return this.handler.isConnected();
+		}
+		return false;
 	}
 
 	/**
@@ -178,9 +151,6 @@ public class ContainerWirelessEssentiaTerminal
 
 		if( this.powerTickCounter > ContainerWirelessEssentiaTerminal.EXTRACT_POWER_ON_TICK )
 		{
-			// Check the network connectivity
-			this.updateConnectivity();
-
 			// Adjust the power multiplier
 			this.handler.updatePowerMultiplier();
 

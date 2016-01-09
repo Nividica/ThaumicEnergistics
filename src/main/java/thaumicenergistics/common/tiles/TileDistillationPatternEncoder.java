@@ -3,11 +3,10 @@ package thaumicenergistics.common.tiles;
 import java.util.ArrayList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import thaumicenergistics.common.items.ItemCraftingAspect;
 import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
 import appeng.api.AEApi;
 
-public class TileDistillationEncoder
+public class TileDistillationPatternEncoder
 	extends ThETileInventory
 {
 	/**
@@ -18,26 +17,31 @@ public class TileDistillationEncoder
 	/**
 	 * Slot counts
 	 */
-	public static int SLOT_SOURCE_ASPECTS_COUNT = 6,
-					SLOT_SELECTED_ASPECT_COUNT = 1,
-					SLOT_PATTERNS_COUNT = 2,
+	public static int SLOT_PATTERNS_COUNT = 2,
 					SLOT_SOURCE_ITEM_COUNT = 1,
-					SLOT_TOTAL_COUNT = SLOT_SOURCE_ITEM_COUNT + SLOT_SOURCE_ASPECTS_COUNT + SLOT_SELECTED_ASPECT_COUNT + SLOT_PATTERNS_COUNT;
+					SLOT_TOTAL_COUNT = SLOT_SOURCE_ITEM_COUNT + SLOT_PATTERNS_COUNT;
 	/**
 	 * Slot ID's
 	 */
 	public static int SLOT_SOURCE_ITEM = 0,
 					SLOT_BLANK_PATTERNS = 1,
-					SLOT_ENCODED_PATTERN = 2,
-					SLOT_SOURCE_ASPECTS = 3,
-					SLOT_SELECTED_ASPECT = SLOT_SOURCE_ASPECTS + SLOT_SOURCE_ASPECTS_COUNT;
+					SLOT_ENCODED_PATTERN = 2;
 
 	/**
 	 * Default constructor.
 	 */
-	public TileDistillationEncoder()
+	public TileDistillationPatternEncoder()
 	{
 		super( "distillation.inscriber", SLOT_TOTAL_COUNT, 64 );
+	}
+
+	/**
+	 * Does not need ticks.
+	 */
+	@Override
+	public boolean canUpdate()
+	{
+		return false;
 	}
 
 	/**
@@ -94,12 +98,6 @@ public class TileDistillationEncoder
 		if( slotId == SLOT_ENCODED_PATTERN )
 		{
 			return AEApi.instance().definitions().items().encodedPattern().isSameAs( itemStack );
-		}
-
-		// Aspect slot?
-		if( ( slotId >= SLOT_SOURCE_ASPECTS ) && ( slotId <= SLOT_SELECTED_ASPECT ) )
-		{
-			return( itemStack.getItem() instanceof ItemCraftingAspect );
 		}
 
 		return true;

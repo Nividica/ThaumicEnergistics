@@ -219,25 +219,6 @@ public class ThEGuiHandler
 	}
 
 	/**
-	 * Launches an AE part gui
-	 * 
-	 * @param part
-	 * @param player
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 */
-	public static void launchGui( final ThEPartBase part, final EntityPlayer player, final World world, final int x, final int y, final int z )
-	{
-		// Ensure the player is allowed to open the gui
-		if( part.doesPlayerHavePermissionToOpenGui( player ) )
-		{
-			player.openGui( ThaumicEnergistics.INSTANCE, part.getSide().ordinal(), world, x, y, z );
-		}
-	}
-
-	/**
 	 * Launches a non AE part gui.
 	 * 
 	 * @param ID
@@ -269,6 +250,25 @@ public class ThEGuiHandler
 		ThEGuiHandler.extraData = extraData;
 		player.openGui( ThaumicEnergistics.INSTANCE, ID + ThEGuiHandler.DIRECTION_OFFSET, world, x, y, z );
 		ThEGuiHandler.extraData = null;
+	}
+
+	/**
+	 * Launches an AE part gui
+	 * 
+	 * @param part
+	 * @param player
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
+	public static void launchGui( final ThEPartBase part, final EntityPlayer player, final World world, final int x, final int y, final int z )
+	{
+		// Ensure the player is allowed to open the gui
+		if( part.isUseableByPlayer( player ) )
+		{
+			player.openGui( ThaumicEnergistics.INSTANCE, part.getSide().ordinal(), world, x, y, z );
+		}
 	}
 
 	@Override
@@ -316,7 +316,7 @@ public class ThEGuiHandler
 
 			// Distillation encoder?
 		case ThEGuiHandler.DISTILLATION_ENCODER:
-			return new GuiDistillationEncoder( player, world, x, y, z );
+			return new GuiDistillationPatternEncoder( player, world, x, y, z );
 
 			// AE2 Autocrafting Amount?
 		case ThEGuiHandler.AUTO_CRAFTING_AMOUNT:
@@ -404,7 +404,7 @@ public class ThEGuiHandler
 
 			// Distillation encoder?
 		case ThEGuiHandler.DISTILLATION_ENCODER:
-			return new ContainerDistillationEncoder( player, world, x, y, z );
+			return new ContainerDistillationPatternEncoder( player, world, x, y, z );
 
 			// AE2 Autocrafting Amount?
 		case ThEGuiHandler.AUTO_CRAFTING_AMOUNT:

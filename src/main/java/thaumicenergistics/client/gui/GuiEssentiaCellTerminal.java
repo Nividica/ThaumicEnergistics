@@ -25,8 +25,8 @@ import thaumicenergistics.client.gui.buttons.GuiButtonViewType;
 import thaumicenergistics.client.gui.widget.ThEWidget;
 import thaumicenergistics.client.gui.widget.WidgetAspectSelector;
 import thaumicenergistics.client.textures.GuiTextureManager;
-import thaumicenergistics.common.container.ContainerEssentiaCellTerminalBase;
 import thaumicenergistics.common.container.ContainerEssentiaCell;
+import thaumicenergistics.common.container.ContainerEssentiaCellTerminalBase;
 import thaumicenergistics.common.container.ContainerEssentiaTerminal;
 import thaumicenergistics.common.container.ContainerWirelessEssentiaTerminal;
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
@@ -299,6 +299,24 @@ public class GuiEssentiaCellTerminal
 	}
 
 	/**
+	 * Refreshes our aspect list to match that of the container.
+	 */
+	private void onListUpdate()
+	{
+		// Update the scrollbar
+		this.updateScrollMaximum();
+
+		// Update the search results
+		this.updateView();
+
+		// Update the selected aspect
+		this.updateSelectedAspect();
+
+		// Mark for widget update
+		this.flagWidgetsNeedUpdate = true;
+	}
+
+	/**
 	 * Updates the scroll bar's range.
 	 */
 	private void updateScrollMaximum()
@@ -320,6 +338,30 @@ public class GuiEssentiaCellTerminal
 
 		// Mark for widget update
 		this.flagWidgetsNeedUpdate = true;
+	}
+
+	/**
+	 * Refreshes our selected aspect to match that of the container.
+	 */
+	private void updateSelectedAspect()
+	{
+		// No selection by default
+		this.selectedAspectStack = null;
+
+		// Check all aspects
+		for( IAspectStack aspectStack : this.baseContainer.getAspectStackList() )
+		{
+			// Does this match?
+			if( aspectStack.getAspect() == this.baseContainer.getSelectedAspect() )
+			{
+				// Set our selection
+				this.selectedAspectStack = aspectStack;
+
+				// Done
+				return;
+			}
+		}
+
 	}
 
 	/**
@@ -655,16 +697,16 @@ public class GuiEssentiaCellTerminal
 	 */
 	public void drawWidgets( final int mouseX, final int mouseY )
 	{
+		// Do the widgets need to be updated?
+		if( this.flagWidgetsNeedUpdate )
+		{
+			// Update first
+			this.updateWidgets();
+		}
+
 		// Anything to draw?
 		if( !this.matchingSearchStacks.isEmpty() )
 		{
-			// Do the widgets need to be updated?
-			if( this.flagWidgetsNeedUpdate )
-			{
-				// Update first
-				this.updateWidgets();
-			}
-
 			for( int widgetIndex = 0; widgetIndex < this.aspectWidgets.length; ++widgetIndex )
 			{
 				// Get the widget
@@ -728,7 +770,7 @@ public class GuiEssentiaCellTerminal
 		Keyboard.enableRepeatEvents( true );
 
 		// Get the aspect list
-		this.updateAspects();
+		this.onListUpdate();
 
 		// Set up the search bar
 		this.searchBar = new GuiTextField( this.fontRendererObj,
@@ -787,7 +829,7 @@ public class GuiEssentiaCellTerminal
 		this.baseContainer.onReceivedAspectList( aspectStackList );
 
 		// Update the gui
-		this.updateAspects();
+		this.onListUpdate();
 	}
 
 	/**
@@ -801,7 +843,7 @@ public class GuiEssentiaCellTerminal
 		if( this.baseContainer.onReceivedAspectListChange( change ) )
 		{
 			// Update the gui
-			this.updateAspects();
+			this.onListUpdate();
 		}
 	}
 
@@ -851,48 +893,6 @@ public class GuiEssentiaCellTerminal
 
 		// Mark for widget update
 		this.flagWidgetsNeedUpdate = true;
-	}
-
-	/**
-	 * Refreshes our aspect list to match that of the container.
-	 */
-	public void updateAspects()
-	{
-		// Update the scrollbar
-		this.updateScrollMaximum();
-
-		// Update the search results
-		this.updateView();
-
-		// Update the selected aspect
-		this.updateSelectedAspect();
-
-		// Mark for widget update
-		this.flagWidgetsNeedUpdate = true;
-	}
-
-	/**
-	 * Refreshes our selected aspect to match that of the container.
-	 */
-	public void updateSelectedAspect()
-	{
-		// No selection by default
-		this.selectedAspectStack = null;
-
-		// Check all aspects
-		for( IAspectStack aspectStack : this.baseContainer.getAspectStackList() )
-		{
-			// Does this match?
-			if( aspectStack.getAspect() == this.baseContainer.getSelectedAspect() )
-			{
-				// Set our selection
-				this.selectedAspectStack = aspectStack;
-
-				// Done
-				return;
-			}
-		}
-
 	}
 
 }

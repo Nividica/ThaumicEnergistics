@@ -12,7 +12,7 @@ public enum TileEnum
 		ArcaneAssembler ("TileArcaneAssembler", TileArcaneAssembler.class),
 		KnowledgeInscriber ("TileKnowledgeInscriber", TileKnowledgeInscriber.class),
 		EssentiaVibrationChamber ("TileEssentiaVibrationChamber", TileEssentiaVibrationChamber.class),
-		DistillationInscriber ("TileDistillationInscriber", TileDistillationEncoder.class);
+		DistillationInscriber ("TileDistillationInscriber", TileDistillationPatternEncoder.class);
 
 	/**
 	 * Unique ID of the tile entity

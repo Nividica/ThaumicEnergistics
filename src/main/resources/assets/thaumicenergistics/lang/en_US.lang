@@ -50,7 +50,6 @@ thaumicenergistics.item.focus.aewrench.disabled.name=Wand Focus: AE Wrench - Wre
 thaumicenergistics.tooltip.itemstack.details=Hold §eshift§f for details.
 thaumicenergistics.tooltip.essentia.cell.bytes=%d of %d bytes used.
 thaumicenergistics.tooltip.essentia.cell.types=%d of %d essentia types stored.
-thaumicenergistics.tooltip.button.clear.crafting=Deposit Crafting Grid
 thaumicenergistics.tooltip.button.void=Allow Void?
 thaumicenergistics.tooltip.button.void.disabled=Do not void essentia
 thaumicenergistics.tooltip.button.void.allowed=Void essentia if jar is full

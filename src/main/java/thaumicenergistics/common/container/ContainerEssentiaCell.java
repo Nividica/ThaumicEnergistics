@@ -59,6 +59,8 @@ public class ContainerEssentiaCell
 	 */
 	private ISaveProvider chestSaveProvider;
 
+	private Aspect tmpSelectedAspect;
+
 	/**
 	 * Import and export inventory slots.
 	 */
@@ -179,6 +181,28 @@ public class ContainerEssentiaCell
 	protected BaseActionSource getActionSource()
 	{
 		return this.playerSource;
+	}
+
+	@Override
+	protected Aspect getHostSelectedAspect()
+	{
+		return this.tmpSelectedAspect;
+	}
+
+	@Override
+	protected void setHostSelectedAspect( final Aspect aspect )
+	{
+		this.tmpSelectedAspect = aspect;
+	}
+
+	@Override
+	public boolean canInteractWith( final EntityPlayer player )
+	{
+		if( this.hostChest != null )
+		{
+			return this.hostChest.isUseableByPlayer( player );
+		}
+		return false;
 	}
 
 	/**

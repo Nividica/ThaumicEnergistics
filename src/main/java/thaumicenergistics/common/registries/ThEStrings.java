@@ -62,7 +62,6 @@ public enum ThEStrings
 		Tooltip_ArcaneAssemblerHasVis ("tooltip.arcane.assembler.hasVis", false),
 
 		// Button Tooltips
-		TooltipButton_DepositCraftingGrid ("tooltip.button.clear.crafting", false),
 		TooltipButton_VoidHeader ("tooltip.button.void", false),
 		TooltipButton_VoidAllow ("tooltip.button.void.allowed", false),
 		TooltipButton_VoidDisable ("tooltip.button.void.disabled", false),

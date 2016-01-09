@@ -1,12 +1,15 @@
 package thaumicenergistics.common.container;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
+import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaStorageBus;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
+import thaumicenergistics.common.utils.EffectiveSide;
 
 public class ContainerPartEssentiaStorageBus
 	extends ContainerWithNetworkTool
@@ -31,9 +34,25 @@ public class ContainerPartEssentiaStorageBus
 	 */
 	private static int HOTBAR_INV_POSITION_Y = 160;
 
-	private PartEssentiaStorageBus part;
+	/**
+	 * The essentia storage bus.
+	 */
+	private final PartEssentiaStorageBus storageBus;
 
-	private EntityPlayer player;
+	/**
+	 * The associated player.
+	 */
+	private final EntityPlayer player;
+
+	/**
+	 * Cache of filteredAspects.
+	 */
+	private final ArrayList<Aspect> filteredAspects = new ArrayList<Aspect>( PartEssentiaStorageBus.FILTER_SIZE );
+
+	/**
+	 * Cache of isVoidAllowed.
+	 */
+	private boolean isVoidAllowed = false;
 
 	public ContainerPartEssentiaStorageBus( final PartEssentiaStorageBus part, final EntityPlayer player )
 	{
@@ -41,7 +60,13 @@ public class ContainerPartEssentiaStorageBus
 		this.player = player;
 
 		// Set the part
-		this.part = part;
+		this.storageBus = part;
+
+		// Setup the filtered aspects
+		for( int i = 0; i < PartEssentiaStorageBus.FILTER_SIZE; ++i )
+		{
+			this.filteredAspects.add( null );
+		}
 
 		// Add the upgrade slot
 		this.addUpgradeSlots( part.getUpgradeInventory(), 1, ContainerPartEssentiaStorageBus.UPGRADE_SLOT_X,
@@ -54,26 +79,52 @@ public class ContainerPartEssentiaStorageBus
 		// Bind to the network tool
 		this.bindToNetworkTool( player.inventory, part.getHost().getLocation(), 0, 0 );
 
-		// Register as a listener
-		this.part.addListener( this );
-
 	}
 
-	/**
-	 * Who can interact with the container?
-	 */
 	@Override
 	public boolean canInteractWith( final EntityPlayer player )
 	{
-		return true;
+		if( this.storageBus != null )
+		{
+			return this.storageBus.isUseableByPlayer( player );
+		}
+		return false;
 	}
 
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void detectAndSendChanges()
 	{
-		if( this.part != null )
+		// Call super
+		super.detectAndSendChanges();
+
+		if( EffectiveSide.isClientSide() )
 		{
-			this.part.removeListener( this );
+			return;
+		}
+
+		// Has the filtered list changed?
+		boolean updateFilters = false;
+		for( int filterIndex = 0; filterIndex < PartEssentiaStorageBus.FILTER_SIZE; ++filterIndex )
+		{
+			if( this.filteredAspects.get( filterIndex ) != this.storageBus.getFilteredAspect( filterIndex ) )
+			{
+				// Found mismatch
+				this.filteredAspects.set( filterIndex, this.storageBus.getFilteredAspect( filterIndex ) );
+				updateFilters = true;
+			}
+		}
+		if( updateFilters )
+		{
+			// Update the client
+			Packet_C_AspectSlot.setFilterList( this.filteredAspects, this.player );
+		}
+
+		// Has the void mode changed?
+		if( this.isVoidAllowed != this.storageBus.isVoidAllowed() )
+		{
+			// Update
+			this.isVoidAllowed = this.storageBus.isVoidAllowed();
+			Packet_C_EssentiaStorageBus.sendIsVoidAllowed( this.player, this.isVoidAllowed );
 		}
 	}
 
@@ -92,7 +143,7 @@ public class ContainerPartEssentiaStorageBus
 		if( ( slot != null ) && ( slot.getHasStack() ) )
 		{
 			// Can this aspect be added to the filter list?
-			if( ( this.part != null ) && ( this.part.addFilteredAspectFromItemstack( player, slot.getStack() ) ) )
+			if( ( this.storageBus != null ) && ( this.storageBus.addFilteredAspectFromItemstack( player, slot.getStack() ) ) )
 			{
 				return null;
 			}

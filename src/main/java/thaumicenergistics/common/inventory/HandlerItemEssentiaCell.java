@@ -1,7 +1,6 @@
 package thaumicenergistics.common.inventory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -103,7 +102,7 @@ public class HandlerItemEssentiaCell
 	/**
 	 * List of aspects this cell can only accept.
 	 */
-	protected final List<Aspect> partitionAspects = new ArrayList<Aspect>();
+	protected final ArrayList<Aspect> partitionAspects = new ArrayList<Aspect>();
 
 	public HandlerItemEssentiaCell( final ItemStack storageStack, final ISaveProvider saveProvider )
 	{
@@ -610,9 +609,9 @@ public class HandlerItemEssentiaCell
 	 * 
 	 * @return
 	 */
-	public List<Aspect> getPartitionAspects()
+	public ArrayList<Aspect> getPartitionAspects()
 	{
-		return Collections.unmodifiableList( this.partitionAspects );
+		return this.partitionAspects;
 	}
 
 	@Override

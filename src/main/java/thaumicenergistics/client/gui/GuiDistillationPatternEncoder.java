@@ -18,7 +18,7 @@ import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
 import thaumicenergistics.client.gui.buttons.GuiButtonEncodePattern;
 import thaumicenergistics.client.textures.AEStateIconsEnum;
 import thaumicenergistics.client.textures.GuiTextureManager;
-import thaumicenergistics.common.container.ContainerDistillationEncoder;
+import thaumicenergistics.common.container.ContainerDistillationPatternEncoder;
 import thaumicenergistics.common.items.ItemCraftingAspect;
 import thaumicenergistics.common.network.packet.server.Packet_S_DistillationEncoder;
 import thaumicenergistics.common.registries.ThEStrings;
@@ -27,7 +27,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiDistillationEncoder
+public class GuiDistillationPatternEncoder
 	extends ThEBaseGui
 	implements IInventoryUpdateReceiver
 {
@@ -64,7 +64,7 @@ public class GuiDistillationEncoder
 	/**
 	 * The GUI's container.
 	 */
-	private final ContainerDistillationEncoder deContainer;
+	private final ContainerDistillationPatternEncoder deContainer;
 
 	/**
 	 * Thaumcraft's thaumometer
@@ -82,24 +82,14 @@ public class GuiDistillationEncoder
 	private GuiButtonEncodePattern buttonEncode;
 
 	/**
-	 * Hash code of the last itemstack.
-	 */
-	private int lastSourceItemHash = 0;
-
-	/**
 	 * Set true when the source item may have been changed.
 	 */
 	private boolean sourceItemDirty = false;
 
-	/**
-	 * Set false the first time the GUI is drawn.
-	 */
-	private boolean firstDraw = true;
-
-	public GuiDistillationEncoder( final EntityPlayer player, final World world, final int x, final int y, final int z )
+	public GuiDistillationPatternEncoder( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
 		// Call super
-		super( new ContainerDistillationEncoder( player, world, x, y, z ) );
+		super( new ContainerDistillationPatternEncoder( player, world, x, y, z ) );
 
 		// Set the title
 		this.title = ThEStrings.Block_DistillationEncoder.getLocalized();
@@ -109,7 +99,7 @@ public class GuiDistillationEncoder
 		this.ySize = GUI_HEIGHT;
 
 		// Set the container
-		this.deContainer = (ContainerDistillationEncoder)this.inventorySlots;
+		this.deContainer = (ContainerDistillationPatternEncoder)this.inventorySlots;
 		this.deContainer.slotUpdateReceiver = this;
 
 	}
@@ -122,28 +112,15 @@ public class GuiDistillationEncoder
 		// Clear the dirty bit
 		this.sourceItemDirty = false;
 
-		// Get the source item
-		ItemStack sourceItem = this.deContainer.slotSourceItem.getDisplayStack();
-
-		// Is there a stack?
-		if( sourceItem == null )
-		{
-			// Reset hash
-			this.lastSourceItemHash = 0;
-			return;
-		}
-
-		// Compare to last hash
-		int hash = sourceItem.hashCode();
-		if( hash == this.lastSourceItemHash )
-		{
-			// Same item
-			return;
-		}
-		this.lastSourceItemHash = hash;
-
 		// Clear any existing particles
 		this.particles.clear();
+
+		// Is there a source item to check?
+		if( !this.deContainer.slotSourceItem.getHasStack() )
+		{
+			// Done
+			return;
+		}
 
 		// Check each slot
 		boolean isItemScanned = false;
@@ -213,9 +190,9 @@ public class GuiDistillationEncoder
 		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize );
 
 		// Calculate the position and rotation of the thaumometer
-		float th_PosX = this.guiLeft + ContainerDistillationEncoder.SLOT_SOURCE_ITEM_POS_X + ITEM_HALF_SIZE;
-		float th_PosY = this.guiTop + ContainerDistillationEncoder.SLOT_SOURCE_ITEM_POS_Y - 0.25f + ITEM_HALF_SIZE;
-		float th_Rotation = ( ( System.currentTimeMillis() % 36000 ) * 0.02f );
+		float th_PosX = this.guiLeft + ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_X + ITEM_HALF_SIZE;
+		float th_PosY = this.guiTop + ( ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_Y - 0.25f ) + ITEM_HALF_SIZE;
+		float th_Rotation = ( System.currentTimeMillis() % 36000 ) * 0.02f;
 		float th_ScaleOffset = (float)Math.sin( th_Rotation * 0.15f ) * 0.1f;
 
 		// Disable depth testing and push the matrix
@@ -250,7 +227,7 @@ public class GuiDistillationEncoder
 		this.fontRendererObj.drawString( this.title, TITLE_POS_X, TITLE_POS_Y, 0 );
 
 		// Check the source item
-		if( this.sourceItemDirty && !this.firstDraw )
+		if( this.sourceItemDirty )
 		{
 			this.checkSourceItem();
 		}
@@ -274,8 +251,6 @@ public class GuiDistillationEncoder
 			// Finish
 			EnumGuiParticles.finishDraw();
 		}
-
-		this.firstDraw = false;
 
 	}
 
@@ -303,10 +278,11 @@ public class GuiDistillationEncoder
 	@Override
 	protected void onButtonClicked( final GuiButton button, final int mouseButton )
 	{
+		// Encode button?
 		if( button == this.buttonEncode )
 		{
-			Packet_S_DistillationEncoder.sendEncodePattern(
-							( (ContainerDistillationEncoder)this.inventorySlots ).getPlayer() );
+			// Ask server to encode
+			Packet_S_DistillationEncoder.sendEncodePattern( this.deContainer.getPlayer() );
 		}
 	}
 
@@ -324,15 +300,14 @@ public class GuiDistillationEncoder
 
 		// Reset flags
 		this.sourceItemDirty = false;
-		this.firstDraw = true;
 	}
 
+	/**
+	 * Called by the container when the source item has changed.
+	 */
 	@Override
 	public void onInventoryChanged( final IInventory sourceInventory )
 	{
-		if( !this.sourceItemDirty && ( sourceInventory == this.deContainer.slotSourceItem.inventory ) )
-		{
-			this.sourceItemDirty = true;
-		}
+		this.sourceItemDirty = true;
 	}
 }

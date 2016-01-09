@@ -2,7 +2,11 @@ package thaumicenergistics.common.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.tileentity.TileEntity;
 import thaumicenergistics.common.network.packet.client.Packet_C_Priority;
+import thaumicenergistics.common.parts.ThEPartBase;
+import thaumicenergistics.common.utils.ThEUtils;
 import appeng.helpers.IPriorityHost;
 
 public class ContainerPriority
@@ -37,13 +41,22 @@ public class ContainerPriority
 		Packet_C_Priority.sendPriority( this.host.getPriority(), this.player );
 	}
 
-	/**
-	 * Who can interact with this?
-	 */
 	@Override
 	public boolean canInteractWith( final EntityPlayer player )
 	{
-		return true;
+		if( this.host instanceof IInventory )
+		{
+			return ( (IInventory)this.host ).isUseableByPlayer( player );
+		}
+		else if( this.host instanceof ThEPartBase )
+		{
+			return ( (ThEPartBase)this.host ).isUseableByPlayer( player );
+		}
+		else if( this.host instanceof TileEntity )
+		{
+			return ThEUtils.canPlayerInteractWith( player, (TileEntity)this.host );
+		}
+		return false;
 	}
 
 	/**

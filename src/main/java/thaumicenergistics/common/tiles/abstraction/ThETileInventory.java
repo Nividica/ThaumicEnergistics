@@ -83,6 +83,12 @@ public abstract class ThETileInventory
 	}
 
 	@Override
+	public void markDirty()
+	{
+		this.worldObj.markTileEntityChunkModified( this.xCoord, this.yCoord, this.zCoord, this );
+	}
+
+	@Override
 	public void openInventory()
 	{
 	}

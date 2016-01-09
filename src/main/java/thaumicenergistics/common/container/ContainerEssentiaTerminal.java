@@ -1,5 +1,6 @@
 package thaumicenergistics.common.container;
 
+import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import thaumcraft.api.aspects.Aspect;
@@ -47,13 +48,10 @@ public class ContainerEssentiaTerminal
 	 * @param player
 	 * Player that owns this container.
 	 */
-	public ContainerEssentiaTerminal( final PartEssentiaTerminal terminal, final EntityPlayer player )
+	public ContainerEssentiaTerminal( @Nonnull final PartEssentiaTerminal terminal, final EntityPlayer player )
 	{
 		// Call the super
 		super( player );
-
-		// Set the player
-		this.player = player;
 
 		// Set the terminal
 		this.terminal = terminal;
@@ -88,6 +86,24 @@ public class ContainerEssentiaTerminal
 	protected BaseActionSource getActionSource()
 	{
 		return this.playerSource;
+	}
+
+	@Override
+	protected Aspect getHostSelectedAspect()
+	{
+		return this.terminal.selectedAspect;
+	}
+
+	@Override
+	protected void setHostSelectedAspect( final Aspect aspect )
+	{
+		this.terminal.selectedAspect = aspect;
+	}
+
+	@Override
+	public boolean canInteractWith( final EntityPlayer player )
+	{
+		return this.terminal.isUseableByPlayer( player );
 	}
 
 	/**
@@ -178,7 +194,7 @@ public class ContainerEssentiaTerminal
 	{
 		super.onContainerClosed( player );
 
-		if( EffectiveSide.isServerSide() && ( this.terminal != null ) )
+		if( EffectiveSide.isServerSide() )
 		{
 			this.terminal.removeListener( this );
 		}

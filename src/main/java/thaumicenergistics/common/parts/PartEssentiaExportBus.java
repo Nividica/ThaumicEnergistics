@@ -10,7 +10,6 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.tiles.TileJarFillableVoid;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.client.textures.BlockTextureManager;
-import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
 import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import appeng.api.config.Actionable;
@@ -34,17 +33,7 @@ public class PartEssentiaExportBus
 
 	public PartEssentiaExportBus()
 	{
-		super( AEPartsEnum.EssentiaExportBus );
-	}
-
-	/**
-	 * Sends the state of the void mode to the specified player.
-	 * 
-	 * @param player
-	 */
-	private void sendVoidModeToClient( final EntityPlayer player )
-	{
-		Packet_C_EssentiaIOBus.sendVoidMode( player, this.isVoidAllowed );
+		super( AEPartsEnum.EssentiaExportBus, SecurityPermissions.EXTRACT );
 	}
 
 	@Override
@@ -57,16 +46,6 @@ public class PartEssentiaExportBus
 	public int cableConnectionRenderTo()
 	{
 		return 5;
-	}
-
-	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
-	{
-		// Does the player have export permissions
-		return this.doesPlayerHavePermission( player, SecurityPermissions.EXTRACT );
 	}
 
 	/**
@@ -180,25 +159,21 @@ public class PartEssentiaExportBus
 	}
 
 	/**
-	 * Called when a player has requested to change the void mode
+	 * Returns if voiding is allowed.
+	 * 
+	 * @return
 	 */
-	public void onClientRequestChangeVoidMode( final EntityPlayer player )
+	@Override
+	public boolean isVoidAllowed()
 	{
-		// Swap void modes
-		this.isVoidAllowed = !this.isVoidAllowed;
-
-		// Send reply back
-		this.sendVoidModeToClient( player );
+		return this.isVoidAllowed;
 	}
 
 	@Override
-	public void onClientRequestFullUpdate( final EntityPlayer player )
+	public void onClientRequestFilterList( final EntityPlayer player )
 	{
 		// Call super
-		super.onClientRequestFullUpdate( player );
-
-		// Send void mode
-		this.sendVoidModeToClient( player );
+		super.onClientRequestFilterList( player );
 	}
 
 	@Override
@@ -335,14 +310,38 @@ public class PartEssentiaExportBus
 		this.renderStaticBusLights( x, y, z, helper, renderer );
 	}
 
+	/**
+	 * Called when a player has requested to change the void mode
+	 */
+	public void toggleVoidMode( final EntityPlayer player )
+	{
+		// Swap void modes
+		this.isVoidAllowed = !this.isVoidAllowed;
+	}
+
 	@Override
 	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
 	{
 		// Call super
 		super.writeToNBT( data, saveType );
 
+		boolean doSave = ( saveType == PartItemStack.World );
+		if( !doSave )
+		{
+			// Are there any filters?
+			for( Aspect aspect : this.filteredAspects )
+			{
+				if( aspect != null )
+				{
+					// Only save the void state if filters are set.
+					doSave = true;
+					break;
+				}
+			}
+		}
+
 		// Write void
-		if( this.isVoidAllowed )
+		if( doSave && this.isVoidAllowed )
 		{
 			data.setBoolean( PartEssentiaExportBus.NBT_KEY_VOID, this.isVoidAllowed );
 		}

@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
 import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
 import thaumicenergistics.client.textures.BlockTextureManager;
@@ -79,6 +80,12 @@ public class PartEssentiaTerminal
 	 */
 	private ViewItems viewMode = DEFAULT_VIEW_MODE;
 
+	/**
+	 * The selected aspect in the GUI.
+	 * Only stored while the part is loaded.
+	 */
+	public Aspect selectedAspect = null;
+
 	private TheInternalInventory inventory = new TheInternalInventory( ThaumicEnergistics.MOD_ID + ".part.aspect.terminal", 2, 64 )
 	{
 		@Override
@@ -121,15 +128,6 @@ public class PartEssentiaTerminal
 	public int cableConnectionRenderTo()
 	{
 		return 1;
-	}
-
-	/**
-	 * Checks if the specified player can open the gui.
-	 */
-	@Override
-	public boolean doesPlayerHavePermissionToOpenGui( final EntityPlayer player )
-	{
-		return true;
 	}
 
 	@Override
@@ -443,6 +441,12 @@ public class PartEssentiaTerminal
 	{
 		// Call super
 		super.writeToNBT( data, saveType );
+
+		// Only write NBT data if saving, or wrenched.
+		if( ( saveType != PartItemStack.World ) && ( saveType != PartItemStack.Wrench ) )
+		{
+			return;
+		}
 
 		// Write the sorting mode
 		if( this.sortMode != DEFAULT_SORT_MODE )

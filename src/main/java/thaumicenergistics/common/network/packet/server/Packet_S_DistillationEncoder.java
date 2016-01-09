@@ -2,7 +2,7 @@ package thaumicenergistics.common.network.packet.server;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
-import thaumicenergistics.common.container.ContainerDistillationEncoder;
+import thaumicenergistics.common.container.ContainerDistillationPatternEncoder;
 import thaumicenergistics.common.network.NetworkHandler;
 
 public class Packet_S_DistillationEncoder
@@ -45,10 +45,10 @@ public class Packet_S_DistillationEncoder
 		}
 
 		// Get the players open container
-		if( this.player.openContainer instanceof ContainerDistillationEncoder )
+		if( this.player.openContainer instanceof ContainerDistillationPatternEncoder )
 		{
 			// Send the encode
-			( (ContainerDistillationEncoder)this.player.openContainer ).onEncodePattern();
+			( (ContainerDistillationPatternEncoder)this.player.openContainer ).onEncodePattern();
 		}
 	}
 

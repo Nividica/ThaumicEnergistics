@@ -4,7 +4,6 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
@@ -414,9 +413,6 @@ public class GuiEssentiaLevelEmitter
 		this.buttonList.add( new GuiButtonRedstoneModes( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX, this.guiLeft +
 						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_X, this.guiTop + GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_Y,
 						GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE, RedstoneMode.LOW_SIGNAL, true ) );
-
-		// Request an update from the server
-		Packet_S_EssentiaEmitter.sendUpdateRequest( this.part, this.player );
 	}
 
 	/**
@@ -434,7 +430,7 @@ public class GuiEssentiaLevelEmitter
 	 * 
 	 * @param mode
 	 */
-	public void onServerUpdateRedstoneMode( final RedstoneMode mode )
+	public void onReceiveRedstoneMode( final RedstoneMode mode )
 	{
 		( (GuiButtonRedstoneModes)this.buttonList.get( GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX ) ).setRedstoneMode( mode );
 	}
@@ -444,29 +440,9 @@ public class GuiEssentiaLevelEmitter
 	 * 
 	 * @param amount
 	 */
-	public void onServerUpdateWantedAmount( final long amount )
+	public void onReceiveThresholdValue( final long amount )
 	{
 		this.amountField.setText( Long.toString( amount ) );
-	}
-
-	/**
-	 * Sets the tracked aspect based on the specified item.
-	 * 
-	 * @param itemStack
-	 * @return
-	 */
-	public boolean setFilteredAspectFromItemstack( final ItemStack itemStack )
-	{
-		Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( itemStack );
-
-		if( itemAspect != null )
-		{
-			this.aspectFilterSlot.setAspect( itemAspect, 1, false );
-
-			return true;
-		}
-
-		return false;
 	}
 
 	/**

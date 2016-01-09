@@ -45,6 +45,8 @@ public class ModuleWaila
 	{
 		// Register the providers
 		registrar.registerBodyProvider( ModuleWaila.INSTANCE, AbstractBlockProviderBase.class );
+
+		// Register the assembler
 		registrar.registerBodyProvider( ModuleWaila.INSTANCE, BlockArcaneAssembler.class );
 
 		// Register the vibration chamber

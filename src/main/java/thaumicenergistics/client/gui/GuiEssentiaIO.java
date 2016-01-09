@@ -375,7 +375,7 @@ public class GuiEssentiaIO
 		}
 
 		// Request a full update from the server
-		Packet_S_EssentiaIOBus.sendFullUpdateRequest( this.player, this.part );
+		Packet_S_EssentiaIOBus.sendRequestFilterList( this.player, this.part );
 
 	}
 

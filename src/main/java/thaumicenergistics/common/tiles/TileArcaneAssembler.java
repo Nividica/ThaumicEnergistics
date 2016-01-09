@@ -303,7 +303,7 @@ public class TileArcaneAssembler
 
 					// Mark the assembler as no longer crafting
 					this.isCrafting = false;
-					this.internalInventory.clearSlot( TARGET_SLOT_INDEX );
+					this.internalInventory.setInventorySlotContents( TARGET_SLOT_INDEX, null );
 					this.currentPattern = null;
 
 					// Mark for network update
@@ -526,7 +526,7 @@ public class TileArcaneAssembler
 			else
 			{
 				// Clear slot
-				this.internalInventory.clearSlot( index );
+				this.internalInventory.setInventorySlotContents( index, null );
 			}
 		}
 	}

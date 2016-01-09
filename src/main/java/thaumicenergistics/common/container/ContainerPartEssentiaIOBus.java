@@ -8,6 +8,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
 import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
+import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.config.RedstoneMode;
 
 /**
@@ -47,12 +48,17 @@ public class ContainerPartEssentiaIOBus
 	/**
 	 * The part associated with this container
 	 */
-	private ThEPartEssentiaIOBus_Base part;
+	private final ThEPartEssentiaIOBus_Base bus;
 
 	/**
 	 * Player associated with the container
 	 */
-	private EntityPlayer player;
+	private final EntityPlayer player;
+
+	/**
+	 * Cached isVoidAllowed
+	 */
+	private boolean isVoidAllowed;
 
 	/**
 	 * Creates the container.
@@ -65,7 +71,7 @@ public class ContainerPartEssentiaIOBus
 	public ContainerPartEssentiaIOBus( final ThEPartEssentiaIOBus_Base part, final EntityPlayer player )
 	{
 		// Set the part
-		this.part = part;
+		this.bus = part;
 
 		// Set the player
 		this.player = player;
@@ -82,30 +88,45 @@ public class ContainerPartEssentiaIOBus
 		this.bindToNetworkTool( player.inventory, part.getHost().getLocation(), 0, 0 );
 
 		// Register as a listener on the part
-		this.part.addListener( this );
+		this.bus.addListener( this );
 	}
 
-	@Override
-	protected void retrySlotClick( final int par1, final int par2, final boolean par3, final EntityPlayer player )
-	{
-		// Ignored
-	}
-
-	/**
-	 * Who can interact with the container?
-	 */
 	@Override
 	public boolean canInteractWith( final EntityPlayer player )
 	{
-		return true;
+		if( this.bus != null )
+		{
+			return this.bus.isUseableByPlayer( player );
+		}
+		return false;
+	}
+
+	@Override
+	public void detectAndSendChanges()
+	{
+		// Call super
+		super.detectAndSendChanges();
+
+		if( EffectiveSide.isClientSide() )
+		{
+			return;
+		}
+
+		// Has the void mode changed?
+		if( this.isVoidAllowed != this.bus.isVoidAllowed() )
+		{
+			// Update
+			this.isVoidAllowed = this.bus.isVoidAllowed();
+			Packet_C_EssentiaIOBus.sendVoidMode( this.player, this.isVoidAllowed );
+		}
 	}
 
 	@Override
 	public void onContainerClosed( final EntityPlayer player )
 	{
-		if( this.part != null )
+		if( this.bus != null )
 		{
-			this.part.removeListener( this );
+			this.bus.removeListener( this );
 		}
 	}
 
@@ -142,7 +163,7 @@ public class ContainerPartEssentiaIOBus
 		if( ( slot != null ) && ( slot.getHasStack() ) )
 		{
 			// Can this aspect be added to the filter list?
-			if( ( this.part != null ) && ( this.part.addFilteredAspectFromItemstack( player, slot.getStack() ) ) )
+			if( ( this.bus != null ) && ( this.bus.addFilteredAspectFromItemstack( player, slot.getStack() ) ) )
 			{
 				return null;
 			}

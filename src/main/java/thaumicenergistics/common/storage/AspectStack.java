@@ -292,6 +292,12 @@ public class AspectStack
 			this.stackSize = stack.getStackSize();
 			this.isCraftable = stack.getCraftable();
 		}
+		else
+		{
+			this.aspect = null;
+			this.stackSize = 0;
+			this.isCraftable = false;
+		}
 	}
 
 	@Override

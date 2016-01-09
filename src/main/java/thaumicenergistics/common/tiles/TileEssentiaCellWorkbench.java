@@ -12,8 +12,8 @@ import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.container.ContainerEssentiaCellWorkbench;
 import thaumicenergistics.common.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.common.items.ItemEssentiaCell;
-import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.utils.EffectiveSide;
+import thaumicenergistics.common.utils.ThEUtils;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.ISaveProvider;
 
@@ -21,6 +21,9 @@ public class TileEssentiaCellWorkbench
 	extends TileEntity
 	implements IInventory, ISaveProvider
 {
+	/**
+	 * NBT Keys
+	 */
 	private static String NBT_KEY_CELL = "EssentiaCell";
 
 	/**
@@ -36,32 +39,44 @@ public class TileEssentiaCellWorkbench
 	/**
 	 * List of containers that are open.
 	 */
-	private final List<ContainerEssentiaCellWorkbench> openContainers = new ArrayList<ContainerEssentiaCellWorkbench>();
+	private final List<ContainerEssentiaCellWorkbench> listeners = new ArrayList<ContainerEssentiaCellWorkbench>();
 
 	public TileEssentiaCellWorkbench()
 	{
 	}
 
 	/**
-	 * Forces all containers to sync the cell itemstack
+	 * Notifies listeners that the partition list has changed.
 	 */
-	private void forceContainerSyncCell()
+	private void notifyListenersOfPartitionChange()
 	{
-		for( ContainerEssentiaCellWorkbench container : this.openContainers )
+		ArrayList<Aspect> partitionList = this.getPartitionList();
+
+		// Update each listener
+		for( ContainerEssentiaCellWorkbench container : this.listeners )
 		{
-			container.onForceSyncCell();
+			container.onPartitionChanged( partitionList );
 		}
 	}
 
 	/**
-	 * Notifies the open containers that the cell changed.
+	 * Attempts to add an aspect to the partition.
+	 * 
+	 * @param aspect
 	 */
-	private void onCellChanged()
+	public boolean addAspectToPartition( final Aspect aspect )
 	{
-		for( ContainerEssentiaCellWorkbench container : this.openContainers )
+		if( ( this.eCellHandler != null ) )
 		{
-			container.onCellChanged();
+			if( this.eCellHandler.addAspectToPartitionList( aspect ) )
+			{
+				// Update listeners
+				this.notifyListenersOfPartitionChange();
+				return true;
+			}
 		}
+
+		return false;
 	}
 
 	/**
@@ -71,6 +86,24 @@ public class TileEssentiaCellWorkbench
 	public boolean canUpdate()
 	{
 		return false;
+	}
+
+	/**
+	 * Clears all partitioning.
+	 * 
+	 * @param player
+	 */
+	public void clearAllPartitioning()
+	{
+		// Ensure there is a handler
+		if( this.eCellHandler != null )
+		{
+			// Clear the partitioning
+			this.eCellHandler.clearPartitioning();
+
+			// Update listeners
+			this.notifyListenersOfPartitionChange();
+		}
 	}
 
 	@Override
@@ -108,6 +141,30 @@ public class TileEssentiaCellWorkbench
 	public int getInventoryStackLimit()
 	{
 		return 1;
+	}
+
+	/**
+	 * Gets the partition list.
+	 * 
+	 * @return
+	 */
+	public ArrayList<Aspect> getPartitionList()
+	{
+		ArrayList<Aspect> partitionList;
+
+		// Ensure there is a handler
+		if( ( this.eCellHandler != null ) )
+		{
+			// Get the partition list
+			partitionList = this.eCellHandler.getPartitionAspects();
+		}
+		else
+		{
+			// Create an empty list
+			partitionList = new ArrayList<Aspect>();
+		}
+
+		return partitionList;
 	}
 
 	@Override
@@ -162,126 +219,31 @@ public class TileEssentiaCellWorkbench
 	@Override
 	public boolean isUseableByPlayer( final EntityPlayer player )
 	{
-		return true;
-	}
-
-	/**
-	 * A client requests to add an aspect to the partition list.
-	 * 
-	 * @param aspect
-	 */
-	public boolean onClientRequestAddAspectToPartitionList( final EntityPlayer player, final Aspect aspect )
-	{
-		if( ( this.eCellHandler != null ) )
-		{
-			if( this.eCellHandler.addAspectToPartitionList( aspect ) )
-			{
-				// Re-send the list
-				this.onClientRequestPartitionList( player );
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * A client requests all partition data be removed.
-	 * 
-	 * @param player
-	 */
-	public void onClientRequestClearPartitioning( final EntityPlayer player )
-	{
-		if( this.eCellHandler != null )
-		{
-			this.eCellHandler.clearPartitioning();
-
-			// Re-send the list
-			this.onClientRequestPartitionList( player );
-
-			// Force containers to update the cell item.
-			this.forceContainerSyncCell();
-		}
-	}
-
-	/**
-	 * A client requests the partition list.
-	 * 
-	 * @param player
-	 */
-	public void onClientRequestPartitionList( final EntityPlayer player )
-	{
-		List<Aspect> partitionList;
-
-		if( ( this.eCellHandler != null ) )
-		{
-			partitionList = this.eCellHandler.getPartitionAspects();
-		}
-		else
-		{
-			partitionList = new ArrayList<Aspect>();
-		}
-
-		// Send to client
-		Packet_C_AspectSlot.setFilterList( partitionList, player );
-	}
-
-	/**
-	 * A client requests the cell partition list be set to match
-	 * the contents of the cell.
-	 * 
-	 * @param player
-	 */
-	public void onClientRequestPartitionToContents( final EntityPlayer player )
-	{
-		if( this.eCellHandler != null )
-		{
-			this.eCellHandler.partitionToCellContents();
-
-			// Re-send the list
-			this.onClientRequestPartitionList( player );
-		}
-	}
-
-	/**
-	 * A client requests to remove an aspect from the partition list.
-	 * 
-	 * @param aspect
-	 */
-	public void onClientRequestRemoveAspectFromPartitionList( final EntityPlayer player, final Aspect aspect )
-	{
-		if( ( this.eCellHandler != null ) )
-		{
-			if( this.eCellHandler.removeAspectFromPartitionList( aspect ) )
-			{
-				// Re-send the list
-				this.onClientRequestPartitionList( player );
-			}
-		}
-	}
-
-	/**
-	 * A client requests to replace an aspect from the partition list.
-	 * 
-	 * @param aspect
-	 */
-	public void onClientRequestReplaceAspectFromPartitionList( final EntityPlayer player, final Aspect fromAspect, final Aspect toAspect )
-	{
-		if( this.eCellHandler != null )
-		{
-			if( this.eCellHandler.replaceAspectInPartitionList( fromAspect, toAspect ) )
-			{
-				// Re-send the list
-				this.onClientRequestPartitionList( player );
-			}
-		}
+		return ThEUtils.canPlayerInteractWith( player, this );
 	}
 
 	@Override
 	public void openInventory()
 	{
 		// Ignored
+	}
+
+	/**
+	 * Partitions the cell be set to the contents of the cell.
+	 * 
+	 * @param player
+	 */
+	public void partitionToCellContents()
+	{
+		// Ensure there is a handler
+		if( this.eCellHandler != null )
+		{
+			// Partition the cell
+			this.eCellHandler.partitionToCellContents();
+
+			// Update listeners
+			this.notifyListenersOfPartitionChange();
+		}
 	}
 
 	/**
@@ -307,13 +269,32 @@ public class TileEssentiaCellWorkbench
 	 * 
 	 * @param container
 	 */
-	public void registerContainer( final ContainerEssentiaCellWorkbench container )
+	public void registerListener( final ContainerEssentiaCellWorkbench container )
 	{
-		if( !this.openContainers.contains( container ) )
+		if( !this.listeners.contains( container ) )
 		{
-			this.openContainers.add( container );
+			this.listeners.add( container );
 		}
 
+	}
+
+	/**
+	 * Removes an aspect from the partition.
+	 * 
+	 * @param aspect
+	 */
+	public void removeAspectFromPartition( final Aspect aspect )
+	{
+		// Ensure there is a handler
+		if( ( this.eCellHandler != null ) )
+		{
+			// Remove from the partition list
+			if( this.eCellHandler.removeAspectFromPartitionList( aspect ) )
+			{
+				// Update listeners
+				this.notifyListenersOfPartitionChange();
+			}
+		}
 	}
 
 	/**
@@ -322,9 +303,9 @@ public class TileEssentiaCellWorkbench
 	 * 
 	 * @param container
 	 */
-	public void removeContainer( final ContainerEssentiaCellWorkbench container )
+	public void removeListener( final ContainerEssentiaCellWorkbench container )
 	{
-		this.openContainers.remove( container );
+		this.listeners.remove( container );
 	}
 
 	/**
@@ -333,7 +314,8 @@ public class TileEssentiaCellWorkbench
 	@Override
 	public void saveChanges( final IMEInventory cellInventory )
 	{
-		// Mark the chunk as needing to be saved.( less invasive than this.markDirty() )
+		// Mark the chunk as needing to be saved.
+		// Much less invasive than markDirty(), which issues onNeighborChanged events to a 12 block radius...
 		this.worldObj.markTileEntityChunkModified( this.xCoord, this.yCoord, this.zCoord, this );
 	}
 
@@ -364,7 +346,26 @@ public class TileEssentiaCellWorkbench
 				}
 
 				// Update containers
-				this.onCellChanged();
+				this.notifyListenersOfPartitionChange();
+			}
+		}
+	}
+
+	/**
+	 * Replaces one aspect with another.
+	 * 
+	 * @param aspect
+	 */
+	public void swapPartitionedAspect( final Aspect fromAspect, final Aspect toAspect )
+	{
+		// Ensure there is a handler
+		if( this.eCellHandler != null )
+		{
+			// Replace the aspect
+			if( this.eCellHandler.replaceAspectInPartitionList( fromAspect, toAspect ) )
+			{
+				// Update listeners
+				this.notifyListenersOfPartitionChange();
 			}
 		}
 	}
