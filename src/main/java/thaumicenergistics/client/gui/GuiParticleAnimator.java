@@ -2,7 +2,6 @@ package thaumicenergistics.client.gui;
 
 import javax.annotation.Nonnull;
 import net.minecraft.client.gui.Gui;
-import thaumicenergistics.common.utils.ThELog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -144,7 +143,6 @@ public class GuiParticleAnimator
 
 		// Draw the particle
 		this.theParticle.drawParticle( gui, posX, posY, particleFrame, this.red, this.green, this.blue, needsPrepare );
-		ThELog.info( "Drawing Particle @ %f", this.percentComplete * 100.0f );
 
 		return true;
 	}

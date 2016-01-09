@@ -74,7 +74,7 @@ public final class IntegrationCore
 		{
 
 			// Log failure
-			ThELog.warning( "Skipping integration with %s", modID );
+			ThELog.info( "Skipping integration with %s", modID );
 		}
 	}
 
