@@ -53,7 +53,6 @@ import appeng.items.storage.ItemViewCell;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// TODO: convert inventory to internal inventory
 public class PartArcaneCraftingTerminal
 	extends ThERotateablePart
 	implements IInventory, IGridTickable, ICraftingIssuerHost, ITerminalHost
@@ -67,6 +66,21 @@ public class PartArcaneCraftingTerminal
 	 * Index of the wand, result, and view slot(s)
 	 */
 	public static final int WAND_SLOT_INDEX = 9, RESULT_SLOT_INDEX = 10, VIEW_SLOT_MIN = 11, VIEW_SLOT_MAX = 15, ARMOR_SLOT_MIN = 16;
+
+	/**
+	 * Default sorting order.
+	 */
+	public static final SortOrder DEFAULT_SORT_ORDER = SortOrder.NAME;
+
+	/**
+	 * Default sorting direction.
+	 */
+	public static final SortDir DEFAULT_SORT_DIR = SortDir.ASCENDING;
+
+	/**
+	 * Default view mode.
+	 */
+	public static final ViewItems DEFAULT_VIEW_MODE = ViewItems.ALL;
 
 	/**
 	 * Inventory name
@@ -102,21 +116,6 @@ public class PartArcaneCraftingTerminal
 	 * How much AE power is required to keep the part active.
 	 */
 	private static final double IDLE_POWER_DRAIN = 0.5D;
-
-	/**
-	 * Default sorting order.
-	 */
-	private static final SortOrder DEFAULT_SORT_ORDER = SortOrder.NAME;
-
-	/**
-	 * Default sorting direction.
-	 */
-	private static final SortDir DEFAULT_SORT_DIR = SortDir.ASCENDING;
-
-	/**
-	 * Default view mode.
-	 */
-	private static final ViewItems DEFAULT_VIEW_MODE = ViewItems.ALL;
 
 	/**
 	 * Inventory slots
@@ -293,7 +292,6 @@ public class PartArcaneCraftingTerminal
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		// NOTE: Ignored, should it be?
 		return null;
 	}
 

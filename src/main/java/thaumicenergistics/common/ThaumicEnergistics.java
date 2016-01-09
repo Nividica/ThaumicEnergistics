@@ -191,6 +191,5 @@ public class ThaumicEnergistics
 	}
 
 	// TODO: General: Sync server configs
-	// TODO: General: Use area packets over tile sync when possible
 
 }

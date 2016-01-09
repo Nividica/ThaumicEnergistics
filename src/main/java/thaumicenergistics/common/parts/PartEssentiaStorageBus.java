@@ -437,7 +437,6 @@ public class PartEssentiaStorageBus
 		{
 			this.upgradeInventory.readFromNBT( data, PartEssentiaStorageBus.NBT_KEY_UPGRADES );
 
-			// TODO: Is this needed or will onChange be called?
 			// Update the handler inverted
 			this.updateInverterState();
 		}

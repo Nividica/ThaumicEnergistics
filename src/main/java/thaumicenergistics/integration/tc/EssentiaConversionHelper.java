@@ -9,7 +9,7 @@ import appeng.api.AEApi;
 import appeng.api.storage.data.IAEFluidStack;
 
 /**
- * TODO Move all conversion operations to the essentia grid cache
+ * Aids in converting essentia to and from a fluid.
  * 
  * @author Nividica
  * 

@@ -9,7 +9,6 @@ import thaumicenergistics.common.inventory.TheInternalInventory;
 /**
  * Base for tiles with inventories.
  * Note: The inventory is not automatically saved to NBT.
- * TODO: Mark dirty stuff
  * 
  * @author Nividica
  * 

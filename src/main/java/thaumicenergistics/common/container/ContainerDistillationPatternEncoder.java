@@ -378,7 +378,7 @@ public class ContainerDistillationPatternEncoder
 		}
 
 		// Has the player discovered this aspect?
-		if( ItemCraftingAspect.canPlayerSeeAspect( this.player, aspect ) )
+		if( !ItemCraftingAspect.canPlayerSeeAspect( this.player, aspect ) )
 		{
 			// Set the selected aspect to unknown
 			this.slotSelectedAspect.putStack( ItemEnum.CRAFTING_ASPECT.getStack() );

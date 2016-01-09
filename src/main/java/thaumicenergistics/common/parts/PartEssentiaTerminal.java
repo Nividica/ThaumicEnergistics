@@ -155,7 +155,6 @@ public class PartEssentiaTerminal
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		// NOTE: Ignored, should it be? No, not it should not. Could use this to store all the terminal settings.
 		return null;
 	}
 

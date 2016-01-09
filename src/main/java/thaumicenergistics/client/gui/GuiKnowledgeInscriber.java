@@ -1,7 +1,6 @@
 package thaumicenergistics.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -23,86 +22,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiKnowledgeInscriber
 	extends ThEBaseGui
 {
-	// TODO: Either subclass guiparticleanimator or move to it completely.
-	private class SaveParticle
-	{
-		private int startX, startY;
-		private int distX, distY;
-		private float percent;
-		private int slot;
-
-		public SaveParticle( final int slotNumber )
-		{
-			// Set percentage
-			this.percent = 1.0f;
-
-			// Set slot
-			this.slot = slotNumber;
-
-			// Calculate starting postion
-			this.startX = ContainerKnowledgeInscriber.CRAFTING_SLOT_X + (
-							( slotNumber % ContainerKnowledgeInscriber.CRAFTING_COLS )
-							* ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING );
-
-			this.startY = ContainerKnowledgeInscriber.CRAFTING_SLOT_Y + (
-							( slotNumber / ContainerKnowledgeInscriber.CRAFTING_COLS )
-							* ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING );
-
-			// Calculate distances
-			this.distX = ContainerKnowledgeInscriber.KCORE_SLOT_X - this.startX;
-			this.distY = ContainerKnowledgeInscriber.KCORE_SLOT_Y - this.startY;
-		}
-
-		/**
-		 * Draws the particle. Assumes prepare and finish are called elsewhere.
-		 * 
-		 * @param gui
-		 * @param percentDelta
-		 * @param frame
-		 */
-		public void draw( final Gui gui, final float percentDelta, final int frame )
-		{
-			// Add delta
-			this.percent += percentDelta;
-
-			// Bounds check
-			if( this.percent >= 1.0f )
-			{
-				this.percent = 1.0f;
-			}
-			else if( this.percent < 0 )
-			{
-				return;
-			}
-
-			// Calculate X and Y
-			int X = this.startX + (int)( this.distX * this.percent );
-			int Y = this.startY + (int)( this.distY * this.percent );
-
-			// Draw
-			EnumGuiParticles.Knowledge.drawParticle( gui, X, Y, frame, 0.2f, 0.5f, 1.0f, false );
-		}
-
-		/**
-		 * Returns true if the particle is not finished drawing
-		 * 
-		 * @return
-		 */
-		public boolean notFinished()
-		{
-			return( this.percent < 1.0f );
-		}
-
-		/**
-		 * Prepares the particle to be draw again.
-		 */
-		public void reset()
-		{
-			// Set percentage
-			this.percent = -( this.slot / 8.0f );
-		}
-	}
-
 	/**
 	 * Gui size.
 	 */
@@ -124,6 +43,21 @@ public class GuiKnowledgeInscriber
 	private static final int TITLE_POS_X = 6, TITLE_POS_Y = 6;
 
 	/**
+	 * Player viewing the GUI.
+	 */
+	private final EntityPlayer player;
+
+	/**
+	 * Save particles
+	 */
+	private final GuiParticleAnimator[] particles;
+
+	/**
+	 * GUI Title
+	 */
+	private final String title;
+
+	/**
 	 * Save / Delete button.
 	 */
 	private GuiButtonSaveDelete buttonSave;
@@ -134,29 +68,14 @@ public class GuiKnowledgeInscriber
 	private GuiButtonClearCraftingGrid buttonClear;
 
 	/**
-	 * GUI Title
-	 */
-	private String title;
-
-	/**
 	 * State of the save button.
 	 */
 	private CoreSaveState saveState = CoreSaveState.Disabled_MissingCore;
 
 	/**
-	 * Save particles
-	 */
-	private SaveParticle[] particles;
-
-	/**
 	 * True if particles need to be drawn.
 	 */
 	private boolean hasParticlesToDraw = false;
-
-	/**
-	 * Player viewing the GUI.
-	 */
-	private EntityPlayer player;
 
 	public GuiKnowledgeInscriber( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
@@ -174,24 +93,50 @@ public class GuiKnowledgeInscriber
 		this.title = ThEStrings.Block_KnowledgeInscriber.getLocalized();
 
 		// Setup the particles
-		this.particles = new SaveParticle[ContainerKnowledgeInscriber.CRAFTING_COLS * ContainerKnowledgeInscriber.CRAFTING_ROWS];
+		this.particles = new GuiParticleAnimator[ContainerKnowledgeInscriber.CRAFTING_COLS * ContainerKnowledgeInscriber.CRAFTING_ROWS];
 		for( int index = 0; index < this.particles.length; ++index )
 		{
-			this.particles[index] = new SaveParticle( index );
+			this.particles[index] = this.createSaveParticle( index );
 		}
 	}
 
+	/**
+	 * Creates a particle for the specified slot number.
+	 * 
+	 * @param slotNumber
+	 * @return
+	 */
+	private GuiParticleAnimator createSaveParticle( final int slotNumber )
+	{
+		int startX = ContainerKnowledgeInscriber.CRAFTING_SLOT_X + (
+						( slotNumber % ContainerKnowledgeInscriber.CRAFTING_COLS )
+						* ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING );
+
+		int startY = ContainerKnowledgeInscriber.CRAFTING_SLOT_Y + (
+						( slotNumber / ContainerKnowledgeInscriber.CRAFTING_COLS )
+						* ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING );
+
+		// Create the animator
+		GuiParticleAnimator gpa = new GuiParticleAnimator( startX, startY,
+						ContainerKnowledgeInscriber.KCORE_SLOT_X, ContainerKnowledgeInscriber.KCORE_SLOT_Y,
+						0.4f, EnumGuiParticles.Knowledge );
+
+		// Set color
+		gpa.red = 0.2f;
+		gpa.green = 0.5f;
+		gpa.blue = 1.0f;
+
+		// Set delay
+		gpa.setDelayTime( slotNumber * 50 );
+
+		return gpa;
+	}
+
+	/**
+	 * Draws all save particles.
+	 */
 	private void drawSaveParticles()
 	{
-		int time = (int)( System.currentTimeMillis() % Integer.MAX_VALUE );
-
-		// Calculate frame number
-		int frame = ( time / 125 );
-
-		// Set percent delta
-		// NOTE: This should be time based, not FPS based. But lazy.
-		float percentDelta = 0.03f;
-
 		// Assume all particles are drawn
 		this.hasParticlesToDraw = false;
 
@@ -199,10 +144,7 @@ public class GuiKnowledgeInscriber
 		for( int index = 0; index < this.particles.length; ++index )
 		{
 			// Draw the particle
-			this.particles[index].draw( this, percentDelta, frame );
-
-			// Is the particle not done?
-			this.hasParticlesToDraw |= this.particles[index].notFinished();
+			this.hasParticlesToDraw |= this.particles[index].draw( this, false );
 		}
 		EnumGuiParticles.finishDraw();
 	}

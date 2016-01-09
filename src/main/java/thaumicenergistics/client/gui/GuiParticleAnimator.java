@@ -2,6 +2,7 @@ package thaumicenergistics.client.gui;
 
 import javax.annotation.Nonnull;
 import net.minecraft.client.gui.Gui;
+import thaumicenergistics.common.utils.ThELog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -14,19 +15,24 @@ public class GuiParticleAnimator
 	private final int distanceX, distanceY;
 
 	/**
-	 * Time when the particle was created.
-	 */
-	private final double epoch;
-
-	/**
 	 * The amount of time the particle is alive for.
 	 */
 	private final long timeToLive;
 
 	/**
+	 * Time when the particle was created.
+	 */
+	private double epoch;
+
+	/**
 	 * How complete the animation is.
 	 */
 	private double percentComplete;
+
+	/**
+	 * The number of MS to wait before starting the animation.
+	 */
+	private long delayTime = 0;
 
 	/**
 	 * Starting position.
@@ -126,6 +132,11 @@ public class GuiParticleAnimator
 		{
 			this.percentComplete = 1.0f;
 		}
+		else if( this.percentComplete < 0 )
+		{
+			// Delayed
+			return true;
+		}
 
 		// Calculate position
 		int posX = this.startingX + (int)( this.distanceX * this.percentComplete );
@@ -133,8 +144,18 @@ public class GuiParticleAnimator
 
 		// Draw the particle
 		this.theParticle.drawParticle( gui, posX, posY, particleFrame, this.red, this.green, this.blue, needsPrepare );
+		ThELog.info( "Drawing Particle @ %f", this.percentComplete * 100.0f );
 
 		return true;
+	}
+
+	/**
+	 * Resets the particle back to it's original state.
+	 */
+	public void reset()
+	{
+		this.epoch = System.currentTimeMillis() + this.delayTime;
+		this.percentComplete = 0;
 	}
 
 	/**
@@ -149,5 +170,16 @@ public class GuiParticleAnimator
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
+	}
+
+	/**
+	 * Sets the number of MS to wait before starting the animation.
+	 * 
+	 * @param timeMS
+	 */
+	public void setDelayTime( final long timeMS )
+	{
+		this.delayTime = timeMS;
+		this.epoch += this.delayTime;
 	}
 }

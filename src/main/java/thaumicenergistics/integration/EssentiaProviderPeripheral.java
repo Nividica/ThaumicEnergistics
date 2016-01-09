@@ -819,7 +819,6 @@ public class EssentiaProviderPeripheral
 	@Override
 	public boolean equals( final IPeripheral other )
 	{
-		// TODO: Make this more robust.
 		return this.equals( other );
 	}
 

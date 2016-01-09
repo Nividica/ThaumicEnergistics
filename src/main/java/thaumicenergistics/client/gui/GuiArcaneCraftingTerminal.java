@@ -567,7 +567,6 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private void updateScrollbarRange()
 	{
-		// TODO: Is there still overscroll?
 		// Calculate the total number of rows needed to display ALL items
 		int totalNumberOfRows = (int)Math.ceil( this.repo.size() / (double)GuiConstants_ACT.ME_COLUMNS );
 

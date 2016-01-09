@@ -133,12 +133,23 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * The arcane crafting terminal associated with the container.
 	 */
-	private PartArcaneCraftingTerminal terminal;
+	private final PartArcaneCraftingTerminal terminal;
 
 	/**
 	 * The player associated with this container.
 	 */
-	private EntityPlayer player;
+	private final EntityPlayer player;
+
+	/**
+	 * The AE network item monitor we are attached to.
+	 */
+	private final IMEMonitor<IAEItemStack> monitor;
+
+	/**
+	 * Network source representing the player who is interacting with the
+	 * container.
+	 */
+	private final PlayerSource playerSource;
 
 	/**
 	 * Slot number of the first and last crafting slots.
@@ -176,15 +187,19 @@ public class ContainerPartArcaneCraftingTerminal
 	private List<ArcaneCrafingCost> craftingCost = new ArrayList<ArcaneCrafingCost>();
 
 	/**
-	 * The AE network item monitor we are attached to.
+	 * Cached sorting order.
 	 */
-	private IMEMonitor<IAEItemStack> monitor;
+	private SortOrder cachedSortOrder = PartArcaneCraftingTerminal.DEFAULT_SORT_ORDER;
 
 	/**
-	 * Network source representing the player who is interacting with the
-	 * container.
+	 * Cached sorting direction.
 	 */
-	private PlayerSource playerSource;
+	private SortDir cachedSortDirection = PartArcaneCraftingTerminal.DEFAULT_SORT_DIR;
+
+	/**
+	 * Cached view mode.
+	 */
+	private ViewItems cachedViewMode = PartArcaneCraftingTerminal.DEFAULT_VIEW_MODE;
 
 	/**
 	 * Creates the container
@@ -328,6 +343,10 @@ public class ContainerPartArcaneCraftingTerminal
 				// Register with the monitor.
 				this.monitor.addListener( this, null );
 			}
+		}
+		else
+		{
+			this.monitor = null;
 		}
 	}
 
@@ -843,6 +862,52 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 	}
 
+	@Override
+	public void detectAndSendChanges()
+	{
+		// Call super
+		super.detectAndSendChanges();
+
+		if( EffectiveSide.isClientSide() )
+		{
+			return;
+		}
+
+		boolean sendUpdate = false;
+
+		// Has the sorting order changed?
+		if( this.cachedSortOrder != this.terminal.getSortingOrder() )
+		{
+			// Update
+			this.cachedSortOrder = this.terminal.getSortingOrder();
+			sendUpdate = true;
+		}
+
+		// Has the sorting direction changed?
+		if( this.cachedSortDirection != this.terminal.getSortingDirection() )
+		{
+			// Update
+			this.cachedSortDirection = this.terminal.getSortingDirection();
+			sendUpdate = true;
+		}
+
+		// Has the view mode changed?
+		if( this.cachedViewMode != this.terminal.getViewMode() )
+		{
+			// Update
+			this.cachedViewMode = this.terminal.getViewMode();
+			sendUpdate = true;
+		}
+
+		// Send update?
+		if( sendUpdate )
+		{
+			// Send the mode info
+			Packet_C_ArcaneCraftingTerminal.sendModeChange( this.player,
+				this.cachedSortOrder, this.cachedSortDirection, this.cachedViewMode );
+		}
+	}
+
 	/**
 	 * Gets the aspect cost and how much is missing for the current recipe.
 	 * 
@@ -1252,10 +1317,6 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	public void onClientRequestFullUpdate( final EntityPlayer player )
 	{
-		// Send the sorting info
-		Packet_C_ArcaneCraftingTerminal.sendModeChange( player, this.terminal.getSortingOrder(),
-			this.terminal.getSortingDirection(), this.terminal.getViewMode() );
-
 		// Ensure we have a monitor & the terminal is active
 		if( ( this.monitor != null ) && ( this.terminal.isActive() ) )
 		{
