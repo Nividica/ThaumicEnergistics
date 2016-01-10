@@ -4,6 +4,8 @@
   Fixed bug where Terminals would not properly update during certain AE-network changes.
   Fixed bug where craftable essentia was still present on the network when it should not be.
   Added config option to force some thaumcraft blocks to be turned into facades.
+  Dependency Updated: AE2-rv3-beta-4
+  Added config options for many things.
 
 01/09/2016 0.10.0.0
   Fixed crafting aspect item display name.

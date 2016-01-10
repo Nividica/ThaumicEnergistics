@@ -1,11 +1,11 @@
 package thaumicenergistics.common.features;
 
-import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.items.ItemMaterial;
 import thaumicenergistics.common.registries.*;
@@ -13,11 +13,16 @@ import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
 public class FeatureConversionCores
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
 
+	public FeatureConversionCores()
+	{
+		super( ResearchTypes.CORES.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		return true;
 	}
@@ -26,6 +31,12 @@ public class FeatureConversionCores
 	protected Object[] getItemReqs( final CommonDependantItems cdi )
 	{
 		return new Object[] { cdi.FormationCore, cdi.AnnihilationCore };
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return FeatureRegistry.instance().featureThaumicEnergistics;
 	}
 
 	@Override
@@ -41,7 +52,7 @@ public class FeatureConversionCores
 		coalescenceAspects.add( Aspect.ORDER, 2 );
 
 		// Register Coalescence Core
-		RecipeRegistry.MATERIAL_COALESCENCE_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
+		RecipeRegistry.MATERIAL_COALESCENCE_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( this.researchKey,
 			CoalescenceCore, coalescenceAspects, cdi.QuickSilverDrop, cdi.QuickSilverDrop, cdi.QuickSilverDrop, cdi.OrderShard, cdi.FormationCore );
 
 		// Set Diffusion Core aspects
@@ -50,7 +61,7 @@ public class FeatureConversionCores
 		diffusionAspects.add( Aspect.ENTROPY, 2 );
 
 		// Register Diffusion Core
-		RecipeRegistry.MATERIAL_DIFFUSION_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.CORES.getKey(),
+		RecipeRegistry.MATERIAL_DIFFUSION_CORE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( this.researchKey,
 			DiffusionCore, diffusionAspects, cdi.QuickSilverDrop, cdi.QuickSilverDrop, cdi.QuickSilverDrop, cdi.EntropyShard, cdi.AnnihilationCore );
 	}
 
@@ -80,21 +91,9 @@ public class FeatureConversionCores
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.CORES.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
-	{
-		return EnumSet.of( PseudoResearchTypes.DISTILESSENTIA );
+		PseudoResearchTypes.DISTILESSENTIA.registerPsudeoResearch();
 	}
 
 }

@@ -5,6 +5,7 @@ import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
@@ -12,11 +13,16 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureACT
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
 
+	public FeatureACT()
+	{
+		super( ResearchTypes.ARCANE_TERMINAL.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		// Depends on crafting terminal
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.CraftingTerminal ) )
@@ -24,13 +30,19 @@ public class FeatureACT
 			return false;
 		}
 
-		return true;
+		return theConfig.craftArcaneCraftingTerminal();
 	}
 
 	@Override
 	protected Object[] getItemReqs( final CommonDependantItems cdi )
 	{
 		return new Object[] { cdi.CalculationProcessor, cdi.METerminal };
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return FeatureRegistry.instance().featureThaumicEnergistics;
 	}
 
 	@Override
@@ -54,8 +66,7 @@ public class FeatureACT
 		Object[] actRecipe = new Object[] { cdi.METerminal, cdi.ArcaneWorkTable, cdi.CalculationProcessor };
 
 		// Register
-		RecipeRegistry.PART_ARCANE_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
-			ResearchRegistry.ResearchTypes.ARCANE_TERMINAL.getKey(),
+		RecipeRegistry.PART_ARCANE_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe( this.researchKey,
 			ArcaneCraftingTerminal, actAspectList, actRecipe );
 	}
 
@@ -83,14 +94,7 @@ public class FeatureACT
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.ARCANE_TERMINAL.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
 	}
 }

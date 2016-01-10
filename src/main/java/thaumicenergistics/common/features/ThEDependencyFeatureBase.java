@@ -1,5 +1,10 @@
 package thaumicenergistics.common.features;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import thaumicenergistics.api.IThEConfig;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.registries.FeatureRegistry;
 
 /**
  * Defines a feature that depends on a configuration setting and/or specific
@@ -11,9 +16,14 @@ package thaumicenergistics.common.features;
 public abstract class ThEDependencyFeatureBase
 	extends ThEFeatureBase
 {
+	/**
+	 * True if the requirements have been checked.
+	 */
+	private boolean hasCheckedReqs = false;
+
 	public ThEDependencyFeatureBase()
 	{
-		// Inform the super that we are not enabled by default
+		// Disabled by default
 		super( false );
 	}
 
@@ -47,24 +57,38 @@ public abstract class ThEDependencyFeatureBase
 	/**
 	 * Checks if this feature can be enabled based on ThE, TC and/or AE configs.
 	 */
-	protected abstract boolean checkConfigs();
+	protected abstract boolean checkConfigs( @Nonnull IThEConfig theConfig );
 
 	/**
 	 * Gets the features required items.
 	 * 
 	 * @return
 	 */
+	@Nullable
 	protected abstract Object[] getItemReqs( CommonDependantItems cdi );
+
+	@Override
+	protected void registerAdditional()
+	{
+	}
 
 	/**
 	 * Evaluates the dependencies of the feature and enables it if possible.
 	 * 
 	 * @param cdi
 	 */
-	public final void evaluateDependencies( final CommonDependantItems cdi )
+	@Override
+	public boolean isAvailable()
 	{
-		// Ask for the features config settings and required items
-		this.setAvailable( this.checkConfigs() && this.checkItemReqs( this.getItemReqs( cdi ) ) );
+		if( !this.hasCheckedReqs )
+		{
+			// Ask for the features config settings and required items
+			this.available = this.checkConfigs( ThEApi.instance().config() )
+							&& this.checkItemReqs( this.getItemReqs( FeatureRegistry.instance().cdi ) );
+			this.hasCheckedReqs = true;
+		}
+
+		return super.isAvailable();
 	}
 
 }

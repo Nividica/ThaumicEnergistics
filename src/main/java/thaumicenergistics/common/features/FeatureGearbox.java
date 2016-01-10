@@ -1,6 +1,5 @@
 package thaumicenergistics.common.features;
 
-import java.util.EnumSet;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -8,6 +7,7 @@ import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
@@ -15,12 +15,30 @@ import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
 public class FeatureGearbox
-	extends ThEFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
 
 	public FeatureGearbox()
 	{
-		super( true );
+		super( ResearchTypes.IRON_GEARBOX.getKey() );
+	}
+
+	@Override
+	protected boolean checkConfigs( final IThEConfig theConfig )
+	{
+		return true;
+	}
+
+	@Override
+	protected Object[] getItemReqs( final CommonDependantItems cdi )
+	{
+		return null;
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return null;
 	}
 
 	@Override
@@ -51,7 +69,7 @@ public class FeatureGearbox
 		Object[] recipeIronGear = new Object[] { " I ", " W ", "I I", 'I', cdi.IronIngot, 'W', WoodGear };
 
 		// Register Iron Gear
-		RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRON_GEARBOX.getKey(), ThEIronGear,
+		RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey, ThEIronGear,
 			ironGearAspects, recipeIronGear );
 
 		// Set Iron Gear Box aspects
@@ -62,7 +80,7 @@ public class FeatureGearbox
 		// Iron Gear Box recipe
 		Object[] recipeIronGearBox = new Object[] { "SGS", "GGG", "SGS", 'S', cdi.Cobblestone, 'G', IronGear };
 
-		RecipeRegistry.BLOCK_IRONGEARBOX = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IRON_GEARBOX.getKey(), IronGearBox,
+		RecipeRegistry.BLOCK_IRONGEARBOX = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey, IronGearBox,
 			igbAspects, recipeIronGearBox );
 
 		// Set Thaumium Gear Box aspects
@@ -123,21 +141,10 @@ public class FeatureGearbox
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.IRON_GEARBOX.getKey();
-		}
+		PseudoResearchTypes.COREUSE.registerPsudeoResearch();
 
-		// No parent to pass to
-		return "";
-	}
-
-	@Override
-	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
-	{
-		return EnumSet.of( PseudoResearchTypes.COREUSE );
 	}
 
 }

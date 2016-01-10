@@ -1,12 +1,12 @@
 package thaumicenergistics.common.features;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
@@ -15,13 +15,18 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureEssentiaIOBuses
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
 
 	private boolean isImportExportEnabled = false;
 
+	public FeatureEssentiaIOBuses()
+	{
+		super( ResearchTypes.IO.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		this.isImportExportEnabled = ( AEConfig.instance.isFeatureEnabled( AEFeature.ImportBus ) || AEConfig.instance
 						.isFeatureEnabled( AEFeature.ExportBus ) );
@@ -33,6 +38,12 @@ public class FeatureEssentiaIOBuses
 	protected Object[] getItemReqs( final CommonDependantItems cdi )
 	{
 		return null;
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return FeatureRegistry.instance().featureConversionCores;
 	}
 
 	@Override
@@ -54,7 +65,7 @@ public class FeatureEssentiaIOBuses
 						cdi.FilterTube, 'W', cdi.WardedGlass };
 
 		// Register the storage bus
-		RecipeRegistry.PART_STORAGE_BUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IO.getKey(), EssentiaStorageBus,
+		RecipeRegistry.PART_STORAGE_BUS = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey, EssentiaStorageBus,
 			storageAspectList, recipeStorageBus );
 
 		// Is import and export enabled?
@@ -77,11 +88,11 @@ public class FeatureEssentiaIOBuses
 			Object[] recipeExportBus = new Object[] { "JCJ", "IFI", 'J', cdi.WardedJar, 'C', CoalescenceCore, 'I', cdi.IronIngot, 'F', cdi.FilterTube };
 
 			// Register Import Bus
-			RecipeRegistry.PART_IMPORT_BUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IO.getKey(), EssentiaImportBus,
+			RecipeRegistry.PART_IMPORT_BUS = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey, EssentiaImportBus,
 				ioAspectList, recipeImportBus );
 
 			// Register Export Bus
-			RecipeRegistry.PART_EXPORT_BUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.IO.getKey(), EssentiaExportBus,
+			RecipeRegistry.PART_EXPORT_BUS = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey, EssentiaExportBus,
 				ioAspectList, recipeExportBus );
 		}
 	}
@@ -129,20 +140,8 @@ public class FeatureEssentiaIOBuses
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.IO.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureConversionCores.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
-	{
-		return EnumSet.of( PseudoResearchTypes.TUBEFILTER );
+		PseudoResearchTypes.TUBEFILTER.registerPsudeoResearch();
 	}
 }

@@ -34,7 +34,7 @@ public class Renderers
 		RenderingRegistry.registerBlockHandler( new RenderBlockInfusionProvider() );
 
 		// Are gearbox models enabled?
-		if( !ThEApi.instance().config().gearboxModelDisabled() )
+		if( !ThEApi.instance().config().disableGearboxModel() )
 		{
 			// Register the gearbox renderer
 			ClientRegistry.bindTileEntitySpecialRenderer( TileGearBox.class, new RenderTileGearbox() );

@@ -1,11 +1,11 @@
 package thaumicenergistics.common.features;
 
-import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
@@ -16,11 +16,16 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureAutocrafting_Arcane
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
 
+	public FeatureAutocrafting_Arcane()
+	{
+		super( ResearchTypes.ARCANE_ASSEMBLER.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		// Depends on crafting CPU's
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.CraftingCPU ) )
@@ -34,13 +39,19 @@ public class FeatureAutocrafting_Arcane
 			return false;
 		}
 
-		return true;
+		return theConfig.craftArcaneAssembler();
 	}
 
 	@Override
 	protected Object[] getItemReqs( final CommonDependantItems cdi )
 	{
 		return new Object[] { cdi.VibrantGlass, cdi.CalculationProcessor, cdi.LogicProcessor, cdi.MolecularAssembler };
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return FeatureRegistry.instance().featureVRI;
 	}
 
 	@Override
@@ -68,7 +79,7 @@ public class FeatureAutocrafting_Arcane
 						cdi.CalculationProcessor };
 
 		// Register KC
-		RecipeRegistry.ITEM_KNOWLEDGE_CORE = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.KNOWLEDGE_INSCRIBER.getKey(),
+		RecipeRegistry.ITEM_KNOWLEDGE_CORE = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey,
 			KnowledgeCore, kCoreAspects, kCoreRecipe );
 
 		// Knowledge Inscriber
@@ -87,8 +98,7 @@ public class FeatureAutocrafting_Arcane
 						cdi.LogicProcessor };
 
 		// Register KI
-		RecipeRegistry.BLOCK_KNOWLEDGE_INSCRIBER = ThaumcraftApi.addArcaneCraftingRecipe(
-			ResearchRegistry.ResearchTypes.KNOWLEDGE_INSCRIBER.getKey(),
+		RecipeRegistry.BLOCK_KNOWLEDGE_INSCRIBER = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey,
 			KnowledgeInscriber, kiAspects, kiRecipe );
 
 		// Arcane Assembler
@@ -107,7 +117,7 @@ public class FeatureAutocrafting_Arcane
 						cdi.EntropyShard, cdi.FireShard };
 
 		// Register Assembler
-		RecipeRegistry.BLOCK_ARCANE_ASSEMBLER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ARCANE_ASSEMBLER.getKey(),
+		RecipeRegistry.BLOCK_ARCANE_ASSEMBLER = ThaumcraftApi.addInfusionCraftingRecipe( this.researchKey,
 			ArcaneAssembler, 7, assemblerAspects, cdi.MolecularAssembler, assemblerRecipe );
 	}
 
@@ -171,21 +181,9 @@ public class FeatureAutocrafting_Arcane
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.ARCANE_ASSEMBLER.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureVRI.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
-	{
-		return EnumSet.of( PseudoResearchTypes.SCEPTRE );
+		PseudoResearchTypes.SCEPTRE.registerPsudeoResearch();
 	}
 
 }

@@ -5,29 +5,37 @@ import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
 public class FeatureEssentiaProvider
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
 
+	public FeatureEssentiaProvider()
+	{
+		super( ResearchTypes.ESSENTIA_PROVIDER.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		// Depends on ThE config
-		if( !ThEApi.instance().config().allowedToCraftEssentiaProvider() )
-		{
-			return false;
-		}
-		return true;
+		return theConfig.craftEssentiaProvider();
 	}
 
 	@Override
 	protected Object[] getItemReqs( final CommonDependantItems cdi )
 	{
 		return new Object[] { cdi.MEInterface };
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return FeatureRegistry.instance().featureEssentiaIOBuses;
 	}
 
 	@Override
@@ -50,7 +58,7 @@ public class FeatureEssentiaProvider
 						DiffusionCore, cdi.WaterShard };
 
 		// Register Essentia Provider
-		RecipeRegistry.BLOCK_ESSENTIA_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.ESSENTIA_PROVIDER.getKey(),
+		RecipeRegistry.BLOCK_ESSENTIA_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( this.researchKey,
 			EssentiaProvider, 3, essentiaProviderList, cdi.MEInterface, recipeEssentiaProvider );
 	}
 
@@ -81,15 +89,8 @@ public class FeatureEssentiaProvider
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.ESSENTIA_PROVIDER.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureEssentiaIOBuses.getFirstValidParentKey( true );
 	}
 
 }

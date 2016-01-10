@@ -1,11 +1,11 @@
 package thaumicenergistics.common.features;
 
-import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
@@ -15,10 +15,15 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureWrenchFocus
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
+	public FeatureWrenchFocus()
+	{
+		super( ResearchTypes.FOCUS_WRENCH.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		// Depends on quartz tools
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzTools ) )
@@ -32,13 +37,19 @@ public class FeatureWrenchFocus
 			return false;
 		}
 
-		return true;
+		return theConfig.enableWrenchFocus();
 	}
 
 	@Override
 	protected Object[] getItemReqs( final CommonDependantItems cdi )
 	{
 		return new Object[] { cdi.CertusWrench };
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return null;
 	}
 
 	@Override
@@ -51,7 +62,7 @@ public class FeatureWrenchFocus
 		AspectList wrenchAspects = new AspectList();
 		wrenchAspects.add( Aspect.AIR, 10 );
 		wrenchAspects.add( Aspect.FIRE, 10 );
-		RecipeRegistry.ITEM_WRENCH_FOCUS = ThaumcraftApi.addArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.FOCUS_WRENCH.getKey(), WrenchFocus,
+		RecipeRegistry.ITEM_WRENCH_FOCUS = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey, WrenchFocus,
 			wrenchAspects, new Object[] { "ANF", "NWN", "FNA", 'A', cdi.AirShard, 'F', cdi.FireShard, 'N', cdi.NetherQuartz, 'W', cdi.CertusWrench } );
 	}
 
@@ -78,21 +89,9 @@ public class FeatureWrenchFocus
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.FOCUS_WRENCH.getKey();
-		}
-
-		// No parent
-		return "";
-	}
-
-	@Override
-	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
-	{
-		return EnumSet.of( PseudoResearchTypes.FOCUSFIRE );
+		PseudoResearchTypes.FOCUSFIRE.registerPsudeoResearch();
 	}
 
 }

@@ -7,6 +7,7 @@ import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.IThEParts;
 import thaumicenergistics.api.ThEApi;
@@ -17,16 +18,22 @@ import appeng.core.features.AEFeature;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class FeatureEssentiaMonitoring
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
 
 	private boolean isWirelessEnabled = false, isConversionEnabled = false;
 
+	public FeatureEssentiaMonitoring()
+	{
+		super( ResearchTypes.ESSENTIA_TERMINAL.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		this.isConversionEnabled = AEConfig.instance.isFeatureEnabled( AEFeature.PartConversionMonitor );
-		this.isWirelessEnabled = AEConfig.instance.isFeatureEnabled( AEFeature.WirelessAccessTerminal );
+		this.isWirelessEnabled = AEConfig.instance.isFeatureEnabled( AEFeature.WirelessAccessTerminal )
+						&& theConfig.craftWirelessEssentiaTerminal();
 		return true;
 	}
 
@@ -36,6 +43,12 @@ public class FeatureEssentiaMonitoring
 		this.isWirelessEnabled &= ( cdi.DenseCell != null ) && ( cdi.WirelessReceiver != null );
 
 		return new Object[] { cdi.LogicProcessor, cdi.CalculationProcessor };
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return FeatureRegistry.instance().featureConversionCores;
 	}
 
 	@Override
@@ -58,7 +71,7 @@ public class FeatureEssentiaMonitoring
 
 		// Register Essentia Terminal
 		RecipeRegistry.PART_ESSENTIA_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
-			ResearchRegistry.ResearchTypes.ESSENTIA_TERMINAL.getKey(), EssentiaTerminal, etAspectList, cdi.IlluminatedPanel, DiffusionCore,
+			this.researchKey, EssentiaTerminal, etAspectList, cdi.IlluminatedPanel, DiffusionCore,
 			CoalescenceCore, cdi.LogicProcessor, cdi.VisFilter );
 
 		// Is wireless term enabled?
@@ -80,7 +93,7 @@ public class FeatureEssentiaMonitoring
 
 		// Register Essentia Level Emitter
 		RecipeRegistry.PART_ESSENTIA_LEVEL_EMITTER = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
-			ResearchRegistry.ResearchTypes.ESSENTIA_TERMINAL.getKey(), EssentiaLevelEmitter, emitterAspectList, cdi.CalculationProcessor,
+			this.researchKey, EssentiaLevelEmitter, emitterAspectList, cdi.CalculationProcessor,
 			cdi.RedstoneTorch, cdi.SalisMundus );
 
 		// Register Essentia Storage Monitor
@@ -141,14 +154,7 @@ public class FeatureEssentiaMonitoring
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.ESSENTIA_TERMINAL.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureConversionCores.getFirstValidParentKey( true );
 	}
 }

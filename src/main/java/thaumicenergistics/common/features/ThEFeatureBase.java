@@ -1,8 +1,5 @@
 package thaumicenergistics.common.features;
 
-import java.util.EnumSet;
-import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
-
 /**
  * Defines what a basic feature of ThE is.
  * 
@@ -13,14 +10,14 @@ public abstract class ThEFeatureBase
 {
 
 	/**
-	 * Is the feature available.
-	 */
-	private boolean available = false;
-
-	/**
 	 * Has the feature been called to register itself?
 	 */
 	private boolean hasRegistered = false;
+
+	/**
+	 * Is the feature available.
+	 */
+	protected boolean available = false;
 
 	/**
 	 * Creates the feature.
@@ -29,60 +26,20 @@ public abstract class ThEFeatureBase
 	 */
 	public ThEFeatureBase( final boolean initiallyAvailable )
 	{
-		this.setAvailable( initiallyAvailable );
+		this.available = initiallyAvailable;
 	}
+
+	/**
+	 * Registers any additional features of this feature.
+	 */
+	protected abstract void registerAdditional();
 
 	/**
 	 * Registers the features crafting recipes, if it has any.
 	 * 
 	 * @param cdi
 	 */
-	protected void registerCrafting( final CommonDependantItems cdi )
-	{
-	}
-
-	/**
-	 * Registers the research with Thaumcraft, if it has any.
-	 */
-	protected void registerResearch()
-	{
-	}
-
-	/**
-	 * Set if the feature is available.
-	 * 
-	 * @param available
-	 */
-	protected void setAvailable( final boolean available )
-	{
-		this.available = available;
-	}
-
-	/**
-	 * Gets the research key of the first valid parent that can be found.
-	 * If the feature in question is not enabled, it will pass the call to its
-	 * parent.
-	 * 
-	 * Only valid for Thaumcraft features.
-	 * 
-	 * @return
-	 */
-	public String getFirstValidParentKey( final boolean includeSelf )
-	{
-		return "";
-	}
-
-	/**
-	 * Gets the features pseudo-parent(s) if it has any.
-	 * 
-	 * Only valid for Thaumcraft features.
-	 * 
-	 * @return
-	 */
-	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
-	{
-		return EnumSet.noneOf( PseudoResearchTypes.class );
-	}
+	protected abstract void registerCrafting( final CommonDependantItems cdi );
 
 	/**
 	 * Is the feature available?
@@ -107,8 +64,8 @@ public abstract class ThEFeatureBase
 			// Register crafting recipe(s)
 			this.registerCrafting( cdi );
 
-			// Register Thaumcraft research.
-			this.registerResearch();
+			// Register anything else
+			this.registerAdditional();
 
 			// Mark that this feature has been registered
 			this.hasRegistered = true;

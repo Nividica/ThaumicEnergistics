@@ -1,34 +1,41 @@
 package thaumicenergistics.common.features;
 
-import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
-import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.common.registries.*;
+import thaumicenergistics.api.IThEConfig;
+import thaumicenergistics.common.registries.RecipeRegistry;
+import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import appeng.api.AEApi;
 
 public class FeatureQuartzDupe
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
+	public FeatureQuartzDupe()
+	{
+		super( ResearchTypes.CERTUS_DUPE.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		// Depends on ThE config
-		if( !ThEApi.instance().config().allowedToDuplicateCertusQuartz() )
-		{
-			return false;
-		}
-		return true;
+		return theConfig.enableCertusQuartzDupe();
 	}
 
 	@Override
 	protected Object[] getItemReqs( final CommonDependantItems cdi )
+	{
+		return null;
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
 	{
 		return null;
 	}
@@ -47,7 +54,7 @@ public class FeatureQuartzDupe
 		NetherQuartz2.stackSize = 2;
 
 		// Certus Quartz
-		if( FeatureRegistry.instance().getCommonItems().CertusQuartz != null )
+		if( cdi.CertusQuartz != null )
 		{
 			AspectList certusAspects = new AspectList();
 			certusAspects.add( Aspect.CRYSTAL, 4 );
@@ -97,20 +104,8 @@ public class FeatureQuartzDupe
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.CERTUS_DUPE.getKey();
-		}
-
-		// No parent
-		return "";
-	}
-
-	@Override
-	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
-	{
-		return EnumSet.of( PseudoResearchTypes.DUPE );
+		PseudoResearchTypes.DUPE.registerPsudeoResearch();
 	}
 }

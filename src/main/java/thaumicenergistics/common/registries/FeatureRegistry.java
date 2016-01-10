@@ -16,12 +16,7 @@ public class FeatureRegistry
 	/**
 	 * Singleton instance of the FR
 	 */
-	private static FeatureRegistry instanceFR;
-
-	/**
-	 * Commonly used dependency items.
-	 */
-	private final CommonDependantItems commonItems;
+	private static FeatureRegistry INSTANCE;
 
 	/**
 	 * All features.
@@ -34,9 +29,14 @@ public class FeatureRegistry
 	private boolean hasRegistered = false;
 
 	/**
+	 * Commonly used dependency items.
+	 */
+	public final CommonDependantItems cdi;
+
+	/**
 	 * Sets up the TC research tab.
 	 */
-	public final FeatureResearchSetup featureResearchSetup;
+	public final FeatureThaumicEnergisticsResearch featureThaumicEnergistics;
 
 	/**
 	 * Autocrafting.
@@ -119,10 +119,10 @@ public class FeatureRegistry
 	private FeatureRegistry()
 	{
 		// Build common items
-		this.commonItems = new CommonDependantItems();
+		this.cdi = new CommonDependantItems();
 
-		// Build setup
-		this.featureResearchSetup = new FeatureResearchSetup();
+		// Build ThE primary node
+		this.featuresList.add( this.featureThaumicEnergistics = new FeatureThaumicEnergisticsResearch() );
 
 		// Build autocrafting
 		this.featuresList.add( this.featureAutoCrafting_Arcane = new FeatureAutocrafting_Arcane() );
@@ -177,22 +177,12 @@ public class FeatureRegistry
 	 */
 	public static FeatureRegistry instance()
 	{
-		if( FeatureRegistry.instanceFR == null )
+		if( FeatureRegistry.INSTANCE == null )
 		{
-			FeatureRegistry.instanceFR = new FeatureRegistry();
+			FeatureRegistry.INSTANCE = new FeatureRegistry();
 		}
 
-		return FeatureRegistry.instanceFR;
-	}
-
-	/**
-	 * Gets items that are depended on.
-	 * 
-	 * @return
-	 */
-	public CommonDependantItems getCommonItems()
-	{
-		return this.commonItems;
+		return FeatureRegistry.INSTANCE;
 	}
 
 	/**
@@ -207,32 +197,12 @@ public class FeatureRegistry
 			return;
 		}
 
-		// Build common items
-		this.commonItems.buildCommon();
-
-		// Build dependencies
-		for( ThEFeatureBase feature : this.featuresList )
-		{
-			// Is the feature a dependency feature?
-			if( feature instanceof ThEDependencyFeatureBase )
-			{
-				// Evaluate the dependencies
-				( (ThEDependencyFeatureBase)feature ).evaluateDependencies( this.commonItems );
-			}
-		}
-
-		// Start with the setup
-		this.featureResearchSetup.registerFeature( this.commonItems );
-
 		// Register each feature
 		for( ThEFeatureBase feature : this.featuresList )
 		{
 			// Attempt to register the feature
-			feature.registerFeature( this.commonItems );
+			feature.registerFeature( this.cdi );
 		}
-
-		// Finish the registration
-		this.featureResearchSetup.finalizeRegistration( this.featuresList );
 
 		// Mark that registration has occurred.
 		this.hasRegistered = true;

@@ -12,18 +12,29 @@ class ConfigurationHandler
 	/**
 	 * Names of the categories.
 	 */
-	private static final String CATEGORY_CRAFTING = "crafting", CATEGORY_CLIENT = "client", CATEGORY_INTEGRATION = "integration";
+	private static final String CATEGORY_CRAFTING = "crafting",
+					CATEGORY_CLIENT = "client",
+					CATEGORY_INTEGRATION = "integration";
 
 	/**
 	 * Default values.
 	 */
-	private static final int DEFAULT_CONVERSION_EXPONENT = 7;
-	private static final boolean DEFAULT_ESSENTIAPROVIDER = true,
-					DEFAULT_INFUSIONPROVIDER = true,
-					DEFAULT_QUARTZ = true,
-					DEFAULT_GEARBOX_DISABLED = false,
-					DEFAULT_EXTRACELLS_BLIST = true,
-					DEFAULT_FORCE_TC_FACADES = true;
+	private static final int DFT_CONVERSION_EXPONENT = 7;
+	private static final boolean
+					DFT_CRAFT_ARCANE_ASSEMBLER = true,
+					DFT_CRAFT_ARCANE_CRAFTING_TERM = true,
+					DFT_CRAFT_DISTILLATION_PATTERN_ENCODER = true,
+					DFT_CRAFT_ESSENTIA_CELLS = true,
+					DFT_CRAFT_ESSENTIA_PROVIDER = true,
+					DFT_CRAFT_ESSENTIA_VIBRATION_CHAMBER = true,
+					DFT_CRAFT_INFUSION_PROVIDER = true,
+					DFT_CRAFT_VIS_RELAY_INTERFACE = true,
+					DFT_CRAFT_WIRELESS_ESSENTIA_TERM = true,
+					DFT_DISABLE_GEARBOX = false,
+					DFT_ENABLE_QUARTZ_DUPE = true,
+					DFT_ENABLE_WRENCH_FOCUS = true,
+					DFT_EXTRACELLS_BLIST = true,
+					DFT_FORCE_TC_FACADES = true;
 
 	/**
 	 * Mod configuration
@@ -34,38 +45,23 @@ class ConfigurationHandler
 	 * Controls the conversion ratio of essentia/fluid. <BR>
 	 * 1 essentia unit is converted to this many mb's of fluid.
 	 */
-	private int conversionMultiplier = (int)Math.pow( 2, DEFAULT_CONVERSION_EXPONENT );
+	private int conversionMultiplier = (int)Math.pow( 2, DFT_CONVERSION_EXPONENT );
 
-	/**
-	 * Controls if the Essentia Provider is allowed to be crafted.
-	 */
-	private boolean allowEssentiaProvider = DEFAULT_ESSENTIAPROVIDER;
-
-	/**
-	 * Controls if the Infusion Provider is allowed to be crafted.
-	 */
-	private boolean allowInfusionProvider = DEFAULT_INFUSIONPROVIDER;
-
-	/**
-	 * Controls if Certus Quartz can be duped in the crucible.
-	 */
-	private boolean allowCertusDupe = DEFAULT_QUARTZ;
-
-	/**
-	 * Controls if the iron and thaumium gearbox's will be rendered as a
-	 * standard block.
-	 */
-	private boolean gearboxModelDisabled = DEFAULT_GEARBOX_DISABLED;
-
-	/**
-	 * Controls if essentia gas is blacklisted
-	 */
-	private boolean extracellsBlacklist = DEFAULT_EXTRACELLS_BLIST;
-
-	/**
-	 * Allows specific blocks from Thaumcraft to be turned into facades.
-	 */
-	private boolean forceTCFacades = DEFAULT_FORCE_TC_FACADES;
+	private boolean
+					craft_Arcane_Assembler = DFT_CRAFT_ARCANE_ASSEMBLER,
+					craft_Arcane_Crafting_Term = DFT_CRAFT_ARCANE_CRAFTING_TERM,
+					craft_Distillation_Pattern_Encoder = DFT_CRAFT_DISTILLATION_PATTERN_ENCODER,
+					craft_Essentia_Cells = DFT_CRAFT_ESSENTIA_CELLS,
+					craft_Essentia_Provider = DFT_CRAFT_ESSENTIA_PROVIDER,
+					craft_Essentia_Vibration_Chamber = DFT_CRAFT_ESSENTIA_VIBRATION_CHAMBER,
+					craft_Infusion_Provider = DFT_CRAFT_INFUSION_PROVIDER,
+					craft_Vis_Relay_Interface = DFT_CRAFT_VIS_RELAY_INTERFACE,
+					craft_Wireless_Essentia_Term = DFT_CRAFT_WIRELESS_ESSENTIA_TERM,
+					disable_Gearbox = DFT_DISABLE_GEARBOX,
+					enable_Quartz_Dupe = DFT_ENABLE_QUARTZ_DUPE,
+					enable_Wrench_Focus = DFT_ENABLE_WRENCH_FOCUS,
+					extracells_Blist = DFT_EXTRACELLS_BLIST,
+					force_TC_Facades = DFT_FORCE_TC_FACADES;
 
 	private ConfigurationHandler( final Configuration config )
 	{
@@ -84,7 +80,6 @@ class ConfigurationHandler
 		{
 			ConfigurationHandler.INSTANCE = new ConfigurationHandler( new Configuration( configFile ) );
 		}
-
 		return ConfigurationHandler.INSTANCE;
 	}
 
@@ -93,12 +88,12 @@ class ConfigurationHandler
 	 */
 	private void synchronizeConfigFile()
 	{
-		// Sync the essentia fluid conversion ratio
+		// General =========================================================
 		int fluidPow = this.configSettings
 						.getInt(
 							"Essentia Fluid Ratio Exponent",
 							Configuration.CATEGORY_GENERAL,
-							ConfigurationHandler.DEFAULT_CONVERSION_EXPONENT,
+							ConfigurationHandler.DFT_CONVERSION_EXPONENT,
 							1,
 							11,
 							"Controls the conversion ratio of essentia/fluid. 1 essentia is converted to (2^this) milibuckets of fluid. "
@@ -106,29 +101,78 @@ class ConfigurationHandler
 											+ "Values above 11 make it impossible to use fluid transfer devices such as the ME IO Port, or anything from EC2." );
 		this.conversionMultiplier = (int)Math.pow( 2, Math.min( fluidPow, 11 ) );
 
-		// Sync essentia provider
-		this.allowEssentiaProvider = this.configSettings.getBoolean( "Allow Crafting Essentia Provider", CATEGORY_CRAFTING,
-			DEFAULT_ESSENTIAPROVIDER, "Controls if the Essentia Provider is allowed to be crafted." );
+		// Crafting ========================================================
+		this.craft_Arcane_Assembler = this.configSettings.getBoolean(
+			"Arcane Assembler",
+			CATEGORY_CRAFTING, DFT_CRAFT_ARCANE_ASSEMBLER,
+			"Controls if the Arcane Assembler can be crafted." );
 
-		// Sync essentia provider
-		this.allowInfusionProvider = this.configSettings.getBoolean( "Allow Crafting Infusion Provider", CATEGORY_CRAFTING,
-			DEFAULT_INFUSIONPROVIDER, "Controls if the Infusion Provider is allowed to be crafted." );
+		this.craft_Arcane_Crafting_Term = this.configSettings.getBoolean(
+			"Arcane Crafting Terminal",
+			CATEGORY_CRAFTING, DFT_CRAFT_ARCANE_CRAFTING_TERM,
+			"Controls if the Arcane Crafting Terminal can be crafted." );
 
-		// Sync certus dupe
-		this.allowCertusDupe = this.configSettings.getBoolean( "Certus Quartz Duplication", CATEGORY_CRAFTING,
-			DEFAULT_QUARTZ, "Controls if Certus Quartz can be duplicated in the crucible." );
+		this.craft_Distillation_Pattern_Encoder = this.configSettings.getBoolean(
+			"Distillation Pattern Encoder.",
+			CATEGORY_CRAFTING, DFT_CRAFT_DISTILLATION_PATTERN_ENCODER,
+			"Controls if the Distillation Pattern Encoder can be crafted." );
 
-		// Gearbox model
-		this.gearboxModelDisabled = this.configSettings.getBoolean( "Disable Gearbox Model", CATEGORY_CLIENT,
-			DEFAULT_GEARBOX_DISABLED, "The iron and thaumium gearboxes will be rendered as a standard block." );
+		this.craft_Essentia_Cells = this.configSettings.getBoolean(
+			"Essentia Cells",
+			CATEGORY_CRAFTING, DFT_CRAFT_ESSENTIA_CELLS,
+			"Controls if Essentia Cells and Components can be crafted." );
 
-		// Extra cells blacklist
-		this.extracellsBlacklist = this.configSettings.getBoolean( "ExtraCells Blacklist", CATEGORY_INTEGRATION,
-			DEFAULT_EXTRACELLS_BLIST, "Prevents extra cells from interacting with essentia gas" );
+		this.craft_Essentia_Provider = this.configSettings.getBoolean(
+			"Essentia Provider",
+			CATEGORY_CRAFTING, DFT_CRAFT_ESSENTIA_PROVIDER,
+			"Controls if the Essentia Provider can be crafted." );
 
-		// Thaumcraft facades
-		this.forceTCFacades = this.configSettings.getBoolean( "Force TC Facades", CATEGORY_CRAFTING, DEFAULT_FORCE_TC_FACADES,
-			"When enabled, overwrites the AE2 facade setting for certain Thaumcraft blocks, allowing them to become facades." );
+		this.craft_Essentia_Vibration_Chamber = this.configSettings.getBoolean(
+			"Essentia Vibration Chamber",
+			CATEGORY_CRAFTING, DFT_CRAFT_ESSENTIA_VIBRATION_CHAMBER,
+			"Controlls if the Essentia Vibration Chamber can be crafted." );
+
+		this.craft_Infusion_Provider = this.configSettings.getBoolean(
+			"Infusion Provider",
+			CATEGORY_CRAFTING, DFT_CRAFT_INFUSION_PROVIDER,
+			"Controls if the Infusion Provider can be crafted." );
+
+		this.craft_Vis_Relay_Interface = this.configSettings.getBoolean(
+			"Vis Relay Interface",
+			CATEGORY_CRAFTING, DFT_CRAFT_VIS_RELAY_INTERFACE,
+			"Controls if the Vis Relay Interface can be crafted." );
+
+		this.craft_Wireless_Essentia_Term = this.configSettings.getBoolean(
+			"Allow Crafting Wireless Essentia Terminal",
+			CATEGORY_CRAFTING, DFT_CRAFT_WIRELESS_ESSENTIA_TERM,
+			"Controls if the Wireless Essentia Terminal can be crafted." );
+
+		this.enable_Quartz_Dupe = this.configSettings.getBoolean(
+			"Certus Quartz Duplication",
+			CATEGORY_CRAFTING, DFT_ENABLE_QUARTZ_DUPE,
+			"Controls if Certus Quartz can be duplicated in the crucible." );
+
+		this.enable_Wrench_Focus = this.configSettings.getBoolean(
+			"Wrench Focus",
+			CATEGORY_CRAFTING, DFT_ENABLE_WRENCH_FOCUS,
+			"Controlls if the Wrench Focus is enabled and craftable." );
+
+		this.force_TC_Facades = this.configSettings.getBoolean(
+			"Force TC Facades",
+			CATEGORY_CRAFTING, DFT_FORCE_TC_FACADES,
+			"When enabled, overwrites the AE2 facade settings for some Thaumcraft blocks, allowing their facades to be crafted." );
+
+		// Client ==========================================================
+		this.disable_Gearbox = this.configSettings.getBoolean(
+			"Disable Gearbox Model",
+			CATEGORY_CLIENT, DFT_DISABLE_GEARBOX,
+			"The iron and thaumium gearboxes will be rendered as a standard block." );
+
+		// Integration =====================================================
+		this.extracells_Blist = this.configSettings.getBoolean(
+			"ExtraCells Blacklist",
+			CATEGORY_INTEGRATION, DFT_EXTRACELLS_BLIST,
+			"Prevents extra cells from interacting with essentia gas" );
 
 		// Has the config file changed?
 		if( this.configSettings.hasChanged() )
@@ -139,27 +183,9 @@ class ConfigurationHandler
 	}
 
 	@Override
-	public boolean allowedToCraftEssentiaProvider()
-	{
-		return this.allowEssentiaProvider;
-	}
-
-	@Override
-	public boolean allowedToCraftInfusionProvider()
-	{
-		return this.allowInfusionProvider;
-	}
-
-	@Override
-	public boolean allowedToDuplicateCertusQuartz()
-	{
-		return this.allowCertusDupe;
-	}
-
-	@Override
 	public boolean blacklistEssentiaFluidInExtraCells()
 	{
-		return this.extracellsBlacklist;
+		return this.extracells_Blist;
 	}
 
 	@Override
@@ -169,15 +195,81 @@ class ConfigurationHandler
 	}
 
 	@Override
-	public boolean forceTCFacades()
+	public boolean craftArcaneAssembler()
 	{
-		return this.forceTCFacades;
+		return this.craft_Arcane_Assembler;
 	}
 
 	@Override
-	public boolean gearboxModelDisabled()
+	public boolean craftArcaneCraftingTerminal()
 	{
-		return this.gearboxModelDisabled;
+		return this.craft_Arcane_Crafting_Term;
+	}
+
+	@Override
+	public boolean craftDistillationPatternEncoder()
+	{
+		return this.craft_Distillation_Pattern_Encoder;
+	}
+
+	@Override
+	public boolean craftEssentiaCells()
+	{
+		return this.craft_Essentia_Cells;
+	}
+
+	@Override
+	public boolean craftEssentiaProvider()
+	{
+		return this.craft_Essentia_Provider;
+	}
+
+	@Override
+	public boolean craftEssentiaVibrationChamber()
+	{
+		return this.craft_Essentia_Vibration_Chamber;
+	}
+
+	@Override
+	public boolean craftInfusionProvider()
+	{
+		return this.craft_Infusion_Provider;
+	}
+
+	@Override
+	public boolean craftVisRelayInterface()
+	{
+		return this.craft_Vis_Relay_Interface;
+	}
+
+	@Override
+	public boolean craftWirelessEssentiaTerminal()
+	{
+		return this.craft_Wireless_Essentia_Term;
+	}
+
+	@Override
+	public boolean disableGearboxModel()
+	{
+		return this.disable_Gearbox;
+	}
+
+	@Override
+	public boolean enableCertusQuartzDupe()
+	{
+		return this.enable_Quartz_Dupe;
+	}
+
+	@Override
+	public boolean enableWrenchFocus()
+	{
+		return this.enable_Wrench_Focus;
+	}
+
+	@Override
+	public boolean forceTCFacades()
+	{
+		return this.force_TC_Facades;
 	}
 
 }

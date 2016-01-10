@@ -1,7 +1,6 @@
 package thaumicenergistics.common.features;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -13,6 +12,7 @@ import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
 import thaumcraft.api.research.ResearchPage;
 import thaumcraft.common.config.Config;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.*;
@@ -23,8 +23,13 @@ import appeng.core.features.AEFeature;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class FeatureCells
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
+	public FeatureCells()
+	{
+		super( ResearchTypes.STORAGE.getKey() );
+	}
+
 	/**
 	 * Helper function to replace a single item with a group of items in a
 	 * recipe.
@@ -57,7 +62,7 @@ public class FeatureCells
 	}
 
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		// Depends on cells
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.StorageCells ) )
@@ -65,7 +70,7 @@ public class FeatureCells
 			return false;
 		}
 
-		return true;
+		return theConfig.craftEssentiaCells();
 	}
 
 	@Override
@@ -73,6 +78,12 @@ public class FeatureCells
 	{
 		return new Object[] { cdi.ChargedCertusQuartz, cdi.CertusQuartz, cdi.PureCertusQuartz, cdi.LogicProcessor, cdi.EngineeringProcessor,
 						cdi.CalculationProcessor, cdi.QuartzGlass, cdi.MECellWorkbench };
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return FeatureRegistry.instance().featureThaumicEnergistics;
 	}
 
 	@Override
@@ -120,7 +131,7 @@ public class FeatureCells
 						EssentiaStorageComponent_1k };
 
 		// Register 1K storage
-		RecipeRegistry.ITEM_STORAGE_COMPONENT_1K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(),
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_1K = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey,
 			EssentiaStorageComponent_1k,
 			aspects1KStorage, recipe1KStorage );
 
@@ -148,7 +159,7 @@ public class FeatureCells
 						EssentiaStorageComponent_4k };
 
 		// Register 4K storage
-		RecipeRegistry.ITEM_STORAGE_COMPONENT_4K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(),
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_4K = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey,
 			EssentiaStorageComponent_4k,
 			aspects4KStorage, recipe4KStorage );
 
@@ -173,7 +184,7 @@ public class FeatureCells
 						EssentiaStorageComponent_16k };
 
 		// Register 16K storage
-		RecipeRegistry.ITEM_STORAGE_COMPONENT_16K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(),
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_16K = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey,
 			EssentiaStorageComponent_16k,
 			aspects16KStorage, recipe16KStorage );
 
@@ -199,7 +210,7 @@ public class FeatureCells
 						EssentiaStorageComponent_64k };
 
 		// Register 64K storage
-		RecipeRegistry.ITEM_STORAGE_COMPONENT_64K = ThaumcraftApi.addArcaneCraftingRecipe( ResearchTypes.STORAGE.getKey(),
+		RecipeRegistry.ITEM_STORAGE_COMPONENT_64K = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey,
 			EssentiaStorageComponent_64k,
 			aspects64KStorage, recipe64KStorage );
 
@@ -271,26 +282,14 @@ public class FeatureCells
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
-	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.STORAGE.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureResearchSetup.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
+	public void registerPseudoParents()
 	{
 		if( Config.wardedStone )
 		{
-			return EnumSet.of( PseudoResearchTypes.WARDED, PseudoResearchTypes.DISTILESSENTIA );
+			PseudoResearchTypes.WARDED.registerPsudeoResearch();
 		}
 
-		return EnumSet.of( PseudoResearchTypes.DISTILESSENTIA );
+		PseudoResearchTypes.DISTILESSENTIA.registerPsudeoResearch();
 	}
 
 }

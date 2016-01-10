@@ -5,6 +5,7 @@ import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.registries.RecipeRegistry;
@@ -14,10 +15,15 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureEssentiaVibrationChamber
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
+	public FeatureEssentiaVibrationChamber()
+	{
+		super( ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		// Depends on power generation
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.PowerGen ) )
@@ -25,7 +31,7 @@ public class FeatureEssentiaVibrationChamber
 			return false;
 		}
 
-		return true;
+		return theConfig.craftEssentiaVibrationChamber();
 	}
 
 	@Override
@@ -33,6 +39,12 @@ public class FeatureEssentiaVibrationChamber
 	{
 		// Depends on warded jars, annihilation core, and vibration chamber
 		return new Object[] { cdi.WardedJar, cdi.VibrationChamber, cdi.AnnihilationCore };
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return FeatureRegistry.instance().featureConversionCores;
 	}
 
 	@Override
@@ -50,8 +62,8 @@ public class FeatureEssentiaVibrationChamber
 		chamberAspects.add( Aspect.ORDER, 4 );
 
 		// Register Chamber
-		RecipeRegistry.BLOCK_ESSENTIA_VIBRATION_CHAMBER = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
-			ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getKey(), EssVibrationChamber, chamberAspects, cdi.VibrationChamber, DiffusionCore,
+		RecipeRegistry.BLOCK_ESSENTIA_VIBRATION_CHAMBER = ThaumcraftApi.addShapelessArcaneCraftingRecipe( this.researchKey,
+			EssVibrationChamber, chamberAspects, cdi.VibrationChamber, DiffusionCore,
 			cdi.WardedJar );
 	}
 
@@ -90,15 +102,8 @@ public class FeatureEssentiaVibrationChamber
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureConversionCores.getFirstValidParentKey( true );
 	}
 
 }

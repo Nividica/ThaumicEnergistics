@@ -76,6 +76,23 @@ public class CommonDependantItems
 	public ItemStack VibrationChamber;
 
 	/**
+	 * Populates the common items
+	 */
+	public CommonDependantItems()
+	{
+		// MC items
+		this.VanillaLapis = new ItemStack( (Item)Item.itemRegistry.getObject( "dye" ), 1, 4 );
+		this.RedstoneDust = new ItemStack( (Item)Item.itemRegistry.getObject( "redstone" ) );
+		this.RedstoneTorch = new ItemStack( net.minecraft.init.Blocks.redstone_torch );
+
+		// AE items
+		this.populateAEItems();
+
+		// TC items
+		this.populateTCItems();
+	}
+
+	/**
 	 * Attempts to get the specified AE item.
 	 * Returns a stack of size 1, or null.
 	 * 
@@ -188,22 +205,5 @@ public class CommonDependantItems
 		this.VisFilter = new ItemStack( ConfigItems.itemResource, 1, 8 );
 		this.QuickSilverDrop = new ItemStack( ConfigItems.itemNugget, 1, 5 );
 		this.Thaumometer = new ItemStack( ConfigItems.itemThaumometer );
-	}
-
-	/**
-	 * Populates the common items
-	 */
-	public void buildCommon()
-	{
-		// MC items
-		this.VanillaLapis = new ItemStack( (Item)Item.itemRegistry.getObject( "dye" ), 1, 4 );
-		this.RedstoneDust = new ItemStack( (Item)Item.itemRegistry.getObject( "redstone" ) );
-		this.RedstoneTorch = new ItemStack( net.minecraft.init.Blocks.redstone_torch );
-
-		// AE items
-		this.populateAEItems();
-
-		// TC items
-		this.populateTCItems();
 	}
 }

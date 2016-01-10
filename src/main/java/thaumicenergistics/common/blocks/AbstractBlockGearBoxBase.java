@@ -120,7 +120,7 @@ public abstract class AbstractBlockGearBoxBase
 	@Override
 	public final boolean isSideSolid( final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side )
 	{
-		return ThEApi.instance().config().gearboxModelDisabled();
+		return ThEApi.instance().config().disableGearboxModel();
 	}
 
 	/**
@@ -158,7 +158,7 @@ public abstract class AbstractBlockGearBoxBase
 	@Override
 	public final boolean renderAsNormalBlock()
 	{
-		return ThEApi.instance().config().gearboxModelDisabled();
+		return ThEApi.instance().config().disableGearboxModel();
 	}
 
 	/**
@@ -168,7 +168,7 @@ public abstract class AbstractBlockGearBoxBase
 	@Override
 	public boolean shouldSideBeRendered( final IBlockAccess iblockaccess, final int i, final int j, final int k, final int l )
 	{
-		return ThEApi.instance().config().gearboxModelDisabled();
+		return ThEApi.instance().config().disableGearboxModel();
 	}
 
 }

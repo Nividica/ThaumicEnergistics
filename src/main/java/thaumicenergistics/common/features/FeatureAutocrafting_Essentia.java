@@ -5,6 +5,7 @@ import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.registries.RecipeRegistry;
@@ -14,11 +15,16 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureAutocrafting_Essentia
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
 
+	public FeatureAutocrafting_Essentia()
+	{
+		super( ResearchTypes.DISTILLATION_PATTERN_ENCODER.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		// Depends on crafting CPU's
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.CraftingCPU ) )
@@ -26,13 +32,19 @@ public class FeatureAutocrafting_Essentia
 			return false;
 		}
 
-		return true;
+		return theConfig.craftDistillationPatternEncoder();
 	}
 
 	@Override
 	protected Object[] getItemReqs( final CommonDependantItems cdi )
 	{
 		return new Object[] { cdi.MEInterface, cdi.EngineeringProcessor };
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return FeatureRegistry.instance().featureEssentiaIOBuses;
 	}
 
 	@Override
@@ -52,8 +64,7 @@ public class FeatureAutocrafting_Essentia
 						cdi.EngineeringProcessor };
 
 		// Register
-		RecipeRegistry.BLOCK_DISTILLATION_PATTERN_ENCODER = ThaumcraftApi.addArcaneCraftingRecipe(
-			ResearchTypes.DISTILLATION_PATTERN_ENCODER.getKey(),
+		RecipeRegistry.BLOCK_DISTILLATION_PATTERN_ENCODER = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey,
 			dpeStack, dpeAspects, dpeRecipe );
 
 	}
@@ -92,15 +103,8 @@ public class FeatureAutocrafting_Essentia
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.DISTILLATION_PATTERN_ENCODER.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureEssentiaIOBuses.getFirstValidParentKey( true );
 	}
 
 }

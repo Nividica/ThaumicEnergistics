@@ -1,11 +1,11 @@
 package thaumicenergistics.common.features;
 
-import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
@@ -14,10 +14,15 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 public class FeatureVisRelayInterface
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
+	public FeatureVisRelayInterface()
+	{
+		super( ResearchTypes.VIS_RELAY_INTERFACE.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		// Depends on P2P
 		if( !AEConfig.instance.isFeatureEnabled( AEFeature.P2PTunnel ) )
@@ -25,13 +30,19 @@ public class FeatureVisRelayInterface
 			return false;
 		}
 
-		return true;
+		return theConfig.craftVisRelayInterface();
 	}
 
 	@Override
 	protected Object[] getItemReqs( final CommonDependantItems cdi )
 	{
 		return new Object[] { cdi.MEP2P };
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return FeatureRegistry.instance().featureACT;
 	}
 
 	@Override
@@ -48,8 +59,7 @@ public class FeatureVisRelayInterface
 		visInterfaceAspectList.add( Aspect.FIRE, 2 );
 		visInterfaceAspectList.add( Aspect.ORDER, 2 );
 		visInterfaceAspectList.add( Aspect.WATER, 2 );
-		RecipeRegistry.PART_VIS_INTERFACE = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
-			ResearchRegistry.ResearchTypes.VIS_RELAY_INTERFACE.getKey(),
+		RecipeRegistry.PART_VIS_INTERFACE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( this.researchKey,
 			VisInterface, visInterfaceAspectList, cdi.BallanceShard, cdi.MEP2P );
 	}
 
@@ -80,21 +90,9 @@ public class FeatureVisRelayInterface
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
-		{
-			return ResearchTypes.VIS_RELAY_INTERFACE.getKey();
-		}
-
-		// Pass to parent
-		return FeatureRegistry.instance().featureACT.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
-	{
-		return EnumSet.of( PseudoResearchTypes.VISPOWER );
+		PseudoResearchTypes.VISPOWER.registerPsudeoResearch();
 	}
 
 }

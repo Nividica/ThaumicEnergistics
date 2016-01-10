@@ -1,36 +1,42 @@
 package thaumicenergistics.common.features;
 
-import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumcraft.common.config.Config;
+import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
 public class FeatureInfusionProvider
-	extends ThEDependencyFeatureBase
+	extends ThEThaumcraftResearchFeature
 {
+	public FeatureInfusionProvider()
+	{
+		super( ResearchTypes.INFUSION_PROVIDER.getKey() );
+	}
+
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		// Depends on ThEConfig
-		if( !ThEApi.instance().config().allowedToCraftInfusionProvider() )
-		{
-			return false;
-		}
-
-		return true;
+		return theConfig.craftInfusionProvider();
 	}
 
 	@Override
 	protected Object[] getItemReqs( final CommonDependantItems cdi )
 	{
 		return new Object[] { cdi.MEInterface };
+	}
+
+	@Override
+	protected ThEThaumcraftResearchFeature getParentFeature()
+	{
+		return FeatureRegistry.instance().featureEssentiaIOBuses;
 	}
 
 	@Override
@@ -52,7 +58,7 @@ public class FeatureInfusionProvider
 						cdi.SalisMundus, CoalescenceCore, cdi.AirShard };
 
 		// Create the infusion provider recipe
-		RecipeRegistry.BLOCK_INFUSION_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( ResearchRegistry.ResearchTypes.INFUSION_PROVIDER.getKey(),
+		RecipeRegistry.BLOCK_INFUSION_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe( this.researchKey,
 			InfusionProvider, 4, infusionProviderList, cdi.MEInterface, infusionProviderRecipeItems );
 	}
 
@@ -89,21 +95,18 @@ public class FeatureInfusionProvider
 	}
 
 	@Override
-	public String getFirstValidParentKey( final boolean includeSelf )
+	public void registerPseudoParents()
 	{
-		if( includeSelf && this.isAvailable() )
+		PseudoResearchTypes.INFUSION.registerPsudeoResearch();
+		if( Config.allowMirrors )
 		{
-			return ResearchTypes.INFUSION_PROVIDER.getKey();
+			PseudoResearchTypes.MIRROR.registerPsudeoResearch();
+		}
+		else
+		{
+			PseudoResearchTypes.JAR.registerPsudeoResearch();
 		}
 
-		// Pass to parent
-		return FeatureRegistry.instance().featureEssentiaIOBuses.getFirstValidParentKey( true );
-	}
-
-	@Override
-	public EnumSet<PseudoResearchTypes> getPseudoParentTypes()
-	{
-		return EnumSet.of( PseudoResearchTypes.INFUSION, ( Config.allowMirrors ? PseudoResearchTypes.MIRROR : PseudoResearchTypes.JAR ) );
 	}
 
 }

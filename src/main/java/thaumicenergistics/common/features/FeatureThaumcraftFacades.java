@@ -5,7 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraftforge.common.config.Property;
 import thaumcraft.common.config.Config;
 import thaumcraft.common.config.ConfigBlocks;
-import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.IThEConfig;
 import appeng.core.FacadeConfig;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
@@ -59,9 +59,9 @@ public class FeatureThaumcraftFacades
 	}
 
 	@Override
-	protected boolean checkConfigs()
+	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
-		return ThEApi.instance().config().forceTCFacades();
+		return theConfig.forceTCFacades();
 	}
 
 	@Override
@@ -71,8 +71,11 @@ public class FeatureThaumcraftFacades
 	}
 
 	@Override
-	protected void registerCrafting( final CommonDependantItems cdi )
+	protected void registerAdditional()
 	{
+		// Call super
+		super.registerAdditional();
+
 		// Amber block
 		this.forceEnabled( ConfigBlocks.blockCosmeticOpaque, 0 );
 
@@ -120,6 +123,11 @@ public class FeatureThaumcraftFacades
 
 		// Flesh block :<
 		this.forceEnabled( ConfigBlocks.blockTaint, 2 );
+	}
+
+	@Override
+	protected void registerCrafting( final CommonDependantItems cdi )
+	{
 	}
 
 }
