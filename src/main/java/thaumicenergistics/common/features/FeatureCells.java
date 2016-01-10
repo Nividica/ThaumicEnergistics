@@ -15,9 +15,7 @@ import thaumcraft.api.research.ResearchPage;
 import thaumcraft.common.config.Config;
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.common.registries.FeatureRegistry;
-import thaumicenergistics.common.registries.RecipeRegistry;
-import thaumicenergistics.common.registries.ResearchRegistry;
+import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import appeng.core.AEConfig;
@@ -78,11 +76,8 @@ public class FeatureCells
 	}
 
 	@Override
-	protected void registerCrafting()
+	protected void registerCrafting( final CommonDependantItems cdi )
 	{
-		// Common items
-		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
-
 		// My items
 		IThEItems theItems = ThEApi.instance().items();
 		ItemStack EssentiaStorageComponent_1k = theItems.EssentiaStorageComponent_1k.getStack();

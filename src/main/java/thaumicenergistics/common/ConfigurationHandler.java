@@ -22,7 +22,8 @@ class ConfigurationHandler
 					DEFAULT_INFUSIONPROVIDER = true,
 					DEFAULT_QUARTZ = true,
 					DEFAULT_GEARBOX_DISABLED = false,
-					DEFAULT_EXTRACELLS_BLIST = true;
+					DEFAULT_EXTRACELLS_BLIST = true,
+					DEFAULT_FORCE_TC_FACADES = true;
 
 	/**
 	 * Mod configuration
@@ -60,6 +61,11 @@ class ConfigurationHandler
 	 * Controls if essentia gas is blacklisted
 	 */
 	private boolean extracellsBlacklist = DEFAULT_EXTRACELLS_BLIST;
+
+	/**
+	 * Allows specific blocks from Thaumcraft to be turned into facades.
+	 */
+	private boolean forceTCFacades = DEFAULT_FORCE_TC_FACADES;
 
 	private ConfigurationHandler( final Configuration config )
 	{
@@ -101,24 +107,28 @@ class ConfigurationHandler
 		this.conversionMultiplier = (int)Math.pow( 2, Math.min( fluidPow, 11 ) );
 
 		// Sync essentia provider
-		this.allowEssentiaProvider = this.configSettings.getBoolean( "Allow Crafting Essentia Provider", ConfigurationHandler.CATEGORY_CRAFTING,
-			ConfigurationHandler.DEFAULT_ESSENTIAPROVIDER, "Controls if the Essentia Provider is allowed to be crafted." );
+		this.allowEssentiaProvider = this.configSettings.getBoolean( "Allow Crafting Essentia Provider", CATEGORY_CRAFTING,
+			DEFAULT_ESSENTIAPROVIDER, "Controls if the Essentia Provider is allowed to be crafted." );
 
 		// Sync essentia provider
-		this.allowInfusionProvider = this.configSettings.getBoolean( "Allow Crafting Infusion Provider", ConfigurationHandler.CATEGORY_CRAFTING,
-			ConfigurationHandler.DEFAULT_INFUSIONPROVIDER, "Controls if the Infusion Provider is allowed to be crafted." );
+		this.allowInfusionProvider = this.configSettings.getBoolean( "Allow Crafting Infusion Provider", CATEGORY_CRAFTING,
+			DEFAULT_INFUSIONPROVIDER, "Controls if the Infusion Provider is allowed to be crafted." );
 
 		// Sync certus dupe
-		this.allowCertusDupe = this.configSettings.getBoolean( "Certus Quartz Duplication", ConfigurationHandler.CATEGORY_CRAFTING,
-			ConfigurationHandler.DEFAULT_QUARTZ, "Controls if Certus Quartz can be duplicated in the crucible." );
+		this.allowCertusDupe = this.configSettings.getBoolean( "Certus Quartz Duplication", CATEGORY_CRAFTING,
+			DEFAULT_QUARTZ, "Controls if Certus Quartz can be duplicated in the crucible." );
 
 		// Gearbox model
-		this.gearboxModelDisabled = this.configSettings.getBoolean( "Disable Gearbox Model", ConfigurationHandler.CATEGORY_CLIENT,
-			ConfigurationHandler.DEFAULT_GEARBOX_DISABLED, "The iron and thaumium gearboxes will be rendered as a standard block." );
+		this.gearboxModelDisabled = this.configSettings.getBoolean( "Disable Gearbox Model", CATEGORY_CLIENT,
+			DEFAULT_GEARBOX_DISABLED, "The iron and thaumium gearboxes will be rendered as a standard block." );
 
 		// Extra cells blacklist
-		this.extracellsBlacklist = this.configSettings.getBoolean( "ExtraCells Blacklist", ConfigurationHandler.CATEGORY_INTEGRATION,
-			ConfigurationHandler.DEFAULT_EXTRACELLS_BLIST, "Prevents extra cells from interacting with essentia gas" );
+		this.extracellsBlacklist = this.configSettings.getBoolean( "ExtraCells Blacklist", CATEGORY_INTEGRATION,
+			DEFAULT_EXTRACELLS_BLIST, "Prevents extra cells from interacting with essentia gas" );
+
+		// Thaumcraft facades
+		this.forceTCFacades = this.configSettings.getBoolean( "Force TC Facades", CATEGORY_CRAFTING, DEFAULT_FORCE_TC_FACADES,
+			"When enabled, overwrites the AE2 facade setting for certain Thaumcraft blocks, allowing them to become facades." );
 
 		// Has the config file changed?
 		if( this.configSettings.hasChanged() )
@@ -156,6 +166,12 @@ class ConfigurationHandler
 	public int conversionMultiplier()
 	{
 		return this.conversionMultiplier;
+	}
+
+	@Override
+	public boolean forceTCFacades()
+	{
+		return this.forceTCFacades;
 	}
 
 	@Override

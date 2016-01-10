@@ -7,7 +7,6 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
@@ -43,11 +42,8 @@ public class FeatureWrenchFocus
 	}
 
 	@Override
-	protected void registerCrafting()
+	protected void registerCrafting( final CommonDependantItems cdi )
 	{
-		// Common items
-		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
-
 		// My items
 		ItemStack WrenchFocus = ThEApi.instance().items().WandFocusAEWrench.getStack();
 

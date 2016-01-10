@@ -1,4 +1,11 @@
-﻿01/02/2016 0.10.0.0
+﻿01/10/2016 0.10.0.0 - Beta
+  Fixed name collision with "isUseableByPlayer".
+  Fixed KnowledgeInscriber not being able to erase patterns.
+  Fixed bug where Terminals would not properly update during certain AE-network changes.
+  Fixed bug where craftable essentia was still present on the network when it should not be.
+  Added config option to force some thaumcraft blocks to be turned into facades.
+
+01/09/2016 0.10.0.0
   Fixed crafting aspect item display name.
   More Multiplayer gui sync fixes.
   Slightly reduced size of all packets.

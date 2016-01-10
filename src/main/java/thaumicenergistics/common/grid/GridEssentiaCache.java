@@ -295,6 +295,12 @@ public class GridEssentiaCache
 		// Call super
 		super.updateCacheToMatchNetwork();
 
+		// Is the network powered?
+		if( !this.energyGrid.isNetworkPowered() )
+		{
+			return;
+		}
+
 		// Get the item monitor
 		IStorageGrid storage = (IStorageGrid)this.internalGrid.getCache( IStorageGrid.class );
 		IMEMonitor<IAEItemStack> itemMonitor = storage.getItemInventory();

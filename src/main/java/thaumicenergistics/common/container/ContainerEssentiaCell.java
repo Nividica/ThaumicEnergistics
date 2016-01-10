@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.grid.EssentiaMonitor;
@@ -22,6 +23,7 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import appeng.api.config.Settings;
 import appeng.api.config.ViewItems;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.PlayerSource;
@@ -45,7 +47,7 @@ public class ContainerEssentiaCell
 	/**
 	 * The ME chest the cell is stored in.
 	 */
-	private TileChest hostChest;
+	private final TileChest hostChest;
 
 	/**
 	 * Network source representing the player who is interacting with the
@@ -96,12 +98,12 @@ public class ContainerEssentiaCell
 		// Call the super-constructor
 		super( player );
 
+		// Get the tile entity for the chest
+		this.hostChest = (TileChest)world.getTileEntity( x, y, z );
+
 		// Is this server side?
 		if( EffectiveSide.isServerSide() )
 		{
-			// Get the tile entity for the chest
-			this.hostChest = (TileChest)world.getTileEntity( x, y, z );
-
 			/*
 			 * Note: Casting the hostChest to an object is required to prevent the compiler
 			 * from seeing the soft-dependencies of AE2, such a buildcraft, which it attempts
@@ -112,38 +114,11 @@ public class ContainerEssentiaCell
 
 			// Create the action source
 			this.playerSource = new PlayerSource( this.player, (IActionHost)hostObject );
-
-			try
-			{
-				IMEInventoryHandler<IAEFluidStack> handler = null;
-
-				// Get the chest handler
-				List<IMEInventoryHandler> hostCellArray = this.hostChest.getCellArray( StorageChannel.FLUIDS );
-				if( hostCellArray.size() > 0 )
-				{
-					handler = hostCellArray.get( 0 );
-				}
-
-				// Get the monitor
-				if( handler != null )
-				{
-					// Create the essentia monitor
-					this.monitor = new EssentiaMonitor( (IMEMonitor<IAEFluidStack>)handler, this.hostChest.getProxy().getEnergy(), this );
-
-					// Attach to the monitor
-					this.attachToMonitor();
-				}
-			}
-			catch( Exception e )
-			{
-				e.printStackTrace();
-			}
 		}
 		else
 		{
 			// Request a full update from the server
 			Packet_S_EssentiaCellTerminal.sendFullUpdateRequest( player );
-			this.hasRequested = true;
 		}
 
 		// Bind our inventory
@@ -184,9 +159,51 @@ public class ContainerEssentiaCell
 	}
 
 	@Override
+	protected IGrid getHostGrid()
+	{
+		try
+		{
+			return this.hostChest.getActionableNode().getGrid();
+		}
+		catch( Exception e )
+		{
+			return null;
+		}
+	}
+
+	@Override
 	protected Aspect getHostSelectedAspect()
 	{
 		return this.tmpSelectedAspect;
+	}
+
+	@Override
+	protected IMEEssentiaMonitor getNewMonitor()
+	{
+		try
+		{
+			IMEInventoryHandler<IAEFluidStack> handler = null;
+
+			// Get the chest handler
+			List<IMEInventoryHandler> hostCellArray = this.hostChest.getCellArray( StorageChannel.FLUIDS );
+			if( hostCellArray.size() > 0 )
+			{
+				handler = hostCellArray.get( 0 );
+			}
+
+			// Get the monitor
+			if( handler != null )
+			{
+				// Create the essentia monitor
+				return new EssentiaMonitor( (IMEMonitor<IAEFluidStack>)handler, this.hostChest.getProxy().getEnergy(), this );
+			}
+		}
+		catch( Exception e )
+		{
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	@Override
@@ -246,7 +263,7 @@ public class ContainerEssentiaCell
 		}
 
 		// Send the list
-		if( ( this.monitor != null ) && ( this.hostChest.isPowered() ) )
+		if( this.hostChest.isPowered() )
 		{
 			Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.repo.getAll() );
 		}
@@ -303,22 +320,16 @@ public class ContainerEssentiaCell
 	@Override
 	public void onContainerClosed( final EntityPlayer player )
 	{
-
+		// Drop anything in the work slots.
 		if( EffectiveSide.isServerSide() )
 		{
-			// Is there a monitor
-			if( this.monitor != null )
-			{
-				// Ensure it gets detached.
-				( (EssentiaMonitor)this.monitor ).detach();
-			}
-
 			for( int i = 0; i < 2; i++ )
 			{
 				this.player.dropPlayerItemWithRandomChoice( ( (Slot)this.inventorySlots.get( i ) ).getStack(), false );
 			}
 		}
 
+		// Call super
 		super.onContainerClosed( player );
 	}
 }

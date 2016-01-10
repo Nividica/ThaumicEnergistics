@@ -35,6 +35,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -141,15 +142,15 @@ public class ContainerPartArcaneCraftingTerminal
 	private final EntityPlayer player;
 
 	/**
-	 * The AE network item monitor we are attached to.
-	 */
-	private final IMEMonitor<IAEItemStack> monitor;
-
-	/**
 	 * Network source representing the player who is interacting with the
 	 * container.
 	 */
 	private final PlayerSource playerSource;
+
+	/**
+	 * The AE network item monitor we are attached to.
+	 */
+	private IMEMonitor<IAEItemStack> monitor;
 
 	/**
 	 * Slot number of the first and last crafting slots.
@@ -328,26 +329,51 @@ public class ContainerPartArcaneCraftingTerminal
 
 		}
 
-		// Is this server side?
 		if( EffectiveSide.isServerSide() )
 		{
-			// Register with part
+			// Register with terminal
 			this.registerForUpdates();
+		}
 
+		// Attach to the monitor
+		this.attachToMonitor();
+
+	}
+
+	/**
+	 * Attempts to attach to the item monitor.
+	 * 
+	 * @return
+	 */
+	private boolean attachToMonitor()
+	{
+		// Is this server side?
+		if( EffectiveSide.isClientSide() )
+		{
+			return false;
+		}
+
+		// Clear any existing
+		if( this.monitor != null )
+		{
+			this.monitor.removeListener( this );
+		}
+
+		// Get the grid
+		IGrid grid = this.terminal.getGridBlock().getGrid();
+		if( grid != null )
+		{
 			// Get the AE monitor
-			this.monitor = terminal.getItemInventory();
-
-			// Did we get a monitor?
+			this.monitor = this.terminal.getItemInventory();
 			if( this.monitor != null )
 			{
 				// Register with the monitor.
-				this.monitor.addListener( this, null );
+				this.monitor.addListener( this, grid.hashCode() );
+				return true;
 			}
 		}
-		else
-		{
-			this.monitor = null;
-		}
+
+		return false;
 	}
 
 	/**
@@ -906,6 +932,17 @@ public class ContainerPartArcaneCraftingTerminal
 			Packet_C_ArcaneCraftingTerminal.sendModeChange( this.player,
 				this.cachedSortOrder, this.cachedSortDirection, this.cachedViewMode );
 		}
+
+		// Is the monitor null?
+		if( this.monitor == null )
+		{
+			// Attempt to re-attach
+			if( this.attachToMonitor() )
+			{
+				// Update the client
+				this.onClientRequestFullUpdate( this.player );
+			}
+		}
 	}
 
 	/**
@@ -944,9 +981,36 @@ public class ContainerPartArcaneCraftingTerminal
 	@Override
 	public boolean isValid( final Object authToken )
 	{
-		return true;
+		if( this.monitor == null )
+		{
+			return false;
+		}
+
+		// Get the grid
+		IGrid grid = this.terminal.getGridBlock().getGrid();
+		if( grid != null )
+		{
+			if( grid.hashCode() == (Integer)authToken )
+			{
+				return true;
+			}
+		}
+
+		// Monitor no longer valid
+		this.monitor = null;
+
+		// Update client
+		this.onClientRequestFullUpdate( this.player );
+
+		return false;
 	}
 
+	/**
+	 * Called when a client is setting up the crafting grid via NEI
+	 * 
+	 * @param player
+	 * @param gridItems
+	 */
 	public void onClientNEIRequestSetCraftingGrid( final EntityPlayer player, final IAEItemStack[] gridItems )
 	{
 		// Attempt to clear the crafting grid
@@ -1035,8 +1099,8 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	public void onClientRequestDeposit( final EntityPlayer player, final int mouseButton )
 	{
-		// Ensure there is a player
-		if( player == null )
+		// Ensure there is a player & monitor
+		if( ( player == null ) || ( this.monitor == null ) )
 		{
 			return;
 		}
@@ -1176,8 +1240,8 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	public void onClientRequestExtract( final EntityPlayer player, final IAEItemStack requestedStack, final int mouseButton, final boolean isShiftHeld )
 	{
-		// Ensure there is a player
-		if( player == null )
+		// Ensure there is a player and monitor
+		if( ( player == null ) || ( this.monitor == null ) )
 		{
 			return;
 		}
@@ -1326,6 +1390,11 @@ public class ContainerPartArcaneCraftingTerminal
 			// Send to the client
 			Packet_C_ArcaneCraftingTerminal.sendAllNetworkItems( player, fullList );
 		}
+		else
+		{
+			// Send empty list
+			Packet_C_ArcaneCraftingTerminal.sendAllNetworkItems( player, AEApi.instance().storage().createItemList() );
+		}
 	}
 
 	/**
@@ -1446,6 +1515,11 @@ public class ContainerPartArcaneCraftingTerminal
 	@Override
 	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> changes, final BaseActionSource actionSource )
 	{
+		if( this.monitor == null )
+		{
+			return;
+		}
+
 		for( IAEItemStack change : changes )
 		{
 			// Get the total amount of the item in the network
@@ -1484,6 +1558,11 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	public ItemStack requestCraftingReplenishment( final ItemStack itemStack )
 	{
+		if( this.monitor == null )
+		{
+			return null;
+		}
+
 		// Create the request stack
 		IAEItemStack requestStack = AEApi.instance().storage().createItemStack( itemStack );
 

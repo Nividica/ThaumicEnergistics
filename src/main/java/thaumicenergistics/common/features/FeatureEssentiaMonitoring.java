@@ -39,11 +39,8 @@ public class FeatureEssentiaMonitoring
 	}
 
 	@Override
-	protected void registerCrafting()
+	protected void registerCrafting( final CommonDependantItems cdi )
 	{
-		// Common items
-		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
-
 		// My items
 		IThEItems theItems = ThEApi.instance().items();
 		IThEParts theParts = ThEApi.instance().parts();

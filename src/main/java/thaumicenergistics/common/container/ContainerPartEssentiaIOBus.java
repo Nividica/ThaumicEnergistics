@@ -96,7 +96,7 @@ public class ContainerPartEssentiaIOBus
 	{
 		if( this.bus != null )
 		{
-			return this.bus.isUseableByPlayer( player );
+			return this.bus.isPartUseableByPlayer( player );
 		}
 		return false;
 	}

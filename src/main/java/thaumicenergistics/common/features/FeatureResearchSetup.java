@@ -1,5 +1,6 @@
 package thaumicenergistics.common.features;
 
+import java.util.ArrayList;
 import net.minecraft.util.ResourceLocation;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchCategories;
@@ -58,7 +59,7 @@ public class FeatureResearchSetup
 	 * 
 	 * @param featureList
 	 */
-	public void finalizeRegistration( final ThEFeatureBase[] featureList )
+	public void finalizeRegistration( final ArrayList<ThEFeatureBase> featureList )
 	{
 		if( this.hasFinalizedResearch )
 		{

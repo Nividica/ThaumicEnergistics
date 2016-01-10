@@ -9,7 +9,6 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
@@ -25,11 +24,8 @@ public class FeatureGearbox
 	}
 
 	@Override
-	protected void registerCrafting()
+	protected void registerCrafting( final CommonDependantItems cdi )
 	{
-		// Common items
-		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
-
 		// Ore dictionary items
 		Object WoodGear = "gearWood";
 		String IronGear = "gearIron";

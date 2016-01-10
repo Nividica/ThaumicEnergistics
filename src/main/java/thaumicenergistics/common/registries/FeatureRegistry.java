@@ -1,5 +1,6 @@
 package thaumicenergistics.common.registries;
 
+import java.util.ArrayList;
 import thaumicenergistics.common.features.*;
 
 /**
@@ -23,9 +24,9 @@ public class FeatureRegistry
 	private final CommonDependantItems commonItems;
 
 	/**
-	 * All features in a nice compact array.
+	 * All features.
 	 */
-	private final ThEFeatureBase[] featuresList;
+	private final ArrayList<ThEFeatureBase> featuresList = new ArrayList<ThEFeatureBase>( 20 );
 
 	/**
 	 * Set to true when registerFeatures() is called.
@@ -108,6 +109,11 @@ public class FeatureRegistry
 	public final FeatureAutocrafting_Essentia featureAutocrafting_Essentia;
 
 	/**
+	 * Thaumcraft facades.
+	 */
+	public final FeatureThaumcraftFacades featureTCFacades;
+
+	/**
 	 * Private constructor
 	 */
 	private FeatureRegistry()
@@ -119,52 +125,49 @@ public class FeatureRegistry
 		this.featureResearchSetup = new FeatureResearchSetup();
 
 		// Build autocrafting
-		this.featureAutoCrafting_Arcane = new FeatureAutocrafting_Arcane();
+		this.featuresList.add( this.featureAutoCrafting_Arcane = new FeatureAutocrafting_Arcane() );
 
 		// Build cells
-		this.featureCells = new FeatureCells();
+		this.featuresList.add( this.featureCells = new FeatureCells() );
 
 		// Build ACT
-		this.featureACT = new FeatureACT();
+		this.featuresList.add( this.featureACT = new FeatureACT() );
 
 		// Build VRI
-		this.featureVRI = new FeatureVisRelayInterface();
+		this.featuresList.add( this.featureVRI = new FeatureVisRelayInterface() );
 
 		// Build IO buses
-		this.featureEssentiaIOBuses = new FeatureEssentiaIOBuses();
+		this.featuresList.add( this.featureEssentiaIOBuses = new FeatureEssentiaIOBuses() );
 
 		// Build infusion provider
-		this.featureInfusionProvider = new FeatureInfusionProvider();
+		this.featuresList.add( this.featureInfusionProvider = new FeatureInfusionProvider() );
 
 		// Build essentia provider
-		this.featureEssentiaProvider = new FeatureEssentiaProvider();
+		this.featuresList.add( this.featureEssentiaProvider = new FeatureEssentiaProvider() );
 
 		// Build monitoring
-		this.featureEssentiaMonitoring = new FeatureEssentiaMonitoring();
+		this.featuresList.add( this.featureEssentiaMonitoring = new FeatureEssentiaMonitoring() );
 
 		// Build conversion cores
-		this.featureConversionCores = new FeatureConversionCores();
+		this.featuresList.add( this.featureConversionCores = new FeatureConversionCores() );
 
 		// Build gearboxes
-		this.featureGearbox = new FeatureGearbox();
+		this.featuresList.add( this.featureGearbox = new FeatureGearbox() );
 
 		// Build wrench focus
-		this.featureWrenchFocus = new FeatureWrenchFocus();
+		this.featuresList.add( this.featureWrenchFocus = new FeatureWrenchFocus() );
 
 		// Build quartz dupe
-		this.featureQuartzDupe = new FeatureQuartzDupe();
+		this.featuresList.add( this.featureQuartzDupe = new FeatureQuartzDupe() );
 
 		// Build essentia vibration chamber
-		this.featureEssentiaVibrationChamber = new FeatureEssentiaVibrationChamber();
+		this.featuresList.add( this.featureEssentiaVibrationChamber = new FeatureEssentiaVibrationChamber() );
 
 		// Build distillation pattern encoder
-		this.featureAutocrafting_Essentia = new FeatureAutocrafting_Essentia();
+		this.featuresList.add( this.featureAutocrafting_Essentia = new FeatureAutocrafting_Essentia() );
 
-		// Build array of features
-		this.featuresList = new ThEFeatureBase[] { this.featureAutoCrafting_Arcane, this.featureCells, this.featureACT, this.featureVRI,
-						this.featureEssentiaIOBuses, this.featureInfusionProvider, this.featureEssentiaProvider, this.featureEssentiaMonitoring,
-						this.featureConversionCores, this.featureGearbox, this.featureWrenchFocus, this.featureQuartzDupe,
-						this.featureEssentiaVibrationChamber, this.featureAutocrafting_Essentia };
+		// Build TC facades
+		this.featuresList.add( this.featureTCFacades = new FeatureThaumcraftFacades() );
 	}
 
 	/**
@@ -214,18 +217,18 @@ public class FeatureRegistry
 			if( feature instanceof ThEDependencyFeatureBase )
 			{
 				// Evaluate the dependencies
-				( (ThEDependencyFeatureBase)feature ).evaluateDependencies( this );
+				( (ThEDependencyFeatureBase)feature ).evaluateDependencies( this.commonItems );
 			}
 		}
 
 		// Start with the setup
-		this.featureResearchSetup.registerFeature();
+		this.featureResearchSetup.registerFeature( this.commonItems );
 
 		// Register each feature
 		for( ThEFeatureBase feature : this.featuresList )
 		{
 			// Attempt to register the feature
-			feature.registerFeature();
+			feature.registerFeature( this.commonItems );
 		}
 
 		// Finish the registration

@@ -1,10 +1,12 @@
 package thaumicenergistics.common.container;
 
+import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
@@ -20,6 +22,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.ViewItems;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerOpenContext;
@@ -39,6 +42,7 @@ public class ContainerWirelessEssentiaTerminal
 	/**
 	 * Handler used to interact with the wireless terminal.
 	 */
+	@Nonnull
 	private final HandlerWirelessEssentiaTerminal handler;
 
 	private Aspect tmpSelectedAspect;
@@ -74,7 +78,7 @@ public class ContainerWirelessEssentiaTerminal
 	 * @param player
 	 * @param handler
 	 */
-	public ContainerWirelessEssentiaTerminal( final EntityPlayer player, final HandlerWirelessEssentiaTerminal handler )
+	public ContainerWirelessEssentiaTerminal( final EntityPlayer player, final @Nonnull HandlerWirelessEssentiaTerminal handler )
 	{
 		// Call super
 		super( player );
@@ -88,20 +92,11 @@ public class ContainerWirelessEssentiaTerminal
 		// Set the handler
 		this.handler = handler;
 
-		// Server side?
-		if( EffectiveSide.isServerSide() )
-		{
-			// Set the monitor
-			this.monitor = this.handler.getEssentiaMonitor();
-
-			// Attach to the monitor
-			this.attachToMonitor();
-		}
-		else
+		// Client side?
+		if( EffectiveSide.isClientSide() )
 		{
 			// Request a full update from the server
 			Packet_S_EssentiaCellTerminal.sendFullUpdateRequest( player );
-			this.hasRequested = true;
 		}
 	}
 
@@ -112,9 +107,28 @@ public class ContainerWirelessEssentiaTerminal
 	}
 
 	@Override
+	protected IGrid getHostGrid()
+	{
+		try
+		{
+			return this.handler.getActionableNode().getGrid();
+		}
+		catch( Exception e )
+		{
+			return null;
+		}
+	}
+
+	@Override
 	protected Aspect getHostSelectedAspect()
 	{
 		return this.tmpSelectedAspect;
+	}
+
+	@Override
+	protected IMEEssentiaMonitor getNewMonitor()
+	{
+		return this.handler.getEssentiaMonitor();
 	}
 
 	@Override

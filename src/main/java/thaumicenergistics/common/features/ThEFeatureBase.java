@@ -34,8 +34,10 @@ public abstract class ThEFeatureBase
 
 	/**
 	 * Registers the features crafting recipes, if it has any.
+	 * 
+	 * @param cdi
 	 */
-	protected void registerCrafting()
+	protected void registerCrafting( final CommonDependantItems cdi )
 	{
 	}
 
@@ -94,14 +96,16 @@ public abstract class ThEFeatureBase
 
 	/**
 	 * Asks the feature to register itself.
+	 * 
+	 * @param cdi
 	 */
-	public final void registerFeature()
+	public final void registerFeature( final CommonDependantItems cdi )
 	{
 		// Is the feature enabled and has not yet been registered?
 		if( this.isAvailable() && !this.hasRegistered )
 		{
 			// Register crafting recipe(s)
-			this.registerCrafting();
+			this.registerCrafting( cdi );
 
 			// Register Thaumcraft research.
 			this.registerResearch();

@@ -79,7 +79,7 @@ public class ContainerPartEssentiaLevelEmitter
 	{
 		if( this.emitter != null )
 		{
-			return this.emitter.isUseableByPlayer( player );
+			return this.emitter.isPartUseableByPlayer( player );
 		}
 		return false;
 	}

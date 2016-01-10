@@ -36,11 +36,8 @@ public class FeatureAutocrafting_Essentia
 	}
 
 	@Override
-	protected void registerCrafting()
+	protected void registerCrafting( final CommonDependantItems cdi )
 	{
-		// Common items
-		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
-
 		// My items
 		ItemStack dpeStack = ThEApi.instance().blocks().DistillationPatternEncoder.getStack();
 

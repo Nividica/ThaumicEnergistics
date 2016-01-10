@@ -8,10 +8,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.common.registries.AEPartsEnum;
-import thaumicenergistics.common.registries.FeatureRegistry;
-import thaumicenergistics.common.registries.RecipeRegistry;
-import thaumicenergistics.common.registries.ResearchRegistry;
+import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import appeng.core.AEConfig;
@@ -39,11 +36,8 @@ public class FeatureEssentiaIOBuses
 	}
 
 	@Override
-	protected void registerCrafting()
+	protected void registerCrafting( final CommonDependantItems cdi )
 	{
-		// Common items
-		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
-
 		// My items
 		ItemStack DiffusionCore = ThEApi.instance().items().DiffusionCore.getStack();
 		ItemStack CoalescenceCore = ThEApi.instance().items().CoalescenceCore.getStack();

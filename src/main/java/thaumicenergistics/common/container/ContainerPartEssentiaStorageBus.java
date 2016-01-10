@@ -86,7 +86,7 @@ public class ContainerPartEssentiaStorageBus
 	{
 		if( this.storageBus != null )
 		{
-			return this.storageBus.isUseableByPlayer( player );
+			return this.storageBus.isPartUseableByPlayer( player );
 		}
 		return false;
 	}

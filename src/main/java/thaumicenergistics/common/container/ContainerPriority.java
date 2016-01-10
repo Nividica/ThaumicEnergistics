@@ -50,7 +50,7 @@ public class ContainerPriority
 		}
 		else if( this.host instanceof ThEPartBase )
 		{
-			return ( (ThEPartBase)this.host ).isUseableByPlayer( player );
+			return ( (ThEPartBase)this.host ).isPartUseableByPlayer( player );
 		}
 		else if( this.host instanceof TileEntity )
 		{

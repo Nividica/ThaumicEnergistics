@@ -265,7 +265,7 @@ public class ThEGuiHandler
 	public static void launchGui( final ThEPartBase part, final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
 		// Ensure the player is allowed to open the gui
-		if( part.isUseableByPlayer( player ) )
+		if( part.isPartUseableByPlayer( player ) )
 		{
 			player.openGui( ThaumicEnergistics.INSTANCE, part.getSide().ordinal(), world, x, y, z );
 		}

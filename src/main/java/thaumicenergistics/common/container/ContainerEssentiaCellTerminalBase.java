@@ -1,8 +1,6 @@
 package thaumicenergistics.common.container;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -30,6 +28,7 @@ import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.ISecurityGrid;
@@ -135,12 +134,6 @@ public abstract class ContainerEssentiaCellTerminalBase
 	private Slot outputSlot;
 
 	/**
-	 * Holds a list of changes sent to the gui before the
-	 * full list is sent.
-	 */
-	private List<IAspectStack> pendingChanges = new ArrayList<IAspectStack>();
-
-	/**
 	 * The aspect the user has selected.
 	 */
 	private Aspect selectedAspect;
@@ -168,12 +161,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 	/**
 	 * Essentia network monitor
 	 */
-	protected IMEEssentiaMonitor monitor;
-
-	/**
-	 * Set to true once a full list request is sent to the server.
-	 */
-	protected boolean hasRequested = false;
+	private IMEEssentiaMonitor essentiaMonitor;
 
 	/**
 	 * Create the container and register the owner
@@ -189,13 +177,45 @@ public abstract class ContainerEssentiaCellTerminalBase
 			// Set the sound time
 			this.lastSoundPlaytime = System.currentTimeMillis();
 		}
-		else
-		{
-			this.hasRequested = true;
-		}
 
 		// Create the reop
 		this.repo = new EssentiaRepo();
+	}
+
+	/**
+	 * Attach this container to the Essentia monitor
+	 * 
+	 * @param essentiaMonitor
+	 */
+	private boolean attachToMonitor( final IMEEssentiaMonitor eMonitor )
+	{
+		if( ( EffectiveSide.isServerSide() ) && ( eMonitor != null ) )
+		{
+			// Get the grid
+			IGrid grid = this.getHostGrid();
+			if( grid == null )
+			{
+				return false;
+			}
+
+			// Detach from any current monitor
+			if( this.essentiaMonitor != null )
+			{
+				this.detachFromMonitor();
+			}
+
+			// Set the monitor
+			this.essentiaMonitor = eMonitor;
+
+			// Listen
+			this.essentiaMonitor.addListener( this, grid.hashCode() );
+
+			// Update our cached list of aspects
+			this.repo.copyFrom( this.essentiaMonitor.getEssentiaList() );
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -319,7 +339,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 		int proposedDrainAmount = (int)containerEssentia.getStackSize();
 
 		// Do a network injection
-		long rejectedAmount = this.monitor.injectEssentia( containerEssentia.getAspect(), proposedDrainAmount, mode, actionSource,
+		long rejectedAmount = this.essentiaMonitor.injectEssentia( containerEssentia.getAspect(), proposedDrainAmount, mode, actionSource,
 			true );
 
 		// Was any rejected?
@@ -376,7 +396,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 		}
 
 		// Do an extraction from the network
-		long extractedAmount = this.monitor.extractEssentia( withAspect, containerCapacity, mode, actionSource, true );
+		long extractedAmount = this.essentiaMonitor.extractEssentia( withAspect, containerCapacity, mode, actionSource, true );
 
 		// Was anything extracted?
 		if( extractedAmount <= 0 )
@@ -398,21 +418,6 @@ public abstract class ContainerEssentiaCellTerminalBase
 		// Create a new container filled to the proposed amount
 		return EssentiaItemContainerHelper.INSTANCE.injectIntoContainer( container,
 			new AspectStack( withAspect, proposedFillAmount ) );
-	}
-
-	/**
-	 * Attach this container to the Essentia monitor
-	 */
-	protected void attachToMonitor()
-	{
-		if( ( EffectiveSide.isServerSide() ) && ( this.monitor != null ) )
-		{
-			this.monitor.addListener( this, this.monitor.hashCode() );
-
-			// Update our cached list of aspects
-			this.repo.copyFrom( this.monitor.getEssentiaList() );
-
-		}
 	}
 
 	/**
@@ -448,13 +453,13 @@ public abstract class ContainerEssentiaCellTerminalBase
 	{
 		if( EffectiveSide.isServerSide() )
 		{
-			if( this.monitor != null )
+			if( this.essentiaMonitor != null )
 			{
 				// Stop listening
-				this.monitor.removeListener( this );
+				this.essentiaMonitor.removeListener( this );
 
 				// Null the monitor
-				this.monitor = null;
+				this.essentiaMonitor = null;
 
 				// Clear the repo
 				this.repo.clear();
@@ -475,12 +480,28 @@ public abstract class ContainerEssentiaCellTerminalBase
 	protected abstract BaseActionSource getActionSource();
 
 	/**
+	 * Gets the grid for the host.
+	 * 
+	 * @return
+	 */
+	@Nullable
+	protected abstract IGrid getHostGrid();
+
+	/**
 	 * Return the selected aspect stored in the host.
 	 * 
 	 * @return
 	 */
 	@Nullable
 	protected abstract Aspect getHostSelectedAspect();
+
+	/**
+	 * Attempts to get a new essentia monitor.
+	 * 
+	 * @return
+	 */
+	@Nullable
+	protected abstract IMEEssentiaMonitor getNewMonitor();
 
 	/**
 	 * Sets the hosts selected aspect.
@@ -503,7 +524,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 	protected ItemStack transferEssentia( final ItemStack stack, final Aspect aspect, final BaseActionSource actionSource, final Actionable mode )
 	{
 		// Ensure the stack & monitor are not null
-		if( ( stack == null ) || ( this.monitor == null ) )
+		if( ( stack == null ) || ( this.essentiaMonitor == null ) )
 		{
 			return stack;
 		}
@@ -666,16 +687,35 @@ public abstract class ContainerEssentiaCellTerminalBase
 		// Call super
 		super.detectAndSendChanges();
 
-		// Inc tick tracker
-		this.tickCounter += 1;
-
-		if( this.tickCounter > ContainerEssentiaCellTerminalBase.WORK_TICK_RATE )
+		if( EffectiveSide.isClientSide() )
 		{
-			// Do work
-			this.doWork( this.tickCounter );
+			return;
+		}
 
-			// Reset the tick counter
-			this.tickCounter = 0;
+		// Is there a monitor?
+		if( this.essentiaMonitor != null )
+		{
+			// Inc tick tracker
+			this.tickCounter += 1;
+
+			if( this.tickCounter > ContainerEssentiaCellTerminalBase.WORK_TICK_RATE )
+			{
+				// Do work
+				this.doWork( this.tickCounter );
+
+				// Reset the tick counter
+				this.tickCounter = 0;
+			}
+		}
+		else
+		{
+			// Attempt to attach to a monitor
+			if( this.attachToMonitor( this.getNewMonitor() ) )
+			{
+				// Send update
+				this.onClientRequestFullUpdate();
+			}
+
 		}
 
 		// Compare selected aspects
@@ -727,22 +767,25 @@ public abstract class ContainerEssentiaCellTerminalBase
 	 * from the AE monitor?
 	 */
 	@Override
-	public boolean isValid( final Object verificationToken )
+	public final boolean isValid( final Object verificationToken )
 	{
-		if( this.monitor == null )
+		// Get the grid
+		IGrid grid = this.getHostGrid();
+		if( grid != null )
 		{
-			return false;
+			// Do the hash codes match?
+			if( grid.hashCode() == (Integer)verificationToken )
+			{
+				return true;
+			}
 		}
 
-		// Do the hash codes match?
-		if( this.monitor.hashCode() == (Integer)verificationToken )
-		{
-			return true;
-		}
-
-		// No longer valid
-		this.monitor = null;
+		// No longer valid (Do not call detach, this will happen automatically)
+		this.essentiaMonitor = null;
 		this.repo.clear();
+
+		// Update the client
+		this.onClientRequestFullUpdate();
 
 		return false;
 	}
@@ -781,8 +824,10 @@ public abstract class ContainerEssentiaCellTerminalBase
 	@Override
 	public void onContainerClosed( final EntityPlayer player )
 	{
+		// Call super
 		super.onContainerClosed( player );
 
+		// Detach from the monitor
 		this.detachFromMonitor();
 	}
 
@@ -865,60 +910,29 @@ public abstract class ContainerEssentiaCellTerminalBase
 	{
 		// Set the aspect list
 		this.repo.copyFrom( aspectStackList );
-
-		// Check pending changes
-		if( ( aspectStackList != null ) && ( !this.pendingChanges.isEmpty() ) )
-		{
-			// Update list with pending changes
-			for( int index = 0; index < this.pendingChanges.size(); index++ )
-			{
-				this.onReceivedAspectListChange( this.pendingChanges.get( index ) );
-			}
-
-			// Clear pending
-			this.pendingChanges.clear();
-		}
 	}
 
 	/**
 	 * Called by the gui when a change arrives.
 	 * 
 	 * @param change
-	 * @return True if the repo is prepared to be displayed.
 	 */
-	public boolean onReceivedAspectListChange( final IAspectStack change )
+	public void onReceivedAspectListChange( final IAspectStack change )
 	{
 		// Ignored server side
 		if( EffectiveSide.isServerSide() )
 		{
-			return false;
+			return;
 		}
 
 		// Ensure the change is not null
 		if( change == null )
 		{
-			return false;
-		}
-
-		// Have we requested the full list yet?
-		if( !this.hasRequested )
-		{
-			return false;
-		}
-
-		// Has the full list been received?
-		if( this.repo.isEmpty() )
-		{
-			// Not yet received full list, add to pending
-			this.pendingChanges.add( change );
-			return false;
+			return;
 		}
 
 		// Post the change
 		this.repo.postChange( change );
-
-		// The GUI can update if there are no pending changes
-		return this.pendingChanges.isEmpty();
 	}
 
 	/**

@@ -44,11 +44,8 @@ public class FeatureAutocrafting_Arcane
 	}
 
 	@Override
-	protected void registerCrafting()
+	protected void registerCrafting( final CommonDependantItems cdi )
 	{
-		// Common items
-		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
-
 		// Thaumcraft items
 		ItemStack CraftingScepter = VisCraftingHelper.INSTANCE.getCraftingScepter();
 

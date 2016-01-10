@@ -840,11 +840,11 @@ public class GuiEssentiaCellTerminal
 	public void onReceiveAspectListChange( final IAspectStack change )
 	{
 		// Update the container
-		if( this.baseContainer.onReceivedAspectListChange( change ) )
-		{
-			// Update the gui
-			this.onListUpdate();
-		}
+		this.baseContainer.onReceivedAspectListChange( change );
+
+		// Update the gui
+		this.onListUpdate();
+
 	}
 
 	/**

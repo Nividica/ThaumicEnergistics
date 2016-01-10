@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.items.ItemCraftingAspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaCellTerminal;
@@ -14,6 +15,7 @@ import thaumicenergistics.common.storage.AspectStackComparator.AspectStackCompar
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.config.ViewItems;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.data.IAEItemStack;
@@ -32,13 +34,14 @@ public class ContainerEssentiaTerminal
 	/**
 	 * The terminal this is associated with.
 	 */
-	private PartEssentiaTerminal terminal = null;
+	@Nonnull
+	private final PartEssentiaTerminal terminal;
 
 	/**
 	 * Network source representing the player who is interacting with the
 	 * container.
 	 */
-	private PlayerSource playerSource = null;
+	private final PlayerSource playerSource;
 
 	/**
 	 * Creates the container
@@ -62,12 +65,6 @@ public class ContainerEssentiaTerminal
 		// Is this server side?
 		if( EffectiveSide.isServerSide() )
 		{
-			// Get the monitor
-			this.monitor = terminal.getGridBlock().getEssentiaMonitor();
-
-			// Attach to the monitor
-			this.attachToMonitor();
-
 			// Add this container to the terminal's list
 			terminal.addListener( this );
 		}
@@ -75,7 +72,6 @@ public class ContainerEssentiaTerminal
 		{
 			// Ask for a list update
 			Packet_S_EssentiaCellTerminal.sendFullUpdateRequest( this.player );
-			this.hasRequested = true;
 		}
 
 		// Bind our inventory
@@ -89,9 +85,28 @@ public class ContainerEssentiaTerminal
 	}
 
 	@Override
+	protected IGrid getHostGrid()
+	{
+		try
+		{
+			return this.terminal.getGridBlock().getGrid();
+		}
+		catch( Exception e )
+		{
+			return null;
+		}
+	}
+
+	@Override
 	protected Aspect getHostSelectedAspect()
 	{
 		return this.terminal.selectedAspect;
+	}
+
+	@Override
+	protected IMEEssentiaMonitor getNewMonitor()
+	{
+		return this.terminal.getGridBlock().getEssentiaMonitor();
 	}
 
 	@Override
@@ -103,7 +118,7 @@ public class ContainerEssentiaTerminal
 	@Override
 	public boolean canInteractWith( final EntityPlayer player )
 	{
-		return this.terminal.isUseableByPlayer( player );
+		return this.terminal.isPartUseableByPlayer( player );
 	}
 
 	/**
@@ -168,10 +183,7 @@ public class ContainerEssentiaTerminal
 		this.onModeChanged( this.terminal.getSortingMode(), this.terminal.getViewMode() );
 
 		// Send the aspect list
-		if( this.monitor != null )
-		{
-			Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.repo.getAll() );
-		}
+		Packet_C_EssentiaCellTerminal.sendFullList( this.player, this.repo.getAll() );
 	}
 
 	@Override

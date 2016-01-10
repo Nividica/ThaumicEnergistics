@@ -1,6 +1,5 @@
 package thaumicenergistics.common.features;
 
-import thaumicenergistics.common.registries.FeatureRegistry;
 
 /**
  * Defines a feature that depends on a configuration setting and/or specific
@@ -60,12 +59,12 @@ public abstract class ThEDependencyFeatureBase
 	/**
 	 * Evaluates the dependencies of the feature and enables it if possible.
 	 * 
-	 * @param fr
+	 * @param cdi
 	 */
-	public final void evaluateDependencies( final FeatureRegistry fr )
+	public final void evaluateDependencies( final CommonDependantItems cdi )
 	{
 		// Ask for the features config settings and required items
-		this.setAvailable( this.checkConfigs() && this.checkItemReqs( this.getItemReqs( fr.getCommonItems() ) ) );
+		this.setAvailable( this.checkConfigs() && this.checkItemReqs( this.getItemReqs( cdi ) ) );
 	}
 
 }

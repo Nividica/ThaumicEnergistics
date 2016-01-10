@@ -276,16 +276,6 @@ public class EssentiaMonitor
 	@SuppressWarnings("null")
 	protected void updateCacheToMatchNetwork()
 	{
-		// Get the list of fluids in the network
-		IItemList<IAEFluidStack> fluidStackList;
-
-		// Validate the list
-		if( ( fluidStackList = this.fluidMonitor.getStorageList() ) == null )
-		{
-			// Invalid list
-			return;
-		}
-
 		// Changes made to the cache
 		List<IAspectStack> aspectChanges = null;
 
@@ -307,38 +297,46 @@ public class EssentiaMonitor
 			this.cache.clear();
 		}
 
-		// Loop over all fluids
-		for( IAEFluidStack fluidStack : fluidStackList )
+		// Is the network powerd?
+		if( this.energyGrid.isNetworkPowered() )
 		{
-			// Ensure the fluid is an essentia gas
-			if( !( fluidStack.getFluid() instanceof GaseousEssentia ) )
+
+			// Get the list of fluids in the network
+			IItemList<IAEFluidStack> fluidStackList = this.fluidMonitor.getStorageList();
+
+			// Loop over all fluids
+			for( IAEFluidStack fluidStack : fluidStackList )
 			{
-				// Not an essentia gas.
-				continue;
-			}
-
-			// Get the gas aspect
-			Aspect aspect = ( (GaseousEssentia)fluidStack.getFluid() ).getAspect();
-
-			// Calculate the new amount
-			Long newAmount = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
-
-			// Update the cache
-			IAspectStack prevStack = this.cache.setAspect( aspect, newAmount, false );
-
-			// Are there any listeners?
-			if( hasListeners )
-			{
-				// Remove from the previous mapping
-				previousAspects.remove( aspect );
-
-				// Calculate the difference
-				long diff = ( newAmount - ( prevStack != null ? prevStack.getStackSize() : 0 ) );
-
-				if( diff != 0 )
+				// Ensure the fluid is an essentia gas
+				if( !( fluidStack.getFluid() instanceof GaseousEssentia ) )
 				{
-					// Add to the changes
-					aspectChanges.add( new AspectStack( aspect, diff ) );
+					// Not an essentia gas.
+					continue;
+				}
+
+				// Get the gas aspect
+				Aspect aspect = ( (GaseousEssentia)fluidStack.getFluid() ).getAspect();
+
+				// Calculate the new amount
+				Long newAmount = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+
+				// Update the cache
+				IAspectStack prevStack = this.cache.setAspect( aspect, newAmount, false );
+
+				// Are there any listeners?
+				if( hasListeners )
+				{
+					// Remove from the previous mapping
+					previousAspects.remove( aspect );
+
+					// Calculate the difference
+					long diff = ( newAmount - ( prevStack != null ? prevStack.getStackSize() : 0 ) );
+
+					if( diff != 0 )
+					{
+						// Add to the changes
+						aspectChanges.add( new AspectStack( aspect, diff ) );
+					}
 				}
 			}
 		}
@@ -349,7 +347,7 @@ public class EssentiaMonitor
 			// Anything left in the previous mapping is no longer present in the network
 			for( Aspect aspect : previousAspects )
 			{
-				aspectChanges.add( new AspectStack( aspect, -this.cache.remove( aspect ).getStackSize() ) );
+				aspectChanges.add( new AspectStack( aspect, -this.cache.remove( aspect ).getStackSize(), false ) );
 			}
 
 			// Notify listeners

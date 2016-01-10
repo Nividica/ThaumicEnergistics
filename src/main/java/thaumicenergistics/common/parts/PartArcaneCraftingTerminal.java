@@ -532,6 +532,12 @@ public class PartArcaneCraftingTerminal
 	}
 
 	@Override
+	public boolean isUseableByPlayer( final EntityPlayer player )
+	{
+		return this.isPartUseableByPlayer( player );
+	}
+
+	@Override
 	public void launchGUI( final EntityPlayer player )
 	{
 		TileEntity host = this.getHostTile();

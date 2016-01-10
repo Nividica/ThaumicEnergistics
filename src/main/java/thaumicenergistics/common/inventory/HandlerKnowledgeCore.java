@@ -23,20 +23,29 @@ public class HandlerKnowledgeCore
 	/**
 	 * Array of stored patterns.
 	 */
-	private ArrayList<ArcaneCraftingPattern> patterns = new ArrayList<ArcaneCraftingPattern>( HandlerKnowledgeCore.MAXIMUM_STORED_PATTERNS );
+	private final ArrayList<ArcaneCraftingPattern> patterns = new ArrayList<ArcaneCraftingPattern>( MAXIMUM_STORED_PATTERNS );
 
 	/**
 	 * Knowledge core being handled.
 	 */
 	private ItemStack kCore;
 
+	/**
+	 * Creates a handler without a core.
+	 * Use open() to set the core in the future.
+	 */
+	public HandlerKnowledgeCore()
+	{
+	}
+
+	/**
+	 * Creates the handler with the specified core.
+	 * 
+	 * @param kCore
+	 */
 	public HandlerKnowledgeCore( final ItemStack kCore )
 	{
-		// Set the kCore
-		this.kCore = kCore;
-
-		// Load
-		this.loadKCoreData();
+		this.open( kCore );
 	}
 
 	/**
@@ -66,10 +75,10 @@ public class HandlerKnowledgeCore
 		NBTTagCompound data = this.getOrCreateNBT();
 
 		// Are there saved patterns?
-		if( data.hasKey( HandlerKnowledgeCore.NBTKEY_PATTERNS ) )
+		if( data.hasKey( NBTKEY_PATTERNS ) )
 		{
 			// Get the list
-			NBTTagList plist = data.getTagList( HandlerKnowledgeCore.NBTKEY_PATTERNS, Constants.NBT.TAG_COMPOUND );
+			NBTTagList plist = data.getTagList( NBTKEY_PATTERNS, Constants.NBT.TAG_COMPOUND );
 
 			// Read in each pattern
 			for( int index = 0; index < plist.tagCount(); index++ )
@@ -122,7 +131,7 @@ public class HandlerKnowledgeCore
 		// Write the list to the data
 		if( plist.tagCount() > 0 )
 		{
-			data.setTag( HandlerKnowledgeCore.NBTKEY_PATTERNS, plist );
+			data.setTag( NBTKEY_PATTERNS, plist );
 		}
 	}
 
@@ -227,6 +236,16 @@ public class HandlerKnowledgeCore
 	}
 
 	/**
+	 * Returns true if the handler has a core.
+	 * 
+	 * @return
+	 */
+	public boolean hasCore()
+	{
+		return this.kCore != null;
+	}
+
+	/**
 	 * Returns true if there is a pattern stored that produces the specified
 	 * result.
 	 * 
@@ -278,6 +297,23 @@ public class HandlerKnowledgeCore
 		}
 
 		return( ItemStack.areItemStacksEqual( kCore, this.kCore ) && ( ItemStack.areItemStackTagsEqual( kCore, this.kCore ) ) );
+	}
+
+	/**
+	 * Closes the previous core, and opens the new core.
+	 * 
+	 * @param kCore
+	 */
+	public void open( final ItemStack kCore )
+	{
+		// Close any existing core
+		this.close();
+
+		// Set the kCore
+		this.kCore = kCore;
+
+		// Load
+		this.loadKCoreData();
 	}
 
 	/**

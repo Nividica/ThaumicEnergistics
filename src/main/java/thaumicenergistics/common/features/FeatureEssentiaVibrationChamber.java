@@ -36,11 +36,8 @@ public class FeatureEssentiaVibrationChamber
 	}
 
 	@Override
-	protected void registerCrafting()
+	protected void registerCrafting( final CommonDependantItems cdi )
 	{
-		// Common items
-		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
-
 		// My Items
 		ItemStack EssVibrationChamber = ThEApi.instance().blocks().EssentiaVibrationChamber.getStack();
 		ItemStack DiffusionCore = ThEApi.instance().items().DiffusionCore.getStack();
@@ -54,7 +51,8 @@ public class FeatureEssentiaVibrationChamber
 
 		// Register Chamber
 		RecipeRegistry.BLOCK_ESSENTIA_VIBRATION_CHAMBER = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
-			ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getKey(), EssVibrationChamber, chamberAspects, cdi.VibrationChamber, DiffusionCore, cdi.WardedJar );
+			ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getKey(), EssVibrationChamber, chamberAspects, cdi.VibrationChamber, DiffusionCore,
+			cdi.WardedJar );
 	}
 
 	@Override

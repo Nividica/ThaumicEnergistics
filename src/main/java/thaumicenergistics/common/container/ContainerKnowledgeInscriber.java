@@ -3,6 +3,7 @@ package thaumicenergistics.common.container;
 import java.util.ArrayList;
 import java.util.Iterator;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -73,22 +74,22 @@ public class ContainerKnowledgeInscriber
 					CRAFTING_SLOT_SPACING = 18, CRAFTING_RESULT_SLOT = CRAFTING_MATRIX_SLOT + ( CRAFTING_ROWS * CRAFTING_COLS );
 
 	/**
+	 * Handles interaction with the knowledge core.
+	 */
+	private final HandlerKnowledgeCore kCoreHandler;
+
+	/**
 	 * Slots
 	 */
-	private SlotRestrictive kCoreSlot;
+	private final SlotRestrictive kCoreSlot;
+	private final SlotFake resultSlot;
 	private SlotInaccessible[] patternSlots = new SlotInaccessible[MAXIMUM_PATTERNS];
 	private SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[CRAFTING_ROWS * CRAFTING_COLS];
-	private SlotFake resultSlot;
 
 	/**
 	 * Slot index ranges.
 	 */
 	private int patternSlot_first, patternSlot_last, craftingSlot_first, craftingSlot_last;
-
-	/**
-	 * Handles interaction with the knowledge core.
-	 */
-	private HandlerKnowledgeCore kCoreHandler;
 
 	/**
 	 * Player using the inscriber
@@ -99,11 +100,6 @@ public class ContainerKnowledgeInscriber
 	 * The current recipe, if any.
 	 */
 	private IArcaneRecipe activeRecipe = null;
-
-	/**
-	 * Tracks changes to the core slot.
-	 */
-	private boolean hadCoreLastCheck = false;
 
 	/**
 	 * Inscriber tile entity.
@@ -145,26 +141,8 @@ public class ContainerKnowledgeInscriber
 		this.resultSlot = new SlotFake( this.internalInventory, CRAFTING_RESULT_SLOT, 116, 108 );
 		this.addSlotToContainer( this.resultSlot );
 
-		// Perform server side only setup
-		if( EffectiveSide.isServerSide() )
-		{
-			// Check for a kcore
-			if( this.kCoreSlot.getHasStack() )
-			{
-				// Mark the presence of the core
-				this.hadCoreLastCheck = true;
-
-				// Create the handler
-				this.kCoreHandler = new HandlerKnowledgeCore( this.kCoreSlot.getStack() );
-			}
-
-			// Update the patterns
-			this.updatePatternSlots();
-
-			// Update the result
-			this.onCraftMatrixChanged( this.internalInventory );
-		}
-
+		// Create the handler
+		this.kCoreHandler = new HandlerKnowledgeCore();
 	}
 
 	/**
@@ -177,7 +155,7 @@ public class ContainerKnowledgeInscriber
 		CoreSaveState saveState;
 
 		// Is there a core handler?
-		if( this.kCoreHandler == null )
+		if( !this.kCoreHandler.hasCore() )
 		{
 			saveState = CoreSaveState.Disabled_MissingCore;
 		}
@@ -349,7 +327,7 @@ public class ContainerKnowledgeInscriber
 		Iterator<ItemStack> iterator = null;
 
 		// Get the list of stored pattern results
-		if( this.kCoreHandler != null )
+		if( this.kCoreHandler.hasCore() )
 		{
 			ArrayList<ItemStack> storedResults = this.kCoreHandler.getStoredOutputs();
 			iterator = storedResults.iterator();
@@ -400,44 +378,33 @@ public class ContainerKnowledgeInscriber
 	@Override
 	public void detectAndSendChanges()
 	{
+		if( this.player instanceof EntityPlayerMP )
+		{
+			// Has a core changed?
+			if( !this.kCoreHandler.isHandlingCore( this.kCoreSlot.getStack() ) )
+			{
+				if( this.kCoreSlot.getHasStack() )
+				{
+					// Setup the handler
+					this.kCoreHandler.open( this.kCoreSlot.getStack() );
+				}
+				else
+				{
+					// Close the handler
+					this.kCoreHandler.close();
+				}
+
+				// Update the slots
+				this.updatePatternSlots();
+				( (EntityPlayerMP)this.player ).isChangingQuantityOnly = false;
+
+				// Update the save state
+				this.sendSaveState( false );
+			}
+		}
+
 		// Call super
 		super.detectAndSendChanges();
-
-		// Ignore the rest of client side
-		if( EffectiveSide.isClientSide() )
-		{
-			return;
-		}
-
-		// Check for a kcore
-		boolean hasCore = this.kCoreSlot.getHasStack();
-
-		// Has a core been placed or removed?
-		if( hasCore != this.hadCoreLastCheck )
-		{
-			if( hasCore )
-			{
-				// Get the handler
-				this.kCoreHandler = new HandlerKnowledgeCore( this.kCoreSlot.getStack() );
-			}
-			else
-			{
-				// Remove the handler
-				this.kCoreHandler = null;
-			}
-
-			// Update the slots
-			this.updatePatternSlots();
-
-			// Update the save state
-			this.sendSaveState( false );
-
-			// Mark the inscriber as dirty
-			this.inscriber.markDirty();
-		}
-
-		// Mark the cores presence
-		this.hadCoreLastCheck = hasCore;
 
 	}
 
@@ -601,58 +568,54 @@ public class ContainerKnowledgeInscriber
 	@Override
 	public ItemStack slotClick( final int slotID, final int buttonPressed, final int flag, final EntityPlayer player )
 	{
-		if( EffectiveSide.isServerSide() )
+		if( EffectiveSide.isClientSide() )
 		{
-			try
+			return null;
+		}
+
+		// Get the clicked slot
+		Slot clickedSlot = this.getSlot( slotID );
+
+		// Get the itemstack the player is holding with the mouse
+		ItemStack draggingStack = player.inventory.getItemStack();
+
+		// Was the clicked slot a crafting slot?
+		if( ( clickedSlot.slotNumber >= this.craftingSlot_first ) && ( clickedSlot.slotNumber <= this.craftingSlot_last ) )
+		{
+			// Is the player holding anything?
+			if( draggingStack != null )
 			{
-				// Get the clicked slot
-				Slot clickedSlot = this.getSlot( slotID );
+				ItemStack copiedStack = draggingStack.copy();
+				copiedStack.stackSize = 1;
 
-				// Get the itemstack the player is holding with the mouse
-				ItemStack draggingStack = player.inventory.getItemStack();
-
-				// Was the clicked slot a crafting slot?
-				if( ( clickedSlot.slotNumber >= this.craftingSlot_first ) && ( clickedSlot.slotNumber <= this.craftingSlot_last ) )
-				{
-					// Is the player holding anything?
-					if( draggingStack != null )
-					{
-						ItemStack copiedStack = draggingStack.copy();
-						copiedStack.stackSize = 1;
-
-						// Place a copy of the stack into the clicked slot
-						clickedSlot.putStack( copiedStack );
-					}
-					else
-					{
-						// Clear the slot
-						clickedSlot.putStack( null );
-					}
-
-					// Update the matrix
-					this.onCraftMatrixChanged( clickedSlot.inventory );
-
-					return draggingStack;
-				}
-				// Was the clicked slot a pattern slot?
-				else if( ( clickedSlot.slotNumber >= this.patternSlot_first ) && ( clickedSlot.slotNumber <= this.patternSlot_last ) )
-				{
-					// Does the slot correspond to a stored pattern?
-					if( clickedSlot.getHasStack() )
-					{
-						// Load the pattern
-						this.loadPattern( this.kCoreHandler.getPatternForItem( clickedSlot.getStack() ) );
-
-						// Update the matrix
-						this.onCraftMatrixChanged( clickedSlot.inventory );
-					}
-
-					return draggingStack;
-				}
+				// Place a copy of the stack into the clicked slot
+				clickedSlot.putStack( copiedStack );
 			}
-			catch( Exception e )
+			else
 			{
+				// Clear the slot
+				clickedSlot.putStack( null );
 			}
+
+			// Update the matrix
+			this.onCraftMatrixChanged( clickedSlot.inventory );
+
+			return draggingStack;
+		}
+		// Was the clicked slot a pattern slot?
+		else if( ( clickedSlot.slotNumber >= this.patternSlot_first ) && ( clickedSlot.slotNumber <= this.patternSlot_last ) )
+		{
+			// Does the slot correspond to a stored pattern?
+			if( clickedSlot.getHasStack() )
+			{
+				// Load the pattern
+				this.loadPattern( this.kCoreHandler.getPatternForItem( clickedSlot.getStack() ) );
+
+				// Update the matrix
+				this.onCraftMatrixChanged( clickedSlot.inventory );
+			}
+
+			return draggingStack;
 		}
 
 		// Pass to super

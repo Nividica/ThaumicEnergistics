@@ -31,6 +31,14 @@ public interface IThEConfig
 	public int conversionMultiplier();
 
 	/**
+	 * When enabled, overwrites the AE2 facade setting for certain Thaumcraft blocks,
+	 * allowing them to become facades.
+	 * 
+	 * @return
+	 */
+	public boolean forceTCFacades();
+
+	/**
 	 * If true the iron and thaumium gearbox's will be rendered as a standard
 	 * block.
 	 */

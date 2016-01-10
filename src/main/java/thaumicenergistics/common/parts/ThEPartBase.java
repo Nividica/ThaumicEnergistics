@@ -448,6 +448,56 @@ public abstract class ThEPartBase
 		return false;
 	}
 
+	/**
+	 * Called the player interact with this part?
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public final boolean isPartUseableByPlayer( final EntityPlayer player )
+	{
+		// Null check host
+		if( ( this.hostTile == null ) || ( this.host == null ) )
+		{
+			return false;
+		}
+
+		// Does the host still exist in the world and the player in range of it?
+		if( !ThEUtils.canPlayerInteractWith( player, this.hostTile ) )
+		{
+			return false;
+		}
+
+		// Is the part still attached?
+		if( this.host.getPart( this.cableSide ) != this )
+		{
+			return false;
+		}
+
+		// Are there any permissions to check?
+		if( this.interactionPermissions != null )
+		{
+			// Get the security grid
+			ISecurityGrid sGrid = this.gridBlock.getSecurityGrid();
+			if( sGrid == null )
+			{
+				// Security grid was unaccessible.
+				return false;
+			}
+
+			// Check each permission
+			for( SecurityPermissions perm : this.interactionPermissions )
+			{
+				if( !sGrid.hasPermission( player, perm ) )
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 	@Override
 	public boolean isPowered()
 	{
@@ -495,56 +545,6 @@ public abstract class ThEPartBase
 	public boolean isSolid()
 	{
 		return false;
-	}
-
-	/**
-	 * Called the player interact with this part?
-	 * 
-	 * @param player
-	 * @return
-	 */
-	public final boolean isUseableByPlayer( final EntityPlayer player )
-	{
-		// Null check host
-		if( ( this.hostTile == null ) || ( this.host == null ) )
-		{
-			return false;
-		}
-
-		// Does the host still exist in the world and the player in range of it?
-		if( !ThEUtils.canPlayerInteractWith( player, this.hostTile ) )
-		{
-			return false;
-		}
-
-		// Is the part still attached?
-		if( this.host.getPart( this.cableSide ) != this )
-		{
-			return false;
-		}
-
-		// Are there any permissions to check?
-		if( this.interactionPermissions != null )
-		{
-			// Get the security grid
-			ISecurityGrid sGrid = this.gridBlock.getSecurityGrid();
-			if( sGrid == null )
-			{
-				// Security grid was unaccessible.
-				return false;
-			}
-
-			// Check each permission
-			for( SecurityPermissions perm : this.interactionPermissions )
-			{
-				if( !sGrid.hasPermission( player, perm ) )
-				{
-					return false;
-				}
-			}
-		}
-
-		return true;
 	}
 
 	/**

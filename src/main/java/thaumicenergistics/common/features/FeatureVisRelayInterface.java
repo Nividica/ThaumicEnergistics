@@ -7,10 +7,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.common.registries.AEPartsEnum;
-import thaumicenergistics.common.registries.FeatureRegistry;
-import thaumicenergistics.common.registries.RecipeRegistry;
-import thaumicenergistics.common.registries.ResearchRegistry;
+import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import appeng.core.AEConfig;
@@ -38,11 +35,8 @@ public class FeatureVisRelayInterface
 	}
 
 	@Override
-	protected void registerCrafting()
+	protected void registerCrafting( final CommonDependantItems cdi )
 	{
-		// Common items
-		CommonDependantItems cdi = FeatureRegistry.instance().getCommonItems();
-
 		// My items
 		ItemStack VisInterface = ThEApi.instance().parts().VisRelay_Interface.getStack();
 
@@ -54,7 +48,8 @@ public class FeatureVisRelayInterface
 		visInterfaceAspectList.add( Aspect.FIRE, 2 );
 		visInterfaceAspectList.add( Aspect.ORDER, 2 );
 		visInterfaceAspectList.add( Aspect.WATER, 2 );
-		RecipeRegistry.PART_VIS_INTERFACE = ThaumcraftApi.addShapelessArcaneCraftingRecipe( ResearchRegistry.ResearchTypes.VIS_RELAY_INTERFACE.getKey(),
+		RecipeRegistry.PART_VIS_INTERFACE = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
+			ResearchRegistry.ResearchTypes.VIS_RELAY_INTERFACE.getKey(),
 			VisInterface, visInterfaceAspectList, cdi.BallanceShard, cdi.MEP2P );
 	}
 
@@ -73,7 +68,8 @@ public class FeatureVisRelayInterface
 
 		// Set the pages
 		ResearchPage[] vriPages = new ResearchPage[] { new ResearchPage( ResearchTypes.VIS_RELAY_INTERFACE.getPageName( 1 ) ),
-						new ResearchPage( RecipeRegistry.PART_VIS_INTERFACE ), new ResearchPage( ResearchTypes.VIS_RELAY_INTERFACE.getPageName( 2 ) ),
+						new ResearchPage( RecipeRegistry.PART_VIS_INTERFACE ),
+						new ResearchPage( ResearchTypes.VIS_RELAY_INTERFACE.getPageName( 2 ) ),
 						new ResearchPage( ResearchTypes.VIS_RELAY_INTERFACE.getPageName( 3 ) ) };
 
 		// Create the vis relay interface research

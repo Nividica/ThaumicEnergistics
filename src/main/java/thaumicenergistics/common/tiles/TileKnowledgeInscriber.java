@@ -9,11 +9,6 @@ public class TileKnowledgeInscriber
 	extends ThETileInventory
 {
 	public static final int KCORE_SLOT = 0;
-	/*
-	public static final int PATTERN_SLOT = KCORE_SLOT + 1;
-	public static final int CRAFTING_MATRIX_SLOT = HandlerKnowledgeCore.MAXIMUM_STORED_PATTERNS + PATTERN_SLOT;
-	public static final int CRAFTING_RESULT_SLOT = CRAFTING_MATRIX_SLOT + 9;
-	*/
 
 	private static final String NBTKEY_KCORE = "kcore";
 
