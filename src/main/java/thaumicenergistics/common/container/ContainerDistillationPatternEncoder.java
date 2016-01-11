@@ -57,11 +57,6 @@ public class ContainerDistillationPatternEncoder
 	private static final int SLOT_PATTERN_ENCODED_POS_X = 146, SLOT_PATTERN_ENCODED_POS_Y = 113;
 
 	/**
-	 * Player who opened the GUI.
-	 */
-	private final EntityPlayer player;
-
-	/**
 	 * Host encoder.
 	 */
 	private final TileDistillationPatternEncoder encoder;
@@ -117,8 +112,8 @@ public class ContainerDistillationPatternEncoder
 	 */
 	public ContainerDistillationPatternEncoder( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
-		// Set the player
-		this.player = player;
+		// Call super
+		super( player );
 
 		// Get the encoder
 		this.encoder = (TileDistillationPatternEncoder)world.getTileEntity( x, y, z );
@@ -354,6 +349,27 @@ public class ContainerDistillationPatternEncoder
 		}
 	}
 
+	@Override
+	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
+	{
+		// Does the pattern slot need to be sync'd?
+		if( this.doesSlotNeedSync( this.slotPatternEncoded ) )
+		{
+			// Load the pattern
+			this.loadPattern();
+			return true;
+		}
+		// Does the source item need to be sync'd?
+		else if( this.doesSlotNeedSync( this.slotSourceItem ) )
+		{
+			// Scan the source item
+			this.scanSourceItem( true );
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Set's the selected aspect stack.
 	 * 
@@ -397,31 +413,6 @@ public class ContainerDistillationPatternEncoder
 			return this.encoder.isUseableByPlayer( player );
 		}
 		return false;
-	}
-
-	@Override
-	public void detectAndSendChanges()
-	{
-		if( this.player instanceof EntityPlayerMP )
-		{
-			// Does the pattern slot need to be sync'd?
-			if( this.doesSlotNeedSync( this.slotPatternEncoded ) )
-			{
-				// Load the pattern
-				this.loadPattern();
-				( (EntityPlayerMP)this.player ).isChangingQuantityOnly = false;
-			}
-			// Does the source item need to be sync'd?
-			else if( this.doesSlotNeedSync( this.slotSourceItem ) )
-			{
-				// Scan the source item
-				this.scanSourceItem( true );
-				( (EntityPlayerMP)this.player ).isChangingQuantityOnly = false;
-			}
-		}
-
-		// Lastly call super
-		super.detectAndSendChanges();
 	}
 
 	/**
@@ -569,10 +560,10 @@ public class ContainerDistillationPatternEncoder
 		}
 
 		// Get the slot
-		Slot clickedSlot = this.getSlot( slotNumber );
+		Slot clickedSlot = this.getSlotOrNull( slotNumber );
 
 		// Slot empty?
-		if( !clickedSlot.getHasStack() )
+		if( ( clickedSlot == null ) || !clickedSlot.getHasStack() )
 		{
 			// Done
 			return null;

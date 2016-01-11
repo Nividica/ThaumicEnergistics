@@ -2,6 +2,7 @@ package thaumicenergistics.common.container;
 
 import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
@@ -212,6 +213,10 @@ public class ContainerWirelessEssentiaTerminal
 			cca.setItemToCraft( result );
 
 			// Issue update
+			if( player instanceof EntityPlayerMP )
+			{
+				( (EntityPlayerMP)player ).isChangingQuantityOnly = false;
+			}
 			cca.detectAndSendChanges();
 		}
 
@@ -279,11 +284,11 @@ public class ContainerWirelessEssentiaTerminal
 	}
 
 	@Override
-	public ItemStack slotClick( final int slotID, final int buttonPressed, final int flag, final EntityPlayer player )
+	public ItemStack slotClick( final int slotNumber, final int buttonPressed, final int flag, final EntityPlayer player )
 	{
 		try
 		{
-			Slot clickedSlot = this.getSlot( slotID );
+			Slot clickedSlot = this.getSlotOrNull( slotNumber );
 			// Protect the wireless terminal
 			if( ( clickedSlot.inventory == this.player.inventory ) && ( clickedSlot.getSlotIndex() == this.terminalSlotIndex ) )
 			{
@@ -294,7 +299,7 @@ public class ContainerWirelessEssentiaTerminal
 		{
 		}
 
-		return super.slotClick( slotID, buttonPressed, flag, player );
+		return super.slotClick( slotNumber, buttonPressed, flag, player );
 
 	}
 

@@ -83,18 +83,8 @@ public class ContainerKnowledgeInscriber
 	 */
 	private final SlotRestrictive kCoreSlot;
 	private final SlotFake resultSlot;
-	private SlotInaccessible[] patternSlots = new SlotInaccessible[MAXIMUM_PATTERNS];
-	private SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[CRAFTING_ROWS * CRAFTING_COLS];
-
-	/**
-	 * Slot index ranges.
-	 */
-	private int patternSlot_first, patternSlot_last, craftingSlot_first, craftingSlot_last;
-
-	/**
-	 * Player using the inscriber
-	 */
-	private EntityPlayer player;
+	private final SlotInaccessible[] patternSlots = new SlotInaccessible[MAXIMUM_PATTERNS];
+	private final SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[CRAFTING_ROWS * CRAFTING_COLS];
 
 	/**
 	 * The current recipe, if any.
@@ -113,8 +103,8 @@ public class ContainerKnowledgeInscriber
 
 	public ContainerKnowledgeInscriber( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
-		// Set the player
-		this.player = player;
+		// Call super
+		super( player );
 
 		// Bind to the players inventory
 		this.bindPlayerInventory( player.inventory, ContainerKnowledgeInscriber.PLAYER_INV_POSITION_Y,
@@ -211,27 +201,22 @@ public class ContainerKnowledgeInscriber
 		int slotIndex;
 		// Create the crafting slots
 		slotIndex = CRAFTING_MATRIX_SLOT;
-		for( int row = 0; row < ContainerKnowledgeInscriber.CRAFTING_ROWS; row++ )
+		for( int row = 0; row < CRAFTING_ROWS; row++ )
 		{
-			for( int column = 0; column < ContainerKnowledgeInscriber.CRAFTING_COLS; column++ )
+			for( int column = 0; column < CRAFTING_COLS; column++ )
 			{
 				// Calculate the array index
-				int index = ( row * ContainerKnowledgeInscriber.CRAFTING_COLS ) + column;
+				int index = ( row * CRAFTING_COLS ) + column;
 
 				// Calculate the position
-				int posX = ContainerKnowledgeInscriber.CRAFTING_SLOT_X + ( ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING * column );
-				int posY = ContainerKnowledgeInscriber.CRAFTING_SLOT_Y + ( ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING * row );
-
-				// Add to the array
-				this.craftingSlots[index] = new SlotFakeCraftingMatrix( this.internalInventory, slotIndex++ , posX, posY );
+				int posX = CRAFTING_SLOT_X + ( CRAFTING_SLOT_SPACING * column );
+				int posY = CRAFTING_SLOT_Y + ( CRAFTING_SLOT_SPACING * row );
 
 				// Add the slot
-				this.addSlotToContainer( this.craftingSlots[index] );
+				this.addSlotToContainer( this.craftingSlots[index] = new SlotFakeCraftingMatrix( this.internalInventory, slotIndex++ , posX, posY ) );
 
 			}
 		}
-		this.craftingSlot_first = this.craftingSlots[0].slotNumber;
-		this.craftingSlot_last = this.craftingSlots[this.craftingSlots.length - 1].slotNumber;
 	}
 
 	private void initPatternSlots()
@@ -239,16 +224,16 @@ public class ContainerKnowledgeInscriber
 		int slotIndex;
 		// Create the pattern slots
 		slotIndex = PATTERN_SLOT;
-		for( int row = 0; row < ContainerKnowledgeInscriber.PATTERN_ROWS; row++ )
+		for( int row = 0; row < PATTERN_ROWS; row++ )
 		{
-			for( int column = 0; column < ContainerKnowledgeInscriber.PATTERN_COLS; column++ )
+			for( int column = 0; column < PATTERN_COLS; column++ )
 			{
 				// Calculate the array index
-				int index = ( row * ContainerKnowledgeInscriber.PATTERN_COLS ) + column;
+				int index = ( row * PATTERN_COLS ) + column;
 
 				// Calculate the position
-				int posX = ContainerKnowledgeInscriber.PATTERN_SLOT_X + ( ContainerKnowledgeInscriber.PATTERN_SLOT_SPACING * column );
-				int posY = ContainerKnowledgeInscriber.PATTERN_SLOT_Y + ( ContainerKnowledgeInscriber.PATTERN_SLOT_SPACING * row );
+				int posX = PATTERN_SLOT_X + ( PATTERN_SLOT_SPACING * column );
+				int posY = PATTERN_SLOT_Y + ( PATTERN_SLOT_SPACING * row );
 
 				// Add to the array
 				this.patternSlots[index] = new SlotInaccessible( this.internalInventory, slotIndex++ , posX, posY );
@@ -257,8 +242,6 @@ public class ContainerKnowledgeInscriber
 				this.addSlotToContainer( this.patternSlots[index] );
 			}
 		}
-		this.patternSlot_first = this.patternSlots[0].slotNumber;
-		this.patternSlot_last = this.patternSlots[this.patternSlots.length - 1].slotNumber;
 	}
 
 	private void loadPattern( final ArcaneCraftingPattern pattern )
@@ -357,6 +340,41 @@ public class ContainerKnowledgeInscriber
 	}
 
 	/**
+	 * Checks for core insertion or removal.
+	 * 
+	 * @param playerMP
+	 * @return
+	 */
+	@Override
+	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
+	{
+		// Has a core changed?
+		if( !this.kCoreHandler.isHandlingCore( this.kCoreSlot.getStack() ) )
+		{
+			if( this.kCoreSlot.getHasStack() )
+			{
+				// Setup the handler
+				this.kCoreHandler.open( this.kCoreSlot.getStack() );
+			}
+			else
+			{
+				// Close the handler
+				this.kCoreHandler.close();
+			}
+
+			// Update the slots
+			this.updatePatternSlots();
+
+			// Update the save state
+			this.sendSaveState( false );
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Can interact with anyone
 	 * 
 	 * @param player
@@ -370,42 +388,6 @@ public class ContainerKnowledgeInscriber
 			return this.inscriber.isUseableByPlayer( player );
 		}
 		return false;
-	}
-
-	/**
-	 * Checks for core insertion or removal.
-	 */
-	@Override
-	public void detectAndSendChanges()
-	{
-		if( this.player instanceof EntityPlayerMP )
-		{
-			// Has a core changed?
-			if( !this.kCoreHandler.isHandlingCore( this.kCoreSlot.getStack() ) )
-			{
-				if( this.kCoreSlot.getHasStack() )
-				{
-					// Setup the handler
-					this.kCoreHandler.open( this.kCoreSlot.getStack() );
-				}
-				else
-				{
-					// Close the handler
-					this.kCoreHandler.close();
-				}
-
-				// Update the slots
-				this.updatePatternSlots();
-				( (EntityPlayerMP)this.player ).isChangingQuantityOnly = false;
-
-				// Update the save state
-				this.sendSaveState( false );
-			}
-		}
-
-		// Call super
-		super.detectAndSendChanges();
-
 	}
 
 	public void onClientRequestClearGrid()
@@ -559,67 +541,66 @@ public class ContainerKnowledgeInscriber
 	/**
 	 * Creates 'ghost' items when a crafting slot is clicked.
 	 * 
-	 * @param slotID
+	 * @param slotNumber
 	 * @param buttonPressed
 	 * @param flag
 	 * @param player
 	 * @return
 	 */
 	@Override
-	public ItemStack slotClick( final int slotID, final int buttonPressed, final int flag, final EntityPlayer player )
+	public ItemStack slotClick( final int slotNumber, final int buttonPressed, final int flag, final EntityPlayer player )
 	{
-		if( EffectiveSide.isClientSide() )
-		{
-			return null;
-		}
-
-		// Get the clicked slot
-		Slot clickedSlot = this.getSlot( slotID );
-
 		// Get the itemstack the player is holding with the mouse
 		ItemStack draggingStack = player.inventory.getItemStack();
 
 		// Was the clicked slot a crafting slot?
-		if( ( clickedSlot.slotNumber >= this.craftingSlot_first ) && ( clickedSlot.slotNumber <= this.craftingSlot_last ) )
+		for( Slot slot : this.craftingSlots )
 		{
-			// Is the player holding anything?
-			if( draggingStack != null )
+			if( slot.slotNumber == slotNumber )
 			{
-				ItemStack copiedStack = draggingStack.copy();
-				copiedStack.stackSize = 1;
+				// Is the player holding anything?
+				if( draggingStack != null )
+				{
+					ItemStack copiedStack = draggingStack.copy();
+					copiedStack.stackSize = 1;
 
-				// Place a copy of the stack into the clicked slot
-				clickedSlot.putStack( copiedStack );
-			}
-			else
-			{
-				// Clear the slot
-				clickedSlot.putStack( null );
-			}
-
-			// Update the matrix
-			this.onCraftMatrixChanged( clickedSlot.inventory );
-
-			return draggingStack;
-		}
-		// Was the clicked slot a pattern slot?
-		else if( ( clickedSlot.slotNumber >= this.patternSlot_first ) && ( clickedSlot.slotNumber <= this.patternSlot_last ) )
-		{
-			// Does the slot correspond to a stored pattern?
-			if( clickedSlot.getHasStack() )
-			{
-				// Load the pattern
-				this.loadPattern( this.kCoreHandler.getPatternForItem( clickedSlot.getStack() ) );
+					// Place a copy of the stack into the clicked slot
+					slot.putStack( copiedStack );
+				}
+				else
+				{
+					// Clear the slot
+					slot.putStack( null );
+				}
 
 				// Update the matrix
-				this.onCraftMatrixChanged( clickedSlot.inventory );
-			}
+				this.onCraftMatrixChanged( slot.inventory );
 
-			return draggingStack;
+				return draggingStack;
+			}
+		}
+
+		// Was the clicked slot a pattern slot?
+		for( Slot slot : this.patternSlots )
+		{
+			if( slot.slotNumber == slotNumber )
+			{
+				// Does the slot correspond to a stored pattern?
+				if( slot.getHasStack() )
+				{
+					// Load the pattern
+					this.loadPattern( this.kCoreHandler.getPatternForItem( slot.getStack() ) );
+
+					// Update the matrix
+					this.onCraftMatrixChanged( slot.inventory );
+				}
+
+				return draggingStack;
+			}
 		}
 
 		// Pass to super
-		return super.slotClick( slotID, buttonPressed, flag, player );
+		return super.slotClick( slotNumber, buttonPressed, flag, player );
 
 	}
 
@@ -634,7 +615,7 @@ public class ContainerKnowledgeInscriber
 		}
 
 		// Get the slot that was shift-clicked
-		Slot slot = (Slot)this.inventorySlots.get( slotNumber );
+		Slot slot = this.getSlotOrNull( slotNumber );
 
 		// Is there a valid slot with and item?
 		if( ( slot != null ) && ( slot.getHasStack() ) )

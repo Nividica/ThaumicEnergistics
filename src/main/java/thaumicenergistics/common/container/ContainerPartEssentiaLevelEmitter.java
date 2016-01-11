@@ -3,6 +3,7 @@ package thaumicenergistics.common.container;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
@@ -51,11 +52,6 @@ public class ContainerPartEssentiaLevelEmitter
 	private Aspect trackedAspect = null;
 
 	/**
-	 * The associated player
-	 */
-	private final EntityPlayer player;
-
-	/**
 	 * Create the container.
 	 * 
 	 * @param player
@@ -63,11 +59,11 @@ public class ContainerPartEssentiaLevelEmitter
 	 */
 	public ContainerPartEssentiaLevelEmitter( final PartEssentiaLevelEmitter part, final EntityPlayer player )
 	{
+		// Call super
+		super( player );
+
 		// Set the part
 		this.emitter = part;
-
-		// Set the player
-		this.player = player;
 
 		// Get the players inventory and bind it to the container.
 		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaLevelEmitter.PLAYER_INV_POSITION_Y,
@@ -75,21 +71,8 @@ public class ContainerPartEssentiaLevelEmitter
 	}
 
 	@Override
-	public boolean canInteractWith( final EntityPlayer player )
+	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
 	{
-		if( this.emitter != null )
-		{
-			return this.emitter.isPartUseableByPlayer( player );
-		}
-		return false;
-	}
-
-	@Override
-	public void detectAndSendChanges()
-	{
-		// Call super
-		super.detectAndSendChanges();
-
 		// Threshold
 		if( this.thresholdLevel != this.emitter.getThresholdLevel() )
 		{
@@ -113,13 +96,25 @@ public class ContainerPartEssentiaLevelEmitter
 			filter.add( this.trackedAspect );
 			Packet_C_AspectSlot.setFilterList( filter, this.player );
 		}
+
+		return false;
+	}
+
+	@Override
+	public boolean canInteractWith( final EntityPlayer player )
+	{
+		if( this.emitter != null )
+		{
+			return this.emitter.isPartUseableByPlayer( player );
+		}
+		return false;
 	}
 
 	@Override
 	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
 		// Get the slot
-		Slot slot = this.getSlot( slotNumber );
+		Slot slot = this.getSlotOrNull( slotNumber );
 
 		if( ( slot != null ) && ( slot.getHasStack() ) )
 		{

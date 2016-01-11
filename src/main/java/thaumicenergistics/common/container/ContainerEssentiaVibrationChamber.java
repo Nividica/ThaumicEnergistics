@@ -1,7 +1,6 @@
 package thaumicenergistics.common.container;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
@@ -12,7 +11,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
 
 public class ContainerEssentiaVibrationChamber
-	extends Container
+	extends TheContainerBase
 {
 	/**
 	 * The number of items to average.
@@ -24,18 +23,13 @@ public class ContainerEssentiaVibrationChamber
 	 */
 	private final TileEssentiaVibrationChamber chamber;
 
-	/**
-	 * Player who has this container open.
-	 */
-	private final EntityPlayer player;
-
 	private float powerPerTick = 0, powerPercent = 1.0F, ticksPercent = 1.0F, ticksRemaningMovingAverage = 0.0F;
 	private int averageTicksRemaning;
 
 	public ContainerEssentiaVibrationChamber( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
-		// Set the player
-		this.player = player;
+		// Call super
+		super( player );
 
 		// Get the tile entity
 		TileEntity te = world.getTileEntity( x, y, z );

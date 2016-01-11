@@ -2,13 +2,13 @@ package thaumicenergistics.common.container;
 
 import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
 import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
-import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.config.RedstoneMode;
 
 /**
@@ -51,11 +51,6 @@ public class ContainerPartEssentiaIOBus
 	private final ThEPartEssentiaIOBus_Base bus;
 
 	/**
-	 * Player associated with the container
-	 */
-	private final EntityPlayer player;
-
-	/**
 	 * Cached isVoidAllowed
 	 */
 	private boolean isVoidAllowed;
@@ -70,11 +65,11 @@ public class ContainerPartEssentiaIOBus
 	 */
 	public ContainerPartEssentiaIOBus( final ThEPartEssentiaIOBus_Base part, final EntityPlayer player )
 	{
+		// Call super
+		super( player );
+
 		// Set the part
 		this.bus = part;
-
-		// Set the player
-		this.player = player;
 
 		// Bind to the player's inventory
 		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaIOBus.PLAYER_INV_POSITION_Y,
@@ -92,26 +87,8 @@ public class ContainerPartEssentiaIOBus
 	}
 
 	@Override
-	public boolean canInteractWith( final EntityPlayer player )
+	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
 	{
-		if( this.bus != null )
-		{
-			return this.bus.isPartUseableByPlayer( player );
-		}
-		return false;
-	}
-
-	@Override
-	public void detectAndSendChanges()
-	{
-		// Call super
-		super.detectAndSendChanges();
-
-		if( EffectiveSide.isClientSide() )
-		{
-			return;
-		}
-
 		// Has the void mode changed?
 		if( this.isVoidAllowed != this.bus.isVoidAllowed() )
 		{
@@ -119,6 +96,18 @@ public class ContainerPartEssentiaIOBus
 			this.isVoidAllowed = this.bus.isVoidAllowed();
 			Packet_C_EssentiaIOBus.sendVoidMode( this.player, this.isVoidAllowed );
 		}
+
+		return false;
+	}
+
+	@Override
+	public boolean canInteractWith( final EntityPlayer player )
+	{
+		if( this.bus != null )
+		{
+			return this.bus.isPartUseableByPlayer( player );
+		}
+		return false;
 	}
 
 	@Override
@@ -157,7 +146,7 @@ public class ContainerPartEssentiaIOBus
 	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
 		// Get the slot
-		Slot slot = this.getSlot( slotNumber );
+		Slot slot = this.getSlotOrNull( slotNumber );
 
 		// Do we have a valid slot with an item?
 		if( ( slot != null ) && ( slot.getHasStack() ) )

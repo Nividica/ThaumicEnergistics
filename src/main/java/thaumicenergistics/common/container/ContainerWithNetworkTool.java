@@ -73,6 +73,11 @@ public abstract class ContainerWithNetworkTool
 	 */
 	protected boolean hasNetworkTool = false;
 
+	public ContainerWithNetworkTool( final EntityPlayer player )
+	{
+		super( player );
+	}
+
 	/**
 	 * Adds upgrade slots to the container.
 	 * 
@@ -275,13 +280,16 @@ public abstract class ContainerWithNetworkTool
 		return this.hasNetworkTool;
 	}
 
-	// Note: mergeItemStack args: ItemStack stack, int slotStart, int slotEnd(exclusive), boolean reverse
+	/**
+	 * Checks if the shift+click happend in the network tool.
+	 */
 	@Override
 	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
+		// Note: mergeItemStack args: ItemStack stack, int slotStart, int slotEnd(exclusive), boolean reverse
 
 		// Get the slot that was clicked on
-		Slot slot = this.getSlot( slotNumber );
+		Slot slot = this.getSlotOrNull( slotNumber );
 
 		boolean didMerge = false;
 

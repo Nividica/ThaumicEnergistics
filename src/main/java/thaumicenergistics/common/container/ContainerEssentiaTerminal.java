@@ -2,6 +2,7 @@ package thaumicenergistics.common.container;
 
 import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
@@ -168,6 +169,10 @@ public class ContainerEssentiaTerminal
 			cca.setItemToCraft( result );
 
 			// Issue update
+			if( player instanceof EntityPlayerMP )
+			{
+				( (EntityPlayerMP)player ).isChangingQuantityOnly = false;
+			}
 			cca.detectAndSendChanges();
 		}
 	}

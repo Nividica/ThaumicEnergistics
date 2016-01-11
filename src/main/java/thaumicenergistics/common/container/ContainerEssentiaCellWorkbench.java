@@ -32,33 +32,27 @@ public class ContainerEssentiaCellWorkbench
 	public static int CELL_SLOT_X = 152, CELL_SLOT_Y = 8;
 
 	/**
-	 * The player that owns this container.
-	 */
-	private EntityPlayer player;
-
-	/**
 	 * Cell Workbench.
 	 */
 	public final TileEssentiaCellWorkbench workbench;
 
 	/**
-	 * Index of the cell slot.
+	 * The cell slot.
 	 */
-	private final int cellSlotIndex;
+	private final Slot cellSlot;
 
 	public ContainerEssentiaCellWorkbench( final EntityPlayer player, final World world, final int x, final int y, final int z )
 	{
-		// Set the player
-		this.player = player;
+		// Call super
+		super( player );
 
 		// Get the workbench
 		this.workbench = (TileEssentiaCellWorkbench)world.getTileEntity( x, y, z );
 
 		// Create the cell slot
-		Slot cellSlot = new SlotRestrictive( this.workbench, 0, ContainerEssentiaCellWorkbench.CELL_SLOT_X,
+		this.cellSlot = new SlotRestrictive( this.workbench, 0, ContainerEssentiaCellWorkbench.CELL_SLOT_X,
 						ContainerEssentiaCellWorkbench.CELL_SLOT_Y );
-		this.addSlotToContainer( cellSlot );
-		this.cellSlotIndex = cellSlot.slotNumber;
+		this.addSlotToContainer( this.cellSlot );
 
 		// Bind to the player's inventory
 		this.bindPlayerInventory( this.player.inventory, ContainerEssentiaCellWorkbench.PLAYER_INV_POSITION_Y,
@@ -103,15 +97,6 @@ public class ContainerEssentiaCellWorkbench
 	}
 
 	/**
-	 * Syncs the cell item.
-	 */
-	public void onForceSyncCell()
-	{
-		this.getSlot( this.cellSlotIndex ).onSlotChanged();
-		this.detectAndSendChanges();
-	}
-
-	/**
 	 * Called when the partition list changes.
 	 */
 	public void onPartitionChanged( final ArrayList<Aspect> partitionList )
@@ -131,7 +116,7 @@ public class ContainerEssentiaCellWorkbench
 		}
 
 		// Get the slot that was shift-clicked
-		Slot slot = (Slot)this.inventorySlots.get( slotNumber );
+		Slot slot = this.getSlotOrNull( slotNumber );
 
 		// Is there a valid slot with and item?
 		if( ( slot != null ) && ( slot.getHasStack() ) )
@@ -142,7 +127,7 @@ public class ContainerEssentiaCellWorkbench
 			ItemStack slotStack = slot.getStack();
 
 			// Was the slot clicked the cell slot
-			if( ( slotNumber == this.cellSlotIndex ) )
+			if( ( slot == this.cellSlot ) )
 			{
 				// Attempt to merge with the player inventory
 				didMerge = this.mergeSlotWithPlayerInventory( slotStack );
@@ -150,17 +135,14 @@ public class ContainerEssentiaCellWorkbench
 			// Was the slot clicked in the player or hotbar inventory?
 			else if( this.slotClickedWasInPlayerInventory( slotNumber ) || this.slotClickedWasInHotbarInventory( slotNumber ) )
 			{
-				// Get the cell slot
-				Slot cellSlot = ( (Slot)this.inventorySlots.get( this.cellSlotIndex ) );
-
 				// Is the cell slot empty?
-				if( !cellSlot.getHasStack() )
+				if( !this.cellSlot.getHasStack() )
 				{
 					// Is the item in the clicked slot a valid cell?
-					if( cellSlot.isItemValid( slotStack ) )
+					if( this.cellSlot.isItemValid( slotStack ) )
 					{
 						// Set the slot
-						cellSlot.putStack( slotStack.copy() );
+						this.cellSlot.putStack( slotStack.copy() );
 
 						// Clear the clicked slot
 						slotStack.stackSize = 0;

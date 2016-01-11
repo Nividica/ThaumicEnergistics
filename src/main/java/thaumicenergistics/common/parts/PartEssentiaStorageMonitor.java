@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -26,6 +27,7 @@ import thaumicenergistics.api.grid.IEssentiaWatcherHost;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.textures.BlockTextureManager;
+import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.utils.EffectiveSide;
@@ -197,6 +199,12 @@ public class PartEssentiaStorageMonitor
 	 * NBT Keys
 	 */
 	private static final String NBT_KEY_LOCKED = "Locked", NBT_KEY_TRACKED_ASPECT = "TrackedAspect";
+
+	/***
+	 * Locked texture.
+	 */
+	private static final ResourceLocation TEXTURE_LOCKED = new ResourceLocation( ThaumicEnergistics.MOD_ID,
+					"textures/blocks/parts/monitor.locked.png" );
 
 	/**
 	 * Watches the for changes in the essentia grid.
@@ -372,6 +380,64 @@ public class PartEssentiaStorageMonitor
 	}
 
 	/**
+	 * Renders the lock.
+	 * Note: This must come after renderAspect, as it depends on the
+	 * GL position state that renderAspect sets up.
+	 * 
+	 * @param tessellator
+	 */
+	private void renderLock( final Tessellator tessellator )
+	{
+		// Enable blending
+		GL11.glEnable( GL11.GL_BLEND );
+
+		// Specify the blending mode
+		GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
+
+		// Set white
+		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+
+		// Move to the top right corner
+		GL11.glTranslatef( 0.4f, -0.06f, 0.0f );
+
+		// Scale
+		float scale = 0.10f;
+		float invScale = 1.0f / scale;
+		GL11.glScalef( scale, scale, scale );
+
+		// Bind the block texture
+		Minecraft.getMinecraft().renderEngine.bindTexture( TEXTURE_LOCKED );
+
+		// Locked state
+		float txUMax = 0.5f;
+		float txUMin = 0.0f;
+		if( !this.isLocked() )
+		{
+			txUMin = 0.5f;
+			txUMax = 1.0f;
+		}
+
+		// Add the vertex points
+		double size = 1.0D;
+		double zDepth = -0.268D * invScale;
+		tessellator.startDrawingQuads();
+		tessellator.addVertexWithUV( 0.0D, size, zDepth, txUMin, 1.0D ); // Bottom left
+		tessellator.addVertexWithUV( size, size, zDepth, txUMax, 1.0D ); // Bottom right
+		tessellator.addVertexWithUV( size, 0.0D, zDepth, txUMax, 0.0D ); // Top right
+		tessellator.addVertexWithUV( 0.0D, 0.0D, zDepth, txUMin, 0.0D ); // Top left
+
+		// Draw
+		tessellator.draw();
+
+		// Restore
+		GL11.glScalef( invScale, invScale, invScale );
+		GL11.glTranslatef( -0.4f, 0.06f, 0.0f );
+
+		// Disable blending
+		GL11.glDisable( GL11.GL_BLEND );
+	}
+
+	/**
 	 * Renders the aspect and amount onto the screen.
 	 * Note: Method originally from Applied Energistics 2,
 	 * PartStorageMonitor.java
@@ -382,9 +448,6 @@ public class PartEssentiaStorageMonitor
 	@SideOnly(Side.CLIENT)
 	private void renderScreen( final Tessellator tessellator, final IAspectStack aspectStack )
 	{
-		// Push the OpenGL attributes
-		//GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-
 		// Get the side
 		ForgeDirection side = this.getSide();
 
@@ -428,9 +491,6 @@ public class PartEssentiaStorageMonitor
 
 		}
 
-		// Push the OpenGL matrix
-		//GL11.glPushMatrix();
-
 		try
 		{
 			// Calculate the brightness for the lightmap
@@ -443,13 +503,14 @@ public class PartEssentiaStorageMonitor
 
 			// Render the aspect
 			this.renderAspect( tessellator, aspectStack.getAspect() );
+
+			// Render the lock
+			this.renderLock( tessellator );
+
 		}
 		catch( Exception e )
 		{
 		}
-
-		// Pop the OpenGL matrix
-		//GL11.glPopMatrix();
 
 		// Move below the screen image
 		GL11.glTranslatef( 0.2f, 0.4f, -0.25f );
@@ -466,9 +527,6 @@ public class PartEssentiaStorageMonitor
 
 		// Render the string
 		fr.drawString( renderedStackSize, 0, 0, 0 );
-
-		// Pop the OpenGL attributes
-		//GL11.glPopAttrib();
 	}
 
 	/**
@@ -786,7 +844,13 @@ public class PartEssentiaStorageMonitor
 		redraw |= super.readFromStream( stream );
 
 		// Read locked state
-		this.monitorLocked = stream.readBoolean();
+		boolean newLockState = stream.readBoolean();
+		if( this.monitorLocked != newLockState )
+		{
+			// Mark for screen redraw
+			redraw |= this.updateDisplayList = true;
+		}
+		this.monitorLocked = newLockState;
 
 		// Is there any tracking info to read?
 		if( stream.readBoolean() )

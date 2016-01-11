@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
@@ -137,11 +138,6 @@ public class ContainerPartArcaneCraftingTerminal
 	private final PartArcaneCraftingTerminal terminal;
 
 	/**
-	 * The player associated with this container.
-	 */
-	private final EntityPlayer player;
-
-	/**
 	 * Network source representing the player who is interacting with the
 	 * container.
 	 */
@@ -165,12 +161,12 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * Slot number of the wand.
 	 */
-	private int wandSlotNumber = -1;
+	private final SlotRestrictive wandSlot;
 
 	/**
 	 * Slot number of the result.
 	 */
-	private int resultSlotNumber = -1;
+	private final SlotArcaneCraftingResult resultSlot;
 
 	/**
 	 * The wand currently in the wand slot.
@@ -210,31 +206,31 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	public ContainerPartArcaneCraftingTerminal( final PartArcaneCraftingTerminal terminal, final EntityPlayer player )
 	{
+		// Call super
+		super( player );
+
 		// Set the part
 		this.terminal = terminal;
-
-		// Set the player
-		this.player = player;
 
 		// Set the player source
 		this.playerSource = new PlayerSource( this.player, terminal );
 
 		// Bind to the players inventory
-		this.bindPlayerInventory( player.inventory, ContainerPartArcaneCraftingTerminal.PLAYER_INV_POSITION_Y,
-			ContainerPartArcaneCraftingTerminal.HOTBAR_INV_POSITION_Y );
+		this.bindPlayerInventory( player.inventory, PLAYER_INV_POSITION_Y,
+			HOTBAR_INV_POSITION_Y );
 
 		// Add crafting slots
 		Slot craftingSlot = null;
-		for( int row = 0; row < ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_SIZE; row++ )
+		for( int row = 0; row < CRAFTING_GRID_SIZE; row++ )
 		{
-			for( int column = 0; column < ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_SIZE; column++ )
+			for( int column = 0; column < CRAFTING_GRID_SIZE; column++ )
 			{
 				// Calculate the index
-				int slotIndex = ( row * ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_SIZE ) + column;
+				int slotIndex = ( row * CRAFTING_GRID_SIZE ) + column;
 
 				// Create the slot
-				craftingSlot = new Slot( terminal, slotIndex, ContainerPartArcaneCraftingTerminal.CRAFTING_SLOT_X_POS +
-								( column * ContainerWithPlayerInventory.SLOT_SIZE ), ContainerPartArcaneCraftingTerminal.CRAFTING_SLOT_Y_POS +
+				craftingSlot = new Slot( terminal, slotIndex, CRAFTING_SLOT_X_POS +
+								( column * ContainerWithPlayerInventory.SLOT_SIZE ), CRAFTING_SLOT_Y_POS +
 								( row * ContainerWithPlayerInventory.SLOT_SIZE ) );
 
 				// Add the slot
@@ -255,25 +251,19 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 
 		// Create the result slot
-		SlotArcaneCraftingResult resultSlot = new SlotArcaneCraftingResult( player, this, terminal, terminal,
-						PartArcaneCraftingTerminal.RESULT_SLOT_INDEX, ContainerPartArcaneCraftingTerminal.RESULT_SLOT_X_POS,
-						ContainerPartArcaneCraftingTerminal.RESULT_SLOT_Y_POS );
+		this.resultSlot = new SlotArcaneCraftingResult( player, this, terminal, terminal,
+						PartArcaneCraftingTerminal.RESULT_SLOT_INDEX, RESULT_SLOT_X_POS,
+						RESULT_SLOT_Y_POS );
 
 		// Add the result slot
-		this.addSlotToContainer( resultSlot );
-
-		// Set the result slot number
-		this.resultSlotNumber = resultSlot.slotNumber;
+		this.addSlotToContainer( this.resultSlot );
 
 		// Create the wand slot
-		SlotRestrictive wandSlot = new SlotRestrictive( terminal, PartArcaneCraftingTerminal.WAND_SLOT_INDEX,
-						ContainerPartArcaneCraftingTerminal.WAND_SLOT_XPOS, ContainerPartArcaneCraftingTerminal.WAND_SLOT_YPOS );
+		this.wandSlot = new SlotRestrictive( terminal, PartArcaneCraftingTerminal.WAND_SLOT_INDEX,
+						WAND_SLOT_XPOS, WAND_SLOT_YPOS );
 
 		// Add the wand slot
-		this.addSlotToContainer( wandSlot );
-
-		// Set wand slot number
-		this.wandSlotNumber = wandSlot.slotNumber;
+		this.addSlotToContainer( this.wandSlot );
 
 		// Create the view slots
 		SlotRestrictive viewSlot = null;
@@ -281,10 +271,10 @@ public class ContainerPartArcaneCraftingTerminal
 		{
 			// Calculate the y position
 			int row = viewSlotID - PartArcaneCraftingTerminal.VIEW_SLOT_MIN;
-			int yPos = ContainerPartArcaneCraftingTerminal.VIEW_SLOT_YPOS + ( row * ContainerWithPlayerInventory.SLOT_SIZE );
+			int yPos = VIEW_SLOT_YPOS + ( row * ContainerWithPlayerInventory.SLOT_SIZE );
 
 			// Create the slot
-			viewSlot = new SlotRestrictive( terminal, viewSlotID, ContainerPartArcaneCraftingTerminal.VIEW_SLOT_XPOS, yPos );
+			viewSlot = new SlotRestrictive( terminal, viewSlotID, VIEW_SLOT_XPOS, yPos );
 
 			// Add the slot
 			this.addSlotToContainer( viewSlot );
@@ -303,14 +293,14 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 
 		// Create the armor slots
-		for( int armorIndex = 0; armorIndex < ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_COUNT; ++armorIndex )
+		for( int armorIndex = 0; armorIndex < ARMOR_SLOT_COUNT; ++armorIndex )
 		{
 			// Calculate y position
-			int yPos = ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_Y_POS + ( ContainerWithPlayerInventory.SLOT_SIZE * armorIndex );
+			int yPos = ARMOR_SLOT_Y_POS + ( ContainerWithPlayerInventory.SLOT_SIZE * armorIndex );
 
 			// Create the slot
 			SlotArmor armorSlot = new SlotArmor( terminal, PartArcaneCraftingTerminal.ARMOR_SLOT_MIN + armorIndex,
-							ContainerPartArcaneCraftingTerminal.ARMOR_SLOT_X_POS, yPos, armorIndex, false );
+							ARMOR_SLOT_X_POS, yPos, armorIndex, false );
 
 			// Add to container
 			this.addSlotToContainer( armorSlot );
@@ -457,11 +447,8 @@ public class ContainerPartArcaneCraftingTerminal
 		// Tracks how many items we have made
 		int autoCraftCounter = 0;
 
-		// Get the result slot
-		SlotArcaneCraftingResult resultSlot = (SlotArcaneCraftingResult)this.getSlot( this.resultSlotNumber );
-
 		// Get the current crafting result.
-		ItemStack resultStack = resultSlot.getStack();
+		ItemStack resultStack = this.resultSlot.getStack();
 
 		// Make a copy of it
 		ItemStack slotStackOriginal = resultStack.copy();
@@ -475,13 +462,13 @@ public class ContainerPartArcaneCraftingTerminal
 			if( didMerge )
 			{
 				// Let the result slot know it was picked up
-				resultSlot.onPickupFromSlotViaTransfer( player, resultStack );
+				this.resultSlot.onPickupFromSlotViaTransfer( player, resultStack );
 
 				// Update the matrix
 				this.onCraftMatrixChanged( null );
 
 				// Get the stack in the result slot now.
-				resultStack = resultSlot.getStack();
+				resultStack = this.resultSlot.getStack();
 
 				// Is it empty?
 				if( ( resultStack == null ) || ( resultStack.stackSize == 0 ) )
@@ -508,7 +495,7 @@ public class ContainerPartArcaneCraftingTerminal
 		if( autoCraftCounter > 0 )
 		{
 			// Mark the result slot as dirty
-			resultSlot.onSlotChanged();
+			this.resultSlot.onSlotChanged();
 
 			// Send changes
 			this.detectAndSendChanges();
@@ -568,7 +555,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 		// Is there a matching recipe?
 		IArcaneRecipe matchingRecipe = ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult( this.terminal, 0,
-			ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, this.player );
+			CRAFTING_GRID_TOTAL_SIZE, this.player );
 
 		if( matchingRecipe != null )
 		{
@@ -589,10 +576,10 @@ public class ContainerPartArcaneCraftingTerminal
 	{
 		// Create a new crafting inventory
 		InventoryCrafting craftingInventory = new InventoryCrafting( new ContainerInternalCrafting(),
-						ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_SIZE, ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_SIZE );
+						CRAFTING_GRID_SIZE, CRAFTING_GRID_SIZE );
 
 		// Load the inventory based on what is in the part's inventory
-		for( int slotIndex = 0; slotIndex < ( ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE ); slotIndex++ )
+		for( int slotIndex = 0; slotIndex < ( CRAFTING_GRID_TOTAL_SIZE ); slotIndex++ )
 		{
 			// Set the slot
 			craftingInventory.setInventorySlotContents( slotIndex, this.terminal.getStackInSlot( slotIndex ) );
@@ -615,7 +602,7 @@ public class ContainerPartArcaneCraftingTerminal
 		for( int viewSlotIndex = this.firstViewSlotNumber; viewSlotIndex <= this.lastViewSlotNumber; viewSlotIndex++ )
 		{
 			// Get the slot
-			viewSlot = this.getSlot( viewSlotIndex );
+			viewSlot = this.getSlotOrNull( viewSlotIndex );
 
 			// Ensure the slot is not empty
 			if( !viewSlot.getHasStack() )
@@ -635,27 +622,20 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	private void getWand()
 	{
-		// Get the wand slot
-		Slot wandSlot = this.getSlot( this.wandSlotNumber );
-
-		// Ensure the slot is not null
-		if( wandSlot != null )
+		// Is this the same wand that we have cached?
+		if( this.wand == this.wandSlot.getStack() )
 		{
-			// Is this the same wand that we have cached?
-			if( this.wand == wandSlot.getStack() )
-			{
-				// Nothing has changed
-				return;
-			}
+			// Nothing has changed
+			return;
+		}
 
-			// Is the item a valid crafting wand?
-			if( ThEUtils.isItemValidWand( wandSlot.getStack(), false ) )
-			{
-				// Set the wand
-				this.wand = wandSlot.getStack();
+		// Is the item a valid crafting wand?
+		if( ThEUtils.isItemValidWand( this.wandSlot.getStack(), false ) )
+		{
+			// Set the wand
+			this.wand = this.wandSlot.getStack();
 
-				return;
-			}
+			return;
 		}
 
 		// Set the wand to null
@@ -718,7 +698,7 @@ public class ContainerPartArcaneCraftingTerminal
 		for( int viewSlotIndex = this.firstViewSlotNumber; viewSlotIndex <= this.lastViewSlotNumber; viewSlotIndex++ )
 		{
 			// Get the slot
-			viewSlot = this.getSlot( viewSlotIndex );
+			viewSlot = this.getSlotOrNull( viewSlotIndex );
 
 			// Is there a slot?
 			if( viewSlot == null )
@@ -778,7 +758,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 		// Get the cost
 		this.requiredAspects = ArcaneRecipeHelper.INSTANCE.getRecipeAspectCost( this.terminal, 0,
-			ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, forRecipe );
+			CRAFTING_GRID_TOTAL_SIZE, forRecipe );
 
 		// Ensure there is a cost
 		if( this.requiredAspects == null )
@@ -836,11 +816,62 @@ public class ContainerPartArcaneCraftingTerminal
 		{
 			// Get the result of the recipe.
 			return ArcaneRecipeHelper.INSTANCE.getRecipeOutput( this.terminal, 0,
-				ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, forRecipe );
+				CRAFTING_GRID_TOTAL_SIZE, forRecipe );
 		}
 
 		return null;
 
+	}
+
+	@Override
+	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
+	{
+		boolean sendModeUpdate = false;
+
+		// Has the sorting order changed?
+		if( this.cachedSortOrder != this.terminal.getSortingOrder() )
+		{
+			// Update
+			this.cachedSortOrder = this.terminal.getSortingOrder();
+			sendModeUpdate = true;
+		}
+
+		// Has the sorting direction changed?
+		if( this.cachedSortDirection != this.terminal.getSortingDirection() )
+		{
+			// Update
+			this.cachedSortDirection = this.terminal.getSortingDirection();
+			sendModeUpdate = true;
+		}
+
+		// Has the view mode changed?
+		if( this.cachedViewMode != this.terminal.getViewMode() )
+		{
+			// Update
+			this.cachedViewMode = this.terminal.getViewMode();
+			sendModeUpdate = true;
+		}
+
+		// Send update?
+		if( sendModeUpdate )
+		{
+			// Send the mode info
+			Packet_C_ArcaneCraftingTerminal.sendModeChange( this.player,
+				this.cachedSortOrder, this.cachedSortDirection, this.cachedViewMode );
+		}
+
+		// Is the monitor null?
+		if( this.monitor == null )
+		{
+			// Attempt to re-attach
+			if( this.attachToMonitor() )
+			{
+				// Update the client
+				this.onClientRequestFullUpdate( this.player );
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -885,63 +916,6 @@ public class ContainerPartArcaneCraftingTerminal
 
 			// Adjust Y pos
 			slot.yDisplayPosition += deltaY;
-		}
-	}
-
-	@Override
-	public void detectAndSendChanges()
-	{
-		// Call super
-		super.detectAndSendChanges();
-
-		if( EffectiveSide.isClientSide() )
-		{
-			return;
-		}
-
-		boolean sendUpdate = false;
-
-		// Has the sorting order changed?
-		if( this.cachedSortOrder != this.terminal.getSortingOrder() )
-		{
-			// Update
-			this.cachedSortOrder = this.terminal.getSortingOrder();
-			sendUpdate = true;
-		}
-
-		// Has the sorting direction changed?
-		if( this.cachedSortDirection != this.terminal.getSortingDirection() )
-		{
-			// Update
-			this.cachedSortDirection = this.terminal.getSortingDirection();
-			sendUpdate = true;
-		}
-
-		// Has the view mode changed?
-		if( this.cachedViewMode != this.terminal.getViewMode() )
-		{
-			// Update
-			this.cachedViewMode = this.terminal.getViewMode();
-			sendUpdate = true;
-		}
-
-		// Send update?
-		if( sendUpdate )
-		{
-			// Send the mode info
-			Packet_C_ArcaneCraftingTerminal.sendModeChange( this.player,
-				this.cachedSortOrder, this.cachedSortDirection, this.cachedViewMode );
-		}
-
-		// Is the monitor null?
-		if( this.monitor == null )
-		{
-			// Attempt to re-attach
-			if( this.attachToMonitor() )
-			{
-				// Update the client
-				this.onClientRequestFullUpdate( this.player );
-			}
 		}
 	}
 
@@ -1081,6 +1055,10 @@ public class ContainerPartArcaneCraftingTerminal
 			cca.setItemToCraft( result );
 
 			// Issue update
+			if( player instanceof EntityPlayerMP )
+			{
+				( (EntityPlayerMP)player ).isChangingQuantityOnly = false;
+			}
 			cca.detectAndSendChanges();
 		}
 	}
@@ -1469,12 +1447,9 @@ public class ContainerPartArcaneCraftingTerminal
 			craftResult = this.findMatchingArcaneResult();
 		}
 
-		// Get the result slot
-		SlotArcaneCraftingResult resultSlot = (SlotArcaneCraftingResult)this.getSlot( this.resultSlotNumber );
-
 		// Set the result slot aspects and wand
-		resultSlot.setResultAspects( this.requiredAspects );
-		resultSlot.setWand( this.wand );
+		this.resultSlot.setResultAspects( this.requiredAspects );
+		this.resultSlot.setWand( this.wand );
 
 		// Set the result
 		this.terminal.setInventorySlotContentsWithoutNotify( PartArcaneCraftingTerminal.RESULT_SLOT_INDEX, craftResult );
@@ -1615,16 +1590,16 @@ public class ContainerPartArcaneCraftingTerminal
 	 * Called when a slot is clicked by the player.
 	 */
 	@Override
-	public ItemStack slotClick( final int slotID, final int button, final int flag, final EntityPlayer player )
+	public ItemStack slotClick( final int slotNumber, final int button, final int flag, final EntityPlayer player )
 	{
-		if( ( slotID == this.resultSlotNumber ) && ( button == ThEGuiHelper.MOUSE_BUTTON_RIGHT ) )
+		if( ( slotNumber == this.resultSlot.slotNumber ) && ( button == ThEGuiHelper.MOUSE_BUTTON_RIGHT ) )
 		{
 			// If right clicking on result slot, change it to left click
-			return super.slotClick( slotID, ThEGuiHelper.MOUSE_BUTTON_LEFT, flag, player );
+			return super.slotClick( slotNumber, ThEGuiHelper.MOUSE_BUTTON_LEFT, flag, player );
 		}
 
 		// Pass to super
-		return super.slotClick( slotID, button, flag, player );
+		return super.slotClick( slotNumber, button, flag, player );
 
 	}
 
@@ -1642,7 +1617,7 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 
 		// Get the slot that was shift-clicked
-		Slot slot = (Slot)this.inventorySlots.get( slotNumber );
+		Slot slot = this.getSlotOrNull( slotNumber );
 
 		// Is there a valid slot with and item?
 		if( ( slot != null ) && ( slot.getHasStack() ) )
@@ -1653,7 +1628,7 @@ public class ContainerPartArcaneCraftingTerminal
 			ItemStack slotStack = slot.getStack();
 
 			// Was the slot clicked in the crafting grid or wand?
-			if( ( slotNumber == this.wandSlotNumber ) || this.slotClickedWasInCraftingInventory( slotNumber ) )
+			if( ( slot == this.wandSlot ) || this.slotClickedWasInCraftingInventory( slotNumber ) )
 			{
 				// Attempt to merge with the ME network
 				didMerge = this.mergeWithMENetwork( slotStack );
@@ -1677,10 +1652,10 @@ public class ContainerPartArcaneCraftingTerminal
 			{
 
 				// Is the item a valid wand?
-				if( this.getSlot( this.wandSlotNumber ).isItemValid( slotStack ) )
+				if( this.wandSlot.isItemValid( slotStack ) )
 				{
 					// Attempt to merge with the wand
-					didMerge = this.mergeItemStack( slotStack, this.wandSlotNumber, this.wandSlotNumber + 1, false );
+					didMerge = this.mergeItemStack( slotStack, this.wandSlot.slotNumber, this.wandSlot.slotNumber + 1, false );
 				}
 
 				// Did we merge?
@@ -1712,7 +1687,7 @@ public class ContainerPartArcaneCraftingTerminal
 				}
 			}
 			// Was the slot clicked the crafting result?
-			else if( slotNumber == this.resultSlotNumber )
+			else if( slot == this.resultSlot )
 			{
 				// Start the autocrafting loop
 				this.doShiftAutoCrafting( player );

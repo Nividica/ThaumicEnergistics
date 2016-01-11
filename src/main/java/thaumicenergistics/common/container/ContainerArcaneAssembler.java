@@ -76,6 +76,9 @@ public class ContainerArcaneAssembler
 
 	public ContainerArcaneAssembler( final EntityPlayer player, final World world, final int X, final int Y, final int Z )
 	{
+		// Call super
+		super( player );
+
 		// Get the assembler
 		this.assembler = (TileArcaneAssembler)world.getTileEntity( X, Y, Z );
 
@@ -186,7 +189,7 @@ public class ContainerArcaneAssembler
 		}
 
 		// Get the slot that was shift-clicked
-		Slot slot = (Slot)this.inventorySlots.get( slotNumber );
+		Slot slot = this.getSlotOrNull( slotNumber );
 
 		// Is there a valid slot with and item?
 		if( ( slot != null ) && ( slot.getHasStack() ) )

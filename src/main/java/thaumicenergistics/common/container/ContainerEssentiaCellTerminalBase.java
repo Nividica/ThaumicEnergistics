@@ -3,6 +3,7 @@ package thaumicenergistics.common.container;
 import java.util.Collection;
 import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
@@ -154,11 +155,6 @@ public abstract class ContainerEssentiaCellTerminalBase
 	protected final IEssentiaRepo repo;
 
 	/**
-	 * The player that owns this container.
-	 */
-	protected final EntityPlayer player;
-
-	/**
 	 * Essentia network monitor
 	 */
 	private IMEEssentiaMonitor essentiaMonitor;
@@ -170,7 +166,8 @@ public abstract class ContainerEssentiaCellTerminalBase
 	 */
 	public ContainerEssentiaCellTerminalBase( final EntityPlayer player )
 	{
-		this.player = player;
+		// Call super
+		super( player );
 
 		if( EffectiveSide.isClientSide() )
 		{
@@ -468,6 +465,54 @@ public abstract class ContainerEssentiaCellTerminalBase
 	}
 
 	/**
+	 * Checks if there is any work to perform.
+	 * If there is it does so.
+	 */
+	@Override
+	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
+	{
+		// Compare selected aspects
+		if( this.getHostSelectedAspect() != this.selectedAspect )
+		{
+			// Update the selected aspect
+			this.selectedAspect = this.getHostSelectedAspect();
+
+			// Send the change back to the client
+			Packet_C_EssentiaCellTerminal.setSelectedAspect( this.player, this.selectedAspect );
+		}
+
+		// Is there a monitor?
+		if( this.essentiaMonitor != null )
+		{
+			// Inc tick tracker
+			this.tickCounter += 1;
+
+			if( this.tickCounter > ContainerEssentiaCellTerminalBase.WORK_TICK_RATE )
+			{
+				// Do work
+				this.doWork( this.tickCounter );
+
+				// Reset the tick counter
+				this.tickCounter = 0;
+
+				return true;
+			}
+		}
+		else
+		{
+			// Attempt to attach to a monitor
+			if( this.attachToMonitor( this.getNewMonitor() ) )
+			{
+				// Send update
+				this.onClientRequestFullUpdate();
+			}
+
+		}
+
+		return false;
+	}
+
+	/**
 	 * Called periodically so that the container can perform work.
 	 */
 	protected abstract void doWork( int elapsedTicks );
@@ -678,58 +723,6 @@ public abstract class ContainerEssentiaCellTerminalBase
 	}
 
 	/**
-	 * Checks if there is any work to perform.
-	 * If there is it does so.
-	 */
-	@Override
-	public final void detectAndSendChanges()
-	{
-		// Call super
-		super.detectAndSendChanges();
-
-		if( EffectiveSide.isClientSide() )
-		{
-			return;
-		}
-
-		// Is there a monitor?
-		if( this.essentiaMonitor != null )
-		{
-			// Inc tick tracker
-			this.tickCounter += 1;
-
-			if( this.tickCounter > ContainerEssentiaCellTerminalBase.WORK_TICK_RATE )
-			{
-				// Do work
-				this.doWork( this.tickCounter );
-
-				// Reset the tick counter
-				this.tickCounter = 0;
-			}
-		}
-		else
-		{
-			// Attempt to attach to a monitor
-			if( this.attachToMonitor( this.getNewMonitor() ) )
-			{
-				// Send update
-				this.onClientRequestFullUpdate();
-			}
-
-		}
-
-		// Compare selected aspects
-		if( this.getHostSelectedAspect() != this.selectedAspect )
-		{
-			// Update the selected aspect
-			this.selectedAspect = this.getHostSelectedAspect();
-
-			// Send the change back to the client
-			Packet_C_EssentiaCellTerminal.setSelectedAspect( this.player, this.selectedAspect );
-		}
-	}
-
-	/**
 	 * Gets the list of aspect stacks in the container.
 	 * 
 	 * @return
@@ -895,6 +888,10 @@ public abstract class ContainerEssentiaCellTerminalBase
 
 		// Update
 		Packet_C_Sync.sendPlayerHeldItem( player, sourceStack );
+		if( player instanceof EntityPlayerMP )
+		{
+			( (EntityPlayerMP)player ).isChangingQuantityOnly = false;
+		}
 		this.detectAndSendChanges();
 		this.playTransferSound( player, false,
 			( EssentiaItemContainerHelper.INSTANCE.getItemType( sourceStack ) == AspectItemType.JarLabel ? 1 : 0 ) );
@@ -1069,7 +1066,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
 		// Get the slot that was shift-clicked
-		Slot slot = (Slot)this.inventorySlots.get( slotNumber );
+		Slot slot = this.getSlotOrNull( slotNumber );
 
 		// Is there a valid slot with and item?
 		if( ( slot != null ) && ( slot.getHasStack() ) )

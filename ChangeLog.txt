@@ -1,4 +1,10 @@
-﻿01/10/2016 0.10.0.0 - Beta
+﻿01/11/2016 0.10.0.0 - Beta
+  Fixed occasional crash when the Knowledge Inscriber GUI was clicked.
+  Added locked/unlocked texture & indicator to storage monitors.
+  Fixed bug where autocrafting gui didn't always show the item being crafted.
+  Fixed and cleaned up some gui sync issues. (will this never end?!)
+
+01/10/2016 0.10.0.0 - Beta
   Fixed name collision with "isUseableByPlayer".
   Fixed KnowledgeInscriber not being able to erase patterns.
   Fixed bug where Terminals would not properly update during certain AE-network changes.

@@ -3,13 +3,13 @@ package thaumicenergistics.common.container;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaStorageBus;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
-import thaumicenergistics.common.utils.EffectiveSide;
 
 public class ContainerPartEssentiaStorageBus
 	extends ContainerWithNetworkTool
@@ -40,11 +40,6 @@ public class ContainerPartEssentiaStorageBus
 	private final PartEssentiaStorageBus storageBus;
 
 	/**
-	 * The associated player.
-	 */
-	private final EntityPlayer player;
-
-	/**
 	 * Cache of filteredAspects.
 	 */
 	private final ArrayList<Aspect> filteredAspects = new ArrayList<Aspect>( PartEssentiaStorageBus.FILTER_SIZE );
@@ -56,8 +51,8 @@ public class ContainerPartEssentiaStorageBus
 
 	public ContainerPartEssentiaStorageBus( final PartEssentiaStorageBus part, final EntityPlayer player )
 	{
-		// Set the player
-		this.player = player;
+		// Call super
+		super( player );
 
 		// Set the part
 		this.storageBus = part;
@@ -82,26 +77,8 @@ public class ContainerPartEssentiaStorageBus
 	}
 
 	@Override
-	public boolean canInteractWith( final EntityPlayer player )
+	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
 	{
-		if( this.storageBus != null )
-		{
-			return this.storageBus.isPartUseableByPlayer( player );
-		}
-		return false;
-	}
-
-	@Override
-	public void detectAndSendChanges()
-	{
-		// Call super
-		super.detectAndSendChanges();
-
-		if( EffectiveSide.isClientSide() )
-		{
-			return;
-		}
-
 		// Has the filtered list changed?
 		boolean updateFilters = false;
 		for( int filterIndex = 0; filterIndex < PartEssentiaStorageBus.FILTER_SIZE; ++filterIndex )
@@ -126,6 +103,18 @@ public class ContainerPartEssentiaStorageBus
 			this.isVoidAllowed = this.storageBus.isVoidAllowed();
 			Packet_C_EssentiaStorageBus.sendIsVoidAllowed( this.player, this.isVoidAllowed );
 		}
+
+		return false;
+	}
+
+	@Override
+	public boolean canInteractWith( final EntityPlayer player )
+	{
+		if( this.storageBus != null )
+		{
+			return this.storageBus.isPartUseableByPlayer( player );
+		}
+		return false;
 	}
 
 	public void setFilteredAspects( final List<Aspect> filteredAspects )
@@ -137,7 +126,7 @@ public class ContainerPartEssentiaStorageBus
 	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
 	{
 		// Get the slot
-		Slot slot = this.getSlot( slotNumber );
+		Slot slot = this.getSlotOrNull( slotNumber );
 
 		// Do we have a valid slot with an item?
 		if( ( slot != null ) && ( slot.getHasStack() ) )
