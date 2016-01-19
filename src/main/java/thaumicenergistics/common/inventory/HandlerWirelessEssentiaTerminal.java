@@ -4,45 +4,37 @@ import java.util.Set;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
-import thaumicenergistics.api.grid.IEssentiaGrid;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.common.grid.EssentiaPassThroughMonitor;
+import thaumicenergistics.common.grid.WirelessAELink;
+import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.items.ItemWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.registries.EnumCache;
-import thaumicenergistics.common.registries.ItemEnum;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
-import appeng.api.networking.IMachineSet;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.PlayerSource;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
-import appeng.tile.networking.TileWireless;
 
 public class HandlerWirelessEssentiaTerminal
-	implements IActionHost, ICraftingIssuerHost, ITerminalHost, IGuiItemObject
+	extends WirelessAELink
+	implements IActionHost, ICraftingIssuerHost, IGuiItemObject
 {
 	/**
 	 * Redirects power requests to the wireless terminal.
@@ -189,32 +181,6 @@ public class HandlerWirelessEssentiaTerminal
 	private final IThEWirelessEssentiaTerminal wirelessTerminal;
 
 	/**
-	 * Access point used to communicate with the AE network.
-	 */
-	private IWirelessAccessPoint accessPoint;
-
-	/**
-	 * Cached value of the range of the access point, squared.
-	 */
-	private double apTransmitRange;
-
-	/**
-	 * Where in the world is the access point.
-	 */
-	private DimensionalCoord apLocation;
-
-	/**
-	 * Player who is using the wireless terminal.
-	 */
-	private EntityPlayer player;
-
-	/**
-	 * Network source representing the player who is interacting with the
-	 * container.
-	 */
-	private PlayerSource playerSource = null;
-
-	/**
 	 * The itemstack that represents this terminal.
 	 */
 	final private ItemStack wirelessItemstack;
@@ -224,68 +190,18 @@ public class HandlerWirelessEssentiaTerminal
 	 */
 	private double wirelessPowerMultiplier = 1.0D;
 
-	public HandlerWirelessEssentiaTerminal( final EntityPlayer player, final IWirelessAccessPoint accessPoint,
+	public HandlerWirelessEssentiaTerminal( final EntityPlayer player, final String encryptionKey,
 											final IThEWirelessEssentiaTerminal wirelessTerminalInterface,
 											final ItemStack wirelessTerminalItemstack )
 	{
-		// Set the player
-		this.player = player;
+		// Call super
+		super( player, encryptionKey );
 
 		// Set the terminal interface
 		this.wirelessTerminal = wirelessTerminalInterface;
 
 		// Set the itemstack
 		this.wirelessItemstack = wirelessTerminalItemstack;
-
-		// Set the access point
-		this.setAccessPoint( accessPoint );
-	}
-
-	/**
-	 * Gets the distance the specified player is from the AP.
-	 * 
-	 * @param APLocation
-	 * @param player
-	 * @return
-	 */
-	private static double getSquaredPlayerDistanceFromAP( final DimensionalCoord APLocation, final EntityPlayer player )
-	{
-		// Get the player position
-		int pX = (int)Math.floor( player.posX ), pY = (int)Math.floor( player.posY ), pZ = (int)Math.floor( player.posZ );
-
-		// Calculate the distance from the AP
-		int dX = APLocation.x - pX, dY = APLocation.y - pY, dZ = APLocation.z - pZ;
-
-		// Calculate the square distance
-		int squareDistance = ( dX * dX ) + ( dY * dY ) + ( dZ * dZ );
-
-		return squareDistance;
-	}
-
-	/**
-	 * Checks if the AP at the specified location and has the specified range,
-	 * is close enough to communicate with.
-	 * 
-	 * @param APLocation
-	 * @param APRange
-	 * @param X
-	 * @param Y
-	 * @param Z
-	 * @return
-	 */
-	public static boolean isAPInRangeOfPlayer( final DimensionalCoord APLocation, final double APRange, final EntityPlayer player )
-	{
-		// Is the AP and the player in the same world?
-		if( !APLocation.isInWorld( player.worldObj ) )
-		{
-			return false;
-		}
-
-		// Calculate the square distance
-		double squareDistance = HandlerWirelessEssentiaTerminal.getSquaredPlayerDistanceFromAP( APLocation, player );
-
-		// Return if close enough to use AP
-		return squareDistance <= ( APRange * APRange );
 	}
 
 	/**
@@ -299,47 +215,28 @@ public class HandlerWirelessEssentiaTerminal
 		return( !wirelessTerminal.getEncryptionKey( wirelessTerminalItemstack ).isEmpty() );
 	}
 
-	/**
-	 * Checks if the AP is still active and in range.
-	 * 
-	 * @return
-	 */
-	private boolean isAPInRangeAndActive()
+	@Override
+	protected int getUserPositionX()
 	{
-		if( this.accessPoint != null )
-		{
-			return( ( this.accessPoint.isActive() ) && ( HandlerWirelessEssentiaTerminal.isAPInRangeOfPlayer( this.apLocation,
-				this.apTransmitRange, this.player ) ) );
-		}
-		return false;
+		return (int)this.player.posX;
 	}
 
-	/**
-	 * Set's the access point used for communication.
-	 * 
-	 * @param accessPoint
-	 */
-	private void setAccessPoint( final IWirelessAccessPoint accessPoint )
+	@Override
+	protected int getUserPositionY()
 	{
-		// Set the access point
-		this.accessPoint = accessPoint;
-		if( accessPoint == null )
-		{
-			// Most likely on the client side.
-			return;
-		}
+		return (int)this.player.posY;
+	}
 
-		// Get the range of the access point
-		this.apTransmitRange = this.accessPoint.getRange();
+	@Override
+	protected int getUserPositionZ()
+	{
+		return (int)this.player.posZ;
+	}
 
-		// Get the location of the access point
-		this.apLocation = this.accessPoint.getLocation();
-
-		// Create the action source
-		if( this.player != null )
-		{
-			this.playerSource = new PlayerSource( this.player, this.accessPoint );
-		}
+	@Override
+	protected World getUserWorld()
+	{
+		return this.player.worldObj;
 	}
 
 	/**
@@ -396,7 +293,7 @@ public class HandlerWirelessEssentiaTerminal
 	 */
 	public BaseActionSource getActionHost()
 	{
-		return this.playerSource;
+		return this.actionSource;
 	}
 
 	@Override
@@ -417,53 +314,23 @@ public class HandlerWirelessEssentiaTerminal
 	 * 
 	 * @return
 	 */
-	public IMEEssentiaMonitor getEssentiaMonitor()
-	{
-		if( this.accessPoint == null )
-		{
-			return null;
-		}
-
-		try
-		{
-			// Get the network essentia monitor
-			IMEEssentiaMonitor essMonitor = ( (IMEEssentiaMonitor)this.accessPoint.getGrid().getCache( IEssentiaGrid.class ) );
-
-			// Create the power redirector
-			PowerRedirector pr = new PowerRedirector();
-
-			// Create and return the essentia monitor
-			IMEEssentiaMonitor monitor = new EssentiaPassThroughMonitor( essMonitor, pr );
-			return monitor;
-		}
-		catch( Exception e )
-		{
-			return null;
-		}
-	}
-
 	@Override
-	public IMEMonitor<IAEFluidStack> getFluidInventory()
+	public IMEEssentiaMonitor getEssentiaInventory()
 	{
-		if( this.accessPoint == null )
+
+		// Get the network essentia monitor
+		IMEEssentiaMonitor essMonitor = super.getEssentiaInventory();
+		if( essMonitor == null )
 		{
 			return null;
 		}
 
-		try
-		{
-			// Get the storage grid
-			IStorageGrid storageGrid = this.accessPoint.getActionableNode().getGrid().getCache( IStorageGrid.class );
+		// Create the power redirector
+		PowerRedirector pr = new PowerRedirector();
 
-			// Return the monitor
-			return storageGrid.getFluidInventory();
-		}
-		catch( Exception e )
-		{
-			// Ignored
-		}
-
-		return null;
+		// Create and return the passthrough essentia monitor
+		IMEEssentiaMonitor monitor = new EssentiaPassThroughMonitor( essMonitor, pr );
+		return monitor;
 	}
 
 	@Override
@@ -476,30 +343,6 @@ public class HandlerWirelessEssentiaTerminal
 	public ItemStack getIcon()
 	{
 		return ItemEnum.WIRELESS_TERMINAL.getStack();
-	}
-
-	@Override
-	public IMEMonitor<IAEItemStack> getItemInventory()
-	{
-		if( this.accessPoint == null )
-		{
-			return null;
-		}
-
-		try
-		{
-			// Get the storage grid
-			IStorageGrid storageGrid = this.accessPoint.getActionableNode().getGrid().getCache( IStorageGrid.class );
-
-			// Return the monitor
-			return storageGrid.getItemInventory();
-		}
-		catch( Exception e )
-		{
-			// Ignored
-		}
-
-		return null;
 	}
 
 	@Override
@@ -557,69 +400,10 @@ public class HandlerWirelessEssentiaTerminal
 	 * 
 	 * @return
 	 */
-	public boolean hasPower()
+	@Override
+	public boolean hasPowerToCommunicate()
 	{
 		return( this.wirelessTerminal.getAECurrentPower( this.wirelessItemstack ) > 0 );
-	}
-
-	/**
-	 * Checks if the terminal is connected to the network.
-	 * 
-	 * @return True if the terminal is connected, false otherwise.
-	 */
-	public boolean isConnected()
-	{
-		if( this.accessPoint == null )
-		{
-			return false;
-		}
-
-		// Does the terminal have power?
-		if( !this.hasPower() )
-		{
-			// Terminal is dead.
-			return false;
-		}
-
-		// Is the current AP still good?
-		if( this.isAPInRangeAndActive() )
-		{
-			// Current AP is still connected.
-			return true;
-		}
-
-		// Get all AP's on the grid
-		IMachineSet accessPoints = this.accessPoint.getGrid().getMachines( TileWireless.class );
-
-		// Loop over AP's and see if any are close enough to communicate with
-		for( IGridNode APNode : accessPoints )
-		{
-			// Get the AP
-			IWirelessAccessPoint AP = (IWirelessAccessPoint)APNode.getMachine();
-
-			// Skip if current AP
-			if( AP.equals( this.accessPoint ) )
-			{
-				continue;
-			}
-
-			// Is the AP active?
-			if( AP.isActive() )
-			{
-				// Is the player close enough to the AP?
-				if( HandlerWirelessEssentiaTerminal.isAPInRangeOfPlayer( AP.getLocation(), AP.getRange(), this.player ) )
-				{
-					// Set the new AP
-					this.setAccessPoint( AP );
-
-					// Found usable AP
-					return true;
-				}
-			}
-		}
-
-		// No AP's in range.
-		return false;
 	}
 
 	@Override
@@ -673,7 +457,10 @@ public class HandlerWirelessEssentiaTerminal
 	public void updatePowerMultiplier()
 	{
 		// Get the squared distance
-		double distance = HandlerWirelessEssentiaTerminal.getSquaredPlayerDistanceFromAP( this.apLocation, this.player );
+		double distance = WirelessAELink.getSquaredDistanceFromAP( this.apLocation,
+			this.getUserPositionX(),
+			this.getUserPositionY(),
+			this.getUserPositionZ() );
 
 		// Calculate the distance
 		distance = Math.sqrt( distance );

@@ -1,4 +1,4 @@
-package thaumicenergistics.integration.tc;
+package thaumicenergistics.common.integration.tc;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

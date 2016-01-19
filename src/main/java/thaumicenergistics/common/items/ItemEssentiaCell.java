@@ -21,7 +21,6 @@ import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.common.inventory.HandlerItemEssentiaCellCreative;
-import thaumicenergistics.common.registries.ItemEnum;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.storage.AspectStackComparator;
 import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;

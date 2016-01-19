@@ -2,7 +2,7 @@ package thaumicenergistics.common.storage;
 
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import thaumicenergistics.common.registries.ItemEnum;
+import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.registries.ThEStrings;
 
 /**

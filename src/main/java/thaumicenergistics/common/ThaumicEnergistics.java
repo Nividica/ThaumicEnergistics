@@ -6,13 +6,14 @@ import net.minecraft.item.ItemStack;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.grid.IEssentiaGrid;
+import thaumicenergistics.common.entities.WirelessGolemHandler;
 import thaumicenergistics.common.grid.GridEssentiaCache;
+import thaumicenergistics.common.integration.IntegrationCore;
+import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.registries.AEAspectRegister;
 import thaumicenergistics.common.utils.ThELog;
-import thaumicenergistics.integration.IntegrationCore;
-import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
-import thaumicenergistics.integration.tc.EssentiaTileContainerHelper;
 import appeng.api.AEApi;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -113,6 +114,9 @@ public class ThaumicEnergistics
 
 		// Register the essentia grid cache
 		AEApi.instance().registries().gridCache().registerGridCache( IEssentiaGrid.class, GridEssentiaCache.class );
+
+		// Register the wireless golem handler
+		ThEApi.instance().interact().registerGolemHookHandler( WirelessGolemHandler.getInstance() );
 
 		// Mark that ThE has finished Init
 		ThELog.endSection( "Load", startTime );

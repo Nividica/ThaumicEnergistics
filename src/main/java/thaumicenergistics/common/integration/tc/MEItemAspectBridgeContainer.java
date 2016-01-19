@@ -1,4 +1,4 @@
-package thaumicenergistics.integration.tc;
+package thaumicenergistics.common.integration.tc;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;

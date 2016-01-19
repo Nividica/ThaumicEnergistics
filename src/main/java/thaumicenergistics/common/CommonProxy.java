@@ -2,10 +2,10 @@ package thaumicenergistics.common;
 
 import net.minecraftforge.oredict.OreDictionary;
 import thaumicenergistics.common.fluids.GaseousEssentia;
+import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.items.ItemMaterial;
 import thaumicenergistics.common.registries.BlockEnum;
 import thaumicenergistics.common.registries.FeatureRegistry;
-import thaumicenergistics.common.registries.ItemEnum;
 import thaumicenergistics.common.registries.TileEnum;
 import appeng.api.AEApi;
 import appeng.api.movable.IMovableRegistry;

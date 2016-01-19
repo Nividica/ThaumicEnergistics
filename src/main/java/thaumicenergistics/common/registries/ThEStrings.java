@@ -54,6 +54,7 @@ public enum ThEStrings
 		Item_KnowledgeCore ("item.knowledge.core", true),
 		Item_FocusAEWrench ("item.focus.aewrench", true),
 		Item_FocusAEWrench_Disabled ("item.focus.aewrench.disabled", true),
+		Item_Golem_Wifi_Backpack ("item.golem.wifi.backpack", true),
 
 		// Tooltips
 		Tooltip_ItemStackDetails ("tooltip.itemstack.details", false),

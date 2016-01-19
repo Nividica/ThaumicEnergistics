@@ -1,4 +1,4 @@
-package thaumicenergistics.integration;
+package thaumicenergistics.common.integration;
 
 import java.lang.ref.WeakReference;
 import java.util.*;

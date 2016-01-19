@@ -1,9 +1,8 @@
-package thaumicenergistics.common.registries;
+package thaumicenergistics.common.items;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.items.*;
 
 public enum ItemEnum
 {
@@ -15,7 +14,8 @@ public enum ItemEnum
 		WIRELESS_TERMINAL ("wireless.essentia.terminal", new ItemWirelessEssentiaTerminal()),
 		KNOWLEDGE_CORE ("knowledge.core", new ItemKnowledgeCore()),
 		FOCUS_AEWRENCH ("focus.aewrench", new ItemFocusAEWrench()),
-		CRAFTING_ASPECT ("crafting.aspect", new ItemCraftingAspect());
+		CRAFTING_ASPECT ("crafting.aspect", new ItemCraftingAspect()),
+		GOLEM_WIFI_BACKPACK ("golem.wifi.backpack", new ItemGolemWirelessBackpack());
 
 	/**
 	 * Internal name of the item.

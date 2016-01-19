@@ -22,11 +22,11 @@ import thaumicenergistics.client.textures.AEStateIconsEnum;
 import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
+import thaumicenergistics.common.integration.tc.MEItemAspectBridgeContainer;
 import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
 import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.utils.ThEUtils;
-import thaumicenergistics.integration.tc.MEItemAspectBridgeContainer;
 import appeng.api.config.*;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -435,13 +435,12 @@ public class GuiArcaneCraftingTerminal
 						if( ( widgetStack.isCraftable() ) && ( mouseButton != ThEGuiHelper.MOUSE_BUTTON_RIGHT ) )
 						{
 							Packet_S_ArcaneCraftingTerminal.sendAutoCraft( this.player, widgetStack );
+							return;
 						}
 					}
-					else
-					{
-						// Let the server know the user is requesting an itemstack.
-						Packet_S_ArcaneCraftingTerminal.sendExtract( this.player, widgetStack, mouseButton, GuiScreen.isShiftKeyDown() );
-					}
+
+					// Let the server know the user is requesting an itemstack.
+					Packet_S_ArcaneCraftingTerminal.sendExtract( this.player, widgetStack, mouseButton, GuiScreen.isShiftKeyDown() );
 				}
 
 				// Stop searching

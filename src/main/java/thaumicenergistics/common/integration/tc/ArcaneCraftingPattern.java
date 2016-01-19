@@ -1,4 +1,4 @@
-package thaumicenergistics.integration.tc;
+package thaumicenergistics.common.integration.tc;
 
 import java.util.ArrayList;
 import javax.annotation.Nullable;

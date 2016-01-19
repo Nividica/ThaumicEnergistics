@@ -7,11 +7,11 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.integration.tc.VisCraftingHelper;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
-import thaumicenergistics.integration.tc.VisCraftingHelper;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 

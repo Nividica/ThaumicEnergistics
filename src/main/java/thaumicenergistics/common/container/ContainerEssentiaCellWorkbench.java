@@ -7,10 +7,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
+import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
 import thaumicenergistics.common.utils.EffectiveSide;
-import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 
 public class ContainerEssentiaCellWorkbench
 	extends ContainerWithPlayerInventory

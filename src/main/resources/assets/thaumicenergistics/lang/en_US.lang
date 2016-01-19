@@ -45,6 +45,7 @@ thaumicenergistics.item.wireless.essentia.terminal.name=Wireless Essentia Termin
 thaumicenergistics.item.knowledge.core.name=Knowledge Core
 thaumicenergistics.item.focus.aewrench.name=Wand Focus: AE Wrench
 thaumicenergistics.item.focus.aewrench.disabled.name=Wand Focus: AE Wrench - Wrench Mode Disabled
+thaumicenergistics.item.golem.wifi.backpack.name=Wireless Golem Backpack
 
 #Tooltips
 thaumicenergistics.tooltip.itemstack.details=Hold §eshift§f for details.
@@ -54,7 +55,7 @@ thaumicenergistics.tooltip.button.void=Allow Void?
 thaumicenergistics.tooltip.button.void.disabled=Do not void essentia
 thaumicenergistics.tooltip.button.void.allowed=Void essentia if jar is full
 thaumicenergistics.tooltip.button.void.note=Only applies to void jars
-thaumicenergistics.tooltip.button.inscriber.invalid=Invalid Recipe
+thaumicenergistics.tooltip.button.inscriber.invalid=Invalid Arcane Recipe
 thaumicenergistics.tooltip.button.inscriber.full=Knowledge Core Is Full
 thaumicenergistics.tooltip.button.inscriber.delete=Erase Pattern From Knowledge Core
 thaumicenergistics.tooltip.button.inscriber.save=Save Pattern To Knowledge Core

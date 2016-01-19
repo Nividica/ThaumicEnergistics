@@ -25,12 +25,12 @@ import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.container.slot.SlotArcaneCraftingResult;
 import thaumicenergistics.common.container.slot.SlotArmor;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
+import thaumicenergistics.common.integration.tc.ArcaneRecipeHelper;
 import thaumicenergistics.common.network.packet.client.Packet_C_ArcaneCraftingTerminal;
 import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
 import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
-import thaumicenergistics.integration.tc.ArcaneRecipeHelper;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SortDir;
@@ -1257,6 +1257,16 @@ public class ContainerPartArcaneCraftingTerminal
 				halfRequest = Math.ceil( halfRequest );
 				halfMax = Math.ceil( halfMax );
 				amountToExtract = (int)Math.min( halfMax, halfRequest );
+			}
+			break;
+
+		case ThEGuiHelper.MOUSE_BUTTON_WHEEL:
+			if( player.capabilities.isCreativeMode )
+			{
+				ItemStack creativeCopy = requestedStack.getItemStack();
+				creativeCopy.stackSize = creativeCopy.getMaxStackSize();
+				player.inventory.setItemStack( creativeCopy );
+				Packet_C_Sync.sendPlayerHeldItem( player, creativeCopy );
 			}
 			break;
 

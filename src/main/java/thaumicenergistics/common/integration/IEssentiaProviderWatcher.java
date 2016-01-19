@@ -1,4 +1,4 @@
-package thaumicenergistics.integration;
+package thaumicenergistics.common.integration;
 
 /**
  * Used to pass specific events to a watcher.

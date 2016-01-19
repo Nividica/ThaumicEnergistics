@@ -1,4 +1,4 @@
-package thaumicenergistics.integration;
+package thaumicenergistics.common.integration;
 
 import net.minecraft.nbt.NBTTagCompound;
 import thaumicenergistics.api.ThEApi;

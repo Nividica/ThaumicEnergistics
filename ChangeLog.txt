@@ -1,4 +1,28 @@
-﻿01/11/2016 0.10.0.0 - Beta
+﻿01/18/2016 0.10.0.0 - Beta
+  Fixed bug where DPE would eat item stacks.
+  Refactored golem network code.
+
+01/17/2016 0.10.0.0 - Beta
+  Cleaned up backpack render code.
+  Cleaned up and documented IGolemHookHandler interface.
+  Added AE network capabilities to golem backpack. 
+
+01/16/2016 0.10.0.0 - Beta
+  Work on golem hooks & sync
+  Work on item and wifi backpack.
+  Fixed bug: A.C.T. didn't copy item on middle click when in creative mode.
+
+01/15/2016 0.10.0.0 - Beta
+  Work on golem hooks
+  Work on item and wifi backpack.
+  
+01/14/2016 0.10.0.0 - Beta
+  Work on golem hooks
+  
+01/13/2016 0.10.0.0 - Beta
+  Began looking into #213
+  
+01/11/2016 0.10.0.0 - Beta
   Fixed occasional crash when the Knowledge Inscriber GUI was clicked.
   Added locked/unlocked texture & indicator to storage monitors.
   Fixed bug where autocrafting gui didn't always show the item being crafted.

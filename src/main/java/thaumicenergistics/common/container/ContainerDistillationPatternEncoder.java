@@ -16,7 +16,7 @@ import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
 import thaumicenergistics.common.inventory.TheInternalInventory;
 import thaumicenergistics.common.items.ItemCraftingAspect;
-import thaumicenergistics.common.registries.ItemEnum;
+import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
 import thaumicenergistics.common.utils.DistillationPatternHelper;
 import thaumicenergistics.common.utils.EffectiveSide;
@@ -220,7 +220,9 @@ public class ContainerDistillationPatternEncoder
 				return this.mergeItemStack( slotStack, this.slotPatternEncoded.slotNumber, this.slotPatternEncoded.slotNumber + 1, false );
 			}
 			// Set the source slot
-			this.slotSourceItem.putStack( slotStack );
+			ItemStack copy = slotStack.copy();
+			copy.stackSize = 1;
+			this.slotSourceItem.putStack( copy );
 			return true;
 
 		}

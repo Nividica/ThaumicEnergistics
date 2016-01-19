@@ -89,7 +89,7 @@ public class GaseousEssentia
 			gasList.put( aspect, newGas );
 
 			// Log info
-			ThELog.info( "Created fluid for aspect %s.", aspect.getTag() );
+			// ThELog.info( "Created fluid for aspect %s.", aspect.getTag() );
 		}
 		else
 		{

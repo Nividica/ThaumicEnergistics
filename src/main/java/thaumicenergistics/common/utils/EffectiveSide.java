@@ -1,6 +1,7 @@
 package thaumicenergistics.common.utils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 
 public final class EffectiveSide
 {
@@ -27,5 +28,15 @@ public final class EffectiveSide
 	public static final boolean isServerSide()
 	{
 		return FCH.getEffectiveSide().isServer();
+	}
+
+	/**
+	 * Returns the effective side for the context in the game.
+	 * 
+	 * @return
+	 */
+	public static final Side side()
+	{
+		return FCH.getEffectiveSide();
 	}
 }

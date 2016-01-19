@@ -13,7 +13,6 @@ import net.minecraft.util.StatCollector;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.registries.ItemEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

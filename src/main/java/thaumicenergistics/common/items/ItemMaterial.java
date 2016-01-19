@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.registries.ItemEnum;
 import thaumicenergistics.common.registries.ThEStrings;
 
 public class ItemMaterial

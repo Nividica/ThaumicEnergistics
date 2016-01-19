@@ -1,26 +1,24 @@
 package thaumicenergistics.implementaion;
 
+import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.api.IThEInteractionHelper;
 import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
+import thaumicenergistics.api.entities.IGolemHookHandler;
 import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.common.ThEGuiHandler;
+import thaumicenergistics.common.grid.WirelessAELink;
+import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.common.integration.tc.GolemHooks;
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
-import thaumicenergistics.integration.tc.EssentiaConversionHelper;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IMachineSet;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.localization.PlayerMessages;
-import appeng.tile.misc.TileSecurity;
-import appeng.tile.networking.TileWireless;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -99,80 +97,34 @@ public class ThEInteractionHelper
 		}
 
 		// Get the encryption key
-		long encryptionKey;
-		try
-		{
-			encryptionKey = Long.parseLong( terminalInterface.getEncryptionKey( wirelessTerminal ) );
-		}
-		catch( NumberFormatException e )
-		{
-			// Invalid security key
-			player.addChatMessage( PlayerMessages.CommunicationError.get() );
-			return;
-		}
+		String encKey = terminalInterface.getEncryptionKey( wirelessTerminal );
 
-		// Get the linked source
-		Object source = AEApi.instance().registries().locatable().getLocatableBy( encryptionKey );
+		// Are any AP's in range?
+		ArrayList<IWirelessAccessPoint> accessPoints = WirelessAELink.locateAPsInRangeOfPlayer( player, encKey );
 
-		// Ensure it is a security terminal
-		if( !( source instanceof TileSecurity ) )
-		{
-			// Invalid security terminal
-			player.addChatMessage( PlayerMessages.CommunicationError.get() );
-			return;
-		}
-
-		// Get the terminal
-		TileSecurity securityHost = (TileSecurity)source;
-
-		// Get the grid
-		IGrid hostGrid;
-		try
-		{
-			hostGrid = securityHost.getGridNode( ForgeDirection.UNKNOWN ).getGrid();
-		}
-		catch( Exception e )
-		{
-			// Can not find the grid
-			player.addChatMessage( PlayerMessages.CommunicationError.get() );
-			return;
-		}
-
-		// Get the AP's
-		IMachineSet accessPoints = hostGrid.getMachines( TileWireless.class );
-
-		// Loop over AP's and see if any are close enough to communicate with
-		for( IGridNode APNode : accessPoints )
-		{
-			// Get the AP
-			IWirelessAccessPoint AP = (IWirelessAccessPoint)APNode.getMachine();
-
-			// Is the AP active?
-			if( AP.isActive() )
-			{
-				// Is the player close enough to the AP?
-				if( HandlerWirelessEssentiaTerminal.isAPInRangeOfPlayer( AP.getLocation(), AP.getRange(), player ) )
-				{
-					// Launch the gui
-					ThEGuiHandler.launchGui( ThEGuiHandler.WIRELESS_TERMINAL_ID, player, player.worldObj, (int)player.posX, (int)player.posY,
-						(int)player.posZ, new Object[] { new HandlerWirelessEssentiaTerminal( player, AP, terminalInterface, wirelessTerminal ) } );
-
-					// All done.
-					return;
-				}
-			}
-		}
-
-		// No AP's were close enough
-		if( accessPoints.isEmpty() )
+		// Error occured
+		if( accessPoints == null )
 		{
 			player.addChatMessage( PlayerMessages.CommunicationError.get() );
 		}
-		else
+		// None in range
+		else if( accessPoints.isEmpty() )
 		{
 			player.addChatMessage( PlayerMessages.OutOfRange.get() );
 		}
+		// Launch the gui
+		else
+		{
+			ThEGuiHandler.launchGui( ThEGuiHandler.WIRELESS_TERMINAL_ID, player, player.worldObj, (int)player.posX, (int)player.posY,
+				(int)player.posZ, new Object[] { new HandlerWirelessEssentiaTerminal( player, encKey, terminalInterface, wirelessTerminal ) } );
+		}
 
+	}
+
+	@Override
+	public void registerGolemHookHandler( final IGolemHookHandler handler )
+	{
+		GolemHooks.registerHandler( handler );
 	}
 
 	@Override

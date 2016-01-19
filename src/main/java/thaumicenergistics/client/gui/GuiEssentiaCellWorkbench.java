@@ -15,10 +15,10 @@ import thaumicenergistics.client.gui.widget.WidgetAspectSlot;
 import thaumicenergistics.client.textures.AEStateIconsEnum;
 import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerEssentiaCellWorkbench;
+import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellWorkbench;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
-import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

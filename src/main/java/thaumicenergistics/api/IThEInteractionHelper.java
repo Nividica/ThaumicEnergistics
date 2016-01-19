@@ -2,6 +2,7 @@ package thaumicenergistics.api;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import thaumicenergistics.api.entities.IGolemHookHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -41,6 +42,13 @@ public interface IThEInteractionHelper
 	 * @param player
 	 */
 	public abstract void openWirelessTerminalGui( final EntityPlayer player );
+
+	/**
+	 * Registers a handler to receive golem events.
+	 * 
+	 * @param handler
+	 */
+	public abstract void registerGolemHookHandler( IGolemHookHandler handler );
 
 	/**
 	 * Attempts to set the Arcane Crafting Terminals recipe to the items

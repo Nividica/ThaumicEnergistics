@@ -5,7 +5,7 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.integration.tc.PseudoResearchItem;
+import thaumicenergistics.common.integration.tc.PseudoResearchItem;
 
 public class ResearchRegistry
 {

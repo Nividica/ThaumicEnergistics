@@ -146,7 +146,7 @@ class ThETransportPermissions
 			if( this.tileExtractWhiteList.add( tileClass ) )
 			{
 				// Log the addition
-				ThELog.info( "Added %s with capacity %d to extraction whitelist.", tileClass.toString(), capacity );
+				ThELog.info( "Added \"%s\" with capacity (%d) to extraction whitelist.", tileClass.toString(), capacity );
 			}
 
 			return true;
@@ -168,7 +168,7 @@ class ThETransportPermissions
 			if( this.tileInjectWhiteList.add( tileClass ) )
 			{
 				// Log the addition
-				ThELog.info( "Added %s with capacity %d to injection whitelist.", tileClass.toString(), capacity );
+				ThELog.info( "Added \"%s\" with capacity (%d) to injection whitelist.", tileClass.toString(), capacity );
 			}
 
 			return true;
@@ -197,7 +197,7 @@ class ThETransportPermissions
 			}
 
 			// Log the addition
-			ThELog.info( "Adding %s[%d] to item whitelist.", itemClass.toString(), damageValue );
+			ThELog.info( "Added \"%s\"[%d] to item whitelist.", itemClass.toString(), damageValue );
 		}
 	}
 

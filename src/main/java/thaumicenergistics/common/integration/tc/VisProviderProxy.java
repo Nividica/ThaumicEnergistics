@@ -1,4 +1,4 @@
-package thaumicenergistics.integration.tc;
+package thaumicenergistics.common.integration.tc;
 
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.WorldCoordinates;

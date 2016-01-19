@@ -33,4 +33,6 @@ public abstract class IThEItems
 	public IThEItemDescription KnowledgeCore;
 
 	public IThEItemDescription WandFocusAEWrench;
+
+	public IThEItemDescription GolemWifiBackpack;
 }

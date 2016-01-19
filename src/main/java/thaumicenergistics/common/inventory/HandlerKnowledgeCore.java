@@ -5,8 +5,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
+import thaumicenergistics.common.integration.tc.ArcaneCraftingPattern;
 import thaumicenergistics.common.items.ItemKnowledgeCore;
-import thaumicenergistics.integration.tc.ArcaneCraftingPattern;
 
 public class HandlerKnowledgeCore
 {

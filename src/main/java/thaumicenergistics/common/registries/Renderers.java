@@ -3,6 +3,7 @@ package thaumicenergistics.common.registries;
 import net.minecraftforge.client.MinecraftForgeClient;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.render.*;
+import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import thaumicenergistics.common.tiles.TileGearBox;
 import cpw.mods.fml.client.registry.ClientRegistry;

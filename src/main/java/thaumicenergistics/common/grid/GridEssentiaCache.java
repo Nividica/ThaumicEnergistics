@@ -7,7 +7,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.*;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.common.items.ItemCraftingAspect;
-import thaumicenergistics.common.registries.ItemEnum;
+import thaumicenergistics.common.items.ItemEnum;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;

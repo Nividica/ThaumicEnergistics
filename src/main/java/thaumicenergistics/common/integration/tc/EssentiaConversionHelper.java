@@ -1,4 +1,4 @@
-package thaumicenergistics.integration.tc;
+package thaumicenergistics.common.integration.tc;
 
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;

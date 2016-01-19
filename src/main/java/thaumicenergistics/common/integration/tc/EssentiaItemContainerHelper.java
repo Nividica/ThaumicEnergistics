@@ -1,4 +1,4 @@
-package thaumicenergistics.integration.tc;
+package thaumicenergistics.common.integration.tc;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

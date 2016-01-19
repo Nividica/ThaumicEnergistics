@@ -83,3 +83,10 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+jar {
+  manifest {
+  attributes 'FMLCorePlugin': 'thaumicenergistics.fml.ThECore',
+    'FMLCorePluginContainsFMLMod': 'true'
+    }
+}

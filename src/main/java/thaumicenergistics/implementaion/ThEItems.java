@@ -1,8 +1,8 @@
 package thaumicenergistics.implementaion;
 
 import thaumicenergistics.api.IThEItems;
+import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.items.ItemMaterial.MaterialTypes;
-import thaumicenergistics.common.registries.ItemEnum;
 import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
 
 class ThEItems
@@ -33,5 +33,6 @@ class ThEItems
 		this.WirelessEssentiaTerminal = new ThEItemDescription( ItemEnum.WIRELESS_TERMINAL.getStack() );
 		this.KnowledgeCore = new ThEItemDescription( ItemEnum.KNOWLEDGE_CORE.getStack() );
 		this.WandFocusAEWrench = new ThEItemDescription( ItemEnum.FOCUS_AEWRENCH.getStack() );
+		this.GolemWifiBackpack = new ThEItemDescription( ItemEnum.GOLEM_WIFI_BACKPACK.getStack() );
 	}
 }

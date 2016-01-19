@@ -10,6 +10,8 @@ import thaumicenergistics.api.grid.ICraftingIssuerHost;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
+import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.common.inventory.TheInternalInventory;
 import thaumicenergistics.common.items.ItemCraftingAspect;
@@ -17,8 +19,6 @@ import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaCellTerm
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
-import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
-import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
@@ -129,7 +129,7 @@ public class ContainerWirelessEssentiaTerminal
 	@Override
 	protected IMEEssentiaMonitor getNewMonitor()
 	{
-		return this.handler.getEssentiaMonitor();
+		return this.handler.getEssentiaInventory();
 	}
 
 	@Override

@@ -12,6 +12,8 @@ import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.grid.EssentiaMonitor;
+import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.common.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.common.inventory.TheInternalInventory;
 import thaumicenergistics.common.items.ItemEssentiaCell;
@@ -19,8 +21,6 @@ import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaCellTerm
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
-import thaumicenergistics.integration.tc.EssentiaItemContainerHelper;
-import thaumicenergistics.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import appeng.api.config.Settings;
 import appeng.api.config.ViewItems;
 import appeng.api.networking.IGrid;

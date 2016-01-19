@@ -808,7 +808,7 @@ public class AEAspectRegister
 					// Still could not register on pass 2.
 					if( !this.displayName.isEmpty() )
 					{
-						ThELog.info( "'%s' was not registered for TC scanning.", this.displayName );
+						ThELog.info( "Could not register \"%s\" for TC scanning.", this.displayName );
 					}
 				}
 				return;
@@ -1172,7 +1172,7 @@ public class AEAspectRegister
 		// Were the cells registered?
 		if( ( aeCell == null ) || ( cellAspects == null ) )
 		{
-			ThELog.info( "'%s' was not registered for TC scanning.", "Essentia Cells" );
+			ThELog.info( "Could not register \"%s\" for TC scanning.", "Essentia Cells" );
 		}
 
 		// Set the aspects for the iron gearbox

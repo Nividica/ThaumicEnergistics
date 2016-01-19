@@ -1,4 +1,4 @@
-package thaumicenergistics.integration;
+package thaumicenergistics.common.integration;
 
 import java.util.List;
 import mcp.mobius.waila.api.IWailaConfigHandler;

@@ -212,12 +212,6 @@ public class ModelGearbox
 	@Override
 	public void render( final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5 )
 	{
-		// Call super
-		super.render( entity, f, f1, f2, f3, f4, f5 );
-
-		// Set the angles
-		this.setRotationAngles( f, f1, f2, f3, f4, f5, entity );
-
 		// Render the transmission
 		this.Transmission.render( f5 );
 
@@ -231,12 +225,6 @@ public class ModelGearbox
 			this.renderShaft( side, f5 );
 		}
 
-	}
-
-	@Override
-	public void setRotationAngles( final float f, final float f1, final float f2, final float f3, final float f4, final float f5, final Entity entity )
-	{
-		super.setRotationAngles( f, f1, f2, f3, f4, f5, entity );
 	}
 
 	/**
