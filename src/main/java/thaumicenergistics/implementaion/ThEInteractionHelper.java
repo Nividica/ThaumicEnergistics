@@ -5,9 +5,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.FakePlayer;
+import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.IThEInteractionHelper;
 import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
 import thaumicenergistics.api.entities.IGolemHookHandler;
+import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.grid.WirelessAELink;
@@ -15,6 +17,7 @@ import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.common.integration.tc.GolemHooks;
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
+import thaumicenergistics.common.storage.AspectStack;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.storage.data.IAEItemStack;
@@ -36,6 +39,12 @@ public class ThEInteractionHelper
 	public long convertFluidAmountToEssentiaAmount( final long milibuckets )
 	{
 		return EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( milibuckets );
+	}
+
+	@Override
+	public IAspectStack createAspectStack( final Aspect aspect, final long stackSize )
+	{
+		return new AspectStack( aspect, stackSize );
 	}
 
 	@Override
@@ -118,6 +127,14 @@ public class ThEInteractionHelper
 			ThEGuiHandler.launchGui( ThEGuiHandler.WIRELESS_TERMINAL_ID, player, player.worldObj, (int)player.posX, (int)player.posY,
 				(int)player.posZ, new Object[] { new HandlerWirelessEssentiaTerminal( player, encKey, terminalInterface, wirelessTerminal ) } );
 		}
+
+	}
+
+	@Deprecated
+	@Override
+	public void openWirelessTerminalGui( final EntityPlayer player, final IThEWirelessEssentiaTerminal terminalInterface )
+	{
+		this.openWirelessTerminalGui( player );
 
 	}
 

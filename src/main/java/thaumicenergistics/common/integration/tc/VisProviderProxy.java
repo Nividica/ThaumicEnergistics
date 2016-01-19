@@ -14,6 +14,7 @@ public class VisProviderProxy
 {
 	/**
 	 * How far vis can travel from the source. I think >.>
+	 * TODO: Test vis range
 	 */
 	private static final int VIS_RANGE = 1;
 

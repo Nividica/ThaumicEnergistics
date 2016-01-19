@@ -31,6 +31,14 @@ public class GolemHooks
 		}
 
 		@Override
+		public void bellLeftClicked( final EntityGolemBase golem, final Object handlerData, final ItemStack itemGolemPlacer,
+										final EntityPlayer player, final boolean dismantled,
+										final Side side )
+		{
+
+		}
+
+		@Override
 		public boolean canHandleInteraction( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player, final Side side )
 		{
 			return false;
@@ -43,27 +51,24 @@ public class GolemHooks
 		}
 
 		@Override
+		public void golemTick( final EntityGolemBase golem, final Object serverHandlerData, final IGolemHookSyncRegistry syncData )
+		{
+		}
+
+		@Override
+		public boolean needsDynamicUpdates()
+		{
+			return false;
+		}
+
+		@Override
 		public boolean needsRenderer()
 		{
 			return false;
 		}
 
 		@Override
-		public void onBellLeftClick( final EntityGolemBase golem, final Object handlerData, final ItemStack itemGolemPlacer,
-										final EntityPlayer player, final boolean dismantled,
-										final Side side )
-		{
-
-		}
-
-		@Override
-		public Object onSyncDataChanged( final IGolemHookSyncRegistry syncData, final Object clientHandlerData )
-		{
-			return null;
-		}
-
-		@Override
-		public Object readEntityFromNBT( final EntityGolemBase golem, final IGolemHookSyncRegistry syncData, final NBTTagCompound nbtTag )
+		public Object readEntityFromNBT( final EntityGolemBase golem, final NBTTagCompound nbtTag )
 		{
 			return null;
 		}
@@ -83,6 +88,12 @@ public class GolemHooks
 
 		@Override
 		public Object spawnGolemFromItemStack( final EntityGolemBase golem, final ItemStack itemGolemPlacer, final Side side )
+		{
+			return null;
+		}
+
+		@Override
+		public Object syncDataChanged( final IGolemHookSyncRegistry syncData, final Object clientHandlerData )
 		{
 			return null;
 		}
@@ -114,6 +125,11 @@ public class GolemHooks
 	 * All hook handlers
 	 */
 	protected static final HashSet<IGolemHookHandler> registeredHandlers = new HashSet<IGolemHookHandler>();
+
+	/**
+	 * Handlers that need to be called during tick event.
+	 */
+	protected static final HashSet<IGolemHookHandler> dynamicHandlers = new HashSet<IGolemHookHandler>();
 
 	/**
 	 * Handlers that need to be called during render.
@@ -177,7 +193,7 @@ public class GolemHooks
 
 				// Call handler
 
-				handler.onBellLeftClick( golem, handlerData, dropped, player, dismantled, side );
+				handler.bellLeftClicked( golem, handlerData, dropped, player, dismantled, side );
 			}
 			catch( Exception e )
 			{
@@ -282,13 +298,24 @@ public class GolemHooks
 	 */
 	public static void hook_onEntityUpdate( final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData )
 	{
-		if( EffectiveSide.isServerSide() )
-		{
-			return;
-		}
-
 		// Get the sync registry
 		GolemSyncRegistry syncRegistry = (GolemSyncRegistry)golemHandlerData.get( internalHandler );
+
+		if( EffectiveSide.isServerSide() )
+		{
+			// Update handlers
+			for( IGolemHookHandler handler : dynamicHandlers )
+			{
+				handler.golemTick( golem, golemHandlerData.get( handler ), syncRegistry );
+			}
+
+			// Update data watcher
+			if( syncRegistry.hasChanged() )
+			{
+				golem.getDataWatcher().updateObject( DATAWATCHER_ID, syncRegistry.mappingsToString() );
+			}
+			return;
+		}
 
 		// Update sync ticks
 		++syncRegistry.clientSyncTicks;
@@ -325,7 +352,7 @@ public class GolemHooks
 					boolean hadData = ( handlerData != null );
 
 					// Call handler
-					handlerData = handler.onSyncDataChanged( syncRegistry, handlerData );
+					handlerData = handler.syncDataChanged( syncRegistry, handlerData );
 
 					// Update golem
 					if( handlerData == null )
@@ -397,9 +424,6 @@ public class GolemHooks
 	public static void hook_ReadEntityFromNBT( final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData,
 												final NBTTagCompound nbt )
 	{
-		// Get the sync data
-		GolemSyncRegistry localSyncRegistry = (GolemSyncRegistry)golemHandlerData.get( internalHandler );
-
 		// Inform each handler
 		for( IGolemHookHandler handler : registeredHandlers )
 		{
@@ -409,7 +433,7 @@ public class GolemHooks
 				Object handlerData = golemHandlerData.getOrDefault( handler, null );
 
 				// Call handler
-				handlerData = handler.readEntityFromNBT( golem, localSyncRegistry, nbt );
+				handlerData = handler.readEntityFromNBT( golem, nbt );
 
 				// Update golem
 				if( handlerData == null )
@@ -548,6 +572,12 @@ public class GolemHooks
 		if( handler.needsRenderer() )
 		{
 			renderHandlers.add( handler );
+		}
+
+		// Needs tick?
+		if( handler.needsDynamicUpdates() )
+		{
+			dynamicHandlers.add( handler );
 		}
 
 		// Register sync data

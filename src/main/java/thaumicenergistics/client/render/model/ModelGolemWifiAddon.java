@@ -48,8 +48,14 @@ public class ModelGolemWifiAddon
 	 */
 	private float pearlRotation = 0.0f;
 
+	/**
+	 * True if the pearl display list is compiled
+	 */
 	private boolean isPearlCompiled = false;
 
+	/**
+	 * ID of the pearl display list.
+	 */
 	private int pearlDispListID = -1;
 
 	public ModelGolemWifiAddon()
@@ -147,17 +153,25 @@ public class ModelGolemWifiAddon
 		tess.draw();
 	}
 
-	private void renderPearl( final float partialElapsedTick )
+	private void renderPearl( final float partialElapsedTick, final boolean inRange )
 	{
-		// Apply Y rotation
-		if( !Minecraft.getMinecraft().isGamePaused() )
+		if( inRange )
 		{
-			this.pearlRotation += ( partialElapsedTick * 2.0f );
-			if( this.pearlRotation >= 360.0f )
+			// Apply Y rotation
+			if( !Minecraft.getMinecraft().isGamePaused() )
 			{
-				this.pearlRotation -= 360.0f;
-			}
+				this.pearlRotation += ( partialElapsedTick * 2.0f );
+				if( this.pearlRotation >= 360.0f )
+				{
+					this.pearlRotation -= 360.0f;
+				}
 
+			}
+		}
+		else
+		{
+			// Set red
+			GL11.glColor3f( 1.0f, 0.0f, 0.0f );
 		}
 		GL11.glRotatef( this.pearlRotation, 0.0f, 1.0f, 0.0f );
 
@@ -181,14 +195,20 @@ public class ModelGolemWifiAddon
 	}
 
 	@Override
-	public void render( final Entity entity, final float partialElapsedTick, final float f1, final float f2, final float f3, final float f4,
+	public void render( final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4,
 						final float f5 )
+	{
+		this.render( 0.03f, f5, true );
+	}
+
+	public void render( final float partialElapsedTick, final float f5, final boolean inRange )
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture( ModelGolemWifiAddon.TEXTURE );
 		this.PackBack.render( f5 );
 		this.PackFront.render( f5 );
 		this.Antenna.render( f5 );
-		this.renderPearl( partialElapsedTick );
+		this.renderPearl( partialElapsedTick, inRange );
+
 	}
 
 }

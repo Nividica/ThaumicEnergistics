@@ -1,6 +1,9 @@
 ﻿01/18/2016 0.10.0.0 - Beta
   Fixed bug where DPE would eat item stacks.
   Refactored golem network code.
+  Added wifi backpack for Gather, Decanting, and Fill cores.
+  Fixes #265: Restored API call and marked as deprecated.
+  Fixed broken integration core.
 
 01/17/2016 0.10.0.0 - Beta
   Cleaned up backpack render code.

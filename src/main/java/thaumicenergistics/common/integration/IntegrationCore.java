@@ -17,7 +17,7 @@ public final class IntegrationCore
 	/**
 	 * Class path to all integration modules
 	 */
-	private static final String CLASS_PATH = ThaumicEnergistics.MOD_ID + ".integration.Module";
+	private static final String CLASS_PATH = ThaumicEnergistics.MOD_ID + ".common.integration.Module";
 
 	/**
 	 * Module ID for Waila

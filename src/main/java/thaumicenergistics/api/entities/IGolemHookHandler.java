@@ -62,6 +62,23 @@ public interface IGolemHookHandler
 	public void addDefaultSyncEntries( @Nonnull IGolemHookSyncRegistry syncRegistry );
 
 	/**
+	 * Called when the golem was left clicked by a player holding the Golemancers Bell.
+	 * 
+	 * @param golem
+	 * @param handlerData
+	 * Handler data attached to the golem.
+	 * @param itemGolemPlacer
+	 * Itemstack that will be used to hold the golem.
+	 * @param player
+	 * @param dismantled
+	 * True if the golem will drop its core and upgrades.
+	 * @param side
+	 * Server or Client @Nonnull Side side
+	 */
+	public void bellLeftClicked( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull ItemStack itemGolemPlacer,
+									@Nonnull EntityPlayer player, boolean dismantled, @Nonnull Side side );
+
+	/**
 	 * Return true if you can handle this interaction.<br/>
 	 * 
 	 * @param golem
@@ -93,6 +110,23 @@ public interface IGolemHookHandler
 										@Nonnull Side side );
 
 	/**
+	 * Called when a golem receives a tick, if {@code needsDynamicUpdate} returned true during registration.
+	 * Note: This is only called server side.
+	 * 
+	 * @param golem
+	 * @param serverHandlerData
+	 * @param syncData
+	 */
+	public void golemTick( @Nonnull EntityGolemBase golem, @Nullable Object serverHandlerData, @Nonnull IGolemHookSyncRegistry syncData );
+
+	/**
+	 * Return true if your handler wants to be called each time the golem gets a tick from the server.
+	 * 
+	 * @return
+	 */
+	public boolean needsDynamicUpdates();
+
+	/**
 	 * Return true if your handler wants to be called when a golem is rendered.<br/>
 	 * Note: This is called only once during registration.
 	 * 
@@ -101,44 +135,15 @@ public interface IGolemHookHandler
 	public boolean needsRenderer();
 
 	/**
-	 * Called when the golem was left clicked by a player holding the Golemancers Bell.
-	 * 
-	 * @param golem
-	 * @param handlerData
-	 * Handler data attached to the golem.
-	 * @param itemGolemPlacer
-	 * Itemstack that will be used to hold the golem.
-	 * @param player
-	 * @param dismantled
-	 * True if the golem will drop its core and upgrades.
-	 * @param side
-	 * Server or Client @Nonnull Side side
-	 */
-	public void onBellLeftClick( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull ItemStack itemGolemPlacer,
-									@Nonnull EntityPlayer player, boolean dismantled, @Nonnull Side side );
-
-	/**
-	 * Called when sync data has changed.
-	 * 
-	 * @param syncData
-	 * @param clientHandlerData
-	 * Handler data attached to the golem on the client side.
-	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
-	 */
-	@SideOnly(Side.CLIENT)
-	public Object onSyncDataChanged( @Nonnull IGolemHookSyncRegistry syncData, @Nullable Object clientHandlerData );
-
-	/**
 	 * Called when reading the golem's NBT.<br />
 	 * Note: Called during a world load, not when the golem is placed via its item.
 	 * 
 	 * @param golem
-	 * @param syncData
 	 * @param nbtTag
 	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
 	 */
 	@Nullable
-	public Object readEntityFromNBT( @Nonnull final EntityGolemBase golem, @Nonnull IGolemHookSyncRegistry syncData, @Nonnull NBTTagCompound nbtTag );
+	public Object readEntityFromNBT( @Nonnull final EntityGolemBase golem, @Nonnull NBTTagCompound nbtTag );
 
 	/**
 	 * Called when a golem is being rendered, if {@code needsRenderer} returned true during registration.
@@ -183,6 +188,17 @@ public interface IGolemHookHandler
 	 */
 	@Nullable
 	public Object spawnGolemFromItemStack( @Nonnull final EntityGolemBase golem, @Nonnull ItemStack itemGolemPlacer, @Nonnull Side side );
+
+	/**
+	 * Called when sync data has changed.
+	 * 
+	 * @param syncData
+	 * @param clientHandlerData
+	 * Handler data attached to the golem on the client side.
+	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
+	 */
+	@SideOnly(Side.CLIENT)
+	public Object syncDataChanged( @Nonnull IGolemHookSyncRegistry syncData, @Nullable Object clientHandlerData );
 
 	/**
 	 * Called when saving the golem's NBT.<br />

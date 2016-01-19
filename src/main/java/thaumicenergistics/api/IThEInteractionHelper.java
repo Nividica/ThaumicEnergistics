@@ -2,7 +2,9 @@ package thaumicenergistics.api;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.entities.IGolemHookHandler;
+import thaumicenergistics.api.storage.IAspectStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -29,6 +31,15 @@ public interface IThEInteractionHelper
 	public abstract long convertFluidAmountToEssentiaAmount( long milibuckets );
 
 	/**
+	 * Creates a new instance of an aspect stack.
+	 * 
+	 * @param aspect
+	 * @param stackSize
+	 * @return
+	 */
+	public IAspectStack createAspectStack( Aspect aspect, long stackSize );
+
+	/**
 	 * Returns the Arcane Crafting Terminals GUI class.
 	 */
 	@SideOnly(Side.CLIENT)
@@ -42,6 +53,18 @@ public interface IThEInteractionHelper
 	 * @param player
 	 */
 	public abstract void openWirelessTerminalGui( final EntityPlayer player );
+
+	/**
+	 * The {@code IThEWirelessEssentiaTerminal} is assumed to be the item the player is holding, and is no longer needs to be passed in.
+	 * 
+	 * 
+	 * @param player
+	 * @param terminalInterface
+	 * is now ignored
+	 * @see #openWirelessTerminalGui(EntityPlayer)
+	 */
+	@Deprecated
+	public abstract void openWirelessTerminalGui( final EntityPlayer player, final IThEWirelessEssentiaTerminal terminalInterface );
 
 	/**
 	 * Registers a handler to receive golem events.

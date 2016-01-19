@@ -13,6 +13,7 @@ import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.security.PlayerSource;
@@ -42,11 +43,6 @@ public abstract class WirelessAELink
 	 * Access point used to communicate with the AE network.
 	 */
 	protected IWirelessAccessPoint accessPoint;
-
-	/**
-	 * Cached value of the range of the access point, squared.
-	 */
-	protected double apTransmitRange = 0;
 
 	/**
 	 * Where in the world is the access point.
@@ -243,7 +239,7 @@ public abstract class WirelessAELink
 			if( this.accessPoint.isActive() )
 			{
 				// In range?
-				return isAPInRange( this.apLocation, this.apTransmitRange, this.getUserWorld(),
+				return isAPInRange( this.apLocation, this.accessPoint.getRange(), this.getUserWorld(),
 					this.getUserPositionX(), this.getUserPositionY(), this.getUserPositionZ() );
 			}
 		}
@@ -321,9 +317,6 @@ public abstract class WirelessAELink
 		// Set the access point
 		this.accessPoint = accessPoint;
 
-		// Get the range of the access point
-		this.apTransmitRange = this.accessPoint.getRange();
-
 		// Get the location of the access point
 		this.apLocation = this.accessPoint.getLocation();
 
@@ -373,6 +366,27 @@ public abstract class WirelessAELink
 	 */
 	protected abstract boolean hasPowerToCommunicate();
 
+	public IEnergyGrid getEnergyGrid()
+	{
+		// Check AP
+		if( this.accessPoint == null )
+		{
+			return null;
+		}
+
+		try
+		{
+			// Get the energy grid
+			return this.accessPoint.getActionableNode().getGrid().getCache( IEnergyGrid.class );
+		}
+		catch( Exception e )
+		{
+			// Ignored
+		}
+
+		return null;
+	}
+
 	/**
 	 * Gets the essentia inventory.
 	 * 
@@ -380,7 +394,8 @@ public abstract class WirelessAELink
 	 */
 	public IMEEssentiaMonitor getEssentiaInventory()
 	{
-		if( this.accessPoint == null )
+		// Check connectivity
+		if( ( this.accessPoint == null ) || !this.isConnected() )
 		{
 			return null;
 		}
@@ -399,7 +414,8 @@ public abstract class WirelessAELink
 	@Override
 	public IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
-		if( this.accessPoint == null )
+		// Check connectivity
+		if( ( this.accessPoint == null ) || !this.isConnected() )
 		{
 			return null;
 		}
@@ -423,7 +439,8 @@ public abstract class WirelessAELink
 	@Override
 	public IMEMonitor<IAEItemStack> getItemInventory()
 	{
-		if( this.accessPoint == null )
+		// Check connectivity
+		if( ( this.accessPoint == null ) || !this.isConnected() )
 		{
 			return null;
 		}

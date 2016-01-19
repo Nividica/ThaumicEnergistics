@@ -3,68 +3,61 @@ package thaumicenergistics.common.entities;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.common.entities.golems.EntityGolemBase;
 import thaumicenergistics.common.grid.WirelessAELink;
+import thaumicenergistics.common.integration.tc.GolemUpgradeTypes;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 
 public abstract class AIAENetworkGolem
 	extends EntityAIBase
 {
-
 	protected class NetworkHandler
 		extends WirelessAELink
 	{
-		private static final int NETWORK_COOLDOWN = 15;
 
 		/**
 		 * The maximum number of items the golem can inject/extract per update.
 		 */
-		private final int maxItems;
+		private final int maxItemRate;
 
 		/**
 		 * The maximum amount of fluid, in mb, the golem can inject/extract per update.
 		 */
-		private final int maxFluids;
+		private final int maxFluidRate;
 
 		/**
 		 * The maximum amount of essentia the golem can inject/extract per update.
 		 */
-		private final int maxEssentia;
+		private final int maxEssentiaRate;
 
 		/**
-		 * How many ticks until the golem can interact with the network again.
+		 * Data associated with the wireless state of the backpack.
 		 */
-		private int actionTimer = 0;
+		public final WirelessGolemHandler.WirelessServerData wirelessStateData;
 
-		public NetworkHandler( final String encryptionKey, final int maxItems, final int maxFluids, final int maxEssentia )
+		public NetworkHandler( final WirelessGolemHandler.WirelessServerData wsd, final int maxItems, final int maxFluids, final int maxEssentia )
 		{
 			// Call super
-			super( null, encryptionKey );
+			super( null, wsd.encryptionKey );
 
 			// Set maximums
-			this.maxItems = maxItems;
-			this.maxFluids = maxFluids;
-			this.maxEssentia = maxEssentia;
-		}
+			this.maxItemRate = maxItems;
+			this.maxFluidRate = maxFluids;
+			this.maxEssentiaRate = maxEssentia;
 
-		/**
-		 * Gets the item monitor if possible.
-		 * 
-		 * @return
-		 */
-		private IMEMonitor<IAEItemStack> getNetworkItems()
-		{
-			// Check connectivity
-			if( !this.canInteractWithNetwork() )
-			{
-				return null;
-			}
+			// Set state data
+			this.wirelessStateData = wsd;
 
-			// Get the item monitor
-			return this.getItemInventory();
+			// Attempt to connect to AP
+			this.isConnected();
+
 		}
 
 		@Override
@@ -99,49 +92,15 @@ public abstract class AIAENetworkGolem
 		}
 
 		/**
-		 * Checks if the network can be interacted with.
+		 * Attempts to deposit the itemstack into the AE system.
+		 * The {@code stack.stacksize} will change according to how many items were left over after the deposit.
 		 * 
-		 * @return
-		 */
-		public boolean canInteractWithNetwork()
-		{
-			// Is the interaction timer cooling down?
-			if( this.actionTimer > 0 )
-			{
-				return false;
-			}
-
-			// Connected to network?
-			if( !this.isConnected() )
-			{
-				return false;
-			}
-
-			return true;
-		}
-
-		/**
-		 * Called to decrement the action timer.
-		 * 
-		 * @return True if cooled down.
-		 */
-		public boolean cooldownTick()
-		{
-			if( this.actionTimer > 0 )
-			{
-				--this.actionTimer;
-				return false;
-			}
-			return true;
-		}
-
-		/**
-		 * Deposits the itemstack into the AE system.
+		 * @param stack
 		 */
 		public void depositStack( final ItemStack stack )
 		{
 			// Get the item monitor
-			IMEMonitor<IAEItemStack> monitor = this.getNetworkItems();
+			IMEMonitor<IAEItemStack> monitor = this.getItemInventory();
 			if( monitor == null )
 			{
 				return;
@@ -151,11 +110,11 @@ public abstract class AIAENetworkGolem
 			IAEItemStack aeStack = AEApi.instance().storage().createItemStack( stack );
 
 			// Set size
-			int depositSize = Math.min( stack.stackSize, this.maxItems );
+			int depositSize = Math.min( stack.stackSize, this.maxItemRate );
 			aeStack.setStackSize( depositSize );
 
 			// Deposit
-			IAEItemStack rejected = monitor.injectItems( aeStack, Actionable.MODULATE, this.actionSource );
+			IAEItemStack rejected = AEApi.instance().storage().poweredInsert( this.getEnergyGrid(), monitor, aeStack, this.actionSource );
 			if( rejected != null )
 			{
 				depositSize -= (int)rejected.getStackSize();
@@ -163,12 +122,114 @@ public abstract class AIAENetworkGolem
 
 			// Reduce stack by number of items deposited
 			stack.stackSize -= depositSize;
+		}
 
-			// Reset network timer
-			this.actionTimer = NETWORK_COOLDOWN;
+		/**
+		 * Extracts fluids from the network.
+		 * 
+		 * @param target
+		 * @return
+		 */
+		public FluidStack extractFluid( final FluidStack target )
+		{
+			// Get the fluid monitor
+			IMEMonitor<IAEFluidStack> monitor = this.getFluidInventory();
+			if( monitor == null )
+			{
+				return null;
+			}
+
+			// Get power grid
+			IEnergyGrid eGrid = this.getEnergyGrid();
+			if( eGrid == null )
+			{
+				return null;
+			}
+
+			// Calculate request size
+			long requestSize = Math.min( target.amount, this.maxFluidRate );
+
+			// Calculate power required
+			double pwrReq = requestSize / 100;
+			if( eGrid.extractAEPower( pwrReq, Actionable.SIMULATE, PowerMultiplier.CONFIG ) < pwrReq )
+			{
+				// Not enough power
+				return null;
+			}
+
+			// Create the fluid stack
+			IAEFluidStack aeRequest = AEApi.instance().storage().createFluidStack( target );
+
+			// Set size
+			aeRequest.setStackSize( requestSize );
+
+			// Extract
+			IAEFluidStack extracted = monitor.extractItems( aeRequest, Actionable.MODULATE, this.actionSource );
+			if( extracted == null )
+			{
+				return null;
+			}
+
+			// Take power
+			pwrReq = extracted.getStackSize() / 100;
+			eGrid.extractAEPower( pwrReq, Actionable.MODULATE, PowerMultiplier.CONFIG );
+
+			return extracted.getFluidStack();
+
+		}
+
+		/**
+		 * Extracts items from the network.
+		 * 
+		 * @param target
+		 * @return Extracted stack.
+		 */
+		public ItemStack extractStack( final ItemStack target )
+		{
+			// Get the item monitor
+			IMEMonitor<IAEItemStack> monitor = this.getItemInventory();
+			if( monitor == null )
+			{
+				return null;
+			}
+
+			// Create the AE stack
+			IAEItemStack aeRequest = AEApi.instance().storage().createItemStack( target );
+
+			// Set size
+			aeRequest.setStackSize( Math.min( target.stackSize, this.maxItemRate ) );
+
+			// Extract
+			IAEItemStack extracted = AEApi.instance().storage().poweredExtraction( this.getEnergyGrid(), monitor, aeRequest, this.actionSource );
+			if( extracted == null )
+			{
+				return null;
+			}
+
+			return extracted.getItemStack();
+		}
+
+		/**
+		 * Checks if the network can be interacted with.
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isConnected()
+		{
+			// Connected to network?
+			this.wirelessStateData.isInRange = super.isConnected();
+			return this.wirelessStateData.isInRange;
 		}
 
 	}
+
+	private static final int NETWORK_COOLDOWN = 15;
+
+	/**
+	 * How many ticks until the golem can interact with the network again.
+	 */
+	private int actionTimer = 0;
 
 	/**
 	 * Handles AE network communication.
@@ -204,7 +265,7 @@ public abstract class AIAENetworkGolem
 	 */
 	private static final int[] ESS_RATES = new int[] { 8, 24, 32 };
 
-	public AIAENetworkGolem( final EntityGolemBase golem, final String encKey )
+	public AIAENetworkGolem( final EntityGolemBase golem, final WirelessGolemHandler.WirelessServerData wsd )
 	{
 		// Set the golem
 		this.golem = golem;
@@ -229,7 +290,31 @@ public abstract class AIAENetworkGolem
 		int maxFluids = FLUID_RATES[orderUpgrades] * rateMult;
 
 		// Create the network handler
-		this.network = new NetworkHandler( encKey, maxItems, maxFluids, maxEssentia );
+		this.network = new NetworkHandler( wsd, maxItems, maxFluids, maxEssentia );
+	}
+
+	/**
+	 * Called to decrement the action timer.
+	 * 
+	 * @return True if cooled down.
+	 */
+	private boolean cooldownTick()
+	{
+		if( this.actionTimer > 0 )
+		{
+			--this.actionTimer;
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 */
+	private void restartNetworkCooldown()
+	{
+		// Reset network timer
+		this.actionTimer = NETWORK_COOLDOWN;
 	}
 
 	/**
@@ -237,17 +322,27 @@ public abstract class AIAENetworkGolem
 	 * 
 	 * @return
 	 */
-	protected abstract boolean needsNetworkInteraction();
+	protected abstract boolean needsNetworkNow();
 
 	@Override
 	public final boolean shouldExecute()
 	{
 		// Check the network timer
-		if( this.network.cooldownTick() )
+		if( this.cooldownTick() )
 		{
-			return this.needsNetworkInteraction();
+			this.restartNetworkCooldown();
+
+			// IsConnected needs to be checked before needsNetwork
+			// This ensures the wireless state data is kept up-to-date
+			if( this.network.isConnected() )
+			{
+				return this.needsNetworkNow();
+			}
 		}
 		return false;
 	}
+
+	@Override
+	public abstract void updateTask();
 
 }

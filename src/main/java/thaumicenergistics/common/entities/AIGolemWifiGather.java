@@ -6,13 +6,13 @@ import thaumcraft.common.entities.golems.EntityGolemBase;
 public class AIGolemWifiGather
 	extends AIAENetworkGolem
 {
-	public AIGolemWifiGather( final EntityGolemBase golem, final String encKey )
+	public AIGolemWifiGather( final EntityGolemBase golem, final WirelessGolemHandler.WirelessServerData wsd )
 	{
-		super( golem, encKey );
+		super( golem, wsd );
 	}
 
 	@Override
-	public boolean needsNetworkInteraction()
+	public boolean needsNetworkNow()
 	{
 		// Execute when the golem is holding something
 		return( this.golem.getCarried() != null );

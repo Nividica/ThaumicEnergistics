@@ -1,4 +1,4 @@
-package thaumicenergistics.common.entities;
+package thaumicenergistics.common.integration.tc;
 
 import javax.annotation.Nullable;
 
