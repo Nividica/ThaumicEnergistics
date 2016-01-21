@@ -1113,6 +1113,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 					// Inform the slot its stack changed;
 					slot.onSlotChanged();
 				}
+				this.detectAndSendChanges();
 			}
 
 		}

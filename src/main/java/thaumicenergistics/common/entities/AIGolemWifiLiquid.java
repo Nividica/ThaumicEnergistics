@@ -73,6 +73,7 @@ public class AIGolemWifiLiquid
 		{
 			this.golem.fluidCarried = extracted;
 		}
+		this.golem.updateCarried();
 
 		this.wantedFluid = null;
 	}

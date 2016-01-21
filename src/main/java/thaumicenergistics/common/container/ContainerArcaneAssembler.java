@@ -9,7 +9,6 @@ import thaumcraft.api.IVisDiscountGear;
 import thaumicenergistics.common.blocks.BlockArcaneAssembler;
 import thaumicenergistics.common.container.slot.SlotArmor;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
-import thaumicenergistics.common.items.ItemKnowledgeCore;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.implementations.items.IUpgradeModule;
@@ -62,17 +61,22 @@ public class ContainerArcaneAssembler
 	/**
 	 * Reference to the arcane assembler
 	 */
-	public TileArcaneAssembler assembler;
+	public final TileArcaneAssembler assembler;
 
 	/**
 	 * Knowledge Core slot.
 	 */
-	private SlotRestrictive kCoreSlot;
+	private final SlotRestrictive kCoreSlot;
 
 	/**
 	 * Discount armor slots.
 	 */
-	private SlotArmor[] discountSlots = new SlotArmor[4];
+	private final SlotArmor[] discountSlots = new SlotArmor[4];
+
+	/**
+	 * Pattern slots
+	 */
+	private final SlotInaccessible[] patternSlots = new SlotInaccessible[PATTERN_ROWS * PATTERN_COLS];
 
 	public ContainerArcaneAssembler( final EntityPlayer player, final World world, final int X, final int Y, final int Z )
 	{
@@ -83,7 +87,7 @@ public class ContainerArcaneAssembler
 		this.assembler = (TileArcaneAssembler)world.getTileEntity( X, Y, Z );
 
 		// Get the assemblers inventory
-		IInventory asmInv = this.assembler.getInternalInventory();
+		IInventory assemblerInventory = this.assembler.getInternalInventory();
 
 		// Bind to the players inventory
 		this.bindPlayerInventory( player.inventory, ContainerArcaneAssembler.PLAYER_INV_POSITION_Y, ContainerArcaneAssembler.HOTBAR_INV_POSITION_Y );
@@ -92,7 +96,7 @@ public class ContainerArcaneAssembler
 		this.bindToNetworkTool( player.inventory, this.assembler.getLocation(), 0, 35 );
 
 		// Add the kcore slot
-		this.kCoreSlot = new SlotRestrictive( asmInv, TileArcaneAssembler.KCORE_SLOT_INDEX, ContainerArcaneAssembler.KCORE_SLOT_X,
+		this.kCoreSlot = new SlotRestrictive( assemblerInventory, TileArcaneAssembler.KCORE_SLOT_INDEX, ContainerArcaneAssembler.KCORE_SLOT_X,
 						ContainerArcaneAssembler.KCORE_SLOT_Y );
 		this.addSlotToContainer( this.kCoreSlot );
 
@@ -102,11 +106,13 @@ public class ContainerArcaneAssembler
 			for( int col = 0; col < ContainerArcaneAssembler.PATTERN_COLS; col++ )
 			{
 				// Calculate the index
-				int index = TileArcaneAssembler.PATTERN_SLOT_INDEX + ( ( row * ContainerArcaneAssembler.PATTERN_COLS ) + col );
+				int index = ( row * ContainerArcaneAssembler.PATTERN_COLS ) + col;
+				int invIndex = TileArcaneAssembler.PATTERN_SLOT_INDEX + index;
 
 				// Add the slot
-				this.addSlotToContainer( new SlotInaccessible( asmInv, index, ContainerArcaneAssembler.PATTERN_SLOT_X + ( 18 * col ),
-								ContainerArcaneAssembler.PATTERN_SLOT_Y + ( 18 * row ) ) );
+				this.addSlotToContainer( this.patternSlots[index]
+								= new SlotInaccessible( assemblerInventory, invIndex, ContainerArcaneAssembler.PATTERN_SLOT_X + ( 18 * col ),
+												ContainerArcaneAssembler.PATTERN_SLOT_Y + ( 18 * row ) ) );
 			}
 		}
 
@@ -115,15 +121,16 @@ public class ContainerArcaneAssembler
 			ContainerArcaneAssembler.UPGRADE_SLOT_X, ContainerArcaneAssembler.UPGRADE_SLOT_Y );
 
 		// Create the target slot
-		this.addSlotToContainer( new SlotInaccessible( asmInv, TileArcaneAssembler.TARGET_SLOT_INDEX, ContainerArcaneAssembler.TARGET_SLOT_X,
-						ContainerArcaneAssembler.TARGET_SLOT_Y ) );
+		this.addSlotToContainer( new SlotInaccessible( assemblerInventory, TileArcaneAssembler.TARGET_SLOT_INDEX,
+						ContainerArcaneAssembler.TARGET_SLOT_X, ContainerArcaneAssembler.TARGET_SLOT_Y ) );
 
 		// Add armor slots
 		for( int index = 0; index < ContainerArcaneAssembler.DISCOUNT_ARMOR_COUNT; index++ )
 		{
-			this.discountSlots[index] = new SlotArmor( asmInv, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index,
-							ContainerArcaneAssembler.DISCOUNT_ARMOR_SLOT_X, ContainerArcaneAssembler.DISCOUNT_ARMOR_SLOT_Y + ( index * 18 ), index,
-							true );
+			this.discountSlots[index] = new SlotArmor( assemblerInventory, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX + index,
+							ContainerArcaneAssembler.DISCOUNT_ARMOR_SLOT_X,
+							ContainerArcaneAssembler.DISCOUNT_ARMOR_SLOT_Y + ( index * 18 ),
+							index, true );
 
 			this.addSlotToContainer( this.discountSlots[index] );
 		}
@@ -206,7 +213,7 @@ public class ContainerArcaneAssembler
 				if( !( slotStack.getItem() instanceof IUpgradeModule ) )
 				{
 					// Attempt to merge with kcore slot
-					if( slotStack.getItem() instanceof ItemKnowledgeCore )
+					if( this.kCoreSlot.isItemValid( slotStack ) )
 					{
 						didMerge = this.mergeItemStack( slotStack, this.kCoreSlot.slotNumber, this.kCoreSlot.slotNumber + 1, false );
 					}

@@ -4,7 +4,9 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.entities.golems.EntityGolemBase;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.common.grid.WirelessAELink;
 import thaumicenergistics.common.integration.tc.GolemUpgradeTypes;
 import appeng.api.AEApi;
@@ -21,7 +23,6 @@ public abstract class AIAENetworkGolem
 	protected class NetworkHandler
 		extends WirelessAELink
 	{
-
 		/**
 		 * The maximum number of items the golem can inject/extract per update.
 		 */
@@ -125,6 +126,27 @@ public abstract class AIAENetworkGolem
 		}
 
 		/**
+		 * Extracts essentia from the network.
+		 * 
+		 * @param aspect
+		 * @param amount
+		 * @param mode
+		 * @return The amount extracted.
+		 */
+		public long extractEssentia( final Aspect aspect, final int amount, final Actionable mode )
+		{
+			// Get the essentia monitor
+			IMEEssentiaMonitor monitor = this.getEssentiaInventory();
+			if( monitor == null )
+			{
+				return 0;
+			}
+
+			return monitor.extractEssentia( aspect, Math.min( amount, this.maxEssentiaRate ), mode, this.actionSource, mode == Actionable.MODULATE );
+
+		}
+
+		/**
 		 * Extracts fluids from the network.
 		 * 
 		 * @param target
@@ -210,6 +232,29 @@ public abstract class AIAENetworkGolem
 		}
 
 		/**
+		 * Inserts essentia into the network.
+		 * 
+		 * @param aspect
+		 * @param amount
+		 * @return Amount injected
+		 */
+		public long insertEssentia( final Aspect aspect, final int amount )
+		{
+			// Get the essentia monitor
+			IMEEssentiaMonitor monitor = this.getEssentiaInventory();
+			if( monitor == null )
+			{
+				return 0;
+			}
+
+			int amountToInject = Math.min( amount, this.maxEssentiaRate );
+
+			long amountRejected = monitor.injectEssentia( aspect, amountToInject, Actionable.MODULATE, this.actionSource, true );
+
+			return amountToInject - amountRejected;
+		}
+
+		/**
 		 * Checks if the network can be interacted with.
 		 * 
 		 * @return
@@ -224,7 +269,7 @@ public abstract class AIAENetworkGolem
 
 	}
 
-	private static final int NETWORK_COOLDOWN = 15;
+	private static final int NETWORK_COOLDOWN = 20;
 
 	/**
 	 * How many ticks until the golem can interact with the network again.
@@ -259,11 +304,11 @@ public abstract class AIAENetworkGolem
 
 	/**
 	 * <PRE>
-	 * Base      8, 24, 32
-	 * Advanced 16, 48, 64
+	 * Base     4, 12, 16
+	 * Advanced 8, 24, 32
 	 * </PRE>
 	 */
-	private static final int[] ESS_RATES = new int[] { 8, 24, 32 };
+	private static final int[] ESS_RATES = new int[] { 4, 12, 16 };
 
 	public AIAENetworkGolem( final EntityGolemBase golem, final WirelessGolemHandler.WirelessServerData wsd )
 	{
@@ -298,7 +343,7 @@ public abstract class AIAENetworkGolem
 	 * 
 	 * @return True if cooled down.
 	 */
-	private boolean cooldownTick()
+	private boolean cooledDown()
 	{
 		if( this.actionTimer > 0 )
 		{
@@ -328,7 +373,7 @@ public abstract class AIAENetworkGolem
 	public final boolean shouldExecute()
 	{
 		// Check the network timer
-		if( this.cooldownTick() )
+		if( this.cooledDown() )
 		{
 			this.restartNetworkCooldown();
 

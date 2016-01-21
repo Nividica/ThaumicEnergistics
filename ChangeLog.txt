@@ -1,4 +1,16 @@
-﻿01/18/2016 0.10.0.0 - Beta
+﻿01/21/2016 0.10.0.0 - Beta
+  Fixed multiple issues with the Arcane assembler: GUI desync, invalid network state.
+  Golem backpack pearl now responds to out-of-range and if golem is disabled(Fetter).
+  Fixed issue where the last pattern on a knowledge core could not be erased.
+
+01/19/2016 0.10.0.0 - Beta
+  Cleaned up some ASM transformation code.
+  Renamed model and texture of golem Addon to golem Backpack
+  Fixed bug where storage bus did not work when placed after jar was placed.
+  Added wifi backpack for Essentia core.
+  Fixed GUI based dupe bug.
+
+01/18/2016 0.10.0.0 - Beta
   Fixed bug where DPE would eat item stacks.
   Refactored golem network code.
   Added wifi backpack for Gather, Decanting, and Fill cores.

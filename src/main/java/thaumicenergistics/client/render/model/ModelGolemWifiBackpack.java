@@ -13,10 +13,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelGolemWifiAddon
+public class ModelGolemWifiBackpack
 	extends ModelBase
 {
-	public static ResourceLocation TEXTURE = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/models/golem.wifi.addon.png" );
+	public static ResourceLocation TEXTURE = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/models/golem.wifi.backpack.png" );
 
 	/**
 	 * Submodels
@@ -44,11 +44,6 @@ public class ModelGolemWifiAddon
 	private final float pearl_FaceDistance, pearl_2FD;
 
 	/**
-	 * Rotation of the pearls
-	 */
-	private float pearlRotation = 0.0f;
-
-	/**
 	 * True if the pearl display list is compiled
 	 */
 	private boolean isPearlCompiled = false;
@@ -58,7 +53,7 @@ public class ModelGolemWifiAddon
 	 */
 	private int pearlDispListID = -1;
 
-	public ModelGolemWifiAddon()
+	public ModelGolemWifiBackpack()
 	{
 		this.textureWidth = 16;
 		this.textureHeight = 16;
@@ -153,27 +148,16 @@ public class ModelGolemWifiAddon
 		tess.draw();
 	}
 
-	private void renderPearl( final float partialElapsedTick, final boolean inRange )
+	private void renderPearl( final float pearlRotation, final boolean inRange )
 	{
-		if( inRange )
+		if( !inRange )
 		{
-			// Apply Y rotation
-			if( !Minecraft.getMinecraft().isGamePaused() )
-			{
-				this.pearlRotation += ( partialElapsedTick * 2.0f );
-				if( this.pearlRotation >= 360.0f )
-				{
-					this.pearlRotation -= 360.0f;
-				}
-
-			}
-		}
-		else
-		{
-			// Set red
+			// Set red tint
 			GL11.glColor3f( 1.0f, 0.0f, 0.0f );
 		}
-		GL11.glRotatef( this.pearlRotation, 0.0f, 1.0f, 0.0f );
+
+		// Apply Y rotation
+		GL11.glRotatef( pearlRotation, 0.0f, 1.0f, 0.0f );
 
 		// Is the pearl compiled?
 		if( !this.isPearlCompiled )
@@ -201,13 +185,13 @@ public class ModelGolemWifiAddon
 		this.render( 0.03f, f5, true );
 	}
 
-	public void render( final float partialElapsedTick, final float f5, final boolean inRange )
+	public void render( final float pearlRotation, final float f5, final boolean inRange )
 	{
-		Minecraft.getMinecraft().renderEngine.bindTexture( ModelGolemWifiAddon.TEXTURE );
+		Minecraft.getMinecraft().renderEngine.bindTexture( ModelGolemWifiBackpack.TEXTURE );
 		this.PackBack.render( f5 );
 		this.PackFront.render( f5 );
 		this.Antenna.render( f5 );
-		this.renderPearl( partialElapsedTick, inRange );
+		this.renderPearl( pearlRotation, inRange );
 
 	}
 

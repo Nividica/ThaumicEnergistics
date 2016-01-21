@@ -133,6 +133,10 @@ public class HandlerKnowledgeCore
 		{
 			data.setTag( NBTKEY_PATTERNS, plist );
 		}
+		else
+		{
+			data.removeTag( NBTKEY_PATTERNS );
+		}
 	}
 
 	/**

@@ -88,17 +88,20 @@ public abstract class TheContainerBase
 	@Override
 	public void detectAndSendChanges()
 	{
+		// Call super
+		super.detectAndSendChanges();
+
 		// MP player?
 		if( this.playerMP != null )
 		{
 			if( this.detectAndSendChangesMP( this.playerMP ) )
 			{
 				this.playerMP.isChangingQuantityOnly = false;
+
+				// Call super
+				super.detectAndSendChanges();
 			}
 		}
-
-		// Call super
-		super.detectAndSendChanges();
 	}
 
 	/**

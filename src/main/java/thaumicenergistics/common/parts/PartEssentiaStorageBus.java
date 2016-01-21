@@ -373,7 +373,7 @@ public class PartEssentiaStorageBus
 		super.onNeighborChanged();
 
 		// Send grid update event on server side
-		if( EffectiveSide.isServerSide() )
+		if( EffectiveSide.isServerSide() && this.isActive() )
 		{
 			// Update the handler
 			if( this.handler.onNeighborChange() )

@@ -29,14 +29,15 @@ public class VisCraftingHelper
 	 * 
 	 * @param inventory
 	 * @param firstSlotIndex
+	 * @param slotCount
 	 * @param aspect
 	 * @return
 	 */
-	public float calculateArmorDiscount( final IInventory inventory, final int firstSlotIndex, final Aspect aspect )
+	public float calculateArmorDiscount( final IInventory inventory, final int firstSlotIndex, final int slotCount, final Aspect aspect )
 	{
 		float discount = 0.0F;
 
-		for( int index = 0; index < 4; index++ )
+		for( int index = 0; index < slotCount; index++ )
 		{
 			// Get the armor stack
 			ItemStack armor = inventory.getStackInSlot( firstSlotIndex + index );
@@ -63,13 +64,14 @@ public class VisCraftingHelper
 	 * 
 	 * @param inventory
 	 * @param firstSlotIndex
+	 * @param slotCount
 	 * @return
 	 */
-	public int calculateArmorWarp( final IInventory inventory, final int firstSlotIndex )
+	public int calculateArmorWarp( final IInventory inventory, final int firstSlotIndex, final int slotCount )
 	{
 		int warp = 0;
 
-		for( int index = 0; index < 4; index++ )
+		for( int index = 0; index < slotCount; index++ )
 		{
 			// Get the armor stack
 			ItemStack armor = inventory.getStackInSlot( firstSlotIndex + index );

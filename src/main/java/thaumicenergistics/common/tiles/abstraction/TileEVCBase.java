@@ -46,6 +46,11 @@ public abstract class TileEVCBase
 	public static final int MAX_ESSENTIA_STORED = 64;
 
 	/**
+	 * Maximum reciprocal
+	 */
+	public static final float MAX_ESSENTIA_STORED_RECIPROCAL = 1.0f / MAX_ESSENTIA_STORED;
+
+	/**
 	 * Stored Essentia
 	 */
 	protected IAspectStack storedEssentia = null;
@@ -236,50 +241,38 @@ public abstract class TileEVCBase
 	@Override
 	public int getSuctionAmount( final ForgeDirection side )
 	{
-		int suction = 0;
+		// Suction is based on how full the chamber is, as it fills up suction drops
 
-		// Is there anything stored?
-		if( this.storedEssentia != null )
+		// Get how much is stored
+		float stored = ( this.storedEssentia == null ? 0.0f : this.storedEssentia.getStackSize() );
+		if( stored == MAX_ESSENTIA_STORED )
 		{
-			// Not Full?
-			if( this.storedEssentia.getStackSize() < TileEVCBase.MAX_ESSENTIA_STORED )
-			{
-				// Full suction when stored but not full.
-				suction = 128;
-			}
-		}
-		else
-		{
-			// Less suction when nothing stored.
-			suction = 100;
+			return 0;
 		}
 
-		return suction;
+		// Calculate the ratio, minimum of 25%, and multiply against maximum suction
+		return (int)( 128 * ( 1.0f - ( ( stored * 0.75f ) * MAX_ESSENTIA_STORED_RECIPROCAL ) ) );
 	}
 
 	@Override
 	public Aspect getSuctionType( final ForgeDirection side )
 	{
-		// Default to Ignis
-		Aspect suction = Aspect.FIRE;
-
 		// Is there anything stored?
 		if( this.hasStoredEssentia() )
 		{
 			// Suction type must match what is stored
-			suction = this.storedEssentia.getAspect();
-		}
-		else
-		{
-			// Rotate into Potentia?
-			if( ( MinecraftServer.getServer().getTickCounter() % 200 ) > 100 )
-			{
-				// Set to Potentia
-				suction = Aspect.ENERGY;
-			}
+			return this.storedEssentia.getAspect();
 		}
 
-		return suction;
+		// Rotate into Potentia?
+		if( ( MinecraftServer.getServer().getTickCounter() % 200 ) > 100 )
+		{
+			// Set to Potentia
+			return Aspect.ENERGY;
+		}
+
+		// Default to Ignis
+		return Aspect.FIRE;
 	}
 
 	@Override

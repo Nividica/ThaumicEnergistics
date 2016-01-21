@@ -109,7 +109,7 @@ public class GolemHooks
 	/**
 	 * ID of the datawatcher field.
 	 */
-	private static final int DATAWATCHER_ID = 4;
+	private static int DATAWATCHER_ID = -1;
 
 	/**
 	 * Default sync values.
@@ -285,8 +285,36 @@ public class GolemHooks
 		// Get the datawatcher
 		DataWatcher watcher = golem.getDataWatcher();
 
-		// Add datawatcher field.
-		watcher.addObject( DATAWATCHER_ID, localRegistry.mappingsToString() );
+		// Has the ID been set?
+		if( DATAWATCHER_ID == -1 )
+		{
+			// Set the ID to the next available
+			for( int i = 4; i < 31; ++i )
+			{
+				try
+				{
+					// Add the object
+					watcher.addObject( DATAWATCHER_ID, localRegistry.mappingsToString() );
+
+					// Object was added
+					DATAWATCHER_ID = i;
+					return;
+				}
+				catch( IllegalArgumentException e )
+				{
+				}
+			}
+
+			// If execution makes it this far, there were no available ID's :(
+			DATAWATCHER_ID = -2;
+			ThELog.warning( "Golem Hook API is unable to register channel for sync data." );
+			return;
+		}
+		else if( DATAWATCHER_ID > 0 )
+		{
+			// Add datawatcher field.
+			watcher.addObject( DATAWATCHER_ID, localRegistry.mappingsToString() );
+		}
 	}
 
 	/**
@@ -312,8 +340,16 @@ public class GolemHooks
 			// Update data watcher
 			if( syncRegistry.hasChanged() )
 			{
-				golem.getDataWatcher().updateObject( DATAWATCHER_ID, syncRegistry.mappingsToString() );
+				if( DATAWATCHER_ID > 0 )
+				{
+					golem.getDataWatcher().updateObject( DATAWATCHER_ID, syncRegistry.mappingsToString() );
+				}
 			}
+			return;
+		}
+
+		if( DATAWATCHER_ID < 0 )
+		{
 			return;
 		}
 
@@ -321,7 +357,7 @@ public class GolemHooks
 		++syncRegistry.clientSyncTicks;
 
 		// Have 20 ticks passed? (Roughly a full second if the game is not lagging)
-		if( syncRegistry.clientSyncTicks >= 20.0f )
+		if( syncRegistry.clientSyncTicks >= 30.0f )
 		{
 			// Reset the counter
 			syncRegistry.clientSyncTicks = 0.0f;
@@ -478,6 +514,7 @@ public class GolemHooks
 				logCaughtException( "renderGolem", handler, e );
 			}
 		}
+
 	}
 
 	/**

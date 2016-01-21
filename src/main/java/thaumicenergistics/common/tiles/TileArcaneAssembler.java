@@ -60,7 +60,6 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.InvOperation;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -69,6 +68,53 @@ public class TileArcaneAssembler
 	extends AENetworkInvTile
 	implements ICraftingProvider, IWailaSource
 {
+	private class AAInv
+		extends TheInternalInventory
+	{
+
+		public AAInv()
+		{
+			super( "ArcaneAssemblerInventory", TileArcaneAssembler.SLOT_COUNT, 64 );
+		}
+
+		@Override
+		public boolean isItemValidForSlot( final int slotIndex, final ItemStack itemStack )
+		{
+			if( slotIndex == TileArcaneAssembler.KCORE_SLOT_INDEX )
+			{
+				return ( itemStack == null ) || ( itemStack.getItem() instanceof ItemKnowledgeCore );
+			}
+
+			return true;
+		}
+
+		@Override
+		public void markDirty()
+		{
+			TileArcaneAssembler.this.markDirty();
+		}
+
+		@Override
+		public void setInventorySlotContents( final int slotIndex, final ItemStack itemStack )
+		{
+			// Call super
+			super.setInventorySlotContents( slotIndex, itemStack );
+
+			// Core changed?
+			if( slotIndex == TileArcaneAssembler.KCORE_SLOT_INDEX )
+			{
+				TileArcaneAssembler.this.flag_CoreChanged = true;
+			}
+
+			// Armor changed?
+			if( slotIndex >= DISCOUNT_ARMOR_INDEX )
+			{
+				TileArcaneAssembler.this.flag_RecalcVis = true;
+			}
+		}
+
+	}
+
 	/**
 	 * NBT Keys
 	 */
@@ -118,9 +164,10 @@ public class TileArcaneAssembler
 	public static double IDLE_POWER = 0.0D, ACTIVE_POWER = 1.5D, WARP_POWER_PERCENT = 0.15;
 
 	/**
-	 * Holds the patterns and the kcore
+	 * Holds the patterns and the kcore.
+	 * Saved and loaded by AEInvTile due to getInternalInventory() call.
 	 */
-	private final TheInternalInventory internalInventory;
+	private final AAInv internalInventory;
 
 	/**
 	 * Holds the upgrades
@@ -140,7 +187,7 @@ public class TileArcaneAssembler
 	/**
 	 * Handles interaction with the knowledge core.
 	 */
-	private HandlerKnowledgeCore kCoreHandler;
+	private final HandlerKnowledgeCore kCoreHandler;
 
 	/**
 	 * If true the network should be informed of changes to available patterns.
@@ -193,9 +240,14 @@ public class TileArcaneAssembler
 	private boolean delayedUpdate = false;
 
 	/**
-	 * Set true when the tile is ready.
+	 * True when the core has changed.
 	 */
-	private boolean isReady = false;
+	boolean flag_CoreChanged = false;
+
+	/**
+	 * True if the vis discount needs to be re-calculated.
+	 */
+	boolean flag_RecalcVis = false;
 
 	/**
 	 * Creates the assembler and it's inventory.
@@ -203,7 +255,7 @@ public class TileArcaneAssembler
 	public TileArcaneAssembler()
 	{
 		// Create the internal inventory
-		this.internalInventory = new TheInternalInventory( "ArcaneAssemblerInventory", TileArcaneAssembler.SLOT_COUNT, 64 );
+		this.internalInventory = new AAInv();
 
 		// Create the upgrade inventory
 		this.upgradeInventory = new BlockUpgradeInventory( ThEApi.instance().blocks().ArcaneAssembler.getBlock(), this,
@@ -217,6 +269,15 @@ public class TileArcaneAssembler
 		{
 			this.visDiscount.put( primal, VisCraftingHelper.INSTANCE.getScepterVisModifier( primal ) );
 		}
+
+		// Create the handler
+		this.kCoreHandler = new HandlerKnowledgeCore();
+
+		// Set idle power usage
+		this.getProxy().setIdlePowerUsage( TileArcaneAssembler.IDLE_POWER );
+
+		// Require a channel
+		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
 	/**
@@ -248,6 +309,7 @@ public class TileArcaneAssembler
 	 */
 	private void calculateVisDiscounts()
 	{
+		this.flag_RecalcVis = false;
 		float discount;
 
 		for( Aspect primal : TileArcaneAssembler.PRIMALS )
@@ -256,7 +318,8 @@ public class TileArcaneAssembler
 			discount = VisCraftingHelper.INSTANCE.getScepterVisModifier( primal );
 
 			// Factor in the discount armor
-			discount -= VisCraftingHelper.INSTANCE.calculateArmorDiscount( this.internalInventory, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX, primal );
+			discount -= VisCraftingHelper.INSTANCE.calculateArmorDiscount( this.internalInventory, DISCOUNT_ARMOR_INDEX, 4,
+				primal );
 
 			this.visDiscount.put( primal, discount );
 		}
@@ -265,8 +328,8 @@ public class TileArcaneAssembler
 		this.warpPowerMultiplier = 1.0F;
 
 		// Calculate warp power multiplier
-		this.warpPowerMultiplier += VisCraftingHelper.INSTANCE.calculateArmorWarp( this.internalInventory, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX ) *
-						TileArcaneAssembler.WARP_POWER_PERCENT;
+		this.warpPowerMultiplier += VisCraftingHelper.INSTANCE.calculateArmorWarp( this.internalInventory, DISCOUNT_ARMOR_INDEX, 4 ) *
+						WARP_POWER_PERCENT;
 	}
 
 	private void craftingTick()
@@ -478,27 +541,45 @@ public class TileArcaneAssembler
 	}
 
 	/**
-	 * Configures the Assembler.
-	 */
-	private void setupAssemblerTile()
-	{
-		// Ignored on client side
-		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
-		{
-			// Set idle power usage
-			this.getProxy().setIdlePowerUsage( TileArcaneAssembler.IDLE_POWER );
-
-			// Set that we require a channel
-			this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
-		}
-	}
-
-	/**
 	 * The number of ticks required to craft an item.
 	 */
 	private int ticksPerCraft()
 	{
 		return TileArcaneAssembler.BASE_TICKS_PER_CRAFT - ( 4 * this.upgradeCount );
+	}
+
+	/**
+	 * Updates the handler to the current core.
+	 */
+	private void updateCoreHandler()
+	{
+		this.flag_CoreChanged = false;
+		// Is there a kcore?
+		ItemStack kCore = this.internalInventory.getStackInSlot( KCORE_SLOT_INDEX );
+		if( kCore != null )
+		{
+			// Is it a new core?
+			if( !TileArcaneAssembler.this.kCoreHandler.isHandlingCore( kCore ) )
+			{
+				// Open the core
+				TileArcaneAssembler.this.kCoreHandler.open( kCore );
+
+				// Update the pattern slots
+				TileArcaneAssembler.this.updatePatternSlots();
+			}
+		}
+		else
+		{
+			// Was there a core?
+			if( TileArcaneAssembler.this.kCoreHandler.hasCore() )
+			{
+				// No more core
+				TileArcaneAssembler.this.kCoreHandler.close();
+
+				// Update the pattern slots
+				TileArcaneAssembler.this.updatePatternSlots();
+			}
+		}
 	}
 
 	/**
@@ -529,6 +610,8 @@ public class TileArcaneAssembler
 				this.internalInventory.setInventorySlotContents( index, null );
 			}
 		}
+
+		this.stalePatterns = true;
 	}
 
 	@Override
@@ -763,63 +846,6 @@ public class TileArcaneAssembler
 		}
 	}
 
-	@Override
-	public void markDirty()
-	{
-		// Call super
-		super.markDirty();
-
-		// Is the tile ready?
-		if( !this.isReady )
-		{
-			// Still in setup phase.
-			return;
-		}
-
-		// Is there a kcore?
-		ItemStack kCore = this.internalInventory.getStackInSlot( TileArcaneAssembler.KCORE_SLOT_INDEX );
-		if( kCore != null )
-		{
-			// Is it a new core?
-			if( ( this.kCoreHandler == null ) || ( !this.kCoreHandler.isHandlingCore( kCore ) ) )
-			{
-				// Close the old handler
-				if( this.kCoreHandler != null )
-				{
-					this.kCoreHandler.close();
-				}
-
-				// Create a new handler
-				this.kCoreHandler = new HandlerKnowledgeCore( kCore );
-
-				// Update the pattern slots
-				this.updatePatternSlots();
-
-				// Update the network
-				this.stalePatterns = true;
-			}
-		}
-		else
-		{
-			// Was there a core?
-			if( this.kCoreHandler != null )
-			{
-				// No more core
-				this.kCoreHandler.close();
-				this.kCoreHandler = null;
-
-				// Update the pattern slots
-				this.updatePatternSlots();
-
-				// Update the network
-				this.stalePatterns = true;
-			}
-		}
-
-		//Recalculate the vis discount.
-		this.calculateVisDiscounts();
-	}
-
 	/**
 	 * Called when the tile entity is about to be destroyed by a block break.
 	 */
@@ -913,24 +939,18 @@ public class TileArcaneAssembler
 		// Call super
 		super.onReady();
 
+		// Setup the kcore handler
+		this.updateCoreHandler();
+
 		// Is there a knowledge core?
 		if( this.internalInventory.getHasStack( KCORE_SLOT_INDEX ) )
 		{
 			// Is there a pattern?
 			if( this.currentPattern != null )
 			{
-				// Set the core
+				// Set the patterns core
 				this.currentPattern.setKnowledgeCore( this.internalInventory.getStackInSlot( KCORE_SLOT_INDEX ) );
 			}
-
-			// Create the handler
-			this.kCoreHandler = new HandlerKnowledgeCore( this.internalInventory.getStackInSlot( KCORE_SLOT_INDEX ) );
-
-			// Update the pattern slots
-			this.updatePatternSlots();
-
-			// Update the network
-			this.stalePatterns = true;
 		}
 		else if( this.currentPattern != null )
 		{
@@ -939,14 +959,8 @@ public class TileArcaneAssembler
 			this.currentPattern = null;
 		}
 
-		// Setup the assembler
-		this.setupAssemblerTile();
-
 		// Recalculate the vis discounts
 		this.calculateVisDiscounts();
-
-		// Set ready
-		this.isReady = true;
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
@@ -1014,7 +1028,12 @@ public class TileArcaneAssembler
 	@TileEvent(TileEventType.TICK)
 	public void onTick()
 	{
-		// Ignored on client side.
+		// Vis discounts need to be updated?
+		if( this.flag_RecalcVis )
+		{
+			this.calculateVisDiscounts();
+		}
+
 		if( EffectiveSide.isClientSide() )
 		{
 			if( ( this.isCrafting ) && ( this.craftTickCounter < TileArcaneAssembler.BASE_TICKS_PER_CRAFT ) )
@@ -1022,7 +1041,14 @@ public class TileArcaneAssembler
 				this.craftTickCounter++ ;
 			}
 
+			// Ignore the rest on client side.
 			return;
+		}
+
+		// Core changed?
+		if( this.flag_CoreChanged )
+		{
+			this.updateCoreHandler();
 		}
 
 		// Ensure the assembler is active

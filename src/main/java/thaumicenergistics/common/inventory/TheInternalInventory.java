@@ -68,19 +68,6 @@ public class TheInternalInventory
 		// Calculate the amount to get
 		int decAmount = Math.min( amount, slotStack.stackSize );
 
-		// Calculate the remaining amount
-		int remAmount = slotStack.stackSize - decAmount;
-
-		// Is there anything remaining in the slot?
-		if( remAmount > 0 )
-		{
-			this.slots[slotIndex].stackSize = remAmount;
-		}
-		else
-		{
-			this.slots[slotIndex] = null;
-		}
-
 		// Was any amount gotten?
 		if( decAmount > 0 )
 		{
@@ -88,7 +75,20 @@ public class TheInternalInventory
 			resultStack.stackSize = decAmount;
 		}
 
-		this.markDirty();
+		// Calculate the remaining amount
+		slotStack.stackSize = slotStack.stackSize - decAmount;
+
+		// Is there anything remaining in the slot?
+		if( slotStack.stackSize > 0 )
+		{
+			// Re-set
+			this.setInventorySlotContents( slotIndex, slotStack );
+		}
+		else
+		{
+			// Clear
+			this.setInventorySlotContents( slotIndex, null );
+		}
 
 		return resultStack;
 	}

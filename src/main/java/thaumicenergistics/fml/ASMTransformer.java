@@ -50,7 +50,7 @@ public class ASMTransformer
 	private static final String FIELDTYPE_EntityGolemBase_hookHandlers = "java/util/HashMap";
 
 	/**
-	 * Adds a reference to a golems dataWatcher field to the stack.
+	 * Adds a reference to a golems hookHandlers field to the stack.
 	 * 
 	 * @param instructionList
 	 * @param golemVar
@@ -297,6 +297,7 @@ public class ASMTransformer
 			if( method.name.equals( "onLeftClickEntity" ) )
 			{
 				this.transformMethod_ItemGolemBell_OnLeftClickEntity( method );
+				break; // Stop searching.
 			}
 		}
 
@@ -322,6 +323,7 @@ public class ASMTransformer
 			if( method.name.equals( "spawnCreature" ) )
 			{
 				this.transformMethod_ItemGolemPlacer_SpawnCreature( method );
+				break; // Stop searching.
 			}
 		}
 
@@ -340,25 +342,16 @@ public class ASMTransformer
 		ClassReader classReader = new ClassReader( classBytes );
 		classReader.accept( classNode, 0 );
 
-		boolean isObf = false;
-		MethodNode render = null;
-
 		// Transform methods
 		for( MethodNode method : classNode.methods )
 		{
-			if( method.name.equals( "func_76986_a" ) )
+			if( method.name.equals( "render" ) )
 			{
-				isObf = true;
-			}
-			// Render
-			else if( method.name.equals( "render" ) )
-			{
-				render = method;
+				// Render
+				this.transformMethod_RenderGolemBase_Render( method );
+				break; // Stop searching.
 			}
 		}
-
-		// Render
-		this.transformMethod_RenderGolemBase_Render( render, isObf );
 
 		// Create the writer
 		ClassWriter writer = new ClassWriter( ClassWriter.COMPUTE_MAXS );
@@ -452,7 +445,7 @@ public class ASMTransformer
 	private void transformMethod_GolemBase_ReadEntityFromNBT( final MethodNode method )
 	{
 		// Locate the super call
-		AbstractInsnNode insertionPoint = this.findFirstOpCode( method.instructions, Opcodes.INVOKESTATIC );
+		AbstractInsnNode insertionPoint = this.findFirstOpCode( method.instructions, Opcodes.INVOKESPECIAL );
 
 		// Insert the hook
 		// GolemHooks.hook_ReadEntityFromNBT( this, this.hookHandlers, nbt);
@@ -599,7 +592,7 @@ public class ASMTransformer
 
 	}
 
-	private void transformMethod_RenderGolemBase_Render( final MethodNode method, final boolean isObf )
+	private void transformMethod_RenderGolemBase_Render( final MethodNode method )
 	{
 		// Find the return
 		AbstractInsnNode insertionPoint = this.findLastOpCode( method.instructions, Opcodes.RETURN );

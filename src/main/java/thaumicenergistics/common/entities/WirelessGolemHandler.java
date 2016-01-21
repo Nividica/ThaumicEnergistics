@@ -1,5 +1,6 @@
 package thaumicenergistics.common.entities;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -7,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 import thaumcraft.common.entities.golems.EntityGolemBase;
 import thaumicenergistics.api.entities.IGolemHookHandler;
 import thaumicenergistics.api.entities.IGolemHookSyncRegistry;
-import thaumicenergistics.client.render.model.ModelGolemWifiAddon;
+import thaumicenergistics.client.render.model.ModelGolemWifiBackpack;
 import thaumicenergistics.common.integration.tc.GolemCoreType;
 import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
@@ -21,6 +22,7 @@ public class WirelessGolemHandler
 	public static class WirelessClientData
 	{
 		public boolean isInRange = false;
+		public float pearlRotation = 0.0f;
 
 		public WirelessClientData( final boolean inRange )
 		{
@@ -54,7 +56,7 @@ public class WirelessGolemHandler
 					SYNCFLAG_NO_WIFI = Character.valueOf( 'n' );
 
 	@SideOnly(Side.CLIENT)
-	private ModelGolemWifiAddon addonModel;
+	private ModelGolemWifiBackpack addonModel;
 
 	/**
 	 * ID of the wifi sync field.
@@ -101,7 +103,7 @@ public class WirelessGolemHandler
 	@SideOnly(Side.CLIENT)
 	private void setupModel()
 	{
-		this.addonModel = new ModelGolemWifiAddon();
+		this.addonModel = new ModelGolemWifiBackpack();
 	}
 
 	@Override
@@ -139,17 +141,6 @@ public class WirelessGolemHandler
 		// Check for backpack
 		boolean isHoldingBackpack = ( ( heldItem != null ) && ( heldItem.getItem() == this.backpackItem ) );
 
-		// Client side?
-		if( side == Side.CLIENT )
-		{
-			if( isHoldingBackpack )
-			{
-				//Swing the item
-				player.swingItem();
-			}
-			return false;
-		}
-
 		// Does the golem already have a backpack on?
 		if( handlerData != null )
 		{
@@ -168,8 +159,7 @@ public class WirelessGolemHandler
 		// Unsupported cores
 		case Butcher:
 		case Empty:
-		case Essentia: // TODO, complex no doubt
-		case Fish: // TODO?
+		case Fish:
 		case Guard:
 		case Harvest:
 		case Lumber:
@@ -182,8 +172,22 @@ public class WirelessGolemHandler
 		case Gather:
 		case Fill:
 		case Liquid:
-			return isHoldingBackpack;
+		case Essentia:
+			break;
 		}
+
+		// Client side?
+		if( side == Side.CLIENT )
+		{
+			if( isHoldingBackpack )
+			{
+				//Swing the item
+				player.swingItem();
+			}
+			return false;
+		}
+
+		return isHoldingBackpack;
 
 	}
 
@@ -197,6 +201,9 @@ public class WirelessGolemHandler
 		String encKey = this.backpackItem.getEncryptionKey( heldItem );
 		if( encKey != null )
 		{
+			// Play sound
+			golem.worldObj.playSoundAtEntity( golem, "thaumcraft:upgrade", 0.5F, 1.0F );
+
 			// Take the item
 			player.inventory.setInventorySlotContents( player.inventory.currentItem, null );
 
@@ -254,6 +261,7 @@ public class WirelessGolemHandler
 		{
 			return;
 		}
+		WirelessClientData wcd = (WirelessClientData)clientHandlerData;
 
 		if( golem.hurtTime > 0 )
 		{
@@ -271,15 +279,33 @@ public class WirelessGolemHandler
 			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		}
 
+		// Is the golem in range and active?
+		boolean golemActive = wcd.isInRange && !golem.inactive;
+
+		// Update the rotation of the pearl
+		if( golemActive && !Minecraft.getMinecraft().isGamePaused() )
+		{
+			wcd.pearlRotation += partialElaspsedTick * 2.0f;
+			if( wcd.pearlRotation >= 360.0f )
+			{
+				wcd.pearlRotation -= 360.0f;
+			}
+
+		}
+
 		// Push the matrix
 		GL11.glPushMatrix();
 
 		// Translate to the golem
 		GL11.glTranslatef( (float)x, (float)y + 0.63f, (float)z );
 
-		// Rotate with the golem
+		// Rotate to face away from the golem
 		float golemYaw = 270.0f;
+
+		// Interpolate the golems rotation
 		golemYaw -= ( ( golem.renderYawOffset * partialElaspsedTick ) + ( golem.prevRenderYawOffset * ( 1.0f - partialElaspsedTick ) ) );
+
+		// Rotate with the golem
 		GL11.glRotatef( golemYaw, 0.0f, 1.0f, 0.0f );
 
 		// Translate just behind the golem
@@ -289,7 +315,7 @@ public class WirelessGolemHandler
 		GL11.glScalef( 0.8f, 0.8f, 0.8f );
 
 		// Render
-		this.addonModel.render( partialElaspsedTick, 0.0625f, ( (WirelessClientData)clientHandlerData ).isInRange );
+		this.addonModel.render( wcd.pearlRotation, 0.0625f, golemActive );
 
 		// Pop the matrix
 		GL11.glPopMatrix();
@@ -329,6 +355,11 @@ public class WirelessGolemHandler
 					// Add liquid AI script
 					golem.tasks.addTask( 2, new AIGolemWifiLiquid( golem, wsd ) );
 					break;
+
+				case Essentia:
+					// Add essentia AI script
+					golem.tasks.addTask( 2, new AIGolemWifiEssentia( golem, wsd ) );
+					break;
 				default:
 					break;
 				}
@@ -349,7 +380,6 @@ public class WirelessGolemHandler
 	@Override
 	public Object spawnGolemFromItemStack( final EntityGolemBase golem, final ItemStack itemGolemPlacer, final Side side )
 	{
-		golem.advanced = true;
 		return null;
 	}
 
