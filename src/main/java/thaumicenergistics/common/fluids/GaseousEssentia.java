@@ -115,8 +115,6 @@ public class GaseousEssentia
 	 */
 	public static void registerGases()
 	{
-		long startTime = ThELog.beginSection( "Essentia Gas Creation" );
-
 		// Create a gas for each essentia type
 		for( Entry<String, Aspect> aspectType : Aspect.aspects.entrySet() )
 		{
@@ -126,8 +124,6 @@ public class GaseousEssentia
 			// Create and register
 			GaseousEssentia.create( aspect );
 		}
-
-		ThELog.endSection( "Essentia Gas Creation", startTime );
 
 	}
 

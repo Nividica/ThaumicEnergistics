@@ -1,4 +1,10 @@
-﻿01/21/2016 0.10.0.0 - Beta
+﻿01/22/2016 1.0.0.0 - Beta
+  Bumped version to 1.0.0.0
+  Fixes #213: Added backpack lore and recipe.
+  Added backpack config option.
+  Updated mod info file.
+
+01/21/2016 0.10.0.0 - Beta
   Fixed multiple issues with the Arcane assembler: GUI desync, invalid network state.
   Golem backpack pearl now responds to out-of-range and if golem is disabled(Fetter).
   Fixed issue where the last pattern on a knowledge core could not be erased.

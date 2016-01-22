@@ -114,6 +114,11 @@ public class FeatureRegistry
 	public final FeatureThaumcraftFacades featureTCFacades;
 
 	/**
+	 * Golem wifi backpack.
+	 */
+	public final FeatureGolemBackpack featureGolemWifiBackpack;
+
+	/**
 	 * Private constructor
 	 */
 	private FeatureRegistry()
@@ -168,6 +173,9 @@ public class FeatureRegistry
 
 		// Build TC facades
 		this.featuresList.add( this.featureTCFacades = new FeatureThaumcraftFacades() );
+
+		// Build golem wifi backpack
+		this.featuresList.add( this.featureGolemWifiBackpack = new FeatureGolemBackpack() );
 	}
 
 	/**

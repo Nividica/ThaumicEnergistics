@@ -27,7 +27,9 @@ class ConfigurationHandler
 					DFT_CRAFT_ESSENTIA_CELLS = true,
 					DFT_CRAFT_ESSENTIA_PROVIDER = true,
 					DFT_CRAFT_ESSENTIA_VIBRATION_CHAMBER = true,
+					DFT_CRAFT_GOLEM_BACKPACK = true,
 					DFT_CRAFT_INFUSION_PROVIDER = true,
+					DFT_CRAFT_IO_BUSES = true,
 					DFT_CRAFT_VIS_RELAY_INTERFACE = true,
 					DFT_CRAFT_WIRELESS_ESSENTIA_TERM = true,
 					DFT_DISABLE_GEARBOX = false,
@@ -47,14 +49,15 @@ class ConfigurationHandler
 	 */
 	private int conversionMultiplier = (int)Math.pow( 2, DFT_CONVERSION_EXPONENT );
 
-	private boolean
-					craft_Arcane_Assembler = DFT_CRAFT_ARCANE_ASSEMBLER,
+	private boolean craft_Arcane_Assembler = DFT_CRAFT_ARCANE_ASSEMBLER,
 					craft_Arcane_Crafting_Term = DFT_CRAFT_ARCANE_CRAFTING_TERM,
 					craft_Distillation_Pattern_Encoder = DFT_CRAFT_DISTILLATION_PATTERN_ENCODER,
 					craft_Essentia_Cells = DFT_CRAFT_ESSENTIA_CELLS,
 					craft_Essentia_Provider = DFT_CRAFT_ESSENTIA_PROVIDER,
 					craft_Essentia_Vibration_Chamber = DFT_CRAFT_ESSENTIA_VIBRATION_CHAMBER,
+					craft_GolemBackpack = DFT_CRAFT_GOLEM_BACKPACK,
 					craft_Infusion_Provider = DFT_CRAFT_INFUSION_PROVIDER,
+					craft_IO_Buses = DFT_CRAFT_IO_BUSES,
 					craft_Vis_Relay_Interface = DFT_CRAFT_VIS_RELAY_INTERFACE,
 					craft_Wireless_Essentia_Term = DFT_CRAFT_WIRELESS_ESSENTIA_TERM,
 					disable_Gearbox = DFT_DISABLE_GEARBOX,
@@ -132,10 +135,20 @@ class ConfigurationHandler
 			CATEGORY_CRAFTING, DFT_CRAFT_ESSENTIA_VIBRATION_CHAMBER,
 			"Controlls if the Essentia Vibration Chamber can be crafted." );
 
+		this.craft_GolemBackpack = this.configSettings.getBoolean(
+			"Golem Wifi Backpack",
+			CATEGORY_CRAFTING, DFT_CRAFT_GOLEM_BACKPACK,
+			"Controls if the Golem Wifi Backpack can be crafted." );
+
 		this.craft_Infusion_Provider = this.configSettings.getBoolean(
 			"Infusion Provider",
 			CATEGORY_CRAFTING, DFT_CRAFT_INFUSION_PROVIDER,
 			"Controls if the Infusion Provider can be crafted." );
+
+		this.craft_IO_Buses = this.configSettings.getBoolean(
+			"IO Buses",
+			CATEGORY_CRAFTING, DFT_CRAFT_IO_BUSES,
+			"Controls if the import and export buses can be crafted." );
 
 		this.craft_Vis_Relay_Interface = this.configSettings.getBoolean(
 			"Vis Relay Interface",
@@ -155,7 +168,7 @@ class ConfigurationHandler
 		this.enable_Wrench_Focus = this.configSettings.getBoolean(
 			"Wrench Focus",
 			CATEGORY_CRAFTING, DFT_ENABLE_WRENCH_FOCUS,
-			"Controlls if the Wrench Focus is enabled and craftable." );
+			"Controls if the Wrench Focus is enabled and craftable." );
 
 		this.force_TC_Facades = this.configSettings.getBoolean(
 			"Force TC Facades",
@@ -231,9 +244,21 @@ class ConfigurationHandler
 	}
 
 	@Override
+	public boolean craftGolemWifiBackpack()
+	{
+		return this.craft_GolemBackpack;
+	}
+
+	@Override
 	public boolean craftInfusionProvider()
 	{
 		return this.craft_Infusion_Provider;
+	}
+
+	@Override
+	public boolean craftIOBuses()
+	{
+		return this.craft_IO_Buses;
 	}
 
 	@Override

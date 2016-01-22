@@ -18,7 +18,7 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
  * <li>Adds hook to method <em>writeEntityNBT</em></li>
  * <li>Adds hook to method <em>readEntityFromNBT</em></li>
  * <li>Adds hook to method <em>func_70088_a | entityInit</em></li>
- * <li>Adds hook to method <em>func_70030_z | onEntityUpdate<em></li>
+ * <li>Adds hook to method <em>func_70030_z | onEntityUpdate</em></li>
  * </ul>
  * Thaumcraft class <em>ItemGolemBell</em>
  * <ul>
@@ -27,7 +27,6 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
  * 
  * Thaumcraft class <em>ItemGolemPlacer</em>
  * <ul>
- * <li>TODO: Adds hook to method <em>func_77624_a | addInformation</em></li>
  * <li>Adds hook to method <em>spawnCreature</em></li>
  * </ul>
  * 
@@ -631,50 +630,65 @@ public class ASMTransformer
 	@Override
 	public byte[] transform( final String name, final String transformedName, final byte[] basicClass )
 	{
-		if( transformedName.equals( "thaumcraft.common.entities.golems.EntityGolemBase" ) )
+		// Thaumcraft class?
+		if( transformedName.startsWith( "thaumcraft" ) )
 		{
-			try
+			if( transformedName.equals( "thaumcraft.common.entities.golems.EntityGolemBase" ) )
 			{
-				return this.transformClass_GolemBase( basicClass );
-			}
-			catch( Exception e )
-			{
-				this.log( "Unable to modify golem base class." );
-			}
-		}
-		else if( transformedName.equals( "thaumcraft.common.entities.golems.ItemGolemBell" ) )
-		{
-			try
-			{
-				return this.transformClass_ItemGolemBell( basicClass );
-			}
-			catch( Exception e )
-			{
-				this.log( "Unable to modify item golem bell class." );
-			}
-		}
-		else if( transformedName.equals( "thaumcraft.common.entities.golems.ItemGolemPlacer" ) )
-		{
-			try
-			{
-				return this.transformClass_ItemGolemPlacer( basicClass );
-			}
-			catch( Exception e )
-			{
-				this.log( "Unable to modify item golem placer class." );
-			}
-		}
-		else if( transformedName.equals( "thaumcraft.client.renderers.entity.RenderGolemBase" ) )
-		{
-			try
-			{
-				return this.transformClass_RenderGolemBase( basicClass );
-			}
-			catch( Exception e )
-			{
-				this.log( "Unable to modify render golem class." );
+				try
+				{
+					this.log( "Transforming Class (thaumcraft/common/entities/golems/EntityGolemBase)" );
+					return this.transformClass_GolemBase( basicClass );
+				}
+				catch( Exception e )
+				{
+					this.log( "Unable to transform (thaumcraft/common/entities/golems/EntityGolemBase)" );
+					ThECore.golemHooksTransformFailed = true;
+				}
 			}
 
+			else if( transformedName.equals( "thaumcraft.common.entities.golems.ItemGolemBell" ) )
+			{
+				try
+				{
+					this.log( "Transforming Class (thaumcraft/common/entities/golems/ItemGolemBell)" );
+					return this.transformClass_ItemGolemBell( basicClass );
+				}
+				catch( Exception e )
+				{
+					this.log( "Unable to transform (thaumcraft/common/entities/golems/ItemGolemBell)" );
+					ThECore.golemHooksTransformFailed = true;
+				}
+			}
+
+			else if( transformedName.equals( "thaumcraft.common.entities.golems.ItemGolemPlacer" ) )
+			{
+				try
+				{
+					this.log( "Transforming Class (thaumcraft/common/entities/golems/ItemGolemPlacer)" );
+					return this.transformClass_ItemGolemPlacer( basicClass );
+				}
+				catch( Exception e )
+				{
+					this.log( "Unable to transform (thaumcraft/common/entities/golems/ItemGolemPlacer)" );
+					ThECore.golemHooksTransformFailed = true;
+				}
+			}
+
+			else if( transformedName.equals( "thaumcraft.client.renderers.entity.RenderGolemBase" ) )
+			{
+				try
+				{
+					this.log( "Transforming Class (thaumcraft/client/renderers/entity/RenderGolemBase)" );
+					return this.transformClass_RenderGolemBase( basicClass );
+				}
+				catch( Exception e )
+				{
+					this.log( "Unable to transform (thaumcraft/client/renderers/entity/RenderGolemBase)" );
+					ThECore.golemHooksTransformFailed = true;
+				}
+
+			}
 		}
 
 		return basicClass;

@@ -11,6 +11,7 @@ import thaumicenergistics.api.entities.IGolemHookHandler;
 import thaumicenergistics.api.entities.IGolemHookSyncRegistry;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThELog;
+import thaumicenergistics.fml.ThECore;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -602,6 +603,12 @@ public class GolemHooks
 	 */
 	public static void registerHandler( final IGolemHookHandler handler )
 	{
+		// Ensure the required transforms are present.
+		if( ThECore.golemHooksTransformFailed )
+		{
+			return;
+		}
+
 		// Add the handler
 		registeredHandlers.add( handler );
 

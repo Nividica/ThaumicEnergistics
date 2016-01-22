@@ -52,6 +52,7 @@ public class CommonDependantItems
 	public ItemStack VisFilter;
 	public ItemStack QuickSilverDrop;
 	public ItemStack Thaumometer;
+	public ItemStack Nitor;
 
 	// AE Items =========================
 	public Object VibrantGlass;
@@ -74,6 +75,9 @@ public class CommonDependantItems
 	public ItemStack AnnihilationCore;
 	public ItemStack CertusWrench;
 	public ItemStack VibrationChamber;
+	public ItemStack MEInterfacePart;
+	public ItemStack FluixCrystal;
+	public ItemStack MECharger;
 
 	/**
 	 * Populates the common items
@@ -156,37 +160,44 @@ public class CommonDependantItems
 
 	private void populateAEItems()
 	{
-		// Get a reference to the AE blocks, materials, and parts
-		IBlocks aeBlocks = AEApi.instance().definitions().blocks();
+		// Mats
 		IMaterials aeMaterials = AEApi.instance().definitions().materials();
-		IParts aeParts = AEApi.instance().definitions().parts();
-
-		this.VibrantGlass = this.getItemOrAlt( aeBlocks.quartzVibrantGlass(), this.VanillaGlass );
 		this.EngineeringProcessor = this.getAEItem( aeMaterials.engProcessor() );
 		this.CalculationProcessor = this.getAEItem( aeMaterials.calcProcessor() );
 		this.LogicProcessor = this.getAEItem( aeMaterials.logicProcessor() );
-		this.MolecularAssembler = this.getAEItem( aeBlocks.molecularAssembler() );
 		this.CertusQuartz = this.getAEItem( aeMaterials.certusQuartzCrystal() );
 		this.ChargedCertusQuartz = this.getAEItem( aeMaterials.certusQuartzCrystalCharged() );
 		this.PureCertusQuartz = this.getAEItem( aeMaterials.purifiedCertusQuartzCrystal() );
-		this.QuartzGlass = this.getItemOrAlt( aeBlocks.quartzGlass(), this.VanillaGlass );
-		this.MECellWorkbench = this.getItemOrAlt( aeBlocks.cellWorkbench(), new ItemStack( Blocks.crafting_table ) );
-		this.METerminal = this.getAEItem( aeParts.terminal() );
-		this.MEP2P = this.getAEItem( aeParts.p2PTunnelME() );
-		this.MEInterface = this.getAEItem( aeBlocks.iface() );
 		this.WirelessReceiver = this.getAEItem( aeMaterials.wireless() );
-		this.DenseCell = (ItemStack)this.getItemOrAlt( aeBlocks.energyCellDense(), this.getAEItem( aeBlocks.energyCell() ) );
 		this.AnnihilationCore = this.getAEItem( aeMaterials.annihilationCore() );
 		this.FormationCore = this.getAEItem( aeMaterials.formationCore() );
-		this.CertusWrench = this.getAEItem( AEApi.instance().definitions().items().certusQuartzWrench() );
+		this.FluixCrystal = this.getAEItem( aeMaterials.fluixCrystal() );
+
+		// Blocks
+		IBlocks aeBlocks = AEApi.instance().definitions().blocks();
+		this.VibrantGlass = this.getItemOrAlt( aeBlocks.quartzVibrantGlass(), this.VanillaGlass );
+		this.MolecularAssembler = this.getAEItem( aeBlocks.molecularAssembler() );
+		this.QuartzGlass = this.getItemOrAlt( aeBlocks.quartzGlass(), this.VanillaGlass );
+		this.MECellWorkbench = this.getItemOrAlt( aeBlocks.cellWorkbench(), new ItemStack( Blocks.crafting_table ) );
+		this.MEInterface = this.getAEItem( aeBlocks.iface() );
+		this.DenseCell = (ItemStack)this.getItemOrAlt( aeBlocks.energyCellDense(), this.getAEItem( aeBlocks.energyCell() ) );
 		this.VibrationChamber = this.getAEItem( aeBlocks.vibrationChamber() );
+
+		// Parts
+		IParts aeParts = AEApi.instance().definitions().parts();
+		this.MECharger = this.getAEItem( aeBlocks.charger() );
+		this.MEInterfacePart = this.getAEItem( aeParts.iface() );
+		this.METerminal = this.getAEItem( aeParts.terminal() );
+		this.MEP2P = this.getAEItem( aeParts.p2PTunnelME() );
+
+		// Items
+		this.CertusWrench = this.getAEItem( AEApi.instance().definitions().items().certusQuartzWrench() );
 
 	}
 
 	private void populateTCItems()
 	{
-		this.ZombieBrain = new ItemStack( ConfigItems.itemZombieBrain );
-		this.Thaumonomicon = new ItemStack( ConfigItems.itemThaumonomicon );
+		// Shards
 		this.AirShard = new ItemStack( ConfigItems.itemShard, 1, 0 );
 		this.FireShard = new ItemStack( ConfigItems.itemShard, 1, 1 );
 		this.WaterShard = new ItemStack( ConfigItems.itemShard, 1, 2 );
@@ -194,16 +205,26 @@ public class CommonDependantItems
 		this.OrderShard = new ItemStack( ConfigItems.itemShard, 1, 4 );
 		this.EntropyShard = new ItemStack( ConfigItems.itemShard, 1, 5 );
 		this.BallanceShard = new ItemStack( ConfigItems.itemShard, 1, 6 );
-		this.EtheralEssence = new ItemStack( ConfigItems.itemWispEssence );
-		this.SalisMundus = new ItemStack( ConfigItems.itemResource, 1, 14 );
-		this.WardedGlass = this.getItemOrAlt( Config.wardedStone, new ItemStack( ConfigBlocks.blockCosmeticOpaque, 1, 2 ), this.VanillaGlass );
+
+		// Resources
+		this.Nitor = new ItemStack( ConfigItems.itemResource, 1, 1 );
 		this.ThaumiumIngot = new ItemStack( ConfigItems.itemResource, 1, 2 );
-		this.ArcaneWorkTable = new ItemStack( ConfigBlocks.blockTable, 1, 15 );
-		this.WardedJar = new ItemStack( ConfigBlocks.blockJar, 1, 0 );
-		this.FilterTube = new ItemStack( ConfigBlocks.blockTube, 1, 3 );
-		this.EssentiaMirror = (ItemStack)this.getItemOrAlt( Config.allowMirrors, new ItemStack( ConfigBlocks.blockMirror, 1, 6 ), this.WardedJar );
 		this.VisFilter = new ItemStack( ConfigItems.itemResource, 1, 8 );
-		this.QuickSilverDrop = new ItemStack( ConfigItems.itemNugget, 1, 5 );
+		this.SalisMundus = new ItemStack( ConfigItems.itemResource, 1, 14 );
+
+		// Blocks
+		this.WardedJar = new ItemStack( ConfigBlocks.blockJar, 1, 0 );
+		this.ArcaneWorkTable = new ItemStack( ConfigBlocks.blockTable, 1, 15 );
+		this.FilterTube = new ItemStack( ConfigBlocks.blockTube, 1, 3 );
+		this.WardedGlass = this.getItemOrAlt( Config.wardedStone, new ItemStack( ConfigBlocks.blockCosmeticOpaque, 1, 2 ), this.VanillaGlass );
+		this.EssentiaMirror = (ItemStack)this.getItemOrAlt( Config.allowMirrors, new ItemStack( ConfigBlocks.blockMirror, 1, 6 ), this.WardedJar );
+
+		// Items
 		this.Thaumometer = new ItemStack( ConfigItems.itemThaumometer );
+		this.Thaumonomicon = new ItemStack( ConfigItems.itemThaumonomicon );
+		this.EtheralEssence = new ItemStack( ConfigItems.itemWispEssence );
+		this.ZombieBrain = new ItemStack( ConfigItems.itemZombieBrain );
+		this.QuickSilverDrop = new ItemStack( ConfigItems.itemNugget, 1, 5 );
+
 	}
 }

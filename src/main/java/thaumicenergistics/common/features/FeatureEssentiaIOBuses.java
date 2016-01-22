@@ -28,7 +28,7 @@ public class FeatureEssentiaIOBuses
 	@Override
 	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
-		this.isImportExportEnabled = ( AEConfig.instance.isFeatureEnabled( AEFeature.ImportBus ) || AEConfig.instance
+		this.isImportExportEnabled = theConfig.craftIOBuses() && ( AEConfig.instance.isFeatureEnabled( AEFeature.ImportBus ) || AEConfig.instance
 						.isFeatureEnabled( AEFeature.ExportBus ) );
 
 		return true;

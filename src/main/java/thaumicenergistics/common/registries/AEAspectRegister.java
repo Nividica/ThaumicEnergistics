@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -978,10 +979,18 @@ public class AEAspectRegister
 		this.registerItem( aeMats.silicon(), aspects );
 
 		// Skystone
-		aspects = new AspectList();
-		aspects.add( Aspect.EARTH, 1 );
-		aspects.add( Aspect.DARKNESS, 1 );
-		this.registerItem( aeBlocks.skyStone(), aspects );
+		Item skyStone = aeBlocks.skyStone().maybeItem().orNull();
+		if( skyStone != null )
+		{
+			aspects = new AspectList();
+			aspects.add( Aspect.ELDRITCH, 2 );
+			aspects.add( Aspect.EARTH, 1 );
+			aspects.add( Aspect.DARKNESS, 1 );
+			this.registerItem( aeBlocks.skyStone(), aspects );
+			ThaumcraftApi.registerObjectTag( new ItemStack( skyStone, 1, 1 ), aspects );
+			ThaumcraftApi.registerObjectTag( new ItemStack( skyStone, 1, 2 ), aspects );
+			ThaumcraftApi.registerObjectTag( new ItemStack( skyStone, 1, 3 ), aspects );
+		}
 
 		// Matter ball
 		aspects = new AspectList();
@@ -989,6 +998,11 @@ public class AEAspectRegister
 		aspects.add( Aspect.EARTH, 4 );
 		aspects.add( Aspect.FLIGHT, 4 );
 		this.registerItem( aeMats.matterBall(), aspects );
+
+		// Facade
+		aspects = new AspectList();
+		aspects.add( Aspect.METAL, 1 );
+		this.registerItem( aeItems.facade(), aspects );
 
 		// Cables -----------------------------------------
 
@@ -1193,78 +1207,6 @@ public class AEAspectRegister
 	}
 
 	/**
-	 * Gives AppliedEnergistics blocks and items Thaumcraft aspects.
-	 */
-	public void registerAEAspects()
-	{
-		// Log
-		long sectionStartTime = ThELog.beginSection( "AE Scanables" );
-
-		// Get the normal recipes
-		this.NORMAL_RECIPES = CraftingManager.getInstance().getRecipeList();
-
-		// Get the grinder recipes
-		if( !this.getGrinderRecipes() )
-		{
-			ThELog.warning( "Unable to load AE2 Grinder recipes, aspect registration will be incomplete" );
-		}
-
-		// Get the inscriber recipes
-		if( !this.getInscriberRecipes() )
-		{
-			ThELog.warning( "Unable to load AE2 Inscriber recipes, aspect registration will be incomplete" );
-		}
-
-		// Build the list of items to give aspects to
-		this.getItemsFromAERegistryClass( AEApi.instance().definitions().materials() );
-		this.getItemsFromAERegistryClass( AEApi.instance().definitions().items() );
-		this.getItemsFromAERegistryClass( AEApi.instance().definitions().blocks() );
-		this.getItemsFromAERegistryClass( AEApi.instance().definitions().parts() );
-
-		// Give base AE items & materials aspects
-		this.registerBase();
-
-		// Register the remaining items
-		for( int pass = 1; pass <= 2; pass++ )
-		{
-			while( this.ITEMS_TO_ADD.size() > 0 )
-			{
-				// Get the next item
-				AEItemInfo itemInfo = this.ITEMS_TO_ADD.get( 0 );
-
-				// Remove
-				this.ITEMS_TO_ADD.remove( 0 );
-
-				// Register it
-				itemInfo.registerItem( pass );
-
-			}
-
-			// Upon completion of pass 1, move all unregisterable items back into the items to add, and try again. 
-			if( pass == 1 )
-			{
-				this.ITEMS_TO_ADD.addAll( this.UNREGISTERABLE );
-				this.UNREGISTERABLE.clear();
-			}
-		}
-
-		// Finally register my items
-		this.registerThEItems();
-
-		// Cleanup
-		this.NORMAL_RECIPES = null;
-		this.GRINDER_RECIPES = null;
-		this.ALL_ITEMS = null;
-		this.ITEMS_REGISTERED = null;
-		this.ITEMS_TO_ADD = null;
-		this.DEPENDENCY_CHAIN = null;
-		this.UNREGISTERABLE = null;
-
-		// Log
-		ThELog.endSection( "AE Scanables", sectionStartTime );
-	}
-
-	/**
 	 * Gets the item info for the item def or itemstack.
 	 * 
 	 * @param itemDef
@@ -1364,5 +1306,77 @@ public class AEAspectRegister
 			// Register it
 			ThaumcraftApi.registerObjectTag( itemInfo.itemStack, itemInfo.getFinalAspects() );
 		}
+	}
+
+	/**
+	 * Gives AppliedEnergistics blocks and items Thaumcraft aspects.
+	 */
+	public void registerAEAspects()
+	{
+		// Log
+		long sectionStartTime = ThELog.beginSection( "AE Scanables" );
+
+		// Get the normal recipes
+		this.NORMAL_RECIPES = CraftingManager.getInstance().getRecipeList();
+
+		// Get the grinder recipes
+		if( !this.getGrinderRecipes() )
+		{
+			ThELog.warning( "Unable to load AE2 Grinder recipes, aspect registration will be incomplete" );
+		}
+
+		// Get the inscriber recipes
+		if( !this.getInscriberRecipes() )
+		{
+			ThELog.warning( "Unable to load AE2 Inscriber recipes, aspect registration will be incomplete" );
+		}
+
+		// Build the list of items to give aspects to
+		this.getItemsFromAERegistryClass( AEApi.instance().definitions().materials() );
+		this.getItemsFromAERegistryClass( AEApi.instance().definitions().items() );
+		this.getItemsFromAERegistryClass( AEApi.instance().definitions().blocks() );
+		this.getItemsFromAERegistryClass( AEApi.instance().definitions().parts() );
+
+		// Give base AE items & materials aspects
+		this.registerBase();
+
+		// Register the remaining items
+		for( int pass = 1; pass <= 2; pass++ )
+		{
+			while( this.ITEMS_TO_ADD.size() > 0 )
+			{
+				// Get the next item
+				AEItemInfo itemInfo = this.ITEMS_TO_ADD.get( 0 );
+
+				// Remove
+				this.ITEMS_TO_ADD.remove( 0 );
+
+				// Register it
+				itemInfo.registerItem( pass );
+
+			}
+
+			// Upon completion of pass 1, move all unregisterable items back into the items to add, and try again. 
+			if( pass == 1 )
+			{
+				this.ITEMS_TO_ADD.addAll( this.UNREGISTERABLE );
+				this.UNREGISTERABLE.clear();
+			}
+		}
+
+		// Finally register my items
+		this.registerThEItems();
+
+		// Cleanup
+		this.NORMAL_RECIPES = null;
+		this.GRINDER_RECIPES = null;
+		this.ALL_ITEMS = null;
+		this.ITEMS_REGISTERED = null;
+		this.ITEMS_TO_ADD = null;
+		this.DEPENDENCY_CHAIN = null;
+		this.UNREGISTERABLE = null;
+
+		// Log
+		ThELog.endSection( "AE Scanables", sectionStartTime );
 	}
 }

@@ -17,17 +17,16 @@ public class ResearchRegistry
 			MIRROR ("MIRROR", "ARTIFICE", -4, 0),
 			JAR ("JARLABEL", "ALCHEMY", -4, 0),
 			INFUSION ("INFUSION", "ARTIFICE", -6, 0),
-			COREUSE ("COREUSE", "GOLEMANCY", 4, 3),
 			DUPE ("ALCHEMICALDUPLICATION", "ALCHEMY", -5, -6),
 			WARDED ("WARDEDARCANA", "ARTIFICE", 1, 2),
 			FOCUSFIRE ("FOCUSFIRE", "THAUMATURGY", -4, -7),
 			VISPOWER ("VISPOWER", "THAUMATURGY", 4, 0),
-			SCEPTRE ("SCEPTRE", "THAUMATURGY", 5, 0);
+			SCEPTRE ("SCEPTRE", "THAUMATURGY", 5, 0),
+			COREUSE ("COREUSE", "GOLEMANCY", 3, -6),
+			COREGATHER ("COREGATHER", "GOLEMANCY", 1, -6);
 
-		private String realResearchKey;
-		private String realResearchCategory;
-		private int column;
-		private int row;
+		private String realResearchKey, realResearchCategory;
+		private int column, row;
 		private PseudoResearchItem researchItem;
 		private boolean hasRegistered = false;
 
@@ -67,22 +66,30 @@ public class ResearchRegistry
 			ESSENTIA_TERMINAL ("ESSTERM", -1, -4),
 			ESSENTIA_PROVIDER ("ESSPROV", -2, -4),
 			INFUSION_PROVIDER ("INFPROV", -5, -2),
-			IRON_GEARBOX ("IRONGEARBOX", 3, 2),
-			THAUMIUM_GEARBOX ("THAUMGBOX", 3, 3),
+			IRON_GEARBOX ("IRONGEARBOX", 4, -5),
+			THAUMIUM_GEARBOX ("THAUMGBOX", 4, -6),
 			CERTUS_DUPE ("CERTUSDUPE", -5, -5),
 			VIS_RELAY_INTERFACE ("VISINT", 4, -1),
 			ARCANE_ASSEMBLER ("ARCANEASSEMBLER", 6, -1),
 			KNOWLEDGE_INSCRIBER ("KNOWLEDGEINSCRIBER", 6, 0),
 			FOCUS_WRENCH ("FOCUSWRENCH", -3, -7),
 			ESSENTIA_VIBRATION_CHAMBER ("ESSVIBCMBR", 1, -4),
-			DISTILLATION_PATTERN_ENCODER ("DISTILLATIONPATTERNENCODER", -4, -4);
+			DISTILLATION_PATTERN_ENCODER ("DISTILLATIONPATTERNENCODER", -4, -4),
+			GOLEM_BACKPACK ("GOLEMWIFIBACKPACK", 0, -6);
 
+		/**
+		 * Internal name of the research type.
+		 */
 		private String internalName;
 
-		private int column;
+		/**
+		 * Position of the research node in the Thaumonomicon.
+		 */
+		private int column, row;
 
-		private int row;
-
+		/**
+		 * The actual research item.
+		 */
 		public ResearchItem researchItem;
 
 		private ResearchTypes( final String internalName, final int column, final int row )
@@ -113,14 +120,26 @@ public class ResearchRegistry
 			return ThaumicEnergistics.MOD_ID + "." + this.internalName;
 		}
 
+		/**
+		 * Gets the name of a numeric page.
+		 * 
+		 * @param index
+		 * @return
+		 */
 		public String getPageName( final int index )
 		{
 			return ThaumicEnergistics.MOD_ID + ".research_page." + this.internalName + "." + index;
 		}
 
-		public ResearchItem getResearchItem()
+		/**
+		 * Gets the name of a named page.
+		 * 
+		 * @param subName
+		 * @return
+		 */
+		public String getPageName( final String subName )
 		{
-			return this.researchItem;
+			return ThaumicEnergistics.MOD_ID + ".research_page." + this.internalName + "." + subName;
 		}
 	}
 

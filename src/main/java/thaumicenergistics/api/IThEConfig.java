@@ -56,9 +56,23 @@ public interface IThEConfig
 	public boolean craftEssentiaVibrationChamber();
 
 	/**
+	 * Can the golem backpack be crafted.
+	 * 
+	 * @return
+	 */
+	public boolean craftGolemWifiBackpack();
+
+	/**
 	 * Can the Infusion Provider be crafted.
 	 */
 	public boolean craftInfusionProvider();
+
+	/**
+	 * Controls if the import/export/storage can be crafted.
+	 * 
+	 * @return
+	 */
+	public boolean craftIOBuses();
 
 	/**
 	 * Can the VRI be crafted.

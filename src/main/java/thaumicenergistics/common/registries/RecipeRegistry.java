@@ -14,6 +14,7 @@ public class RecipeRegistry
 	public static IArcaneRecipe ITEM_STORAGE_COMPONENT_64K;
 	public static IArcaneRecipe ITEM_KNOWLEDGE_CORE;
 	public static IArcaneRecipe ITEM_WRENCH_FOCUS;
+	public static IArcaneRecipe ITEM_GOLEM_WIFI_BACKPACK;
 	public static IArcaneRecipe MATERIAL_DIFFUSION_CORE;
 	public static IArcaneRecipe MATERIAL_COALESCENCE_CORE;
 	public static IArcaneRecipe MATERIAL_IRON_GEAR;
