@@ -1,10 +1,13 @@
 package thaumicenergistics.common.entities;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.lwjgl.opengl.GL11;
+import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.entities.golems.EntityGolemBase;
 import thaumicenergistics.api.entities.IGolemHookHandler;
 import thaumicenergistics.api.entities.IGolemHookSyncRegistry;
@@ -12,28 +15,42 @@ import thaumicenergistics.client.render.model.ModelGolemWifiBackpack;
 import thaumicenergistics.common.integration.tc.GolemCoreType;
 import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
+import thaumicenergistics.common.items.ItemGolemWirelessBackpack.BackpackSkins;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.AEApi;
+import appeng.items.parts.ItemFacade;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class WirelessGolemHandler
 	implements IGolemHookHandler
 {
+	/**
+	 * Data stored on the client side.
+	 * 
+	 * @author Nividica
+	 * 
+	 */
 	public static class WirelessClientData
 	{
 		public boolean isInRange = false;
 		public float pearlRotation = 0.0f;
-
-		public WirelessClientData( final boolean inRange )
-		{
-			this.isInRange = inRange;
-		}
+		public BackpackSkins skin = BackpackSkins.Thaumium;
 	}
 
+	/**
+	 * Data stored on the server side.
+	 * 
+	 * @author Nividica
+	 * 
+	 */
 	public static class WirelessServerData
 	{
 		public final String encryptionKey;
+		public int tickCounter = 0;
 		public boolean isInRange = false;
+		public ItemStack facade = null;
+		public BackpackSkins skin = BackpackSkins.Thaumium;
 
 		public WirelessServerData( final String encKey )
 		{
@@ -44,16 +61,17 @@ public class WirelessGolemHandler
 	private static WirelessGolemHandler INSTANCE = null;
 
 	/**
-	 * NBT key used to represent if the golem has the wifi backpack or not.
+	 * NBT keys
 	 */
-	private static final String NBTKEY_WIFI_KEY = "wifiBackpackKey";
+	private static final String NBTKEY_WIFI_KEY = "wifiBackpackKey", NBTKEY_FACADE = "facade";
 
 	/**
 	 * State flags.
 	 */
 	private static final Character SYNCFLAG_HAS_WIFI_IN_RANGE = Character.valueOf( 'i' ),
 					SYNCFLAG_HAS_WIFI_OUT_OF_RANGE = Character.valueOf( 'o' ),
-					SYNCFLAG_NO_WIFI = Character.valueOf( 'n' );
+					SYNCFLAG_NO_WIFI = Character.valueOf( 'n' ),
+					SYNCFIELD_SKIN = 'a';
 
 	@SideOnly(Side.CLIENT)
 	private ModelGolemWifiBackpack addonModel;
@@ -64,9 +82,19 @@ public class WirelessGolemHandler
 	private int wifiSyncID = -1;
 
 	/**
+	 * ID of the skin sync field.
+	 */
+	private int skinSyncID = -1;
+
+	/**
 	 * Cache of the backpack item.
 	 */
 	private ItemGolemWirelessBackpack backpackItem;
+
+	/**
+	 * Item that represents a facade, or null.
+	 */
+	private ItemFacade facadeItem;
 
 	/**
 	 * Private constructor.
@@ -81,6 +109,9 @@ public class WirelessGolemHandler
 
 		// Store a reference to the backpack item.
 		this.backpackItem = (ItemGolemWirelessBackpack)ItemEnum.GOLEM_WIFI_BACKPACK.getItem();
+
+		// Store a reference to the facade item
+		this.facadeItem = (ItemFacade)AEApi.instance().definitions().items().facade().maybeItem().orNull();
 	}
 
 	/**
@@ -98,61 +129,45 @@ public class WirelessGolemHandler
 	}
 
 	/**
-	 * Creates the wifi addon model.
+	 * Gets a character based on the skin.
+	 * 
+	 * @param skin
+	 * @return
 	 */
-	@SideOnly(Side.CLIENT)
-	private void setupModel()
+	private Character backpackSkinToSyncChar( final BackpackSkins skin )
 	{
-		this.addonModel = new ModelGolemWifiBackpack();
-	}
-
-	@Override
-	public void addDefaultSyncEntries( final IGolemHookSyncRegistry syncRegistry )
-	{
-		// Register the wifi entry
-		this.wifiSyncID = syncRegistry.registerSyncChar( this, SYNCFLAG_NO_WIFI );
-	}
-
-	@Override
-	public void bellLeftClicked( final EntityGolemBase golem, final Object handlerData, final ItemStack itemGolemPlacer, final EntityPlayer player,
-									final boolean dismantled, final Side side )
-	{
-		// Goes the golem have a backpack on?
-		if( handlerData instanceof WirelessServerData )
+		int id = 0;
+		if( skin != null )
 		{
-			// Create a new backpack item
-			ItemStack backpack = ItemEnum.GOLEM_WIFI_BACKPACK.getStack();
-
-			// Set the key
-			this.backpackItem.setEncryptionKey( backpack, ( (WirelessServerData)handlerData ).encryptionKey, null );
-
-			// Drop the backpack
-			golem.entityDropItem( backpack, 0.5f );
+			id = skin.ordinal();
 		}
-
+		return Character.valueOf( (char)( SYNCFIELD_SKIN + id ) );
 	}
 
-	@Override
-	public boolean canHandleInteraction( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player, final Side side )
+	/**
+	 * Han the backpack be handled?
+	 * 
+	 * @param golem
+	 * @param handlerData
+	 * @param player
+	 * @param side
+	 * @return
+	 */
+	private InteractionLevel canHandleInteration_Backpack( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player,
+															final Side side )
 	{
-		// Get the held item
-		ItemStack heldItem = player.inventory.getCurrentItem();
-
-		// Check for backpack
-		boolean isHoldingBackpack = ( ( heldItem != null ) && ( heldItem.getItem() == this.backpackItem ) );
-
 		// Does the golem already have a backpack on?
 		if( handlerData != null )
 		{
 			// Already has backpack.
-			return false;
+			return InteractionLevel.NoInteraction;
 		}
 
 		// Is the core valid?
 		GolemCoreType core = GolemCoreType.getCoreByID( golem.getCore() );
 		if( core == null )
 		{
-			return false;
+			return InteractionLevel.NoInteraction;
 		}
 		switch ( core )
 		{
@@ -166,7 +181,7 @@ public class WirelessGolemHandler
 		case Sorting:
 		case Use:
 		default:
-			return false;
+			return InteractionLevel.NoInteraction;
 
 			// Supported cores
 		case Gather:
@@ -179,36 +194,274 @@ public class WirelessGolemHandler
 		// Client side?
 		if( side == Side.CLIENT )
 		{
-			if( isHoldingBackpack )
-			{
-				//Swing the item
-				player.swingItem();
-			}
-			return false;
+			//Swing the item
+			player.swingItem();
+			return InteractionLevel.NoInteraction;
 		}
 
-		return isHoldingBackpack;
+		return InteractionLevel.FullInteraction;
+	}
+
+	/**
+	 * Can the facade be handled?
+	 * 
+	 * @param golem
+	 * @param handlerData
+	 * @param player
+	 * @param side
+	 * @param heldItem
+	 * @return
+	 */
+	private InteractionLevel canHandleInteration_Facade( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player,
+															final Side side,
+															final ItemStack heldItem )
+	{
+		// Is the golem wearing a backpack?
+		if( handlerData == null )
+		{
+			// No backpack to apply it to
+			return InteractionLevel.NoInteraction;
+		}
+
+		// Get the skin for the facade
+		BackpackSkins skin = this.getSkinFromFacade( heldItem );
+		if( skin == null )
+		{
+			// Unsupported facade
+			return InteractionLevel.NoInteraction;
+		}
+
+		// Client side?
+		if( ( side == Side.CLIENT ) && ( handlerData instanceof WirelessClientData ) )
+		{
+			//Swing the item
+			player.swingItem();
+
+			// Set the skin
+			( (WirelessClientData)handlerData ).skin = skin;
+
+			return InteractionLevel.NoInteraction;
+		}
+
+		return InteractionLevel.SyncInteraction;
+	}
+
+	/**
+	 * Returns the skin associated with the facade, or null if there is not one.
+	 * 
+	 * @param facade
+	 * @return
+	 */
+	private BackpackSkins getSkinFromFacade( final ItemStack facade )
+	{
+		Block b = this.facadeItem.getBlock( facade );
+		int metaData = this.facadeItem.getMeta( facade );
+
+		if( b == ConfigBlocks.blockCosmeticSolid )
+		{
+			// Thaumium block?
+			if( metaData == 4 )
+			{
+				return BackpackSkins.Thaumium;
+			}
+			// Tallow block?
+			else if( metaData == 5 )
+			{
+				return BackpackSkins.Tallow;
+			}
+		}
+		// Greatwood log?
+		else if( ( b == ConfigBlocks.blockMagicalLog ) && ( metaData == 0 ) )
+		{
+			return BackpackSkins.GreatWood;
+		}
+		// Flesh?
+		else if( ( b == ConfigBlocks.blockTaint ) && ( metaData == 2 ) )
+		{
+			return BackpackSkins.Flesh;
+		}
+		// Stone block?
+		else if( b == Blocks.stone )
+		{
+			return BackpackSkins.Stone;
+		}
+		// Hay block?
+		else if( b == Blocks.hay_block )
+		{
+			return BackpackSkins.Straw;
+		}
+		// Bricks?
+		else if( b == Blocks.brick_block )
+		{
+			return BackpackSkins.Clay;
+		}
+		// Iron?
+		else if( b == Blocks.iron_block )
+		{
+			return BackpackSkins.Iron;
+		}
+		else if( b == Blocks.gold_block )
+		{
+			return BackpackSkins.Gold;
+		}
+		else if( b == Blocks.diamond_block )
+		{
+			return BackpackSkins.Diamond;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Creates the wifi addon model.
+	 */
+	@SideOnly(Side.CLIENT)
+	private void setupModel()
+	{
+		this.addonModel = new ModelGolemWifiBackpack();
+	}
+
+	/**
+	 * Gets the skin based on the character
+	 * 
+	 * @param skinSyncChar
+	 * @return
+	 */
+	private BackpackSkins syncCharToBackpackSkin( final char skinSyncChar )
+	{
+		int id = skinSyncChar - SYNCFIELD_SKIN;
+		if( ( id < 0 ) || ( id > BackpackSkins.VALUES.length ) )
+		{
+			id = 0;
+		}
+		return BackpackSkins.VALUES[id];
+	}
+
+	@Override
+	public void addDefaultSyncEntries( final IGolemHookSyncRegistry syncRegistry )
+	{
+		// Register the wifi entry
+		this.wifiSyncID = syncRegistry.registerSyncChar( this, SYNCFLAG_NO_WIFI );
+
+		// Register facade item
+		this.skinSyncID = syncRegistry.registerSyncChar( this, this.backpackSkinToSyncChar( BackpackSkins.Thaumium ) );
+	}
+
+	@Override
+	public void bellLeftClicked( final EntityGolemBase golem, final Object handlerData, final ItemStack itemGolemPlacer, final EntityPlayer player,
+									final boolean dismantled, final Side side )
+	{
+		// Goes the golem have a backpack on?
+		if( handlerData instanceof WirelessServerData )
+		{
+			WirelessServerData wsd = ( (WirelessServerData)handlerData );
+
+			// Create a new backpack item
+			ItemStack backpack = ItemEnum.GOLEM_WIFI_BACKPACK.getStack();
+
+			// Set the key
+			this.backpackItem.setEncryptionKey( backpack, wsd.encryptionKey, null );
+
+			// Drop the backpack
+			golem.entityDropItem( backpack, 0.5f );
+
+			// Is there a facade?
+			if( wsd.facade != null )
+			{
+				// Drop the facade
+				golem.entityDropItem( wsd.facade, 0.5f );
+			}
+		}
 
 	}
 
 	@Override
-	public Object customInteraction( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player, final Side side )
+	public InteractionLevel canHandleInteraction( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player, final Side side )
 	{
 		// Get the held item
 		ItemStack heldItem = player.inventory.getCurrentItem();
 
-		// Is the backpack linked?
-		String encKey = this.backpackItem.getEncryptionKey( heldItem );
-		if( encKey != null )
+		// Empty hand?
+		if( heldItem == null )
 		{
+			return InteractionLevel.NoInteraction;
+		}
+
+		// Backpack?
+		if( heldItem.getItem() == this.backpackItem )
+		{
+			return this.canHandleInteration_Backpack( golem, handlerData, player, side );
+		}
+
+		// Facade?
+		else if( ( this.facadeItem != null ) && ( heldItem.getItem() == this.facadeItem ) )
+		{
+			return this.canHandleInteration_Facade( golem, handlerData, player, side, heldItem );
+		}
+
+		return InteractionLevel.NoInteraction;
+
+	}
+
+	@Override
+	public Object customInteraction( final EntityGolemBase golem, final Object handlerData, final IGolemHookSyncRegistry syncData,
+										final EntityPlayer player, final Side side )
+	{
+		// Get the held item
+		ItemStack heldItem = player.inventory.getCurrentItem();
+
+		// Backpack?
+		if( heldItem.getItem() == this.backpackItem )
+		{
+			// Is the backpack linked?
+			String encKey = this.backpackItem.getEncryptionKey( heldItem );
+			if( encKey != null )
+			{
+				// Play sound
+				golem.worldObj.playSoundAtEntity( golem, "thaumcraft:upgrade", 0.5F, 1.0F );
+
+				// Take the item
+				player.inventory.setInventorySlotContents( player.inventory.currentItem, null );
+
+				// Create the data
+				return new WirelessServerData( encKey );
+			}
+		}
+
+		// Facade?
+		else if( ( this.facadeItem != null ) && ( heldItem.getItem() == this.facadeItem ) )
+		{
+			WirelessServerData wsd = (WirelessServerData)handlerData;
+
+			// Is there a facade set?
+			if( ( wsd.facade != null ) && ( !player.capabilities.isCreativeMode ) )
+			{
+				// Drop the old facade
+				golem.entityDropItem( wsd.facade, 0.5f );
+			}
+
+			// Set facade
+			wsd.facade = heldItem.copy();
+			wsd.facade.stackSize = 1;
+
+			// Take a facade from the player
+			if( !player.capabilities.isCreativeMode )
+			{
+				--heldItem.stackSize;
+				if( heldItem.stackSize <= 0 )
+				{
+					player.inventory.setInventorySlotContents( player.inventory.currentItem, null );
+				}
+			}
+
+			// Set the skin
+			wsd.skin = this.getSkinFromFacade( wsd.facade );
+			syncData.updateSyncChar( this, this.skinSyncID, this.backpackSkinToSyncChar( wsd.skin ) );
+
 			// Play sound
-			golem.worldObj.playSoundAtEntity( golem, "thaumcraft:upgrade", 0.5F, 1.0F );
+			golem.worldObj.playSoundAtEntity( golem, "thaumcraft:cameraticks", 0.5F, 1.0F );
 
-			// Take the item
-			player.inventory.setInventorySlotContents( player.inventory.currentItem, null );
-
-			// Create the data
-			return new WirelessServerData( encKey );
+			return wsd;
 		}
 
 		return null;
@@ -220,9 +473,18 @@ public class WirelessGolemHandler
 		// Has backpack?
 		if( serverHandlerData instanceof WirelessServerData )
 		{
-			// Update clients
-			syncData.updateSyncChar( this, this.wifiSyncID, ( ( (WirelessServerData)serverHandlerData ).isInRange ? SYNCFLAG_HAS_WIFI_IN_RANGE
-																													: SYNCFLAG_HAS_WIFI_OUT_OF_RANGE ) );
+			WirelessServerData wsd = (WirelessServerData)serverHandlerData;
+
+			// Set sync data every 18th tick
+			if( ++wsd.tickCounter > 18 )
+			{
+				// Reset counter
+				wsd.tickCounter = 0;
+
+				// Set sync data
+				syncData.updateSyncChar( this, this.wifiSyncID, ( wsd.isInRange ? SYNCFLAG_HAS_WIFI_IN_RANGE : SYNCFLAG_HAS_WIFI_OUT_OF_RANGE ) );
+				syncData.updateSyncChar( this, this.skinSyncID, this.backpackSkinToSyncChar( wsd.skin ) );
+			}
 		}
 	}
 
@@ -241,15 +503,31 @@ public class WirelessGolemHandler
 	@Override
 	public Object readEntityFromNBT( final EntityGolemBase golem, final NBTTagCompound nbtTag )
 	{
+		WirelessServerData wsd = null;
+
 		// Does the golem have a backpack?
 		if( nbtTag.hasKey( NBTKEY_WIFI_KEY ) )
 		{
 			// Create the data
-			return new WirelessServerData( nbtTag.getString( NBTKEY_WIFI_KEY ) );
+			wsd = new WirelessServerData( nbtTag.getString( NBTKEY_WIFI_KEY ) );
+
+			if( nbtTag.hasKey( NBTKEY_FACADE ) )
+			{
+				// Read the facade
+				try
+				{
+					wsd.facade = ItemStack.loadItemStackFromNBT( nbtTag.getCompoundTag( NBTKEY_FACADE ) );
+					wsd.skin = this.getSkinFromFacade( wsd.facade );
+				}
+				catch( Exception e )
+				{
+					// Invalid facade
+				}
+			}
+
 		}
 
-		// No wifi
-		return null;
+		return wsd;
 	}
 
 	@Override
@@ -297,7 +575,7 @@ public class WirelessGolemHandler
 		GL11.glPushMatrix();
 
 		// Translate to the golem
-		GL11.glTranslatef( (float)x, (float)y + 0.63f, (float)z );
+		GL11.glTranslatef( (float)x, (float)y + 0.64f, (float)z );
 
 		// Rotate to face away from the golem
 		float golemYaw = 270.0f;
@@ -315,7 +593,7 @@ public class WirelessGolemHandler
 		GL11.glScalef( 0.8f, 0.8f, 0.8f );
 
 		// Render
-		this.addonModel.render( wcd.pearlRotation, 0.0625f, golemActive );
+		this.addonModel.render( wcd.pearlRotation, 0.0625f, golemActive, wcd.skin );
 
 		// Pop the matrix
 		GL11.glPopMatrix();
@@ -405,15 +683,25 @@ public class WirelessGolemHandler
 		}
 
 		// Has existing data?
+		WirelessClientData wcd = null;
 		if( clientHandlerData instanceof WirelessClientData )
 		{
-			// Update the data
-			( (WirelessClientData)clientHandlerData ).isInRange = inRange;
-			return clientHandlerData;
+			wcd = (WirelessClientData)clientHandlerData;
+		}
+		else
+		{
+			// Create new data
+			wcd = new WirelessClientData();
 		}
 
-		// Create new data
-		return new WirelessClientData( inRange );
+		// Update the range
+		wcd.isInRange = inRange;
+
+		// Get the skin
+		char skinChar = syncData.getSyncCharOrDefault( this.skinSyncID, SYNCFIELD_SKIN );
+		wcd.skin = this.syncCharToBackpackSkin( skinChar );
+
+		return wcd;
 	}
 
 	@Override
@@ -422,8 +710,17 @@ public class WirelessGolemHandler
 		// Does the golem have a backpack?
 		if( serverHandlerData instanceof WirelessServerData )
 		{
+			WirelessServerData wsd = ( (WirelessServerData)serverHandlerData );
+
 			// Write network key
-			nbtTag.setString( NBTKEY_WIFI_KEY, ( (WirelessServerData)serverHandlerData ).encryptionKey );
+			nbtTag.setString( NBTKEY_WIFI_KEY, wsd.encryptionKey );
+
+			// Has facade?
+			if( wsd.facade != null )
+			{
+				// Write the facade
+				nbtTag.setTag( NBTKEY_FACADE, wsd.facade.writeToNBT( new NBTTagCompound() ) );
+			}
 		}
 	}
 

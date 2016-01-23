@@ -87,6 +87,11 @@ public class ContainerDistillationPatternEncoder
 	private final TheInternalInventory internalInventory;
 
 	/**
+	 * Cached versions of the source and pattern.
+	 */
+	private ItemStack cachedSource, cachedPattern;
+
+	/**
 	 * Slot holding the source item.
 	 */
 	public final SlotFake slotSourceItem;
@@ -180,20 +185,6 @@ public class ContainerDistillationPatternEncoder
 	}
 
 	/**
-	 * Returns true if the slot needs to be sync'd
-	 * 
-	 * @param slot
-	 * @return
-	 */
-	private boolean doesSlotNeedSync( final Slot slot )
-	{
-		ItemStack slotStack = slot.getStack();
-		ItemStack invStack = (ItemStack)this.inventoryItemStacks.get( slot.slotNumber );
-
-		return !ItemStack.areItemStacksEqual( invStack, slotStack );
-	}
-
-	/**
 	 * Returns true if the transfer was handled.
 	 * Assumes that clickedslot has an itemstack.
 	 * 
@@ -249,7 +240,8 @@ public class ContainerDistillationPatternEncoder
 	private void loadPattern()
 	{
 		// Read the pattern
-		this.patternHelper.readPattern( this.slotPatternEncoded.getStack() );
+		this.cachedPattern = this.slotPatternEncoded.getStack();
+		this.patternHelper.readPattern( this.cachedPattern );
 
 		// Is the pattern valid?
 		if( this.patternHelper.isValid() )
@@ -270,27 +262,21 @@ public class ContainerDistillationPatternEncoder
 	 */
 	private void scanSourceItem( final boolean setSelectedAspect )
 	{
-		if( EffectiveSide.isClientSide() )
-		{
-			// Ignored client side
-			return;
-		}
+
+		this.cachedSource = this.slotSourceItem.getStack();
 
 		// Clear aspect slots
 		this.clearAspectSlots();
 
 		// Null?
-		if( !this.slotSourceItem.getHasStack() )
+		if( this.cachedSource == null )
 		{
 			// Done
 			return;
 		}
 
-		// Get the itemstack
-		ItemStack sourceItem = this.slotSourceItem.getDisplayStack();
-
 		// Get the aspects
-		AspectList itemAspects = ThaumcraftApiHelper.getObjectAspects( sourceItem );
+		AspectList itemAspects = ThaumcraftApiHelper.getObjectAspects( this.cachedSource );
 		Aspect[] sortedAspects = null;
 
 		// Does the item have any aspects?
@@ -301,7 +287,7 @@ public class ContainerDistillationPatternEncoder
 		}
 
 		// Generate hash
-		int hash = ScanManager.generateItemHash( sourceItem.getItem(), sourceItem.getItemDamage() );
+		int hash = ScanManager.generateItemHash( this.cachedSource.getItem(), this.cachedSource.getItemDamage() );
 
 		// Get the list of scanned objects
 		List<String> list = Thaumcraft.proxy.getScannedObjects().get( this.player.getCommandSenderName() );
@@ -355,14 +341,14 @@ public class ContainerDistillationPatternEncoder
 	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
 	{
 		// Does the pattern slot need to be sync'd?
-		if( this.doesSlotNeedSync( this.slotPatternEncoded ) )
+		if( this.slotPatternEncoded.getStack() != this.cachedPattern )
 		{
 			// Load the pattern
 			this.loadPattern();
 			return true;
 		}
 		// Does the source item need to be sync'd?
-		else if( this.doesSlotNeedSync( this.slotSourceItem ) )
+		else if( this.slotSourceItem.getStack() != this.cachedSource )
 		{
 			// Scan the source item
 			this.scanSourceItem( true );
@@ -513,7 +499,16 @@ public class ContainerDistillationPatternEncoder
 			ItemStack heldItem = player.inventory.getItemStack();
 
 			// Set the source slot
-			this.slotSourceItem.putStack( heldItem );
+			if( heldItem != null )
+			{
+				ItemStack copy = heldItem.copy();
+				copy.stackSize = 1;
+				this.slotSourceItem.putStack( copy );
+			}
+			else
+			{
+				this.slotSourceItem.putStack( null );
+			}
 
 			handled = true;
 		}

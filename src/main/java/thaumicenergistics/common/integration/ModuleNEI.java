@@ -25,6 +25,86 @@ public class ModuleNEI
 {
 
 	/**
+	 * Base class for handling item overlays.
+	 * 
+	 * @author Nividica
+	 * 
+	 */
+	abstract class AbstractBaseOverlayHandler
+		implements IOverlayHandler
+	{
+		/**
+		 * Calls on the subclass to add an ingredient to the items array.
+		 * 
+		 * @param ingredient
+		 * @param overlayItems
+		 */
+		protected abstract boolean addIngredientToItems( PositionedStack ingredient, IAEItemStack[] overlayItems );
+
+		/**
+		 * Called when the items are ready to be placed in the GUI.
+		 * 
+		 * @param overlayItems
+		 */
+		protected abstract void addItemsToGUI( IAEItemStack[] overlayItems );
+
+		/**
+		 * Checks with the subclass to see if this is a GUI it handles.
+		 * 
+		 * @param gui
+		 * @return
+		 */
+		protected abstract boolean isCorrectGUI( GuiContainer gui );
+
+		/**
+		 * Called when the user has shift-clicked the [?] button in NEI
+		 */
+		@Override
+		public final void overlayRecipe( final GuiContainer gui, final IRecipeHandler recipeHandler, final int recipeIndex, final boolean shift )
+		{
+			try
+			{
+				// Ensure the gui is correct
+				if( this.isCorrectGUI( gui ) )
+				{
+					// List of items
+					IAEItemStack[] overlayItems = new IAEItemStack[9];
+
+					// Assume there are no items until they are added.
+					boolean hasItems = false;
+
+					// Get the ingredients
+					List<PositionedStack> ingredients = recipeHandler.getIngredientStacks( recipeIndex );
+
+					// Get each item
+					for( PositionedStack ingredient : ingredients )
+					{
+						// Skip nulls
+						if( ( ingredient == null ) || ( ingredient.item == null ) || ( ingredient.item.getItem() == null ) )
+						{
+							continue;
+						}
+
+						// Pass to subclass
+						hasItems |= this.addIngredientToItems( ingredient, overlayItems );
+					}
+
+					// Were any items added?
+					if( hasItems )
+					{
+						this.addItemsToGUI( overlayItems );
+					}
+				}
+			}
+			catch( Exception e )
+			{
+				// Silently ignored.
+			}
+		}
+
+	}
+
+	/**
 	 * Sends a selected NEI recipe to the open A.C.T on the server.
 	 * 
 	 * @author Nividica
@@ -174,86 +254,6 @@ public class ModuleNEI
 			}
 
 			return stacks;
-		}
-
-	}
-
-	/**
-	 * Base class for handling item overlays.
-	 * 
-	 * @author Nividica
-	 * 
-	 */
-	abstract class AbstractBaseOverlayHandler
-		implements IOverlayHandler
-	{
-		/**
-		 * Calls on the subclass to add an ingredient to the items array.
-		 * 
-		 * @param ingredient
-		 * @param overlayItems
-		 */
-		protected abstract boolean addIngredientToItems( PositionedStack ingredient, IAEItemStack[] overlayItems );
-
-		/**
-		 * Called when the items are ready to be placed in the GUI.
-		 * 
-		 * @param overlayItems
-		 */
-		protected abstract void addItemsToGUI( IAEItemStack[] overlayItems );
-
-		/**
-		 * Checks with the subclass to see if this is a GUI it handles.
-		 * 
-		 * @param gui
-		 * @return
-		 */
-		protected abstract boolean isCorrectGUI( GuiContainer gui );
-
-		/**
-		 * Called when the user has shift-clicked the [?] button in NEI
-		 */
-		@Override
-		public final void overlayRecipe( final GuiContainer gui, final IRecipeHandler recipeHandler, final int recipeIndex, final boolean shift )
-		{
-			try
-			{
-				// Ensure the gui is correct
-				if( this.isCorrectGUI( gui ) )
-				{
-					// List of items
-					IAEItemStack[] overlayItems = new IAEItemStack[9];
-
-					// Assume there are no items until they are added.
-					boolean hasItems = false;
-
-					// Get the ingredients
-					List<PositionedStack> ingredients = recipeHandler.getIngredientStacks( recipeIndex );
-
-					// Get each item
-					for( PositionedStack ingredient : ingredients )
-					{
-						// Skip nulls
-						if( ( ingredient == null ) || ( ingredient.item == null ) || ( ingredient.item.getItem() == null ) )
-						{
-							continue;
-						}
-
-						// Pass to subclass
-						hasItems |= this.addIngredientToItems( ingredient, overlayItems );
-					}
-
-					// Were any items added?
-					if( hasItems )
-					{
-						this.addItemsToGUI( overlayItems );
-					}
-				}
-			}
-			catch( Exception e )
-			{
-				// Silently ignored.
-			}
 		}
 
 	}

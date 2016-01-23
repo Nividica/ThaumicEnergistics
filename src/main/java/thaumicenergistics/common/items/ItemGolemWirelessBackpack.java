@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ThEStrings;
 import appeng.api.features.INetworkEncodable;
@@ -16,6 +17,59 @@ public class ItemGolemWirelessBackpack
 	extends Item
 	implements INetworkEncodable
 {
+	public static enum BackpackSkins
+	{
+			Thaumium ("Thaum"),
+			Stone ("Stone"),
+			Straw ("Straw"),
+			GreatWood ("Wood"),
+			Flesh ("Flesh"),
+			Clay ("Clay"),
+			Iron ("Iron"),
+			Tallow ("Tallow"),
+			Gold ("Gold"),
+			Diamond ("Diamond");
+
+		/**
+		 * Array of skins.
+		 */
+		public static final BackpackSkins VALUES[] = BackpackSkins.values();
+
+		/**
+		 * Skin texture.
+		 */
+		private ResourceLocation texture = null;
+
+		/**
+		 * Texture ID of the skin
+		 */
+		private final String texID;
+
+		/**
+		 * Private constructor
+		 * 
+		 * @param ID
+		 */
+		private BackpackSkins( final String ID )
+		{
+			this.texID = ID;
+		}
+
+		/**
+		 * Gets the texture for this skin.
+		 * 
+		 * @return
+		 */
+		public ResourceLocation getTextureLocation()
+		{
+			if( this.texture == null )
+			{
+				this.texture = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/models/golemBackpack/" + this.texID + ".png" );
+			}
+			return this.texture;
+		}
+	}
+
 	private static final String NBT_ENCRYPTION_KEY = "wifiKey";
 
 	public ItemGolemWirelessBackpack()
@@ -25,6 +79,8 @@ public class ItemGolemWirelessBackpack
 
 		// Set non stacking
 		this.setMaxStackSize( 1 );
+
+		// Set non-damageable
 		this.setMaxDamage( 0 );
 	}
 

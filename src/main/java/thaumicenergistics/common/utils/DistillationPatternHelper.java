@@ -163,7 +163,8 @@ public class DistillationPatternHelper
 	 */
 	public void setInputItem( final ItemStack inputItem )
 	{
-		this.input = inputItem;
+		this.input = inputItem.copy();
+		this.input.stackSize = 1;
 	}
 
 	/**

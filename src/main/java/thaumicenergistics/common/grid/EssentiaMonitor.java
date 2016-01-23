@@ -514,14 +514,21 @@ public class EssentiaMonitor
 		}
 
 		// Simulate the injection
-		long rejectedAmount = this.injectEssentiaSafely( aspect, amount, Actionable.SIMULATE, source, essentiaGas );
-		long adjustedAmount = amount - rejectedAmount;
+		long injectedAmount = amount;
+		long rejectedAmount = this.injectEssentiaSafely( aspect, injectedAmount, Actionable.SIMULATE, source, essentiaGas );
+		injectedAmount -= rejectedAmount;
+
+		// Was all rejected?
+		if( injectedAmount == 0 )
+		{
+			return amount;
+		}
 
 		// Is this a powered injection?
 		if( powered )
 		{
 			// Simulate power extraction
-			double powerRequest = EssentiaMonitor.AE_PER_ESSENTIA * adjustedAmount;
+			double powerRequest = EssentiaMonitor.AE_PER_ESSENTIA * injectedAmount;
 			double powerReceived = this.energyGrid.extractAEPower( powerRequest, Actionable.SIMULATE, PowerMultiplier.CONFIG );
 
 			// Was enough power extracted?
@@ -536,18 +543,18 @@ public class EssentiaMonitor
 		if( mode == Actionable.MODULATE )
 		{
 			// Inject
-			rejectedAmount = this.injectEssentiaSafely( aspect, adjustedAmount, Actionable.MODULATE, source, essentiaGas );
-			adjustedAmount -= rejectedAmount;
+			rejectedAmount = this.injectEssentiaSafely( aspect, injectedAmount, Actionable.MODULATE, source, essentiaGas );
+			injectedAmount -= rejectedAmount;
 
 			// Adjust and extract power
 			if( powered )
 			{
-				double powerRequest = EssentiaMonitor.AE_PER_ESSENTIA * adjustedAmount;
+				double powerRequest = EssentiaMonitor.AE_PER_ESSENTIA * injectedAmount;
 				this.energyGrid.extractAEPower( powerRequest, Actionable.MODULATE, PowerMultiplier.CONFIG );
 			}
 		}
 
-		return rejectedAmount;
+		return amount - injectedAmount;
 	}
 
 	@Override

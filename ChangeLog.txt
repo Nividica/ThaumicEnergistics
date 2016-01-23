@@ -1,8 +1,15 @@
-﻿01/22/2016 1.0.0.0 - Beta
+﻿01/23/2016 1.0.0.0 - Beta
+  Fixed SMP packet crash.
+  Fixed potential golem hook crash.
+  Added levels of interaction.
+  Added golem backpack skins.
+
+01/22/2016 1.0.0.0 - Beta
   Bumped version to 1.0.0.0
   Fixes #213: Added backpack lore and recipe.
   Added backpack config option.
   Updated mod info file.
+  Fixed several SMP crashes.
 
 01/21/2016 0.10.0.0 - Beta
   Fixed multiple issues with the Arcane assembler: GUI desync, invalid network state.

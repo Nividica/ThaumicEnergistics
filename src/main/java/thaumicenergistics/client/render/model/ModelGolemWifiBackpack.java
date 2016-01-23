@@ -6,9 +6,8 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import thaumicenergistics.common.ThaumicEnergistics;
+import thaumicenergistics.common.items.ItemGolemWirelessBackpack.BackpackSkins;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -16,8 +15,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ModelGolemWifiBackpack
 	extends ModelBase
 {
-	public static ResourceLocation TEXTURE = new ResourceLocation( ThaumicEnergistics.MOD_ID, "textures/models/golem.wifi.backpack.png" );
-
 	/**
 	 * Submodels
 	 */
@@ -182,12 +179,12 @@ public class ModelGolemWifiBackpack
 	public void render( final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4,
 						final float f5 )
 	{
-		this.render( 0.03f, f5, true );
+		this.render( 0.03f, f5, true, BackpackSkins.Thaumium );
 	}
 
-	public void render( final float pearlRotation, final float f5, final boolean inRange )
+	public void render( final float pearlRotation, final float f5, final boolean inRange, final BackpackSkins skin )
 	{
-		Minecraft.getMinecraft().renderEngine.bindTexture( ModelGolemWifiBackpack.TEXTURE );
+		Minecraft.getMinecraft().renderEngine.bindTexture( skin.getTextureLocation() );
 		this.PackBack.render( f5 );
 		this.PackFront.render( f5 );
 		this.Antenna.render( f5 );

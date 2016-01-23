@@ -247,10 +247,13 @@ public abstract class AIAENetworkGolem
 				return 0;
 			}
 
+			// Calculate the amount to inject
 			int amountToInject = Math.min( amount, this.maxEssentiaRate );
 
+			// Attempt to inject
 			long amountRejected = monitor.injectEssentia( aspect, amountToInject, Actionable.MODULATE, this.actionSource, true );
 
+			// Return the amount that was injected
 			return amountToInject - amountRejected;
 		}
 

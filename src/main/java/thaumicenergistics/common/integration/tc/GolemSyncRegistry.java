@@ -121,6 +121,14 @@ class GolemSyncRegistry
 	}
 
 	/**
+	 * Marks the registry as needing to be syncd.
+	 */
+	public void markDirty()
+	{
+		this.hasDataChanged = true;
+	}
+
+	/**
 	 * Reads the mappings from a string
 	 * 
 	 * @param data

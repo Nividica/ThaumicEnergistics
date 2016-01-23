@@ -52,6 +52,59 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public interface IGolemHookHandler
 {
+	/**
+	 * Defines interaction levels.
+	 * 
+	 * @author Nividica
+	 * 
+	 */
+	public static enum InteractionLevel
+	{
+			/**
+			 * The interaction was not handled at all.<br>
+			 * <ul>
+			 * <li>GUI will be shown, if golem has one.</li>
+			 * <li>customInteraction() will not be called.</li>
+			 * <li>Sync data will not be sent.</li>
+			 * <li>setupGolem() will not be called.</li>
+			 * </ul>
+			 */
+			NoInteraction,
+
+			/**
+			 * The interaction was handled, but no sync data changed, and golem does not need to be re-setup.<br>
+			 * <ul>
+			 * <li>GUI will not be shown</li>
+			 * <li>customInteraction() called.
+			 * <li>
+			 * <li>Sync data will not be sent.</li>
+			 * <li>setupGolem() will not be called.</li>
+			 * </ul>
+			 */
+			BasicInteraction,
+
+			/**
+			 * The interaction was handled and sync data changed, but the golem does not need to be re-setup<br>
+			 * <ul>
+			 * <li>GUI will not be shown</li>
+			 * <li>customInteraction() called.</li>
+			 * <li>Sync data sent.</li>
+			 * <li>setupGolem() will not be called.</li>
+			 * </ul>
+			 */
+			SyncInteraction,
+
+			/**
+			 * The interaction was handled and the golem needs to be re-setup.
+			 * <ul>
+			 * <li>GUI will not be shown</li>
+			 * <li>customInteraction() called.</li>
+			 * <li>Sync data sent.</li>
+			 * <li>setupGolem() called.</li>
+			 * </ul>
+			 */
+			FullInteraction;
+	}
 
 	/**
 	 * Any data you wish to sync between the server and clients can be added here.<br/>
@@ -87,12 +140,11 @@ public interface IGolemHookHandler
 	 * @param player
 	 * @param side
 	 * Server or Client
-	 * @return True will cause customInteraction to be called.<br>
-	 * If any handlers return true, the setupGolem method will be called once all handlers
-	 * have finished the interaction.
+	 * @return The level of interaction.
 	 */
-	public boolean canHandleInteraction( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull EntityPlayer player,
-											@Nonnull Side side );
+	@Nonnull
+	public InteractionLevel canHandleInteraction( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull EntityPlayer player,
+													@Nonnull Side side );
 
 	/**
 	 * Called when the golem has been interacted with and it hasn't been handled by Thaumcraft.<br/>
@@ -100,17 +152,21 @@ public interface IGolemHookHandler
 	 * @param golem
 	 * @param handlerData
 	 * Handler data attached to the golem.
+	 * @param syncData
 	 * @param player
 	 * @param side
 	 * Server or Client
 	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
 	 */
 	@Nullable
-	public Object customInteraction( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull EntityPlayer player,
-										@Nonnull Side side );
+	public Object customInteraction( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull IGolemHookSyncRegistry syncData,
+										@Nonnull EntityPlayer player, @Nonnull Side side );
 
 	/**
-	 * Called when a golem receives a tick, if {@code needsDynamicUpdate} returned true during registration.
+	 * Called when a golem receives a tick, if {@code needsDynamicUpdate} returned true during registration.<br>
+	 * If setting sync data, you do not need to track if the sync data has changed yourself. The {@code syncData} class
+	 * tracks this internally and will only ever send updates if the data has actually changed. Although for performance reasons
+	 * it would be a good idea to keep a tick counter and only set the data periodically if there is any processing involved.<br>
 	 * Note: This is only called server side.
 	 * 
 	 * @param golem

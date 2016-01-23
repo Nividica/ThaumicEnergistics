@@ -92,6 +92,7 @@ public class FeatureGolemBackpack
 						new ResearchPage( ResearchTypes.GOLEM_BACKPACK.getPageName( 1 ) ),
 						new ResearchPage( RecipeRegistry.ITEM_GOLEM_WIFI_BACKPACK ),
 						new ResearchPage( ResearchTypes.GOLEM_BACKPACK.getPageName( 2 ) ),
+						new ResearchPage( ResearchTypes.GOLEM_BACKPACK.getPageName( 3 ) ),
 						new ResearchPage( ResearchTypes.GOLEM_BACKPACK.getPageName( "COREGATHER" ) ),
 						new ResearchPage( "COREFILL", ResearchTypes.GOLEM_BACKPACK.getPageName( "COREFILL" ) ),
 						new ResearchPage( "CORELIQUID", ResearchTypes.GOLEM_BACKPACK.getPageName( "CORELIQUID" ) ),
@@ -103,7 +104,8 @@ public class FeatureGolemBackpack
 		ResearchTypes.GOLEM_BACKPACK.createResearchItem( aspects, ResearchRegistry.COMPLEXITY_LARGE, icon, pages );
 
 		// Set parents
-		ResearchTypes.GOLEM_BACKPACK.researchItem.setParents( this.getFirstValidParentKey( false ), PseudoResearchTypes.COREGATHER.getKey() );
+		ResearchTypes.GOLEM_BACKPACK.researchItem.setParents( this.getFirstValidParentKey( false ), "COREGATHER",
+			PseudoResearchTypes.COREGATHER.getKey() );
 
 		// Hide until the parent has been researched
 		ResearchTypes.GOLEM_BACKPACK.researchItem.setConcealed();

@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import thaumcraft.common.entities.golems.EntityGolemBase;
 import thaumicenergistics.api.entities.IGolemHookHandler;
+import thaumicenergistics.api.entities.IGolemHookHandler.InteractionLevel;
 import thaumicenergistics.api.entities.IGolemHookSyncRegistry;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThELog;
@@ -15,6 +16,13 @@ import thaumicenergistics.fml.ThECore;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Golem hook system.<br>
+ * Manages golem hooks and handlers.
+ * 
+ * @author Nividica
+ * 
+ */
 public class GolemHooks
 {
 	private static class DummyHookHandler
@@ -40,13 +48,15 @@ public class GolemHooks
 		}
 
 		@Override
-		public boolean canHandleInteraction( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player, final Side side )
+		public InteractionLevel canHandleInteraction( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player,
+														final Side side )
 		{
-			return false;
+			return InteractionLevel.NoInteraction;
 		}
 
 		@Override
-		public Object customInteraction( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player, final Side side )
+		public Object customInteraction( final EntityGolemBase golem, final Object handlerData, final IGolemHookSyncRegistry syncData,
+											final EntityPlayer player, final Side side )
 		{
 			return null;
 		}
@@ -216,56 +226,91 @@ public class GolemHooks
 	public static boolean hook_CustomInteraction( final EntityGolemBase golem, final EntityPlayer player,
 													final HashMap<IGolemHookHandler, Object> golemHandlerData )
 	{
-		boolean interactionHandled = false;
+		GolemSyncRegistry syncRegistry = ( (GolemSyncRegistry)golemHandlerData.get( internalHandler ) );
+
+		boolean needsSync = false;
+		boolean needsSetup = false;
+		boolean skipGUI = false;
+		InteractionLevel handlerLevel;
+
 		Side side = EffectiveSide.side();
 
 		for( IGolemHookHandler handler : registeredHandlers )
 		{
+			// Get the current handler data
+			Object handlerData = golemHandlerData.getOrDefault( handler, null );
+
+			// Call handler
 			try
 			{
-				// Get the current handler data
-				Object handlerData = golemHandlerData.getOrDefault( handler, null );
-				boolean hadData = ( handlerData != null );
-
-				// Call handler
-				interactionHandled |= handler.canHandleInteraction( golem, handlerData, player, side );
-				if( interactionHandled )
-				{
-					try
-					{
-						handlerData = handler.customInteraction( golem, handlerData, player, side );
-
-						// Update golem
-						if( handlerData == null )
-						{
-							if( hadData )
-							{
-								golemHandlerData.remove( handler );
-							}
-						}
-						else
-						{
-							golemHandlerData.put( handler, handlerData );
-						}
-					}
-					catch( Exception e )
-					{
-						logCaughtException( "customInteraction", handler, e );
-					}
-				}
+				handlerLevel = handler.canHandleInteraction( golem, handlerData, player, side );
 			}
 			catch( Exception e )
 			{
 				logCaughtException( "canHandleInteraction", handler, e );
+				continue;
+			}
+
+			switch ( handlerLevel )
+			{
+			case NoInteraction:
+				continue;
+
+			case BasicInteraction:
+				break;
+
+			case SyncInteraction:
+				needsSync = true;
+				break;
+
+			case FullInteraction:
+				needsSync = true;
+				needsSetup = true;
+				break;
+			}
+
+			// Handled, dont show the GUI
+			skipGUI = true;
+
+			boolean hadData = ( handlerData != null );
+			try
+			{
+				handlerData = handler.customInteraction( golem, handlerData, syncRegistry, player, side );
+			}
+			catch( Exception e )
+			{
+				logCaughtException( "customInteraction", handler, e );
+				continue;
+			}
+
+			// Update golem
+			if( handlerData == null )
+			{
+				if( hadData )
+				{
+					golemHandlerData.remove( handler );
+				}
+			}
+			else
+			{
+				golemHandlerData.put( handler, handlerData );
 			}
 
 		}
-		if( interactionHandled && side == Side.SERVER )
+
+		if( side == Side.SERVER )
 		{
-			golem.setupGolem();
+			if( needsSetup )
+			{
+				golem.setupGolem();
+			}
+			if( needsSync )
+			{
+				syncRegistry.markDirty();
+			}
 		}
 
-		return interactionHandled;
+		return skipGUI;
 	}
 
 	/**
@@ -314,7 +359,14 @@ public class GolemHooks
 		else if( DATAWATCHER_ID > 0 )
 		{
 			// Add datawatcher field.
-			watcher.addObject( DATAWATCHER_ID, localRegistry.mappingsToString() );
+			try
+			{
+				watcher.addObject( DATAWATCHER_ID, localRegistry.mappingsToString() );
+			}
+			catch( Exception e )
+			{
+				localRegistry.markDirty();
+			}
 		}
 	}
 
@@ -335,7 +387,14 @@ public class GolemHooks
 			// Update handlers
 			for( IGolemHookHandler handler : dynamicHandlers )
 			{
-				handler.golemTick( golem, golemHandlerData.get( handler ), syncRegistry );
+				try
+				{
+					handler.golemTick( golem, golemHandlerData.get( handler ), syncRegistry );
+				}
+				catch( Exception e )
+				{
+					logCaughtException( "golemTick", handler, e );
+				}
 			}
 
 			// Update data watcher
@@ -343,7 +402,22 @@ public class GolemHooks
 			{
 				if( DATAWATCHER_ID > 0 )
 				{
-					golem.getDataWatcher().updateObject( DATAWATCHER_ID, syncRegistry.mappingsToString() );
+					try
+					{
+						golem.getDataWatcher().updateObject( DATAWATCHER_ID, syncRegistry.mappingsToString() );
+					}
+					catch( NullPointerException e1 )
+					{
+
+						try
+						{
+							golem.getDataWatcher().addObject( DATAWATCHER_ID, syncRegistry.mappingsToString() );
+						}
+						catch( Exception e2 )
+						{
+							syncRegistry.markDirty();
+						}
+					}
 				}
 			}
 			return;
@@ -364,10 +438,18 @@ public class GolemHooks
 			syncRegistry.clientSyncTicks = 0.0f;
 
 			// Is the data out of sync?
-			String watcherString = golem.getDataWatcher().getWatchableObjectString( DATAWATCHER_ID );
-			if( !syncRegistry.hasChanged() && ( watcherString == syncRegistry.lastUpdatedFrom ) )
+			String watcherString;
+			try
 			{
-				// Data is in sync
+				watcherString = golem.getDataWatcher().getWatchableObjectString( DATAWATCHER_ID );
+				if( !syncRegistry.hasChanged() && ( watcherString == syncRegistry.lastUpdatedFrom ) )
+				{
+					// Data is in sync
+					return;
+				}
+			}
+			catch( Exception e )
+			{
 				return;
 			}
 
@@ -382,31 +464,31 @@ public class GolemHooks
 			// Inform each handler
 			for( IGolemHookHandler handler : handlersToUpdate )
 			{
+				// Get the current handler data
+				Object handlerData = golemHandlerData.getOrDefault( handler, null );
+				boolean hadData = ( handlerData != null );
 				try
 				{
-					// Get the current handler data
-					Object handlerData = golemHandlerData.getOrDefault( handler, null );
-					boolean hadData = ( handlerData != null );
-
 					// Call handler
 					handlerData = handler.syncDataChanged( syncRegistry, handlerData );
-
-					// Update golem
-					if( handlerData == null )
-					{
-						if( hadData )
-						{
-							golemHandlerData.remove( handler );
-						}
-					}
-					else
-					{
-						golemHandlerData.put( handler, handlerData );
-					}
 				}
 				catch( Exception e )
 				{
 					logCaughtException( "onSyncDataChanged", handler, e );
+					continue;
+				}
+
+				// Update golem
+				if( handlerData == null )
+				{
+					if( hadData )
+					{
+						golemHandlerData.remove( handler );
+					}
+				}
+				else
+				{
+					golemHandlerData.put( handler, handlerData );
 				}
 			}
 		}
@@ -562,9 +644,16 @@ public class GolemHooks
 		}
 
 		// Update data watcher
-		if( localRegistry.hasChanged() && side == Side.SERVER )
+		if( localRegistry.hasChanged() && ( side == Side.SERVER ) && ( DATAWATCHER_ID > 0 ) )
 		{
-			golem.getDataWatcher().updateObject( DATAWATCHER_ID, localRegistry.mappingsToString() );
+			try
+			{
+				golem.getDataWatcher().updateObject( DATAWATCHER_ID, localRegistry.mappingsToString() );
+			}
+			catch( NullPointerException e )
+			{
+				localRegistry.markDirty();
+			}
 		}
 	}
 
