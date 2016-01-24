@@ -9,6 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
@@ -296,6 +297,15 @@ public class ContainerKnowledgeInscriber
 				ingList.add( item );
 			}
 
+			return ingList;
+		}
+		// Is this a wildcard item?
+		else if( ( input instanceof ItemStack ) && ( ( (ItemStack)input ).getItemDamage() == OreDictionary.WILDCARD_VALUE ) )
+		{
+			// Create a list to hold the users preferred item, and the wildcard item
+			ArrayList<ItemStack> ingList = new ArrayList<ItemStack>();
+			ingList.add( this.craftingSlots[slotNumber].getStack() );
+			ingList.add( (ItemStack)input );
 			return ingList;
 		}
 

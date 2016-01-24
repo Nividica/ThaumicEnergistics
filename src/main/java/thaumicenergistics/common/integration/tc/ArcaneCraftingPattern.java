@@ -6,6 +6,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -146,8 +147,8 @@ public class ArcaneCraftingPattern
 			}
 		}
 
-		// Finally check item damage (32767 is some magic number from thaumcraft)
-		return( ( target.getItemDamage() == 32767 ) || ( target.getItemDamage() == input.getItemDamage() ) );
+		// Finally check item damage
+		return( ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE ) || ( target.getItemDamage() == input.getItemDamage() ) );
 	}
 
 	/**
@@ -209,7 +210,6 @@ public class ArcaneCraftingPattern
 	@Override
 	public boolean canSubstitute()
 	{
-		//return false;
 		return true;
 	}
 

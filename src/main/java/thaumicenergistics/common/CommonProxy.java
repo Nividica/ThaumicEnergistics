@@ -1,6 +1,8 @@
 package thaumicenergistics.common;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import thaumcraft.common.config.ConfigItems;
 import thaumicenergistics.common.fluids.GaseousEssentia;
 import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.items.ItemMaterial;
@@ -52,6 +54,9 @@ public class CommonProxy
 
 		// Add iron gear to the oredic
 		OreDictionary.registerOre( "gearIron", ItemMaterial.MaterialTypes.IRON_GEAR.getStack() );
+
+		// Add the shard from thaumcraft so that AE will suggest replacements.
+		OreDictionary.registerOre( "materialAspectShard", new ItemStack( ConfigItems.itemShard, 1, OreDictionary.WILDCARD_VALUE ) );
 	}
 
 	/**
