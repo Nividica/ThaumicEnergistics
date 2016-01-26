@@ -12,6 +12,14 @@ import appeng.util.item.AEItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Widget displaying an AE item.
+ * 
+ * @author Nividica
+ * 
+ * @deprecated Remove in favor of MESlots
+ */
+@Deprecated
 @SideOnly(Side.CLIENT)
 public class WidgetAEItem
 	extends ThEWidget

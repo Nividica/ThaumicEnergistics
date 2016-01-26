@@ -1,22 +1,66 @@
 package thaumicenergistics.api;
 
+import javax.annotation.Nonnull;
+
+/**
+ * Thaumic Energistics Blocks.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class IThEBlocks
 {
-	public IThEItemDescription EssentiaProvider;
-
-	public IThEItemDescription InfusionProvider;
-
-	public IThEItemDescription IronGearBox;
-
-	public IThEItemDescription ThaumiumGearBox;
-
-	public IThEItemDescription EssentiaCellWorkbench;
-
+	/**
+	 * Arcane Assembler.
+	 */
+	@Nonnull
 	public IThEItemDescription ArcaneAssembler;
 
-	public IThEItemDescription KnowledgeInscriber;
+	/**
+	 * Distilation Pattern Encoder.
+	 */
+	@Nonnull
+	public IThEItemDescription DistillationPatternEncoder;
 
+	/**
+	 * Essentia Cell Workbench.
+	 */
+	@Nonnull
+	public IThEItemDescription EssentiaCellWorkbench;
+
+	/**
+	 * Essentia Provider.
+	 */
+	@Nonnull
+	public IThEItemDescription EssentiaProvider;
+
+	/**
+	 * Essentia Vibration Chamber.
+	 */
+	@Nonnull
 	public IThEItemDescription EssentiaVibrationChamber;
 
-	public IThEItemDescription DistillationPatternEncoder;
+	/**
+	 * Infusion Provider.
+	 */
+	@Nonnull
+	public IThEItemDescription InfusionProvider;
+
+	/**
+	 * Iron Gearbox.
+	 */
+	@Nonnull
+	public IThEItemDescription IronGearBox;
+
+	/**
+	 * Knowledge Inscriber.
+	 */
+	@Nonnull
+	public IThEItemDescription KnowledgeInscriber;
+
+	/**
+	 * Thaumium Gearbox.
+	 */
+	@Nonnull
+	public IThEItemDescription ThaumiumGearBox;
 }

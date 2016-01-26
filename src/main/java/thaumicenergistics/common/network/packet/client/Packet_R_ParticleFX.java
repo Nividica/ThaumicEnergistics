@@ -11,6 +11,12 @@ import thaumicenergistics.common.network.NetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Particle effect packet, clients-in-area-bound
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_R_ParticleFX
 	extends ThEAreaPacket
 {

@@ -15,9 +15,16 @@ import thaumicenergistics.common.container.ContainerKnowledgeInscriber;
 import thaumicenergistics.common.container.ContainerKnowledgeInscriber.CoreSaveState;
 import thaumicenergistics.common.network.packet.server.Packet_S_KnowledgeInscriber;
 import thaumicenergistics.common.registries.ThEStrings;
+import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link TileKnowledgeInscriber} GUI
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiKnowledgeInscriber
 	extends ThEBaseGui

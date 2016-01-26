@@ -1,8 +1,13 @@
-package thaumicenergistics.common.registries;
+package thaumicenergistics.common.tiles;
 
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.tiles.*;
 
+/**
+ * Enumeration of all ThE tile entities.
+ * 
+ * @author Nividica
+ * 
+ */
 public enum TileEnum
 {
 		EssentiaProvider ("TileEssentiaProvider", TileEssentiaProvider.class),

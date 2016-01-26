@@ -14,6 +14,12 @@ import thaumicenergistics.api.IThEEssentiaContainerPermission;
 import thaumicenergistics.api.IThETransportPermissions;
 import thaumicenergistics.common.utils.ThELog;
 
+/**
+ * Implements {@link IThETransportPermissions}.
+ * 
+ * @author Nividica
+ * 
+ */
 class ThETransportPermissions
 	implements IThETransportPermissions
 {

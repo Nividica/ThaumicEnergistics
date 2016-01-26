@@ -9,8 +9,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
+import thaumicenergistics.common.items.ItemEssentiaCell;
+import thaumicenergistics.common.items.ItemWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
+import thaumicenergistics.common.parts.PartEssentiaTerminal;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
@@ -18,6 +21,12 @@ import appeng.api.config.ViewItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link PartEssentiaTerminal}, {@link ItemWirelessEssentiaTerminal}, and {@link ItemEssentiaCell} client-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_C_EssentiaCellTerminal
 	extends ThEClientPacket
 {

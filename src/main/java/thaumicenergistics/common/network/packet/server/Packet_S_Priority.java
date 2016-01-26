@@ -5,6 +5,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.common.container.ContainerPriority;
 import thaumicenergistics.common.network.NetworkHandler;
 
+/**
+ * Priority GUI client-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_S_Priority
 	extends ThEServerPacket
 {

@@ -20,7 +20,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.grid.AEPartGridBlock;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
 import appeng.api.AEApi;
@@ -42,6 +41,12 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base class for all ThE cable parts.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class ThEPartBase
 	implements IPart, IGridHost, IActionHost, IPowerChannelState
 {

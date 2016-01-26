@@ -1,7 +1,14 @@
 package thaumicenergistics.api.gui;
 
+import javax.annotation.Nonnull;
 import net.minecraft.client.gui.FontRenderer;
 
+/**
+ * GUI that displays widgets.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IWidgetHost
 {
 	/**
@@ -9,9 +16,20 @@ public interface IWidgetHost
 	 * 
 	 * @return
 	 */
-	public FontRenderer getFontRenderer();
+	@Nonnull
+	FontRenderer getFontRenderer();
 
-	public int guiLeft();
+	/**
+	 * Return the left of the GUI.
+	 * 
+	 * @return
+	 */
+	int guiLeft();
 
-	public int guiTop();
+	/**
+	 * Return the top of the GUI.
+	 * 
+	 * @return
+	 */
+	int guiTop();
 }

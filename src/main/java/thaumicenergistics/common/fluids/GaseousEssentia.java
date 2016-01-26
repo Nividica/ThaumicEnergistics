@@ -158,20 +158,6 @@ public class GaseousEssentia
 		return BlockTextureManager.GASEOUS_ESSENTIA.getTexture();
 	}
 
-	/**
-	 * Gets the fluid form of this gas.
-	 */
-	@Override
-	public Fluid getFluid()
-	{
-		return this;
-	}
-
-	/**
-	 * Gets the localized version of the gasses name.
-	 * 
-	 * @deprecated
-	 */
 	@Deprecated
 	@Override
 	public String getLocalizedName()

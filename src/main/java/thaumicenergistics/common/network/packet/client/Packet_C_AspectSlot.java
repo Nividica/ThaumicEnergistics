@@ -13,6 +13,12 @@ import thaumicenergistics.common.network.ThEBasePacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Aspect slot client-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_C_AspectSlot
 	extends ThEClientPacket
 {

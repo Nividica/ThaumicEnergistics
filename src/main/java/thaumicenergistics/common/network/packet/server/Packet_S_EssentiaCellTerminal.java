@@ -4,9 +4,18 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.container.ContainerEssentiaCellTerminalBase;
+import thaumicenergistics.common.items.ItemEssentiaCell;
+import thaumicenergistics.common.items.ItemWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
+import thaumicenergistics.common.parts.PartEssentiaTerminal;
 
+/**
+ * {@link PartEssentiaTerminal}, {@link ItemWirelessEssentiaTerminal}, and {@link ItemEssentiaCell} server-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_S_EssentiaCellTerminal
 	extends ThEServerPacket
 {

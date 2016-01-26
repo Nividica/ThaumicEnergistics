@@ -4,6 +4,12 @@ import java.io.File;
 import net.minecraftforge.common.config.Configuration;
 import thaumicenergistics.api.IThEConfig;
 
+/**
+ * Controls the ThE configuration.
+ * 
+ * @author Nividica
+ * 
+ */
 class ConfigurationHandler
 	implements IThEConfig
 {

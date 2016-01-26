@@ -15,6 +15,12 @@ import thaumcraft.common.tiles.TileJarFillableVoid;
 import thaumicenergistics.common.entities.WirelessGolemHandler.WirelessServerData;
 import appeng.api.config.Actionable;
 
+/**
+ * Allows a golem to interact with networked essentia.
+ * 
+ * @author Nividica
+ * 
+ */
 public class AIGolemWifiEssentia
 	extends AIAENetworkGolem
 {

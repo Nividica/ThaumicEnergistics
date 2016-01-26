@@ -18,6 +18,12 @@ import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link TileArcaneAssembler} GUI
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiArcaneAssembler
 	extends ThEBaseGui

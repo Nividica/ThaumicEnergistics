@@ -8,6 +8,12 @@ import net.minecraft.item.ItemStack;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ThEStrings;
 
+/**
+ * Holds arcane crafting patterns.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemKnowledgeCore
 	extends Item
 {

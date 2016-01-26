@@ -7,6 +7,12 @@ import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Displays redstone mode icons.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiButtonRedstoneModes
 	extends ThEStateButton

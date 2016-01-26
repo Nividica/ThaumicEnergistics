@@ -16,6 +16,12 @@ import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.core.AELog;
 
+/**
+ * Server-bound confirm crafting packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_S_ConfirmCraftingJob
 	extends ThEServerPacket
 {

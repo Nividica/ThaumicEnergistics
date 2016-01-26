@@ -6,6 +6,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Container that includes the players inventory.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class ContainerWithPlayerInventory
 	extends TheContainerBase
 {

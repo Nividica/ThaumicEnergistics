@@ -6,6 +6,12 @@ import thaumcraft.common.entities.golems.EntityGolemBase;
 import thaumcraft.common.entities.golems.GolemHelper;
 import thaumicenergistics.common.entities.WirelessGolemHandler.WirelessServerData;
 
+/**
+ * Allows a golem to extract liquid from the network as it needs it.
+ * 
+ * @author Nividica
+ * 
+ */
 public class AIGolemWifiLiquid
 	extends AIAENetworkGolem
 {

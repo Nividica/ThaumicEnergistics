@@ -15,6 +15,7 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper.Aspe
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.common.inventory.TheInternalInventory;
 import thaumicenergistics.common.items.ItemCraftingAspect;
+import thaumicenergistics.common.items.ItemWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaCellTerminal;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
@@ -30,6 +31,12 @@ import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.util.Platform;
 
+/**
+ * {@link ItemWirelessEssentiaTerminal} container.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ContainerWirelessEssentiaTerminal
 	extends ContainerEssentiaCellTerminalBase
 {

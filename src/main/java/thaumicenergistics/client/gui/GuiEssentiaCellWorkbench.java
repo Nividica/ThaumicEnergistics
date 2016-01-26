@@ -23,7 +23,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Gui for the cell workbench
+ * {@link TileEssentiaCellWorkbench} GUI
  * 
  * @author Nividica
  * 

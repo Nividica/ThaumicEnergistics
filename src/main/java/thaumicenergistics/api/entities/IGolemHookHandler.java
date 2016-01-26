@@ -112,7 +112,7 @@ public interface IGolemHookHandler
 	 * 
 	 * @param syncRegistry
 	 */
-	public void addDefaultSyncEntries( @Nonnull IGolemHookSyncRegistry syncRegistry );
+	void addDefaultSyncEntries( @Nonnull IGolemHookSyncRegistry syncRegistry );
 
 	/**
 	 * Called when the golem was left clicked by a player holding the Golemancers Bell.
@@ -128,8 +128,8 @@ public interface IGolemHookHandler
 	 * @param side
 	 * Server or Client @Nonnull Side side
 	 */
-	public void bellLeftClicked( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull ItemStack itemGolemPlacer,
-									@Nonnull EntityPlayer player, boolean dismantled, @Nonnull Side side );
+	void bellLeftClicked( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull ItemStack itemGolemPlacer,
+							@Nonnull EntityPlayer player, boolean dismantled, @Nonnull Side side );
 
 	/**
 	 * Return true if you can handle this interaction.<br/>
@@ -143,8 +143,8 @@ public interface IGolemHookHandler
 	 * @return The level of interaction.
 	 */
 	@Nonnull
-	public InteractionLevel canHandleInteraction( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull EntityPlayer player,
-													@Nonnull Side side );
+	InteractionLevel canHandleInteraction( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull EntityPlayer player,
+											@Nonnull Side side );
 
 	/**
 	 * Called when the golem has been interacted with and it hasn't been handled by Thaumcraft.<br/>
@@ -159,8 +159,8 @@ public interface IGolemHookHandler
 	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
 	 */
 	@Nullable
-	public Object customInteraction( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull IGolemHookSyncRegistry syncData,
-										@Nonnull EntityPlayer player, @Nonnull Side side );
+	Object customInteraction( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull IGolemHookSyncRegistry syncData,
+								@Nonnull EntityPlayer player, @Nonnull Side side );
 
 	/**
 	 * Called when a golem receives a tick, if {@code needsDynamicUpdate} returned true during registration.<br>
@@ -173,14 +173,14 @@ public interface IGolemHookHandler
 	 * @param serverHandlerData
 	 * @param syncData
 	 */
-	public void golemTick( @Nonnull EntityGolemBase golem, @Nullable Object serverHandlerData, @Nonnull IGolemHookSyncRegistry syncData );
+	void golemTick( @Nonnull EntityGolemBase golem, @Nullable Object serverHandlerData, @Nonnull IGolemHookSyncRegistry syncData );
 
 	/**
 	 * Return true if your handler wants to be called each time the golem gets a tick from the server.
 	 * 
 	 * @return
 	 */
-	public boolean needsDynamicUpdates();
+	boolean needsDynamicUpdates();
 
 	/**
 	 * Return true if your handler wants to be called when a golem is rendered.<br/>
@@ -188,7 +188,7 @@ public interface IGolemHookHandler
 	 * 
 	 * @return
 	 */
-	public boolean needsRenderer();
+	boolean needsRenderer();
 
 	/**
 	 * Called when reading the golem's NBT.<br />
@@ -199,7 +199,7 @@ public interface IGolemHookHandler
 	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
 	 */
 	@Nullable
-	public Object readEntityFromNBT( @Nonnull final EntityGolemBase golem, @Nonnull NBTTagCompound nbtTag );
+	Object readEntityFromNBT( @Nonnull final EntityGolemBase golem, @Nonnull NBTTagCompound nbtTag );
 
 	/**
 	 * Called when a golem is being rendered, if {@code needsRenderer} returned true during registration.
@@ -212,8 +212,8 @@ public interface IGolemHookHandler
 	 * @param partialElaspsedTick
 	 */
 	@SideOnly(Side.CLIENT)
-	public void renderGolem( @Nonnull EntityGolemBase golem, @Nullable Object clientHandlerData, double x, double y, double z,
-								float partialElaspsedTick );
+	void renderGolem( @Nonnull EntityGolemBase golem, @Nullable Object clientHandlerData, double x, double y, double z,
+						float partialElaspsedTick );
 
 	/**
 	 * Called just before the golem has finished setting up.<br/>
@@ -229,8 +229,8 @@ public interface IGolemHookHandler
 	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
 	 */
 	@Nullable
-	public Object setupGolem( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull IGolemHookSyncRegistry syncData,
-								@Nonnull Side side );
+	Object setupGolem( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull IGolemHookSyncRegistry syncData,
+						@Nonnull Side side );
 
 	/**
 	 * Called when a golem is being spawned via it's item.<br/>
@@ -243,7 +243,7 @@ public interface IGolemHookHandler
 	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
 	 */
 	@Nullable
-	public Object spawnGolemFromItemStack( @Nonnull final EntityGolemBase golem, @Nonnull ItemStack itemGolemPlacer, @Nonnull Side side );
+	Object spawnGolemFromItemStack( @Nonnull final EntityGolemBase golem, @Nonnull ItemStack itemGolemPlacer, @Nonnull Side side );
 
 	/**
 	 * Called when sync data has changed.
@@ -254,7 +254,7 @@ public interface IGolemHookHandler
 	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
 	 */
 	@SideOnly(Side.CLIENT)
-	public Object syncDataChanged( @Nonnull IGolemHookSyncRegistry syncData, @Nullable Object clientHandlerData );
+	Object syncDataChanged( @Nonnull IGolemHookSyncRegistry syncData, @Nullable Object clientHandlerData );
 
 	/**
 	 * Called when saving the golem's NBT.<br />
@@ -264,5 +264,5 @@ public interface IGolemHookHandler
 	 * @param serverHandlerData
 	 * @param nbtTag
 	 */
-	public void writeEntityNBT( @Nonnull final EntityGolemBase golem, @Nullable Object serverHandlerData, @Nonnull NBTTagCompound nbtTag );
+	void writeEntityNBT( @Nonnull final EntityGolemBase golem, @Nullable Object serverHandlerData, @Nonnull NBTTagCompound nbtTag );
 }

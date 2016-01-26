@@ -5,6 +5,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import thaumicenergistics.common.items.ItemKnowledgeCore;
 import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
 
+/**
+ * Encodes arcane recipes.
+ * 
+ * @author Nividica
+ * 
+ */
 public class TileKnowledgeInscriber
 	extends ThETileInventory
 {

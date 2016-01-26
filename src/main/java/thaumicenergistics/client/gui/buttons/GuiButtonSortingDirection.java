@@ -7,6 +7,12 @@ import appeng.api.config.SortDir;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Displays sorting direction icons.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiButtonSortingDirection
 	extends ThEStateButton

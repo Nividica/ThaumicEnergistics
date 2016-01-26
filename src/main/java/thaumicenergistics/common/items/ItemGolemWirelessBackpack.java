@@ -13,6 +13,12 @@ import appeng.core.localization.GuiText;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Gives golems access to the AE network.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemGolemWirelessBackpack
 	extends Item
 	implements INetworkEncodable

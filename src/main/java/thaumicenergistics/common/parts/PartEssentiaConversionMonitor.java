@@ -10,11 +10,11 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IEssentiaContainerItem;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper.AspectItemType;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
@@ -25,6 +25,12 @@ import appeng.client.texture.CableBusTextures;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
+/**
+ * Displays essentia levels, and allows extraction/insertion from {@link IEssentiaContainerItem}.
+ * 
+ * @author Nividica
+ * 
+ */
 public class PartEssentiaConversionMonitor
 	extends PartEssentiaStorageMonitor
 {

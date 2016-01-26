@@ -1,8 +1,15 @@
 package thaumicenergistics.api.items;
 
+import javax.annotation.Nonnull;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 
+/**
+ * Essentia container item that restricts what aspects it can store.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IRestrictedEssentiaContainerItem
 	extends IEssentiaContainerItem
 {
@@ -12,5 +19,5 @@ public interface IRestrictedEssentiaContainerItem
 	 * @param aspect
 	 * @return
 	 */
-	public boolean acceptsAspect( Aspect aspect );
+	boolean acceptsAspect( @Nonnull Aspect aspect );
 }

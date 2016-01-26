@@ -7,9 +7,17 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.blocks.BlockEnum;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
+import thaumicenergistics.common.tiles.TileEssentiaProvider;
 
+/**
+ * {@link TileEssentiaProvider} feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureEssentiaProvider
 	extends ThEThaumcraftResearchFeature
 {
@@ -63,6 +71,11 @@ public class FeatureEssentiaProvider
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set Essentia Provider research aspects
@@ -86,11 +99,6 @@ public class FeatureEssentiaProvider
 		ResearchTypes.ESSENTIA_PROVIDER.researchItem.setParentsHidden( "INFUSION", "TUBEFILTER" );
 		ResearchTypes.ESSENTIA_PROVIDER.researchItem.setConcealed();
 		ResearchTypes.ESSENTIA_PROVIDER.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
 	}
 
 }

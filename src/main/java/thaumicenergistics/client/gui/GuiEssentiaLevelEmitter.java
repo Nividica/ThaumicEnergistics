@@ -16,14 +16,14 @@ import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerPartEssentiaLevelEmitter;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaEmitter;
+import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Gui for the level emitter.
+ * {@link PartEssentiaLevelEmitter} GUI
  * 
  * @author Nividica
  * 

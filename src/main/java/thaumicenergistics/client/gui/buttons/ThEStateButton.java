@@ -11,6 +11,12 @@ import com.google.common.base.Splitter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base class for ThE state buttons.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public abstract class ThEStateButton
 	extends ThEGuiButtonBase

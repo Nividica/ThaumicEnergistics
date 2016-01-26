@@ -26,6 +26,7 @@ import thaumicenergistics.common.integration.tc.MEItemAspectBridgeContainer;
 import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
 import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.registries.ThEStrings;
+import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import thaumicenergistics.common.utils.ThEUtils;
 import appeng.api.config.*;
 import appeng.api.storage.data.IAEItemStack;
@@ -39,7 +40,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Gui for the Arcane Crafting Terminal
+ * {@link TileArcaneAssembler} GUI
  * 
  * @author Nividica
  * 

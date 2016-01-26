@@ -2,6 +2,12 @@ package thaumicenergistics.common.integration;
 
 import java.util.List;
 
+/**
+ * Waila source block
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IWailaSource
 {
 	/**
@@ -9,5 +15,5 @@ public interface IWailaSource
 	 * 
 	 * @param tooltip
 	 */
-	public void addWailaInformation( List<String> tooltip );
+	void addWailaInformation( List<String> tooltip );
 }

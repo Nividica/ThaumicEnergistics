@@ -9,6 +9,12 @@ import net.minecraft.util.EnumChatFormatting;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
 
+/**
+ * {@link TileArcaneAssembler} item.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemBlockArcaneAssembler
 	extends ItemBlock
 {

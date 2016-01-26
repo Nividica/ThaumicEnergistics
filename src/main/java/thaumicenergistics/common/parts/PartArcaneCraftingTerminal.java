@@ -26,7 +26,6 @@ import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.integration.tc.DigiVisSourceData;
 import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
@@ -53,6 +52,12 @@ import appeng.items.storage.ItemViewCell;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Allows crafting arcane items while viewing the items in the network.
+ * 
+ * @author Nividica
+ * 
+ */
 public class PartArcaneCraftingTerminal
 	extends ThERotateablePart
 	implements IInventory, IGridTickable, ICraftingIssuerHost, ITerminalHost

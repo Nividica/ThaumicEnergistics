@@ -7,6 +7,12 @@ import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.integration.tc.PseudoResearchItem;
 
+/**
+ * Enumeration of ThE's Thaumcraft research.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ResearchRegistry
 {
 	// Fake research, serves as placeholder for existing research

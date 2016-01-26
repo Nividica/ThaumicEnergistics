@@ -6,6 +6,12 @@ import thaumicenergistics.client.gui.ThEGuiHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base class for ThE buttons.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public abstract class ThEGuiButtonBase
 	extends GuiButton

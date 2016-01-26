@@ -1,4 +1,4 @@
-package thaumicenergistics.common.registries;
+package thaumicenergistics.common.parts;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,9 +8,15 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.items.ItemEnum;
-import thaumicenergistics.common.parts.*;
+import thaumicenergistics.common.registries.ThEStrings;
 import appeng.api.config.Upgrades;
 
+/**
+ * Enumeration of all ThE cable parts.
+ * 
+ * @author Nividica
+ * 
+ */
 public enum AEPartsEnum
 {
 		EssentiaImportBus (ThEStrings.Part_EssentiaImportBus, PartEssentiaImportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport",

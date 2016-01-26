@@ -14,8 +14,15 @@ import thaumicenergistics.api.items.IRestrictedEssentiaContainerItem;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.storage.AspectStack;
+import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
 
+/**
+ * {@link TileEssentiaVibrationChamber} item.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemBlockEssentiaVibrationChamber
 	extends ItemBlock
 	implements IRestrictedEssentiaContainerItem

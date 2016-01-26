@@ -1,8 +1,14 @@
 package thaumicenergistics.implementaion;
 
 import thaumicenergistics.api.IThEParts;
-import thaumicenergistics.common.registries.AEPartsEnum;
+import thaumicenergistics.common.parts.AEPartsEnum;
 
+/**
+ * Implements {@link IThEParts}.
+ * 
+ * @author Nividica
+ * 
+ */
 class ThEParts
 	extends IThEParts
 {

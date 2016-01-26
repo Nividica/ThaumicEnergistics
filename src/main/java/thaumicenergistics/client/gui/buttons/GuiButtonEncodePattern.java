@@ -6,6 +6,12 @@ import appeng.core.localization.ButtonToolTips;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Displays encode pattern icon.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiButtonEncodePattern
 	extends ThEStateButton

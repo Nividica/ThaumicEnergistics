@@ -8,6 +8,12 @@ import thaumcraft.api.aspects.Aspect;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Helper methods for GUI's.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public final class ThEGuiHelper
 {

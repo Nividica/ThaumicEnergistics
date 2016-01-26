@@ -1,7 +1,14 @@
 package thaumicenergistics.api.grid;
 
+import javax.annotation.Nonnull;
 import thaumicenergistics.api.storage.IAspectStack;
 
+/**
+ * Defines a class that will attach to a monitor to receive all essentia change events.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IMEEssentiaMonitorReceiver
 {
 	/**
@@ -12,7 +19,7 @@ public interface IMEEssentiaMonitorReceiver
 	 * @param verificationToken
 	 * @return False if the receiver should no longer get updates.
 	 */
-	boolean isValid( Object verificationToken );
+	boolean isValid( @Nonnull Object verificationToken );
 
 	/**
 	 * Called when a change to the stored essentia occurs.
@@ -20,5 +27,5 @@ public interface IMEEssentiaMonitorReceiver
 	 * @param fromMonitor
 	 * @param changes
 	 */
-	void postChange( IMEEssentiaMonitor fromMonitor, Iterable<IAspectStack> changes );
+	void postChange( @Nonnull IMEEssentiaMonitor fromMonitor, @Nonnull Iterable<IAspectStack> changes );
 }

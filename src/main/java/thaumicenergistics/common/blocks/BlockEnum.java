@@ -1,11 +1,18 @@
-package thaumicenergistics.common.registries;
+package thaumicenergistics.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import thaumicenergistics.common.blocks.*;
 import thaumicenergistics.common.items.ItemBlockArcaneAssembler;
 import thaumicenergistics.common.items.ItemBlockEssentiaVibrationChamber;
+import thaumicenergistics.common.registries.ThEStrings;
 
+/**
+ * Enumeration of all ThE blocks.
+ * 
+ * @author Nividica
+ * 
+ */
 public enum BlockEnum
 {
 		ESSENTIA_PROVIDER (ThEStrings.Block_EssentiaProvider, new BlockEssentiaProvider()),

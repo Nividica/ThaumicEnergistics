@@ -8,10 +8,18 @@ import thaumcraft.api.research.ResearchPage;
 import thaumcraft.common.config.Config;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.blocks.BlockEnum;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
+import thaumicenergistics.common.tiles.TileInfusionProvider;
 
+/**
+ * {@link TileInfusionProvider} feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureInfusionProvider
 	extends ThEThaumcraftResearchFeature
 {
@@ -63,6 +71,21 @@ public class FeatureInfusionProvider
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+		PseudoResearchTypes.INFUSION.registerPsudeoResearch();
+		if( Config.allowMirrors )
+		{
+			PseudoResearchTypes.MIRROR.registerPsudeoResearch();
+		}
+		else
+		{
+			PseudoResearchTypes.JAR.registerPsudeoResearch();
+		}
+
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set the research aspects
@@ -92,21 +115,6 @@ public class FeatureInfusionProvider
 		ResearchTypes.INFUSION_PROVIDER.researchItem.setParentsHidden( researchKeyMirrorOrJar, "INFUSION" );
 		ResearchTypes.INFUSION_PROVIDER.researchItem.setConcealed().setSpecial();
 		ResearchTypes.INFUSION_PROVIDER.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
-		PseudoResearchTypes.INFUSION.registerPsudeoResearch();
-		if( Config.allowMirrors )
-		{
-			PseudoResearchTypes.MIRROR.registerPsudeoResearch();
-		}
-		else
-		{
-			PseudoResearchTypes.JAR.registerPsudeoResearch();
-		}
-
 	}
 
 }

@@ -9,7 +9,14 @@ import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
+import appeng.tile.misc.TileVibrationChamber;
 
+/**
+ * {@link TileVibrationChamber} container.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ContainerEssentiaVibrationChamber
 	extends TheContainerBase
 {

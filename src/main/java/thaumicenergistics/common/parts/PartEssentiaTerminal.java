@@ -22,7 +22,6 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.common.inventory.TheInternalInventory;
 import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
@@ -40,6 +39,12 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Allows a player to extract/deposit essentia from the network.
+ * 
+ * @author Nividica
+ * 
+ */
 public class PartEssentiaTerminal
 	extends ThERotateablePart
 	implements ICraftingIssuerHost

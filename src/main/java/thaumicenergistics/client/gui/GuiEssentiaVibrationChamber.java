@@ -9,9 +9,16 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
 import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerEssentiaVibrationChamber;
+import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link TileEssentiaVibrationChamber} GUI
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaVibrationChamber
 	extends ThEBaseGui

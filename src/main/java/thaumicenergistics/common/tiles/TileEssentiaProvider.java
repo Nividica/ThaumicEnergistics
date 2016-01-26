@@ -17,6 +17,12 @@ import appeng.api.config.Actionable;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 
+/**
+ * Provides essentia to {@link IEssentiaTransport} devices via suction.
+ * 
+ * @author Nividica
+ * 
+ */
 public class TileEssentiaProvider
 	extends TileProviderBase
 	implements IEssentiaTransportWithSimulate

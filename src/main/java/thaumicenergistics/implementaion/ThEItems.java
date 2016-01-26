@@ -5,6 +5,12 @@ import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.items.ItemMaterial.MaterialTypes;
 import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
 
+/**
+ * Implements {@link IThEItems}.
+ * 
+ * @author Nividica
+ * 
+ */
 class ThEItems
 	extends IThEItems
 {

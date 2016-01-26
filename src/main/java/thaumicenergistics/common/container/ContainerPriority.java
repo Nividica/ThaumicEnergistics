@@ -9,6 +9,12 @@ import thaumicenergistics.common.parts.ThEPartBase;
 import thaumicenergistics.common.utils.ThEUtils;
 import appeng.helpers.IPriorityHost;
 
+/**
+ * Container for a priority GUI.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ContainerPriority
 	extends Container
 {

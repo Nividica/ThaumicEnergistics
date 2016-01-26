@@ -4,6 +4,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.common.ThaumicEnergistics;
 
+/**
+ * Enumeration of all ThE items.
+ * 
+ * @author Nividica
+ * 
+ */
 public enum ItemEnum
 {
 		ITEM_AEPART ("part.base", new ItemAEPart()),

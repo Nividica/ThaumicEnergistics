@@ -7,6 +7,12 @@ import thaumicenergistics.common.CommonProxy;
 import thaumicenergistics.common.registries.Renderers;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
+/**
+ * Client side proxy.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ClientProxy
 	extends CommonProxy
 {

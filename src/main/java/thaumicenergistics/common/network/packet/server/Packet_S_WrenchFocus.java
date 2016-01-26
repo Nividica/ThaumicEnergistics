@@ -8,6 +8,12 @@ import thaumicenergistics.common.items.ItemFocusAEWrench;
 import thaumicenergistics.common.network.NetworkHandler;
 import appeng.util.Platform;
 
+/**
+ * {@link ItemFocusAEWrench} server-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_S_WrenchFocus
 	extends ThEServerPacket
 {

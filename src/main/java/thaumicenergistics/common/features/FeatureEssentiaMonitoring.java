@@ -11,12 +11,22 @@ import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.IThEParts;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.parts.AEPartsEnum;
+import thaumicenergistics.common.parts.PartEssentiaConversionMonitor;
+import thaumicenergistics.common.parts.PartEssentiaStorageMonitor;
+import thaumicenergistics.common.parts.PartEssentiaTerminal;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import cpw.mods.fml.common.registry.GameRegistry;
 
+/**
+ * {@link PartEssentiaTerminal}, {@link PartEssentiaStorageMonitor}, and {@link PartEssentiaConversionMonitor} feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureEssentiaMonitoring
 	extends ThEThaumcraftResearchFeature
 {
@@ -112,6 +122,11 @@ public class FeatureEssentiaMonitoring
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set the research aspects
@@ -151,10 +166,5 @@ public class FeatureEssentiaMonitoring
 		ResearchTypes.ESSENTIA_TERMINAL.researchItem.setConcealed();
 		ResearchTypes.ESSENTIA_TERMINAL.researchItem.setSecondary();
 		ResearchTypes.ESSENTIA_TERMINAL.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
 	}
 }

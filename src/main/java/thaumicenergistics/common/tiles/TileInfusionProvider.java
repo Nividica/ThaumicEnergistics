@@ -8,6 +8,12 @@ import thaumcraft.common.Thaumcraft;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.tiles.abstraction.TileProviderBase;
 
+/**
+ * Provides essentia to devices via Infusion mechanics.
+ * 
+ * @author Nividica
+ * 
+ */
 public class TileInfusionProvider
 	extends TileProviderBase
 	implements IAspectSource

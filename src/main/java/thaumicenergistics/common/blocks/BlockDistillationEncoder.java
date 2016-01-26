@@ -16,12 +16,17 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.registries.BlockEnum;
 import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
 import thaumicenergistics.common.utils.EffectiveSide;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link TileDistillationPatternEncoder} block.
+ * 
+ * @author Nividica
+ * 
+ */
 public class BlockDistillationEncoder
 	extends AbstractBlockAEWrenchable
 {

@@ -3,6 +3,12 @@ package thaumicenergistics.common.utils;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
+/**
+ * Which side, server vs client, is the code on?
+ * 
+ * @author Nividica
+ * 
+ */
 public final class EffectiveSide
 {
 	/**

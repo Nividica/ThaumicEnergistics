@@ -26,6 +26,12 @@ import appeng.api.util.DimensionalCoord;
 import appeng.tile.misc.TileSecurity;
 import appeng.tile.networking.TileWireless;
 
+/**
+ * Provides wireless access to a ME network.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class WirelessAELink
 	implements IStorageMonitorable
 {

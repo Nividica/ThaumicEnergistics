@@ -15,6 +15,12 @@ import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
+/**
+ * {@link TileArcaneAssembler} feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureAutocrafting_Arcane
 	extends ThEThaumcraftResearchFeature
 {
@@ -122,6 +128,12 @@ public class FeatureAutocrafting_Arcane
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+		PseudoResearchTypes.SCEPTRE.registerPsudeoResearch();
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set Assembler research aspects
@@ -178,12 +190,6 @@ public class FeatureAutocrafting_Arcane
 
 		// Register the research
 		ResearchTypes.KNOWLEDGE_INSCRIBER.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
-		PseudoResearchTypes.SCEPTRE.registerPsudeoResearch();
 	}
 
 }

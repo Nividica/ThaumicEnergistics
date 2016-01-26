@@ -9,6 +9,12 @@ import thaumicenergistics.client.textures.IStateIconTexture;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Large corner-button.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiButtonAETab
 	extends ThEStateButton

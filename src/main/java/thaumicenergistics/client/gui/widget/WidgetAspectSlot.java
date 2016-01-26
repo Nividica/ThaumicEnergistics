@@ -12,6 +12,12 @@ import thaumicenergistics.common.network.packet.server.Packet_S_AspectSlot;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Widget displaying an aspect.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class WidgetAspectSlot
 	extends AspectWidgetBase

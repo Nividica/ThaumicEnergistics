@@ -5,6 +5,12 @@ import net.minecraft.client.gui.Gui;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Animates {@link EnumGuiParticles}.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiParticleAnimator
 {

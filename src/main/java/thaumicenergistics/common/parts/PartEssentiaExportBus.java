@@ -7,11 +7,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.common.tiles.TileJarFillableVoid;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartCollisionHelper;
@@ -20,6 +20,12 @@ import appeng.api.parts.PartItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Exports essentia into {@link IAspectContainer}
+ * 
+ * @author Nividica
+ * 
+ */
 public class PartEssentiaExportBus
 	extends ThEPartEssentiaIOBus_Base
 {

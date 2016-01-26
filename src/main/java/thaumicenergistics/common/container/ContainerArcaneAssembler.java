@@ -14,6 +14,12 @@ import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.container.slot.SlotInaccessible;
 
+/**
+ * {@link TileArcaneAssembler} container.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ContainerArcaneAssembler
 	extends ContainerWithNetworkTool
 {

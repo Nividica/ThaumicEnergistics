@@ -11,7 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.registries.AEPartsEnum;
+import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.utils.ThELog;
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
@@ -21,6 +21,12 @@ import appeng.api.parts.IPartItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base class for all ThE's AE2 cable parts.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemAEPart
 	extends Item
 	implements IPartItem, IItemGroup
@@ -30,14 +36,17 @@ public class ItemAEPart
 	 */
 	public ItemAEPart()
 	{
+		// Undamageable
 		this.setMaxDamage( 0 );
 
+		// Has sub types
 		this.setHasSubtypes( true );
 
+		// Can be rendered on a cable.
 		AEApi.instance().partHelper().setItemBusRenderer( this );
 
+		// Register parts who can take an upgrade card.
 		Map<Upgrades, Integer> possibleUpgradesList;
-
 		for( AEPartsEnum part : AEPartsEnum.VALUES )
 		{
 			possibleUpgradesList = part.getUpgrades();

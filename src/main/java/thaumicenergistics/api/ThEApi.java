@@ -2,10 +2,15 @@ package thaumicenergistics.api;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 /**
  * Thaumic Energistics API
+ * 
+ * @author Nividica
+ * 
  */
 public abstract class ThEApi
 {
@@ -15,6 +20,7 @@ public abstract class ThEApi
 	 * Gets the Thaumic Energistics API.
 	 * Note: Only available after the PREINIT event.
 	 */
+	@Nullable
 	public static ThEApi instance()
 	{
 		// Have we already retrieved the api?
@@ -44,16 +50,19 @@ public abstract class ThEApi
 	/**
 	 * Blocks
 	 */
+	@Nonnull
 	public abstract IThEBlocks blocks();
 
 	/**
 	 * Configuration
 	 */
+	@Nonnull
 	public abstract IThEConfig config();
 
 	/**
 	 * Essentia Gasses
 	 */
+	@Nonnull
 	public abstract ImmutableList<List<IThEEssentiaGas>> essentiaGases();
 
 	/**
@@ -61,21 +70,25 @@ public abstract class ThEApi
 	 * 
 	 * @return
 	 */
+	@Nonnull
 	public abstract IThEInteractionHelper interact();
 
 	/**
 	 * Items
 	 */
+	@Nonnull
 	public abstract IThEItems items();
 
 	/**
 	 * Cable Parts
 	 */
+	@Nonnull
 	public abstract IThEParts parts();
 
 	/**
 	 * Transport Permissions.
 	 */
+	@Nonnull
 	public abstract IThETransportPermissions transportPermissions();
 
 }

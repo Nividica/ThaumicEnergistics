@@ -3,6 +3,12 @@ package thaumicenergistics.common.utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Provides logging functions for ThE.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ThELog
 {
 	public static final Logger log = LogManager.getLogger( "Thaumic Energistics" );

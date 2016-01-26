@@ -32,6 +32,12 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
 
+/**
+ * Handles an {@link ItemWirelessEssentiaTerminal}
+ * 
+ * @author Nividica
+ * 
+ */
 public class HandlerWirelessEssentiaTerminal
 	extends WirelessAELink
 	implements IActionHost, ICraftingIssuerHost, IGuiItemObject

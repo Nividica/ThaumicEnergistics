@@ -15,6 +15,12 @@ import thaumicenergistics.common.blocks.BlockArcaneAssembler;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
+/**
+ * What Am I Looking At integration.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ModuleWaila
 	implements IWailaDataProvider
 {

@@ -3,6 +3,12 @@ package thaumicenergistics.common.entities;
 import net.minecraft.item.ItemStack;
 import thaumcraft.common.entities.golems.EntityGolemBase;
 
+/**
+ * Allows a golem to extract items from the network as it needs them.
+ * 
+ * @author Nividica
+ * 
+ */
 public class AIGolemWifiFill
 	extends AIAENetworkGolem
 {

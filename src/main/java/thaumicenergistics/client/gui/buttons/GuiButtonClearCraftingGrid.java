@@ -7,6 +7,12 @@ import appeng.core.localization.ButtonToolTips;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Displays clear grid icon.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiButtonClearCraftingGrid
 	extends ThEStateButton

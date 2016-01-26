@@ -12,6 +12,12 @@ import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.utils.EffectiveSide;
 import cpw.mods.fml.common.FMLCommonHandler;
 
+/**
+ * Slot that holds the result of an arcane crafting recipe.
+ * 
+ * @author Nividica
+ * 
+ */
 public class SlotArcaneCraftingResult
 	extends SlotCrafting
 {

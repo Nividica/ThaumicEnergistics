@@ -13,6 +13,8 @@ import thaumicenergistics.api.grid.IEssentiaGrid;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.common.integration.IWailaSource;
 import thaumicenergistics.common.registries.EnumCache;
+import thaumicenergistics.common.tiles.TileEssentiaProvider;
+import thaumicenergistics.common.tiles.TileInfusionProvider;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.tiles.IColorableTile;
@@ -34,6 +36,12 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base class of {@link TileEssentiaProvider} and {@link TileInfusionProvider}.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class TileProviderBase
 	extends AENetworkTile
 	implements IColorableTile, IWailaSource

@@ -5,6 +5,12 @@ import thaumicenergistics.common.ThaumicEnergistics;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Textures for all ThE GUIs.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public enum GuiTextureManager
 {

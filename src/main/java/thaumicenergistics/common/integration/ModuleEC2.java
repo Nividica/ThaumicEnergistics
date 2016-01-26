@@ -4,6 +4,12 @@ import java.lang.reflect.Method;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.fluids.GaseousEssentia;
 
+/**
+ * Extra Cells 2 integration.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ModuleEC2
 {
 

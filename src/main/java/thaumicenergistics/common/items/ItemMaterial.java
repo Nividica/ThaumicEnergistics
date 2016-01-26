@@ -10,6 +10,12 @@ import net.minecraft.util.MathHelper;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ThEStrings;
 
+/**
+ * Crafting material items.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemMaterial
 	extends Item
 {

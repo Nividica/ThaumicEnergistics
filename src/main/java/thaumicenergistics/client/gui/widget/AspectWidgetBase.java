@@ -15,6 +15,12 @@ import thaumicenergistics.common.storage.AspectStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base class of Aspect Widgets.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public abstract class AspectWidgetBase
 	extends ThEWidget

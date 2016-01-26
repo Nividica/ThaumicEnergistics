@@ -1,11 +1,18 @@
 package thaumicenergistics.api.grid;
 
 import java.util.Collection;
+import javax.annotation.Nonnull;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.storage.IAspectStack;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 
+/**
+ * Provides access to essentia storage.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IMEEssentiaMonitor
 {
 	/**
@@ -13,8 +20,9 @@ public interface IMEEssentiaMonitor
 	 * 
 	 * @param listener
 	 * @param verificationToken
+	 * Token used to verify the receiver is still valid, and wants to continue receiving events.
 	 */
-	public void addListener( IMEEssentiaMonitorReceiver listener, Object verificationToken );
+	void addListener( @Nonnull IMEEssentiaMonitorReceiver listener, @Nonnull Object verificationToken );
 
 	/**
 	 * Extract the specified essentia from the network.<br>
@@ -27,23 +35,23 @@ public interface IMEEssentiaMonitor
 	 * If true will take the required power for the extraction, respecting the mode setting.
 	 * @return The amount extracted.
 	 */
-	public long extractEssentia( Aspect aspect, long amount, Actionable mode, BaseActionSource source, boolean powered );
+	long extractEssentia( @Nonnull Aspect aspect, long amount, @Nonnull Actionable mode, @Nonnull BaseActionSource source, boolean powered );
 
 	/**
-	 * Returns the how much of the specified essentia is in the network.<br>
-	 * If the aspect is null, returns 0.
+	 * Returns the how much of the specified essentia is in the network.
 	 * 
 	 * @param aspect
 	 * @return
 	 */
-	public long getEssentiaAmount( final Aspect aspect );
+	long getEssentiaAmount( @Nonnull Aspect aspect );
 
 	/**
 	 * Gets the list of essentia in the network.
 	 * 
 	 * @return
 	 */
-	public Collection<IAspectStack> getEssentiaList();
+	@Nonnull
+	Collection<IAspectStack> getEssentiaList();
 
 	/**
 	 * Inject the specified essentia into the network.<br>
@@ -56,12 +64,12 @@ public interface IMEEssentiaMonitor
 	 * If true will take the required power for the injection, respecting the mode setting.
 	 * @return The amount that could <strong>not</strong> be injected.
 	 */
-	public long injectEssentia( Aspect aspect, long amount, Actionable mode, BaseActionSource source, boolean powered );
+	long injectEssentia( @Nonnull Aspect aspect, long amount, @Nonnull Actionable mode, @Nonnull BaseActionSource source, boolean powered );
 
 	/**
 	 * Removes a listener from the essentia grid.
 	 * 
 	 * @param listener
 	 */
-	public void removeListener( IMEEssentiaMonitorReceiver listener );
+	public void removeListener( @Nonnull IMEEssentiaMonitorReceiver listener );
 }

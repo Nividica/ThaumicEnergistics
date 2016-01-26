@@ -49,6 +49,11 @@ public abstract class ThEThaumcraftResearchFeature
 	}
 
 	/**
+	 * If the research item has any pseudo parents, register them here.
+	 */
+	protected abstract void registerPseudoParents();
+
+	/**
 	 * Registers the research with Thaumcraft, if it has any.
 	 */
 	protected abstract void registerResearch();
@@ -78,9 +83,4 @@ public abstract class ThEThaumcraftResearchFeature
 			return "";
 		}
 	}
-
-	/**
-	 * If the research item has any pseudo parents, register them here.
-	 */
-	public abstract void registerPseudoParents();
 }

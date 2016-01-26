@@ -10,6 +10,12 @@ import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
+/**
+ * Central research node for all ThE research.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureThaumicEnergisticsResearch
 	extends ThEThaumcraftResearchFeature
 {
@@ -54,6 +60,11 @@ public class FeatureThaumicEnergisticsResearch
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 
@@ -70,11 +81,6 @@ public class FeatureThaumicEnergisticsResearch
 						new ResearchPage( ResearchTypes.BASIC.getPageName( 1 ) ) } );
 		ResearchTypes.BASIC.researchItem.setRound().setAutoUnlock();
 		ResearchTypes.BASIC.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
 	}
 
 }

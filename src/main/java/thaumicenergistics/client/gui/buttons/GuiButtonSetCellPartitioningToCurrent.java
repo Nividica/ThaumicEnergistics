@@ -6,6 +6,12 @@ import thaumicenergistics.client.textures.AEStateIconsEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Displays partition to current icon.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiButtonSetCellPartitioningToCurrent
 	extends ThEStateButton

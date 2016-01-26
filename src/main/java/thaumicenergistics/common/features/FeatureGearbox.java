@@ -13,7 +13,14 @@ import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
+import thaumicenergistics.common.tiles.TileGearBox;
 
+/**
+ * {@link TileGearBox} feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureGearbox
 	extends ThEThaumcraftResearchFeature
 {
@@ -94,6 +101,13 @@ public class FeatureGearbox
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+		PseudoResearchTypes.COREUSE.registerPsudeoResearch();
+
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set the research aspects for the Iron Gear Box
@@ -138,13 +152,6 @@ public class FeatureGearbox
 
 		// Set as secondary and register
 		ResearchTypes.THAUMIUM_GEARBOX.researchItem.setSecondary().registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
-		PseudoResearchTypes.COREUSE.registerPsudeoResearch();
-
 	}
 
 }

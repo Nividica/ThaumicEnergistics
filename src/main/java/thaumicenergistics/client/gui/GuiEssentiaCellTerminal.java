@@ -30,6 +30,8 @@ import thaumicenergistics.common.container.ContainerEssentiaCellTerminalBase;
 import thaumicenergistics.common.container.ContainerEssentiaTerminal;
 import thaumicenergistics.common.container.ContainerWirelessEssentiaTerminal;
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
+import thaumicenergistics.common.items.ItemEssentiaCell;
+import thaumicenergistics.common.items.ItemWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.common.parts.PartEssentiaTerminal;
 import thaumicenergistics.common.registries.ThEStrings;
@@ -40,7 +42,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Essentia terminal, wireless terminal, and cell(ME Chest) Gui.
+ * {@link PartEssentiaTerminal}, {@link ItemWirelessEssentiaTerminal}, and {@link ItemEssentiaCell} GUI
  * 
  * @author Nividica
  * 

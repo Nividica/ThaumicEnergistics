@@ -9,6 +9,12 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import thaumicenergistics.common.utils.ThEUtils;
 
+/**
+ * Manages an internal inventory.
+ * 
+ * @author Nividica
+ * 
+ */
 public class TheInternalInventory
 	implements IInventory
 {

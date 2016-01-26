@@ -8,6 +8,12 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.api.storage.IEssentiaRepo;
 
+/**
+ * Manages a repository of essentia.
+ * 
+ * @author Nividica
+ * 
+ */
 public class EssentiaRepo
 	implements IEssentiaRepo
 {

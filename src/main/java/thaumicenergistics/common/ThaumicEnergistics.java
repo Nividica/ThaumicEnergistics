@@ -23,6 +23,14 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
+/**
+ * <strong>Thaumic Energistics</strong>
+ * <hr>
+ * A bridge between Thaumcraft and Applied Energistics. Essentia storage management, transportation, and application.
+ * 
+ * @author Nividica
+ * 
+ */
 @Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:ThE-core;required-after:appliedenergistics2@[rv3-beta-1,);required-after:Thaumcraft@[4.2.3.5,);after:Waila;after:extracells")
 public class ThaumicEnergistics
 {

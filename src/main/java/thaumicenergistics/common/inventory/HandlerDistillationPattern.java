@@ -1,12 +1,19 @@
-package thaumicenergistics.common.utils;
+package thaumicenergistics.common.inventory;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 import thaumicenergistics.common.items.ItemCraftingAspect;
+import appeng.items.misc.ItemEncodedPattern;
 
-public class DistillationPatternHelper
+/**
+ * Handles {@link ItemEncodedPattern} items with a distillation encodeing.
+ * 
+ * @author Nividica
+ * 
+ */
+public class HandlerDistillationPattern
 {
 	/**
 	 * NBT Keys

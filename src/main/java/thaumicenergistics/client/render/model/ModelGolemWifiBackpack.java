@@ -7,10 +7,17 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
+import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
 import thaumicenergistics.common.items.ItemGolemWirelessBackpack.BackpackSkins;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link ItemGolemWirelessBackpack} model.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class ModelGolemWifiBackpack
 	extends ModelBase

@@ -14,12 +14,17 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.registries.BlockEnum;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
 import thaumicenergistics.common.utils.EffectiveSide;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link TileEssentiaCellWorkbench} block.
+ * 
+ * @author Nividica
+ * 
+ */
 public class BlockEssentiaCellWorkbench
 	extends AbstractBlockAEWrenchable
 {

@@ -1,5 +1,11 @@
 package thaumicenergistics.api;
 
+/**
+ * Thaumic Energistics configuration options.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IThEConfig
 {
 	/**
@@ -7,104 +13,104 @@ public interface IThEConfig
 	 * 
 	 * @return
 	 */
-	public boolean blacklistEssentiaFluidInExtraCells();
+	boolean blacklistEssentiaFluidInExtraCells();
 
 	/**
 	 * Controls the conversion ratio of essentia/fluid. <BR>
 	 * 1 essentia unit is converted to this many mb's of fluid.
 	 */
-	public int conversionMultiplier();
+	int conversionMultiplier();
 
 	/**
 	 * Can the Arcane Assembler be crafted.
 	 * 
 	 * @return
 	 */
-	public boolean craftArcaneAssembler();
+	boolean craftArcaneAssembler();
 
 	/**
 	 * Can the ACT be crafted.
 	 * 
 	 * @return
 	 */
-	public boolean craftArcaneCraftingTerminal();
+	boolean craftArcaneCraftingTerminal();
 
 	/**
 	 * Can the DPE be crafted.
 	 * 
 	 * @return
 	 */
-	public boolean craftDistillationPatternEncoder();
+	boolean craftDistillationPatternEncoder();
 
 	/**
 	 * Can Essentia cells be crafted.
 	 * 
 	 * @return
 	 */
-	public boolean craftEssentiaCells();
+	boolean craftEssentiaCells();
 
 	/**
 	 * Can the Essentia Provider be crafted.
 	 */
-	public boolean craftEssentiaProvider();
+	boolean craftEssentiaProvider();
 
 	/**
 	 * Can the EVC be crafted.
 	 * 
 	 * @return
 	 */
-	public boolean craftEssentiaVibrationChamber();
+	boolean craftEssentiaVibrationChamber();
 
 	/**
 	 * Can the golem backpack be crafted.
 	 * 
 	 * @return
 	 */
-	public boolean craftGolemWifiBackpack();
+	boolean craftGolemWifiBackpack();
 
 	/**
 	 * Can the Infusion Provider be crafted.
 	 */
-	public boolean craftInfusionProvider();
+	boolean craftInfusionProvider();
 
 	/**
 	 * Controls if the import/export/storage can be crafted.
 	 * 
 	 * @return
 	 */
-	public boolean craftIOBuses();
+	boolean craftIOBuses();
 
 	/**
 	 * Can the VRI be crafted.
 	 * 
 	 * @return
 	 */
-	public boolean craftVisRelayInterface();
+	boolean craftVisRelayInterface();
 
 	/**
 	 * Can the WET be crafted.
 	 * 
 	 * @return
 	 */
-	public boolean craftWirelessEssentiaTerminal();
+	boolean craftWirelessEssentiaTerminal();
 
 	/**
 	 * If true the iron and thaumium gearbox's will be rendered as a standard
 	 * block.
 	 */
-	public boolean disableGearboxModel();
+	boolean disableGearboxModel();
 
 	/**
 	 * Controls if Certus Quartz can be duped in the crucible.
 	 */
-	public boolean enableCertusQuartzDupe();
+	boolean enableCertusQuartzDupe();
 
 	/**
 	 * Is the wrench focus enabled.
 	 * 
 	 * @return
 	 */
-	public boolean enableWrenchFocus();
+	boolean enableWrenchFocus();
 
 	/**
 	 * When enabled, overwrites the AE2 facade setting for certain Thaumcraft blocks,
@@ -112,5 +118,5 @@ public interface IThEConfig
 	 * 
 	 * @return
 	 */
-	public boolean forceTCFacades();
+	boolean forceTCFacades();
 }

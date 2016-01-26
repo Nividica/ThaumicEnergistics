@@ -9,6 +9,12 @@ import thaumicenergistics.common.network.NetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Priority GUI client-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_C_Priority
 	extends ThEClientPacket
 {

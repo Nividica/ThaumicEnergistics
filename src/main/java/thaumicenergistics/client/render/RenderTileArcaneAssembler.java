@@ -16,6 +16,12 @@ import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Renders the {@link TileArcaneAssembler}
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class RenderTileArcaneAssembler
 	extends TileEntitySpecialRenderer

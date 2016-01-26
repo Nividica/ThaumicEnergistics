@@ -14,6 +14,12 @@ import appeng.api.storage.data.IItemList;
 import appeng.tile.misc.TileCondenser;
 import com.google.common.collect.ImmutableList;
 
+/**
+ * Handles interaction between {@link PartEssentiaStorageBus} and {@link TileCondenser}.
+ * 
+ * @author Nividica
+ * 
+ */
 public class HandlerEssentiaStorageBusCondenser
 	extends HandlerEssentiaStorageBusBase
 {

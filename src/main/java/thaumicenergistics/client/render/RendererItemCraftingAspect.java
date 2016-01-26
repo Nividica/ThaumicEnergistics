@@ -11,6 +11,12 @@ import thaumicenergistics.common.items.ItemCraftingAspect;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Renders the {@link ItemCraftingAspect}.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class RendererItemCraftingAspect
 	implements IItemRenderer

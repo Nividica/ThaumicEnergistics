@@ -8,12 +8,22 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.parts.AEPartsEnum;
+import thaumicenergistics.common.parts.PartEssentiaExportBus;
+import thaumicenergistics.common.parts.PartEssentiaImportBus;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
+/**
+ * {@link PartEssentiaImportBus}, {@link PartEssentiaExportBus}, and {@link PartEssentiaStorageBus} feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureEssentiaIOBuses
 	extends ThEThaumcraftResearchFeature
 {
@@ -98,6 +108,12 @@ public class FeatureEssentiaIOBuses
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+		PseudoResearchTypes.TUBEFILTER.registerPsudeoResearch();
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set the research aspects
@@ -137,11 +153,5 @@ public class FeatureEssentiaIOBuses
 		ResearchTypes.IO.researchItem.setParentsHidden( "TUBEFILTER" );
 		ResearchTypes.IO.researchItem.setConcealed();
 		ResearchTypes.IO.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
-		PseudoResearchTypes.TUBEFILTER.registerPsudeoResearch();
 	}
 }

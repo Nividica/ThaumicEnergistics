@@ -13,6 +13,12 @@ import thaumicenergistics.common.registries.ThEStrings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Displays void status.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiButtonAllowVoid
 	extends ThEGuiButtonBase

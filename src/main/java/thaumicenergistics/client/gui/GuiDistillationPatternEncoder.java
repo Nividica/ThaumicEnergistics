@@ -22,10 +22,17 @@ import thaumicenergistics.common.container.ContainerDistillationPatternEncoder;
 import thaumicenergistics.common.items.ItemCraftingAspect;
 import thaumicenergistics.common.network.packet.server.Packet_S_DistillationEncoder;
 import thaumicenergistics.common.registries.ThEStrings;
+import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
 import thaumicenergistics.common.utils.ThEUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link TileDistillationPatternEncoder} GUI
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiDistillationPatternEncoder
 	extends ThEBaseGui

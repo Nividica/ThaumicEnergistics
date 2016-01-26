@@ -6,6 +6,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
 import appeng.api.AEApi;
 
+/**
+ * Encodes recipes whose result is essentia.
+ * 
+ * @author Nividica
+ * 
+ */
 public class TileDistillationPatternEncoder
 	extends ThETileInventory
 {

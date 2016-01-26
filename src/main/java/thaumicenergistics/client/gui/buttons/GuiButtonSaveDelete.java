@@ -7,6 +7,12 @@ import thaumicenergistics.common.registries.ThEStrings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Displays save state icons.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiButtonSaveDelete
 	extends ThEStateButton

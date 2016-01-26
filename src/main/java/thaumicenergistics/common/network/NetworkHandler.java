@@ -10,6 +10,12 @@ import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 
+/**
+ * Handles all server<->client network communication for ThE.
+ * 
+ * @author Nividica
+ * 
+ */
 public class NetworkHandler
 {
 	/**

@@ -16,6 +16,12 @@ import thaumicenergistics.common.tiles.TileGearBox;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Renders the {@link TileGearBox}
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class RenderTileGearbox
 	extends TileEntitySpecialRenderer

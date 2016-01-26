@@ -16,6 +16,12 @@ import thaumicenergistics.common.tiles.TileGearBox;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base block of {@link BlockGearBox} and {@link BlockGolemGearBox}
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class AbstractBlockGearBoxBase
 	extends AbstractBlockAEWrenchable
 {

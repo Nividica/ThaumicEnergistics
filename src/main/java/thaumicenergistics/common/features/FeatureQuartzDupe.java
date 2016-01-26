@@ -13,6 +13,12 @@ import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import appeng.api.AEApi;
 
+/**
+ * Quartz duplication feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureQuartzDupe
 	extends ThEThaumcraftResearchFeature
 {
@@ -74,6 +80,12 @@ public class FeatureQuartzDupe
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+		PseudoResearchTypes.DUPE.registerPsudeoResearch();
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set aspects
@@ -101,11 +113,5 @@ public class FeatureQuartzDupe
 
 		// Register
 		ResearchTypes.CERTUS_DUPE.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
-		PseudoResearchTypes.DUPE.registerPsudeoResearch();
 	}
 }

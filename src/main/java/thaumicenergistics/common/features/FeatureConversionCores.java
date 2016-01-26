@@ -12,6 +12,12 @@ import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
+/**
+ * {@link ItemMaterial}'s conversion cores feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureConversionCores
 	extends ThEThaumcraftResearchFeature
 {
@@ -66,6 +72,12 @@ public class FeatureConversionCores
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+		PseudoResearchTypes.DISTILESSENTIA.registerPsudeoResearch();
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set the research aspects
@@ -88,12 +100,6 @@ public class FeatureConversionCores
 		ResearchTypes.CORES.researchItem.setParents( this.getFirstValidParentKey( false ), PseudoResearchTypes.DISTILESSENTIA.getKey() );
 		ResearchTypes.CORES.researchItem.setParentsHidden( "DISTILESSENTIA" );
 		ResearchTypes.CORES.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
-		PseudoResearchTypes.DISTILESSENTIA.registerPsudeoResearch();
 	}
 
 }

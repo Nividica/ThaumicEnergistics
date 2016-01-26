@@ -11,6 +11,12 @@ import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
 import appeng.api.implementations.items.IStorageComponent;
 
+/**
+ * {@link ItemEssentiaCell} storage components.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemStorageComponent
 	extends Item
 	implements IStorageComponent

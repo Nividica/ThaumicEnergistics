@@ -5,6 +5,12 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
+/**
+ * Handles all client-side ThE packets.
+ * 
+ * @author Nividica
+ * 
+ */
 public class HandlerClient
 	implements IMessageHandler<WrapperPacket_C, IMessage>
 {

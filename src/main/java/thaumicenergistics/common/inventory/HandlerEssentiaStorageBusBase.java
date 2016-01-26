@@ -21,6 +21,12 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 
+/**
+ * Defines a {@link PartEssentiaStorageBus} handler.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class HandlerEssentiaStorageBusBase
 	implements IMEInventoryHandler<IAEFluidStack>
 {

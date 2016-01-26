@@ -2,8 +2,16 @@ package thaumicenergistics.api.storage;
 
 import java.util.Collection;
 import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import thaumcraft.api.aspects.Aspect;
 
+/**
+ * Repository, or collection, of essentia.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IEssentiaRepo
 {
 
@@ -12,12 +20,13 @@ public interface IEssentiaRepo
 	 * 
 	 * @return
 	 */
-	public Set<Aspect> aspectSet();
+	@Nonnull
+	Set<Aspect> aspectSet();
 
 	/**
 	 * Removes all entries in the repo.
 	 */
-	public void clear();
+	void clear();
 
 	/**
 	 * Returns true if the repo has the aspect stored.
@@ -25,7 +34,7 @@ public interface IEssentiaRepo
 	 * @param aspect
 	 * @return
 	 */
-	public boolean containsAspect( Aspect aspect );
+	boolean containsAspect( @Nonnull Aspect aspect );
 
 	/**
 	 * Sets the repo to match the specified collection.
@@ -33,31 +42,32 @@ public interface IEssentiaRepo
 	 * 
 	 * @param stacks
 	 */
-	public void copyFrom( Collection<IAspectStack> stacks );
+	void copyFrom( @Nonnull Collection<IAspectStack> stacks );
 
 	/**
 	 * Gets the aspect stack associated with the aspect or null.
 	 */
-	public IAspectStack get( Aspect aspect );
+	IAspectStack get( @Nonnull Aspect aspect );
 
 	/**
 	 * Returns all aspect information stored in the repo.
 	 * 
 	 * @return
 	 */
-	public Collection<IAspectStack> getAll();
+	@Nonnull
+	Collection<IAspectStack> getAll();
 
 	/**
 	 * Gets the aspect stack associated with the aspect or specified the default value.
 	 */
-	public IAspectStack getOrDefault( Aspect aspect, IAspectStack defaultValue );
+	IAspectStack getOrDefault( @Nonnull Aspect aspect, @Nullable IAspectStack defaultValue );
 
 	/**
 	 * Returns true if the repo is empty.
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty();
+	boolean isEmpty();
 
 	/**
 	 * Changes the aspect in the repo by the specified values.
@@ -69,7 +79,8 @@ public interface IEssentiaRepo
 	 * Otherwise it is set to false.
 	 * @return The previous stack, if there was one.
 	 */
-	public IAspectStack postChange( Aspect aspect, long change, Boolean isCraftable );
+	@Nullable
+	IAspectStack postChange( @Nonnull Aspect aspect, long change, Boolean isCraftable );
 
 	/**
 	 * Changes the aspect in the repo by the specified aspect stack.
@@ -77,16 +88,18 @@ public interface IEssentiaRepo
 	 * @param change
 	 * @return The previous stack, if there was one.
 	 */
-	public IAspectStack postChange( IAspectStack change );
+	@Nullable
+	IAspectStack postChange( @Nonnull IAspectStack change );
 
 	/**
-	 * Removes an aspect from the repo.
-	 * Returns the removed stack.
+	 * Removes an aspect from the repo.<br>
+	 * Returns the removed stack, if there was one removed.
 	 * 
 	 * @param aspect
 	 * @return
 	 */
-	public IAspectStack remove( Aspect aspect );
+	@Nullable
+	IAspectStack remove( Aspect aspect );
 
 	/**
 	 * Sets the aspect in the repo by the specified values.
@@ -96,7 +109,8 @@ public interface IEssentiaRepo
 	 * @param isCraftable
 	 * @return The previous stack, if there was one.
 	 */
-	public IAspectStack setAspect( Aspect aspect, long amount, boolean isCraftable );
+	@Nullable
+	IAspectStack setAspect( @Nonnull Aspect aspect, long amount, boolean isCraftable );
 
 	/**
 	 * Sets the aspect in the repo to the specified aspect stack.
@@ -104,12 +118,13 @@ public interface IEssentiaRepo
 	 * @param stack
 	 * @return The previous stack, if there was one.
 	 */
-	public IAspectStack setAspect( IAspectStack stack );
+	@Nullable
+	IAspectStack setAspect( @Nonnull IAspectStack stack );
 
 	/**
 	 * Returns the number of unique aspects stored.
 	 * 
 	 * @return
 	 */
-	public int size();
+	int size();
 }

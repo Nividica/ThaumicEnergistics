@@ -1,7 +1,14 @@
 package thaumicenergistics.api.gui;
 
+import javax.annotation.Nonnull;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
 
+/**
+ * Container that can issue AE2 crafting jobs.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface ICraftingIssuerContainer
 {
 	/**
@@ -9,5 +16,6 @@ public interface ICraftingIssuerContainer
 	 * 
 	 * @return
 	 */
-	public ICraftingIssuerHost getCraftingHost();
+	@Nonnull
+	ICraftingIssuerHost getCraftingHost();
 }

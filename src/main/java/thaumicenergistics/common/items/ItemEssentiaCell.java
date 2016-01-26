@@ -34,6 +34,12 @@ import appeng.core.localization.GuiText;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Stores essentia.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemEssentiaCell
 	extends Item
 	implements ICellHandler

@@ -6,12 +6,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import thaumicenergistics.client.textures.BlockTextureManager;
-import thaumicenergistics.common.registries.BlockEnum;
 import thaumicenergistics.common.registries.Renderers;
 import thaumicenergistics.common.tiles.TileInfusionProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link TileInfusionProvider} block.
+ * 
+ * @author Nividica
+ * 
+ */
 public class BlockInfusionProvider
 	extends AbstractBlockProviderBase
 {

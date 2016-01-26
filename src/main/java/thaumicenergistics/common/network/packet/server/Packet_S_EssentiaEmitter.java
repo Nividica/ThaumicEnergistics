@@ -6,6 +6,12 @@ import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
 
+/**
+ * {@link PartEssentiaLevelEmitter} server-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_S_EssentiaEmitter
 	extends ThEServerPacket
 {

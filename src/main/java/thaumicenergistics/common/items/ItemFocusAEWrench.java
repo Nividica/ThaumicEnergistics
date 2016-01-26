@@ -31,6 +31,12 @@ import appeng.core.CommonHelper;
 import appeng.parts.PartPlacement;
 import appeng.parts.PartPlacement.PlaceType;
 
+/**
+ * Focus that behaves like an AE2 wrench.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemFocusAEWrench
 	extends ItemFocusBasic
 {

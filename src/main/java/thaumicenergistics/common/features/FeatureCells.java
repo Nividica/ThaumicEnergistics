@@ -15,6 +15,8 @@ import thaumcraft.common.config.Config;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.items.ItemEssentiaCell;
+import thaumicenergistics.common.items.ItemStorageComponent;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
@@ -22,6 +24,12 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import cpw.mods.fml.common.registry.GameRegistry;
 
+/**
+ * {@link ItemEssentiaCell} and {@link ItemStorageComponent} feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureCells
 	extends ThEThaumcraftResearchFeature
 {
@@ -226,6 +234,17 @@ public class FeatureCells
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+		if( Config.wardedStone )
+		{
+			PseudoResearchTypes.WARDED.registerPsudeoResearch();
+		}
+
+		PseudoResearchTypes.DISTILESSENTIA.registerPsudeoResearch();
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set the research aspects
@@ -279,17 +298,6 @@ public class FeatureCells
 		ResearchTypes.STORAGE.researchItem.setParents( storageParents );
 		ResearchTypes.STORAGE.researchItem.setParentsHidden( "DISTILESSENTIA" );
 		ResearchTypes.STORAGE.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
-		if( Config.wardedStone )
-		{
-			PseudoResearchTypes.WARDED.registerPsudeoResearch();
-		}
-
-		PseudoResearchTypes.DISTILESSENTIA.registerPsudeoResearch();
 	}
 
 }

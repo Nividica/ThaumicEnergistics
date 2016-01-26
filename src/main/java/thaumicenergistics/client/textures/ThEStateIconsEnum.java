@@ -3,6 +3,12 @@ package thaumicenergistics.client.textures;
 import net.minecraft.util.ResourceLocation;
 import thaumicenergistics.common.ThaumicEnergistics;
 
+/**
+ * Icons from the ThE "states" texture.
+ * 
+ * @author Nividica
+ * 
+ */
 public enum ThEStateIconsEnum
 	implements IStateIconTexture
 {

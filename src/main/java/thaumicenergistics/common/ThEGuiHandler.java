@@ -17,6 +17,12 @@ import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.helpers.IPriorityHost;
 import cpw.mods.fml.common.network.IGuiHandler;
 
+/**
+ * Handles ThE GUI launching.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ThEGuiHandler
 	implements IGuiHandler
 {

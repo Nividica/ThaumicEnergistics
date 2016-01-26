@@ -12,12 +12,14 @@ import thaumicenergistics.api.entities.IGolemHookHandler;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.common.ThEGuiHandler;
+import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.grid.WirelessAELink;
 import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.common.integration.tc.GolemHooks;
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
 import thaumicenergistics.common.storage.AspectStack;
+import thaumicenergistics.common.utils.ThELog;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.storage.data.IAEItemStack;
@@ -25,6 +27,9 @@ import appeng.core.localization.PlayerMessages;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Implements {@link IThEInteractionHelper}
+ */
 public class ThEInteractionHelper
 	implements IThEInteractionHelper
 {
@@ -141,7 +146,16 @@ public class ThEInteractionHelper
 	@Override
 	public void registerGolemHookHandler( final IGolemHookHandler handler )
 	{
-		GolemHooks.registerHandler( handler );
+		try
+		{
+			GolemHooks.registerHandler( handler );
+		}
+		catch( Exception e )
+		{
+			ThELog.warning( "Caught Exception During API call to registerGolemHookHandler" );
+			ThELog.warning( e.toString() );
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -150,6 +164,15 @@ public class ThEInteractionHelper
 	{
 		try
 		{
+			// Get the player
+			EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+
+			// Is the player looking at an ACT?
+			if( !( player.openContainer instanceof ContainerPartArcaneCraftingTerminal ) )
+			{
+				return;
+			}
+
 			boolean hasItems = false;
 
 			// Ensure the input items array is the correct size
@@ -174,12 +197,14 @@ public class ThEInteractionHelper
 			// Send the list to the server
 			if( hasItems )
 			{
-				Packet_S_ArcaneCraftingTerminal.sendSetCrafting_NEI( Minecraft.getMinecraft().thePlayer, items );
+				Packet_S_ArcaneCraftingTerminal.sendSetCrafting_NEI( player, items );
 			}
 		}
 		catch( Exception e )
 		{
-			// Silently ignore.
+			ThELog.warning( "Caught Exception During API call to setArcaneCraftingTerminalRecipe" );
+			ThELog.warning( e.toString() );
+			e.printStackTrace();
 		}
 
 	}

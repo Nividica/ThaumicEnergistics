@@ -49,6 +49,12 @@ import appeng.container.implementations.ContainerCraftAmount;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link PartArcaneCraftingTerminal} container.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ContainerPartArcaneCraftingTerminal
 	extends ContainerWithPlayerInventory
 	implements IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingIssuerContainer

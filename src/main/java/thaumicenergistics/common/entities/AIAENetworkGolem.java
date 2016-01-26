@@ -9,6 +9,7 @@ import thaumcraft.common.entities.golems.EntityGolemBase;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.common.grid.WirelessAELink;
 import thaumicenergistics.common.integration.tc.GolemUpgradeTypes;
+import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -17,6 +18,12 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 
+/**
+ * Base AI script for golems wearing the {@link ItemGolemWirelessBackpack}.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class AIAENetworkGolem
 	extends EntityAIBase
 {

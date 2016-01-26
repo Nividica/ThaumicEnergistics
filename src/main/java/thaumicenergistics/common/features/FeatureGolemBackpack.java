@@ -7,11 +7,18 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import thaumicenergistics.fml.ThECore;
 
+/**
+ * {@link ItemGolemWirelessBackpack} feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureGolemBackpack
 	extends ThEThaumcraftResearchFeature
 {
@@ -73,6 +80,12 @@ public class FeatureGolemBackpack
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+		PseudoResearchTypes.COREGATHER.registerPsudeoResearch();
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set the research aspects
@@ -112,12 +125,6 @@ public class FeatureGolemBackpack
 
 		// Register
 		ResearchTypes.GOLEM_BACKPACK.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
-		PseudoResearchTypes.COREGATHER.registerPsudeoResearch();
 	}
 
 }

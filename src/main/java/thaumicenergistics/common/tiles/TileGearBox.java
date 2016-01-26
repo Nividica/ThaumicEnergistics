@@ -12,6 +12,12 @@ import appeng.api.implementations.tiles.ICrankable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Unbreakable crank.
+ * 
+ * @author Nividica
+ * 
+ */
 public class TileGearBox
 	extends TileEntity
 {

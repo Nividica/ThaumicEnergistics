@@ -8,6 +8,12 @@ import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 
+/**
+ * Thaumic Energistics Core Mod.
+ * 
+ * @author Nividica
+ * 
+ */
 @MCVersion("1.7.10")
 public class ThECore
 	extends DummyModContainer
@@ -84,7 +90,7 @@ public class ThECore
 	@Override
 	public String getVersion()
 	{
-		return "0.10.0.0";
+		return "1.0.0.1";
 	}
 
 	@Override

@@ -9,6 +9,12 @@ import thaumicenergistics.api.grid.IEssentiaWatcher;
 import thaumicenergistics.api.grid.IEssentiaWatcherHost;
 import thaumicenergistics.common.grid.GridEssentiaCache.EssentiaWatcherManager;
 
+/**
+ * Watches the essentia grid for changes, informs the host when changes occur.
+ * 
+ * @author Nividica
+ * 
+ */
 public class EssentiaWatcher
 	implements IEssentiaWatcher
 {

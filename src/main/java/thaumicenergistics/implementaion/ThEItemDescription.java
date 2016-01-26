@@ -5,6 +5,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.api.IThEItemDescription;
 
+/**
+ * Implements {@link IThEItemDescription}.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ThEItemDescription
 	implements IThEItemDescription
 {
@@ -56,13 +62,7 @@ public class ThEItemDescription
 	@Override
 	public ItemStack getStacks( final int amount )
 	{
-		if( this.myItem != null )
-		{
-			return new ItemStack( this.myItem, amount, this.itemMeta );
-		}
-
-		return null;
-
+		return new ItemStack( this.myItem, amount, this.itemMeta );
 	}
 
 }

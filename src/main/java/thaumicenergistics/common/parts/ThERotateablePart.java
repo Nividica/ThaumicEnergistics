@@ -7,12 +7,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.PartItemStack;
 import appeng.util.Platform;
 
+/**
+ * Base class for rotatble cable parts.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class ThERotateablePart
 	extends ThEPartBase
 {

@@ -10,6 +10,12 @@ import appeng.core.localization.ButtonToolTips;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Displays sorting mode icons.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiButtonSortingMode
 	extends ThEStateButton

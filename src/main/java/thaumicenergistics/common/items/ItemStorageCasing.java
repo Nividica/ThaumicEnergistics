@@ -6,6 +6,12 @@ import net.minecraft.item.ItemStack;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ThEStrings;
 
+/**
+ * {@link ItemEssentiaCell} housing.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemStorageCasing
 	extends Item
 {

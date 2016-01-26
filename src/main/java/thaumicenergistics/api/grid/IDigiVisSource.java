@@ -1,10 +1,18 @@
 package thaumicenergistics.api.grid;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import appeng.api.networking.IGrid;
 import appeng.api.util.DimensionalCoord;
 
+/**
+ * Digital Vis source.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IDigiVisSource
 {
 	/**
@@ -12,23 +20,25 @@ public interface IDigiVisSource
 	 * 
 	 * @param digiVisAspect
 	 * @param amount
-	 * @return
+	 * @return The amount drained.
 	 */
-	public int consumeVis( Aspect digiVisAspect, int amount );
+	int consumeVis( @Nonnull Aspect digiVisAspect, int amount );
 
 	/**
 	 * Get's the AE grid the source is attached to.
 	 * 
 	 * @return
 	 */
-	public IGrid getGrid();
+	@Nullable
+	IGrid getGrid();
 
 	/**
 	 * Returns the location of the source.
 	 * 
 	 * @return
 	 */
-	public DimensionalCoord getLocation();
+	@Nonnull
+	DimensionalCoord getLocation();
 
 	/**
 	 * Gets the side of cable the source part is attached to.
@@ -36,19 +46,20 @@ public interface IDigiVisSource
 	 * 
 	 * @return
 	 */
-	public ForgeDirection getSide();
+	@Nonnull
+	ForgeDirection getSide();
 
 	/**
 	 * Get's the unique identifier for this source.
 	 * 
 	 * @return
 	 */
-	public long getUID();
+	long getUID();
 
 	/**
 	 * Is the source active?
 	 * 
 	 * @return
 	 */
-	public boolean isActive();
+	boolean isActive();
 }

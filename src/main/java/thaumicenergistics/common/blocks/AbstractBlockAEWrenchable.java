@@ -7,6 +7,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import appeng.util.Platform;
 
+/**
+ * Base class for wrenchable blocks.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class AbstractBlockAEWrenchable
 	extends BlockContainer
 {

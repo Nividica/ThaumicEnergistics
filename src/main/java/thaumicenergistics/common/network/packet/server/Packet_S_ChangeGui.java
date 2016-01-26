@@ -9,6 +9,12 @@ import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.parts.ThEPartBase;
 
+/**
+ * Server-bound gui change request packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_S_ChangeGui
 	extends ThEServerPacket
 {

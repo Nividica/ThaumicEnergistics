@@ -2,6 +2,12 @@ package thaumicenergistics.api.grid;
 
 import thaumcraft.api.aspects.Aspect;
 
+/**
+ * A host that wants to be informed of essentia events.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IEssentiaWatcherHost
 {
 	/**

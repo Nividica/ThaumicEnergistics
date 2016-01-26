@@ -17,6 +17,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 // Note to fix inconsistent hierarchy: Include the COFHCore & IC2 Api's into
 // build path
+/**
+ * Provides wireless access to networked essentia.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemWirelessEssentiaTerminal
 	extends AEBasePoweredItem
 	implements IThEWirelessEssentiaTerminal

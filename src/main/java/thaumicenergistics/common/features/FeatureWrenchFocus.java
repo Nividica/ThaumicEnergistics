@@ -7,6 +7,7 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.items.ItemFocusAEWrench;
 import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
@@ -14,6 +15,12 @@ import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
+/**
+ * {@link ItemFocusAEWrench} featire.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureWrenchFocus
 	extends ThEThaumcraftResearchFeature
 {
@@ -67,6 +74,12 @@ public class FeatureWrenchFocus
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+		PseudoResearchTypes.FOCUSFIRE.registerPsudeoResearch();
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set the research aspects
@@ -86,12 +99,6 @@ public class FeatureWrenchFocus
 		ResearchTypes.FOCUS_WRENCH.createResearchItem( focusAspects, ResearchRegistry.COMPLEXITY_SMALL, focusIcon, focusPages );
 		ResearchTypes.FOCUS_WRENCH.researchItem.setParents( PseudoResearchTypes.FOCUSFIRE.getKey() ).setSecondary();
 		ResearchTypes.FOCUS_WRENCH.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
-		PseudoResearchTypes.FOCUSFIRE.registerPsudeoResearch();
 	}
 
 }

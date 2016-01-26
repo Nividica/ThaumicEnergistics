@@ -7,6 +7,12 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Particles that can be displayed in a GUI.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public enum EnumGuiParticles
 {
@@ -37,7 +43,7 @@ public enum EnumGuiParticles
 	private ResourceLocation texture;
 
 	private EnumGuiParticles( final ResourceLocation textureLocation, final int U, final int V, final int width, final int height,
-							final int UStep, final int VStep, final int Frames )
+								final int UStep, final int VStep, final int Frames )
 	{
 		this.texture = textureLocation;
 		this.txU = U;

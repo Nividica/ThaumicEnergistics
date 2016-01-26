@@ -6,11 +6,19 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.client.gui.GuiEssentiaIO;
 import thaumicenergistics.common.network.NetworkHandler;
+import thaumicenergistics.common.parts.PartEssentiaExportBus;
+import thaumicenergistics.common.parts.PartEssentiaImportBus;
 import thaumicenergistics.common.registries.EnumCache;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link PartEssentiaImportBus}, {@link PartEssentiaExportBus} client-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_C_EssentiaIOBus
 	extends ThEClientPacket
 {

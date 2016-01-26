@@ -19,7 +19,6 @@ import thaumicenergistics.api.grid.IDigiVisSource;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.integration.tc.DigiVisSourceData;
 import thaumicenergistics.common.integration.tc.VisProviderProxy;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.items.IMemoryCard;
@@ -36,6 +35,12 @@ import appeng.api.parts.PartItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Iterfaces with a {@link TileVisRelay}.
+ * 
+ * @author Nividica
+ * 
+ */
 public class PartVisInterface
 	extends ThEPartBase
 	implements IGridTickable, IDigiVisSource

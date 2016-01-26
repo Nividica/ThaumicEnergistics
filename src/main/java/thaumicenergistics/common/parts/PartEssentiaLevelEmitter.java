@@ -22,7 +22,6 @@ import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.container.ContainerPartEssentiaLevelEmitter;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.IAspectSlotPart;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.config.RedstoneMode;
@@ -34,6 +33,12 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Emits redstone signals based on networked essentia levels.
+ * 
+ * @author Nividica
+ * 
+ */
 public class PartEssentiaLevelEmitter
 	extends ThEPartBase
 	implements IAspectSlotPart, IEssentiaWatcherHost

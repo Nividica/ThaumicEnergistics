@@ -1,14 +1,20 @@
 package thaumicenergistics.api;
 
+/**
+ * Essentia container options.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IThEEssentiaContainerPermission
 {
 	/**
 	 * Can the container be partially filled?
 	 */
-	public boolean canHoldPartialAmount();
+	boolean canHoldPartialAmount();
 
 	/**
 	 * The maximum amount this container can hold
 	 */
-	public int maximumCapacity();
+	int maximumCapacity();
 }

@@ -9,6 +9,12 @@ import thaumcraft.api.IVisDiscountGear;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Slot that holds armor.
+ * 
+ * @author Nividica
+ * 
+ */
 public class SlotArmor
 	extends Slot
 {

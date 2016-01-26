@@ -4,6 +4,12 @@ import io.netty.buffer.ByteBuf;
 import thaumicenergistics.common.utils.ThELog;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
+/**
+ * Wraps all ThE packets for network transmission.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class WrapperPacket
 	implements IMessage
 {

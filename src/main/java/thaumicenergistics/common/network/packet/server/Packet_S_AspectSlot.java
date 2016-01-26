@@ -8,6 +8,12 @@ import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.parts.ThEPartBase;
 
+/**
+ * Aspect slot server-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_S_AspectSlot
 	extends ThEServerPacket
 {

@@ -5,12 +5,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
+import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.registries.EnumCache;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
 
+/**
+ * {@link PartArcaneCraftingTerminal} server-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_S_ArcaneCraftingTerminal
 	extends ThEServerPacket
 {

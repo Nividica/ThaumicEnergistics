@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
+import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.registries.EnumCache;
 import appeng.api.AEApi;
 import appeng.api.config.SortDir;
@@ -18,6 +19,12 @@ import appeng.api.storage.data.IItemList;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link PartArcaneCraftingTerminal} client-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_C_ArcaneCraftingTerminal
 	extends ThEClientPacket
 {

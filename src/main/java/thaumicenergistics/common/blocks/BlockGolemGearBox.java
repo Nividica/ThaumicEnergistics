@@ -2,10 +2,16 @@ package thaumicenergistics.common.blocks;
 
 import net.minecraft.util.IIcon;
 import thaumicenergistics.client.textures.BlockTextureManager;
-import thaumicenergistics.common.registries.BlockEnum;
+import thaumicenergistics.common.tiles.TileGearBox;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link TileGearBox} block, golem form.
+ * 
+ * @author Nividica
+ * 
+ */
 public class BlockGolemGearBox
 	extends AbstractBlockGearBoxBase
 {

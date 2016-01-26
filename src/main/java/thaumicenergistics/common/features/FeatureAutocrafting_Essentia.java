@@ -11,9 +11,16 @@ import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
+import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
+/**
+ * {@link TileDistillationPatternEncoder} feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureAutocrafting_Essentia
 	extends ThEThaumcraftResearchFeature
 {
@@ -70,6 +77,11 @@ public class FeatureAutocrafting_Essentia
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Aspect list
@@ -100,11 +112,6 @@ public class FeatureAutocrafting_Essentia
 		// Register the research
 		ResearchTypes.DISTILLATION_PATTERN_ENCODER.researchItem.registerResearchItem();
 
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
 	}
 
 }

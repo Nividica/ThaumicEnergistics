@@ -15,11 +15,7 @@ import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.*;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.storage.MEInventoryHandler;
@@ -27,6 +23,12 @@ import appeng.parts.misc.PartInterface;
 import appeng.tile.misc.TileInterface;
 import appeng.util.Platform;
 
+/**
+ * Handles interaction between {@link PartEssentiaStorageBus} and {@link TileInterface}, providing sub-networking.
+ * 
+ * @author Nividica
+ * 
+ */
 class HandlerEssentiaStorageBusInterface
 	extends HandlerEssentiaStorageBusBase
 	implements IMEMonitorHandlerReceiver<IAEFluidStack>

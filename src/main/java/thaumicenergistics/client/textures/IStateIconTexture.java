@@ -1,16 +1,49 @@
 package thaumicenergistics.client.textures;
 
+import javax.annotation.Nonnull;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * Icon from a state texture.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IStateIconTexture
 {
-	public int getHeight();
+	/**
+	 * Height of the icon.
+	 * 
+	 * @return
+	 */
+	int getHeight();
 
-	public ResourceLocation getTexture();
+	/**
+	 * Texture the icon is in.
+	 * 
+	 * @return
+	 */
+	@Nonnull
+	ResourceLocation getTexture();
 
-	public int getU();
+	/**
+	 * U coordinate of the icon.
+	 * 
+	 * @return
+	 */
+	int getU();
 
-	public int getV();
+	/**
+	 * V coordinate of the icon.
+	 * 
+	 * @return
+	 */
+	int getV();
 
-	public int getWidth();
+	/**
+	 * Width of the icon.
+	 * 
+	 * @return
+	 */
+	int getWidth();
 }

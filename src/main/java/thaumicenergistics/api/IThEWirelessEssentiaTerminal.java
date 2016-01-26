@@ -1,5 +1,6 @@
 package thaumicenergistics.api;
 
+import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.features.INetworkEncodable;
@@ -22,5 +23,6 @@ public interface IThEWirelessEssentiaTerminal
 	 * @param terminalItemstack
 	 * @return
 	 */
-	public NBTTagCompound getWETerminalTag( ItemStack terminalItemstack );
+	@Nonnull
+	NBTTagCompound getWETerminalTag( @Nonnull ItemStack terminalItemstack );
 }

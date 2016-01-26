@@ -6,12 +6,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.api.grid.IEssentiaGrid;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.common.parts.ThEPartBase;
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.GridNotification;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridBlock;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
+import appeng.api.networking.*;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
@@ -22,7 +17,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 
 /**
- * AE Gridblock used for all my AE parts.
+ * AE Gridblock used for all ThE AE parts.
  * 
  * @author Nividica
  * 

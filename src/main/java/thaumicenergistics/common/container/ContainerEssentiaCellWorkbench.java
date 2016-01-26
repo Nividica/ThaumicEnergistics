@@ -12,6 +12,12 @@ import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
 import thaumicenergistics.common.utils.EffectiveSide;
 
+/**
+ * {@link TileEssentiaCellWorkbench} container.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ContainerEssentiaCellWorkbench
 	extends ContainerWithPlayerInventory
 {

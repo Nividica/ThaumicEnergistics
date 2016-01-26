@@ -64,6 +64,12 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Allows auto-crafting arcane recipes.
+ * 
+ * @author Nividica
+ * 
+ */
 public class TileArcaneAssembler
 	extends AENetworkInvTile
 	implements ICraftingProvider, IWailaSource

@@ -8,6 +8,12 @@ import appeng.core.localization.ButtonToolTips;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Displays terminal style icons.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiButtonTerminalStyle
 	extends ThEStateButton

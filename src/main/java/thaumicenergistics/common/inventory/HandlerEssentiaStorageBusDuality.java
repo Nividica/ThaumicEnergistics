@@ -15,7 +15,7 @@ import appeng.tile.misc.TileCondenser;
 import appeng.tile.misc.TileInterface;
 
 /**
- * Pass-though handler for containers and interfaces.
+ * Pass-though handler for other handlers.
  * 
  * @author Nividica
  * 

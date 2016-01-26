@@ -9,6 +9,12 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import thaumicenergistics.common.utils.ThELog;
 
+/**
+ * Base container for all ThE containers.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class TheContainerBase
 	extends Container
 {

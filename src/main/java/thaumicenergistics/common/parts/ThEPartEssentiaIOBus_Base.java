@@ -16,7 +16,6 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.IAspectSlotPart;
 import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
@@ -29,6 +28,8 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.PartItemStack;
+import appeng.parts.automation.PartExportBus;
+import appeng.parts.automation.PartImportBus;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -36,6 +37,12 @@ import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base class of {@link PartExportBus} and {@link PartImportBus}.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class ThEPartEssentiaIOBus_Base
 	extends ThEPartBase
 	implements IGridTickable, IAspectSlotPart, IAEAppEngInventory

@@ -4,6 +4,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import appeng.api.storage.ITerminalHost;
 
+/**
+ * Defines the requirements for a terminal that wishes to issue AE2 crafting jobs.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface ICraftingIssuerHost
 	extends ITerminalHost
 {
@@ -12,11 +18,11 @@ public interface ICraftingIssuerHost
 	 * 
 	 * @return
 	 */
-	public ItemStack getIcon();
+	ItemStack getIcon();
 
 	/**
 	 * Launches the terminal's GUI.
 	 * Used to return to the gui after crafting is confirmed or canceled.
 	 */
-	public void launchGUI( EntityPlayer player );
+	void launchGUI( EntityPlayer player );
 }

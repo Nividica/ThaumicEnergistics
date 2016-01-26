@@ -23,6 +23,12 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import com.google.common.collect.ImmutableList;
 
+/**
+ * Handles interaction between {@link PartEssentiaStorageBus} and {@link IAspectContainer}.
+ * 
+ * @author Nividica
+ * 
+ */
 class HandlerEssentiaStorageBusContainer
 	extends HandlerEssentiaStorageBusBase
 {

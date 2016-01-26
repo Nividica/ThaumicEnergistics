@@ -16,6 +16,12 @@ import thaumicenergistics.common.ThaumicEnergistics;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Item used to represent an {@link Aspect}
+ * 
+ * @author Nividica
+ * 
+ */
 public class ItemCraftingAspect
 	extends Item
 {

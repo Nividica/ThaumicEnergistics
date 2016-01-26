@@ -2,6 +2,12 @@ package thaumicenergistics.client.textures;
 
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * Icons stored in the AE2's "states" texture.
+ * 
+ * @author Nividica
+ * 
+ */
 public enum AEStateIconsEnum
 	implements IStateIconTexture
 {

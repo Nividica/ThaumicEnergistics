@@ -17,13 +17,18 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.registries.BlockEnum;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.implementations.items.IMemoryCard;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link TileArcaneAssembler} block.
+ * 
+ * @author Nividica
+ * 
+ */
 public class BlockArcaneAssembler
 	extends AbstractBlockAEWrenchable
 {

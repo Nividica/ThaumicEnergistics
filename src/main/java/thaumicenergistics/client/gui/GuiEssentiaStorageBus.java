@@ -22,13 +22,13 @@ import thaumicenergistics.common.container.ContainerPartEssentiaStorageBus;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaStorageBus;
+import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Gui for the storage bus.
+ * {@link PartEssentiaStorageBus} GUI
  * 
  * @author Nividica
  * 

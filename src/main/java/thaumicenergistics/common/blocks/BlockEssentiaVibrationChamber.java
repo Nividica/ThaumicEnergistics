@@ -17,13 +17,18 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.registries.BlockEnum;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link TileEssentiaVibrationChamber} block.
+ * 
+ * @author Nividica
+ * 
+ */
 public class BlockEssentiaVibrationChamber
 	extends AbstractBlockAEWrenchable
 {

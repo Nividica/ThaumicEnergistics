@@ -7,16 +7,21 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import thaumcraft.api.aspects.Aspect;
 
+/**
+ * A stack, or collection, of a single aspect.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IAspectStack
 {
 	/**
-	 * Changes the stack size by the delta amount and
-	 * returns the new stack size.
+	 * Changes the stack size by the delta amount and returns the new stack size.
 	 * 
 	 * @param delta
 	 * @return Adjusted stack size.
 	 */
-	public long adjustStackSize( long delta );
+	long adjustStackSize( long delta );
 
 	/**
 	 * Creates a copy of this stack and returns it.
@@ -24,7 +29,7 @@ public interface IAspectStack
 	 * @return Copy of the stack.
 	 */
 	@Nonnull
-	public IAspectStack copy();
+	IAspectStack copy();
 
 	/**
 	 * Returns the aspect that is stored.
@@ -32,14 +37,15 @@ public interface IAspectStack
 	 * @return
 	 */
 	@Nullable
-	public Aspect getAspect();
+	Aspect getAspect();
 
 	/**
 	 * Gets the Thaumcraft description for the aspect.
 	 * 
 	 * @return Localized description, or empty string if no aspect.
 	 */
-	public String getAspectDescription();
+	@Nonnull
+	String getAspectDescription();
 
 	/**
 	 * Gets the name of the aspect.<br>
@@ -48,7 +54,7 @@ public interface IAspectStack
 	 * @return
 	 */
 	@Nonnull
-	public String getAspectName();
+	String getAspectName();
 
 	/**
 	 * Gets the display name of the aspect for the player.
@@ -57,7 +63,7 @@ public interface IAspectStack
 	 * @return
 	 */
 	@Nonnull
-	public String getAspectName( @Nullable EntityPlayer player );
+	String getAspectName( @Nullable EntityPlayer player );
 
 	/**
 	 * Gets the Thaumcraft tag for the aspect
@@ -65,7 +71,7 @@ public interface IAspectStack
 	 * @return Thaumcraft tag, or empty string if no aspect.
 	 */
 	@Nonnull
-	public String getAspectTag();
+	String getAspectTag();
 
 	/**
 	 * The chat color associated with this aspect.
@@ -73,28 +79,28 @@ public interface IAspectStack
 	 * @return Chat prefix string, or empty string if no aspect.
 	 */
 	@Nonnull
-	public String getChatColor();
+	String getChatColor();
 
 	/**
 	 * Returns true if the aspect is craftable.
 	 * 
 	 * @return
 	 */
-	public boolean getCraftable();
+	boolean getCraftable();
 
 	/**
 	 * Returns the stack size.
 	 * 
 	 * @return
 	 */
-	public long getStackSize();
+	long getStackSize();
 
 	/**
 	 * Returns true if the stack has a non-null aspect set.
 	 * 
 	 * @return
 	 */
-	public boolean hasAspect();
+	boolean hasAspect();
 
 	/**
 	 * Checks if the player has discovered this aspect.
@@ -102,21 +108,21 @@ public interface IAspectStack
 	 * @param player
 	 * @return
 	 */
-	public boolean hasPlayerDiscovered( @Nullable EntityPlayer player );
+	boolean hasPlayerDiscovered( @Nullable EntityPlayer player );
 
 	/**
 	 * Returns true if the size is not positive.
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty();
+	boolean isEmpty();
 
 	/**
 	 * Sets this stack to the data in the stream.
 	 * 
 	 * @param stream
 	 */
-	public void readFromStream( @Nonnull ByteBuf stream );
+	void readFromStream( @Nonnull ByteBuf stream );
 
 	/**
 	 * Sets everything.
@@ -125,51 +131,52 @@ public interface IAspectStack
 	 * @param size
 	 * @param craftable
 	 */
-	public void setAll( @Nullable Aspect aspect, long size, boolean craftable );
+	void setAll( @Nullable Aspect aspect, long size, boolean craftable );
 
 	/**
-	 * Sets the values of this stack to match the passed stack.
+	 * Sets the values of this stack to match the passed stack.<br>
 	 * If the stack is null, all values are reset.
 	 * 
 	 * @param stack
 	 */
-	public void setAll( @Nullable IAspectStack stack );
+	void setAll( @Nullable IAspectStack stack );
 
 	/**
 	 * Sets the aspect for the stack.
 	 * 
 	 * @param aspect
 	 */
-	public void setAspect( @Nullable Aspect aspect );
+	void setAspect( @Nullable Aspect aspect );
 
 	/**
 	 * Sets if the aspect is craftable.
 	 * 
 	 * @param craftable
 	 */
-	public void setCraftable( boolean craftable );
+	void setCraftable( boolean craftable );
 
 	/**
 	 * Sets the size of the stack.
 	 * 
 	 * @param size
 	 */
-	public void setStackSize( long size );
+	void setStackSize( long size );
 
 	/**
 	 * Writes this aspect stack to the specified NBT tag
 	 * 
 	 * @param data
 	 * The tag to write to
-	 * @return The nbt tag.
+	 * @return The nbt tag passed in.
 	 */
-	public NBTTagCompound writeToNBT( @Nonnull NBTTagCompound data );
+	@Nonnull
+	NBTTagCompound writeToNBT( @Nonnull NBTTagCompound data );
 
 	/**
 	 * Writes the stack to a bytebuf stream.
 	 * 
 	 * @param stream
 	 */
-	public void writeToStream( @Nonnull ByteBuf stream );
+	void writeToStream( @Nonnull ByteBuf stream );
 
 }

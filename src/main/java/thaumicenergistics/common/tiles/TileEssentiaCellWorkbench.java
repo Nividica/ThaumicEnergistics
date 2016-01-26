@@ -17,6 +17,12 @@ import thaumicenergistics.common.utils.ThEUtils;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.ISaveProvider;
 
+/**
+ * Provides {@link ItemEssentiaCell} partitioning.
+ * 
+ * @author Nividica
+ * 
+ */
 public class TileEssentiaCellWorkbench
 	extends TileEntity
 	implements IInventory, ISaveProvider

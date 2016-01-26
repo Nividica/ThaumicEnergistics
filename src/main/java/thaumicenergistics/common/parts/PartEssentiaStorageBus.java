@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.client.gui.GuiEssentiaStorageBus;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.container.ContainerPartEssentiaStorageBus;
@@ -20,7 +21,6 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusBase;
 import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusDuality;
 import thaumicenergistics.common.network.IAspectSlotPart;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -48,6 +48,12 @@ import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Allows an {@link IAspectContainer} to be used as network essentia storage.
+ * 
+ * @author Nividica
+ * 
+ */
 public class PartEssentiaStorageBus
 	extends ThEPartBase
 	implements IGridTickable, ICellContainer, IAspectSlotPart, IAEAppEngInventory, IPriorityHost

@@ -5,6 +5,12 @@ import thaumcraft.api.crafting.CrucibleRecipe;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.crafting.InfusionRecipe;
 
+/**
+ * All ThE recipes.
+ * 
+ * @author Nividica
+ * 
+ */
 public class RecipeRegistry
 {
 	// Arcane recipes

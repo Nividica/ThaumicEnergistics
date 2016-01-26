@@ -12,6 +12,12 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Integrates ThE with other mods.
+ * 
+ * @author Nividica
+ * 
+ */
 public final class IntegrationCore
 {
 	/**

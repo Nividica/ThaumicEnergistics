@@ -14,15 +14,21 @@ import thaumcraft.common.Thaumcraft;
 import thaumcraft.common.lib.research.ScanManager;
 import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
+import thaumicenergistics.common.inventory.HandlerDistillationPattern;
 import thaumicenergistics.common.inventory.TheInternalInventory;
 import thaumicenergistics.common.items.ItemCraftingAspect;
 import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
-import thaumicenergistics.common.utils.DistillationPatternHelper;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.container.slot.SlotFake;
 
+/**
+ * {@link TileDistillationPatternEncoder} container.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ContainerDistillationPatternEncoder
 	extends ContainerWithPlayerInventory
 {
@@ -79,7 +85,7 @@ public class ContainerDistillationPatternEncoder
 	/**
 	 * Pattern helper
 	 */
-	private final DistillationPatternHelper patternHelper;
+	private final HandlerDistillationPattern patternHelper;
 
 	/**
 	 * Stores the aspects for the source item.
@@ -168,7 +174,7 @@ public class ContainerDistillationPatternEncoder
 		this.bindPlayerInventory( player.inventory, PLAYER_INV_POSITION_Y, HOTBAR_INV_POSITION_Y );
 
 		// Create the helper
-		this.patternHelper = new DistillationPatternHelper();
+		this.patternHelper = new HandlerDistillationPattern();
 
 	}
 

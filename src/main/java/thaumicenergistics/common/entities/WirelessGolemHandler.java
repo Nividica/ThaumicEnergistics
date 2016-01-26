@@ -22,6 +22,12 @@ import appeng.items.parts.ItemFacade;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Handles golems wearing the {@link ItemGolemWirelessBackpack}
+ * 
+ * @author Nividica
+ * 
+ */
 public class WirelessGolemHandler
 	implements IGolemHookHandler
 {

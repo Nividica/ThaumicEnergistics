@@ -4,7 +4,14 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.common.container.ContainerKnowledgeInscriber;
 import thaumicenergistics.common.network.NetworkHandler;
+import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
 
+/**
+ * {@link TileKnowledgeInscriber} server-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_S_KnowledgeInscriber
 	extends ThEServerPacket
 {

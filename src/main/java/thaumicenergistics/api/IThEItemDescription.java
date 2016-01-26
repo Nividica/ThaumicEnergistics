@@ -1,39 +1,50 @@
 package thaumicenergistics.api;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Item information.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IThEItemDescription
 {
 
 	/**
-	 * Gets the block of this item if it has one.
+	 * Gets the block of this item, if it has one.
 	 * 
 	 * @return
 	 */
-	public Block getBlock();
+	@Nullable
+	Block getBlock();
 
 	/**
 	 * Gets the damage, or meta, value of the item.
 	 * 
 	 * @return
 	 */
-	public int getDamage();
+	int getDamage();
 
 	/**
 	 * Gets the item.
 	 * 
 	 * @return
 	 */
-	public Item getItem();
+	@Nonnull
+	Item getItem();
 
 	/**
 	 * Gets a stack of size 1.
 	 * 
 	 * @return
 	 */
-	public ItemStack getStack();
+	@Nonnull
+	ItemStack getStack();
 
 	/**
 	 * Gets a stack of the specified size.
@@ -41,5 +52,6 @@ public interface IThEItemDescription
 	 * @param amount
 	 * @return
 	 */
-	public ItemStack getStacks( int amount );
+	@Nonnull
+	ItemStack getStacks( int amount );
 }

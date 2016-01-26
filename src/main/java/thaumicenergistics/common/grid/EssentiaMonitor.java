@@ -362,6 +362,11 @@ public class EssentiaMonitor
 	@Override
 	public void addListener( final IMEEssentiaMonitorReceiver listener, final Object verificationToken )
 	{
+		if( verificationToken == null )
+		{
+			throw new NullPointerException( "Verification token can not be null" );
+		}
+
 		// If this is the first listener, and the cache is out of sync, it needs to be updated first
 		if( ( this.listeners.size() == 0 ) && ( this.cacheNeedsUpdate ) )
 		{

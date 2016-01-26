@@ -7,11 +7,19 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.parts.AEPartsEnum;
+import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.registries.*;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
+/**
+ * {@link PartArcaneCraftingTerminal} feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureACT
 	extends ThEThaumcraftResearchFeature
 {
@@ -71,6 +79,11 @@ public class FeatureACT
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set the research aspects
@@ -91,10 +104,5 @@ public class FeatureACT
 		ResearchTypes.ARCANE_TERMINAL.createResearchItem( actAspectList, ResearchRegistry.COMPLEXITY_SMALL, actIcon, actPages );
 		ResearchTypes.ARCANE_TERMINAL.researchItem.setParents( this.getFirstValidParentKey( false ) );
 		ResearchTypes.ARCANE_TERMINAL.researchItem.registerResearchItem();
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
 	}
 }

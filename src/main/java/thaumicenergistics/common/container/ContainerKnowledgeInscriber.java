@@ -28,6 +28,12 @@ import appeng.container.slot.SlotFake;
 import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.container.slot.SlotInaccessible;
 
+/**
+ * {@link TileKnowledgeInscriber} container.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ContainerKnowledgeInscriber
 	extends ContainerWithPlayerInventory
 {

@@ -8,6 +8,12 @@ import appeng.core.localization.ButtonToolTips;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Displays view types icons.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiButtonViewType
 	extends ThEStateButton

@@ -13,6 +13,12 @@ import appeng.core.localization.GuiText;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Bridges the AE2 CraftAmount GUI and the ThE API
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class GuiCraftAmountBridge
 	extends GuiCraftAmount

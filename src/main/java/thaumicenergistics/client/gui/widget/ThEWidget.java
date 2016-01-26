@@ -8,6 +8,12 @@ import thaumicenergistics.client.gui.ThEGuiHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base class of ThE widgets.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public abstract class ThEWidget
 	extends Gui

@@ -5,8 +5,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.parts.PartEssentiaExportBus;
+import thaumicenergistics.common.parts.PartEssentiaImportBus;
 import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
 
+/**
+ * {@link PartEssentiaImportBus} and {@link PartEssentiaExportBus} server-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_S_EssentiaIOBus
 	extends ThEServerPacket
 {
@@ -35,21 +42,6 @@ public class Packet_S_EssentiaIOBus
 	}
 
 	/**
-	 * Sends a request to the server for a full update of the buses state.
-	 * 
-	 * @param player
-	 * @param part
-	 * @return
-	 */
-	public static void sendRequestFilterList( final EntityPlayer player, final ThEPartEssentiaIOBus_Base part )
-	{
-		Packet_S_EssentiaIOBus packet = newPacket( player, MODE_REQUEST_FULL_UPDATE, part );
-
-		// Send it
-		NetworkHandler.sendPacketToServer( packet );
-	}
-
-	/**
 	 * Sends a request to the server to change the redstone mode.
 	 * 
 	 * @param player
@@ -59,6 +51,21 @@ public class Packet_S_EssentiaIOBus
 	public static void sendRedstoneModeChange( final EntityPlayer player, final ThEPartEssentiaIOBus_Base part )
 	{
 		Packet_S_EssentiaIOBus packet = newPacket( player, MODE_REQUEST_CHANGE_REDSTONE_MODE, part );
+
+		// Send it
+		NetworkHandler.sendPacketToServer( packet );
+	}
+
+	/**
+	 * Sends a request to the server for a full update of the buses state.
+	 * 
+	 * @param player
+	 * @param part
+	 * @return
+	 */
+	public static void sendRequestFilterList( final EntityPlayer player, final ThEPartEssentiaIOBus_Base part )
+	{
+		Packet_S_EssentiaIOBus packet = newPacket( player, MODE_REQUEST_FULL_UPDATE, part );
 
 		// Send it
 		NetworkHandler.sendPacketToServer( packet );

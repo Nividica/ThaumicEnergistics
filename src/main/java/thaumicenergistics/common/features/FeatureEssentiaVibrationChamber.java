@@ -11,9 +11,16 @@ import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
+import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
+/**
+ * {@link TileEssentiaVibrationChamber} feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureEssentiaVibrationChamber
 	extends ThEThaumcraftResearchFeature
 {
@@ -68,6 +75,11 @@ public class FeatureEssentiaVibrationChamber
 	}
 
 	@Override
+	protected void registerPseudoParents()
+	{
+	}
+
+	@Override
 	protected void registerResearch()
 	{
 		// Set the research aspects
@@ -99,11 +111,6 @@ public class FeatureEssentiaVibrationChamber
 		// Register
 		ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.researchItem.registerResearchItem();
 
-	}
-
-	@Override
-	public void registerPseudoParents()
-	{
 	}
 
 }

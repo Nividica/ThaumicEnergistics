@@ -30,7 +30,6 @@ import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper.AspectItemType;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
@@ -50,6 +49,12 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Displays stored essentia levels.
+ * 
+ * @author Nividica
+ * 
+ */
 public class PartEssentiaStorageMonitor
 	extends ThEPartBase
 	implements IPartStorageMonitor, IEssentiaWatcherHost, IPowerChannelState

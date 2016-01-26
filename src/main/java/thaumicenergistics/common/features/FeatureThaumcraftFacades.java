@@ -10,6 +10,12 @@ import appeng.core.FacadeConfig;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
+/**
+ * Thaumcraft facades feature.
+ * 
+ * @author Nividica
+ * 
+ */
 public class FeatureThaumcraftFacades
 	extends ThEDependencyFeatureBase
 {

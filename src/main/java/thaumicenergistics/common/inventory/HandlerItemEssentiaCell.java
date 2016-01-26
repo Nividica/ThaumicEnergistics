@@ -24,6 +24,12 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 
+/**
+ * Handles a non creative {@link ItemEssentiaCell}
+ * 
+ * @author Nividica
+ * 
+ */
 public class HandlerItemEssentiaCell
 	implements IMEInventoryHandler<IAEFluidStack>
 {

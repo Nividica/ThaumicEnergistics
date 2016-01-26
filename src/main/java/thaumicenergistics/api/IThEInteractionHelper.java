@@ -1,5 +1,7 @@
 package thaumicenergistics.api;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
@@ -9,7 +11,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Contains misc functionality intended to help other moders interact with ThE.
+ * Contains miscellaneous functionality intended to help other moders interact with ThE.
  * 
  * @author Nividica
  * 
@@ -21,14 +23,14 @@ public interface IThEInteractionHelper
 	 * 
 	 * @return
 	 */
-	public abstract long convertEssentiaAmountToFluidAmount( long essentiaAmount );
+	long convertEssentiaAmountToFluidAmount( long essentiaAmount );
 
 	/**
 	 * Converts an amount of Essentia to an amount of milibuckets.
 	 * 
 	 * @return
 	 */
-	public abstract long convertFluidAmountToEssentiaAmount( long milibuckets );
+	long convertFluidAmountToEssentiaAmount( long milibuckets );
 
 	/**
 	 * Creates a new instance of an aspect stack.
@@ -37,13 +39,14 @@ public interface IThEInteractionHelper
 	 * @param stackSize
 	 * @return
 	 */
-	public IAspectStack createAspectStack( Aspect aspect, long stackSize );
+	@Nonnull
+	IAspectStack createAspectStack( @Nullable Aspect aspect, long stackSize );
 
 	/**
 	 * Returns the Arcane Crafting Terminals GUI class.
 	 */
 	@SideOnly(Side.CLIENT)
-	public abstract Class getArcaneCraftingTerminalGUIClass();
+	Class getArcaneCraftingTerminalGUIClass();
 
 	/**
 	 * Opens the wireless gui for the specified player.
@@ -52,7 +55,7 @@ public interface IThEInteractionHelper
 	 * 
 	 * @param player
 	 */
-	public abstract void openWirelessTerminalGui( final EntityPlayer player );
+	void openWirelessTerminalGui( @Nonnull EntityPlayer player );
 
 	/**
 	 * The {@code IThEWirelessEssentiaTerminal} is assumed to be the item the player is holding, and is no longer needs to be passed in.
@@ -64,23 +67,29 @@ public interface IThEInteractionHelper
 	 * @see #openWirelessTerminalGui(EntityPlayer)
 	 */
 	@Deprecated
-	public abstract void openWirelessTerminalGui( final EntityPlayer player, final IThEWirelessEssentiaTerminal terminalInterface );
+	void openWirelessTerminalGui( @Nonnull EntityPlayer player, IThEWirelessEssentiaTerminal terminalInterface );
 
 	/**
 	 * Registers a handler to receive golem events.
 	 * 
 	 * @param handler
 	 */
-	public abstract void registerGolemHookHandler( IGolemHookHandler handler );
+	void registerGolemHookHandler( @Nonnull IGolemHookHandler handler );
 
 	/**
 	 * Attempts to set the Arcane Crafting Terminals recipe to the items
-	 * specified for the current player.
+	 * specified for the current player.<br>
+	 * Call is ignored if player does not have an A.C.T. GUI open.<br>
 	 * The items array should be of size 9. Items will be placed in the crafting
-	 * grid according
-	 * to index where 0 = Top-Left, 1 = Top-Middle, 2 = Top-Right, etc.
-	 * Nulls are allowed.
+	 * grid according to index where
+	 * <ul>
+	 * <li>0 = Top-Left</li>
+	 * <li>1 = Top-Middle</li>
+	 * <li>2 = Top-Right</li>
+	 * <li>etc</li>
+	 * </ul>
+	 * Null items are allowed.
 	 */
 	@SideOnly(Side.CLIENT)
-	public abstract void setArcaneCraftingTerminalRecipe( ItemStack[] items );
+	void setArcaneCraftingTerminalRecipe( @Nonnull ItemStack[] items );
 }

@@ -8,6 +8,12 @@ import thaumicenergistics.common.tiles.TileGearBox;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * {@link TileGearBox} model.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class ModelGearbox
 	extends ModelBase

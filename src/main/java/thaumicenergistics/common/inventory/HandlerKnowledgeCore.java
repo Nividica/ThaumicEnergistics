@@ -8,6 +8,12 @@ import net.minecraftforge.common.util.Constants;
 import thaumicenergistics.common.integration.tc.ArcaneCraftingPattern;
 import thaumicenergistics.common.items.ItemKnowledgeCore;
 
+/**
+ * Handles an {@link ItemKnowledgeCore}
+ * 
+ * @author Nividica
+ * 
+ */
 public class HandlerKnowledgeCore
 {
 	/**

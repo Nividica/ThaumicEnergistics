@@ -6,6 +6,12 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Base class for ThE area packets.
+ * 
+ * @author Nividica
+ * 
+ */
 public abstract class ThEAreaPacket
 	extends ThEClientPacket
 {

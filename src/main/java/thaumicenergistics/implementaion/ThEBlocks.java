@@ -1,8 +1,14 @@
 package thaumicenergistics.implementaion;
 
 import thaumicenergistics.api.IThEBlocks;
-import thaumicenergistics.common.registries.BlockEnum;
+import thaumicenergistics.common.blocks.BlockEnum;
 
+/**
+ * Implements {@link IThEBlocks}
+ * 
+ * @author Nividica
+ * 
+ */
 class ThEBlocks
 	extends IThEBlocks
 {

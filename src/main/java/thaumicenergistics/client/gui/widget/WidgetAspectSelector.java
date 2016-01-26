@@ -16,6 +16,12 @@ import appeng.util.ReadableNumberConverter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Widget displaying an aspect and if it is selected.
+ * 
+ * @author Nividica
+ * 
+ */
 @SideOnly(Side.CLIENT)
 public class WidgetAspectSelector
 	extends AspectWidgetBase

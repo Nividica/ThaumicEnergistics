@@ -17,16 +17,16 @@ import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerPartEssentiaIOBus;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaIOBus;
+import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.parts.PartEssentiaExportBus;
 import thaumicenergistics.common.parts.PartEssentiaImportBus;
 import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
-import thaumicenergistics.common.registries.AEPartsEnum;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Gui for the Import and Export buses
+ * {@link PartEssentiaExportBus} and {@link PartEssentiaImportBus} GUI
  * 
  * @author Nividica
  * 

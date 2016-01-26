@@ -2,6 +2,7 @@ package thaumicenergistics.common.integration.tc;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import javax.annotation.Nonnull;
 import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -690,7 +691,7 @@ public class GolemHooks
 	 * 
 	 * @param handler
 	 */
-	public static void registerHandler( final IGolemHookHandler handler )
+	public static void registerHandler( final @Nonnull IGolemHookHandler handler )
 	{
 		// Ensure the required transforms are present.
 		if( ThECore.golemHooksTransformFailed )
@@ -698,25 +699,38 @@ public class GolemHooks
 			return;
 		}
 
-		// Add the handler
-		registeredHandlers.add( handler );
-
-		// Needs render?
-		if( handler.needsRenderer() )
+		if( handler == null )
 		{
-			renderHandlers.add( handler );
+			throw new NullPointerException( "Golem hook handler can not be null." );
 		}
 
-		// Needs tick?
-		if( handler.needsDynamicUpdates() )
+		try
 		{
-			dynamicHandlers.add( handler );
+			// Add the handler
+			registeredHandlers.add( handler );
+
+			// Needs render?
+			if( handler.needsRenderer() )
+			{
+				renderHandlers.add( handler );
+			}
+
+			// Needs tick?
+			if( handler.needsDynamicUpdates() )
+			{
+				dynamicHandlers.add( handler );
+			}
+
+			// Register sync data
+			defaultSyncRegistry.canRegister = true;
+			handler.addDefaultSyncEntries( defaultSyncRegistry );
+			defaultSyncRegistry.canRegister = false;
+
+		}
+		catch( Exception e )
+		{
+			logCaughtException( "registerHandler", handler, e );
 		}
 
-		// Register sync data
-		defaultSyncRegistry.canRegister = true;
-		handler.addDefaultSyncEntries( defaultSyncRegistry );
-		defaultSyncRegistry.canRegister = false;
 	}
-
 }

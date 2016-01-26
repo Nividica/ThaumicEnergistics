@@ -1,21 +1,22 @@
 package thaumicenergistics.api;
 
-import net.minecraftforge.fluids.Fluid;
+import javax.annotation.Nullable;
 import thaumcraft.api.aspects.Aspect;
 
+/**
+ * Gaseous essentia accessor methods.
+ * 
+ * @author Nividica
+ * 
+ */
 public interface IThEEssentiaGas
 {
 	/**
-	 * Get the aspect this gas is based off of.
+	 * Get the aspect of the gas.<br>
+	 * Can be null if the gas itself is invalid.
 	 * 
 	 * @return
 	 */
-	public Aspect getAspect();
-
-	/**
-	 * Gets the fluid form of the gas.
-	 * 
-	 * @return
-	 */
-	public Fluid getFluid();
+	@Nullable
+	Aspect getAspect();
 }

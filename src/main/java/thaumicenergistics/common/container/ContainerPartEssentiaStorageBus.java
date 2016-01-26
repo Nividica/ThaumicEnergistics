@@ -11,6 +11,12 @@ import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaStorageBus;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
+/**
+ * {@link PartEssentiaStorageBus} container.
+ * 
+ * @author Nividica
+ * 
+ */
 public class ContainerPartEssentiaStorageBus
 	extends ContainerWithNetworkTool
 {

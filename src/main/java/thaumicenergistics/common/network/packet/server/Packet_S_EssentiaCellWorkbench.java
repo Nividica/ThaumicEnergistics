@@ -8,6 +8,12 @@ import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
 
+/**
+ * {@link TileEssentiaCellWorkbench} server-bound packet.
+ * 
+ * @author Nividica
+ * 
+ */
 public class Packet_S_EssentiaCellWorkbench
 	extends ThEServerPacket
 {
