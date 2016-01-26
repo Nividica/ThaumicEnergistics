@@ -251,7 +251,7 @@ public class AIGolemWifiEssentia
 			for( int i = 1; ( i < 6 ) && this.modeFill; ++i )
 			{
 				te = this.golem.worldObj.getTileEntity( gHomePos.posX - side.offsetX,
-					gHomePos.posY - side.offsetY + i,
+					( gHomePos.posY - side.offsetY ) + i,
 					gHomePos.posZ - side.offsetZ );
 				this.modeFill = !( te instanceof TileAlembic );
 			}

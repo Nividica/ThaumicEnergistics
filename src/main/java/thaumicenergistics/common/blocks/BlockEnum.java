@@ -2,7 +2,6 @@ package thaumicenergistics.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
-import thaumicenergistics.common.blocks.*;
 import thaumicenergistics.common.items.ItemBlockArcaneAssembler;
 import thaumicenergistics.common.items.ItemBlockEssentiaVibrationChamber;
 import thaumicenergistics.common.registries.ThEStrings;

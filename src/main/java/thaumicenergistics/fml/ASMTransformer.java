@@ -272,7 +272,7 @@ public class ASMTransformer
 		}
 
 		// Add the onEntityUpdate method.
-		insertMethod_GolemBase_onEntityUpdate( classNode, isObf );
+		this.insertMethod_GolemBase_onEntityUpdate( classNode, isObf );
 
 		// Create the writer
 		ClassWriter writer = new ClassWriter( ClassWriter.COMPUTE_MAXS );

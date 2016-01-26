@@ -8,7 +8,9 @@ import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.blocks.BlockEnum;
-import thaumicenergistics.common.registries.*;
+import thaumicenergistics.common.registries.FeatureRegistry;
+import thaumicenergistics.common.registries.RecipeRegistry;
+import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import thaumicenergistics.common.tiles.TileEssentiaProvider;
 

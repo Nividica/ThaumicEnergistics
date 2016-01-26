@@ -759,6 +759,97 @@ public class EssentiaProviderPeripheral
 		return( provider != null ? provider.isActive() : false );
 	}
 
+	/**
+	 * Attempts to get the Essentia Provider
+	 * 
+	 * @return
+	 */
+	TileEssentiaProvider getProvider()
+	{
+		// Attempt to get the world
+		World world;
+		if( ( this.epWorld == null ) || ( ( world = this.epWorld.get() ) == null ) )
+		{
+			return null;
+		}
+
+		// Get the tile entity at the recorded location
+		TileEntity te = world.getTileEntity( this.epX, this.epY, this.epZ );
+
+		// Is the entity a provider?
+		if( te instanceof TileEssentiaProvider )
+		{
+			// Is the peripheral registered as a block watcher?
+			if( !this.isRegisteredAsBlockListener )
+			{
+				// Register
+				( (TileEssentiaProvider)te ).registerBlockWatcher( this );
+				this.isRegisteredAsBlockListener = true;
+			}
+
+			// Return the provider
+			return (TileEssentiaProvider)te;
+		}
+
+		return null;
+
+	}
+
+	/**
+	 * Gets the essentia monitor from the provider.
+	 * 
+	 * @return
+	 * @throws LuaException
+	 * @throws InterruptedException
+	 */
+	IMEEssentiaMonitor getProviderMonitor() throws LuaException, InterruptedException
+	{
+		// Get the provider
+		TileEssentiaProvider provider = this.getProvider();
+
+		// Is the provider active?
+		if( !provider.isActive() )
+		{
+			// Inactive
+			return null;
+		}
+
+		// Attempt to get the essentia monitor
+		try
+		{
+			return (IMEEssentiaMonitor)provider.getActionableNode().getGrid().getCache( IEssentiaGrid.class );
+		}
+		catch( NullPointerException npe )
+		{
+			// Could not get the monitor
+			return null;
+		}
+	}
+
+	/**
+	 * Sends an event to the specified computer
+	 * 
+	 * @param computer
+	 * @param event
+	 * @param additionalData
+	 */
+	void sendEvent( final IComputerAccess computer, final CCEvents event, final Object ... additionalData )
+	{
+		// Create the arguments
+		Object[] args = new Object[( additionalData == null ? 1 : 1 + additionalData.length )];
+
+		// Set the ID
+		args[0] = event.eventID;
+
+		// Copy the rest of the data
+		if( additionalData != null )
+		{
+			System.arraycopy( additionalData, 0, args, 1, additionalData.length );
+		}
+
+		computer.queueEvent( EssentiaProviderPeripheral.CC_EVENT_NAME, args );
+	}
+
 	@Override
 	public void attach( final IComputerAccess computer )
 	{
@@ -857,97 +948,6 @@ public class EssentiaProviderPeripheral
 		{
 			this.sendEvent( computer, CCEvents.PowerChange, isOnline );
 		}
-	}
-
-	/**
-	 * Attempts to get the Essentia Provider
-	 * 
-	 * @return
-	 */
-	TileEssentiaProvider getProvider()
-	{
-		// Attempt to get the world
-		World world;
-		if( ( this.epWorld == null ) || ( ( world = this.epWorld.get() ) == null ) )
-		{
-			return null;
-		}
-
-		// Get the tile entity at the recorded location
-		TileEntity te = world.getTileEntity( this.epX, this.epY, this.epZ );
-
-		// Is the entity a provider?
-		if( te instanceof TileEssentiaProvider )
-		{
-			// Is the peripheral registered as a block watcher?
-			if( !this.isRegisteredAsBlockListener )
-			{
-				// Register
-				( (TileEssentiaProvider)te ).registerBlockWatcher( this );
-				this.isRegisteredAsBlockListener = true;
-			}
-
-			// Return the provider
-			return (TileEssentiaProvider)te;
-		}
-
-		return null;
-
-	}
-
-	/**
-	 * Gets the essentia monitor from the provider.
-	 * 
-	 * @return
-	 * @throws LuaException
-	 * @throws InterruptedException
-	 */
-	IMEEssentiaMonitor getProviderMonitor() throws LuaException, InterruptedException
-	{
-		// Get the provider
-		TileEssentiaProvider provider = this.getProvider();
-
-		// Is the provider active?
-		if( !provider.isActive() )
-		{
-			// Inactive
-			return null;
-		}
-
-		// Attempt to get the essentia monitor
-		try
-		{
-			return (IMEEssentiaMonitor)provider.getActionableNode().getGrid().getCache( IEssentiaGrid.class );
-		}
-		catch( NullPointerException npe )
-		{
-			// Could not get the monitor
-			return null;
-		}
-	}
-
-	/**
-	 * Sends an event to the specified computer
-	 * 
-	 * @param computer
-	 * @param event
-	 * @param additionalData
-	 */
-	void sendEvent( final IComputerAccess computer, final CCEvents event, final Object ... additionalData )
-	{
-		// Create the arguments
-		Object[] args = new Object[( additionalData == null ? 1 : 1 + additionalData.length )];
-
-		// Set the ID
-		args[0] = event.eventID;
-
-		// Copy the rest of the data
-		if( additionalData != null )
-		{
-			System.arraycopy( additionalData, 0, args, 1, additionalData.length );
-		}
-
-		computer.queueEvent( EssentiaProviderPeripheral.CC_EVENT_NAME, args );
 	}
 
 }

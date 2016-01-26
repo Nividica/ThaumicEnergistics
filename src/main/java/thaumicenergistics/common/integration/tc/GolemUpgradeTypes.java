@@ -40,7 +40,7 @@ public enum GolemUpgradeTypes
 	@Nullable
 	public static GolemUpgradeTypes getUpgradeByID( final byte ID )
 	{
-		if( ID >= 0 && ID < allUpgrades.length )
+		if( ( ID >= 0 ) && ( ID < allUpgrades.length ) )
 		{
 			return allUpgrades[ID];
 		}

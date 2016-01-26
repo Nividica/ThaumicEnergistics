@@ -54,7 +54,7 @@ public class ThECore
 	@Override
 	public String getDisplayVersion()
 	{
-		return getVersion();
+		return this.getVersion();
 	}
 
 	@Override

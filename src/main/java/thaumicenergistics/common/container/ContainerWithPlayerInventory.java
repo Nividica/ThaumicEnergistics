@@ -69,7 +69,7 @@ public abstract class ContainerWithPlayerInventory
 	 */
 	protected final boolean mergeSlotWithPlayerInventory( final ItemStack slotStack )
 	{
-		return this.mergeItemStack( slotStack, this.playerSlots[0].slotNumber, this.playerSlots[COLUMNS * ROWS - 1].slotNumber + 1, false );
+		return this.mergeItemStack( slotStack, this.playerSlots[0].slotNumber, this.playerSlots[( COLUMNS * ROWS ) - 1].slotNumber + 1, false );
 	}
 
 	/**
@@ -91,7 +91,7 @@ public abstract class ContainerWithPlayerInventory
 	 */
 	protected final boolean slotClickedWasInPlayerInventory( final int slotNumber )
 	{
-		return ( slotNumber >= this.playerSlots[0].slotNumber ) && ( slotNumber <= this.playerSlots[COLUMNS * ROWS - 1].slotNumber );
+		return ( slotNumber >= this.playerSlots[0].slotNumber ) && ( slotNumber <= this.playerSlots[( COLUMNS * ROWS ) - 1].slotNumber );
 	}
 
 	/**

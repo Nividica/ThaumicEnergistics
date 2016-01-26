@@ -224,7 +224,7 @@ public class WidgetAspectSelector
 
 			// Calculate position
 			float posX = this.xPosition + positionOffset + ThEWidget.WIDGET_SIZE;
-			float posY = this.yPosition + positionOffset + ThEWidget.WIDGET_SIZE - 1;
+			float posY = ( this.yPosition + positionOffset + ThEWidget.WIDGET_SIZE ) - 1;
 
 			// Has amount to draw?
 			if( ( ( stackSize > 0 ) && !this.hideAmount ) )

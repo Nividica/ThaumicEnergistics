@@ -46,7 +46,7 @@ public enum GolemCoreType
 	@Nullable
 	public static GolemCoreType getCoreByID( final byte ID )
 	{
-		if( ID >= 0 && ID < allCores.length )
+		if( ( ID >= 0 ) && ( ID < allCores.length ) )
 		{
 			return allCores[ID];
 		}

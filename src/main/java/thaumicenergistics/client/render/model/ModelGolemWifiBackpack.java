@@ -167,7 +167,7 @@ public class ModelGolemWifiBackpack
 		if( !this.isPearlCompiled )
 		{
 			// Compile the pearl
-			compilePearl();
+			this.compilePearl();
 		}
 
 		// Draw the pearl

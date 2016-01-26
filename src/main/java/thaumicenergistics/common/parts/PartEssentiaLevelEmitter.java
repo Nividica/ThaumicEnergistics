@@ -613,7 +613,7 @@ public class PartEssentiaLevelEmitter
 		}
 
 		// Only save the rest on world save, or if there is a tracked aspect
-		if( ( saveType == PartItemStack.World ) || this.trackedAspect != null )
+		if( ( saveType == PartItemStack.World ) || ( this.trackedAspect != null ) )
 		{
 			// Write the redstone mode ordinal
 			if( this.redstoneMode != PartEssentiaLevelEmitter.DEFAULT_REDSTONE_MODE )

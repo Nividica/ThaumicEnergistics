@@ -833,7 +833,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 	public void onInteractWithHeldItem( final EntityPlayer player, final Aspect aspect )
 	{
 		// Sanity check
-		if( ( player == null || ( player.inventory.getItemStack() == null ) ) )
+		if( ( ( player == null ) || ( player.inventory.getItemStack() == null ) ) )
 		{
 			return;
 		}

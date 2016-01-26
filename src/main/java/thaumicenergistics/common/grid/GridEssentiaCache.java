@@ -287,6 +287,14 @@ public class GridEssentiaCache
 	}
 
 	/**
+	 * Called by the crafting watcher when an update is needed.
+	 */
+	void markForUpdate()
+	{
+		this.cacheNeedsUpdate = true;
+	}
+
+	/**
 	 * Add in any craftable aspects
 	 */
 	@Override
@@ -494,13 +502,5 @@ public class GridEssentiaCache
 		{
 			this.essentiaWatcherManger.removeWatcher( gridNode );
 		}
-	}
-
-	/**
-	 * Called by the crafting watcher when an update is needed.
-	 */
-	void markForUpdate()
-	{
-		this.cacheNeedsUpdate = true;
 	}
 }

@@ -600,10 +600,10 @@ public class GuiEssentiaCellTerminal
 		}
 
 		// Is the mouse over the search bar?
-		boolean mouseOverSearchBar = mouseX >= this.searchBar.xPosition
-						&& mouseX < this.searchBar.xPosition + this.searchBar.width
-						&& mouseY >= this.searchBar.yPosition
-						&& mouseY < this.searchBar.yPosition + this.searchBar.height;
+		boolean mouseOverSearchBar = ( mouseX >= this.searchBar.xPosition )
+						&& ( mouseX < ( this.searchBar.xPosition + this.searchBar.width ) )
+						&& ( mouseY >= this.searchBar.yPosition )
+						&& ( mouseY < ( this.searchBar.yPosition + this.searchBar.height ) );
 		if( mouseOverSearchBar )
 		{
 			// Left click?
