@@ -108,24 +108,31 @@ public class WidgetAEItem
 			ItemStack stack = this.aeItemStack.getItemStack();
 
 			// Get the tooltip list
-			List<String> stackTooltip = stack.getTooltip( WidgetAEItem.MC.thePlayer, WidgetAEItem.MC.gameSettings.advancedItemTooltips );
-
-			// Set colors and add
-			for( int index = 0; index < stackTooltip.size(); index++ )
+			try
 			{
-				if( index == 0 )
-				{
-					// Item name based on rarity
-					stackTooltip.set( index, stack.getRarity().rarityColor + stackTooltip.get( index ) );
-				}
-				else
-				{
-					// The rest grey
-					stackTooltip.set( index, EnumChatFormatting.GRAY + stackTooltip.get( index ) );
-				}
+				List<String> stackTooltip = stack.getTooltip( WidgetAEItem.MC.thePlayer, WidgetAEItem.MC.gameSettings.advancedItemTooltips );
 
-				// Add the item tooltip line
-				tooltip.add( stackTooltip.get( index ) );
+				// Set colors and add
+				for( int index = 0; index < stackTooltip.size(); index++ )
+				{
+					if( index == 0 )
+					{
+						// Item name based on rarity
+						stackTooltip.set( index, stack.getRarity().rarityColor + stackTooltip.get( index ) );
+					}
+					else
+					{
+						// The rest grey
+						stackTooltip.set( index, EnumChatFormatting.GRAY + stackTooltip.get( index ) );
+					}
+
+					// Add the item tooltip line
+					tooltip.add( stackTooltip.get( index ) );
+				}
+			}
+			catch( Exception e )
+			{
+				tooltip.add( EnumChatFormatting.ITALIC + "<Unable to get item tooltip>" );
 			}
 
 			// Get the mod name

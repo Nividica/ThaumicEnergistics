@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.api.storage.IEssentiaRepo;
+import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * Manages a repository of essentia.
@@ -71,7 +72,7 @@ public class EssentiaRepo
 	@Override
 	public IAspectStack get( final Aspect aspect )
 	{
-		return this.cache.getOrDefault( aspect, null );
+		return ThEUtils.getOrDefault( this.cache, aspect, null );
 	}
 
 	@Override
@@ -83,7 +84,7 @@ public class EssentiaRepo
 	@Override
 	public IAspectStack getOrDefault( final Aspect aspect, final IAspectStack defaultValue )
 	{
-		return this.cache.getOrDefault( aspect, defaultValue );
+		return ThEUtils.getOrDefault( this.cache, aspect, defaultValue );
 	}
 
 	@Override

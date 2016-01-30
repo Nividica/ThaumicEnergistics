@@ -375,9 +375,6 @@ public class PartEssentiaStorageBus
 	@Override
 	public void onNeighborChanged()
 	{
-		// Call super
-		super.onNeighborChanged();
-
 		// Send grid update event on server side
 		if( EffectiveSide.isServerSide() && this.isActive() )
 		{

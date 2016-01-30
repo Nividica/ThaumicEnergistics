@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import thaumicenergistics.api.entities.IGolemHookHandler;
 import thaumicenergistics.api.entities.IGolemHookSyncRegistry;
 import thaumicenergistics.common.utils.ThELog;
+import thaumicenergistics.common.utils.ThEUtils;
 import com.google.common.base.Charsets;
 
 class GolemSyncRegistry
@@ -60,7 +61,7 @@ class GolemSyncRegistry
 	@Override
 	public char getSyncCharOrDefault( final int id, final char defaultChar )
 	{
-		return this.dataMappings.getOrDefault( Integer.valueOf( id ), defaultChar );
+		return ThEUtils.getOrDefault( this.dataMappings, Integer.valueOf( id ), defaultChar );
 	}
 
 	/**

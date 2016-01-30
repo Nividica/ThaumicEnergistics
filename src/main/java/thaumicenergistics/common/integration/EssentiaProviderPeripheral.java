@@ -4,12 +4,15 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.StringUtils;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.IEssentiaGrid;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.api.grid.IMEEssentiaMonitorReceiver;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.common.tiles.TileEssentiaProvider;
+import appeng.api.networking.IGrid;
+import appeng.me.GridAccessException;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
@@ -132,7 +135,7 @@ public class EssentiaProviderPeripheral
 					break;
 
 				case help:
-					helpText = "\nDisplays help for the following:\n" + String.join( "()\n", this.getMethodNames() ) + "()\n";
+					helpText = "\nDisplays help for the following:\n" + StringUtils.join( "()\n", this.getMethodNames() ) + "()\n";
 					break;
 				}
 			}
@@ -320,12 +323,17 @@ public class EssentiaProviderPeripheral
 					IMEEssentiaMonitor monitor = EssentiaProviderPeripheral.this.getProviderMonitor();
 					if( monitor != null )
 					{
-
 						// Register
-						monitor.addListener( this, null );
+						try
+						{
+							monitor.addListener( this, EssentiaProviderPeripheral.this.getProvider().getProxy().getGrid() );
 
-						// Mark as receiving
-						this.isReceving = true;
+							// Mark as receiving
+							this.isReceving = true;
+						}
+						catch( GridAccessException e )
+						{
+						}
 					}
 				}
 			}
@@ -334,11 +342,25 @@ public class EssentiaProviderPeripheral
 		@Override
 		public boolean isValid( final Object verificationToken )
 		{
-			synchronized( this.threadLock )
+			// Assume false
+			this.isReceving = false;
+			try
 			{
-				// Only valid if there are computer watchers
-				this.isReceving = ( this.computerWatchers.size() > 0 );
+				IGrid grid = EssentiaProviderPeripheral.this.getProvider().getProxy().getGrid();
+				if( verificationToken == grid )
+				{
+					synchronized( this.threadLock )
+					{
+						// Only valid if there are computer watchers
+						this.isReceving = ( this.computerWatchers.size() > 0 );
+					}
+				}
 			}
+			catch( GridAccessException e )
+			{
+				return false;
+			}
+
 			return this.isReceving;
 		}
 

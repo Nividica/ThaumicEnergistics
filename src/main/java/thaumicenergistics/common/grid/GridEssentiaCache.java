@@ -110,7 +110,7 @@ public class GridEssentiaCache
 			if( !this.isListeningForChanges )
 			{
 				// Listen for changes
-				GridEssentiaCache.this.addListener( this, null );
+				GridEssentiaCache.this.addListener( this, GridEssentiaCache.this.internalGrid );
 				this.isListeningForChanges = true;
 			}
 		}
@@ -118,7 +118,7 @@ public class GridEssentiaCache
 		@Override
 		public boolean isValid( final Object verificationToken )
 		{
-			return this.isListeningForChanges;
+			return this.isListeningForChanges && ( verificationToken == GridEssentiaCache.this.internalGrid );
 		}
 
 		/**

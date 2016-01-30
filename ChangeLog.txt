@@ -1,4 +1,14 @@
-﻿01/24/2016 1.0.0.1 - Beta
+﻿01/30/2016 1.0.0.2 - Beta
+  Fixes #270: Restored Java 7 compatibility.
+
+01/26/2016 1.0.0.2 - Beta
+  Fixed potential memory leak on networks with essentia monitor listeners.
+  Added mod identification to aspects in the Essentia Crafting Terminal.
+
+01/25/2016 1.0.0.2 - Beta
+  Fixes #268: Getting an item tooltip in the A.C.T. is now a checked operation.
+
+01/24/2016 1.0.0.1 - Beta
   Fixes #267: Wildcard damage values will no longer cause GUI crashes.
   Added Thaumcraft's itemShard to the ore dictionary, allowing autocrafting substitutions where allowed.
 

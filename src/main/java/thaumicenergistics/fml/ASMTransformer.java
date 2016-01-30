@@ -35,6 +35,11 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
  * <li>Adds hook to method <em>render</em></li>
  * </ul>
  * 
+ * Thaumcraft class <em>Aspect</em>
+ * <ul>
+ * <li>Adds hook to <em>constructor</em></li>
+ * </ul>
+ * 
  * @author Nividica
  * 
  */
@@ -42,7 +47,9 @@ public class ASMTransformer
 	implements IClassTransformer
 {
 	private static final String CLASS_EntityGolemBase = "thaumcraft/common/entities/golems/EntityGolemBase";
+	private static final String CLASS_Aspect = "thaumcraft/api/aspects/Aspect";
 	private static final String CLASS_GolemHooks = "thaumicenergistics/common/integration/tc/GolemHooks";
+	private static final String CLASS_AspectHooks = "thaumicenergistics/common/integration/tc/AspectHooks";
 	private static final String INTERFACE_IGolemHookHandler = "thaumicenergistics/api/entities/IGolemHookHandler";
 
 	private static final String FIELD_EntityGolemBase_hookHandlers = "hookHandlers";
@@ -218,6 +225,34 @@ public class ASMTransformer
 		FMLRelaunchLog.log( "ThE-Core", Level.INFO, text );
 	}
 
+	private byte[] transformClass_Aspect( final byte[] classBytes )
+	{
+		// Create the class node and read in the class
+		ClassNode classNode = new ClassNode();
+		ClassReader classReader = new ClassReader( classBytes );
+		classReader.accept( classNode, 0 );
+
+		// Transform methods
+		for( MethodNode method : classNode.methods )
+		{
+			// Constructor
+			if( method.name.equals( "<init>" ) )
+			{
+				if( this.transformMethod_Aspect_init( method ) )
+				{
+					break; // Stop searching.
+				}
+			}
+		}
+
+		// Create the writer
+		ClassWriter writer = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+		classNode.accept( writer );
+
+		// Return the modified class
+		return writer.toByteArray();
+	}
+
 	private byte[] transformClass_GolemBase( final byte[] classBytes )
 	{
 
@@ -358,6 +393,37 @@ public class ASMTransformer
 
 		// Return the modified class
 		return writer.toByteArray();
+	}
+
+	private boolean transformMethod_Aspect_init( final MethodNode method )
+	{
+		// Is this the full constructor?
+		// Check description
+		if( !"(Ljava/lang/String;I[Lthaumcraft/api/aspects/Aspect;Lnet/minecraft/util/ResourceLocation;I)V".equals( method.desc ) )
+		{
+			return false;
+		}
+
+		int opSequence[] = new int[] { Opcodes.GETSTATIC, Opcodes.ALOAD, Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL, Opcodes.POP };
+		AbstractInsnNode insertionPoint = this.findSequence( method.instructions, opSequence, false );
+
+		// Insert the hook
+		// AspectHooks.hook_AspectInit( this )
+		InsnList instructionList = new InsnList();
+
+		// this
+		instructionList.add( new VarInsnNode( Opcodes.ALOAD, 0 ) );
+
+		// AspectHooks.hook_AspectInit( Aspect )
+		instructionList.add( new MethodInsnNode( Opcodes.INVOKESTATIC,
+						CLASS_AspectHooks, "hook_AspectInit",
+						"(L" + CLASS_Aspect + ";)V", false ) );
+
+		// Insert the static call
+		method.instructions.insert( insertionPoint, instructionList );
+
+		return true;
+
 	}
 
 	private void transformMethod_GolemBase_CustomInteraction( final MethodNode method )
@@ -686,6 +752,20 @@ public class ASMTransformer
 				{
 					this.log( "Unable to transform (thaumcraft/client/renderers/entity/RenderGolemBase)" );
 					ThECore.golemHooksTransformFailed = true;
+				}
+
+			}
+
+			else if( transformedName.equals( "thaumcraft.api.aspects.Aspect" ) )
+			{
+				try
+				{
+					this.log( "Transforming Class (thaumcraft.api.aspects.Aspect)" );
+					return this.transformClass_Aspect( basicClass );
+				}
+				catch( Exception e )
+				{
+					this.log( "Unable to transform (thaumcraft.api.aspects.Aspect)" );
 				}
 
 			}

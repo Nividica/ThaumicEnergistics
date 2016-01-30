@@ -9,10 +9,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
 import thaumicenergistics.common.ThaumicEnergistics;
+import thaumicenergistics.common.integration.tc.AspectHooks;
+import thaumicenergistics.common.utils.ThEUtils;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -148,6 +152,12 @@ public class ItemCraftingAspect
 			{
 				// Add the aspect info
 				list.add( aspect.getLocalizedDescription() );
+
+				ModContainer mod = ThEUtils.getOrDefault( AspectHooks.aspectToMod, aspect, null );
+				if( mod != null )
+				{
+					list.add( EnumChatFormatting.DARK_PURPLE.toString() + EnumChatFormatting.ITALIC.toString() + mod.getName() );
+				}
 			}
 			else
 			{

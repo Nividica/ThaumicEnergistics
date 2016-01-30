@@ -1,10 +1,8 @@
 package thaumicenergistics.client.gui.widget;
 
-import java.util.List;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSelectorGui;
@@ -264,25 +262,6 @@ public class WidgetAspectSelector
 
 		// Disable blending
 		GL11.glDisable( GL11.GL_BLEND );
-	}
-
-	/**
-	 * Draws the aspect name and amount
-	 */
-	@Override
-	public void getTooltip( final List<String> tooltip )
-	{
-		if( this.hasAspect() )
-		{
-			// Add the name
-			tooltip.add( this.aspectName );
-
-			// Add aspect info
-			tooltip.add( EnumChatFormatting.GRAY.toString() + this.aspectDescription );
-
-			// Add footnote
-			tooltip.add( EnumChatFormatting.BLUE.toString() + EnumChatFormatting.ITALIC.toString() + this.aspectFootnote );
-		}
 	}
 
 	/**

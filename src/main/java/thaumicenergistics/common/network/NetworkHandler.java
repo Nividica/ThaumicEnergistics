@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.network.packet.client.*;
 import thaumicenergistics.common.network.packet.server.*;
+import thaumicenergistics.common.utils.ThEUtils;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -58,7 +59,7 @@ public class NetworkHandler
 	 */
 	public static Class getPacketClassFromID( final Short id )
 	{
-		return NetworkHandler.IDToClass.getOrDefault( id, null );
+		return ThEUtils.getOrDefault( NetworkHandler.IDToClass, id, null );
 	}
 
 	/**
@@ -69,7 +70,7 @@ public class NetworkHandler
 	 */
 	public static short getPacketID( final ThEBasePacket packet )
 	{
-		return NetworkHandler.ClassToID.getOrDefault( packet.getClass(), (short) -1 );
+		return ThEUtils.getOrDefault( NetworkHandler.ClassToID, packet.getClass(), (short) -1 );
 	}
 
 	/**

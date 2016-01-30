@@ -1,17 +1,20 @@
 package thaumicenergistics.client.gui.widget;
 
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.api.gui.IWidgetHost;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.ThEGuiHelper;
-import thaumicenergistics.common.registries.ThEStrings;
+import thaumicenergistics.common.integration.tc.AspectHooks;
 import thaumicenergistics.common.storage.AspectStack;
+import thaumicenergistics.common.utils.ThEUtils;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -52,8 +55,7 @@ public abstract class AspectWidgetBase
 
 	/**
 	 * Cached footnote of the aspect.
-	 * NOTE: One day I hope to put what mod the aspect is from here,
-	 * not just its primallity.
+	 * NOTE: One day I hope to put what mod the aspect is from here, not just its primallity.
 	 */
 	protected String aspectFootnote = "";
 
@@ -159,20 +161,23 @@ public abstract class AspectWidgetBase
 				// Get the description
 				this.aspectDescription = this.aspectStack.getAspectDescription();
 
+				// Get the mod
+				ModContainer mod = ThEUtils.getOrDefault( AspectHooks.aspectToMod, this.aspectStack.getAspect(), null );
+
 				// Set footnote
-				if( this.aspectStack.getAspect().isPrimal() )
+				if( mod != null )
 				{
-					this.aspectFootnote = StatCollector.translateToLocal( "tc.aspect.primal" );
+					this.aspectFootnote = mod.getName();
 				}
 				else
 				{
-					this.aspectFootnote = ThEStrings.Gui_SelectedAspect.getLocalized();
+					this.aspectFootnote = "Unknown";
 				}
 			}
 			else
 			{
 				this.aspectDescription = this.aspectName;
-				this.aspectFootnote = this.aspectName;
+				this.aspectFootnote = "Unknown";
 			}
 
 			// Get the color bytes
@@ -234,6 +239,25 @@ public abstract class AspectWidgetBase
 	public IAspectStack getStack()
 	{
 		return this.aspectStack;
+	}
+
+	/**
+	 * Draws the aspect name and amount
+	 */
+	@Override
+	public void getTooltip( final List<String> tooltip )
+	{
+		if( this.hasAspect() )
+		{
+			// Add the name
+			tooltip.add( this.aspectName );
+
+			// Add aspect info
+			tooltip.add( EnumChatFormatting.GRAY.toString() + this.aspectDescription );
+
+			// Add footnote
+			tooltip.add( EnumChatFormatting.DARK_PURPLE.toString() + EnumChatFormatting.ITALIC.toString() + this.aspectFootnote );
+		}
 	}
 
 	/**

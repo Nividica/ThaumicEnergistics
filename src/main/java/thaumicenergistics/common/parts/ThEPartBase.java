@@ -37,7 +37,6 @@ import appeng.api.parts.*;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -102,17 +101,12 @@ public abstract class ThEPartBase
 	/**
 	 * The IGridBlock for this part.
 	 */
-	private AEPartGridBlock gridBlock;
+	private final AEPartGridBlock gridBlock;
 
 	/**
 	 * AE2 player ID for the owner of this part.
 	 */
 	private int ownerID = -1;
-
-	/**
-	 * Is the part receiving a redstone signal.
-	 */
-	private boolean recevingRedstonePower;
 
 	/**
 	 * The item that represents this part.
@@ -139,6 +133,16 @@ public abstract class ThEPartBase
 		else
 		{
 			this.interactionPermissions = null;
+		}
+
+		if( EffectiveSide.isServerSide() )
+		{
+			// Create the grid block
+			this.gridBlock = new AEPartGridBlock( this );
+		}
+		else
+		{
+			this.gridBlock = null;
 		}
 	}
 
@@ -181,6 +185,11 @@ public abstract class ThEPartBase
 	 */
 	protected boolean doesPlayerHavePermission( final EntityPlayer player, final SecurityPermissions permission )
 	{
+		if( EffectiveSide.isClientSide() )
+		{
+			return false;
+		}
+
 		// Get the security grid
 		ISecurityGrid sGrid = this.gridBlock.getSecurityGrid();
 
@@ -205,6 +214,11 @@ public abstract class ThEPartBase
 	 */
 	protected boolean doesPlayerHavePermission( final int playerID, final SecurityPermissions permission )
 	{
+		if( EffectiveSide.isClientSide() )
+		{
+			return false;
+		}
+
 		// Get the security grid
 		ISecurityGrid sGrid = this.gridBlock.getSecurityGrid();
 
@@ -226,6 +240,11 @@ public abstract class ThEPartBase
 	 */
 	protected TileEntity getFacingTile()
 	{
+		if( this.hostTile == null )
+		{
+			return null;
+		}
+
 		// Get the world
 		World world = this.hostTile.getWorldObj();
 
@@ -245,22 +264,20 @@ public abstract class ThEPartBase
 	public void addToWorld()
 	{
 		// Ignored on client side
-		if( FMLCommonHandler.instance().getEffectiveSide().isServer() )
+		if( EffectiveSide.isClientSide() )
 		{
-			// Create the grid block
-			this.gridBlock = new AEPartGridBlock( this );
-
-			// Create the node
-			this.node = AEApi.instance().createGridNode( this.gridBlock );
-
-			// Update state
-			this.node.updateState();
-
-			// Set the player id
-			this.node.setPlayerID( this.ownerID );
-
-			this.setPower( null );
+			return;
 		}
+		// Create the node
+		this.node = AEApi.instance().createGridNode( this.gridBlock );
+
+		// Update state
+		this.node.updateState();
+
+		// Set the player id
+		this.node.setPlayerID( this.ownerID );
+
+		this.setPower( null );
 	}
 
 	@Override
@@ -269,8 +286,8 @@ public abstract class ThEPartBase
 	@Override
 	public boolean canBePlacedOn( final BusSupport type )
 	{
-		// Can not be placed on dense cable
-		return type != BusSupport.DENSE_CABLE;
+		// Can only be placed on normal cable
+		return type == BusSupport.CABLE;
 	}
 
 	@Override
@@ -288,6 +305,7 @@ public abstract class ThEPartBase
 	@Override
 	public abstract void getBoxes( IPartCollisionHelper helper );
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public abstract IIcon getBreakingTexture();
 
@@ -461,6 +479,11 @@ public abstract class ThEPartBase
 	 */
 	public final boolean isPartUseableByPlayer( final EntityPlayer player )
 	{
+		if( EffectiveSide.isClientSide() )
+		{
+			return false;
+		}
+
 		// Null check host
 		if( ( this.hostTile == null ) || ( this.host == null ) )
 		{
@@ -543,7 +566,12 @@ public abstract class ThEPartBase
 	 */
 	public boolean isReceivingRedstonePower()
 	{
-		return this.recevingRedstonePower;
+		if( this.host != null )
+		{
+			// Get redstone state
+			return this.host.hasRedstone( this.cableSide );
+		}
+		return false;
 	}
 
 	@Override
@@ -603,20 +631,6 @@ public abstract class ThEPartBase
 	@Override
 	public void onNeighborChanged()
 	{
-		if( this.hostTile != null )
-		{
-			// Get the world
-			World world = this.hostTile.getWorldObj();
-
-			// Get our location
-			int x = this.hostTile.xCoord;
-			int y = this.hostTile.yCoord;
-			int z = this.hostTile.zCoord;
-
-			// Check redstone state
-			this.recevingRedstonePower = world.isBlockIndirectlyGettingPowered( x, y, z );
-
-		}
 	}
 
 	@Override
@@ -768,7 +782,7 @@ public abstract class ThEPartBase
 		List<ItemStack> drops = new ArrayList<ItemStack>();
 
 		// Get this item
-		drops.add( this.getItemStack( null ) );
+		drops.add( this.getItemStack( PartItemStack.Break ) );
 
 		// Get the drops for this part
 		this.getDrops( drops, false );
@@ -785,9 +799,7 @@ public abstract class ThEPartBase
 	public final void setPartHostInfo( final ForgeDirection side, final IPartHost host, final TileEntity tile )
 	{
 		this.cableSide = side;
-
 		this.host = host;
-
 		this.hostTile = tile;
 
 	}
@@ -796,8 +808,6 @@ public abstract class ThEPartBase
 	public final void setPower( final MENetworkPowerStatusChange event )
 	{
 		this.updateStatus();
-
-		this.host.markForUpdate();
 	}
 
 	/**

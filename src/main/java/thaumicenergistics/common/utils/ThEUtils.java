@@ -1,5 +1,6 @@
 package thaumicenergistics.common.utils;
 
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
@@ -49,6 +50,27 @@ public final class ThEUtils
 		return ( tile.getWorldObj().getTileEntity( tile.xCoord, tile.yCoord, tile.zCoord ) == tile )
 						&& ( player.getDistanceSq( tile.xCoord + 0.5D, tile.yCoord + 0.5D, tile.zCoord + 0.5D ) <= SQUARED_REACH );
 
+	}
+
+	/**
+	 * Returns the value to which the specified key is mapped, or defaultValue if the map contains no mapping for the key.
+	 * <hr>
+	 * NOTE: This is included for java 7 compatibility.
+	 * <hr>
+	 * 
+	 * @param map
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public static final <K, V> V getOrDefault( final Map<K, V> map, final K key, final V defaultValue )
+	{
+		if( map.containsKey( key ) )
+		{
+			return map.get( key );
+		}
+
+		return defaultValue;
 	}
 
 	/**

@@ -1,6 +1,5 @@
 package thaumicenergistics.client.gui.widget;
 
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
@@ -100,15 +99,6 @@ public class WidgetAspectSlot
 
 		}
 
-	}
-
-	@Override
-	public void getTooltip( final List<String> tooltip )
-	{
-		if( this.canRender() && ( this.getAspect() != null ) )
-		{
-			tooltip.add( this.aspectName );
-		}
 	}
 
 	public void mouseClicked( final Aspect withAspect )

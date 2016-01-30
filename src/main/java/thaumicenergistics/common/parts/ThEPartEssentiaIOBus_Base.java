@@ -472,9 +472,6 @@ public abstract class ThEPartEssentiaIOBus_Base
 	@Override
 	public void onNeighborChanged()
 	{
-		// Call super
-		super.onNeighborChanged();
-
 		// Ignored client side
 		if( EffectiveSide.isClientSide() )
 		{

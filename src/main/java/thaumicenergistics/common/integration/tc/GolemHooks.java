@@ -13,6 +13,7 @@ import thaumicenergistics.api.entities.IGolemHookHandler.InteractionLevel;
 import thaumicenergistics.api.entities.IGolemHookSyncRegistry;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThELog;
+import thaumicenergistics.common.utils.ThEUtils;
 import thaumicenergistics.fml.ThECore;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -201,7 +202,7 @@ public class GolemHooks
 			try
 			{
 				// Get the current handler data
-				Object handlerData = golemHandlerData.getOrDefault( handler, null );
+				Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
 
 				// Call handler
 
@@ -239,7 +240,7 @@ public class GolemHooks
 		for( IGolemHookHandler handler : registeredHandlers )
 		{
 			// Get the current handler data
-			Object handlerData = golemHandlerData.getOrDefault( handler, null );
+			Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
 
 			// Call handler
 			try
@@ -466,7 +467,7 @@ public class GolemHooks
 			for( IGolemHookHandler handler : handlersToUpdate )
 			{
 				// Get the current handler data
-				Object handlerData = golemHandlerData.getOrDefault( handler, null );
+				Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
 				boolean hadData = ( handlerData != null );
 				try
 				{
@@ -550,7 +551,7 @@ public class GolemHooks
 			try
 			{
 				// Get the current handler data
-				Object handlerData = golemHandlerData.getOrDefault( handler, null );
+				Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
 
 				// Call handler
 				handlerData = handler.readEntityFromNBT( golem, nbt );
@@ -619,7 +620,7 @@ public class GolemHooks
 			try
 			{
 				// Get the current handler data
-				Object handlerData = golemHandlerData.getOrDefault( handler, null );
+				Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
 				boolean hadData = ( handlerData != null );
 
 				// Call handler
@@ -674,7 +675,7 @@ public class GolemHooks
 			try
 			{
 				// Get the current handler data
-				Object handlerData = golemHandlerData.getOrDefault( handler, null );
+				Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
 
 				// Call handler
 				handler.writeEntityNBT( golem, handlerData, nbt );

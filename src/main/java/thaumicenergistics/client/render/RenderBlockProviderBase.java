@@ -17,6 +17,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 /**
  * Renders the providers.
  * 
+ * TODO: GL Display lists
+ * 
  * @author Nividica
  * 
  */
