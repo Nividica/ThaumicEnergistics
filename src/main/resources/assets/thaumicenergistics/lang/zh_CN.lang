@@ -13,7 +13,8 @@ thaumicenergistics.block.golem.gear.box.name=神秘齿轮箱
 thaumicenergistics.block.essentia.cell.workbench.name=源质元件工作台
 thaumicenergistics.block.arcane.assembler.name=奥术装配器
 thaumicenergistics.block.knowledge.inscriber.name=知识记录仪
-thaumicenergistics.block.essentia.vibration.chamber.name=[WIP]源质谐振腔
+thaumicenergistics.block.essentia.vibration.chamber.name=源质谐振仓
+thaumicenergistics.block.distillation.encoder.name=蒸馏编码台
 
 #Cable parts
 thaumicenergistics.aeparts.essentia.ImportBus.name=源质输入总线
@@ -43,7 +44,8 @@ thaumicenergistics.item.material.iron.gear.name=铁齿轮
 thaumicenergistics.item.wireless.essentia.terminal.name=无线源质终端
 thaumicenergistics.item.knowledge.core.name=知识核心
 thaumicenergistics.item.focus.aewrench.name=法杖核心: AE扳手
-thaumicenergistics.item.focus.aewrench.disabled.name=法杖核心: AE扳手 - 禁用扳手模式
+thaumicenergistics.item.focus.aewrench.disabled.name=法杖核心: AE扳手 - 扳手模式已禁用
+thaumicenergistics.item.golem.wifi.backpack.name=无线傀儡背包
 
 #Tooltips
 thaumicenergistics.tooltip.essentia.cell.bytes=%d / %d 字节已使用.
@@ -62,6 +64,7 @@ thaumicenergistics.tooltip.button.inscriber.missing=需要知识核心
 thaumicenergistics.tooltip.button.swap.armor=将你目前装备的护甲与终端中的护甲交换.
 thaumicenergistics.tooltip.button.swap.armor.title=交换护甲
 
+
 #GUI
 thaumicenergistics.gui.arcane.crafting.terminal.title=奥术终端
 thaumicenergistics.gui.essentia.cell.title=源质元件
@@ -70,6 +73,8 @@ thaumicenergistics.gui.selected.aspect=要素
 thaumicenergistics.gui.digivis.source.name=数位魔力源
 thaumicenergistics.gui.essentia.cell.workbench.title.name=源质元件工作台
 thaumicenergistics.gui.arcane.assembler.title=奥术装配器
+thaumicenergistics.gui.vibration.chamber.stored=存储：%d %s
+thaumicenergistics.gui.vibration.chamber.processing=正在处理：%s
 
 #Research Tab
 tc.research_category.thaumicenergistics=神秘能源
@@ -107,6 +112,8 @@ tc.research_name.thaumicenergistics.TEESSTERM=源质终端
 tc.research_text.thaumicenergistics.TEESSTERM=已知你有多少源质.
 thaumicenergistics.research_page.TEESSTERM.1=§l源质终端§r让你能看到网络中储存了多少源质,并提供了用源质容器向终端输入源质或从中抽取源质的方法.§l源质发信器§r会持续监测网络中的源质等级,并在条件符合时发出红石信号.
 thaumicenergistics.research_page.TEESSTERM.2=§l源质储存监控器§r和§l源质交换监控器§r则能让你看到此刻有多少某源质存储于网络之中. 转换监视器还能让你向网络中输入或从中抽取源质.<BR>使用扳手右键将会锁定/解锁监视器.<BR>手持标签,装有源质的罐子或者安瓿右击解锁状态下的监视器将会设定当前显示的要素种类,空手右键则会清空.<BR>右击锁定的交换监视器可以填充要素罐子或安瓿,潜行并右击则会清空罐子或安瓿并将源质导入网络.<BR>潜行并右键双击将会清空你物品栏里所有的源质,并导入进网络.
+thaumicenergistics.research_page.TEESSTERM.3=§l源质发信器§r可在网络中源质低于或高于指定水平时发出红石信号.
+thaumicenergistics.research_page.TEESSTERM.4=§l源质储存监控器§r和§l源质交换监控器§r可以让你知道在某一刻时网络内有多少指定要素源质.源质交换监控器还可以让你将源质输入网络,或是从网络中提取源质.<BR>使用扳手右击即可锁定/解锁监控器.<BR>手持罐子标签或者填满的罐子或填满的安瓿右击未锁定的监控器可设定显示的要素种类,空手右击则可清空.<BR>右击锁定的监控器可填满罐子或安瓿,按住Shift右击则可清空它们.<BR>按住Shift时右键双击可清空你物品栏中的所有源质.
 
 # Research Essentia Provider
 tc.research_name.thaumicenergistics.TEESSPROV=源质供应器
@@ -157,4 +164,29 @@ thaumicenergistics.research_page.TEARCANEASSEMBLER.3=§l要素减免§r<BR>装�
 # Research Wrench Focus
 tc.research_name.thaumicenergistics.TEFOCUSWRENCH=法杖核心: AE扳手
 tc.research_text.thaumicenergistics.TEFOCUSWRENCH=一些地方会用得上的
-thaumicenergistics.research_page.TEFOCUSWRENCH.1=这个法杖核心的作用类似于AE2的扳手.<BR>潜行+左键: 转向.<BR>潜行+右键: 拆除.<BR>注意对线缆的完全支持当前还在制作中(wip).
+thaumicenergistics.research_page.TEFOCUSWRENCH.1=这个法杖核心的作用类似于AE2的扳手.<BR>潜行+左键: 转向.<BR>潜行+右键: 拆除.
+
+# Research Essentia Vibration Chamber
+tc.research_name.thaumicenergistics.TEESSVIBCMBR=源质谐振仓
+tc.research_text.thaumicenergistics.TEESSVIBCMBR=源质驱动网络
+thaumicenergistics.research_page.TEESSVIBCMBR.1=直到现在你的网络所需的能量还是要依赖§l谐振仓§r燃烧物品.是时候改变这一切了!<BR>你造出了一台可以释放源质中的能量的设备,它可以为谐振仓提供能量.现在只需要蒸馏出§lIgnis§r或§lPotentia§r源质,你就可以仅靠烧物品来驱动你的网络了.<BR>不过要注意一点,它也有和普通谐振仓一样的限制:若网络中有足够能源,它就会降低输出以避免浪费,但只要还有源质它就会一直反应下去.
+thaumicenergistics.research_page.TEESSVIBCMBR.2=§l§n操作§r<BR>将诸如煤炭之类的物品分解,以得到Ignis或Potentia源质,这些源质可以为你带来更多的能量.你最初的估计是,将煤炭分解成源质再使用源质谐振仓供能,相比于直接烧煤,可以带来约350%的效率提升.Potentia源质似乎比Ignis源质更具有开发潜力.<BR>§l源质谐振仓§r在没有源质时,可根据实际情况智能调整对源质的需求,将需求量稳定在一个正常的水平上.当存有源质时,它只会请求更多其存有的源质.
+thaumicenergistics.research_page.TEESSVIBCMBR.3=打开GUI后,其GUI会显示当前存储的源质种类,源质数量,正在处理的源质,剩余时间以及当前产能等级.<LINE>§l§n备注§r<BR>The §l源质谐振仓§r可置于§l源质终端§r中以快速填装源质.<BR>§l源质输出总线§r,§l源质储存总线§r和源质管道都可以为§l源质谐振仓§r源源不断提供源质.
+
+# Research Distillation Pattern Encoder
+tc.research_name.thaumicenergistics.TEDISTILLATIONPATTERNENCODER=蒸馏编码台
+tc.research_text.thaumicenergistics.TEDISTILLATIONPATTERNENCODER=买买买
+thaumicenergistics.research_page.TEDISTILLATIONPATTERNENCODER.1=将AE自动合成的原理进行推广后,你找到了将源质蒸馏过程写入§l编码样板§r的方法.<BR>将物品放入魔导透镜的格子中后会揭示其要素组成.选中你想要的要素后,其数据就可以写入样板中了.
+
+# Research Golem Wifi Backpack
+tc.research_name.thaumicenergistics.TEGOLEMWIFIBACKPACK=无线傀儡背包
+tc.research_text.thaumicenergistics.TEGOLEMWIFIBACKPACK=DigitalGolem423@ae2.net
+thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.1=你的傀儡不断地奔波于各个箱子之间,帮你储存收集到的物品,以供不时之需.在看到这一切后,你开始思考一个问题:有没有可能把这个中间人裁掉? 而当你想到你的ME网络可以做到无线访问后,你恍然大悟:你完全可以用一样的方法完成这个任务.<BR>在热火朝天地奋斗数小时后,你终于做出来了一个特制背包,傀儡可以通过这个背包访问ME网络.然而这个背包也有一些局限.傀儡必须处在§lAccess Point§r的范围内方可访问网络.天线上的福鲁伊克斯珍珠可以告诉你傀儡是否能访问ME网络.
+thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.2=有鉴于连接网络也需要耗能,你对充能器做了些修改,使得它可以从两个内嵌的闪耀之光中吸取能量.充能后,背包仅有一小段可与网络建立连接的时间.在这段宝贵的时间里傀儡便可与网络进行无线交互.<BR>要将背包与你的网络连接,将其置于安全终端中即可.<LINE>随着你对傀儡学研究的不断深入,请不要忘记继续浏览本页以查看新的用法.
+thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.3=§n迷彩§r<BR>各种迷彩可以为背包带来各种不同的风格.可用的伪装材质有:神秘块(默认), 宏伟之木,砖,草垛,油脂块,腐肉块,石头,铁块,金块以及钻石块.<BR>手持目标方块右击背有背包的傀儡以改变迷彩.
+thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.COREGATHER=§n聚集核心 解锁§r<IMG>thaumicenergistics:textures/gui/states.png:16:0:16:16:1.0</IMG>装备有§l聚集核心§r的傀儡可将收集到的物品直接存入网络.单次存储物品之最大数取决于傀儡管理每次充能的效率.
+thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.COREFILL=§n填充核心 解锁§r<IMG>thaumicenergistics:textures/gui/states.png:32:0:16:16:1.0</IMG>装备有§l填充核心§r的傀儡可直接从网络中抽取物品.单次提取物品之最大数取决于傀儡的GUI以及傀儡管理每次充能的效率.
+thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.CORELIQUID=§n移液核心 解锁§r<IMG>thaumicenergistics:textures/gui/states.png:48:0:16:16:1.0</IMG>装备有§l移液核心§r的傀儡可直接从网络中抽取液体.单次提取流体之最大数取决于傀儡管理每次充能的效率.<LINE>特别提醒:在ME网络中存储流体的功能需要别的MOD支持,例如Extra Cells 2.
+thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.COREALCHEMY=§n炼金核心 解锁§r<IMG>thaumicenergistics:textures/gui/states.png:64:0:16:16:1.0</IMG>装备有§l炼金核心§r的傀儡可自动从网络中自动存入或抽取源质.单次传输源质之最大数取决于傀儡管理每次充能的效率.<BR>当傀儡被放置于源质来源上时,例如放置于炼金熔炉上时,它会自动将源质存入网络.<BR>若是要求傀儡填装源质容器,例如罐子,那么它会从网络中提取源质.
+thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.UPGRADEORDER=§n秩序升级 解锁§r<IMG>thaumcraft:textures/items/golem_upgrade_order.png:0:0:255:255:0.0625</IMG>装备有秩序升级的傀儡会更高效地管理背包能量,这为其带来了单次充能后工作量的提升.
+thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.ADVANCEDGOLEM=§n高级傀儡§r<IMG>thaumcraft:textures/items/brain.png:0:0:255:255:0.0625</IMG>高级傀儡每次充能后的工作量是原来的两倍.
