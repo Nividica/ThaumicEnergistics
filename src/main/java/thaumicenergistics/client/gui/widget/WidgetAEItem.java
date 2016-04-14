@@ -1,16 +1,16 @@
 package thaumicenergistics.client.gui.widget;
 
 import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import thaumicenergistics.api.gui.IWidgetHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.render.AppEngRenderItem;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import thaumicenergistics.api.gui.IWidgetHost;
 
 /**
  * Widget displaying an AE item.
@@ -65,26 +65,33 @@ public class WidgetAEItem
 	@Override
 	public void drawWidget()
 	{
-		if( this.aeItemStack != null )
+		try
 		{
-			// Set the z level
-			this.zLevel = 2.0F;
-			this.aeItemRenderer.zLevel = 2.0F;
+			if( this.aeItemStack != null )
+			{
+				// Set the z level
+				this.zLevel = 2.0F;
+				this.aeItemRenderer.zLevel = 2.0F;
 
-			// Set the item
-			this.aeItemRenderer.setAeStack( this.aeItemStack );
+				// Set the item
+				this.aeItemRenderer.setAeStack( this.aeItemStack );
 
-			// Draw the item
-			this.aeItemRenderer.renderItemAndEffectIntoGUI( WidgetAEItem.MC.fontRenderer, WidgetAEItem.TEXTURE_MANAGER,
-				this.aeItemStack.getItemStack(), this.xPosition + 1, this.yPosition + 1 );
+				// Draw the item
+				this.aeItemRenderer.renderItemAndEffectIntoGUI( WidgetAEItem.MC.fontRenderer, WidgetAEItem.TEXTURE_MANAGER,
+					this.aeItemStack.getItemStack(), this.xPosition + 1, this.yPosition + 1 );
 
-			// Draw the amount
-			this.aeItemRenderer.renderItemOverlayIntoGUI( WidgetAEItem.MC.fontRenderer, WidgetAEItem.TEXTURE_MANAGER,
-				this.aeItemStack.getItemStack(), this.xPosition + 1, this.yPosition + 1 );
+				// Draw the amount
+				this.aeItemRenderer.renderItemOverlayIntoGUI( WidgetAEItem.MC.fontRenderer, WidgetAEItem.TEXTURE_MANAGER,
+					this.aeItemStack.getItemStack(), this.xPosition + 1, this.yPosition + 1 );
 
-			// Reset the z level
-			this.zLevel = 0.0F;
-			this.aeItemRenderer.zLevel = 0.0F;
+				// Reset the z level
+				this.zLevel = 0.0F;
+				this.aeItemRenderer.zLevel = 0.0F;
+			}
+		}
+		catch( Exception e )
+		{
+			// Silently ignore.
 		}
 
 	}

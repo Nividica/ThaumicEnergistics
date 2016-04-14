@@ -42,6 +42,18 @@ public class ThELog
 	}
 
 	/**
+	 * Logs an exception.
+	 * 
+	 * @param e
+	 * @param format
+	 * @param data
+	 */
+	public static void error( final Throwable e, final String format, final Object ... data )
+	{
+		log.error( String.format( format, data ), e );
+	}
+
+	/**
 	 * Logs basic info.
 	 * 
 	 * @param format
@@ -53,7 +65,8 @@ public class ThELog
 	}
 
 	/**
-	 * Logs an error.
+	 * Logs an error.<br>
+	 * If there is an exception available, use {@code error}.
 	 * 
 	 * @param format
 	 * @param data

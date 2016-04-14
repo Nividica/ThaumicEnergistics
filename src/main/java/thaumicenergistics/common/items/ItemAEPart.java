@@ -3,6 +3,13 @@ package thaumicenergistics.common.items;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import appeng.api.AEApi;
+import appeng.api.config.Upgrades;
+import appeng.api.implementations.items.IItemGroup;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartItem;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,13 +20,6 @@ import net.minecraft.world.World;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.utils.ThELog;
-import appeng.api.AEApi;
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.items.IItemGroup;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base class for all ThE's AE2 cable parts.
@@ -75,10 +75,7 @@ public class ItemAEPart
 		catch( Throwable e )
 		{
 			// Bad stuff, log the error.
-			ThELog.severe( "Unable to create cable-part from item: %s", itemStack.getDisplayName() );
-
-			// Print that stack-trace
-			e.printStackTrace();
+			ThELog.error( e, "Unable to create cable-part from item: %s", itemStack.getDisplayName() );
 		}
 
 		// Return the part
@@ -132,7 +129,7 @@ public class ItemAEPart
 	}
 
 	@Override
-	public boolean onItemUse( final ItemStack itemStack, final EntityPlayer player, final World world, final int x, final int y, final int z,
+	public boolean onItemUse(	final ItemStack itemStack, final EntityPlayer player, final World world, final int x, final int y, final int z,
 								final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		// Can we place the item on the bus?

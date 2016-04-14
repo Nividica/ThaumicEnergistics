@@ -2,6 +2,23 @@ package thaumicenergistics.common.container;
 
 import java.util.ArrayList;
 import java.util.List;
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.PlayerSource;
+import appeng.api.networking.storage.IBaseMonitor;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
+import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerCraftAmount;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,23 +48,6 @@ import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
 import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.PlayerSource;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.container.ContainerOpenContext;
-import appeng.container.implementations.ContainerCraftAmount;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartArcaneCraftingTerminal} container.
@@ -237,7 +237,7 @@ public class ContainerPartArcaneCraftingTerminal
 				// Create the slot
 				craftingSlot = new Slot( terminal, slotIndex, CRAFTING_SLOT_X_POS +
 								( column * ContainerWithPlayerInventory.SLOT_SIZE ), CRAFTING_SLOT_Y_POS +
-								( row * ContainerWithPlayerInventory.SLOT_SIZE ) );
+												( row * ContainerWithPlayerInventory.SLOT_SIZE ) );
 
 				// Add the slot
 				this.addSlotToContainer( craftingSlot );
@@ -1222,7 +1222,8 @@ public class ContainerPartArcaneCraftingTerminal
 	 * @param requestedStack
 	 * @param mouseButton
 	 */
-	public void onClientRequestExtract( final EntityPlayer player, final IAEItemStack requestedStack, final int mouseButton, final boolean isShiftHeld )
+	public void onClientRequestExtract(	final EntityPlayer player, final IAEItemStack requestedStack, final int mouseButton,
+										final boolean isShiftHeld )
 	{
 		// Ensure there is a player and monitor
 		if( ( player == null ) || ( this.monitor == null ) )
@@ -1643,8 +1644,8 @@ public class ContainerPartArcaneCraftingTerminal
 			// Get the itemstack in the slot
 			ItemStack slotStack = slot.getStack();
 
-			// Was the slot clicked in the crafting grid or wand?
-			if( ( slot == this.wandSlot ) || this.slotClickedWasInCraftingInventory( slotNumber ) )
+			// Was the slot clicked in the crafting grid?
+			if( this.slotClickedWasInCraftingInventory( slotNumber ) )
 			{
 				// Attempt to merge with the ME network
 				didMerge = this.mergeWithMENetwork( slotStack );
@@ -1709,6 +1710,26 @@ public class ContainerPartArcaneCraftingTerminal
 				this.doShiftAutoCrafting( player );
 
 				return null;
+			}
+			// Wand?
+			else if( slot == this.wandSlot )
+			{
+				// Attempt to merge with the hotbar
+				didMerge = this.mergeSlotWithHotbarInventory( slotStack );
+
+				// Did we merge?
+				if( !didMerge )
+				{
+					// Attempt to merge with the player inventory
+					didMerge = this.mergeSlotWithPlayerInventory( slotStack );
+
+					// Did we merge?
+					if( !didMerge )
+					{
+						// Attempt to merge with the ME network
+						didMerge = this.mergeWithMENetwork( slotStack );
+					}
+				}
 			}
 			// Was the slot clicked a view cell?
 			else if( ( slotNumber >= this.firstViewSlotNumber ) && ( slotNumber <= this.lastViewSlotNumber ) )

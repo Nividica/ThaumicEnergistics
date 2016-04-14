@@ -2,6 +2,9 @@ package thaumicenergistics.common.items;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -15,10 +18,6 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.integration.tc.AspectHooks;
-import thaumicenergistics.common.utils.ThEUtils;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Item used to represent an {@link Aspect}
@@ -153,7 +152,7 @@ public class ItemCraftingAspect
 				// Add the aspect info
 				list.add( aspect.getLocalizedDescription() );
 
-				ModContainer mod = ThEUtils.getOrDefault( AspectHooks.aspectToMod, aspect, null );
+				ModContainer mod = AspectHooks.aspectToMod.getOrDefault( aspect, null );
 				if( mod != null )
 				{
 					list.add( EnumChatFormatting.DARK_PURPLE.toString() + EnumChatFormatting.ITALIC.toString() + mod.getName() );

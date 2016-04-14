@@ -1,13 +1,22 @@
 package thaumicenergistics.common.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import com.google.common.base.Charsets;
+import appeng.api.parts.IPartHost;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.util.item.AEItemStack;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,15 +26,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.parts.ThEPartBase;
-import appeng.api.parts.IPartHost;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.util.item.AEItemStack;
-import com.google.common.base.Charsets;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import thaumicenergistics.common.utils.ThELog;
 
 /**
  * Base of all ThE Packets. Also includes packet utils.
@@ -342,27 +343,28 @@ public abstract class ThEBasePacket
 		// Create a new data stream
 		ByteBuf decompressedStream = Unpooled.buffer( ThEBasePacket.COMPRESSED_BUFFER_SIZE );
 
-		GZIPInputStream decompressor = null;
-		try
+		try(
+						InputStream inStream = new InputStream()
+						{
+
+							@Override
+							public int read() throws IOException
+							{
+								// Is there anymore data to read from the packet stream?
+								if( packetStream.readableBytes() <= 0 )
+								{
+									// Return end marker
+									return -1;
+								}
+
+								// Return the byte
+								return packetStream.readByte() & 0xFF;
+							}
+						};
+
+						// Create the decompressor
+						GZIPInputStream decompressor = new GZIPInputStream( inStream ) )
 		{
-			// Create the decompressor
-			decompressor = new GZIPInputStream( new InputStream()
-			{
-
-				@Override
-				public int read() throws IOException
-				{
-					// Is there anymore data to read from the packet stream?
-					if( packetStream.readableBytes() <= 0 )
-					{
-						// Return end marker
-						return -1;
-					}
-
-					// Return the byte
-					return packetStream.readByte() & 0xFF;
-				}
-			} );
 
 			// Create a temporary holding array
 			byte[] holding = new byte[512];
@@ -394,16 +396,7 @@ public abstract class ThEBasePacket
 		catch( IOException e )
 		{
 			// Failed
-			if( decompressor != null )
-			{
-				try
-				{
-					decompressor.close();
-				}
-				catch( IOException e1 )
-				{
-				}
-			}
+			ThELog.error( e, "Packet decompression failed." );
 		}
 	}
 
@@ -421,25 +414,26 @@ public abstract class ThEBasePacket
 		// Pass to subclass
 		this.writeData( streamToCompress );
 
-		GZIPOutputStream compressor = null;
-		try
-		{
-			// Create the compressor
-			compressor = new GZIPOutputStream( new OutputStream()
-			{
+		// Create the compressor		
+		try(
+						OutputStream outStream = new OutputStream()
+						{
 
-				@Override
-				public void write( final int byteToWrite ) throws IOException
-				{
-					// Write the byte to the packet stream
-					packetStream.writeByte( byteToWrite & 0xFF );
-				}
-			} )
-			{
-				{
-					this.def.setLevel( Deflater.BEST_COMPRESSION );
-				}
-			};
+							@Override
+							public void write( final int byteToWrite ) throws IOException
+							{
+								// Write the byte to the packet stream
+								packetStream.writeByte( byteToWrite & 0xFF );
+							}
+						};
+
+						GZIPOutputStream compressor = new GZIPOutputStream( outStream )
+						{
+							{
+								this.def.setLevel( Deflater.BEST_COMPRESSION );
+							}
+						} )
+		{
 
 			// Compress
 			compressor.write( streamToCompress.array(), 0, streamToCompress.writerIndex() );
@@ -450,17 +444,7 @@ public abstract class ThEBasePacket
 		catch( IOException e )
 		{
 			// Failed
-
-			if( compressor != null )
-			{
-				try
-				{
-					compressor.close();
-				}
-				catch( IOException e1 )
-				{
-				}
-			}
+			ThELog.error( e, "Packet compression failed, packet will be incomplete or dropped." );
 		}
 	}
 

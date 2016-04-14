@@ -1,12 +1,12 @@
 package thaumicenergistics.fml;
 
-import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
+import net.minecraft.launchwrapper.IClassTransformer;
 
 /**
  * <strong>Modifications made by the transformer:</strong></br>
@@ -253,6 +253,32 @@ public class ASMTransformer
 		return writer.toByteArray();
 	}
 
+	private byte[] transformClass_CraftingTreeProcess( final byte[] classBytes )
+	{
+		// Create the class node and read in the class
+		ClassNode classNode = new ClassNode();
+		ClassReader classReader = new ClassReader( classBytes );
+		classReader.accept( classNode, 0 );
+
+		// Transform methods
+		for( MethodNode method : classNode.methods )
+		{
+			// Constructor
+			if( method.name.equals( "<init>" ) )
+			{
+				this.transformMethod_CraftingTreeProcess_init( method );
+				break; // Stop searching.
+			}
+		}
+
+		// Create the writer
+		ClassWriter writer = new ClassWriter( ClassWriter.COMPUTE_MAXS );
+		classNode.accept( writer );
+
+		// Return the modified class
+		return writer.toByteArray();
+	}
+
 	private byte[] transformClass_GolemBase( final byte[] classBytes )
 	{
 
@@ -426,6 +452,29 @@ public class ASMTransformer
 
 	}
 
+	private void transformMethod_CraftingTreeProcess_init( final MethodNode method )
+	{
+		int opSequence[] = new int[] { Opcodes.ILOAD, Opcodes.PUTFIELD, Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL, Opcodes.ASTORE };
+		AbstractInsnNode insertionPoint = this.findSequence( method.instructions, opSequence, true );
+
+		// Insert this.world = world
+		InsnList instructionList = new InsnList();
+
+		// this
+		instructionList.add( new VarInsnNode( Opcodes.ALOAD, 0 ) );
+
+		// world
+		instructionList.add( new VarInsnNode( Opcodes.ALOAD, 6 ) );
+
+		// this.world = world
+		instructionList.add( new FieldInsnNode( Opcodes.PUTFIELD,
+						"appeng/crafting/CraftingTreeProcess", "world", "Lnet/minecraft/world/World;" ) );
+
+		// Insert the new code
+		method.instructions.insert( insertionPoint, instructionList );
+
+	}
+
 	private void transformMethod_GolemBase_CustomInteraction( final MethodNode method )
 	{
 		int opSequence[] = new int[] { Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL, Opcodes.ICONST_M1 };
@@ -453,8 +502,8 @@ public class ASMTransformer
 		// GolemHooks.setupGolemHook( EntityGolemBase, Hashmap )
 		instructionList.add( new MethodInsnNode( Opcodes.INVOKESTATIC,
 						CLASS_GolemHooks, "hook_CustomInteraction",
-						"(L" + CLASS_EntityGolemBase + ";Lnet/minecraft/entity/player/EntityPlayer;L"
-										+ FIELDTYPE_EntityGolemBase_hookHandlers + ";)Z",
+						"(L" + CLASS_EntityGolemBase + ";Lnet/minecraft/entity/player/EntityPlayer;L" + FIELDTYPE_EntityGolemBase_hookHandlers +
+										";)Z",
 						false ) );
 
 		// Insert the return check
@@ -528,8 +577,9 @@ public class ASMTransformer
 		// GolemHooks.hook_ReadEntityFromNBT( EntityGolemBase, Hashmap, NBTTagCompound )
 		instructionList.add( new MethodInsnNode( Opcodes.INVOKESTATIC,
 						CLASS_GolemHooks, "hook_ReadEntityFromNBT",
-						"(L" + CLASS_EntityGolemBase + ";L" + FIELDTYPE_EntityGolemBase_hookHandlers + ";"
-										+ "Lnet/minecraft/nbt/NBTTagCompound;" + ")V", false ) );
+						"(L" + CLASS_EntityGolemBase + ";L" + FIELDTYPE_EntityGolemBase_hookHandlers + ";" + "Lnet/minecraft/nbt/NBTTagCompound;" +
+										")V",
+						false ) );
 
 		// Insert the static call
 		method.instructions.insert( insertionPoint, instructionList );
@@ -584,8 +634,9 @@ public class ASMTransformer
 		// GolemHooks.hook_WriteEntityToNBT( EntityGolemBase, Hashmap, NBTTagCompound )
 		instructionList.add( new MethodInsnNode( Opcodes.INVOKESTATIC,
 						CLASS_GolemHooks, "hook_WriteEntityToNBT",
-						"(L" + CLASS_EntityGolemBase + ";L" + FIELDTYPE_EntityGolemBase_hookHandlers + ";"
-										+ "Lnet/minecraft/nbt/NBTTagCompound;" + ")V", false ) );
+						"(L" + CLASS_EntityGolemBase + ";L" + FIELDTYPE_EntityGolemBase_hookHandlers + ";" + "Lnet/minecraft/nbt/NBTTagCompound;" +
+										")V",
+						false ) );
 
 		// Insert the static call
 		method.instructions.insertBefore( insertionPoint, instructionList );
@@ -618,8 +669,9 @@ public class ASMTransformer
 		// GolemHooks.hook_Bell_OnLeftClickGolem( EntityGolemBase, ItemStack, EntityPlayer, Hashmap ) 
 		instructionList.add( new MethodInsnNode( Opcodes.INVOKESTATIC,
 						CLASS_GolemHooks, "hook_Bell_OnLeftClickGolem",
-						"(L" + CLASS_EntityGolemBase + ";Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;L"
-										+ FIELDTYPE_EntityGolemBase_hookHandlers + ";)V", false ) );
+						"(L" + CLASS_EntityGolemBase + ";Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;L" +
+										FIELDTYPE_EntityGolemBase_hookHandlers + ";)V",
+						false ) );
 
 		// Insert the static call
 		method.instructions.insert( insertionPoint, instructionList );
@@ -696,19 +748,33 @@ public class ASMTransformer
 	@Override
 	public byte[] transform( final String name, final String transformedName, final byte[] basicClass )
 	{
+		// AE2 Crafting Process?
+		if( transformedName.equals( "appeng.crafting.CraftingTreeProcess" ) )
+		{
+			try
+			{
+				this.log( "Transforming Class (appeng.crafting.CraftingTreeProcess)" );
+				return this.transformClass_CraftingTreeProcess( basicClass );
+			}
+			catch( Exception e )
+			{
+				this.log( "Unable to transform (appeng.crafting.CraftingTreeProcess)" );
+				e.printStackTrace();
+			}
+		}
 		// Thaumcraft class?
-		if( transformedName.startsWith( "thaumcraft" ) )
+		else if( transformedName.startsWith( "thaumcraft" ) )
 		{
 			if( transformedName.equals( "thaumcraft.common.entities.golems.EntityGolemBase" ) )
 			{
 				try
 				{
-					this.log( "Transforming Class (thaumcraft/common/entities/golems/EntityGolemBase)" );
+					this.log( "Transforming Class (thaumcraft.common.entities.golems.EntityGolemBase)" );
 					return this.transformClass_GolemBase( basicClass );
 				}
 				catch( Exception e )
 				{
-					this.log( "Unable to transform (thaumcraft/common/entities/golems/EntityGolemBase)" );
+					this.log( "Unable to transform (thaumcraft.common.entities.golems.EntityGolemBase)" );
 					ThECore.golemHooksTransformFailed = true;
 				}
 			}
@@ -717,12 +783,12 @@ public class ASMTransformer
 			{
 				try
 				{
-					this.log( "Transforming Class (thaumcraft/common/entities/golems/ItemGolemBell)" );
+					this.log( "Transforming Class (thaumcraft.common.entities.golems.ItemGolemBell)" );
 					return this.transformClass_ItemGolemBell( basicClass );
 				}
 				catch( Exception e )
 				{
-					this.log( "Unable to transform (thaumcraft/common/entities/golems/ItemGolemBell)" );
+					this.log( "Unable to transform (thaumcraft.common.entities.golems.ItemGolemBell)" );
 					ThECore.golemHooksTransformFailed = true;
 				}
 			}
@@ -731,12 +797,12 @@ public class ASMTransformer
 			{
 				try
 				{
-					this.log( "Transforming Class (thaumcraft/common/entities/golems/ItemGolemPlacer)" );
+					this.log( "Transforming Class (thaumcraft.common.entities.golems.ItemGolemPlacer)" );
 					return this.transformClass_ItemGolemPlacer( basicClass );
 				}
 				catch( Exception e )
 				{
-					this.log( "Unable to transform (thaumcraft/common/entities/golems/ItemGolemPlacer)" );
+					this.log( "Unable to transform (thaumcraft.common.entities.golems.ItemGolemPlacer)" );
 					ThECore.golemHooksTransformFailed = true;
 				}
 			}

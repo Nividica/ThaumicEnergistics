@@ -4,6 +4,15 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import appeng.api.AEApi;
+import appeng.api.definitions.*;
+import appeng.api.features.IGrinderEntry;
+import appeng.api.features.IInscriberRecipe;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEColoredItemDefinition;
+import appeng.core.features.registries.entries.InscriberRecipe;
+import appeng.recipes.GroupIngredient;
+import appeng.recipes.Ingredient;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -15,15 +24,6 @@ import thaumcraft.api.aspects.AspectList;
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.utils.ThELog;
-import appeng.api.AEApi;
-import appeng.api.definitions.*;
-import appeng.api.features.IGrinderEntry;
-import appeng.api.features.IInscriberRecipe;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEColoredItemDefinition;
-import appeng.core.features.registries.entries.InscriberRecipe;
-import appeng.recipes.GroupIngredient;
-import appeng.recipes.Ingredient;
 
 /**
  * Gives items from AE2 aspects when scanned.
@@ -782,6 +782,13 @@ public class AEAspectRegister
 
 			if( this.itemStack != null )
 			{
+				// Skip anything that is not from AE
+				if( !this.itemStack.getItem().getClass().getCanonicalName().startsWith( "appeng" ) )
+				{
+					//ThELog.info( "Skipping registration for non AE item: %s (%s) ", this.itemStack.getDisplayName(), this.itemStack.getItem().getClass().getCanonicalName() );
+					return;
+				}
+
 				// Add to the dependency chain
 				AEAspectRegister.this.DEPENDENCY_CHAIN.add( this );
 

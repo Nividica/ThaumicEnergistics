@@ -1,11 +1,14 @@
 package thaumicenergistics.client.gui.widget;
 
 import java.util.List;
+import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.api.gui.IWidgetHost;
@@ -13,10 +16,6 @@ import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.ThEGuiHelper;
 import thaumicenergistics.common.integration.tc.AspectHooks;
 import thaumicenergistics.common.storage.AspectStack;
-import thaumicenergistics.common.utils.ThEUtils;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base class of Aspect Widgets.
@@ -162,7 +161,7 @@ public abstract class AspectWidgetBase
 				this.aspectDescription = this.aspectStack.getAspectDescription();
 
 				// Get the mod
-				ModContainer mod = ThEUtils.getOrDefault( AspectHooks.aspectToMod, this.aspectStack.getAspect(), null );
+				ModContainer mod = AspectHooks.aspectToMod.getOrDefault( this.aspectStack.getAspect(), null );
 
 				// Set footnote
 				if( mod != null )

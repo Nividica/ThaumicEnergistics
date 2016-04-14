@@ -3,6 +3,8 @@ package thaumicenergistics.common.integration.tc;
 import java.util.HashMap;
 import java.util.HashSet;
 import javax.annotation.Nonnull;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,10 +15,7 @@ import thaumicenergistics.api.entities.IGolemHookHandler.InteractionLevel;
 import thaumicenergistics.api.entities.IGolemHookSyncRegistry;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThELog;
-import thaumicenergistics.common.utils.ThEUtils;
 import thaumicenergistics.fml.ThECore;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Golem hook system.<br>
@@ -42,7 +41,7 @@ public class GolemHooks
 		}
 
 		@Override
-		public void bellLeftClicked( final EntityGolemBase golem, final Object handlerData, final ItemStack itemGolemPlacer,
+		public void bellLeftClicked(	final EntityGolemBase golem, final Object handlerData, final ItemStack itemGolemPlacer,
 										final EntityPlayer player, final boolean dismantled,
 										final Side side )
 		{
@@ -50,14 +49,14 @@ public class GolemHooks
 		}
 
 		@Override
-		public InteractionLevel canHandleInteraction( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player,
+		public InteractionLevel canHandleInteraction(	final EntityGolemBase golem, final Object handlerData, final EntityPlayer player,
 														final Side side )
 		{
 			return InteractionLevel.NoInteraction;
 		}
 
 		@Override
-		public Object customInteraction( final EntityGolemBase golem, final Object handlerData, final IGolemHookSyncRegistry syncData,
+		public Object customInteraction(	final EntityGolemBase golem, final Object handlerData, final IGolemHookSyncRegistry syncData,
 											final EntityPlayer player, final Side side )
 		{
 			return null;
@@ -87,7 +86,7 @@ public class GolemHooks
 		}
 
 		@Override
-		public void renderGolem( final EntityGolemBase golem, final Object clientHandlerData, final double x, final double y, final double z,
+		public void renderGolem(	final EntityGolemBase golem, final Object clientHandlerData, final double x, final double y, final double z,
 									final float partialElaspsedTick )
 		{
 
@@ -190,7 +189,7 @@ public class GolemHooks
 	 * @param player
 	 * @param golemHandlerData
 	 */
-	public static void hook_Bell_OnLeftClickGolem( final EntityGolemBase golem, final ItemStack dropped, final EntityPlayer player,
+	public static void hook_Bell_OnLeftClickGolem(	final EntityGolemBase golem, final ItemStack dropped, final EntityPlayer player,
 													final HashMap<IGolemHookHandler, Object> golemHandlerData )
 	{
 		// Get the dismantled status
@@ -202,7 +201,7 @@ public class GolemHooks
 			try
 			{
 				// Get the current handler data
-				Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
+				Object handlerData = golemHandlerData.getOrDefault( handler, null );
 
 				// Call handler
 
@@ -225,7 +224,7 @@ public class GolemHooks
 	 * @param golemHandlerData
 	 * @return
 	 */
-	public static boolean hook_CustomInteraction( final EntityGolemBase golem, final EntityPlayer player,
+	public static boolean hook_CustomInteraction(	final EntityGolemBase golem, final EntityPlayer player,
 													final HashMap<IGolemHookHandler, Object> golemHandlerData )
 	{
 		GolemSyncRegistry syncRegistry = ( (GolemSyncRegistry)golemHandlerData.get( internalHandler ) );
@@ -240,7 +239,7 @@ public class GolemHooks
 		for( IGolemHookHandler handler : registeredHandlers )
 		{
 			// Get the current handler data
-			Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
+			Object handlerData = golemHandlerData.getOrDefault( handler, null );
 
 			// Call handler
 			try
@@ -467,7 +466,7 @@ public class GolemHooks
 			for( IGolemHookHandler handler : handlersToUpdate )
 			{
 				// Get the current handler data
-				Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
+				Object handlerData = golemHandlerData.getOrDefault( handler, null );
 				boolean hadData = ( handlerData != null );
 				try
 				{
@@ -504,7 +503,7 @@ public class GolemHooks
 	 * @param itemGolemPlacer
 	 * @param golemHandlerData
 	 */
-	public static void hook_Placer_SpawnGolem( final EntityGolemBase golem, final ItemStack itemGolemPlacer,
+	public static void hook_Placer_SpawnGolem(	final EntityGolemBase golem, final ItemStack itemGolemPlacer,
 												final HashMap<IGolemHookHandler, Object> golemHandlerData )
 	{
 		// Ensure the stack has an NBT tag
@@ -542,7 +541,7 @@ public class GolemHooks
 	 * @param golemHandlerData
 	 * @param nbt
 	 */
-	public static void hook_ReadEntityFromNBT( final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData,
+	public static void hook_ReadEntityFromNBT(	final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData,
 												final NBTTagCompound nbt )
 	{
 		// Inform each handler
@@ -551,7 +550,7 @@ public class GolemHooks
 			try
 			{
 				// Get the current handler data
-				Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
+				Object handlerData = golemHandlerData.getOrDefault( handler, null );
 
 				// Call handler
 				handlerData = handler.readEntityFromNBT( golem, nbt );
@@ -583,7 +582,7 @@ public class GolemHooks
 	 * @param partialElaspsedTick
 	 */
 	@SideOnly(Side.CLIENT)
-	public static void hook_RenderGolem( final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData, final double x,
+	public static void hook_RenderGolem(	final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData, final double x,
 											final double y, final double z, final float partialElaspsedTick )
 	{
 
@@ -620,7 +619,7 @@ public class GolemHooks
 			try
 			{
 				// Get the current handler data
-				Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
+				Object handlerData = golemHandlerData.getOrDefault( handler, null );
 				boolean hadData = ( handlerData != null );
 
 				// Call handler
@@ -666,7 +665,7 @@ public class GolemHooks
 	 * @param golemHandlerData
 	 * @param nbt
 	 */
-	public static void hook_WriteEntityToNBT( final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData,
+	public static void hook_WriteEntityToNBT(	final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData,
 												final NBTTagCompound nbt )
 	{
 		// Inform each handler
@@ -675,7 +674,7 @@ public class GolemHooks
 			try
 			{
 				// Get the current handler data
-				Object handlerData = ThEUtils.getOrDefault( golemHandlerData, handler, null );
+				Object handlerData = golemHandlerData.getOrDefault( handler, null );
 
 				// Call handler
 				handler.writeEntityNBT( golem, handlerData, nbt );

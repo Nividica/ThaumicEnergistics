@@ -4,11 +4,10 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import com.google.common.base.Charsets;
 import thaumicenergistics.api.entities.IGolemHookHandler;
 import thaumicenergistics.api.entities.IGolemHookSyncRegistry;
 import thaumicenergistics.common.utils.ThELog;
-import thaumicenergistics.common.utils.ThEUtils;
-import com.google.common.base.Charsets;
 
 class GolemSyncRegistry
 	implements IGolemHookSyncRegistry
@@ -61,7 +60,7 @@ class GolemSyncRegistry
 	@Override
 	public char getSyncCharOrDefault( final int id, final char defaultChar )
 	{
-		return ThEUtils.getOrDefault( this.dataMappings, Integer.valueOf( id ), defaultChar );
+		return this.dataMappings.getOrDefault( Integer.valueOf( id ), defaultChar );
 	}
 
 	/**
@@ -83,12 +82,10 @@ class GolemSyncRegistry
 	{
 		this.hasDataChanged = false;
 
-		ByteArrayOutputStream baos = null;
-		DataOutputStream stream = null;
-		try
+		// Write the data
+		try( ByteArrayOutputStream baos = new ByteArrayOutputStream( ( this.dataMappings.size() * 6 ) + 4 );
+						DataOutputStream stream = new DataOutputStream( baos ) )
 		{
-			baos = new ByteArrayOutputStream( ( this.dataMappings.size() * 6 ) + 4 );
-			stream = new DataOutputStream( baos );
 
 			// Write count
 			stream.writeInt( this.dataMappings.size() );
@@ -108,14 +105,7 @@ class GolemSyncRegistry
 		}
 		catch( IOException e )
 		{
-			ThELog.warning( "Unable to send golem sync data" );
-			try
-			{
-				stream.close();
-			}
-			catch( IOException e1 )
-			{
-			}
+			ThELog.error( e, "Unable to send golem sync data" );
 		}
 
 		return "";
@@ -151,12 +141,9 @@ class GolemSyncRegistry
 		this.lastUpdatedFrom = data;
 
 		// Read the data
-		ByteArrayInputStream bais = null;
-		DataInputStream stream = null;
-		try
+		try( ByteArrayInputStream bais = new ByteArrayInputStream( data.getBytes( Charsets.UTF_8.name() ) );
+						DataInputStream stream = new DataInputStream( bais ); )
 		{
-			bais = new ByteArrayInputStream( data.getBytes( Charsets.UTF_8.name() ) );
-			stream = new DataInputStream( bais );
 
 			// Read the count
 			int count = stream.readInt();
@@ -181,17 +168,7 @@ class GolemSyncRegistry
 		}
 		catch( Exception e )
 		{
-			ThELog.warning( "Malformed golem sync data received" );
-			try
-			{
-				if( stream != null )
-				{
-					stream.close();
-				}
-			}
-			catch( IOException e1 )
-			{
-			}
+			ThELog.error( e, "Malformed golem sync data received" );
 
 		}
 

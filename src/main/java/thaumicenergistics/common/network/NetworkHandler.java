@@ -1,15 +1,14 @@
 package thaumicenergistics.common.network;
 
 import java.util.HashMap;
-import net.minecraft.entity.player.EntityPlayerMP;
-import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.network.packet.client.*;
-import thaumicenergistics.common.network.packet.server.*;
-import thaumicenergistics.common.utils.ThEUtils;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.entity.player.EntityPlayerMP;
+import thaumicenergistics.common.ThaumicEnergistics;
+import thaumicenergistics.common.network.packet.client.*;
+import thaumicenergistics.common.network.packet.server.*;
 
 /**
  * Handles all server<->client network communication for ThE.
@@ -59,7 +58,7 @@ public class NetworkHandler
 	 */
 	public static Class getPacketClassFromID( final Short id )
 	{
-		return ThEUtils.getOrDefault( NetworkHandler.IDToClass, id, null );
+		return NetworkHandler.IDToClass.getOrDefault( id, null );
 	}
 
 	/**
@@ -70,7 +69,7 @@ public class NetworkHandler
 	 */
 	public static short getPacketID( final ThEBasePacket packet )
 	{
-		return ThEUtils.getOrDefault( NetworkHandler.ClassToID, packet.getClass(), (short) -1 );
+		return NetworkHandler.ClassToID.getOrDefault( packet.getClass(), (short) -1 );
 	}
 
 	/**

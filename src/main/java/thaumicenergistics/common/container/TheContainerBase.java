@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import thaumicenergistics.common.utils.ThELog;
-import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * Base container for all ThE containers.
@@ -89,7 +88,7 @@ public abstract class TheContainerBase
 	@Nullable
 	protected Slot getSlotOrNull( final int slotNumber )
 	{
-		return ThEUtils.getOrDefault( this.slotMap, slotNumber, null );
+		return this.slotMap.getOrDefault( slotNumber, null );
 	}
 
 	@Override

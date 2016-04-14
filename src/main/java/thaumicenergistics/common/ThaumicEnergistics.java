@@ -1,5 +1,15 @@
 package thaumicenergistics.common;
 
+import appeng.api.AEApi;
+import cpw.mods.fml.common.LoaderState;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,14 +24,6 @@ import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.registries.AEAspectRegister;
 import thaumicenergistics.common.utils.ThELog;
-import appeng.api.AEApi;
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 
 /**
  * <strong>Thaumic Energistics</strong>
@@ -47,7 +49,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "1.0.0.2"; // NOTE: don't forget to change the build.gradle file as well
+	public static final String VERSION = "1.0.0.3"; // NOTE: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance

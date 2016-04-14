@@ -1,34 +1,10 @@
 package thaumicenergistics.common.tiles;
 
-import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.common.Thaumcraft;
-import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.api.grid.IDigiVisSource;
-import thaumicenergistics.client.gui.ThEGuiHelper;
-import thaumicenergistics.common.blocks.BlockArcaneAssembler;
-import thaumicenergistics.common.integration.IWailaSource;
-import thaumicenergistics.common.integration.tc.ArcaneCraftingPattern;
-import thaumicenergistics.common.integration.tc.DigiVisSourceData;
-import thaumicenergistics.common.integration.tc.VisCraftingHelper;
-import thaumicenergistics.common.inventory.HandlerKnowledgeCore;
-import thaumicenergistics.common.inventory.TheInternalInventory;
-import thaumicenergistics.common.items.ItemKnowledgeCore;
-import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -63,6 +39,30 @@ import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.common.Thaumcraft;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.grid.IDigiVisSource;
+import thaumicenergistics.client.gui.ThEGuiHelper;
+import thaumicenergistics.common.blocks.BlockArcaneAssembler;
+import thaumicenergistics.common.integration.IWailaSource;
+import thaumicenergistics.common.integration.tc.ArcaneCraftingPattern;
+import thaumicenergistics.common.integration.tc.DigiVisSourceData;
+import thaumicenergistics.common.integration.tc.VisCraftingHelper;
+import thaumicenergistics.common.inventory.HandlerKnowledgeCore;
+import thaumicenergistics.common.inventory.TheInternalInventory;
+import thaumicenergistics.common.items.ItemKnowledgeCore;
+import thaumicenergistics.common.utils.EffectiveSide;
 
 /**
  * Allows auto-crafting arcane recipes.
@@ -361,14 +361,26 @@ public class TileArcaneAssembler
 				IStorageGrid storageGrid = this.getProxy().getStorage();
 
 				// Simulate placing the items
-				IAEItemStack rejected = storageGrid.getItemInventory().injectItems( this.currentPattern.getResult(), Actionable.SIMULATE,
-					this.mySource );
+				boolean rejected = false;
+				for( IAEItemStack output : this.currentPattern.getAllResults() )
+				{
+					IAEItemStack rejectedResult = storageGrid.getItemInventory().injectItems( output, Actionable.SIMULATE,
+						this.mySource );
+					if( ( rejectedResult != null ) && ( rejectedResult.getStackSize() > 0 ) )
+					{
+						rejected = true;
+						break;
+					}
+				}
 
-				// Was all items accepted?
-				if( ( rejected == null ) || ( rejected.getStackSize() == 0 ) )
+				// Were all items accepted?
+				if( !rejected )
 				{
 					// Inject into the network
-					storageGrid.getItemInventory().injectItems( this.currentPattern.getResult().copy(), Actionable.MODULATE, this.mySource );
+					for( IAEItemStack output : this.currentPattern.getAllResults() )
+					{
+						storageGrid.getItemInventory().injectItems( output, Actionable.MODULATE, this.mySource );
+					}
 
 					// Mark the assembler as no longer crafting
 					this.isCrafting = false;
@@ -433,7 +445,8 @@ public class TileArcaneAssembler
 	 */
 	private int getRequiredAmountForAspect( final Aspect aspect )
 	{
-		return (int)Math.ceil( this.visDiscount.get( aspect ) * ( this.currentPattern.getAspectCost( aspect ) * TileArcaneAssembler.CVIS_MULTIPLER ) );
+		return (int)Math.ceil(
+			this.visDiscount.get( aspect ) * ( this.currentPattern.getAspectCost( aspect ) * TileArcaneAssembler.CVIS_MULTIPLER ) );
 	}
 
 	private boolean hasEnoughVisForCraft()
@@ -603,7 +616,8 @@ public class TileArcaneAssembler
 		}
 
 		// Set pattern slots
-		for( int index = TileArcaneAssembler.PATTERN_SLOT_INDEX; index < ( TileArcaneAssembler.PATTERN_SLOT_INDEX + HandlerKnowledgeCore.MAXIMUM_STORED_PATTERNS ); index++ )
+		for( int index = TileArcaneAssembler.PATTERN_SLOT_INDEX; index < ( TileArcaneAssembler.PATTERN_SLOT_INDEX +
+						HandlerKnowledgeCore.MAXIMUM_STORED_PATTERNS ); index++ )
 		{
 			if( ( pIterator != null ) && ( pIterator.hasNext() ) )
 			{
@@ -1172,7 +1186,8 @@ public class TileArcaneAssembler
 				NetworkRegistry.TargetPoint where = new NetworkRegistry.TargetPoint( this.worldObj.provider.dimensionId, this.xCoord, this.yCoord,
 								this.zCoord, 32.0D );
 				appeng.core.sync.network.NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( this.xCoord, this.yCoord,
-								this.zCoord, (byte)( 10 + ( 9 * this.upgradeCount ) ), this.currentPattern.getResult() ), where );
+								this.zCoord, (byte)( 10 + ( 9 * this.upgradeCount ) ), this.currentPattern.getResult() ),
+					where );
 			}
 			catch( IOException e )
 			{
