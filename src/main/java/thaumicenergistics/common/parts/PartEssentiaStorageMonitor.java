@@ -1,8 +1,25 @@
 package thaumicenergistics.common.parts;
 
-import io.netty.buffer.ByteBuf;
 import java.awt.Color;
 import java.io.IOException;
+import org.lwjgl.opengl.GL11;
+import appeng.api.AEApi;
+import appeng.api.implementations.IPowerChannelState;
+import appeng.api.implementations.parts.IPartStorageMonitor;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.util.AEColor;
+import appeng.client.texture.CableBusTextures;
+import appeng.core.localization.PlayerMessages;
+import appeng.util.Platform;
+import appeng.util.ReadableNumberConverter;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
@@ -20,7 +37,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.IEssentiaWatcher;
 import thaumicenergistics.api.grid.IEssentiaWatcherHost;
@@ -32,22 +48,6 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.AEApi;
-import appeng.api.implementations.IPowerChannelState;
-import appeng.api.implementations.parts.IPartStorageMonitor;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.PartItemStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.util.AEColor;
-import appeng.client.texture.CableBusTextures;
-import appeng.core.localization.PlayerMessages;
-import appeng.util.Platform;
-import appeng.util.ReadableNumberConverter;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Displays stored essentia levels.
@@ -937,7 +937,7 @@ public class PartEssentiaStorageMonitor
 	@Override
 	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
 	{
-		IIcon side = BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[3];
+		IIcon side = BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4];
 
 		helper.setTexture( side, side, side, side, side, side );
 		helper.setBounds( 2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F );
