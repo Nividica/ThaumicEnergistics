@@ -14,12 +14,11 @@ import thaumicenergistics.api.gui.IWidgetHost;
 
 /**
  * Widget displaying an AE item.
- * 
+ *
  * @author Nividica
- * 
- * @deprecated Remove in favor of MESlots
+ *
+ * TODO: Deprecated Remove in favor of MESlots
  */
-@Deprecated
 @SideOnly(Side.CLIENT)
 public class WidgetAEItem
 	extends ThEWidget
@@ -46,7 +45,7 @@ public class WidgetAEItem
 
 	/**
 	 * Creates the widget
-	 * 
+	 *
 	 * @param hostGUI
 	 * @param xPos
 	 * @param yPos
@@ -98,7 +97,7 @@ public class WidgetAEItem
 
 	/**
 	 * Returns the itemstack this widget represents.
-	 * 
+	 *
 	 * @return IAEItemstack if the widget has one, null otherwise.
 	 */
 	public IAEItemStack getItemStack()
@@ -159,7 +158,7 @@ public class WidgetAEItem
 
 	/**
 	 * Set the itemstack this widget represents
-	 * 
+	 *
 	 * @param itemStack
 	 */
 	public void setItemStack( final IAEItemStack itemStack )

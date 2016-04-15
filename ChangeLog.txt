@@ -1,4 +1,7 @@
-﻿04/14/2016 1.0.0.3 - Beta
+﻿04/15/2016 1.0.0.4 - Beta
+  Cleaned up ASM transformer code.
+
+04/14/2016 1.0.0.3 - Beta
   Completely moved dev environment to Java 8, Java 7 and earlier is no longer supported.
   Updated forge to 10.13.4.1566
   Fixes #294: Wand move targets for shift+click changed to favor player inventory over ME storage.

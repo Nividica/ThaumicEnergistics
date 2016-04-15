@@ -29,9 +29,9 @@ import thaumicenergistics.common.utils.ThELog;
  * <strong>Thaumic Energistics</strong>
  * <hr>
  * A bridge between Thaumcraft and Applied Energistics. Essentia storage management, transportation, and application.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:ThE-core;required-after:appliedenergistics2@[rv3-beta-1,);required-after:Thaumcraft@[4.2.3.5,);after:Waila;after:extracells")
 public class ThaumicEnergistics
@@ -49,7 +49,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "1.0.0.3"; // NOTE: don't forget to change the build.gradle file as well
+	public static final String VERSION = "1.0.0.4"; // NOTE: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance
@@ -91,7 +91,7 @@ public class ThaumicEnergistics
 	 * PREINITIALIZATION: PreInit has finished.<br>
 	 * INITIALIZATION: Load has finished.<br>
 	 * POSTINITIALIZATION: PostInit has finished, ThE is fully loaded.
-	 * 
+	 *
 	 * @return
 	 */
 	public static LoaderState getLoaderState()
@@ -101,7 +101,7 @@ public class ThaumicEnergistics
 
 	/**
 	 * Called after the preInit event, and before the post init event.
-	 * 
+	 *
 	 * @param event
 	 */
 	@EventHandler
@@ -135,7 +135,7 @@ public class ThaumicEnergistics
 
 	/**
 	 * Called after the load event.
-	 * 
+	 *
 	 * @param event
 	 */
 	@EventHandler
@@ -174,7 +174,7 @@ public class ThaumicEnergistics
 
 	/**
 	 * Called before the load event.
-	 * 
+	 *
 	 * @param event
 	 * @throws Exception
 	 */
