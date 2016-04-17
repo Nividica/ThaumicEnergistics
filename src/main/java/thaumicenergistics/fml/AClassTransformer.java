@@ -95,7 +95,7 @@ public abstract class AClassTransformer
 
 	/**
 	 * Finds the next occurrence of the opcode after the specified instruction.
-	 * 
+	 *
 	 * @param fromInstruction
 	 * @param opcode
 	 * @return

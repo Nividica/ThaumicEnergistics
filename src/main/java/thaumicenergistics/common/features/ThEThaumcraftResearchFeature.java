@@ -5,9 +5,9 @@ import javax.annotation.Nullable;
 
 /**
  * Defines a feature that has Thaumcraft research.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class ThEThaumcraftResearchFeature
 	extends ThEDependencyFeatureBase
@@ -19,7 +19,7 @@ public abstract class ThEThaumcraftResearchFeature
 
 	/**
 	 * Creates the feature with the specified research key.
-	 * 
+	 *
 	 * @param parent
 	 */
 	public ThEThaumcraftResearchFeature( @Nonnull final String researchKey )
@@ -29,7 +29,7 @@ public abstract class ThEThaumcraftResearchFeature
 
 	/**
 	 * Gets the parent for this feature, if there is one.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nullable
@@ -62,7 +62,7 @@ public abstract class ThEThaumcraftResearchFeature
 	 * Gets the research key of the first valid parent that can be found.
 	 * If the feature in question is not enabled, it will pass the call to its
 	 * parent.
-	 * 
+	 *
 	 * @param includeSelf
 	 * @return
 	 */

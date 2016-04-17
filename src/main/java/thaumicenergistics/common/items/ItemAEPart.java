@@ -23,9 +23,9 @@ import thaumicenergistics.common.utils.ThELog;
 
 /**
  * Base class for all ThE's AE2 cable parts.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ItemAEPart
 	extends Item

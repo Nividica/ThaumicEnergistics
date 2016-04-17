@@ -1,21 +1,21 @@
 package thaumicenergistics.client.render;
 
+import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.common.items.ItemCraftingAspect;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Renders the {@link ItemCraftingAspect}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class RendererItemCraftingAspect

@@ -3,6 +3,9 @@ package thaumicenergistics.common.tiles;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
+import appeng.api.config.Actionable;
+import appeng.tile.TileEvent;
+import appeng.tile.events.TileEventType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -13,15 +16,12 @@ import thaumicenergistics.api.tiles.IEssentiaTransportWithSimulate;
 import thaumicenergistics.common.integration.IEssentiaProviderWatcher;
 import thaumicenergistics.common.integration.tc.EssentiaTransportHelper;
 import thaumicenergistics.common.tiles.abstraction.TileProviderBase;
-import appeng.api.config.Actionable;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 
 /**
  * Provides essentia to {@link IEssentiaTransport} devices via suction.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class TileEssentiaProvider
 	extends TileProviderBase

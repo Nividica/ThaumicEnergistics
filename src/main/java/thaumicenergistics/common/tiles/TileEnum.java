@@ -4,9 +4,9 @@ import thaumicenergistics.common.ThaumicEnergistics;
 
 /**
  * Enumeration of all ThE tile entities.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public enum TileEnum
 {
@@ -45,7 +45,7 @@ public enum TileEnum
 
 	/**
 	 * Gets the tile entity's ID.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getTileID()

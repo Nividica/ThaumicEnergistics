@@ -13,9 +13,9 @@ import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
 /**
  * {@link PartEssentiaStorageBus} container.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ContainerPartEssentiaStorageBus
 	extends ContainerWithNetworkTool

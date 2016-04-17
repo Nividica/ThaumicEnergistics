@@ -1,11 +1,13 @@
 package thaumicenergistics.client.gui;
 
+import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
 import thaumicenergistics.client.gui.buttons.GuiButtonClearCraftingGrid;
 import thaumicenergistics.client.gui.buttons.GuiButtonSaveDelete;
@@ -16,14 +18,12 @@ import thaumicenergistics.common.container.ContainerKnowledgeInscriber.CoreSaveS
 import thaumicenergistics.common.network.packet.server.Packet_S_KnowledgeInscriber;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileKnowledgeInscriber} GUI
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiKnowledgeInscriber
@@ -109,19 +109,17 @@ public class GuiKnowledgeInscriber
 
 	/**
 	 * Creates a particle for the specified slot number.
-	 * 
+	 *
 	 * @param slotNumber
 	 * @return
 	 */
 	private GuiParticleAnimator createSaveParticle( final int slotNumber )
 	{
-		int startX = ContainerKnowledgeInscriber.CRAFTING_SLOT_X + (
-						( slotNumber % ContainerKnowledgeInscriber.CRAFTING_COLS )
-						* ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING );
+		int startX = ContainerKnowledgeInscriber.CRAFTING_SLOT_X +
+						( ( slotNumber % ContainerKnowledgeInscriber.CRAFTING_COLS ) * ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING );
 
-		int startY = ContainerKnowledgeInscriber.CRAFTING_SLOT_Y + (
-						( slotNumber / ContainerKnowledgeInscriber.CRAFTING_COLS )
-						* ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING );
+		int startY = ContainerKnowledgeInscriber.CRAFTING_SLOT_Y +
+						( ( slotNumber / ContainerKnowledgeInscriber.CRAFTING_COLS ) * ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING );
 
 		// Create the animator
 		GuiParticleAnimator gpa = new GuiParticleAnimator( startX, startY,
@@ -247,7 +245,7 @@ public class GuiKnowledgeInscriber
 	/**
 	 * Called when the server sends a change in the save/load button
 	 * functionality.
-	 * 
+	 *
 	 * @param saveState
 	 * @param justSaved
 	 */

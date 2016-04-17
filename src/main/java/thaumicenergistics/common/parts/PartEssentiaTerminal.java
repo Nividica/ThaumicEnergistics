@@ -2,6 +2,19 @@ package thaumicenergistics.common.parts;
 
 import java.util.ArrayList;
 import java.util.List;
+import appeng.api.config.Settings;
+import appeng.api.config.ViewItems;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AEColor;
+import appeng.api.util.IConfigManager;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,25 +38,12 @@ import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.config.Settings;
-import appeng.api.config.ViewItems;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.PartItemStack;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.util.AEColor;
-import appeng.api.util.IConfigManager;
-import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Allows a player to extract/deposit essentia from the network.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class PartEssentiaTerminal
 	extends ThERotateablePart
@@ -238,7 +238,7 @@ public class PartEssentiaTerminal
 
 	/**
 	 * Gets the current sorting mode
-	 * 
+	 *
 	 * @return
 	 */
 	public AspectStackComparatorMode getSortingMode()
@@ -248,7 +248,7 @@ public class PartEssentiaTerminal
 
 	/**
 	 * Gets the view mode.
-	 * 
+	 *
 	 * @return
 	 */
 	public ViewItems getViewMode()
@@ -276,7 +276,7 @@ public class PartEssentiaTerminal
 
 	/**
 	 * Called when a player has changed sorting modes.
-	 * 
+	 *
 	 * @param sortMode
 	 */
 	public void onClientRequestSortingModeChange( final boolean backwards )

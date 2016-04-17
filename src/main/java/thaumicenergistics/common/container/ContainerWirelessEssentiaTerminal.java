@@ -1,6 +1,16 @@
 package thaumicenergistics.common.container;
 
 import javax.annotation.Nonnull;
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
+import appeng.api.config.ViewItems;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerCraftAmount;
+import appeng.util.Platform;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -20,22 +30,12 @@ import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaCellTerm
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.Settings;
-import appeng.api.config.ViewItems;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.container.ContainerOpenContext;
-import appeng.container.implementations.ContainerCraftAmount;
-import appeng.util.Platform;
 
 /**
  * {@link ItemWirelessEssentiaTerminal} container.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ContainerWirelessEssentiaTerminal
 	extends ContainerEssentiaCellTerminalBase
@@ -82,7 +82,7 @@ public class ContainerWirelessEssentiaTerminal
 	private int terminalSlotIndex = -1;
 
 	/**
-	 * 
+	 *
 	 * @param player
 	 * @param handler
 	 */

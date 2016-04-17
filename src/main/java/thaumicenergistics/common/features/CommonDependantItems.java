@@ -1,24 +1,24 @@
 package thaumicenergistics.common.features;
 
+import com.google.common.base.Optional;
+import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.IMaterials;
+import appeng.api.definitions.IParts;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumcraft.common.config.Config;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IMaterials;
-import appeng.api.definitions.IParts;
-import com.google.common.base.Optional;
 
 /**
  * Every TC/AE item that any feature depends on.
  * The items can be an ItemStack, a String, or null.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class CommonDependantItems
 {
@@ -99,7 +99,7 @@ public class CommonDependantItems
 	/**
 	 * Attempts to get the specified AE item.
 	 * Returns a stack of size 1, or null.
-	 * 
+	 *
 	 * @param def
 	 * @return
 	 */
@@ -128,7 +128,7 @@ public class CommonDependantItems
 	/**
 	 * Gets an item based on if it is available and allowed by the specified
 	 * config flag.
-	 * 
+	 *
 	 * @param configDependency
 	 * @param preferred
 	 * @param alt
@@ -147,7 +147,7 @@ public class CommonDependantItems
 	/**
 	 * Gets an AE item, or if unavailable sets the item to the specified
 	 * alternative.
-	 * 
+	 *
 	 * @param def
 	 * @param alt
 	 * @return

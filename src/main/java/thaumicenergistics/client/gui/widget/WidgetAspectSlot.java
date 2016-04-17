@@ -1,21 +1,21 @@
 package thaumicenergistics.client.gui.widget;
 
+import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IWidgetHost;
 import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.network.IAspectSlotPart;
 import thaumicenergistics.common.network.packet.server.Packet_S_AspectSlot;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Widget displaying an aspect.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class WidgetAspectSlot
@@ -38,13 +38,13 @@ public class WidgetAspectSlot
 		this( hostGui, player, part, 0, posX, posY, null, (byte)0 );
 	}
 
-	public WidgetAspectSlot( final IWidgetHost hostGui, final EntityPlayer player, final IAspectSlotPart part, final int id, final int posX,
+	public WidgetAspectSlot(	final IWidgetHost hostGui, final EntityPlayer player, final IAspectSlotPart part, final int id, final int posX,
 								final int posY )
 	{
 		this( hostGui, player, part, id, posX, posY, null, (byte)0 );
 	}
 
-	public WidgetAspectSlot( final IWidgetHost hostGui, final EntityPlayer player, final IAspectSlotPart part, final int id, final int posX,
+	public WidgetAspectSlot(	final IWidgetHost hostGui, final EntityPlayer player, final IAspectSlotPart part, final int id, final int posX,
 								final int posY, final IConfigurable configurable, final byte configOption )
 	{
 		super( hostGui, null, posX, posY, player );

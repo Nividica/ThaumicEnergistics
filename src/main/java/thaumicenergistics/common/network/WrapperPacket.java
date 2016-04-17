@@ -1,14 +1,14 @@
 package thaumicenergistics.common.network;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
 import thaumicenergistics.common.utils.ThELog;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
 /**
  * Wraps all ThE packets for network transmission.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class WrapperPacket
 	implements IMessage
@@ -24,7 +24,7 @@ public abstract class WrapperPacket
 
 	/**
 	 * Constructs the wrapper, wrapping the specified packet.
-	 * 
+	 *
 	 * @param packet
 	 */
 	public WrapperPacket( final ThEBasePacket packet )

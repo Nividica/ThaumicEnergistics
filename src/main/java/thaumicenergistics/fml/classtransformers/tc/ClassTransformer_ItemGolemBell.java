@@ -10,7 +10,7 @@ import thaumicenergistics.fml.ThECore;
  * <ul>
  * <li>Adds hook to method <em>onLeftClickEntity</em></li>
  * </ul>
- * 
+ *
  * @author Nividica
  *
  */
@@ -50,7 +50,8 @@ public class ClassTransformer_ItemGolemBell
 		// GolemHooks.hook_Bell_OnLeftClickGolem( EntityGolemBase, ItemStack, EntityPlayer, Hashmap )
 		instructionList.add( new MethodInsnNode( Opcodes.INVOKESTATIC,
 						GolemHookTransformHelper.CLASS_GolemHooks, "hook_Bell_OnLeftClickGolem",
-						"(L" + GolemHookTransformHelper.CLASS_EntityGolemBase + ";Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;L" +
+						"(L" + GolemHookTransformHelper.CLASS_EntityGolemBase +
+										";Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;L" +
 										GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + ";)V",
 						false ) );
 

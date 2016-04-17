@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Container that includes the players inventory.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class ContainerWithPlayerInventory
 	extends TheContainerBase
@@ -52,7 +52,7 @@ public abstract class ContainerWithPlayerInventory
 
 	/**
 	 * Attempt to merge the specified slot stack with the hotbar inventory
-	 * 
+	 *
 	 * @param slotStack
 	 * @return
 	 */
@@ -63,7 +63,7 @@ public abstract class ContainerWithPlayerInventory
 
 	/**
 	 * Attempt to merge the specified slot stack with the player inventory
-	 * 
+	 *
 	 * @param slotStack
 	 * @return
 	 */
@@ -74,7 +74,7 @@ public abstract class ContainerWithPlayerInventory
 
 	/**
 	 * Checks if the slot clicked was in the hotbar inventory
-	 * 
+	 *
 	 * @param slotNumber
 	 * @return True if it was in the hotbar inventory, false otherwise.
 	 */
@@ -85,7 +85,7 @@ public abstract class ContainerWithPlayerInventory
 
 	/**
 	 * Checks if the slot clicked was in the player inventory
-	 * 
+	 *
 	 * @param slotNumber
 	 * @return True if it was in the player inventory, false otherwise.
 	 */
@@ -96,7 +96,7 @@ public abstract class ContainerWithPlayerInventory
 
 	/**
 	 * Attempt to move the item from hotbar <-> player inventory
-	 * 
+	 *
 	 * @param slotNumber
 	 * @return
 	 */
@@ -116,7 +116,7 @@ public abstract class ContainerWithPlayerInventory
 
 	/**
 	 * Binds the player inventory to this container.
-	 * 
+	 *
 	 * @param playerInventory
 	 * Inventory to bind
 	 * @param indexOffset
@@ -156,7 +156,7 @@ public abstract class ContainerWithPlayerInventory
 
 	/**
 	 * Gets all non-empty slot from the hotbar inventory.
-	 * 
+	 *
 	 * @return
 	 */
 	public final ArrayList<Slot> getNonEmptySlotsFromHotbar()
@@ -176,7 +176,7 @@ public abstract class ContainerWithPlayerInventory
 
 	/**
 	 * Gets all non-empty slot from the player inventory.
-	 * 
+	 *
 	 * @return
 	 */
 	public final ArrayList<Slot> getNonEmptySlotsFromPlayerInventory()

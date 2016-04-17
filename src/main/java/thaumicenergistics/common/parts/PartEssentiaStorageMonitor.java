@@ -51,9 +51,9 @@ import thaumicenergistics.common.utils.EffectiveSide;
 
 /**
  * Displays stored essentia levels.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class PartEssentiaStorageMonitor
 	extends ThEPartBase
@@ -61,9 +61,9 @@ public class PartEssentiaStorageMonitor
 {
 	/**
 	 * All the data about what is being tracked.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	protected class TrackingInformation
 	{
@@ -107,7 +107,7 @@ public class PartEssentiaStorageMonitor
 
 		/**
 		 * Gets the aspect stack associated with the essentia.
-		 * 
+		 *
 		 * @return
 		 */
 		public IAspectStack getAspectStack()
@@ -118,7 +118,7 @@ public class PartEssentiaStorageMonitor
 		/**
 		 * Gets an itemstack representing the essentia being tracked.
 		 * Note: The only valid methods on the itemstack are the name accessors.
-		 * 
+		 *
 		 * @return
 		 */
 		public IAEItemStack getItemStack()
@@ -128,7 +128,7 @@ public class PartEssentiaStorageMonitor
 
 		/**
 		 * Returns true if their is an essentia being tracked.
-		 * 
+		 *
 		 * @return
 		 */
 		public boolean isValid()
@@ -138,7 +138,7 @@ public class PartEssentiaStorageMonitor
 
 		/**
 		 * Sets what is being tracked, or clears the data if null.
-		 * 
+		 *
 		 * @param as
 		 * @return Returns true if the tracker was changed, false otherwise.
 		 */
@@ -180,7 +180,7 @@ public class PartEssentiaStorageMonitor
 
 		/**
 		 * Updates the aspect amount.
-		 * 
+		 *
 		 * @param aspectAmount
 		 */
 		public void updateTrackedAmount( final long aspectAmount )
@@ -242,7 +242,7 @@ public class PartEssentiaStorageMonitor
 
 	/**
 	 * Constructor for conversion monitor.
-	 * 
+	 *
 	 * @param subPart
 	 */
 	protected PartEssentiaStorageMonitor( final AEPartsEnum subPart )
@@ -292,7 +292,7 @@ public class PartEssentiaStorageMonitor
 
 	/**
 	 * Returns true if the lock state was changed by this activation.
-	 * 
+	 *
 	 * @param player
 	 * @param heldItem
 	 * @return
@@ -333,7 +333,7 @@ public class PartEssentiaStorageMonitor
 
 	/**
 	 * Renders the aspect onto the screen.
-	 * 
+	 *
 	 * @param tessellator
 	 * @param aspect
 	 */
@@ -388,7 +388,7 @@ public class PartEssentiaStorageMonitor
 	 * Renders the lock.
 	 * Note: This must come after renderAspect, as it depends on the
 	 * GL position state that renderAspect sets up.
-	 * 
+	 *
 	 * @param tessellator
 	 */
 	private void renderLock( final Tessellator tessellator )
@@ -446,7 +446,7 @@ public class PartEssentiaStorageMonitor
 	 * Renders the aspect and amount onto the screen.
 	 * Note: Method originally from Applied Energistics 2,
 	 * PartStorageMonitor.java
-	 * 
+	 *
 	 * @param tessellator
 	 * @param aspect
 	 */
@@ -536,7 +536,7 @@ public class PartEssentiaStorageMonitor
 
 	/**
 	 * Updates the tracked essentia amount.
-	 * 
+	 *
 	 * @param essMonitor
 	 */
 	private void updateTrackedEssentiaAmount( final IMEEssentiaMonitor essMonitor )
@@ -563,7 +563,7 @@ public class PartEssentiaStorageMonitor
 
 	/**
 	 * Permission and activation checks.
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -607,7 +607,7 @@ public class PartEssentiaStorageMonitor
 	/**
 	 * Called when the monitor is right-clicked with an empty hand.
 	 * Clears the tracker.
-	 * 
+	 *
 	 * @return
 	 */
 	protected boolean onActivatedWithEmptyHand()
@@ -636,7 +636,7 @@ public class PartEssentiaStorageMonitor
 	 * label.
 	 * Sets the tracker to the items contained aspect, or clears if the
 	 * container is empty.
-	 * 
+	 *
 	 * @param player
 	 * @param heldItem
 	 * @param itemType

@@ -2,10 +2,13 @@ package thaumicenergistics.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.lwjgl.opengl.GL11;
+import appeng.api.config.RedstoneMode;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSlotGui;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
@@ -21,15 +24,12 @@ import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.parts.PartEssentiaExportBus;
 import thaumicenergistics.common.parts.PartEssentiaImportBus;
 import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
-import appeng.api.config.RedstoneMode;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartEssentiaExportBus} and {@link PartEssentiaImportBus} GUI
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaIO
@@ -157,7 +157,7 @@ public class GuiEssentiaIO
 
 	/**
 	 * Creates the gui
-	 * 
+	 *
 	 * @param partBus
 	 * @param player
 	 */
@@ -381,7 +381,7 @@ public class GuiEssentiaIO
 
 	/**
 	 * Called when the server sends a filter size update.
-	 * 
+	 *
 	 * @param filterSize
 	 */
 	public void onReceiveFilterSize( final byte filterSize )
@@ -405,7 +405,7 @@ public class GuiEssentiaIO
 
 	/**
 	 * Called when the server sends if the bus is redstone controlled.
-	 * 
+	 *
 	 * @param newRedstoneControled
 	 */
 	public void onReceiveRedstoneControlled( final boolean newRedstoneControled )
@@ -446,7 +446,7 @@ public class GuiEssentiaIO
 
 	/**
 	 * Called when the server sends the void mode status
-	 * 
+	 *
 	 * @param isVoidAllowed
 	 */
 	public void onServerSendVoidMode( final boolean isVoidAllowed )

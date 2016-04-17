@@ -8,9 +8,9 @@ import thaumicenergistics.common.registries.ThEStrings;
 
 /**
  * Enumeration of all ThE blocks.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public enum BlockEnum
 {
@@ -24,6 +24,11 @@ public enum BlockEnum
 		ESSENTIA_VIBRATION_CHAMBER (ThEStrings.Block_EssentiaVibrationChamber, new BlockEssentiaVibrationChamber(),
 			ItemBlockEssentiaVibrationChamber.class),
 		DISTILLATION_ENCODER (ThEStrings.Block_DistillationEncoder, new BlockDistillationEncoder());
+
+	/**
+	 * Cache of the enum values
+	 */
+	public static final BlockEnum[] VALUES = BlockEnum.values();
 
 	/**
 	 * The block object.
@@ -41,13 +46,8 @@ public enum BlockEnum
 	public final Class<? extends ItemBlock> itemBlockClass;
 
 	/**
-	 * Cache of the enum values
-	 */
-	public static final BlockEnum[] VALUES = BlockEnum.values();
-
-	/**
 	 * Constructs the block with the default itemblock.
-	 * 
+	 *
 	 * @param unlocalizedName
 	 * @param block
 	 */
@@ -58,7 +58,7 @@ public enum BlockEnum
 
 	/**
 	 * Constructs the block with the specified itemBlock.
-	 * 
+	 *
 	 * @param unlocalizedName
 	 * @param block
 	 * @param itemBlockClass

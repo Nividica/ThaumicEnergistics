@@ -2,6 +2,10 @@ package thaumicenergistics.common.container;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.container.slot.SlotFake;
+import appeng.container.slot.SlotFakeCraftingMatrix;
+import appeng.container.slot.SlotInaccessible;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ICrafting;
@@ -23,25 +27,21 @@ import thaumicenergistics.common.items.ItemKnowledgeCore;
 import thaumicenergistics.common.network.packet.client.Packet_C_KnowledgeInscriber;
 import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.container.slot.SlotFake;
-import appeng.container.slot.SlotFakeCraftingMatrix;
-import appeng.container.slot.SlotInaccessible;
 
 /**
  * {@link TileKnowledgeInscriber} container.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ContainerKnowledgeInscriber
 	extends ContainerWithPlayerInventory
 {
 	/**
 	 * What state the save/delete button should be in.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	public enum CoreSaveState
 	{
@@ -144,7 +144,7 @@ public class ContainerKnowledgeInscriber
 
 	/**
 	 * Determines the current save state.
-	 * 
+	 *
 	 * @return
 	 */
 	private CoreSaveState getSaveState()
@@ -274,7 +274,7 @@ public class ContainerKnowledgeInscriber
 
 	/**
 	 * Prepares input to a pattern from the current recipe
-	 * 
+	 *
 	 * @param input
 	 * @param slotNumber
 	 * @return
@@ -357,7 +357,7 @@ public class ContainerKnowledgeInscriber
 
 	/**
 	 * Checks for core insertion or removal.
-	 * 
+	 *
 	 * @param playerMP
 	 * @return
 	 */
@@ -392,7 +392,7 @@ public class ContainerKnowledgeInscriber
 
 	/**
 	 * Can interact with anyone
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -420,7 +420,7 @@ public class ContainerKnowledgeInscriber
 
 	/**
 	 * Attempts to save or delete the active pattern from the kcore.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void onClientRequestSaveOrDelete( final EntityPlayer player )
@@ -505,7 +505,7 @@ public class ContainerKnowledgeInscriber
 
 	/**
 	 * A client has requested the save state.
-	 * 
+	 *
 	 * @param player
 	 * @param justSaved
 	 */
@@ -517,7 +517,7 @@ public class ContainerKnowledgeInscriber
 
 	/**
 	 * Updates the arcane recipe.
-	 * 
+	 *
 	 * @param inv
 	 */
 	@Override
@@ -556,7 +556,7 @@ public class ContainerKnowledgeInscriber
 
 	/**
 	 * Creates 'ghost' items when a crafting slot is clicked.
-	 * 
+	 *
 	 * @param slotNumber
 	 * @param buttonPressed
 	 * @param flag

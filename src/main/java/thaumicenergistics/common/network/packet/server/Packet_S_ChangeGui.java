@@ -11,9 +11,9 @@ import thaumicenergistics.common.parts.ThEPartBase;
 
 /**
  * Server-bound gui change request packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_S_ChangeGui
 	extends ThEServerPacket
@@ -34,7 +34,7 @@ public class Packet_S_ChangeGui
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -51,7 +51,7 @@ public class Packet_S_ChangeGui
 		return packet;
 	}
 
-	public static void sendGuiChange( final int guiID, final EntityPlayer player, final World world, final int x, final int y,
+	public static void sendGuiChange(	final int guiID, final EntityPlayer player, final World world, final int x, final int y,
 										final int z )
 	{
 		Packet_S_ChangeGui packet = newPacket( player, MODE_REGULAR );
@@ -71,7 +71,7 @@ public class Packet_S_ChangeGui
 		NetworkHandler.sendPacketToServer( packet );
 	}
 
-	public static void sendGuiChangeToPart( final ThEPartBase part, final EntityPlayer player, final World world, final int x,
+	public static void sendGuiChangeToPart(	final ThEPartBase part, final EntityPlayer player, final World world, final int x,
 											final int y, final int z )
 	{
 		Packet_S_ChangeGui packet = newPacket( player, MODE_PART );

@@ -1,24 +1,24 @@
 package thaumicenergistics.common.container;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import thaumicenergistics.common.container.slot.SlotNetworkTool;
-import thaumicenergistics.common.container.slot.SlotRestrictive;
 import appeng.api.AEApi;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.util.DimensionalCoord;
 import appeng.parts.automation.UpgradeInventory;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import thaumicenergistics.common.container.slot.SlotNetworkTool;
+import thaumicenergistics.common.container.slot.SlotRestrictive;
 
 /**
  * Container that shows the network tool, player inventory,
  * and any specified upgrade slots.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class ContainerWithNetworkTool
 	extends ContainerWithPlayerInventory
@@ -80,7 +80,7 @@ public abstract class ContainerWithNetworkTool
 
 	/**
 	 * Adds upgrade slots to the container.
-	 * 
+	 *
 	 * @param upgradeInventory
 	 * @param count
 	 * @param xPosition
@@ -114,7 +114,7 @@ public abstract class ContainerWithNetworkTool
 		}
 	}
 
-	protected void bindToNetworkTool( final InventoryPlayer playerInventory, final DimensionalCoord partLocation, final int slotOffsetX,
+	protected void bindToNetworkTool(	final InventoryPlayer playerInventory, final DimensionalCoord partLocation, final int slotOffsetX,
 										final int slotOffsetY )
 	{
 		//Get the networkTool or null if absent (e.g. disabled in AE's config-file)
@@ -152,7 +152,7 @@ public abstract class ContainerWithNetworkTool
 							// Create the slot
 							toolSlot = new SlotNetworkTool( networkTool, slotToolIndex, ContainerWithNetworkTool.TOOL_SLOT_X_OFFSET + slotOffsetX +
 											( column * ContainerWithPlayerInventory.SLOT_SIZE ), ( row * ContainerWithPlayerInventory.SLOT_SIZE ) +
-											ContainerWithNetworkTool.TOOL_SLOT_Y_OFFSET + slotOffsetY );
+															ContainerWithNetworkTool.TOOL_SLOT_Y_OFFSET + slotOffsetY );
 
 							// Add the slot
 							this.addSlotToContainer( toolSlot );
@@ -183,7 +183,7 @@ public abstract class ContainerWithNetworkTool
 
 	/**
 	 * Attempt to merge the specified slot stack with the tool inventory
-	 * 
+	 *
 	 * @param slotStack
 	 * @return
 	 */
@@ -206,7 +206,7 @@ public abstract class ContainerWithNetworkTool
 
 	/**
 	 * Attempt to merge the specified slot stack with the upgrade inventory
-	 * 
+	 *
 	 * @param slotStack
 	 * @return
 	 */
@@ -261,7 +261,7 @@ public abstract class ContainerWithNetworkTool
 
 	/**
 	 * Checks if the slot clicked was in the network tools inventory
-	 * 
+	 *
 	 * @param slotNumber
 	 * @return True if it was in the tools inventory, false otherwise.
 	 */

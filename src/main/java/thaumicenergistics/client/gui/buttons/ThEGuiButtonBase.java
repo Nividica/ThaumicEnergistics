@@ -1,16 +1,16 @@
 package thaumicenergistics.client.gui.buttons;
 
 import java.util.List;
-import net.minecraft.client.gui.GuiButton;
-import thaumicenergistics.client.gui.ThEGuiHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.GuiButton;
+import thaumicenergistics.client.gui.ThEGuiHelper;
 
 /**
  * Base class for ThE buttons.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public abstract class ThEGuiButtonBase
@@ -28,7 +28,7 @@ public abstract class ThEGuiButtonBase
 
 	/**
 	 * Called to get the tooltip for this button.
-	 * 
+	 *
 	 * @param tooltip
 	 * List to add tooltip string to.
 	 */
@@ -36,7 +36,7 @@ public abstract class ThEGuiButtonBase
 
 	/**
 	 * Checks if the mouse is over this button.
-	 * 
+	 *
 	 * @param mouseX
 	 * @param mouseY
 	 * @return

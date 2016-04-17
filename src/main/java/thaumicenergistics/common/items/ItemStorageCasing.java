@@ -8,9 +8,9 @@ import thaumicenergistics.common.registries.ThEStrings;
 
 /**
  * {@link ItemEssentiaCell} housing.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ItemStorageCasing
 	extends Item

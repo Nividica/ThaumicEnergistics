@@ -1,6 +1,9 @@
 package thaumicenergistics.common.blocks;
 
 import java.util.ArrayList;
+import appeng.api.implementations.items.IMemoryCard;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -19,15 +22,12 @@ import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.implementations.items.IMemoryCard;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileArcaneAssembler} block.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class BlockArcaneAssembler
 	extends AbstractBlockAEWrenchable
@@ -37,7 +37,7 @@ public class BlockArcaneAssembler
 
 	public BlockArcaneAssembler()
 	{
-		// Call super with material machine (iron) 
+		// Call super with material machine (iron)
 		super( Material.iron );
 
 		// Basic hardness
@@ -52,7 +52,7 @@ public class BlockArcaneAssembler
 
 	/**
 	 * Called when the assembler is right-clicked
-	 * 
+	 *
 	 * @param world
 	 * @param x
 	 * @param y

@@ -1,15 +1,15 @@
 package thaumicenergistics.client.gui.abstraction;
 
-import net.minecraft.inventory.Container;
-import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.inventory.Container;
+import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
 
 /**
  * Holds all the constants for {@link GuiEssentiaCellTerminal}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public abstract class GuiConstants_ECT

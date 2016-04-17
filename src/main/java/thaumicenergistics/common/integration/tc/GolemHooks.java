@@ -20,9 +20,9 @@ import thaumicenergistics.fml.ThECore;
 /**
  * Golem hook system.<br>
  * Manages golem hooks and handlers.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class GolemHooks
 {
@@ -150,7 +150,7 @@ public class GolemHooks
 
 	/**
 	 * Logs an exception when it occurs.
-	 * 
+	 *
 	 * @param hook
 	 * @param handler
 	 * @param e
@@ -183,7 +183,7 @@ public class GolemHooks
 
 	/**
 	 * Hook for ItemGolemBell.onLeftClickEntity
-	 * 
+	 *
 	 * @param golem
 	 * @param dropped
 	 * @param player
@@ -218,7 +218,7 @@ public class GolemHooks
 
 	/**
 	 * Hook for EntityGolemBase.customInteraction
-	 * 
+	 *
 	 * @param golem
 	 * @param player
 	 * @param golemHandlerData
@@ -316,7 +316,7 @@ public class GolemHooks
 
 	/**
 	 * Hook for EntityGolemBase.entityInit
-	 * 
+	 *
 	 * @param golem
 	 * @param golemHandlerData
 	 */
@@ -374,7 +374,7 @@ public class GolemHooks
 	/**
 	 * Hook for EntityGolemBase.onEntityUpdate.
 	 * Keeps client handlers updated.
-	 * 
+	 *
 	 * @param golem
 	 * @param golemHandlerData
 	 */
@@ -498,7 +498,7 @@ public class GolemHooks
 
 	/**
 	 * Hook for ItemGolemPlacer.spawnCreature
-	 * 
+	 *
 	 * @param golem
 	 * @param itemGolemPlacer
 	 * @param golemHandlerData
@@ -536,7 +536,7 @@ public class GolemHooks
 
 	/**
 	 * Hook for EntityGolemBase.readEntityFromNBT
-	 * 
+	 *
 	 * @param golem
 	 * @param golemHandlerData
 	 * @param nbt
@@ -574,7 +574,7 @@ public class GolemHooks
 
 	/**
 	 * Hook for RenderGolemBase.render
-	 * 
+	 *
 	 * @param golem
 	 * @param x
 	 * @param y
@@ -603,7 +603,7 @@ public class GolemHooks
 
 	/**
 	 * Hook for EntityGolemBase.setupGolem
-	 * 
+	 *
 	 * @param golem
 	 * @param golemHandlerData
 	 */
@@ -660,7 +660,7 @@ public class GolemHooks
 
 	/**
 	 * Hook for EntityGolemBase.writeEntityToNBT
-	 * 
+	 *
 	 * @param golem
 	 * @param golemHandlerData
 	 * @param nbt
@@ -688,7 +688,7 @@ public class GolemHooks
 
 	/**
 	 * Registers a handler.
-	 * 
+	 *
 	 * @param handler
 	 */
 	public static void registerHandler( final @Nonnull IGolemHookHandler handler )

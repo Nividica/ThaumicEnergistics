@@ -6,9 +6,9 @@ import thaumicenergistics.common.ThaumicEnergistics;
 
 /**
  * Enumeration of all ThE items.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public enum ItemEnum
 {
@@ -24,6 +24,11 @@ public enum ItemEnum
 		GOLEM_WIFI_BACKPACK ("golem.wifi.backpack", new ItemGolemWirelessBackpack());
 
 	/**
+	 * Cache of the enum values
+	 */
+	public static final ItemEnum[] VALUES = ItemEnum.values();
+
+	/**
 	 * Internal name of the item.
 	 */
 	private final String internalName;
@@ -32,11 +37,6 @@ public enum ItemEnum
 	 * The actual item.
 	 */
 	private Item item;
-
-	/**
-	 * Cache of the enum values
-	 */
-	public static final ItemEnum[] VALUES = ItemEnum.values();
 
 	private ItemEnum( final String internalName, final Item item )
 	{
@@ -49,7 +49,7 @@ public enum ItemEnum
 
 	/**
 	 * Gets an item stack of size 1 with the specified damage value.
-	 * 
+	 *
 	 * @param damageValue
 	 * @return
 	 */
@@ -60,7 +60,7 @@ public enum ItemEnum
 
 	/**
 	 * Gets an item stack of the specified size and damage value.
-	 * 
+	 *
 	 * @param damageValue
 	 * @param size
 	 * @return
@@ -82,7 +82,7 @@ public enum ItemEnum
 
 	/**
 	 * Gets an item stack of size 1.
-	 * 
+	 *
 	 * @return
 	 */
 	public ItemStack getStack()
@@ -92,7 +92,7 @@ public enum ItemEnum
 
 	/**
 	 * Gets an item stack of the specified size.
-	 * 
+	 *
 	 * @param size
 	 * @return
 	 */

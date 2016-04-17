@@ -1,26 +1,26 @@
 package thaumicenergistics.client.render;
 
+import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
-import org.lwjgl.opengl.GL11;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.registries.Renderers;
 import thaumicenergistics.common.tiles.abstraction.TileProviderBase;
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Renders the providers.
- * 
+ *
  * TODO: GL Display lists
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public abstract class RenderBlockProviderBase
@@ -39,7 +39,7 @@ public abstract class RenderBlockProviderBase
 
 	/**
 	 * Creates the renderer.
-	 * 
+	 *
 	 * @param baseTexture
 	 * @param overlayTexture
 	 */
@@ -50,7 +50,7 @@ public abstract class RenderBlockProviderBase
 
 	/**
 	 * Renders all faces of the provider.
-	 * 
+	 *
 	 * @param world
 	 * @param x
 	 * @param y
@@ -172,10 +172,10 @@ public abstract class RenderBlockProviderBase
 	}
 
 	@Override
-	public final boolean renderWorldBlock( final IBlockAccess world, final int x, final int y, final int z, final Block block, final int modelId,
+	public final boolean renderWorldBlock(	final IBlockAccess world, final int x, final int y, final int z, final Block block, final int modelId,
 											final RenderBlocks renderer )
 	{
-		// Get the tessellator 
+		// Get the tessellator
 		Tessellator tessellator = Tessellator.instance;
 
 		// Texture

@@ -30,9 +30,9 @@ import thaumicenergistics.common.utils.ThELog;
 
 /**
  * Base of all ThE Packets. Also includes packet utils.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class ThEBasePacket
 	implements IMessage
@@ -69,7 +69,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Gets the loaded world on the client side.
-	 * 
+	 *
 	 * @return
 	 */
 	@SideOnly(Side.CLIENT)
@@ -80,7 +80,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Reads an AE itemstack from the stream.
-	 * 
+	 *
 	 * @param stream
 	 * @return
 	 */
@@ -103,7 +103,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Reads an itemstack from the stream.
-	 * 
+	 *
 	 * @param stream
 	 * @return
 	 */
@@ -114,7 +114,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Reads an AE part from the stream.
-	 * 
+	 *
 	 * @param stream
 	 * @return
 	 */
@@ -129,7 +129,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Reads a player entity from the stream.
-	 * 
+	 *
 	 * @param stream
 	 * @return
 	 */
@@ -148,7 +148,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Reads a string from the stream.
-	 * 
+	 *
 	 * @param stream
 	 * @return
 	 */
@@ -163,7 +163,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Reads a tile entity from the stream.
-	 * 
+	 *
 	 * @param stream
 	 * @return
 	 */
@@ -176,7 +176,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Reads a world from the stream.
-	 * 
+	 *
 	 * @param stream
 	 * @return
 	 */
@@ -197,7 +197,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Writes an AE itemstack to the stream.
-	 * 
+	 *
 	 * @param itemStack
 	 * @param stream
 	 */
@@ -219,7 +219,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Writes an itemstack into the stream.
-	 * 
+	 *
 	 * @param stack
 	 * @param stream
 	 */
@@ -230,7 +230,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Writes an AE part to the stream.
-	 * 
+	 *
 	 * @param part
 	 * @param stream
 	 */
@@ -243,7 +243,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Writes a player to the stream.
-	 * 
+	 *
 	 * @param player
 	 * @param stream
 	 */
@@ -263,7 +263,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Writes a string to the stream.
-	 * 
+	 *
 	 * @param string
 	 * @param stream
 	 */
@@ -278,7 +278,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Writes a tile entity to the stream.
-	 * 
+	 *
 	 * @param entity
 	 * @param stream
 	 */
@@ -292,7 +292,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Writes a world to the stream.
-	 * 
+	 *
 	 * @param world
 	 * @param stream
 	 */
@@ -303,7 +303,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Reads a Thaumcraft aspect from the stream.
-	 * 
+	 *
 	 * @param stream
 	 * @return
 	 */
@@ -322,7 +322,7 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Writes a Thaumcraft aspect to the stream.
-	 * 
+	 *
 	 * @param aspect
 	 * @param stream
 	 */
@@ -403,7 +403,7 @@ public abstract class ThEBasePacket
 	/**
 	 * Creates a new stream, calls to the subclass to write
 	 * into it, then compresses it into the packet stream.
-	 * 
+	 *
 	 * @param packetStream
 	 */
 	private void toCompressedBytes( final ByteBuf packetStream )
@@ -414,7 +414,7 @@ public abstract class ThEBasePacket
 		// Pass to subclass
 		this.writeData( streamToCompress );
 
-		// Create the compressor		
+		// Create the compressor
 		try(
 						OutputStream outStream = new OutputStream()
 						{
@@ -450,21 +450,21 @@ public abstract class ThEBasePacket
 
 	/**
 	 * Return true if the player should be included in the data stream.
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract boolean includePlayerInStream();
 
 	/**
 	 * Allows subclasses to read data from the specified stream.
-	 * 
+	 *
 	 * @param stream
 	 */
 	protected abstract void readData( ByteBuf stream );
 
 	/**
 	 * Allows subclasses to write data into the specified stream.
-	 * 
+	 *
 	 * @param stream
 	 */
 	protected abstract void writeData( ByteBuf stream );

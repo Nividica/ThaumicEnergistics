@@ -26,7 +26,7 @@ public class ArcaneRecipeHelper
 	/**
 	 * Creates a workbench with its crafting grid set to match the source
 	 * inventory.
-	 * 
+	 *
 	 * @param sourceInventory
 	 * @param firstSlotIndex
 	 * @param gridSize
@@ -49,14 +49,14 @@ public class ArcaneRecipeHelper
 
 	/**
 	 * Searches for a matching arcane crafting recipe
-	 * 
+	 *
 	 * @param sourceInventory
 	 * @param firstSlotIndex
 	 * @param gridSize
 	 * @param player
 	 * @return
 	 */
-	public IArcaneRecipe findMatchingArcaneResult( final IInventory sourceInventory, final int firstSlotIndex, final int gridSize,
+	public IArcaneRecipe findMatchingArcaneResult(	final IInventory sourceInventory, final int firstSlotIndex, final int gridSize,
 													final EntityPlayer player )
 	{
 		// Create a the workbench
@@ -87,14 +87,15 @@ public class ArcaneRecipeHelper
 
 	/**
 	 * Gets the base aspect cost of this recipe. Can return null.
-	 * 
+	 *
 	 * @param sourceInventory
 	 * @param firstSlotIndex
 	 * @param gridSize
 	 * @param recipe
 	 * @return
 	 */
-	public AspectList getRecipeAspectCost( final IInventory sourceInventory, final int firstSlotIndex, final int gridSize, final IArcaneRecipe recipe )
+	public AspectList getRecipeAspectCost(	final IInventory sourceInventory, final int firstSlotIndex, final int gridSize,
+											final IArcaneRecipe recipe )
 	{
 		// Ensure the recipe is valid
 		if( recipe == null )
@@ -107,7 +108,7 @@ public class ArcaneRecipeHelper
 
 	/**
 	 * Gets the item that results from this recipe. Can be null.
-	 * 
+	 *
 	 * @param sourceInventory
 	 * @param firstSlotIndex
 	 * @param gridSize

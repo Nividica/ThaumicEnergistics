@@ -2,6 +2,11 @@ package thaumicenergistics.common.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import appeng.api.config.Actionable;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.ISaveProvider;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IItemList;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.storage.IAspectStack;
@@ -9,17 +14,12 @@ import thaumicenergistics.common.fluids.GaseousEssentia;
 import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.common.items.ItemEssentiaCell;
 import thaumicenergistics.common.storage.AspectStack;
-import appeng.api.config.Actionable;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
 
 /**
  * Handles a creative {@link ItemEssentiaCell}
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class HandlerItemEssentiaCellCreative
 	extends HandlerItemEssentiaCell

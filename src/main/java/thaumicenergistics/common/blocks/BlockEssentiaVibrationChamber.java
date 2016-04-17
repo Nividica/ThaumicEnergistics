@@ -1,5 +1,8 @@
 package thaumicenergistics.common.blocks;
 
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -19,15 +22,12 @@ import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileEssentiaVibrationChamber} block.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class BlockEssentiaVibrationChamber
 	extends AbstractBlockAEWrenchable
@@ -35,7 +35,7 @@ public class BlockEssentiaVibrationChamber
 
 	public BlockEssentiaVibrationChamber()
 	{
-		// Call super with material machine (iron) 
+		// Call super with material machine (iron)
 		super( Material.iron );
 
 		// Basic hardness
@@ -50,7 +50,7 @@ public class BlockEssentiaVibrationChamber
 
 	/**
 	 * Returns the EVC tile entity, if found and is valid.
-	 * 
+	 *
 	 * @param world
 	 * @param x
 	 * @param y
@@ -150,7 +150,7 @@ public class BlockEssentiaVibrationChamber
 
 	/**
 	 * Gets the world icons
-	 * 
+	 *
 	 * @param world
 	 * @param x
 	 * @param y
@@ -171,7 +171,7 @@ public class BlockEssentiaVibrationChamber
 			return this.getIcon( side, 0 );
 		}
 
-		// Is this side the face?		
+		// Is this side the face?
 		if( ( chamber.getForward() != null ) && ( side == chamber.getForward().ordinal() ) )
 		{
 			// Get the aspect in the chamber

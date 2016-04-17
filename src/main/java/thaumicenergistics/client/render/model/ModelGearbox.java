@@ -1,18 +1,18 @@
 package thaumicenergistics.client.render.model;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.common.tiles.TileGearBox;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileGearBox} model.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class ModelGearbox
@@ -49,7 +49,7 @@ public class ModelGearbox
 
 		/**
 		 * Creates the transfomation
-		 * 
+		 *
 		 * @param rotateAngleY
 		 * @param rotateAngleZ
 		 * @param offsetX
@@ -76,7 +76,7 @@ public class ModelGearbox
 
 		/**
 		 * Set what is rendered.
-		 * 
+		 *
 		 * @param shaft
 		 * @param gear
 		 */
@@ -163,7 +163,7 @@ public class ModelGearbox
 
 	/**
 	 * Renders a shaft on the specified side.
-	 * 
+	 *
 	 * @param side
 	 * @param withGear
 	 * @param withExtension
@@ -235,7 +235,7 @@ public class ModelGearbox
 
 	/**
 	 * Updates the model to match the tile entity data.
-	 * 
+	 *
 	 * @param gearboxTile
 	 */
 	public void updateToTileEntity( final TileGearBox gearboxTile )

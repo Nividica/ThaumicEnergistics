@@ -1,6 +1,8 @@
 package thaumicenergistics.common.blocks;
 
 import java.util.ArrayList;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -18,21 +20,19 @@ import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
 import thaumicenergistics.common.utils.EffectiveSide;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileDistillationPatternEncoder} block.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class BlockDistillationEncoder
 	extends AbstractBlockAEWrenchable
 {
 	public BlockDistillationEncoder()
 	{
-		// Call super with material machine (iron) 
+		// Call super with material machine (iron)
 		super( Material.iron );
 
 		// Basic hardness
@@ -113,8 +113,7 @@ public class BlockDistillationEncoder
 		}
 
 		// Top or bottom?
-		if( ( ForgeDirection.VALID_DIRECTIONS[side] == ForgeDirection.UP )
-						|| ( ForgeDirection.VALID_DIRECTIONS[side] == ForgeDirection.DOWN ) )
+		if( ( ForgeDirection.VALID_DIRECTIONS[side] == ForgeDirection.UP ) || ( ForgeDirection.VALID_DIRECTIONS[side] == ForgeDirection.DOWN ) )
 		{
 			// Bottom texture
 			return BlockTextureManager.DISTILLATION_ENCODER.getTextures()[2];

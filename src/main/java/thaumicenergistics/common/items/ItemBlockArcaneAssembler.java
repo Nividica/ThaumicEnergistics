@@ -11,9 +11,9 @@ import thaumicenergistics.common.tiles.TileArcaneAssembler;
 
 /**
  * {@link TileArcaneAssembler} item.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ItemBlockArcaneAssembler
 	extends ItemBlock
@@ -37,8 +37,8 @@ public class ItemBlockArcaneAssembler
 		if( stack.getTagCompound().hasKey( TileArcaneAssembler.NBTKEY_STORED_VIS ) )
 		{
 			// Add the info
-			displayList.add( EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString()
-							+ ThEStrings.Tooltip_ArcaneAssemblerHasVis.getLocalized() );
+			displayList.add( EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString() +
+							ThEStrings.Tooltip_ArcaneAssemblerHasVis.getLocalized() );
 		}
 	}
 

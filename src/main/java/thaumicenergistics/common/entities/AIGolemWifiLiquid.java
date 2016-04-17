@@ -8,9 +8,9 @@ import thaumicenergistics.common.entities.WirelessGolemHandler.WirelessServerDat
 
 /**
  * Allows a golem to extract liquid from the network as it needs it.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class AIGolemWifiLiquid
 	extends AIAENetworkGolem

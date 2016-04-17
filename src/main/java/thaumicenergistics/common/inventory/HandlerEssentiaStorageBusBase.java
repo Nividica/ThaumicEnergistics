@@ -2,13 +2,6 @@ package thaumicenergistics.common.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.common.fluids.GaseousEssentia;
-import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
@@ -20,12 +13,19 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.fluids.GaseousEssentia;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
 /**
  * Defines a {@link PartEssentiaStorageBus} handler.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class HandlerEssentiaStorageBusBase
 	implements IMEInventoryHandler<IAEFluidStack>
@@ -70,7 +70,7 @@ public abstract class HandlerEssentiaStorageBusBase
 
 	/**
 	 * Creates the handler.
-	 * 
+	 *
 	 * @param part
 	 */
 	public HandlerEssentiaStorageBusBase( final PartEssentiaStorageBus part )
@@ -90,7 +90,7 @@ public abstract class HandlerEssentiaStorageBusBase
 
 	/**
 	 * Returns true if there are no filters.
-	 * 
+	 *
 	 * @return
 	 */
 	protected boolean allowAny()
@@ -112,7 +112,7 @@ public abstract class HandlerEssentiaStorageBusBase
 	/**
 	 * Verifies that the requested fluidstack to insert/extract is both an
 	 * Essentia Gas and white-listed, or not black-listed.
-	 * 
+	 *
 	 * @param fluidRequest
 	 * @return True if the bus is allowed to transfer the fluid, false if it can
 	 * not.
@@ -137,17 +137,17 @@ public abstract class HandlerEssentiaStorageBusBase
 		 * Expected outcome: * valid = true Sequence * valid = ( isFiltered ==
 		 * !inverted ); * valid = ( true == !false ) * valid = ( true == true )
 		 * * valid = true
-		 * 
+		 *
 		 * ---- Conditions: * isFiltered = false * inverted = false Expected
 		 * outcome: * valid = false Sequence * valid = ( isFiltered == !inverted
 		 * ); * valid = ( false == !false ) * valid = ( false == true ) * valid
 		 * = false
-		 * 
+		 *
 		 * ---- Conditions: * isFiltered = true * inverted = true Expected
 		 * outcome: * valid = false Sequence * valid = ( isFiltered == !inverted
 		 * ); * valid = ( true == !true ) * valid = ( true == false ) * valid =
 		 * false ----
-		 * 
+		 *
 		 * Conditions: * isFiltered = false * inverted = true Expected outcome:
 		 * * valid = true Sequence * valid = ( isFiltered == !inverted ); *
 		 * valid = ( false == !true ) * valid = ( false == false ) * valid =
@@ -157,7 +157,7 @@ public abstract class HandlerEssentiaStorageBusBase
 
 	/**
 	 * Gets the tile entity the storage bus is facing.
-	 * 
+	 *
 	 * @return
 	 */
 	protected TileEntity getFaceingTile()
@@ -189,7 +189,7 @@ public abstract class HandlerEssentiaStorageBusBase
 
 	/**
 	 * Gets the part that is facing the essentia storage bus.
-	 * 
+	 *
 	 * @param partHost
 	 * @return
 	 */
@@ -211,7 +211,7 @@ public abstract class HandlerEssentiaStorageBusBase
 
 	/**
 	 * Checks if the fluid is an essentia gas.
-	 * 
+	 *
 	 * @param fluid
 	 * @return
 	 */
@@ -229,7 +229,7 @@ public abstract class HandlerEssentiaStorageBusBase
 
 	/**
 	 * Checks if the AE fluidstack is an essentia gas.
-	 * 
+	 *
 	 * @param fluidStack
 	 * @return
 	 */
@@ -246,7 +246,7 @@ public abstract class HandlerEssentiaStorageBusBase
 
 	/**
 	 * Lets the host grid know that the storage amount has changed.
-	 * 
+	 *
 	 * @param change
 	 */
 	protected void postAlterationToHostGrid( final Iterable<IAEFluidStack> change )
@@ -352,7 +352,7 @@ public abstract class HandlerEssentiaStorageBusBase
 
 	/**
 	 * Gets if voiding is allowed.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isVoidAllowed()
@@ -362,14 +362,14 @@ public abstract class HandlerEssentiaStorageBusBase
 
 	/**
 	 * Called when a neighboring block changes.
-	 * 
+	 *
 	 * @return True if a cell update is needed.
 	 */
 	public abstract boolean onNeighborChange();
 
 	/**
 	 * Sets if the storage bus filter mode is inverted or not.
-	 * 
+	 *
 	 * @param isInverted
 	 * True = Blacklist, False = Whitelist.
 	 */
@@ -380,7 +380,7 @@ public abstract class HandlerEssentiaStorageBusBase
 
 	/**
 	 * Set's the list of filtered aspects.
-	 * 
+	 *
 	 * @param aspectList
 	 */
 	public void setPrioritizedAspects( final List<Aspect> aspectList )
@@ -390,7 +390,7 @@ public abstract class HandlerEssentiaStorageBusBase
 
 	/**
 	 * Sets if the handler can void excess essentia if connected to void jar.
-	 * 
+	 *
 	 * @param
 	 */
 	public void setVoidAllowed( final boolean isVoidAllowed )

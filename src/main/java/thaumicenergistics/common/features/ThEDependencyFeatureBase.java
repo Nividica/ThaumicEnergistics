@@ -9,9 +9,9 @@ import thaumicenergistics.common.registries.FeatureRegistry;
 /**
  * Defines a feature that depends on a configuration setting and/or specific
  * items to be available.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class ThEDependencyFeatureBase
 	extends ThEFeatureBase
@@ -29,7 +29,7 @@ public abstract class ThEDependencyFeatureBase
 
 	/**
 	 * Ensures that all the required items are present.
-	 * 
+	 *
 	 * @param items
 	 * @return
 	 */
@@ -61,7 +61,7 @@ public abstract class ThEDependencyFeatureBase
 
 	/**
 	 * Gets the features required items.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nullable
@@ -74,7 +74,7 @@ public abstract class ThEDependencyFeatureBase
 
 	/**
 	 * Evaluates the dependencies of the feature and enables it if possible.
-	 * 
+	 *
 	 * @param cdi
 	 */
 	@Override
@@ -83,8 +83,8 @@ public abstract class ThEDependencyFeatureBase
 		if( !this.hasCheckedReqs )
 		{
 			// Ask for the features config settings and required items
-			this.available = this.checkConfigs( ThEApi.instance().config() )
-							&& this.checkItemReqs( this.getItemReqs( FeatureRegistry.instance().cdi ) );
+			this.available = this.checkConfigs( ThEApi.instance().config() ) &&
+							this.checkItemReqs( this.getItemReqs( FeatureRegistry.instance().cdi ) );
 			this.hasCheckedReqs = true;
 		}
 

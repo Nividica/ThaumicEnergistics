@@ -6,9 +6,9 @@ import thaumicenergistics.common.fluids.GaseousEssentia;
 
 /**
  * Extra Cells 2 integration.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ModuleEC2
 {

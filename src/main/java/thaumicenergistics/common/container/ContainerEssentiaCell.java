@@ -2,6 +2,19 @@ package thaumicenergistics.common.container;
 
 import java.util.ArrayList;
 import java.util.List;
+import appeng.api.config.Settings;
+import appeng.api.config.ViewItems;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.PlayerSource;
+import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.ISaveProvider;
+import appeng.api.storage.StorageChannel;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.tile.storage.TileChest;
+import appeng.util.Platform;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -21,25 +34,12 @@ import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaCellTerm
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.config.Settings;
-import appeng.api.config.ViewItems;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.PlayerSource;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.tile.storage.TileChest;
-import appeng.util.Platform;
 
 /**
  * Inventory container for essentia cells in a ME chest.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ContainerEssentiaCell
 	extends ContainerEssentiaCellTerminalBase
@@ -81,7 +81,7 @@ public class ContainerEssentiaCell
 
 	/**
 	 * Creates the container.
-	 * 
+	 *
 	 * @param player
 	 * The player that owns this container.
 	 * @param world
@@ -128,7 +128,7 @@ public class ContainerEssentiaCell
 
 	/**
 	 * Gets a handler for the essentia cell.
-	 * 
+	 *
 	 * @return
 	 */
 	private HandlerItemEssentiaCell getCellHandler()

@@ -6,9 +6,9 @@ import thaumicenergistics.api.IThEConfig;
 
 /**
  * Controls the ThE configuration.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 class ConfigurationHandler
 	implements IThEConfig
@@ -26,8 +26,7 @@ class ConfigurationHandler
 	 * Default values.
 	 */
 	private static final int DFT_CONVERSION_EXPONENT = 7;
-	private static final boolean
-					DFT_CRAFT_ARCANE_ASSEMBLER = true,
+	private static final boolean DFT_CRAFT_ARCANE_ASSEMBLER = true,
 					DFT_CRAFT_ARCANE_CRAFTING_TERM = true,
 					DFT_CRAFT_DISTILLATION_PATTERN_ENCODER = true,
 					DFT_CRAFT_ESSENTIA_CELLS = true,
@@ -80,7 +79,7 @@ class ConfigurationHandler
 
 	/**
 	 * Loads and synchronizes the config file.
-	 * 
+	 *
 	 * @param configFile
 	 */
 	public static IThEConfig loadAndSyncConfigFile( final File configFile )
@@ -105,9 +104,9 @@ class ConfigurationHandler
 							ConfigurationHandler.DFT_CONVERSION_EXPONENT,
 							1,
 							11,
-							"Controls the conversion ratio of essentia/fluid. 1 essentia is converted to (2^this) milibuckets of fluid. "
-											+ "Please be aware that this value effects how much fluid is transferred through the AE system, which also effects transfer speed and power consumption. "
-											+ "Values above 11 make it impossible to use fluid transfer devices such as the ME IO Port, or anything from EC2." );
+							"Controls the conversion ratio of essentia/fluid. 1 essentia is converted to (2^this) milibuckets of fluid. " +
+											"Please be aware that this value effects how much fluid is transferred through the AE system, which also effects transfer speed and power consumption. " +
+											"Values above 11 make it impossible to use fluid transfer devices such as the ME IO Port, or anything from EC2." );
 		this.conversionMultiplier = (int)Math.pow( 2, Math.min( fluidPow, 11 ) );
 
 		// Crafting ========================================================

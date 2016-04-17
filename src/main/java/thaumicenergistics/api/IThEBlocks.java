@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 
 /**
  * Thaumic Energistics Blocks.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class IThEBlocks
 {

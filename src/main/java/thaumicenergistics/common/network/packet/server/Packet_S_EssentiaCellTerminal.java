@@ -12,9 +12,9 @@ import thaumicenergistics.common.parts.PartEssentiaTerminal;
 
 /**
  * {@link PartEssentiaTerminal}, {@link ItemWirelessEssentiaTerminal}, and {@link ItemEssentiaCell} server-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_S_EssentiaCellTerminal
 	extends ThEServerPacket
@@ -41,7 +41,7 @@ public class Packet_S_EssentiaCellTerminal
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -60,7 +60,7 @@ public class Packet_S_EssentiaCellTerminal
 
 	/**
 	 * Asks the server to begin a crafting job for the specified aspect.
-	 * 
+	 *
 	 * @param player
 	 * @param aspect
 	 */
@@ -78,7 +78,7 @@ public class Packet_S_EssentiaCellTerminal
 
 	/**
 	 * Asks the server to change the sorting mode.
-	 * 
+	 *
 	 * @param player
 	 */
 	public static void sendChangeSorting( final EntityPlayer player, final boolean wasRightClick )
@@ -95,7 +95,7 @@ public class Packet_S_EssentiaCellTerminal
 
 	/**
 	 * Asks the server to change the view mode.
-	 * 
+	 *
 	 * @param player
 	 */
 	public static void sendChangeView( final EntityPlayer player, final boolean wasRightClick )
@@ -112,7 +112,7 @@ public class Packet_S_EssentiaCellTerminal
 
 	/**
 	 * Requests a full update from the server.
-	 * 
+	 *
 	 * @param player
 	 */
 	public static void sendFullUpdateRequest( final EntityPlayer player )
@@ -127,7 +127,7 @@ public class Packet_S_EssentiaCellTerminal
 	/**
 	 * Informs the server when an aspect has been clicked on and the player
 	 * is holding an item.
-	 * 
+	 *
 	 * @param player
 	 * @param aspect
 	 */
@@ -145,7 +145,7 @@ public class Packet_S_EssentiaCellTerminal
 
 	/**
 	 * Informs the server the player has (un)selected an aspect.
-	 * 
+	 *
 	 * @param player
 	 * @param currentAspect
 	 */

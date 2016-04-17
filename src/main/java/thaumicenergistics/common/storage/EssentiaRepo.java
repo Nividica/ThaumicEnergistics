@@ -10,9 +10,9 @@ import thaumicenergistics.api.storage.IEssentiaRepo;
 
 /**
  * Manages a repository of essentia.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class EssentiaRepo
 	implements IEssentiaRepo

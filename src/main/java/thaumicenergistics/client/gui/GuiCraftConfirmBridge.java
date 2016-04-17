@@ -1,18 +1,18 @@
 package thaumicenergistics.client.gui;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
-import thaumicenergistics.api.grid.ICraftingIssuerHost;
 import appeng.client.gui.implementations.GuiCraftConfirm;
 import appeng.core.localization.GuiText;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.EntityPlayer;
+import thaumicenergistics.api.grid.ICraftingIssuerHost;
 
 /**
  * Bridges the AE2 CraftConfirm GUI and the ThE API.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiCraftConfirmBridge

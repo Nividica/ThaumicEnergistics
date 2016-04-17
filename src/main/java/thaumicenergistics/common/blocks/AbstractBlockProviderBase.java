@@ -1,5 +1,7 @@
 package thaumicenergistics.common.blocks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -15,8 +17,6 @@ import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.registries.Renderers;
 import thaumicenergistics.common.tiles.abstraction.TileProviderBase;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class AbstractBlockProviderBase
 	extends AbstractBlockAEWrenchable
@@ -70,30 +70,30 @@ public abstract class AbstractBlockProviderBase
 	{
 		// Get  tile entity
 		TileEntity tileProvider = world.getTileEntity( x, y, z );
-
+	
 		// Is there still have a tile?
 		if( tileProvider instanceof TileProviderBase )
 		{
-
+	
 			float r = 0;
 			float g = 0;
 			float b = 0;
-
+	
 			if( ( (TileProviderBase)tileProvider ).isActive() )
 			{
 				int mv = ( (TileProviderBase)tileProvider ).getColor().mediumVariant;
-
+	
 				r = ( ( mv >> 16 ) & 0xff ) / 255.0F;
 				g = ( ( mv >> 8 ) & 0xff ) / 255.0F;
 				b = ( ( mv ) & 0xff ) / 255.0F;
 				return CLApi.makeRGBLightValue( r, g, b );
 			}
-
+	
 			return 0;
 		}
-
+	
 		return super.getLightValue( world, x, y, z );
-
+	
 	}
 	*/
 
@@ -128,7 +128,7 @@ public abstract class AbstractBlockProviderBase
 
 	// Sets the metadata for the block based on which side of the neighbor block they clicked on.
 	@Override
-	public final int onBlockPlaced( final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY,
+	public final int onBlockPlaced(	final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY,
 									final float hitZ, final int metaData )
 	{
 		// Get the opposite face and return it
@@ -136,7 +136,7 @@ public abstract class AbstractBlockProviderBase
 	}
 
 	@Override
-	public final void onBlockPlacedBy( final World world, final int x, final int y, final int z, final EntityLivingBase entity,
+	public final void onBlockPlacedBy(	final World world, final int x, final int y, final int z, final EntityLivingBase entity,
 										final ItemStack itemstack )
 	{
 		// Set the owner

@@ -1,23 +1,23 @@
 package thaumicenergistics.common.container.slot;
 
+import appeng.api.implementations.guiobjects.INetworkTool;
+import appeng.api.implementations.items.IUpgradeModule;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import appeng.api.implementations.guiobjects.INetworkTool;
-import appeng.api.implementations.items.IUpgradeModule;
 
 /**
  * Represents a slot in the network tool
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class SlotNetworkTool
 	extends Slot
 {
 	/**
 	 * Creates the slot.
-	 * 
+	 *
 	 * @param inventory
 	 * The inventory of the network tool.
 	 * @param slotIndex

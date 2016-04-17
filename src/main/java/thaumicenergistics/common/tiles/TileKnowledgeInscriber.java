@@ -7,9 +7,9 @@ import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
 
 /**
  * Encodes arcane recipes.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class TileKnowledgeInscriber
 	extends ThETileInventory
@@ -25,7 +25,7 @@ public class TileKnowledgeInscriber
 
 	/**
 	 * Returns true if there is a stored KCore.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasKCore()

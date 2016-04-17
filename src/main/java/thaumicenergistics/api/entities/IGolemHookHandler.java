@@ -2,12 +2,12 @@ package thaumicenergistics.api.entities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import thaumcraft.common.entities.golems.EntityGolemBase;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Defines the methods required to interact with the golem hook system.</br>
@@ -43,20 +43,21 @@ import cpw.mods.fml.relauncher.SideOnly;
  * Following the above situation, if later during a call to setupGolem the server-side handler sets the sync character to 'n'(no), when the client
  * receives the update, the client-side handlerData can be set to, for example, null. This will let the handler know to not perform the special
  * render.<br/>
- * </br> If you want to see an example of a class that implements this, lookup my {@code WirelessGolemHandler} class on the ThE github.
- * 
+ * </br>
+ * If you want to see an example of a class that implements this, lookup my {@code WirelessGolemHandler} class on the ThE github.
+ *
  * @author Nividica
- * 
+ *
  * @see IGolemHookSyncRegistry
- * 
+ *
  */
 public interface IGolemHookHandler
 {
 	/**
 	 * Defines interaction levels.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	public static enum InteractionLevel
 	{
@@ -109,14 +110,14 @@ public interface IGolemHookHandler
 	/**
 	 * Any data you wish to sync between the server and clients can be added here.<br/>
 	 * The added bytes are considered the default state, and will be added to all golems in that state.
-	 * 
+	 *
 	 * @param syncRegistry
 	 */
 	void addDefaultSyncEntries( @Nonnull IGolemHookSyncRegistry syncRegistry );
 
 	/**
 	 * Called when the golem was left clicked by a player holding the Golemancers Bell.
-	 * 
+	 *
 	 * @param golem
 	 * @param handlerData
 	 * Handler data attached to the golem.
@@ -128,12 +129,12 @@ public interface IGolemHookHandler
 	 * @param side
 	 * Server or Client @Nonnull Side side
 	 */
-	void bellLeftClicked( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull ItemStack itemGolemPlacer,
+	void bellLeftClicked(	@Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull ItemStack itemGolemPlacer,
 							@Nonnull EntityPlayer player, boolean dismantled, @Nonnull Side side );
 
 	/**
 	 * Return true if you can handle this interaction.<br/>
-	 * 
+	 *
 	 * @param golem
 	 * @param handlerData
 	 * Handler data attached to the golem.
@@ -143,12 +144,12 @@ public interface IGolemHookHandler
 	 * @return The level of interaction.
 	 */
 	@Nonnull
-	InteractionLevel canHandleInteraction( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull EntityPlayer player,
+	InteractionLevel canHandleInteraction(	@Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull EntityPlayer player,
 											@Nonnull Side side );
 
 	/**
 	 * Called when the golem has been interacted with and it hasn't been handled by Thaumcraft.<br/>
-	 * 
+	 *
 	 * @param golem
 	 * @param handlerData
 	 * Handler data attached to the golem.
@@ -159,7 +160,7 @@ public interface IGolemHookHandler
 	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
 	 */
 	@Nullable
-	Object customInteraction( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull IGolemHookSyncRegistry syncData,
+	Object customInteraction(	@Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull IGolemHookSyncRegistry syncData,
 								@Nonnull EntityPlayer player, @Nonnull Side side );
 
 	/**
@@ -168,7 +169,7 @@ public interface IGolemHookHandler
 	 * tracks this internally and will only ever send updates if the data has actually changed. Although for performance reasons
 	 * it would be a good idea to keep a tick counter and only set the data periodically if there is any processing involved.<br>
 	 * Note: This is only called server side.
-	 * 
+	 *
 	 * @param golem
 	 * @param serverHandlerData
 	 * @param syncData
@@ -177,7 +178,7 @@ public interface IGolemHookHandler
 
 	/**
 	 * Return true if your handler wants to be called each time the golem gets a tick from the server.
-	 * 
+	 *
 	 * @return
 	 */
 	boolean needsDynamicUpdates();
@@ -185,7 +186,7 @@ public interface IGolemHookHandler
 	/**
 	 * Return true if your handler wants to be called when a golem is rendered.<br/>
 	 * Note: This is called only once during registration.
-	 * 
+	 *
 	 * @return
 	 */
 	boolean needsRenderer();
@@ -193,7 +194,7 @@ public interface IGolemHookHandler
 	/**
 	 * Called when reading the golem's NBT.<br />
 	 * Note: Called during a world load, not when the golem is placed via its item.
-	 * 
+	 *
 	 * @param golem
 	 * @param nbtTag
 	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
@@ -203,7 +204,7 @@ public interface IGolemHookHandler
 
 	/**
 	 * Called when a golem is being rendered, if {@code needsRenderer} returned true during registration.
-	 * 
+	 *
 	 * @param golem
 	 * @param clientHandlerData
 	 * @param x
@@ -212,7 +213,7 @@ public interface IGolemHookHandler
 	 * @param partialElaspsedTick
 	 */
 	@SideOnly(Side.CLIENT)
-	void renderGolem( @Nonnull EntityGolemBase golem, @Nullable Object clientHandlerData, double x, double y, double z,
+	void renderGolem(	@Nonnull EntityGolemBase golem, @Nullable Object clientHandlerData, double x, double y, double z,
 						float partialElaspsedTick );
 
 	/**
@@ -220,7 +221,7 @@ public interface IGolemHookHandler
 	 * If you are adding an AI script(s) to the golem, be aware that Thaumcraft clears all of the golems scripts at the beginning of this call. You
 	 * will need to add the script(s) each time this is called, but you do not need to worry about removing them.<br/>
 	 * Note: The golems inventory may not be ready.
-	 * 
+	 *
 	 * @param golem
 	 * @param handlerData
 	 * Handler data attached to the golem.
@@ -229,13 +230,13 @@ public interface IGolemHookHandler
 	 * @return Return the handler data you wish to attach to the golem, or null to clear any attached data.
 	 */
 	@Nullable
-	Object setupGolem( @Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull IGolemHookSyncRegistry syncData,
+	Object setupGolem(	@Nonnull final EntityGolemBase golem, @Nullable Object handlerData, @Nonnull IGolemHookSyncRegistry syncData,
 						@Nonnull Side side );
 
 	/**
 	 * Called when a golem is being spawned via it's item.<br/>
 	 * Note: This is not called if the item has no NBT data.
-	 * 
+	 *
 	 * @param golem
 	 * @param itemGolemPlacer
 	 * @param side
@@ -247,7 +248,7 @@ public interface IGolemHookHandler
 
 	/**
 	 * Called when sync data has changed.
-	 * 
+	 *
 	 * @param syncData
 	 * @param clientHandlerData
 	 * Handler data attached to the golem on the client side.
@@ -259,7 +260,7 @@ public interface IGolemHookHandler
 	/**
 	 * Called when saving the golem's NBT.<br />
 	 * Note: Called during a world save, not when the golem is being turned into an item via Golemancer's Bell.
-	 * 
+	 *
 	 * @param golem
 	 * @param serverHandlerData
 	 * @param nbtTag

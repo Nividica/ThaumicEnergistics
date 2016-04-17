@@ -1,6 +1,9 @@
 package thaumicenergistics.common.features;
 
 import java.util.ArrayList;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import thaumcraft.api.ThaumcraftApi;
@@ -19,15 +22,12 @@ import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * {@link PartEssentiaTerminal}, {@link PartEssentiaStorageMonitor}, and {@link PartEssentiaConversionMonitor} feature.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureEssentiaMonitoring
 	extends ThEThaumcraftResearchFeature
@@ -44,8 +44,7 @@ public class FeatureEssentiaMonitoring
 	protected boolean checkConfigs( final IThEConfig theConfig )
 	{
 		this.isConversionEnabled = AEConfig.instance.isFeatureEnabled( AEFeature.PartConversionMonitor );
-		this.isWirelessEnabled = AEConfig.instance.isFeatureEnabled( AEFeature.WirelessAccessTerminal )
-						&& theConfig.craftWirelessEssentiaTerminal();
+		this.isWirelessEnabled = AEConfig.instance.isFeatureEnabled( AEFeature.WirelessAccessTerminal ) && theConfig.craftWirelessEssentiaTerminal();
 		return true;
 	}
 

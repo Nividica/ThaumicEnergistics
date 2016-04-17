@@ -21,9 +21,9 @@ import thaumicenergistics.common.integration.tc.AspectHooks;
 
 /**
  * Item used to represent an {@link Aspect}
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ItemCraftingAspect
 	extends Item
@@ -41,7 +41,7 @@ public class ItemCraftingAspect
 
 	/**
 	 * Returns true if the player has discovered the aspect.
-	 * 
+	 *
 	 * @param player
 	 * @param aspect
 	 * @return
@@ -53,7 +53,7 @@ public class ItemCraftingAspect
 
 	/**
 	 * Creates a new crafting aspect stack with the specified amount.
-	 * 
+	 *
 	 * @param aspect
 	 * @param amount
 	 * @return
@@ -71,7 +71,7 @@ public class ItemCraftingAspect
 
 	/**
 	 * Gets the aspect associated with the item.
-	 * 
+	 *
 	 * @param itemStack
 	 * @return
 	 */
@@ -86,7 +86,7 @@ public class ItemCraftingAspect
 
 	/**
 	 * Gets the aspect stored in the crafting items tag.
-	 * 
+	 *
 	 * @param tag
 	 * @return
 	 */
@@ -102,7 +102,7 @@ public class ItemCraftingAspect
 
 	/**
 	 * Sets the aspect of the item stack.
-	 * 
+	 *
 	 * @param stack
 	 * @param aspect
 	 */

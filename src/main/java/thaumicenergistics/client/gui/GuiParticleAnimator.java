@@ -1,15 +1,15 @@
 package thaumicenergistics.client.gui;
 
 import javax.annotation.Nonnull;
-import net.minecraft.client.gui.Gui;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.Gui;
 
 /**
  * Animates {@link EnumGuiParticles}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiParticleAnimator
@@ -64,7 +64,7 @@ public class GuiParticleAnimator
 	 */
 	public int framesPerSecond = 1;
 
-	public GuiParticleAnimator( final int startX, final int startY, final int destX, final int destY, final float time,
+	public GuiParticleAnimator(	final int startX, final int startY, final int destX, final int destY, final float time,
 								@Nonnull final EnumGuiParticles particle )
 	{
 		// Set starting position
@@ -95,7 +95,7 @@ public class GuiParticleAnimator
 
 	/**
 	 * Returns false if the particle has reached the end of its life.
-	 * 
+	 *
 	 * @param gui
 	 * @param needsPrepare
 	 * @return
@@ -117,7 +117,7 @@ public class GuiParticleAnimator
 
 	/**
 	 * Returns false if the particle has reached the end of its life.
-	 * 
+	 *
 	 * @param gui
 	 * @param particleFrame
 	 * @param needsPrepare
@@ -164,7 +164,7 @@ public class GuiParticleAnimator
 
 	/**
 	 * Sets the color of the particle.
-	 * 
+	 *
 	 * @param red
 	 * @param green
 	 * @param blue
@@ -178,7 +178,7 @@ public class GuiParticleAnimator
 
 	/**
 	 * Sets the number of MS to wait before starting the animation.
-	 * 
+	 *
 	 * @param timeMS
 	 */
 	public void setDelayTime( final long timeMS )

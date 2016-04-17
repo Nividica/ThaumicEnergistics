@@ -1,15 +1,6 @@
 package thaumicenergistics.common.network.packet.client;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Iterator;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.entity.player.EntityPlayer;
-import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
-import thaumicenergistics.common.network.NetworkHandler;
-import thaumicenergistics.common.network.ThEBasePacket;
-import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
-import thaumicenergistics.common.registries.EnumCache;
 import appeng.api.AEApi;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -18,12 +9,21 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.entity.player.EntityPlayer;
+import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
+import thaumicenergistics.common.network.NetworkHandler;
+import thaumicenergistics.common.network.ThEBasePacket;
+import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
+import thaumicenergistics.common.registries.EnumCache;
 
 /**
  * {@link PartArcaneCraftingTerminal} client-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_C_ArcaneCraftingTerminal
 	extends ThEClientPacket
@@ -44,7 +44,7 @@ public class Packet_C_ArcaneCraftingTerminal
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -64,7 +64,7 @@ public class Packet_C_ArcaneCraftingTerminal
 	/**
 	 * Creates a packet with the full list of items in the AE network.
 	 * Only send in response to a request.
-	 * 
+	 *
 	 * @param player
 	 * @param fullList
 	 */
@@ -85,13 +85,13 @@ public class Packet_C_ArcaneCraftingTerminal
 
 	/**
 	 * Creates a packet with an update to the sorting order and direction.
-	 * 
+	 *
 	 * @param player
 	 * @param order
 	 * @param direction
 	 * @return
 	 */
-	public static void sendModeChange( final EntityPlayer player, final SortOrder order, final SortDir direction,
+	public static void sendModeChange(	final EntityPlayer player, final SortOrder order, final SortDir direction,
 										final ViewItems viewMode )
 	{
 		// Create the packet
@@ -108,7 +108,7 @@ public class Packet_C_ArcaneCraftingTerminal
 
 	/**
 	 * Creates a packet with a changed network stack amount
-	 * 
+	 *
 	 * @param player
 	 * @param change
 	 */
@@ -126,7 +126,7 @@ public class Packet_C_ArcaneCraftingTerminal
 
 	/**
 	 * Forces the client to re-calculate the displayed aspect costs
-	 * 
+	 *
 	 * @return
 	 */
 	public static void updateAspectCost( final EntityPlayer player )

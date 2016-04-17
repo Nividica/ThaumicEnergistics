@@ -1,21 +1,21 @@
 package thaumicenergistics.api.grid;
 
+import appeng.api.storage.ITerminalHost;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import appeng.api.storage.ITerminalHost;
 
 /**
  * Defines the requirements for a terminal that wishes to issue AE2 crafting jobs.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public interface ICraftingIssuerHost
 	extends ITerminalHost
 {
 	/**
 	 * Gets the icon for this terminal.
-	 * 
+	 *
 	 * @return
 	 */
 	ItemStack getIcon();

@@ -10,21 +10,21 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 
 /**
  * Thaumic Energistics Core Mod.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @MCVersion("1.7.10")
 public class ThECore
 	extends DummyModContainer
 	implements IFMLLoadingPlugin
 {
-	private final ModMetadata metadata = new ModMetadata();
-
 	/**
 	 * Set to true if any classes required for golem hooks can not be transformed.
 	 */
 	public static boolean golemHooksTransformFailed = false;
+
+	private final ModMetadata metadata = new ModMetadata();
 
 	public ThECore()
 	{

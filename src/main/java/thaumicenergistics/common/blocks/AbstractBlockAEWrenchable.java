@@ -1,17 +1,17 @@
 package thaumicenergistics.common.blocks;
 
+import appeng.util.Platform;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import appeng.util.Platform;
 
 /**
  * Base class for wrenchable blocks.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class AbstractBlockAEWrenchable
 	extends BlockContainer
@@ -24,7 +24,7 @@ public abstract class AbstractBlockAEWrenchable
 
 	/**
 	 * Called when the block is right-clicked
-	 * 
+	 *
 	 * @param world
 	 * @param x
 	 * @param y
@@ -48,7 +48,7 @@ public abstract class AbstractBlockAEWrenchable
 
 	/**
 	 * Returning false will cancel onBlockActivated.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean canPlayerInteract( final EntityPlayer player )
@@ -60,7 +60,7 @@ public abstract class AbstractBlockAEWrenchable
 	 * The block was right-clicked
 	 */
 	@Override
-	public final boolean onBlockActivated( final World world, final int x, final int y, final int z, final EntityPlayer player, final int side,
+	public final boolean onBlockActivated(	final World world, final int x, final int y, final int z, final EntityPlayer player, final int side,
 											final float hitX, final float hitY, final float hitZ )
 	{
 		// Can the player interact with the block?

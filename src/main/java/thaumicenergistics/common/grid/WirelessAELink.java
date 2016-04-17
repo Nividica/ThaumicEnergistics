@@ -3,11 +3,6 @@ package thaumicenergistics.common.grid;
 import java.util.ArrayList;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumicenergistics.api.grid.IEssentiaGrid;
-import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.IGrid;
@@ -25,12 +20,17 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.DimensionalCoord;
 import appeng.tile.misc.TileSecurity;
 import appeng.tile.networking.TileWireless;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import thaumicenergistics.api.grid.IEssentiaGrid;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 
 /**
  * Provides wireless access to a ME network.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class WirelessAELink
 	implements IStorageMonitorable
@@ -75,7 +75,7 @@ public abstract class WirelessAELink
 	/**
 	 * Checks if the AP at the specified location and has the specified range,
 	 * is close enough to communicate with.
-	 * 
+	 *
 	 * @param APLocation
 	 * @param APRange
 	 * @param world
@@ -84,7 +84,7 @@ public abstract class WirelessAELink
 	 * @param z
 	 * @return
 	 */
-	private static boolean isAPInRange( final DimensionalCoord APLocation, final double APRange, final World world, final int x, final int y,
+	private static boolean isAPInRange(	final DimensionalCoord APLocation, final double APRange, final World world, final int x, final int y,
 										final int z )
 	{
 		// Is the AP in the same world?
@@ -142,7 +142,7 @@ public abstract class WirelessAELink
 
 	/**
 	 * Returns the squared distance the specified coords are from the Access Point.
-	 * 
+	 *
 	 * @param locationAP
 	 * @param x
 	 * @param y
@@ -165,7 +165,7 @@ public abstract class WirelessAELink
 
 	/**
 	 * Returns an unsorted list of AP's in range.
-	 * 
+	 *
 	 * @param world
 	 * @param x
 	 * @param y
@@ -173,7 +173,7 @@ public abstract class WirelessAELink
 	 * @param encryptionKey
 	 * @return Null on error, list of AP's in range otherwise.
 	 */
-	public static ArrayList<IWirelessAccessPoint> locateAPsInRange( final World world, final int x, final int y, final int z,
+	public static ArrayList<IWirelessAccessPoint> locateAPsInRange(	final World world, final int x, final int y, final int z,
 																	final String encryptionKey )
 	{
 		// Get the encryption key
@@ -218,7 +218,7 @@ public abstract class WirelessAELink
 
 	/**
 	 * Returns an unsorted list of AP's in range.
-	 * 
+	 *
 	 * @param player
 	 * @param encryptionKey
 	 * @return Null on error, list of AP's in range otherwise.
@@ -233,7 +233,7 @@ public abstract class WirelessAELink
 
 	/**
 	 * Checks if the AP is still active and in range.
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean isAPInRangeAndActive()
@@ -254,7 +254,7 @@ public abstract class WirelessAELink
 
 	/**
 	 * Locates the closest AP in range and links with it.
-	 * 
+	 *
 	 * @return True if AP linked with.
 	 */
 	private boolean linkWithNewAP()
@@ -315,7 +315,7 @@ public abstract class WirelessAELink
 
 	/**
 	 * Set's the access point used for communication.
-	 * 
+	 *
 	 * @param accessPoint
 	 */
 	private void setAP( final IWirelessAccessPoint accessPoint )
@@ -339,35 +339,35 @@ public abstract class WirelessAELink
 
 	/**
 	 * Return the x position of the user.
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract int getUserPositionX();
 
 	/**
 	 * Return the y position of the user.
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract int getUserPositionY();
 
 	/**
 	 * Return the z position of the user.
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract int getUserPositionZ();
 
 	/**
 	 * Return the world the user is in.
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract World getUserWorld();
 
 	/**
 	 * Is there enough local power to communicate with the AP?
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract boolean hasPowerToCommunicate();
@@ -395,7 +395,7 @@ public abstract class WirelessAELink
 
 	/**
 	 * Gets the essentia inventory.
-	 * 
+	 *
 	 * @return
 	 */
 	public IMEEssentiaMonitor getEssentiaInventory()
@@ -469,7 +469,7 @@ public abstract class WirelessAELink
 
 	/**
 	 * Checks if the AP is still connected.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isConnected()

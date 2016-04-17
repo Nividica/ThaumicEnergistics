@@ -12,9 +12,9 @@ import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
 /**
  * Central research node for all ThE research.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureThaumicEnergisticsResearch
 	extends ThEThaumcraftResearchFeature

@@ -1,16 +1,16 @@
 package thaumicenergistics.client.textures;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
 import thaumicenergistics.common.ThaumicEnergistics;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Textures for all ThE blocks.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public enum BlockTextureManager
@@ -50,7 +50,8 @@ public enum BlockTextureManager
 
 		ARCANE_ASSEMBLER (TextureTypes.Block, new String[] { "arcane.assembler.fallback" }),
 
-		KNOWLEDGE_INSCRIBER (TextureTypes.Block, new String[] { "knowledge.inscriber.side", "knowledge.inscriber.top", "knowledge.inscriber.bottom" }),
+		KNOWLEDGE_INSCRIBER (TextureTypes.Block,
+			new String[] { "knowledge.inscriber.side", "knowledge.inscriber.top", "knowledge.inscriber.bottom" }),
 
 		ESSENTIA_VIBRATION_CHAMBER (TextureTypes.Block, new String[] { "e.vibration.input", "e.vibration.face.off", "e.vibration.face.ignis",
 						"e.vibration.face.potentia" }),
@@ -64,16 +65,16 @@ public enum BlockTextureManager
 			Part;
 	}
 
+	/**
+	 * Cache of the enum values
+	 */
+	public static final BlockTextureManager[] VALUES = BlockTextureManager.values();
+
 	private TextureTypes textureType;
 
 	private String[] textureNames;
 
 	private IIcon[] textures;
-
-	/**
-	 * Cache of the enum values
-	 */
-	public static final BlockTextureManager[] VALUES = BlockTextureManager.values();
 
 	private BlockTextureManager( final TextureTypes textureType, final String[] textureNames )
 	{

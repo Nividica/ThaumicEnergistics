@@ -8,9 +8,9 @@ import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
 
 /**
  * {@link TileDistillationPatternEncoder} server-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_S_DistillationEncoder
 	extends ThEServerPacket

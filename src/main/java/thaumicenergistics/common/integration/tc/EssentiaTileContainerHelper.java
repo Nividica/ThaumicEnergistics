@@ -3,6 +3,8 @@ package thaumicenergistics.common.integration.tc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import appeng.api.config.Actionable;
+import appeng.api.storage.data.IAEFluidStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
@@ -16,14 +18,12 @@ import thaumicenergistics.common.fluids.GaseousEssentia;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
-import appeng.api.config.Actionable;
-import appeng.api.storage.data.IAEFluidStack;
 
 /**
  * Helper class for working with Thaumcraft TileEntity essentia containers.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public final class EssentiaTileContainerHelper
 {
@@ -40,7 +40,7 @@ public final class EssentiaTileContainerHelper
 	/**
 	 * Extracts essentia from a container based on the specified fluid stack
 	 * type and amount.
-	 * 
+	 *
 	 * @param container
 	 * @param request
 	 * @param mode
@@ -87,7 +87,7 @@ public final class EssentiaTileContainerHelper
 
 	/**
 	 * Extracts the specified aspect and amount from the container.
-	 * 
+	 *
 	 * @param container
 	 * @param amountToDrain
 	 * @param aspectToDrain
@@ -138,7 +138,7 @@ public final class EssentiaTileContainerHelper
 
 	/**
 	 * Returns the aspect of the essentia in the container.
-	 * 
+	 *
 	 * @param container
 	 * @return
 	 */
@@ -191,7 +191,7 @@ public final class EssentiaTileContainerHelper
 
 	/**
 	 * Gets the list of aspects in the container.
-	 * 
+	 *
 	 * @param container
 	 * @return
 	 */
@@ -228,7 +228,7 @@ public final class EssentiaTileContainerHelper
 
 	/**
 	 * Returns the capacity of the specified container.
-	 * 
+	 *
 	 * @param container
 	 * @return Capacity or -1 if unknown capacity.
 	 */
@@ -256,7 +256,7 @@ public final class EssentiaTileContainerHelper
 	/**
 	 * Attempts to inject essentia into the container.
 	 * Returns the amount that was injected.
-	 * 
+	 *
 	 * @param container
 	 * @param amountToFill
 	 * @param aspectToFill
@@ -316,7 +316,7 @@ public final class EssentiaTileContainerHelper
 	/**
 	 * Attempts to inject the fluid into the container.
 	 * Returns the amount that was injected in milibuckets.
-	 * 
+	 *
 	 * @param container
 	 * @param fluidStack
 	 * @param mode

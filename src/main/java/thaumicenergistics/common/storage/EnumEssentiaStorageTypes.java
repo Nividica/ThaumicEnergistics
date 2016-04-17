@@ -7,9 +7,9 @@ import thaumicenergistics.common.registries.ThEStrings;
 
 /**
  * The types of essentia storage.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public enum EnumEssentiaStorageTypes
 {
@@ -23,6 +23,21 @@ public enum EnumEssentiaStorageTypes
 	 * Array of values whose index matches the types index.
 	 */
 	public static final EnumEssentiaStorageTypes fromIndex[];
+
+	/**
+	 * This is to ensure that the index can be independent of the ordinal.
+	 * Since the data is saved based on index, not ordinal.
+	 */
+	static
+	{
+		// Setup the array
+		fromIndex = new EnumEssentiaStorageTypes[5];
+		fromIndex[Type_1K.index] = Type_1K;
+		fromIndex[Type_4K.index] = Type_4K;
+		fromIndex[Type_16K.index] = Type_16K;
+		fromIndex[Type_64K.index] = Type_64K;
+		fromIndex[Type_Creative.index] = Type_Creative;
+	}
 
 	/**
 	 * Index of the type.
@@ -65,22 +80,7 @@ public enum EnumEssentiaStorageTypes
 	 */
 	public final ThEStrings componentName;
 
-	/**
-	 * This is to ensure that the index can be independent of the ordinal.
-	 * Since the data is saved based on index, not ordinal.
-	 */
-	static
-	{
-		// Setup the array
-		fromIndex = new EnumEssentiaStorageTypes[5];
-		fromIndex[Type_1K.index] = Type_1K;
-		fromIndex[Type_4K.index] = Type_4K;
-		fromIndex[Type_16K.index] = Type_16K;
-		fromIndex[Type_64K.index] = Type_64K;
-		fromIndex[Type_Creative.index] = Type_Creative;
-	}
-
-	private EnumEssentiaStorageTypes( final int index, final int capacity, final int maxStoredTypes,
+	private EnumEssentiaStorageTypes(	final int index, final int capacity, final int maxStoredTypes,
 										final String suffix, final EnumRarity rarity, final double aeDrain,
 										final ThEStrings cellName, final ThEStrings componentName )
 	{
@@ -96,7 +96,7 @@ public enum EnumEssentiaStorageTypes
 
 	/**
 	 * Returns an empty cell for this type.
-	 * 
+	 *
 	 * @return
 	 */
 	public ItemStack getCell()
@@ -107,7 +107,7 @@ public enum EnumEssentiaStorageTypes
 	/**
 	 * Returns a storage component for this type.
 	 * The creative type has no component, null is returned.
-	 * 
+	 *
 	 * @param stackSize
 	 * @return
 	 */

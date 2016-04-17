@@ -1,5 +1,7 @@
 package thaumicenergistics.common.container;
 
+import appeng.api.implementations.items.IUpgradeModule;
+import appeng.container.slot.SlotInaccessible;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -11,14 +13,12 @@ import thaumicenergistics.common.container.slot.SlotArmor;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.implementations.items.IUpgradeModule;
-import appeng.container.slot.SlotInaccessible;
 
 /**
  * {@link TileArcaneAssembler} container.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ContainerArcaneAssembler
 	extends ContainerWithNetworkTool
@@ -116,9 +116,9 @@ public class ContainerArcaneAssembler
 				int invIndex = TileArcaneAssembler.PATTERN_SLOT_INDEX + index;
 
 				// Add the slot
-				this.addSlotToContainer( this.patternSlots[index]
-								= new SlotInaccessible( assemblerInventory, invIndex, ContainerArcaneAssembler.PATTERN_SLOT_X + ( 18 * col ),
-												ContainerArcaneAssembler.PATTERN_SLOT_Y + ( 18 * row ) ) );
+				this.addSlotToContainer( this.patternSlots[index] = new SlotInaccessible( assemblerInventory, invIndex,
+								ContainerArcaneAssembler.PATTERN_SLOT_X + ( 18 * col ),
+								ContainerArcaneAssembler.PATTERN_SLOT_Y + ( 18 * row ) ) );
 			}
 		}
 
@@ -145,7 +145,7 @@ public class ContainerArcaneAssembler
 
 	/**
 	 * Attempts to merge the itemstack with the armor slots.
-	 * 
+	 *
 	 * @param slotStack
 	 * @return
 	 */
@@ -238,7 +238,8 @@ public class ContainerArcaneAssembler
 			}
 			// Was the slot clicked the KCore slot or armor slots?
 			else if( ( this.kCoreSlot.slotNumber == slotNumber ) ||
-							( ( slotNumber >= this.discountSlots[0].slotNumber ) && ( slotNumber <= this.discountSlots[ContainerArcaneAssembler.DISCOUNT_ARMOR_COUNT - 1].slotNumber ) ) )
+							( ( slotNumber >= this.discountSlots[0].slotNumber ) &&
+											( slotNumber <= this.discountSlots[ContainerArcaneAssembler.DISCOUNT_ARMOR_COUNT - 1].slotNumber ) ) )
 			{
 				// Attempt to merge with player hotbar
 				didMerge = this.mergeSlotWithHotbarInventory( slotStack );

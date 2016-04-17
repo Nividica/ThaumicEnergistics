@@ -1,17 +1,17 @@
 package thaumicenergistics.common.inventory;
 
+import appeng.items.misc.ItemEncodedPattern;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 import thaumicenergistics.common.items.ItemCraftingAspect;
-import appeng.items.misc.ItemEncodedPattern;
 
 /**
  * Handles {@link ItemEncodedPattern} items with a distillation encodeing.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class HandlerDistillationPattern
 {
@@ -76,7 +76,7 @@ public class HandlerDistillationPattern
 	/**
 	 * Returns the input of the pattern.
 	 * May be null.
-	 * 
+	 *
 	 * @return
 	 */
 	public ItemStack getInput()
@@ -87,7 +87,7 @@ public class HandlerDistillationPattern
 	/**
 	 * Returns the output of the pattern.
 	 * May be null.
-	 * 
+	 *
 	 * @return
 	 */
 	public ItemStack getOutput()
@@ -97,7 +97,7 @@ public class HandlerDistillationPattern
 
 	/**
 	 * Returns true if the current items are valid.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isValid()
@@ -107,7 +107,7 @@ public class HandlerDistillationPattern
 
 	/**
 	 * Loads the values from the pattern
-	 * 
+	 *
 	 * @param pattern
 	 */
 	public void readPattern( final ItemStack pattern )
@@ -165,7 +165,7 @@ public class HandlerDistillationPattern
 
 	/**
 	 * Sets the input.
-	 * 
+	 *
 	 * @param inputItem
 	 */
 	public void setInputItem( final ItemStack inputItem )
@@ -177,7 +177,7 @@ public class HandlerDistillationPattern
 	/**
 	 * Sets the output.
 	 * Must be a crafting aspect.
-	 * 
+	 *
 	 * @param outputItem
 	 */
 	public void setOutputItem( final ItemStack outputItem )
@@ -201,7 +201,7 @@ public class HandlerDistillationPattern
 	/**
 	 * Sets the input and output items.
 	 * Returns if the recipe is valid or not.
-	 * 
+	 *
 	 * @param inputItem
 	 * @param outputItem
 	 * @return

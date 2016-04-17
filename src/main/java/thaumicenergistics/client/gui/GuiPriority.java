@@ -1,11 +1,15 @@
 package thaumicenergistics.client.gui;
 
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+import appeng.core.localization.GuiText;
+import appeng.helpers.IPriorityHost;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
 import thaumicenergistics.client.gui.buttons.GuiButtonAETab;
 import thaumicenergistics.client.gui.widget.DigitTextField;
@@ -15,16 +19,12 @@ import thaumicenergistics.common.container.ContainerPriority;
 import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.network.packet.server.Packet_S_Priority;
 import thaumicenergistics.common.parts.ThEPartBase;
-import appeng.core.localization.GuiText;
-import appeng.helpers.IPriorityHost;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Gui for the priority window
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiPriority
@@ -68,7 +68,7 @@ public class GuiPriority
 
 		/**
 		 * Creates the button definition
-		 * 
+		 *
 		 * @param buttonWidth
 		 * @param amount
 		 */
@@ -86,7 +86,7 @@ public class GuiPriority
 
 		/**
 		 * Creates a GUI button based of this definition
-		 * 
+		 *
 		 * @param ID
 		 * @param xPosition
 		 * @param yPosition
@@ -204,7 +204,7 @@ public class GuiPriority
 
 	/**
 	 * Create the gui.
-	 * 
+	 *
 	 * @param host
 	 * @param player
 	 */
@@ -298,7 +298,7 @@ public class GuiPriority
 		// Was the priority button clicked?
 		if( button.id == GuiPriority.PART_SWITCH_BUTTON_ID )
 		{
-			// Get the storage buses host 
+			// Get the storage buses host
 			TileEntity host = this.part.getHostTile();
 
 			// Ask the server to change to the priority gui
@@ -392,7 +392,7 @@ public class GuiPriority
 
 	/**
 	 * Called when the server sends the priority.
-	 * 
+	 *
 	 * @param priority
 	 */
 	public void onServerSendPriority( final int priority )

@@ -2,20 +2,20 @@ package thaumicenergistics.common.parts;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import appeng.api.config.Upgrades;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.registries.ThEStrings;
-import appeng.api.config.Upgrades;
 
 /**
  * Enumeration of all ThE cable parts.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public enum AEPartsEnum
 {
@@ -39,6 +39,11 @@ public enum AEPartsEnum
 
 		EssentiaConversionMonitor (ThEStrings.Part_EssentiaConversionMonitor, PartEssentiaConversionMonitor.class);
 
+	/**
+	 * Cached enum values
+	 */
+	public static final AEPartsEnum[] VALUES = AEPartsEnum.values();
+
 	private ThEStrings unlocalizedName;
 
 	private Class<? extends ThEPartBase> partClass;
@@ -46,11 +51,6 @@ public enum AEPartsEnum
 	private String groupName;
 
 	private Map<Upgrades, Integer> upgrades = new HashMap<Upgrades, Integer>();
-
-	/**
-	 * Cached enum values
-	 */
-	public static final AEPartsEnum[] VALUES = AEPartsEnum.values();
 
 	private AEPartsEnum( final ThEStrings unlocalizedName, final Class<? extends ThEPartBase> partClass )
 	{
@@ -69,7 +69,7 @@ public enum AEPartsEnum
 		this.groupName = groupName;
 	}
 
-	private AEPartsEnum( final ThEStrings unlocalizedName, final Class<? extends ThEPartBase> partClass, final String groupName,
+	private AEPartsEnum(	final ThEStrings unlocalizedName, final Class<? extends ThEPartBase> partClass, final String groupName,
 							final Pair<Upgrades, Integer> ... upgrades )
 	{
 		this( unlocalizedName, partClass, groupName );
@@ -89,7 +89,7 @@ public enum AEPartsEnum
 
 	/**
 	 * Gets an AEPart based on an item stacks damage value.
-	 * 
+	 *
 	 * @param damageValue
 	 * @return
 	 */
@@ -138,7 +138,7 @@ public enum AEPartsEnum
 
 	/**
 	 * Gets the group associated with this part.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getGroupName()
@@ -153,7 +153,7 @@ public enum AEPartsEnum
 
 	/**
 	 * Gets the class associated with this part.
-	 * 
+	 *
 	 * @return
 	 */
 	public Class<? extends ThEPartBase> getPartClass()
@@ -168,7 +168,7 @@ public enum AEPartsEnum
 
 	/**
 	 * Gets the unlocalized name for this part.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getUnlocalizedName()

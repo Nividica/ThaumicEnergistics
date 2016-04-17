@@ -1,24 +1,24 @@
 package thaumicenergistics.client.gui.widget;
 
+import org.lwjgl.opengl.GL11;
+import appeng.core.AEConfig;
+import appeng.util.ReadableNumberConverter;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSelectorGui;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.ThEGuiHelper;
 import thaumicenergistics.common.utils.ThEUtils;
-import appeng.core.AEConfig;
-import appeng.util.ReadableNumberConverter;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Widget displaying an aspect and if it is selected.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class WidgetAspectSelector
@@ -50,7 +50,7 @@ public class WidgetAspectSelector
 	 */
 	protected boolean hideAmount = false;
 
-	public WidgetAspectSelector( final IAspectSelectorGui selectorGui, final IAspectStack stack, final int xPos, final int yPos,
+	public WidgetAspectSelector(	final IAspectSelectorGui selectorGui, final IAspectStack stack, final int xPos, final int yPos,
 									final EntityPlayer player )
 	{
 		// Call super
@@ -59,7 +59,7 @@ public class WidgetAspectSelector
 
 	/**
 	 * Draws the selector outline.
-	 * 
+	 *
 	 * @param posX
 	 * @param posY
 	 * @param width
@@ -74,7 +74,7 @@ public class WidgetAspectSelector
 		// Ending X point of the right line
 		int rightXEnd = posX + width;
 
-		// Beginning X point of the right line 
+		// Beginning X point of the right line
 		int rightXBegin = rightXEnd - thickness;
 
 		// Ending X point of the left line
@@ -123,7 +123,7 @@ public class WidgetAspectSelector
 
 	/**
 	 * Gets the background gradient color based on the current time.
-	 * 
+	 *
 	 * @return
 	 */
 	private int getBackgroundColor()
@@ -186,7 +186,7 @@ public class WidgetAspectSelector
 		// Does the selected aspect match the widgets?
 		if( selectedAspect == this.getAspect() )
 		{
-			// Draw the selection box 
+			// Draw the selection box
 			this.drawHollowRectWithCorners( this.xPosition, this.yPosition,
 				ThEWidget.WIDGET_SIZE, ThEWidget.WIDGET_SIZE,
 				this.getBackgroundColor(), WidgetAspectSelector.borderThickness );
@@ -310,7 +310,7 @@ public class WidgetAspectSelector
 
 	/**
 	 * Sets whether or not to show the amount.
-	 * 
+	 *
 	 * @param hide
 	 * @return
 	 */

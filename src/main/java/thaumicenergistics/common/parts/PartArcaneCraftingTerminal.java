@@ -2,6 +2,28 @@ package thaumicenergistics.common.parts;
 
 import java.util.ArrayList;
 import java.util.List;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AEColor;
+import appeng.api.util.IConfigManager;
+import appeng.items.storage.ItemViewCell;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,34 +51,12 @@ import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
-import appeng.api.implementations.items.IMemoryCard;
-import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.PartItemStack;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.util.AEColor;
-import appeng.api.util.IConfigManager;
-import appeng.items.storage.ItemViewCell;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Allows crafting arcane items while viewing the items in the network.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class PartArcaneCraftingTerminal
 	extends ThERotateablePart
@@ -163,7 +163,7 @@ public class PartArcaneCraftingTerminal
 
 	/**
 	 * Validates that a slot is inbounds of the inventory.
-	 * 
+	 *
 	 * @param slotIndex
 	 * @return
 	 */
@@ -176,7 +176,7 @@ public class PartArcaneCraftingTerminal
 	/**
 	 * Notifies all listeners that our inventory contents
 	 * have changed.
-	 * 
+	 *
 	 * @param slotIndex
 	 */
 	private void notifyListeners( final int slotIndex )
@@ -411,7 +411,7 @@ public class PartArcaneCraftingTerminal
 
 	/**
 	 * Returns the stored sorting direction.
-	 * 
+	 *
 	 * @return
 	 */
 	public SortDir getSortingDirection()
@@ -421,7 +421,7 @@ public class PartArcaneCraftingTerminal
 
 	/**
 	 * Returns the stored sorting order.
-	 * 
+	 *
 	 * @return
 	 */
 	public SortOrder getSortingOrder()
@@ -471,7 +471,7 @@ public class PartArcaneCraftingTerminal
 
 	/**
 	 * Returns the view mode.
-	 * 
+	 *
 	 * @return
 	 */
 	public ViewItems getViewMode()
@@ -481,7 +481,7 @@ public class PartArcaneCraftingTerminal
 
 	/**
 	 * Gets the world this inventory is in.
-	 * 
+	 *
 	 * @return
 	 */
 	public World getWorldObj()
@@ -706,7 +706,7 @@ public class PartArcaneCraftingTerminal
 
 	/**
 	 * Adds a listener to the list if not already added.
-	 * 
+	 *
 	 * @param container
 	 */
 	public void registerListener( final ContainerPartArcaneCraftingTerminal container )
@@ -722,7 +722,7 @@ public class PartArcaneCraftingTerminal
 
 	/**
 	 * Removes a listener from the list.
-	 * 
+	 *
 	 * @param container
 	 */
 	public void removeListener( final ContainerPartArcaneCraftingTerminal container )
@@ -809,7 +809,7 @@ public class PartArcaneCraftingTerminal
 	/**
 	 * Sets the contents of the specified inventory slot and
 	 * updates the listeners.
-	 * 
+	 *
 	 * @param slotIndex
 	 * @param slotStack
 	 * @return
@@ -827,7 +827,7 @@ public class PartArcaneCraftingTerminal
 	/**
 	 * Sets the contents of the specified inventory slot without
 	 * updating listeners.
-	 * 
+	 *
 	 * @param slotIndex
 	 * @param slotStack
 	 * @return
@@ -848,7 +848,7 @@ public class PartArcaneCraftingTerminal
 
 	/**
 	 * Sets the sorting order and direction
-	 * 
+	 *
 	 * @param order
 	 * @param dir
 	 */
@@ -866,7 +866,7 @@ public class PartArcaneCraftingTerminal
 	/**
 	 * Swaps the armor stored in the ACT with what the specified player is
 	 * wearing.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void swapStoredArmor( final EntityPlayer player )

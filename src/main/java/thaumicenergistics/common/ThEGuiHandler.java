@@ -1,5 +1,12 @@
 package thaumicenergistics.common;
 
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.container.AEBaseContainer;
+import appeng.container.implementations.ContainerCraftAmount;
+import appeng.container.implementations.ContainerCraftConfirm;
+import appeng.helpers.IPriorityHost;
+import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -9,19 +16,12 @@ import thaumicenergistics.client.gui.*;
 import thaumicenergistics.common.container.*;
 import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.common.parts.ThEPartBase;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.container.AEBaseContainer;
-import appeng.container.implementations.ContainerCraftAmount;
-import appeng.container.implementations.ContainerCraftConfirm;
-import appeng.helpers.IPriorityHost;
-import cpw.mods.fml.common.network.IGuiHandler;
 
 /**
  * Handles ThE GUI launching.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ThEGuiHandler
 	implements IGuiHandler
@@ -94,7 +94,7 @@ public class ThEGuiHandler
 
 	/**
 	 * Gets the crafting issuer host or null.
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -125,7 +125,7 @@ public class ThEGuiHandler
 
 	/**
 	 * Gets the AE part at the specified location.
-	 * 
+	 *
 	 * @param tileSide
 	 * @param world
 	 * @param x
@@ -150,7 +150,7 @@ public class ThEGuiHandler
 
 	/**
 	 * Gets the sided part for the GUI ID.
-	 * 
+	 *
 	 * @param ID
 	 * @param world
 	 * @param x
@@ -166,7 +166,7 @@ public class ThEGuiHandler
 
 	/**
 	 * Get the gui element for the AE part at the specified location
-	 * 
+	 *
 	 * @param tileSide
 	 * @param player
 	 * @param world
@@ -176,7 +176,7 @@ public class ThEGuiHandler
 	 * @param isServerSide
 	 * @return
 	 */
-	private static Object getPartGuiElement( final ForgeDirection tileSide, final EntityPlayer player, final World world, final int x, final int y,
+	private static Object getPartGuiElement(	final ForgeDirection tileSide, final EntityPlayer player, final World world, final int x, final int y,
 												final int z, final boolean isServerSide )
 	{
 		// Get the part
@@ -201,7 +201,7 @@ public class ThEGuiHandler
 
 	/**
 	 * Returns true if the specified ID is within the base range.
-	 * 
+	 *
 	 * @param BaseID
 	 * @param ID
 	 * @return
@@ -214,7 +214,7 @@ public class ThEGuiHandler
 	/**
 	 * Helper function to properly generate a GUI ID that
 	 * includes a forge direction.
-	 * 
+	 *
 	 * @param ID
 	 * @param side
 	 * @return
@@ -226,7 +226,7 @@ public class ThEGuiHandler
 
 	/**
 	 * Launches a non AE part gui.
-	 * 
+	 *
 	 * @param ID
 	 * @param player
 	 * @param world
@@ -241,7 +241,7 @@ public class ThEGuiHandler
 
 	/**
 	 * Launches a non AE part gui with the specified extra data.
-	 * 
+	 *
 	 * @param ID
 	 * @param player
 	 * @param world
@@ -250,7 +250,7 @@ public class ThEGuiHandler
 	 * @param z
 	 * @param extraData
 	 */
-	public static void launchGui( final int ID, final EntityPlayer player, final World world, final int x, final int y, final int z,
+	public static void launchGui(	final int ID, final EntityPlayer player, final World world, final int x, final int y, final int z,
 									final Object[] extraData )
 	{
 		ThEGuiHandler.extraData = extraData;
@@ -260,7 +260,7 @@ public class ThEGuiHandler
 
 	/**
 	 * Launches an AE part gui
-	 * 
+	 *
 	 * @param part
 	 * @param player
 	 * @param world
@@ -300,31 +300,31 @@ public class ThEGuiHandler
 		case ThEGuiHandler.ESSENTIA_CELL_ID:
 			return GuiEssentiaCellTerminal.NewEssentiaCellGui( player, world, x, y, z );
 
-			// Is this the cell workbench?
+		// Is this the cell workbench?
 		case ThEGuiHandler.CELL_WORKBENCH_ID:
 			return new GuiEssentiaCellWorkbench( player, world, x, y, z );
 
-			// Is this the wireless gui?
+		// Is this the wireless gui?
 		case ThEGuiHandler.WIRELESS_TERMINAL_ID:
 			return GuiEssentiaCellTerminal.NewWirelessEssentiaTerminalGui( player );
 
-			// Is this the arcane assembler?
+		// Is this the arcane assembler?
 		case ThEGuiHandler.ARCANE_ASSEMBLER_ID:
 			return new GuiArcaneAssembler( player, world, x, y, z );
 
-			// Is this the knowledge inscriber?
+		// Is this the knowledge inscriber?
 		case ThEGuiHandler.KNOWLEDGE_INSCRIBER:
 			return new GuiKnowledgeInscriber( player, world, x, y, z );
 
-			// Vibration chamber?
+		// Vibration chamber?
 		case ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER:
 			return new GuiEssentiaVibrationChamber( player, world, x, y, z );
 
-			// Distillation encoder?
+		// Distillation encoder?
 		case ThEGuiHandler.DISTILLATION_ENCODER:
 			return new GuiDistillationPatternEncoder( player, world, x, y, z );
 
-			// AE2 Autocrafting Amount?
+		// AE2 Autocrafting Amount?
 		case ThEGuiHandler.AUTO_CRAFTING_AMOUNT:
 			ICraftingIssuerHost amountHost = ThEGuiHandler.getCraftingIssuerHost( player );
 			if( amountHost != null )
@@ -333,7 +333,7 @@ public class ThEGuiHandler
 			}
 			return null;
 
-			// AE2 Autocrafting Confirm?
+		// AE2 Autocrafting Confirm?
 		case ThEGuiHandler.AUTO_CRAFTING_CONFIRM:
 			ICraftingIssuerHost confirmHost = ThEGuiHandler.getCraftingIssuerHost( player );
 			if( confirmHost != null )
@@ -387,32 +387,32 @@ public class ThEGuiHandler
 		case ThEGuiHandler.ESSENTIA_CELL_ID:
 			return new ContainerEssentiaCell( player, world, x, y, z );
 
-			// Is this the cell workbench?
+		// Is this the cell workbench?
 		case ThEGuiHandler.CELL_WORKBENCH_ID:
 			return new ContainerEssentiaCellWorkbench( player, world, x, y, z );
 
-			// Is this the wireless gui?
+		// Is this the wireless gui?
 		case ThEGuiHandler.WIRELESS_TERMINAL_ID:
 			HandlerWirelessEssentiaTerminal handler = (HandlerWirelessEssentiaTerminal)ThEGuiHandler.extraData[0];
 			return new ContainerWirelessEssentiaTerminal( player, handler );
 
-			// Is this the arcane assembler?
+		// Is this the arcane assembler?
 		case ThEGuiHandler.ARCANE_ASSEMBLER_ID:
 			return new ContainerArcaneAssembler( player, world, x, y, z );
 
-			// Is this the knowledge inscriber?
+		// Is this the knowledge inscriber?
 		case ThEGuiHandler.KNOWLEDGE_INSCRIBER:
 			return new ContainerKnowledgeInscriber( player, world, x, y, z );
 
-			// Vibration chamber?
+		// Vibration chamber?
 		case ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER:
 			return new ContainerEssentiaVibrationChamber( player, world, x, y, z );
 
-			// Distillation encoder?
+		// Distillation encoder?
 		case ThEGuiHandler.DISTILLATION_ENCODER:
 			return new ContainerDistillationPatternEncoder( player, world, x, y, z );
 
-			// AE2 Autocrafting Amount?
+		// AE2 Autocrafting Amount?
 		case ThEGuiHandler.AUTO_CRAFTING_AMOUNT:
 			ICraftingIssuerHost amountHost = ThEGuiHandler.getCraftingIssuerHost( player );
 			if( amountHost != null )
@@ -421,7 +421,7 @@ public class ThEGuiHandler
 			}
 			return null;
 
-			// AE2 Autocrafting Confirm?
+		// AE2 Autocrafting Confirm?
 		case ThEGuiHandler.AUTO_CRAFTING_CONFIRM:
 			ICraftingIssuerHost confirmHost = ThEGuiHandler.getCraftingIssuerHost( player );
 			if( confirmHost != null )

@@ -7,9 +7,9 @@ import thaumicenergistics.common.network.NetworkHandler;
 
 /**
  * Priority GUI client-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_S_Priority
 	extends ThEServerPacket
@@ -22,7 +22,7 @@ public class Packet_S_Priority
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -41,7 +41,7 @@ public class Packet_S_Priority
 
 	/**
 	 * Asks the server to set the priority to the specified value.
-	 * 
+	 *
 	 * @param priority
 	 * @param player
 	 * @return
@@ -59,7 +59,7 @@ public class Packet_S_Priority
 
 	/**
 	 * Asks the server to adjust the priority by the specified value.
-	 * 
+	 *
 	 * @param priority
 	 * @param player
 	 * @return

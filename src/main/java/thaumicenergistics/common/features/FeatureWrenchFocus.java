@@ -1,5 +1,7 @@
 package thaumicenergistics.common.features;
 
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -12,14 +14,12 @@ import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 
 /**
  * {@link ItemFocusAEWrench} featire.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureWrenchFocus
 	extends ThEThaumcraftResearchFeature
@@ -70,7 +70,8 @@ public class FeatureWrenchFocus
 		wrenchAspects.add( Aspect.AIR, 10 );
 		wrenchAspects.add( Aspect.FIRE, 10 );
 		RecipeRegistry.ITEM_WRENCH_FOCUS = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey, WrenchFocus,
-			wrenchAspects, new Object[] { "ANF", "NWN", "FNA", 'A', cdi.AirShard, 'F', cdi.FireShard, 'N', cdi.NetherQuartz, 'W', cdi.CertusWrench } );
+			wrenchAspects,
+			new Object[] { "ANF", "NWN", "FNA", 'A', cdi.AirShard, 'F', cdi.FireShard, 'N', cdi.NetherQuartz, 'W', cdi.CertusWrench } );
 	}
 
 	@Override

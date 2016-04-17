@@ -1,7 +1,5 @@
 package thaumicenergistics.common.inventory;
 
-import net.minecraft.tileentity.TileEntity;
-import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
@@ -22,12 +20,14 @@ import appeng.me.storage.MEInventoryHandler;
 import appeng.parts.misc.PartInterface;
 import appeng.tile.misc.TileInterface;
 import appeng.util.Platform;
+import net.minecraft.tileentity.TileEntity;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
 /**
  * Handles interaction between {@link PartEssentiaStorageBus} and {@link TileInterface}, providing sub-networking.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 class HandlerEssentiaStorageBusInterface
 	extends HandlerEssentiaStorageBusBase
@@ -56,7 +56,7 @@ class HandlerEssentiaStorageBusInterface
 
 	/**
 	 * Creates the interface handler.
-	 * 
+	 *
 	 * @param part
 	 */
 	public HandlerEssentiaStorageBusInterface( final PartEssentiaStorageBus part )

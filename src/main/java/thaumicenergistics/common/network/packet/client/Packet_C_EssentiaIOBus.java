@@ -1,5 +1,8 @@
 package thaumicenergistics.common.network.packet.client;
 
+import appeng.api.config.RedstoneMode;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -9,15 +12,12 @@ import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.parts.PartEssentiaExportBus;
 import thaumicenergistics.common.parts.PartEssentiaImportBus;
 import thaumicenergistics.common.registries.EnumCache;
-import appeng.api.config.RedstoneMode;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartEssentiaImportBus}, {@link PartEssentiaExportBus} client-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_C_EssentiaIOBus
 	extends ThEClientPacket
@@ -39,7 +39,7 @@ public class Packet_C_EssentiaIOBus
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -56,7 +56,7 @@ public class Packet_C_EssentiaIOBus
 		return packet;
 	}
 
-	public static void sendBusState( final EntityPlayer player, final RedstoneMode redstoneMode, final byte filterSize,
+	public static void sendBusState(	final EntityPlayer player, final RedstoneMode redstoneMode, final byte filterSize,
 										final boolean redstoneControlled )
 	{
 		Packet_C_EssentiaIOBus packet = newPacket( player, MODE_SEND_FULL_UPDATE );
@@ -76,7 +76,7 @@ public class Packet_C_EssentiaIOBus
 
 	/**
 	 * Create a packet to update the clients filter size.
-	 * 
+	 *
 	 * @param player
 	 * @param filterSize
 	 * @return
@@ -95,7 +95,7 @@ public class Packet_C_EssentiaIOBus
 	/**
 	 * Create a packet to update the client whether the bus is controlled
 	 * by redstone or not.
-	 * 
+	 *
 	 * @param player
 	 * @param redstoneControlled
 	 * @return
@@ -113,7 +113,7 @@ public class Packet_C_EssentiaIOBus
 
 	/**
 	 * Create a packet to update the clients redstone mode.
-	 * 
+	 *
 	 * @param player
 	 * @param redstoneMode
 	 * @return
@@ -131,7 +131,7 @@ public class Packet_C_EssentiaIOBus
 
 	/**
 	 * Sends an update the client informing it of the void mode.
-	 * 
+	 *
 	 * @param player
 	 * @param isVoidAllowed
 	 * @return

@@ -1,13 +1,13 @@
 package thaumicenergistics.common.items;
 
 import java.util.List;
+import org.lwjgl.input.Keyboard;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
-import org.lwjgl.input.Keyboard;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumicenergistics.api.items.IRestrictedEssentiaContainerItem;
@@ -19,9 +19,9 @@ import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
 
 /**
  * {@link TileEssentiaVibrationChamber} item.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ItemBlockEssentiaVibrationChamber
 	extends ItemBlock
@@ -34,7 +34,7 @@ public class ItemBlockEssentiaVibrationChamber
 
 	/**
 	 * Gets the aspect stack from the EVC item.
-	 * 
+	 *
 	 * @param evcStack
 	 * @return AspectStack or null
 	 */

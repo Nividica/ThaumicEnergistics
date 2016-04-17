@@ -8,9 +8,9 @@ import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
 
 /**
  * {@link TileKnowledgeInscriber} server-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_S_KnowledgeInscriber
 	extends ThEServerPacket

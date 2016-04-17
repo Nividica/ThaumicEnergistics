@@ -2,6 +2,15 @@ package thaumicenergistics.common.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
+import appeng.api.config.ViewItems;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.ISaveProvider;
+import appeng.api.storage.StorageChannel;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IItemList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
@@ -14,21 +23,12 @@ import thaumicenergistics.common.items.ItemEssentiaCell;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.ViewItems;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
 
 /**
  * Handles a non creative {@link ItemEssentiaCell}
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class HandlerItemEssentiaCell
 	implements IMEInventoryHandler<IAEFluidStack>
@@ -142,7 +142,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Attempts to add the essentia to the cell
-	 * 
+	 *
 	 * @param aspect
 	 * @param Amount
 	 * @return Amount not stored
@@ -201,7 +201,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Attempts to extract essentia from the cell.
-	 * 
+	 *
 	 * @param aspect
 	 * @param amount
 	 * @param mode
@@ -252,7 +252,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Finds the first matching, or empty slot and return its index.
-	 * 
+	 *
 	 * @param aspect
 	 * @return -1 if no match or empty slot found
 	 */
@@ -405,7 +405,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Synchronizes the data tag to the changed slot.
-	 * 
+	 *
 	 * @param slotIndex
 	 * @param fluidStack
 	 */
@@ -438,7 +438,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Adds an aspect to the cells partitioning.
-	 * 
+	 *
 	 * @param aspect
 	 */
 	public boolean addAspectToPartitionList( final Aspect aspect )
@@ -602,7 +602,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Convenience function for determining how many bytes are free.
-	 * 
+	 *
 	 * @return
 	 */
 	public long getFreeBytes()
@@ -612,7 +612,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Gets the list of aspects this cell has been partitioned for.
-	 * 
+	 *
 	 * @return
 	 */
 	public ArrayList<Aspect> getPartitionAspects()
@@ -637,7 +637,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Gets the stored sorting mode.
-	 * 
+	 *
 	 * @return
 	 */
 	public AspectStackComparatorMode getSortingMode()
@@ -647,7 +647,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Gets a list of the stored essentia on this cell.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<IAspectStack> getStoredEssentia()
@@ -669,7 +669,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Total number of bytes the cell can hold.
-	 * 
+	 *
 	 * @return
 	 */
 	public long getTotalBytes()
@@ -679,7 +679,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Total number of types the cell can hold.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getTotalTypes()
@@ -689,7 +689,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Returns how many bytes are used.
-	 * 
+	 *
 	 * @return
 	 */
 	public long getUsedBytes()
@@ -699,7 +699,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Returns how many types are used.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getUsedTypes()
@@ -722,7 +722,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Gets the view mode.
-	 * 
+	 *
 	 * @return
 	 */
 	public ViewItems getViewMode()
@@ -792,7 +792,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Is the cell being handled a creative cell?
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isCreative()
@@ -802,7 +802,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Returns true if the cell is partitioned.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isPartitioned()
@@ -871,7 +871,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Removes an aspect from the cells partitioning.
-	 * 
+	 *
 	 * @param aspect
 	 */
 	public boolean removeAspectFromPartitionList( final Aspect aspect )
@@ -890,7 +890,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Replaces one aspect with another in the partition list.
-	 * 
+	 *
 	 * @param originalAspect
 	 * @param newAspect
 	 */
@@ -916,7 +916,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Sets the stored sorting mode.
-	 * 
+	 *
 	 * @param sortMode
 	 */
 	public void setSortingMode( final AspectStackComparatorMode sortMode )
@@ -933,7 +933,7 @@ public class HandlerItemEssentiaCell
 
 	/**
 	 * Sets the view mode.
-	 * 
+	 *
 	 * @param viewMode
 	 */
 	public void setViewMode( final ViewItems viewMode )
@@ -952,7 +952,7 @@ public class HandlerItemEssentiaCell
 	 * Valid for pass 1 if partitioned or has stored essentia.
 	 * essentia.
 	 * Valid for pass 2 if not partitioned and empty.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override

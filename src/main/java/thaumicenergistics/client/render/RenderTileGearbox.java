@@ -1,5 +1,8 @@
 package thaumicenergistics.client.render;
 
+import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -8,19 +11,16 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.render.model.ModelGearbox;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileGearBox;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Renders the {@link TileGearBox}
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class RenderTileGearbox
@@ -44,7 +44,7 @@ public class RenderTileGearbox
 
 	/**
 	 * Renders the gearbox.
-	 * 
+	 *
 	 * @param gearboxTile
 	 * @param world
 	 * @param x
@@ -107,7 +107,7 @@ public class RenderTileGearbox
 
 	/**
 	 * Called when a gearbox tile entity needs to be rendered.
-	 * 
+	 *
 	 * @param tileEntity
 	 * @param d
 	 * @param d1

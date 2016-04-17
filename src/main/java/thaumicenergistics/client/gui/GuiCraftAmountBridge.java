@@ -1,23 +1,23 @@
 package thaumicenergistics.client.gui;
 
 import java.lang.reflect.Field;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import thaumicenergistics.api.grid.ICraftingIssuerHost;
-import thaumicenergistics.common.network.packet.server.Packet_S_ConfirmCraftingJob;
 import appeng.client.gui.implementations.GuiCraftAmount;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.core.localization.GuiText;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import thaumicenergistics.api.grid.ICraftingIssuerHost;
+import thaumicenergistics.common.network.packet.server.Packet_S_ConfirmCraftingJob;
 
 /**
  * Bridges the AE2 CraftAmount GUI and the ThE API
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiCraftAmountBridge

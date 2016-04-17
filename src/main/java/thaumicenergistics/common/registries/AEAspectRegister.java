@@ -27,17 +27,17 @@ import thaumicenergistics.common.utils.ThELog;
 
 /**
  * Gives items from AE2 aspects when scanned.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class AEAspectRegister
 {
 	/**
 	 * Helper class to derive aspects from an item definition.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	private class AEItemInfo
 	{
@@ -83,7 +83,7 @@ public class AEAspectRegister
 
 		/**
 		 * Creates the info.
-		 * 
+		 *
 		 * @param itemDef
 		 */
 		public AEItemInfo( final IItemDefinition itemDef )
@@ -305,7 +305,7 @@ public class AEAspectRegister
 
 		/**
 		 * Attempts to build the aspects for the item via grinder recipes.
-		 * 
+		 *
 		 * @return
 		 */
 		private boolean buildAspectsFromGrinder()
@@ -340,7 +340,7 @@ public class AEAspectRegister
 
 		/**
 		 * Attempts to build the aspects for the item via inscriber recipes.
-		 * 
+		 *
 		 * @return
 		 */
 		private boolean buildAspectsFromInscriber()
@@ -374,7 +374,7 @@ public class AEAspectRegister
 
 		/**
 		 * Attempts to build the aspects for the item via normal recipes.
-		 * 
+		 *
 		 * @return
 		 */
 		private boolean buildAspectsFromNormal()
@@ -415,7 +415,7 @@ public class AEAspectRegister
 
 		/**
 		 * Builds the aspect list from the items ingredients.
-		 * 
+		 *
 		 * @param itemInfo
 		 */
 		private void findAspectsForIngredients()
@@ -457,7 +457,7 @@ public class AEAspectRegister
 					// Get the current amount
 					int existingAmount = this.ingredientAspects.getAmount( currentStackAspect );
 
-					// Get the ingredient amount 
+					// Get the ingredient amount
 					int ingredientAspectAmount = stackAspects.getAmount( currentStackAspect );
 
 					// Merge
@@ -607,7 +607,7 @@ public class AEAspectRegister
 		/**
 		 * Determines if the recipe is valid, and aspects
 		 * can be derived from it.
-		 * 
+		 *
 		 * @param recipe
 		 * @return
 		 */
@@ -638,7 +638,7 @@ public class AEAspectRegister
 
 		/**
 		 * Determines if the specified stacks are equal.
-		 * 
+		 *
 		 * @param stack1
 		 * @param stack2
 		 * @return
@@ -694,7 +694,7 @@ public class AEAspectRegister
 
 		/**
 		 * Builds the final aspect list used for this item.
-		 * 
+		 *
 		 * @return
 		 */
 		public AspectList getFinalAspects()
@@ -763,7 +763,7 @@ public class AEAspectRegister
 
 		/**
 		 * Compares the specified itemstack with this itemstack.
-		 * 
+		 *
 		 * @param stack
 		 * @return
 		 */
@@ -946,7 +946,7 @@ public class AEAspectRegister
 		aspects.add( Aspect.ENERGY, 4 );
 		this.registerItem( aeBlocks.quartzOreCharged(), aspects );
 
-		// Crystal Seed		
+		// Crystal Seed
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, 1 );
 		aspects.add( Aspect.EXCHANGE, 1 );
@@ -958,13 +958,13 @@ public class AEAspectRegister
 		aspects.add( Aspect.ENERGY, AEAspectRegister.FLUIX_CHARGE );
 		this.registerItem( aeMats.fluixCrystal(), aspects );
 
-		// Pure Fluix Crystal		
+		// Pure Fluix Crystal
 		aspects = new AspectList();
 		aspects.add( Aspect.CRYSTAL, AEAspectRegister.CRYSTAL_PURE );
 		aspects.add( Aspect.ENERGY, AEAspectRegister.FLUIX_CHARGE );
 		this.registerItem( aeMats.purifiedFluixCrystal(), aspects );
 
-		// Enderdust		
+		// Enderdust
 		aspects = new AspectList();
 		aspects.add( Aspect.ELDRITCH, 2 );
 		aspects.add( Aspect.MOTION, 2 );
@@ -1101,7 +1101,7 @@ public class AEAspectRegister
 
 	/**
 	 * Registers all cable colors of this set with the specified aspects.
-	 * 
+	 *
 	 * @param cableSet
 	 * @param aspects
 	 */
@@ -1119,7 +1119,7 @@ public class AEAspectRegister
 
 	/**
 	 * Registers the item def with thaumcraft.
-	 * 
+	 *
 	 * @param itemDef
 	 * @param aspects
 	 */
@@ -1215,7 +1215,7 @@ public class AEAspectRegister
 
 	/**
 	 * Gets the item info for the item def or itemstack.
-	 * 
+	 *
 	 * @param itemDef
 	 * @return
 	 */
@@ -1246,7 +1246,7 @@ public class AEAspectRegister
 
 	/**
 	 * Gets the declared items from an AE registry.
-	 * 
+	 *
 	 * @param AEDefinitionInstance
 	 */
 	void getItemsFromAERegistryClass( final Object AEDefinitionInstance )
@@ -1295,7 +1295,7 @@ public class AEAspectRegister
 
 	/**
 	 * Registers the item info with thaumcraft.
-	 * 
+	 *
 	 * @param itemInfo
 	 * @param aspects
 	 */
@@ -1363,7 +1363,7 @@ public class AEAspectRegister
 
 			}
 
-			// Upon completion of pass 1, move all unregisterable items back into the items to add, and try again. 
+			// Upon completion of pass 1, move all unregisterable items back into the items to add, and try again.
 			if( pass == 1 )
 			{
 				this.ITEMS_TO_ADD.addAll( this.UNREGISTERABLE );

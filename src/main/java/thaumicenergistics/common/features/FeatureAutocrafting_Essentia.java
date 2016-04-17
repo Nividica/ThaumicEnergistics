@@ -1,5 +1,7 @@
 package thaumicenergistics.common.features;
 
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -12,14 +14,12 @@ import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 
 /**
  * {@link TileDistillationPatternEncoder} feature.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureAutocrafting_Essentia
 	extends ThEThaumcraftResearchFeature
@@ -106,7 +106,7 @@ public class FeatureAutocrafting_Essentia
 		// Set parents
 		ResearchTypes.DISTILLATION_PATTERN_ENCODER.researchItem.setParents( this.getFirstValidParentKey( false ) );
 		ResearchTypes.DISTILLATION_PATTERN_ENCODER.researchItem.setParentsHidden(
-						FeatureRegistry.instance().featureEssentiaMonitoring.getFirstValidParentKey( true ) );
+			FeatureRegistry.instance().featureEssentiaMonitoring.getFirstValidParentKey( true ) );
 		ResearchTypes.DISTILLATION_PATTERN_ENCODER.researchItem.setConcealed();
 
 		// Register the research

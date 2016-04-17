@@ -9,9 +9,9 @@ import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * Packed used to send miscellaneous events to the client.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_C_Sync
 	extends ThEClientPacket
@@ -30,7 +30,7 @@ public class Packet_C_Sync
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -49,7 +49,7 @@ public class Packet_C_Sync
 
 	/**
 	 * Creates a packet with an update to what itemstack the player is holding.
-	 * 
+	 *
 	 * @param player
 	 * @param heldItem
 	 * @return
@@ -71,7 +71,7 @@ public class Packet_C_Sync
 
 	/**
 	 * Sends a sound to the player to play.
-	 * 
+	 *
 	 * @param player
 	 * @param soundLocation
 	 */

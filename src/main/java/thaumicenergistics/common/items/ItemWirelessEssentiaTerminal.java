@@ -1,5 +1,10 @@
 package thaumicenergistics.common.items;
 
+import com.google.common.base.Optional;
+import appeng.api.config.PowerMultiplier;
+import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -9,19 +14,14 @@ import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ThEStrings;
-import appeng.api.config.PowerMultiplier;
-import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import com.google.common.base.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 // Note to fix inconsistent hierarchy: Include the COFHCore & IC2 Api's into
 // build path
 /**
  * Provides wireless access to networked essentia.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ItemWirelessEssentiaTerminal
 	extends AEBasePoweredItem
@@ -52,7 +52,7 @@ public class ItemWirelessEssentiaTerminal
 
 	/**
 	 * Gets or creates the NBT compound tag for the terminal.
-	 * 
+	 *
 	 * @param wirelessTerminal
 	 * @return
 	 */
@@ -77,7 +77,7 @@ public class ItemWirelessEssentiaTerminal
 
 	/**
 	 * Gets the encryption, or source, key for the specified terminal.
-	 * 
+	 *
 	 * @param wirelessTerminal
 	 * @return
 	 */
@@ -132,7 +132,7 @@ public class ItemWirelessEssentiaTerminal
 
 	/**
 	 * Opens the wireless terminal.
-	 * 
+	 *
 	 * @param itemStack
 	 * @param world
 	 * @param entityPlayer
@@ -159,7 +159,7 @@ public class ItemWirelessEssentiaTerminal
 
 	/**
 	 * Sets the encryption, or source, key for the specified terminal.
-	 * 
+	 *
 	 * @param wirelessTerminal
 	 * @param sourceKey
 	 * @param name
@@ -174,7 +174,7 @@ public class ItemWirelessEssentiaTerminal
 
 	/**
 	 * Always show the durability bar.
-	 * 
+	 *
 	 * @param wirelessTerminal
 	 * @return
 	 */

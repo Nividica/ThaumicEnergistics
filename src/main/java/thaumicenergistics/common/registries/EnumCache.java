@@ -8,9 +8,9 @@ import appeng.api.util.AEColor;
 
 /**
  * Cached value arrays of commonly used third party enums
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class EnumCache
 {

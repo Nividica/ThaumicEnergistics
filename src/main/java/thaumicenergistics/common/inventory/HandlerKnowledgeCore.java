@@ -10,9 +10,9 @@ import thaumicenergistics.common.items.ItemKnowledgeCore;
 
 /**
  * Handles an {@link ItemKnowledgeCore}
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class HandlerKnowledgeCore
 {
@@ -46,7 +46,7 @@ public class HandlerKnowledgeCore
 
 	/**
 	 * Creates the handler with the specified core.
-	 * 
+	 *
 	 * @param kCore
 	 */
 	public HandlerKnowledgeCore( final ItemStack kCore )
@@ -56,7 +56,7 @@ public class HandlerKnowledgeCore
 
 	/**
 	 * Gets or creates the NBT tag for the knowledge core.
-	 * 
+	 *
 	 * @return
 	 */
 	private NBTTagCompound getOrCreateNBT()
@@ -187,7 +187,7 @@ public class HandlerKnowledgeCore
 
 	/**
 	 * Gets the pattern that produces the result.
-	 * 
+	 *
 	 * @param resultStack
 	 * @return
 	 */
@@ -214,7 +214,7 @@ public class HandlerKnowledgeCore
 
 	/**
 	 * Gets the list of stored patterns.
-	 * 
+	 *
 	 * @return
 	 */
 	public ArrayList<ArcaneCraftingPattern> getPatterns()
@@ -224,7 +224,7 @@ public class HandlerKnowledgeCore
 
 	/**
 	 * Gets the results of all stored patterns.
-	 * 
+	 *
 	 * @return
 	 */
 	public ArrayList<ItemStack> getStoredOutputs()
@@ -247,7 +247,7 @@ public class HandlerKnowledgeCore
 
 	/**
 	 * Returns true if the handler has a core.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasCore()
@@ -258,7 +258,7 @@ public class HandlerKnowledgeCore
 	/**
 	 * Returns true if there is a pattern stored that produces the specified
 	 * result.
-	 * 
+	 *
 	 * @param resultStack
 	 * @return
 	 */
@@ -269,7 +269,7 @@ public class HandlerKnowledgeCore
 
 	/**
 	 * Returns true if there is room to store a new pattern.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasRoomToStorePattern()
@@ -279,7 +279,7 @@ public class HandlerKnowledgeCore
 
 	/**
 	 * Return's true if this handler is handling the specified knowledge core.
-	 * 
+	 *
 	 * @param kCore
 	 * @return
 	 */
@@ -311,7 +311,7 @@ public class HandlerKnowledgeCore
 
 	/**
 	 * Closes the previous core, and opens the new core.
-	 * 
+	 *
 	 * @param kCore
 	 */
 	public void open( final ItemStack kCore )
@@ -328,7 +328,7 @@ public class HandlerKnowledgeCore
 
 	/**
 	 * Removes the specified pattern from the core.
-	 * 
+	 *
 	 * @param pattern
 	 */
 	public void removePattern( final ArcaneCraftingPattern pattern )

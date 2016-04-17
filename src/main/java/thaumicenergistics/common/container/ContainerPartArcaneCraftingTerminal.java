@@ -51,9 +51,9 @@ import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * {@link PartArcaneCraftingTerminal} container.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ContainerPartArcaneCraftingTerminal
 	extends ContainerWithPlayerInventory
@@ -61,9 +61,9 @@ public class ContainerPartArcaneCraftingTerminal
 {
 	/**
 	 * Holds a single aspect cost for the current recipe.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	public class ArcaneCrafingCost
 	{
@@ -206,7 +206,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Creates the container
-	 * 
+	 *
 	 * @param terminal
 	 * @param player
 	 */
@@ -338,7 +338,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Attempts to attach to the item monitor.
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean attachToMonitor()
@@ -375,7 +375,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * Attempts to clear the crafting grid by placing the items
 	 * back in the ME network.
-	 * 
+	 *
 	 * @param sendUpdate
 	 * If true, any changes made are sent across the network
 	 * @return
@@ -442,7 +442,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * Handles automatically crafting items when the crafting
 	 * output slot is shift+clicked
-	 * 
+	 *
 	 * @param player
 	 */
 	private void doShiftAutoCrafting( final EntityPlayer player )
@@ -510,7 +510,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Checks if two stacks match. Either directly, or by ore dictionary.
-	 * 
+	 *
 	 * @param keyStack
 	 * @param potentialMatch
 	 * @return
@@ -552,7 +552,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Searches for a matching arcane crafting recipe result
-	 * 
+	 *
 	 * @return ItemStack of the result if found, null otherwise.
 	 */
 	private ItemStack findMatchingArcaneResult()
@@ -575,7 +575,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Searches for a matching regular(non arcane) crafting recipe result
-	 * 
+	 *
 	 * @return ItemStack of the result if found, null otherwise.
 	 */
 	private ItemStack findMatchingRegularResult()
@@ -597,7 +597,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Gets the view cells in the terminal.
-	 * 
+	 *
 	 * @return
 	 */
 	private ItemStack[] getViewCells()
@@ -611,7 +611,7 @@ public class ContainerPartArcaneCraftingTerminal
 			viewSlot = this.getSlotOrNull( viewSlotIndex );
 
 			// Ensure the slot is not empty
-			if( viewSlot == null || !viewSlot.getHasStack() )
+			if( ( viewSlot == null ) || !viewSlot.getHasStack() )
 			{
 				continue;
 			}
@@ -652,7 +652,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * Attempts to inject an itemstack into the ME network.
 	 * Adjusts the stack size of the specified itemstack according to
 	 * the results of the merger.
-	 * 
+	 *
 	 * @param itemStack
 	 * @return True if any amount was merged, False otherwise.
 	 */
@@ -688,7 +688,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Attempts to add the itemstack to the view cell slots
-	 * 
+	 *
 	 * @param itemStack
 	 * @return True if was moved, False otherwise.
 	 */
@@ -752,7 +752,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * Checks if the wand has enough vis to complete the craft.
 	 * Takes into consideration the players multiplier.
-	 * 
+	 *
 	 * @param forRecipe
 	 * @return ItemStack of the result if wand has enough vis, null otherwise.
 	 */
@@ -882,7 +882,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Checks if the slot number belongs to the crafting matrix
-	 * 
+	 *
 	 * @param slotNumber
 	 * @return
 	 */
@@ -904,7 +904,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * Changes the Y offset for all slots, except the view slots, in this
 	 * container.
-	 * 
+	 *
 	 * @param deltaY
 	 */
 	public void changeSlotsYOffset( final int deltaY )
@@ -927,7 +927,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Gets the aspect cost and how much is missing for the current recipe.
-	 * 
+	 *
 	 * @return Null if not an arcane recipe, cost otherwise.
 	 */
 	public List<ArcaneCrafingCost> getCraftingCost( final boolean forceUpdate )
@@ -987,7 +987,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Called when a client is setting up the crafting grid via NEI
-	 * 
+	 *
 	 * @param player
 	 * @param gridItems
 	 */
@@ -1030,7 +1030,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * Called when a client has clicked on a craftable item.
-	 * 
+	 *
 	 * @param player
 	 * @param result
 	 */
@@ -1152,7 +1152,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * A client has requested that a region(inventory) be deposited into the ME
 	 * network.
-	 * 
+	 *
 	 * @param player
 	 * @param slotNumber
 	 */
@@ -1217,7 +1217,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * A client player is requesting to extract an item stack out
 	 * of the ME network.
-	 * 
+	 *
 	 * @param player
 	 * @param requestedStack
 	 * @param mouseButton
@@ -1371,7 +1371,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * A client has requested the full list of all items in the ME network.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void onClientRequestFullUpdate( final EntityPlayer player )
@@ -1394,7 +1394,7 @@ public class ContainerPartArcaneCraftingTerminal
 
 	/**
 	 * A client has request that the stored sorting order be changed.
-	 * 
+	 *
 	 * @param order
 	 * @param dir
 	 */
@@ -1407,7 +1407,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * Called when a client has requested they swap their equipped armor with
 	 * the stored armor.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void onClientRequestSwapArmor( final EntityPlayer player )
@@ -1544,7 +1544,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * Attempts to extract an item from the network.
 	 * Used when crafting to replenish the crafting grid.
-	 * 
+	 *
 	 * @param itemStack
 	 * @return
 	 */
@@ -1570,7 +1570,7 @@ public class ContainerPartArcaneCraftingTerminal
 			return replenishment.getItemStack();
 		}
 
-		// Did not get a replenishment, search for items that match. 
+		// Did not get a replenishment, search for items that match.
 
 		// Get a list of all items in the ME network
 		IItemList<IAEItemStack> networkItems = this.monitor.getStorageList();

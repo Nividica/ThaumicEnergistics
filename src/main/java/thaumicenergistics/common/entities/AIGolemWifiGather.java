@@ -5,9 +5,9 @@ import thaumcraft.common.entities.golems.EntityGolemBase;
 
 /**
  * Allows a golem to deposit items into the network as it gathers them.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class AIGolemWifiGather
 	extends AIAENetworkGolem

@@ -1,8 +1,23 @@
 package thaumicenergistics.common.parts;
 
-import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,27 +34,12 @@ import thaumicenergistics.api.grid.IDigiVisSource;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.integration.tc.DigiVisSourceData;
 import thaumicenergistics.common.integration.tc.VisProviderProxy;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.implementations.items.IMemoryCard;
-import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.PartItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Iterfaces with a {@link TileVisRelay}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class PartVisInterface
 	extends ThEPartBase
@@ -118,7 +118,7 @@ public class PartVisInterface
 
 	/**
 	 * Requests that the interface drain vis from the relay
-	 * 
+	 *
 	 * @param digiVisAspect
 	 * @param amount
 	 * @return
@@ -168,7 +168,7 @@ public class PartVisInterface
 
 	/**
 	 * Verifies that a p2p source is valid
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean isP2PSourceValid()
@@ -212,7 +212,7 @@ public class PartVisInterface
 
 	/**
 	 * Sets the color we are draining.
-	 * 
+	 *
 	 * @param color
 	 */
 	private void setDrainColor( final int color )
@@ -281,7 +281,7 @@ public class PartVisInterface
 
 	/**
 	 * Drains vis from either the vis relay network, or from the p2p source.
-	 * 
+	 *
 	 * @param digiVisAspect
 	 * @param amount
 	 * @return
@@ -349,7 +349,7 @@ public class PartVisInterface
 
 	/**
 	 * Gets the grid the interface is attached to
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -385,7 +385,7 @@ public class PartVisInterface
 
 	/**
 	 * Gets the relay the interface is facing. If any.
-	 * 
+	 *
 	 * @return
 	 */
 	public TileVisRelay getRelay()
@@ -437,7 +437,7 @@ public class PartVisInterface
 
 	/**
 	 * Gets the unique ID for this interface
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -448,7 +448,7 @@ public class PartVisInterface
 
 	/**
 	 * Is the interface on and active?
-	 * 
+	 *
 	 * @return
 	 */
 	@Override

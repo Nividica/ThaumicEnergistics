@@ -1,7 +1,7 @@
 package thaumicenergistics.common.storage;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nullable;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
@@ -13,9 +13,9 @@ import thaumicenergistics.common.network.ThEBasePacket;
 
 /**
  * Stores an aspect and an amount.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class AspectStack
 	implements IAspectStack
@@ -49,7 +49,7 @@ public class AspectStack
 	/**
 	 * Creates a stack using the specified aspect and amount.
 	 * Defaults to not craftable.
-	 * 
+	 *
 	 * @param aspect
 	 * What aspect this stack will have.
 	 * @param amount
@@ -63,7 +63,7 @@ public class AspectStack
 	/**
 	 * Creates a stack using the specified aspect and amount, and
 	 * sets if it is craftable.
-	 * 
+	 *
 	 * @param aspect
 	 * What aspect this stack will have.
 	 * @param size
@@ -79,7 +79,7 @@ public class AspectStack
 	/**
 	 * Creates a new stack from the passed stack.
 	 * If a new stack is not needed you can also use copyFrom().
-	 * 
+	 *
 	 * @param source
 	 */
 	public AspectStack( final AspectStack stack )
@@ -89,7 +89,7 @@ public class AspectStack
 
 	/**
 	 * Creates an aspect stack from a NBT compound tag.
-	 * 
+	 *
 	 * @param data
 	 * Tag to load from
 	 * @return Created stack, or null.
@@ -127,7 +127,7 @@ public class AspectStack
 
 	/**
 	 * Creates an aspect stack from the stream.
-	 * 
+	 *
 	 * @param stream
 	 * @return
 	 */

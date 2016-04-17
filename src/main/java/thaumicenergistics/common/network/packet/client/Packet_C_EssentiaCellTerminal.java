@@ -1,8 +1,11 @@
 package thaumicenergistics.common.network.packet.client;
 
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Collection;
+import appeng.api.config.ViewItems;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,15 +20,12 @@ import thaumicenergistics.common.parts.PartEssentiaTerminal;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
-import appeng.api.config.ViewItems;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartEssentiaTerminal}, {@link ItemWirelessEssentiaTerminal}, and {@link ItemEssentiaCell} client-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_C_EssentiaCellTerminal
 	extends ThEClientPacket
@@ -46,7 +46,7 @@ public class Packet_C_EssentiaCellTerminal
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -65,7 +65,7 @@ public class Packet_C_EssentiaCellTerminal
 
 	/**
 	 * Called to send the full list of aspects.
-	 * 
+	 *
 	 * @param player
 	 * @param list
 	 */
@@ -85,7 +85,7 @@ public class Packet_C_EssentiaCellTerminal
 
 	/**
 	 * Sends the viewing modes.
-	 * 
+	 *
 	 * @param player
 	 * @param sortMode
 	 */
@@ -105,7 +105,7 @@ public class Packet_C_EssentiaCellTerminal
 
 	/**
 	 * Called when an aspect amount changes.
-	 * 
+	 *
 	 * @param player
 	 * @param change
 	 */
@@ -122,7 +122,7 @@ public class Packet_C_EssentiaCellTerminal
 
 	/**
 	 * Called when the selected aspect changes.
-	 * 
+	 *
 	 * @param player
 	 * @param selectedAspect
 	 */

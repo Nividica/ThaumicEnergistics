@@ -9,16 +9,18 @@ import thaumcraft.common.config.Config;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.blocks.BlockEnum;
-import thaumicenergistics.common.registries.*;
+import thaumicenergistics.common.registries.FeatureRegistry;
+import thaumicenergistics.common.registries.RecipeRegistry;
+import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import thaumicenergistics.common.tiles.TileInfusionProvider;
 
 /**
  * {@link TileInfusionProvider} feature.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureInfusionProvider
 	extends ThEThaumcraftResearchFeature

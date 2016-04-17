@@ -1,23 +1,23 @@
 package thaumicenergistics.client.gui;
 
+import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
 import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerEssentiaVibrationChamber;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileEssentiaVibrationChamber} GUI
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaVibrationChamber
@@ -82,7 +82,8 @@ public class GuiEssentiaVibrationChamber
 		int storedHeightOffset = (int)( GuiEssentiaVibrationChamber.STORED_HEIGHT * this.container.getStoredEssentiaPercent() );
 
 		this.drawTexturedModalRect( this.guiLeft + GuiEssentiaVibrationChamber.STORED_POS_X, this.guiTop + GuiEssentiaVibrationChamber.STORED_POS_Y +
-						storedHeightOffset, GuiEssentiaVibrationChamber.STORED_TEX_X, storedHeightOffset, GuiEssentiaVibrationChamber.STORED_WIDTH,
+						storedHeightOffset,
+			GuiEssentiaVibrationChamber.STORED_TEX_X, storedHeightOffset, GuiEssentiaVibrationChamber.STORED_WIDTH,
 			GuiEssentiaVibrationChamber.STORED_HEIGHT - storedHeightOffset );
 
 		// Enable alpha blending
@@ -99,7 +100,8 @@ public class GuiEssentiaVibrationChamber
 		int progressHeightOffset = (int)( GuiEssentiaVibrationChamber.FIRE_HEIGHT * this.container.getTicksRemainingPercent() );
 
 		this.drawTexturedModalRect( this.guiLeft + GuiEssentiaVibrationChamber.FIRE_POS_X, this.guiTop + GuiEssentiaVibrationChamber.FIRE_POS_Y +
-						progressHeightOffset, GuiEssentiaVibrationChamber.FIRE_TEX_X, progressHeightOffset, GuiEssentiaVibrationChamber.FIRE_WIDTH,
+						progressHeightOffset,
+			GuiEssentiaVibrationChamber.FIRE_TEX_X, progressHeightOffset, GuiEssentiaVibrationChamber.FIRE_WIDTH,
 			GuiEssentiaVibrationChamber.FIRE_HEIGHT - progressHeightOffset );
 
 		// Disable blending

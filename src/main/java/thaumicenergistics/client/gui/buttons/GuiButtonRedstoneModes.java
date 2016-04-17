@@ -1,17 +1,17 @@
 package thaumicenergistics.client.gui.buttons;
 
 import java.util.List;
-import net.minecraft.util.StatCollector;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.StatCollector;
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 /**
  * Displays redstone mode icons.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonRedstoneModes
@@ -34,7 +34,7 @@ public class GuiButtonRedstoneModes
 
 	/**
 	 * Creates the button.
-	 * 
+	 *
 	 * @param ID
 	 * @param xPos
 	 * @param yPos
@@ -49,7 +49,7 @@ public class GuiButtonRedstoneModes
 
 	/**
 	 * Creates the button with argument for if this is an emitter.
-	 * 
+	 *
 	 * @param ID
 	 * @param xPos
 	 * @param yPos
@@ -58,7 +58,7 @@ public class GuiButtonRedstoneModes
 	 * @param mode
 	 * @param emitter
 	 */
-	public GuiButtonRedstoneModes( final int ID, final int xPos, final int yPos, final int width, final int height, final RedstoneMode mode,
+	public GuiButtonRedstoneModes(	final int ID, final int xPos, final int yPos, final int width, final int height, final RedstoneMode mode,
 									final boolean emitter )
 	{
 		// Call super
@@ -105,7 +105,7 @@ public class GuiButtonRedstoneModes
 
 	/**
 	 * Sets the redstone mode this button represents.
-	 * 
+	 *
 	 * @param mode
 	 */
 	public void setRedstoneMode( final RedstoneMode mode )

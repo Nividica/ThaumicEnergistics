@@ -1,17 +1,17 @@
 package thaumicenergistics.client.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Particles that can be displayed in a GUI.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public enum EnumGuiParticles
@@ -42,7 +42,7 @@ public enum EnumGuiParticles
 	 */
 	private ResourceLocation texture;
 
-	private EnumGuiParticles( final ResourceLocation textureLocation, final int U, final int V, final int width, final int height,
+	private EnumGuiParticles(	final ResourceLocation textureLocation, final int U, final int V, final int width, final int height,
 								final int UStep, final int VStep, final int Frames )
 	{
 		this.texture = textureLocation;
@@ -71,7 +71,7 @@ public enum EnumGuiParticles
 	 * Draws the particle.
 	 * If settings "needsPrepare" to false, prepare and finish must be called manually.
 	 * However this can be useful if drawing multiple of the same particle.
-	 * 
+	 *
 	 * @param gui
 	 * @param positionX
 	 * @param positionY
@@ -81,7 +81,7 @@ public enum EnumGuiParticles
 	 * @param blue
 	 * @param needsPrepare
 	 */
-	public void drawParticle( final Gui gui, final int positionX, final int positionY, final int frameNumber, final float red, final float green,
+	public void drawParticle(	final Gui gui, final int positionX, final int positionY, final int frameNumber, final float red, final float green,
 								final float blue, final boolean needsPrepare )
 	{
 		if( needsPrepare )

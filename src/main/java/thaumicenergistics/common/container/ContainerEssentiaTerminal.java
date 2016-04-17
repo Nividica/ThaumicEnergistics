@@ -1,6 +1,14 @@
 package thaumicenergistics.common.container;
 
 import javax.annotation.Nonnull;
+import appeng.api.AEApi;
+import appeng.api.config.ViewItems;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.PlayerSource;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerCraftAmount;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -14,20 +22,12 @@ import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerm
 import thaumicenergistics.common.parts.PartEssentiaTerminal;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.AEApi;
-import appeng.api.config.ViewItems;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.PlayerSource;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.container.ContainerOpenContext;
-import appeng.container.implementations.ContainerCraftAmount;
 
 /**
  * Inventory container for the essentia terminal.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ContainerEssentiaTerminal
 	extends ContainerEssentiaCellTerminalBase
@@ -46,7 +46,7 @@ public class ContainerEssentiaTerminal
 
 	/**
 	 * Creates the container
-	 * 
+	 *
 	 * @param terminal
 	 * Parent terminal.
 	 * @param player

@@ -1,6 +1,7 @@
 package thaumicenergistics.common.items;
 
 import java.util.List;
+import appeng.api.implementations.items.IStorageComponent;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumRarity;
@@ -9,13 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
-import appeng.api.implementations.items.IStorageComponent;
 
 /**
  * {@link ItemEssentiaCell} storage components.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ItemStorageComponent
 	extends Item

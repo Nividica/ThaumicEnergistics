@@ -3,15 +3,7 @@ package thaumicenergistics.common.grid;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.Map.Entry;
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.grid.IMEEssentiaMonitor;
-import thaumicenergistics.api.grid.IMEEssentiaMonitorReceiver;
-import thaumicenergistics.api.storage.IAspectStack;
-import thaumicenergistics.api.storage.IEssentiaRepo;
-import thaumicenergistics.common.fluids.GaseousEssentia;
-import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
-import thaumicenergistics.common.storage.AspectStack;
-import thaumicenergistics.common.storage.EssentiaRepo;
+import com.google.common.collect.ImmutableList;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -21,13 +13,21 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
-import com.google.common.collect.ImmutableList;
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
+import thaumicenergistics.api.grid.IMEEssentiaMonitorReceiver;
+import thaumicenergistics.api.storage.IAspectStack;
+import thaumicenergistics.api.storage.IEssentiaRepo;
+import thaumicenergistics.common.fluids.GaseousEssentia;
+import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.common.storage.AspectStack;
+import thaumicenergistics.common.storage.EssentiaRepo;
 
 /**
  * Wraps a fluid & power grid for easy essentia conversion and usage.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class EssentiaMonitor
 	implements IMEEssentiaMonitor, IMEMonitorHandlerReceiver<IAEFluidStack>
@@ -84,7 +84,7 @@ public class EssentiaMonitor
 
 	/**
 	 * Wraps the specified fluid monitor and energy grid.
-	 * 
+	 *
 	 * @param fluidMonitor
 	 * Fluid monitor to listen to
 	 * @param energyGrid
@@ -104,14 +104,14 @@ public class EssentiaMonitor
 	/**
 	 * Mirror method of the injectEssentia. Used to defer power calculations, because the simulation is not always accurate, and Essentia gas should
 	 * not be stored in partial amounts.
-	 * 
+	 *
 	 * @param aspect
 	 * @param amount
 	 * @param mode
 	 * @param source
 	 * @return Amount that was <strong>not</strong> injected
 	 */
-	private long injectEssentiaSafely( final Aspect aspect, final long amount, final Actionable mode, final BaseActionSource source,
+	private long injectEssentiaSafely(	final Aspect aspect, final long amount, final Actionable mode, final BaseActionSource source,
 										final GaseousEssentia essentiaGas )
 	{
 		// Create the fluid request
@@ -140,7 +140,7 @@ public class EssentiaMonitor
 
 	/**
 	 * Notifies all listeners of the specified changes.
-	 * 
+	 *
 	 * @param changes
 	 */
 	private void notifyListeners( final List<IAspectStack> changes )
@@ -231,7 +231,7 @@ public class EssentiaMonitor
 
 	/**
 	 * Sets if the aspect is craftable.
-	 * 
+	 *
 	 * @param aspect
 	 * @param isCraftable
 	 */
@@ -242,7 +242,7 @@ public class EssentiaMonitor
 
 	/**
 	 * Sets each aspect as craftable.
-	 * 
+	 *
 	 * @param aspects
 	 */
 	protected void setCraftableAspects( final HashSet<Aspect> aspects )
@@ -392,7 +392,7 @@ public class EssentiaMonitor
 	@Override
 	public long extractEssentia( final Aspect aspect, final long amount, final Actionable mode, final BaseActionSource source, final boolean powered )
 	{
-		// Ensure the aspect is not null, and the amount is > 0 
+		// Ensure the aspect is not null, and the amount is > 0
 		if( ( aspect == null ) || ( amount <= 0 ) )
 		{
 			// Invalid arguments
@@ -501,7 +501,7 @@ public class EssentiaMonitor
 	@Override
 	public long injectEssentia( final Aspect aspect, final long amount, final Actionable mode, final BaseActionSource source, final boolean powered )
 	{
-		// Ensure the aspect is not null, and the amount is > 0 
+		// Ensure the aspect is not null, and the amount is > 0
 		if( ( aspect == null ) || ( amount <= 0 ) )
 		{
 			// Invalid arguments
@@ -592,7 +592,8 @@ public class EssentiaMonitor
 	}
 
 	@Override
-	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> fluidChanges, final BaseActionSource actionSource )
+	public void postChange(	final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> fluidChanges,
+							final BaseActionSource actionSource )
 	{
 		// Ensure the cache is up to date
 		if( this.cacheNeedsUpdate )
@@ -602,7 +603,7 @@ public class EssentiaMonitor
 
 			/*
 			 * Note: this should never happen if there are listeners. As the cache will be updated when a list update occurs.
-			 * If any changes occur between a call to onListUpdate() and onUpdateTick(), those changes will be ignored until the cache is updated. 
+			 * If any changes occur between a call to onListUpdate() and onUpdateTick(), those changes will be ignored until the cache is updated.
 			 */
 		}
 
@@ -679,7 +680,7 @@ public class EssentiaMonitor
 
 	/**
 	 * Wraps the specified fluid monitor and energy grid.
-	 * 
+	 *
 	 * @param fluidMonitor
 	 * Fluid monitor to listen to
 	 * @param energyGrid

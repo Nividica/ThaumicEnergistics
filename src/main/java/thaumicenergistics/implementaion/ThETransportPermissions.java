@@ -16,18 +16,18 @@ import thaumicenergistics.common.utils.ThELog;
 
 /**
  * Implements {@link IThETransportPermissions}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 class ThETransportPermissions
 	implements IThETransportPermissions
 {
 	/**
 	 * Collection of ContainerInfo indexed by damage value.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	private class ContainerCollection
 	{
@@ -38,7 +38,7 @@ class ThETransportPermissions
 
 		/**
 		 * Constructor adding the specified info the the collection
-		 * 
+		 *
 		 * @param capacity
 		 * @param canHoldPartialAmount
 		 * @param damageValue
@@ -50,7 +50,7 @@ class ThETransportPermissions
 
 		/**
 		 * Adds the specified info to the collection
-		 * 
+		 *
 		 * @param capacity
 		 * @param canHoldPartialAmount
 		 * @param damageValue
@@ -69,7 +69,7 @@ class ThETransportPermissions
 
 		/**
 		 * Gets the info about the item using the specified metadata.
-		 * 
+		 *
 		 * @param damageValue
 		 * @return {@link ContainerInfo} if a match is found, null otherwise.
 		 */
@@ -81,9 +81,9 @@ class ThETransportPermissions
 
 	/**
 	 * Basic information about a thaumcraft container.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	private class ContainerInfo
 		implements IThEEssentiaContainerPermission
@@ -140,7 +140,8 @@ class ThETransportPermissions
 	}
 
 	@Override
-	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToExtractPermissions( final Class<T> tileClass, final int capacity )
+	public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToExtractPermissions(	final Class<T> tileClass,
+																											final int capacity )
 	{
 		// Ensure we have a tile
 		if( tileClass != null )
@@ -184,7 +185,7 @@ class ThETransportPermissions
 	}
 
 	@Override
-	public void addEssentiaContainerItemToTransportPermissions( final Class<? extends IEssentiaContainerItem> itemClass, final int capacity,
+	public void addEssentiaContainerItemToTransportPermissions(	final Class<? extends IEssentiaContainerItem> itemClass, final int capacity,
 																final int damageValue, final boolean canHoldPartialAmount )
 	{
 		// Do we have an item?
@@ -208,7 +209,8 @@ class ThETransportPermissions
 	}
 
 	@Override
-	public void addEssentiaContainerItemToTransportPermissions( final ItemStack containerItem, final int capacity, final boolean canHoldPartialAmount )
+	public void addEssentiaContainerItemToTransportPermissions(	final ItemStack containerItem, final int capacity,
+																final boolean canHoldPartialAmount )
 	{
 		// Ensure the item is a valid container
 		if( ( containerItem == null ) || !( containerItem.getItem() instanceof IEssentiaContainerItem ) )

@@ -1,20 +1,20 @@
 package thaumicenergistics.common.features;
 
 import java.util.regex.Pattern;
+import appeng.core.FacadeConfig;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.config.Property;
 import thaumcraft.common.config.Config;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumicenergistics.api.IThEConfig;
-import appeng.core.FacadeConfig;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 /**
  * Thaumcraft facades feature.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureThaumcraftFacades
 	extends ThEDependencyFeatureBase
@@ -33,13 +33,13 @@ public class FeatureThaumcraftFacades
 
 	/**
 	 * Forces the specified stack to have a facade if possible.
-	 * 
+	 *
 	 * @param block
 	 * @param meta
 	 */
 	private void forceEnabled( final Block block, final int meta )
 	{
-		// Sanity check		
+		// Sanity check
 		if( block == null )
 		{
 			return;

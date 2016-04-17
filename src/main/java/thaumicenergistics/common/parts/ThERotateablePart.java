@@ -1,22 +1,22 @@
 package thaumicenergistics.common.parts;
 
-import io.netty.buffer.ByteBuf;
 import java.io.IOException;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.parts.PartItemStack;
+import appeng.util.Platform;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.parts.PartItemStack;
-import appeng.util.Platform;
 
 /**
  * Base class for rotatble cable parts.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class ThERotateablePart
 	extends ThEPartBase
@@ -39,7 +39,7 @@ public abstract class ThERotateablePart
 
 	/**
 	 * Rotates the renderer.
-	 * 
+	 *
 	 * @param renderer
 	 * @param reset
 	 */

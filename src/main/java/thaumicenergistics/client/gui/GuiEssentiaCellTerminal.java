@@ -3,6 +3,12 @@ package thaumicenergistics.client.gui;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+import appeng.api.config.ViewItems;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -11,9 +17,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
 import thaumicenergistics.api.gui.IAspectSelectorContainer;
@@ -37,15 +40,12 @@ import thaumicenergistics.common.parts.PartEssentiaTerminal;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.storage.AspectStackComparator;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
-import appeng.api.config.ViewItems;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartEssentiaTerminal}, {@link ItemWirelessEssentiaTerminal}, and {@link ItemEssentiaCell} GUI
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaCellTerminal
@@ -155,7 +155,7 @@ public class GuiEssentiaCellTerminal
 
 	/**
 	 * Creates the gui.
-	 * 
+	 *
 	 * @param player
 	 * Player viewing this gui.
 	 * @param container
@@ -210,7 +210,7 @@ public class GuiEssentiaCellTerminal
 
 	/**
 	 * Creates the GUI for an essentia cell inside an ME chest.
-	 * 
+	 *
 	 * @param player
 	 * Player viewing the gui.
 	 * @param world
@@ -231,7 +231,7 @@ public class GuiEssentiaCellTerminal
 
 	/**
 	 * Creates the GUI for an essentia terminal.
-	 * 
+	 *
 	 * @param terminal
 	 * @param player
 	 * @return
@@ -244,7 +244,7 @@ public class GuiEssentiaCellTerminal
 
 	/**
 	 * Creates the GUI for a wireless essentia terminal.
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -286,7 +286,7 @@ public class GuiEssentiaCellTerminal
 
 	/**
 	 * True if the mouse is over the widget area
-	 * 
+	 *
 	 * @param mouseX
 	 * @param mouseY
 	 * @return
@@ -390,9 +390,8 @@ public class GuiEssentiaCellTerminal
 			}
 
 			// Is the search term in this aspects tag or name?
-			if( ( this.searchTerm == "" )
-							|| ( stack.getAspectName().contains( this.searchTerm ) )
-							|| ( stack.getAspectTag().contains( this.searchTerm ) ) )
+			if( ( this.searchTerm == "" ) || ( stack.getAspectName().contains( this.searchTerm ) ) ||
+							( stack.getAspectTag().contains( this.searchTerm ) ) )
 			{
 				this.matchingSearchStacks.add( stack );
 			}
@@ -581,8 +580,7 @@ public class GuiEssentiaCellTerminal
 					{
 						// Check if the aspect is to be crafted
 						if( ( !isRightClick && widget.hasAspect() && widget.getCraftable() ) &&
-										( viewingCraftable
-										|| ( isMiddleClick || ( isLeftClick && ( widget.getAmount() == 0 ) ) ) ) )
+										( viewingCraftable || ( isMiddleClick || ( isLeftClick && ( widget.getAmount() == 0 ) ) ) ) )
 						{
 							// Send request
 							Packet_S_EssentiaCellTerminal.sendAutoCraft( this.player, widget.getAspect() );
@@ -600,10 +598,8 @@ public class GuiEssentiaCellTerminal
 		}
 
 		// Is the mouse over the search bar?
-		boolean mouseOverSearchBar = ( mouseX >= this.searchBar.xPosition )
-						&& ( mouseX < ( this.searchBar.xPosition + this.searchBar.width ) )
-						&& ( mouseY >= this.searchBar.yPosition )
-						&& ( mouseY < ( this.searchBar.yPosition + this.searchBar.height ) );
+		boolean mouseOverSearchBar = ( mouseX >= this.searchBar.xPosition ) && ( mouseX < ( this.searchBar.xPosition + this.searchBar.width ) ) &&
+						( mouseY >= this.searchBar.yPosition ) && ( mouseY < ( this.searchBar.yPosition + this.searchBar.height ) );
 		if( mouseOverSearchBar )
 		{
 			// Left click?
@@ -693,7 +689,7 @@ public class GuiEssentiaCellTerminal
 
 	/**
 	 * Draw the widgets
-	 * 
+	 *
 	 * @param mouseX
 	 * @param mouseY
 	 */
@@ -822,7 +818,7 @@ public class GuiEssentiaCellTerminal
 
 	/**
 	 * Called when the server sends a full list of network aspects.
-	 * 
+	 *
 	 * @param aspectStackList
 	 */
 	public void onReceiveAspectList( final Collection<IAspectStack> aspectStackList )
@@ -836,7 +832,7 @@ public class GuiEssentiaCellTerminal
 
 	/**
 	 * Called when an aspect in the list changes amount.
-	 * 
+	 *
 	 * @param change
 	 */
 	public void onReceiveAspectListChange( final IAspectStack change )
@@ -851,7 +847,7 @@ public class GuiEssentiaCellTerminal
 
 	/**
 	 * Called when the server sends a change to the selected aspect.
-	 * 
+	 *
 	 * @param selectedAspect
 	 */
 	public void onReceiveSelectedAspect( final Aspect selectedAspect )
@@ -865,7 +861,7 @@ public class GuiEssentiaCellTerminal
 
 	/**
 	 * Called when the server sends a change in the sorting mode.
-	 * 
+	 *
 	 * @param sortMode
 	 */
 	public void onViewingModesChanged( final AspectStackComparatorMode sortMode, final ViewItems viewMode )
@@ -882,7 +878,7 @@ public class GuiEssentiaCellTerminal
 
 	/**
 	 * Called when a new view mode is sent.
-	 * 
+	 *
 	 * @param mode
 	 */
 	public void onViewModeChanged( final ViewItems mode )

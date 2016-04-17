@@ -9,9 +9,9 @@ import thaumicenergistics.common.integration.tc.PseudoResearchItem;
 
 /**
  * Enumeration of ThE's Thaumcraft research.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ResearchRegistry
 {
@@ -107,7 +107,7 @@ public class ResearchRegistry
 
 		/**
 		 * Convenience function to aid in research item creation.
-		 * 
+		 *
 		 * @param aspectList
 		 * @param column
 		 * @param row
@@ -128,7 +128,7 @@ public class ResearchRegistry
 
 		/**
 		 * Gets the name of a numeric page.
-		 * 
+		 *
 		 * @param index
 		 * @return
 		 */
@@ -139,7 +139,7 @@ public class ResearchRegistry
 
 		/**
 		 * Gets the name of a named page.
-		 * 
+		 *
 		 * @param subName
 		 * @return
 		 */

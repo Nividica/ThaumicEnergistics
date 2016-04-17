@@ -1,21 +1,21 @@
 package thaumicenergistics.client.gui.buttons;
 
 import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.text.WordUtils;
 import org.lwjgl.opengl.GL11;
-import thaumicenergistics.client.textures.IStateIconTexture;
 import com.google.common.base.Splitter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.EnumChatFormatting;
+import thaumicenergistics.client.textures.IStateIconTexture;
 
 /**
  * Base class for ThE state buttons.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public abstract class ThEStateButton
@@ -37,7 +37,7 @@ public abstract class ThEStateButton
 	public int iconXOffset = 0, iconYOffset = 0;
 
 	/**
-	 * 
+	 *
 	 * @param ID
 	 * @param xPosition
 	 * @param yPosition
@@ -48,7 +48,7 @@ public abstract class ThEStateButton
 	 * @param iconYOffset
 	 * @param backgroundIcon
 	 */
-	public ThEStateButton( final int ID, final int xPosition, final int yPosition, final int buttonWidth, final int buttonHeight,
+	public ThEStateButton(	final int ID, final int xPosition, final int yPosition, final int buttonWidth, final int buttonHeight,
 							final IStateIconTexture icon, final int iconXOffset, final int iconYOffset, final IStateIconTexture backgroundIcon )
 	{
 		// Call super
@@ -69,7 +69,7 @@ public abstract class ThEStateButton
 	 * Draws a textured rectangle at the stored z-value, the texture will
 	 * be scaled to fit within the width and height
 	 */
-	private void drawScaledTexturedModalRect( final int xPosition, final int yPosition, final int u, final int v, final int width, final int height,
+	private void drawScaledTexturedModalRect(	final int xPosition, final int yPosition, final int u, final int v, final int width, final int height,
 												final int textureWidth, final int textureHeight )
 	{
 		// No idea what this is
@@ -106,7 +106,7 @@ public abstract class ThEStateButton
 	/**
 	 * Adds info to the tooltip as a white header, and grey body.
 	 * The body is broken down into lines of length 30.
-	 * 
+	 *
 	 * @param tooltip
 	 * @param title
 	 * @param text
@@ -125,7 +125,7 @@ public abstract class ThEStateButton
 
 	/**
 	 * Draws an icon to the screen.
-	 * 
+	 *
 	 * @param minecraftInstance
 	 * @param icon
 	 * @param xPos
@@ -133,7 +133,7 @@ public abstract class ThEStateButton
 	 * @param iconWidth
 	 * @param iconHeight
 	 */
-	protected void drawIcon( final Minecraft minecraftInstance, final IStateIconTexture icon, final int xPos, final int yPos, final int iconWidth,
+	protected void drawIcon(	final Minecraft minecraftInstance, final IStateIconTexture icon, final int xPos, final int yPos, final int iconWidth,
 								final int iconHeight )
 	{
 		// Bind the sheet

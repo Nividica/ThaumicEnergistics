@@ -1,5 +1,7 @@
 package thaumicenergistics.common.features;
 
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -9,17 +11,17 @@ import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.parts.PartVisInterface;
-import thaumicenergistics.common.registries.*;
+import thaumicenergistics.common.registries.FeatureRegistry;
+import thaumicenergistics.common.registries.RecipeRegistry;
+import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 
 /**
  * {@link PartVisInterface} feature.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureVisRelayInterface
 	extends ThEThaumcraftResearchFeature

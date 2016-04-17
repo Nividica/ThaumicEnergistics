@@ -1,18 +1,18 @@
 package thaumicenergistics.common.integration.tc;
 
+import appeng.api.AEApi;
+import appeng.api.storage.data.IAEFluidStack;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.fluids.GaseousEssentia;
 import thaumicenergistics.common.storage.AspectStack;
-import appeng.api.AEApi;
-import appeng.api.storage.data.IAEFluidStack;
 
 /**
  * Aids in converting essentia to and from a fluid.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public final class EssentiaConversionHelper
 {
@@ -31,7 +31,7 @@ public final class EssentiaConversionHelper
 
 	/**
 	 * Converts an AE fluid stack into an AspectStack.
-	 * 
+	 *
 	 * @param fluidStack
 	 * @return Aspect stack if converted, null otherwise.
 	 */
@@ -50,7 +50,7 @@ public final class EssentiaConversionHelper
 
 	/**
 	 * Converts an essentia amount into a fluid amount(mb).
-	 * 
+	 *
 	 * @param essentiaAmount
 	 * @return
 	 */
@@ -61,7 +61,7 @@ public final class EssentiaConversionHelper
 
 	/**
 	 * Converts a fluid amount(mb) into an essentia amount.
-	 * 
+	 *
 	 * @param fluidAmount
 	 * @return
 	 */
@@ -73,7 +73,7 @@ public final class EssentiaConversionHelper
 	/**
 	 * Creates an AE fluid stack from the specified essentia gas. This will
 	 * convert the specified amount from essentia units to fluid units(mb).
-	 * 
+	 *
 	 * @param Aspect
 	 * @param essentiaAmount
 	 * @return
@@ -93,7 +93,7 @@ public final class EssentiaConversionHelper
 	/**
 	 * Creates an AE fluid stack from the specified essentia gas. This will
 	 * convert the specified amount from essentia units to fluid units(mb).
-	 * 
+	 *
 	 * @param essentiaGas
 	 * @param essentiaAmount
 	 * @return
@@ -106,7 +106,7 @@ public final class EssentiaConversionHelper
 	/**
 	 * Creates an AE fluid stack from the specified essentia gas with the amount
 	 * specified.
-	 * 
+	 *
 	 * @param essentiaGas
 	 * @param fluidAmount
 	 * @return

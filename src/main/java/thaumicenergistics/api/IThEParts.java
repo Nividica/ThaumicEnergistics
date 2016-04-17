@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 
 /**
  * Thaumic Energistics AE2 cable parts.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class IThEParts
 {

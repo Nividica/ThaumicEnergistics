@@ -5,14 +5,14 @@ import thaumicenergistics.common.ThaumicEnergistics;
 
 /**
  * Icons from the ThE "states" texture.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public enum ThEStateIconsEnum
 	implements IStateIconTexture
 {
-	SWAP (0, 0);
+		SWAP (0, 0);
 
 	/**
 	 * Location of the AE states texture
@@ -46,7 +46,7 @@ public enum ThEStateIconsEnum
 
 	/**
 	 * Standard icon constructor
-	 * 
+	 *
 	 * @param u
 	 * @param v
 	 */
@@ -57,7 +57,7 @@ public enum ThEStateIconsEnum
 
 	/**
 	 * Icon constructor
-	 * 
+	 *
 	 * @param u
 	 * @param v
 	 * @param width

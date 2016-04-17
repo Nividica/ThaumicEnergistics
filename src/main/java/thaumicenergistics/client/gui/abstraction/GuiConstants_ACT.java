@@ -1,15 +1,15 @@
 package thaumicenergistics.client.gui.abstraction;
 
-import net.minecraft.inventory.Container;
-import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.inventory.Container;
+import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
 
 /**
  * Holds all constants for {@link GuiArcaneCraftingTerminal}
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public abstract class GuiConstants_ACT

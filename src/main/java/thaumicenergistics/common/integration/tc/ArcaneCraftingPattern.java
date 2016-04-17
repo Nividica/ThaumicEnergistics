@@ -66,7 +66,7 @@ public class ArcaneCraftingPattern
 	protected boolean isValid = false;
 
 	/**
-	 * 
+	 *
 	 * @param knowledgeCore
 	 * @param aspects
 	 * @param craftingResult
@@ -104,7 +104,7 @@ public class ArcaneCraftingPattern
 	}
 
 	/**
-	 * 
+	 *
 	 * @param knowledgeCore
 	 * @param data
 	 */
@@ -122,7 +122,7 @@ public class ArcaneCraftingPattern
 
 	/**
 	 * Checks if one item can be substituted for another.
-	 * 
+	 *
 	 * @param target
 	 * @param input
 	 * @return
@@ -268,7 +268,7 @@ public class ArcaneCraftingPattern
 
 	/**
 	 * This includes container items.
-	 * 
+	 *
 	 * @return
 	 */
 	public IAEItemStack[] getAllResults()
@@ -282,7 +282,7 @@ public class ArcaneCraftingPattern
 
 	/**
 	 * Returns the aspect cost for the specified aspect.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getAspectCost( final Aspect aspect )
@@ -292,7 +292,7 @@ public class ArcaneCraftingPattern
 
 	/**
 	 * Returns a cached array of the required aspects for this pattern.
-	 * 
+	 *
 	 * @return
 	 */
 	public Aspect[] getCachedAspects()
@@ -379,7 +379,7 @@ public class ArcaneCraftingPattern
 
 	/**
 	 * Returns the result of the craft.
-	 * 
+	 *
 	 * @return
 	 */
 	public IAEItemStack getResult()
@@ -396,7 +396,7 @@ public class ArcaneCraftingPattern
 
 	/**
 	 * True if the recipe is valid.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isPatternValid()
@@ -647,7 +647,7 @@ public class ArcaneCraftingPattern
 
 	/**
 	 * Sets the knowledge core.
-	 * 
+	 *
 	 * @param knowledgeCore
 	 */
 	public void setKnowledgeCore( final ItemStack knowledgeCore )
@@ -663,7 +663,7 @@ public class ArcaneCraftingPattern
 
 	/**
 	 * Write's the pattern to the NBT tag.
-	 * 
+	 *
 	 * @param data
 	 * @return
 	 */

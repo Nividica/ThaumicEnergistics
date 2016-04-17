@@ -1,5 +1,8 @@
 package thaumicenergistics.common.tiles;
 
+import appeng.api.implementations.tiles.ICrankable;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -8,15 +11,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.common.blocks.BlockGolemGearBox;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.implementations.tiles.ICrankable;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Unbreakable crank.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class TileGearBox
 	extends TileEntity
@@ -112,7 +112,7 @@ public class TileGearBox
 
 	/**
 	 * Constructor used for item rendering.
-	 * 
+	 *
 	 * @param isThaumium
 	 */
 	public TileGearBox( final boolean isThaumium )
@@ -122,7 +122,7 @@ public class TileGearBox
 
 	/**
 	 * Calculates the amount of power to send to each crank.
-	 * 
+	 *
 	 * @return
 	 */
 	private int calculateTransferPower()
@@ -169,7 +169,7 @@ public class TileGearBox
 
 	/**
 	 * Reads Server->Client sync data from the specified NBT tag.
-	 * 
+	 *
 	 * @param data
 	 */
 	private void readSyncData( final NBTTagCompound data )
@@ -209,7 +209,7 @@ public class TileGearBox
 	 * Applies the specified power to each shaft.
 	 * Once a shaft has enough stored power, it applies a turn to
 	 * its crankable.
-	 * 
+	 *
 	 * @param powerTransfered
 	 */
 	private void updateShafts( final int powerTransfered )
@@ -239,7 +239,7 @@ public class TileGearBox
 
 	/**
 	 * Writes Server->Client sync data to the specified NBT tag.
-	 * 
+	 *
 	 * @param data
 	 */
 	private void writeSyncDataToNBT( final NBTTagCompound data )
@@ -287,7 +287,7 @@ public class TileGearBox
 
 	/**
 	 * Cranks the gearbox.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean crankGearbox()
@@ -344,7 +344,7 @@ public class TileGearBox
 
 	/**
 	 * Returns true if this is a thaumium gearbox, false if iron gearbox.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isThaumiumGearbox()
@@ -369,14 +369,14 @@ public class TileGearBox
 	{
 		// Call super
 		super.readFromNBT( data );
-
+	
 		// Read crankables
 		this.readSyncData( data );
 	}*/
 
 	/**
 	 * Locates attached crankables.
-	 * 
+	 *
 	 * @return Number of attached crankables found.
 	 */
 	public void updateCrankables()
@@ -474,7 +474,7 @@ public class TileGearBox
 	{
 		// Call super
 		super.writeToNBT( data );
-
+	
 		// Write sync data
 		this.writeSyncDataToNBT( data );
 	}

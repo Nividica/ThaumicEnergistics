@@ -1,5 +1,8 @@
 package thaumicenergistics.common;
 
+import appeng.api.AEApi;
+import appeng.api.movable.IMovableRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.common.config.ConfigItems;
@@ -9,15 +12,12 @@ import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.items.ItemMaterial;
 import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.tiles.TileEnum;
-import appeng.api.AEApi;
-import appeng.api.movable.IMovableRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Proxy shared by both client and server.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class CommonProxy
 {

@@ -1,12 +1,12 @@
 package thaumicenergistics.common.integration.tc;
 
+import appeng.api.config.Actionable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
 import thaumicenergistics.api.tiles.IEssentiaTransportWithSimulate;
-import appeng.api.config.Actionable;
 
 public class EssentiaTransportHelper
 {
@@ -23,7 +23,7 @@ public class EssentiaTransportHelper
 		// Intentionally Empty
 	}
 
-	public void takeEssentiaFromTransportNeighbors( final IEssentiaTransportWithSimulate destination, final World world, final int x, final int y,
+	public void takeEssentiaFromTransportNeighbors(	final IEssentiaTransportWithSimulate destination, final World world, final int x, final int y,
 													final int z )
 	{
 		// Null checks

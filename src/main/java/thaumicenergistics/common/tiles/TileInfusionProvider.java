@@ -10,9 +10,9 @@ import thaumicenergistics.common.tiles.abstraction.TileProviderBase;
 
 /**
  * Provides essentia to devices via Infusion mechanics.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class TileInfusionProvider
 	extends TileProviderBase
@@ -20,7 +20,7 @@ public class TileInfusionProvider
 {
 	/**
 	 * Shows runes on the infusion provider.
-	 * 
+	 *
 	 * @param aspectColor
 	 */
 	private void doParticalFX( final int aspectColor )

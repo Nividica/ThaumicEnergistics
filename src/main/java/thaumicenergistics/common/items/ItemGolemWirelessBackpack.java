@@ -1,6 +1,10 @@
 package thaumicenergistics.common.items;
 
 import java.util.List;
+import appeng.api.features.INetworkEncodable;
+import appeng.core.localization.GuiText;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -8,16 +12,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ThEStrings;
-import appeng.api.features.INetworkEncodable;
-import appeng.core.localization.GuiText;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Gives golems access to the AE network.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ItemGolemWirelessBackpack
 	extends Item
@@ -53,7 +53,7 @@ public class ItemGolemWirelessBackpack
 
 		/**
 		 * Private constructor
-		 * 
+		 *
 		 * @param ID
 		 */
 		private BackpackSkins( final String ID )
@@ -63,7 +63,7 @@ public class ItemGolemWirelessBackpack
 
 		/**
 		 * Gets the texture for this skin.
-		 * 
+		 *
 		 * @return
 		 */
 		public ResourceLocation getTextureLocation()

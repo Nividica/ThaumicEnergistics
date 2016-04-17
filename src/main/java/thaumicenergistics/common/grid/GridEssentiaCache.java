@@ -2,12 +2,7 @@ package thaumicenergistics.common.grid;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import net.minecraft.item.ItemStack;
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.grid.*;
-import thaumicenergistics.api.storage.IAspectStack;
-import thaumicenergistics.common.items.ItemCraftingAspect;
-import thaumicenergistics.common.items.ItemEnum;
+import com.google.common.collect.ImmutableSet;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -27,13 +22,18 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import com.google.common.collect.ImmutableSet;
+import net.minecraft.item.ItemStack;
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.grid.*;
+import thaumicenergistics.api.storage.IAspectStack;
+import thaumicenergistics.common.items.ItemCraftingAspect;
+import thaumicenergistics.common.items.ItemEnum;
 
 /**
  * Creates an essentia monitor for the attached grid.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class GridEssentiaCache
 	extends EssentiaMonitor
@@ -65,9 +65,7 @@ public class GridEssentiaCache
 			for( IAEItemStack stack : change )
 			{
 				// Is the stack craftable, has NBT tag, and is a crafting aspect?
-				if( stack.isCraftable()
-								&& stack.hasTagCompound()
-								&& ( stack.getItem() instanceof ItemCraftingAspect ) )
+				if( stack.isCraftable() && stack.hasTagCompound() && ( stack.getItem() instanceof ItemCraftingAspect ) )
 				{
 					GridEssentiaCache.this.markForUpdate();
 					break;
@@ -97,7 +95,7 @@ public class GridEssentiaCache
 
 		/**
 		 * Adds a watcher.
-		 * 
+		 *
 		 * @param node
 		 * @param watcher
 		 */
@@ -147,7 +145,7 @@ public class GridEssentiaCache
 
 		/**
 		 * Called by watchers just before they are cleared.
-		 * 
+		 *
 		 * @param watcher
 		 * @param previouslyTrackedAspects
 		 */
@@ -161,7 +159,7 @@ public class GridEssentiaCache
 
 		/**
 		 * Called by watchers when an aspect is no longer to be tracked.
-		 * 
+		 *
 		 * @param watcher
 		 * @param aspect
 		 */
@@ -222,7 +220,7 @@ public class GridEssentiaCache
 
 		/**
 		 * Removes a watcher.
-		 * 
+		 *
 		 * @param node
 		 */
 		public void removeWatcher( final IGridNode node )
@@ -332,9 +330,7 @@ public class GridEssentiaCache
 			}
 
 			// Is the stack craftable, has NBT tag, and is a crafting aspect?
-			if( stack.isCraftable()
-							&& stack.hasTagCompound()
-							&& ( stack.getItem() instanceof ItemCraftingAspect ) )
+			if( stack.isCraftable() && stack.hasTagCompound() && ( stack.getItem() instanceof ItemCraftingAspect ) )
 			{
 				// Get the aspect
 				Aspect aspect = ItemCraftingAspect.getAspect( stack.getTagCompound().getNBTTagCompoundCopy() );

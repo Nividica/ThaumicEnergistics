@@ -1,5 +1,12 @@
 package thaumicenergistics.common.entities;
 
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -10,19 +17,12 @@ import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.common.grid.WirelessAELink;
 import thaumicenergistics.common.integration.tc.GolemUpgradeTypes;
 import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
 
 /**
  * Base AI script for golems wearing the {@link ItemGolemWirelessBackpack}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class AIAENetworkGolem
 	extends EntityAIBase
@@ -102,7 +102,7 @@ public abstract class AIAENetworkGolem
 		/**
 		 * Attempts to deposit the itemstack into the AE system.
 		 * The {@code stack.stacksize} will change according to how many items were left over after the deposit.
-		 * 
+		 *
 		 * @param stack
 		 */
 		public void depositStack( final ItemStack stack )
@@ -134,7 +134,7 @@ public abstract class AIAENetworkGolem
 
 		/**
 		 * Extracts essentia from the network.
-		 * 
+		 *
 		 * @param aspect
 		 * @param amount
 		 * @param mode
@@ -155,7 +155,7 @@ public abstract class AIAENetworkGolem
 
 		/**
 		 * Extracts fluids from the network.
-		 * 
+		 *
 		 * @param target
 		 * @return
 		 */
@@ -209,7 +209,7 @@ public abstract class AIAENetworkGolem
 
 		/**
 		 * Extracts items from the network.
-		 * 
+		 *
 		 * @param target
 		 * @return Extracted stack.
 		 */
@@ -240,7 +240,7 @@ public abstract class AIAENetworkGolem
 
 		/**
 		 * Inserts essentia into the network.
-		 * 
+		 *
 		 * @param aspect
 		 * @param amount
 		 * @return Amount injected
@@ -266,7 +266,7 @@ public abstract class AIAENetworkGolem
 
 		/**
 		 * Checks if the network can be interacted with.
-		 * 
+		 *
 		 * @return
 		 */
 		@Override
@@ -280,21 +280,6 @@ public abstract class AIAENetworkGolem
 	}
 
 	private static final int NETWORK_COOLDOWN = 20;
-
-	/**
-	 * How many ticks until the golem can interact with the network again.
-	 */
-	private int actionTimer = 0;
-
-	/**
-	 * Handles AE network communication.
-	 */
-	public final NetworkHandler network;
-
-	/**
-	 * The golem the script is attached to.
-	 */
-	protected final EntityGolemBase golem;
 
 	/**
 	 * <PRE>
@@ -319,6 +304,21 @@ public abstract class AIAENetworkGolem
 	 * </PRE>
 	 */
 	private static final int[] ESS_RATES = new int[] { 4, 12, 16 };
+
+	/**
+	 * How many ticks until the golem can interact with the network again.
+	 */
+	private int actionTimer = 0;
+
+	/**
+	 * Handles AE network communication.
+	 */
+	public final NetworkHandler network;
+
+	/**
+	 * The golem the script is attached to.
+	 */
+	protected final EntityGolemBase golem;
 
 	public AIAENetworkGolem( final EntityGolemBase golem, final WirelessGolemHandler.WirelessServerData wsd )
 	{
@@ -350,7 +350,7 @@ public abstract class AIAENetworkGolem
 
 	/**
 	 * Called to decrement the action timer.
-	 * 
+	 *
 	 * @return True if cooled down.
 	 */
 	private boolean cooledDown()
@@ -364,7 +364,7 @@ public abstract class AIAENetworkGolem
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void restartNetworkCooldown()
 	{
@@ -374,7 +374,7 @@ public abstract class AIAENetworkGolem
 
 	/**
 	 * Return true if network interaction is required this update.
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract boolean needsNetworkNow();

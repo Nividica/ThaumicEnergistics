@@ -6,9 +6,9 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Wrapper class to pass validation to inventory
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class SlotRestrictive
 	extends Slot
@@ -17,7 +17,7 @@ public class SlotRestrictive
 
 	/**
 	 * Create the slot.
-	 * 
+	 *
 	 * @param inventory
 	 * Inventory it belongs to.
 	 * @param index

@@ -2,22 +2,22 @@ package thaumicenergistics.api.grid;
 
 import java.util.Collection;
 import javax.annotation.Nonnull;
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.storage.IAspectStack;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.storage.IAspectStack;
 
 /**
  * Provides access to essentia storage.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public interface IMEEssentiaMonitor
 {
 	/**
 	 * Adds a listener to the essentia grid.
-	 * 
+	 *
 	 * @param listener
 	 * @param verificationToken
 	 * Token used to verify the receiver is still valid, and wants to continue receiving events.
@@ -26,7 +26,7 @@ public interface IMEEssentiaMonitor
 
 	/**
 	 * Extract the specified essentia from the network.<br>
-	 * 
+	 *
 	 * @param aspect
 	 * @param amount
 	 * @param mode
@@ -39,7 +39,7 @@ public interface IMEEssentiaMonitor
 
 	/**
 	 * Returns the how much of the specified essentia is in the network.
-	 * 
+	 *
 	 * @param aspect
 	 * @return
 	 */
@@ -47,7 +47,7 @@ public interface IMEEssentiaMonitor
 
 	/**
 	 * Gets the list of essentia in the network.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nonnull
@@ -55,7 +55,7 @@ public interface IMEEssentiaMonitor
 
 	/**
 	 * Inject the specified essentia into the network.<br>
-	 * 
+	 *
 	 * @param aspect
 	 * @param amount
 	 * @param mode
@@ -68,7 +68,7 @@ public interface IMEEssentiaMonitor
 
 	/**
 	 * Removes a listener from the essentia grid.
-	 * 
+	 *
 	 * @param listener
 	 */
 	public void removeListener( @Nonnull IMEEssentiaMonitorReceiver listener );

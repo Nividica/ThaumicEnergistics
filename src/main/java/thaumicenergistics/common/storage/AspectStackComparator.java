@@ -5,9 +5,9 @@ import thaumicenergistics.api.storage.IAspectStack;
 
 /**
  * Compares one aspect stack against another.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class AspectStackComparator
 	implements Comparator<IAspectStack>
@@ -15,9 +15,9 @@ public class AspectStackComparator
 
 	/**
 	 * Modes of comparison
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	public enum AspectStackComparatorMode
 	{
@@ -38,7 +38,7 @@ public class AspectStackComparator
 
 		/**
 		 * Returns the next mode of comparison.
-		 * 
+		 *
 		 * @return
 		 */
 		public AspectStackComparatorMode nextMode()
@@ -48,7 +48,7 @@ public class AspectStackComparator
 
 		/**
 		 * Returns the previous mode of comparison.
-		 * 
+		 *
 		 * @return
 		 */
 		public AspectStackComparatorMode previousMode()
@@ -73,7 +73,7 @@ public class AspectStackComparator
 	/**
 	 * Creates the comparator with specified sorting mode.
 	 * If the mode is unrecognized, the list will not be sorted.
-	 * 
+	 *
 	 * @param mode
 	 * Mode to sort by.
 	 */
@@ -84,7 +84,7 @@ public class AspectStackComparator
 
 	/**
 	 * Compares the two stacks by amount.
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @return
@@ -96,7 +96,7 @@ public class AspectStackComparator
 
 	/**
 	 * Compares the two stacks by name
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @return
@@ -137,7 +137,7 @@ public class AspectStackComparator
 
 	/**
 	 * Sets the mode of comparison.
-	 * 
+	 *
 	 * @param mode
 	 */
 	public void setMode( final AspectStackComparatorMode mode )

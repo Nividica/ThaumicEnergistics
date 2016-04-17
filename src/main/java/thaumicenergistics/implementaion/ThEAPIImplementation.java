@@ -4,34 +4,34 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import com.google.common.collect.ImmutableList;
+import cpw.mods.fml.common.LoaderState;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.*;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.fluids.GaseousEssentia;
 import thaumicenergistics.common.utils.ThELog;
-import com.google.common.collect.ImmutableList;
-import cpw.mods.fml.common.LoaderState;
 
 /**
  * Implements {@link ThEApi}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ThEAPIImplementation
 	extends ThEApi
 {
+	/**
+	 * Create the API instance.
+	 */
+	private static ThEAPIImplementation INSTANCE = null;
 	private final ThEBlocks blocks;
 	private final ThEItems items;
 	private final ThEParts parts;
 	private final List<IThEEssentiaGas> essentiaGases;
 	private final ThETransportPermissions transportPermissions;
-	private final ThEInteractionHelper interactionHelper;
 
-	/**
-	 * Create the API instance.
-	 */
-	private static ThEAPIImplementation INSTANCE = null;
+	private final ThEInteractionHelper interactionHelper;
 
 	/**
 	 * Private constructor
@@ -48,7 +48,7 @@ public class ThEAPIImplementation
 
 	/**
 	 * Checks if ThE has finished the preinit phase.
-	 * 
+	 *
 	 * @return
 	 */
 	protected static boolean hasFinishedPreInit()

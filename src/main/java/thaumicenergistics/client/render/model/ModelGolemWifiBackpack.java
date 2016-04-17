@@ -1,22 +1,22 @@
 package thaumicenergistics.client.render.model;
 
+import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
-import org.lwjgl.opengl.GL11;
 import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
 import thaumicenergistics.common.items.ItemGolemWirelessBackpack.BackpackSkins;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link ItemGolemWirelessBackpack} model.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class ModelGolemWifiBackpack
@@ -183,7 +183,7 @@ public class ModelGolemWifiBackpack
 	}
 
 	@Override
-	public void render( final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4,
+	public void render(	final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4,
 						final float f5 )
 	{
 		this.render( 0.03f, f5, true, BackpackSkins.Thaumium );

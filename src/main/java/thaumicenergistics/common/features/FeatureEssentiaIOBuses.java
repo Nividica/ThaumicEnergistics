@@ -1,6 +1,8 @@
 package thaumicenergistics.common.features;
 
 import java.util.ArrayList;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -12,17 +14,17 @@ import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.parts.PartEssentiaExportBus;
 import thaumicenergistics.common.parts.PartEssentiaImportBus;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
-import thaumicenergistics.common.registries.*;
+import thaumicenergistics.common.registries.FeatureRegistry;
+import thaumicenergistics.common.registries.RecipeRegistry;
+import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 
 /**
  * {@link PartEssentiaImportBus}, {@link PartEssentiaExportBus}, and {@link PartEssentiaStorageBus} feature.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureEssentiaIOBuses
 	extends ThEThaumcraftResearchFeature
@@ -95,7 +97,8 @@ public class FeatureEssentiaIOBuses
 			Object[] recipeImportBus = new Object[] { "JDJ", "IFI", 'J', cdi.WardedJar, 'D', DiffusionCore, 'I', cdi.IronIngot, 'F', cdi.FilterTube };
 
 			// Export Bus recipe
-			Object[] recipeExportBus = new Object[] { "JCJ", "IFI", 'J', cdi.WardedJar, 'C', CoalescenceCore, 'I', cdi.IronIngot, 'F', cdi.FilterTube };
+			Object[] recipeExportBus = new Object[] { "JCJ", "IFI", 'J', cdi.WardedJar, 'C', CoalescenceCore, 'I', cdi.IronIngot, 'F',
+							cdi.FilterTube };
 
 			// Register Import Bus
 			RecipeRegistry.PART_IMPORT_BUS = ThaumcraftApi.addArcaneCraftingRecipe( this.researchKey, EssentiaImportBus,

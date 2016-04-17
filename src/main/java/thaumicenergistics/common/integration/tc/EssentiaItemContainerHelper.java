@@ -1,9 +1,9 @@
 package thaumicenergistics.common.integration.tc;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
@@ -26,9 +26,9 @@ import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
 
 /**
  * Helper class for working with Thaumcraft item essentia containers.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public final class EssentiaItemContainerHelper
 {
@@ -95,7 +95,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Gets the first aspect contained in the IEssentiaContainerItem. Ignores the whitelist.
-	 * 
+	 *
 	 * @param itemStack
 	 * @return
 	 */
@@ -120,7 +120,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Returns an itemstack with a single empty jar
-	 * 
+	 *
 	 * @param metadata
 	 * @return
 	 */
@@ -132,7 +132,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Returns an itemstack with a single empty phial
-	 * 
+	 *
 	 * @return
 	 */
 	public ItemStack createEmptyPhial()
@@ -143,7 +143,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Returns an itemstack with a single filled jar.
-	 * 
+	 *
 	 * @param aspect
 	 * @param amount
 	 * @param metadata
@@ -193,7 +193,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Returns an itemstack with a single filled phial.
-	 * 
+	 *
 	 * @param aspect
 	 * @return
 	 */
@@ -215,7 +215,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Returns true if the jar has a label, false if it does not.
-	 * 
+	 *
 	 * @param jar
 	 * @return
 	 */
@@ -228,7 +228,7 @@ public final class EssentiaItemContainerHelper
 	/**
 	 * Extracts essentia from the specified container using the
 	 * aspect and amount specified by the AspectStack.
-	 * 
+	 *
 	 * @param container
 	 * @param aspectStack
 	 * @return
@@ -347,7 +347,7 @@ public final class EssentiaItemContainerHelper
 	/**
 	 * Extracts essentia from the specified container using the
 	 * aspect in the container, and the amount(in essentia units).
-	 * 
+	 *
 	 * @param container
 	 * @param drainAmount_EU
 	 * @return
@@ -370,7 +370,7 @@ public final class EssentiaItemContainerHelper
 	/**
 	 * Gets the aspect on the label.
 	 * Can return null.
-	 * 
+	 *
 	 * @param label
 	 * @return
 	 */
@@ -400,7 +400,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Returns the aspect in the container, or null if empty or invalid container.
-	 * 
+	 *
 	 * @param itemStack
 	 * @return
 	 */
@@ -418,7 +418,7 @@ public final class EssentiaItemContainerHelper
 	/**
 	 * Gets an {@link AspectStack} representing the essentia and
 	 * amount in the container.
-	 * 
+	 *
 	 * @param container
 	 * @return AspectStack can read container, null otherwise.
 	 */
@@ -441,7 +441,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Gets the maximum amount the specified container can hold
-	 * 
+	 *
 	 * @param container
 	 * @return
 	 */
@@ -469,7 +469,7 @@ public final class EssentiaItemContainerHelper
 	/**
 	 * Gets the information about the container as it was registered to the
 	 * whitelist.
-	 * 
+	 *
 	 * @param item
 	 * @param metadata
 	 * @return
@@ -488,7 +488,7 @@ public final class EssentiaItemContainerHelper
 	/**
 	 * Gets the information about the container as it was registered to the
 	 * whitelist.
-	 * 
+	 *
 	 * @param itemstack
 	 * @return
 	 */
@@ -505,7 +505,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Gets the amount stored in the container.
-	 * 
+	 *
 	 * @param container
 	 * @return
 	 */
@@ -536,7 +536,7 @@ public final class EssentiaItemContainerHelper
 	/**
 	 * Returns the aspect of of the specified item. This method supports jars, jar labels and crystallized essentia.
 	 * This should not be used to validate a container.
-	 * 
+	 *
 	 * @param itemStack
 	 * @return Aspect if container has one, null otherwise.
 	 */
@@ -565,7 +565,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Gets the aspect type of the item.
-	 * 
+	 *
 	 * @param itemStack
 	 * @return
 	 */
@@ -618,7 +618,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Gets the aspect represented by a jar's label.
-	 * 
+	 *
 	 * @param jar
 	 * @return
 	 */
@@ -646,7 +646,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Creates a copy of the container filled with the additional gas.
-	 * 
+	 *
 	 * @param container
 	 * @param aspectStack
 	 * @return The amount that was inject, and the new container.
@@ -794,7 +794,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Checks if the specified itemstack represents an empty container.
-	 * 
+	 *
 	 * @param container
 	 * @return
 	 */
@@ -805,7 +805,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Checks if the specified itemstack represents a non-empty container.
-	 * 
+	 *
 	 * @param container
 	 * @return
 	 */
@@ -817,7 +817,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Quick check to see if the item is whitelisted.
-	 * 
+	 *
 	 * @param item
 	 * @param metadata
 	 * @return
@@ -829,7 +829,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Quick check to see if the itemstack is whitelisted.
-	 * 
+	 *
 	 * @param item
 	 * @return
 	 */
@@ -854,12 +854,13 @@ public final class EssentiaItemContainerHelper
 		this.perms.addEssentiaContainerItemToTransportPermissions( ItemJarFilled.class, JAR_CAPACITY, 3, true );
 
 		// Vibration chamber
-		this.perms.addEssentiaContainerItemToTransportPermissions( ItemBlockEssentiaVibrationChamber.class, TileEVCBase.MAX_ESSENTIA_STORED, 0, true );
+		this.perms.addEssentiaContainerItemToTransportPermissions( ItemBlockEssentiaVibrationChamber.class, TileEVCBase.MAX_ESSENTIA_STORED, 0,
+			true );
 	}
 
 	/**
 	 * Sets the specified jar's label.
-	 * 
+	 *
 	 * @param jar
 	 * @param OverrideAspect
 	 * Override existing label and use this aspect. Can be null to use existing
@@ -904,7 +905,7 @@ public final class EssentiaItemContainerHelper
 
 	/**
 	 * Sets a labels aspect
-	 * 
+	 *
 	 * @param label
 	 * The itemstack is modified.
 	 * @param aspect

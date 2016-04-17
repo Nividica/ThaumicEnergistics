@@ -1,5 +1,12 @@
 package thaumicenergistics.common.parts;
 
+import appeng.api.config.Actionable;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,19 +19,12 @@ import thaumcraft.common.tiles.TileJarFillableVoid;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
-import appeng.api.config.Actionable;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.PartItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Exports essentia into {@link IAspectContainer}
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class PartEssentiaExportBus
 	extends ThEPartEssentiaIOBus_Base
@@ -81,7 +81,8 @@ public class PartEssentiaExportBus
 			// Can we inject any of this into the container
 			if( EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer( this.facingContainer, 1, filterAspect, Actionable.SIMULATE ) <= 0 )
 			{
-				if( !( ( this.isVoidAllowed ) && ( EssentiaTileContainerHelper.INSTANCE.getAspectInContainer( this.facingContainer ) == filterAspect ) ) )
+				if( !( ( this.isVoidAllowed ) &&
+								( EssentiaTileContainerHelper.INSTANCE.getAspectInContainer( this.facingContainer ) == filterAspect ) ) )
 				{
 					// Container will not accept any of this, and cannot void(essentia type wrong)
 					continue;
@@ -166,7 +167,7 @@ public class PartEssentiaExportBus
 
 	/**
 	 * Returns if voiding is allowed.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -289,7 +290,7 @@ public class PartEssentiaExportBus
 		helper.setBounds( 5.0F, 5.0F, 14.5F, 11.0F, 11.0F, 15.0F );
 		helper.renderBlock( x, y, z, renderer );
 
-		// Setup the face texture	
+		// Setup the face texture
 		helper.setTexture( busSideTexture, busSideTexture, busSideTexture, BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[0], busSideTexture,
 			busSideTexture );
 

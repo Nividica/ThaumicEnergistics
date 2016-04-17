@@ -1,6 +1,7 @@
 package thaumicenergistics.common.integration;
 
 import java.util.List;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
@@ -13,13 +14,12 @@ import net.minecraft.world.World;
 import thaumicenergistics.common.blocks.AbstractBlockProviderBase;
 import thaumicenergistics.common.blocks.BlockArcaneAssembler;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
-import cpw.mods.fml.common.event.FMLInterModComms;
 
 /**
  * What Am I Looking At integration.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ModuleWaila
 	implements IWailaDataProvider
@@ -44,7 +44,7 @@ public class ModuleWaila
 
 	/**
 	 * Called by Waila to register our hooks.
-	 * 
+	 *
 	 * @param registrar
 	 */
 	public static void callbackRegister( final IWailaRegistrar registrar )
@@ -60,7 +60,7 @@ public class ModuleWaila
 	}
 
 	@Override
-	public NBTTagCompound getNBTData( final EntityPlayerMP player, final TileEntity tileEntity, final NBTTagCompound data, final World world,
+	public NBTTagCompound getNBTData(	final EntityPlayerMP player, final TileEntity tileEntity, final NBTTagCompound data, final World world,
 										final int x, final int y, final int z )
 	{
 		// Ignored
@@ -71,7 +71,7 @@ public class ModuleWaila
 	 * Changes the body of the Waila message.
 	 */
 	@Override
-	public List<String> getWailaBody( final ItemStack itemStack, final List<String> tooltip, final IWailaDataAccessor accessor,
+	public List<String> getWailaBody(	final ItemStack itemStack, final List<String> tooltip, final IWailaDataAccessor accessor,
 										final IWailaConfigHandler config )
 	{
 		// Get the tile entity
@@ -88,7 +88,7 @@ public class ModuleWaila
 	}
 
 	@Override
-	public List<String> getWailaHead( final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor,
+	public List<String> getWailaHead(	final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor,
 										final IWailaConfigHandler config )
 	{
 		// Ignored
@@ -103,7 +103,7 @@ public class ModuleWaila
 	}
 
 	@Override
-	public List<String> getWailaTail( final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor,
+	public List<String> getWailaTail(	final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor,
 										final IWailaConfigHandler config )
 	{
 		// Ignored

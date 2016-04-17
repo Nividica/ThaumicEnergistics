@@ -1,14 +1,14 @@
 package thaumicenergistics.common.integration.tc;
 
 import java.util.HashMap;
-import thaumcraft.api.aspects.Aspect;
 import cpw.mods.fml.common.ModContainer;
+import thaumcraft.api.aspects.Aspect;
 
 /**
  * Manages hooks inserted into Thaumcraft's {@code Aspect} class.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class AspectHooks
 {
@@ -21,7 +21,7 @@ public class AspectHooks
 
 	/**
 	 * Called from the constructor.
-	 * 
+	 *
 	 * @param aspect
 	 */
 	public static void hook_AspectInit( final Aspect aspect )

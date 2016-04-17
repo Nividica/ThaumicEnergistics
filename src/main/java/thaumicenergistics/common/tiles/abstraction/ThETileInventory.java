@@ -9,9 +9,9 @@ import thaumicenergistics.common.inventory.TheInternalInventory;
 /**
  * Base for tiles with inventories.
  * Note: The inventory is not automatically saved to NBT.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class ThETileInventory
 	extends TileEntity

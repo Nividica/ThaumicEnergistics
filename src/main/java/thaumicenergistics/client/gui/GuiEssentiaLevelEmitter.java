@@ -1,11 +1,14 @@
 package thaumicenergistics.client.gui;
 
 import java.util.List;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+import appeng.api.config.RedstoneMode;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSlotGui;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
@@ -18,15 +21,12 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaEmitter;
 import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
-import appeng.api.config.RedstoneMode;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartEssentiaLevelEmitter} GUI
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaLevelEmitter
@@ -180,7 +180,7 @@ public class GuiEssentiaLevelEmitter
 
 	/**
 	 * Create the GUI.
-	 * 
+	 *
 	 * @param part
 	 * AE part associated with the gui.
 	 * @param player
@@ -293,7 +293,8 @@ public class GuiEssentiaLevelEmitter
 		if( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
 		{
 			// Pass to the widget
-			this.aspectFilterSlot.mouseClicked( EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() ) );
+			this.aspectFilterSlot
+							.mouseClicked( EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() ) );
 		}
 	}
 
@@ -402,7 +403,8 @@ public class GuiEssentiaLevelEmitter
 				int buttonIndex = ( row * 3 ) + column;
 
 				// Calculate the x position of the button
-				int xPos = ( ( this.guiLeft + GuiEssentiaLevelEmitter.BUTTON_POS_X ) + ( column * ( GuiEssentiaLevelEmitter.BUTTON_WIDTH + GuiEssentiaLevelEmitter.BUTTON_PADDING_HORZ ) ) );
+				int xPos = ( ( this.guiLeft + GuiEssentiaLevelEmitter.BUTTON_POS_X ) +
+								( column * ( GuiEssentiaLevelEmitter.BUTTON_WIDTH + GuiEssentiaLevelEmitter.BUTTON_PADDING_HORZ ) ) );
 
 				this.buttonList.add( new GuiButton( buttonIndex, xPos, yPos, GuiEssentiaLevelEmitter.BUTTON_WIDTH,
 								GuiEssentiaLevelEmitter.BUTTON_HEIGHT, GuiEssentiaLevelEmitter.BUTTON_LABELS[buttonIndex] ) );
@@ -427,7 +429,7 @@ public class GuiEssentiaLevelEmitter
 
 	/**
 	 * Sets the redstone mode
-	 * 
+	 *
 	 * @param mode
 	 */
 	public void onReceiveRedstoneMode( final RedstoneMode mode )
@@ -437,7 +439,7 @@ public class GuiEssentiaLevelEmitter
 
 	/**
 	 * Returns the amount
-	 * 
+	 *
 	 * @param amount
 	 */
 	public void onReceiveThresholdValue( final long amount )

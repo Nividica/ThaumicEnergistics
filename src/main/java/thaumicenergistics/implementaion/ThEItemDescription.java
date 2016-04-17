@@ -7,9 +7,9 @@ import thaumicenergistics.api.IThEItemDescription;
 
 /**
  * Implements {@link IThEItemDescription}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ThEItemDescription
 	implements IThEItemDescription

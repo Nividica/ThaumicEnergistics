@@ -5,9 +5,9 @@ import thaumicenergistics.common.blocks.BlockEnum;
 
 /**
  * Implements {@link IThEBlocks}
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 class ThEBlocks
 	extends IThEBlocks

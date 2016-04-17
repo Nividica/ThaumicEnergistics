@@ -17,9 +17,9 @@ import thaumicenergistics.common.tiles.TileGearBox;
 
 /**
  * {@link TileGearBox} feature.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureGearbox
 	extends ThEThaumcraftResearchFeature

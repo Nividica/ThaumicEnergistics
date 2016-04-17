@@ -2,6 +2,8 @@ package thaumicenergistics.common.container;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import appeng.api.AEApi;
+import appeng.container.slot.SlotFake;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -20,14 +22,12 @@ import thaumicenergistics.common.items.ItemCraftingAspect;
 import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.AEApi;
-import appeng.container.slot.SlotFake;
 
 /**
  * {@link TileDistillationPatternEncoder} container.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ContainerDistillationPatternEncoder
 	extends ContainerWithPlayerInventory
@@ -114,7 +114,7 @@ public class ContainerDistillationPatternEncoder
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param player
 	 * @param world
 	 * @param x
@@ -193,7 +193,7 @@ public class ContainerDistillationPatternEncoder
 	/**
 	 * Returns true if the transfer was handled.
 	 * Assumes that clickedslot has an itemstack.
-	 * 
+	 *
 	 * @param clickedSlot
 	 * @return
 	 */
@@ -263,7 +263,7 @@ public class ContainerDistillationPatternEncoder
 
 	/**
 	 * Called when the source item has changed.
-	 * 
+	 *
 	 * @param setSelectedAspect
 	 */
 	private void scanSourceItem( final boolean setSelectedAspect )
@@ -366,7 +366,7 @@ public class ContainerDistillationPatternEncoder
 
 	/**
 	 * Set's the selected aspect stack.
-	 * 
+	 *
 	 * @param aspectStack
 	 */
 	protected void setSelectedAspect( final ItemStack aspectStack )
@@ -411,7 +411,7 @@ public class ContainerDistillationPatternEncoder
 
 	/**
 	 * Returns the player for this container.
-	 * 
+	 *
 	 * @return
 	 */
 	public EntityPlayer getPlayer()

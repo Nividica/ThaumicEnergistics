@@ -1,18 +1,18 @@
 package thaumicenergistics.client.gui.widget;
 
 import java.util.List;
-import net.minecraft.client.gui.Gui;
 import org.lwjgl.opengl.GL11;
-import thaumicenergistics.api.gui.IWidgetHost;
-import thaumicenergistics.client.gui.ThEGuiHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.Gui;
+import thaumicenergistics.api.gui.IWidgetHost;
+import thaumicenergistics.client.gui.ThEGuiHelper;
 
 /**
  * Base class of ThE widgets.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public abstract class ThEWidget

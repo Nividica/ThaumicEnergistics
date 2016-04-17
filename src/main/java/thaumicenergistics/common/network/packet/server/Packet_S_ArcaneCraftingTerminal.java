@@ -1,5 +1,9 @@
 package thaumicenergistics.common.network.packet.server;
 
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
+import appeng.api.storage.data.IAEItemStack;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
@@ -7,16 +11,12 @@ import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.registries.EnumCache;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
-import appeng.api.storage.data.IAEItemStack;
 
 /**
  * {@link PartArcaneCraftingTerminal} server-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_S_ArcaneCraftingTerminal
 	extends ThEServerPacket
@@ -76,7 +76,7 @@ public class Packet_S_ArcaneCraftingTerminal
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -95,7 +95,7 @@ public class Packet_S_ArcaneCraftingTerminal
 
 	/**
 	 * Create a packet to request to autocraft the specified item.
-	 * 
+	 *
 	 * @param player
 	 * @param result
 	 * @return
@@ -114,7 +114,7 @@ public class Packet_S_ArcaneCraftingTerminal
 	/**
 	 * Create a packet to request that the crafting grid be cleared.
 	 * the ME network. Use only when needed.
-	 * 
+	 *
 	 * @param player
 	 */
 	public static void sendClearGrid( final EntityPlayer player )
@@ -128,7 +128,7 @@ public class Packet_S_ArcaneCraftingTerminal
 	/**
 	 * Creates a packet letting the server know the user would like to
 	 * deposition whatever they are holding into the ME network.
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -146,7 +146,7 @@ public class Packet_S_ArcaneCraftingTerminal
 	/**
 	 * Create a packet requesting that a region(inventory) be deposited into the
 	 * ME network.
-	 * 
+	 *
 	 * @param player
 	 * @param slotNumber
 	 * @return
@@ -165,13 +165,13 @@ public class Packet_S_ArcaneCraftingTerminal
 	/**
 	 * Creates a packet letting the server know the user would like to
 	 * extract the specified itemstack from the ME network.
-	 * 
+	 *
 	 * @param player
 	 * @param itemStack
 	 * @param mouseButton
 	 * @return
 	 */
-	public static void sendExtract( final EntityPlayer player, final IAEItemStack itemStack, final int mouseButton,
+	public static void sendExtract(	final EntityPlayer player, final IAEItemStack itemStack, final int mouseButton,
 									final boolean isShiftHeld )
 	{
 		Packet_S_ArcaneCraftingTerminal packet = newPacket( player, MODE_REQUEST_EXTRACTION );
@@ -193,7 +193,7 @@ public class Packet_S_ArcaneCraftingTerminal
 	 * Create a packet in full list mode.
 	 * This will request a full list of all items in
 	 * the ME network. Use only when needed.
-	 * 
+	 *
 	 * @param player
 	 */
 	public static void sendFullListRequest( final EntityPlayer player )
@@ -206,13 +206,13 @@ public class Packet_S_ArcaneCraftingTerminal
 
 	/**
 	 * Create a packet to request the sorting order and direction.
-	 * 
+	 *
 	 * @param player
 	 * @param order
 	 * @param direction
 	 * @return
 	 */
-	public static void sendMode( final EntityPlayer player, final SortOrder order, final SortDir direction,
+	public static void sendMode(	final EntityPlayer player, final SortOrder order, final SortDir direction,
 									final ViewItems viewMode )
 	{
 		Packet_S_ArcaneCraftingTerminal packet = newPacket( player, MODE_REQUEST_SET_SORT );
@@ -228,7 +228,7 @@ public class Packet_S_ArcaneCraftingTerminal
 
 	/**
 	 * Create a packet to request that the crafting grid be set to these items.
-	 * 
+	 *
 	 * @param player
 	 * @param items
 	 * Must be at least length of 9

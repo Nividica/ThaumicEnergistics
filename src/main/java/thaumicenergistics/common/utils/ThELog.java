@@ -5,9 +5,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Provides logging functions for ThE.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ThELog
 {
@@ -24,7 +24,7 @@ public class ThELog
 
 	/**
 	 * Logs a debug statement.
-	 * 
+	 *
 	 * @param format
 	 * @param data
 	 */
@@ -43,7 +43,7 @@ public class ThELog
 
 	/**
 	 * Logs an exception.
-	 * 
+	 *
 	 * @param e
 	 * @param format
 	 * @param data
@@ -55,7 +55,7 @@ public class ThELog
 
 	/**
 	 * Logs basic info.
-	 * 
+	 *
 	 * @param format
 	 * @param data
 	 */
@@ -67,7 +67,7 @@ public class ThELog
 	/**
 	 * Logs an error.<br>
 	 * If there is an exception available, use {@code error}.
-	 * 
+	 *
 	 * @param format
 	 * @param data
 	 */
@@ -78,7 +78,7 @@ public class ThELog
 
 	/**
 	 * Logs a warning.
-	 * 
+	 *
 	 * @param format
 	 * @param data
 	 */

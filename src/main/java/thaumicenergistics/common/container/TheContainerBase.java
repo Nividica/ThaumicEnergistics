@@ -11,9 +11,9 @@ import thaumicenergistics.common.utils.ThELog;
 
 /**
  * Base container for all ThE containers.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class TheContainerBase
 	extends Container
@@ -69,9 +69,9 @@ public abstract class TheContainerBase
 	 * Detects server side changes to send to the player.<br/>
 	 * When modifying slots, return true to set {@code playerMP.isChangingQuantityOnly} to {@code false},
 	 * or set it directly with the player argument.
-	 * 
+	 *
 	 * @param playerMP
-	 * 
+	 *
 	 * @return
 	 */
 	protected boolean detectAndSendChangesMP( @Nonnull final EntityPlayerMP playerMP )
@@ -81,7 +81,7 @@ public abstract class TheContainerBase
 
 	/**
 	 * Returns the slot with the specified slot number or null.
-	 * 
+	 *
 	 * @param slotNumber
 	 * @return
 	 */

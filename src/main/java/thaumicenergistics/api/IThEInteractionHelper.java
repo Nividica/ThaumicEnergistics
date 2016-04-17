@@ -2,39 +2,39 @@ package thaumicenergistics.api;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.entities.IGolemHookHandler;
 import thaumicenergistics.api.storage.IAspectStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Contains miscellaneous functionality intended to help other moders interact with ThE.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public interface IThEInteractionHelper
 {
 	/**
 	 * Converts an amount of milibuckets to an amount of Essentia.
-	 * 
+	 *
 	 * @return
 	 */
 	long convertEssentiaAmountToFluidAmount( long essentiaAmount );
 
 	/**
 	 * Converts an amount of Essentia to an amount of milibuckets.
-	 * 
+	 *
 	 * @return
 	 */
 	long convertFluidAmountToEssentiaAmount( long milibuckets );
 
 	/**
 	 * Creates a new instance of an aspect stack.
-	 * 
+	 *
 	 * @param aspect
 	 * @param stackSize
 	 * @return
@@ -52,15 +52,15 @@ public interface IThEInteractionHelper
 	 * Opens the wireless gui for the specified player.
 	 * The item the player is holding is used for the settings and power.
 	 * Must be called from the server side.
-	 * 
+	 *
 	 * @param player
 	 */
 	void openWirelessTerminalGui( @Nonnull EntityPlayer player );
 
 	/**
 	 * The {@code IThEWirelessEssentiaTerminal} is assumed to be the item the player is holding, and is no longer needs to be passed in.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param player
 	 * @param terminalInterface
 	 * is now ignored
@@ -71,7 +71,7 @@ public interface IThEInteractionHelper
 
 	/**
 	 * Registers a handler to receive golem events.
-	 * 
+	 *
 	 * @param handler
 	 */
 	void registerGolemHookHandler( @Nonnull IGolemHookHandler handler );

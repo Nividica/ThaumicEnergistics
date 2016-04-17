@@ -12,9 +12,9 @@ import thaumicenergistics.common.registries.ThEStrings;
 
 /**
  * Crafting material items.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ItemMaterial
 	extends Item
@@ -22,15 +22,20 @@ public class ItemMaterial
 
 	/**
 	 * Enum of all materials
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	public static enum MaterialTypes
 	{
 			DIFFUSION_CORE (0, "diffusion.core", ThEStrings.Item_DiffusionCore),
 			COALESCENCE_CORE (1, "coalescence.core", ThEStrings.Item_CoalescenceCore),
 			IRON_GEAR (2, "iron.gear", ThEStrings.Item_IronGear);
+
+		/**
+		 * Cache of the enum values
+		 */
+		public static final MaterialTypes[] VALUES = MaterialTypes.values();
 
 		/**
 		 * Numeric ID of the material.
@@ -46,11 +51,6 @@ public class ItemMaterial
 		 * Localization string.
 		 */
 		private ThEStrings unlocalizedName;
-
-		/**
-		 * Cache of the enum values
-		 */
-		public static final MaterialTypes[] VALUES = MaterialTypes.values();
 
 		private MaterialTypes( final int ID, final String textureName, final ThEStrings unlocalizedName )
 		{
@@ -68,7 +68,7 @@ public class ItemMaterial
 
 		/**
 		 * Gets an item stack of size 1 of the material item.
-		 * 
+		 *
 		 * @return
 		 */
 		public ItemStack getStack()
@@ -78,7 +78,7 @@ public class ItemMaterial
 
 		/**
 		 * Gets an item stack of the specified size of the material item.
-		 * 
+		 *
 		 * @param size
 		 * @return
 		 */

@@ -8,9 +8,9 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * Thaumic Energistics API
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class ThEApi
 {
@@ -67,7 +67,7 @@ public abstract class ThEApi
 
 	/**
 	 * Gets the ThE interaction manager
-	 * 
+	 *
 	 * @return
 	 */
 	@Nonnull

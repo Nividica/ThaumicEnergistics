@@ -1,9 +1,16 @@
 package thaumicenergistics.common.tiles;
 
-import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.me.GridAccessException;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,19 +23,12 @@ import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.me.GridAccessException;
 
 /**
  * Implements the logical functionality of the E.V.C.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class TileEssentiaVibrationChamber
 	extends TileEVCBase
@@ -117,7 +117,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Adjusts processing time and power production based on essentia type.
-	 * 
+	 *
 	 * @return
 	 */
 	private int adjustProcessingValues()
@@ -160,7 +160,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Converts an essentia to processing time.
-	 * 
+	 *
 	 * @return True if essentia was consumed, false otherwise.
 	 */
 	private boolean consumeEssentia()
@@ -195,7 +195,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Adds power to the network.
-	 * 
+	 *
 	 * @param ticksSinceLastCall
 	 * @return
 	 */
@@ -302,7 +302,8 @@ public class TileEssentiaVibrationChamber
 		float powerPerTick = (float)this.sync_powerPerTick;
 
 		// Calculate the maximum power per tick
-		float maxPowerPerTick = (float)( this.powerProducedPerProcessingTick * ( TileEssentiaVibrationChamber.PROCESS_SPEED_MAX / TileEssentiaVibrationChamber.DILATATION_DIVISOR ) );
+		float maxPowerPerTick = (float)( this.powerProducedPerProcessingTick *
+						( TileEssentiaVibrationChamber.PROCESS_SPEED_MAX / TileEssentiaVibrationChamber.DILATATION_DIVISOR ) );
 
 		// Clamp the processing speed
 		this.clampProcessingSpeed();
@@ -322,7 +323,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Adds essentia to the buffer.
-	 * 
+	 *
 	 * @param aspect
 	 * @param amount
 	 * @param mode
@@ -372,7 +373,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Reads saved data.
-	 * 
+	 *
 	 * @param data
 	 */
 	@Override
@@ -413,7 +414,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Saves the data.
-	 * 
+	 *
 	 * @param data
 	 */
 	@Override
@@ -441,7 +442,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Reads info from the network.
-	 * 
+	 *
 	 * @param stream
 	 */
 	@Override
@@ -458,7 +459,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Writes data to the network.
-	 * 
+	 *
 	 * @param stream
 	 */
 	@Override
@@ -478,7 +479,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Adds WAILA tooltip strings.
-	 * 
+	 *
 	 * @param tooltip
 	 */
 	@Override
@@ -500,7 +501,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Returns what aspect is currently being processed.
-	 * 
+	 *
 	 * @return
 	 */
 	public Aspect getProcessingAspect()
@@ -510,7 +511,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * How often to tick?
-	 * 
+	 *
 	 * @param node
 	 * @return
 	 */
@@ -524,7 +525,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Returns true if there is data that should be saved during a dismantle.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasSaveDataForDismanle()
@@ -546,7 +547,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Registers a listener with the EVC
-	 * 
+	 *
 	 * @param listener
 	 */
 	public void registerListener( final ContainerEssentiaVibrationChamber listener )
@@ -556,7 +557,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Un-registers a listener with the EVC.
-	 * 
+	 *
 	 * @param listener
 	 */
 	public void removeListener( final ContainerEssentiaVibrationChamber listener )
@@ -575,7 +576,7 @@ public class TileEssentiaVibrationChamber
 
 	/**
 	 * Called when the network ticks.
-	 * 
+	 *
 	 * @param node
 	 * @param ticksSinceLastCall
 	 * @return

@@ -5,9 +5,9 @@ import thaumicenergistics.common.ThaumicEnergistics;
 
 /**
  * Houses all used localization strings.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public enum ThEStrings
 {
@@ -97,7 +97,7 @@ public enum ThEStrings
 
 	/**
 	 * Gets the localized string.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getLocalized()
@@ -112,7 +112,7 @@ public enum ThEStrings
 
 	/**
 	 * Gets the unlocalized string.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getUnlocalized()

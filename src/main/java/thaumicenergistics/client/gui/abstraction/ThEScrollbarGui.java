@@ -1,20 +1,20 @@
 package thaumicenergistics.client.gui.abstraction;
 
-import net.minecraft.inventory.Container;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import thaumicenergistics.client.gui.ThEGuiHelper;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.inventory.Container;
+import net.minecraft.util.ResourceLocation;
+import thaumicenergistics.client.gui.ThEGuiHelper;
 
 /**
  * Base GUI for guis with scrollbars.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public abstract class ThEScrollbarGui
@@ -44,7 +44,7 @@ public abstract class ThEScrollbarGui
 
 		/**
 		 * Create the parameters
-		 * 
+		 *
 		 * @param x
 		 * @param y
 		 * @param height
@@ -58,7 +58,7 @@ public abstract class ThEScrollbarGui
 
 		/**
 		 * Sets the height of the scrollbar
-		 * 
+		 *
 		 * @param height
 		 */
 		void setHeight( final int height )
@@ -114,7 +114,7 @@ public abstract class ThEScrollbarGui
 
 	/**
 	 * Gets the scroll bar parameters from the subclass.
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract ScrollbarParams getScrollbarParameters();
@@ -192,7 +192,7 @@ public abstract class ThEScrollbarGui
 
 	/**
 	 * Called when the mouse wheel is scrolled.
-	 * 
+	 *
 	 * @param deltaZ
 	 * @param mouseX
 	 * @param mouseY
@@ -206,7 +206,7 @@ public abstract class ThEScrollbarGui
 
 	/**
 	 * Changes the height of the scroll bar.
-	 * 
+	 *
 	 * @param newHeight
 	 */
 	protected void setScrollBarHeight( final int newHeight )
@@ -344,7 +344,7 @@ public abstract class ThEScrollbarGui
 			}
 
 			@Override
-			public void drawTexturedModalRect( final int posX, final int posY, final int sourceOffsetX, final int sourceOffsetY, final int width,
+			public void drawTexturedModalRect(	final int posX, final int posY, final int sourceOffsetX, final int sourceOffsetY, final int width,
 												final int height )
 			{
 				ThEScrollbarGui.this.drawTexturedModalRect( posX, posY, sourceOffsetX, sourceOffsetY, width, height );

@@ -11,9 +11,9 @@ import thaumicenergistics.common.grid.GridEssentiaCache.EssentiaWatcherManager;
 
 /**
  * Watches the essentia grid for changes, informs the host when changes occur.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class EssentiaWatcher
 	implements IEssentiaWatcher

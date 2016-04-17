@@ -5,9 +5,9 @@ import thaumcraft.api.aspects.Aspect;
 
 /**
  * Parts who have a set aspect.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public interface IAspectSlotPart
 {

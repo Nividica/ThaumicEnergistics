@@ -2,13 +2,20 @@ package thaumicenergistics.common.parts;
 
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.security.PlayerSource;
+import appeng.client.texture.CableBusTextures;
+import appeng.util.InventoryAdaptor;
+import appeng.util.Platform;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
@@ -17,19 +24,12 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.security.PlayerSource;
-import appeng.client.texture.CableBusTextures;
-import appeng.util.InventoryAdaptor;
-import appeng.util.Platform;
 
 /**
  * Displays essentia levels, and allows extraction/insertion from {@link IEssentiaContainerItem}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class PartEssentiaConversionMonitor
 	extends PartEssentiaStorageMonitor
@@ -64,7 +64,7 @@ public class PartEssentiaConversionMonitor
 
 	/**
 	 * Drains the container at the specified index.
-	 * 
+	 *
 	 * @param player
 	 * @param slotIndex
 	 * @param mustMatchAspect
@@ -134,7 +134,7 @@ public class PartEssentiaConversionMonitor
 
 	/**
 	 * Fills the container the player is holding.
-	 * 
+	 *
 	 * @param player
 	 * @param heldItem
 	 * @return
@@ -266,7 +266,7 @@ public class PartEssentiaConversionMonitor
 
 	/**
 	 * Drains all containers in the players inventory.
-	 * 
+	 *
 	 * @param player
 	 */
 	private void insertAllEssentiaIntoNetwork( final EntityPlayer player )
@@ -308,7 +308,7 @@ public class PartEssentiaConversionMonitor
 
 	/**
 	 * Sets the last interaction trackers.
-	 * 
+	 *
 	 * @param player
 	 */
 	private void markFirstClick( final EntityPlayer player )
@@ -322,14 +322,15 @@ public class PartEssentiaConversionMonitor
 
 	/**
 	 * Returns true if double clicked.
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
 	private boolean wasDoubleClick( final EntityPlayer player )
 	{
 		// Is this the same player that just used the monitor?
-		if( ( this.depositedPlayerID != -1 ) && ( this.depositedPlayerID == AEApi.instance().registries().players().getID( player.getGameProfile() ) ) )
+		if( ( this.depositedPlayerID != -1 ) &&
+						( this.depositedPlayerID == AEApi.instance().registries().players().getID( player.getGameProfile() ) ) )
 		{
 			// Was it a double click?
 			if( ( MinecraftServer.getServer().getTickCounter() - this.depositedTick ) <= PartEssentiaConversionMonitor.DOUBLE_CLICK_TICKS )

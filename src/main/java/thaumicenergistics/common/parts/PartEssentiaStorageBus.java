@@ -3,25 +3,6 @@ package thaumicenergistics.common.parts;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.IAspectContainer;
-import thaumicenergistics.client.gui.GuiEssentiaStorageBus;
-import thaumicenergistics.client.textures.BlockTextureManager;
-import thaumicenergistics.common.container.ContainerPartEssentiaStorageBus;
-import thaumicenergistics.common.grid.EssentiaMonitor;
-import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
-import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusBase;
-import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusDuality;
-import thaumicenergistics.common.network.IAspectSlotPart;
-import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -47,12 +28,31 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
+import thaumicenergistics.client.gui.GuiEssentiaStorageBus;
+import thaumicenergistics.client.textures.BlockTextureManager;
+import thaumicenergistics.common.container.ContainerPartEssentiaStorageBus;
+import thaumicenergistics.common.grid.EssentiaMonitor;
+import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusBase;
+import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusDuality;
+import thaumicenergistics.common.network.IAspectSlotPart;
+import thaumicenergistics.common.utils.EffectiveSide;
 
 /**
  * Allows an {@link IAspectContainer} to be used as network essentia storage.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class PartEssentiaStorageBus
 	extends ThEPartBase
@@ -120,7 +120,7 @@ public class PartEssentiaStorageBus
 
 	/**
 	 * Adds a new filter from the specified itemstack.
-	 * 
+	 *
 	 * @param player
 	 * @param itemStack
 	 * @return
@@ -177,7 +177,7 @@ public class PartEssentiaStorageBus
 	/**
 	 * Extracts power from the network proportional to the specified essentia
 	 * amount.
-	 * 
+	 *
 	 * @param essentiaAmount
 	 * @param mode
 	 * @return
@@ -271,7 +271,7 @@ public class PartEssentiaStorageBus
 
 	/**
 	 * Returns the aspect in the filter slot.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nullable
@@ -328,7 +328,7 @@ public class PartEssentiaStorageBus
 
 	/**
 	 * Gets the inventory that holds our upgrades.
-	 * 
+	 *
 	 * @return
 	 */
 	public UpgradeInventory getUpgradeInventory()
@@ -338,7 +338,7 @@ public class PartEssentiaStorageBus
 
 	/**
 	 * Is voiding of essentia allowed?
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isVoidAllowed()
@@ -357,7 +357,7 @@ public class PartEssentiaStorageBus
 
 	/**
 	 * Called when a player has changed void mode via gui.
-	 * 
+	 *
 	 * @param player
 	 * @param isVoidAllowed
 	 */

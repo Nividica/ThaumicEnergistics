@@ -1,5 +1,7 @@
 package thaumicenergistics.common.blocks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,21 +19,19 @@ import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
 import thaumicenergistics.common.utils.EffectiveSide;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileKnowledgeInscriber} block.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class BlockKnowledgeInscriber
 	extends AbstractBlockAEWrenchable
 {
 	public BlockKnowledgeInscriber()
 	{
-		// Call super with material machine (iron) 
+		// Call super with material machine (iron)
 		super( Material.iron );
 
 		// Basic hardness
@@ -73,7 +73,7 @@ public class BlockKnowledgeInscriber
 				{
 					// Spawn the core as an item entity.
 					world.spawnEntityInWorld( new EntityItem( world, 0.5 + x, 0.5 + y, 0.2 + z, tileKI.getStackInSlot(
-									TileKnowledgeInscriber.KCORE_SLOT ) ) );
+						TileKnowledgeInscriber.KCORE_SLOT ) ) );
 				}
 			}
 		}
@@ -103,8 +103,7 @@ public class BlockKnowledgeInscriber
 		}
 
 		// Top or bottom?
-		if( ( ForgeDirection.VALID_DIRECTIONS[side] == ForgeDirection.UP )
-						|| ( ForgeDirection.VALID_DIRECTIONS[side] == ForgeDirection.DOWN ) )
+		if( ( ForgeDirection.VALID_DIRECTIONS[side] == ForgeDirection.UP ) || ( ForgeDirection.VALID_DIRECTIONS[side] == ForgeDirection.DOWN ) )
 		{
 			// Bottom texture
 			return BlockTextureManager.KNOWLEDGE_INSCRIBER.getTextures()[2];

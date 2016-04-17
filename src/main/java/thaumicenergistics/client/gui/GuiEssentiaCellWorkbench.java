@@ -1,11 +1,13 @@
 package thaumicenergistics.client.gui;
 
 import java.util.List;
+import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSlotGui;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
@@ -19,14 +21,12 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellWorkbench;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileEssentiaCellWorkbench} GUI
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaCellWorkbench
@@ -156,7 +156,8 @@ public class GuiEssentiaCellWorkbench
 
 		// Draw the cell slot background
 		this.drawTexturedModalRect( this.guiLeft + ContainerEssentiaCellWorkbench.CELL_SLOT_X, this.guiTop +
-						ContainerEssentiaCellWorkbench.CELL_SLOT_Y, GuiEssentiaCellWorkbench.CELL_BG_ICON.getU(),
+						ContainerEssentiaCellWorkbench.CELL_SLOT_Y,
+			GuiEssentiaCellWorkbench.CELL_BG_ICON.getU(),
 			GuiEssentiaCellWorkbench.CELL_BG_ICON.getV(), GuiEssentiaCellWorkbench.CELL_BG_ICON.getWidth(),
 			GuiEssentiaCellWorkbench.CELL_BG_ICON.getHeight() );
 

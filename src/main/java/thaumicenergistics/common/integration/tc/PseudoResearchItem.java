@@ -1,13 +1,13 @@
 package thaumicenergistics.common.integration.tc;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.api.research.ResearchPage;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class PseudoResearchItem
 	extends ResearchItem
@@ -16,7 +16,7 @@ public class PseudoResearchItem
 
 	/**
 	 * Icon as itemstack
-	 * 
+	 *
 	 * @param key
 	 * @param category
 	 * @param column
@@ -34,7 +34,7 @@ public class PseudoResearchItem
 
 	/**
 	 * Icon as resource location
-	 * 
+	 *
 	 * @param key
 	 * @param category
 	 * @param column
@@ -52,7 +52,7 @@ public class PseudoResearchItem
 
 	/**
 	 * Creates a new pseudo research item.
-	 * 
+	 *
 	 * @param key
 	 * @param category
 	 * @param realKey
@@ -61,7 +61,7 @@ public class PseudoResearchItem
 	 * @param row
 	 * @return
 	 */
-	public static PseudoResearchItem newPseudo( final String key, final String category, final String realKey, final String realCategory,
+	public static PseudoResearchItem newPseudo(	final String key, final String category, final String realKey, final String realCategory,
 												final int column, final int row )
 	{
 		PseudoResearchItem pseudo;

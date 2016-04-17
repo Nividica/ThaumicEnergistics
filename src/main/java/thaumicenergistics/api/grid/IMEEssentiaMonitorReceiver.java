@@ -5,9 +5,9 @@ import thaumicenergistics.api.storage.IAspectStack;
 
 /**
  * Defines a class that will attach to a monitor to receive all essentia change events.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public interface IMEEssentiaMonitorReceiver
 {
@@ -15,7 +15,7 @@ public interface IMEEssentiaMonitorReceiver
 	 * Verifies that the receiver is still valid.<br>
 	 * If returning false the receiver will be removed from the monitor
 	 * and the receiver should NOT call removeListener itself.
-	 * 
+	 *
 	 * @param verificationToken
 	 * @return False if the receiver should no longer get updates.
 	 */
@@ -23,7 +23,7 @@ public interface IMEEssentiaMonitorReceiver
 
 	/**
 	 * Called when a change to the stored essentia occurs.
-	 * 
+	 *
 	 * @param fromMonitor
 	 * @param changes
 	 */

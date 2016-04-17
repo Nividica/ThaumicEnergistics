@@ -4,9 +4,9 @@ import net.minecraft.util.ResourceLocation;
 
 /**
  * Icons stored in the AE2's "states" texture.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public enum AEStateIconsEnum
 	implements IStateIconTexture
@@ -93,7 +93,7 @@ public enum AEStateIconsEnum
 
 	/**
 	 * Standard icon constructor
-	 * 
+	 *
 	 * @param u
 	 * @param v
 	 */
@@ -104,7 +104,7 @@ public enum AEStateIconsEnum
 
 	/**
 	 * Icon constructor
-	 * 
+	 *
 	 * @param u
 	 * @param v
 	 * @param width

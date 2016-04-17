@@ -1,7 +1,15 @@
 package thaumicenergistics.common.tiles.abstraction;
 
-import io.netty.buffer.ByteBuf;
 import java.io.IOException;
+import appeng.api.config.Actionable;
+import appeng.api.util.AECableType;
+import appeng.api.util.DimensionalCoord;
+import appeng.tile.TileEvent;
+import appeng.tile.events.TileEventType;
+import appeng.tile.grid.AENetworkTile;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,21 +23,13 @@ import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.api.tiles.IEssentiaTransportWithSimulate;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.config.Actionable;
-import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalCoord;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
-import appeng.tile.grid.AENetworkTile;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Essentia Vibration Chamber Base
  * Handles most of the mod-interface functionality.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class TileEVCBase
 	extends AENetworkTile
@@ -57,7 +57,7 @@ public abstract class TileEVCBase
 
 	/**
 	 * Returns true if the EVC accepts the specified aspect.
-	 * 
+	 *
 	 * @param aspect
 	 * @return
 	 */
@@ -68,7 +68,7 @@ public abstract class TileEVCBase
 
 	/**
 	 * Add essentia to the EVC.
-	 * 
+	 *
 	 * @param aspect
 	 * @param amount
 	 * @param mode
@@ -85,7 +85,7 @@ public abstract class TileEVCBase
 
 	/**
 	 * Returns true if there is any stored essentia.
-	 * 
+	 *
 	 * @return
 	 */
 	protected boolean hasStoredEssentia()
@@ -364,7 +364,7 @@ public abstract class TileEVCBase
 
 	/**
 	 * Sets up the chamber
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -398,7 +398,7 @@ public abstract class TileEVCBase
 
 	/**
 	 * Sets the owner of this tile.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void setOwner( final EntityPlayer player )

@@ -1,16 +1,16 @@
 package thaumicenergistics.client.gui.buttons;
 
 import java.util.List;
-import net.minecraft.util.StatCollector;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.StatCollector;
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 /**
  * Displays cell partitioning icon.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonClearCellPartitioning
@@ -24,7 +24,7 @@ public class GuiButtonClearCellPartitioning
 
 	/**
 	 * Creates the button
-	 * 
+	 *
 	 * @param ID
 	 * @param xPosition
 	 * @param yPosition

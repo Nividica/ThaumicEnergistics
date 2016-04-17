@@ -6,9 +6,9 @@ import thaumicenergistics.common.features.*;
 /**
  * Acts as a safe way to depend on features that can be disabled in both TC and
  * AE.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureRegistry
 {
@@ -180,7 +180,7 @@ public class FeatureRegistry
 
 	/**
 	 * Gets the instance of the FR
-	 * 
+	 *
 	 * @return
 	 */
 	public static FeatureRegistry instance()

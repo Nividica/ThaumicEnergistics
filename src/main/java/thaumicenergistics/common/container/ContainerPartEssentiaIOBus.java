@@ -1,6 +1,7 @@
 package thaumicenergistics.common.container;
 
 import java.util.List;
+import appeng.api.config.RedstoneMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -9,13 +10,12 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
 import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
-import appeng.api.config.RedstoneMode;
 
 /**
  * Inventory container for the import and export busses.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ContainerPartEssentiaIOBus
 	extends ContainerWithNetworkTool
@@ -57,7 +57,7 @@ public class ContainerPartEssentiaIOBus
 
 	/**
 	 * Creates the container.
-	 * 
+	 *
 	 * @param part
 	 * The AE part associated with the container.
 	 * @param player

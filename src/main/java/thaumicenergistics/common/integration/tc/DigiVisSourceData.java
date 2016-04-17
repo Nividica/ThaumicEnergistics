@@ -1,6 +1,10 @@
 package thaumicenergistics.common.integration.tc;
 
 import java.lang.ref.WeakReference;
+import appeng.api.networking.IGrid;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.api.util.DimensionalCoord;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -8,10 +12,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.api.grid.IDigiVisSource;
 import thaumicenergistics.common.registries.ThEStrings;
-import appeng.api.networking.IGrid;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.api.util.DimensionalCoord;
 
 public class DigiVisSourceData
 {
@@ -71,7 +71,7 @@ public class DigiVisSourceData
 
 	/**
 	 * Creates the data from a digivis source.
-	 * 
+	 *
 	 * @param digiVisSource
 	 */
 	public DigiVisSourceData( final IDigiVisSource digiVisSource )
@@ -116,7 +116,7 @@ public class DigiVisSourceData
 
 	/**
 	 * Gets the vis source.
-	 * 
+	 *
 	 * @return
 	 */
 	private IDigiVisSource getSource( final boolean forceUpdate )
@@ -232,7 +232,7 @@ public class DigiVisSourceData
 
 	/**
 	 * True if there is data.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasSourceData()
@@ -242,7 +242,7 @@ public class DigiVisSourceData
 
 	/**
 	 * Reads the info directly from the tag.
-	 * 
+	 *
 	 * @param tag
 	 */
 	public void readFromNBT( final NBTTagCompound tag )
@@ -293,7 +293,7 @@ public class DigiVisSourceData
 
 	/**
 	 * Reads the info from the data tag.
-	 * 
+	 *
 	 * @param data
 	 * @param name
 	 */
@@ -305,9 +305,9 @@ public class DigiVisSourceData
 	/**
 	 * Verifies that the source exists, is active and that the
 	 * source and destination grid's are the same.
-	 * 
+	 *
 	 * @param destinationGrid
-	 * 
+	 *
 	 * @return Return's the source if valid, null otherwise.
 	 */
 	public IDigiVisSource tryGetSource( final IGrid destinationGrid )
@@ -365,7 +365,7 @@ public class DigiVisSourceData
 
 	/**
 	 * Creates a new NBT tag and writes the data into it
-	 * 
+	 *
 	 * @return
 	 */
 	public NBTTagCompound writeToNBT()
@@ -390,7 +390,7 @@ public class DigiVisSourceData
 
 	/**
 	 * Writes the info into the data tag.
-	 * 
+	 *
 	 * @param data
 	 * @param name
 	 */

@@ -6,16 +6,16 @@ import thaumcraft.api.aspects.Aspect;
 
 /**
  * GUI that has a selectable aspect.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public interface IAspectSelectorGui
 	extends IWidgetHost
 {
 	/**
 	 * Return the selector container.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nonnull
@@ -23,7 +23,7 @@ public interface IAspectSelectorGui
 
 	/**
 	 * Return the selected aspect, or null if no aspect is selected.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nullable

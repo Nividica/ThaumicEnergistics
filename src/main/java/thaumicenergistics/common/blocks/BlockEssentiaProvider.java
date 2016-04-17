@@ -1,5 +1,7 @@
 package thaumicenergistics.common.blocks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
@@ -8,14 +10,12 @@ import net.minecraft.world.World;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.registries.Renderers;
 import thaumicenergistics.common.tiles.TileEssentiaProvider;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileEssentiaProvider} block.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class BlockEssentiaProvider
 	extends AbstractBlockProviderBase
@@ -23,7 +23,7 @@ public class BlockEssentiaProvider
 
 	public BlockEssentiaProvider()
 	{
-		// Call super with material machine (iron) 
+		// Call super with material machine (iron)
 		super( Material.iron );
 
 		// Basic hardness

@@ -11,9 +11,9 @@ import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * Manages an internal inventory.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class TheInternalInventory
 	implements IInventory
@@ -40,7 +40,7 @@ public class TheInternalInventory
 
 	/**
 	 * Creates the inventory.
-	 * 
+	 *
 	 * @param customName
 	 * @param size
 	 * @param stackLimit
@@ -101,7 +101,7 @@ public class TheInternalInventory
 
 	/**
 	 * Returns true if there is a stack in the specified slot.
-	 * 
+	 *
 	 * @param slotIndex
 	 * @return
 	 */
@@ -149,7 +149,7 @@ public class TheInternalInventory
 	/**
 	 * Increases the stack size of the specified slot, and marks the inventory
 	 * as dirty.
-	 * 
+	 *
 	 * @param slotIndex
 	 * @param amount
 	 * @return The amount that was added.
@@ -183,7 +183,7 @@ public class TheInternalInventory
 
 	/**
 	 * True if the inventory is empty.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isEmpty()

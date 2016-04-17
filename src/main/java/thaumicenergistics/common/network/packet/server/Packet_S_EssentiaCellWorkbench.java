@@ -10,9 +10,9 @@ import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
 
 /**
  * {@link TileEssentiaCellWorkbench} server-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_S_EssentiaCellWorkbench
 	extends ThEServerPacket
@@ -29,7 +29,7 @@ public class Packet_S_EssentiaCellWorkbench
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -46,7 +46,7 @@ public class Packet_S_EssentiaCellWorkbench
 		return packet;
 	}
 
-	public static void sendAddAspect( final EntityPlayer player, final TileEssentiaCellWorkbench workbench,
+	public static void sendAddAspect(	final EntityPlayer player, final TileEssentiaCellWorkbench workbench,
 										final Aspect aspect )
 	{
 		Packet_S_EssentiaCellWorkbench packet = newPacket( player, MODE_REQUEST_ADD_ASPECT );
@@ -94,7 +94,7 @@ public class Packet_S_EssentiaCellWorkbench
 		NetworkHandler.sendPacketToServer( packet );
 	}
 
-	public static void sendRemoveAspect( final EntityPlayer player, final TileEssentiaCellWorkbench workbench,
+	public static void sendRemoveAspect(	final EntityPlayer player, final TileEssentiaCellWorkbench workbench,
 											final Aspect aspect )
 	{
 		Packet_S_EssentiaCellWorkbench packet = newPacket( player, MODE_REQUEST_REMOVE_ASPECT );
@@ -109,7 +109,7 @@ public class Packet_S_EssentiaCellWorkbench
 		NetworkHandler.sendPacketToServer( packet );
 	}
 
-	public static void sendReplaceAspect( final EntityPlayer player, final TileEssentiaCellWorkbench workbench,
+	public static void sendReplaceAspect(	final EntityPlayer player, final TileEssentiaCellWorkbench workbench,
 											final Aspect originalAspect, final Aspect newAspect )
 	{
 		Packet_S_EssentiaCellWorkbench packet = newPacket( player, MODE_REQUEST_REPLACE_ASPECT );

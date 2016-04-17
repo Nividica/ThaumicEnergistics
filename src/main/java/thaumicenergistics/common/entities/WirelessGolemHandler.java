@@ -1,12 +1,16 @@
 package thaumicenergistics.common.entities;
 
+import org.lwjgl.opengl.GL11;
+import appeng.api.AEApi;
+import appeng.items.parts.ItemFacade;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.entities.golems.EntityGolemBase;
 import thaumicenergistics.api.entities.IGolemHookHandler;
@@ -17,25 +21,21 @@ import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
 import thaumicenergistics.common.items.ItemGolemWirelessBackpack.BackpackSkins;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.AEApi;
-import appeng.items.parts.ItemFacade;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Handles golems wearing the {@link ItemGolemWirelessBackpack}
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class WirelessGolemHandler
 	implements IGolemHookHandler
 {
 	/**
 	 * Data stored on the client side.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	public static class WirelessClientData
 	{
@@ -46,9 +46,9 @@ public class WirelessGolemHandler
 
 	/**
 	 * Data stored on the server side.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	public static class WirelessServerData
 	{
@@ -122,7 +122,7 @@ public class WirelessGolemHandler
 
 	/**
 	 * Returns the instance of the handler
-	 * 
+	 *
 	 * @return
 	 */
 	public static WirelessGolemHandler getInstance()
@@ -136,7 +136,7 @@ public class WirelessGolemHandler
 
 	/**
 	 * Gets a character based on the skin.
-	 * 
+	 *
 	 * @param skin
 	 * @return
 	 */
@@ -152,14 +152,14 @@ public class WirelessGolemHandler
 
 	/**
 	 * Han the backpack be handled?
-	 * 
+	 *
 	 * @param golem
 	 * @param handlerData
 	 * @param player
 	 * @param side
 	 * @return
 	 */
-	private InteractionLevel canHandleInteration_Backpack( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player,
+	private InteractionLevel canHandleInteration_Backpack(	final EntityGolemBase golem, final Object handlerData, final EntityPlayer player,
 															final Side side )
 	{
 		// Does the golem already have a backpack on?
@@ -189,7 +189,7 @@ public class WirelessGolemHandler
 		default:
 			return InteractionLevel.NoInteraction;
 
-			// Supported cores
+		// Supported cores
 		case Gather:
 		case Fill:
 		case Liquid:
@@ -210,7 +210,7 @@ public class WirelessGolemHandler
 
 	/**
 	 * Can the facade be handled?
-	 * 
+	 *
 	 * @param golem
 	 * @param handlerData
 	 * @param player
@@ -218,7 +218,7 @@ public class WirelessGolemHandler
 	 * @param heldItem
 	 * @return
 	 */
-	private InteractionLevel canHandleInteration_Facade( final EntityGolemBase golem, final Object handlerData, final EntityPlayer player,
+	private InteractionLevel canHandleInteration_Facade(	final EntityGolemBase golem, final Object handlerData, final EntityPlayer player,
 															final Side side,
 															final ItemStack heldItem )
 	{
@@ -254,7 +254,7 @@ public class WirelessGolemHandler
 
 	/**
 	 * Returns the skin associated with the facade, or null if there is not one.
-	 * 
+	 *
 	 * @param facade
 	 * @return
 	 */
@@ -329,7 +329,7 @@ public class WirelessGolemHandler
 
 	/**
 	 * Gets the skin based on the character
-	 * 
+	 *
 	 * @param skinSyncChar
 	 * @return
 	 */
@@ -354,7 +354,7 @@ public class WirelessGolemHandler
 	}
 
 	@Override
-	public void bellLeftClicked( final EntityGolemBase golem, final Object handlerData, final ItemStack itemGolemPlacer, final EntityPlayer player,
+	public void bellLeftClicked(	final EntityGolemBase golem, final Object handlerData, final ItemStack itemGolemPlacer, final EntityPlayer player,
 									final boolean dismantled, final Side side )
 	{
 		// Goes the golem have a backpack on?
@@ -410,7 +410,7 @@ public class WirelessGolemHandler
 	}
 
 	@Override
-	public Object customInteraction( final EntityGolemBase golem, final Object handlerData, final IGolemHookSyncRegistry syncData,
+	public Object customInteraction(	final EntityGolemBase golem, final Object handlerData, final IGolemHookSyncRegistry syncData,
 										final EntityPlayer player, final Side side )
 	{
 		// Get the held item
@@ -538,7 +538,7 @@ public class WirelessGolemHandler
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderGolem( final EntityGolemBase golem, final Object clientHandlerData, final double x, final double y, final double z,
+	public void renderGolem(	final EntityGolemBase golem, final Object clientHandlerData, final double x, final double y, final double z,
 								final float partialElaspsedTick )
 	{
 		if( !( clientHandlerData instanceof WirelessClientData ) )

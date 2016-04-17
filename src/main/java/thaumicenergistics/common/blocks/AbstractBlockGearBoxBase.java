@@ -1,5 +1,7 @@
 package thaumicenergistics.common.blocks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -13,14 +15,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileGearBox;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base block of {@link BlockGearBox} and {@link BlockGolemGearBox}
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class AbstractBlockGearBoxBase
 	extends AbstractBlockAEWrenchable

@@ -1,5 +1,10 @@
 package thaumicenergistics.common.items;
 
+import appeng.api.AEApi;
+import appeng.api.parts.IPartHost;
+import appeng.core.CommonHelper;
+import appeng.parts.PartPlacement;
+import appeng.parts.PartPlacement.PlaceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,17 +30,12 @@ import thaumicenergistics.common.network.packet.server.Packet_S_WrenchFocus;
 import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.utils.ThEUtils;
-import appeng.api.AEApi;
-import appeng.api.parts.IPartHost;
-import appeng.core.CommonHelper;
-import appeng.parts.PartPlacement;
-import appeng.parts.PartPlacement.PlaceType;
 
 /**
  * Focus that behaves like an AE2 wrench.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ItemFocusAEWrench
 	extends ItemFocusBasic
@@ -64,7 +64,7 @@ public class ItemFocusAEWrench
 	/**
 	 * Consumes the casting cost of the focus from he wand and spawns the
 	 * activation beam.
-	 * 
+	 *
 	 * @param wand
 	 * @param wandStack
 	 * @param player
@@ -72,7 +72,7 @@ public class ItemFocusAEWrench
 	 * @param beamY
 	 * @param beamZ
 	 */
-	private static void consumeVisAndSpawnBeam( final ItemWandCasting wand, final ItemStack wandStack, final EntityPlayer player, final double beamX,
+	private static void consumeVisAndSpawnBeam(	final ItemWandCasting wand, final ItemStack wandStack, final EntityPlayer player, final double beamX,
 												final double beamY, final double beamZ )
 	{
 		// Use vis
@@ -98,7 +98,7 @@ public class ItemFocusAEWrench
 	/**
 	 * Returns the wand if it is valid and contains enough charge to perform a
 	 * cast.
-	 * 
+	 *
 	 * @param stack
 	 * @param player
 	 * @return
@@ -128,7 +128,7 @@ public class ItemFocusAEWrench
 	/**
 	 * Called after the client has sent the request to the server.
 	 * Because where your eyes are matters a great deal.
-	 * 
+	 *
 	 * @param player
 	 * @param eyeHeight
 	 * @param x
@@ -177,7 +177,7 @@ public class ItemFocusAEWrench
 	/**
 	 * Attempts to use the focus.
 	 * Position must contain a block hit.
-	 * 
+	 *
 	 * @param world
 	 * @param player
 	 * @param position
@@ -185,7 +185,7 @@ public class ItemFocusAEWrench
 	 * @param action
 	 * @return
 	 */
-	private boolean onUse( final World world, final EntityPlayer player, final MovingObjectPosition position, final ItemStack wandStack,
+	private boolean onUse(	final World world, final EntityPlayer player, final MovingObjectPosition position, final ItemStack wandStack,
 							final Action action )
 	{
 		// For all current actions the player must be sneaking

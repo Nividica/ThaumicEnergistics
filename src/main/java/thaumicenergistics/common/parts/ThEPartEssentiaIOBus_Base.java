@@ -2,22 +2,6 @@ package thaumicenergistics.common.parts;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Vec3;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.IAspectContainer;
-import thaumicenergistics.client.gui.GuiEssentiaIO;
-import thaumicenergistics.common.container.ContainerPartEssentiaIOBus;
-import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
-import thaumicenergistics.common.network.IAspectSlotPart;
-import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
-import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
-import thaumicenergistics.common.registries.EnumCache;
-import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
@@ -36,12 +20,28 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Vec3;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
+import thaumicenergistics.client.gui.GuiEssentiaIO;
+import thaumicenergistics.common.container.ContainerPartEssentiaIOBus;
+import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.common.network.IAspectSlotPart;
+import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
+import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
+import thaumicenergistics.common.registries.EnumCache;
+import thaumicenergistics.common.utils.EffectiveSide;
 
 /**
  * Base class of {@link PartExportBus} and {@link PartImportBus}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class ThEPartEssentiaIOBus_Base
 	extends ThEPartBase
@@ -88,6 +88,12 @@ public abstract class ThEPartEssentiaIOBus_Base
 	 */
 	private static final RedstoneMode DEFAULT_REDSTONE_MODE = RedstoneMode.IGNORE;
 
+	/**
+	 * NBT Keys
+	 */
+	private static final String NBT_KEY_REDSTONE_MODE = "redstoneMode", NBT_KEY_FILTER_NUMBER = "AspectFilter#",
+					NBT_KEY_UPGRADE_INV = "upgradeInventory";
+
 	private boolean lastRedstone;
 
 	private int[] availableFilterSlots = { ThEPartEssentiaIOBus_Base.BASE_SLOT_INDEX };
@@ -116,12 +122,6 @@ public abstract class ThEPartEssentiaIOBus_Base
 	protected byte upgradeSpeedCount = 0;
 
 	protected boolean redstoneControlled;
-
-	/**
-	 * NBT Keys
-	 */
-	private static final String NBT_KEY_REDSTONE_MODE = "redstoneMode", NBT_KEY_FILTER_NUMBER = "AspectFilter#",
-					NBT_KEY_UPGRADE_INV = "upgradeInventory";
 
 	public ThEPartEssentiaIOBus_Base( final AEPartsEnum associatedPart, final SecurityPermissions ... interactionPermissions )
 	{
@@ -424,7 +424,8 @@ public abstract class ThEPartEssentiaIOBus_Base
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onChangeInventory(	final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack,
+									final ItemStack newStack )
 	{
 		if( inv == this.upgradeInventory )
 		{
@@ -434,7 +435,7 @@ public abstract class ThEPartEssentiaIOBus_Base
 
 	/**
 	 * Called when a player has clicked the redstone button in the gui.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void onClientRequestChangeRedstoneMode( final EntityPlayer player )
@@ -457,7 +458,7 @@ public abstract class ThEPartEssentiaIOBus_Base
 
 	/**
 	 * Called when a client gui is requesting a full update.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void onClientRequestFilterList( final EntityPlayer player )
@@ -509,7 +510,7 @@ public abstract class ThEPartEssentiaIOBus_Base
 	 * Called client-side to keep the client-side part in sync
 	 * with the server-side part. This aids in keeping the
 	 * gui in sync even in high network lag enviroments.
-	 * 
+	 *
 	 * @param filteredAspects
 	 */
 	@SideOnly(Side.CLIENT)
@@ -522,7 +523,7 @@ public abstract class ThEPartEssentiaIOBus_Base
 	 * Called client-side to keep the client-side part in sync
 	 * with the server-side part. This aids in keeping the
 	 * gui in sync even in high network lag enviroments.
-	 * 
+	 *
 	 * @param filterSize
 	 */
 	@SideOnly(Side.CLIENT)

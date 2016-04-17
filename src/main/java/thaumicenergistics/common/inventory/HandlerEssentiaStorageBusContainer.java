@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import com.google.common.collect.ImmutableList;
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IItemList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import thaumcraft.api.aspects.Aspect;
@@ -15,19 +22,12 @@ import thaumicenergistics.common.fluids.GaseousEssentia;
 import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Handles interaction between {@link PartEssentiaStorageBus} and {@link IAspectContainer}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 class HandlerEssentiaStorageBusContainer
 	extends HandlerEssentiaStorageBusBase
@@ -49,7 +49,7 @@ class HandlerEssentiaStorageBusContainer
 
 	/**
 	 * Adds a list of aspects stacks to a <Aspect,Long> dictionary.
-	 * 
+	 *
 	 * @param essentiaList
 	 */
 	private void addListToDictionary( final List<IAspectStack> essentiaList, final Hashtable<Aspect, Long> dictionary )
@@ -68,7 +68,7 @@ class HandlerEssentiaStorageBusContainer
 	 * Adjusts the cached aspect amount based on the specified delta.
 	 * Positive diff adds to the amount, negative diff removes from the
 	 * amount.
-	 * 
+	 *
 	 * @param aspect
 	 * @param diff
 	 */
@@ -417,7 +417,7 @@ class HandlerEssentiaStorageBusContainer
 
 	/**
 	 * Checks if we are still facing a valid container.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -546,7 +546,7 @@ class HandlerEssentiaStorageBusContainer
 	 * Valid for pass 1 if there are filters or the container has stored
 	 * essentia.
 	 * Valid for pass 2 if no filters or stored essentia.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override

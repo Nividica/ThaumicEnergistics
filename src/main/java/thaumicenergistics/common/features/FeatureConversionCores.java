@@ -8,15 +8,17 @@ import thaumcraft.api.research.ResearchPage;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.items.ItemMaterial;
-import thaumicenergistics.common.registries.*;
+import thaumicenergistics.common.registries.FeatureRegistry;
+import thaumicenergistics.common.registries.RecipeRegistry;
+import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 
 /**
  * {@link ItemMaterial}'s conversion cores feature.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureConversionCores
 	extends ThEThaumcraftResearchFeature

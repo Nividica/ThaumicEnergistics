@@ -1,6 +1,8 @@
 package thaumicenergistics.client.gui.buttons;
 
 import java.util.List;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -10,14 +12,12 @@ import net.minecraft.util.EnumChatFormatting;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumicenergistics.client.textures.AEStateIconsEnum;
 import thaumicenergistics.common.registries.ThEStrings;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Displays void status.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonAllowVoid

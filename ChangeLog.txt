@@ -1,7 +1,9 @@
+﻿04/17/2016 1.0.0.4 - Beta
   Fixes #300 and #282: Microblock compatibility added.
   Fixes #293: Added missing redstone method to level emitter.
   Craftable essentia no longer shows in item terminals.
   Texture updated: Level Emitter
+  Applied new formatting rules to entire project.
 
 04/15/2016 1.0.0.4 - Beta
   Cleaned up ASM transformer code.  

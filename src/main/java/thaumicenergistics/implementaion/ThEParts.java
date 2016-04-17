@@ -5,9 +5,9 @@ import thaumicenergistics.common.parts.AEPartsEnum;
 
 /**
  * Implements {@link IThEParts}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 class ThEParts
 	extends IThEParts

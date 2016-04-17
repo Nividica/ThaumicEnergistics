@@ -1,18 +1,18 @@
 package thaumicenergistics.client.gui;
 
 import java.util.HashMap;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
-import thaumcraft.api.aspects.Aspect;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.EnumChatFormatting;
+import thaumcraft.api.aspects.Aspect;
 
 /**
  * Helper methods for GUI's.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public final class ThEGuiHelper
@@ -63,7 +63,8 @@ public final class ThEGuiHelper
 
 	}
 
-	public static final void drawScaledText( final FontRenderer fontRenderer, final String text, final float scale, final float posX, final float posY )
+	public static final void drawScaledText(	final FontRenderer fontRenderer, final String text, final float scale, final float posX,
+												final float posY )
 	{
 		// Disable lighting
 		GL11.glDisable( GL11.GL_LIGHTING );
@@ -195,7 +196,7 @@ public final class ThEGuiHelper
 
 	/**
 	 * Gets the chat color associated with the specified aspect.
-	 * 
+	 *
 	 * @param aspect
 	 * @return
 	 */
@@ -211,7 +212,7 @@ public final class ThEGuiHelper
 	/**
 	 * Checks if the specified point is within or on the bounds of a rectangle.
 	 * This version localizes the rectangle to the confounds of the current gui.
-	 * 
+	 *
 	 * @param top
 	 * @param left
 	 * @param height
@@ -222,7 +223,7 @@ public final class ThEGuiHelper
 	 * @param guiTop
 	 * @return
 	 */
-	public final boolean isPointInGuiRegion( final int top, final int left, final int height, final int width, final int pointX, final int pointY,
+	public final boolean isPointInGuiRegion(	final int top, final int left, final int height, final int width, final int pointX, final int pointY,
 												final int guiLeft, final int guiTop )
 	{
 		return this.isPointInRegion( top, left, height, width, pointX - guiLeft, pointY - guiTop );
@@ -230,7 +231,7 @@ public final class ThEGuiHelper
 
 	/**
 	 * Checks if the specified point is within or on the bounds of a rectangle
-	 * 
+	 *
 	 * @param top
 	 * @param left
 	 * @param height

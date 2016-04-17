@@ -4,9 +4,9 @@ import thaumicenergistics.common.network.WrapperPacket;
 
 /**
  * Client packet wrapper.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class WrapperPacket_C
 	extends WrapperPacket

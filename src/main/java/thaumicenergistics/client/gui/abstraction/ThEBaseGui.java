@@ -2,6 +2,10 @@ package thaumicenergistics.client.gui.abstraction;
 
 import java.util.ArrayList;
 import java.util.List;
+import appeng.api.AEApi;
+import appeng.parts.automation.UpgradeInventory;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -14,16 +18,12 @@ import thaumicenergistics.client.gui.buttons.ThEGuiButtonBase;
 import thaumicenergistics.client.textures.AEStateIconsEnum;
 import thaumicenergistics.common.container.ContainerWithNetworkTool;
 import thaumicenergistics.common.container.slot.SlotNetworkTool;
-import appeng.api.AEApi;
-import appeng.parts.automation.UpgradeInventory;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base gui of all Thaumic Energistics guis
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public abstract class ThEBaseGui
@@ -47,7 +47,7 @@ public abstract class ThEBaseGui
 
 	/**
 	 * Adds to the tooltip based on which button the mouse is over.
-	 * 
+	 *
 	 * @param mouseX
 	 * @param mouseY
 	 * @return True when a tooltip was added, false otherwise.
@@ -80,7 +80,7 @@ public abstract class ThEBaseGui
 
 	/**
 	 * Checks if the specified point is within the bounds of the specified slot.
-	 * 
+	 *
 	 * @param slot
 	 * @param x
 	 * @param y
@@ -94,7 +94,7 @@ public abstract class ThEBaseGui
 	/**
 	 * Checks if a not-left-click was on a button.<BR>
 	 * Left click is handled by GuiScreen.mouseClicked()
-	 * 
+	 *
 	 * @param mouseX
 	 * @param mouseY
 	 * @return True if click was handled.
@@ -129,7 +129,7 @@ public abstract class ThEBaseGui
 
 	/**
 	 * Draws the slot backgrounds for the network tool and upgrade slots.
-	 * 
+	 *
 	 * @param alpha
 	 * @param mouseX
 	 * @param mouseY
@@ -156,7 +156,7 @@ public abstract class ThEBaseGui
 
 	/**
 	 * Gets the slot who contains the specified point.
-	 * 
+	 *
 	 * @param x
 	 * @param y
 	 * @return Slot the point is within, null if point is within no slots.
@@ -218,7 +218,7 @@ public abstract class ThEBaseGui
 
 	/**
 	 * Called when a button is clicked. Includes which button was pressed.
-	 * 
+	 *
 	 * @param button
 	 * @param mouseButton
 	 */
@@ -229,7 +229,7 @@ public abstract class ThEBaseGui
 	/**
 	 * Called when a button is left-clicked<BR>
 	 * Note: Do not override, use {@link #onButtonClicked(GuiButton, int) onButtonClicked} instead.
-	 * 
+	 *
 	 * @see #onButtonClicked(GuiButton, int )
 	 */
 	@Override

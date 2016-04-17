@@ -8,9 +8,9 @@ import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
 /**
  * {@link PartEssentiaStorageBus} server-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_S_EssentiaStorageBus
 	extends ThEServerPacket
@@ -25,7 +25,7 @@ public class Packet_S_EssentiaStorageBus
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -43,7 +43,7 @@ public class Packet_S_EssentiaStorageBus
 		return packet;
 	}
 
-	public static void setVoidAllowed( final EntityPlayer player, final PartEssentiaStorageBus part,
+	public static void setVoidAllowed(	final EntityPlayer player, final PartEssentiaStorageBus part,
 										final boolean isVoidAllowed )
 	{
 		Packet_S_EssentiaStorageBus packet = newPacket( player, MODE_REQUEST_SET_VOID, part );

@@ -2,9 +2,9 @@ package thaumicenergistics.api;
 
 /**
  * Essentia container options.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public interface IThEEssentiaContainerPermission
 {

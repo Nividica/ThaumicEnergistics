@@ -1,18 +1,18 @@
 package thaumicenergistics.common.network.packet.server;
 
+import appeng.util.Platform;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import thaumicenergistics.common.items.ItemFocusAEWrench;
 import thaumicenergistics.common.network.NetworkHandler;
-import appeng.util.Platform;
 
 /**
  * {@link ItemFocusAEWrench} server-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_S_WrenchFocus
 	extends ThEServerPacket

@@ -10,7 +10,7 @@ import thaumicenergistics.fml.ThECore;
  * <ul>
  * <li>Adds hook to method <em>render</em></li>
  * </ul>
- * 
+ *
  * @author Nividica
  *
  */
@@ -53,7 +53,8 @@ public class ClassTransformer_RenderGolemBase
 		// GolemHooks.hook_RenderGolem( EntityGolemBase, Hashmap, double, double, double, float )
 		instructionList.add( new MethodInsnNode( Opcodes.INVOKESTATIC,
 						GolemHookTransformHelper.CLASS_GolemHooks, "hook_RenderGolem",
-						"(L" + GolemHookTransformHelper.CLASS_EntityGolemBase + ";L" + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + ";DDDF)V",
+						"(L" + GolemHookTransformHelper.CLASS_EntityGolemBase + ";L" +
+										GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + ";DDDF)V",
 						false ) );
 
 		// Insert the static call

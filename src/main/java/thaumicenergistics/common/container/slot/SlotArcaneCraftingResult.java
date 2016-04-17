@@ -1,5 +1,6 @@
 package thaumicenergistics.common.container.slot;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.SlotCrafting;
@@ -10,13 +11,12 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.utils.EffectiveSide;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Slot that holds the result of an arcane crafting recipe.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class SlotArcaneCraftingResult
 	extends SlotCrafting
@@ -48,7 +48,7 @@ public class SlotArcaneCraftingResult
 
 	/**
 	 * Creates the slot
-	 * 
+	 *
 	 * @param player
 	 * @param terminalInventory
 	 * @param slotInventory
@@ -56,7 +56,7 @@ public class SlotArcaneCraftingResult
 	 * @param xPos
 	 * @param yPos
 	 */
-	public SlotArcaneCraftingResult( final EntityPlayer player, final ContainerPartArcaneCraftingTerminal hostContianer,
+	public SlotArcaneCraftingResult(	final EntityPlayer player, final ContainerPartArcaneCraftingTerminal hostContianer,
 										final IInventory terminalInventory, final IInventory slotInventory, final int slotIndex, final int xPos,
 										final int yPos )
 	{
@@ -87,7 +87,7 @@ public class SlotArcaneCraftingResult
 	/**
 	 * Similar to the onPickupFromSlot, with the key difference being
 	 * that this function call will not update the client.
-	 * 
+	 *
 	 * @param player
 	 * @param itemStack
 	 */

@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 
 /**
  * Thaumic Energistics items.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class IThEItems
 {

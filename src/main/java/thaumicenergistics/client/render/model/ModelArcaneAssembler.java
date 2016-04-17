@@ -1,18 +1,18 @@
 package thaumicenergistics.client.render.model;
 
+import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import org.lwjgl.opengl.GL11;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileArcaneAssembler} model.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class ModelArcaneAssembler
@@ -105,7 +105,7 @@ public class ModelArcaneAssembler
 
 	/**
 	 * Renders the glass on one side of the block.
-	 * 
+	 *
 	 * @param YRotation
 	 * @param XRotation
 	 * @param f5
@@ -120,7 +120,7 @@ public class ModelArcaneAssembler
 
 	/**
 	 * Renders the inner frame on one side of the block.
-	 * 
+	 *
 	 * @param YRotation
 	 * @param XRotation
 	 * @param f5
@@ -148,7 +148,7 @@ public class ModelArcaneAssembler
 
 	/**
 	 * Renders the outer frame on one side of the block.
-	 * 
+	 *
 	 * @param rotation
 	 * @param f5
 	 */
@@ -211,7 +211,8 @@ public class ModelArcaneAssembler
 	}
 
 	@Override
-	public void setRotationAngles( final float f, final float f1, final float f2, final float f3, final float f4, final float f5, final Entity entity )
+	public void setRotationAngles(	final float f, final float f1, final float f2, final float f3, final float f4, final float f5,
+									final Entity entity )
 	{
 		super.setRotationAngles( f, f1, f2, f3, f4, f5, entity );
 	}

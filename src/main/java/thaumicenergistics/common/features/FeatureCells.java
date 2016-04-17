@@ -1,6 +1,9 @@
 package thaumicenergistics.common.features;
 
 import java.util.ArrayList;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -17,18 +20,17 @@ import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.items.ItemEssentiaCell;
 import thaumicenergistics.common.items.ItemStorageComponent;
-import thaumicenergistics.common.registries.*;
+import thaumicenergistics.common.registries.FeatureRegistry;
+import thaumicenergistics.common.registries.RecipeRegistry;
+import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * {@link ItemEssentiaCell} and {@link ItemStorageComponent} feature.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureCells
 	extends ThEThaumcraftResearchFeature
@@ -41,7 +43,7 @@ public class FeatureCells
 	/**
 	 * Helper function to replace a single item with a group of items in a
 	 * recipe.
-	 * 
+	 *
 	 * @param recipe
 	 * @param ingredient
 	 * @param group

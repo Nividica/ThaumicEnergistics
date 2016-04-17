@@ -8,16 +8,16 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Item information.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public interface IThEItemDescription
 {
 
 	/**
 	 * Gets the block of this item, if it has one.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nullable
@@ -25,14 +25,14 @@ public interface IThEItemDescription
 
 	/**
 	 * Gets the damage, or meta, value of the item.
-	 * 
+	 *
 	 * @return
 	 */
 	int getDamage();
 
 	/**
 	 * Gets the item.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nonnull
@@ -40,7 +40,7 @@ public interface IThEItemDescription
 
 	/**
 	 * Gets a stack of size 1.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nonnull
@@ -48,7 +48,7 @@ public interface IThEItemDescription
 
 	/**
 	 * Gets a stack of the specified size.
-	 * 
+	 *
 	 * @param amount
 	 * @return
 	 */

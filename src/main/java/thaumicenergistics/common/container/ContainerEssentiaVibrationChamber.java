@@ -1,5 +1,6 @@
 package thaumicenergistics.common.container;
 
+import appeng.tile.misc.TileVibrationChamber;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -9,13 +10,12 @@ import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
-import appeng.tile.misc.TileVibrationChamber;
 
 /**
  * {@link TileVibrationChamber} container.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ContainerEssentiaVibrationChamber
 	extends TheContainerBase
@@ -78,7 +78,7 @@ public class ContainerEssentiaVibrationChamber
 
 	/**
 	 * Gets the power level as a percentage.
-	 * 
+	 *
 	 * @return
 	 */
 	public float getPowerPercent()
@@ -88,7 +88,7 @@ public class ContainerEssentiaVibrationChamber
 
 	/**
 	 * Gets the power produced per tick.
-	 * 
+	 *
 	 * @return
 	 */
 	public float getPowerPerTick()
@@ -98,7 +98,7 @@ public class ContainerEssentiaVibrationChamber
 
 	/**
 	 * Gets the aspect being processed by the EVC, can be null.
-	 * 
+	 *
 	 * @return
 	 */
 	public Aspect getProcessingAspect()
@@ -113,7 +113,7 @@ public class ContainerEssentiaVibrationChamber
 
 	/**
 	 * Gets the amount of essentia stored in the EVC.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getStoredEssentiaAmount()
@@ -128,7 +128,7 @@ public class ContainerEssentiaVibrationChamber
 
 	/**
 	 * Gets the aspect stored in the EVC, can be null.
-	 * 
+	 *
 	 * @return
 	 */
 	public Aspect getStoredEssentiaAspect()
@@ -143,7 +143,7 @@ public class ContainerEssentiaVibrationChamber
 
 	/**
 	 * Gets the amount of essentia stored in the EVC as a percentage.
-	 * 
+	 *
 	 * @return
 	 */
 	public float getStoredEssentiaPercent()
@@ -153,7 +153,7 @@ public class ContainerEssentiaVibrationChamber
 
 	/**
 	 * Gets the number of ticks left for processing.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getTicksRemaining()
@@ -163,7 +163,7 @@ public class ContainerEssentiaVibrationChamber
 
 	/**
 	 * Gets the time remaining as a percentage.
-	 * 
+	 *
 	 * @return
 	 */
 	public float getTicksRemainingPercent()
@@ -173,7 +173,7 @@ public class ContainerEssentiaVibrationChamber
 
 	/**
 	 * Called server side when the EVC updates; client side when an update packet arrives.
-	 * 
+	 *
 	 * @param powerPerTick
 	 * @param ticksRemaining
 	 * @param totalTicks

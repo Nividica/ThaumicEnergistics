@@ -16,9 +16,9 @@ import thaumicenergistics.common.tiles.TileEssentiaProvider;
 
 /**
  * {@link TileEssentiaProvider} feature.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureEssentiaProvider
 	extends ThEThaumcraftResearchFeature

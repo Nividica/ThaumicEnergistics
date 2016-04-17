@@ -1,6 +1,7 @@
 package thaumicenergistics.common.entities;
 
 import java.util.HashSet;
+import appeng.api.config.Actionable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
@@ -13,13 +14,12 @@ import thaumcraft.common.tiles.TileAlembic;
 import thaumcraft.common.tiles.TileJarFillable;
 import thaumcraft.common.tiles.TileJarFillableVoid;
 import thaumicenergistics.common.entities.WirelessGolemHandler.WirelessServerData;
-import appeng.api.config.Actionable;
 
 /**
  * Allows a golem to interact with networked essentia.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class AIGolemWifiEssentia
 	extends AIAENetworkGolem
@@ -58,7 +58,7 @@ public class AIGolemWifiEssentia
 
 	/**
 	 * Checks jars connected to the specified jar for potential targets.
-	 * 
+	 *
 	 * @param world
 	 * @param gHomePos
 	 * @param teJar
@@ -174,7 +174,7 @@ public class AIGolemWifiEssentia
 
 	/**
 	 * Sets the target if the jar is valid, closer, and in range.
-	 * 
+	 *
 	 * @param jar
 	 * @param gHomePos
 	 * @return 1 = Jar out of range, 2 = Jar already visited, 3 = Invalid jar, 4 = Set as target

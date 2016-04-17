@@ -2,9 +2,9 @@ package thaumicenergistics.common.features;
 
 /**
  * Defines what a basic feature of ThE is.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class ThEFeatureBase
 {
@@ -21,7 +21,7 @@ public abstract class ThEFeatureBase
 
 	/**
 	 * Creates the feature.
-	 * 
+	 *
 	 * @param initiallyAvailable
 	 */
 	public ThEFeatureBase( final boolean initiallyAvailable )
@@ -36,14 +36,14 @@ public abstract class ThEFeatureBase
 
 	/**
 	 * Registers the features crafting recipes, if it has any.
-	 * 
+	 *
 	 * @param cdi
 	 */
 	protected abstract void registerCrafting( final CommonDependantItems cdi );
 
 	/**
 	 * Is the feature available?
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isAvailable()
@@ -53,7 +53,7 @@ public abstract class ThEFeatureBase
 
 	/**
 	 * Asks the feature to register itself.
-	 * 
+	 *
 	 * @param cdi
 	 */
 	public final void registerFeature( final CommonDependantItems cdi )

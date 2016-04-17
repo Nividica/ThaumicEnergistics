@@ -26,7 +26,7 @@ public class VisCraftingHelper
 
 	/**
 	 * Calculates the vis discount for the specified armor slots and aspect.
-	 * 
+	 *
 	 * @param inventory
 	 * @param firstSlotIndex
 	 * @param slotCount
@@ -61,7 +61,7 @@ public class VisCraftingHelper
 
 	/**
 	 * Calculates the amount of warp generated from the specified armor slots.
-	 * 
+	 *
 	 * @param inventory
 	 * @param firstSlotIndex
 	 * @param slotCount
@@ -96,7 +96,7 @@ public class VisCraftingHelper
 	/**
 	 * Gets an itemstack representing a fully charged silverwood and thaumium
 	 * crafting scepter.
-	 * 
+	 *
 	 * @return
 	 */
 	public ItemStack getCraftingScepter()
@@ -129,7 +129,7 @@ public class VisCraftingHelper
 	/**
 	 * Gets the vis discount given by the crafting scepter for the specified
 	 * aspect.
-	 * 
+	 *
 	 * @param aspect
 	 * @return
 	 */

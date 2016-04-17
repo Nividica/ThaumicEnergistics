@@ -4,15 +4,15 @@ import thaumcraft.api.aspects.Aspect;
 
 /**
  * A host that wants to be informed of essentia events.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public interface IEssentiaWatcherHost
 {
 	/**
 	 * Called when essentia levels change in the network.
-	 * 
+	 *
 	 * @param aspect
 	 * Aspect of the changed essentia.
 	 * @param storedAmount
@@ -24,7 +24,7 @@ public interface IEssentiaWatcherHost
 
 	/**
 	 * Providers the essentia watcher for your host.
-	 * 
+	 *
 	 * @param newWatcher
 	 */
 	void updateWatcher( IEssentiaWatcher newWatcher );

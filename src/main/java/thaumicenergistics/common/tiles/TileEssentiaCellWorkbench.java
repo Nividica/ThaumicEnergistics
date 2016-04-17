@@ -2,6 +2,8 @@ package thaumicenergistics.common.tiles;
 
 import java.util.ArrayList;
 import java.util.List;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.ISaveProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -14,14 +16,12 @@ import thaumicenergistics.common.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.common.items.ItemEssentiaCell;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.ISaveProvider;
 
 /**
  * Provides {@link ItemEssentiaCell} partitioning.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class TileEssentiaCellWorkbench
 	extends TileEntity
@@ -67,7 +67,7 @@ public class TileEssentiaCellWorkbench
 
 	/**
 	 * Attempts to add an aspect to the partition.
-	 * 
+	 *
 	 * @param aspect
 	 */
 	public boolean addAspectToPartition( final Aspect aspect )
@@ -96,7 +96,7 @@ public class TileEssentiaCellWorkbench
 
 	/**
 	 * Clears all partitioning.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void clearAllPartitioning()
@@ -151,7 +151,7 @@ public class TileEssentiaCellWorkbench
 
 	/**
 	 * Gets the partition list.
-	 * 
+	 *
 	 * @return
 	 */
 	public ArrayList<Aspect> getPartitionList()
@@ -205,7 +205,7 @@ public class TileEssentiaCellWorkbench
 
 	/**
 	 * Checks if the workbench has a cell.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasEssentiaCell()
@@ -236,7 +236,7 @@ public class TileEssentiaCellWorkbench
 
 	/**
 	 * Partitions the cell be set to the contents of the cell.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void partitionToCellContents()
@@ -272,7 +272,7 @@ public class TileEssentiaCellWorkbench
 	/**
 	 * Registers a container.
 	 * The container will be notified when the cell changes.
-	 * 
+	 *
 	 * @param container
 	 */
 	public void registerListener( final ContainerEssentiaCellWorkbench container )
@@ -286,7 +286,7 @@ public class TileEssentiaCellWorkbench
 
 	/**
 	 * Removes an aspect from the partition.
-	 * 
+	 *
 	 * @param aspect
 	 */
 	public void removeAspectFromPartition( final Aspect aspect )
@@ -306,7 +306,7 @@ public class TileEssentiaCellWorkbench
 	/**
 	 * Removes a container.
 	 * It will no longer receive notifications when the cell changes.
-	 * 
+	 *
 	 * @param container
 	 */
 	public void removeListener( final ContainerEssentiaCellWorkbench container )
@@ -327,7 +327,7 @@ public class TileEssentiaCellWorkbench
 
 	/**
 	 * Sets the stored cell
-	 * 
+	 *
 	 * @param cell
 	 */
 	@Override
@@ -359,7 +359,7 @@ public class TileEssentiaCellWorkbench
 
 	/**
 	 * Replaces one aspect with another.
-	 * 
+	 *
 	 * @param aspect
 	 */
 	public void swapPartitionedAspect( final Aspect fromAspect, final Aspect toAspect )

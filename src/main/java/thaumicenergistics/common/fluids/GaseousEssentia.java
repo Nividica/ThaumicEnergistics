@@ -14,9 +14,9 @@ import thaumicenergistics.common.utils.ThELog;
 
 /**
  * A fluid which represents the gas form of an essentia.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class GaseousEssentia
 	extends Fluid
@@ -34,7 +34,7 @@ public class GaseousEssentia
 
 	/**
 	 * Creates the gas.
-	 * 
+	 *
 	 * @param gasName
 	 * Name of the gas displayed to the user
 	 * @param aspect
@@ -64,7 +64,7 @@ public class GaseousEssentia
 
 	/**
 	 * Creates a gas based on the specified aspect
-	 * 
+	 *
 	 * @param aspect
 	 */
 	private static void create( final Aspect aspect )
@@ -101,7 +101,7 @@ public class GaseousEssentia
 
 	/**
 	 * Gets the gas form of the specified aspect
-	 * 
+	 *
 	 * @param aspect
 	 * @return
 	 */
@@ -129,7 +129,7 @@ public class GaseousEssentia
 
 	/**
 	 * Get the aspect this gas is based off of.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override

@@ -10,7 +10,7 @@ import thaumicenergistics.fml.ThECore;
  * <ul>
  * <li>Adds hook to method <em>spawnCreature</em></li>
  * </ul>
- * 
+ *
  * @author Nividica
  *
  */

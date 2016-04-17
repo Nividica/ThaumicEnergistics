@@ -8,9 +8,9 @@ import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
 
 /**
  * {@link PartEssentiaLevelEmitter} server-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_S_EssentiaEmitter
 	extends ThEServerPacket
@@ -25,7 +25,7 @@ public class Packet_S_EssentiaEmitter
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -55,13 +55,13 @@ public class Packet_S_EssentiaEmitter
 
 	/**
 	 * Creates a packet to update the wanted amount on the server
-	 * 
+	 *
 	 * @param wantedAmount
 	 * @param part
 	 * @param player
 	 * @return
 	 */
-	public static void sendWantedAmount( final long wantedAmount, final PartEssentiaLevelEmitter part,
+	public static void sendWantedAmount(	final long wantedAmount, final PartEssentiaLevelEmitter part,
 											final EntityPlayer player )
 	{
 		Packet_S_EssentiaEmitter packet = newPacket( player, MODE_SEND_WANTED );
@@ -78,13 +78,13 @@ public class Packet_S_EssentiaEmitter
 
 	/**
 	 * Creates a packet to adjust the wanted amount on the server
-	 * 
+	 *
 	 * @param adjustmentAmount
 	 * @param part
 	 * @param player
 	 * @return
 	 */
-	public static void sendWantedAmountDelta( final int adjustmentAmount, final PartEssentiaLevelEmitter part,
+	public static void sendWantedAmountDelta(	final int adjustmentAmount, final PartEssentiaLevelEmitter part,
 												final EntityPlayer player )
 	{
 		Packet_S_EssentiaEmitter packet = newPacket( player, MODE_ADJUST_WANTED );

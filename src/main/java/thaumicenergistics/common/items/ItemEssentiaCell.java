@@ -2,6 +2,16 @@ package thaumicenergistics.common.items;
 
 import java.util.Collections;
 import java.util.List;
+import org.lwjgl.input.Keyboard;
+import appeng.api.AEApi;
+import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.api.implementations.tiles.IMEChest;
+import appeng.api.networking.security.PlayerSource;
+import appeng.api.storage.*;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.core.localization.GuiText;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +24,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import org.lwjgl.input.Keyboard;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
@@ -24,21 +33,12 @@ import thaumicenergistics.common.inventory.HandlerItemEssentiaCellCreative;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.storage.AspectStackComparator;
 import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
-import appeng.api.AEApi;
-import appeng.api.implementations.tiles.IChestOrDrive;
-import appeng.api.implementations.tiles.IMEChest;
-import appeng.api.networking.security.PlayerSource;
-import appeng.api.storage.*;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.core.localization.GuiText;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Stores essentia.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ItemEssentiaCell
 	extends Item
@@ -71,7 +71,7 @@ public class ItemEssentiaCell
 
 	/**
 	 * Adds the contents of the cell to the description tooltip.
-	 * 
+	 *
 	 * @param cellHandler
 	 * @param displayList
 	 * @param player
@@ -327,7 +327,7 @@ public class ItemEssentiaCell
 
 	/**
 	 * Maximum storage, in bytes, the cell can hold.
-	 * 
+	 *
 	 * @param essentiaCell
 	 * @return
 	 */
@@ -338,7 +338,7 @@ public class ItemEssentiaCell
 
 	/**
 	 * The maximum number of types each cell can hold.
-	 * 
+	 *
 	 * @param essentiaCell
 	 * @return
 	 */
@@ -393,7 +393,7 @@ public class ItemEssentiaCell
 	 * Shows the cell GUI.
 	 */
 	@Override
-	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv,
+	public void openChestGui(	final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv,
 								final ItemStack itemStack, final StorageChannel channel )
 	{
 		// Ensure this is the fluid channel

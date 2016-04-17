@@ -2,12 +2,14 @@ package thaumicenergistics.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSlotGui;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
@@ -24,14 +26,12 @@ import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaStorageBus;
 import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartEssentiaStorageBus} GUI
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaStorageBus
@@ -136,7 +136,7 @@ public class GuiEssentiaStorageBus
 
 	/**
 	 * Creates the GUI.
-	 * 
+	 *
 	 * @param storageBus
 	 * The part associated with the gui.
 	 * @param player
@@ -267,7 +267,7 @@ public class GuiEssentiaStorageBus
 		// Was the priority button clicked?
 		if( button.id == BUTTON_PRIORITY_ID )
 		{
-			// Get the storage buses host 
+			// Get the storage buses host
 			TileEntity host = this.storageBus.getHostTile();
 
 			// Get the side the storage bus is attached to
@@ -320,7 +320,7 @@ public class GuiEssentiaStorageBus
 
 	/**
 	 * Called when the server has sent a change to void mode.
-	 * 
+	 *
 	 * @param isVoidAllowed
 	 */
 	public void onServerSentVoidMode( final boolean isVoidAllowed )

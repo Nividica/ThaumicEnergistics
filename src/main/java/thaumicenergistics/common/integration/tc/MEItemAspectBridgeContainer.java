@@ -4,6 +4,11 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Map.Entry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.eventhandler.EventBus;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -11,19 +16,14 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import thaumcraft.client.lib.ClientTickEventsFML;
 import thaumicenergistics.common.inventory.TheInternalInventory;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.eventhandler.EventBus;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Allows the Thaumcraft item aspect renderer (the aspects you see while holding
  * down shift and mousing over and item) to be aware of the added slots and
  * their contents.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class MEItemAspectBridgeContainer
@@ -43,7 +43,7 @@ public class MEItemAspectBridgeContainer
 	/**
 	 * Constructs a pseudo container that TC can use to 'see' the items in the
 	 * ME network.
-	 * 
+	 *
 	 * @param inventorySize
 	 * @throws Exception
 	 * When the TC rendering code can not be found, the bridge will not
@@ -92,7 +92,7 @@ public class MEItemAspectBridgeContainer
 	/**
 	 * Adds a slot to the container. The index and position should perfectly
 	 * match the widgets they represent.
-	 * 
+	 *
 	 * @param index
 	 * @param posX
 	 * @param posY
@@ -116,7 +116,7 @@ public class MEItemAspectBridgeContainer
 	/**
 	 * Calls on TC to render the items aspects. This should only be called from
 	 * a GUI's drawScreen event.
-	 * 
+	 *
 	 * @param gui
 	 * @param player
 	 */
@@ -143,7 +143,7 @@ public class MEItemAspectBridgeContainer
 	/**
 	 * Sets the itemstack of the slot. When you update a widget, update this as
 	 * well.
-	 * 
+	 *
 	 * @param index
 	 * @param stack
 	 */

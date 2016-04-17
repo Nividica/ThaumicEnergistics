@@ -7,9 +7,9 @@ import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
 
 /**
  * Implements {@link IThEItems}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 class ThEItems
 	extends IThEItems

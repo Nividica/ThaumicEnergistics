@@ -8,16 +8,16 @@ import thaumcraft.api.aspects.Aspect;
 
 /**
  * Repository, or collection, of essentia.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public interface IEssentiaRepo
 {
 
 	/**
 	 * Returns a set of the stored aspects.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nonnull
@@ -30,7 +30,7 @@ public interface IEssentiaRepo
 
 	/**
 	 * Returns true if the repo has the aspect stored.
-	 * 
+	 *
 	 * @param aspect
 	 * @return
 	 */
@@ -39,7 +39,7 @@ public interface IEssentiaRepo
 	/**
 	 * Sets the repo to match the specified collection.
 	 * Any existing data is removed.
-	 * 
+	 *
 	 * @param stacks
 	 */
 	void copyFrom( @Nonnull Collection<IAspectStack> stacks );
@@ -51,7 +51,7 @@ public interface IEssentiaRepo
 
 	/**
 	 * Returns all aspect information stored in the repo.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nonnull
@@ -64,14 +64,14 @@ public interface IEssentiaRepo
 
 	/**
 	 * Returns true if the repo is empty.
-	 * 
+	 *
 	 * @return
 	 */
 	boolean isEmpty();
 
 	/**
 	 * Changes the aspect in the repo by the specified values.
-	 * 
+	 *
 	 * @param aspect
 	 * @param change
 	 * @param isCraftable
@@ -84,7 +84,7 @@ public interface IEssentiaRepo
 
 	/**
 	 * Changes the aspect in the repo by the specified aspect stack.
-	 * 
+	 *
 	 * @param change
 	 * @return The previous stack, if there was one.
 	 */
@@ -94,7 +94,7 @@ public interface IEssentiaRepo
 	/**
 	 * Removes an aspect from the repo.<br>
 	 * Returns the removed stack, if there was one removed.
-	 * 
+	 *
 	 * @param aspect
 	 * @return
 	 */
@@ -103,7 +103,7 @@ public interface IEssentiaRepo
 
 	/**
 	 * Sets the aspect in the repo by the specified values.
-	 * 
+	 *
 	 * @param aspect
 	 * @param amount
 	 * @param isCraftable
@@ -114,7 +114,7 @@ public interface IEssentiaRepo
 
 	/**
 	 * Sets the aspect in the repo to the specified aspect stack.
-	 * 
+	 *
 	 * @param stack
 	 * @return The previous stack, if there was one.
 	 */
@@ -123,7 +123,7 @@ public interface IEssentiaRepo
 
 	/**
 	 * Returns the number of unique aspects stored.
-	 * 
+	 *
 	 * @return
 	 */
 	int size();

@@ -1,6 +1,19 @@
 package thaumicenergistics.common.inventory;
 
 import java.util.Set;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.config.ViewItems;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridStorage;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.util.AECableType;
+import appeng.api.util.IConfigManager;
+import appeng.core.AEConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,25 +31,12 @@ import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.ViewItems;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridStorage;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.util.AECableType;
-import appeng.api.util.IConfigManager;
-import appeng.core.AEConfig;
 
 /**
  * Handles an {@link ItemWirelessEssentiaTerminal}
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class HandlerWirelessEssentiaTerminal
 	extends WirelessAELink
@@ -44,9 +44,9 @@ public class HandlerWirelessEssentiaTerminal
 {
 	/**
 	 * Redirects power requests to the wireless terminal.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	private class PowerRedirector
 		implements IEnergyGrid
@@ -196,7 +196,7 @@ public class HandlerWirelessEssentiaTerminal
 	 */
 	private double wirelessPowerMultiplier = 1.0D;
 
-	public HandlerWirelessEssentiaTerminal( final EntityPlayer player, final String encryptionKey,
+	public HandlerWirelessEssentiaTerminal(	final EntityPlayer player, final String encryptionKey,
 											final IThEWirelessEssentiaTerminal wirelessTerminalInterface,
 											final ItemStack wirelessTerminalItemstack )
 	{
@@ -212,7 +212,7 @@ public class HandlerWirelessEssentiaTerminal
 
 	/**
 	 * Returns true if the wireless terminal is linked to a network.
-	 * 
+	 *
 	 * @param wirelessTerminal
 	 * @return
 	 */
@@ -247,7 +247,7 @@ public class HandlerWirelessEssentiaTerminal
 
 	/**
 	 * Uses some of the terminals stored power. This does take into account the extra power required for wireless operations.
-	 * 
+	 *
 	 * @param amount
 	 * @return Returns the amount extracted.
 	 */
@@ -294,7 +294,7 @@ public class HandlerWirelessEssentiaTerminal
 
 	/**
 	 * Gets the the player source used when interacting with the network.
-	 * 
+	 *
 	 * @return
 	 */
 	public BaseActionSource getActionHost()
@@ -317,7 +317,7 @@ public class HandlerWirelessEssentiaTerminal
 
 	/**
 	 * Gets the essentia monitor.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -359,7 +359,7 @@ public class HandlerWirelessEssentiaTerminal
 
 	/**
 	 * Gets the terminals sorting mode.
-	 * 
+	 *
 	 * @return
 	 */
 	public AspectStackComparatorMode getSortingMode()
@@ -378,7 +378,7 @@ public class HandlerWirelessEssentiaTerminal
 
 	/**
 	 * Gets the wireless terminal itemstack.
-	 * 
+	 *
 	 * @return
 	 */
 	public ItemStack getTerminalItem()
@@ -403,7 +403,7 @@ public class HandlerWirelessEssentiaTerminal
 
 	/**
 	 * Returns true if the terminal has power.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -434,7 +434,7 @@ public class HandlerWirelessEssentiaTerminal
 
 	/**
 	 * Sets the terminals sorting mode.
-	 * 
+	 *
 	 * @param mode
 	 */
 	public void setSortingMode( final AspectStackComparatorMode mode )
@@ -457,7 +457,7 @@ public class HandlerWirelessEssentiaTerminal
 
 	/**
 	 * Updates the power multiplier for wireless operations.
-	 * 
+	 *
 	 * @return
 	 */
 	public void updatePowerMultiplier()

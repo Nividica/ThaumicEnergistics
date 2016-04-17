@@ -12,9 +12,9 @@ import thaumicenergistics.common.network.packet.server.*;
 
 /**
  * Handles all server<->client network communication for ThE.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class NetworkHandler
 {
@@ -40,7 +40,7 @@ public class NetworkHandler
 
 	/**
 	 * Registers a packet.
-	 * 
+	 *
 	 * @param packet
 	 */
 	private static void registerPacket( final Class<? extends ThEBasePacket> packetClass )
@@ -52,7 +52,7 @@ public class NetworkHandler
 
 	/**
 	 * Get's the class for the packet with the specified ID.
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -63,7 +63,7 @@ public class NetworkHandler
 
 	/**
 	 * Gets the ID for the specified packet.
-	 * 
+	 *
 	 * @param packet
 	 * @return
 	 */

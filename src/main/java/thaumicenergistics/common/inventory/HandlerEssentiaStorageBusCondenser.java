@@ -1,10 +1,6 @@
 package thaumicenergistics.common.inventory;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.FluidStack;
-import thaumicenergistics.common.fluids.GaseousEssentia;
-import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
-import thaumicenergistics.common.parts.PartEssentiaStorageBus;
+import com.google.common.collect.ImmutableList;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
@@ -12,13 +8,17 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.tile.misc.TileCondenser;
-import com.google.common.collect.ImmutableList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.FluidStack;
+import thaumicenergistics.common.fluids.GaseousEssentia;
+import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
 /**
  * Handles interaction between {@link PartEssentiaStorageBus} and {@link TileCondenser}.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class HandlerEssentiaStorageBusCondenser
 	extends HandlerEssentiaStorageBusBase

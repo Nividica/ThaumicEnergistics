@@ -66,9 +66,9 @@ import thaumicenergistics.common.utils.EffectiveSide;
 
 /**
  * Allows auto-crafting arcane recipes.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class TileArcaneAssembler
 	extends AENetworkInvTile
@@ -288,7 +288,7 @@ public class TileArcaneAssembler
 
 	/**
 	 * Get's the NBT tag for the just-crafted assembler.
-	 * 
+	 *
 	 * @return
 	 */
 	public static NBTTagCompound getCraftTag()
@@ -439,7 +439,7 @@ public class TileArcaneAssembler
 	/**
 	 * Helper function to calculate how much vis is required for the specified
 	 * aspect for the current recipe.
-	 * 
+	 *
 	 * @param aspect
 	 * @return
 	 */
@@ -479,7 +479,7 @@ public class TileArcaneAssembler
 
 	/**
 	 * Returns true if the tile is connected to the AE network and active.
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean isActive()
@@ -528,7 +528,7 @@ public class TileArcaneAssembler
 		{
 		}
 
-		// Ensure the source is reachable. 
+		// Ensure the source is reachable.
 		if( visSource == null )
 		{
 			return;
@@ -715,7 +715,7 @@ public class TileArcaneAssembler
 
 	/**
 	 * Called when the block is broken to get any additional items.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -759,7 +759,7 @@ public class TileArcaneAssembler
 
 	/**
 	 * Get's the current knowledge core handler.
-	 * 
+	 *
 	 * @return
 	 */
 	public HandlerKnowledgeCore getKCoreHandler()
@@ -775,7 +775,7 @@ public class TileArcaneAssembler
 
 	/**
 	 * Returns the percent the current crafting job is complete.
-	 * 
+	 *
 	 * @return
 	 */
 	public float getPercentComplete()
@@ -792,7 +792,7 @@ public class TileArcaneAssembler
 
 	/**
 	 * Get's the stored vis amounts.
-	 * 
+	 *
 	 * @return
 	 */
 	public AspectList getStoredVis()
@@ -807,7 +807,7 @@ public class TileArcaneAssembler
 
 	/**
 	 * Returns the discount for the specified aspect.
-	 * 
+	 *
 	 * @param aspect
 	 * @return
 	 */
@@ -912,7 +912,7 @@ public class TileArcaneAssembler
 	/**
 	 * Called when the player right-clicks the assembler with a memory card in
 	 * hand.
-	 * 
+	 *
 	 * @param memoryCard
 	 */
 	public void onMemoryCardActivate( final EntityPlayer player, final IMemoryCard memoryCard, final ItemStack playerHolding )
@@ -1236,7 +1236,7 @@ public class TileArcaneAssembler
 
 	/**
 	 * Reads the stored vis levels.
-	 * 
+	 *
 	 * @param data
 	 */
 	public void readVisLevelsFromNBT( final NBTTagCompound data )
@@ -1249,7 +1249,7 @@ public class TileArcaneAssembler
 
 	/**
 	 * Sets the owner of this tile.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void setOwner( final EntityPlayer player )
@@ -1285,7 +1285,7 @@ public class TileArcaneAssembler
 
 	/**
 	 * Writes the stored vis levels.
-	 * 
+	 *
 	 * @param data
 	 */
 	public void writeVisLevelsToNBT( final NBTTagCompound data )

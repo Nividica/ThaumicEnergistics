@@ -1,5 +1,8 @@
 package thaumicenergistics.common.network.packet.client;
 
+import appeng.api.config.RedstoneMode;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -8,15 +11,12 @@ import thaumicenergistics.client.gui.GuiEssentiaLevelEmitter;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
 import thaumicenergistics.common.registries.EnumCache;
-import appeng.api.config.RedstoneMode;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartEssentiaLevelEmitter} client-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_C_EssentiaEmitter
 	extends ThEClientPacket
@@ -32,7 +32,7 @@ public class Packet_C_EssentiaEmitter
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -62,7 +62,7 @@ public class Packet_C_EssentiaEmitter
 
 	/**
 	 * Create a packet to update a client with a new wanted amount.
-	 * 
+	 *
 	 * @param threshold
 	 * @param player
 	 * @return

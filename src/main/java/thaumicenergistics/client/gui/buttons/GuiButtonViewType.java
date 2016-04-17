@@ -1,18 +1,18 @@
 package thaumicenergistics.client.gui.buttons;
 
 import java.util.List;
-import net.minecraft.util.EnumChatFormatting;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 import appeng.api.config.ViewItems;
 import appeng.core.localization.ButtonToolTips;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumChatFormatting;
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 /**
  * Displays view types icons.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonViewType
@@ -25,7 +25,7 @@ public class GuiButtonViewType
 
 	/**
 	 * Creates the view button.
-	 * 
+	 *
 	 * @param ID
 	 * @param xPosition
 	 * @param yPosition
@@ -46,7 +46,7 @@ public class GuiButtonViewType
 
 	/**
 	 * Sets the icon based on the view mode.
-	 * 
+	 *
 	 * @param mode
 	 */
 	public void setViewMode( final ViewItems mode )

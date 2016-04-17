@@ -7,9 +7,9 @@ import thaumcraft.api.crafting.InfusionRecipe;
 
 /**
  * All ThE recipes.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class RecipeRegistry
 {

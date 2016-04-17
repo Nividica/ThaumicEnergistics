@@ -65,7 +65,7 @@ class GolemSyncRegistry
 
 	/**
 	 * True if the data has changed since the last sync.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasChanged()
@@ -75,7 +75,7 @@ class GolemSyncRegistry
 
 	/**
 	 * Converts the mappings into a string.
-	 * 
+	 *
 	 * @return
 	 */
 	public String mappingsToString()
@@ -121,7 +121,7 @@ class GolemSyncRegistry
 
 	/**
 	 * Reads the mappings from a string
-	 * 
+	 *
 	 * @param data
 	 */
 	public HashSet<IGolemHookHandler> readFromString( final String data )
@@ -197,7 +197,7 @@ class GolemSyncRegistry
 		// Get the id
 		int id = this.uuid;
 
-		// Increment the uuid 
+		// Increment the uuid
 		this.uuid = Integer.valueOf( id + 1 );
 
 		return id;

@@ -1,5 +1,6 @@
 package thaumicenergistics.common.integration.tc;
 
+import appeng.api.util.DimensionalCoord;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.WorldCoordinates;
 import thaumcraft.api.aspects.Aspect;
@@ -7,7 +8,6 @@ import thaumcraft.api.visnet.TileVisNode;
 import thaumcraft.api.visnet.VisNetHandler;
 import thaumcraft.common.tiles.TileVisRelay;
 import thaumicenergistics.common.parts.PartVisInterface;
-import appeng.api.util.DimensionalCoord;
 
 public class VisProviderProxy
 	extends TileVisNode

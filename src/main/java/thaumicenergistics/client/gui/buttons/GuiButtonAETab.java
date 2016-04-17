@@ -1,19 +1,19 @@
 package thaumicenergistics.client.gui.buttons;
 
 import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
-import thaumicenergistics.client.textures.IStateIconTexture;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.StatCollector;
+import thaumicenergistics.client.textures.AEStateIconsEnum;
+import thaumicenergistics.client.textures.IStateIconTexture;
 
 /**
  * Large corner-button.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonAETab
@@ -43,7 +43,7 @@ public class GuiButtonAETab
 	public GuiButtonAETab( final int ID, final int xPosition, final int yPosition, final IStateIconTexture icon, final String unlocalizedTooltip )
 	{
 		// Call super
-		super( ID, xPosition, yPosition, GuiButtonAETab.BUTTON_WIDTH, GuiButtonAETab.BUTTON_HEIGHT, icon, GuiButtonAETab.ICON_X_POSITION,
+		super(	ID, xPosition, yPosition, GuiButtonAETab.BUTTON_WIDTH, GuiButtonAETab.BUTTON_HEIGHT, icon, GuiButtonAETab.ICON_X_POSITION,
 				GuiButtonAETab.ICON_Y_POSITION, AEStateIconsEnum.TAB_BUTTON );
 
 		// Set the tooltip

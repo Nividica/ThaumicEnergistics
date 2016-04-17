@@ -2,11 +2,6 @@ package thaumicenergistics.common.integration;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
-import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
-import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import codechicken.nei.PositionedStack;
@@ -14,28 +9,33 @@ import codechicken.nei.api.API;
 import codechicken.nei.api.IOverlayHandler;
 import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.recipe.IRecipeHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
+import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
+import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
 
 /**
  * Contains all code required to integrate with Not Enough Items.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class ModuleNEI
 {
 
 	/**
 	 * Base class for handling item overlays.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	abstract class AbstractBaseOverlayHandler
 		implements IOverlayHandler
 	{
 		/**
 		 * Calls on the subclass to add an ingredient to the items array.
-		 * 
+		 *
 		 * @param ingredient
 		 * @param overlayItems
 		 */
@@ -43,14 +43,14 @@ public class ModuleNEI
 
 		/**
 		 * Called when the items are ready to be placed in the GUI.
-		 * 
+		 *
 		 * @param overlayItems
 		 */
 		protected abstract void addItemsToGUI( IAEItemStack[] overlayItems );
 
 		/**
 		 * Checks with the subclass to see if this is a GUI it handles.
-		 * 
+		 *
 		 * @param gui
 		 * @return
 		 */
@@ -106,9 +106,9 @@ public class ModuleNEI
 
 	/**
 	 * Sends a selected NEI recipe to the open A.C.T on the server.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	public class ACTOverlayHandler
 		extends AbstractBaseOverlayHandler
@@ -130,7 +130,7 @@ public class ModuleNEI
 
 		/**
 		 * Creates the handler.
-		 * 
+		 *
 		 * @param isArcane
 		 * Set to true for arcane recipes
 		 */
@@ -141,7 +141,7 @@ public class ModuleNEI
 
 		/**
 		 * Adds ThaumcraftNEIPlugin ingredients to the ACT crafting grid.
-		 * 
+		 *
 		 * @return
 		 */
 		private boolean addArcaneCraftingItems( final PositionedStack ingredient, final IAEItemStack[] overlayItems )
@@ -180,7 +180,7 @@ public class ModuleNEI
 
 		/**
 		 * Adds NEI ingredients to the ACT crafting grid.
-		 * 
+		 *
 		 * @param ingredient
 		 * @param overlayItems
 		 * @return
@@ -230,9 +230,9 @@ public class ModuleNEI
 
 	/**
 	 * Corrects the slot positions so that NEI can find and render them.
-	 * 
+	 *
 	 * @author Nividica
-	 * 
+	 *
 	 */
 	public class ACTSlotPositioner
 		implements IStackPositioner
@@ -270,7 +270,7 @@ public class ModuleNEI
 
 	/**
 	 * Integrates with Not Enough Items
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	public ModuleNEI() throws Exception
@@ -287,7 +287,8 @@ public class ModuleNEI
 		// Register the handlers
 		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, craftingOverlayHandler, "crafting" );
 		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler, "arcaneshapedrecipes" );
-		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler, "arcaneshapelessrecipes" );
+		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler,
+			"arcaneshapelessrecipes" );
 	}
 
 }

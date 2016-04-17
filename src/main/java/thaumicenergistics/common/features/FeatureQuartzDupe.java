@@ -1,5 +1,6 @@
 package thaumicenergistics.common.features;
 
+import appeng.api.AEApi;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.api.ThaumcraftApi;
@@ -11,13 +12,12 @@ import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
-import appeng.api.AEApi;
 
 /**
  * Quartz duplication feature.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class FeatureQuartzDupe
 	extends ThEThaumcraftResearchFeature

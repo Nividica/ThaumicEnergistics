@@ -10,9 +10,9 @@ import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
 
 /**
  * {@link PartEssentiaImportBus} and {@link PartEssentiaExportBus} server-bound packet.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class Packet_S_EssentiaIOBus
 	extends ThEServerPacket
@@ -23,7 +23,7 @@ public class Packet_S_EssentiaIOBus
 
 	/**
 	 * Creates the packet
-	 * 
+	 *
 	 * @param player
 	 * @param mode
 	 * @return
@@ -43,7 +43,7 @@ public class Packet_S_EssentiaIOBus
 
 	/**
 	 * Sends a request to the server to change the redstone mode.
-	 * 
+	 *
 	 * @param player
 	 * @param part
 	 * @return
@@ -58,7 +58,7 @@ public class Packet_S_EssentiaIOBus
 
 	/**
 	 * Sends a request to the server for a full update of the buses state.
-	 * 
+	 *
 	 * @param player
 	 * @param part
 	 * @return
@@ -73,7 +73,7 @@ public class Packet_S_EssentiaIOBus
 
 	/**
 	 * Sends a request to the server to update the void mode.
-	 * 
+	 *
 	 * @param player
 	 * @param part
 	 * @return

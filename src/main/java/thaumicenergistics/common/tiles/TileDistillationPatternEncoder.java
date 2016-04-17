@@ -1,16 +1,16 @@
 package thaumicenergistics.common.tiles;
 
 import java.util.ArrayList;
+import appeng.api.AEApi;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
-import appeng.api.AEApi;
 
 /**
  * Encodes recipes whose result is essentia.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class TileDistillationPatternEncoder
 	extends ThETileInventory
@@ -52,7 +52,7 @@ public class TileDistillationPatternEncoder
 
 	/**
 	 * Returns a list of items to drop when broken.
-	 * 
+	 *
 	 * @return
 	 */
 	public ArrayList<ItemStack> getDrops( final ArrayList<ItemStack> drops )
@@ -74,14 +74,13 @@ public class TileDistillationPatternEncoder
 
 	/**
 	 * True if there is a pattern to encode onto.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasPatterns()
 	{
 		// Is there anything in the pattern slots?
-		return this.internalInventory.getHasStack( SLOT_ENCODED_PATTERN )
-						|| this.internalInventory.getHasStack( SLOT_BLANK_PATTERNS );
+		return this.internalInventory.getHasStack( SLOT_ENCODED_PATTERN ) || this.internalInventory.getHasStack( SLOT_BLANK_PATTERNS );
 
 	}
 

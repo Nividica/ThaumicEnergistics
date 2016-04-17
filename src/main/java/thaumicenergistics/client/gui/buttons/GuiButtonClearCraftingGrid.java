@@ -1,17 +1,17 @@
 package thaumicenergistics.client.gui.buttons;
 
 import java.util.List;
-import net.minecraft.util.EnumChatFormatting;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 import appeng.core.localization.ButtonToolTips;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumChatFormatting;
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 /**
  * Displays clear grid icon.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonClearCraftingGrid
@@ -26,14 +26,14 @@ public class GuiButtonClearCraftingGrid
 
 	/**
 	 * Creates the button
-	 * 
+	 *
 	 * @param ID
 	 * @param xPosition
 	 * @param yPosition
 	 * @param width
 	 * @param height
 	 */
-	public GuiButtonClearCraftingGrid( final int ID, final int xPosition, final int yPosition, final int width, final int height,
+	public GuiButtonClearCraftingGrid(	final int ID, final int xPosition, final int yPosition, final int width, final int height,
 										final boolean showTooltip )
 	{
 		// Call super
