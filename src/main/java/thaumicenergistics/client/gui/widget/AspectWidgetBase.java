@@ -19,9 +19,9 @@ import thaumicenergistics.common.storage.AspectStack;
 
 /**
  * Base class of Aspect Widgets.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public abstract class AspectWidgetBase
@@ -54,7 +54,6 @@ public abstract class AspectWidgetBase
 
 	/**
 	 * Cached footnote of the aspect.
-	 * NOTE: One day I hope to put what mod the aspect is from here, not just its primallity.
 	 */
 	protected String aspectFootnote = "";
 
@@ -85,7 +84,7 @@ public abstract class AspectWidgetBase
 
 	/**
 	 * Clears the stack and optionally fires the on stack changed event.
-	 * 
+	 *
 	 * @param doUpdate
 	 */
 	protected void clearStack( final boolean doUpdate )
@@ -202,7 +201,7 @@ public abstract class AspectWidgetBase
 
 	/**
 	 * Gets the stack size.
-	 * 
+	 *
 	 * @return
 	 */
 	public long getAmount()
@@ -212,7 +211,7 @@ public abstract class AspectWidgetBase
 
 	/**
 	 * Gets the aspect stack for this widget.
-	 * 
+	 *
 	 * @return
 	 */
 	public Aspect getAspect()
@@ -222,7 +221,7 @@ public abstract class AspectWidgetBase
 
 	/**
 	 * Gets whether or not the stack is craftable.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean getCraftable()
@@ -232,7 +231,7 @@ public abstract class AspectWidgetBase
 
 	/**
 	 * Returns the aspect stack.
-	 * 
+	 *
 	 * @return
 	 */
 	public IAspectStack getStack()
@@ -261,7 +260,7 @@ public abstract class AspectWidgetBase
 
 	/**
 	 * Returns true if the widget has an aspect.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasAspect()
@@ -271,7 +270,7 @@ public abstract class AspectWidgetBase
 
 	/**
 	 * Set's the aspect stack based on the passed values.
-	 * 
+	 *
 	 * @param aspect
 	 * @param amount
 	 * @param isCraftable
@@ -286,7 +285,7 @@ public abstract class AspectWidgetBase
 
 	/**
 	 * Sets the aspect based on the stack
-	 * 
+	 *
 	 * @param stack
 	 */
 	public void setAspect( final IAspectStack stack )

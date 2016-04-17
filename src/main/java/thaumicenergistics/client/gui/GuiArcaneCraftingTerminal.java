@@ -2,32 +2,9 @@ package thaumicenergistics.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import thaumcraft.client.lib.UtilsFX;
-import thaumcraft.common.config.Config;
-import thaumicenergistics.client.gui.abstraction.GuiConstants_ACT;
-import thaumicenergistics.client.gui.buttons.*;
-import thaumicenergistics.client.gui.widget.ThEWidget;
-import thaumicenergistics.client.gui.widget.WidgetAEItem;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
-import thaumicenergistics.client.textures.GuiTextureManager;
-import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
-import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
-import thaumicenergistics.common.integration.tc.MEItemAspectBridgeContainer;
-import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
-import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
-import thaumicenergistics.common.registries.ThEStrings;
-import thaumicenergistics.common.tiles.TileArcaneAssembler;
-import thaumicenergistics.common.utils.ThEUtils;
 import appeng.api.config.*;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -38,12 +15,36 @@ import appeng.core.AEConfig;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import thaumcraft.client.lib.UtilsFX;
+import thaumcraft.common.config.Config;
+import thaumicenergistics.client.gui.abstraction.GuiConstants_ACT;
+import thaumicenergistics.client.gui.buttons.*;
+import thaumicenergistics.client.gui.widget.ThEWidget;
+import thaumicenergistics.client.gui.widget.WidgetAEItem;
+import thaumicenergistics.client.textures.AEStateIconsEnum;
+import thaumicenergistics.client.textures.GuiTextureManager;
+import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
+import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal.ArcaneCrafingCost;
+import thaumicenergistics.common.integration.AEHooks;
+import thaumicenergistics.common.integration.tc.MEItemAspectBridgeContainer;
+import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
+import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
+import thaumicenergistics.common.registries.ThEStrings;
+import thaumicenergistics.common.tiles.TileArcaneAssembler;
+import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * {@link TileArcaneAssembler} GUI
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 @SideOnly(Side.CLIENT)
 public class GuiArcaneCraftingTerminal
@@ -192,7 +193,7 @@ public class GuiArcaneCraftingTerminal
 
 	/**
 	 * Checks if the click was a region deposit.
-	 * 
+	 *
 	 * @param mouseX
 	 * @param mouseY
 	 * @return True if click was handled.
@@ -221,7 +222,7 @@ public class GuiArcaneCraftingTerminal
 
 	/**
 	 * Checks if the click was inside the search box.
-	 * 
+	 *
 	 * @param mouseX
 	 * @param mouseY
 	 * @param mouseButton
@@ -255,7 +256,7 @@ public class GuiArcaneCraftingTerminal
 
 	/**
 	 * Checks if the click was inside the widgets.
-	 * 
+	 *
 	 * @param mouseX
 	 * @param mouseY
 	 * @param mouseButton
@@ -296,14 +297,14 @@ public class GuiArcaneCraftingTerminal
 	/**
 	 * Extracts or inserts an item to/from the player held stack based on the
 	 * direction the mouse wheel was scrolled.
-	 * 
+	 *
 	 * @param deltaZ
 	 */
 	private void doMEWheelAction( final int deltaZ, final int mouseX, final int mouseY )
 	{
 		// Is the mouse inside the ME area?
-		if( ThEGuiHelper.INSTANCE.isPointInGuiRegion( ME_ITEM_POS_Y, ME_ITEM_POS_X,
-			this.numberOfWidgetRows * ME_ROW_HEIGHT, ME_GRID_WIDTH,
+		if( ThEGuiHelper.INSTANCE.isPointInGuiRegion( GuiConstants_ACT.ME_ITEM_POS_Y, GuiConstants_ACT.ME_ITEM_POS_X,
+			this.numberOfWidgetRows * GuiConstants_ACT.ME_ROW_HEIGHT, GuiConstants_ACT.ME_GRID_WIDTH,
 			mouseX, mouseY, this.guiLeft, this.guiTop ) )
 		{
 			// Which direction was the scroll?
@@ -327,7 +328,7 @@ public class GuiArcaneCraftingTerminal
 
 	/**
 	 * Draws the crafting aspect's and their costs.
-	 * 
+	 *
 	 * @param craftingCost
 	 */
 	private void drawCraftingAspects( final List<ArcaneCrafingCost> craftingCost )
@@ -369,7 +370,7 @@ public class GuiArcaneCraftingTerminal
 
 	/**
 	 * Draws the AE item widgets.
-	 * 
+	 *
 	 * @param mouseX
 	 * @param mouseY
 	 * @return
@@ -409,7 +410,7 @@ public class GuiArcaneCraftingTerminal
 	/**
 	 * If the user has clicked on an item widget this will inform the server
 	 * so that the item can be extracted from the AE network.
-	 * 
+	 *
 	 * @param mouseX
 	 * @param mouseY
 	 * @param mouseButton
@@ -540,7 +541,7 @@ public class GuiArcaneCraftingTerminal
 		{
 			IAEItemStack stack = this.repo.getReferenceItem( repoIndex++ );
 
-			// Did we get a stack? 
+			// Did we get a stack?
 			if( stack != null )
 			{
 				// Set the item
@@ -702,7 +703,8 @@ public class GuiArcaneCraftingTerminal
 		}
 
 		// Should we force a tooltip update?
-		boolean forceTooltipUpdate = ( ( System.currentTimeMillis() - this.lastTooltipUpdateTime ) >= GuiConstants_ACT.WIDGET_TOOLTIP_UPDATE_INTERVAL );
+		boolean forceTooltipUpdate = ( ( System.currentTimeMillis() -
+						this.lastTooltipUpdateTime ) >= GuiConstants_ACT.WIDGET_TOOLTIP_UPDATE_INTERVAL );
 
 		// Has the mouse moved, or timeout reached?
 		if( forceTooltipUpdate || ( this.previousMouseX != mouseX ) || ( this.previousMouseY != mouseY ) )
@@ -746,7 +748,7 @@ public class GuiArcaneCraftingTerminal
 
 	/**
 	 * Returns the scroll bar parameters.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -989,7 +991,7 @@ public class GuiArcaneCraftingTerminal
 	protected void onMouseWheel( final int deltaZ, final int mouseX, final int mouseY )
 	{
 		// Is the mouse inside of, or to the left of, the GUI?
-		if( mouseX > ( this.guiLeft + GUI_WIDTH ) )
+		if( mouseX > ( this.guiLeft + GuiConstants_ACT.GUI_WIDTH ) )
 		{
 			// Mouse is to the right of the gui
 			return;
@@ -1112,7 +1114,8 @@ public class GuiArcaneCraftingTerminal
 		// Create the clear grid button
 		this.buttonList.add( new GuiButtonClearCraftingGrid( GuiConstants_ACT.BUTTON_CLEAR_GRID_ID, this.guiLeft +
 						GuiConstants_ACT.BUTTON_CLEAR_GRID_POS_X, this.guiTop + GuiConstants_ACT.BUTTON_CLEAR_GRID_POS_Y +
-						this.lowerTerminalYOffset, 8, 8, true ) );
+										this.lowerTerminalYOffset,
+						8, 8, true ) );
 
 		// Add sort order button
 		this.buttonList.add( this.btnSortingMode = new GuiButtonSortingMode( GuiConstants_ACT.BUTTON_SORT_MODE_ID, this.guiLeft +
@@ -1132,7 +1135,8 @@ public class GuiArcaneCraftingTerminal
 		// Add swap armor button
 		this.buttonList.add( new GuiButtonSwapArmor( GuiConstants_ACT.BUTTON_SWAP_ARMOR_ID, this.guiLeft +
 						GuiConstants_ACT.BUTTON_SWAP_ARMOR_POS_X, this.guiTop + GuiConstants_ACT.BUTTON_SWAP_ARMOR_POS_Y +
-						this.lowerTerminalYOffset, 8, 8 ) );
+										this.lowerTerminalYOffset,
+						8, 8 ) );
 
 		// Add search mode button
 		this.buttonList.add( this.btnSearchMode = new GuiButtonSearchMode( GuiConstants_ACT.BUTTON_SEARCH_MODE_ID, this.guiLeft +
@@ -1167,11 +1171,17 @@ public class GuiArcaneCraftingTerminal
 
 	/**
 	 * Called to update the amount of an item in the ME network.
-	 * 
+	 *
 	 * @param change
 	 */
 	public void onReceiveChange( final IAEItemStack change )
 	{
+		// Is the item blacklisted?
+		if( AEHooks.isItemGUIBlacklisted( change ) )
+		{
+			return;
+		}
+
 		// Update the repository
 		this.repo.postUpdate( change );
 
@@ -1182,7 +1192,7 @@ public class GuiArcaneCraftingTerminal
 	/**
 	 * Called when the server sends a full list of all
 	 * items in the AE network in response to our request.
-	 * 
+	 *
 	 * @param itemList
 	 */
 	public void onReceiveFullList( final IItemList<IAEItemStack> itemList )
@@ -1193,16 +1203,13 @@ public class GuiArcaneCraftingTerminal
 		// Update the repository
 		for( IAEItemStack stack : itemList )
 		{
-			this.repo.postUpdate( stack );
+			this.onReceiveChange( stack );
 		}
-
-		// Repo needs update
-		this.viewNeedsUpdate = true;
 	}
 
 	/**
 	 * Called when the server sends the sorting order and direction.
-	 * 
+	 *
 	 * @param order
 	 * @param direction
 	 */

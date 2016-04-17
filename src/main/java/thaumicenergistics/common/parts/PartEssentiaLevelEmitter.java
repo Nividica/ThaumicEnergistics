@@ -1,9 +1,17 @@
 package thaumicenergistics.common.parts;
 
-import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.Random;
 import javax.annotation.Nullable;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,20 +32,12 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.IAspectSlotPart;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.utils.EffectiveSide;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.PartItemStack;
-import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Emits redstone signals based on networked essentia levels.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public class PartEssentiaLevelEmitter
 	extends ThEPartBase
@@ -58,6 +58,27 @@ public class PartEssentiaLevelEmitter
 	 * Default redstone mode the part starts with.
 	 */
 	private static final RedstoneMode DEFAULT_REDSTONE_MODE = RedstoneMode.HIGH_SIGNAL;
+
+	/**
+	 * Dimensions and offsets
+	 */
+	private static final float Base_XY_Min = 7.0F, Base_XY_Max = 9.0F, Base_Z_Min = 11.0F, Base_Z_Max = 13.0F,
+					// Head Z's
+					Head_Z_Min = PartEssentiaLevelEmitter.Base_Z_Max, Head_Z_Max = PartEssentiaLevelEmitter.Head_Z_Min + 2.0F,
+					// Face Z's
+					Face_Z_Min = PartEssentiaLevelEmitter.Head_Z_Min - 1.0F, FaceZMax = PartEssentiaLevelEmitter.Head_Z_Max + 1.0F,
+					// Face offsets
+					FaceOffset_XH_YV = 0.001F, FaceOffset_XV_YH = 1.0F,
+					// Horizontal faces XY
+					Face_XH_Min = PartEssentiaLevelEmitter.Base_XY_Min - PartEssentiaLevelEmitter.FaceOffset_XH_YV,
+					Face_YH_Min = PartEssentiaLevelEmitter.Base_XY_Min - PartEssentiaLevelEmitter.FaceOffset_XV_YH,
+					Face_XH_Max = PartEssentiaLevelEmitter.Base_XY_Max + PartEssentiaLevelEmitter.FaceOffset_XH_YV,
+					Face_YH_Max = PartEssentiaLevelEmitter.Base_XY_Max + PartEssentiaLevelEmitter.FaceOffset_XV_YH,
+					// Vertical faces XY
+					Face_XV_Min = PartEssentiaLevelEmitter.Base_XY_Min - PartEssentiaLevelEmitter.FaceOffset_XV_YH,
+					Face_YV_Min = PartEssentiaLevelEmitter.Base_XY_Min - PartEssentiaLevelEmitter.FaceOffset_XH_YV,
+					Face_XV_Max = PartEssentiaLevelEmitter.Base_XY_Max + PartEssentiaLevelEmitter.FaceOffset_XV_YH,
+					Face_YV_Max = PartEssentiaLevelEmitter.Base_XY_Max + PartEssentiaLevelEmitter.FaceOffset_XH_YV;
 
 	/**
 	 * Aspect we are watching.
@@ -148,7 +169,7 @@ public class PartEssentiaLevelEmitter
 	/**
 	 * Sets the current amount in the network, of the aspect
 	 * we are watching/filtering.
-	 * 
+	 *
 	 * @param amount
 	 */
 	private void setCurrentLevel( final long amount )
@@ -166,7 +187,7 @@ public class PartEssentiaLevelEmitter
 
 	/**
 	 * Checks if the emitter should be emitting a redstone signal.
-	 * 
+	 *
 	 * @return
 	 */
 	private void updateEmittingState()
@@ -228,9 +249,16 @@ public class PartEssentiaLevelEmitter
 	}
 
 	@Override
+	public boolean canConnectRedstone()
+	{
+		return true;
+	}
+
+	@Override
 	public void getBoxes( final IPartCollisionHelper helper )
 	{
-		helper.addBox( 7.0D, 7.0D, 11.0D, 9.0D, 9.0D, 16.0D );
+		helper.addBox( PartEssentiaLevelEmitter.Base_XY_Min, PartEssentiaLevelEmitter.Base_XY_Min, PartEssentiaLevelEmitter.Base_Z_Min,
+			PartEssentiaLevelEmitter.Base_XY_Max, PartEssentiaLevelEmitter.Base_XY_Max, PartEssentiaLevelEmitter.Head_Z_Max );
 	}
 
 	@Override
@@ -265,7 +293,7 @@ public class PartEssentiaLevelEmitter
 
 	/**
 	 * Returns the redstone mode.
-	 * 
+	 *
 	 * @return
 	 */
 	public RedstoneMode getRedstoneMode()
@@ -284,7 +312,7 @@ public class PartEssentiaLevelEmitter
 
 	/**
 	 * Returns the threshold level.
-	 * 
+	 *
 	 * @return
 	 */
 	public long getThresholdLevel()
@@ -294,7 +322,7 @@ public class PartEssentiaLevelEmitter
 
 	/**
 	 * Returns the aspect being tracked.
-	 * 
+	 *
 	 * @return
 	 */
 	@Nullable
@@ -324,7 +352,7 @@ public class PartEssentiaLevelEmitter
 	/**
 	 * Called when a player has adjusted the amount wanted via
 	 * gui buttons.
-	 * 
+	 *
 	 * @param adjustmentAmount
 	 * @param player
 	 */
@@ -335,7 +363,7 @@ public class PartEssentiaLevelEmitter
 
 	/**
 	 * Called when a player has pressed the redstone toggle button in the gui.
-	 * 
+	 *
 	 * @param player
 	 */
 	public void onClientToggleRedstoneMode( final EntityPlayer player )
@@ -371,7 +399,7 @@ public class PartEssentiaLevelEmitter
 
 	/**
 	 * Called when a player has changed the wanted amount
-	 * 
+	 *
 	 * @param threshold
 	 * @param player
 	 */
@@ -454,7 +482,7 @@ public class PartEssentiaLevelEmitter
 
 	/**
 	 * Called client side when a sync packet has been received.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	@SideOnly(Side.CLIENT)
@@ -488,7 +516,6 @@ public class PartEssentiaLevelEmitter
 		// Set the base texture
 		helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[0] );
 		helper.setBounds( 7.0F, 1.0F, 14.0F, 9.0F, 7.0F, 16.0F );
-		//helper.setBounds( 7.0F, 7.0F, 11.0F, 9.0F, 9.0F, 14.0F );
 		helper.renderInventoryBox( renderer );
 
 		// Set the active texture
@@ -507,17 +534,36 @@ public class PartEssentiaLevelEmitter
 	{
 		// Set the base texture
 		helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[0] );
-		helper.setBounds( 7.0F, 7.0F, 11.0F, 9.0F, 9.0F, 14.0F );
+
+		// Set shaft bounds
+		helper.setBounds( PartEssentiaLevelEmitter.Base_XY_Min, PartEssentiaLevelEmitter.Base_XY_Min, PartEssentiaLevelEmitter.Base_Z_Min,
+			PartEssentiaLevelEmitter.Base_XY_Max, PartEssentiaLevelEmitter.Base_XY_Max, PartEssentiaLevelEmitter.Base_Z_Max );
+
+		// Render shaft
 		helper.renderBlock( x, y, z, renderer );
 
 		// Is the part emitting?
 		if( this.isEmitting )
 		{
 			// Set the active texture
-			helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[1] );
+			IIcon activeTex = BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[1];
+			helper.setTexture( activeTex );
 
 			// Set the brightness
-			Tessellator.instance.setBrightness( ThEPartBase.ACTIVE_FACE_BRIGHTNESS );
+			Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
+			Tessellator.instance.setBrightness( 0xD000D0 );
+
+			// Render horizontal faces
+			helper.setBounds( PartEssentiaLevelEmitter.Face_XH_Min, PartEssentiaLevelEmitter.Face_YH_Min, PartEssentiaLevelEmitter.Face_Z_Min,
+				PartEssentiaLevelEmitter.Face_XH_Max, PartEssentiaLevelEmitter.Face_YH_Max, PartEssentiaLevelEmitter.FaceZMax );
+			helper.renderFace( x, y, z, activeTex, ForgeDirection.EAST, renderer );
+			helper.renderFace( x, y, z, activeTex, ForgeDirection.WEST, renderer );
+
+			// Render vertical faces
+			helper.setBounds( PartEssentiaLevelEmitter.Face_XV_Min, PartEssentiaLevelEmitter.Face_YV_Min, PartEssentiaLevelEmitter.Face_Z_Min,
+				PartEssentiaLevelEmitter.Face_XV_Max, PartEssentiaLevelEmitter.Face_YV_Max, PartEssentiaLevelEmitter.FaceZMax );
+			helper.renderFace( x, y, z, activeTex, ForgeDirection.UP, renderer );
+			helper.renderFace( x, y, z, activeTex, ForgeDirection.DOWN, renderer );
 
 		}
 		else
@@ -526,8 +572,11 @@ public class PartEssentiaLevelEmitter
 			helper.setTexture( BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[2] );
 		}
 
-		// Set shaft bounds
-		helper.setBounds( 7.0F, 7.0F, 14.0F, 9.0F, 9.0F, 16.0F );
+		// Set head bounds
+		helper.setBounds( PartEssentiaLevelEmitter.Base_XY_Min, PartEssentiaLevelEmitter.Base_XY_Min, PartEssentiaLevelEmitter.Head_Z_Min,
+			PartEssentiaLevelEmitter.Base_XY_Max, PartEssentiaLevelEmitter.Base_XY_Max, PartEssentiaLevelEmitter.Head_Z_Max );
+
+		// Render head
 		helper.renderBlock( x, y, z, renderer );
 	}
 
@@ -558,7 +607,7 @@ public class PartEssentiaLevelEmitter
 
 	/**
 	 * Called from the container to set the filter based on an itemstack.
-	 * 
+	 *
 	 * @param player
 	 * @param itemStack
 	 * @return
@@ -638,7 +687,7 @@ public class PartEssentiaLevelEmitter
 
 	/**
 	 * Called when a packet to sync client and server is being created.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	@Override

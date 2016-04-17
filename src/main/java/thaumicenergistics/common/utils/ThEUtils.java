@@ -16,9 +16,9 @@ import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
 
 /**
  * Houses commonly used methods.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public final class ThEUtils
 {
@@ -39,22 +39,30 @@ public final class ThEUtils
 
 	/**
 	 * Returns true if the tile still exists and the player is within reach range.
-	 * 
+	 *
 	 * @param player
 	 * @param tile
 	 * @return
 	 */
 	public static final boolean canPlayerInteractWith( @Nonnull final EntityPlayer player, @Nonnull final TileEntity tile )
 	{
-		return ( tile.getWorldObj().getTileEntity( tile.xCoord, tile.yCoord, tile.zCoord ) == tile ) &&
-						( player.getDistanceSq( tile.xCoord + 0.5D, tile.yCoord + 0.5D, tile.zCoord + 0.5D ) <= SQUARED_REACH );
+		TileEntity tileAtCoords = tile.getWorldObj().getTileEntity( tile.xCoord, tile.yCoord, tile.zCoord );
+
+		// Null check
+		if( tileAtCoords == null )
+		{
+			return false;
+		}
+
+		// Range check
+		return( player.getDistanceSq( tile.xCoord + 0.5D, tile.yCoord + 0.5D, tile.zCoord + 0.5D ) <= ThEUtils.SQUARED_REACH );
 
 	}
 
 	/**
 	 * Returns true if the item stack is a wand, scepter, or staff if they are
 	 * allowed.
-	 * 
+	 *
 	 * @param stack
 	 * @param allowStaves
 	 * @return
@@ -103,7 +111,7 @@ public final class ThEUtils
 	 * Ping pongs a value back and forth from min -> max -> min.
 	 * The base speed of this effect is 1 second per transition, 2 seconds
 	 * total.
-	 * 
+	 *
 	 * @param speedReduction
 	 * The higher this value, the slower the effect. The smaller this value, the
 	 * faster the effect.
@@ -144,7 +152,7 @@ public final class ThEUtils
 
 	/**
 	 * Plays a sound only the specified player can hear.
-	 * 
+	 *
 	 * @param player
 	 * Can be null on client side.
 	 * @param soundLocation
@@ -163,7 +171,7 @@ public final class ThEUtils
 			ResourceLocation sound = new ResourceLocation( soundLocation );
 
 			// Play the sound
-			playLocalSound( sound );
+			ThEUtils.playLocalSound( sound );
 		}
 		else
 		{

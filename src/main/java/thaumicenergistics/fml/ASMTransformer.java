@@ -3,6 +3,7 @@ package thaumicenergistics.fml;
 import java.util.HashMap;
 import net.minecraft.launchwrapper.IClassTransformer;
 import thaumicenergistics.fml.classtransformers.ae.ClassTransformer_CraftingTreeProcess;
+import thaumicenergistics.fml.classtransformers.ae.ClassTransformer_GuiMEMonitorable;
 import thaumicenergistics.fml.classtransformers.tc.*;
 
 public class ASMTransformer
@@ -28,6 +29,7 @@ public class ASMTransformer
 
 		// Add AE transformers
 		this.addTransformer( new ClassTransformer_CraftingTreeProcess() );
+		this.addTransformer( new ClassTransformer_GuiMEMonitorable() );
 	}
 
 	/**

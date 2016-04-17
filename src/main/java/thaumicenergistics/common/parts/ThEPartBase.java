@@ -38,13 +38,14 @@ import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.grid.AEPartGridBlock;
 import thaumicenergistics.common.utils.EffectiveSide;
+import thaumicenergistics.common.utils.ThELog;
 import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * Base class for all ThE cable parts.
- * 
+ *
  * @author Nividica
- * 
+ *
  */
 public abstract class ThEPartBase
 	implements IPart, IGridHost, IActionHost, IPowerChannelState
@@ -115,7 +116,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Creates the part.
-	 * 
+	 *
 	 * @param associatedPart
 	 * @param interactionPermissions
 	 * Permissions required to interact with the part.
@@ -178,7 +179,7 @@ public abstract class ThEPartBase
 	/**
 	 * Checks if the specifies player has clearance for the specified
 	 * permission.
-	 * 
+	 *
 	 * @param player
 	 * @param permission
 	 * @return
@@ -207,7 +208,7 @@ public abstract class ThEPartBase
 	/**
 	 * Checks if the specifies player has clearance for the specified
 	 * permission.
-	 * 
+	 *
 	 * @param playerID
 	 * @param permission
 	 * @return
@@ -235,7 +236,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Gets the tile entity the part is facing, if any.
-	 * 
+	 *
 	 * @return
 	 */
 	protected TileEntity getFacingTile()
@@ -271,13 +272,25 @@ public abstract class ThEPartBase
 		// Create the node
 		this.node = AEApi.instance().createGridNode( this.gridBlock );
 
-		// Update state
-		this.node.updateState();
-
 		// Set the player id
 		this.node.setPlayerID( this.ownerID );
 
-		this.setPower( null );
+		// Update state
+		if( ( this.hostTile != null ) && ( this.host != null ) && ( this.hostTile.getWorldObj() != null ) )
+		{
+			try
+			{
+				this.node.updateState();
+			}
+			catch( Exception e )
+			{
+				ThELog.error( e, "Part (%s) was unable to update it's node. The part may not function correctly",
+					this.associatedItem.getDisplayName() );
+			}
+		}
+
+		// Update the part
+		this.updateStatus();
 	}
 
 	@Override
@@ -333,7 +346,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Gets the parts grid block.
-	 * 
+	 *
 	 * @return
 	 */
 	public AEPartGridBlock getGridBlock()
@@ -360,7 +373,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Gets the host tile entity of this part.
-	 * 
+	 *
 	 * @return
 	 */
 	public final TileEntity getHostTile()
@@ -406,7 +419,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Gets the location of this part.
-	 * 
+	 *
 	 * @return
 	 */
 	public final DimensionalCoord getLocation()
@@ -421,7 +434,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Gets the side of the host that this part is attached to.
-	 * 
+	 *
 	 * @return
 	 */
 	public ForgeDirection getSide()
@@ -431,7 +444,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Gets the unlocalized name of this part.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getUnlocalizedName()
@@ -441,7 +454,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Checks if the part is active and powered.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -473,7 +486,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Called the player interact with this part?
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -568,7 +581,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Returns true if the part is receiving any level of redstone power.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isReceivingRedstonePower()
@@ -819,7 +832,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Setup the part based on the passed item.
-	 * 
+	 *
 	 * @param itemPart
 	 */
 	public void setupPartFromItem( final ItemStack itemPart )
@@ -849,7 +862,7 @@ public abstract class ThEPartBase
 
 	/**
 	 * Saves NBT data specific to the save type.
-	 * 
+	 *
 	 * @param data
 	 * @param saveType
 	 */

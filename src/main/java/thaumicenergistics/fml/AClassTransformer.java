@@ -1,16 +1,25 @@
 package thaumicenergistics.fml;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.util.Printer;
+import org.objectweb.asm.util.Textifier;
+import org.objectweb.asm.util.TraceMethodVisitor;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 
 public abstract class AClassTransformer
 {
 	protected static final String InstanceConstructorName = "<init>";
+
+	private static Printer asmPrinter = new Textifier();
+
+	private static TraceMethodVisitor asmVisitor = new TraceMethodVisitor( AClassTransformer.asmPrinter );
 
 	/**
 	 * Canonical name of the class to be transformed.
@@ -85,6 +94,28 @@ public abstract class AClassTransformer
 	}
 
 	/**
+	 * Finds the next occurrence of the opcode after the specified instruction.
+	 * 
+	 * @param fromInstruction
+	 * @param opcode
+	 * @return
+	 */
+	protected AbstractInsnNode findNextOpCode( final AbstractInsnNode fromInstruction, final int opcode )
+	{
+		AbstractInsnNode nextInsn = fromInstruction;
+		do
+		{
+			if( nextInsn.getOpcode() == opcode )
+			{
+				return nextInsn;
+			}
+		}
+		while( ( nextInsn = nextInsn.getNext() ) != null );
+
+		return null;
+	}
+
+	/**
 	 * Locates a sequence of instructions.
 	 *
 	 * @param instructions
@@ -141,6 +172,24 @@ public abstract class AClassTransformer
 	protected void log( final String text )
 	{
 		FMLRelaunchLog.log( "ThE-Core", Level.INFO, text );
+	}
+
+	protected void logInstructionDetails( final AbstractInsnNode insn )
+	{
+		// Visit the instruction
+		insn.accept( AClassTransformer.asmVisitor );
+
+		// Create the string writer
+		StringWriter sw = new StringWriter();
+
+		// Print the details into the writer
+		AClassTransformer.asmPrinter.print( new PrintWriter( sw ) );
+
+		// Clear the printer
+		AClassTransformer.asmPrinter.getText().clear();
+
+		// Log the details
+		this.log( sw.toString() );
 	}
 
 	/**
