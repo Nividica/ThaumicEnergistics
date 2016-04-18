@@ -173,10 +173,10 @@ public class GuiEssentiaCellTerminal
 		this.player = player;
 
 		// Set the X size
-		this.xSize = GUI_WIDTH;
+		this.xSize = GuiConstants_ECT.GUI_WIDTH;
 
 		// Set the Y size
-		this.ySize = GUI_HEIGHT;
+		this.ySize = GuiConstants_ECT.GUI_HEIGHT;
 
 		// Set the title
 		this.guiTitle = title;
@@ -188,18 +188,18 @@ public class GuiEssentiaCellTerminal
 		this.selectedInfoAmountPrefix = ThEStrings.Gui_SelectedAmount.getLocalized() + ": ";
 
 		// Create the widgets
-		this.aspectWidgets = new WidgetAspectSelector[WIDGETS_PER_PAGE];
+		this.aspectWidgets = new WidgetAspectSelector[GuiConstants_ECT.WIDGETS_PER_PAGE];
 		// Rows
-		for( int y = 0; y < WIDGET_ROWS_PER_PAGE; y++ )
+		for( int y = 0; y < GuiConstants_ECT.WIDGET_ROWS_PER_PAGE; y++ )
 		{
 			// Columns
-			for( int x = 0; x < WIDGETS_PER_ROW; x++ )
+			for( int x = 0; x < GuiConstants_ECT.WIDGETS_PER_ROW; x++ )
 			{
 				WidgetAspectSelector widget = new WidgetAspectSelector( this, null,
-								WIDGET_OFFSET_X + ( x * ThEWidget.WIDGET_SIZE ),
-								WIDGET_OFFSET_Y + ( y * ThEWidget.WIDGET_SIZE ),
+								GuiConstants_ECT.WIDGET_OFFSET_X + ( x * ThEWidget.WIDGET_SIZE ),
+								GuiConstants_ECT.WIDGET_OFFSET_Y + ( y * ThEWidget.WIDGET_SIZE ),
 								player );
-				this.aspectWidgets[( y * WIDGETS_PER_ROW ) + x] = widget;
+				this.aspectWidgets[( y * GuiConstants_ECT.WIDGETS_PER_ROW ) + x] = widget;
 			}
 		}
 
@@ -294,9 +294,9 @@ public class GuiEssentiaCellTerminal
 	private boolean isMouseOverWidgetArea( final int mouseX, final int mouseY )
 	{
 		return ThEGuiHelper.INSTANCE.isPointInGuiRegion(
-			WIDGET_OFFSET_Y, WIDGET_OFFSET_X,
-			WIDGET_ROWS_PER_PAGE * ThEWidget.WIDGET_SIZE,
-			WIDGETS_PER_ROW * ThEWidget.WIDGET_SIZE,
+			GuiConstants_ECT.WIDGET_OFFSET_Y, GuiConstants_ECT.WIDGET_OFFSET_X,
+			GuiConstants_ECT.WIDGET_ROWS_PER_PAGE * ThEWidget.WIDGET_SIZE,
+			GuiConstants_ECT.WIDGETS_PER_ROW * ThEWidget.WIDGET_SIZE,
 			mouseX, mouseY, this.guiLeft, this.guiTop );
 	}
 
@@ -324,10 +324,10 @@ public class GuiEssentiaCellTerminal
 	private void updateScrollMaximum()
 	{
 		// Calculate the number of widgets the will overflow
-		double overflowWidgets = Math.max( 0, this.matchingSearchStacks.size() - WIDGETS_PER_PAGE );
+		double overflowWidgets = Math.max( 0, this.matchingSearchStacks.size() - GuiConstants_ECT.WIDGETS_PER_PAGE );
 
 		// Calculate how many rows will overflow
-		int overflowRows = (int)Math.ceil( overflowWidgets / WIDGETS_PER_ROW );
+		int overflowRows = (int)Math.ceil( overflowWidgets / GuiConstants_ECT.WIDGETS_PER_ROW );
 
 		// Update if the range has changed
 		if( overflowRows != this.previousOverflowRows )
@@ -420,7 +420,7 @@ public class GuiEssentiaCellTerminal
 		int numberOfSearchMatches = this.matchingSearchStacks.size();
 
 		// Calculate the row offset
-		int rowOffset = this.currentScroll * WIDGETS_PER_ROW;
+		int rowOffset = this.currentScroll * GuiConstants_ECT.WIDGETS_PER_ROW;
 
 		// Update each widget
 		int matchIndex = -1;
@@ -461,7 +461,7 @@ public class GuiEssentiaCellTerminal
 		Minecraft.getMinecraft().renderEngine.bindTexture( GuiTextureManager.ESSENTIA_TERMINAL.getTexture() );
 
 		// Draw the gui
-		this.drawTexturedModalRect( this.guiLeft, this.guiTop - GUI_OFFSET_Y, 0, 0, this.xSize, this.ySize );
+		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize );
 
 		// Draw the search field.
 		this.searchBar.drawTextBox();
@@ -477,7 +477,7 @@ public class GuiEssentiaCellTerminal
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
 
 		// Draw the title
-		this.fontRendererObj.drawString( this.guiTitle, TITLE_POS_X, TITLE_POS_Y, 0 );
+		this.fontRendererObj.drawString( this.guiTitle, GuiConstants_ECT.TITLE_POS_X, GuiConstants_ECT.TITLE_POS_Y, 0 );
 
 		// Draw the widgets
 		this.drawWidgets( mouseX, mouseY );
@@ -500,18 +500,18 @@ public class GuiEssentiaCellTerminal
 
 			// Draw the name
 			this.fontRendererObj.drawString( this.selectedInfoNamePrefix + aspectName,
-				SELECTED_INFO_POS_X, SELECTED_INFO_NAME_POS_Y, 0 );
+				GuiConstants_ECT.SELECTED_INFO_POS_X, GuiConstants_ECT.SELECTED_INFO_NAME_POS_Y, 0 );
 
 			// Draw the amount
 			this.fontRendererObj.drawString( this.selectedInfoAmountPrefix + this.cacheAmountDisplay,
-				SELECTED_INFO_POS_X, SELECTED_INFO_AMOUNT_POS_Y, 0 );
+				GuiConstants_ECT.SELECTED_INFO_POS_X, GuiConstants_ECT.SELECTED_INFO_AMOUNT_POS_Y, 0 );
 		}
 	}
 
 	@Override
 	protected ScrollbarParams getScrollbarParameters()
 	{
-		return new ScrollbarParams( SCROLLBAR_POS_X, SCROLLBAR_POS_Y, SCROLLBAR_HEIGHT );
+		return new ScrollbarParams( GuiConstants_ECT.SCROLLBAR_POS_X, GuiConstants_ECT.SCROLLBAR_POS_Y, GuiConstants_ECT.SCROLLBAR_HEIGHT );
 	}
 
 	/**
@@ -661,7 +661,7 @@ public class GuiEssentiaCellTerminal
 	protected void onMouseWheel( final int deltaZ, final int mouseX, final int mouseY )
 	{
 		// Is the mouse inside of, or to the left of, the GUI?
-		if( mouseX > ( this.guiLeft + GUI_WIDTH ) )
+		if( mouseX > ( this.guiLeft + GuiConstants_ECT.GUI_WIDTH ) )
 		{
 			// Mouse is to the right of the gui
 			return;
@@ -772,9 +772,9 @@ public class GuiEssentiaCellTerminal
 
 		// Set up the search bar
 		this.searchBar = new GuiTextField( this.fontRendererObj,
-						this.guiLeft + SEARCH_X_OFFSET,
-						this.guiTop + SEARCH_Y_OFFSET,
-						SEARCH_WIDTH, SEARCH_HEIGHT );
+						this.guiLeft + GuiConstants_ECT.SEARCH_X_OFFSET,
+						this.guiTop + GuiConstants_ECT.SEARCH_Y_OFFSET,
+						GuiConstants_ECT.SEARCH_WIDTH, GuiConstants_ECT.SEARCH_HEIGHT );
 
 		// Set the search bar to draw in the foreground
 		this.searchBar.setEnableBackgroundDrawing( false );
@@ -783,23 +783,23 @@ public class GuiEssentiaCellTerminal
 		this.searchBar.setFocused( false );
 
 		// Set maximum length
-		this.searchBar.setMaxStringLength( SEARCH_MAX_CHARS );
+		this.searchBar.setMaxStringLength( GuiConstants_ECT.SEARCH_MAX_CHARS );
 
 		// Clear any existing buttons
 		this.buttonList.clear();
 
 		// Add the sort mode button
 		this.buttonSortingMode = new GuiButtonSortingMode( 0,
-						this.guiLeft + BUTTON_SORT_MODE_POS_X,
-						this.guiTop + BUTTON_SORT_MODE_POS_Y,
-						MODE_BUTTON_SIZE, MODE_BUTTON_SIZE );
+						this.guiLeft + GuiConstants_ECT.BUTTON_SORT_MODE_POS_X,
+						this.guiTop + GuiConstants_ECT.BUTTON_SORT_MODE_POS_Y,
+						GuiConstants_ECT.MODE_BUTTON_SIZE, GuiConstants_ECT.MODE_BUTTON_SIZE );
 		this.buttonList.add( this.buttonSortingMode );
 
 		// Add view type button
 		this.buttonViewMode = new GuiButtonViewType( 1,
-						this.guiLeft + BUTTON_VIEW_MODE_POS_X,
-						this.guiTop + BUTTON_VIEW_MODE_POS_Y,
-						MODE_BUTTON_SIZE, MODE_BUTTON_SIZE );
+						this.guiLeft + GuiConstants_ECT.BUTTON_VIEW_MODE_POS_X,
+						this.guiTop + GuiConstants_ECT.BUTTON_VIEW_MODE_POS_Y,
+						GuiConstants_ECT.MODE_BUTTON_SIZE, GuiConstants_ECT.MODE_BUTTON_SIZE );
 		this.buttonList.add( this.buttonViewMode );
 	}
 

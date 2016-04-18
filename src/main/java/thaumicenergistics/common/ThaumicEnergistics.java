@@ -49,7 +49,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "1.0.0.4"; // NOTE: don't forget to change the build.gradle file as well
+	public static final String VERSION = "1.0.0.5"; // NOTE: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance

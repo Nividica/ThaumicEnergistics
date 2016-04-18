@@ -54,7 +54,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 	/**
 	 * Y position for the output slot
 	 */
-	private static final int OUTPUT_POSITION_Y = 74;
+	private static final int OUTPUT_POSITION_Y = 92;
 
 	/**
 	 * X position for the input slot
@@ -64,17 +64,17 @@ public abstract class ContainerEssentiaCellTerminalBase
 	/**
 	 * Y position for the input slot
 	 */
-	private static final int INPUT_POSITION_Y = 74;
+	private static final int INPUT_POSITION_Y = ContainerEssentiaCellTerminalBase.OUTPUT_POSITION_Y;
 
 	/**
 	 * Y position for the player inventory
 	 */
-	private static final int PLAYER_INV_POSITION_Y = 104;
+	private static final int PLAYER_INV_POSITION_Y = 122;
 
 	/**
 	 * Y position for the hotbar inventory
 	 */
-	private static final int HOTBAR_INV_POSITION_Y = 162;
+	private static final int HOTBAR_INV_POSITION_Y = 180;
 
 	/**
 	 * The minimum amount of time to wait before playing
@@ -719,7 +719,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 				break;
 			}
 		}
-		while( this.workCounter < ESSENTIA_TRANSFER_PER_WORK_CYCLE );
+		while( this.workCounter < ContainerEssentiaCellTerminalBase.ESSENTIA_TRANSFER_PER_WORK_CYCLE );
 	}
 
 	/**
@@ -1002,7 +1002,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 		}
 
 		// Has enough time passed to play the sound again?
-		if( ( System.currentTimeMillis() - this.lastSoundPlaytime ) > MINIMUM_SOUND_WAIT )
+		if( ( System.currentTimeMillis() - this.lastSoundPlaytime ) > ContainerEssentiaCellTerminalBase.MINIMUM_SOUND_WAIT )
 		{
 			if( type == 0 )
 			{

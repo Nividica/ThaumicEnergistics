@@ -1,4 +1,7 @@
-﻿04/17/2016 1.0.0.4 - Beta
+﻿04/17/2016 1.0.0.5 - Beta
+  Fixed #281: Essentia terminal no longer overlayed by NEI at certain aspect ratios.
+
+04/17/2016 1.0.0.4 - Beta
   Fixes #300 and #282: Microblock compatibility added.
   Fixes #293: Added missing redstone method to level emitter.
   Craftable essentia no longer shows in item terminals.
