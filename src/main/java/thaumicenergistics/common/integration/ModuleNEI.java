@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
+import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
 
 /**
@@ -289,6 +290,10 @@ public class ModuleNEI
 		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler, "arcaneshapedrecipes" );
 		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler,
 			"arcaneshapelessrecipes" );
+
+		// Hide the crafting aspect item
+		API.hideItem( ItemEnum.CRAFTING_ASPECT.getStack() );
+
 	}
 
 }
