@@ -1,4 +1,6 @@
-﻿04/17/2016 1.0.0.5 - Beta
+﻿04/18/2016 1.0.0.5 - Beta
+
+04/17/2016 1.0.0.5 - Beta
   Fixed #281: Essentia terminal no longer overlayed by NEI at certain aspect ratios.
 
 04/17/2016 1.0.0.4 - Beta

@@ -1,6 +1,5 @@
 package thaumicenergistics.common.grid;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import com.google.common.collect.ImmutableSet;
 import appeng.api.AEApi;
@@ -15,17 +14,15 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPostCacheConstruction;
 import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.grid.*;
-import thaumicenergistics.api.storage.IAspectStack;
+import thaumicenergistics.api.grid.IEssentiaGrid;
+import thaumicenergistics.api.grid.IEssentiaWatcherHost;
 import thaumicenergistics.common.items.ItemCraftingAspect;
 import thaumicenergistics.common.items.ItemEnum;
 
@@ -39,215 +36,6 @@ public class GridEssentiaCache
 	extends EssentiaMonitor
 	implements IEssentiaGrid
 {
-	private class AspectCraftingWatcher
-		implements IMEMonitorHandlerReceiver<IAEItemStack>
-	{
-
-		public AspectCraftingWatcher()
-		{
-		}
-
-		@Override
-		public boolean isValid( final Object verificationToken )
-		{
-			return GridEssentiaCache.this.internalGrid == verificationToken;
-		}
-
-		@Override
-		public void onListUpdate()
-		{
-			// Ignored
-		}
-
-		@Override
-		public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final BaseActionSource actionSource )
-		{
-			for( IAEItemStack stack : change )
-			{
-				// Is the stack craftable, has NBT tag, and is a crafting aspect?
-				if( stack.isCraftable() && stack.hasTagCompound() && ( stack.getItem() instanceof ItemCraftingAspect ) )
-				{
-					GridEssentiaCache.this.markForUpdate();
-					break;
-				}
-			}
-		}
-
-	}
-
-	public class EssentiaWatcherManager
-		implements IMEEssentiaMonitorReceiver
-	{
-		/**
-		 * Maps Node->Watcher
-		 */
-		private HashMap<IGridNode, IEssentiaWatcher> watchers = new HashMap<IGridNode, IEssentiaWatcher>();
-
-		/**
-		 * Maps Aspect -> Watchers
-		 */
-		private HashMap<Aspect, HashSet<IEssentiaWatcher>> watchedAspects = new HashMap<Aspect, HashSet<IEssentiaWatcher>>();
-
-		/**
-		 * True when the manager is listening for changes.
-		 */
-		private boolean isListeningForChanges = false;
-
-		/**
-		 * Adds a watcher.
-		 *
-		 * @param node
-		 * @param watcher
-		 */
-		public void addWatcher( final IGridNode node, final IEssentiaWatcher watcher )
-		{
-			// Add the watcher
-			this.watchers.put( node, watcher );
-
-			// Is the manager not listening for changes?
-			if( !this.isListeningForChanges )
-			{
-				// Listen for changes
-				GridEssentiaCache.this.addListener( this, GridEssentiaCache.this.internalGrid );
-				this.isListeningForChanges = true;
-			}
-		}
-
-		@Override
-		public boolean isValid( final Object verificationToken )
-		{
-			return this.isListeningForChanges && ( verificationToken == GridEssentiaCache.this.internalGrid );
-		}
-
-		/**
-		 * Called by watchers when a new aspect is to be tracked.
-		 */
-		public void onWatcherAddAspect( final IEssentiaWatcher watcher, final Aspect aspect )
-		{
-			HashSet<IEssentiaWatcher> aWatchers;
-
-			// Does the set need to be created?
-			if( !this.watchedAspects.containsKey( aspect ) )
-			{
-				// Create the set
-				aWatchers = new HashSet<IEssentiaWatcher>();
-				this.watchedAspects.put( aspect, aWatchers );
-			}
-			else
-			{
-				// Get the set
-				aWatchers = this.watchedAspects.get( aspect );
-			}
-
-			// Add the watcher
-			aWatchers.add( watcher );
-		}
-
-		/**
-		 * Called by watchers just before they are cleared.
-		 *
-		 * @param watcher
-		 * @param previouslyTrackedAspects
-		 */
-		public void onWatcherCleared( final IEssentiaWatcher watcher, final HashSet<Aspect> previouslyTrackedAspects )
-		{
-			for( Aspect aspect : previouslyTrackedAspects )
-			{
-				this.onWatcherRemoveAspect( watcher, aspect );
-			}
-		}
-
-		/**
-		 * Called by watchers when an aspect is no longer to be tracked.
-		 *
-		 * @param watcher
-		 * @param aspect
-		 */
-		public void onWatcherRemoveAspect( final IEssentiaWatcher watcher, final Aspect aspect )
-		{
-			// Get the set
-			HashSet<IEssentiaWatcher> aWatchers = this.watchedAspects.get( aspect );
-			if( aWatchers != null )
-			{
-				// Remove the watcher
-				aWatchers.remove( watcher );
-
-				// Is the set empty?
-				if( aWatchers.isEmpty() )
-				{
-					// Remove the mapping
-					this.watchedAspects.remove( aspect );
-				}
-			}
-		}
-
-		@Override
-		public void postChange( final IMEEssentiaMonitor fromMonitor, final Iterable<IAspectStack> changes )
-		{
-			// Fast bail
-			if( this.watchedAspects.isEmpty() )
-			{
-				return;
-			}
-
-			// Loop over all changes
-			for( IAspectStack change : changes )
-			{
-				// Is the change being watched for?
-				if( this.watchedAspects.containsKey( change.getAspect() ) )
-				{
-					// Get the set
-					HashSet<IEssentiaWatcher> watcherSet = this.watchedAspects.get( change.getAspect() );
-
-					// Get the full amount in the system
-					long fullAmount = GridEssentiaCache.this.getEssentiaAmount( change.getAspect() );
-
-					// Update each watcher
-					for( IEssentiaWatcher watcher : watcherSet )
-					{
-						// Get the watchers host
-						IEssentiaWatcherHost host = watcher.getHost();
-
-						// Update the host
-						if( host != null )
-						{
-							host.onEssentiaChange( change.getAspect(), fullAmount, change.getStackSize() );
-						}
-					}
-				}
-			}
-		}
-
-		/**
-		 * Removes a watcher.
-		 *
-		 * @param node
-		 */
-		public void removeWatcher( final IGridNode node )
-		{
-			// Get the watcher
-			IEssentiaWatcher watcher = this.watchers.get( node );
-			if( watcher != null )
-			{
-				// Clear the watcher
-				watcher.clear();
-
-				// Remove the watcher
-				this.watchers.remove( node );
-
-				// Is the list empty?
-				if( this.watchers.isEmpty() )
-				{
-					// Ensure the watched aspects is also empty
-					this.watchedAspects.clear();
-
-					// Stop listening
-					GridEssentiaCache.this.removeListener( this );
-					this.isListeningForChanges = false;
-				}
-			}
-		}
-	}
 
 	/**
 	 * Grid the cache is part of.
@@ -262,12 +50,12 @@ public class GridEssentiaCache
 	/**
 	 * The 'result' of essentia crafting operations.
 	 */
-	private final ItemStack aspectItem;
+	private final ItemStack craftingAspectItem;
 
 	/**
-	 * Watches the item network for essentia related events.
+	 * Watches the item network for essentia related item events.
 	 */
-	private AspectCraftingWatcher craftingWatcher;
+	private final CraftingAspect_ItemWatcher craftingWatcher;
 
 	public GridEssentiaCache( final IGrid grid )
 	{
@@ -275,13 +63,13 @@ public class GridEssentiaCache
 		this.internalGrid = grid;
 
 		// Create the watcher manager
-		this.essentiaWatcherManger = new EssentiaWatcherManager();
+		this.essentiaWatcherManger = new EssentiaWatcherManager( this );
 
 		// Set the aspect item
-		this.aspectItem = ItemEnum.CRAFTING_ASPECT.getStack();
+		this.craftingAspectItem = ItemEnum.CRAFTING_ASPECT.getStack();
 
 		// Create the crafting watcher
-		this.craftingWatcher = new AspectCraftingWatcher();
+		this.craftingWatcher = new CraftingAspect_ItemWatcher( this );
 	}
 
 	/**
@@ -389,7 +177,7 @@ public class GridEssentiaCache
 			if( cpus.size() > 0 )
 			{
 				// Set the aspect
-				ItemCraftingAspect.setAspect( this.aspectItem, aspect );
+				ItemCraftingAspect.setAspect( this.craftingAspectItem, aspect );
 
 				// Delay creating this as long as possible
 				IAEItemStack aspectAEItem = null;
@@ -406,7 +194,7 @@ public class GridEssentiaCache
 						if( aspectAEItem == null )
 						{
 							// Create AE version
-							aspectAEItem = AEApi.instance().storage().createItemStack( this.aspectItem );
+							aspectAEItem = AEApi.instance().storage().createItemStack( this.craftingAspectItem );
 							aspectAEItem.setStackSize( 1 );
 						}
 

@@ -7,7 +7,6 @@ import java.util.Iterator;
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.IEssentiaWatcher;
 import thaumicenergistics.api.grid.IEssentiaWatcherHost;
-import thaumicenergistics.common.grid.GridEssentiaCache.EssentiaWatcherManager;
 
 /**
  * Watches the essentia grid for changes, informs the host when changes occur.
