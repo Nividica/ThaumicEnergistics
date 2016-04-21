@@ -154,19 +154,19 @@ public class ContainerEssentiaTerminal
 			ContainerCraftAmount cca = (ContainerCraftAmount)this.player.openContainer;
 
 			// Create the open context
-			cca.setOpenContext( new ContainerOpenContext( te ) );
-			cca.getOpenContext().setWorld( te.getWorldObj() );
-			cca.getOpenContext().setX( te.xCoord );
-			cca.getOpenContext().setY( te.yCoord );
-			cca.getOpenContext().setZ( te.zCoord );
-			cca.getOpenContext().setSide( this.terminal.getSide() );
+			cca.openContext = new ContainerOpenContext( te );
+			cca.openContext.w = ( te.getWorldObj() );
+			cca.openContext.x = ( te.xCoord );
+			cca.openContext.y = ( te.yCoord );
+			cca.openContext.z = ( te.zCoord );
+			cca.openContext.side = ( this.terminal.getSide() );
 
 			// Create the result item
 			IAEItemStack result = AEApi.instance().storage().createItemStack( ItemCraftingAspect.createStackForAspect( aspect, 1 ) );
 
 			// Set the item
-			cca.getCraftingItem().putStack( result.getItemStack() );
-			cca.setItemToCraft( result );
+			cca.craftingItem.putStack( result.getItemStack() );
+			cca.whatToMake = result;
 
 			// Issue update
 			if( player instanceof EntityPlayerMP )

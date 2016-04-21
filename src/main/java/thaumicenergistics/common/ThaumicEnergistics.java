@@ -33,7 +33,7 @@ import thaumicenergistics.common.utils.ThELog;
  * @author Nividica
  *
  */
-@Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:ThE-core;required-after:appliedenergistics2@[rv3-beta-1,);required-after:Thaumcraft@[4.2.3.5,);after:Waila;after:extracells")
+@Mod(modid = ThaumicEnergistics.MOD_ID, name = "Thaumic Energistics", version = ThaumicEnergistics.VERSION, dependencies = "required-after:ThE-core;required-after:appliedenergistics2@[rv2-stable-10,);required-after:Thaumcraft@[4.2.3.5,);after:Waila;after:extracells")
 public class ThaumicEnergistics
 {
 	/**
@@ -49,7 +49,7 @@ public class ThaumicEnergistics
 	/**
 	 * Current version of the mod.
 	 */
-	public static final String VERSION = "1.0.0.5"; // NOTE: don't forget to change the build.gradle file as well
+	public static final String VERSION = "1.0.0.5-RV2"; // NOTE: don't forget to change the build.gradle file as well
 
 	/**
 	 * Singleton instance

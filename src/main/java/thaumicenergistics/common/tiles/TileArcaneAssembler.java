@@ -1,10 +1,7 @@
 package thaumicenergistics.common.tiles;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -17,10 +14,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkCraftingPatternChange;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.events.*;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
@@ -113,7 +107,7 @@ public class TileArcaneAssembler
 			}
 
 			// Armor changed?
-			if( slotIndex >= DISCOUNT_ARMOR_INDEX )
+			if( slotIndex >= TileArcaneAssembler.DISCOUNT_ARMOR_INDEX )
 			{
 				TileArcaneAssembler.this.flag_RecalcVis = true;
 			}
@@ -324,7 +318,7 @@ public class TileArcaneAssembler
 			discount = VisCraftingHelper.INSTANCE.getScepterVisModifier( primal );
 
 			// Factor in the discount armor
-			discount -= VisCraftingHelper.INSTANCE.calculateArmorDiscount( this.internalInventory, DISCOUNT_ARMOR_INDEX, 4,
+			discount -= VisCraftingHelper.INSTANCE.calculateArmorDiscount( this.internalInventory, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX, 4,
 				primal );
 
 			this.visDiscount.put( primal, discount );
@@ -334,8 +328,8 @@ public class TileArcaneAssembler
 		this.warpPowerMultiplier = 1.0F;
 
 		// Calculate warp power multiplier
-		this.warpPowerMultiplier += VisCraftingHelper.INSTANCE.calculateArmorWarp( this.internalInventory, DISCOUNT_ARMOR_INDEX, 4 ) *
-						WARP_POWER_PERCENT;
+		this.warpPowerMultiplier += VisCraftingHelper.INSTANCE.calculateArmorWarp( this.internalInventory, TileArcaneAssembler.DISCOUNT_ARMOR_INDEX,
+			4 ) * TileArcaneAssembler.WARP_POWER_PERCENT;
 	}
 
 	private void craftingTick()
@@ -384,7 +378,7 @@ public class TileArcaneAssembler
 
 					// Mark the assembler as no longer crafting
 					this.isCrafting = false;
-					this.internalInventory.setInventorySlotContents( TARGET_SLOT_INDEX, null );
+					this.internalInventory.setInventorySlotContents( TileArcaneAssembler.TARGET_SLOT_INDEX, null );
 					this.currentPattern = null;
 
 					// Mark for network update
@@ -574,7 +568,7 @@ public class TileArcaneAssembler
 	{
 		this.flag_CoreChanged = false;
 		// Is there a kcore?
-		ItemStack kCore = this.internalInventory.getStackInSlot( KCORE_SLOT_INDEX );
+		ItemStack kCore = this.internalInventory.getStackInSlot( TileArcaneAssembler.KCORE_SLOT_INDEX );
 		if( kCore != null )
 		{
 			// Is it a new core?
@@ -658,10 +652,10 @@ public class TileArcaneAssembler
 		}
 
 		// Is the assembler crafting anything?
-		if( ( this.isCrafting ) && this.internalInventory.getHasStack( TARGET_SLOT_INDEX ) )
+		if( ( this.isCrafting ) && this.internalInventory.getHasStack( TileArcaneAssembler.TARGET_SLOT_INDEX ) )
 		{
 			// Add what is being crafted and the percent it is complete
-			tooltip.add( String.format( "%s, %.0f%%", this.internalInventory.getStackInSlot( TARGET_SLOT_INDEX ).getDisplayName(),
+			tooltip.add( String.format( "%s, %.0f%%", this.internalInventory.getStackInSlot( TileArcaneAssembler.TARGET_SLOT_INDEX ).getDisplayName(),
 				( ( this.getPercentComplete() * 100.0F ) ) ) );
 		}
 
@@ -719,7 +713,7 @@ public class TileArcaneAssembler
 	 * @return
 	 */
 	@Override
-	public void getDrops( final World world, final int x, final int y, final int z, final List<ItemStack> drops )
+	public void getDrops( final World world, final int x, final int y, final int z, final ArrayList<ItemStack> drops )
 	{
 		// Add the kCore
 		ItemStack kCore = this.internalInventory.getStackInSlot( TileArcaneAssembler.KCORE_SLOT_INDEX );
@@ -826,7 +820,7 @@ public class TileArcaneAssembler
 	public boolean isItemValidForSlot( final int slotId, final ItemStack itemStack )
 	{
 		// Is the slot being assigned the knowledge core slot?
-		if( slotId == KCORE_SLOT_INDEX )
+		if( slotId == TileArcaneAssembler.KCORE_SLOT_INDEX )
 		{
 			// Ensure the item is a knowledge core.
 			return( ( itemStack == null ) || ( itemStack.getItem() instanceof ItemKnowledgeCore ) );
@@ -963,13 +957,13 @@ public class TileArcaneAssembler
 		this.updateCoreHandler();
 
 		// Is there a knowledge core?
-		if( this.internalInventory.getHasStack( KCORE_SLOT_INDEX ) )
+		if( this.internalInventory.getHasStack( TileArcaneAssembler.KCORE_SLOT_INDEX ) )
 		{
 			// Is there a pattern?
 			if( this.currentPattern != null )
 			{
 				// Set the patterns core
-				this.currentPattern.setKnowledgeCore( this.internalInventory.getStackInSlot( KCORE_SLOT_INDEX ) );
+				this.currentPattern.setKnowledgeCore( this.internalInventory.getStackInSlot( TileArcaneAssembler.KCORE_SLOT_INDEX ) );
 			}
 		}
 		else if( this.currentPattern != null )
@@ -1178,7 +1172,7 @@ public class TileArcaneAssembler
 			this.currentPattern = (ArcaneCraftingPattern)patternDetails;
 
 			// Set the target item
-			this.internalInventory.setInventorySlotContents( TARGET_SLOT_INDEX, this.currentPattern.getResult().getItemStack() );
+			this.internalInventory.setInventorySlotContents( TileArcaneAssembler.TARGET_SLOT_INDEX, this.currentPattern.getResult().getItemStack() );
 
 			// AE effects
 			try

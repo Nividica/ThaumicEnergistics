@@ -3,10 +3,7 @@ package thaumicenergistics.common.container;
 import java.util.ArrayList;
 import java.util.List;
 import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.PlayerSource;
@@ -188,7 +185,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * The required aspects, costs, and missing for the current recipe.
 	 */
-	private List<ArcaneCrafingCost> craftingCost = new ArrayList<ArcaneCrafingCost>();
+	private final List<ArcaneCrafingCost> craftingCost = new ArrayList<ArcaneCrafingCost>();
 
 	/**
 	 * Cached sorting order.
@@ -1050,16 +1047,16 @@ public class ContainerPartArcaneCraftingTerminal
 			ContainerCraftAmount cca = (ContainerCraftAmount)this.player.openContainer;
 
 			// Create the open context
-			cca.setOpenContext( new ContainerOpenContext( te ) );
-			cca.getOpenContext().setWorld( te.getWorldObj() );
-			cca.getOpenContext().setX( te.xCoord );
-			cca.getOpenContext().setY( te.yCoord );
-			cca.getOpenContext().setZ( te.zCoord );
-			cca.getOpenContext().setSide( this.terminal.getSide() );
+			cca.openContext = new ContainerOpenContext( te );
+			cca.openContext.w = ( te.getWorldObj() );
+			cca.openContext.x = ( te.xCoord );
+			cca.openContext.y = ( te.yCoord );
+			cca.openContext.z = ( te.zCoord );
+			cca.openContext.side = ( this.terminal.getSide() );
 
 			// Set the item
-			cca.getCraftingItem().putStack( result.getItemStack() );
-			cca.setItemToCraft( result );
+			cca.craftingItem.putStack( result.getItemStack() );
+			cca.whatToMake = result;
 
 			// Issue update
 			if( player instanceof EntityPlayerMP )
@@ -1245,46 +1242,46 @@ public class ContainerPartArcaneCraftingTerminal
 		int amountToExtract = 0;
 		switch ( mouseButton )
 		{
-		case ThEGuiHelper.MOUSE_BUTTON_LEFT:
-			// Full amount up to maxStackSize
-			amountToExtract = (int)Math.min( maxStackSize, requestedStack.getStackSize() );
-			break;
+			case ThEGuiHelper.MOUSE_BUTTON_LEFT:
+				// Full amount up to maxStackSize
+				amountToExtract = (int)Math.min( maxStackSize, requestedStack.getStackSize() );
+				break;
 
-		case ThEGuiHelper.MOUSE_BUTTON_RIGHT:
-			// Is shift being held?
-			if( isShiftHeld )
-			{
-				// Extract 1
-				amountToExtract = 1;
-			}
-			else
-			{
-				// Half amount up to half of maxStackSize
-				double halfRequest = requestedStack.getStackSize() / 2.0D;
-				double halfMax = maxStackSize / 2.0D;
-				halfRequest = Math.ceil( halfRequest );
-				halfMax = Math.ceil( halfMax );
-				amountToExtract = (int)Math.min( halfMax, halfRequest );
-			}
-			break;
+			case ThEGuiHelper.MOUSE_BUTTON_RIGHT:
+				// Is shift being held?
+				if( isShiftHeld )
+				{
+					// Extract 1
+					amountToExtract = 1;
+				}
+				else
+				{
+					// Half amount up to half of maxStackSize
+					double halfRequest = requestedStack.getStackSize() / 2.0D;
+					double halfMax = maxStackSize / 2.0D;
+					halfRequest = Math.ceil( halfRequest );
+					halfMax = Math.ceil( halfMax );
+					amountToExtract = (int)Math.min( halfMax, halfRequest );
+				}
+				break;
 
-		case ThEGuiHelper.MOUSE_BUTTON_WHEEL:
-			if( player.capabilities.isCreativeMode )
-			{
-				ItemStack creativeCopy = requestedStack.getItemStack();
-				creativeCopy.stackSize = creativeCopy.getMaxStackSize();
-				player.inventory.setItemStack( creativeCopy );
-				Packet_C_Sync.sendPlayerHeldItem( player, creativeCopy );
-			}
-			break;
+			case ThEGuiHelper.MOUSE_BUTTON_WHEEL:
+				if( player.capabilities.isCreativeMode )
+				{
+					ItemStack creativeCopy = requestedStack.getItemStack();
+					creativeCopy.stackSize = creativeCopy.getMaxStackSize();
+					player.inventory.setItemStack( creativeCopy );
+					Packet_C_Sync.sendPlayerHeldItem( player, creativeCopy );
+				}
+				break;
 
-		case ThEGuiHelper.MOUSE_WHEEL_MOTION:
-			// Shift must be held
-			if( isShiftHeld )
-			{
-				// Extract 1
-				amountToExtract = 1;
-			}
+			case ThEGuiHelper.MOUSE_WHEEL_MOTION:
+				// Shift must be held
+				if( isShiftHeld )
+				{
+					// Extract 1
+					amountToExtract = 1;
+				}
 		}
 
 		// Ensure we have some amount to extract

@@ -58,7 +58,8 @@ public class ContainerWirelessEssentiaTerminal
 	/**
 	 * Import and export inventory slots.
 	 */
-	private TheInternalInventory privateInventory = new TheInternalInventory( ThaumicEnergistics.MOD_ID + ".item.essentia.cell.inventory", 2, 64 )
+	private final TheInternalInventory privateInventory = new TheInternalInventory( ThaumicEnergistics.MOD_ID + ".item.essentia.cell.inventory", 2,
+					64 )
 	{
 		@Override
 		public boolean isItemValidForSlot( final int slotID, final ItemStack itemStack )
@@ -209,16 +210,15 @@ public class ContainerWirelessEssentiaTerminal
 			ContainerCraftAmount cca = (ContainerCraftAmount)this.player.openContainer;
 
 			// Create the open context
-			cca.setOpenContext( new ContainerOpenContext( this.handler ) );
-			cca.getOpenContext().setWorld( player.worldObj );
+			cca.openContext = new ContainerOpenContext( this.handler );
+			cca.openContext.w = ( player.worldObj );
 
 			// Create the result item
 			IAEItemStack result = AEApi.instance().storage().createItemStack( ItemCraftingAspect.createStackForAspect( aspect, 1 ) );
 
 			// Set the item
-			cca.getCraftingItem().putStack( result.getItemStack() );
-			cca.setItemToCraft( result );
-
+			cca.craftingItem.putStack( result.getItemStack() );
+			cca.whatToMake = ( result );
 			// Issue update
 			if( player instanceof EntityPlayerMP )
 			{

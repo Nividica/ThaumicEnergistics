@@ -239,7 +239,7 @@ public class GuiArcaneCraftingTerminal
 			this.searchField.setText( "" );
 
 			// Update the repo
-			this.repo.setSearchString( "" );
+			this.repo.searchString = "";
 
 			// Repo needs update
 			this.viewNeedsUpdate = true;
@@ -787,10 +787,10 @@ public class GuiArcaneCraftingTerminal
 			String newSearch = this.searchField.getText().trim().toLowerCase();
 
 			// Has the query changed?
-			if( !newSearch.equals( this.repo.getSearchString() ) )
+			if( !newSearch.equals( this.repo.searchString ) )
 			{
 				// Set the search string
-				this.repo.setSearchString( newSearch );
+				this.repo.searchString = newSearch;
 
 				// Repo needs update
 				this.viewNeedsUpdate = true;
@@ -850,127 +850,127 @@ public class GuiArcaneCraftingTerminal
 		// Which button was clicked?
 		switch ( mouseButton )
 		{
-		case ThEGuiHelper.MOUSE_BUTTON_LEFT:
-			// Already true
-			break;
+			case ThEGuiHelper.MOUSE_BUTTON_LEFT:
+				// Already true
+				break;
 
-		case ThEGuiHelper.MOUSE_BUTTON_RIGHT:
-			// Set to false
-			wasLeftClick = false;
-			break;
+			case ThEGuiHelper.MOUSE_BUTTON_RIGHT:
+				// Set to false
+				wasLeftClick = false;
+				break;
 
-		default:
-			// Don't handle any other buttons
-			return;
+			default:
+				// Don't handle any other buttons
+				return;
 		}
 
 		switch ( button.id )
 		{
-		// Clear grid
-		case GuiConstants_ACT.BUTTON_CLEAR_GRID_ID:
-			// Attempt to clear the grid
-			Packet_S_ArcaneCraftingTerminal.sendClearGrid( this.player );
-			break;
-
-		// Sort order
-		case GuiConstants_ACT.BUTTON_SORT_MODE_ID:
-			switch ( this.sortingOrder )
-			{
-			case AMOUNT:
-				this.sortingOrder = ( wasLeftClick ? SortOrder.MOD : SortOrder.NAME );
+			// Clear grid
+			case GuiConstants_ACT.BUTTON_CLEAR_GRID_ID:
+				// Attempt to clear the grid
+				Packet_S_ArcaneCraftingTerminal.sendClearGrid( this.player );
 				break;
 
-			case INVTWEAKS:
+			// Sort order
+			case GuiConstants_ACT.BUTTON_SORT_MODE_ID:
+				switch ( this.sortingOrder )
+				{
+					case AMOUNT:
+						this.sortingOrder = ( wasLeftClick ? SortOrder.MOD : SortOrder.NAME );
+						break;
+
+					case INVTWEAKS:
+						break;
+
+					case MOD:
+						this.sortingOrder = ( wasLeftClick ? SortOrder.NAME : SortOrder.AMOUNT );
+						break;
+
+					case NAME:
+						this.sortingOrder = ( wasLeftClick ? SortOrder.AMOUNT : SortOrder.MOD );
+						break;
+				}
+				sortingChanged = true;
 				break;
 
-			case MOD:
-				this.sortingOrder = ( wasLeftClick ? SortOrder.NAME : SortOrder.AMOUNT );
+			// Sorting direction
+			case GuiConstants_ACT.BUTTON_SORT_DIR_ID:
+				switch ( this.sortingDirection )
+				{
+					case ASCENDING:
+						this.sortingDirection = SortDir.DESCENDING;
+						break;
+
+					case DESCENDING:
+						this.sortingDirection = SortDir.ASCENDING;
+						break;
+
+				}
+				sortingChanged = true;
 				break;
 
-			case NAME:
-				this.sortingOrder = ( wasLeftClick ? SortOrder.AMOUNT : SortOrder.MOD );
-				break;
-			}
-			sortingChanged = true;
-			break;
+			// View type
+			case GuiConstants_ACT.BUTTON_VIEW_TYPE_ID:
 
-		// Sorting direction
-		case GuiConstants_ACT.BUTTON_SORT_DIR_ID:
-			switch ( this.sortingDirection )
-			{
-			case ASCENDING:
-				this.sortingDirection = SortDir.DESCENDING;
+				// Rotate view mode
+				this.viewMode = Platform.rotateEnum( this.viewMode, !wasLeftClick, Settings.VIEW_MODE.getPossibleValues() );
+
+				sortingChanged = true;
 				break;
 
-			case DESCENDING:
-				this.sortingDirection = SortDir.ASCENDING;
+			// Swap armor
+			case GuiConstants_ACT.BUTTON_SWAP_ARMOR_ID:
+				// Ask the server to swap the armor
+				Packet_S_ArcaneCraftingTerminal.sendSwapArmor( this.player );
 				break;
 
-			}
-			sortingChanged = true;
-			break;
+			// Terminal style
+			case GuiConstants_ACT.BUTTON_TERM_STYLE_ID:
+				switch ( this.terminalStyle )
+				{
+					case SMALL:
+						this.terminalStyle = TerminalStyle.TALL;
+						break;
 
-		// View type
-		case GuiConstants_ACT.BUTTON_VIEW_TYPE_ID:
+					case TALL:
+						this.terminalStyle = TerminalStyle.SMALL;
+						break;
 
-			// Rotate view mode
-			this.viewMode = Platform.rotateEnum( this.viewMode, !wasLeftClick, Settings.VIEW_MODE.getPossibleValues() );
+					default:
+						this.terminalStyle = TerminalStyle.SMALL;
+						break;
 
-			sortingChanged = true;
-			break;
+				}
 
-		// Swap armor
-		case GuiConstants_ACT.BUTTON_SWAP_ARMOR_ID:
-			// Ask the server to swap the armor
-			Packet_S_ArcaneCraftingTerminal.sendSwapArmor( this.player );
-			break;
+				// Update the AE settings
+				AEConfig.instance.getConfigManager().putSetting( Settings.TERMINAL_STYLE, this.terminalStyle );
 
-		// Terminal style
-		case GuiConstants_ACT.BUTTON_TERM_STYLE_ID:
-			switch ( this.terminalStyle )
-			{
-			case SMALL:
-				this.terminalStyle = TerminalStyle.TALL;
+				// Reinit
+				this.initGui();
+
 				break;
 
-			case TALL:
-				this.terminalStyle = TerminalStyle.SMALL;
+			// Search mode
+			case GuiConstants_ACT.BUTTON_SEARCH_MODE_ID:
+				// Rotate search mode
+				SearchBoxMode searchBoxMode = (SearchBoxMode)AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+				searchBoxMode = Platform.rotateEnum( searchBoxMode, !wasLeftClick, Settings.SEARCH_MODE.getPossibleValues() );
+
+				// Set focus
+				this.searchField.setFocused( ( searchBoxMode == SearchBoxMode.AUTOSEARCH ) || ( searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) );
+
+				// Update the settings
+				AEConfig.instance.settings.putSetting( Settings.SEARCH_MODE, searchBoxMode );
+
+				// Update the button
+				this.btnSearchMode.setSearchMode( searchBoxMode );
+
+				// Clear the tooltip
+				this.cachedItemTooltip.clear();
+				this.lastTooltipUpdateTime = 0;
+
 				break;
-
-			default:
-				this.terminalStyle = TerminalStyle.SMALL;
-				break;
-
-			}
-
-			// Update the AE settings
-			AEConfig.instance.getConfigManager().putSetting( Settings.TERMINAL_STYLE, this.terminalStyle );
-
-			// Reinit
-			this.initGui();
-
-			break;
-
-		// Search mode
-		case GuiConstants_ACT.BUTTON_SEARCH_MODE_ID:
-			// Rotate search mode
-			SearchBoxMode searchBoxMode = (SearchBoxMode)AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
-			searchBoxMode = Platform.rotateEnum( searchBoxMode, !wasLeftClick, Settings.SEARCH_MODE.getPossibleValues() );
-
-			// Set focus
-			this.searchField.setFocused( ( searchBoxMode == SearchBoxMode.AUTOSEARCH ) || ( searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) );
-
-			// Update the settings
-			AEConfig.instance.settings.putSetting( Settings.SEARCH_MODE, searchBoxMode );
-
-			// Update the button
-			this.btnSearchMode.setSearchMode( searchBoxMode );
-
-			// Clear the tooltip
-			this.cachedItemTooltip.clear();
-			this.lastTooltipUpdateTime = 0;
-
-			break;
 		}
 
 		// Was the sorting mode changed?
@@ -1106,7 +1106,7 @@ public class GuiArcaneCraftingTerminal
 		this.searchField.setFocused( ( searchBoxMode == SearchBoxMode.AUTOSEARCH ) || ( searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) );
 
 		// Set the search string
-		this.searchField.setText( this.repo.getSearchString() );
+		this.searchField.setText( this.repo.searchString );
 
 		// Clear any existing buttons
 		this.buttonList.clear();

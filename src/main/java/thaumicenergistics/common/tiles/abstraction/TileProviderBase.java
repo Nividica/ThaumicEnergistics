@@ -54,7 +54,7 @@ public abstract class TileProviderBase
 	/**
 	 * Network source representing the provider.
 	 */
-	private MachineSource asMachineSource;
+	private final MachineSource asMachineSource;
 
 	/**
 	 * ForgeDirection ordinal of our attachment side.
@@ -219,7 +219,7 @@ public abstract class TileProviderBase
 	protected void setProviderColor( final AEColor gridColor )
 	{
 		// Set our color to match
-		this.getProxy().setColor( gridColor );
+		this.getProxy().myColor = ( gridColor );
 
 		// Are we server side?
 		if( EffectiveSide.isServerSide() )
@@ -227,7 +227,7 @@ public abstract class TileProviderBase
 			/*
 			// Get the grid node
 			IGridNode gridNode = this.getProxy().getNode();
-			
+
 			// Do we have a grid node?
 			if( gridNode != null )
 			{
@@ -301,7 +301,7 @@ public abstract class TileProviderBase
 		AEColor[] sideColors = this.getNeighborCableColors();
 
 		// Get our current color
-		AEColor currentColor = this.getProxy().getColor();
+		AEColor currentColor = this.getProxy().myColor;
 
 		// Are we attached to a side?
 		if( this.attachmentSide != ForgeDirection.UNKNOWN.ordinal() )
@@ -392,7 +392,7 @@ public abstract class TileProviderBase
 	@Override
 	public AEColor getColor()
 	{
-		return this.getProxy().getColor();
+		return this.getProxy().myColor;
 	}
 
 	public AEColor getGridColor()

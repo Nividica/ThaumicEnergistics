@@ -96,20 +96,20 @@ public class Packet_S_ConfirmCraftingJob
 				}
 
 				final IGrid g = gn.getGrid();
-				if( ( g == null ) || ( cca.getItemToCraft() == null ) )
+				if( ( g == null ) || ( cca.whatToMake == null ) )
 				{
 					return;
 				}
 
-				cca.getItemToCraft().setStackSize( this.amount );
+				cca.whatToMake.setStackSize( this.amount );
 
 				Future<ICraftingJob> futureJob = null;
 				try
 				{
 					final ICraftingGrid cg = g.getCache( ICraftingGrid.class );
-					futureJob = cg.beginCraftingJob( cca.getWorld(), cca.getGrid(), cca.getActionSrc(), cca.getItemToCraft(), null );
+					futureJob = cg.beginCraftingJob( cca.getWorld(), cca.getGrid(), cca.getActionSrc(), cca.whatToMake, null );
 
-					final ContainerOpenContext context = cca.getOpenContext();
+					final ContainerOpenContext context = cca.openContext;
 					if( context != null )
 					{
 						// Begin Thaumic Energistics Changes ===============================
@@ -121,8 +121,8 @@ public class Packet_S_ConfirmCraftingJob
 						if( this.player.openContainer instanceof ContainerCraftConfirm )
 						{
 							final ContainerCraftConfirm ccc = (ContainerCraftConfirm)this.player.openContainer;
-							ccc.setAutoStart( this.heldShift );
-							ccc.setJob( futureJob );
+							ccc.autoStart = this.heldShift;
+							ccc.job = futureJob;
 							cca.detectAndSendChanges();
 						}
 					}
