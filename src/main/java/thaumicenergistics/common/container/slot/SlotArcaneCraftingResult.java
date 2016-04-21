@@ -11,7 +11,6 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.utils.EffectiveSide;
-import thaumicenergistics.common.utils.ThELog;
 
 /**
  * Slot that holds the result of an arcane crafting recipe.
@@ -105,8 +104,6 @@ public class SlotArcaneCraftingResult
 			// No more work on the client side.
 			return;
 		}
-
-		ThELog.info( "%d", itemStack.stackSize );
 
 		// Arcane recipe?
 		if( ( this.craftingAspects != null ) )
