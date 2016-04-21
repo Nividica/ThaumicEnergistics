@@ -239,7 +239,8 @@ public class PartArcaneCraftingTerminal
 			{
 
 				// Is the amount for more than or all of the slot?
-				if( amount >= slotStack.stackSize )
+				// If is it the results stack, the whole stack must be returned, can not 'partially' take the crafting result.
+				if( ( amount >= slotStack.stackSize ) || ( slotIndex == PartArcaneCraftingTerminal.RESULT_SLOT_INDEX ) )
 				{
 					// Set the return to a copy of the stack
 					returnStack = slotStack.copy();
@@ -906,7 +907,7 @@ public class PartArcaneCraftingTerminal
 		}
 
 		// Get the wand slot
-		ItemStack stack = this.getStackInSlot( WAND_SLOT_INDEX );
+		ItemStack stack = this.getStackInSlot( PartArcaneCraftingTerminal.WAND_SLOT_INDEX );
 
 		// Do we have a wand?
 		if( ( stack == null ) )

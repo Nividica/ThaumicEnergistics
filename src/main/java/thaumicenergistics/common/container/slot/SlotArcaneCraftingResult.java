@@ -11,6 +11,7 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.utils.EffectiveSide;
+import thaumicenergistics.common.utils.ThELog;
 
 /**
  * Slot that holds the result of an arcane crafting recipe.
@@ -93,24 +94,26 @@ public class SlotArcaneCraftingResult
 	 */
 	public void onPickupFromSlotViaTransfer( final EntityPlayer player, final ItemStack itemStack )
 	{
-		// Not really sure what this does, but "SlotCrafting" does it, so I shall also!
+		// Fire crafting event
 		FMLCommonHandler.instance().firePlayerCraftingEvent( player, itemStack, this.terminalInventory );
 
 		// Seems to fire achievements, and handles the item creation
 		this.onCrafting( itemStack );
 
-		// Is this an arcane recipe?
-		if( this.craftingAspects != null )
+		if( EffectiveSide.isClientSide() )
+		{
+			// No more work on the client side.
+			return;
+		}
+
+		ThELog.info( "%d", itemStack.stackSize );
+
+		// Arcane recipe?
+		if( ( this.craftingAspects != null ) )
 		{
 			// Consume wand vis
 			this.wandItem.consumeAllVisCrafting( this.wand, player, this.craftingAspects, true );
 
-		}
-
-		// From here on the server will handle the rest
-		if( EffectiveSide.isClientSide() )
-		{
-			return;
 		}
 
 		// Loop over all crafting slots
@@ -129,39 +132,38 @@ public class SlotArcaneCraftingResult
 			// Checked at the end to see if we need to decrement the slot
 			boolean shouldDecrement = true;
 
-			// Does the item in the slotstack have a container?
+			// Does the item have a container?
 			if( slotStack.getItem().hasContainerItem( slotStack ) )
 			{
 				// Get the container item
-				ItemStack slotContainerItem = slotStack.getItem().getContainerItem( slotStack );
+				ItemStack slotContainerStack = slotStack.getItem().getContainerItem( slotStack );
 
 				// Is the container item damage-able?
-				if( slotContainerItem.isItemStackDamageable() )
+				if( slotContainerStack.isItemStackDamageable() )
 				{
 					// Did we kill it?
-					if( slotContainerItem.getItemDamage() >= slotContainerItem.getMaxDamage() )
+					if( slotContainerStack.getItemDamage() >= slotContainerStack.getMaxDamage() )
 					{
-						// Still not sure about these forge events, really need to read up on them
-						// But again "SlotCrafting" does this, so shall I
-						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, slotContainerItem ) );
+						// Fire forge event
+						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, slotContainerStack ) );
 
-						// Null out the container item
-						slotContainerItem = null;
+						// Null the container stack
+						slotContainerStack = null;
 					}
 				}
 
 				// Did we not kill the container item?
-				if( slotContainerItem != null )
+				if( slotContainerStack != null )
 				{
 					/*
 					 * Should the item stay in the crafting grid, or if it is supposed to go back to the
 					 * players inventory but can't?
 					 */
 					if( !slotStack.getItem().doesContainerItemLeaveCraftingGrid( slotStack ) ||
-									!player.inventory.addItemStackToInventory( slotContainerItem ) )
+									!player.inventory.addItemStackToInventory( slotContainerStack ) )
 					{
 						// Place it back in the grid
-						this.terminalInventory.setInventorySlotContents( slotIndex, slotContainerItem );
+						this.terminalInventory.setInventorySlotContents( slotIndex, slotContainerStack );
 
 						// Set NOT to decrement
 						shouldDecrement = false;
@@ -169,37 +171,33 @@ public class SlotArcaneCraftingResult
 				}
 			}
 
-			// Should we decrement the inventory stack?
-			if( shouldDecrement )
+			// If decrementing it would result in it being empty, ask the ME system for a replenishment.
+			if( shouldDecrement && ( slotStack.stackSize == 1 ) )
 			{
-				// Would decrementing it result in it being empty?
-				if( slotStack.stackSize == 1 )
-				{
-					// First check if we can replenish it from the ME network
-					ItemStack replenishment = this.hostContianer.requestCraftingReplenishment( slotStack );
+				// First check if we can replenish it from the ME network
+				ItemStack replenishment = this.hostContianer.requestCraftingReplenishment( slotStack );
 
-					// Did we get a replenishment?
-					if( replenishment != null )
+				// Did we get a replenishment?
+				if( replenishment != null )
+				{
+					// Did the item change?
+					if( !ItemStack.areItemStacksEqual( replenishment, slotStack ) )
 					{
-						// Did the item change?
-						if( !ItemStack.areItemStacksEqual( replenishment, slotStack ) )
-						{
-							// Set the slot contents to the replenishment
-							this.terminalInventory.setInventorySlotContents( slotIndex, replenishment );
-						}
-
-						// And mark not to decrement
-						shouldDecrement = false;
+						// Set the slot contents to the replenishment
+						this.terminalInventory.setInventorySlotContents( slotIndex, replenishment );
 					}
-				}
 
-				// Check again, should we decrement?
-				if( shouldDecrement )
-				{
-					// Decrease it's size by 1
-					this.terminalInventory.decrStackSize( slotIndex, 1 );
+					// And mark not to decrement
+					shouldDecrement = false;
 				}
 			}
+
+			// Decrement the stack?
+			if( shouldDecrement )
+			{
+				this.terminalInventory.decrStackSize( slotIndex, 1 );
+			}
+
 		}
 	}
 

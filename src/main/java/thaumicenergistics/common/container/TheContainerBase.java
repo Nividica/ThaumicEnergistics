@@ -79,18 +79,6 @@ public abstract class TheContainerBase
 		return false;
 	}
 
-	/**
-	 * Returns the slot with the specified slot number or null.
-	 *
-	 * @param slotNumber
-	 * @return
-	 */
-	@Nullable
-	protected Slot getSlotOrNull( final int slotNumber )
-	{
-		return this.slotMap.getOrDefault( slotNumber, null );
-	}
-
 	@Override
 	public void detectAndSendChanges()
 	{
@@ -118,6 +106,18 @@ public abstract class TheContainerBase
 	public Slot getSlot( final int slotNumber )
 	{
 		return super.getSlot( slotNumber );
+	}
+
+	/**
+	 * Returns the slot with the specified slot number or null.
+	 *
+	 * @param slotNumber
+	 * @return
+	 */
+	@Nullable
+	public Slot getSlotOrNull( final int slotNumber )
+	{
+		return this.slotMap.getOrDefault( slotNumber, null );
 	}
 
 	/**

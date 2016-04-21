@@ -57,7 +57,7 @@ public class Packet_C_Sync
 	public static void sendPlayerHeldItem( final EntityPlayer player, final ItemStack heldItem )
 	{
 		// Create the packet
-		Packet_C_Sync packet = newPacket( player, MODE_PLAYER_HELD );
+		Packet_C_Sync packet = Packet_C_Sync.newPacket( player, Packet_C_Sync.MODE_PLAYER_HELD );
 
 		// Set the held item
 		packet.syncStack = heldItem;
@@ -78,7 +78,7 @@ public class Packet_C_Sync
 	public static void sendPlaySound( final EntityPlayer player, final String soundLocation )
 	{
 		// Create the packet
-		Packet_C_Sync packet = newPacket( player, MODE_SOUND );
+		Packet_C_Sync packet = Packet_C_Sync.newPacket( player, Packet_C_Sync.MODE_SOUND );
 
 		// Set the sound location
 		packet.syncString = soundLocation;

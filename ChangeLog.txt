@@ -1,4 +1,9 @@
-﻿04/18/2016 1.0.0.5 - Beta
+﻿04/21/2016 1.0.0.5 - Beta
+  Fixes #303: A.C.T. result slot can no longer dupe items.
+  Fixed issue of A.C.T. result slot improperly handling right clicks, issue was with underlying inventory, as it allowed 'partial' crafting results to be taken.
+
+04/18/2016 1.0.0.5 - Beta
+  Refactored the essentia grid cache
 
 04/17/2016 1.0.0.5 - Beta
   Fixed #281: Essentia terminal no longer overlayed by NEI at certain aspect ratios.
