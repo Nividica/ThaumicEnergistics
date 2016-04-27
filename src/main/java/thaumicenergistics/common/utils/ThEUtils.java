@@ -11,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
 
@@ -38,7 +39,61 @@ public final class ThEUtils
 	}
 
 	/**
-	 * Returns true if the tile still exists and the player is within reach range.
+	 * Determines if the specified stacks are equal, ignoring their stack size.
+	 * <br>
+	 * If either stack is null, returns false.
+	 *
+	 * @param stack1
+	 * @param stack2
+	 * @return
+	 */
+	public static boolean areStacksEqualIgnoreAmount( final ItemStack stack1, final ItemStack stack2 )
+	{
+		// Nulls never match
+		if( ( stack1 == null ) || ( stack2 == null ) || ( stack1.getItem() == null ) || ( stack2.getItem() == null ) )
+		{
+			return false;
+		}
+
+		// NBT state must match
+		if( stack1.hasTagCompound() != stack2.hasTagCompound() )
+		{
+			return false;
+		}
+
+		// Item mismatch?
+		if( !( stack1.getItem().equals( stack2.getItem() ) ) )
+		{
+			return false;
+		}
+
+		// Check damage
+		// Are either NOT wildcard?
+		if( ( stack1.getItemDamage() != OreDictionary.WILDCARD_VALUE ) && ( stack2.getItemDamage() != OreDictionary.WILDCARD_VALUE ) )
+		{
+			// Does damage match?
+			if( stack1.getItemDamage() != stack2.getItemDamage() )
+			{
+				return false;
+			}
+		}
+
+		// NBT mismatch?
+		if( stack1.hasTagCompound() )
+		{
+			if( !( stack1.getTagCompound().equals( stack2.getTagCompound() ) ) )
+			{
+				return false;
+			}
+		}
+
+		// All tests passed
+		return true;
+	}
+
+	/**
+	 * Returns true if the tile still exists and the player is within reach
+	 * range.
 	 *
 	 * @param player
 	 * @param tile

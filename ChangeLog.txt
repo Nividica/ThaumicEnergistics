@@ -1,4 +1,7 @@
-﻿04/21/2016 1.0.0.5 - Beta
+﻿04/27/2016 1.0.0.6 - Beta
+  Fixes #309: When shift clicking [?] from NEI, items will also be pulled from the players inventory if available.
+
+04/21/2016 1.0.0.5 - Beta
   Fixes #303: A.C.T. result slot can no longer dupe items.
   Fixed issue of A.C.T. result slot improperly handling right clicks, issue was with underlying inventory, as it allowed 'partial' crafting results to be taken.
 

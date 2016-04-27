@@ -24,6 +24,7 @@ import thaumcraft.api.aspects.AspectList;
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.utils.ThELog;
+import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * Gives items from AE2 aspects when scanned.
@@ -322,7 +323,7 @@ public class AEAspectRegister
 						continue;
 					}
 
-					if( this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
+					if( ThEUtils.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
 					{
 						if( this.isRecipeUsable( recipe ) )
 						{
@@ -357,7 +358,7 @@ public class AEAspectRegister
 						continue;
 					}
 
-					if( this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
+					if( ThEUtils.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
 					{
 						if( this.isRecipeUsable( recipe ) )
 						{
@@ -394,7 +395,7 @@ public class AEAspectRegister
 					}
 
 					// Is this what we are looking for?
-					if( !this.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
+					if( !ThEUtils.areStacksEqualIgnoreAmount( recipeOutput, this.itemStack ) )
 					{
 						continue;
 					}
@@ -637,40 +638,6 @@ public class AEAspectRegister
 		}
 
 		/**
-		 * Determines if the specified stacks are equal.
-		 *
-		 * @param stack1
-		 * @param stack2
-		 * @return
-		 */
-		public boolean areStacksEqualIgnoreAmount( final ItemStack stack1, final ItemStack stack2 )
-		{
-			// Nulls never match
-			if( ( stack1 == null ) || ( stack2 == null ) || ( stack1.getItem() == null ) || ( stack2.getItem() == null ) )
-			{
-				return false;
-			}
-
-			if( stack1.getItem().equals( stack2.getItem() ) )
-			{
-				if( stack1.getHasSubtypes() )
-				{
-					if( stack1.getItemDamage() == stack2.getItemDamage() )
-					{
-						return true;
-					}
-				}
-				else
-				{
-					return true;
-				}
-
-			}
-
-			return false;
-		}
-
-		/**
 		 * Checks if this item matches the specified object.
 		 */
 		@Override
@@ -769,7 +736,7 @@ public class AEAspectRegister
 		 */
 		public boolean isMatch( final ItemStack stack )
 		{
-			return this.areStacksEqualIgnoreAmount( stack, this.itemStack );
+			return ThEUtils.areStacksEqualIgnoreAmount( stack, this.itemStack );
 		}
 
 		/**

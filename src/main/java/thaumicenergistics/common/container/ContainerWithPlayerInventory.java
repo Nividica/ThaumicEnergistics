@@ -1,10 +1,12 @@
 package thaumicenergistics.common.container;
 
 import java.util.ArrayList;
+import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * Container that includes the players inventory.
@@ -38,12 +40,12 @@ public abstract class ContainerWithPlayerInventory
 	/**
 	 * Array of player hotbar slots
 	 */
-	private final Slot[] hotbarSlots = new Slot[COLUMNS];
+	private final Slot[] hotbarSlots = new Slot[ContainerWithPlayerInventory.COLUMNS];
 
 	/**
 	 * Array of player inventory slots.
 	 */
-	private final Slot[] playerSlots = new Slot[COLUMNS * ROWS];
+	private final Slot[] playerSlots = new Slot[ContainerWithPlayerInventory.COLUMNS * ContainerWithPlayerInventory.ROWS];
 
 	public ContainerWithPlayerInventory( final EntityPlayer player )
 	{
@@ -58,7 +60,8 @@ public abstract class ContainerWithPlayerInventory
 	 */
 	protected final boolean mergeSlotWithHotbarInventory( final ItemStack slotStack )
 	{
-		return this.mergeItemStack( slotStack, this.hotbarSlots[0].slotNumber, this.hotbarSlots[COLUMNS - 1].slotNumber + 1, false );
+		return this.mergeItemStack( slotStack, this.hotbarSlots[0].slotNumber,
+			this.hotbarSlots[ContainerWithPlayerInventory.COLUMNS - 1].slotNumber + 1, false );
 	}
 
 	/**
@@ -69,7 +72,8 @@ public abstract class ContainerWithPlayerInventory
 	 */
 	protected final boolean mergeSlotWithPlayerInventory( final ItemStack slotStack )
 	{
-		return this.mergeItemStack( slotStack, this.playerSlots[0].slotNumber, this.playerSlots[( COLUMNS * ROWS ) - 1].slotNumber + 1, false );
+		return this.mergeItemStack( slotStack, this.playerSlots[0].slotNumber,
+			this.playerSlots[( ContainerWithPlayerInventory.COLUMNS * ContainerWithPlayerInventory.ROWS ) - 1].slotNumber + 1, false );
 	}
 
 	/**
@@ -80,7 +84,8 @@ public abstract class ContainerWithPlayerInventory
 	 */
 	protected final boolean slotClickedWasInHotbarInventory( final int slotNumber )
 	{
-		return ( slotNumber >= this.hotbarSlots[0].slotNumber ) && ( slotNumber <= this.hotbarSlots[COLUMNS - 1].slotNumber );
+		return ( slotNumber >= this.hotbarSlots[0].slotNumber ) &&
+						( slotNumber <= this.hotbarSlots[ContainerWithPlayerInventory.COLUMNS - 1].slotNumber );
 	}
 
 	/**
@@ -91,7 +96,9 @@ public abstract class ContainerWithPlayerInventory
 	 */
 	protected final boolean slotClickedWasInPlayerInventory( final int slotNumber )
 	{
-		return ( slotNumber >= this.playerSlots[0].slotNumber ) && ( slotNumber <= this.playerSlots[( COLUMNS * ROWS ) - 1].slotNumber );
+		return ( slotNumber >= this.playerSlots[0].slotNumber ) &&
+						( slotNumber <= this.playerSlots[( ContainerWithPlayerInventory.COLUMNS * ContainerWithPlayerInventory.ROWS ) -
+										1].slotNumber );
 	}
 
 	/**
@@ -115,6 +122,97 @@ public abstract class ContainerWithPlayerInventory
 	}
 
 	/**
+	 * Searches the players inventory & hotbar for the specified stack.
+	 *
+	 * @param searchStack
+	 * @param amount
+	 * @return
+	 */
+	@Nullable
+	protected final ItemStack takeItemFromPlayer( final ItemStack searchStack, final int amount )
+	{
+		// Sanity check
+		if( ( searchStack == null ) || ( amount <= 0 ) )
+		{
+			return null;
+		}
+
+		Slot matchingSlot = null;
+
+		// Search inventory
+		for( Slot slot : this.playerSlots )
+		{
+			// Empty?
+			if( !slot.getHasStack() )
+			{
+				// Skip
+				continue;
+			}
+
+			// Check for match
+			if( ThEUtils.areStacksEqualIgnoreAmount( searchStack, slot.getStack() ) )
+			{
+				// Found match
+				matchingSlot = slot;
+				break;
+			}
+		}
+
+		if( matchingSlot == null )
+		{
+			// Search hotbar
+			for( Slot slot : this.hotbarSlots )
+			{
+				// Empty?
+				if( !slot.getHasStack() )
+				{
+					// Skip
+					continue;
+				}
+
+				// Check for match
+				if( ThEUtils.areStacksEqualIgnoreAmount( searchStack, slot.getStack() ) )
+				{
+					// Found match
+					matchingSlot = slot;
+					break;
+				}
+			}
+		}
+
+		if( matchingSlot == null )
+		{
+			// No matches
+			return null;
+		}
+
+		// Check amount
+		ItemStack matchStack = matchingSlot.getStack();
+		if( matchStack.stackSize < amount )
+		{
+			// Not enough to take
+			return null;
+		}
+
+		// Split
+		ItemStack result = matchStack.splitStack( amount );
+
+		// Anything left in the stack?
+		if( matchStack.stackSize == 0 )
+		{
+			// Null the slot
+			matchingSlot.putStack( null );
+		}
+		else
+		{
+			// Update the slot
+			matchingSlot.putStack( matchStack );
+		}
+
+		return result;
+	}
+
+	/**
 	 * Binds the player inventory to this container.
 	 *
 	 * @param playerInventory
@@ -127,26 +225,28 @@ public abstract class ContainerWithPlayerInventory
 	public final void bindPlayerInventory( final IInventory playerInventory, final int inventoryOffsetY, final int hotbarPositionY )
 	{
 		// Hot-bar ID's 0-8
-		for( int column = 0; column < COLUMNS; column++ )
+		for( int column = 0; column < ContainerWithPlayerInventory.COLUMNS; column++ )
 		{
 			// Create the slot
-			this.hotbarSlots[column] = new Slot( playerInventory, column, INVENTORY_X_OFFSET + ( column * SLOT_SIZE ), hotbarPositionY );
+			this.hotbarSlots[column] = new Slot( playerInventory, column,
+							ContainerWithPlayerInventory.INVENTORY_X_OFFSET + ( column * ContainerWithPlayerInventory.SLOT_SIZE ), hotbarPositionY );
 
 			// Add the slot
 			this.addSlotToContainer( this.hotbarSlots[column] );
 		}
 
 		// Main inventory ID's 9-36
-		for( int row = 0; row < ROWS; row++ )
+		for( int row = 0; row < ContainerWithPlayerInventory.ROWS; row++ )
 		{
-			for( int column = 0; column < COLUMNS; column++ )
+			for( int column = 0; column < ContainerWithPlayerInventory.COLUMNS; column++ )
 			{
 				// Calculate index
-				int index = column + ( row * COLUMNS );
+				int index = column + ( row * ContainerWithPlayerInventory.COLUMNS );
 
 				// Create the slot
-				this.playerSlots[index] = new Slot( playerInventory, COLUMNS + index, INVENTORY_X_OFFSET + ( column * SLOT_SIZE ),
-								( row * SLOT_SIZE ) + inventoryOffsetY );
+				this.playerSlots[index] = new Slot( playerInventory, ContainerWithPlayerInventory.COLUMNS + index,
+								ContainerWithPlayerInventory.INVENTORY_X_OFFSET + ( column * ContainerWithPlayerInventory.SLOT_SIZE ),
+								( row * ContainerWithPlayerInventory.SLOT_SIZE ) + inventoryOffsetY );
 
 				// Add the slot
 				this.addSlotToContainer( this.playerSlots[index] );
