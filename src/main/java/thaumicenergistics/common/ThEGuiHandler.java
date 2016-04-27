@@ -35,57 +35,57 @@ public class ThEGuiHandler
 	/**
 	 * Singular ID of the essentia cell gui
 	 */
-	public static final int ESSENTIA_CELL_ID = ID_STEP_VALUE * 1;
+	public static final int ESSENTIA_CELL_ID = ThEGuiHandler.ID_STEP_VALUE * 1;
 
 	/**
 	 * Base ID of the priority gui.
 	 * Add the ForgeDirection's side ordinal to this value.
 	 */
-	public static final int PRIORITY_ID = ID_STEP_VALUE * 2;
+	public static final int PRIORITY_ID = ThEGuiHandler.ID_STEP_VALUE * 2;
 
 	/**
 	 * ID of the essentia cell workbench
 	 */
-	public static final int CELL_WORKBENCH_ID = ID_STEP_VALUE * 3;
+	public static final int CELL_WORKBENCH_ID = ThEGuiHandler.ID_STEP_VALUE * 3;
 
 	/**
 	 * ID of the wireless terminal gui.
 	 */
-	public static final int WIRELESS_TERMINAL_ID = ID_STEP_VALUE * 4;
+	public static final int WIRELESS_TERMINAL_ID = ThEGuiHandler.ID_STEP_VALUE * 4;
 
 	/**
 	 * ID of the arcane assembler gui.
 	 */
-	public static final int ARCANE_ASSEMBLER_ID = ID_STEP_VALUE * 5;
+	public static final int ARCANE_ASSEMBLER_ID = ThEGuiHandler.ID_STEP_VALUE * 5;
 
 	/**
 	 * ID of the knowledge inscriber gui.
 	 */
-	public static final int KNOWLEDGE_INSCRIBER = ID_STEP_VALUE * 6;
+	public static final int KNOWLEDGE_INSCRIBER = ThEGuiHandler.ID_STEP_VALUE * 6;
 
 	/**
 	 * ID of the knowledge inscriber gui.
 	 */
-	public static final int ESSENTIA_VIBRATION_CHAMBER = ID_STEP_VALUE * 7;
+	public static final int ESSENTIA_VIBRATION_CHAMBER = ThEGuiHandler.ID_STEP_VALUE * 7;
 
 	/**
 	 * ID of the auto crafting amount bridge.
 	 * When calling this make sure the current container implements ICraftingIssuerContainer,
 	 * or extends AEBaseContainer with the target set to an ICraftingIssuerHost.
 	 */
-	public static final int AUTO_CRAFTING_AMOUNT = ID_STEP_VALUE * 8;
+	public static final int AUTO_CRAFTING_AMOUNT = ThEGuiHandler.ID_STEP_VALUE * 8;
 
 	/**
 	 * ID of the auto crafting confirm bridge.
 	 * When calling this make sure the current container extends
 	 * AEBaseContainer with the target set to an ICraftingIssuerHost.
 	 */
-	public static final int AUTO_CRAFTING_CONFIRM = ID_STEP_VALUE * 9;
+	public static final int AUTO_CRAFTING_CONFIRM = ThEGuiHandler.ID_STEP_VALUE * 9;
 
 	/**
 	 * ID of the distillation encoder.
 	 */
-	public static final int DISTILLATION_ENCODER = ID_STEP_VALUE * 10;
+	public static final int DISTILLATION_ENCODER = ThEGuiHandler.ID_STEP_VALUE * 10;
 
 	/**
 	 * Extra data used for some GUI calls.

@@ -1556,19 +1556,26 @@ public class ContainerPartArcaneCraftingTerminal
 			return null;
 		}
 
-		// Create the request stack
+		// Search the players inventory
+		ItemStack replenishmentPlayer = this.takeItemFromPlayer( itemStack, 1 );
+		if( replenishmentPlayer != null )
+		{
+			return replenishmentPlayer;
+		}
+
+		// Create the AE request stack
 		IAEItemStack requestStack = AEApi.instance().storage().createItemStack( itemStack );
 
 		// Set the request amount to one
 		requestStack.setStackSize( 1 );
 
 		// Attempt an extraction
-		IAEItemStack replenishment = this.monitor.extractItems( requestStack, Actionable.MODULATE, this.playerSource );
+		IAEItemStack replenishmentAE = this.monitor.extractItems( requestStack, Actionable.MODULATE, this.playerSource );
 
 		// Did we get a replenishment?
-		if( replenishment != null )
+		if( replenishmentAE != null )
 		{
-			return replenishment.getItemStack();
+			return replenishmentAE.getItemStack();
 		}
 
 		// Did not get a replenishment, search for items that match.
@@ -1589,12 +1596,12 @@ public class ContainerPartArcaneCraftingTerminal
 				requestStack.setStackSize( 1 );
 
 				// Attempt an extraction
-				replenishment = this.monitor.extractItems( requestStack, Actionable.MODULATE, this.playerSource );
+				replenishmentAE = this.monitor.extractItems( requestStack, Actionable.MODULATE, this.playerSource );
 
 				// Did we get a replenishment?
-				if( ( replenishment != null ) && ( replenishment.getStackSize() > 0 ) )
+				if( ( replenishmentAE != null ) && ( replenishmentAE.getStackSize() > 0 ) )
 				{
-					return replenishment.getItemStack();
+					return replenishmentAE.getItemStack();
 				}
 			}
 
