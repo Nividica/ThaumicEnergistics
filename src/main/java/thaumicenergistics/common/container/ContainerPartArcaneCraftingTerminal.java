@@ -1303,6 +1303,9 @@ public class ContainerPartArcaneCraftingTerminal
 		// Did we extract anything?
 		if( ( extractedStack != null ) && ( extractedStack.getStackSize() > 0 ) )
 		{
+			// 2018-03-11: Dupe fix, adjust amount to extract to amount that WAS extracted during the simulation
+			amountToExtract = Math.min( amountToExtract, (int)extractedStack.getStackSize() );
+
 			// Was this a left-click and is shift being held?
 			if( ( mouseButton == ThEGuiHelper.MOUSE_BUTTON_LEFT ) && isShiftHeld )
 			{
