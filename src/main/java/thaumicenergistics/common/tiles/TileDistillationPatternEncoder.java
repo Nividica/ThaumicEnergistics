@@ -2,6 +2,7 @@ package thaumicenergistics.common.tiles;
 
 import java.util.ArrayList;
 import appeng.api.AEApi;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
@@ -14,6 +15,7 @@ import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
  */
 public class TileDistillationPatternEncoder
 	extends ThETileInventory
+	implements ISidedInventory
 {
 	/**
 	 * NBT Keys
@@ -25,7 +27,7 @@ public class TileDistillationPatternEncoder
 	 */
 	public static int SLOT_PATTERNS_COUNT = 2,
 					SLOT_SOURCE_ITEM_COUNT = 1,
-					SLOT_TOTAL_COUNT = SLOT_SOURCE_ITEM_COUNT + SLOT_PATTERNS_COUNT;
+					SLOT_TOTAL_COUNT = TileDistillationPatternEncoder.SLOT_SOURCE_ITEM_COUNT + TileDistillationPatternEncoder.SLOT_PATTERNS_COUNT;
 	/**
 	 * Slot ID's
 	 */
@@ -38,7 +40,19 @@ public class TileDistillationPatternEncoder
 	 */
 	public TileDistillationPatternEncoder()
 	{
-		super( "distillation.inscriber", SLOT_TOTAL_COUNT, 64 );
+		super( "distillation.inscriber", TileDistillationPatternEncoder.SLOT_TOTAL_COUNT, 64 );
+	}
+
+	@Override
+	public boolean canExtractItem( final int p_102008_1_, final ItemStack p_102008_2_, final int p_102008_3_ )
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canInsertItem( final int p_102007_1_, final ItemStack p_102007_2_, final int p_102007_3_ )
+	{
+		return false;
 	}
 
 	/**
@@ -50,6 +64,12 @@ public class TileDistillationPatternEncoder
 		return false;
 	}
 
+	@Override
+	public int[] getAccessibleSlotsFromSide( final int p_94128_1_ )
+	{
+		return new int[0];
+	}
+
 	/**
 	 * Returns a list of items to drop when broken.
 	 *
@@ -58,15 +78,15 @@ public class TileDistillationPatternEncoder
 	public ArrayList<ItemStack> getDrops( final ArrayList<ItemStack> drops )
 	{
 		// Add encoded
-		if( this.internalInventory.getHasStack( SLOT_ENCODED_PATTERN ) )
+		if( this.internalInventory.getHasStack( TileDistillationPatternEncoder.SLOT_ENCODED_PATTERN ) )
 		{
-			drops.add( this.internalInventory.getStackInSlot( SLOT_ENCODED_PATTERN ) );
+			drops.add( this.internalInventory.getStackInSlot( TileDistillationPatternEncoder.SLOT_ENCODED_PATTERN ) );
 		}
 
 		// Add blank
-		if( this.internalInventory.getHasStack( SLOT_BLANK_PATTERNS ) )
+		if( this.internalInventory.getHasStack( TileDistillationPatternEncoder.SLOT_BLANK_PATTERNS ) )
 		{
-			drops.add( this.internalInventory.getStackInSlot( SLOT_BLANK_PATTERNS ) );
+			drops.add( this.internalInventory.getStackInSlot( TileDistillationPatternEncoder.SLOT_BLANK_PATTERNS ) );
 		}
 
 		return drops;
@@ -80,7 +100,8 @@ public class TileDistillationPatternEncoder
 	public boolean hasPatterns()
 	{
 		// Is there anything in the pattern slots?
-		return this.internalInventory.getHasStack( SLOT_ENCODED_PATTERN ) || this.internalInventory.getHasStack( SLOT_BLANK_PATTERNS );
+		return this.internalInventory.getHasStack( TileDistillationPatternEncoder.SLOT_ENCODED_PATTERN ) ||
+						this.internalInventory.getHasStack( TileDistillationPatternEncoder.SLOT_BLANK_PATTERNS );
 
 	}
 
@@ -94,13 +115,13 @@ public class TileDistillationPatternEncoder
 		}
 
 		// Empty pattern slot?
-		if( slotId == SLOT_BLANK_PATTERNS )
+		if( slotId == TileDistillationPatternEncoder.SLOT_BLANK_PATTERNS )
 		{
 			return AEApi.instance().definitions().materials().blankPattern().isSameAs( itemStack );
 		}
 
 		// Encoded pattern slot?
-		if( slotId == SLOT_ENCODED_PATTERN )
+		if( slotId == TileDistillationPatternEncoder.SLOT_ENCODED_PATTERN )
 		{
 			return AEApi.instance().definitions().items().encodedPattern().isSameAs( itemStack );
 		}
@@ -118,9 +139,9 @@ public class TileDistillationPatternEncoder
 		super.readFromNBT( data );
 
 		// Has saved inventory?
-		if( data.hasKey( NBTKEY_INVENTORY ) )
+		if( data.hasKey( TileDistillationPatternEncoder.NBTKEY_INVENTORY ) )
 		{
-			this.internalInventory.readFromNBT( data, NBTKEY_INVENTORY );
+			this.internalInventory.readFromNBT( data, TileDistillationPatternEncoder.NBTKEY_INVENTORY );
 		}
 
 	}
@@ -135,7 +156,7 @@ public class TileDistillationPatternEncoder
 		super.writeToNBT( data );
 
 		// Write the inventory
-		this.internalInventory.writeToNBT( data, NBTKEY_INVENTORY );
+		this.internalInventory.writeToNBT( data, TileDistillationPatternEncoder.NBTKEY_INVENTORY );
 
 	}
 }
