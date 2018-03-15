@@ -3,6 +3,9 @@ ThaumicEnergistics
 
 Because the digital age could use some magic!
 
+Please note that I am no longer actively maintaining this mod.
+I may however release critical bug fixes from time to time.
+
 The aim of this mod is to serve as a bridge between Thaumcraft and Applied Energistics. The primary focus is essentia management, both in storage, transportation, and application.
 
 Thanks go out to AlgorithmX2 for Applied Energistics, Azanor for Thaumcraft, M3gaFr3ak for ExtraCells, and the Forge team.
