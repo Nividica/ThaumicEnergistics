@@ -35,7 +35,7 @@ public class ContainerDistillationPatternEncoder
 	/**
 	 * Y position for the player and hotbar inventory.
 	 */
-	private static final int PLAYER_INV_POSITION_Y = 152, HOTBAR_INV_POSITION_Y = PLAYER_INV_POSITION_Y + 58;
+	private static final int PLAYER_INV_POSITION_Y = 152, HOTBAR_INV_POSITION_Y = ContainerDistillationPatternEncoder.PLAYER_INV_POSITION_Y + 58;
 
 	/**
 	 * Position of the source item slot
@@ -105,7 +105,7 @@ public class ContainerDistillationPatternEncoder
 	/**
 	 * Slots holding the source item's aspects.
 	 */
-	public final SlotFake[] slotSourceAspects = new SlotFake[SLOT_SOURCE_ASPECTS_COUNT];
+	public final SlotFake[] slotSourceAspects = new SlotFake[ContainerDistillationPatternEncoder.SLOT_SOURCE_ASPECTS_COUNT];
 
 	/**
 	 * Gui to send updates to when slots change.
@@ -140,38 +140,44 @@ public class ContainerDistillationPatternEncoder
 		};
 
 		// Add the source aspect slots
-		for( int index = 0; index < SLOT_SOURCE_ASPECTS_COUNT; ++index )
+		for( int index = 0; index < ContainerDistillationPatternEncoder.SLOT_SOURCE_ASPECTS_COUNT; ++index )
 		{
 			// Calculate Y
-			int posY = SLOT_SOURCE_ASPECTS_POS_Y + ( index * 18 );
+			int posY = ContainerDistillationPatternEncoder.SLOT_SOURCE_ASPECTS_POS_Y + ( index * 18 );
 
 			// Create the slot
-			this.slotSourceAspects[index] = new SlotFake( this.internalInventory, index, SLOT_SOURCE_ASPECTS_POS_X, posY );
+			this.slotSourceAspects[index] = new SlotFake( this.internalInventory, index,
+							ContainerDistillationPatternEncoder.SLOT_SOURCE_ASPECTS_POS_X, posY );
 			this.addSlotToContainer( this.slotSourceAspects[index] );
 		}
 
 		// Add the selected aspect slot
-		this.slotSelectedAspect = new SlotFake( this.internalInventory, SLOT_SOURCE_ASPECTS_COUNT, SLOT_SELECTED_ASPECT_POS_X,
-						SLOT_SELECTED_ASPECT_POS_Y );
+		this.slotSelectedAspect = new SlotFake( this.internalInventory, ContainerDistillationPatternEncoder.SLOT_SOURCE_ASPECTS_COUNT,
+						ContainerDistillationPatternEncoder.SLOT_SELECTED_ASPECT_POS_X,
+						ContainerDistillationPatternEncoder.SLOT_SELECTED_ASPECT_POS_Y );
 		this.addSlotToContainer( this.slotSelectedAspect );
 
 		// Add the source item slot
-		this.slotSourceItem = new SlotFake( this.encoder, TileDistillationPatternEncoder.SLOT_SOURCE_ITEM, SLOT_SOURCE_ITEM_POS_X,
-						SLOT_SOURCE_ITEM_POS_Y );
+		this.slotSourceItem = new SlotFake( this.encoder, TileDistillationPatternEncoder.SLOT_SOURCE_ITEM,
+						ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_X,
+						ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_Y );
 		this.addSlotToContainer( this.slotSourceItem );
 
 		// Add blank pattern slot
 		this.slotPatternsBlank = new SlotRestrictive( this.encoder, TileDistillationPatternEncoder.SLOT_BLANK_PATTERNS,
-						SLOT_PATTERNS_BLANK_POS_X, SLOT_PATTERNS_BLANK_POS_Y );
+						ContainerDistillationPatternEncoder.SLOT_PATTERNS_BLANK_POS_X,
+						ContainerDistillationPatternEncoder.SLOT_PATTERNS_BLANK_POS_Y );
 		this.addSlotToContainer( this.slotPatternsBlank );
 
 		// Add encoded pattern slot
 		this.slotPatternEncoded = new SlotRestrictive( this.encoder, TileDistillationPatternEncoder.SLOT_ENCODED_PATTERN,
-						SLOT_PATTERN_ENCODED_POS_X, SLOT_PATTERN_ENCODED_POS_Y );
+						ContainerDistillationPatternEncoder.SLOT_PATTERN_ENCODED_POS_X,
+						ContainerDistillationPatternEncoder.SLOT_PATTERN_ENCODED_POS_Y );
 		this.addSlotToContainer( this.slotPatternEncoded );
 
 		// Bind to the players inventory
-		this.bindPlayerInventory( player.inventory, PLAYER_INV_POSITION_Y, HOTBAR_INV_POSITION_Y );
+		this.bindPlayerInventory( player.inventory, ContainerDistillationPatternEncoder.PLAYER_INV_POSITION_Y,
+			ContainerDistillationPatternEncoder.HOTBAR_INV_POSITION_Y );
 
 		// Create the helper
 		this.patternHelper = new HandlerDistillationPattern();
@@ -283,6 +289,7 @@ public class ContainerDistillationPatternEncoder
 
 		// Get the aspects
 		AspectList itemAspects = ThaumcraftApiHelper.getObjectAspects( this.cachedSource );
+		itemAspects = ThaumcraftApiHelper.getBonusObjectTags( this.cachedSource, itemAspects );
 		Aspect[] sortedAspects = null;
 
 		// Does the item have any aspects?
