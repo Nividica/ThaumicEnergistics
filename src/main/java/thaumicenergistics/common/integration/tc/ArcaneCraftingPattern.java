@@ -127,7 +127,7 @@ public class ArcaneCraftingPattern
 	 * @param input
 	 * @return
 	 */
-	private boolean canSubstitueItem( final ItemStack target, final ItemStack input )
+	private static boolean canSubItem( final ItemStack target, final ItemStack input )
 	{
 		// Do the itemstacks directly match?
 		if( ItemStack.areItemStacksEqual( target, input ) )
@@ -135,12 +135,12 @@ public class ArcaneCraftingPattern
 			return true;
 		}
 
-		// Do the items match?
 		if( target.getItem() != input.getItem() )
 		{
 			// Mismatched items
 			return false;
 		}
+		// Items match
 
 		// NBT data present?
 		if( target.hasTagCompound() )
@@ -151,10 +151,52 @@ public class ArcaneCraftingPattern
 				// Tags do not match
 				return false;
 			}
+			// Tags equal
 		}
 
-		// Finally check item damage
-		return( ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE ) || ( target.getItemDamage() == input.getItemDamage() ) );
+		// Does the item damage mean something besides damaged?
+		if( !target.isItemStackDamageable() )
+		{
+			return( ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE ) || ( target.getItemDamage() == input.getItemDamage() ) );
+		}
+
+		// Items match, has no tag or tags match, and damage is damage
+		return true;
+	}
+
+	/**
+	 * Checks if the input item can be substituted for the target
+	 *
+	 * @param target
+	 * @param input
+	 * @return
+	 */
+	public static boolean canSubstitueFor( final Object target, final ItemStack input )
+	{
+		// What type is the ingredient?
+		if( target instanceof ItemStack )
+		{
+			// Cast to itemstack
+			return ArcaneCraftingPattern.canSubItem( (ItemStack)target, input );
+		}
+		else if( target instanceof ArrayList )
+		{
+			// Cast to list
+			ArrayList<ItemStack> items = (ArrayList<ItemStack>)target;
+
+			// Check each item
+			for( ItemStack item : items )
+			{
+				if( ArcaneCraftingPattern.canSubItem( item, input ) )
+				{
+					return true;
+				}
+			}
+
+		}
+
+		// Unknown type
+		return false;
 	}
 
 	/**
@@ -417,30 +459,7 @@ public class ArcaneCraftingPattern
 			return false;
 		}
 
-		// What type is the ingredient?
-		if( ing instanceof ItemStack )
-		{
-			// Cast to itemstack
-			ItemStack target = ( (ItemStack)ing );
-			return this.canSubstitueItem( target, input );
-		}
-		else if( ing instanceof ArrayList )
-		{
-			// Cast to list
-			ArrayList<ItemStack> items = (ArrayList<ItemStack>)ing;
-
-			// Check each item
-			for( ItemStack target : items )
-			{
-				if( this.canSubstitueItem( target, input ) )
-				{
-					return true;
-				}
-			}
-
-		}
-
-		return false;
+		return ArcaneCraftingPattern.canSubstitueFor( ing, input );
 
 	}
 

@@ -60,7 +60,7 @@ public class ContainerKnowledgeInscriber
 	/**
 	 * Y position for the player and hotbar inventory.
 	 */
-	private static final int PLAYER_INV_POSITION_Y = 162, HOTBAR_INV_POSITION_Y = PLAYER_INV_POSITION_Y + 58;
+	private static final int PLAYER_INV_POSITION_Y = 162, HOTBAR_INV_POSITION_Y = ContainerKnowledgeInscriber.PLAYER_INV_POSITION_Y + 58;
 
 	/**
 	 * Knowledge core slot.
@@ -76,9 +76,12 @@ public class ContainerKnowledgeInscriber
 	/**
 	 * Crafting slots
 	 */
-	public static final int CRAFTING_MATRIX_SLOT = MAXIMUM_PATTERNS + PATTERN_SLOT, CRAFTING_SLOT_X = 26,
+	public static final int CRAFTING_MATRIX_SLOT = ContainerKnowledgeInscriber.MAXIMUM_PATTERNS + ContainerKnowledgeInscriber.PATTERN_SLOT,
+					CRAFTING_SLOT_X = 26,
 					CRAFTING_SLOT_Y = 90, CRAFTING_ROWS = 3, CRAFTING_COLS = 3,
-					CRAFTING_SLOT_SPACING = 18, CRAFTING_RESULT_SLOT = CRAFTING_MATRIX_SLOT + ( CRAFTING_ROWS * CRAFTING_COLS );
+					CRAFTING_GRID_SIZE = ContainerKnowledgeInscriber.CRAFTING_ROWS * ContainerKnowledgeInscriber.CRAFTING_COLS,
+					CRAFTING_SLOT_SPACING = 18,
+					CRAFTING_RESULT_SLOT = ContainerKnowledgeInscriber.CRAFTING_MATRIX_SLOT + ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE;
 
 	/**
 	 * Handles interaction with the knowledge core.
@@ -90,8 +93,8 @@ public class ContainerKnowledgeInscriber
 	 */
 	private final SlotRestrictive kCoreSlot;
 	private final SlotFake resultSlot;
-	private final SlotInaccessible[] patternSlots = new SlotInaccessible[MAXIMUM_PATTERNS];
-	private final SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[CRAFTING_ROWS * CRAFTING_COLS];
+	private final SlotInaccessible[] patternSlots = new SlotInaccessible[ContainerKnowledgeInscriber.MAXIMUM_PATTERNS];
+	private final SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE];
 
 	/**
 	 * The current recipe, if any.
@@ -126,7 +129,7 @@ public class ContainerKnowledgeInscriber
 		this.addSlotToContainer( this.kCoreSlot );
 
 		// Setup the internal inventory
-		this.internalInventory = new TheInternalInventory( "cki", CRAFTING_RESULT_SLOT + 1, 64 );
+		this.internalInventory = new TheInternalInventory( "cki", ContainerKnowledgeInscriber.CRAFTING_RESULT_SLOT + 1, 64 );
 
 		// Create pattern slots
 		this.initPatternSlots();
@@ -135,7 +138,7 @@ public class ContainerKnowledgeInscriber
 		this.initCraftingSlots();
 
 		// Create the result slot
-		this.resultSlot = new SlotFake( this.internalInventory, CRAFTING_RESULT_SLOT, 116, 108 );
+		this.resultSlot = new SlotFake( this.internalInventory, ContainerKnowledgeInscriber.CRAFTING_RESULT_SLOT, 116, 108 );
 		this.addSlotToContainer( this.resultSlot );
 
 		// Create the handler
@@ -165,7 +168,7 @@ public class ContainerKnowledgeInscriber
 		{
 			// Get the recipe output
 			ItemStack recipeOutput = ArcaneRecipeHelper.INSTANCE.getRecipeOutput( this.internalInventory,
-				CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
+				ContainerKnowledgeInscriber.CRAFTING_MATRIX_SLOT, ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE, this.activeRecipe );
 
 			// Ensure there is an output
 			if( recipeOutput == null )
@@ -207,17 +210,17 @@ public class ContainerKnowledgeInscriber
 	{
 		int slotIndex;
 		// Create the crafting slots
-		slotIndex = CRAFTING_MATRIX_SLOT;
-		for( int row = 0; row < CRAFTING_ROWS; row++ )
+		slotIndex = ContainerKnowledgeInscriber.CRAFTING_MATRIX_SLOT;
+		for( int row = 0; row < ContainerKnowledgeInscriber.CRAFTING_ROWS; row++ )
 		{
-			for( int column = 0; column < CRAFTING_COLS; column++ )
+			for( int column = 0; column < ContainerKnowledgeInscriber.CRAFTING_COLS; column++ )
 			{
 				// Calculate the array index
-				int index = ( row * CRAFTING_COLS ) + column;
+				int index = ( row * ContainerKnowledgeInscriber.CRAFTING_COLS ) + column;
 
 				// Calculate the position
-				int posX = CRAFTING_SLOT_X + ( CRAFTING_SLOT_SPACING * column );
-				int posY = CRAFTING_SLOT_Y + ( CRAFTING_SLOT_SPACING * row );
+				int posX = ContainerKnowledgeInscriber.CRAFTING_SLOT_X + ( ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING * column );
+				int posY = ContainerKnowledgeInscriber.CRAFTING_SLOT_Y + ( ContainerKnowledgeInscriber.CRAFTING_SLOT_SPACING * row );
 
 				// Add the slot
 				this.addSlotToContainer( this.craftingSlots[index] = new SlotFakeCraftingMatrix( this.internalInventory, slotIndex++ , posX, posY ) );
@@ -230,17 +233,17 @@ public class ContainerKnowledgeInscriber
 	{
 		int slotIndex;
 		// Create the pattern slots
-		slotIndex = PATTERN_SLOT;
-		for( int row = 0; row < PATTERN_ROWS; row++ )
+		slotIndex = ContainerKnowledgeInscriber.PATTERN_SLOT;
+		for( int row = 0; row < ContainerKnowledgeInscriber.PATTERN_ROWS; row++ )
 		{
-			for( int column = 0; column < PATTERN_COLS; column++ )
+			for( int column = 0; column < ContainerKnowledgeInscriber.PATTERN_COLS; column++ )
 			{
 				// Calculate the array index
-				int index = ( row * PATTERN_COLS ) + column;
+				int index = ( row * ContainerKnowledgeInscriber.PATTERN_COLS ) + column;
 
 				// Calculate the position
-				int posX = PATTERN_SLOT_X + ( PATTERN_SLOT_SPACING * column );
-				int posY = PATTERN_SLOT_Y + ( PATTERN_SLOT_SPACING * row );
+				int posX = ContainerKnowledgeInscriber.PATTERN_SLOT_X + ( ContainerKnowledgeInscriber.PATTERN_SLOT_SPACING * column );
+				int posY = ContainerKnowledgeInscriber.PATTERN_SLOT_Y + ( ContainerKnowledgeInscriber.PATTERN_SLOT_SPACING * row );
 
 				// Add to the array
 				this.patternSlots[index] = new SlotInaccessible( this.internalInventory, slotIndex++ , posX, posY );
@@ -290,7 +293,10 @@ public class ContainerKnowledgeInscriber
 			ArrayList<ItemStack> ingList = new ArrayList<ItemStack>();
 
 			// Add the prefered item first
-			ingList.add( preferedItem );
+			if( preferedItem != null )
+			{
+				ingList.add( preferedItem );
+			}
 
 			// Add the rest
 			ArrayList<ItemStack> inputList = (ArrayList<ItemStack>)input;
@@ -316,6 +322,52 @@ public class ContainerKnowledgeInscriber
 		}
 
 		return input;
+	}
+
+	private boolean prepareShapless( final Object[] inputs )
+	{
+		// Get the recipe
+		ShapelessArcaneRecipe recipe = (ShapelessArcaneRecipe)this.activeRecipe;
+
+		ArrayList ings = recipe.getInput();
+
+		// Check each crafting grid slot
+		for( int slotIndex = 0; slotIndex < ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE; ++slotIndex )
+		{
+			// Get the stack
+
+			ItemStack slotStack = this.craftingSlots[slotIndex].getStack();
+			if( slotStack == null )
+			{
+				continue;
+			}
+
+			// Locate it in the ingredients.
+			Object matchingIng = null;
+			int ingIndex = 0;
+			for( ; ingIndex < ings.size(); ++ingIndex )
+			{
+				Object ing = ings.get( ingIndex );
+
+				if( ArcaneCraftingPattern.canSubstitueFor( ing, slotStack ) )
+				{
+					matchingIng = ing;
+					break;
+				}
+			}
+
+			// If no match found, do not encode.
+			if( matchingIng == null )
+			{
+				return false;
+			}
+
+			// Add to the inputs
+			inputs[ingIndex] = this.preparePatternInput( matchingIng, slotIndex );
+		}
+
+		// Finished prep
+		return true;
 	}
 
 	/**
@@ -409,9 +461,9 @@ public class ContainerKnowledgeInscriber
 	public void onClientRequestClearGrid()
 	{
 		// Clear the grid
-		for( int index = 0; index < ( CRAFTING_COLS * CRAFTING_ROWS ); ++index )
+		for( int index = ContainerKnowledgeInscriber.CRAFTING_MATRIX_SLOT; index < ContainerKnowledgeInscriber.CRAFTING_RESULT_SLOT; ++index )
 		{
-			this.internalInventory.setInventorySlotContents( index + CRAFTING_MATRIX_SLOT, null );
+			this.internalInventory.setInventorySlotContents( index, null );
 		}
 
 		// Update the matrix
@@ -428,8 +480,7 @@ public class ContainerKnowledgeInscriber
 		// Get the current save state
 		CoreSaveState saveState = this.getSaveState();
 
-		int gridSize = ContainerKnowledgeInscriber.CRAFTING_ROWS * ContainerKnowledgeInscriber.CRAFTING_COLS;
-		Object[] inputs = new Object[gridSize];
+		Object[] inputs = new Object[ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE];
 
 		if( saveState == CoreSaveState.Enabled_Save )
 		{
@@ -447,11 +498,10 @@ public class ContainerKnowledgeInscriber
 			// Is the recipe shapeless?
 			else if( this.activeRecipe instanceof ShapelessArcaneRecipe )
 			{
-				ShapelessArcaneRecipe recipe = (ShapelessArcaneRecipe)this.activeRecipe;
-				ArrayList ings = recipe.getInput();
-				for( int slotNumber = 0; slotNumber < ings.size(); ++slotNumber )
+				if( !this.prepareShapless( inputs ) )
 				{
-					inputs[slotNumber] = this.preparePatternInput( ings.get( slotNumber ), slotNumber );
+					// Could not prep shapeless
+					return;
 				}
 			}
 			else
@@ -462,7 +512,7 @@ public class ContainerKnowledgeInscriber
 
 			// Get the aspect cost
 			AspectList recipeAspects = ArcaneRecipeHelper.INSTANCE.getRecipeAspectCost( this.internalInventory,
-				CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
+				ContainerKnowledgeInscriber.CRAFTING_MATRIX_SLOT, ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE, this.activeRecipe );
 
 			// Create the pattern
 			ArcaneCraftingPattern pattern = new ArcaneCraftingPattern( this.kCoreSlot.getStack(), recipeAspects, this.resultSlot.getStack(), inputs );
@@ -524,14 +574,17 @@ public class ContainerKnowledgeInscriber
 	public void onCraftMatrixChanged( final IInventory inv )
 	{
 		// Set the active recipe
-		this.activeRecipe = ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult( inv, CRAFTING_MATRIX_SLOT, 9, this.player );
+		this.activeRecipe = ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult( inv, ContainerKnowledgeInscriber.CRAFTING_MATRIX_SLOT,
+			ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE,
+			this.player );
 
 		ItemStack craftResult = null;
 
 		// Set the result slot
 		if( this.activeRecipe != null )
 		{
-			craftResult = ArcaneRecipeHelper.INSTANCE.getRecipeOutput( inv, CRAFTING_MATRIX_SLOT, 9, this.activeRecipe );
+			craftResult = ArcaneRecipeHelper.INSTANCE.getRecipeOutput( inv, ContainerKnowledgeInscriber.CRAFTING_MATRIX_SLOT,
+				ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE, this.activeRecipe );
 		}
 
 		this.resultSlot.putStack( craftResult );
