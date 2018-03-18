@@ -82,7 +82,7 @@ public class PartEssentiaStorageBus
 	/**
 	 * Filter list
 	 */
-	private final ArrayList<Aspect> filteredAspects = new ArrayList<Aspect>( FILTER_SIZE );
+	private final ArrayList<Aspect> filteredAspects = new ArrayList<Aspect>( PartEssentiaStorageBus.FILTER_SIZE );
 
 	/**
 	 * Upgrade inventory
@@ -559,6 +559,7 @@ public class PartEssentiaStorageBus
 	public void setPriority( final int priority )
 	{
 		this.priority = priority;
+		this.postGridUpdateEvent();
 	}
 
 	/**
@@ -606,7 +607,7 @@ public class PartEssentiaStorageBus
 		if( hasFilters || ( saveType == PartItemStack.World ) )
 		{
 			// Write the priority
-			if( this.priority > 0 )
+			if( this.priority != 0 )
 			{
 				data.setInteger( PartEssentiaStorageBus.NBT_KEY_PRIORITY, this.priority );
 			}
