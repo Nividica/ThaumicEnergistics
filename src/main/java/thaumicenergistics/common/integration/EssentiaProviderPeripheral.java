@@ -77,12 +77,12 @@ public class EssentiaProviderPeripheral
 		 */
 		public static CCHelpObject Instance()
 		{
-			if( INSTANCE == null )
+			if( CCHelpObject.INSTANCE == null )
 			{
-				INSTANCE = new CCHelpObject();
+				CCHelpObject.INSTANCE = new CCHelpObject();
 			}
 
-			return INSTANCE;
+			return CCHelpObject.INSTANCE;
 		}
 
 		@Override
@@ -213,12 +213,12 @@ public class EssentiaProviderPeripheral
 			VALUES = CCMethods.values();
 
 			// Create the array
-			NAMES = new String[VALUES.length];
+			NAMES = new String[CCMethods.VALUES.length];
 
 			// Populate the array
-			for( int i = 0; i < NAMES.length; ++i )
+			for( int i = 0; i < CCMethods.NAMES.length; ++i )
 			{
-				NAMES[i] = VALUES[i].name();
+				CCMethods.NAMES[i] = CCMethods.VALUES[i].name();
 			}
 		}
 	}
@@ -931,7 +931,14 @@ public class EssentiaProviderPeripheral
 	@Override
 	public boolean equals( final IPeripheral other )
 	{
-		return this.equals( other );
+		return this == other;
+	}
+
+	@Override
+	public boolean equals( final Object other )
+	{
+
+		return super.equals( other );
 	}
 
 	@Override
@@ -944,6 +951,12 @@ public class EssentiaProviderPeripheral
 	public String getType()
 	{
 		return EssentiaProviderPeripheral.CC_PERIPHERAL_NAME;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return super.hashCode();
 	}
 
 	@Override

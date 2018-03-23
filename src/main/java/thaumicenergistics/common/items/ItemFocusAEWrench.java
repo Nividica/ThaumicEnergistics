@@ -220,12 +220,8 @@ public class ItemFocusAEWrench
 		}
 
 		// Is the entity a pedestal?
-		if( te instanceof TilePedestal )
-		{
-			// Ignore pedestals
-			return false;
-		}
-		else if( te.getClass().getName().equals( "cofh.thermalexpansion.block.cache.TileCache" ) && ( action != Action.LEFT_CLICK_BLOCK ) )
+		if( ( te instanceof TilePedestal ) ||
+						( te.getClass().getName().equals( "cofh.thermalexpansion.block.cache.TileCache" ) && ( action != Action.LEFT_CLICK_BLOCK ) ) )
 		{
 			return false;
 		}

@@ -1,6 +1,7 @@
 package thaumicenergistics.common.integration.tc;
 
 import java.lang.ref.WeakReference;
+import javax.annotation.Nonnull;
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
@@ -88,13 +89,6 @@ public class DigiVisSourceData
 
 		// Get the source location
 		DimensionalCoord sourceLocation = digiVisSource.getLocation();
-
-		// Ensure the location is valid.
-		if( sourceLocation == null )
-		{
-			// Invalid location
-			return;
-		}
 
 		// Get the world id
 		this.worldID = sourceLocation.getWorld().provider.dimensionId;
@@ -215,6 +209,34 @@ public class DigiVisSourceData
 		}
 	}
 
+	private IDigiVisSource tryGetSource( @Nonnull final IGrid destinationGrid, final boolean forceUpdate )
+	{
+		IDigiVisSource source = null;
+		try
+		{
+			// Get this source
+			source = this.getSource( forceUpdate );
+			if( source != null )
+			{
+				// Get the source grid
+				IGrid sourceGrid = source.getGrid();
+
+				// Do the grids NOT match?
+				if( ( sourceGrid == null ) || !destinationGrid.equals( sourceGrid ) )
+				{
+					// Grid mismatch
+					source = null;
+				}
+			}
+
+		}
+		catch( Exception e )
+		{
+		}
+
+		return source;
+	}
+
 	/**
 	 * Erases all data
 	 */
@@ -303,7 +325,7 @@ public class DigiVisSourceData
 	}
 
 	/**
-	 * Verifies that the source exists, is active and that the
+	 * Verifies that the source exists, is active, and that the
 	 * source and destination grid's are the same.
 	 *
 	 * @param destinationGrid
@@ -312,55 +334,20 @@ public class DigiVisSourceData
 	 */
 	public IDigiVisSource tryGetSource( final IGrid destinationGrid )
 	{
-		try
+		IDigiVisSource source = null;
+
+		// Ensure the destination grid is not null
+		if( destinationGrid != null )
 		{
-			// Ensure the destination grid is not null
-			if( destinationGrid == null )
-			{
-				// Null destination grid
-				return null;
-			}
-
-			// Get the source
-			IDigiVisSource source = this.getSource( false );
-
-			// Ensure the source is not null
+			// Get the cached source
+			source = this.tryGetSource( destinationGrid, false );
 			if( source == null )
 			{
-				// Null source
-				return null;
+				// Force a refresh
+				source = this.tryGetSource( destinationGrid, true );
 			}
-
-			// Get the source grid
-			IGrid sourceGrid = source.getGrid();
-
-			// Do the grids NOT match?
-			if( !destinationGrid.equals( sourceGrid ) )
-			{
-				// Refresh the source
-				source = this.getSource( true );
-
-				// Get the source grid
-				sourceGrid = source.getGrid();
-
-				// Do the grids still not match?
-				if( !destinationGrid.equals( sourceGrid ) )
-				{
-					// Grids do not match
-					return null;
-				}
-
-			}
-
-			// Every thing checks out
-			return source;
 		}
-		catch( Exception e )
-		{
-		}
-
-		// Exception occurred
-		return null;
+		return source;
 	}
 
 	/**

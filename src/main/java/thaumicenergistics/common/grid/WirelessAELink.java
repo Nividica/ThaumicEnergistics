@@ -18,6 +18,7 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.DimensionalCoord;
+import appeng.me.GridException;
 import appeng.tile.misc.TileSecurity;
 import appeng.tile.networking.TileWireless;
 import net.minecraft.entity.player.EntityPlayer;
@@ -94,7 +95,7 @@ public abstract class WirelessAELink
 		}
 
 		// Calculate the square distance
-		double squareDistance = getSquaredDistanceFromAP( APLocation, x, y, z );
+		double squareDistance = WirelessAELink.getSquaredDistanceFromAP( APLocation, x, y, z );
 
 		// Return if close enough to use AP
 		return squareDistance <= ( APRange * APRange );
@@ -130,7 +131,7 @@ public abstract class WirelessAELink
 			if( AP.isActive() )
 			{
 				// Close enough to the AP?
-				if( isAPInRange( AP.getLocation(), AP.getRange(), world, x, y, z ) )
+				if( WirelessAELink.isAPInRange( AP.getLocation(), AP.getRange(), world, x, y, z ) )
 				{
 					aps.add( AP );
 				}
@@ -213,7 +214,7 @@ public abstract class WirelessAELink
 			return null;
 		}
 
-		return locateAPsInRange( world, x, y, z, grid );
+		return WirelessAELink.locateAPsInRange( world, x, y, z, grid );
 	}
 
 	/**
@@ -225,7 +226,7 @@ public abstract class WirelessAELink
 	 */
 	public static ArrayList<IWirelessAccessPoint> locateAPsInRangeOfPlayer( final EntityPlayer player, final String encryptionKey )
 	{
-		return locateAPsInRange( player.worldObj,
+		return WirelessAELink.locateAPsInRange( player.worldObj,
 			(int)Math.floor( player.posX ),
 			(int)Math.floor( player.posY ),
 			(int)Math.floor( player.posZ ), encryptionKey );
@@ -245,7 +246,7 @@ public abstract class WirelessAELink
 			if( this.accessPoint.isActive() )
 			{
 				// In range?
-				return isAPInRange( this.apLocation, this.accessPoint.getRange(), this.getUserWorld(),
+				return WirelessAELink.isAPInRange( this.apLocation, this.accessPoint.getRange(), this.getUserWorld(),
 					this.getUserPositionX(), this.getUserPositionY(), this.getUserPositionZ() );
 			}
 		}
@@ -264,53 +265,58 @@ public abstract class WirelessAELink
 		int y = this.getUserPositionY();
 		int z = this.getUserPositionZ();
 
-		IGrid grid = null;
+		ArrayList<IWirelessAccessPoint> apList = null;
+
 		if( this.accessPoint != null )
 		{
 			try
 			{
-				grid = this.accessPoint.getGrid();
+				IGrid grid = this.accessPoint.getGrid();
+
+				// Get a list of AP's in range
+				if( grid != null )
+				{
+					apList = WirelessAELink.locateAPsInRange( w, x, y, z, grid );
+				}
+				else
+				{
+					apList = WirelessAELink.locateAPsInRange( w, x, y, z, this.encryptionKey );
+				}
 			}
-			catch( Exception e )
+			catch( GridException e )
 			{
+				// :(
 			}
 		}
 
-		// Get a list of AP's in range
-		ArrayList<IWirelessAccessPoint> apList;
-		if( grid != null )
+		// Determine the closest AP
+		IWirelessAccessPoint closestAP = null;
+		if( apList != null )
 		{
-			apList = locateAPsInRange( w, x, y, z, grid );
+			double closestDistance = Double.MAX_VALUE;
+			for( IWirelessAccessPoint ap : apList )
+			{
+				double dist = WirelessAELink.getSquaredDistanceFromAP( ap.getLocation(), x, y, z );
+				if( dist < closestDistance )
+				{
+					closestDistance = dist;
+					closestAP = ap;
+				}
+			}
+		}
+
+		if( closestAP != null )
+		{
+			// Set the closest as the AP to use
+			this.setAP( closestAP );
 		}
 		else
 		{
-			apList = locateAPsInRange( w, x, y, z, this.encryptionKey );
-		}
-
-		if( ( apList == null ) || ( apList.isEmpty() ) )
-		{
 			// No valid AP's found
 			this.accessPoint = null;
-			return false;
 		}
 
-		// Get the closest
-		IWirelessAccessPoint closest = null;
-		double closestDistance = Double.MAX_VALUE;
-		for( IWirelessAccessPoint ap : apList )
-		{
-			double dist = getSquaredDistanceFromAP( ap.getLocation(), x, y, z );
-			if( dist < closestDistance )
-			{
-				closestDistance = dist;
-				closest = ap;
-			}
-		}
-
-		// Set the closest as the AP to use
-		this.setAP( closest );
-
-		return true;
+		return( this.accessPoint != null );
 	}
 
 	/**

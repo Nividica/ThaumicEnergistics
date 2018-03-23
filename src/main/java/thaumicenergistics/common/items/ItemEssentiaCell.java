@@ -91,13 +91,6 @@ public class ItemEssentiaCell
 				// Get the chat color
 				String aspectChatColor = currentStack.getChatColor();
 
-				// Does this aspect have color?
-				if( aspectChatColor == null )
-				{
-					// It does not, set to white
-					aspectChatColor = EnumChatFormatting.WHITE.toString();
-				}
-
 				// Build the display string
 				String aspectInfo = String.format( "%s%s%s x %d", aspectChatColor, currentStack.getAspectName( player ),
 					EnumChatFormatting.WHITE.toString(), currentStack.getStackSize() );

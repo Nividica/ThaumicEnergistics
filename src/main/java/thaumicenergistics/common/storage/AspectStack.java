@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
@@ -99,10 +100,10 @@ public class AspectStack
 		Aspect aspect = null;
 
 		// Does the tag have the tag?
-		if( data.hasKey( NBTKEY_ASPECT_TAG ) )
+		if( data.hasKey( AspectStack.NBTKEY_ASPECT_TAG ) )
 		{
 			// Attempt to get the aspect
-			aspect = Aspect.aspects.get( data.getString( NBTKEY_ASPECT_TAG ) );
+			aspect = Aspect.aspects.get( data.getString( AspectStack.NBTKEY_ASPECT_TAG ) );
 		}
 
 		// Is there an aspect?
@@ -113,13 +114,13 @@ public class AspectStack
 
 		// Load the amount
 		long amount = 0;
-		if( data.hasKey( NBTKEY_ASPECT_AMOUNT ) )
+		if( data.hasKey( AspectStack.NBTKEY_ASPECT_AMOUNT ) )
 		{
-			amount = data.getLong( NBTKEY_ASPECT_AMOUNT );
+			amount = data.getLong( AspectStack.NBTKEY_ASPECT_AMOUNT );
 		}
 
 		// Load crafting
-		boolean craftable = data.hasKey( NBTKEY_CRAFTABLE );
+		boolean craftable = data.hasKey( AspectStack.NBTKEY_CRAFTABLE );
 
 		// Return a newly created stack.
 		return new AspectStack( aspect, amount, craftable );
@@ -222,7 +223,7 @@ public class AspectStack
 			return ThEGuiHelper.INSTANCE.getAspectChatColor( this.aspect );
 		}
 
-		return "";
+		return EnumChatFormatting.WHITE.toString();
 	}
 
 	@Override
@@ -325,19 +326,19 @@ public class AspectStack
 		if( this.aspect != null )
 		{
 			// Write the tag
-			data.setString( NBTKEY_ASPECT_TAG, this.aspect.getTag() );
+			data.setString( AspectStack.NBTKEY_ASPECT_TAG, this.aspect.getTag() );
 
 			// Write the amount
 			if( this.stackSize > 0 )
 			{
-				data.setLong( NBTKEY_ASPECT_AMOUNT, this.stackSize );
+				data.setLong( AspectStack.NBTKEY_ASPECT_AMOUNT, this.stackSize );
 			}
 
 			// Craftable?
 			if( this.isCraftable )
 			{
 				// Write craftable
-				data.setBoolean( NBTKEY_CRAFTABLE, true );
+				data.setBoolean( AspectStack.NBTKEY_CRAFTABLE, true );
 			}
 		}
 

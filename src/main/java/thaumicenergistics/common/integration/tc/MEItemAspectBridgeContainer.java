@@ -55,7 +55,7 @@ public class MEItemAspectBridgeContainer
 		this.internalInventory = new TheInternalInventory( "TC Inventory Bridge", inventorySize, 1 );
 
 		// Have we hooked to TC's event handler?
-		if( thaumcraftClientEvents.get() == null )
+		if( MEItemAspectBridgeContainer.thaumcraftClientEvents.get() == null )
 		{
 			// Access the listenerOwners field
 			Field loField = EventBus.class.getDeclaredField( "listenerOwners" );
@@ -71,7 +71,7 @@ public class MEItemAspectBridgeContainer
 
 				if( Owner instanceof thaumcraft.client.lib.ClientTickEventsFML )
 				{
-					thaumcraftClientEvents = new WeakReference<ClientTickEventsFML>( (ClientTickEventsFML)Owner );
+					MEItemAspectBridgeContainer.thaumcraftClientEvents = new WeakReference<ClientTickEventsFML>( (ClientTickEventsFML)Owner );
 					break;
 				}
 			}
@@ -81,7 +81,7 @@ public class MEItemAspectBridgeContainer
 			loField = null;
 
 			// Did we locate it?
-			if( thaumcraftClientEvents == null )
+			if( MEItemAspectBridgeContainer.thaumcraftClientEvents.get() == null )
 			{
 				throw new Exception( "Unable to find TC event handler" );
 			}
@@ -122,7 +122,7 @@ public class MEItemAspectBridgeContainer
 	 */
 	public void renderAspects( final GuiContainer gui, final EntityPlayer player )
 	{
-		ClientTickEventsFML tceh = thaumcraftClientEvents.get();
+		ClientTickEventsFML tceh = MEItemAspectBridgeContainer.thaumcraftClientEvents.get();
 
 		if( tceh != null )
 		{

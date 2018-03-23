@@ -1,5 +1,6 @@
 package thaumicenergistics.common.integration.tc;
 
+import java.util.HashSet;
 import appeng.api.util.DimensionalCoord;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.WorldCoordinates;
@@ -17,6 +18,11 @@ public class VisProviderProxy
 	 * TODO: Test vis range
 	 */
 	private static final int VIS_RANGE = 1;
+
+	/**
+	 * Tracks which proxies have been visited during a single call chain.
+	 */
+	private static final HashSet<VisProviderProxy> visitedProxies = new HashSet<>();
 
 	/**
 	 * The interface associated with this source.
@@ -76,7 +82,17 @@ public class VisProviderProxy
 			return 0;
 		}
 
-		return this.visInterface.consumeVis( aspect, amountRequested );
+		int amountConsumed = 0;
+
+		// Prevent recursion
+		if( !VisProviderProxy.visitedProxies.contains( this ) )
+		{
+			VisProviderProxy.visitedProxies.add( this );
+			amountConsumed = this.visInterface.consumeVis( aspect, amountRequested );
+			VisProviderProxy.visitedProxies.remove( this );
+		}
+
+		return amountConsumed;
 	}
 
 	/**

@@ -305,15 +305,18 @@ public class ContainerEssentiaCell
 	{
 		// Get the handler
 		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
+		if( cellHandler != null )
+		{
 
-		// Change the view mode
-		ViewItems viewMode = Platform.rotateEnum( cellHandler.getViewMode(), backwards, Settings.VIEW_MODE.getPossibleValues() );
+			// Change the view mode
+			ViewItems viewMode = Platform.rotateEnum( cellHandler.getViewMode(), backwards, Settings.VIEW_MODE.getPossibleValues() );
 
-		// Inform the handler of the change
-		cellHandler.setViewMode( viewMode );
+			// Inform the handler of the change
+			cellHandler.setViewMode( viewMode );
 
-		// Send confirmation back to client
-		Packet_C_EssentiaCellTerminal.sendViewingModes( player, cellHandler.getSortingMode(), viewMode );
+			// Send confirmation back to client
+			Packet_C_EssentiaCellTerminal.sendViewingModes( player, cellHandler.getSortingMode(), viewMode );
+		}
 	}
 
 	/**

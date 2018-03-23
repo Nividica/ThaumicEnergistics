@@ -196,7 +196,7 @@ public class GolemHooks
 		boolean dismantled = player.isSneaking();
 		Side side = EffectiveSide.side();
 
-		for( IGolemHookHandler handler : registeredHandlers )
+		for( IGolemHookHandler handler : GolemHooks.registeredHandlers )
 		{
 			try
 			{
@@ -209,7 +209,7 @@ public class GolemHooks
 			}
 			catch( Exception e )
 			{
-				logCaughtException( "onBellLeftClick", handler, e );
+				GolemHooks.logCaughtException( "onBellLeftClick", handler, e );
 			}
 
 		}
@@ -227,7 +227,7 @@ public class GolemHooks
 	public static boolean hook_CustomInteraction(	final EntityGolemBase golem, final EntityPlayer player,
 													final HashMap<IGolemHookHandler, Object> golemHandlerData )
 	{
-		GolemSyncRegistry syncRegistry = ( (GolemSyncRegistry)golemHandlerData.get( internalHandler ) );
+		GolemSyncRegistry syncRegistry = ( (GolemSyncRegistry)golemHandlerData.get( GolemHooks.internalHandler ) );
 
 		boolean needsSync = false;
 		boolean needsSetup = false;
@@ -236,7 +236,7 @@ public class GolemHooks
 
 		Side side = EffectiveSide.side();
 
-		for( IGolemHookHandler handler : registeredHandlers )
+		for( IGolemHookHandler handler : GolemHooks.registeredHandlers )
 		{
 			// Get the current handler data
 			Object handlerData = golemHandlerData.getOrDefault( handler, null );
@@ -248,7 +248,7 @@ public class GolemHooks
 			}
 			catch( Exception e )
 			{
-				logCaughtException( "canHandleInteraction", handler, e );
+				GolemHooks.logCaughtException( "canHandleInteraction", handler, e );
 				continue;
 			}
 
@@ -280,7 +280,7 @@ public class GolemHooks
 			}
 			catch( Exception e )
 			{
-				logCaughtException( "customInteraction", handler, e );
+				GolemHooks.logCaughtException( "customInteraction", handler, e );
 				continue;
 			}
 
@@ -324,16 +324,16 @@ public class GolemHooks
 	{
 		// Create a new sync registry
 		GolemSyncRegistry localRegistry = new GolemSyncRegistry();
-		localRegistry.copyDefaults( defaultSyncRegistry );
+		localRegistry.copyDefaults( GolemHooks.defaultSyncRegistry );
 
 		// Add to the handlers
-		golemHandlerData.put( internalHandler, localRegistry );
+		golemHandlerData.put( GolemHooks.internalHandler, localRegistry );
 
 		// Get the datawatcher
 		DataWatcher watcher = golem.getDataWatcher();
 
 		// Has the ID been set?
-		if( DATAWATCHER_ID == -1 )
+		if( GolemHooks.DATAWATCHER_ID == -1 )
 		{
 			// Set the ID to the next available
 			for( int i = 4; i < 31; ++i )
@@ -341,10 +341,10 @@ public class GolemHooks
 				try
 				{
 					// Add the object
-					watcher.addObject( DATAWATCHER_ID, localRegistry.mappingsToString() );
+					watcher.addObject( GolemHooks.DATAWATCHER_ID, localRegistry.mappingsToString() );
 
 					// Object was added
-					DATAWATCHER_ID = i;
+					GolemHooks.DATAWATCHER_ID = i;
 					return;
 				}
 				catch( IllegalArgumentException e )
@@ -353,16 +353,16 @@ public class GolemHooks
 			}
 
 			// If execution makes it this far, there were no available ID's :(
-			DATAWATCHER_ID = -2;
+			GolemHooks.DATAWATCHER_ID = -2;
 			ThELog.warning( "Golem Hook API is unable to register channel for sync data." );
 			return;
 		}
-		else if( DATAWATCHER_ID > 0 )
+		else if( GolemHooks.DATAWATCHER_ID > 0 )
 		{
 			// Add datawatcher field.
 			try
 			{
-				watcher.addObject( DATAWATCHER_ID, localRegistry.mappingsToString() );
+				watcher.addObject( GolemHooks.DATAWATCHER_ID, localRegistry.mappingsToString() );
 			}
 			catch( Exception e )
 			{
@@ -381,12 +381,12 @@ public class GolemHooks
 	public static void hook_onEntityUpdate( final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData )
 	{
 		// Get the sync registry
-		GolemSyncRegistry syncRegistry = (GolemSyncRegistry)golemHandlerData.get( internalHandler );
+		GolemSyncRegistry syncRegistry = (GolemSyncRegistry)golemHandlerData.get( GolemHooks.internalHandler );
 
 		if( EffectiveSide.isServerSide() )
 		{
 			// Update handlers
-			for( IGolemHookHandler handler : dynamicHandlers )
+			for( IGolemHookHandler handler : GolemHooks.dynamicHandlers )
 			{
 				try
 				{
@@ -394,25 +394,25 @@ public class GolemHooks
 				}
 				catch( Exception e )
 				{
-					logCaughtException( "golemTick", handler, e );
+					GolemHooks.logCaughtException( "golemTick", handler, e );
 				}
 			}
 
 			// Update data watcher
 			if( syncRegistry.hasChanged() )
 			{
-				if( DATAWATCHER_ID > 0 )
+				if( GolemHooks.DATAWATCHER_ID > 0 )
 				{
 					try
 					{
-						golem.getDataWatcher().updateObject( DATAWATCHER_ID, syncRegistry.mappingsToString() );
+						golem.getDataWatcher().updateObject( GolemHooks.DATAWATCHER_ID, syncRegistry.mappingsToString() );
 					}
 					catch( NullPointerException e1 )
 					{
 
 						try
 						{
-							golem.getDataWatcher().addObject( DATAWATCHER_ID, syncRegistry.mappingsToString() );
+							golem.getDataWatcher().addObject( GolemHooks.DATAWATCHER_ID, syncRegistry.mappingsToString() );
 						}
 						catch( Exception e2 )
 						{
@@ -424,7 +424,7 @@ public class GolemHooks
 			return;
 		}
 
-		if( DATAWATCHER_ID < 0 )
+		if( GolemHooks.DATAWATCHER_ID < 0 )
 		{
 			return;
 		}
@@ -442,7 +442,7 @@ public class GolemHooks
 			String watcherString;
 			try
 			{
-				watcherString = golem.getDataWatcher().getWatchableObjectString( DATAWATCHER_ID );
+				watcherString = golem.getDataWatcher().getWatchableObjectString( GolemHooks.DATAWATCHER_ID );
 				if( !syncRegistry.hasChanged() && ( watcherString == syncRegistry.lastUpdatedFrom ) )
 				{
 					// Data is in sync
@@ -475,7 +475,7 @@ public class GolemHooks
 				}
 				catch( Exception e )
 				{
-					logCaughtException( "onSyncDataChanged", handler, e );
+					GolemHooks.logCaughtException( "onSyncDataChanged", handler, e );
 					continue;
 				}
 
@@ -514,7 +514,7 @@ public class GolemHooks
 		Side side = EffectiveSide.side();
 
 		// Inform each handler
-		for( IGolemHookHandler handler : registeredHandlers )
+		for( IGolemHookHandler handler : GolemHooks.registeredHandlers )
 		{
 			try
 			{
@@ -529,7 +529,7 @@ public class GolemHooks
 			}
 			catch( Exception e )
 			{
-				logCaughtException( "spawnGolemFromItemStack", handler, e );
+				GolemHooks.logCaughtException( "spawnGolemFromItemStack", handler, e );
 			}
 		}
 	}
@@ -545,7 +545,7 @@ public class GolemHooks
 												final NBTTagCompound nbt )
 	{
 		// Inform each handler
-		for( IGolemHookHandler handler : registeredHandlers )
+		for( IGolemHookHandler handler : GolemHooks.registeredHandlers )
 		{
 			try
 			{
@@ -567,7 +567,7 @@ public class GolemHooks
 			}
 			catch( Exception e )
 			{
-				logCaughtException( "readEntityFromNBT", handler, e );
+				GolemHooks.logCaughtException( "readEntityFromNBT", handler, e );
 			}
 		}
 	}
@@ -587,7 +587,7 @@ public class GolemHooks
 	{
 
 		// Call each render handler
-		for( IGolemHookHandler handler : renderHandlers )
+		for( IGolemHookHandler handler : GolemHooks.renderHandlers )
 		{
 			try
 			{
@@ -595,7 +595,7 @@ public class GolemHooks
 			}
 			catch( Exception e )
 			{
-				logCaughtException( "renderGolem", handler, e );
+				GolemHooks.logCaughtException( "renderGolem", handler, e );
 			}
 		}
 
@@ -610,11 +610,11 @@ public class GolemHooks
 	public static void hook_SetupGolem( final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData )
 	{
 		// Get the sync data
-		GolemSyncRegistry localRegistry = (GolemSyncRegistry)golemHandlerData.get( internalHandler );
+		GolemSyncRegistry localRegistry = (GolemSyncRegistry)golemHandlerData.get( GolemHooks.internalHandler );
 		Side side = EffectiveSide.side();
 
 		// Inform each handler
-		for( IGolemHookHandler handler : registeredHandlers )
+		for( IGolemHookHandler handler : GolemHooks.registeredHandlers )
 		{
 			try
 			{
@@ -640,16 +640,16 @@ public class GolemHooks
 			}
 			catch( Exception e )
 			{
-				logCaughtException( "setupGolem", handler, e );
+				GolemHooks.logCaughtException( "setupGolem", handler, e );
 			}
 		}
 
 		// Update data watcher
-		if( localRegistry.hasChanged() && ( side == Side.SERVER ) && ( DATAWATCHER_ID > 0 ) )
+		if( localRegistry.hasChanged() && ( side == Side.SERVER ) && ( GolemHooks.DATAWATCHER_ID > 0 ) )
 		{
 			try
 			{
-				golem.getDataWatcher().updateObject( DATAWATCHER_ID, localRegistry.mappingsToString() );
+				golem.getDataWatcher().updateObject( GolemHooks.DATAWATCHER_ID, localRegistry.mappingsToString() );
 			}
 			catch( NullPointerException e )
 			{
@@ -669,7 +669,7 @@ public class GolemHooks
 												final NBTTagCompound nbt )
 	{
 		// Inform each handler
-		for( IGolemHookHandler handler : registeredHandlers )
+		for( IGolemHookHandler handler : GolemHooks.registeredHandlers )
 		{
 			try
 			{
@@ -681,7 +681,7 @@ public class GolemHooks
 			}
 			catch( Exception e )
 			{
-				logCaughtException( "writeEntityNBT", handler, e );
+				GolemHooks.logCaughtException( "writeEntityNBT", handler, e );
 			}
 		}
 	}
@@ -699,37 +699,32 @@ public class GolemHooks
 			return;
 		}
 
-		if( handler == null )
-		{
-			throw new NullPointerException( "Golem hook handler can not be null." );
-		}
-
 		try
 		{
 			// Add the handler
-			registeredHandlers.add( handler );
+			GolemHooks.registeredHandlers.add( handler );
 
 			// Needs render?
 			if( handler.needsRenderer() )
 			{
-				renderHandlers.add( handler );
+				GolemHooks.renderHandlers.add( handler );
 			}
 
 			// Needs tick?
 			if( handler.needsDynamicUpdates() )
 			{
-				dynamicHandlers.add( handler );
+				GolemHooks.dynamicHandlers.add( handler );
 			}
 
 			// Register sync data
-			defaultSyncRegistry.canRegister = true;
-			handler.addDefaultSyncEntries( defaultSyncRegistry );
-			defaultSyncRegistry.canRegister = false;
+			GolemHooks.defaultSyncRegistry.canRegister = true;
+			handler.addDefaultSyncEntries( GolemHooks.defaultSyncRegistry );
+			GolemHooks.defaultSyncRegistry.canRegister = false;
 
 		}
 		catch( Exception e )
 		{
-			logCaughtException( "registerHandler", handler, e );
+			GolemHooks.logCaughtException( "registerHandler", handler, e );
 		}
 
 	}
