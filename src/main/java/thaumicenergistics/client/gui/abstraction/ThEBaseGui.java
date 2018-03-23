@@ -161,7 +161,7 @@ public abstract class ThEBaseGui
 	 * @param y
 	 * @return Slot the point is within, null if point is within no slots.
 	 */
-	protected final Slot getSlotAtPosition( final int x, final int y )
+	protected final Slot getSlotAtMousePosition( final int x, final int y )
 	{
 		// Loop over all slots
 		for( int i = 0; i < this.inventorySlots.inventorySlots.size(); i++ )
@@ -200,7 +200,7 @@ public abstract class ThEBaseGui
 			if( ( (ContainerWithNetworkTool)this.inventorySlots ).hasNetworkTool() )
 			{
 				// Get the slot the mouse was clicked over
-				Slot slot = this.getSlotAtPosition( mouseX, mouseY );
+				Slot slot = this.getSlotAtMousePosition( mouseX, mouseY );
 
 				// Was the slot the network tool?
 				if( ( slot != null ) && ( slot.getStack() != null ) &&

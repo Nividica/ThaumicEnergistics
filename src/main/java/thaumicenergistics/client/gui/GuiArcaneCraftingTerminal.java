@@ -204,7 +204,7 @@ public class GuiArcaneCraftingTerminal
 		if( Keyboard.isKeyDown( Keyboard.KEY_SPACE ) )
 		{
 			// Get the slot the mouse is over
-			Slot slotClicked = this.getSlotAtPosition( mouseX, mouseY );
+			Slot slotClicked = this.getSlotAtMousePosition( mouseX, mouseY );
 
 			// Was there a slot under the mouse?
 			if( slotClicked != null )
