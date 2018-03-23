@@ -279,23 +279,25 @@ public class ContainerEssentiaCell
 	{
 		// Get the handler
 		HandlerItemEssentiaCell cellHandler = this.getCellHandler();
-
-		// Change the sorting mode
-		AspectStackComparatorMode sortingMode;
-		if( backwards )
+		if( cellHandler != null )
 		{
-			sortingMode = cellHandler.getSortingMode().previousMode();
-		}
-		else
-		{
-			sortingMode = cellHandler.getSortingMode().nextMode();
-		}
+			// Change the sorting mode
+			AspectStackComparatorMode sortingMode;
+			if( backwards )
+			{
+				sortingMode = cellHandler.getSortingMode().previousMode();
+			}
+			else
+			{
+				sortingMode = cellHandler.getSortingMode().nextMode();
+			}
 
-		// Inform the handler of the change
-		cellHandler.setSortingMode( sortingMode );
+			// Inform the handler of the change
+			cellHandler.setSortingMode( sortingMode );
 
-		// Send confirmation back to client
-		Packet_C_EssentiaCellTerminal.sendViewingModes( player, sortingMode, cellHandler.getViewMode() );
+			// Send confirmation back to client
+			Packet_C_EssentiaCellTerminal.sendViewingModes( player, sortingMode, cellHandler.getViewMode() );
+		}
 	}
 
 	@Override
