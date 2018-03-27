@@ -22,7 +22,7 @@ Code Analysis
 ---
 [![](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](http://https://sonarcloud.io/dashboard?id=thaumicenergistics%3AThaumicEnergistics)
 
-![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=alert_status) ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=sqale_rating) ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=reliability_rating) ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=security_rating)
+![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=sqale_rating) ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=reliability_rating) ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=security_rating)
 
 ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=ncloc) ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=bugs) ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=vulnerabilities) ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=code_smells)
 
