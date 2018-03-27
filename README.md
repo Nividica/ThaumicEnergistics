@@ -20,7 +20,7 @@ Built for MC 1.7.10
 
 Code Analysis
 ---
-[![](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](http://https://sonarcloud.io/dashboard?id=thaumicenergistics%3AThaumicEnergistics)
+[![](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=thaumicenergistics%3AThaumicEnergistics)
 
 ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=sqale_rating) ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=reliability_rating) ![](https://sonarcloud.io/api/project_badges/measure?project=thaumicenergistics%3AThaumicEnergistics&metric=security_rating)
 
