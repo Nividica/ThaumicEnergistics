@@ -102,8 +102,8 @@ public class GuiDistillationPatternEncoder
 		this.title = ThEStrings.Block_DistillationEncoder.getLocalized();
 
 		// Set the GUI size
-		this.xSize = GUI_WIDTH;
-		this.ySize = GUI_HEIGHT;
+		this.xSize = GuiDistillationPatternEncoder.GUI_WIDTH;
+		this.ySize = GuiDistillationPatternEncoder.GUI_HEIGHT;
 
 		// Set the container
 		this.deContainer = (ContainerDistillationPatternEncoder)this.inventorySlots;
@@ -197,8 +197,10 @@ public class GuiDistillationPatternEncoder
 		this.drawTexturedModalRect( this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize );
 
 		// Calculate the position and rotation of the thaumometer
-		float th_PosX = this.guiLeft + ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_X + ITEM_HALF_SIZE;
-		float th_PosY = this.guiTop + ( ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_Y - 0.25f ) + ITEM_HALF_SIZE;
+		float th_PosX = (float)this.guiLeft + ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_X +
+						GuiDistillationPatternEncoder.ITEM_HALF_SIZE;
+		float th_PosY = this.guiTop + ( ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_Y - 0.25f ) +
+						GuiDistillationPatternEncoder.ITEM_HALF_SIZE;
 		float th_Rotation = ( System.currentTimeMillis() % 36000 ) * 0.02f;
 		float th_ScaleOffset = (float)Math.sin( th_Rotation * 0.15f ) * 0.1f;
 
@@ -210,14 +212,15 @@ public class GuiDistillationPatternEncoder
 		GL11.glTranslatef( th_PosX, th_PosY, 0.0F );
 
 		// Scale
-		GL11.glScalef( THAUMOMETER_SCALE + th_ScaleOffset, THAUMOMETER_SCALE + th_ScaleOffset, 1.0f );
+		GL11.glScalef( GuiDistillationPatternEncoder.THAUMOMETER_SCALE + th_ScaleOffset,
+			GuiDistillationPatternEncoder.THAUMOMETER_SCALE + th_ScaleOffset, 1.0f );
 
 		// Rotate
 		GL11.glRotatef( th_Rotation, 0.0f, 0.0f, 1.0f );
 
 		// Draw thaumometer
 		GuiScreen.itemRender.renderItemAndEffectIntoGUI( this.fontRendererObj, this.mc.getTextureManager(),
-			this.thaumometer, -ITEM_HALF_SIZE, -ITEM_HALF_SIZE );
+			this.thaumometer, -GuiDistillationPatternEncoder.ITEM_HALF_SIZE, -GuiDistillationPatternEncoder.ITEM_HALF_SIZE );
 
 		// Restore
 		GL11.glPopMatrix();
@@ -231,7 +234,7 @@ public class GuiDistillationPatternEncoder
 	protected void drawGuiContainerForegroundLayer( final int mouseX, final int mouseY )
 	{
 		// Draw the title
-		this.fontRendererObj.drawString( this.title, TITLE_POS_X, TITLE_POS_Y, 0 );
+		this.fontRendererObj.drawString( this.title, GuiDistillationPatternEncoder.TITLE_POS_X, GuiDistillationPatternEncoder.TITLE_POS_Y, 0 );
 
 		// Check the source item
 		if( this.sourceItemDirty )
@@ -300,7 +303,8 @@ public class GuiDistillationPatternEncoder
 		super.initGui();
 
 		// Create the encode button
-		this.buttonEncode = new GuiButtonEncodePattern( 0, BUTTON_ENCODE_POS_X + this.guiLeft, BUTTON_ENCODE_POS_Y + this.guiTop,
+		this.buttonEncode = new GuiButtonEncodePattern( 0, GuiDistillationPatternEncoder.BUTTON_ENCODE_POS_X + this.guiLeft,
+						GuiDistillationPatternEncoder.BUTTON_ENCODE_POS_Y + this.guiTop,
 						AEStateIconsEnum.STANDARD_ICON_SIZE,
 						AEStateIconsEnum.STANDARD_ICON_SIZE );
 		this.buttonList.add( this.buttonEncode );

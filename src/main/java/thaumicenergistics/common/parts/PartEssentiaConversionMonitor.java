@@ -37,7 +37,7 @@ public class PartEssentiaConversionMonitor
 	/**
 	 * The number of ticks considered to be a double click.
 	 */
-	private static long DOUBLE_CLICK_TICKS = 2 * 20;
+	private static long DOUBLE_CLICK_TICKS = 2 * 20L;
 
 	/**
 	 * The last player ID that deposited essentia

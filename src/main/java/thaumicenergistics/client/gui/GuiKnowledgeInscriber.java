@@ -132,7 +132,7 @@ public class GuiKnowledgeInscriber
 		gpa.blue = 1.0f;
 
 		// Set delay
-		gpa.setDelayTime( slotNumber * 50 );
+		gpa.setDelayTime( slotNumber * 50L );
 
 		return gpa;
 	}
@@ -229,13 +229,13 @@ public class GuiKnowledgeInscriber
 		this.buttonList.clear();
 
 		// Create the save/delete button
-		this.buttonSave = new GuiButtonSaveDelete( 0, this.guiLeft + BUTTON_SAVE_POS_X,
-						this.guiTop + BUTTON_SAVE_POS_Y, this.saveState );
+		this.buttonSave = new GuiButtonSaveDelete( 0, this.guiLeft + GuiKnowledgeInscriber.BUTTON_SAVE_POS_X,
+						this.guiTop + GuiKnowledgeInscriber.BUTTON_SAVE_POS_Y, this.saveState );
 		this.buttonList.add( this.buttonSave );
 
 		// Create the clear grid button
-		this.buttonClear = new GuiButtonClearCraftingGrid( 1, this.guiLeft + BUTTON_CLEAR_POS_X,
-						this.guiTop + BUTTON_CLEAR_POS_Y, 8, 8, false );
+		this.buttonClear = new GuiButtonClearCraftingGrid( 1, this.guiLeft + GuiKnowledgeInscriber.BUTTON_CLEAR_POS_X,
+						this.guiTop + GuiKnowledgeInscriber.BUTTON_CLEAR_POS_Y, 8, 8, false );
 		this.buttonList.add( this.buttonClear );
 
 		// Request full update

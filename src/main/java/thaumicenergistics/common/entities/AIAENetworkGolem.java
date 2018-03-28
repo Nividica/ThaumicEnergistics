@@ -179,7 +179,7 @@ public abstract class AIAENetworkGolem
 			long requestSize = Math.min( target.amount, this.maxFluidRate );
 
 			// Calculate power required
-			double pwrReq = requestSize / 100;
+			double pwrReq = requestSize / 100.0;
 			if( eGrid.extractAEPower( pwrReq, Actionable.SIMULATE, PowerMultiplier.CONFIG ) < pwrReq )
 			{
 				// Not enough power
@@ -200,7 +200,7 @@ public abstract class AIAENetworkGolem
 			}
 
 			// Take power
-			pwrReq = extracted.getStackSize() / 100;
+			pwrReq = extracted.getStackSize() / 100.0;
 			eGrid.extractAEPower( pwrReq, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
 			return extracted.getFluidStack();
@@ -340,9 +340,9 @@ public abstract class AIAENetworkGolem
 		}
 
 		// Set interaction maximums
-		int maxItems = ITEM_RATES[orderUpgrades] * rateMult;
-		int maxEssentia = ESS_RATES[orderUpgrades] * rateMult;
-		int maxFluids = FLUID_RATES[orderUpgrades] * rateMult;
+		int maxItems = AIAENetworkGolem.ITEM_RATES[orderUpgrades] * rateMult;
+		int maxEssentia = AIAENetworkGolem.ESS_RATES[orderUpgrades] * rateMult;
+		int maxFluids = AIAENetworkGolem.FLUID_RATES[orderUpgrades] * rateMult;
 
 		// Create the network handler
 		this.network = new NetworkHandler( wsd, maxItems, maxFluids, maxEssentia );
@@ -369,7 +369,7 @@ public abstract class AIAENetworkGolem
 	private void restartNetworkCooldown()
 	{
 		// Reset network timer
-		this.actionTimer = NETWORK_COOLDOWN;
+		this.actionTimer = AIAENetworkGolem.NETWORK_COOLDOWN;
 	}
 
 	/**

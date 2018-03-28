@@ -27,7 +27,7 @@ public class GuiParticleAnimator
 	/**
 	 * Time when the particle was created.
 	 */
-	private double epoch;
+	private long epoch;
 
 	/**
 	 * How complete the animation is.
@@ -132,7 +132,7 @@ public class GuiParticleAnimator
 		}
 
 		// Calculate percentage
-		this.percentComplete = ( ( System.currentTimeMillis() - this.epoch ) / this.timeToLive );
+		this.percentComplete = ( ( System.currentTimeMillis() - this.epoch ) / (double)this.timeToLive );
 		if( this.percentComplete > 1.0f )
 		{
 			this.percentComplete = 1.0f;

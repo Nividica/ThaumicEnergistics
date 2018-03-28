@@ -37,6 +37,20 @@ import thaumicenergistics.common.utils.ThELog;
 public abstract class ThEBasePacket
 	implements IMessage
 {
+	class ConfigurableGZIPOutputStream
+		extends GZIPOutputStream
+	{
+		public ConfigurableGZIPOutputStream( final OutputStream out ) throws IOException
+		{
+			super( out );
+		}
+
+		public void setLevel( final int level )
+		{
+			this.def.setLevel( level );
+		}
+	}
+
 	/**
 	 * Starting size of buffers compressed buffers, 1 Megabyte
 	 */
@@ -139,8 +153,8 @@ public abstract class ThEBasePacket
 
 		if( stream.readBoolean() )
 		{
-			World playerWorld = readWorld( stream );
-			player = playerWorld.getPlayerEntityByName( readString( stream ) );
+			World playerWorld = ThEBasePacket.readWorld( stream );
+			player = playerWorld.getPlayerEntityByName( ThEBasePacket.readString( stream ) );
 		}
 
 		return player;
@@ -188,7 +202,7 @@ public abstract class ThEBasePacket
 		{
 			if( world == null )
 			{
-				world = getClientWorld();
+				world = ThEBasePacket.getClientWorld();
 			}
 		}
 
@@ -238,7 +252,7 @@ public abstract class ThEBasePacket
 	{
 		stream.writeInt( part.getSide().ordinal() );
 
-		writeTileEntity( part.getHost().getTile(), stream );
+		ThEBasePacket.writeTileEntity( part.getHost().getTile(), stream );
 	}
 
 	/**
@@ -256,8 +270,8 @@ public abstract class ThEBasePacket
 
 		if( validPlayer )
 		{
-			writeWorld( player.worldObj, stream );
-			writeString( player.getCommandSenderName(), stream );
+			ThEBasePacket.writeWorld( player.worldObj, stream );
+			ThEBasePacket.writeString( player.getCommandSenderName(), stream );
 		}
 	}
 
@@ -284,7 +298,7 @@ public abstract class ThEBasePacket
 	 */
 	protected static void writeTileEntity( final TileEntity entity, final ByteBuf stream )
 	{
-		writeWorld( entity.getWorldObj(), stream );
+		ThEBasePacket.writeWorld( entity.getWorldObj(), stream );
 		stream.writeInt( entity.xCoord );
 		stream.writeInt( entity.yCoord );
 		stream.writeInt( entity.zCoord );
@@ -310,7 +324,7 @@ public abstract class ThEBasePacket
 	public static Aspect readAspect( final ByteBuf stream )
 	{
 		// Read the name
-		String name = readString( stream );
+		String name = ThEBasePacket.readString( stream );
 		if( name != "" )
 		{
 			// Return the aspect
@@ -335,7 +349,7 @@ public abstract class ThEBasePacket
 			aspectName = aspect.getTag();
 		}
 
-		writeString( aspectName, stream );
+		ThEBasePacket.writeString( aspectName, stream );
 	}
 
 	private void fromCompressedBytes( final ByteBuf packetStream )
@@ -427,13 +441,11 @@ public abstract class ThEBasePacket
 							}
 						};
 
-						GZIPOutputStream compressor = new GZIPOutputStream( outStream )
-						{
-							{
-								this.def.setLevel( Deflater.BEST_COMPRESSION );
-							}
-						} )
+						ConfigurableGZIPOutputStream compressor = new ConfigurableGZIPOutputStream( outStream ) )
+
 		{
+			// Set compression level to best
+			compressor.setLevel( Deflater.BEST_COMPRESSION );
 
 			// Compress
 			compressor.write( streamToCompress.array(), 0, streamToCompress.writerIndex() );
