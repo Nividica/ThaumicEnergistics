@@ -40,15 +40,15 @@ public class ModelGearbox
 		/**
 		 * Does this side have a shaft?
 		 */
-		public boolean hasShaft = true;
+		boolean hasShaft = true;
 
 		/*
 		 * Does this side have a gear?
 		 */
-		public boolean hasGear = false;
+		boolean hasGear = false;
 
 		/**
-		 * Creates the transfomation
+		 * Creates the transformation
 		 *
 		 * @param rotateAngleY
 		 * @param rotateAngleZ
@@ -68,9 +68,9 @@ public class ModelGearbox
 			this.shaftOffsetZ = offsetZ;
 
 			// Set spoke
-			this.spokeOffsetX = offsetX * SPOKE_OFFSET;
-			this.spokeOffsetY = offsetY * SPOKE_OFFSET;
-			this.spokeOffsetZ = offsetZ * SPOKE_OFFSET;
+			this.spokeOffsetX = offsetX * SideTransformation.SPOKE_OFFSET;
+			this.spokeOffsetY = offsetY * SideTransformation.SPOKE_OFFSET;
+			this.spokeOffsetZ = offsetZ * SideTransformation.SPOKE_OFFSET;
 
 		}
 
@@ -115,7 +115,7 @@ public class ModelGearbox
 	/**
 	 * Rotation angle of the shafts and gears.
 	 */
-	public float rotationAngle = 0.0F;
+	private float rotationAngle = 0.0F;
 
 	/**
 	 * Describes how to render each sides shaft and gear.
@@ -153,12 +153,15 @@ public class ModelGearbox
 
 		// Set the shaft and spoke transformations
 		this.transformations = new SideTransformation[ForgeDirection.VALID_DIRECTIONS.length];
-		this.transformations[ForgeDirection.EAST.ordinal()] = new SideTransformation( 0F, 0F, EDGE_DISTANCE, 0F, 0F );
-		this.transformations[ForgeDirection.WEST.ordinal()] = new SideTransformation( 0F, 0F, -EDGE_DISTANCE, 0F, 0F );
-		this.transformations[ForgeDirection.UP.ordinal()] = new SideTransformation( 0F, HALF_TURN, 0F, EDGE_DISTANCE, 0F );
-		this.transformations[ForgeDirection.DOWN.ordinal()] = new SideTransformation( 0F, HALF_TURN, 0F, -EDGE_DISTANCE, 0F );
-		this.transformations[ForgeDirection.SOUTH.ordinal()] = new SideTransformation( HALF_TURN, 0F, 0F, 0F, EDGE_DISTANCE );
-		this.transformations[ForgeDirection.NORTH.ordinal()] = new SideTransformation( HALF_TURN, 0F, 0F, 0F, -EDGE_DISTANCE );
+		this.transformations[ForgeDirection.EAST.ordinal()] = new SideTransformation( 0F, 0F, ModelGearbox.EDGE_DISTANCE, 0F, 0F );
+		this.transformations[ForgeDirection.WEST.ordinal()] = new SideTransformation( 0F, 0F, -ModelGearbox.EDGE_DISTANCE, 0F, 0F );
+		this.transformations[ForgeDirection.UP.ordinal()] = new SideTransformation( 0F, ModelGearbox.HALF_TURN, 0F, ModelGearbox.EDGE_DISTANCE, 0F );
+		this.transformations[ForgeDirection.DOWN.ordinal()] = new SideTransformation( 0F, ModelGearbox.HALF_TURN, 0F, -ModelGearbox.EDGE_DISTANCE,
+						0F );
+		this.transformations[ForgeDirection.SOUTH.ordinal()] = new SideTransformation( ModelGearbox.HALF_TURN, 0F, 0F, 0F,
+						ModelGearbox.EDGE_DISTANCE );
+		this.transformations[ForgeDirection.NORTH.ordinal()] = new SideTransformation( ModelGearbox.HALF_TURN, 0F, 0F, 0F,
+						-ModelGearbox.EDGE_DISTANCE );
 	}
 
 	/**
@@ -200,13 +203,13 @@ public class ModelGearbox
 				this.Spoke.offsetZ = sideTransform.spokeOffsetZ;
 
 				// Render gear
-				this.Spoke.rotateAngleX += QUARTER_TURN;
+				this.Spoke.rotateAngleX += ModelGearbox.QUARTER_TURN;
 				this.Spoke.render( f5 );
-				this.Spoke.rotateAngleX += QUARTER_TURN;
+				this.Spoke.rotateAngleX += ModelGearbox.QUARTER_TURN;
 				this.Spoke.render( f5 );
-				this.Spoke.rotateAngleX += QUARTER_TURN;
+				this.Spoke.rotateAngleX += ModelGearbox.QUARTER_TURN;
 				this.Spoke.render( f5 );
-				this.Spoke.rotateAngleX += QUARTER_TURN;
+				this.Spoke.rotateAngleX += ModelGearbox.QUARTER_TURN;
 				this.Spoke.render( f5 );
 			}
 		}

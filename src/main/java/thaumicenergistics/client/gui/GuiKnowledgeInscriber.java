@@ -32,22 +32,42 @@ public class GuiKnowledgeInscriber
 	/**
 	 * Gui size.
 	 */
-	private static final int GUI_WIDTH = 210, GUI_HEIGHT = 244;
+	private static final int GUI_WIDTH = 210;
+
+	/**
+	 * Gui size.
+	 */
+	private static final int GUI_HEIGHT = 244;
 
 	/**
 	 * Save/Delete button position.
 	 */
-	private static final int BUTTON_SAVE_POS_X = 141, BUTTON_SAVE_POS_Y = 109;
+	private static final int BUTTON_SAVE_POS_X = 141;
+
+	/**
+	 * Save/Delete button position.
+	 */
+	private static final int BUTTON_SAVE_POS_Y = 109;
 
 	/**
 	 * Clear button position.
 	 */
-	private static final int BUTTON_CLEAR_POS_X = 80, BUTTON_CLEAR_POS_Y = 89;
+	private static final int BUTTON_CLEAR_POS_X = 80;
+
+	/**
+	 * Clear button position.
+	 */
+	private static final int BUTTON_CLEAR_POS_Y = 89;
 
 	/**
 	 * Position of the title string.
 	 */
-	private static final int TITLE_POS_X = 6, TITLE_POS_Y = 6;
+	private static final int TITLE_POS_X = 6;
+
+	/**
+	 * Position of the title string.
+	 */
+	private static final int TITLE_POS_Y = 6;
 
 	/**
 	 * Player viewing the GUI.
@@ -127,9 +147,7 @@ public class GuiKnowledgeInscriber
 						0.4f, EnumGuiParticles.Knowledge );
 
 		// Set color
-		gpa.red = 0.2f;
-		gpa.green = 0.5f;
-		gpa.blue = 1.0f;
+		gpa.setColor( 0.2f, 0.5f, 1.0f );
 
 		// Set delay
 		gpa.setDelayTime( slotNumber * 50L );

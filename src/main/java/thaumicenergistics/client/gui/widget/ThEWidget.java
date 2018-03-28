@@ -21,7 +21,7 @@ public abstract class ThEWidget
 	/**
 	 * The width and height of the aspect
 	 */
-	public static int WIDGET_SIZE = 18;
+	public static final int WIDGET_SIZE = 18;
 
 	protected int xPosition;
 
@@ -59,7 +59,7 @@ public abstract class ThEWidget
 	{
 		return ThEGuiHelper.INSTANCE.isPointInGuiRegion(
 			this.yPosition, this.xPosition,
-			WIDGET_SIZE - 1, WIDGET_SIZE - 1,
+			ThEWidget.WIDGET_SIZE - 1, ThEWidget.WIDGET_SIZE - 1,
 			mouseX, mouseY,
 			this.hostGUI.guiLeft(), this.hostGUI.guiTop() );
 	}

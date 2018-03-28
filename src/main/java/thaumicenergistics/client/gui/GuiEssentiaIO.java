@@ -454,7 +454,7 @@ public class GuiEssentiaIO
 		// Set the void mode if there is a void button
 		if( this.voidModeButton != null )
 		{
-			this.voidModeButton.isVoidAllowed = isVoidAllowed;
+			this.voidModeButton.setIsVoidAllowed( isVoidAllowed );
 		}
 	}
 

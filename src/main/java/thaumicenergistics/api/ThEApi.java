@@ -37,7 +37,7 @@ public abstract class ThEApi
 				// Attempt to get the API instance
 				ThEApi.api = (ThEApi)instanceAccessor.invoke( null );
 			}
-			catch( Throwable e )
+			catch( Exception e )
 			{
 				// Unable to locate the API, return null
 				return null;

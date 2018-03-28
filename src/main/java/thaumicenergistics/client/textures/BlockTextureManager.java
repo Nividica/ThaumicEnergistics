@@ -1,5 +1,8 @@
 package thaumicenergistics.client.textures;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -68,7 +71,7 @@ public enum BlockTextureManager
 	/**
 	 * Cache of the enum values
 	 */
-	public static final BlockTextureManager[] VALUES = BlockTextureManager.values();
+	public static final List<BlockTextureManager> VALUES = Collections.unmodifiableList( Arrays.asList( BlockTextureManager.values() ) );
 
 	private TextureTypes textureType;
 

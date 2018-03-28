@@ -17,7 +17,12 @@ public class GuiParticleAnimator
 	/**
 	 * Distance from start to destination.
 	 */
-	private final int distanceX, distanceY;
+	private final int distanceX;
+
+	/**
+	 * Distance from start to destination.
+	 */
+	private final int distanceY;
 
 	/**
 	 * The amount of time the particle is alive for.
@@ -40,29 +45,49 @@ public class GuiParticleAnimator
 	private long delayTime = 0;
 
 	/**
+	 * Color of the particle.
+	 */
+	private float red = 1.0f;
+
+	/**
+	 * Color of the particle.
+	 */
+	private float green = 1.0f;
+
+	/**
+	 * Color of the particle.
+	 */
+	private float blue = 1.0f;
+
+	/**
+	 * Particle frames per second.
+	 */
+	private int framesPerSecond = 1;
+
+	/**
 	 * Starting position.
 	 */
-	public final int startingX, startingY;
+	public final int startingX;
+
+	/**
+	 * Starting position.
+	 */
+	public final int startingY;
 
 	/**
 	 * Destination position.
 	 */
-	public final int destinationX, destinationY;
+	public final int destinationX;
+
+	/**
+	 * Destination position.
+	 */
+	public final int destinationY;
 
 	/**
 	 * The particle to draw.
 	 */
 	public final EnumGuiParticles theParticle;
-
-	/**
-	 * Color of the particle.
-	 */
-	public float red = 1.0f, green = 1.0f, blue = 1.0f;
-
-	/**
-	 * Particle frames per second.
-	 */
-	public int framesPerSecond = 1;
 
 	public GuiParticleAnimator(	final int startX, final int startY, final int destX, final int destY, final float time,
 								@Nonnull final EnumGuiParticles particle )
@@ -185,5 +210,15 @@ public class GuiParticleAnimator
 	{
 		this.delayTime = timeMS;
 		this.epoch += this.delayTime;
+	}
+
+	/**
+	 * Sets the frames per second
+	 * 
+	 * @param fps
+	 */
+	public void setFPS( final int fps )
+	{
+		this.framesPerSecond = fps;
 	}
 }

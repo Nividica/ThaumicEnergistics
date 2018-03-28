@@ -27,14 +27,19 @@ public abstract class ThEStateButton
 	private IStateIconTexture backgroundIcon;
 
 	/**
-	 * Icon to draw on the button
+	 * Offset from the top-left corner of the button to draw the icon.
 	 */
-	protected IStateIconTexture stateIcon;
+	private int iconXOffset = 0;
 
 	/**
 	 * Offset from the top-left corner of the button to draw the icon.
 	 */
-	public int iconXOffset = 0, iconYOffset = 0;
+	private int iconYOffset = 0;
+
+	/**
+	 * Icon to draw on the button
+	 */
+	protected IStateIconTexture stateIcon;
 
 	/**
 	 *
@@ -142,7 +147,8 @@ public abstract class ThEStateButton
 		minecraftInstance.getTextureManager().bindTexture( icon.getTexture() );
 
 		// Draw the icon
-		this.drawScaledTexturedModalRect( xPos, yPos, icon.getU(), icon.getV(), iconWidth, iconHeight, icon.getWidth(), icon.getHeight() );
+		this.drawScaledTexturedModalRect( xPos + this.iconXOffset, yPos + this.iconYOffset, icon.getU(), icon.getV(), iconWidth, iconHeight,
+			icon.getWidth(), icon.getHeight() );
 	}
 
 	@Override

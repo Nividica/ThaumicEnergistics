@@ -151,7 +151,7 @@ public class GuiEssentiaCellTerminal
 	/**
 	 * The currently selected aspect
 	 */
-	public IAspectStack selectedAspectStack;
+	private IAspectStack selectedAspectStack;
 
 	/**
 	 * Creates the gui.

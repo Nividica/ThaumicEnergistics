@@ -61,7 +61,7 @@ public class GuiButtonAllowVoid
 	/**
 	 * When false, draws the disabled icon over the jar
 	 */
-	public boolean isVoidAllowed = false;
+	private boolean isVoidAllowed = false;
 
 	public GuiButtonAllowVoid( final int ID, final int xPosition, final int yPosition )
 	{
@@ -81,7 +81,8 @@ public class GuiButtonAllowVoid
 		super.drawButton( minecraftInstance, x, y );
 
 		// Draw the void jar
-		itemRenderer.renderItemIntoGUI( GuiButtonAllowVoid.FONT_RENDERER, GuiButtonAllowVoid.RENDER_ENGINE, voidJar, this.xPosition + 1,
+		GuiButtonAllowVoid.itemRenderer.renderItemIntoGUI( GuiButtonAllowVoid.FONT_RENDERER, GuiButtonAllowVoid.RENDER_ENGINE,
+			GuiButtonAllowVoid.voidJar, this.xPosition + 1,
 			this.yPosition + 1, false );
 
 		// Is void not allowed?
@@ -115,5 +116,15 @@ public class GuiButtonAllowVoid
 		// Add the note
 		tooltip.add( EnumChatFormatting.ITALIC + ThEStrings.TooltipButton_VoidNote.getLocalized() );
 
+	}
+
+	/**
+	 * Is void allowed?
+	 * 
+	 * @param allowed
+	 */
+	public void setIsVoidAllowed( final boolean allowed )
+	{
+		this.isVoidAllowed = allowed;
 	}
 }

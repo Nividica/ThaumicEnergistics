@@ -62,7 +62,7 @@ public class GuiButtonAETab
 		if( this.stateIcon != null )
 		{
 			// Draw the overlay icon
-			this.drawIcon( minecraftInstance, this.stateIcon, this.xPosition + this.iconXOffset, this.yPosition + this.iconYOffset,
+			this.drawIcon( minecraftInstance, this.stateIcon, this.xPosition, this.yPosition,
 				AEStateIconsEnum.STANDARD_ICON_SIZE, AEStateIconsEnum.STANDARD_ICON_SIZE );
 		}
 

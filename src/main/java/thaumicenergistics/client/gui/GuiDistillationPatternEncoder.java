@@ -152,7 +152,7 @@ public class GuiDistillationPatternEncoder
 									EnumGuiParticles.Orb );
 
 					// Set FPS
-					gpa.framesPerSecond = 30;
+					gpa.setFPS( 30 );
 
 					// Set the color
 					float[] argb = ThEGuiHelper.INSTANCE.convertPackedColorToARGBf( aspect.getColor() );

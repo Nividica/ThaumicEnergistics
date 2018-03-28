@@ -159,8 +159,8 @@ public class GuiEssentiaStorageBus
 		this.hasNetworkTool = ( (ContainerPartEssentiaStorageBus)this.inventorySlots ).hasNetworkTool();
 
 		// Set the width and height
-		this.xSize = ( this.hasNetworkTool ? GUI_WIDTH_NETWORK_TOOL : GUI_WIDTH_NO_TOOL );
-		this.ySize = GUI_HEIGHT;
+		this.xSize = ( this.hasNetworkTool ? GuiEssentiaStorageBus.GUI_WIDTH_NETWORK_TOOL : GuiEssentiaStorageBus.GUI_WIDTH_NO_TOOL );
+		this.ySize = GuiEssentiaStorageBus.GUI_HEIGHT;
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class GuiEssentiaStorageBus
 		super.drawGuiContainerForegroundLayer( mouseX, mouseY );
 
 		// Draw the title
-		this.fontRendererObj.drawString( this.guiTitle, TITLE_X_POS, TITLE_Y_POS, 0x000000 );
+		this.fontRendererObj.drawString( this.guiTitle, GuiEssentiaStorageBus.TITLE_X_POS, GuiEssentiaStorageBus.TITLE_Y_POS, 0x000000 );
 
 		WidgetAspectSlot slotUnderMouse = null;
 
@@ -265,7 +265,7 @@ public class GuiEssentiaStorageBus
 	protected void onButtonClicked( final GuiButton button, final int mouseButton )
 	{
 		// Was the priority button clicked?
-		if( button.id == BUTTON_PRIORITY_ID )
+		if( button.id == GuiEssentiaStorageBus.BUTTON_PRIORITY_ID )
 		{
 			// Get the storage buses host
 			TileEntity host = this.storageBus.getHostTile();
@@ -278,13 +278,13 @@ public class GuiEssentiaStorageBus
 				host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord );
 
 		}
-		else if( button.id == BUTTON_ALLOW_VOID_ID )
+		else if( button.id == GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID )
 		{
 			// Toggle the mode
 			this.isVoidAllowed = !this.isVoidAllowed;
 
 			// Update the button
-			( (GuiButtonAllowVoid)this.buttonList.get( BUTTON_ALLOW_VOID_ID ) ).isVoidAllowed = this.isVoidAllowed;
+			( (GuiButtonAllowVoid)this.buttonList.get( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID ) ).setIsVoidAllowed( this.isVoidAllowed );
 
 			// Update the server
 			Packet_S_EssentiaStorageBus.setVoidAllowed( this.player, this.storageBus, this.isVoidAllowed );
@@ -298,24 +298,25 @@ public class GuiEssentiaStorageBus
 		super.initGui();
 
 		// Create the widgets
-		for( int row = 0; row < WIDGET_ROWS; row++ )
+		for( int row = 0; row < GuiEssentiaStorageBus.WIDGET_ROWS; row++ )
 		{
-			for( int column = 0; column < WIDGET_COLUMNS; column++ )
+			for( int column = 0; column < GuiEssentiaStorageBus.WIDGET_COLUMNS; column++ )
 			{
 				this.aspectWidgetList.add( new WidgetAspectSlot( this, this.player, this.storageBus,
-								( row * WIDGET_COLUMNS ) + column,
-								WIDGET_X_POS + ( ThEWidget.WIDGET_SIZE * column ),
-								WIDGET_Y_POS + ( ThEWidget.WIDGET_SIZE * row ) ) );
+								( row * GuiEssentiaStorageBus.WIDGET_COLUMNS ) + column,
+								GuiEssentiaStorageBus.WIDGET_X_POS + ( ThEWidget.WIDGET_SIZE * column ),
+								GuiEssentiaStorageBus.WIDGET_Y_POS + ( ThEWidget.WIDGET_SIZE * row ) ) );
 			}
 		}
 
 		// Create the priority tab button
-		this.buttonList.add( new GuiButtonAETab( BUTTON_PRIORITY_ID, this.guiLeft +
-						BUTTON_PRIORITY_X_POSITION, this.guiTop, AEStateIconsEnum.WRENCH, "gui.appliedenergistics2.Priority" ) );
+		this.buttonList.add( new GuiButtonAETab( GuiEssentiaStorageBus.BUTTON_PRIORITY_ID, this.guiLeft +
+						GuiEssentiaStorageBus.BUTTON_PRIORITY_X_POSITION, this.guiTop, AEStateIconsEnum.WRENCH,
+						"gui.appliedenergistics2.Priority" ) );
 
 		// Create the allow void button
-		this.buttonList.add( new GuiButtonAllowVoid( BUTTON_ALLOW_VOID_ID, this.guiLeft +
-						BUTTON_ALLOW_VOID_X_POS, this.guiTop + BUTTON_ALLOW_VOID_Y_POS ) );
+		this.buttonList.add( new GuiButtonAllowVoid( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID, this.guiLeft +
+						GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_X_POS, this.guiTop + GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_Y_POS ) );
 	}
 
 	/**
@@ -329,7 +330,7 @@ public class GuiEssentiaStorageBus
 		this.isVoidAllowed = isVoidAllowed;
 
 		// Update the button
-		( (GuiButtonAllowVoid)this.buttonList.get( BUTTON_ALLOW_VOID_ID ) ).isVoidAllowed = this.isVoidAllowed;
+		( (GuiButtonAllowVoid)this.buttonList.get( GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID ) ).setIsVoidAllowed( this.isVoidAllowed );
 	}
 
 	@Override
