@@ -943,7 +943,7 @@ public class ContainerPartArcaneCraftingTerminal
 		// Does this recipe have costs?
 		if( this.craftingCost.isEmpty() )
 		{
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 
 		// Return required and missing

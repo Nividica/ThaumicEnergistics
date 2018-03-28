@@ -71,7 +71,7 @@ public enum BlockTextureManager
 	/**
 	 * Cache of the enum values
 	 */
-	public static final List<BlockTextureManager> VALUES = Collections.unmodifiableList( Arrays.asList( BlockTextureManager.values() ) );
+	public static final List<BlockTextureManager> ALLVALUES = Collections.unmodifiableList( Arrays.asList( BlockTextureManager.values() ) );
 
 	private TextureTypes textureType;
 

@@ -32,7 +32,7 @@ public class ClientProxy
 	public void registerTextures( final TextureStitchEvent.Pre event )
 	{
 		// Register all block textures
-		for( BlockTextureManager texture : BlockTextureManager.VALUES )
+		for( BlockTextureManager texture : BlockTextureManager.ALLVALUES )
 		{
 			texture.registerTexture( event.map );
 		}
