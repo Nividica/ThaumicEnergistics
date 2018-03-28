@@ -696,7 +696,7 @@ public class GuiArcaneCraftingTerminal
 		List<ArcaneCrafingCost> craftingCost = ( (ContainerPartArcaneCraftingTerminal)this.inventorySlots ).getCraftingCost( false );
 
 		// Does the current recipe have costs?
-		if( craftingCost != null )
+		if( !craftingCost.isEmpty() )
 		{
 			// Draw the costs
 			this.drawCraftingAspects( craftingCost );

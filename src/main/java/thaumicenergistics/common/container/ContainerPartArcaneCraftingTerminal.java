@@ -1,6 +1,7 @@
 package thaumicenergistics.common.container;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -942,11 +943,10 @@ public class ContainerPartArcaneCraftingTerminal
 		// Does this recipe have costs?
 		if( this.craftingCost.isEmpty() )
 		{
-			return null;
+			return Collections.EMPTY_LIST;
 		}
 
 		// Return required and missing
-		//return Collections.unmodifiableList( this.craftingCost );
 		return this.craftingCost;
 	}
 
