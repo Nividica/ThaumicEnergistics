@@ -293,4 +293,35 @@ public abstract class ContainerWithPlayerInventory
 
 		return list;
 	}
+
+	/**
+	 * Returns the first slot that contains the item and has room for more,
+	 * or the first empty slot if no non-full matches are found.
+	 *
+	 * @param stack
+	 * @return
+	 */
+	public final Slot locateMergeSlot( final ItemStack stack )
+	{
+		Slot emptySlot = null;
+
+		for( Slot slot : this.playerSlots )
+		{
+			if( slot.getHasStack() )
+			{
+				ItemStack slotStack = slot.getStack();
+				// Same items, and room?
+				if( ( slotStack.stackSize < slotStack.getMaxStackSize() ) && slotStack.isItemEqual( stack ) )
+				{
+					// Found merge slot
+					return slot;
+				}
+			}
+			else if( emptySlot == null )
+			{
+				emptySlot = slot;
+			}
+		}
+		return emptySlot;
+	}
 }

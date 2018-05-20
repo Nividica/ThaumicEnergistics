@@ -1220,37 +1220,67 @@ public class ContainerPartArcaneCraftingTerminal
 	 * of the ME network.
 	 *
 	 * @param player
-	 * @param requestedStack
+	 * @param requestAEStack
 	 * @param mouseButton
 	 */
-	public void onClientRequestExtract(	final EntityPlayer player, final IAEItemStack requestedStack, final int mouseButton,
+	public void onClientRequestExtract(	final EntityPlayer player, final IAEItemStack requestAEStack, final int mouseButton,
 										final boolean isShiftHeld )
 	{
-		// Ensure there is a player and monitor
-		if( ( player == null ) || ( this.monitor == null ) )
+		// Safety checks
+		if( ( player == null ) || ( this.monitor == null ) || ( requestAEStack == null ) || ( requestAEStack.getStackSize() == 0 ) )
 		{
 			return;
 		}
 
-		// Ensure there is an itemstack
-		if( ( requestedStack == null ) || ( requestedStack.getStackSize() == 0 ) )
-		{
-			return;
-		}
+		// Where to put the items if going directly into the players inventory
+		Slot targetSlot = null;
 
-		// Get the maximum stack size for the requested itemstack
-		int maxStackSize = requestedStack.getItemStack().getMaxStackSize();
+		// What the player is holding
+		ItemStack cursorStack = null;
+
+		// Itemstack of the request
+		ItemStack requestStack = requestAEStack.getItemStack();
 
 		// Determine the amount to extract
 		int amountToExtract = 0;
 		switch ( mouseButton )
 		{
 		case ThEGuiHelper.MOUSE_BUTTON_LEFT:
-			// Full amount up to maxStackSize
-			amountToExtract = (int)Math.min( maxStackSize, requestedStack.getStackSize() );
+			if( isShiftHeld )
+			{
+				// Going to players inventory directly, search for a target slot.
+				targetSlot = this.locateMergeSlot( requestStack );
+				if( targetSlot != null )
+				{
+					// Found target slot, calculate how much room it has and set amount to extract
+					int slotRoom = 0;
+					if( targetSlot.getHasStack() )
+					{
+						// Non empty slot, room = MaxSize - CurrentSize
+						ItemStack slotStack = targetSlot.getStack();
+						slotRoom = slotStack.getMaxStackSize() - slotStack.stackSize;
+					}
+					else
+					{
+						// Empty slot, room = max stack size
+						slotRoom = requestStack.getMaxStackSize();
+					}
+
+					// Amount = whichever is smaller, request size, or room in slot
+					amountToExtract = Math.min( requestStack.stackSize, slotRoom );
+				}
+				// Else no slot to put this in, amount remains zero.
+			}
+			else
+			{
+				// Going to cursor
+				// Full amount up to maxStackSize
+				amountToExtract = Math.min( requestStack.getMaxStackSize(), requestStack.stackSize );
+			}
 			break;
 
 		case ThEGuiHelper.MOUSE_BUTTON_RIGHT:
+			// Going to cursor
 			// Is shift being held?
 			if( isShiftHeld )
 			{
@@ -1260,25 +1290,25 @@ public class ContainerPartArcaneCraftingTerminal
 			else
 			{
 				// Half amount up to half of maxStackSize
-				double halfRequest = requestedStack.getStackSize() / 2.0D;
-				double halfMax = maxStackSize / 2.0D;
-				halfRequest = Math.ceil( halfRequest );
-				halfMax = Math.ceil( halfMax );
+				double halfRequest = Math.ceil( requestStack.stackSize / 2.0D );
+				double halfMax = Math.ceil( requestStack.getMaxStackSize() / 2.0D );
 				amountToExtract = (int)Math.min( halfMax, halfRequest );
 			}
 			break;
 
 		case ThEGuiHelper.MOUSE_BUTTON_WHEEL:
+			// Going to cursor
 			if( player.capabilities.isCreativeMode )
 			{
-				ItemStack creativeCopy = requestedStack.getItemStack();
-				creativeCopy.stackSize = creativeCopy.getMaxStackSize();
-				player.inventory.setItemStack( creativeCopy );
-				Packet_C_Sync.sendPlayerHeldItem( player, creativeCopy );
+				requestStack.stackSize = requestStack.getMaxStackSize();
+				player.inventory.setItemStack( requestStack );
+				Packet_C_Sync.sendPlayerHeldItem( player, requestStack );
 			}
-			break;
+			// Done
+			return;
 
 		case ThEGuiHelper.MOUSE_WHEEL_MOTION:
+			// Going to cursor
 			// Shift must be held
 			if( isShiftHeld )
 			{
@@ -1287,7 +1317,28 @@ public class ContainerPartArcaneCraftingTerminal
 			}
 		}
 
-		// Ensure we have some amount to extract
+		// If the output is the players cursor, ensure there is room, and the stacks match
+		if( ( targetSlot == null ) && ( amountToExtract > 0 ) )
+		{
+			// Get what the player is holding
+			cursorStack = player.inventory.getItemStack();
+
+			// Holding anything?
+			if( cursorStack != null )
+			{
+				// Items are the same?
+				if( !cursorStack.isItemEqual( requestStack ) )
+				{
+					// Item player is holding doesn't match the request
+					return;
+				}
+				// Ensure there is room
+				int cursorRoom = ( cursorStack.getMaxStackSize() - cursorStack.stackSize );
+				amountToExtract = Math.min( cursorRoom, amountToExtract );
+			}
+		}
+
+		// Anything to extract?
 		if( amountToExtract <= 0 )
 		{
 			// Nothing to extract
@@ -1295,81 +1346,50 @@ public class ContainerPartArcaneCraftingTerminal
 		}
 
 		// Create the stack to extract
-		IAEItemStack toExtract = requestedStack.copy();
+		IAEItemStack toExtract = requestAEStack.copy();
 
 		// Set the size
 		toExtract.setStackSize( amountToExtract );
 
-		// Simulate the extraction
-		IAEItemStack extractedStack = this.monitor.extractItems( toExtract, Actionable.SIMULATE, this.playerSource );
+		// Extract
+		IAEItemStack extractedStack = this.monitor.extractItems( toExtract, Actionable.MODULATE, this.playerSource );
 
-		// Did we extract anything?
+		// Was anything extracted?
 		if( ( extractedStack != null ) && ( extractedStack.getStackSize() > 0 ) )
 		{
-
-			// 2018-03-11: Dupe fix, adjust amount to extract to amount that WAS extracted during the simulation
-			amountToExtract = Math.min( amountToExtract, (int)extractedStack.getStackSize() );
-
-			// Was this a left-click and is shift being held?
-			if( ( mouseButton == ThEGuiHelper.MOUSE_BUTTON_LEFT ) && isShiftHeld )
+			// Going to inventory?
+			if( targetSlot != null )
 			{
-				// Can we merge the item with the player inventory
-				if( player.inventory.addItemStackToInventory( extractedStack.getItemStack() ) )
+				if( targetSlot.getHasStack() )
 				{
-					// Merged with player inventory, extract the item
-					this.monitor.extractItems( toExtract, Actionable.MODULATE, this.playerSource );
-
-					// Do not attempt to merge with what the player is holding.
-					return;
-				}
-
-			}
-
-			// Get what the player is holding
-			ItemStack playerHolding = player.inventory.getItemStack();
-
-			// Is the player holding anything?
-			if( playerHolding != null )
-			{
-				// Can we merge with what the player is holding?
-				if( ( playerHolding.stackSize < maxStackSize ) && ( playerHolding.isItemEqual( extractedStack.getItemStack() ) ) )
-				{
-					// Determine how much room is left in the player holding stack
-					amountToExtract = Math.min( amountToExtract, maxStackSize - playerHolding.stackSize );
-
-					// Is there any room?
-					if( amountToExtract <= 0 )
-					{
-						// Can't merge, not enough space
-						return;
-					}
-
-					// Increment what the player is holding
-					playerHolding.stackSize += amountToExtract;
-
-					// Set what the player is holding
-					player.inventory.setItemStack( playerHolding );
-
-					// Adjust extraction size
-					toExtract.setStackSize( amountToExtract );
+					// Add to existing stack
+					targetSlot.getStack().stackSize += (int)extractedStack.getStackSize();
 				}
 				else
 				{
-					// Can't merge, not enough space or items don't match
-					return;
+					// Set stack
+					targetSlot.putStack( extractedStack.getItemStack() );
 				}
 			}
 			else
 			{
-				// Set the extracted item(s) as what the player is holding
-				player.inventory.setItemStack( extractedStack.getItemStack() );
+				// Going to cursor
+				if( cursorStack != null )
+				{
+					// Add to existing stack
+					cursorStack.stackSize += (int)extractedStack.getStackSize();
+				}
+				else
+				{
+					// Set stack
+					this.player.inventory.setItemStack( extractedStack.getItemStack() );
+				}
+
+				// Send the update to the client
+				Packet_C_Sync.sendPlayerHeldItem( this.player, this.player.inventory.getItemStack() );
+
 			}
 
-			// Extract the item(s) from the network
-			this.monitor.extractItems( toExtract, Actionable.MODULATE, this.playerSource );
-
-			// Send the update to the client
-			Packet_C_Sync.sendPlayerHeldItem( player, player.inventory.getItemStack() );
 		}
 
 	}
