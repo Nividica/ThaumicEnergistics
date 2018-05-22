@@ -1,4 +1,20 @@
-﻿04/27/2016 1.0.0.6 - Beta
+﻿05/21/2018 1.1.3.0 - Release
+  Catching up the changelog
+  Fixes #340 and #342: (Dupe Fix) Rewrote how item extraction is performed for the arcane terminal.
+  Much Sonarqube
+  Fixes #316: Storage bus will remember negative priorities.
+  
+03/18/2018 1.1.2.0 - Release
+  Fixed issue where changing storage bus priority did not immediately take effect.
+  
+03/17/2018 1.1.2.0 - Release
+  Fixed knowledge inscriber being picky about shapless recipes
+  Potential fix for #333, checks if the item is damageable before doing damage check.
+  Fixes #332: Item bonus aspects are also added to known aspect list.
+  (Dupe Fix) Distilation Encoder can no longer have ghost items extracted.
+  Fixes #311: (Dupe Fix) Respect extraction simulation amount
+
+04/27/2016 1.0.0.6 - Beta
   Fixes #309: When shift clicking [?] from NEI, items will also be pulled from the players inventory if available.
 
 04/21/2016 1.0.0.5 - Beta
