@@ -3,6 +3,7 @@
   Fixes #340 and #342: (Dupe Fix) Rewrote how item extraction is performed for the arcane terminal.
   Much Sonarqube
   Fixes #316: Storage bus will remember negative priorities.
+  Branch: Created AE2-RV3 branch
   
 03/18/2018 1.1.2.0 - Release
   Fixed issue where changing storage bus priority did not immediately take effect.
