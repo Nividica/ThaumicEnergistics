@@ -1,21 +1,16 @@
 [
-    {
-        "modid": "thaumicenergistics",
-        "name": "Thaumic Energistics",
-        "description": "The digital age could use some magic",
-        "version": "${version}",
-        "mcversion": "${mcversion}",
-        "url": "http://minecraft.curseforge.com/projects/thaumic-energistics",
-        "updateUrl": "",
-        "authorList":[
-            "Nividica"
-        ],
-        "credits": "Azanor & AlgorithmX2 for their respective mods. And M3gaFr3ak for giving me somewhere to start. Localization: Mrkwtkr, alvin137, puyo061, Wuestengecko, TheVizzy, Adaptivity, Joccob, & Keridos. Textures: CyanideX. Special thanks to MKoanga.",
-        "logoFile": "assets/thaumicenergistics/meta/logo.png",
-        "screenshots": [],
-        "dependencies": [
-            "appliedenergistics2",
-            "thaumcraft"
-        ]
-    }
+{
+  "modid": "thaumicenergistics",
+  "name": "Thaumic Energistics",
+  "description": "Merging Thaumcraft and Applied Energistics.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Nividica, Blueletric"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
 ]
