@@ -3,10 +3,7 @@ package thaumicenergistics.integration.appeng;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.util.MeaningfulEssentiaIterator;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IItemList;
@@ -107,15 +104,13 @@ public class EssentiaList implements IItemList<IAEEssentiaStack> {
     }
 
     @Override
-    public IAEEssentiaStack findPrecise(IAEEssentiaStack iaeEssentiaStack) {
-        // TODO
-        return null;
+    public IAEEssentiaStack findPrecise(IAEEssentiaStack stack) {
+        return stack == null ? null : this.getEssentiaRecord(stack);
     }
 
     @Override
-    public Collection<IAEEssentiaStack> findFuzzy(IAEEssentiaStack iaeEssentiaStack, FuzzyMode fuzzyMode) {
-        //TODO
-        return null;
+    public Collection<IAEEssentiaStack> findFuzzy(IAEEssentiaStack stack, FuzzyMode mode) {
+        return stack == null ? Collections.emptyList() : Collections.singletonList(this.findPrecise(stack));
     }
 
     @Override

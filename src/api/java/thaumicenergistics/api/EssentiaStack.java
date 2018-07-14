@@ -13,12 +13,19 @@ public class EssentiaStack {
     private int amount;
 
     public EssentiaStack(Aspect aspect, int amount) {
-        this(aspect.getTag(), amount);
+        this(aspect != null ? aspect.getTag() : "", amount);
     }
 
     public EssentiaStack(String aspect, int amount) {
+        if (aspect == null || aspect.isEmpty())
+            throw new IllegalArgumentException("Aspect cannot be null");
         this.aspect = aspect;
         this.amount = amount;
+    }
+
+    private EssentiaStack(EssentiaStack old) {
+        this.aspect = old.getAspectTag();
+        this.amount = old.getAmount();
     }
 
     private EssentiaStack() {
@@ -50,6 +57,10 @@ public class EssentiaStack {
     public void read(NBTTagCompound tag) {
         this.aspect = tag.getString("Aspect");
         this.amount = tag.getInteger("Amount");
+    }
+
+    public EssentiaStack copy() {
+        return new EssentiaStack(this);
     }
 
     public static EssentiaStack readFromNBT(NBTTagCompound tag) {

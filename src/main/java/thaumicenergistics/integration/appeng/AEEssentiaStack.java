@@ -25,6 +25,7 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
     private long stackSize;
     private long countRequestable;
     private boolean isCraftable;
+    private int hash;
 
     private AEEssentiaStack(Aspect aspect, long amount) {
         this.aspect = aspect;
@@ -34,6 +35,7 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
         this.setStackSize(amount);
         this.setCraftable(false);
         this.setCountRequestable(0);
+        this.hash = this.aspect.hashCode();
     }
 
     private AEEssentiaStack(AEEssentiaStack stack) {
@@ -43,7 +45,7 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
         this.setStackSize(stack.getStackSize());
         this.setCraftable(false);
         this.setCountRequestable(0);
-        // TODO: Hash
+        this.hash = stack.hash;
     }
 
     public static AEEssentiaStack fromEssentiaStack(EssentiaStack stack) {
@@ -135,8 +137,16 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
     }
 
     @Override
-    public void add(IAEEssentiaStack iaeEssentiaStack) {
-        //TODO
+    public EssentiaStack getStack() {
+        return new EssentiaStack(this.getAspect(), (int) Math.min(Integer.MAX_VALUE, this.stackSize));
+    }
+
+    @Override
+    public void add(IAEEssentiaStack option) {
+        if (option == null) return;
+        this.incStackSize(option.getStackSize());
+        this.setCountRequestable(this.getCountRequestable() + option.getCountRequestable());
+        this.setCraftable(this.isCraftable() || option.isCraftable());
     }
 
     @Override
@@ -160,8 +170,9 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
 
     @Override
     public IAEEssentiaStack empty() {
-        // TODO
-        return null;
+        IAEEssentiaStack copy = this.copy();
+        copy.reset();
+        return copy;
     }
 
     @Override
@@ -192,7 +203,23 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
 
     @Override
     public int compareTo(AEEssentiaStack o) {
-        // TODO
-        return 0;
+        int diff = this.hashCode() - o.hashCode();
+        return Integer.compare(diff, 0);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof AEEssentiaStack) {
+            return ((AEEssentiaStack) obj).getAspect().getTag().equalsIgnoreCase(this.getAspect().getTag());
+        }
+        if (obj instanceof EssentiaStack) {
+            return ((EssentiaStack) obj).getAspect().getTag().equalsIgnoreCase(this.getAspect().getTag());
+        }
+        return false;
     }
 }

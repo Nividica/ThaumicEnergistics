@@ -1,4 +1,4 @@
-package thaumicenergistics.integration.appeng;
+package thaumicenergistics.integration.appeng.cell;
 
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.item.ItemEssentiaCell;
@@ -28,17 +28,19 @@ public class BasicEssentiaCellHandler implements ICellHandler {
 
     @Override
     public <T extends IAEStack<T>> void openChestGui(EntityPlayer entityPlayer, IChestOrDrive iChestOrDrive, ICellHandler iCellHandler, IMEInventoryHandler<T> imeInventoryHandler, ItemStack itemStack, IStorageChannel<T> iStorageChannel) {
-
+        // TODO
     }
 
     @Override
-    public <T extends IAEStack<T>> int getStatusForCell(ItemStack itemStack, IMEInventory<T> imeInventory) {
+    public <T extends IAEStack<T>> int getStatusForCell(ItemStack itemStack, IMEInventory<T> inv) {
+        if (inv instanceof EssentiaCellInventoryHandler)
+            return ((EssentiaCellInventoryHandler) inv).getStatusForCell();
         return 0;
     }
 
     @Override
-    public <T extends IAEStack<T>> double cellIdleDrain(ItemStack itemStack, IMEInventory<T> imeInventory) {
-        return 0;
+    public <T extends IAEStack<T>> double cellIdleDrain(ItemStack itemStack, IMEInventory<T> inv) {
+        return ((ICellInventoryHandler) inv).getCellInv().getIdleDrain();
     }
 
     private IStorageChannel getEssentiaStorageChannel() {

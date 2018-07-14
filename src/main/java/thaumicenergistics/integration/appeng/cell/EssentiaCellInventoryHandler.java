@@ -1,4 +1,4 @@
-package thaumicenergistics.integration.appeng;
+package thaumicenergistics.integration.appeng.cell;
 
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
@@ -10,6 +10,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.me.storage.AbstractCellInventoryHandler;
 
 /**
+ * FIXME: Don't use any core AE2 core, AKA remove AbstractCellInventoryHandler
  * @author BrockWS
  */
 public class EssentiaCellInventoryHandler extends AbstractCellInventoryHandler<IAEEssentiaStack> {

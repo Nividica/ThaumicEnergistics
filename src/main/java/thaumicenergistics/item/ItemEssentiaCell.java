@@ -2,6 +2,7 @@ package thaumicenergistics.item;
 
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.EssentiaStack;
+import thaumicenergistics.api.model.IThEModel;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.init.ModGlobals;
@@ -38,14 +39,16 @@ import appeng.items.contents.CellUpgrades;
 /**
  * @author BrockWS
  */
-public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssentiaStack> {
+public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssentiaStack>, IThEModel {
 
+    private String size;
     private int bytes;
     private int types;
 
     public ItemEssentiaCell(String size, int bytes, int types) {
         super("essentia_cell_" + size);
 
+        this.size = size;
         this.bytes = bytes;
         this.types = types;
 
@@ -54,14 +57,13 @@ public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssent
         this.setHasSubtypes(false);
         this.setCreativeTab(ModGlobals.CREATIVE_TAB);
         // TODO: Make client only
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModGlobals.MOD_ID + ":cell/essentia_cell_" + size, "inventory"));
     }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
         IMEInventoryHandler<IAEEssentiaStack> inventory = AEApi.instance().registries().cell().getCellInventory(stack, null, getChannel());
-        inventory.injectItems(AEEssentiaStack.fromEssentiaStack(new EssentiaStack(Aspect.FIRE, 1)), Actionable.MODULATE, null);
+        inventory.injectItems(AEEssentiaStack.fromEssentiaStack(new EssentiaStack(Aspect.FIRE, 1000)), Actionable.MODULATE, null);
         return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
     }
 
@@ -155,5 +157,10 @@ public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssent
     @Override
     public void setFuzzyMode(ItemStack itemStack, FuzzyMode fuzzyMode) {
 
+    }
+
+    @Override
+    public void initModel() {
+        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModGlobals.MOD_ID + ":cell/essentia_cell_" + this.size, "inventory"));
     }
 }
