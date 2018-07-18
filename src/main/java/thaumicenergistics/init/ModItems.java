@@ -10,16 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import appeng.api.AEApi;
-
-import static thaumicenergistics.ThaumicEnergistics.LOG;
+import static thaumicenergistics.ThaumicEnergistics.LOGGER;
 
 /**
  * @author BrockWS
@@ -38,7 +35,7 @@ public class ModItems {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        LOG.info("Registering Items");
+        LOGGER.info("Registering Items");
         ModItems.ITEMS.add(itemEssentiaCell1k = new ItemEssentiaCell("1k", 1024, 12));
         ModItems.ITEMS.add(itemEssentiaCell4k = new ItemEssentiaCell("4k", 1024 * 4, 12));
         ModItems.ITEMS.add(itemEssentiaCell16k = new ItemEssentiaCell("16k", 1024 * 16, 12));

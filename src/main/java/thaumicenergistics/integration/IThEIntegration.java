@@ -1,4 +1,4 @@
-package thaumicenergistics.api;
+package thaumicenergistics.integration;
 
 /**
  * Implemented by Thaumic Energistics Integrations

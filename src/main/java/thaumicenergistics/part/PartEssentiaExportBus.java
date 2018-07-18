@@ -1,12 +1,17 @@
 package thaumicenergistics.part;
 
+import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
 import thaumicenergistics.item.part.ItemEssentiaExportBus;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -49,5 +54,11 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
     @Override
     public IPartModel getStaticModels() {
         return MODEL_BASE;
+    }
+
+    @Override
+    public boolean onActivate(EntityPlayer player, EnumHand hand, Vec3d vec3d) {
+        GuiHandler.openGUI(ModGUIs.ESSENTIA_EXPORT_BUS, player, this.hostTile.getPos(), this.side);
+        return true;
     }
 }

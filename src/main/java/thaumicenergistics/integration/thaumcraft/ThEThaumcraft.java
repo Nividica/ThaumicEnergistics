@@ -3,8 +3,8 @@ package thaumicenergistics.integration.thaumcraft;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchCategories;
-import thaumicenergistics.api.IThEIntegration;
 import thaumicenergistics.init.ModGlobals;
+import thaumicenergistics.integration.IThEIntegration;
 
 import net.minecraft.util.ResourceLocation;
 

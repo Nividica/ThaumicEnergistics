@@ -22,7 +22,7 @@ public class BasicEssentiaCellHandler implements ICellHandler {
     }
 
     @Override
-    public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory(ItemStack stack, ISaveProvider container, IStorageChannel<T> channel) {
+    public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(ItemStack stack, ISaveProvider container, IStorageChannel<T> channel) {
         return channel == this.getEssentiaStorageChannel() ? EssentiaCellInventory.getCell(stack, container) : null;
     }
 

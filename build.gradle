@@ -37,6 +37,12 @@ dependencies {
     deobfCompile "appeng:appliedenergistics2:${version_ae2}"
 }
 
+jar {
+    manifest {
+        attributes 'FMLAT': 'theeng_at.cfg'
+    }
+}
+
 task apiJar(type: Jar) {
     from sourceSets.api.output
     from sourceSets.api.java

@@ -1,6 +1,5 @@
 package thaumicenergistics.item;
 
-import thaumicenergistics.api.model.IThEModel;
 import thaumicenergistics.init.ModGlobals;
 
 import net.minecraft.item.Item;
@@ -8,7 +7,7 @@ import net.minecraft.item.Item;
 /**
  * @author BrockWS
  */
-public abstract class ItemBase extends Item implements IThEModel {
+public abstract class ItemBase extends Item {
 
     public ItemBase(String id) {
         super();

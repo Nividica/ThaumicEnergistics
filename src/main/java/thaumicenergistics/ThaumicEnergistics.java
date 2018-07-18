@@ -1,15 +1,21 @@
 package thaumicenergistics;
 
 import org.apache.logging.log4j.Logger;
-import thaumicenergistics.api.IThEIntegration;
+import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.init.ModGlobals;
+import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
 import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
+import thaumicenergistics.util.ThELog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 /**
  * <strong>Thaumic Energistics</strong>
@@ -27,10 +33,12 @@ public class ThaumicEnergistics {
     @Mod.Instance(value = ModGlobals.MOD_ID)
     public static ThaumicEnergistics INSTANCE;
 
-    private IThEIntegration thaumcraftIntegration = new ThEThaumcraft();
-    private IThEIntegration appliedEnergisticsIntegration = new ThEAppliedEnergistics();
+    /**
+     * Thaumic Energistics Logger
+     */
+    public static Logger LOGGER;
 
-    public static Logger LOG;
+    private static List<IThEIntegration> INTEGRATIONS = new ArrayList<>();
 
     /**
      * Called before the load event.
@@ -38,11 +46,14 @@ public class ThaumicEnergistics {
      * @param event FMLPreInitializationEvent
      */
     @Mod.EventHandler
-    public void preInit(final FMLPreInitializationEvent event) {
-        LOG = event.getModLog();
-        LOG.info("Integrations: PreInit");
-        thaumcraftIntegration.preInit();
-        appliedEnergisticsIntegration.preInit();
+    public void preInit(FMLPreInitializationEvent event) {
+        ThaumicEnergistics.LOGGER = event.getModLog();
+
+        ThaumicEnergistics.INTEGRATIONS.add(new ThEThaumcraft());
+        ThaumicEnergistics.INTEGRATIONS.add(new ThEAppliedEnergistics());
+
+        ThELog.info("Integrations: PreInit");
+        ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::preInit);
     }
 
     /**
@@ -51,10 +62,11 @@ public class ThaumicEnergistics {
      * @param event FMLInitializationEvent
      */
     @Mod.EventHandler
-    public void init(final FMLInitializationEvent event) {
-        LOG.info("Integrations: Init");
-        thaumcraftIntegration.init();
-        appliedEnergisticsIntegration.init();
+    public void init(FMLInitializationEvent event) {
+        NetworkRegistry.INSTANCE.registerGuiHandler(ThaumicEnergistics.INSTANCE, new GuiHandler());
+
+        ThELog.info("Integrations: Init");
+        ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::init);
     }
 
     /**
@@ -63,9 +75,8 @@ public class ThaumicEnergistics {
      * @param event FMLPostInitializationEvent
      */
     @Mod.EventHandler
-    public void postInit(final FMLPostInitializationEvent event) {
-        LOG.info("Integrations: PostInit");
-        thaumcraftIntegration.postInit();
-        appliedEnergisticsIntegration.postInit();
+    public void postInit(FMLPostInitializationEvent event) {
+        ThELog.info("Integrations: PostInit");
+        ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::postInit);
     }
 }

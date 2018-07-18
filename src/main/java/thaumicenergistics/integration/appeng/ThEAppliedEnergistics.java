@@ -3,17 +3,14 @@ package thaumicenergistics.integration.appeng;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import thaumicenergistics.api.EssentiaStack;
-import thaumicenergistics.api.IThEIntegration;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
-import thaumicenergistics.init.ModGlobals;
+import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.cell.BasicEssentiaCellHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-
-import net.minecraft.util.ResourceLocation;
 
 import appeng.api.AEApi;
 import appeng.api.networking.energy.IEnergySource;

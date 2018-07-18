@@ -4,6 +4,8 @@ import thaumcraft.api.aspects.IEssentiaTransport;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.EssentiaStack;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
+import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.AEEssentiaStack;
 import thaumicenergistics.integration.appeng.ThEPartModel;
@@ -11,8 +13,11 @@ import thaumicenergistics.item.part.ItemEssentiaImportBus;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
@@ -66,7 +71,7 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
 
             AEEssentiaStack toInsert = AEEssentiaStack.fromEssentiaStack(inJar);
             if (storage.canAccept(toInsert)) {
-                ThaumicEnergistics.LOG.info("Able to insert");
+                ThaumicEnergistics.LOGGER.info("Able to insert");
                 IAEEssentiaStack notInserted = storage.injectItems(toInsert, Actionable.SIMULATE, this.source);
                 if (notInserted != null && notInserted.getStackSize() > 0) {
                     toInsert.decStackSize(notInserted.getStackSize());
@@ -83,5 +88,11 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
     @Override
     public IPartModel getStaticModels() {
         return MODEL_BASE;
+    }
+
+    @Override
+    public boolean onActivate(EntityPlayer player, EnumHand hand, Vec3d vec3d) {
+        GuiHandler.openGUI(ModGUIs.ESSENTIA_IMPORT_BUS, player, this.hostTile.getPos(), this.side);
+        return true;
     }
 }

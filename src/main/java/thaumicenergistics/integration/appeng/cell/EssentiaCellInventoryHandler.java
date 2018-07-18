@@ -11,6 +11,7 @@ import appeng.me.storage.AbstractCellInventoryHandler;
 
 /**
  * FIXME: Don't use any core AE2 core, AKA remove AbstractCellInventoryHandler
+ *
  * @author BrockWS
  */
 public class EssentiaCellInventoryHandler extends AbstractCellInventoryHandler<IAEEssentiaStack> {
