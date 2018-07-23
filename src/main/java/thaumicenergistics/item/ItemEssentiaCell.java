@@ -56,7 +56,6 @@ public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssent
         this.setMaxDamage(0);
         this.setHasSubtypes(false);
         this.setCreativeTab(ModGlobals.CREATIVE_TAB);
-        // TODO: Make client only
     }
 
     @Override

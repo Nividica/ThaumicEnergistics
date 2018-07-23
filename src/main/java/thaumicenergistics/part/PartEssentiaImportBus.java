@@ -14,18 +14,23 @@ import thaumicenergistics.item.part.ItemEssentiaImportBus;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.config.Actionable;
+import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.util.IConfigManager;
 
 /**
  * @author BrockWS

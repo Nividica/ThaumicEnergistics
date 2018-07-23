@@ -21,7 +21,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.me.storage.AbstractCellInventory;
 
 /**
- * FIXME: Don't use any core AE2 core, AKA remove AbstractCellInventory
+ * FIXME 23/07: rv6-alpha-4 will have a generic cell inventory, Deprecate
  *
  * @author BrockWS
  */

@@ -10,7 +10,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.me.storage.AbstractCellInventoryHandler;
 
 /**
- * FIXME: Don't use any core AE2 core, AKA remove AbstractCellInventoryHandler
+ * FIXME 23/07: rv6-alpha-4 will have a generic cell inventory, Deprecate
  *
  * @author BrockWS
  */

@@ -10,7 +10,15 @@ import appeng.api.storage.data.IAEStack;
  */
 public interface IAEEssentiaStack extends IAEStack<IAEEssentiaStack> {
 
+    /**
+     * Get the Thaumcraft aspect of the stack
+     * @return Thaumcraft Aspect
+     */
     Aspect getAspect();
 
+    /**
+     * Get the general Essentia Stack this AEStack represents
+     * @return Essentia Stack of this stack
+     */
     EssentiaStack getStack();
 }

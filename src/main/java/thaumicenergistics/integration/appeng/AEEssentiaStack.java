@@ -65,6 +65,8 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
         return new AEEssentiaStack(stack.getAspect(), stack.getAmount());
     }
 
+    // TODO: fromPacket
+
     @Override
     public long getStackSize() {
         return this.stackSize;
@@ -159,8 +161,8 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
     }
 
     @Override
-    public void writeToPacket(ByteBuf byteBuf) throws IOException {
-        //TODO
+    public void writeToPacket(ByteBuf buf) throws IOException {
+        // TODO
     }
 
     @Override

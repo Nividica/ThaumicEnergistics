@@ -1,9 +1,12 @@
 package thaumicenergistics.client.gui;
 
+import org.lwjgl.opengl.GL11;
 import thaumicenergistics.container.ContainerBase;
+import thaumicenergistics.container.slot.ISlotOptional;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -20,6 +23,17 @@ public abstract class GuiBase extends GuiContainer {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
+    @Override
+    public void drawSlot(Slot slot) {
+        mc.getTextureManager().bindTexture(this.getGuiBackground());
+        if (slot instanceof ISlotOptional) {
+            if (slot.isEnabled()) {
+                // TODO: Draw slot background on enabled slots
+            }
+        }
+        super.drawSlot(slot);
     }
 
     @Override

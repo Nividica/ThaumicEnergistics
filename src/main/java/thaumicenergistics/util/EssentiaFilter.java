@@ -19,6 +19,7 @@ public class EssentiaFilter implements INBTSerializable<NBTTagCompound> {
 
     public void setAspect(Aspect aspect, int slot) {
         this.aspects[slot] = aspect;
+        this.onContentsChanged();
     }
 
     public Aspect getAspect(int slot) {
@@ -53,6 +54,7 @@ public class EssentiaFilter implements INBTSerializable<NBTTagCompound> {
         for (int i = 0; i < this.aspects.length; i++)
             if (tag.hasKey("aspect#" + i))
                 this.aspects[i] = Aspect.getAspect(tag.getString("aspect#" + i));
+        this.onContentsChanged();
     }
 
     private String[] toStringArray() {
@@ -63,5 +65,9 @@ public class EssentiaFilter implements INBTSerializable<NBTTagCompound> {
             else
                 array[i] = this.aspects[i].getTag();
         return array;
+    }
+
+    protected void onContentsChanged() {
+
     }
 }

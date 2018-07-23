@@ -68,7 +68,7 @@ public class ThEAppliedEnergistics implements IThEIntegration {
         @Nullable
         @Override
         public IAEEssentiaStack poweredExtraction(@Nonnull IEnergySource energy, @Nonnull IMEInventory<IAEEssentiaStack> cell, @Nonnull IAEEssentiaStack request, @Nonnull IActionSource src) {
-            // FIXME: Shouldn't use AE2 Core code, only API stuff
+            // FIXME: removed in rv6-alpha-4
             Preconditions.checkNotNull(energy);
             Preconditions.checkNotNull(cell);
             Preconditions.checkNotNull(request);
@@ -80,7 +80,7 @@ public class ThEAppliedEnergistics implements IThEIntegration {
         @Nullable
         @Override
         public IAEEssentiaStack poweredInsert(@Nonnull IEnergySource energy, @Nonnull IMEInventory<IAEEssentiaStack> cell, @Nonnull IAEEssentiaStack input, @Nonnull IActionSource src) {
-            // FIXME: Shouldn't use AE2 Core code, only API stuff
+            // FIXME: removed in rv6-alpha-4
             Preconditions.checkNotNull(energy);
             Preconditions.checkNotNull(cell);
             Preconditions.checkNotNull(input);

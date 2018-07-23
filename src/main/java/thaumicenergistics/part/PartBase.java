@@ -91,13 +91,15 @@ public abstract class PartBase implements IPart, IGridHost, IActionHost, IPowerC
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
-        // TODO
+    public void writeToNBT(NBTTagCompound nbt) {
+        if (gridNode != null)
+        this.gridNode.saveToNBT("part", nbt);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound) {
-        // TODO
+    public void readFromNBT(NBTTagCompound nbt) {
+        if (gridNode != null)
+        this.gridNode.loadFromNBT("part", nbt);
     }
 
     @Override

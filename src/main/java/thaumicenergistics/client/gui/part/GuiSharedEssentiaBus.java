@@ -18,8 +18,14 @@ public abstract class GuiSharedEssentiaBus extends GuiBase {
 
     public GuiSharedEssentiaBus(ContainerSharedEssentiaBus container) {
         super(container);
-        this.xSize = 176;
+        this.xSize = 176 + 35;
         this.ySize = 184;
+    }
+
+    @Override
+    public void updateScreen() {
+        ((ContainerSharedEssentiaBus)this.inventorySlots).recalculateSlots();
+        super.updateScreen();
     }
 
     @Override
@@ -27,6 +33,7 @@ public abstract class GuiSharedEssentiaBus extends GuiBase {
         this.mc.getTextureManager().bindTexture(this.getGuiBackground());
         // TODO: Check if user has network tool
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, 176, 184);
+        this.drawTexturedModalRect(this.guiLeft + 176, this.guiTop, 176, 0, 35, 86);
 
         // TODO: Draw lighter background behind enabled slots
     }
@@ -39,6 +46,7 @@ public abstract class GuiSharedEssentiaBus extends GuiBase {
     @Override
     public void drawSlot(Slot slot) {
         if (slot instanceof SlotGhostEssentia && ((SlotGhostEssentia) slot).getAspect() != null) {
+            super.drawSlot(slot);
             int x = slot.xPos;
             int y = slot.yPos;
             //mc.getTextureManager().bindTexture(((SlotGhostEssentia) slot).getAspect().getImage());
@@ -46,9 +54,8 @@ public abstract class GuiSharedEssentiaBus extends GuiBase {
 
             // TODO: Don't use Thaumcraft core stuff
             UtilsFX.drawTag(x, y, ((SlotGhostEssentia) slot).getAspect(), 0.0F, 0, (double)this.zLevel);
-        } else {
+        } else
             super.drawSlot(slot);
-        }
     }
 
     @Override

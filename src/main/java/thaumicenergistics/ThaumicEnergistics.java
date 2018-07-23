@@ -6,6 +6,7 @@ import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
 import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
+import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.util.ThELog;
 
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ public class ThaumicEnergistics {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ThaumicEnergistics.LOGGER = event.getModLog();
+
+        PacketHandler.register();
 
         ThaumicEnergistics.INTEGRATIONS.add(new ThEThaumcraft());
         ThaumicEnergistics.INTEGRATIONS.add(new ThEAppliedEnergistics());

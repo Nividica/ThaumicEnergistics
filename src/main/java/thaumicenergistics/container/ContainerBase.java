@@ -17,8 +17,6 @@ import net.minecraft.item.ItemStack;
 /**
  * The base container for all containers in Thaumic Energistics
  * <p>
- * TODO: Save inventory and config to part
- * FIXME: Ghost slots
  *
  * @author BrockWS
  */
@@ -43,12 +41,12 @@ public abstract class ContainerBase extends Container {
 
     @Override
     public ItemStack slotClick(int slotID, int dragType, ClickType clickType, EntityPlayer player) {
-        if (slotID >= 40) {
-            ThELog.info("slotID {}", slotID);
+        //ThELog.info("slotID {}", slotID);
+        if (slotID >= 36) {
             Slot slot = this.getSlot(slotID);
             if (slot instanceof SlotGhostEssentia) {
-                if (this.getEssentiaFilter() != null) {
-                    EssentiaFilter filter = this.getEssentiaFilter();
+                if (((SlotGhostEssentia) slot).getFilter() != null) {
+                    EssentiaFilter filter = ((SlotGhostEssentia) slot).getFilter();
                     ItemStack stack = player.inventory.getItemStack().copy();
                     int id = slot.getSlotIndex();
 
@@ -74,8 +72,18 @@ public abstract class ContainerBase extends Container {
         return super.slotClick(slotID, dragType, clickType, player);
     }
 
-    protected EssentiaFilter getEssentiaFilter() {
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+        // TODO
+        return ItemStack.EMPTY;
+    }
+
+    public EssentiaFilter getEssentiaFilter() {
         return null;
+    }
+
+    public void setEssentiaFilter(EssentiaFilter filter) {
+        this.getEssentiaFilter().deserializeNBT(filter.serializeNBT());
     }
 
     @Override
