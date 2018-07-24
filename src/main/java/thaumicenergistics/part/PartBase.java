@@ -166,7 +166,7 @@ public abstract class PartBase implements IPart, IGridHost, IActionHost, IPowerC
         }
         this.gridNode.updateState();
         //this.setPower(null); TODO
-        this.onNeighborChanged(null, null, null);
+        //this.onNeighborChanged(null, null, null);
     }
 
     @Override

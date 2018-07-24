@@ -15,6 +15,7 @@ import thaumicenergistics.item.ItemBase;
 import thaumicenergistics.item.ItemEssentiaCell;
 import thaumicenergistics.item.part.ItemEssentiaExportBus;
 import thaumicenergistics.item.part.ItemEssentiaImportBus;
+import thaumicenergistics.item.part.ItemEssentiaStorageBus;
 
 import static thaumicenergistics.ThaumicEnergistics.LOGGER;
 
@@ -32,6 +33,7 @@ public class ModItems {
     public static ItemEssentiaCell itemEssentiaCell64k;
     public static ItemEssentiaImportBus itemEssentiaImportBus;
     public static ItemEssentiaExportBus itemEssentiaExportBus;
+    public static ItemEssentiaStorageBus itemEssentiaStorageBus;
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
@@ -42,6 +44,7 @@ public class ModItems {
         ModItems.ITEMS.add(itemEssentiaCell64k = new ItemEssentiaCell("64k", 1024 * 64, 12));
         ModItems.ITEMS.add(itemEssentiaImportBus = new ItemEssentiaImportBus("essentia_import"));
         ModItems.ITEMS.add(itemEssentiaExportBus = new ItemEssentiaExportBus("essentia_export"));
+        ModItems.ITEMS.add(itemEssentiaStorageBus = new ItemEssentiaStorageBus("essentia_storage"));
         event.getRegistry().registerAll(ModItems.ITEMS.toArray(new ItemBase[0]));
     }
 

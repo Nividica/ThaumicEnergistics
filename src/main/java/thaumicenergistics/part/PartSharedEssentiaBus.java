@@ -122,6 +122,7 @@ public abstract class PartSharedEssentiaBus extends PartBase implements IGridTic
 
     @Override
     public IConfigManager getConfigManager() {
+        // TODO
         return null;
     }
 }
