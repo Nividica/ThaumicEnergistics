@@ -1,13 +1,5 @@
 package thaumicenergistics.item;
 
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.EssentiaStack;
-import thaumicenergistics.api.model.IThEModel;
-import thaumicenergistics.api.storage.IAEEssentiaStack;
-import thaumicenergistics.api.storage.IEssentiaStorageChannel;
-import thaumicenergistics.init.ModGlobals;
-import thaumicenergistics.integration.appeng.AEEssentiaStack;
-
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -32,9 +24,19 @@ import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.IItemList;
 import appeng.core.localization.GuiText;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
+
+import thaumcraft.api.aspects.Aspect;
+
+import thaumicenergistics.api.EssentiaStack;
+import thaumicenergistics.api.model.IThEModel;
+import thaumicenergistics.api.storage.IAEEssentiaStack;
+import thaumicenergistics.api.storage.IEssentiaStorageChannel;
+import thaumicenergistics.init.ModGlobals;
+import thaumicenergistics.integration.appeng.AEEssentiaStack;
 
 /**
  * @author BrockWS
@@ -87,6 +89,13 @@ public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssent
                     } else {
                         tooltip.add(GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Precise.getLocal());
                     }
+                }
+
+                // TODO: Temporary util Essentia Terminal is added
+                IItemList<IAEEssentiaStack> list = inventory.getAvailableItems(this.getChannel().createList());
+
+                for (IAEEssentiaStack s : list) {
+                    tooltip.add(s.getAspect().getName() + " : " + s.getStackSize());
                 }
             }
         }

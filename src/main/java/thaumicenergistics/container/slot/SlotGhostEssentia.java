@@ -1,9 +1,10 @@
 package thaumicenergistics.container.slot;
 
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.util.EssentiaFilter;
-
 import net.minecraft.inventory.IInventory;
+
+import thaumcraft.api.aspects.Aspect;
+
+import thaumicenergistics.util.EssentiaFilter;
 
 /**
  * @author BrockWS

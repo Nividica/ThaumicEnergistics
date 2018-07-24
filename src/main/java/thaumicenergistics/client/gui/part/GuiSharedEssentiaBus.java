@@ -1,15 +1,16 @@
 package thaumicenergistics.client.gui.part;
 
+import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.Slot;
+import net.minecraft.util.ResourceLocation;
+
 import thaumcraft.client.lib.UtilsFX;
+
 import thaumicenergistics.client.gui.GuiBase;
 import thaumicenergistics.container.part.ContainerSharedEssentiaBus;
 import thaumicenergistics.container.slot.SlotGhost;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
 import thaumicenergistics.init.ModGlobals;
-
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Slot;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * @author BrockWS
@@ -24,7 +25,7 @@ public abstract class GuiSharedEssentiaBus extends GuiBase {
 
     @Override
     public void updateScreen() {
-        ((ContainerSharedEssentiaBus)this.inventorySlots).recalculateSlots();
+        ((ContainerSharedEssentiaBus) this.inventorySlots).recalculateSlots();
         super.updateScreen();
     }
 
@@ -53,7 +54,7 @@ public abstract class GuiSharedEssentiaBus extends GuiBase {
             //this.drawTexturedModalRect(x, y, 0, 0, 32, 32);
 
             // TODO: Don't use Thaumcraft core stuff
-            UtilsFX.drawTag(x, y, ((SlotGhostEssentia) slot).getAspect(), 0.0F, 0, (double)this.zLevel);
+            UtilsFX.drawTag(x, y, ((SlotGhostEssentia) slot).getAspect(), 0.0F, 0, (double) this.zLevel);
         } else
             super.drawSlot(slot);
     }

@@ -1,18 +1,18 @@
 package thaumicenergistics.container;
 
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.api.aspects.IEssentiaContainerItem;
-import thaumicenergistics.container.slot.SlotGhost;
-import thaumicenergistics.container.slot.SlotGhostEssentia;
-import thaumicenergistics.util.EssentiaFilter;
-import thaumicenergistics.util.ThELog;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.api.aspects.IEssentiaContainerItem;
+
+import thaumicenergistics.container.slot.SlotGhost;
+import thaumicenergistics.container.slot.SlotGhostEssentia;
+import thaumicenergistics.util.EssentiaFilter;
 
 /**
  * The base container for all containers in Thaumic Energistics

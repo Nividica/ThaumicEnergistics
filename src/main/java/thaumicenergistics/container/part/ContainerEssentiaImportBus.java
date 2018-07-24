@@ -1,8 +1,8 @@
 package thaumicenergistics.container.part;
 
-import thaumicenergistics.part.PartEssentiaImportBus;
-
 import net.minecraft.entity.player.EntityPlayer;
+
+import thaumicenergistics.part.PartEssentiaImportBus;
 
 /**
  * @author BrockWS

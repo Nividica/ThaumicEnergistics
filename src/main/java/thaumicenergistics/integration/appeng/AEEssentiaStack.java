@@ -1,11 +1,6 @@
 package thaumicenergistics.integration.appeng;
 
 import io.netty.buffer.ByteBuf;
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.EssentiaStack;
-import thaumicenergistics.api.item.ItemDummyAspect;
-import thaumicenergistics.api.storage.IAEEssentiaStack;
-import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 
 import java.io.IOException;
 
@@ -15,6 +10,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
+
+import thaumcraft.api.aspects.Aspect;
+
+import thaumicenergistics.api.EssentiaStack;
+import thaumicenergistics.api.item.ItemDummyAspect;
+import thaumicenergistics.api.storage.IAEEssentiaStack;
+import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 
 /**
  * @author BrockWS

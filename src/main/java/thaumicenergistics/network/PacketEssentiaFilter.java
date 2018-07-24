@@ -1,9 +1,6 @@
 package thaumicenergistics.network;
 
 import io.netty.buffer.ByteBuf;
-import thaumicenergistics.container.ContainerBase;
-import thaumicenergistics.util.EssentiaFilter;
-import thaumicenergistics.util.ThELog;
 
 import net.minecraft.client.Minecraft;
 
@@ -12,6 +9,9 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import thaumicenergistics.container.ContainerBase;
+import thaumicenergistics.util.EssentiaFilter;
 
 /**
  * @author BrockWS

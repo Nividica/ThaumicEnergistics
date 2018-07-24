@@ -1,14 +1,5 @@
 package thaumicenergistics.client.gui;
 
-import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.client.gui.part.GuiEssentiaExportBus;
-import thaumicenergistics.client.gui.part.GuiEssentiaImportBus;
-import thaumicenergistics.container.part.ContainerEssentiaExportBus;
-import thaumicenergistics.container.part.ContainerEssentiaImportBus;
-import thaumicenergistics.init.ModGUIs;
-import thaumicenergistics.part.PartEssentiaExportBus;
-import thaumicenergistics.part.PartEssentiaImportBus;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +12,15 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
+
+import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.client.gui.part.GuiEssentiaExportBus;
+import thaumicenergistics.client.gui.part.GuiEssentiaImportBus;
+import thaumicenergistics.container.part.ContainerEssentiaExportBus;
+import thaumicenergistics.container.part.ContainerEssentiaImportBus;
+import thaumicenergistics.init.ModGUIs;
+import thaumicenergistics.part.PartEssentiaExportBus;
+import thaumicenergistics.part.PartEssentiaImportBus;
 
 /**
  * @author BrockWS

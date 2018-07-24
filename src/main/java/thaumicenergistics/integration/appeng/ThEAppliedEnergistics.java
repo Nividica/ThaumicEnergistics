@@ -2,11 +2,6 @@ package thaumicenergistics.integration.appeng;
 
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
-import thaumicenergistics.api.EssentiaStack;
-import thaumicenergistics.api.storage.IAEEssentiaStack;
-import thaumicenergistics.api.storage.IEssentiaStorageChannel;
-import thaumicenergistics.integration.IThEIntegration;
-import thaumicenergistics.integration.appeng.cell.BasicEssentiaCellHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,6 +13,14 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
+
+import thaumcraft.api.aspects.Aspect;
+
+import thaumicenergistics.api.EssentiaStack;
+import thaumicenergistics.api.storage.IAEEssentiaStack;
+import thaumicenergistics.api.storage.IEssentiaStorageChannel;
+import thaumicenergistics.integration.IThEIntegration;
+import thaumicenergistics.integration.appeng.cell.BasicEssentiaCellHandler;
 
 /**
  * @author BrockWS
@@ -50,7 +53,9 @@ public class ThEAppliedEnergistics implements IThEIntegration {
         @Nullable
         @Override
         public IAEEssentiaStack createStack(@Nonnull Object o) {
-            if (o instanceof EssentiaStack) {
+            if (o instanceof Aspect) {
+                return this.createStack(new EssentiaStack((Aspect) o, Integer.MAX_VALUE));
+            } else if (o instanceof EssentiaStack) {
                 return AEEssentiaStack.fromEssentiaStack((EssentiaStack) o);
             } else if (o instanceof AEEssentiaStack) {
                 return ((AEEssentiaStack) o).copy();

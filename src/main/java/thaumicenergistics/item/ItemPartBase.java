@@ -1,7 +1,5 @@
 package thaumicenergistics.item;
 
-import thaumicenergistics.api.model.IThEModel;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -11,6 +9,8 @@ import net.minecraft.world.World;
 
 import appeng.api.AEApi;
 import appeng.api.parts.IPartItem;
+
+import thaumicenergistics.api.model.IThEModel;
 
 /**
  * @author BrockWS

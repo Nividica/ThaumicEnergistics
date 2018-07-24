@@ -1,8 +1,8 @@
 package thaumicenergistics.api;
 
-import thaumcraft.api.aspects.Aspect;
-
 import net.minecraft.nbt.NBTTagCompound;
+
+import thaumcraft.api.aspects.Aspect;
 
 /**
  * @author BrockWS

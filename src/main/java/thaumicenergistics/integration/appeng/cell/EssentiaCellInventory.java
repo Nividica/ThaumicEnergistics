@@ -1,11 +1,5 @@
 package thaumicenergistics.integration.appeng.cell;
 
-import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.api.EssentiaStack;
-import thaumicenergistics.api.storage.IAEEssentiaStack;
-import thaumicenergistics.api.storage.IEssentiaStorageChannel;
-import thaumicenergistics.integration.appeng.AEEssentiaStack;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +13,12 @@ import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.me.storage.AbstractCellInventory;
+
+import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.api.EssentiaStack;
+import thaumicenergistics.api.storage.IAEEssentiaStack;
+import thaumicenergistics.api.storage.IEssentiaStorageChannel;
+import thaumicenergistics.integration.appeng.AEEssentiaStack;
 
 /**
  * FIXME 23/07: rv6-alpha-4 will have a generic cell inventory, Deprecate
@@ -110,6 +110,7 @@ public class EssentiaCellInventory extends AbstractCellInventory<IAEEssentiaStac
                     a.setStackSize(a.getStackSize() + input.getStackSize());
                     this.saveChanges();
                 }
+                return null;
             }
         }
 

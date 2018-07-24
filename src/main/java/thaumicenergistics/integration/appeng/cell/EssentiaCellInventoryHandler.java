@@ -1,13 +1,13 @@
 package thaumicenergistics.integration.appeng.cell;
 
-import thaumicenergistics.api.storage.IAEEssentiaStack;
-import thaumicenergistics.api.storage.IEssentiaStorageChannel;
-
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
 import appeng.me.storage.AbstractCellInventoryHandler;
+
+import thaumicenergistics.api.storage.IAEEssentiaStack;
+import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 
 /**
  * FIXME 23/07: rv6-alpha-4 will have a generic cell inventory, Deprecate

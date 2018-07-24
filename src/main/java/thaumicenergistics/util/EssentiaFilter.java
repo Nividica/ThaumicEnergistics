@@ -1,15 +1,18 @@
 package thaumicenergistics.util;
 
-import thaumcraft.api.aspects.Aspect;
+import java.util.Arrays;
+import java.util.Iterator;
 
 import net.minecraft.nbt.NBTTagCompound;
 
 import net.minecraftforge.common.util.INBTSerializable;
 
+import thaumcraft.api.aspects.Aspect;
+
 /**
  * @author BrockWS
  */
-public class EssentiaFilter implements INBTSerializable<NBTTagCompound> {
+public class EssentiaFilter implements INBTSerializable<NBTTagCompound>, Iterable<Aspect> {
 
     private Aspect[] aspects;
 
@@ -37,6 +40,13 @@ public class EssentiaFilter implements INBTSerializable<NBTTagCompound> {
         return false;
     }
 
+    public boolean hasAspects() {
+        for (Aspect a : this.aspects)
+            if (a != null)
+                return true;
+        return false;
+    }
+
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound tag = new NBTTagCompound();
@@ -58,6 +68,7 @@ public class EssentiaFilter implements INBTSerializable<NBTTagCompound> {
     }
 
     private String[] toStringArray() {
+        // TODO Find usage?
         String[] array = new String[this.aspects.length];
         for (int i = 0; i < array.length; i++)
             if (this.aspects[i] == null)
@@ -69,5 +80,10 @@ public class EssentiaFilter implements INBTSerializable<NBTTagCompound> {
 
     protected void onContentsChanged() {
 
+    }
+
+    @Override
+    public Iterator<Aspect> iterator() {
+        return Arrays.asList(this.aspects).iterator();
     }
 }

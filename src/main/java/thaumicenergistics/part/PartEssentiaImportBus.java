@@ -1,7 +1,23 @@
 package thaumicenergistics.part;
 
-import thaumcraft.api.aspects.IEssentiaTransport;
-import thaumicenergistics.ThaumicEnergistics;
+import javax.annotation.Nonnull;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.IPartModel;
+import appeng.api.storage.IMEMonitor;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
+
 import thaumicenergistics.api.EssentiaStack;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.client.gui.GuiHandler;
@@ -10,27 +26,6 @@ import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.AEEssentiaStack;
 import thaumicenergistics.integration.appeng.ThEPartModel;
 import thaumicenergistics.item.part.ItemEssentiaImportBus;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
-
-import net.minecraftforge.items.IItemHandler;
-
-import appeng.api.config.Actionable;
-import appeng.api.config.Upgrades;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.util.IConfigManager;
 
 /**
  * @author BrockWS
@@ -56,7 +51,7 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
     @Override
     public boolean canWork() {
         // TODO: Improve
-        return this.getConnectedTE() != null;
+        return this.getConnectedTE() != null && this.getConnectedTE() instanceof IAspectContainer;
     }
 
     @Nonnull
@@ -64,29 +59,27 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
     public TickRateModulation tickingRequest(@Nonnull IGridNode node, int ticksSinceLastCall) {
         if (!this.canWork())
             return TickRateModulation.IDLE;
-        if (this.getConnectedTE() instanceof IEssentiaTransport) {
-            IEssentiaTransport jar = (IEssentiaTransport) this.getConnectedTE();
-            if (jar.getEssentiaAmount(EnumFacing.UP) < 1)
-                return TickRateModulation.SLOWER;
-
-            EssentiaStack inJar = new EssentiaStack(jar.getEssentiaType(EnumFacing.UP), Math.min(jar.getEssentiaAmount(EnumFacing.UP), this.calculateAmountToSend()));
+        IAspectContainer container = (IAspectContainer) this.getConnectedTE();
+        for (Aspect aspect : container.getAspects().getAspects()) {
+            if (this.config.hasAspects() && !this.config.isInFilter(aspect)) // Check filter
+                continue;
+            EssentiaStack inContainer = new EssentiaStack(aspect, Math.min(container.containerContains(aspect), this.calculateAmountToSend()));
 
             IStorageGrid storageGrid = this.getGridNode().getGrid().getCache(IStorageGrid.class);
             IMEMonitor<IAEEssentiaStack> storage = storageGrid.getInventory(this.getChannel());
 
-            AEEssentiaStack toInsert = AEEssentiaStack.fromEssentiaStack(inJar);
+            AEEssentiaStack toInsert = AEEssentiaStack.fromEssentiaStack(inContainer);
             if (storage.canAccept(toInsert)) {
-                ThaumicEnergistics.LOGGER.info("Able to insert");
                 IAEEssentiaStack notInserted = storage.injectItems(toInsert, Actionable.SIMULATE, this.source);
                 if (notInserted != null && notInserted.getStackSize() > 0) {
                     toInsert.decStackSize(notInserted.getStackSize());
                 }
-                jar.takeEssentia(toInsert.getAspect(), (int) toInsert.getStackSize(), EnumFacing.UP);
+                container.takeFromContainer(toInsert.getAspect(), (int) toInsert.getStackSize());
                 storage.injectItems(toInsert, Actionable.MODULATE, this.source);
                 return TickRateModulation.FASTER;
             }
         }
-        return TickRateModulation.IDLE;
+        return TickRateModulation.SLOWER;
     }
 
     @Nonnull

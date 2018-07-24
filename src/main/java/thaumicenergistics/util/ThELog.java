@@ -1,6 +1,7 @@
 package thaumicenergistics.util;
 
 import org.apache.logging.log4j.Logger;
+
 import thaumicenergistics.ThaumicEnergistics;
 
 /**

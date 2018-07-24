@@ -1,9 +1,6 @@
 package thaumicenergistics.part;
 
 import io.netty.buffer.ByteBuf;
-import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
-import thaumicenergistics.item.ItemPartBase;
-import thaumicenergistics.util.FMLUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,6 +31,10 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.helpers.MachineSource;
+
+import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
+import thaumicenergistics.item.ItemPartBase;
+import thaumicenergistics.util.FMLUtil;
 
 /**
  * @author BrockWS
@@ -93,13 +94,13 @@ public abstract class PartBase implements IPart, IGridHost, IActionHost, IPowerC
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         if (gridNode != null)
-        this.gridNode.saveToNBT("part", nbt);
+            this.gridNode.saveToNBT("part", nbt);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         if (gridNode != null)
-        this.gridNode.loadFromNBT("part", nbt);
+            this.gridNode.loadFromNBT("part", nbt);
     }
 
     @Override

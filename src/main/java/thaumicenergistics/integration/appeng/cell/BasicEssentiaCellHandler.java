@@ -1,8 +1,5 @@
 package thaumicenergistics.integration.appeng.cell;
 
-import thaumicenergistics.api.storage.IEssentiaStorageChannel;
-import thaumicenergistics.item.ItemEssentiaCell;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -10,6 +7,9 @@ import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.*;
 import appeng.api.storage.data.IAEStack;
+
+import thaumicenergistics.api.storage.IEssentiaStorageChannel;
+import thaumicenergistics.item.ItemEssentiaCell;
 
 /**
  * @author BrockWS

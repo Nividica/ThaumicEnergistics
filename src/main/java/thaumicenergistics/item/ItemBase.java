@@ -1,8 +1,8 @@
 package thaumicenergistics.item;
 
-import thaumicenergistics.init.ModGlobals;
-
 import net.minecraft.item.Item;
+
+import thaumicenergistics.init.ModGlobals;
 
 /**
  * @author BrockWS

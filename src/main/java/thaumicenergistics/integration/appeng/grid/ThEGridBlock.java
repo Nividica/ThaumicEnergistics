@@ -1,7 +1,5 @@
 package thaumicenergistics.integration.appeng.grid;
 
-import thaumicenergistics.part.PartBase;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -13,6 +11,8 @@ import appeng.api.networking.*;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+
+import thaumicenergistics.part.PartBase;
 
 /**
  * @author BrockWS

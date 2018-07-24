@@ -1,14 +1,13 @@
 package thaumicenergistics.network;
 
-import thaumicenergistics.init.ModGlobals;
-import thaumicenergistics.util.ThELog;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+
+import thaumicenergistics.init.ModGlobals;
 
 /**
  * @author BrockWS

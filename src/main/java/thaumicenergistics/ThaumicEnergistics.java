@@ -1,13 +1,6 @@
 package thaumicenergistics;
 
 import org.apache.logging.log4j.Logger;
-import thaumicenergistics.client.gui.GuiHandler;
-import thaumicenergistics.init.ModGlobals;
-import thaumicenergistics.integration.IThEIntegration;
-import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
-import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
-import thaumicenergistics.network.PacketHandler;
-import thaumicenergistics.util.ThELog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +10,14 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+
+import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.init.ModGlobals;
+import thaumicenergistics.integration.IThEIntegration;
+import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
+import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
+import thaumicenergistics.network.PacketHandler;
+import thaumicenergistics.util.ThELog;
 
 /**
  * <strong>Thaumic Energistics</strong>

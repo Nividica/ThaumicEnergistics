@@ -3,7 +3,6 @@ package thaumicenergistics.util.inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
 
@@ -33,7 +32,7 @@ public class ThEUpgradeInventory extends ThEInternalInventory {
 
     private void calculateUpgrades() {
         this.cachedUpgrades.clear();
-        this.iterator().forEachRemaining( stack -> {
+        this.iterator().forEachRemaining(stack -> {
             if (!(stack.getItem() instanceof IUpgradeModule))
                 return;
             IUpgradeModule upgrade = (IUpgradeModule) stack.getItem();

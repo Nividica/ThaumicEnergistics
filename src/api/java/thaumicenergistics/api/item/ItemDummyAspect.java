@@ -1,8 +1,8 @@
 package thaumicenergistics.api.item;
 
-import thaumcraft.api.aspects.Aspect;
-
 import net.minecraft.item.Item;
+
+import thaumcraft.api.aspects.Aspect;
 
 /**
  * A dummy item that uses the aspect icon for its icon

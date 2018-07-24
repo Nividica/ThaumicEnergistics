@@ -1,13 +1,12 @@
 package thaumicenergistics.client.gui;
 
-import org.lwjgl.opengl.GL11;
-import thaumicenergistics.container.ContainerBase;
-import thaumicenergistics.container.slot.ISlotOptional;
-import thaumicenergistics.container.slot.SlotGhostEssentia;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
+
+import thaumicenergistics.container.ContainerBase;
+import thaumicenergistics.container.slot.ISlotOptional;
+import thaumicenergistics.container.slot.SlotGhostEssentia;
 
 /**
  * @author BrockWS

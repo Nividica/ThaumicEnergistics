@@ -1,11 +1,5 @@
 package thaumicenergistics.init;
 
-import thaumicenergistics.api.model.IThEModel;
-import thaumicenergistics.item.ItemBase;
-import thaumicenergistics.item.ItemEssentiaCell;
-import thaumicenergistics.item.part.ItemEssentiaExportBus;
-import thaumicenergistics.item.part.ItemEssentiaImportBus;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +9,12 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import thaumicenergistics.api.model.IThEModel;
+import thaumicenergistics.item.ItemBase;
+import thaumicenergistics.item.ItemEssentiaCell;
+import thaumicenergistics.item.part.ItemEssentiaExportBus;
+import thaumicenergistics.item.part.ItemEssentiaImportBus;
 
 import static thaumicenergistics.ThaumicEnergistics.LOGGER;
 

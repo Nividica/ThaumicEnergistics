@@ -1,11 +1,5 @@
 package thaumicenergistics.part;
 
-import thaumicenergistics.api.storage.IEssentiaStorageChannel;
-import thaumicenergistics.item.ItemPartBase;
-import thaumicenergistics.util.EssentiaFilter;
-import thaumicenergistics.util.inventory.ThEUpgradeInventory;
-import thaumicenergistics.util.inventory.WrapperInventoryItemHandler;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -18,6 +12,12 @@ import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.util.IConfigManager;
+
+import thaumicenergistics.api.storage.IEssentiaStorageChannel;
+import thaumicenergistics.item.ItemPartBase;
+import thaumicenergistics.util.EssentiaFilter;
+import thaumicenergistics.util.inventory.ThEUpgradeInventory;
+import thaumicenergistics.util.inventory.WrapperInventoryItemHandler;
 
 /**
  * @author BrockWS
