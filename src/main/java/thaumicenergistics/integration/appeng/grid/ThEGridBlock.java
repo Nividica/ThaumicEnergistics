@@ -68,7 +68,7 @@ public class ThEGridBlock implements IGridBlock {
     @Nonnull
     @Override
     public EnumSet<EnumFacing> getConnectableSides() {
-        return EnumSet.noneOf(EnumFacing.class);
+        return EnumSet.allOf(EnumFacing.class);
     }
 
     @Nonnull

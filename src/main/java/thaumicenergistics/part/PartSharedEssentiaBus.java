@@ -11,6 +11,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
@@ -124,5 +125,10 @@ public abstract class PartSharedEssentiaBus extends PartBase implements IGridTic
     public IConfigManager getConfigManager() {
         // TODO
         return null;
+    }
+
+    @Override
+    public float getCableConnectionLength(AECableType aeCableType) {
+        return 5;
     }
 }

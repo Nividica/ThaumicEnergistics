@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "thaumicenergistics:items/essentia.cell.1k"
+        "layer0": "thaumicenergistics:item/cell/1k"
     }
 }

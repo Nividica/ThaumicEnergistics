@@ -24,14 +24,20 @@ import appeng.api.AEApi;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.parts.*;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 
+import thaumicenergistics.integration.appeng.grid.GridUtil;
 import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
 import thaumicenergistics.item.ItemPartBase;
 import thaumicenergistics.util.FMLUtil;
@@ -130,13 +136,15 @@ public abstract class PartBase implements IPart, IGridHost, IActionHost, IPowerC
 
     @Override
     public void writeToStream(ByteBuf buf) throws IOException {
-        // TODO
+        buf.writeBoolean(this.isActive());
+        buf.writeBoolean(this.isPowered());
     }
 
     @Override
     public boolean readFromStream(ByteBuf buf) throws IOException {
-        // TODO
-        return false;
+        this.isActive = buf.readBoolean();
+        this.isPowered = buf.readBoolean();
+        return true;
     }
 
     @Override
@@ -166,7 +174,8 @@ public abstract class PartBase implements IPart, IGridHost, IActionHost, IPowerC
         }
         this.gridNode.updateState();
         //this.setPower(null); TODO
-        //this.onNeighborChanged(null, null, null);
+        BlockPos pos = this.gridBlock.getLocation().getPos();
+        this.onNeighborChanged(null, pos, pos.offset(this.side.getFacing()));
     }
 
     @Override
@@ -199,8 +208,7 @@ public abstract class PartBase implements IPart, IGridHost, IActionHost, IPowerC
 
     @Override
     public float getCableConnectionLength(AECableType aeCableType) {
-        // TODO: Check Default
-        return 4;
+        return 3;
     }
 
     @Override
@@ -256,5 +264,15 @@ public abstract class PartBase implements IPart, IGridHost, IActionHost, IPowerC
     @Override
     public IGridNode getActionableNode() {
         return this.gridNode;
+    }
+
+    @MENetworkEventSubscribe
+    public void updatePowerStatus(MENetworkPowerStatusChange event) {
+        try {
+            this.isPowered = GridUtil.getEnergyGrid(this).isNetworkPowered();
+        } catch (GridAccessException e) {
+            // should ignore?
+            this.isPowered = false;
+        }
     }
 }

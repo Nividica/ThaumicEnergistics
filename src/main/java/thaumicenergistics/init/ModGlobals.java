@@ -31,4 +31,6 @@ public class ModGlobals {
             return new ItemStack(Items.DIAMOND);
         }
     };
+
+    public static final String RESEARCH_CATEGORY = ModGlobals.MOD_ID;
 }

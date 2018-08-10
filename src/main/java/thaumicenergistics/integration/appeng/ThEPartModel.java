@@ -19,6 +19,10 @@ public class ThEPartModel implements IPartModel {
         this(true, models);
     }
 
+    public ThEPartModel(ResourceLocation... models) {
+        this(true, models);
+    }
+
     public ThEPartModel(boolean requireCableConnection, ResourceLocation... models) {
         this.models = Arrays.asList(models);
         this.requireCableConnection = requireCableConnection;

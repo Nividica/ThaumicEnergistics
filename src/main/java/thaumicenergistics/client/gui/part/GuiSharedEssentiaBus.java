@@ -69,6 +69,6 @@ public abstract class GuiSharedEssentiaBus extends GuiBase {
 
     @Override
     protected ResourceLocation getGuiBackground() {
-        return new ResourceLocation(ModGlobals.MOD_ID, "textures/gui/essentia.io.bus.png");
+        return new ResourceLocation(ModGlobals.MOD_ID, "textures/gui/essentia_io_bus.png");
     }
 }

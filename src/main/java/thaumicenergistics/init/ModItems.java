@@ -9,7 +9,9 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistry;
 
+import thaumicenergistics.api.item.ItemDummyAspect;
 import thaumicenergistics.api.model.IThEModel;
 import thaumicenergistics.item.ItemBase;
 import thaumicenergistics.item.ItemEssentiaCell;
@@ -20,6 +22,8 @@ import thaumicenergistics.item.part.ItemEssentiaStorageBus;
 import static thaumicenergistics.ThaumicEnergistics.LOGGER;
 
 /**
+ * TODO: Move to API based
+ *
  * @author BrockWS
  */
 @Mod.EventBusSubscriber
@@ -35,6 +39,8 @@ public class ModItems {
     public static ItemEssentiaExportBus itemEssentiaExportBus;
     public static ItemEssentiaStorageBus itemEssentiaStorageBus;
 
+    public static ItemDummyAspect itemDummyAspect;
+
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         LOGGER.info("Registering Items");
@@ -46,6 +52,8 @@ public class ModItems {
         ModItems.ITEMS.add(itemEssentiaExportBus = new ItemEssentiaExportBus("essentia_export"));
         ModItems.ITEMS.add(itemEssentiaStorageBus = new ItemEssentiaStorageBus("essentia_storage"));
         event.getRegistry().registerAll(ModItems.ITEMS.toArray(new ItemBase[0]));
+
+        event.getRegistry().register(itemDummyAspect = new ItemDummyAspect());
     }
 
     @SubscribeEvent

@@ -12,7 +12,7 @@ public abstract class ItemBase extends Item {
     public ItemBase(String id) {
         super();
         this.setRegistryName(id);
-        this.setUnlocalizedName(id);
+        this.setUnlocalizedName(ModGlobals.MOD_ID + "." + id);
         this.setCreativeTab(ModGlobals.CREATIVE_TAB);
     }
 }

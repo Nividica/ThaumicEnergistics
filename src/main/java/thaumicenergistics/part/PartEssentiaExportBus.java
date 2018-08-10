@@ -32,10 +32,15 @@ import thaumicenergistics.util.AEUtil;
 public class PartEssentiaExportBus extends PartSharedEssentiaBus {
 
     public static ResourceLocation[] MODELS = new ResourceLocation[]{
-            new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_export_bus_base")
+            new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_export_bus/base"),
+            new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_export_bus/on"),
+            new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_export_bus/off"),
+            new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_export_bus/has_channel")
     };
 
-    private static IPartModel MODEL_BASE = new ThEPartModel(MODELS[0]);
+    private static IPartModel MODEL_ON = new ThEPartModel(MODELS[0], MODELS[1]);
+    private static IPartModel MODEL_OFF = new ThEPartModel(MODELS[0], MODELS[2]);
+    private static IPartModel MODEL_HAS_CHANNEL = new ThEPartModel(MODELS[0], MODELS[3]);
 
     public PartEssentiaExportBus(ItemEssentiaExportBus item) {
         super(item);
@@ -87,7 +92,12 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
     @Nonnull
     @Override
     public IPartModel getStaticModels() {
-        return MODEL_BASE;
+        if (this.isPowered())
+            if (this.isActive())
+                return MODEL_HAS_CHANNEL;
+            else
+                return MODEL_ON;
+        return MODEL_OFF;
     }
 
     @Override

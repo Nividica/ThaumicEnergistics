@@ -112,7 +112,7 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
 
     @Override
     public boolean isMeaningful() {
-        return this.getStackSize() != 0 || this.countRequestable > 0 || this.isCraftable;
+        return (this.getAspect() != null && this.getStackSize() != 0) || this.countRequestable > 0 || this.isCraftable;
     }
 
     @Override
@@ -197,7 +197,7 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
     @Override
     public ItemStack asItemStackRepresentation() {
         // TODO: Test
-        return new ItemStack(new ItemDummyAspect(this.aspect));
+        return new ItemStack(new ItemDummyAspect().setAspect(this.aspect));
     }
 
     @Override

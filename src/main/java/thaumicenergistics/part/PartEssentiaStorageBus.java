@@ -11,6 +11,8 @@ import net.minecraft.world.IBlockAccess;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkStorageEvent;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -19,6 +21,8 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.*;
+import appeng.api.util.AECableType;
+import appeng.me.GridAccessException;
 
 import thaumcraft.api.aspects.IAspectContainer;
 
@@ -35,12 +39,18 @@ import thaumicenergistics.util.ThELog;
 public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICellContainer, IMEMonitorHandlerReceiver<IAEEssentiaStack> {
 
     public static ResourceLocation[] MODELS = new ResourceLocation[]{
-            new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_storage_bus_base")
+            new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_storage_bus/base"),
+            new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_storage_bus/on"),
+            new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_storage_bus/off"),
+            new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_storage_bus/has_channel")
     };
 
-    private static IPartModel MODEL_BASE = new ThEPartModel(MODELS[0]);
+    private static IPartModel MODEL_ON = new ThEPartModel(MODELS[0], MODELS[1]);
+    private static IPartModel MODEL_OFF = new ThEPartModel(MODELS[0], MODELS[2]);
+    private static IPartModel MODEL_HAS_CHANNEL = new ThEPartModel(MODELS[0], MODELS[3]);
 
     private IMEInventoryHandler<IAEEssentiaStack> handler;
+    private boolean wasActive = false;
 
     public PartEssentiaStorageBus(ItemEssentiaStorageBus item) {
         super(item);
@@ -68,6 +78,8 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
     @Override
     public void postChange(IBaseMonitor<IAEEssentiaStack> monitor, Iterable<IAEEssentiaStack> change, IActionSource actionSource) {
         // TODO: Probably should send off an update like PartStorageBus?
+        // Won't get anything here util Platform#postChanges is fixed #3644
+        // https://github.com/AppliedEnergistics/Applied-Energistics-2/pull/3644
         ThELog.info("PartEssentiaStorageBus postChange");
     }
 
@@ -83,11 +95,12 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
 
     @Override
     public void onNeighborChanged(IBlockAccess access, BlockPos pos, BlockPos neighbor) {
-        if (access == null || pos == null || neighbor == null)
+        if (pos == null || neighbor == null)
             return;
         if (pos.offset(this.side.getFacing()).equals(neighbor) && this.getGridNode() != null) {
             IGrid grid = this.getGridNode().getGrid();
             if (grid != null) { // Might want to check if something was changed
+                //ThELog.info("MENetworkCellArrayUpdate");
                 grid.postEvent(new MENetworkCellArrayUpdate());
             }
         }
@@ -101,7 +114,8 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
 
     @Override
     public List<IMEInventoryHandler> getCellArray(IStorageChannel<?> channel) {
-        if (channel != this.getChannel())
+        //ThELog.info("getCellArray");
+        if (channel != this.getChannel() || this.getHandler() == null)
             return Collections.emptyList();
         // We need to "open" the connected IAspectContainer as a "cell" (IMEInventoryHandler)
         return Collections.singletonList(this.getHandler());
@@ -120,13 +134,18 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
     @Nonnull
     @Override
     public IPartModel getStaticModels() {
-        return MODEL_BASE;
+        if (this.isPowered())
+            if (this.isActive())
+                return MODEL_HAS_CHANNEL;
+            else
+                return MODEL_ON;
+        return MODEL_OFF;
     }
 
     private IMEInventoryHandler<IAEEssentiaStack> getHandler() {
-        if (this.handler == null && this.getConnectedContainer() != null) // TODO: Allow cache resetting
-            this.handler = new EssentiaContainerAdapter(this.getConnectedContainer());
-        return this.handler;
+        if (/*this.handler == null &&*/ this.getConnectedContainer() != null) // TODO: Allow cache
+            return this.handler = new EssentiaContainerAdapter(this.getConnectedContainer());
+        return null;
     }
 
     private IAspectContainer getConnectedContainer() {
@@ -135,13 +154,23 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
 
     @Override
     public void getBoxes(IPartCollisionHelper box) {
-        // Face
-        box.addBox(1.0F, 1.0F, 15.0F, 15.0F, 15.0F, 16.0F);
+        box.addBox(3, 3, 15, 13, 13, 16);
+        box.addBox(2, 2, 14, 14, 14, 15);
+        box.addBox(5, 5, 12, 11, 11, 14);
+    }
 
-        // Mid
-        box.addBox(4.0D, 4.0D, 14.0D, 12.0D, 12.0D, 15.0D);
+    @Override
+    public float getCableConnectionLength(AECableType aeCableType) {
+        return 4;
+    }
 
-        // Back
-        box.addBox(5.0D, 5.0D, 13.0D, 11.0D, 11.0D, 14.0D);
+    @MENetworkEventSubscribe
+    public void updateChannels(final MENetworkChannelsChanged changedChannels) {
+        final boolean currentActive = this.getGridNode().isActive();
+        if (this.wasActive != currentActive) {
+            this.wasActive = currentActive;
+            this.gridNode.getGrid().postEvent(new MENetworkCellArrayUpdate());
+            this.host.markForUpdate();
+        }
     }
 }

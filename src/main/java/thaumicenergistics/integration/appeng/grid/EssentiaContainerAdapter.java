@@ -4,20 +4,15 @@ import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IItemList;
 
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
 
-import thaumicenergistics.api.EssentiaStack;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
-import thaumicenergistics.integration.appeng.AEEssentiaStack;
 import thaumicenergistics.util.AEUtil;
 import thaumicenergistics.util.ThELog;
 
@@ -38,7 +33,6 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
 
     @Override
     public IAEEssentiaStack injectItems(IAEEssentiaStack input, Actionable type, IActionSource src) {
-        // ThELog.info("EssentiaContainerAdapter injectItems");
         if (input == null || !input.isMeaningful())
             return input;
 
@@ -57,13 +51,28 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
 
     @Override
     public IAEEssentiaStack extractItems(IAEEssentiaStack request, Actionable mode, IActionSource src) {
-        // ThELog.info("EssentiaContainerAdapter extractItems");
-        return null;
+        if (request == null || !request.isMeaningful())
+            return null;
+        if (this.container.containerContains(request.getAspect()) <= 0) // Make sure the container actually contains it
+            return null;
+
+        Aspect aspect = request.getAspect();
+        int max = (int) Math.min(this.container.containerContains(aspect), request.getStackSize());
+
+        if (mode == Actionable.SIMULATE)
+            return AEUtil.getAEStackFromAspect(aspect, max);
+
+        boolean worked = this.container.takeFromContainer(aspect, max);
+        if (!worked)
+            return null;
+
+        return request.setStackSize(max);
     }
 
     @Override
     public IItemList<IAEEssentiaStack> getAvailableItems(IItemList<IAEEssentiaStack> out) {
-        ThELog.info("EssentiaContainerAdapter getAvailableItems");
+        if (this.container == null)
+            return out;
         for (Aspect aspect : this.container.getAspects().getAspects())
             out.add(AEUtil.getAEStackFromAspect(aspect, this.container.containerContains(aspect)));
         return out;
@@ -81,6 +90,8 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
 
     @Override
     public boolean canAccept(IAEEssentiaStack input) {
+        if (this.container == null)
+            return false;
         return this.container.doesContainerAccept(input.getAspect());
     }
 

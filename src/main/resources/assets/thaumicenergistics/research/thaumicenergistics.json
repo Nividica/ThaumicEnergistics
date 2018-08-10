@@ -1,0 +1,12 @@
+{
+    "entries": [
+        {
+            "key": "BASEENERGISTICS",
+            "name": "research.base_energistics.title",
+            "icons": [
+                "thaumicenergistics:essentia_import"
+            ],
+            "category": "thaumicenergistics"
+        }
+    ]
+}
