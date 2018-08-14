@@ -32,7 +32,7 @@ import appeng.items.contents.CellUpgrades;
 import thaumcraft.api.aspects.Aspect;
 
 import thaumicenergistics.api.EssentiaStack;
-import thaumicenergistics.api.model.IThEModel;
+import thaumicenergistics.api.internal.model.IThEModel;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.init.ModGlobals;

@@ -38,14 +38,16 @@ import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 
 import thaumicenergistics.integration.appeng.grid.GridUtil;
+import thaumicenergistics.integration.appeng.grid.IThEGridHost;
 import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
+import thaumicenergistics.integration.appeng.helpers.ThEActionSource;
 import thaumicenergistics.item.ItemPartBase;
 import thaumicenergistics.util.FMLUtil;
 
 /**
  * @author BrockWS
  */
-public abstract class PartBase implements IPart, IGridHost, IActionHost, IPowerChannelState {
+public abstract class PartBase implements IPart, IThEGridHost, IActionHost, IPowerChannelState {
 
     protected ThEGridBlock gridBlock;
     protected IGridNode gridNode;
@@ -61,7 +63,7 @@ public abstract class PartBase implements IPart, IGridHost, IActionHost, IPowerC
 
     public PartBase(ItemPartBase item) {
         this.item = item;
-        this.source = new MachineSource(this);
+        this.source = new ThEActionSource(this);
     }
 
     public abstract boolean canWork();
@@ -70,6 +72,7 @@ public abstract class PartBase implements IPart, IGridHost, IActionHost, IPowerC
         return 0;
     }
 
+    @Override
     public DimensionalCoord getLocation() {
         if (this.hostTile != null && this.hostTile.hasWorld() && this.hostTile.getWorld().provider != null)
             return new DimensionalCoord(this.hostTile.getWorld(), this.hostTile.getPos());
@@ -274,5 +277,10 @@ public abstract class PartBase implements IPart, IGridHost, IActionHost, IPowerC
             // should ignore?
             this.isPowered = false;
         }
+    }
+
+    @Override
+    public void gridChanged() {
+
     }
 }

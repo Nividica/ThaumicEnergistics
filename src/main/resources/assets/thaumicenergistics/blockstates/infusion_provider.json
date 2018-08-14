@@ -1,0 +1,10 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "thaumicenergistics:infusion_provider"
+    },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{}]
+    }
+}

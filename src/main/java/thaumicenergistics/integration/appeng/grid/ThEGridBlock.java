@@ -13,22 +13,35 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 
 import thaumicenergistics.part.PartBase;
+import thaumicenergistics.util.FMLUtil;
+import thaumicenergistics.util.ThELog;
 
 /**
  * @author BrockWS
  */
 public class ThEGridBlock implements IGridBlock {
 
-    private PartBase part;
+    private IThEGridHost host;
+    private ItemStack rep;
+    private boolean inWorld;
+    private double idlePower = 1;
 
-    public ThEGridBlock(PartBase partBase) {
-        this.part = partBase;
+    public ThEGridBlock(IThEGridHost host, ItemStack rep, boolean inWorld) {
+        this.host = host;
+        this.rep = rep;
+        this.inWorld = inWorld;
     }
 
+    public ThEGridBlock(PartBase part) {
+        this.host = part;
+        this.rep = part.getItemStack(PartItemStack.NETWORK);
+        this.inWorld = false;
+        this.idlePower = part.getIdlePowerUsage();
+    }
 
     @Override
     public double getIdlePowerUsage() {
-        return this.part.getIdlePowerUsage();
+        return this.idlePower;
     }
 
     @Nonnull
@@ -39,13 +52,13 @@ public class ThEGridBlock implements IGridBlock {
 
     @Override
     public boolean isWorldAccessible() {
-        return false;
+        return this.inWorld;
     }
 
     @Nonnull
     @Override
     public DimensionalCoord getLocation() {
-        return this.part.getLocation();
+        return this.host.getLocation();
     }
 
     @Nonnull
@@ -74,17 +87,17 @@ public class ThEGridBlock implements IGridBlock {
     @Nonnull
     @Override
     public IGridHost getMachine() {
-        return this.part;
+        return this.host;
     }
 
     @Override
     public void gridChanged() {
-
+        this.host.gridChanged();
     }
 
     @Nullable
     @Override
     public ItemStack getMachineRepresentation() {
-        return this.part.getItemStack(PartItemStack.NETWORK);
+        return this.rep;
     }
 }

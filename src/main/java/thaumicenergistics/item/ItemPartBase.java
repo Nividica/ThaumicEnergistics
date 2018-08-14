@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.parts.IPartItem;
 
-import thaumicenergistics.api.model.IThEModel;
+import thaumicenergistics.api.internal.model.IThEModel;
 
 /**
  * @author BrockWS
