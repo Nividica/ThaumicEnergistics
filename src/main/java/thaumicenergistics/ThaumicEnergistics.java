@@ -1,17 +1,24 @@
 package thaumicenergistics;
 
+import mezz.jei.startup.PlayerJoinedWorldEvent;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -31,6 +38,7 @@ import thaumicenergistics.util.ThELog;
  * @author Nividica
  */
 @Mod(modid = ModGlobals.MOD_ID, name = ModGlobals.MOD_NAME, version = ModGlobals.MOD_VERSION, dependencies = ModGlobals.MOD_DEPENDENCIES)
+@Mod.EventBusSubscriber
 public class ThaumicEnergistics {
 
     /**
@@ -54,6 +62,7 @@ public class ThaumicEnergistics {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ThaumicEnergistics.LOGGER = event.getModLog();
+        MinecraftForge.EVENT_BUS.register(this);
 
         PacketHandler.register();
 
@@ -86,5 +95,19 @@ public class ThaumicEnergistics {
     public void postInit(FMLPostInitializationEvent event) {
         ThELog.info("Integrations: PostInit");
         ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::postInit);
+    }
+
+    @SubscribeEvent
+    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        // TODO: Temporary alpha warning
+        TextComponentString s1 = new TextComponentString(
+                "Thaumic Energistics is currently in alpha, things may be broken, not implemented or cause lost items and world corruption.\n" +
+                        "Post issues to GitHub"
+        );
+        s1.getStyle().setColor(TextFormatting.RED);
+        TextComponentString link = new TextComponentString("https://github.com/Nividica/ThaumicEnergistics");
+        link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Nividica/ThaumicEnergistics")).setColor(TextFormatting.GOLD);
+
+        event.player.sendMessage(s1.appendSibling(link));
     }
 }

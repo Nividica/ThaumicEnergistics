@@ -20,10 +20,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.implementations.items.IStorageCell;
-import appeng.api.storage.ICellInventory;
-import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.*;
 import appeng.api.storage.data.IItemList;
 import appeng.core.localization.GuiText;
 import appeng.items.contents.CellConfig;
@@ -62,19 +59,16 @@ public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssent
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-        ItemStack stack = playerIn.getHeldItem(handIn);
-        IMEInventoryHandler<IAEEssentiaStack> inventory = AEApi.instance().registries().cell().getCellInventory(stack, null, getChannel());
-        inventory.injectItems(AEEssentiaStack.fromEssentiaStack(new EssentiaStack(Aspect.FIRE, 1000)), Actionable.MODULATE, null);
-        return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+        // TODO: Break into components
+        return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory(stack, null, getChannel());
+        ICellInventoryHandler<IAEEssentiaStack> handler = AEApi.instance().registries().cell().getCellInventory(stack, null, getChannel());
 
-        if (inventory instanceof ICellInventoryHandler) {
-            final ICellInventoryHandler handler = (ICellInventoryHandler) inventory;
-            final ICellInventory cellInventory = handler.getCellInv();
+        if (handler != null) {
+            ICellInventory cellInventory = handler.getCellInv();
 
             if (cellInventory != null) {
                 tooltip.add(cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal());
@@ -92,7 +86,7 @@ public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssent
                 }
 
                 // TODO: Temporary util Essentia Terminal is added
-                IItemList<IAEEssentiaStack> list = inventory.getAvailableItems(this.getChannel().createList());
+                IItemList<IAEEssentiaStack> list = handler.getAvailableItems(this.getChannel().createList());
 
                 for (IAEEssentiaStack s : list) {
                     tooltip.add(s.getAspect().getName() + " : " + s.getStackSize());
@@ -138,7 +132,7 @@ public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssent
     }
 
     @Override
-    public IStorageChannel getChannel() {
+    public IEssentiaStorageChannel getChannel() {
         return AEApi.instance().storage().getStorageChannel(IEssentiaStorageChannel.class);
     }
 

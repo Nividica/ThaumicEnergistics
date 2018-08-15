@@ -12,13 +12,18 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.IItemList;
 import appeng.me.storage.AbstractCellInventory;
+
+import thaumcraft.api.ThaumcraftApi;
+import thaumcraft.api.aspects.Aspect;
 
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.api.EssentiaStack;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.integration.appeng.AEEssentiaStack;
+import thaumicenergistics.item.ItemCreativeEssentiaCell;
 
 /**
  * FIXME 23/07: rv6-alpha-4 will have a generic cell inventory, Deprecate
@@ -27,8 +32,11 @@ import thaumicenergistics.integration.appeng.AEEssentiaStack;
  */
 public class EssentiaCellInventory extends AbstractCellInventory<IAEEssentiaStack> {
 
+    private boolean isCreative;
+
     private EssentiaCellInventory(final ItemStack o, final ISaveProvider container) throws AppEngException {
         super(o, container, 8);
+        isCreative = o.getItem() instanceof ItemCreativeEssentiaCell;
     }
 
     // *******************
@@ -89,6 +97,10 @@ public class EssentiaCellInventory extends AbstractCellInventory<IAEEssentiaStac
             return null;
         if (this.cellType.isBlackListed(this.i, input))
             return input;
+        if (this.isCreative) {
+            // The cell contains every aspect anyway, so just say we "accepted" all of it
+            return null;
+        }
         EssentiaStack essentiaStack = input.getStack();
 
         IAEEssentiaStack a = this.getCellItems().findPrecise(input);
@@ -145,6 +157,8 @@ public class EssentiaCellInventory extends AbstractCellInventory<IAEEssentiaStac
     public IAEEssentiaStack extractItems(IAEEssentiaStack request, Actionable mode, IActionSource src) {
         if (request == null)
             return null;
+        if (this.isCreative)
+            return request.copy();
 
         long size = Math.min(Integer.MAX_VALUE, request.getStackSize());
         IAEEssentiaStack result = null;
@@ -166,6 +180,23 @@ public class EssentiaCellInventory extends AbstractCellInventory<IAEEssentiaStac
             }
         }
         return result;
+    }
+
+    @Override
+    protected IItemList<IAEEssentiaStack> getCellItems() {
+        if (!this.isCreative)
+            return super.getCellItems();
+        if (this.cellItems == null) {
+            this.cellItems = this.getChannel().createList();
+            Aspect.aspects.forEach((s, aspect) -> this.cellItems.add(this.getChannel().createStack(new EssentiaStack(aspect, 1000))));
+        }
+        return this.cellItems;
+    }
+
+    @Override
+    protected void saveChanges() {
+        if (!this.isCreative) // We don't want to save infinity stacks
+            super.saveChanges();
     }
 
     @Override

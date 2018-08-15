@@ -1,7 +1,15 @@
 ﻿# Creative Tab
 itemGroup.ThaumicEnergistics=Thaumic Energistics
 
+# Blocks
+tile.thaumicenergistics.infusion_provider.name=Essentia Infusion Provider
+
 # Items
+item.thaumicenergistics.essentia_cell_1k.name=1k ME Essentia Storage Cell
+item.thaumicenergistics.essentia_cell_4k.name=4k ME Essentia Storage Cell
+item.thaumicenergistics.essentia_cell_16k.name=16k ME Essentia Storage Cell
+item.thaumicenergistics.essentia_cell_64k.name=64k ME Essentia Storage Cell
+item.thaumicenergistics.essentia_cell_creative.name=Creative ME Essentia Storage Cell
 item.thaumicenergistics.essentia_import.name=Essentia Import Bus
 item.thaumicenergistics.essentia_export.name=Essentia Export Bus
 item.thaumicenergistics.essentia_storage.name=Essentia Storage Bus

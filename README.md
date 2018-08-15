@@ -3,8 +3,10 @@
 
 ---
 
-### Please note that I am no longer actively adding features to this mod.
-I may however release bug fixes from time to time.
+### Please note that this mod is currently in development for 1.12.2.
+The following versions are required for this mod:
+- Thaumcraft 6.1.BETA21
+- Applied Energistics 2 rv6-alpha-3
 
 About
 ---

@@ -13,14 +13,14 @@ public class ModGlobals {
 
     public static final String MOD_ID = "thaumicenergistics";
     public static final String MOD_NAME = "Thaumic Energistics";
-    public static final String MOD_VERSION = "1.2.0.0";
-    public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2@[rv6-alpha-2,);required-after:thaumcraft@[6.1.BETA17,)";
+    public static final String MOD_VERSION = "alpha-1";
+    public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2@[rv6-alpha-3,);required-after:thaumcraft@[6.1.BETA21,)";
 
     /**
      * Creative tab.
      */
     public static CreativeTabs CREATIVE_TAB = new CreativeTabs("ThaumicEnergistics") {
-
+        // TODO: Tab Icon
         @Override
         public ItemStack getIconItemStack() {
             return new ItemStack(Items.DIAMOND);

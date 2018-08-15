@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.2.0.0"
+version = "alpha-1"
 group = "thaumicenergistics"
 archivesBaseName = "thaumicenergistics"
 
@@ -41,6 +41,7 @@ jar {
     manifest {
         attributes 'FMLAT': 'theeng_at.cfg'
     }
+    from sourceSets.api.output
 }
 
 task apiJar(type: Jar) {
@@ -64,6 +65,11 @@ task sourcesJar(type: Jar) {
     from sourceSets.api.java
     from sourceSets.main.java
     classifier = 'sources'
+}
+
+sourceSets {
+    api
+    main
 }
 
 artifacts {

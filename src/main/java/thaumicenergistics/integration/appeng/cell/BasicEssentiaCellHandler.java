@@ -9,6 +9,7 @@ import appeng.api.storage.*;
 import appeng.api.storage.data.IAEStack;
 
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
+import thaumicenergistics.item.ItemCreativeEssentiaCell;
 import thaumicenergistics.item.ItemEssentiaCell;
 
 /**
@@ -45,5 +46,9 @@ public class BasicEssentiaCellHandler implements ICellHandler {
 
     private IStorageChannel getEssentiaStorageChannel() {
         return AEApi.instance().storage().getStorageChannel(IEssentiaStorageChannel.class);
+    }
+
+    private boolean isCreative(ItemStack stack) {
+        return stack.getItem() instanceof ItemCreativeEssentiaCell;
     }
 }

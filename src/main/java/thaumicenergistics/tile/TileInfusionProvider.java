@@ -71,7 +71,6 @@ public class TileInfusionProvider extends TileNetwork implements IAspectSource {
                 return false;
             monitor.extractItems(canExtract, Actionable.MODULATE, this.src);
             this.markDirty();
-
         } catch (GridAccessException e) {
             e.printStackTrace();
         }
