@@ -4,8 +4,6 @@ import appeng.api.networking.IGridHost;
 import appeng.api.util.DimensionalCoord;
 
 /**
- *
- *
  * @author BrockWS
  */
 public interface IThEGridHost extends IGridHost {

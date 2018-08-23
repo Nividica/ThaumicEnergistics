@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import net.minecraft.init.Blocks;
 
 import appeng.api.AEApi;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.util.AECableType;
@@ -16,7 +15,7 @@ import appeng.api.util.DimensionalCoord;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.integration.appeng.grid.IThEGridHost;
 import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
-import thaumicenergistics.integration.appeng.helpers.ThEActionSource;
+import thaumicenergistics.integration.appeng.util.ThEActionSource;
 import thaumicenergistics.util.FMLUtil;
 
 /**
@@ -30,7 +29,7 @@ public abstract class TileNetwork extends TileBase implements IThEGridHost, IAct
     protected ThEActionSource src;
 
     public TileNetwork() {
-        this.gridBlock = new ThEGridBlock(this, null, true);
+        this.gridBlock = new ThEGridBlock(this, this, true);
         this.src = new ThEActionSource(this);
     }
 
@@ -83,5 +82,6 @@ public abstract class TileNetwork extends TileBase implements IThEGridHost, IAct
     }
 
     @Override
-    public void securityBreak() {}
+    public void securityBreak() {
+    }
 }

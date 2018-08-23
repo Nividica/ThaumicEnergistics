@@ -1,6 +1,7 @@
 package thaumicenergistics.container;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
@@ -12,6 +13,7 @@ import thaumcraft.api.aspects.IEssentiaContainerItem;
 
 import thaumicenergistics.container.slot.SlotGhost;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
+import thaumicenergistics.network.PacketUIAction;
 import thaumicenergistics.util.EssentiaFilter;
 
 /**
@@ -39,10 +41,22 @@ public abstract class ContainerBase extends Container {
         }
     }
 
+    /**
+     * Called when a PacketUIAction is received by the server
+     *
+     * @param player Player that sent the action
+     * @param packet Packet from client
+     */
+    public void onAction(EntityPlayerMP player, PacketUIAction packet) {
+    }
+
     @Override
     public ItemStack slotClick(int slotID, int dragType, ClickType clickType, EntityPlayer player) {
         //ThELog.info("slotID {}", slotID);
-        if (slotID >= 36) {
+        if (slotID >= 36) { // We only care about non player slots
+            if (slotID >= this.inventorySlots.size())
+                return ItemStack.EMPTY;
+
             Slot slot = this.getSlot(slotID);
             if (slot instanceof SlotGhostEssentia) {
                 if (((SlotGhostEssentia) slot).getFilter() != null) {

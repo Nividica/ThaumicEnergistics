@@ -24,8 +24,6 @@ import thaumicenergistics.util.AEUtil;
 import thaumicenergistics.util.FMLUtil;
 
 /**
- *
- *
  * @author BrockWS
  */
 public class TileInfusionProvider extends TileNetwork implements IAspectSource {

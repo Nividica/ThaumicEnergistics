@@ -53,7 +53,7 @@ public abstract class GuiSharedEssentiaBus extends GuiBase {
             //mc.getTextureManager().bindTexture(((SlotGhostEssentia) slot).getAspect().getImage());
             //this.drawTexturedModalRect(x, y, 0, 0, 32, 32);
 
-            // TODO: Don't use Thaumcraft core stuff
+            // FIXME: Don't use Thaumcraft core stuff
             UtilsFX.drawTag(x, y, ((SlotGhostEssentia) slot).getAspect(), 0.0F, 0, (double) this.zLevel);
         } else
             super.drawSlot(slot);

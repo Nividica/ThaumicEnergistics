@@ -32,6 +32,7 @@ public class ItemEssentiaExportBus extends ItemPartBase {
     @Override
     public void initModel() {
         AEApi.instance().registries().partModels().registerModels(PartEssentiaExportBus.MODELS);
+
         ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModGlobals.MOD_ID + ":part/essentia_export_bus"));
     }
 }

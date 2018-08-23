@@ -10,9 +10,13 @@ import thaumicenergistics.init.ModGlobals;
 public abstract class ItemBase extends Item {
 
     public ItemBase(String id) {
-        super();
+        this(id, true);
+    }
+
+    public ItemBase(String id, boolean setCreativeTab) {
         this.setRegistryName(id);
         this.setUnlocalizedName(ModGlobals.MOD_ID + "." + id);
-        this.setCreativeTab(ModGlobals.CREATIVE_TAB);
+        if (setCreativeTab)
+            this.setCreativeTab(ModGlobals.CREATIVE_TAB);
     }
 }

@@ -1,6 +1,5 @@
 package thaumicenergistics.integration.thaumcraft;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import thaumcraft.api.ThaumcraftApi;
@@ -8,10 +7,8 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchCategory;
-import thaumcraft.api.research.ResearchEntry;
 
 import thaumicenergistics.init.ModGlobals;
-import thaumicenergistics.init.ModItems;
 import thaumicenergistics.integration.IThEIntegration;
 
 /**

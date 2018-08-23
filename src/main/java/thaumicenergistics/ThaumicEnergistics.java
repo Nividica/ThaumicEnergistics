@@ -1,18 +1,16 @@
 package thaumicenergistics;
 
-import mezz.jei.startup.PlayerJoinedWorldEvent;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -20,14 +18,17 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.init.ModGlobals;
+import thaumicenergistics.init.ModItems;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
 import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
+import thaumicenergistics.item.ItemDummyAspect;
+import thaumicenergistics.item.part.ItemEssentiaTerminal;
 import thaumicenergistics.network.PacketHandler;
+import thaumicenergistics.util.FMLUtil;
 import thaumicenergistics.util.ThELog;
 
 /**
@@ -81,6 +82,10 @@ public class ThaumicEnergistics {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(ThaumicEnergistics.INSTANCE, new GuiHandler());
+        if (FMLUtil.isClient()) {
+            Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new ItemDummyAspect.DummyAspectItemColors(), ModItems.itemDummyAspect);
+            Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new ItemEssentiaTerminal.TerminalItemColor(), ModItems.itemEssentiaTerminal);
+        }
 
         ThELog.info("Integrations: Init");
         ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::init);

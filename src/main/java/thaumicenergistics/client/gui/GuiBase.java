@@ -1,12 +1,17 @@
 package thaumicenergistics.client.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 
+import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.container.slot.ISlotOptional;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
+import thaumicenergistics.container.slot.SlotMEEssentia;
 
 /**
  * @author BrockWS
@@ -40,6 +45,14 @@ public abstract class GuiBase extends GuiContainer {
         if (this.hoveredSlot != null) {
             if (this.hoveredSlot instanceof SlotGhostEssentia && ((SlotGhostEssentia) this.hoveredSlot).getAspect() != null) {
                 this.drawHoveringText(((SlotGhostEssentia) this.hoveredSlot).getAspect().getName(), mouseX, mouseY);
+                return;
+            }
+            if (this.hoveredSlot instanceof SlotMEEssentia && this.hoveredSlot.getHasStack()) {
+                IAEEssentiaStack stack = ((SlotMEEssentia) this.hoveredSlot).getAEStack();
+                List<String> tooltip = new ArrayList<>();
+                tooltip.add(stack.getAspect().getName());
+                tooltip.add(Long.toString(stack.getStackSize()));
+                this.drawHoveringText(tooltip, mouseX, mouseY);
                 return;
             }
         }

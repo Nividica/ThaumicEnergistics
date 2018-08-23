@@ -4,6 +4,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
+import thaumicenergistics.client.render.ThEModelLoader;
+
 /**
  * Contains useful constant values
  *
@@ -33,4 +35,5 @@ public class ModGlobals {
     };
 
     public static final String RESEARCH_CATEGORY = ModGlobals.MOD_ID;
+    public static final ThEModelLoader MODEL_LOADER = new ThEModelLoader();
 }

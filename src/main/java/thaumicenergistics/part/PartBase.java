@@ -22,25 +22,21 @@ import net.minecraft.world.World;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.IPowerChannelState;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.parts.*;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.GridAccessException;
-import appeng.me.helpers.MachineSource;
 
 import thaumicenergistics.integration.appeng.grid.GridUtil;
 import thaumicenergistics.integration.appeng.grid.IThEGridHost;
 import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
-import thaumicenergistics.integration.appeng.helpers.ThEActionSource;
+import thaumicenergistics.integration.appeng.util.ThEActionSource;
 import thaumicenergistics.item.ItemPartBase;
 import thaumicenergistics.util.FMLUtil;
 
@@ -56,7 +52,7 @@ public abstract class PartBase implements IPart, IThEGridHost, IActionHost, IPow
     protected AEPartLocation side;
     protected EntityPlayer owner;
     protected ItemPartBase item;
-    protected IActionSource source;
+    public IActionSource source;
 
     protected boolean isPowered;
     protected boolean isActive;
@@ -66,7 +62,9 @@ public abstract class PartBase implements IPart, IThEGridHost, IActionHost, IPow
         this.source = new ThEActionSource(this);
     }
 
-    public abstract boolean canWork();
+    public boolean canWork() {
+        return false;
+    }
 
     public double getIdlePowerUsage() {
         return 0;
@@ -245,7 +243,7 @@ public abstract class PartBase implements IPart, IThEGridHost, IActionHost, IPow
     @Nonnull
     @Override
     public AECableType getCableConnectionType(@Nonnull AEPartLocation dir) {
-        return AECableType.SMART;
+        return AECableType.GLASS;
     }
 
     @Override

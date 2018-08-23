@@ -47,7 +47,7 @@ public abstract class PartSharedEssentiaBus extends PartBase implements IGridTic
     }
 
     protected int calculateAmountToSend() {
-        // A jar can hold 256 essentia
+        // A jar can hold 250 essentia
         // TODO: Get feedback on these values
         switch (this.getInstalledUpgrades(Upgrades.SPEED)) {
             case 4:

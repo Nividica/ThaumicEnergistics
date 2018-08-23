@@ -22,5 +22,6 @@ public abstract class BlockBase extends Block {
         this.setHardness(1f);
     }
 
-    public void registerTileEntity() {}
+    public void registerTileEntity() {
+    }
 }

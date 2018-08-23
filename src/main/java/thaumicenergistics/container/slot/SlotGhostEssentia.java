@@ -1,6 +1,7 @@
 package thaumicenergistics.container.slot;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 
 import thaumcraft.api.aspects.Aspect;
 
@@ -29,5 +30,12 @@ public class SlotGhostEssentia extends SlotGhost {
 
     public Aspect getAspect() {
         return this.getFilter().getAspect(this.getSlotIndex());
+    }
+
+    @Override
+    public ItemStack getStack() {
+        //if (this.getAspect() != null)
+        //return AEUtil.getAEStackFromAspect(this.getAspect(), 0).asItemStackRepresentation();
+        return super.getStack();
     }
 }

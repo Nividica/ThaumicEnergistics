@@ -1,4 +1,4 @@
-package thaumicenergistics.integration.appeng.helpers;
+package thaumicenergistics.integration.appeng.util;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;

@@ -16,11 +16,14 @@ import appeng.api.util.AEPartLocation;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.client.gui.part.GuiEssentiaExportBus;
 import thaumicenergistics.client.gui.part.GuiEssentiaImportBus;
+import thaumicenergistics.client.gui.part.GuiEssentiaTerminal;
 import thaumicenergistics.container.part.ContainerEssentiaExportBus;
 import thaumicenergistics.container.part.ContainerEssentiaImportBus;
+import thaumicenergistics.container.part.ContainerEssentiaTerminal;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.part.PartEssentiaExportBus;
 import thaumicenergistics.part.PartEssentiaImportBus;
+import thaumicenergistics.part.PartEssentiaTerminal;
 
 /**
  * @author BrockWS
@@ -74,12 +77,15 @@ public class GuiHandler implements IGuiHandler {
     public Object getServerGuiElement(int ordinal, EntityPlayer player, World world, int x, int y, int z) {
         ModGUIs guiID = GuiHandler.getGUIFromOrdinal(ordinal);
         AEPartLocation side = GuiHandler.getSideFromOrdinal(ordinal);
+        IPart part = GuiHandler.getPartFromWorld(world, new BlockPos(x, y, z), side);
 
         switch (guiID) {
             case ESSENTIA_IMPORT_BUS:
-                return new ContainerEssentiaImportBus(player, (PartEssentiaImportBus) GuiHandler.getPartFromWorld(world, new BlockPos(x, y, z), side));
+                return new ContainerEssentiaImportBus(player, (PartEssentiaImportBus) part);
             case ESSENTIA_EXPORT_BUS:
-                return new ContainerEssentiaExportBus(player, (PartEssentiaExportBus) GuiHandler.getPartFromWorld(world, new BlockPos(x, y, z), side));
+                return new ContainerEssentiaExportBus(player, (PartEssentiaExportBus) part);
+            case ESSENTIA_TERMINAL:
+                return new ContainerEssentiaTerminal(player, (PartEssentiaTerminal) part);
             default:
                 return null;
         }
@@ -90,12 +96,15 @@ public class GuiHandler implements IGuiHandler {
     public Object getClientGuiElement(int ordinal, EntityPlayer player, World world, int x, int y, int z) {
         ModGUIs guiID = GuiHandler.getGUIFromOrdinal(ordinal);
         AEPartLocation side = GuiHandler.getSideFromOrdinal(ordinal);
+        IPart part = GuiHandler.getPartFromWorld(world, new BlockPos(x, y, z), side);
 
         switch (guiID) {
             case ESSENTIA_IMPORT_BUS:
-                return new GuiEssentiaImportBus(new ContainerEssentiaImportBus(player, (PartEssentiaImportBus) GuiHandler.getPartFromWorld(world, new BlockPos(x, y, z), side)));
+                return new GuiEssentiaImportBus(new ContainerEssentiaImportBus(player, (PartEssentiaImportBus) part));
             case ESSENTIA_EXPORT_BUS:
-                return new GuiEssentiaExportBus(new ContainerEssentiaExportBus(player, (PartEssentiaExportBus) GuiHandler.getPartFromWorld(world, new BlockPos(x, y, z), side)));
+                return new GuiEssentiaExportBus(new ContainerEssentiaExportBus(player, (PartEssentiaExportBus) part));
+            case ESSENTIA_TERMINAL:
+                return new GuiEssentiaTerminal(new ContainerEssentiaTerminal(player, (PartEssentiaTerminal) part));
             default:
                 return null;
         }

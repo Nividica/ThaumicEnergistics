@@ -5,5 +5,7 @@ package thaumicenergistics.init;
  */
 public enum ModGUIs {
     ESSENTIA_IMPORT_BUS,
-    ESSENTIA_EXPORT_BUS
+    ESSENTIA_EXPORT_BUS,
+    ESSENTIA_STORAGE_BUS,
+    ESSENTIA_TERMINAL
 }

@@ -15,7 +15,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IItemList;
 import appeng.me.storage.AbstractCellInventory;
 
-import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 
 import thaumicenergistics.ThaumicEnergistics;

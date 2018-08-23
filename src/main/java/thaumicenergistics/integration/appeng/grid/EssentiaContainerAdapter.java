@@ -14,7 +14,6 @@ import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.util.AEUtil;
-import thaumicenergistics.util.ThELog;
 
 /**
  * Wraps a IAspectContainer for use by a ME system

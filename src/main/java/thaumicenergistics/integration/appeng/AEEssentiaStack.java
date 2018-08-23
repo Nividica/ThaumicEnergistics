@@ -7,6 +7,8 @@ import java.io.IOException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
@@ -14,9 +16,10 @@ import appeng.api.storage.IStorageChannel;
 import thaumcraft.api.aspects.Aspect;
 
 import thaumicenergistics.api.EssentiaStack;
-import thaumicenergistics.api.item.ItemDummyAspect;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
+import thaumicenergistics.init.ModItems;
+import thaumicenergistics.item.ItemDummyAspect;
 
 /**
  * @author BrockWS
@@ -67,7 +70,9 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
         return new AEEssentiaStack(stack.getAspect(), stack.getAmount());
     }
 
-    // TODO: fromPacket
+    public static IAEEssentiaStack fromPacket(ByteBuf buf) {
+        return AEEssentiaStack.fromNBT(ByteBufUtils.readTag(buf));
+    }
 
     @Override
     public long getStackSize() {
@@ -164,7 +169,9 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
 
     @Override
     public void writeToPacket(ByteBuf buf) throws IOException {
-        // TODO
+        NBTTagCompound tag = new NBTTagCompound();
+        this.writeToNBT(tag);
+        ByteBufUtils.writeTag(buf, tag);
     }
 
     @Override
@@ -197,7 +204,9 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
     @Override
     public ItemStack asItemStackRepresentation() {
         // TODO: Test
-        return new ItemStack(new ItemDummyAspect().setAspect(this.aspect));
+        ItemStack stack = new ItemStack(ModItems.itemDummyAspect);
+        ((ItemDummyAspect) stack.getItem()).setAspect(stack, this.aspect);
+        return stack;
     }
 
     @Override

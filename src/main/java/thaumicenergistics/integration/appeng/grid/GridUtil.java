@@ -8,7 +8,6 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.parts.IPart;
 import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
 
