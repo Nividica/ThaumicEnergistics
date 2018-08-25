@@ -1,7 +1,6 @@
 package thaumicenergistics.init;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import thaumicenergistics.client.render.ThEModelLoader;
@@ -25,12 +24,12 @@ public class ModGlobals {
         // TODO: Tab Icon
         @Override
         public ItemStack getIconItemStack() {
-            return new ItemStack(Items.DIAMOND);
+            return new ItemStack(ModItems.itemEssentiaCell1k);
         }
 
         @Override
         public ItemStack getTabIconItem() {
-            return new ItemStack(Items.DIAMOND);
+            return new ItemStack(ModItems.itemEssentiaCell1k);
         }
     };
 

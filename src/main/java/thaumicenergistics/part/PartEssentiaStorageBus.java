@@ -78,7 +78,6 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
         // TODO: Probably should send off an update like PartStorageBus?
         // Won't get anything here util Platform#postChanges is fixed #3644
         // https://github.com/AppliedEnergistics/Applied-Energistics-2/pull/3644
-        ThELog.info("PartEssentiaStorageBus postChange");
     }
 
     @Override

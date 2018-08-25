@@ -19,7 +19,6 @@ import net.minecraftforge.common.model.IModelState;
 import thaumcraft.api.aspects.Aspect;
 
 import thaumicenergistics.init.ModGlobals;
-import thaumicenergistics.util.ThELog;
 
 /**
  * @author BrockWS
@@ -61,7 +60,6 @@ public class DummyAspectItemModel implements IModel {
     @Override
     public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
         IBakedModel base = this.getBaseModel().bake(state, format, bakedTextureGetter);
-        ThELog.info("Baking DummyAspectItemModel");
 
         return new DummyAspectBakedModel(base, format, bakedTextureGetter);
     }

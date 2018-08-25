@@ -13,6 +13,7 @@ item.thaumicenergistics.essentia_cell_creative.name=Creative ME Essentia Storage
 item.thaumicenergistics.essentia_import.name=Essentia Import Bus
 item.thaumicenergistics.essentia_export.name=Essentia Export Bus
 item.thaumicenergistics.essentia_storage.name=Essentia Storage Bus
+item.thaumicenergistics.essentia_terminal.name=Essentia Terminal
 
 
 # FROM THAUMCRAFT en_US.lang

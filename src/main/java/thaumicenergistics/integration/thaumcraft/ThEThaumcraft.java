@@ -31,17 +31,9 @@ public class ThEThaumcraft implements IThEIntegration {
                 ModGlobals.RESEARCH_CATEGORY,
                 null,
                 new AspectList().add(Aspect.FIRE, 1),
-                new ResourceLocation(ModGlobals.MOD_ID, "textures/research/icon.png"),
-                new ResourceLocation(ModGlobals.MOD_ID, "textures/research/background.png"));
+                new ResourceLocation(ModGlobals.MOD_ID, "textures/research/tab_icon.png"),
+                ResearchCategories.getResearchCategory("BASICS").background,
+                ResearchCategories.getResearchCategory("BASICS").background2);
         ThaumcraftApi.registerResearchLocation(new ResourceLocation(ModGlobals.MOD_ID, "research/" + ModGlobals.RESEARCH_CATEGORY));
-        /*ResearchEntry IO_BUS = new ResearchEntry();
-        IO_BUS.setKey("IO_BUS");
-        IO_BUS.setCategory(category.key);
-        IO_BUS.setMeta(ResearchEntry.EnumResearchMeta.values());
-        IO_BUS.setRewardItem(new ItemStack[]{new ItemStack(ModItems.itemEssentiaExportBus), new ItemStack(ModItems.itemEssentiaImportBus)});
-        IO_BUS.setMeta(new ResearchEntry.EnumResearchMeta[]{ResearchEntry.EnumResearchMeta.ROUND});
-        IO_BUS.setIcons(new Object[]{new ItemStack(ModItems.itemEssentiaImportBus)});
-        IO_BUS.setName("Essenta IO Bus");
-        category.research.put("IO_BUS", IO_BUS);*/
     }
 }
