@@ -1,4 +1,4 @@
-package thaumicenergistics.api.internal.model;
+package thaumicenergistics.client.render;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

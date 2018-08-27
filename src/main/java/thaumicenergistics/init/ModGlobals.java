@@ -3,6 +3,7 @@ package thaumicenergistics.init;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.render.ThEModelLoader;
 
 /**
@@ -21,15 +22,17 @@ public class ModGlobals {
      * Creative tab.
      */
     public static CreativeTabs CREATIVE_TAB = new CreativeTabs("ThaumicEnergistics") {
-        // TODO: Tab Icon
         @Override
         public ItemStack getIconItemStack() {
-            return new ItemStack(ModItems.itemEssentiaCell1k);
+            return this.getTabIconItem();
         }
 
         @Override
         public ItemStack getTabIconItem() {
-            return new ItemStack(ModItems.itemEssentiaCell1k);
+            ItemStack icon = ThEApi.instance().items().essentiaCell1k().maybeStack(1).orElse(ItemStack.EMPTY);
+            if (icon.isEmpty())
+                throw new NullPointerException("Unable to use essentiaCell1k for creative tab!");
+            return icon;
         }
     };
 

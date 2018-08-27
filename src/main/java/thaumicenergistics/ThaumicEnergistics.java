@@ -19,9 +19,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.init.ModGlobals;
-import thaumicenergistics.init.ModItems;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
 import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
@@ -63,6 +63,7 @@ public class ThaumicEnergistics {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ThaumicEnergistics.LOGGER = event.getModLog();
+        ThEApi.instance(); // Make sure to init the api
         MinecraftForge.EVENT_BUS.register(this);
 
         PacketHandler.register();
@@ -83,8 +84,15 @@ public class ThaumicEnergistics {
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(ThaumicEnergistics.INSTANCE, new GuiHandler());
         if (FMLUtil.isClient()) {
-            Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new ItemDummyAspect.DummyAspectItemColors(), ModItems.itemDummyAspect);
-            Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new ItemEssentiaTerminal.TerminalItemColor(), ModItems.itemEssentiaTerminal);
+            if (ThEApi.instance().items().dummyAspect().maybeItem().isPresent())
+                Minecraft.getMinecraft().getItemColors().registerItemColorHandler(
+                        new ItemDummyAspect.DummyAspectItemColors(),
+                        ThEApi.instance().items().dummyAspect().maybeItem().get());
+
+            if (ThEApi.instance().items().essentiaTerminal().maybeItem().isPresent())
+                Minecraft.getMinecraft().getItemColors().registerItemColorHandler(
+                        new ItemEssentiaTerminal.TerminalItemColor(),
+                        ThEApi.instance().items().essentiaTerminal().maybeItem().get());
         }
 
         ThELog.info("Integrations: Init");

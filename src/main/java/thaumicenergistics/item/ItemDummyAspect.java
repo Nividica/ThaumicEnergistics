@@ -11,7 +11,7 @@ import net.minecraftforge.client.model.ModelLoader;
 
 import thaumcraft.api.aspects.Aspect;
 
-import thaumicenergistics.api.internal.model.IThEModel;
+import thaumicenergistics.client.render.IThEModel;
 import thaumicenergistics.client.render.DummyAspectItemModel;
 import thaumicenergistics.init.ModGlobals;
 

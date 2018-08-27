@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import thaumicenergistics.api.internal.model.IThEModel;
+import thaumicenergistics.client.render.IThEModel;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.tile.TileInfusionProvider;
 

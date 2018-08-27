@@ -16,9 +16,9 @@ import appeng.api.storage.IStorageChannel;
 import thaumcraft.api.aspects.Aspect;
 
 import thaumicenergistics.api.EssentiaStack;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
-import thaumicenergistics.init.ModItems;
 import thaumicenergistics.item.ItemDummyAspect;
 
 /**
@@ -204,8 +204,9 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
     @Override
     public ItemStack asItemStackRepresentation() {
         // TODO: Test
-        ItemStack stack = new ItemStack(ModItems.itemDummyAspect);
-        ((ItemDummyAspect) stack.getItem()).setAspect(stack, this.aspect);
+        ItemStack stack = ThEApi.instance().items().dummyAspect().maybeStack(1).orElse(ItemStack.EMPTY);
+        if (!stack.isEmpty())
+            ((ItemDummyAspect) stack.getItem()).setAspect(stack, this.aspect);
         return stack;
     }
 

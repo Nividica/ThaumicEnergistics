@@ -25,7 +25,7 @@ import appeng.core.localization.GuiText;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 
-import thaumicenergistics.api.internal.model.IThEModel;
+import thaumicenergistics.client.render.IThEModel;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.init.ModGlobals;
