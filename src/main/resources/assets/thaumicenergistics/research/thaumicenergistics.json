@@ -6,7 +6,21 @@
             "icons": [
                 "thaumicenergistics:essentia_import"
             ],
-            "category": "thaumicenergistics"
+            "category": "thaumicenergistics",
+            "location": [
+                0,
+                0
+            ],
+            "meta": ["ROUND"],
+            "parents": [
+                "AECORE",
+                "UNLOCKARTIFICE"
+            ],
+            "stages": [
+                {
+                    "text": "research.base_energistics.stage.1"
+                }
+            ]
         }
     ]
 }

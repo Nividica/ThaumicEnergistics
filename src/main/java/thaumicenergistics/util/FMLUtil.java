@@ -12,16 +12,8 @@ public class FMLUtil {
         return FMLUtil.getSide().isClient();
     }
 
-    public static boolean isClient(Side side) {
-        return side == Side.CLIENT;
-    }
-
     public static boolean isServer() {
         return FMLUtil.getSide().isServer();
-    }
-
-    public static boolean isServer(Side side) {
-        return side == Side.SERVER;
     }
 
     public static Side getSide() {

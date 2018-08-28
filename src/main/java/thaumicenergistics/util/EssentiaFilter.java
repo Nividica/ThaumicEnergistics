@@ -1,5 +1,6 @@
 package thaumicenergistics.util;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -67,22 +68,12 @@ public class EssentiaFilter implements INBTSerializable<NBTTagCompound>, Iterabl
         this.onContentsChanged();
     }
 
-    private String[] toStringArray() {
-        // TODO Find usage?
-        String[] array = new String[this.aspects.length];
-        for (int i = 0; i < array.length; i++)
-            if (this.aspects[i] == null)
-                array[i] = null;
-            else
-                array[i] = this.aspects[i].getTag();
-        return array;
-    }
-
     protected void onContentsChanged() {
 
     }
 
     @Override
+    @Nonnull
     public Iterator<Aspect> iterator() {
         return Arrays.asList(this.aspects).iterator();
     }

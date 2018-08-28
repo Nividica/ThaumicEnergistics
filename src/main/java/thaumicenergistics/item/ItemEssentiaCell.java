@@ -22,13 +22,13 @@ import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.data.IItemList;
 import appeng.core.localization.GuiText;
-import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 
 import thaumicenergistics.client.render.IThEModel;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.init.ModGlobals;
+import thaumicenergistics.util.EssentiaCellConfig;
 
 /**
  * @author BrockWS
@@ -143,7 +143,7 @@ public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssent
 
     @Override
     public IItemHandler getConfigInventory(ItemStack itemStack) {
-        return new CellConfig(itemStack);
+        return new EssentiaCellConfig(itemStack);
     }
 
     @Override

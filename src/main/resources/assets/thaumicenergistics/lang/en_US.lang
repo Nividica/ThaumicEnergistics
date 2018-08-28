@@ -38,3 +38,7 @@ item.thaumicenergistics.essentia_terminal.name=Essentia Terminal
 
 # Research Category
 tc.research_category.thaumicenergistics=Energistics
+
+# Research Basics
+research.base_energistics.title=Thaumic Energistics
+research.base_energistics.stage.1=As both a scientist and an arcane scholar, I have postulated that it must be possible to combine technology and magic in a stable and productive way.<BR>I should study the principals of matter-energy conversion in detail to accomplish this. It is likely there are aspects of Thaumaturgy that can accomplish this, as well as technology capable of doing the same.<BR>This will require extensive study, but I am sure that it will be a worthwhile investment of your time.

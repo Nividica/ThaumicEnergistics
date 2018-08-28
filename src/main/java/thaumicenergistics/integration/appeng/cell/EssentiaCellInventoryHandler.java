@@ -8,6 +8,8 @@ import appeng.me.storage.AbstractCellInventoryHandler;
 
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
+import thaumicenergistics.item.ItemDummyAspect;
+import thaumicenergistics.util.AEUtil;
 
 /**
  * FIXME 23/07: rv6-alpha-4 will have a generic cell inventory, Deprecate
@@ -25,6 +27,8 @@ public class EssentiaCellInventoryHandler extends AbstractCellInventoryHandler<I
         // TODO: Check if instance of ItemDummyAspect, then convert to AEEssentiaStack
         // Based on ItemCellInventoryHandler
         // AEItemStack.fromItemStack( is );
+        if (is.getItem() instanceof ItemDummyAspect)
+            return AEUtil.getAEStackFromAspect(((ItemDummyAspect) is.getItem()).getAspect(is), 1);
         return null;
     }
 }
