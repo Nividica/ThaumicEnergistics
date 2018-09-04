@@ -17,9 +17,9 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.ITileDefinition;
 
 import thaumicenergistics.api.IThEBlocks;
-import thaumicenergistics.client.render.IThEModel;
 import thaumicenergistics.block.BlockBase;
 import thaumicenergistics.block.BlockInfusionProvider;
+import thaumicenergistics.client.render.IThEModel;
 import thaumicenergistics.definitions.ThEBlockDefinition;
 import thaumicenergistics.definitions.ThETileDefinition;
 import thaumicenergistics.tile.TileInfusionProvider;

@@ -1,18 +1,15 @@
 package thaumicenergistics.integration.appeng;
 
-import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 import appeng.api.AEApi;
-import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IItemList;
-import appeng.util.Platform;
 
 import thaumcraft.api.aspects.Aspect;
 
@@ -65,33 +62,15 @@ public class ThEAppliedEnergistics implements IThEIntegration {
 
         @Nullable
         @Override
-        public IAEEssentiaStack readFromPacket(@Nonnull ByteBuf byteBuf) throws IOException {
+        public IAEEssentiaStack readFromPacket(@Nonnull ByteBuf buf) throws IOException {
             // TODO
-            return null;
+            return AEEssentiaStack.fromPacket(buf);
         }
 
         @Nullable
         @Override
-        public IAEEssentiaStack poweredExtraction(@Nonnull IEnergySource energy, @Nonnull IMEInventory<IAEEssentiaStack> cell, @Nonnull IAEEssentiaStack request, @Nonnull IActionSource src) {
-            // FIXME: removed in rv6-alpha-4
-            Preconditions.checkNotNull(energy);
-            Preconditions.checkNotNull(cell);
-            Preconditions.checkNotNull(request);
-            Preconditions.checkNotNull(src);
-
-            return Platform.poweredExtraction(energy, cell, request, src);
-        }
-
-        @Nullable
-        @Override
-        public IAEEssentiaStack poweredInsert(@Nonnull IEnergySource energy, @Nonnull IMEInventory<IAEEssentiaStack> cell, @Nonnull IAEEssentiaStack input, @Nonnull IActionSource src) {
-            // FIXME: removed in rv6-alpha-4
-            Preconditions.checkNotNull(energy);
-            Preconditions.checkNotNull(cell);
-            Preconditions.checkNotNull(input);
-            Preconditions.checkNotNull(src);
-
-            return Platform.poweredInsert(energy, cell, input, src);
+        public IAEEssentiaStack createFromNBT(@Nonnull NBTTagCompound tag) {
+            return AEEssentiaStack.fromNBT(tag);
         }
     }
 }

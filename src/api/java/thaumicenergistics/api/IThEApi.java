@@ -11,12 +11,14 @@ public interface IThEApi {
 
     /**
      * Contains all items in Thaumic Energistics
+     *
      * @return Class which contains item definitions
      */
     IThEItems items();
 
     /**
      * Contains all blocks/tiles in Thaumic Energistics
+     *
      * @return Class which contains block/tile definitions
      */
     IThEBlocks blocks();

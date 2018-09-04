@@ -11,9 +11,11 @@
                 0,
                 0
             ],
-            "meta": ["ROUND"],
+            "meta": [
+                "ROUND"
+            ],
             "parents": [
-                "AECORE",
+                "f_AECORE",
                 "UNLOCKARTIFICE"
             ],
             "stages": [

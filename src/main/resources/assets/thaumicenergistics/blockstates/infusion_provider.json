@@ -4,7 +4,11 @@
         "model": "thaumicenergistics:infusion_provider"
     },
     "variants": {
-        "normal": [{}],
-        "inventory": [{}]
+        "normal": [
+            {}
+        ],
+        "inventory": [
+            {}
+        ]
     }
 }
