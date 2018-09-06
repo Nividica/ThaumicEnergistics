@@ -85,6 +85,7 @@ public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonit
                 }
             } else {
                 player.inventory.setItemStack(toFill);
+                filledItem = true;
                 PacketHandler.sendToPlayer(player, new PacketInvHeldUpdate(toFill));
             }
             if (filledItem)

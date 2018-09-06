@@ -16,12 +16,9 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.IncludeExclude;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.data.IItemList;
-import appeng.core.localization.GuiText;
 import appeng.items.contents.CellUpgrades;
 
 import thaumicenergistics.api.storage.IAEEssentiaStack;
@@ -60,35 +57,8 @@ public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssent
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        ICellInventoryHandler<IAEEssentiaStack> handler = AEApi.instance().registries().cell().getCellInventory(stack, null, getChannel());
-
-        if (handler != null) {
-            ICellInventory cellInventory = handler.getCellInv();
-
-            if (cellInventory != null) {
-                tooltip.add(cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal());
-
-                tooltip.add(cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalItemTypes() + ' ' + GuiText.Types.getLocal());
-
-                if (handler.isPreformatted()) {
-                    final String list = (handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included : GuiText.Excluded).getLocal();
-
-                    if (handler.isFuzzy()) {
-                        tooltip.add(GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Fuzzy.getLocal());
-                    } else {
-                        tooltip.add(GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Precise.getLocal());
-                    }
-                }
-
-                // TODO: Temporary util Essentia Terminal is added
-                IItemList<IAEEssentiaStack> list = handler.getAvailableItems(this.getChannel().createList());
-
-                for (IAEEssentiaStack s : list) {
-                    tooltip.add(s.getAspect().getName() + " : " + s.getStackSize());
-                }
-            }
-        }
-
+        ICellInventoryHandler<IAEEssentiaStack> cellInventory = AEApi.instance().registries().cell().getCellInventory(stack, null, this.getChannel());
+        AEApi.instance().client().addCellInformation(cellInventory, tooltip);
     }
 
     @Override

@@ -2,6 +2,7 @@ package thaumicenergistics.util;
 
 import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 
 import thaumcraft.api.aspects.Aspect;
@@ -31,5 +32,9 @@ public class AEUtil {
 
     public static IAEEssentiaStack getAEStackFromAspect(Aspect aspect) {
         return AEUtil.getAEStackFromAspect(aspect, Integer.MAX_VALUE);
+    }
+
+    public static <T extends IAEStack<T>, C extends IStorageChannel<T>> C getStorageChannel(Class<C> clazz) {
+        return AEApi.instance().storage().getStorageChannel(clazz);
     }
 }

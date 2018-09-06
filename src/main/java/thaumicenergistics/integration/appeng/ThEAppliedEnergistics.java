@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.IOException;
 
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -17,7 +16,7 @@ import thaumicenergistics.api.EssentiaStack;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.integration.IThEIntegration;
-import thaumicenergistics.integration.appeng.cell.BasicEssentiaCellHandler;
+import thaumicenergistics.integration.appeng.cell.CreativeEssentiaCellHandler;
 
 /**
  * @author BrockWS
@@ -31,7 +30,7 @@ public class ThEAppliedEnergistics implements IThEIntegration {
 
     @Override
     public void init() {
-        AEApi.instance().registries().cell().addCellHandler(new BasicEssentiaCellHandler());
+        AEApi.instance().registries().cell().addCellHandler(new CreativeEssentiaCellHandler());
     }
 
     @Override
@@ -62,8 +61,7 @@ public class ThEAppliedEnergistics implements IThEIntegration {
 
         @Nullable
         @Override
-        public IAEEssentiaStack readFromPacket(@Nonnull ByteBuf buf) throws IOException {
-            // TODO
+        public IAEEssentiaStack readFromPacket(@Nonnull ByteBuf buf) {
             return AEEssentiaStack.fromPacket(buf);
         }
 
