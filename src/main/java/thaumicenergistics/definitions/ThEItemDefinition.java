@@ -33,7 +33,7 @@ public class ThEItemDefinition implements IItemDefinition {
 
     @Override
     public Optional<ItemStack> maybeStack(int i) {
-        return Optional.of(new ItemStack(this.item));
+        return Optional.of(new ItemStack(this.item, i));
     }
 
     @Override

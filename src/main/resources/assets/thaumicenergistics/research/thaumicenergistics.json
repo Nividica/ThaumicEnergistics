@@ -46,7 +46,8 @@
                     "required_knowledge": ["THEORY;THAUMICENERGISTICS;1"]
                 },
                 {
-                    "text": "research.digisentia.stage.2"
+                    "text": "research.digisentia.stage.2",
+                    "recipes": ["thaumicenergistics:coalescence_core", "thaumicenergistics:diffusion_core"]
                 }
             ]
         }

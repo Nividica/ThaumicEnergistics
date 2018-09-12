@@ -1,0 +1,15 @@
+{
+    "result": {
+        "item": "thaumicenergistics:essentia_cell_4k"
+    },
+    "type": "forge:ore_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.empty_storage_cell"
+        },
+        {
+            "item": "thaumicenergistics:essentia_component_4k"
+        }
+    ]
+}

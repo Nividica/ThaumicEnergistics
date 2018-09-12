@@ -5,6 +5,13 @@ itemGroup.ThaumicEnergistics=Thaumic Energistics
 tile.thaumicenergistics.infusion_provider.name=Essentia Infusion Provider
 
 # Items
+item.thaumicenergistics.diffusion_core.name=Diffusion Core
+item.thaumicenergistics.coalescence_core.name=Coalescence Core
+item.thaumicenergistics.essentia_component_1k.name=1k ME Essentia Storage Component
+item.thaumicenergistics.essentia_component_4k.name=4k ME Essentia Storage Component
+item.thaumicenergistics.essentia_component_16k.name=16k ME Essentia Storage Component
+item.thaumicenergistics.essentia_component_64k.name=64k ME Essentia Storage Component
+
 item.thaumicenergistics.essentia_cell_1k.name=1k ME Essentia Storage Cell
 item.thaumicenergistics.essentia_cell_4k.name=4k ME Essentia Storage Cell
 item.thaumicenergistics.essentia_cell_16k.name=16k ME Essentia Storage Cell
@@ -14,8 +21,6 @@ item.thaumicenergistics.essentia_import.name=Essentia Import Bus
 item.thaumicenergistics.essentia_export.name=Essentia Export Bus
 item.thaumicenergistics.essentia_storage.name=Essentia Storage Bus
 item.thaumicenergistics.essentia_terminal.name=Essentia Terminal
-item.thaumicenergistics.diffusion_core.name=Diffusion Core
-item.thaumicenergistics.coalescence_core.name=Coalescence Core
 
 # FROM THAUMCRAFT en_US.lang
 # BEST TO RECHECK THE LATEST LANG FILE FOR CHANGED FORMATTING

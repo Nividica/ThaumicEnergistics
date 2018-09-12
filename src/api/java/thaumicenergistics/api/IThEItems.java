@@ -11,6 +11,8 @@ import appeng.api.definitions.IItemDefinition;
  */
 public interface IThEItems {
 
+    // Cells
+
     IItemDefinition essentiaCell1k();
 
     IItemDefinition essentiaCell4k();
@@ -20,6 +22,8 @@ public interface IThEItems {
     IItemDefinition essentiaCell64k();
 
     IItemDefinition essentiaCellCreative();
+
+    // Parts
 
     IItemDefinition essentiaImportBus();
 
@@ -31,7 +35,17 @@ public interface IThEItems {
 
     IItemDefinition dummyAspect();
 
+    // Materials
+
     IItemDefinition diffusionCore();
 
     IItemDefinition coalescenceCore();
+
+    IItemDefinition essentiaComponent1k();
+
+    IItemDefinition essentiaComponent4k();
+
+    IItemDefinition essentiaComponent16k();
+
+    IItemDefinition essentiaComponent64k();
 }

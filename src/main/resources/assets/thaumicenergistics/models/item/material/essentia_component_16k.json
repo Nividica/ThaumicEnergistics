@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "thaumicenergistics:item/material/essentia_component_16k"
+    }
+}
