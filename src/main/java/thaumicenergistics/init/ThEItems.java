@@ -22,6 +22,8 @@ import thaumicenergistics.item.ItemBase;
 import thaumicenergistics.item.ItemCreativeEssentiaCell;
 import thaumicenergistics.item.ItemDummyAspect;
 import thaumicenergistics.item.ItemEssentiaCell;
+import thaumicenergistics.item.material.ItemCoalescenceCore;
+import thaumicenergistics.item.material.ItemDiffusionCore;
 import thaumicenergistics.item.part.ItemEssentiaExportBus;
 import thaumicenergistics.item.part.ItemEssentiaImportBus;
 import thaumicenergistics.item.part.ItemEssentiaStorageBus;
@@ -68,18 +70,22 @@ public class ThEItems implements IThEItems {
     private final IItemDefinition itemEssentiaStorageBus;
     private final IItemDefinition itemEssentiaTerminal;
     private final IItemDefinition itemDummyAspect;
+    private final IItemDefinition itemDiffusionCore;
+    private final IItemDefinition itemCoalescenceCore;
 
     public ThEItems() {
-        itemEssentiaCell1k = ThEItems.createItem(new ItemEssentiaCell("1k", 1024, 12));
-        itemEssentiaCell4k = ThEItems.createItem(new ItemEssentiaCell("4k", 1024 * 4, 12));
-        itemEssentiaCell16k = ThEItems.createItem(new ItemEssentiaCell("16k", 1024 * 16, 12));
-        itemEssentiaCell64k = ThEItems.createItem(new ItemEssentiaCell("64k", 1024 * 64, 12));
-        itemEssentiaCellCreative = ThEItems.createItem(new ItemCreativeEssentiaCell());
-        itemEssentiaImportBus = ThEItems.createItem(new ItemEssentiaImportBus("essentia_import"));
-        itemEssentiaExportBus = ThEItems.createItem(new ItemEssentiaExportBus("essentia_export"));
-        itemEssentiaStorageBus = ThEItems.createItem(new ItemEssentiaStorageBus("essentia_storage"));
-        itemEssentiaTerminal = ThEItems.createItem(new ItemEssentiaTerminal("essentia_terminal"));
-        itemDummyAspect = ThEItems.createItem(new ItemDummyAspect());
+        this.itemEssentiaCell1k = ThEItems.createItem(new ItemEssentiaCell("1k", 1024, 12));
+        this.itemEssentiaCell4k = ThEItems.createItem(new ItemEssentiaCell("4k", 1024 * 4, 12));
+        this.itemEssentiaCell16k = ThEItems.createItem(new ItemEssentiaCell("16k", 1024 * 16, 12));
+        this.itemEssentiaCell64k = ThEItems.createItem(new ItemEssentiaCell("64k", 1024 * 64, 12));
+        this.itemEssentiaCellCreative = ThEItems.createItem(new ItemCreativeEssentiaCell());
+        this.itemEssentiaImportBus = ThEItems.createItem(new ItemEssentiaImportBus("essentia_import"));
+        this.itemEssentiaExportBus = ThEItems.createItem(new ItemEssentiaExportBus("essentia_export"));
+        this.itemEssentiaStorageBus = ThEItems.createItem(new ItemEssentiaStorageBus("essentia_storage"));
+        this.itemEssentiaTerminal = ThEItems.createItem(new ItemEssentiaTerminal("essentia_terminal"));
+        this.itemDummyAspect = ThEItems.createItem(new ItemDummyAspect());
+        this.itemDiffusionCore = ThEItems.createItem(new ItemDiffusionCore("diffusion_core"));
+        this.itemCoalescenceCore = ThEItems.createItem(new ItemCoalescenceCore("coalescence_core"));
     }
 
     @Override
@@ -130,5 +136,15 @@ public class ThEItems implements IThEItems {
     @Override
     public IItemDefinition dummyAspect() {
         return this.itemDummyAspect;
+    }
+
+    @Override
+    public IItemDefinition diffusionCore() {
+        return this.itemDiffusionCore;
+    }
+
+    @Override
+    public IItemDefinition coalescenceCore() {
+        return this.itemCoalescenceCore;
     }
 }

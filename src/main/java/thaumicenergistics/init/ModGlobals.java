@@ -36,6 +36,6 @@ public class ModGlobals {
         }
     };
 
-    public static final String RESEARCH_CATEGORY = ModGlobals.MOD_ID;
+    public static final String RESEARCH_CATEGORY = ModGlobals.MOD_ID.toUpperCase();
     public static final ThEModelLoader MODEL_LOADER = new ThEModelLoader();
 }

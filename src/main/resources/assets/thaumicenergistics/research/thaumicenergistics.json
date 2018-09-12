@@ -6,7 +6,7 @@
             "icons": [
                 "thaumicenergistics:essentia_import"
             ],
-            "category": "thaumicenergistics",
+            "category": "THAUMICENERGISTICS",
             "location": [
                 0,
                 0
@@ -21,6 +21,32 @@
             "stages": [
                 {
                     "text": "research.base_energistics.stage.1"
+                }
+            ]
+        },
+        {
+            "key": "DIGISENTIA",
+            "name": "research.digisentia.title",
+            "icons": [
+                "thaumicenergistics:essentia_cell_creative"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                0, -2
+            ],
+            "meta": [
+                "ROUND"
+            ],
+            "parents": [
+                "BASEENERGISTICS"
+            ],
+            "stages": [
+                {
+                    "text": "research.digisentia.stage.1",
+                    "required_knowledge": ["THEORY;THAUMICENERGISTICS;1"]
+                },
+                {
+                    "text": "research.digisentia.stage.2"
                 }
             ]
         }

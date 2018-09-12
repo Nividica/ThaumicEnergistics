@@ -9,8 +9,6 @@ import appeng.api.AEApi;
 
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectEventProxy;
-import thaumcraft.api.aspects.AspectHelper;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchCategory;
@@ -61,7 +59,6 @@ public class ThEThaumcraft implements IThEIntegration {
         TheorycraftManager.registerCard(CardTinkerAE.class);
         //if (AEApi.instance().definitions().blocks().controller().maybeEntity().isPresent())
         //TheorycraftManager.registerAid(new AidMEController());
-
     }
 
     @Override

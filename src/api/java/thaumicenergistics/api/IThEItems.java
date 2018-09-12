@@ -30,4 +30,8 @@ public interface IThEItems {
     IItemDefinition essentiaTerminal();
 
     IItemDefinition dummyAspect();
+
+    IItemDefinition diffusionCore();
+
+    IItemDefinition coalescenceCore();
 }
