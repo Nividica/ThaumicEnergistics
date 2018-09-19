@@ -28,7 +28,7 @@ import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
 import thaumicenergistics.item.ItemDummyAspect;
 import thaumicenergistics.item.part.ItemEssentiaTerminal;
 import thaumicenergistics.network.PacketHandler;
-import thaumicenergistics.util.FMLUtil;
+import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.ThELog;
 
 /**
@@ -83,7 +83,7 @@ public class ThaumicEnergistics {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(ThaumicEnergistics.INSTANCE, new GuiHandler());
-        if (FMLUtil.isClient()) {
+        if (ForgeUtil.isClient()) {
             if (ThEApi.instance().items().dummyAspect().maybeItem().isPresent())
                 Minecraft.getMinecraft().getItemColors().registerItemColorHandler(
                         new ItemDummyAspect.DummyAspectItemColors(),

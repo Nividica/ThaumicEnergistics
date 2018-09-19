@@ -29,15 +29,19 @@ public abstract class PartSharedEssentiaBus extends PartBase implements IGridTic
     public ThEUpgradeInventory upgrades;
 
     public PartSharedEssentiaBus(ItemPartBase item) {
+        this(item, 9, 4);
+    }
+
+    public PartSharedEssentiaBus(ItemPartBase item, int configSlots, int upgradeSlots) {
         super(item);
-        this.config = new EssentiaFilter(9) {
+        this.config = new EssentiaFilter(configSlots) {
             @Override
             protected void onContentsChanged() {
                 super.onContentsChanged();
                 PartSharedEssentiaBus.this.host.markForSave();
             }
         };
-        this.upgrades = new ThEUpgradeInventory("", 4, 1) {
+        this.upgrades = new ThEUpgradeInventory("", upgradeSlots, 1) {
             @Override
             public void markDirty() {
                 super.markDirty();

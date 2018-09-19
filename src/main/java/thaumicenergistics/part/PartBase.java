@@ -38,7 +38,7 @@ import thaumicenergistics.integration.appeng.grid.IThEGridHost;
 import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
 import thaumicenergistics.integration.appeng.util.ThEActionSource;
 import thaumicenergistics.item.ItemPartBase;
-import thaumicenergistics.util.FMLUtil;
+import thaumicenergistics.util.ForgeUtil;
 
 /**
  * @author BrockWS
@@ -166,7 +166,7 @@ public abstract class PartBase implements IPart, IThEGridHost, IActionHost, IPow
 
     @Override
     public void addToWorld() {
-        if (FMLUtil.isClient())
+        if (ForgeUtil.isClient())
             return;
         this.gridBlock = new ThEGridBlock(this);
         this.gridNode = AEApi.instance().grid().createGridNode(this.gridBlock);

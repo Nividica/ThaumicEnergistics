@@ -16,7 +16,7 @@ import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.integration.appeng.grid.IThEGridHost;
 import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
 import thaumicenergistics.integration.appeng.util.ThEActionSource;
-import thaumicenergistics.util.FMLUtil;
+import thaumicenergistics.util.ForgeUtil;
 
 /**
  * @author BrockWS
@@ -59,7 +59,7 @@ public abstract class TileNetwork extends TileBase implements IThEGridHost, IAct
     @Nonnull
     @Override
     public IGridNode getActionableNode() {
-        if (this.gridNode == null && FMLUtil.isServer()) {
+        if (this.gridNode == null && ForgeUtil.isServer()) {
             this.gridNode = AEApi.instance().grid().createGridNode(this.getGridBlock());
             this.gridNode.updateState();
         }

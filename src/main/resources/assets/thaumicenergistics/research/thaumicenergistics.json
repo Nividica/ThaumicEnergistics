@@ -28,11 +28,13 @@
             "key": "DIGISENTIA",
             "name": "research.digisentia.title",
             "icons": [
-                "thaumicenergistics:essentia_cell_creative"
+                "thaumicenergistics:coalescence_core",
+                "thaumicenergistics:diffusion_core"
             ],
             "category": "THAUMICENERGISTICS",
             "location": [
-                0, -2
+                0,
+                -2
             ],
             "meta": [
                 "ROUND"
@@ -43,11 +45,314 @@
             "stages": [
                 {
                     "text": "research.digisentia.stage.1",
-                    "required_knowledge": ["THEORY;THAUMICENERGISTICS;1"]
+                    "required_knowledge": [
+                        "THEORY;THAUMICENERGISTICS;1"
+                    ],
+                    "required_item": [
+                        "appliedenergistics:material;2;22",
+                        "appliedenergistics:material;2;8",
+                        "appliedenergistics2:material;1;0",
+                        "minecraft:quartz",
+                        "thaumcraft:quicksilver;2"
+                    ]
                 },
                 {
                     "text": "research.digisentia.stage.2",
-                    "recipes": ["thaumicenergistics:coalescence_core", "thaumicenergistics:diffusion_core"]
+                    "recipes": [
+                        "thaumicenergistics:coalescence_core",
+                        "thaumicenergistics:diffusion_core"
+                    ]
+                }
+            ],
+            "reward_item": [
+                "thaumicenergistics:diffusion_core;2",
+                "thaumicenergistics:coalescence_core;2"
+            ],
+            "reward_knowledge": [
+                "OBSERVATION;THAUMICENERGISTICS;1"
+            ]
+        },
+        {
+            "key": "ESSENTIASTORAGE1k",
+            "name": "research.essentiastorage1k.title",
+            "icons": [
+                "thaumicenergistics:essentia_component_1k",
+                "thaumicenergistics:essentia_cell_1k"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                -2,
+                0
+            ],
+            "meta": [
+                "ROUND"
+            ],
+            "parents": [
+                "BASEENERGISTICS"
+            ],
+            "stages": [
+                {
+                    "text": "research.essentiastorage1k.stage.1",
+                    "required_knowledge": [
+                        "THEORY;THAUMICENERGISTICS;1"
+                    ],
+                    "required_item": [
+                        "thaumcraft:salis_mundus",
+                        "appliedenergistics2:material;1;0",
+                        "appliedenergistics2:material;1;22"
+                    ]
+                },
+                {
+                    "text": "research.essentiastorage1k.stage.2",
+                    "recipes": [
+                        "thaumicenergistics:essentia_component_1k",
+                        "thaumicenergistics:cells/essentia_cell_1k"
+                    ]
+                }
+            ],
+            "reward_item": [
+                "thaumicenergistics:essentia_component_1k"
+            ],
+            "reward_knowledge": [
+                "OBSERVATION;THAUMICENERGISTICS;1"
+            ]
+        },
+        {
+            "key": "ESSENTIASTORAGE4k",
+            "name": "research.essentiastorage4k.title",
+            "icons": [
+                "thaumicenergistics:essentia_component_4k",
+                "thaumicenergistics:essentia_cell_4k"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                -4,
+                0
+            ],
+            "meta": [
+                "ROUND"
+            ],
+            "parents": [
+                "ESSENTIASTORAGE1k"
+            ],
+            "stages": [
+                {
+                    "text": "research.essentiastorage4k.stage.1",
+                    "required_knowledge": [
+                        "THEORY;THAUMICENERGISTICS;1"
+                    ],
+                    "required_item": [
+                        "thaumcraft:salis_mundus;4",
+                        "thaumicenergistics:essentia_component_1k;3",
+                        "appliedenergistics2:material;1;23"
+                    ]
+                },
+                {
+                    "text": "research.essentiastorage4k.stage.2",
+                    "recipes": [
+                        "thaumicenergistics:essentia_component_4k",
+                        "thaumicenergistics:cells/essentia_cell_4k"
+                    ]
+                }
+            ],
+            "reward_item": [
+                "thaumicenergistics:essentia_component_4k"
+            ],
+            "reward_knowledge": [
+                "OBSERVATION;THAUMICENERGISTICS;1"
+            ]
+        },
+        {
+            "key": "ESSENTIASTORAGE16k",
+            "name": "research.essentiastorage16k.title",
+            "icons": [
+                "thaumicenergistics:essentia_component_16k",
+                "thaumicenergistics:essentia_cell_16k"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                -6,
+                0
+            ],
+            "meta": [
+                "ROUND"
+            ],
+            "parents": [
+                "ESSENTIASTORAGE4k"
+            ],
+            "stages": [
+                {
+                    "text": "research.essentiastorage16k.stage.1",
+                    "required_knowledge": [
+                        "THEORY;THAUMICENERGISTICS;1"
+                    ],
+                    "required_item": [
+                        "thaumcraft:salis_mundus;4",
+                        "thaumicenergistics:essentia_component_4k;3",
+                        "appliedenergistics2:material;1;24"
+                    ]
+                },
+                {
+                    "text": "research.essentiastorage16k.stage.2",
+                    "recipes": [
+                        "thaumicenergistics:essentia_component_16k",
+                        "thaumicenergistics:cells/essentia_cell_16k"
+                    ]
+                }
+            ],
+            "reward_item": [
+                "thaumicenergistics:essentia_component_16k"
+            ],
+            "reward_knowledge": [
+                "OBSERVATION;THAUMICENERGISTICS;1"
+            ]
+        },
+        {
+            "key": "ESSENTIASTORAGE64k",
+            "name": "research.essentiastorage64k.title",
+            "icons": [
+                "thaumicenergistics:essentia_component_64k",
+                "thaumicenergistics:essentia_cell_64k"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                -8,
+                0
+            ],
+            "meta": [
+                "ROUND"
+            ],
+            "parents": [
+                "ESSENTIASTORAGE16k"
+            ],
+            "stages": [
+                {
+                    "text": "research.essentiastorage64k.stage.1",
+                    "required_knowledge": [
+                        "THEORY;THAUMICENERGISTICS;2"
+                    ],
+                    "required_item": [
+                        "thaumcraft:salis_mundus;4",
+                        "thaumicenergistics:essentia_component_16k;3",
+                        "appliedenergistics2:material;1;24"
+                    ]
+                },
+                {
+                    "text": "research.essentiastorage64k.stage.2",
+                    "recipes": [
+                        "thaumicenergistics:essentia_component_64k",
+                        "thaumicenergistics:cells/essentia_cell_64k"
+                    ]
+                }
+            ],
+            "reward_item": [
+                "thaumicenergistics:essentia_component_64k"
+            ],
+            "reward_knowledge": [
+                "OBSERVATION;THAUMICENERGISTICS;2"
+            ]
+        },
+        {
+            "key": "ESSENTIABUSES",
+            "name": "research.essentiabuses.title",
+            "icons": [
+                "thaumicenergistics:essentia_import",
+                "thaumicenergistics:essentia_export",
+                "thaumicenergistics:essentia_storage"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                4,
+                -2
+            ],
+            "meta": [
+                "ROUND"
+            ],
+            "parents": [
+                "DIGISENTIA"
+            ],
+            "stages": [
+                {
+                    "text": "research.essentiabuses.stage.1",
+                    "required_knowledge": [
+                        "OBSERVATION;THAUMICENERGISTICS;1"
+                    ]
+                },
+                {
+                    "text": "research.essentiabuses.stage.2",
+                    "recipes": [
+                        "thaumicenergistics:essentia_import_bus",
+                        "thaumicenergistics:essentia_export_bus",
+                        "thaumicenergistics:essentia_storage_bus"
+                    ]
+                }
+            ]
+        },
+        {
+            "key": "ESSENTIATERMINAL",
+            "name": "research.essentiaterminal.title",
+            "icons": [
+                "thaumicenergistics:essentia_terminal"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                -2,
+                -2
+            ],
+            "meta": [
+                "ROUND"
+            ],
+            "parents": [
+                "DIGISENTIA",
+                "ESSENTIASTORAGE1k"
+            ],
+            "stages": [
+                {
+                    "text": "research.essentiaterminal.stage.1",
+                    "required_knowledge": [
+                        "OBSERVATION;THAUMICENERGISTICS;2"
+                    ]
+                },
+                {
+                    "text": "research.essentiaterminal.stage.2",
+                    "recipes": [
+                        "thaumicenergistics:essentia_terminal"
+                    ]
+                }
+            ]
+        },
+        {
+            "key": "INFUSIONPROVIDER",
+            "name": "research.infusionprovider.title",
+            "icons": [
+                "thaumicenergistics:infusion_provider"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                2,
+                -4
+            ],
+            "meta": [
+                "ROUND"
+            ],
+            "parents": [
+                "DIGISENTIA",
+                "ESSENTIABUSES",
+                "INFUSION"
+            ],
+            "stages": [
+                {
+                    "text": "research.infusionprovider.stage.1",
+                    "required_knowledge": [
+                        "THEORY;THAUMICENERGISTICS;3"
+                    ]
+                },
+                {
+                    "text": "research.infusionprovider.stage.2",
+                    "recipes": [
+                        "thaumicenergistics:infusion_provider"
+                    ],
+                    "warp": 2
                 }
             ]
         }

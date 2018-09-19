@@ -29,7 +29,7 @@ import thaumicenergistics.network.PacketUIAction;
 import thaumicenergistics.network.packets.PacketInvHeldUpdate;
 import thaumicenergistics.part.PartEssentiaTerminal;
 import thaumicenergistics.util.AEUtil;
-import thaumicenergistics.util.FMLUtil;
+import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.TCUtil;
 
 /**
@@ -43,7 +43,7 @@ public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonit
     public ContainerEssentiaTerminal(EntityPlayer player, PartEssentiaTerminal part) {
         super(player);
         this.part = part;
-        if (FMLUtil.isServer()) {
+        if (ForgeUtil.isServer()) {
             this.monitor = this.part.getInventory(AEApi.instance().storage().getStorageChannel(IEssentiaStorageChannel.class));
             if (this.monitor != null) {
                 this.monitor.addListener(this, null);
@@ -148,7 +148,7 @@ public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonit
     }
 
     private void sendInventory(IContainerListener listener) {
-        if (FMLUtil.isClient() || !(listener instanceof EntityPlayer) || this.monitor == null)
+        if (ForgeUtil.isClient() || !(listener instanceof EntityPlayer) || this.monitor == null)
             return;
         IItemList<IAEEssentiaStack> storage = this.monitor.getStorageList();
         PacketMEEssentiaUpdate packet = new PacketMEEssentiaUpdate();

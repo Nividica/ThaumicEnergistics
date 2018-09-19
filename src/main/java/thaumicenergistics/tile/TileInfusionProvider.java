@@ -21,7 +21,7 @@ import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.integration.appeng.grid.GridUtil;
 import thaumicenergistics.util.AEUtil;
-import thaumicenergistics.util.FMLUtil;
+import thaumicenergistics.util.ForgeUtil;
 
 /**
  * @author BrockWS
@@ -50,7 +50,7 @@ public class TileInfusionProvider extends TileNetwork implements IAspectSource {
 
     @Override
     public AspectList getAspects() {
-        if (FMLUtil.isClient())
+        if (ForgeUtil.isClient())
             return this.clientAspects;
         AspectList list = new AspectList();
         IItemList<IAEEssentiaStack> stored = this.getStoredAspects();
@@ -95,7 +95,7 @@ public class TileInfusionProvider extends TileNetwork implements IAspectSource {
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-        if (FMLUtil.isClient())
+        if (ForgeUtil.isClient())
             return super.writeToNBT(tag);
         super.writeToNBT(tag);
         this.getAspects().writeToNBT(tag, "storedAspects");

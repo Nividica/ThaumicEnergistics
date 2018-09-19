@@ -22,4 +22,9 @@ public class ThELog {
         if (ThELog.getLogger() != null)
             ThELog.getLogger().error(message, args);
     }
+
+    public static void debug(String message, Object... args) {
+        if (ThELog.getLogger() != null)
+            ThELog.getLogger().debug(message, args);
+    }
 }

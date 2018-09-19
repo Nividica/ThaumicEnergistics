@@ -29,6 +29,7 @@ import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
 import thaumicenergistics.integration.appeng.grid.EssentiaContainerAdapter;
 import thaumicenergistics.item.part.ItemEssentiaStorageBus;
+import thaumicenergistics.util.EssentiaFilter;
 
 /**
  * @author BrockWS
@@ -50,7 +51,7 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
     private boolean wasActive = false;
 
     public PartEssentiaStorageBus(ItemEssentiaStorageBus item) {
-        super(item);
+        super(item, 63, 4);
     }
 
     @Nonnull
