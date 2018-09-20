@@ -15,8 +15,8 @@ public class ModGlobals {
 
     public static final String MOD_ID = "thaumicenergistics";
     public static final String MOD_NAME = "Thaumic Energistics";
-    public static final String MOD_VERSION = "alpha-2";
-    public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2@[rv6-alpha-4,);required-after:thaumcraft@[6.1.BETA23,)";
+    public static final String MOD_VERSION = "alpha-2a";
+    public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2@[rv6-alpha-4,);required-after:thaumcraft@[6.1.BETA24,)";
 
     /**
      * Creative tab.

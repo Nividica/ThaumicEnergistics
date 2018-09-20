@@ -284,10 +284,10 @@ public class ThEThaumcraft implements IThEIntegration {
     }
 
     private void registerInfusionRecipes() {
-        ThEApi.instance().blocks().infusionProvider().maybeBlock().ifPresent(block ->
+        ThEApi.instance().blocks().infusionProvider().maybeStack(1).ifPresent(stack ->
                 ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "infusion_provider"), new InfusionRecipe(
                         "INFUSIONPROVIDER",
-                        block,
+                        stack,
                         2,
                         new AspectList().add(Aspect.MECHANISM, 25).add(Aspect.MAGIC, 25).add(Aspect.EXCHANGE, 20),
                         AEApi.instance().definitions().blocks().iface().maybeBlock().orElseThrow(() -> new NullPointerException("Missing interface block for recipe")),
