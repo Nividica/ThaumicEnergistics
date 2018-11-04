@@ -5,24 +5,25 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import thaumicenergistics.api.storage.IAEEssentiaStack;
-import thaumicenergistics.client.gui.helpers.EssentiaRepo;
+import appeng.api.storage.data.IAEStack;
+
+import thaumicenergistics.client.gui.helpers.MERepo;
 
 /**
  * @author BrockWS
  */
-public class SlotMEEssentia extends Slot {
+public class SlotME<T extends IAEStack<T>> extends Slot {
 
     private static IInventory EMPTY = new InventoryBasic("[Null]", true, 0);
 
-    private EssentiaRepo repo;
+    private MERepo<T> repo;
 
-    public SlotMEEssentia(EssentiaRepo repo, int index, int xPosition, int yPosition) {
+    public SlotME(MERepo<T> repo, int index, int xPosition, int yPosition) {
         super(EMPTY, index, xPosition, yPosition);
         this.repo = repo;
     }
 
-    public IAEEssentiaStack getAEStack() {
+    public T getAEStack() {
         return this.repo.getReferenceStack(this.getSlotIndex());
     }
 

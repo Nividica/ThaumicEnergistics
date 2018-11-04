@@ -1,4 +1,4 @@
-package thaumicenergistics.network;
+package thaumicenergistics.network.packets;
 
 import io.netty.buffer.ByteBuf;
 
@@ -12,10 +12,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import thaumicenergistics.api.storage.IAEEssentiaStack;
+import appeng.api.AEApi;
+import appeng.api.storage.data.IAEStack;
+
 import thaumicenergistics.container.ActionType;
 import thaumicenergistics.container.ContainerBase;
-import thaumicenergistics.integration.appeng.AEEssentiaStack;
+import thaumicenergistics.util.ThELog;
 
 /**
  * @author BrockWS
@@ -23,7 +25,7 @@ import thaumicenergistics.integration.appeng.AEEssentiaStack;
 public class PacketUIAction implements IMessage {
 
     public ActionType action;
-    public IAEEssentiaStack requestedStack;
+    public IAEStack requestedStack;
 
     public PacketUIAction() {
     }
@@ -32,7 +34,7 @@ public class PacketUIAction implements IMessage {
         this.action = action;
     }
 
-    public PacketUIAction(ActionType action, IAEEssentiaStack stack) {
+    public PacketUIAction(ActionType action, IAEStack stack) {
         this(action);
         this.requestedStack = stack;
     }
@@ -40,8 +42,18 @@ public class PacketUIAction implements IMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         this.action = ActionType.values()[buf.readByte()];
-        if (buf.readableBytes() > 0)
-            this.requestedStack = AEEssentiaStack.fromPacket(buf);
+        if (buf.readableBytes() > 0) {
+            int hash = buf.readInt();
+            AEApi.instance().storage().storageChannels().forEach(channel -> {
+                if (channel.hashCode() == hash) {
+                    try {
+                        this.requestedStack = channel.readFromPacket(buf);
+                    } catch (Throwable ignored) {
+                        ThELog.error("Failed to read stack from packet, {}", channel.getClass().getSimpleName());
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -49,6 +61,7 @@ public class PacketUIAction implements IMessage {
         buf.writeByte(this.action.ordinal());
         try {
             if (this.requestedStack != null) {
+                buf.writeInt(this.requestedStack.getChannel().hashCode());
                 this.requestedStack.writeToPacket(buf);
             }
         } catch (IOException e) {

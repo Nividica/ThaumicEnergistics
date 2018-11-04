@@ -8,7 +8,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author BrockWS
  */
-@SideOnly(Side.CLIENT)
 public interface IThEModel {
 
     /**

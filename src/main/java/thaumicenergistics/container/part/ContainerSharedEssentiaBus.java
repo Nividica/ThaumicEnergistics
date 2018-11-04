@@ -13,7 +13,7 @@ import appeng.api.implementations.items.IUpgradeModule;
 import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.container.slot.SlotGhost;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
-import thaumicenergistics.network.PacketEssentiaFilter;
+import thaumicenergistics.network.packets.PacketEssentiaFilter;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.part.PartSharedEssentiaBus;
 import thaumicenergistics.util.EssentiaFilter;

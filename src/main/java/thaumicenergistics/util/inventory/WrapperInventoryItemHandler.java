@@ -24,6 +24,8 @@ public class WrapperInventoryItemHandler implements IItemHandler {
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
         if (slot < 0 || slot > this.getSlots())
             throw new RuntimeException("Slot " + slot + " not in valid range - [0," + this.getSlots() + ")");
+        if (!this.inventory.isItemValidForSlot(slot, stack))
+            return stack;
 
         ItemStack existing = this.getStackInSlot(slot);
 

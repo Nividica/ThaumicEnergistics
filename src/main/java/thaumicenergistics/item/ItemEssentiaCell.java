@@ -31,7 +31,6 @@ import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.client.render.IThEModel;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.util.EssentiaCellConfig;
-import thaumicenergistics.util.ThELog;
 
 /**
  * @author BrockWS

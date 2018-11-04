@@ -12,15 +12,19 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
+import appeng.container.implementations.ContainerCraftConfirm;
 
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.client.gui.part.GuiArcaneTerminal;
 import thaumicenergistics.client.gui.part.GuiEssentiaExportBus;
 import thaumicenergistics.client.gui.part.GuiEssentiaImportBus;
 import thaumicenergistics.client.gui.part.GuiEssentiaTerminal;
+import thaumicenergistics.container.part.ContainerArcaneTerminal;
 import thaumicenergistics.container.part.ContainerEssentiaExportBus;
 import thaumicenergistics.container.part.ContainerEssentiaImportBus;
 import thaumicenergistics.container.part.ContainerEssentiaTerminal;
 import thaumicenergistics.init.ModGUIs;
+import thaumicenergistics.part.PartArcaneTerminal;
 import thaumicenergistics.part.PartEssentiaExportBus;
 import thaumicenergistics.part.PartEssentiaImportBus;
 import thaumicenergistics.part.PartEssentiaTerminal;
@@ -86,6 +90,10 @@ public class GuiHandler implements IGuiHandler {
                 return new ContainerEssentiaExportBus(player, (PartEssentiaExportBus) part);
             case ESSENTIA_TERMINAL:
                 return new ContainerEssentiaTerminal(player, (PartEssentiaTerminal) part);
+            case ARCANE_TERMINAL:
+                return new ContainerArcaneTerminal(player, (PartArcaneTerminal) part);
+            case AE2_CRAFT_CONFIRM:
+                return new ContainerCraftConfirm(player.inventory, (PartArcaneTerminal) part);
             default:
                 return null;
         }
@@ -105,6 +113,8 @@ public class GuiHandler implements IGuiHandler {
                 return new GuiEssentiaExportBus(new ContainerEssentiaExportBus(player, (PartEssentiaExportBus) part));
             case ESSENTIA_TERMINAL:
                 return new GuiEssentiaTerminal(new ContainerEssentiaTerminal(player, (PartEssentiaTerminal) part));
+            case ARCANE_TERMINAL:
+                return new GuiArcaneTerminal(new ContainerArcaneTerminal(player, (PartArcaneTerminal) part));
             default:
                 return null;
         }

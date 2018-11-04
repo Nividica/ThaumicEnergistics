@@ -24,9 +24,9 @@ import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.container.ActionType;
 import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.network.PacketHandler;
-import thaumicenergistics.network.PacketMEEssentiaUpdate;
-import thaumicenergistics.network.PacketUIAction;
 import thaumicenergistics.network.packets.PacketInvHeldUpdate;
+import thaumicenergistics.network.packets.PacketMEEssentiaUpdate;
+import thaumicenergistics.network.packets.PacketUIAction;
 import thaumicenergistics.part.PartEssentiaTerminal;
 import thaumicenergistics.util.AEUtil;
 import thaumicenergistics.util.ForgeUtil;
@@ -56,8 +56,8 @@ public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonit
     @Override
     public void onAction(EntityPlayerMP player, PacketUIAction packet) {
         InventoryPlayer inv = player.inventory;
-        if (packet.action == ActionType.FILL_ESSENTIA_ITEM && packet.requestedStack != null) {
-            IAEEssentiaStack requestedStack = packet.requestedStack;
+        if (packet.action == ActionType.FILL_ESSENTIA_ITEM && packet.requestedStack instanceof IAEEssentiaStack) {
+            IAEEssentiaStack requestedStack = (IAEEssentiaStack) packet.requestedStack;
             ItemStack toFill = inv.getItemStack().copy();
             if (toFill.isEmpty() || !(toFill.getItem() instanceof IEssentiaContainerItem))
                 return;
@@ -135,26 +135,16 @@ public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonit
 
     @Override
     public void postChange(IBaseMonitor<IAEEssentiaStack> iBaseMonitor, Iterable<IAEEssentiaStack> iterable, IActionSource iActionSource) {
-        for (final IContainerListener c : this.listeners) {
+        for (IContainerListener c : this.listeners) {
             this.sendInventory(c);
         }
     }
 
     @Override
     public void onListUpdate() {
-        for (final IContainerListener c : this.listeners) {
+        for (IContainerListener c : this.listeners) {
             this.sendInventory(c);
         }
-    }
-
-    private void sendInventory(IContainerListener listener) {
-        if (ForgeUtil.isClient() || !(listener instanceof EntityPlayer) || this.monitor == null)
-            return;
-        IItemList<IAEEssentiaStack> storage = this.monitor.getStorageList();
-        PacketMEEssentiaUpdate packet = new PacketMEEssentiaUpdate();
-        for (IAEEssentiaStack stack : storage)
-            packet.appendStack(stack);
-        PacketHandler.sendToPlayer((EntityPlayerMP) listener, packet);
     }
 
     @Override
@@ -169,5 +159,15 @@ public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonit
     public void addListener(IContainerListener listener) {
         super.addListener(listener);
         this.sendInventory(listener);
+    }
+
+    private void sendInventory(IContainerListener listener) {
+        if (ForgeUtil.isClient() || !(listener instanceof EntityPlayer) || this.monitor == null)
+            return;
+        IItemList<IAEEssentiaStack> storage = this.monitor.getStorageList();
+        PacketMEEssentiaUpdate packet = new PacketMEEssentiaUpdate();
+        for (IAEEssentiaStack stack : storage)
+            packet.appendStack(stack);
+        PacketHandler.sendToPlayer((EntityPlayerMP) listener, packet);
     }
 }

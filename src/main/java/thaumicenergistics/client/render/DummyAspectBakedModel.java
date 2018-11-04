@@ -89,7 +89,7 @@ public class DummyAspectBakedModel implements IBakedModel {
                     return new DummyAspectBakedModel(ImmutableList.of());
 
                 TextureAtlasSprite sprite = bakedTextureGetter.apply(getAspectImage(aspect));
-                if (sprite == null || sprite.getIconName().equalsIgnoreCase("missingno"))
+                if (sprite == null)
                     throw new NullPointerException("Unable to find texture for aspect " + aspect.getName());
 
                 return new DummyAspectBakedModel(ItemLayerModel.getQuadsForSprite(0, sprite, format, Optional.empty()));

@@ -17,12 +17,10 @@ import appeng.api.definitions.IItemDefinition;
 
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.client.render.IThEModel;
+import thaumicenergistics.client.render.ThEModelLoader;
 import thaumicenergistics.definitions.ThEItemDefinition;
 import thaumicenergistics.item.*;
-import thaumicenergistics.item.part.ItemEssentiaExportBus;
-import thaumicenergistics.item.part.ItemEssentiaImportBus;
-import thaumicenergistics.item.part.ItemEssentiaStorageBus;
-import thaumicenergistics.item.part.ItemEssentiaTerminal;
+import thaumicenergistics.item.part.*;
 import thaumicenergistics.util.ThELog;
 
 /**
@@ -47,7 +45,7 @@ public class ThEItems implements IThEItems {
                 ((IThEModel) item).initModel();
             }
         });
-        ModelLoaderRegistry.registerLoader(ModGlobals.MODEL_LOADER);
+        ModelLoaderRegistry.registerLoader(ThEModelLoader.MODEL_LOADER);
     }
 
     private static IItemDefinition createItem(ItemBase item) {
@@ -64,13 +62,15 @@ public class ThEItems implements IThEItems {
     private final IItemDefinition itemEssentiaExportBus;
     private final IItemDefinition itemEssentiaStorageBus;
     private final IItemDefinition itemEssentiaTerminal;
-    private final IItemDefinition itemDummyAspect;
+    private final IItemDefinition itemArcaneTerminal;
     private final IItemDefinition itemDiffusionCore;
     private final IItemDefinition itemCoalescenceCore;
     private final IItemDefinition itemEssentiaComponent1k;
     private final IItemDefinition itemEssentiaComponent4k;
     private final IItemDefinition itemEssentiaComponent16k;
     private final IItemDefinition itemEssentiaComponent64k;
+    private final IItemDefinition itemUpgradeArcane;
+    private final IItemDefinition itemDummyAspect;
 
     public ThEItems() {
         this.itemEssentiaCell1k = ThEItems.createItem(new ItemEssentiaCell("1k", 1024, 12));
@@ -82,13 +82,15 @@ public class ThEItems implements IThEItems {
         this.itemEssentiaExportBus = ThEItems.createItem(new ItemEssentiaExportBus("essentia_export"));
         this.itemEssentiaStorageBus = ThEItems.createItem(new ItemEssentiaStorageBus("essentia_storage"));
         this.itemEssentiaTerminal = ThEItems.createItem(new ItemEssentiaTerminal("essentia_terminal"));
-        this.itemDummyAspect = ThEItems.createItem(new ItemDummyAspect());
+        this.itemArcaneTerminal = ThEItems.createItem(new ItemArcaneTerminal("arcane_terminal"));
         this.itemDiffusionCore = ThEItems.createItem(new ItemMaterial("diffusion_core"));
         this.itemCoalescenceCore = ThEItems.createItem(new ItemMaterial("coalescence_core"));
         this.itemEssentiaComponent1k = ThEItems.createItem(new ItemMaterial("essentia_component_1k"));
         this.itemEssentiaComponent4k = ThEItems.createItem(new ItemMaterial("essentia_component_4k"));
         this.itemEssentiaComponent16k = ThEItems.createItem(new ItemMaterial("essentia_component_16k"));
         this.itemEssentiaComponent64k = ThEItems.createItem(new ItemMaterial("essentia_component_64k"));
+        this.itemUpgradeArcane = ThEItems.createItem(new ItemMaterial("upgrade_arcane"));
+        this.itemDummyAspect = ThEItems.createItem(new ItemDummyAspect());
     }
 
     @Override
@@ -137,8 +139,8 @@ public class ThEItems implements IThEItems {
     }
 
     @Override
-    public IItemDefinition dummyAspect() {
-        return this.itemDummyAspect;
+    public IItemDefinition arcaneTerminal() {
+        return this.itemArcaneTerminal;
     }
 
     @Override
@@ -169,5 +171,15 @@ public class ThEItems implements IThEItems {
     @Override
     public IItemDefinition essentiaComponent64k() {
         return this.itemEssentiaComponent64k;
+    }
+
+    @Override
+    public IItemDefinition upgradeArcane() {
+        return this.itemUpgradeArcane;
+    }
+
+    @Override
+    public IItemDefinition dummyAspect() {
+        return this.itemDummyAspect;
     }
 }

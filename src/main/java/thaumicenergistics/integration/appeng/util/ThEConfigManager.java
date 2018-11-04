@@ -9,6 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 
+import thaumicenergistics.util.ThELog;
+
 /**
  * @author BrockWS
  */
@@ -28,7 +30,6 @@ public class ThEConfigManager implements IConfigManager {
     public Enum<?> putSetting(Settings setting, Enum<?> value) {
         Enum old = this.getSetting(setting);
         this.settings.put(setting, value);
-        // return old value
         return old;
     }
 
@@ -45,13 +46,23 @@ public class ThEConfigManager implements IConfigManager {
         this.settings.forEach((key, value) -> tag.setString(key.name(), value.name()));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         this.settings.forEach((key, old) -> {
             if (!tag.hasKey(key.name()))
                 return;
+            ThELog.info("Reading existing setting");
             String value = tag.getString(key.name());
-            Enum newValue = Enum.valueOf(key.getDeclaringClass(), value);
+            Enum newValue;
+            try {
+                ThELog.info("value = {}", value);
+                newValue = Enum.valueOf(old.getDeclaringClass(), value);
+                ThELog.info("newValue = {}", newValue.name());
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                return;
+            }
             this.putSetting(key, newValue);
         });
     }

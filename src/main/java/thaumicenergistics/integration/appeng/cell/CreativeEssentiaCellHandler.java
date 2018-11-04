@@ -11,7 +11,6 @@ import appeng.api.storage.data.IAEStack;
 
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.item.ItemCreativeEssentiaCell;
-import thaumicenergistics.item.ItemEssentiaCell;
 
 /**
  * @author BrockWS
@@ -26,6 +25,16 @@ public class CreativeEssentiaCellHandler implements ICellHandler {
     @Override
     public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(ItemStack stack, ISaveProvider container, IStorageChannel<T> channel) {
         return channel == this.getEssentiaStorageChannel() ? CreativeEssentiaCellInventory.getCell(stack, container) : null;
+    }
+
+    @Override
+    public <T extends IAEStack<T>> int getStatusForCell(ItemStack is, ICellInventoryHandler<T> handler) {
+        return 2;
+    }
+
+    @Override
+    public <T extends IAEStack<T>> double cellIdleDrain(ItemStack is, ICellInventoryHandler<T> handler) {
+        return 0;
     }
 
     private IStorageChannel getEssentiaStorageChannel() {

@@ -19,6 +19,8 @@ import thaumicenergistics.init.ModGlobals;
 @SideOnly(Side.CLIENT)
 public class ThEModelLoader implements ICustomModelLoader {
 
+    public static final ThEModelLoader MODEL_LOADER = new ThEModelLoader();
+
     private Map<String, IModel> models;
 
     public ThEModelLoader() {

@@ -4,7 +4,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 
 import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.client.render.ThEModelLoader;
 
 /**
  * Contains useful constant values
@@ -15,8 +14,8 @@ public class ModGlobals {
 
     public static final String MOD_ID = "thaumicenergistics";
     public static final String MOD_NAME = "Thaumic Energistics";
-    public static final String MOD_VERSION = "alpha-2a";
-    public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2@[rv6-alpha-4,);required-after:thaumcraft@[6.1.BETA24,)";
+    public static final String MOD_VERSION = "alpha-3";
+    public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2@[rv6-stable-3,);required-after:thaumcraft@[6.1.BETA26,)";
 
     /**
      * Creative tab.
@@ -37,5 +36,4 @@ public class ModGlobals {
     };
 
     public static final String RESEARCH_CATEGORY = ModGlobals.MOD_ID.toUpperCase();
-    public static final ThEModelLoader MODEL_LOADER = new ThEModelLoader();
 }

@@ -193,7 +193,6 @@ public class ThEThaumcraft implements IThEIntegration {
                     'G',
                     AEApi.instance().definitions().blocks().quartzGlass().maybeBlock().orElse(Blocks.GLASS)
             ));
-            this.addFakeCrafting(new ResourceLocation(ModGlobals.MOD_ID, "cells/essentia_cell_16k"));
         });
         ThEApi.instance().items().essentiaComponent64k().maybeStack(1).ifPresent(stack -> {
             ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "essentia_component_64k"), new ShapedArcaneRecipe(
@@ -268,19 +267,42 @@ public class ThEThaumcraft implements IThEIntegration {
                         Blocks.STICKY_PISTON,
                         ItemsTC.salisMundus
                 )));
-        ThEApi.instance().items().essentiaTerminal().maybeItem().ifPresent(item ->
-                ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "essentia_terminal"), new ShapelessArcaneRecipe(
+        ThEApi.instance().items().essentiaTerminal().maybeItem().ifPresent(essentia -> {
+            ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "essentia_terminal"), new ShapelessArcaneRecipe(
+                    recipeGroup,
+                    "ESSENTIATERMINAL",
+                    25,
+                    new AspectList(),
+                    essentia,
+                    ItemsTC.salisMundus,
+                    ThEApi.instance().items().diffusionCore().maybeStack(1).orElse(ItemStack.EMPTY),
+                    ThEApi.instance().items().coalescenceCore().maybeStack(1).orElse(ItemStack.EMPTY),
+                    AEApi.instance().definitions().materials().logicProcessor().maybeStack(1).orElse(ItemStack.EMPTY),
+                    "itemIlluminatedPanel"
+            ));
+        });
+        ThEApi.instance().items().arcaneTerminal().maybeItem().ifPresent(arcane ->
+                ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "arcane_terminal"), new ShapelessArcaneRecipe(
                         recipeGroup,
-                        "ESSENTIATERMINAL",
-                        25,
+                        "ARCANETERMINAL",
+                        50,
                         new AspectList(),
-                        item,
-                        ItemsTC.salisMundus,
-                        ThEApi.instance().items().diffusionCore().maybeStack(1).orElse(ItemStack.EMPTY),
-                        ThEApi.instance().items().coalescenceCore().maybeStack(1).orElse(ItemStack.EMPTY),
-                        AEApi.instance().definitions().materials().logicProcessor().maybeStack(1).orElse(ItemStack.EMPTY),
-                        "itemIlluminatedPanel"
+                        arcane,
+                        AEApi.instance().definitions().parts().terminal().maybeStack(1).orElse(ItemStack.EMPTY),
+                        BlocksTC.arcaneWorkbench,
+                        AEApi.instance().definitions().materials().calcProcessor().maybeStack(1).orElse(ItemStack.EMPTY)
                 )));
+        ThEApi.instance().items().upgradeArcane().maybeItem().ifPresent(upgrade -> {
+            ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "upgrade_arcane"), new ShapelessArcaneRecipe(
+                    recipeGroup,
+                    "WORKBENCHCHARGER",
+                    25,
+                    new AspectList(),
+                    upgrade,
+                    AEApi.instance().definitions().materials().advCard().maybeStack(1).orElse(ItemStack.EMPTY),
+                    BlocksTC.arcaneWorkbenchCharger
+            ));
+        });
     }
 
     private void registerInfusionRecipes() {

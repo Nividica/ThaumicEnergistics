@@ -21,6 +21,9 @@ item.thaumicenergistics.essentia_import.name=Essentia Import Bus
 item.thaumicenergistics.essentia_export.name=Essentia Export Bus
 item.thaumicenergistics.essentia_storage.name=Essentia Storage Bus
 item.thaumicenergistics.essentia_terminal.name=Essentia Terminal
+item.thaumicenergistics.arcane_terminal.name=Arcane Crafting Terminal
+item.thaumicenergistics.upgrade_arcane.name=Arcane Charging Upgrade
+tooltip.thaumicenergistics.wip=WORK IN PROGRESS, DO NOT USE
 
 # FROM THAUMCRAFT en_US.lang
 # BEST TO RECHECK THE LATEST LANG FILE FOR CHANGED FORMATTING
@@ -86,3 +89,9 @@ research.essentiaterminal.stage.2=I can now make Essentia Terminals
 research.infusionprovider.title=Infusion Provider
 research.infusionprovider.stage.1=Now that I can digitize essentia, it's time to put that technology to work
 research.infusionprovider.stage.2=I can now make Infusion Provider
+
+# Research Arcane Crafting Terminal
+research.arcaneterminal.title=Arcane Crafting Terminal
+research.arcaneterminal.stage.1=Maybe I can combine a ME Terminal with a Arcane Workbench to get something that will help me with my arcane endeavours
+research.arcaneterminal.stage.2=I can now make Arcane Crafting Terminal
+research.arcaneterminal.addena.1=I can upgrade my Arcane Crafting Terminal to increase its vis draw range

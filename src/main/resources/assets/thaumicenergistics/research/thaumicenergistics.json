@@ -355,6 +355,49 @@
                     "warp": 2
                 }
             ]
+        },
+        {
+            "key": "ARCANETERMINAL",
+            "name": "research.arcaneterminal.title",
+            "icons": [
+                "thaumicenergistics:arcane_terminal"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                2,
+                0
+            ],
+            "meta": [
+                "ROUND"
+            ],
+            "parents": [
+                "BASEENERGISTICS"
+            ],
+            "stages": [
+                {
+                    "text": "research.arcaneterminal.stage.1",
+                    "required_knowledge": [
+                        "THEORY;THAUMICENERGISTICS;2"
+                    ]
+                },
+                {
+                    "text": "research.arcaneterminal.stage.2",
+                    "recipes": [
+                        "thaumicenergistics:arcane_terminal"
+                    ]
+                }
+            ],
+            "addenda": [
+                {
+                    "text": "research.arcaneterminal.addena.1",
+                    "recipes": [
+                        "thaumicenergistics:upgrade_arcane"
+                    ],
+                    "required_research": [
+                        "WORKBENCHCHARGER"
+                    ]
+                }
+            ]
         }
     ]
 }

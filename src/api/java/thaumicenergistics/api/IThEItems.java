@@ -33,7 +33,7 @@ public interface IThEItems {
 
     IItemDefinition essentiaTerminal();
 
-    IItemDefinition dummyAspect();
+    IItemDefinition arcaneTerminal();
 
     // Materials
 
@@ -48,4 +48,10 @@ public interface IThEItems {
     IItemDefinition essentiaComponent16k();
 
     IItemDefinition essentiaComponent64k();
+
+    IItemDefinition upgradeArcane();
+
+    // Other
+
+    IItemDefinition dummyAspect();
 }

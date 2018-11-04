@@ -1,7 +1,6 @@
 package thaumicenergistics.item;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +12,7 @@ import thaumcraft.api.aspects.Aspect;
 
 import thaumicenergistics.client.render.DummyAspectItemModel;
 import thaumicenergistics.client.render.IThEModel;
-import thaumicenergistics.init.ModGlobals;
+import thaumicenergistics.client.render.ThEModelLoader;
 
 /**
  * A dummy item that uses the aspect icon for its icon
@@ -63,16 +62,7 @@ public class ItemDummyAspect extends ItemBase implements IThEModel {
 
     @Override
     public void initModel() {
-        ModGlobals.MODEL_LOADER.addModel("models/item/dummy_aspect", new DummyAspectItemModel());
+        ThEModelLoader.MODEL_LOADER.addModel("models/item/dummy_aspect", new DummyAspectItemModel());
         ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(this.getRegistryName(), "inventory"));
-    }
-
-    public static class DummyAspectItemColors implements IItemColor {
-
-        @Override
-        public int colorMultiplier(ItemStack stack, int tintIndex) {
-            ItemDummyAspect item = (ItemDummyAspect) stack.getItem();
-            return item.getAspect(stack).getColor();
-        }
     }
 }

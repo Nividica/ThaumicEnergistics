@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
@@ -15,18 +14,19 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.client.ThEItemColors;
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.command.CommandAddVis;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
 import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
-import thaumicenergistics.item.ItemDummyAspect;
-import thaumicenergistics.item.part.ItemEssentiaTerminal;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.ThELog;
@@ -84,15 +84,7 @@ public class ThaumicEnergistics {
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(ThaumicEnergistics.INSTANCE, new GuiHandler());
         if (ForgeUtil.isClient()) {
-            if (ThEApi.instance().items().dummyAspect().maybeItem().isPresent())
-                Minecraft.getMinecraft().getItemColors().registerItemColorHandler(
-                        new ItemDummyAspect.DummyAspectItemColors(),
-                        ThEApi.instance().items().dummyAspect().maybeItem().get());
-
-            if (ThEApi.instance().items().essentiaTerminal().maybeItem().isPresent())
-                Minecraft.getMinecraft().getItemColors().registerItemColorHandler(
-                        new ItemEssentiaTerminal.TerminalItemColor(),
-                        ThEApi.instance().items().essentiaTerminal().maybeItem().get());
+            ThEItemColors.registerItemColors();
         }
 
         ThELog.info("Integrations: Init");
@@ -108,6 +100,11 @@ public class ThaumicEnergistics {
     public void postInit(FMLPostInitializationEvent event) {
         ThELog.info("Integrations: PostInit");
         ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::postInit);
+    }
+
+    @Mod.EventHandler
+    public void serverLoad(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandAddVis());
     }
 
     @SubscribeEvent

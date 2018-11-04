@@ -1,0 +1,9 @@
+{
+    "parent": "appliedenergistics2:item/part/display",
+    "textures": {
+        "front": "appliedenergistics2:items/part/crafting_terminal",
+        "front_bright": "thaumicenergistics:part/arcane_terminal/overlay1",
+        "front_medium": "thaumicenergistics:part/arcane_terminal/overlay4",
+        "front_dark": "thaumicenergistics:part/arcane_terminal/overlay3"
+    }
+}

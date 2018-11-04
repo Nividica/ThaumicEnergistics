@@ -1,4 +1,4 @@
-package thaumicenergistics.network;
+package thaumicenergistics.network.packets;
 
 import io.netty.buffer.ByteBuf;
 

@@ -19,6 +19,7 @@ import net.minecraftforge.common.model.IModelState;
 import thaumcraft.api.aspects.Aspect;
 
 import thaumicenergistics.init.ModGlobals;
+import thaumicenergistics.util.ThELog;
 
 /**
  * @author BrockWS
@@ -49,6 +50,7 @@ public class DummyAspectItemModel implements IModel {
     public Collection<ResourceLocation> getTextures() {
         List<ResourceLocation> images = new ArrayList<>();
         Aspect.aspects.forEach((s, aspect) -> {
+            ThELog.debug("Registering aspect image for {}", aspect.getName());
             ResourceLocation image = aspect.getImage();
             if (image.getResourcePath().contains("textures/"))
                 image = new ResourceLocation(image.getResourceDomain(), image.getResourcePath().replace("textures/", "").replace(".png", ""));

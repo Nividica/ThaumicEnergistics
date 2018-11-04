@@ -20,8 +20,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.AEApi;
+import appeng.api.config.Upgrades;
 import appeng.api.implementations.IPowerChannelState;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -43,7 +47,7 @@ import thaumicenergistics.util.ForgeUtil;
 /**
  * @author BrockWS
  */
-public abstract class PartBase implements IPart, IThEGridHost, IActionHost, IPowerChannelState {
+public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost, IActionHost, IPowerChannelState {
 
     protected ThEGridBlock gridBlock;
     protected IGridNode gridNode;
@@ -280,5 +284,20 @@ public abstract class PartBase implements IPart, IThEGridHost, IActionHost, IPow
     @Override
     public void gridChanged() {
 
+    }
+
+    @Override
+    public int getInstalledUpgrades(Upgrades u) {
+        return 0;
+    }
+
+    @Override
+    public TileEntity getTile() {
+        return this.hostTile;
+    }
+
+    @Override
+    public IItemHandler getInventoryByName(String name) {
+        return null;
     }
 }
