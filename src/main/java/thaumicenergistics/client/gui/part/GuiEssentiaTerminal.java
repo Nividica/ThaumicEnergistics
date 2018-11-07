@@ -1,14 +1,15 @@
 package thaumicenergistics.client.gui.part;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.api.storage.data.IItemList;
 
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
-import thaumicenergistics.client.gui.GuiBase;
 import thaumicenergistics.client.gui.helpers.GuiScrollBar;
 import thaumicenergistics.client.gui.helpers.MERepo;
 import thaumicenergistics.container.ActionType;
@@ -20,9 +21,8 @@ import thaumicenergistics.network.packets.PacketUIAction;
 /**
  * @author BrockWS
  */
-public class GuiEssentiaTerminal extends GuiBase {
+public class GuiEssentiaTerminal extends GuiAbstractTerminal<IAEEssentiaStack, IEssentiaStorageChannel> {
 
-    private MERepo<IAEEssentiaStack> repo;
     private GuiScrollBar scrollBar;
     private int rows = 6;
 
@@ -31,8 +31,9 @@ public class GuiEssentiaTerminal extends GuiBase {
         this.xSize = 197;
         this.ySize = 102;
         this.ySize += 20 * this.rows;
+        this.repo = new MERepo<>(IEssentiaStorageChannel.class);
         this.scrollBar = new GuiScrollBar(175, 18, 106);
-        this.repo = new MERepo<>(IEssentiaStorageChannel.class, this.scrollBar);
+        this.repo.setScrollBar(this.scrollBar);
         this.addTerminalSlots(9, 18);
     }
 
@@ -61,9 +62,8 @@ public class GuiEssentiaTerminal extends GuiBase {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        // TODO: Use lang name
-        this.fontRenderer.drawString("Essentia Terminal", 8, 6, 4210752);
-        this.fontRenderer.drawString("Inventory", 8, this.ySize - 96 + 3, 4210752);
+        this.fontRenderer.drawString(ThEApi.instance().lang().guiEssentiaTerminal().getLocalizedKey(), 8, 6, 4210752);
+        this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override

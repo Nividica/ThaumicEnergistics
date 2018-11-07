@@ -51,7 +51,6 @@ import thaumicenergistics.part.PartArcaneTerminal;
 import thaumicenergistics.util.AEUtil;
 import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.TCUtil;
-import thaumicenergistics.util.ThELog;
 import thaumicenergistics.util.inventory.ThEInternalInventory;
 import thaumicenergistics.util.inventory.WrapperInventoryItemHandler;
 

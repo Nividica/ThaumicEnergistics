@@ -7,7 +7,9 @@ import net.minecraft.item.ItemStack;
 import appeng.api.config.SortOrder;
 
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IEssentiaContainerItem;
 
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.item.ItemDummyAspect;
 
 /**
@@ -41,5 +43,11 @@ public class ThEUtil {
     public static boolean isInvalidSetting(Enum e) {
         // TODO: Add invtweaks integration
         return e == SortOrder.INVTWEAKS;
+    }
+
+    public static int getEssentiaCapacity(ItemStack stack) {
+        if (stack == null || !(stack.getItem() instanceof IEssentiaContainerItem) || stack.getItem().getRegistryName() == null)
+            return 0;
+        return ThEApi.instance().config().essentiaContainerCapacity().getOrDefault(stack.getItem().getRegistryName().toString() + ":" + stack.getMetadata(), 0);
     }
 }

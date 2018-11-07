@@ -16,9 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.config.Settings;
-import appeng.api.util.IConfigurableObject;
-
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 
@@ -30,7 +27,6 @@ import thaumicenergistics.network.packets.PacketInvHeldUpdate;
 import thaumicenergistics.network.packets.PacketUIAction;
 import thaumicenergistics.util.EssentiaFilter;
 import thaumicenergistics.util.ForgeUtil;
-import thaumicenergistics.util.ThELog;
 
 /**
  * The base container for all containers in Thaumic Energistics

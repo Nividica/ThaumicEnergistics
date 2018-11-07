@@ -7,7 +7,6 @@ import appeng.api.storage.data.IAEStack;
 
 /**
  * Based completely on MeaningfulFluidIterator and MeaningfulItemIterator from Applied Energistics 2
- * TODO: Make a generic MeaningfulIterator in AE2
  *
  * @author BrockWS
  */

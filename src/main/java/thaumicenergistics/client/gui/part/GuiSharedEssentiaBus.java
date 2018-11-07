@@ -4,12 +4,8 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 
-import thaumcraft.client.lib.UtilsFX;
-
 import thaumicenergistics.client.gui.GuiBase;
 import thaumicenergistics.container.part.ContainerSharedEssentiaBus;
-import thaumicenergistics.container.slot.SlotGhost;
-import thaumicenergistics.container.slot.SlotGhostEssentia;
 import thaumicenergistics.init.ModGlobals;
 
 /**
@@ -46,24 +42,11 @@ public abstract class GuiSharedEssentiaBus extends GuiBase {
 
     @Override
     public void drawSlot(Slot slot) {
-        if (slot instanceof SlotGhostEssentia && ((SlotGhostEssentia) slot).getAspect() != null) {
-            super.drawSlot(slot);
-            int x = slot.xPos;
-            int y = slot.yPos;
-            //mc.getTextureManager().bindTexture(((SlotGhostEssentia) slot).getAspect().getImage());
-            //this.drawTexturedModalRect(x, y, 0, 0, 32, 32);
-
-            // FIXME: Don't use Thaumcraft core stuff
-            UtilsFX.drawTag(x, y, ((SlotGhostEssentia) slot).getAspect(), 0.0F, 0, (double) this.zLevel);
-        } else
-            super.drawSlot(slot);
+        super.drawSlot(slot);
     }
 
     @Override
     protected void handleMouseClick(Slot slot, int id, int button, ClickType type) {
-        if (slot instanceof SlotGhost) {
-
-        }
         super.handleMouseClick(slot, id, button, type);
     }
 

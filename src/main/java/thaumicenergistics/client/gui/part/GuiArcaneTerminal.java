@@ -9,6 +9,7 @@ import java.io.IOException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
@@ -26,7 +27,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.widgets.GuiImgButton;
 
-import thaumicenergistics.client.gui.GuiBase;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.gui.helpers.GuiScrollBar;
 import thaumicenergistics.client.gui.helpers.MERepo;
 import thaumicenergistics.container.ActionType;
@@ -37,15 +38,13 @@ import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketSettingChange;
 import thaumicenergistics.network.packets.PacketUIAction;
 import thaumicenergistics.util.AEUtil;
-import thaumicenergistics.util.ThELog;
 import thaumicenergistics.util.ThEUtil;
 
 /**
  * @author BrockWS
  */
-public class GuiArcaneTerminal extends GuiBase {
+public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemStorageChannel> {
 
-    private MERepo<IAEItemStack> repo;
     private GuiTextField searchField;
     private GuiScrollBar scrollBar;
     private GuiImgButton sortByButton;
@@ -63,7 +62,8 @@ public class GuiArcaneTerminal extends GuiBase {
         this.ySize = 183;
         this.ySize += 20 * this.rows;
         this.scrollBar = new GuiScrollBar(175, 18, 106);
-        this.repo = new MERepo<>(IItemStorageChannel.class, this.scrollBar);
+        this.repo = new MERepo<>(IItemStorageChannel.class);
+        this.repo.setScrollBar(this.scrollBar);
         this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
 
         this.updateScroll();
@@ -117,7 +117,6 @@ public class GuiArcaneTerminal extends GuiBase {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        // TODO: Use lang name
         if (this.visAvailable > -1)
             this.fontRenderer.drawString((int) this.visAvailable + " Available", 90, 130, 4210752);
         if (this.visRequired > -1)
@@ -127,8 +126,9 @@ public class GuiArcaneTerminal extends GuiBase {
                 this.fontRenderer.drawString("Vis: " + this.visRequired, 93, 145, 4210752);
         if (this.discount > 0f)
             this.fontRenderer.drawString((int) (this.discount * 100) + "% Discount", 90, 204, 4210752);
-        this.fontRenderer.drawString("Arcane Terminal", 8, 6, 4210752);
-        this.fontRenderer.drawString("Inventory", 8, this.ySize - 96, 4210752);
+
+        this.fontRenderer.drawString(ThEApi.instance().lang().guiArcaneTerminal().getLocalizedKey(), 8, 6, 4210752);
+        this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96, 4210752);
 
         if (this.scrollBar != null)
             this.scrollBar.draw(this);

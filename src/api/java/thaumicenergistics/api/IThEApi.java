@@ -22,4 +22,18 @@ public interface IThEApi {
      * @return Class which contains block/tile definitions
      */
     IThEBlocks blocks();
+
+    /**
+     * Contains all config options in Thaumic Energistics
+     *
+     * @return Class which contains config options
+     */
+    IThEConfig config();
+
+    /**
+     * Contains all language keys in Thaumic Energistics
+     *
+     * @return Class which contains language keys
+     */
+    IThELang lang();
 }

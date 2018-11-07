@@ -7,6 +7,7 @@ tile.thaumicenergistics.infusion_provider.name=Essentia Infusion Provider
 # Items
 item.thaumicenergistics.diffusion_core.name=Diffusion Core
 item.thaumicenergistics.coalescence_core.name=Coalescence Core
+
 item.thaumicenergistics.essentia_component_1k.name=1k ME Essentia Storage Component
 item.thaumicenergistics.essentia_component_4k.name=4k ME Essentia Storage Component
 item.thaumicenergistics.essentia_component_16k.name=16k ME Essentia Storage Component
@@ -17,13 +18,24 @@ item.thaumicenergistics.essentia_cell_4k.name=4k ME Essentia Storage Cell
 item.thaumicenergistics.essentia_cell_16k.name=16k ME Essentia Storage Cell
 item.thaumicenergistics.essentia_cell_64k.name=64k ME Essentia Storage Cell
 item.thaumicenergistics.essentia_cell_creative.name=Creative ME Essentia Storage Cell
-item.thaumicenergistics.essentia_import.name=Essentia Import Bus
-item.thaumicenergistics.essentia_export.name=Essentia Export Bus
-item.thaumicenergistics.essentia_storage.name=Essentia Storage Bus
-item.thaumicenergistics.essentia_terminal.name=Essentia Terminal
+
+item.thaumicenergistics.essentia_import.name=ME Essentia Import Bus
+item.thaumicenergistics.essentia_export.name=ME Essentia Export Bus
+item.thaumicenergistics.essentia_storage.name=ME Essentia Storage Bus
+item.thaumicenergistics.essentia_terminal.name=ME Essentia Terminal
 item.thaumicenergistics.arcane_terminal.name=Arcane Crafting Terminal
+
 item.thaumicenergistics.upgrade_arcane.name=Arcane Charging Upgrade
+
+# Tooltips
 tooltip.thaumicenergistics.wip=WORK IN PROGRESS, DO NOT USE
+
+# GUI
+gui.thaumicenergistics.essentia_import_bus=ME Essentia Import Bus
+gui.thaumicenergistics.essentia_export_bus=ME Essentia Export Bus
+gui.thaumicenergistics.essentia_storage_bus=ME Essentia Storage Bus
+gui.thaumicenergistics.essentia_terminal=Essentia Terminal
+gui.thaumicenergistics.arcane_terminal=Arcane Terminal
 
 # FROM THAUMCRAFT en_US.lang
 # BEST TO RECHECK THE LATEST LANG FILE FOR CHANGED FORMATTING

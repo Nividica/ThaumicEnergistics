@@ -36,12 +36,11 @@ public class MERepo<T extends IAEStack<T>> {
     private GuiScrollBar scrollBar;
     private int rowSize = 9;
 
-    public MERepo(Class<? extends IStorageChannel<T>> clazz, GuiScrollBar scrollBar) {
+    public MERepo(Class<? extends IStorageChannel<T>> clazz) {
         this.list = AEUtil.getList(clazz);
         this.viewMode = ViewItems.ALL;
         this.sortDir = SortDir.ASCENDING;
         this.sortOrder = SortOrder.NAME;
-        this.scrollBar = scrollBar;
     }
 
     public void updateView() {
@@ -113,12 +112,12 @@ public class MERepo<T extends IAEStack<T>> {
             this.sortByCount();
 
         // TODO: Check if this is even needed anymore
-        if (this.scrollBar != null) {
+        if (this.getScrollBar() != null) {
             if (this.view.size() <= this.getRowSize() * 6) { // We don't need to have scrolling
-                this.scrollBar.setRows(6);
-                this.scrollBar.click(this.scrollBar.getY());
+                this.getScrollBar().setRows(6);
+                this.getScrollBar().click(this.scrollBar.getY());
             } else {
-                this.scrollBar.setRows((int) Math.ceil(this.view.size() * this.getRowSize()));
+                this.getScrollBar().setRows((int) Math.ceil(this.view.size() * this.getRowSize()));
             }
         }
     }
@@ -147,6 +146,14 @@ public class MERepo<T extends IAEStack<T>> {
 
     public void clear() {
         this.list.resetStatus();
+    }
+
+    public void setScrollBar(GuiScrollBar scrollBar) {
+        this.scrollBar = scrollBar;
+    }
+
+    public GuiScrollBar getScrollBar() {
+        return this.scrollBar;
     }
 
     public void setRowSize(int rowSize) {
