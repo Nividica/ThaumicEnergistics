@@ -1,8 +1,7 @@
 package thaumicenergistics.client.gui;
 
-import scala.actors.threadpool.Arrays;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
