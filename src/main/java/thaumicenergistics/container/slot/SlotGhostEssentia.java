@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 
 import thaumcraft.api.aspects.Aspect;
 
+import thaumicenergistics.util.AEUtil;
 import thaumicenergistics.util.EssentiaFilter;
 
 /**
@@ -34,8 +35,8 @@ public class SlotGhostEssentia extends SlotGhost {
 
     @Override
     public ItemStack getStack() {
-        //if (this.getAspect() != null)
-        //return AEUtil.getAEStackFromAspect(this.getAspect(), 0).asItemStackRepresentation();
-        return super.getStack();
+        if (this.getAspect() != null)
+            return AEUtil.getAEStackFromAspect(this.getAspect(), 0).asItemStackRepresentation();
+        return ItemStack.EMPTY;
     }
 }

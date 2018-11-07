@@ -11,8 +11,10 @@ import net.minecraftforge.client.model.ModelLoader;
 import thaumcraft.api.aspects.Aspect;
 
 import thaumicenergistics.client.render.DummyAspectItemModel;
+import thaumicenergistics.client.render.DummyAspectRenderer;
 import thaumicenergistics.client.render.IThEModel;
 import thaumicenergistics.client.render.ThEModelLoader;
+import thaumicenergistics.init.ModGlobals;
 
 /**
  * A dummy item that uses the aspect icon for its icon
@@ -62,7 +64,9 @@ public class ItemDummyAspect extends ItemBase implements IThEModel {
 
     @Override
     public void initModel() {
-        ThEModelLoader.MODEL_LOADER.addModel("models/item/dummy_aspect", new DummyAspectItemModel());
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(this.getRegistryName(), "inventory"));
+        this.setTileEntityItemStackRenderer(DummyAspectRenderer.INSTANCE);
+        //ThEModelLoader.MODEL_LOADER.addModel("models/item/dummy_aspect", new DummyAspectItemModel());
+        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModGlobals.MOD_ID + ":dummy_aspect", "inventory"));
+        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(this.getRegistryName(), "inventory"));
     }
 }

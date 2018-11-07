@@ -17,7 +17,6 @@ import appeng.api.definitions.IItemDefinition;
 
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.client.render.IThEModel;
-import thaumicenergistics.client.render.ThEModelLoader;
 import thaumicenergistics.definitions.ThEItemDefinition;
 import thaumicenergistics.item.*;
 import thaumicenergistics.item.part.*;
@@ -45,7 +44,6 @@ public class ThEItems implements IThEItems {
                 ((IThEModel) item).initModel();
             }
         });
-        ModelLoaderRegistry.registerLoader(ThEModelLoader.MODEL_LOADER);
     }
 
     private static IItemDefinition createItem(ItemBase item) {
