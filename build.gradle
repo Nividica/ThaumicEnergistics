@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "alpha-3a"
+version = "alpha-4"
 group = "thaumicenergistics"
 archivesBaseName = "thaumicenergistics"
 

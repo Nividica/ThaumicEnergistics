@@ -2,6 +2,9 @@ package thaumicenergistics.container.part;
 
 import java.util.Objects;
 
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IContainerListener;
@@ -42,6 +45,7 @@ import thaumicenergistics.container.DummyContainer;
 import thaumicenergistics.container.ICraftingContainer;
 import thaumicenergistics.container.slot.SlotArcaneMatrix;
 import thaumicenergistics.container.slot.SlotArcaneResult;
+import thaumicenergistics.container.slot.SlotUpgrade;
 import thaumicenergistics.container.slot.ThESlot;
 import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.integration.thaumcraft.TCCraftingManager;
@@ -115,12 +119,12 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
     }
 
     private void addUpgradeSlots(int offsetX, int offsetY) {
-        this.addSlotToContainer(new ThESlot(this.getInventory("upgrades"), 0, offsetX, offsetY) {
+        this.addSlotToContainer(new SlotUpgrade(this.getInventory("upgrades"), 0, offsetX, offsetY)/* {
             @Override
             public boolean isItemValid(ItemStack stack) {
                 return ThEApi.instance().items().upgradeArcane().isSameAs(stack);
             }
-        });
+        }*/);
     }
 
     @Override
@@ -161,6 +165,8 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
     @Override
     public void onAction(EntityPlayerMP player, PacketUIAction packet) {
         // TODO: Give inventoryInsert/inventoryExtract IEnergyGrid to extract power
+        if (this.monitor == null)
+            return;
         if (packet.action == ActionType.PICKUP_OR_SETDOWN) { // Normal lmb
             if (player.inventory.getItemStack().isEmpty() && packet.requestedStack != null) { // PICKUP
                 IAEItemStack stack = (IAEItemStack) packet.requestedStack.copy();
@@ -173,7 +179,7 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
                     player.inventory.setItemStack(ItemStack.EMPTY);
                 PacketHandler.sendToPlayer(player, new PacketInvHeldUpdate(player.inventory.getItemStack()));
             } else if (!player.inventory.getItemStack().isEmpty()) { // Set down
-                IAEItemStack stack = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(player.inventory.getItemStack());
+                IAEItemStack stack = this.channel.createStack(player.inventory.getItemStack());
                 stack = AEUtil.inventoryInsert(stack, this.monitor, this.part.source);
 
                 if (stack != null)
@@ -199,7 +205,7 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
                     player.inventory.setItemStack(ItemStack.EMPTY);
                 PacketHandler.sendToPlayer(player, new PacketInvHeldUpdate(player.inventory.getItemStack()));
             } else if (!player.inventory.getItemStack().isEmpty()) { // Drop single
-                IAEItemStack stack = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(player.inventory.getItemStack());
+                IAEItemStack stack = this.channel.createStack(player.inventory.getItemStack());
                 Objects.requireNonNull(stack).setStackSize(1);
                 stack = AEUtil.inventoryInsert(stack, this.monitor, this.part.source);
                 if (stack == null) {
@@ -210,7 +216,7 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
                     PacketHandler.sendToPlayer(player, new PacketInvHeldUpdate(player.inventory.getItemStack()));
                 }
             }
-        } else if (packet.action == ActionType.PICKUP_SINGLE && packet.requestedStack instanceof IAEItemStack) { // Shift rmb
+        } else if ((packet.action == ActionType.SCROLL_UP || packet.action == ActionType.PICKUP_SINGLE) && packet.requestedStack instanceof IAEItemStack) { // Shift rmb
             ItemStack held = player.inventory.getItemStack();
             if (!held.isEmpty() && (held.getCount() >= held.getMaxStackSize() || !ForgeUtil.areItemStacksEqual(((IAEItemStack) packet.requestedStack).getDefinition(), held)))
                 return;
@@ -222,6 +228,21 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
                     held.grow(1);
                 else
                     held = stack.createItemStack();
+            }
+            player.inventory.setItemStack(held);
+            PacketHandler.sendToPlayer(player, new PacketInvHeldUpdate(player.inventory.getItemStack()));
+        } else if (packet.action == ActionType.SCROLL_DOWN && !player.inventory.getItemStack().isEmpty()) {
+            ItemStack held = player.inventory.getItemStack();
+            IAEItemStack is = this.channel.createStack(held);
+            Objects.requireNonNull(is);
+            is.setStackSize(1);
+            is = AEUtil.inventoryInsert(is, this.monitor, this.part.source, Actionable.MODULATE);
+            if (is != null) // Failed to insert one item
+                return;
+            if (held.getCount() > 1) {
+                held.shrink(1);
+            } else {
+                held = ItemStack.EMPTY;
             }
             player.inventory.setItemStack(held);
             PacketHandler.sendToPlayer(player, new PacketInvHeldUpdate(player.inventory.getItemStack()));
@@ -415,12 +436,12 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
         NonNullList<ItemStack> remaining = recipe.getRemainingItems(inv);
         AspectList crystals = this.recipe instanceof IArcaneRecipe ? ((IArcaneRecipe) this.recipe).getCrystals() : null;
         for (int i = 0; i < remaining.size(); i++) {
-            if (!remaining.get(i).isEmpty()) // The recipe returned a item so return that instead
-                continue;
             if (i < 9) {
+                boolean hasLeftover = !remaining.get(i).isEmpty();
                 ItemStack existing = inv.getStackInSlot(i);
-                if (existing.getCount() > 1) {
-                    existing.shrink(1);
+                if (existing.getCount() > 1) { // We had more than one
+                    if (!hasLeftover)
+                        existing.shrink(1);
                     remaining.set(i, existing);
                 }
             } else {

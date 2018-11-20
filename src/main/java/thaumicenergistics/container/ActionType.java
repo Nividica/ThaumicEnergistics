@@ -11,5 +11,7 @@ public enum ActionType {
     SPLIT_OR_PLACE_SINGLE,
     PICKUP_SINGLE,
     SHIFT_MOVE,
-    AUTO_CRAFT
+    AUTO_CRAFT,
+    SCROLL_DOWN,
+    SCROLL_UP
 }

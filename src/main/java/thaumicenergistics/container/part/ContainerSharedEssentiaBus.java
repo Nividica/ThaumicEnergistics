@@ -3,9 +3,10 @@ package thaumicenergistics.container.part;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
@@ -13,10 +14,12 @@ import appeng.api.implementations.items.IUpgradeModule;
 import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.container.slot.SlotGhost;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
+import thaumicenergistics.container.slot.SlotUpgrade;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketEssentiaFilter;
 import thaumicenergistics.part.PartSharedEssentiaBus;
 import thaumicenergistics.util.EssentiaFilter;
+import thaumicenergistics.util.ThEUtil;
 
 /**
  * @author BrockWS
@@ -28,64 +31,65 @@ public abstract class ContainerSharedEssentiaBus extends ContainerBase {
     public ContainerSharedEssentiaBus(EntityPlayer player, PartSharedEssentiaBus part) {
         super(player);
         this.part = part;
-        if (this.getEssentiaFilter() != null && this.player instanceof EntityPlayerMP) {
-            PacketHandler.sendToPlayer((EntityPlayerMP) this.player, new PacketEssentiaFilter(this.getEssentiaFilter()));
-        }
+        this.sendFilter();
         this.bindPlayerInventory(player.inventory, 0, 100);
-        this.bindContainerInventory(this.getEssentiaFilter(), new InventoryBasic("null", false, 9), 80, 40);
-        this.bindUpgradesInventory(this.part.upgrades, 187, 8);
     }
 
-    private void bindContainerInventory(EssentiaFilter filter, IInventory inventory, int offsetX, int offsetY) {
-        this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 0, offsetX, offsetY, 0));
+    protected void bindContainerInventory(EssentiaFilter filter, IInventory inventory, int offsetX, int offsetY, int rows, int columns) {
+        this.bindContainerInventory(filter, inventory, offsetX, offsetY, rows, columns, 0);
+    }
 
-        // 1 Upgrade
-        this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 1, offsetX, offsetY - 18, 1));
-        this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 2, offsetX - 18, offsetY, 1));
-        this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 3, offsetX + 18, offsetY, 1));
-        this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 4, offsetX, offsetY + 18, 1));
+    protected void bindContainerInventory(EssentiaFilter filter, IInventory inventory, int offsetX, int offsetY, int rows, int columns, int groups) {
+        if (rows == 3 && columns == 3) {
+            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 0, offsetX, offsetY, 0));
 
-        // 2 Upgrades
-        this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 5, offsetX - 18, offsetY - 18, 2));
-        this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 6, offsetX + 18, offsetY - 18, 2));
-        this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 7, offsetX - 18, offsetY + 18, 2));
-        this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 8, offsetX + 18, offsetY + 18, 2));
+            // 1 Upgrade
+            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 1, offsetX, offsetY - 18, 1));
+            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 2, offsetX - 18, offsetY, 1));
+            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 3, offsetX + 18, offsetY, 1));
+            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 4, offsetX, offsetY + 18, 1));
+
+            // 2 Upgrades
+            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 5, offsetX - 18, offsetY - 18, 2));
+            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 6, offsetX + 18, offsetY - 18, 2));
+            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 7, offsetX - 18, offsetY + 18, 2));
+            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 8, offsetX + 18, offsetY + 18, 2));
+        } else {
+            int i = 0;
+            int perGroup = ThEUtil.divide(rows * columns, groups);
+            for (int x = 0; x < rows; x++) {
+                for (int y = 0; y < columns; y++) {
+                    this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, i, offsetX + x * 18, offsetY + y * 18, ThEUtil.divide(i, perGroup)));
+                    i++;
+                }
+            }
+        }
         this.recalculateSlots();
     }
 
-    private void bindUpgradesInventory(IInventory inventory, int offsetX, int offsetY) {
-        this.addSlotToContainer(new Slot(inventory, 0, offsetX, offsetY) {
-            @Override
-            public boolean isItemValid(ItemStack stack) {
-                return stack.getItem() instanceof IUpgradeModule;
-            }
-        });
-        this.addSlotToContainer(new Slot(inventory, 1, offsetX, offsetY + 18) {
-            @Override
-            public boolean isItemValid(ItemStack stack) {
-                return stack.getItem() instanceof IUpgradeModule;
-            }
-        });
-        this.addSlotToContainer(new Slot(inventory, 2, offsetX, offsetY + 36) {
-            @Override
-            public boolean isItemValid(ItemStack stack) {
-                return stack.getItem() instanceof IUpgradeModule;
-            }
-        });
-        this.addSlotToContainer(new Slot(inventory, 3, offsetX, offsetY + 54) {
-            @Override
-            public boolean isItemValid(ItemStack stack) {
-                return stack.getItem() instanceof IUpgradeModule;
-            }
-        });
+    protected void bindUpgradesInventory(IItemHandler handler, int offsetX, int offsetY, int count) {
+        for (int i = 0; i < count; i++) {
+            this.addSlotToContainer(new SlotUpgrade(handler, i, offsetX, offsetY + 18 * i) {
+                @Override
+                public boolean isItemValid(ItemStack stack) {
+                    return stack.getItem() instanceof IUpgradeModule && super.isItemValid(stack);
+                }
+            });
+        }
     }
 
     @Override
     public void detectAndSendChanges() {
+        // TODO: Send filter updates?
         this.recalculateSlots();
         super.detectAndSendChanges();
     }
 
+    protected void sendFilter() {
+        if (this.getEssentiaFilter() != null && this.player instanceof EntityPlayerMP) {
+            PacketHandler.sendToPlayer((EntityPlayerMP) this.player, new PacketEssentiaFilter(this.getEssentiaFilter()));
+        }
+    }
 
     public void recalculateSlots() {
         for (Slot slot : this.inventorySlots) {

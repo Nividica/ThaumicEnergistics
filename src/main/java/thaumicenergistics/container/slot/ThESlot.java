@@ -1,11 +1,16 @@
 package thaumicenergistics.container.slot;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.util.helpers.ItemHandlerUtil;
@@ -22,6 +27,11 @@ public class ThESlot extends Slot {
     public ThESlot(IItemHandler handler, int index, int xPosition, int yPosition) {
         super(ThESlot.EMPTY, index, xPosition, yPosition);
         this.itemHandler = handler;
+    }
+
+    @Override
+    public boolean isItemValid(ItemStack stack) {
+        return this.itemHandler.isItemValid(this.getSlotIndex(), stack);
     }
 
     @Override
@@ -58,5 +68,20 @@ public class ThESlot extends Slot {
         if (this.itemHandler == null)
             return 0;
         return this.itemHandler.getSlotLimit(this.getSlotIndex());
+    }
+
+    @SideOnly(Side.CLIENT)
+    public int getBackgroundIconIndex() {
+        return -1;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public ResourceLocation getBackgroundIcon() {
+        return null;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean hasBackgroundIcon() {
+        return this.getBackgroundIcon() != null && this.getBackgroundIconIndex() > -1;
     }
 }

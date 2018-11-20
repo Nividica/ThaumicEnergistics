@@ -22,9 +22,9 @@ public class ThELangKey implements IThELangKey {
     }
 
     @Override
-    public String getLocalizedKey() {
+    public String getLocalizedKey(Object... args) {
         if (I18n.hasKey(this.getUnlocalizedKey()))
-            return I18n.format(this.getUnlocalizedKey());
+            return I18n.format(this.getUnlocalizedKey(), args);
         return this.getUnlocalizedKey();
     }
 }

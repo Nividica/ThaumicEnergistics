@@ -20,6 +20,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
 
 import thaumicenergistics.api.EssentiaStack;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.init.ModGUIs;
@@ -51,7 +52,7 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
     @Nonnull
     @Override
     public TickingRequest getTickingRequest(@Nonnull IGridNode node) {
-        return new TickingRequest(5, 40, false, false);
+        return new TickingRequest(ThEApi.instance().config().tickTimeEssentiaImportBusMin(), ThEApi.instance().config().tickTimeEssentiaImportBusMax(), false, false);
     }
 
     @Override

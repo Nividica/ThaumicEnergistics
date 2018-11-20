@@ -7,4 +7,16 @@ import java.util.Map;
  */
 public interface IThEConfig {
     Map<String, Integer> essentiaContainerCapacity();
+
+    int tickTimeEssentiaImportBusMin();
+
+    int tickTimeEssentiaImportBusMax();
+
+    int tickTimeEssentiaExportBusMin();
+
+    int tickTimeEssentiaExportBusMax();
+
+    int tickTimeEssentiaStorageBusMin();
+
+    int tickTimeEssentiaStorageBusMax();
 }

@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.IThreadListener;
 
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -43,9 +44,9 @@ public class PacketUIAction implements IMessage {
     public void fromBytes(ByteBuf buf) {
         this.action = ActionType.values()[buf.readByte()];
         if (buf.readableBytes() > 0) {
-            int hash = buf.readInt();
+            String channelClass = ByteBufUtils.readUTF8String(buf);
             AEApi.instance().storage().storageChannels().forEach(channel -> {
-                if (channel.hashCode() == hash) {
+                if (channel.getClass().getSimpleName().equalsIgnoreCase(channelClass)) {
                     try {
                         this.requestedStack = channel.readFromPacket(buf);
                     } catch (Throwable ignored) {
@@ -61,7 +62,7 @@ public class PacketUIAction implements IMessage {
         buf.writeByte(this.action.ordinal());
         try {
             if (this.requestedStack != null) {
-                buf.writeInt(this.requestedStack.getChannel().hashCode());
+                ByteBufUtils.writeUTF8String(buf, this.requestedStack.getChannel().getClass().getSimpleName());
                 this.requestedStack.writeToPacket(buf);
             }
         } catch (IOException e) {

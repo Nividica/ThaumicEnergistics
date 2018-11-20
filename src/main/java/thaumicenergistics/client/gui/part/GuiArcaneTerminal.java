@@ -38,6 +38,7 @@ import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketSettingChange;
 import thaumicenergistics.network.packets.PacketUIAction;
 import thaumicenergistics.util.AEUtil;
+import thaumicenergistics.util.ThELog;
 import thaumicenergistics.util.ThEUtil;
 
 /**
@@ -116,16 +117,15 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         if (this.visAvailable > -1)
-            this.fontRenderer.drawString((int) this.visAvailable + " Available", 90, 130, 4210752);
+            this.fontRenderer.drawString(ThEApi.instance().lang().guiVisAvailable().getLocalizedKey((int) this.visAvailable), 90, 130, 4210752);
         if (this.visRequired > -1)
             if (this.visRequired > this.visAvailable)
-                this.fontRenderer.drawString("Vis: " + this.visRequired, 93, 145, Color.RED.getRGB());
+                this.fontRenderer.drawString(ThEApi.instance().lang().guiVisRequired().getLocalizedKey(this.visRequired), 93, 145, Color.RED.getRGB());
             else
-                this.fontRenderer.drawString("Vis: " + this.visRequired, 93, 145, 4210752);
+                this.fontRenderer.drawString(ThEApi.instance().lang().guiVisRequired().getLocalizedKey(this.visRequired), 93, 145, 4210752);
         if (this.discount > 0f)
-            this.fontRenderer.drawString((int) (this.discount * 100) + "% Discount", 90, 204, 4210752);
+            this.fontRenderer.drawString(ThEApi.instance().lang().guiVisDiscount().getLocalizedKey((int) (this.discount * 100)), 90, 204, 4210752);
 
         this.fontRenderer.drawString(ThEApi.instance().lang().guiArcaneTerminal().getLocalizedKey(), 8, 6, 4210752);
         this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96, 4210752);
@@ -229,8 +229,20 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
         int delta = Mouse.getEventDWheel();
 
-        if (delta != 0 && this.scrollBar != null)
-            this.scrollBar.wheel(delta);
+        if (delta != 0) {
+            if (isShiftKeyDown()) {
+                Slot slot = this.getSlotUnderMouse();
+                if (slot instanceof SlotME && slot.getHasStack()) {
+                    delta = delta / Math.abs(delta);
+                    ThELog.info("Sending {} times", Math.abs(delta));
+                    for (int k = 0; k < Math.abs(delta); k++) {
+                        PacketHandler.sendToServer(new PacketUIAction(delta > 0 ? ActionType.SCROLL_DOWN : ActionType.SCROLL_UP, ((SlotME) slot).getAEStack()));
+                    }
+                }
+            } else if (this.scrollBar != null)
+                this.scrollBar.wheel(delta);
+        }
+
 
     }
 

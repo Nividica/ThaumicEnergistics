@@ -1,11 +1,19 @@
 package thaumicenergistics.client.gui;
 
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -24,6 +32,7 @@ import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.container.slot.ISlotOptional;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
 import thaumicenergistics.container.slot.SlotME;
+import thaumicenergistics.container.slot.ThESlot;
 
 /**
  * @author BrockWS
@@ -39,6 +48,7 @@ public abstract class GuiBase extends GuiContainer {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
+        GlStateManager.color(1.0F, 1.0F, 1.0f, 1.0F);
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
@@ -55,6 +65,24 @@ public abstract class GuiBase extends GuiContainer {
             super.drawSlot(slot);
             stackSizeRenderer.renderStackSize(this.fontRenderer, (IAEItemStack) slotME.getAEStack(), slot.xPos, slot.yPos);
             return;
+        } else if (slot instanceof ThESlot) {
+            if (((ThESlot) slot).hasBackgroundIcon()) {
+                int index = ((ThESlot) slot).getBackgroundIconIndex();
+                int uv_y = (int) Math.floor((double) index / 16);
+                int uv_x = index - uv_y * 16;
+
+                Minecraft.getMinecraft().getTextureManager().bindTexture(((ThESlot) slot).getBackgroundIcon());
+
+                GlStateManager.enableBlend();
+                GlStateManager.disableLighting();
+                GlStateManager.enableTexture2D();
+                GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+
+                this.drawTexturedModelReactColor(slot.xPos, slot.yPos, uv_x * 16, uv_y * 16, 16, 16, new Color(1f, 1f, 1f, 0.4f));
+
+                //GlStateManager.enableLighting();
+            }
         }
         super.drawSlot(slot);
     }
@@ -130,5 +158,20 @@ public abstract class GuiBase extends GuiContainer {
 
     protected ResourceLocation getGuiBackground() {
         return null;
+    }
+
+    protected void drawTexturedModelReactColor(int x, int y, int textureX, int textureY, int width, int height, Color color) {
+        float offsetX = 0.00390625F;
+        float offsetY = 0.00390625F;
+        Tessellator tess = Tessellator.getInstance();
+        BufferBuilder buf = tess.getBuffer();
+
+        buf.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        buf.pos(x, y + height, this.zLevel).tex(textureX * offsetX, (textureY + height) * offsetY).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
+        buf.pos(x + width, y + height, this.zLevel).tex((textureX + width) * offsetX, (textureY + height) * offsetY).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
+        buf.pos(x + width, y, this.zLevel).tex((textureX + width) * offsetX, textureY * offsetY).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
+        buf.pos(x, y, this.zLevel).tex(textureX * offsetX, textureY * offsetY).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
+
+        tess.draw();
     }
 }

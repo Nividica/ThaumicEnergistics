@@ -49,7 +49,6 @@ public class GuiEssentiaTerminal extends GuiAbstractTerminal<IAEEssentiaStack, I
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         this.mc.getTextureManager().bindTexture(this.getGuiBackground());
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.getXSize(), 18);
-        // FIXME: Hide search box for now
         this.drawTexturedModalRect(this.guiLeft + 100, this.guiTop, 5, 0, 70, 16);
         this.drawTexturedModalRect(this.guiLeft + 50, this.guiTop, 5, 0, 70, 16);
 
@@ -71,7 +70,7 @@ public class GuiEssentiaTerminal extends GuiAbstractTerminal<IAEEssentiaStack, I
         if (slot instanceof SlotME) {
             // Send to server for processing
             if (slot.getHasStack())
-                PacketHandler.sendToServer(new PacketUIAction(ActionType.FILL_ESSENTIA_ITEM, (IAEEssentiaStack) ((SlotME) slot).getAEStack()));
+                PacketHandler.sendToServer(new PacketUIAction(ActionType.FILL_ESSENTIA_ITEM, ((SlotME) slot).getAEStack()));
             else
                 PacketHandler.sendToServer(new PacketUIAction(ActionType.EMPTY_ESSENTIA_ITEM));
             return;

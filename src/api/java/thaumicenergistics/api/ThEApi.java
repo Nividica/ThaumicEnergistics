@@ -25,7 +25,7 @@ public class ThEApi {
                 Method instanceAccessor = clazz.getMethod("instance");
                 ThEApi.API = (IThEApi) instanceAccessor.invoke(null);
             } catch (Exception e) {
-                // Ignored
+                e.printStackTrace();
             }
         }
         return ThEApi.API;

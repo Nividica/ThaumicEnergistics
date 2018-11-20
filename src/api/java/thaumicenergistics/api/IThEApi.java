@@ -24,6 +24,13 @@ public interface IThEApi {
     IThEBlocks blocks();
 
     /**
+     * Contains all upgrades in Thaumic Energistics
+     *
+     * @return Class which contains upgrade definitions
+     */
+    IThEUpgrades upgrades();
+
+    /**
      * Contains all config options in Thaumic Energistics
      *
      * @return Class which contains config options

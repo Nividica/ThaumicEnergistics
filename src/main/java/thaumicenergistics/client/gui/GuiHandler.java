@@ -15,19 +15,10 @@ import appeng.api.util.AEPartLocation;
 import appeng.container.implementations.ContainerCraftConfirm;
 
 import thaumicenergistics.ThaumicEnergistics;
-import thaumicenergistics.client.gui.part.GuiArcaneTerminal;
-import thaumicenergistics.client.gui.part.GuiEssentiaExportBus;
-import thaumicenergistics.client.gui.part.GuiEssentiaImportBus;
-import thaumicenergistics.client.gui.part.GuiEssentiaTerminal;
-import thaumicenergistics.container.part.ContainerArcaneTerminal;
-import thaumicenergistics.container.part.ContainerEssentiaExportBus;
-import thaumicenergistics.container.part.ContainerEssentiaImportBus;
-import thaumicenergistics.container.part.ContainerEssentiaTerminal;
+import thaumicenergistics.client.gui.part.*;
+import thaumicenergistics.container.part.*;
 import thaumicenergistics.init.ModGUIs;
-import thaumicenergistics.part.PartArcaneTerminal;
-import thaumicenergistics.part.PartEssentiaExportBus;
-import thaumicenergistics.part.PartEssentiaImportBus;
-import thaumicenergistics.part.PartEssentiaTerminal;
+import thaumicenergistics.part.*;
 
 /**
  * @author BrockWS
@@ -88,6 +79,8 @@ public class GuiHandler implements IGuiHandler {
                 return new ContainerEssentiaImportBus(player, (PartEssentiaImportBus) part);
             case ESSENTIA_EXPORT_BUS:
                 return new ContainerEssentiaExportBus(player, (PartEssentiaExportBus) part);
+            case ESSENTIA_STORAGE_BUS:
+                return new ContainerEssentiaStorageBus(player, (PartEssentiaStorageBus) part);
             case ESSENTIA_TERMINAL:
                 return new ContainerEssentiaTerminal(player, (PartEssentiaTerminal) part);
             case ARCANE_TERMINAL:
@@ -111,6 +104,8 @@ public class GuiHandler implements IGuiHandler {
                 return new GuiEssentiaImportBus(new ContainerEssentiaImportBus(player, (PartEssentiaImportBus) part));
             case ESSENTIA_EXPORT_BUS:
                 return new GuiEssentiaExportBus(new ContainerEssentiaExportBus(player, (PartEssentiaExportBus) part));
+            case ESSENTIA_STORAGE_BUS:
+                return new GuiEssentiaStorageBus(new ContainerEssentiaStorageBus(player, (PartEssentiaStorageBus) part));
             case ESSENTIA_TERMINAL:
                 return new GuiEssentiaTerminal(new ContainerEssentiaTerminal(player, (PartEssentiaTerminal) part));
             case ARCANE_TERMINAL:

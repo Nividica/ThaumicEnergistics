@@ -76,6 +76,11 @@ public class WrapperInventoryItemHandler implements IItemHandler {
         }
     }
 
+    @Override
+    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        return this.inventory.isItemValidForSlot(slot, stack);
+    }
+
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {

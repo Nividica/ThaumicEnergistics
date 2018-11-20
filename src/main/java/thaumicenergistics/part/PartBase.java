@@ -140,13 +140,13 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
     }
 
     @Override
-    public void writeToStream(ByteBuf buf) throws IOException {
+    public void writeToStream(ByteBuf buf) {
         buf.writeBoolean(this.isActive());
         buf.writeBoolean(this.isPowered());
     }
 
     @Override
-    public boolean readFromStream(ByteBuf buf) throws IOException {
+    public boolean readFromStream(ByteBuf buf) {
         this.isActive = buf.readBoolean();
         this.isPowered = buf.readBoolean();
         return true;

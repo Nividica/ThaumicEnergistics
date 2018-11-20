@@ -15,6 +15,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.parts.IPartModel;
+import appeng.api.parts.PartItemStack;
 
 import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.init.ModGUIs;
@@ -22,6 +23,7 @@ import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
 import thaumicenergistics.item.part.ItemArcaneTerminal;
 import thaumicenergistics.util.inventory.ThEInternalInventory;
+import thaumicenergistics.util.inventory.ThEUpgradeInventory;
 import thaumicenergistics.util.inventory.WrapperInventoryItemHandler;
 
 /**
@@ -48,7 +50,7 @@ public class PartArcaneTerminal extends PartSharedTerminal {
     public PartArcaneTerminal(ItemArcaneTerminal item) {
         super(item);
         this.craftingInventory = new ThEInternalInventory("matrix", 15, 64);
-        this.upgradeInventory = new ThEInternalInventory("upgrades", 1, 1);
+        this.upgradeInventory = new ThEUpgradeInventory("upgrades", 1, 1, this.getItemStack(PartItemStack.PICK));
         this.getConfigManager().registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.getConfigManager().registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
         this.getConfigManager().registerSetting(Settings.VIEW_MODE, ViewItems.ALL);

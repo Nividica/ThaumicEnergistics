@@ -4,8 +4,11 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.networking.IGrid;
@@ -24,7 +27,10 @@ import appeng.api.util.AECableType;
 
 import thaumcraft.api.aspects.IAspectContainer;
 
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
+import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
 import thaumicenergistics.integration.appeng.grid.EssentiaContainerAdapter;
@@ -56,7 +62,7 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
     @Nonnull
     @Override
     public TickingRequest getTickingRequest(@Nonnull IGridNode node) {
-        return new TickingRequest(5, 60, false, false);
+        return new TickingRequest(ThEApi.instance().config().tickTimeEssentiaStorageBusMin(), ThEApi.instance().config().tickTimeEssentiaStorageBusMax(), false, false);
     }
 
     @Override
@@ -101,6 +107,12 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
             }
         }
         super.onNeighborChanged(access, pos, neighbor);
+    }
+
+    @Override
+    public boolean onActivate(EntityPlayer player, EnumHand hand, Vec3d vec3d) {
+        GuiHandler.openGUI(ModGUIs.ESSENTIA_STORAGE_BUS, player, this.hostTile.getPos(), this.side);
+        return true;
     }
 
     @Override

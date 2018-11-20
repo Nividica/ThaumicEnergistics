@@ -52,13 +52,10 @@ public class ThEConfigManager implements IConfigManager {
         this.settings.forEach((key, old) -> {
             if (!tag.hasKey(key.name()))
                 return;
-            ThELog.info("Reading existing setting");
             String value = tag.getString(key.name());
             Enum newValue;
             try {
-                ThELog.info("value = {}", value);
                 newValue = Enum.valueOf(old.getDeclaringClass(), value);
-                ThELog.info("newValue = {}", newValue.name());
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 return;

@@ -7,13 +7,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import thaumcraft.api.aspects.Aspect;
 
-import thaumicenergistics.client.render.DummyAspectItemModel;
 import thaumicenergistics.client.render.DummyAspectRenderer;
 import thaumicenergistics.client.render.IThEModel;
-import thaumicenergistics.client.render.ThEModelLoader;
 import thaumicenergistics.init.ModGlobals;
 
 /**
@@ -63,6 +63,7 @@ public class ItemDummyAspect extends ItemBase implements IThEModel {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void initModel() {
         this.setTileEntityItemStackRenderer(DummyAspectRenderer.INSTANCE);
         //ThEModelLoader.MODEL_LOADER.addModel("models/item/dummy_aspect", new DummyAspectItemModel());

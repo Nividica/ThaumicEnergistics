@@ -46,9 +46,7 @@ public class MERepo<T extends IAEStack<T>> {
     public void updateView() {
         this.view.clear();
         this.view.ensureCapacity(this.list.size());
-        // TODO: Improve
-        // Add Sorting
-        // Add scrolling
+
         boolean searchByMod = false;
         String search = this.searchString;
         if (search.startsWith("@")) {

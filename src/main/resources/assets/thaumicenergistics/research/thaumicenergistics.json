@@ -49,8 +49,8 @@
                         "THEORY;THAUMICENERGISTICS;1"
                     ],
                     "required_item": [
-                        "appliedenergistics:material;2;22",
-                        "appliedenergistics:material;2;8",
+                        "appliedenergistics2:material;2;22",
+                        "appliedenergistics2:material;2;8",
                         "appliedenergistics2:material;1;0",
                         "minecraft:quartz",
                         "thaumcraft:quicksilver;2"

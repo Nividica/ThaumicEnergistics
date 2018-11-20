@@ -17,6 +17,17 @@ import thaumicenergistics.item.ItemDummyAspect;
  */
 public class ThEUtil {
 
+    /**
+     * Safe divide
+     *
+     * @param x amount
+     * @param y amount
+     * @return if x or y is 0, returns 0, else divides x by y
+     */
+    public static int divide(int x, int y) {
+        return x == 0 || y == 0 ? 0 : x / y;
+    }
+
     public static ItemStack setAspect(ItemStack stack, Aspect aspect) {
         if (stack.isEmpty() || !(stack.getItem() instanceof ItemDummyAspect))
             return stack;

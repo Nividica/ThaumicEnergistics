@@ -168,7 +168,7 @@ public class AEEssentiaStack implements IAEEssentiaStack, Comparable<AEEssentiaS
     }
 
     @Override
-    public void writeToPacket(ByteBuf buf) throws IOException {
+    public void writeToPacket(ByteBuf buf) {
         NBTTagCompound tag = new NBTTagCompound();
         this.writeToNBT(tag);
         ByteBufUtils.writeTag(buf, tag);

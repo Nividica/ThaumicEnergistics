@@ -8,11 +8,13 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.AEApi;
+import appeng.api.config.Upgrades;
 import appeng.api.storage.data.IItemList;
 
 import thaumcraft.api.aspects.Aspect;
 
 import thaumicenergistics.api.EssentiaStack;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.integration.IThEIntegration;
@@ -31,6 +33,18 @@ public class ThEAppliedEnergistics implements IThEIntegration {
     @Override
     public void init() {
         AEApi.instance().registries().cell().addCellHandler(new CreativeEssentiaCellHandler());
+
+        ThEApi.instance().items().essentiaImportBus().maybeStack(1).ifPresent(stack -> {
+            Upgrades.CAPACITY.registerItem(stack, 2);
+            Upgrades.SPEED.registerItem(stack, 4);
+        });
+        ThEApi.instance().items().essentiaExportBus().maybeStack(1).ifPresent(stack -> {
+            Upgrades.CAPACITY.registerItem(stack, 2);
+            Upgrades.SPEED.registerItem(stack, 4);
+        });
+        ThEApi.instance().items().essentiaStorageBus().maybeStack(1).ifPresent(stack -> {
+            Upgrades.CAPACITY.registerItem(stack, 5);
+        });
     }
 
     @Override

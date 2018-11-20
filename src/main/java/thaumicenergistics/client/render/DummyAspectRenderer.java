@@ -43,19 +43,19 @@ public class DummyAspectRenderer extends TileEntityItemStackRenderer {
             Minecraft.getMinecraft().getTextureManager().bindTexture(aspect.getImage());
             GL11.glBlendFunc(770, 771);
             GlStateManager.disableLighting();
-            GlStateManager.scale(0.063f, 0.063f, 0);
+           // GlStateManager.scale(0.063f, 0.063f, 0);
             GlStateManager.rotate(180f, 1, 1, 0);
             GlStateManager.rotate(90f, 0, 0, 1);
-            GlStateManager.translate(0f, -16f, 0.0F);
+            GlStateManager.translate(0f, -1f, 0);
 
             Color c = new Color(aspect.getColor());
             GlStateManager.color((float) c.getRed() / 255.0F, (float) c.getGreen() / 255.0F, (float) c.getBlue() / 255.0F, 1.0f);
 
             Tessellator tess = Tessellator.getInstance();
             tess.getBuffer().begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-            tess.getBuffer().pos(0.0D, 16.0D, 0).tex(0.0D, 1.0D).color((float) c.getRed() / 255.0F, (float) c.getGreen() / 255.0F, (float) c.getBlue() / 255.0F, 1.0f).endVertex();
-            tess.getBuffer().pos(16.0D, 16.0D, 0).tex(1.0D, 1.0D).color((float) c.getRed() / 255.0F, (float) c.getGreen() / 255.0F, (float) c.getBlue() / 255.0F, 1.0f).endVertex();
-            tess.getBuffer().pos(16.0D, 0.0D, 0).tex(1.0D, 0.0D).color((float) c.getRed() / 255.0F, (float) c.getGreen() / 255.0F, (float) c.getBlue() / 255.0F, 1.0f).endVertex();
+            tess.getBuffer().pos(0.0D, 1.0D, 0).tex(0.0D, 1.0D).color((float) c.getRed() / 255.0F, (float) c.getGreen() / 255.0F, (float) c.getBlue() / 255.0F, 1.0f).endVertex();
+            tess.getBuffer().pos(1.0D, 1.0D, 0).tex(1.0D, 1.0D).color((float) c.getRed() / 255.0F, (float) c.getGreen() / 255.0F, (float) c.getBlue() / 255.0F, 1.0f).endVertex();
+            tess.getBuffer().pos(1.0D, 0.0D, 0).tex(1.0D, 0.0D).color((float) c.getRed() / 255.0F, (float) c.getGreen() / 255.0F, (float) c.getBlue() / 255.0F, 1.0f).endVertex();
             tess.getBuffer().pos(0.0D, 0.0D, 0).tex(0.0D, 0.0D).color((float) c.getRed() / 255.0F, (float) c.getGreen() / 255.0F, (float) c.getBlue() / 255.0F, 1.0f).endVertex();
             tess.draw();
             GlStateManager.enableLighting();

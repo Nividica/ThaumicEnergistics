@@ -32,6 +32,9 @@ public class ThELang implements IThELang {
     private IThELangKey guiEssentiaStorageBus;
     private IThELangKey guiEssentiaTerminal;
     private IThELangKey guiArcaneTerminal;
+    private IThELangKey guiVisRequired;
+    private IThELangKey guiVisAvailable;
+    private IThELangKey guiVisDiscount;
     private IThELangKey researchCategory;
 
     public ThELang() {
@@ -67,6 +70,10 @@ public class ThELang implements IThELang {
         this.guiEssentiaStorageBus = new ThELangKey("gui.thaumicenergistics.essentia_storage_bus");
         this.guiEssentiaTerminal = new ThELangKey("gui.thaumicenergistics.essentia_terminal");
         this.guiArcaneTerminal = new ThELangKey("gui.thaumicenergistics.arcane_terminal");
+
+        this.guiVisRequired = new ThELangKey("gui.thaumicenergistics.vis_required");
+        this.guiVisAvailable = new ThELangKey("gui.thaumicenergistics.vis_available");
+        this.guiVisDiscount = new ThELangKey("gui.thaumicenergistics.vis_discount");
 
         this.researchCategory = new ThELangKey("tc.research_category.THAUMICENERGISTICS");
     }
@@ -189,6 +196,21 @@ public class ThELang implements IThELang {
     @Override
     public IThELangKey guiArcaneTerminal() {
         return this.guiArcaneTerminal;
+    }
+
+    @Override
+    public IThELangKey guiVisRequired() {
+        return this.guiVisRequired;
+    }
+
+    @Override
+    public IThELangKey guiVisAvailable() {
+        return this.guiVisAvailable;
+    }
+
+    @Override
+    public IThELangKey guiVisDiscount() {
+        return this.guiVisDiscount;
     }
 
     @Override
