@@ -14,6 +14,7 @@ import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.util.AEUtil;
+import thaumicenergistics.util.EssentiaFilter;
 
 /**
  * Wraps a IAspectContainer for use by a ME system
@@ -25,9 +26,11 @@ import thaumicenergistics.util.AEUtil;
 public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentiaStack> {
 
     private IAspectContainer container;
+    private EssentiaFilter config;
 
-    public EssentiaContainerAdapter(IAspectContainer container) {
+    public EssentiaContainerAdapter(IAspectContainer container, EssentiaFilter config) {
         this.container = container;
+        this.config = config;
     }
 
     @Override
@@ -91,11 +94,12 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
     public boolean canAccept(IAEEssentiaStack input) {
         if (this.container == null)
             return false;
-        return this.container.doesContainerAccept(input.getAspect());
+        return this.container.doesContainerAccept(input.getAspect()) && this.config.isInFilter(input.getAspect());
     }
 
     @Override
     public int getPriority() {
+        // TODO: StorageBus Priority
         return 0;
     }
 

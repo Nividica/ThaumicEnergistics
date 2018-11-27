@@ -50,7 +50,7 @@ public class PartArcaneTerminal extends PartSharedTerminal {
     public PartArcaneTerminal(ItemArcaneTerminal item) {
         super(item);
         this.craftingInventory = new ThEInternalInventory("matrix", 15, 64);
-        this.upgradeInventory = new ThEUpgradeInventory("upgrades", 1, 1, this.getItemStack(PartItemStack.PICK));
+        this.upgradeInventory = new ThEUpgradeInventory("upgrades", 1, 1, this.getItemStack(PartItemStack.NETWORK));
         this.getConfigManager().registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.getConfigManager().registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
         this.getConfigManager().registerSetting(Settings.VIEW_MODE, ViewItems.ALL);

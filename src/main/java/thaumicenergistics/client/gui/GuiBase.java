@@ -79,7 +79,7 @@ public abstract class GuiBase extends GuiContainer {
                 GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-                this.drawTexturedModelReactColor(slot.xPos, slot.yPos, uv_x * 16, uv_y * 16, 16, 16, new Color(1f, 1f, 1f, 0.4f));
+                this.drawTexturedModelRectColor(slot.xPos, slot.yPos, uv_x * 16, uv_y * 16, 16, 16, new Color(1f, 1f, 1f, 0.4f));
 
                 //GlStateManager.enableLighting();
             }
@@ -160,7 +160,7 @@ public abstract class GuiBase extends GuiContainer {
         return null;
     }
 
-    protected void drawTexturedModelReactColor(int x, int y, int textureX, int textureY, int width, int height, Color color) {
+    protected void drawTexturedModelRectColor(int x, int y, int textureX, int textureY, int width, int height, Color color) {
         float offsetX = 0.00390625F;
         float offsetY = 0.00390625F;
         Tessellator tess = Tessellator.getInstance();

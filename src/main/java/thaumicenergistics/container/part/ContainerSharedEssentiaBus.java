@@ -19,7 +19,6 @@ import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketEssentiaFilter;
 import thaumicenergistics.part.PartSharedEssentiaBus;
 import thaumicenergistics.util.EssentiaFilter;
-import thaumicenergistics.util.ThEUtil;
 
 /**
  * @author BrockWS
@@ -32,39 +31,21 @@ public abstract class ContainerSharedEssentiaBus extends ContainerBase {
         super(player);
         this.part = part;
         this.sendFilter();
-        this.bindPlayerInventory(player.inventory, 0, 100);
     }
 
     protected void bindContainerInventory(EssentiaFilter filter, IInventory inventory, int offsetX, int offsetY, int rows, int columns) {
-        this.bindContainerInventory(filter, inventory, offsetX, offsetY, rows, columns, 0);
-    }
-
-    protected void bindContainerInventory(EssentiaFilter filter, IInventory inventory, int offsetX, int offsetY, int rows, int columns, int groups) {
-        if (rows == 3 && columns == 3) {
-            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 0, offsetX, offsetY, 0));
-
-            // 1 Upgrade
-            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 1, offsetX, offsetY - 18, 1));
-            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 2, offsetX - 18, offsetY, 1));
-            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 3, offsetX + 18, offsetY, 1));
-            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 4, offsetX, offsetY + 18, 1));
-
-            // 2 Upgrades
-            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 5, offsetX - 18, offsetY - 18, 2));
-            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 6, offsetX + 18, offsetY - 18, 2));
-            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 7, offsetX - 18, offsetY + 18, 2));
-            this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, 8, offsetX + 18, offsetY + 18, 2));
-        } else {
-            int i = 0;
-            int perGroup = ThEUtil.divide(rows * columns, groups);
-            for (int x = 0; x < rows; x++) {
-                for (int y = 0; y < columns; y++) {
-                    this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, i, offsetX + x * 18, offsetY + y * 18, ThEUtil.divide(i, perGroup)));
-                    i++;
-                }
+        int i = 0;
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < columns; x++) {
+                this.addSlotToContainer(new SlotGhostEssentia(filter, inventory, i, offsetX + x * 18, offsetY + y * 18, this.calculateSlotGroup(i)));
+                i++;
             }
         }
         this.recalculateSlots();
+    }
+
+    protected int calculateSlotGroup(int index) {
+        return 0;
     }
 
     protected void bindUpgradesInventory(IItemHandler handler, int offsetX, int offsetY, int count) {

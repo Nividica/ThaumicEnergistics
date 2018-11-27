@@ -11,6 +11,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 
@@ -41,7 +42,7 @@ public abstract class PartSharedEssentiaBus extends PartBase implements IGridTic
                 PartSharedEssentiaBus.this.host.markForSave();
             }
         };
-        this.upgrades = new ThEUpgradeInventory("", upgradeSlots, 1) {
+        this.upgrades = new ThEUpgradeInventory("", upgradeSlots, 1, this.getItemStack(PartItemStack.NETWORK)) {
             @Override
             public void markDirty() {
                 super.markDirty();

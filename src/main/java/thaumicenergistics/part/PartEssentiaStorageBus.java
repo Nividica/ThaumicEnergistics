@@ -56,7 +56,7 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
     private boolean wasActive = false;
 
     public PartEssentiaStorageBus(ItemEssentiaStorageBus item) {
-        super(item, 63, 4);
+        super(item, 63, 5);
     }
 
     @Nonnull
@@ -92,7 +92,7 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
 
     @Override
     public void saveChanges(ICellInventory<?> iCellInventory) {
-        // TODO: Ignored Maybe?
+        // Ignored
     }
 
     @Override
@@ -131,6 +131,7 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
 
     @Override
     public int getPriority() {
+        // TODO: StorageBus Priority
         return 0;
     }
 
@@ -152,7 +153,7 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
 
     private IMEInventoryHandler<IAEEssentiaStack> getHandler() {
         if (/*this.handler == null &&*/ this.getConnectedContainer() != null) // TODO: Allow cache
-            return this.handler = new EssentiaContainerAdapter(this.getConnectedContainer());
+            return this.handler = new EssentiaContainerAdapter(this.getConnectedContainer(), this.config);
         return null;
     }
 

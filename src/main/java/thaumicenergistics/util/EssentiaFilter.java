@@ -27,6 +27,8 @@ public class EssentiaFilter implements INBTSerializable<NBTTagCompound>, Iterabl
     }
 
     public Aspect getAspect(int slot) {
+        if (slot < 0 || slot > this.aspects.length)
+            return null;
         return this.aspects[slot];
     }
 
@@ -60,8 +62,8 @@ public class EssentiaFilter implements INBTSerializable<NBTTagCompound>, Iterabl
 
     @Override
     public void deserializeNBT(NBTTagCompound tag) {
-        //if (tag.hasKey("count"))
-        //    this.aspects = new Aspect[tag.getInteger("count")];
+        if (tag.hasKey("count"))
+            this.aspects = new Aspect[tag.getInteger("count")];
         for (int i = 0; i < this.aspects.length; i++)
             if (tag.hasKey("aspect#" + i))
                 this.aspects[i] = Aspect.getAspect(tag.getString("aspect#" + i));

@@ -2,14 +2,18 @@ package thaumicenergistics.util.inventory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
 
+import thaumicenergistics.api.IThEUpgrade;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.util.ForgeUtil;
 
 /**
  * @author BrockWS
@@ -45,11 +49,22 @@ public class ThEUpgradeInventory extends ThEInternalInventory {
         this.cached = false;
     }
 
-    public int getUpgrades(Object upgrade) {
+    public int getUpgrades(Object o) {
         if (!this.cached)
             this.calculateUpgrades();
 
-        return this.cachedUpgrades.getOrDefault(upgrade, 0);
+        if (o instanceof ItemStack) {
+            ItemStack stack = (ItemStack) o;
+            if (stack.getItem() instanceof IUpgradeModule) { // AE Upgrade
+                o = ((IUpgradeModule) stack.getItem()).getType(stack);
+            } else {
+                Optional<IThEUpgrade> upgrade = ThEApi.instance().upgrades().getUpgrade(stack);
+                if (upgrade.isPresent())
+                    o = upgrade.get();
+            }
+        }
+
+        return this.cachedUpgrades.getOrDefault(o, 0);
     }
 
     private void calculateUpgrades() {
@@ -71,12 +86,15 @@ public class ThEUpgradeInventory extends ThEInternalInventory {
     }
 
     private int getMaxUpgrades(ItemStack upgradeStack) {
-        AtomicInteger max = new AtomicInteger();
+        AtomicInteger max = new AtomicInteger(0);
         ThEApi.instance().upgrades().getUpgrade(upgradeStack).ifPresent(upgrade -> max.set(upgrade.getSupported(this.upgradable)));
         if (upgradeStack.getItem() instanceof IUpgradeModule) {
             Upgrades upgrade = ((IUpgradeModule) upgradeStack.getItem()).getType(upgradeStack);
-            if (upgrade != null)
-                max.set(upgrade.getSupported().getOrDefault(upgradeStack, 0));
+            if (upgrade != null) {
+                Stream<ItemStack> stream = upgrade.getSupported().keySet().stream();
+                Optional<ItemStack> upgradable = stream.filter(o -> ForgeUtil.areItemStacksEqual(this.upgradable, o)).findFirst();
+                upgradable.ifPresent(stack -> max.set(upgrade.getSupported().getOrDefault(upgradable.get(), 0)));
+            }
         }
         return max.get();
     }
