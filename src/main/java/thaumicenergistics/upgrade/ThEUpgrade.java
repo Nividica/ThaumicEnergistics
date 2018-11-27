@@ -2,8 +2,6 @@ package thaumicenergistics.upgrade;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import net.minecraft.item.ItemStack;
@@ -12,7 +10,6 @@ import appeng.api.definitions.IItemDefinition;
 
 import thaumicenergistics.api.IThEUpgrade;
 import thaumicenergistics.util.ForgeUtil;
-import thaumicenergistics.util.ThELog;
 
 /**
  * @author BrockWS

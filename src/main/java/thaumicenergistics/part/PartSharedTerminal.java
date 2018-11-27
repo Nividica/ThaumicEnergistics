@@ -1,9 +1,7 @@
 package thaumicenergistics.part;
 
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.nbt.NBTTagCompound;
 
-import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
@@ -12,7 +10,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.me.GridAccessException;
 
-import thaumicenergistics.container.part.ContainerArcaneTerminal;
 import thaumicenergistics.integration.appeng.grid.GridUtil;
 import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.item.ItemPartBase;

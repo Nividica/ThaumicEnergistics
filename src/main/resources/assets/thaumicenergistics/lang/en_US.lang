@@ -70,7 +70,7 @@ research.base_energistics.stage.1=As both a scientist and an arcane scholar, I h
 
 # Research Digisentia
 research.digisentia.title=Digi-Sentia
-research.digisentia.stage.1=Having discovered how to distill essentia, it occurs to you that you may be able store it digitally.<BR>Examining the §lFormation Core§r and §lAnnihilation Core§r you realize that with some minor modifications they could serve as a means to convert essentia to and from a digital format.<BR>However, due to the corrosive nature of certain types of essentia, a layer of quicksilver around the circuitry is required to prevent decay.
+research.digisentia.stage.1=Having discovered how to distill essentia, it occurs to me that I may be able store it digitally.<BR>Examining the §lFormation Core§r and §lAnnihilation Core§r I realize that with some minor modifications they could serve as a means to convert essentia to and from a digital format.<BR>However, due to the corrosive nature of certain types of essentia, a layer of quicksilver around the circuitry is required to prevent decay.
 research.digisentia.stage.2=§lDiffusion Core§r<BR>The relatively high volatility and immense energy in distilled essentia requires that it first be diffused then digitized. A buffer chamber of some kind will likely be required to hold the diffused essentia.<PAGE><LINE>§lCoalescence Core§r<BR>Compresses and binds re-materialized essentia diffusion back into its raw form. A buffer chamber will also likely be needed.
 
 # Research Digisentia Storage

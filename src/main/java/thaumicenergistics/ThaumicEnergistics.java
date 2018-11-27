@@ -95,7 +95,7 @@ public class ThaumicEnergistics {
                 .arcaneTerminal()
                 .maybeStack(1).
                 ifPresent(stack ->
-                ThEApi.instance().upgrades().arcaneCharger().registerItem(stack, 1));
+                        ThEApi.instance().upgrades().arcaneCharger().registerItem(stack, 1));
 
         ThELog.info("Integrations: Init");
         ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::init);

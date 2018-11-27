@@ -2,8 +2,6 @@ package thaumicenergistics.integration.appeng;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 

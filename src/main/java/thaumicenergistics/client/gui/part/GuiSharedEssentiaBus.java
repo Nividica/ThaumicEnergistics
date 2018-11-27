@@ -1,14 +1,13 @@
 package thaumicenergistics.client.gui.part;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.inventory.ClickType;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 
 import thaumicenergistics.client.gui.GuiBase;
 import thaumicenergistics.container.part.ContainerSharedEssentiaBus;
 import thaumicenergistics.container.slot.ISlotOptional;
-import thaumicenergistics.init.ModGlobals;
 
 /**
  * @author BrockWS
@@ -41,6 +40,12 @@ public abstract class GuiSharedEssentiaBus extends GuiBase {
         this.drawTexturedModalRect(this.guiLeft + this.mainBackgroundWidth + this.upgradeOffset, this.guiTop, this.mainBackgroundWidth + this.upgradeOffset, 0, this.upgradeBackgroundWidth, this.upgradeBackgroundHeight);
 
         this.inventorySlots.inventorySlots.forEach(this::drawSlotBackground);
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 94, 4210752);
     }
 
     protected void drawSlotBackground(Slot slot) {

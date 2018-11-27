@@ -2,9 +2,6 @@ package thaumicenergistics.container.part;
 
 import java.util.Objects;
 
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IContainerListener;
@@ -38,7 +35,6 @@ import thaumcraft.api.aura.AuraHelper;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.items.ItemsTC;
 
-import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.container.ActionType;
 import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.container.DummyContainer;
@@ -46,7 +42,6 @@ import thaumicenergistics.container.ICraftingContainer;
 import thaumicenergistics.container.slot.SlotArcaneMatrix;
 import thaumicenergistics.container.slot.SlotArcaneResult;
 import thaumicenergistics.container.slot.SlotUpgrade;
-import thaumicenergistics.container.slot.ThESlot;
 import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.integration.thaumcraft.TCCraftingManager;
 import thaumicenergistics.network.PacketHandler;

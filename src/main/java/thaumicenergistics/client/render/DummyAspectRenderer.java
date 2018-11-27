@@ -43,7 +43,7 @@ public class DummyAspectRenderer extends TileEntityItemStackRenderer {
             Minecraft.getMinecraft().getTextureManager().bindTexture(aspect.getImage());
             GL11.glBlendFunc(770, 771);
             GlStateManager.disableLighting();
-           // GlStateManager.scale(0.063f, 0.063f, 0);
+            // GlStateManager.scale(0.063f, 0.063f, 0);
             GlStateManager.rotate(180f, 1, 1, 0);
             GlStateManager.rotate(90f, 0, 0, 1);
             GlStateManager.translate(0f, -1f, 0);

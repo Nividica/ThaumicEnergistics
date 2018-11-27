@@ -1,0 +1,946 @@
+﻿05/21/2018 1.1.3.0 - Release
+  Catching up the changelog
+  Fixes #340 and #342: (Dupe Fix) Rewrote how item extraction is performed for the arcane terminal.
+  Much Sonarqube
+  Fixes #316: Storage bus will remember negative priorities.
+  
+03/18/2018 1.1.2.0 - Release
+  Fixed issue where changing storage bus priority did not immediately take effect.
+  
+03/17/2018 1.1.2.0 - Release
+  Fixed knowledge inscriber being picky about shapless recipes
+  Potential fix for #333, checks if the item is damageable before doing damage check.
+  Fixes #332: Item bonus aspects are also added to known aspect list.
+  (Dupe Fix) Distilation Encoder can no longer have ghost items extracted.
+  Fixes #311: (Dupe Fix) Respect extraction simulation amount
+
+04/27/2016 1.0.0.6 - Beta
+  Fixes #309: When shift clicking [?] from NEI, items will also be pulled from the players inventory if available.
+
+04/21/2016 1.0.0.5 - Beta
+  Fixes #303: A.C.T. result slot can no longer dupe items.
+  Fixed issue of A.C.T. result slot improperly handling right clicks, issue was with underlying inventory, as it allowed 'partial' crafting results to be taken.
+
+04/18/2016 1.0.0.5 - Beta
+  Refactored the essentia grid cache
+
+04/17/2016 1.0.0.5 - Beta
+  Fixed #281: Essentia terminal no longer overlayed by NEI at certain aspect ratios.
+
+04/17/2016 1.0.0.4 - Beta
+  Fixes #300 and #282: Microblock compatibility added.
+  Fixes #293: Added missing redstone method to level emitter.
+  Craftable essentia no longer shows in item terminals.
+  Texture updated: Level Emitter
+  Applied new formatting rules to entire project.
+
+04/15/2016 1.0.0.4 - Beta
+  Cleaned up ASM transformer code.  
+
+04/14/2016 1.0.0.3 - Beta
+  Completely moved dev environment to Java 8, Java 7 and earlier is no longer supported.
+  Updated forge to 10.13.4.1566
+  Fixes #294: Wand move targets for shift+click changed to favor player inventory over ME storage.
+  Fixes #289: Only AE2 items have aspects applied.
+  Fixes #299: Assembler no longer eats pearls.
+
+01/30/2016 1.0.0.2 - Beta
+  Fixes #270: Restored Java 7 compatibility.
+
+01/26/2016 1.0.0.2 - Beta
+  Fixed potential memory leak on networks with essentia monitor listeners.
+  Added mod identification to aspects in the Essentia Crafting Terminal.
+
+01/25/2016 1.0.0.2 - Beta
+  Fixes #268: Getting an item tooltip in the A.C.T. is now a checked operation.
+
+01/24/2016 1.0.0.1 - Beta
+  Fixes #267: Wildcard damage values will no longer cause GUI crashes.
+  Added Thaumcraft's itemShard to the ore dictionary, allowing autocrafting substitutions where allowed.
+
+01/23/2016 1.0.0.0 - Beta
+  Fixed SMP packet crash.
+  Fixed potential golem hook crash.
+  Added levels of interaction.
+  Added golem backpack skins.
+
+01/22/2016 1.0.0.0 - Beta
+  Bumped version to 1.0.0.0
+  Fixes #213: Added backpack lore and recipe.
+  Added backpack config option.
+  Updated mod info file.
+  Fixed several SMP crashes.
+
+01/21/2016 0.10.0.0 - Beta
+  Fixed multiple issues with the Arcane assembler: GUI desync, invalid network state.
+  Golem backpack pearl now responds to out-of-range and if golem is disabled(Fetter).
+  Fixed issue where the last pattern on a knowledge core could not be erased.
+
+01/19/2016 0.10.0.0 - Beta
+  Cleaned up some ASM transformation code.
+  Renamed model and texture of golem Addon to golem Backpack
+  Fixed bug where storage bus did not work when placed after jar was placed.
+  Added wifi backpack for Essentia core.
+  Fixed GUI based dupe bug.
+
+01/18/2016 0.10.0.0 - Beta
+  Fixed bug where DPE would eat item stacks.
+  Refactored golem network code.
+  Added wifi backpack for Gather, Decanting, and Fill cores.
+  Fixes #265: Restored API call and marked as deprecated.
+  Fixed broken integration core.
+
+01/17/2016 0.10.0.0 - Beta
+  Cleaned up backpack render code.
+  Cleaned up and documented IGolemHookHandler interface.
+  Added AE network capabilities to golem backpack. 
+
+01/16/2016 0.10.0.0 - Beta
+  Work on golem hooks & sync
+  Work on item and wifi backpack.
+  Fixed bug: A.C.T. didn't copy item on middle click when in creative mode.
+
+01/15/2016 0.10.0.0 - Beta
+  Work on golem hooks
+  Work on item and wifi backpack.
+  
+01/14/2016 0.10.0.0 - Beta
+  Work on golem hooks
+  
+01/13/2016 0.10.0.0 - Beta
+  Began looking into #213
+  
+01/11/2016 0.10.0.0 - Beta
+  Fixed occasional crash when the Knowledge Inscriber GUI was clicked.
+  Added locked/unlocked texture & indicator to storage monitors.
+  Fixed bug where autocrafting gui didn't always show the item being crafted.
+  Fixed and cleaned up some gui sync issues. (will this never end?!)
+
+01/10/2016 0.10.0.0 - Beta
+  Fixed name collision with "isUseableByPlayer".
+  Fixed KnowledgeInscriber not being able to erase patterns.
+  Fixed bug where Terminals would not properly update during certain AE-network changes.
+  Fixed bug where craftable essentia was still present on the network when it should not be.
+  Added config option to force some thaumcraft blocks to be turned into facades.
+  Dependency Updated: AE2-rv3-beta-4
+  Added config options for many things.
+
+01/09/2016 0.10.0.0
+  Fixed crafting aspect item display name.
+  More Multiplayer gui sync fixes.
+  Slightly reduced size of all packets.
+
+01/08/2016 0.10.0.0
+  More Multiplayer gui sync fixes.
+  
+01/06/2016 0.10.0.0 - Beta
+  Fixes #263: Replaced flawed conversion amount config item. Essentia cells should work correctly in the IO Port.
+  Removed redundant tile entity code.
+  Cleaned up inventory processing.
+  Cleaned up the NBT save code for parts.
+  Fixes #264 - ACT clears all items on network power loss.
+  Multiplayer gui sync fixes.
+
+01/05/2016 0.10.0.0 - Beta
+  Added recipe and Thaumonomicon entry for DPE.
+  Reduced client packet overhead.
+  More cleanup.
+
+01/04/2016 0.10.0.0 - Beta
+  Essentia terminal player different sounds depending on item.
+  Added debug level to logger.
+  Updated essentia terminal lore.
+  Updated essentia terminal gui.
+  Created block texture for DPE.
+  Fixed DPE not dropping patterns on breaking.
+  Enhancing DPE gui.
+
+01/03/2016 0.10.0.0 - Beta
+  Essentia terminal can fill/drain containers when they are dragged and clicked over an aspect.
+
+01/02/2016 0.10.0.0 - Beta
+  File restructure & code refactor.
+  Added mult-mouse-button support to essentia terminal.
+  Fixed ACT scroll bug issue with NEI.
+
+01/01/2016 0.10.0.0 - Beta
+  Essentia subsystem now supports craftable aspects.
+  Essentia terminal now shows craftable essentia.
+  Reworked some terrible GUI code.
+  Fixed sort-by-name in the Essentia Terminal.
+  Fixed a bug where some parts would not be aware of neighboring blocks when placed.
+  Fixes #53: :D
+
+12/30/2015 0.10.0.0 - Beta
+  Added Distillation Pattern Encoder
+  Added pattern handler
+  Implemented Distillation Pattern Encoder GUI
+  Cleaned up tooltip code, and fixed underdraw issue.  
+
+12/29/2015 0.10.0.0 - Beta
+  Began integrating essentia into crafting system.
+  Added "Essentia" item.
+
+12/29/2015 0.9.1.2 - Beta
+  Fixed #261 AE2-RV3-Beta-2 issue
+  Added particle effects to Knowledge Inscriber.
+
+12/28/2015 0.9.1.2 - Beta
+  Complete network code overhaul.
+
+12/28/2015 0.9.1.1 - Beta
+  Added a lot of safety checks to arcane patterns.
+  Updated name of storage components and cells to better match AE2's.
+  Fixes #260 - Players preferred item is now used in arcane patterns.
+  QOL: Essentia terminal aspects are now un-selectable.
+
+12/27/2015 0.9.1.0 - Beta
+  Fixes #112 - A.C.T can now issue crafting jobs!
+  Fixes #230 - Arcane patterns now respect substitutions.
+  Note: This change is NOT retro-active. Knowledge cores must have their patterns re-saved in order for the changes to take effect.
+
+12/24/2015 0.9.0.4 - Alpha
+  Dependency Updated: Forge 10.13.4.1558
+  Dependency Updated: AE2-rv3-beta-1
+  Merged pull request #255 - Keridos
+  Merged pull request #252 - Aquahatsche
+  Fixed #255 TODO's
+  Fixes #228 - Corrected blacklisting code
+  Fixes compatibility with Thaumic Tinkerer.
+  Fixes #249 - Capacity can be checked on any essentia container, inject now respects essentia the container would not take.
+  Fixes issue with Technomancy(and any other mods that use my API) where essentia was voided when mod container is full.
+  Fixes #248 - Focus now interacts with caches properly.
+  
+10/13/2015 0.9.0.0 - Alpha
+  Dependency Updated: AE2-rv3-9
+  Fixes #227: Storage bus void support restored, attaches to network when placed with pre-set filters, and condenser support restored. May address #234
+  Added EssentiaProvider to Thaumic Tinkerer blacklist, will be supported in the next release of Thaumic Tinkerer #228
+  Fixes #229: Storage bus can fully utilize the Essentia Reservoir without setting filters.
+  Fixes #239: Essentia cells obey their filters when used in an IO port.
+  Fixes #240: Added checks to not redraw the essentia storage monitor or send update packets if not needed.
+
+8/3/2015 0.8.10.10
+  Fixed #226: Properly sided E.V.C. packet code.
+
+7/30/2015 0.8.10.9
+  Fixed #223: Removed recursive call causing stack overflow.
+  Aspect registration is more robust when dealing with AE Api changes.
+  Removed unneeded GL calls from storage monitor.
+  E.V.C. produces light when active.
+
+7/23/2015 0.8.10.8
+  Fixes #219: ACT buttons can be right-clicked to go backwards.
+  Cleaned up some GUI code.
+  Really fixed #216.
+
+7/22/2015 0.8.10.8
+  Added E.V.C GUI.
+  API Change: Tile whitelist now requires capacity, and includes a dual add method.
+  Fixes #216: Arcane crafting patterns can no longer substitute items, must match exactly.
+  More EVC research notes.
+  The Essentia Terminal can be used to drain or fill the EVC.
+
+7/21/2015 0.8.10.8
+  Added Essentia Vibration Chamber recipe & research.
+  Preliminary work on Vibration Chamber GUI.
+
+7/10/2015 0.8.10.8
+  Fixes #214: Empty jars can again be filled in Essentia Terminal.
+  Fixes #215: Level Emitter adjustment button placement corrected.
+  Essentia Vibration Chamber:
+  * Produces Power
+  * Power based on essentia type
+  * Power cycle length based on essentia type
+  * Saves data
+  * Updates client
+  
+7/4/2015 0.8.10.7
+  Changed level emitter block update code to match AE emitter.
+  Made the essentia grid cache compatible with Java 1.7 #211
+
+7/2/2015 0.8.10.6
+  Fixes #203: Crystallized Essentia & Wisp Essence can now be used to set filters.
+  Fixes #206: Import bus will no longer crash with redstone card.
+  Using the wrench focus on a pedestal no longer spawns wrenches.
+  Fixes #204: ACT search box focus obeys search mode.
+  Fixes #201: ACT GUI less laggy when ME system very busy.
+  Dependency Updated: Forge 10.13.4.1448
+  Added CC help command.
+  
+6/12/2016 0.8.10.6
+  Fixes #199: Conversion & Storage monitors now placeable in SMP.
+  EssentiaGrid:
+  * Updated Conversion Monitor
+  * Updated Import & Export buses
+  * Updated Essentia Cell
+  * Updated Wireless Terminal
+  * Updated Level Emitter
+  * Updated Storage Monitor
+  Refactored a great deal of code surrounding essentia transfers and power usage.
+  Cleaned up redundancies in the wireless terminal code.
+  Reduced gearbox bounding/collision box.
+
+5/30/2015 0.8.10.6
+  More CC work #194
+
+5/29/2015 0.8.10.6
+  Fixes #197: Arcane Assembler no longer eats armor on shift-click.
+  Fixes #196: Arcane Assembler requires Sceptre research.
+
+5/28/2015 0.8.10.6
+  Major under-the-hood changes to how devices interact with the network are underway.
+  Bugfix: Potential situation where the Essentia Provider would stop accepting essentia.
+  More CC work.
+
+5/27/2015 0.8.10.6
+  Fixes #195: Shift+Rightclick in the ACT continues to extract 1 item at a time.
+  Added some support for ComputerCraft #194
+
+5/25/2015 0.8.10.6
+  Potential bugfix: Improper array bounds checking.
+  Potential bugfix: ACT view slots are checked for being null before usage.
+
+5/25/2015 0.8.10.5
+  Fixes #135: Adds support for shift-clicking arcane recipes if ThaumicNEIPlugin is installed.
+
+5/25/2015 0.8.10.4
+  Fixes #191: Features should never be null.
+
+5/23/2015 0.8.10.3
+  Bugfix: Feature dependencies resetting to false.
+  Bugfix: Wrench focus calculation errors fixed.
+
+5/22/2015 0.8.10.3
+  More API changes.
+  Added safety layer to API ensuring it can not be accessed before it is ready.
+  Added scanning aspects for:
+  * Encoded Pattern
+  * Singularities
+  * EU & RF P2P Tunnels
+  Fixes #188: Crafting result is now updated on both client and server if wand vis levels change.
+  Conversion monitor reports who is doing the insert or removal of essentia to the AE network.
+
+5/21/2015 0.8.10.3
+  Code cleanup.
+  API name changes.
+  Required research no longer shows up for ThE research if the ThE research is disabled.
+
+5/19/2015 0.8.10.3
+  Internal code cleanup.
+  Much more robust checking of disabled AE or TC features.
+  * I have tried to catch every possible issue that can arise from disabling features in either mod, but to say its complex is a bit of an understatement.
+  Essentia provider recipe change: Replaced one of the coalescence cores with a diffusion core.
+
+5/19/2015 0.8.10.2
+  Bugfix: Essentia Storage Bus updates AE network if contents are externally changed.
+  Bugfix: Essentia Terminal sync issue if a cell is removed/added while viewing terminal.
+  Bugfix: Essentia Conversion Monitor crash.
+  Bugfix: Essentia Conversion Monitor no longer eats stacks.
+  Essentia Conversion Monitor: When shift-double-rightclicking the monitor only takes essentia matching the input aspect, instead of any essentia in the players inventory.
+  Bugfix: Priority tab icon size corrected.
+  Essentia storage bus can now be attached to a ME Condenser.
+
+5/16/2015 0.8.10.1
+  Redundant code cleanup.
+  Added Essentia Conversion Monitor.
+
+5/13/2015 0.8.10.1
+  Essentia Storage Bus supports ME Interface part for subnetworks.
+  Bugfix: The essentia sub-network sync bug ~should be~ fixed.
+  Added AE security to Arcane Assembler GUI.
+  Terminals can be rotated with a wrench.
+  Bugfix: Vis export from the VRI now supports crystal attunement.
+  Fixes #132: Added Essentia Storage Monitor.
+
+5/12/2015 0.8.10.1
+  Bugfix: ACT search bar retains its contents when viewing NEI recipes.
+  Fixes #75: Added Tall Centered ACT terminal style.
+  Added Search Mode button to ACT.
+
+5/11/2015 0.8.10.1
+  Fixes #178: Added armor slots to ACT.
+  Updated ACT Lore.
+  Started work on 'Tall Centered" ACT terminal style.
+
+5/7/2015 0.8.10.0
+  Dependency Updated: AE2 rv2 stable 1
+  Version numbers simplified.
+  Fixes #179: Export Bus now has void jar support.
+  Fixes #181: Vis Relay Interfaces now support full P2P, can export vis.
+  Fixes #130: Wireless Essentia Terminal can be charged from other power systems.
+  Merged RV2 branch into main branch.
+  API Updated to support third-party code setting ACT Crafting Grid. #135
+
+4/8/2015 0.8.9.3a-rv2
+  Dependency Updated: AE2 rv2 beta 27
+  Fixes #160: More robust checking for disabled wrench
+  Fixes #162: Updated AE2
+  Better aspect registration & cleanup.
+  
+4/2/2015 0.8.9.2a-rv2
+  Dependency Updated: AE2 rv2 beta 22
+
+3/32/2015 0.8.9.1b-rv2
+  Dependency Updated: Forge 10.13.2.1291
+  Dependency Updated: Thaumcraft 4.2.3.5
+  Dependency Updated: AE2 rv2 beta 18
+  Fixes #145: Blocks now make sure their tile entity is valid before using them.
+  Fixes #143: Removed essentia types are now properly ignored on launch.
+  Fixes #133: Assembler AE-network connection initialization now protected.
+  Fixes #129: Wrench focus disabled when quartz wrench has been disabled.
+  Fixes #139: A.C.T. ignores right-clicks on the crafting result.
+  Adds #138: Jar labels can be set in the essentia terminal.
+  Added config option that controls if essentia gas can be used by ExtraCells.
+  Fixed ItemFocusAEWrench init bug.
+  Aspect registration is now protected from causing a crash.
+  Merged language translation updates.
+  Cleaned logging.
+  Re-ballanced some recipes.
+  Clarified Thaumonomicon entries.
+  Essentia filter-slots can now be set by jar labels.
+    
+2/1/2015 0.8.9.0b-rv2
+  Finished wrench focus recipe and lore
+  Fixes #126: Added support for AE2-rv2-beta8
+  
+1/16/2015 0.8.9.0b-rv2
+  Added support for cable parts to wrench focus.
+
+1/15/2015 0.8.9.0b-rv2
+  Fixes #122: Assembler will now connect to a network with a security terminal.
+  Fixes #123: Added wrench focus.
+  Began work on Essentia vibration chamber.
+
+1/13/2015 0.8.8.4b-rv2
+  Added forge version information to dependencies.
+  Clarified permission API.
+  Fixes #117: Added config option for gearbox models.
+  Fixes #120: Assembler recipe now properly accepts a crafted scepter.
+  Fixes #119: Assembler saves core and upgrades when wrenched.
+  Fixes #118: Assembler now drops upgrades when broken.
+  Fixes #114: Assembler now has slots for vis discount armor and inherits the scepter's vis discount.
+  Bugfix: Assembler power calculation fixed.
+  Bugfix: Fixed Assembler's GUI shift+click for upgrade cards.
+  Reduced network overhead in assembler.
+
+1/11/2015 0.8.8.1b-rv2
+  Corrected model placement when player is holding it.
+  Fixes #115: Arcane recipes are now fully validated.
+  Decreased the time period between vis checks in the A.C.T.(wands will start charging sooner)
+  Fixes #113: The knowledge inscriber can now be rotated with an AE wrench.
+
+1/10/2015 0.8.8.0b-rv2
+  Added recipes and lore for inscriber and assembler.
+  Disabled craftable items in A.C.T.
+  Added localization registry.
+  Moved all ThE displayable strings to localization registry.
+  Fixes #111: All parts now have fully customizable textures.
+  Corrected part breaking textures.
+  Fixed level emitter texture offset.
+  Essentia Import bus now works with the Advanced Alchemical Furnace.
+
+1/9/2015 0.8.8.0b-rv2
+  Added Assembler model.
+  Models now render in inventory.
+  Added crafting effects.
+  Terminal search bars no longer open with focus.
+  Added Knowledge Inscriber icons.
+  
+1/8/2015 0.8.8.0b-rv2
+  Fixes #106: Arcane items are now auto-craftable!
+  Corrected centi-vis math.
+  Added WAILA text to assembler.
+  API Updated with ThE mod abbreviation.
+  Assembler GUI now reflects active crafting job, and accepts upgrades.
+
+1/7/2015 0.8.7.3a-rv2
+  Knowledge Inscriber fully functional.
+  Knowledge Inscriber now saves inventory, and drops Knowledge core when broken.
+  Arcane Assembler can be linked with vis relay.
+  Assembler GUI now reflects Vis amount.
+
+1/4/2015 0.8.7.3a-rv2
+  Added first bits of the Knowledge Inscriber.
+  Fixes #110: Essentia gasses are now hidden from EC2. Requires EC2 version 2.2.24b44 or higher.
+
+12/22/2014 0.8.7.3a-rv2
+  Fixes #108: Added essentia creative cell. Set aspects in cell workbench.
+  Maximum of 6 aspects enforced on AE items.
+
+12/22/2014 0.8.7.2a-rv2
+  Fixed storage bus recipe when Warded Arcana research is disabled.
+  Added A.A. block, tile, and gui.
+  Fixes #69: Final RV2 testing complete.
+
+12/18/2014 0.8.7.2a-rv2
+  Added Knowledge Core item.
+  Began work on Arcane Assembler.
+
+12/17/2014 0.8.7.2a-rv2
+  A.C.T. can now see craftable items, but can not issue crafting jobs.
+
+12/16/2014 0.8.7.2a-rv2
+  Initial port to RV2
+  Null return fix for grid block.
+  Dupe fix for wireless terminal.
+  Fixed unresponsive tooltip on sort buttons in A.C.T.
+
+12/14/2014 0.8.7.2b-rv1
+  Removed essentia gas dynamic texture generation.
+  Abstracted the wireless terminal interface, and moved into API.
+
+12/14/2014 0.8.7.1b
+  Changed version number scheme: Release.Major.Minor.Bugfix
+  Fixes #103: Warded glass recipes fixed.
+  Fixes #102: Servers no longer crash third-party code is exploring the gearbox tile.  
+
+11/30/2014 0.8.7b
+  Reproduced provider render bug thanks to the suggestion of Einsvies to test with Ars Magica 2. #99
+  Renderer now reacquires the texture reference every draw call.
+
+11/30/2014 0.8.6b
+  Fixed provider render bug?
+
+11/29/2014 0.8.6b
+  Updated forge to 10.13.2.1230
+  Sided provider render ID's.
+  Minor tweaks to provider renderer.
+
+11/29/2014 0.8.5b
+  Fixes #100: A.C.T. Checks user permissions again.
+  Potential Fix #99 Un-cached texture location in provider renderer.
+  Cleaned up terminal work code.
+  Added Wireless E.Term. recipe and included in E.Term. research.
+
+11/28/2014 0.8.5b
+  Fixes #81: Added Wireless Essentia Terminal.
+  Major GUI cleanup for essentia terminals and cells.
+
+11/27/2014 0.8.5b
+  Created model for gearboxes.
+  Fixed an A.C.T crafting bug.
+  A.C.T. search bar can be focused with right-click.
+
+11/26/2014 0.8.5b
+  Changed name of storage cell "casing" to "housing" to conform to AE.
+  Fixes #97: NEI Shift+Click in the A.C.T. now includes ore dictionary matches, this also fixes shift-crafting not matching properly.
+  A.C.T. Search bar opens with focus again.
+
+11/25/2014 0.8.4b
+  Lots of AE network code fixes. Lots.
+  Fixes #94: Cell recipe now uses glass if warded glass has been disabled.
+  Fixes #96: Import bus can now import from Essentia Buffers.
+
+11/23/2014 0.8.4b
+  Storage bus no longer requires a filter to be able to interact with a jar.
+  Fixes #93: Essentia terminal no longer drops inventory contents when wrenched.
+  Fixes #44: Subnets are now supported by placing an Essentia Storage Bus against a ME Interface block.
+  Note: Filter is not respected for subnet operation.
+
+11/22/2014 0.8.4b
+  Cleaned up provider rendering code.
+  Updated ACT block graphics.
+  Fixes #61: Reworked light levels of all parts.
+  Added Nether Quartz duplication to Certus Quartz duplication research.
+  Fixes #91: Removed essentia gas air-block. This does brake compatibility with EC2's fluid formation plane.
+
+11/19/2014 0.8.3b
+  Fixes #90: Recipes with the "Wooden Gear" and "Certus Quartz" now refer to the ore dictionary.
+  Not 100% sure this will fix the crucible result, but should fix the catalyst.
+  Iron gear now registered with ore dictionary.
+  Iron Gearbox is now an Arcane recipe.
+
+11/17/2014 0.8.2b
+  Fixes #88: Tooltips are no longer laggy.
+  Fixes #86: Items in the ME network show their aspects in the A.C.T.
+  Potentialy Fixes #84: Added circular dependency checking to AE Aspect registry.
+  Fixes #83 and #87: Added checks for wooden gear being disabled.
+
+11/17/2014 0.8.1b
+  Fixes #82: Prevent recipes with null outputs from crashing the game during aspect registration.
+  Removed duplicate entry in language file. Ty Mrkwtkr for noticing ^.^
+
+11/17/2014 0.8.0b
+  Fixes #79: Essentia cells now work with the ME IO Port(Please oh please let this never break again)...
+  Added conversion methods to API, made API type-safe as stand alone.
+  Added cell workbench recipe.
+  Bugfix: Fixed security violation in TE parts with GUI.
+
+11/16/2014 0.8.0b
+  Minor optimizations.
+  Fixes #71: Added view cell support for A.C.T.
+  Bugfix: Level emitter aspect now shows tooltip.
+  Lots of code clean up.
+  Fixed a long standing bug: Essentia cells in a ME chest now update the network when changed via the chest gui.
+
+11/15/2014 0.8.0b
+  Fixes #21: Added Essentia Cell Workbench.
+  Changed tile entity mapping, support for worlds saved prior to 0.8.0 will be dropped at version 1.0
+  Infusion provider has particle effects while active.
+
+11/12/2014 0.8.0b
+  REALLY fixed ACT memory leak.
+  Fixes #31: Temporary(I hope) fix for false essentia amounts after storage bus voids.
+
+11/11/2014 0.8.0b
+  Fixed cell recipe.
+  Fixes #77: ACT no longer leaks memory on client side.
+  Gearboxes and Providers are now wrenchable.
+  Essentia cells can now hold 12 types.
+  Fixes #76: Added scrollbar to Essentia terminal.
+  Fixes #74: Essentia provider now has suction.
+
+11/8/2014 0.8.0b
+  Added Certus Quartz Duplication.
+  Added configuration option to disable certus duplication.
+
+11/7/2014 0.8.0b
+  Reworked Thaumonomicon layout.
+  Added parent nodes.
+
+11/6/2014 0.8.0b
+  Added Iron and Thaumium GearBoxes.
+
+11/1/2014 0.7.4b
+  Bugfix: Added ME cables to Thuamcraft scanning.
+  More API work.
+
+10/31/2014 0.7.4b
+  Fixes #73: Added AE2 items/blocks to Thaumcraft scanning.
+  Aspect assignment is done by internal examination of crafting recipe.
+  Began work on API. This is very much WIP, don't depend on this yet.
+
+10/30/2014 0.7.4b
+  Added research background image.
+
+10/29/2014 0.7.4b
+  Bugfix: Import/Export buses got caught in a loop and imported a full jar amount on neighbor change.
+  IO bus redstone pulse mode now works properly
+  Bugfix: Export bus would not export into reservoir if aspect to export and aspect in reservoir did not match.
+  Compatibility fix with ExtraCells2: Server crash when exporting essentia gas using the Fluid Formation Plane.
+  Notice: Essentia gas will simply disperse if exported using the Fluid Formation Plane.
+
+10/24/2014 0.7.4b
+  Created interface for digivis sources.
+  Improved performance when ACT is charging a wand.
+
+10/23/2014 0.7.3b
+  Fixes #67: Properly sided integration code.
+
+10/22/2014 0.7.2b
+  Reworked essentia gas textures to reduce memory and texture consumption.
+  Updated icon.
+  Fixes #20: Integrated the A.C.T. with Not Enough Items.
+  A.C.T. search bar no longer opens with focus.
+  Added config options to allow/disable crafting the essentia and infusion providers.
+
+10/21/2014 0.7.2b
+  Cached several enum values for faster performance.
+  Removed dead objects created during essentia texture generation.
+  Removed redundant enum caches
+
+10/20/2014 0.7.1b
+  Fixes #60: V.R.I link now properly updates cached values.
+  You can now clear the A.C.T relay settings by right-clicking on it with an empty memory card.
+
+10/19/2014 0.7.1b
+  Fixes #63: Essentia gas generation moved to post-init event.
+  This should now support all TC addon essentia types.
+  Fixes #64: Added build.gradle for diff visibility.
+  Fixes #65: Properly sided V.R.I rendering code.
+  
+10/13/2014 0.7.1b
+  Fixes #57: Export buses not longer crash when attempting to export to empty jar.
+
+10/12/2014 0.7.0b
+  Dependency Changed: Thaumcraft 4.2.1.4
+  Updated forge to 10.13.1.1225
+  Fixes #47: Configurable Fluid conversion ratio.
+  Fixes #52: Disabled AE2 version check.
+  Fixes #54: Magic Bees now supported.
+  Fixes #55: Finally figured out how to move my Thaumonomicon tab.
+  Fixes #56: IO busses now work with Essentia Reservior.
+  Added V.R.I. graphics.
+  Added V.R.I. Thaumonomicon entry.
+  Optimized some of the V.R.I. code.
+  Draining vis now takes power. 4AE per aspect per drain tick.
+  Doubled the storage capacity of cells. 2 Essentia = 1 Byte
+  Major overhaul of essentia cell internal storage.
+  Storage cell capacity is now independent of fluid conversion factor.
+  Essentia Storage Bus can now use an Essentia Reservoir without filters set.
+
+9/21/2014 0.7.0b
+  Added Vis Relay Interface [WIP]
+  Vis Relay Interface settings can be saved to memory card.
+  A.C.T can now load setting from memory card.
+  V.R.I can now request vis from attached relay.
+  A.C.T. can now charge its wand!
+
+9/21/2014 0.6.10b
+  Dependency Changed: Applied Energistics 2 rv1 stable 1
+  AE version checker now considers release.
+
+9/15/2014 0.6.9b
+  Fixes #41: Added compatibility for ForbiddenMagic aspects.
+  Fixes #35: Added support for Version Checker.
+  Fixes #38: Added shift+scroll wheel support to A.C.T
+  Shift+Click in A.C.T. crafting grid now moves item to ME network if possible.
+  Right click now clears search in A.C.T and Essentia Terminal.
+
+9/14/2014 0.6.8b
+  Dependency Changed: Applied Energistics 2 rv1 beta 30
+  Updated AE2 API calls and callbacks.
+  Fixes #40: Unhandled null when aspect does not have fluid form.
+  Added AE2 version check. Throws exception when this mod can not be loaded.
+
+9/6/2014 0.6.7b
+  Dependency Changed: Applied Energistics 2 rv1 beta 20
+  All parts now break and drop if AE2 detects a security breach.
+  All parts now remember who placed them.
+  Fixes #33: All parts now check network security before allowing GUI to be opened.
+  Providers now respect BUILD security.
+  Essentia terminal now respects Inject and Extract security permissions.
+
+9/4/2014 0.6.6b
+  Fixed Storage bus Gui width.
+  Fixes #30: Add tooltips to buttons.
+  Cleaned up storage bus NBT code.
+  Fixes #29: Added void mode to Essentia Storage Bus, with known issue #31
+
+9/2/2014 0.6.6b
+  Fixes #27: Removed all reflection calls.
+  Texture generation now works outside of dev environment.
+  Package cleanup.
+  Can now type in negative number in priority window.
+  Fixes #28: Corrected level emitter button placement.
+
+9/2/2014 0.6.5b
+  Fixed tooltips.
+  Added MOD name to item tooltips.
+
+9/1/2014 0.6.4b
+  A.C.T Now remembers it's sorting modes.
+  A.C.T Now shows Arcane recipe cost without needing a wand.
+
+8/31/2014 0.6.4b
+  Fixes #23: Scroll and Sort added to A.C.T.
+  Move ACT constants to separate file, they were getting out of hand.
+  ACT item handler now uses AE2's item handler.
+  Added scroll bar widget to A.C.T(non-functional)
+  Updated A.C.T texture to include scroll bar area, and aspect area.
+  Linked scroll bar to item handler(functional).
+  Added mouse tracking to scroll bar.
+  Added key->scroll mapping for Home, End, Up Arrow, and Down Arrow.
+  Added Sort Order, and Sort Direction buttons to A.C.T.
+
+8/30/2014 0.6.4b
+  Dependency Changed: Thaumcraft 4.2.0.1
+  Dependency Changed: Applied Energistics 2 rv1 beta 19
+  Greatly reduced the overhead of shift-autocrafting in the A.C.T.
+
+8/30/2014 0.6.3b
+  Adds #19: Space+Click to deposit inventory or hotbar
+  
+8/26/2014 0.6.3b
+  Terminal's idle power set to 0.5 ae/t
+  Level emitter idle power set to 0.3 ae/t
+
+8/25/2014 0.6.3b
+  Refactored several classes into singletons to reduce permgen size.
+  Fixes #18: Essentia fluid texture generation.
+  ExtraCells2 2.1.9 compatibility test passed.
+
+8/24/2014 0.6.3b
+  Adds #17: aspect cost gui to A.C.T.
+  Bugfix: Key-presses are swallowed by the A.C.T. This also fixes the issue where you could not view NEI recipes while the ACT was open.
+
+8/24/2014 0.6.2a
+  Fixed incorrect ME chest overlay textures.
+  Additional logging during mod load.
+  Restored essentia gas names.
+  
+8/23/2014 0.6.2a
+  Fixes #14: The Essentia Provider does not always update its active/powered status if the network changes
+  Fixes #16: NEI lighting bug during A.C.T. Tooltips
+  Dependency Changed: Applied Energistics 2 rv1 beta 12
+  Optional Dependency Changed: Waila 1.5.3
+  Updated ME chest overlay texture.
+
+8/23/2014 0.6.1a
+  Fixes #12: Can use a staff in the A.C.T. for crafting.
+  Fixes #13: Fluid changes in the ME network that are not essentia gas cause unnecessary updates to propagate.
+
+8/22/2014 0.6.0a
+  Dependency Changed: Thaumcraft 4.2.0.0
+  Dependency Changed: Applied Energistics 2 rv1 beta 10
+  Dependency Changed: forge-1.7.10-10.13.0.1208
+  Dependency Changed: Mincraft 1.7.10
+  Initial port to 1.7.10
+  Project wide code cleanup and auto-formatting.
+
+8/19/2014 0.5.2a
+  Bugfix: Reverted essentia terminal update method due to no-update lock.
+  Known Issue: This will cause it to occasionally not automatically update essentia amounts with storage buses, you need to close are reopen the GUI.
+  Added GUI titles for Import/Export/Storage buses.
+  Providers can now be moved with AppEng2 spatial IO.
+  Critical bugfix: Providers will crash client if not connected to a colored cable and given power.
+  
+
+8/16/2014 0.5.1a
+  Bugfix: A.C.T. SMP crash on placement.
+  Bugfix: A.C.T. SMP crash when player attempts to take item from ME network.
+
+8/15/2014 0.5.0a
+	Added Storage bus priority gui.
+	Added Essentia Level Emitter recipe and Thaumonomicon entry.
+
+8/13/2014 0.5.0a
+	Reworked essentia terminal more responsive to essentia amount changes.
+
+8/12/2014 0.5.0a
+	More robust filter support for storage bus.
+	Bugfix: Storage bus filter not updated on load.
+	Known issue: Storage bus does not always register jar on world load.
+	Added Essentia and Infusion provider recipes and Thaumonomicon entries courtesy of MKoanga.
+
+8/9/2014 0.4.4a
+	Import/Export/Storage bus now reports filter changes to all clients viewing the GUI.
+	Network tool is now properly protected from being moved while in GUI's
+	Reworked Essentia terminal and cell for less network traffic.
+	Level emitters now retain their emitting state when saved/loaded.
+	Aspect names are now occluded if player has not discovered them.
+	Essentia cells now retain sorting order.
+	Storage bus filter size reduced.
+	Added priority mode button to storage bus.
+	
+8/8/2014 0.4.4a
+	Added deeper client vs server checking.
+	Added background pulse to selected aspect in essentia terminal.
+	Essentia terminal now retains selected sorting mode.
+	Corrected gui title for Essentia Cell in a ME chest.
+
+8/8/2014 0.4.3a
+	Bugfix: SSP packets not getting executed.
+
+8/7/2014 0.4.2a
+	Bugfix: SMP server crash when placing parts.
+	Bugfix: SMP server crash when Essentia Terminal or ME Chest with essentia cell, is opened.
+	Bugfix: SMP server crash while generating client packets.
+
+8/4/2014 0.4.2a
+	Linked to AppEng2 state texture sheet.
+	Upgrades slots now show appropriate background texture.
+	Bugfix: A.C.T. Does not receive network updates if network contained no items when A.C.T was opened.
+	Added clear crafting grid button to A.C.T.
+	Added sort mode to Essentia Terminal.
+	
+8/4/2014 0.4.1a
+	Tweaks to provider power usage.
+
+8/3/2014 0.4.1a
+	Corrected emitter inventory orientation.
+	Added redstone particle effects to emitter.
+	Linked redstone mode button tooltips.
+	Bugfix: IO gui doesn't show updated filters on shift click.
+
+8/2/2014 0.4.1a
+	Massive network code cleanup.
+	Rewrite of the essentia emitter.
+	Corrected slot size on emitter gui.
+	Corrected emitter title placement.
+	
+8/2/2014 0.4.0a
+	Added IO research.
+	Added A.C.T research.
+	Added Essentia Terminal research.
+
+8/01/2014 0.4.0a
+	Added root research node to Thaumonomicon.
+	Added core's research.
+	Added storage research.
+
+7/31/2014 0.4.0a
+	Made Thaumonomicon tab.
+	Got textures from CyanideX!
+	Bugfix: Providers do not use a channel on load.
+	Bugfix: Providers can not determine network color when placed to another provider who's cable is full(8 devices).
+	Essentia Terminal now always drops any items in the input and output slots when broken or wrenched.
+
+7/30/2014 0.4.0a
+	Adding regular recipes.
+
+7/29/2014 0.3.1a
+	Bugfix: AE Parts now drop or save inventory contents when broken or wrenched.
+	Bugfix: AE Parts now require power to work.
+	Bugfix: Import and Export GUI slots don't indicate when they can be used.
+	Bugfix: Can't place torches, levers etc against the side of providers.
+	Bugfix: Providers give no visual indication that they are inactive or disconnected.
+
+7/28/2014 0.3.0a
+	Added search to ACT.
+	Added item tooltips to ME slots in ACT.
+	Fixed build error: Was using JVM 1.7 compliance, changed to 1.6
+    
+7/27/2014 0.3.0a
+	Cleaned up widget and gui code.
+	Added ME deposit support to ACT.
+	Added ME extract support to ACT.
+	Added ME linked crafting to ACT.
+	Added fuzzy match to linked ME crafting to ACT.
+
+7/26/2014 0.3.0a
+	Linked ACT to ME item network.
+
+7/25/2014 0.3.0a
+	Added vanilla crafting functionality to ACT.
+	Added Thaumcraft crafting functionality to ACT.
+	Comments and code cleanup on abstract packet.
+	Implemented packet compression for lists.
+
+7/24/2014 0.3.0a
+	Bugfix: Terminals now drop contents when destroyed.
+	Added Arcane Crafting Terminal AppEng part.
+
+7/23/2014 0.2.1a
+	Fixes #2: Added IO whitelist. Tiles must be on the whitelist for extraction/injection.
+	Added "Cell" to the storage cell names.
+	Refactored EssentiaTileContainerHelper method names for clarity.
+	Refactored EssentiaItemContainerHelper method names for clarity.
+	Added whitelist registration methods to EssentiaTileContainerHelper and EssentiaItemContainerHelper.
+	Bugfix: Can no longer put items that do not hold essentia into terminal input slot.
+	Several bugfixes related to jars when used in the terminal.
+
+7/22/2014 0.2.0a
+	Created Infusion provider block.
+	Added custom renderer to provider.
+	Implemented AppEng part of provider.
+	Implemented Thaumcraft part of provider.
+	BugFix: Import bus would not import if no filter was set.
+
+7/21/2014 0.1.3a
+	Various bug fixes.
+	Code comments and cleanup
+	Bugfix: Possible CME on terminal inventory when multiple players are using it.
+	Major Bugfix: Shift+Click did not properly transfer items, and could dupe items.
+
+7/20/2014 0.1.2a
+	Essentia Providers now take on the color of the cable they are placed against.
+	Essentia Providers will take on the color of the first cable it finds if there are not matching cables with its color.
+	Bugfix: Incorrect lighting on essentia providers.
+	Rotated provider textures for a more seamless look.
+	Various code cleanups.
+
+7/19/2014 0.1.1a
+	Created block for Essentia Provider.
+	Implemented Thaumcraft part of essentia provider functionality.
+	Implemented AppEng part of essentia provider functionality.
+	Removed unused tickable interface from essentia terminal.
+	BugFix: Potential issue in essentia<->fluid conversion handler when input list was null.
+	Various name refactors.
+	BugFix: All parts, trying to use the world before it existed.
+	BugFix: Storage bus did not update when phial was used to deposit essentia in empty neighboring jar.
+	BugFix: Terminal plays sound each time it is opened, if an item was left in the output slot
+	Added custom renderer and overlay texture for essentia provider.
+
+7/18/2014 0.1.0a
+	Initial github commit.

@@ -1,12 +1,9 @@
 package thaumicenergistics.container.part;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 
-import thaumicenergistics.container.slot.SlotGhostEssentia;
 import thaumicenergistics.part.PartEssentiaImportBus;
-import thaumicenergistics.util.EssentiaFilter;
 
 /**
  * @author BrockWS

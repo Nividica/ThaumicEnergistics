@@ -9,8 +9,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 
-import thaumicenergistics.util.ThELog;
-
 /**
  * @author BrockWS
  */

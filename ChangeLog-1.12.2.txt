@@ -1,0 +1,10 @@
+﻿2018/11/28 - 2.0.0 - Alpha
+  Initial public build for Minecraft 1.12.2
+  Rewritten from scratch
+  Added Essentia Storage Cells
+  Added Essentia Import Bus
+  Added Essentia Export Bus
+  Added Essentia Storage Bus
+  Added Essentia Terminal
+  Added Infusion Provider
+  Added Arcane Crafting Terminal

@@ -1,6 +1,6 @@
 /*
 !/.gitignore
-!/ChangeLog.txt
+!/ChangeLog*.txt
 !/Features.md
 !/LICENSE
 !/README.md

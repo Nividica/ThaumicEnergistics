@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.util.EssentiaFilter;
-import thaumicenergistics.util.ThELog;
 
 /**
  * @author BrockWS
