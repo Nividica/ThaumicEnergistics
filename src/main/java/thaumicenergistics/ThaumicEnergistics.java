@@ -114,21 +114,18 @@ public class ThaumicEnergistics {
 
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandAddVis());
+        //event.registerServerCommand(new CommandAddVis());
     }
 
     @SubscribeEvent
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        // TODO: Temporary alpha warning
-        TextComponentString s1 = new TextComponentString(
-                "Thaumic Energistics is currently in alpha, things may be broken, not implemented or cause lost items and world corruption.\n" +
-                        "Post issues to GitHub"
-        );
-        s1.getStyle().setColor(TextFormatting.RED);
-        TextComponentString link = new TextComponentString("https://github.com/Nividica/ThaumicEnergistics");
-        link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Nividica/ThaumicEnergistics")).setColor(TextFormatting.GOLD);
-
-        event.player.sendMessage(s1.appendSibling(link));
+        //Temporary alpha warning
+        //TextComponentString s1 = new TextComponentString("Thaumic Energistics is currently in alpha. Post issues to GitHub");
+        //s1.getStyle().setColor(TextFormatting.RED);
+        //TextComponentString link = new TextComponentString("https://github.com/Nividica/ThaumicEnergistics");
+        //link.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Nividica/ThaumicEnergistics")).setColor(TextFormatting.GOLD);
+        //
+        //event.player.sendMessage(s1.appendSibling(link));
     }
 
     @SubscribeEvent

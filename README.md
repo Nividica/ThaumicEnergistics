@@ -1,7 +1,7 @@
 # ThaumicEnergistics
 *Because the digital age could use some magic!*
 
-[![Build Status](https://ci.brock.pw/job/Thaumic%20Energistics/badge/icon)](https://ci.brock.pw/job/Thaumic%20Energistics/)
+[![Build Status](https://ci.brock.pw/job/Thaumic%20Energistics%20RV6/badge/icon)](https://ci.brock.pw/job/Thaumic%20Energistics%20RV6/)
 
 ### Please note that this mod is currently in alpha for 1.12.2.
 The following versions are required for this mod:
@@ -41,7 +41,7 @@ How To Contribute
 ---
 
 ## Code Format
-Code formatting is pretty simple, just keep to defaults. No tabs, use 4 spaces instead
+Code formatting is pretty simple, just keep to defaults. No tabs, use 4 spaces instead.
 
 ## Compile
 

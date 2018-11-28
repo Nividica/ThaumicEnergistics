@@ -62,6 +62,7 @@ public abstract class ContainerSharedEssentiaBus extends ContainerBase {
     @Override
     public void detectAndSendChanges() {
         // TODO: Send filter updates?
+        this.sendFilter();
         this.recalculateSlots();
         super.detectAndSendChanges();
     }
