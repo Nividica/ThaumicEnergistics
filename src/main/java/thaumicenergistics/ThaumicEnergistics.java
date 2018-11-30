@@ -5,10 +5,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -25,7 +21,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.ThEItemColors;
 import thaumicenergistics.client.gui.GuiHandler;
-import thaumicenergistics.command.CommandAddVis;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;

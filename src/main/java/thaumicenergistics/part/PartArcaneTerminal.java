@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -24,7 +25,6 @@ import thaumicenergistics.integration.appeng.ThEPartModel;
 import thaumicenergistics.item.part.ItemArcaneTerminal;
 import thaumicenergistics.util.inventory.ThEInternalInventory;
 import thaumicenergistics.util.inventory.ThEUpgradeInventory;
-import thaumicenergistics.util.inventory.WrapperInventoryItemHandler;
 
 /**
  * @author BrockWS
@@ -59,9 +59,9 @@ public class PartArcaneTerminal extends PartSharedTerminal {
     @Override
     public IItemHandler getInventoryByName(String name) {
         if (name.equalsIgnoreCase("crafting"))
-            return new WrapperInventoryItemHandler(this.craftingInventory);
+            return new InvWrapper(this.craftingInventory);
         if (name.equalsIgnoreCase("upgrades"))
-            return new WrapperInventoryItemHandler(this.upgradeInventory);
+            return new InvWrapper(this.upgradeInventory);
         return super.getInventoryByName(name);
     }
 

@@ -1,4 +1,4 @@
-package thaumicenergistics;
+package thaumicenergistics.config;
 
 import java.util.HashMap;
 import java.util.Map;

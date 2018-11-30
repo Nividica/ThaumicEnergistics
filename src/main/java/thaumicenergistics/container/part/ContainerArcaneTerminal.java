@@ -15,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import appeng.api.AEApi;
 import appeng.api.config.*;
@@ -51,7 +52,6 @@ import thaumicenergistics.util.AEUtil;
 import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.TCUtil;
 import thaumicenergistics.util.inventory.ThEInternalInventory;
-import thaumicenergistics.util.inventory.WrapperInventoryItemHandler;
 
 /**
  * @author BrockWS
@@ -383,7 +383,7 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
             case "upgrades":
                 return this.part.getInventoryByName(name);
             case "result":
-                return new WrapperInventoryItemHandler(this.craftingResult);
+                return new InvWrapper(this.craftingResult);
         }
         return null;
     }

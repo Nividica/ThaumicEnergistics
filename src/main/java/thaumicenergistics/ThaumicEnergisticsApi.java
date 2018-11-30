@@ -1,6 +1,7 @@
 package thaumicenergistics;
 
 import thaumicenergistics.api.*;
+import thaumicenergistics.config.ThEConfig;
 import thaumicenergistics.init.ThEBlocks;
 import thaumicenergistics.init.ThEItems;
 import thaumicenergistics.lang.ThELang;

@@ -1,4 +1,4 @@
-package thaumicenergistics.util;
+package thaumicenergistics.util.inventory;
 
 import javax.annotation.Nonnull;
 
@@ -12,6 +12,7 @@ import thaumcraft.api.aspects.IEssentiaContainerItem;
 
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.item.ItemDummyAspect;
+import thaumicenergistics.util.ThEUtil;
 
 /**
  * @author BrockWS

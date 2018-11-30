@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
@@ -19,7 +20,6 @@ import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.item.ItemPartBase;
 import thaumicenergistics.util.EssentiaFilter;
 import thaumicenergistics.util.inventory.ThEUpgradeInventory;
-import thaumicenergistics.util.inventory.WrapperInventoryItemHandler;
 
 /**
  * @author BrockWS
@@ -121,7 +121,7 @@ public abstract class PartSharedEssentiaBus extends PartBase implements IGridTic
     @Override
     public IItemHandler getInventoryByName(String s) {
         if (s.equalsIgnoreCase("upgrades")) {
-            return new WrapperInventoryItemHandler(this.upgrades);
+            return new InvWrapper(this.upgrades);
         }
         return null;
     }
