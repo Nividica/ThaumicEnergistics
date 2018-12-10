@@ -35,6 +35,10 @@ public interface IThEItems {
 
     IItemDefinition arcaneTerminal();
 
+    // Items
+
+    IItemDefinition wirelessEssentiaTerminal();
+
     // Materials
 
     IItemDefinition diffusionCore();

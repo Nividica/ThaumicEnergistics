@@ -1,5 +1,7 @@
 package thaumicenergistics.api;
 
+import thaumicenergistics.api.wireless.IThEWireless;
+
 /**
  * The Thaumic Energistics API
  *
@@ -29,6 +31,13 @@ public interface IThEApi {
      * @return Class which contains upgrade definitions
      */
     IThEUpgrades upgrades();
+
+    /**
+     * Contains all wireless utilities in Thaumic Energistics
+     *
+     * @return Class which contains wireless utilities
+     */
+    IThEWireless wireless();
 
     /**
      * Contains all config options in Thaumic Energistics

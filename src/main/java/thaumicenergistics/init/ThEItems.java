@@ -60,6 +60,7 @@ public class ThEItems implements IThEItems {
     private final IItemDefinition itemEssentiaStorageBus;
     private final IItemDefinition itemEssentiaTerminal;
     private final IItemDefinition itemArcaneTerminal;
+    private final IItemDefinition itemWirelessEssentiaTerminal;
     private final IItemDefinition itemDiffusionCore;
     private final IItemDefinition itemCoalescenceCore;
     private final IItemDefinition itemEssentiaComponent1k;
@@ -80,6 +81,7 @@ public class ThEItems implements IThEItems {
         this.itemEssentiaStorageBus = ThEItems.createItem(new ItemEssentiaStorageBus("essentia_storage"));
         this.itemEssentiaTerminal = ThEItems.createItem(new ItemEssentiaTerminal("essentia_terminal"));
         this.itemArcaneTerminal = ThEItems.createItem(new ItemArcaneTerminal("arcane_terminal"));
+        this.itemWirelessEssentiaTerminal = ThEItems.createItem(new ItemWirelessEssentiaTerminal("wireless_essentia_terminal"));
         this.itemDiffusionCore = ThEItems.createItem(new ItemMaterial("diffusion_core"));
         this.itemCoalescenceCore = ThEItems.createItem(new ItemMaterial("coalescence_core"));
         this.itemEssentiaComponent1k = ThEItems.createItem(new ItemMaterial("essentia_component_1k"));
@@ -138,6 +140,11 @@ public class ThEItems implements IThEItems {
     @Override
     public IItemDefinition arcaneTerminal() {
         return this.itemArcaneTerminal;
+    }
+
+    @Override
+    public IItemDefinition wirelessEssentiaTerminal() {
+        return this.itemWirelessEssentiaTerminal;
     }
 
     @Override

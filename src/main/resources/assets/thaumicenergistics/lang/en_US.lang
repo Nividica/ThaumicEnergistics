@@ -41,6 +41,9 @@ gui.thaumicenergistics.vis_required=Vis: %s
 gui.thaumicenergistics.vis_available=%s Available
 gui.thaumicenergistics.vis_discount=%s%% Discount
 
+# Chat
+chat.thaumicenergistics.missing_wireless_handler=Missing wireless handler for %s. Report to Mod Developer!
+
 # FROM THAUMCRAFT en_US.lang
 # BEST TO RECHECK THE LATEST LANG FILE FOR CHANGED FORMATTING
 #

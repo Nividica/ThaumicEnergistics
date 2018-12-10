@@ -5,10 +5,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -23,9 +19,10 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.wireless.IEssentiaTermWirelessHandler;
+import thaumicenergistics.api.wireless.IThEWirelessObject;
 import thaumicenergistics.client.ThEItemColors;
 import thaumicenergistics.client.gui.GuiHandler;
-import thaumicenergistics.command.CommandAddVis;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
@@ -33,6 +30,7 @@ import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.ThELog;
+import thaumicenergistics.wireless.EssentiaTermWirelessHandler;
 
 /**
  * <strong>Thaumic Energistics</strong>
@@ -90,12 +88,14 @@ public class ThaumicEnergistics {
             ThEItemColors.registerItemColors();
         }
 
-        ThEApi.instance()
-                .items()
-                .arcaneTerminal()
-                .maybeStack(1).
-                ifPresent(stack ->
-                        ThEApi.instance().upgrades().arcaneCharger().registerItem(stack, 1));
+        ThEApi.instance().items().arcaneTerminal().maybeStack(1).ifPresent(stack ->
+                ThEApi.instance().upgrades().arcaneCharger().registerItem(stack, 1)
+        );
+
+        ThEApi.instance().wireless().registerWirelessHandler(IEssentiaTermWirelessHandler.class, new EssentiaTermWirelessHandler());
+        ThEApi.instance().items().wirelessEssentiaTerminal().maybeItem().ifPresent(item ->
+                ThEApi.instance().wireless().getWirelessHandler(IEssentiaTermWirelessHandler.class).registerObject((IThEWirelessObject) item)
+        );
 
         ThELog.info("Integrations: Init");
         ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::init);
