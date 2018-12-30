@@ -13,14 +13,19 @@ public class ThELog {
         return ThaumicEnergistics.LOGGER;
     }
 
-    public static void info(String message, Object... args) {
-        if (ThELog.getLogger() != null)
-            ThELog.getLogger().info(message, args);
-    }
-
     public static void error(String message, Object... args) {
         if (ThELog.getLogger() != null)
             ThELog.getLogger().error(message, args);
+    }
+
+    public static void warn(String message, Object... args) {
+        if (ThELog.getLogger() != null)
+            ThELog.getLogger().warn(message, args);
+    }
+
+    public static void info(String message, Object... args) {
+        if (ThELog.getLogger() != null)
+            ThELog.getLogger().info(message, args);
     }
 
     public static void debug(String message, Object... args) {

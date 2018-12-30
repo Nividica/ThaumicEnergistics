@@ -6,6 +6,7 @@ import java.util.Map;
 import net.minecraftforge.common.config.Config;
 
 import thaumicenergistics.api.IThEConfig;
+import thaumicenergistics.api.config.PrefixSetting;
 import thaumicenergistics.init.ModGlobals;
 
 import static net.minecraftforge.common.config.Config.Comment;
@@ -22,9 +23,29 @@ public class ThEConfig implements IThEConfig {
     @Comment("Specifies how much a item that holds essentia can hold\nFor filling with Essentia Terminal\nBest to set it to how much the item can actually store")
     public static Map<String, Integer> essentiaContainerCapacity = new HashMap<>();
 
-
     @Name("Tick Rates")
     public static TickRates tickRates = new TickRates();
+
+    @Name("Client Config")
+    public static Client client = new Client();
+
+    public static class Client {
+
+        @Name("Mod Search Prefix")
+        public String modSearchPrefix = "@";
+
+        @Name("Mod Search Setting")
+        public PrefixSetting modSearchSetting = PrefixSetting.REQUIRE_PREFIX;
+
+        @Name("Aspect Search Prefix")
+        public String aspectSearchPrefix = "#";
+
+        @Name("Aspect Search Setting")
+        public PrefixSetting aspectSearchSetting = PrefixSetting.REQUIRE_PREFIX;
+
+        private Client() {
+        }
+    }
 
     public static class TickRates {
         @Name("Essentia Import Bus Min")
@@ -41,6 +62,9 @@ public class ThEConfig implements IThEConfig {
         public int tickTimeEssentiaStorageBusMin = 5;
         @Name("Essentia Storage Bus Max")
         public int tickTimeEssentiaStorageBusMax = 60;
+
+        private TickRates() {
+        }
     }
 
     static {
@@ -83,5 +107,25 @@ public class ThEConfig implements IThEConfig {
     @Override
     public int tickTimeEssentiaStorageBusMax() {
         return tickRates.tickTimeEssentiaStorageBusMax;
+    }
+
+    @Override
+    public String modSearchPrefix() {
+        return client.modSearchPrefix;
+    }
+
+    @Override
+    public PrefixSetting modSearchSetting() {
+        return client.modSearchSetting;
+    }
+
+    @Override
+    public String aspectSearchPrefix() {
+        return client.aspectSearchPrefix;
+    }
+
+    @Override
+    public PrefixSetting aspectSearchSetting() {
+        return client.aspectSearchSetting;
     }
 }

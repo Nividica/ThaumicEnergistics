@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "2.0.0"
+version = "${version_the}"
 group = "thaumicenergistics"
 archivesBaseName = "thaumicenergistics"
 
@@ -19,12 +19,21 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.5.2768"
+    version = "${version_mc}-${version_forge}"
     runDir = "run"
     mappings = "snapshot_20171003"
 }
 
 repositories {
+    maven {
+        name = "progwml6"
+        url = "http://dvs1.progwml6.com/files/maven"
+    }
+    maven {
+        name = "covers1624"
+        url = "http://maven.covers1624.net"
+    }
+    // CF Maven always last
     maven {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
@@ -32,9 +41,21 @@ repositories {
 }
 
 dependencies {
+    provided "mezz.jei:jei_${version_jei}:api"
     deobfCompile "baubles:baubles:${version_ba}"
     deobfCompile "thaumcraft:thaumcraft:${version_tc}"
-    deobfCompile "appeng:appliedenergistics2:${version_ae2}"
+    deobfCompile("appeng:appliedenergistics2:${version_ae2}") {
+        transitive = false
+    }
+    // Testing mods
+    runtime "mezz.jei:jei_${version_jei}"
+    runtime("thaumic-jei:ThaumicJEI-${version_tjei}") {
+        transitive = false
+    }
+    runtime "cofh:RedstoneFlux:${version_rf}:universal"
+    runtime "p455w0rd:p455w0rdslib:${version_pwlib}"
+    runtime "p455w0rd:AE2WTLib:${version_wtlib}"
+    runtime "p455w0rd:WirelessCraftingTerminal:${version_wct}"
 }
 
 jar {

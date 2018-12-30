@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -15,7 +17,13 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
+
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.config.PrefixSetting;
 import thaumicenergistics.util.AEUtil;
+import thaumicenergistics.util.TCUtil;
 
 /**
  * Based on ItemRepo and FluidRepo
@@ -47,60 +55,92 @@ public class MERepo<T extends IAEStack<T>> {
         this.view.clear();
         this.view.ensureCapacity(this.list.size());
 
-        boolean searchByMod = false;
         String search = this.searchString;
-        if (search.startsWith("@")) {
-            searchByMod = true;
-            search = search.substring(1);
+        boolean sbm = false;
+        boolean sba = false;
+        boolean searchSpecific = false;
+
+        PrefixSetting modSearchSetting = ThEApi.instance().config().modSearchSetting();
+        PrefixSetting aspectSearchSetting = ThEApi.instance().config().aspectSearchSetting();
+
+        // DISABLED = Don't search and ignore what it starts with
+        // REQUIRE_PREFIX = If search starts with prefix, drop prefix and search ONLY by that search
+        // ENABLED = Always search and add to result
+        // ENABLED WITH SEARCH = Act like REQUIRE_PREFIX
+
+        switch (modSearchSetting) {
+            case ENABLED:
+                sbm = true;
+            case REQUIRE_PREFIX:
+                if (!search.startsWith(ThEApi.instance().config().modSearchPrefix()))
+                    break;
+                search = search.substring(ThEApi.instance().config().modSearchPrefix().length());
+                searchSpecific = true;
+                sbm = true;
+            default:
         }
 
-        Pattern p;
+        if (!searchSpecific) {
+            switch (aspectSearchSetting) {
+                case ENABLED:
+                    sba = true;
+                case REQUIRE_PREFIX:
+                    if (!search.startsWith(ThEApi.instance().config().aspectSearchPrefix()))
+                        break;
+                    search = search.substring(ThEApi.instance().config().aspectSearchPrefix().length());
+                    searchSpecific = true;
+                    sba = true;
+
+                    sbm = false; // Set to false so when MOD is ENABLED but we want to only search aspects
+                default:
+            }
+        }
+
+        Pattern pattern;
         try {
-            p = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
+            pattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
         } catch (PatternSyntaxException ignored) {
             try {
-                p = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
+                pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
             } catch (PatternSyntaxException ignored2) {
                 return;
             }
         }
 
-        String s = "";
+        // Can't use non final in lambdas....
+        final Pattern p = pattern;
+        final boolean searchByMod = sbm;
+        final boolean searchByAspect = sba;
 
-        for (T stack : this.list) {
-            if (this.getViewMode() == ViewItems.CRAFTABLE && !stack.isCraftable())
-                continue;
+        Stream<T> stream = StreamSupport.stream(this.list.spliterator(), false);
 
-            if (this.getViewMode() == ViewItems.STORED && stack.getStackSize() == 0)
-                continue;
+        stream = stream.filter(t ->
+                !(this.getViewMode() == ViewItems.CRAFTABLE && !t.isCraftable()) || !(this.getViewMode() == ViewItems.STORED && t.getStackSize() == 0)
+        );
 
-            // TODO: Don't use platform methods
-            if (stack instanceof IAEItemStack)
-                s = searchByMod ? Platform.getModId((IAEItemStack) stack) : Platform.getItemDisplayName(stack);
-            else if (stack instanceof IAEFluidStack)
-                s = searchByMod ? Platform.getModId((IAEFluidStack) stack) : Platform.getFluidDisplayName(stack);
-
-            boolean match = false;
-            if (p.matcher(s).find())
-                match = true;
-
-            if (!match && !searchByMod) {
-                List<String> tooltip = Platform.getTooltip(stack);
-                for (String line : tooltip) {
-                    if (p.matcher(line).find()) {
-                        this.view.add(stack);
-                        break;
-                    }
-                }
+        if (searchSpecific) {
+            if (searchByAspect) {
+                stream = stream.filter(t -> this.searchAspects(t, p));
+            } else if (searchByMod) {
+                stream = stream.filter(t -> this.searchMod(t, p));
             }
-            if (match) {
-                if (this.getViewMode().equals(ViewItems.CRAFTABLE)) {
-                    stack = stack.copy();
-                    stack.setStackSize(0);
-                }
-                this.view.add(stack);
-            }
+        } else {
+            stream = stream.filter(t -> {
+                if (searchByAspect && this.searchAspects(t, p))
+                    return true;
+                if (searchByMod && this.searchMod(t, p))
+                    return true;
+                return this.searchName(t, p) || this.searchTooltip(t, p);
+            });
         }
+
+        stream.forEach(t -> {
+            T stack = t.copy();
+            if (this.getViewMode().equals(ViewItems.CRAFTABLE)) {
+                stack.setStackSize(0);
+            }
+            this.view.add(stack);
+        });
 
         if (sortOrder == SortOrder.MOD)
             this.sortByMod();
@@ -192,6 +232,37 @@ public class MERepo<T extends IAEStack<T>> {
 
     public void setSortOrder(SortOrder sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    private boolean searchName(T stack, Pattern p) {
+        return p.matcher(Platform.getItemDisplayName(stack)).find();
+    }
+
+    private boolean searchTooltip(T stack, Pattern p) {
+        List<String> tooltip = Platform.getTooltip(stack);
+        for (String line : tooltip) {
+            if (p.matcher(line).find()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean searchMod(T stack, Pattern p) {
+        if (stack instanceof IAEItemStack)
+            return p.matcher(Platform.getModId((IAEItemStack) stack)).find();
+        if (stack instanceof IAEFluidStack)
+            return p.matcher(Platform.getModId((IAEFluidStack) stack)).find();
+        return true;
+    }
+
+    private boolean searchAspects(T stack, Pattern p) {
+        AspectList aspects = TCUtil.getItemAspects(stack.asItemStackRepresentation());
+        if (aspects == null || aspects.size() < 1)
+            return false;
+        final Pattern pf = p;
+        Stream<Aspect> stream = aspects.aspects.keySet().stream();
+        return stream.anyMatch(aspect -> pf.matcher(aspect.getName()).find());
     }
 
     private int checkSortDir(int i) {

@@ -4,7 +4,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 import thaumcraft.api.aura.AuraHelper;
 import thaumcraft.api.items.ItemsTC;
@@ -44,6 +46,7 @@ public class TCUtil {
             ThELog.error("Failed to drain enough vis from nearby chunks. Drained {} of {}", drained, vis);
     }
 
+    @Deprecated
     public static int getMaxStorable(IEssentiaContainerItem container) {
         switch (container.getClass().getSimpleName()) {
             case "ItemPhial":
@@ -56,5 +59,9 @@ public class TCUtil {
         if (!(stack.getItem() instanceof IEssentiaContainerItem) || stack.getItem() != ItemsTC.crystalEssence)
             return null;
         return ((IEssentiaContainerItem) stack.getItem()).getAspects(stack).getAspects()[0];
+    }
+
+    public static AspectList getItemAspects(ItemStack stack) {
+        return ThaumcraftApi.internalMethods.getObjectAspects(stack);
     }
 }

@@ -127,7 +127,7 @@ public class TileInfusionProvider extends TileNetwork implements IAspectSource {
 
     @Override
     public boolean doesContainerContainAmount(Aspect aspect, int i) {
-        return this.containerContains(aspect) == i;
+        return this.containerContains(aspect) >= i;
     }
 
     @Override

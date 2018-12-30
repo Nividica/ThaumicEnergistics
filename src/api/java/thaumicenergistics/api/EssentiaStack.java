@@ -5,6 +5,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import thaumcraft.api.aspects.Aspect;
 
 /**
+ * Something for Essentia similar to ItemStack and FluidStack, since Thaumcraft doesn't have one
+ *
  * @author BrockWS
  */
 public class EssentiaStack {

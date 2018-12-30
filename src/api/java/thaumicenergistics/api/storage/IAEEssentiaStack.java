@@ -7,6 +7,8 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.EssentiaStack;
 
 /**
+ * An AE2 Stack representing Essentia
+ *
  * @author BrockWS
  */
 public interface IAEEssentiaStack extends IAEStack<IAEEssentiaStack> {

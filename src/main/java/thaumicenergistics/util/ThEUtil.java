@@ -56,6 +56,7 @@ public class ThEUtil {
         return e == SortOrder.INVTWEAKS;
     }
 
+    @Deprecated
     public static int getEssentiaCapacity(ItemStack stack) {
         if (stack == null || !(stack.getItem() instanceof IEssentiaContainerItem) || stack.getItem().getRegistryName() == null)
             return 0;

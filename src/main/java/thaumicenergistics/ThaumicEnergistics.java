@@ -69,6 +69,9 @@ public class ThaumicEnergistics {
         ThaumicEnergistics.INTEGRATIONS.add(new ThEThaumcraft());
         ThaumicEnergistics.INTEGRATIONS.add(new ThEAppliedEnergistics());
 
+        // Remove any integration that is not installed
+        ThaumicEnergistics.INTEGRATIONS.removeIf(in -> !in.isLoaded());
+
         ThELog.info("Integrations: PreInit");
         ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::preInit);
     }

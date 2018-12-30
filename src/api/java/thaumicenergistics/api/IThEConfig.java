@@ -2,6 +2,8 @@ package thaumicenergistics.api;
 
 import java.util.Map;
 
+import thaumicenergistics.api.config.PrefixSetting;
+
 /**
  * @author BrockWS
  */
@@ -19,4 +21,12 @@ public interface IThEConfig {
     int tickTimeEssentiaStorageBusMin();
 
     int tickTimeEssentiaStorageBusMax();
+
+    String modSearchPrefix();
+
+    PrefixSetting modSearchSetting();
+
+    String aspectSearchPrefix();
+
+    PrefixSetting aspectSearchSetting();
 }

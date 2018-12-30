@@ -85,6 +85,16 @@ public class ThEThaumcraft implements IThEIntegration {
     public void postInit() {
     }
 
+    @Override
+    public String getModID() {
+        return "thaumcraft";
+    }
+
+    @Override
+    public boolean isRequired() {
+        return true;
+    }
+
     private void registerArcaneRecipes() {
         ResourceLocation recipeGroup = new ResourceLocation("");
 
