@@ -1,4 +1,11 @@
-﻿2018/11/28 - 2.0.0 - Alpha
+﻿2019/01/05 - 2.1.0 - Beta
+  Added ability to search items by the aspects they break into
+  Added JEI & Thaumic JEI integration
+  Added Clear Grid button to ACT
+  Fixed issue with dragging stacks in ACT
+  Minor bug fixes
+
+2018/11/28 - 2.0.0 - Beta
   Initial public build for Minecraft 1.12.2
   Rewritten from scratch
   Added Essentia Storage Cells
