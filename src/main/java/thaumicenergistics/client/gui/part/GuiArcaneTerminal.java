@@ -209,17 +209,19 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         if (this.scrollBar != null) {
-            mouseX -= this.getGuiLeft();
-            mouseY -= this.getGuiTop();
-            boolean flag = mouseX >= this.scrollBar.getX() &&
-                    mouseX <= this.scrollBar.getX() + 15 &&
-                    mouseY >= this.scrollBar.getY() &&
-                    mouseY <= this.scrollBar.getY() + this.scrollBar.getHeight();
-            if (flag)
-                this.scrollBar.click(mouseY);
-            this.repo.updateView();
-            this.updateScroll();
+            int x = mouseX - this.getGuiLeft();
+            int y = mouseY - this.getGuiTop();
+            boolean flag = x >= this.scrollBar.getX() &&
+                    x <= this.scrollBar.getX() + 15 &&
+                    y >= this.scrollBar.getY() &&
+                    y <= this.scrollBar.getY() + this.scrollBar.getHeight();
+            if (flag) {
+                this.scrollBar.click(y);
+                this.repo.updateView();
+                this.updateScroll();
+            }
         }
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
     }
 
     @Override
