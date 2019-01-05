@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -16,6 +17,7 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -206,5 +208,31 @@ public class AEUtil {
                 }
         }
         return AEUtil.focusKeyBinding;
+    }
+
+    public static boolean clearIntoMEInventory(IItemHandler handler, IMEInventory<IAEItemStack> inv, IActionSource src) {
+        Preconditions.checkNotNull(handler);
+        Preconditions.checkNotNull(inv);
+        Preconditions.checkNotNull(src);
+        if (handler.getSlots() < 1)
+            return true;
+        for (int slot = 0; slot < handler.getSlots(); slot++) {
+            ItemStack stack = handler.getStackInSlot(slot).copy();
+            if (stack.isEmpty())
+                continue;
+            IAEItemStack aeStack = AEUtil.getStorageChannel(IItemStorageChannel.class).createStack(stack);
+            if (aeStack == null || aeStack.getStackSize() != stack.getCount()) {
+                ThELog.warn("Failed to create IAEItemStack for {}, report to developer!", stack.toString());
+                return false;
+            }
+            IAEItemStack returned = AEUtil.inventoryInsert(aeStack, inv, src);
+            if (returned != null && returned.getStackSize() > 0) { // Failed to clear handler
+                handler.extractItem(slot, Math.toIntExact(stack.getCount() - returned.getStackSize()), false);
+                return false;
+            } else {
+                handler.extractItem(slot, stack.getCount(), false);
+            }
+        }
+        return true;
     }
 }

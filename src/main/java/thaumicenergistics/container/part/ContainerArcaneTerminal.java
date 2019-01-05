@@ -1,6 +1,8 @@
 package thaumicenergistics.container.part;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,11 +13,15 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.AEApi;
 import appeng.api.config.*;
@@ -48,9 +54,7 @@ import thaumicenergistics.integration.thaumcraft.TCCraftingManager;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.*;
 import thaumicenergistics.part.PartArcaneTerminal;
-import thaumicenergistics.util.AEUtil;
-import thaumicenergistics.util.ForgeUtil;
-import thaumicenergistics.util.TCUtil;
+import thaumicenergistics.util.*;
 import thaumicenergistics.util.inventory.ThEInternalInventory;
 
 /**
@@ -356,6 +360,62 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
     }
 
     @Override
+    public void handleJEITransfer(EntityPlayer player, NBTTagCompound tag) {
+        NBTTagList normal = tag.getTagList("normal", 9);
+        NBTTagList crystals = tag.getTagList("crystal", 9);
+        List<NBTBase> ingredients = ForgeUtil.toArrayList(ForgeUtil.mergeTagLists(normal, crystals));
+        AtomicInteger currentSlot = new AtomicInteger(-1);
+
+        IItemHandler crafting = this.getInventory("crafting");
+        IItemHandler playerInv = this.getInventory("player");
+
+        boolean clearSuccess = AEUtil.clearIntoMEInventory(crafting, this.monitor, this.part.source);
+        this.onMatrixChanged();
+        if (!clearSuccess)
+            return;
+
+        ingredients.forEach(ingredientGroup -> {
+            int slot = currentSlot.incrementAndGet();
+
+            if (ingredientGroup == null || ingredientGroup.hasNoTags()) {
+                // TODO: Probably check if its already in the slot
+                return;
+            }
+            NBTTagList subs = (NBTTagList) ingredientGroup;
+            for (int i = 0; i < subs.tagCount(); i++) {
+                NBTTagCompound ingredient = subs.getCompoundTagAt(i);
+                ItemStack stack = new ItemStack(ingredient);
+                if (stack.isEmpty()) {
+                    ThELog.error("Failed to read ingredient data {}", ingredient);
+                    return;
+                }
+                ThELog.debug("Adding {} for {}", stack.getDisplayName(), slot);
+                IAEItemStack aeStack = this.channel.createStack(stack);
+                if (aeStack == null) {
+                    ThELog.warn("Failed to create IAEItemStack for {}, report to developer!", stack.toString());
+                    return;
+                }
+                IAEItemStack aeExtract = AEUtil.inventoryExtract(aeStack, this.monitor, this.part.source);
+                if (aeExtract != null && aeExtract.getStackSize() > 0)
+                    crafting.insertItem(slot, aeExtract.createItemStack(), false);
+
+                if (crafting.getStackInSlot(slot).getCount() >= stack.getCount()) // We managed to pull everything from the system
+                    return;
+
+                // Try pull from player
+                ThELog.debug("Failed to pull item from ae inv, trying player inventory");
+                stack.shrink(crafting.getStackInSlot(slot).getCount());
+
+                ItemStack invExtract = ItemHandlerUtil.extract(playerInv, stack, false);
+                if (!invExtract.isEmpty())
+                    crafting.insertItem(slot, invExtract, false);
+            }
+            ThELog.debug("Failed to find valid item");
+        });
+        this.onMatrixChanged();
+    }
+
+    @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         if (this.player instanceof IContainerListener)
@@ -384,6 +444,8 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
                 return this.part.getInventoryByName(name);
             case "result":
                 return new InvWrapper(this.craftingResult);
+            case "player":
+                return new PlayerInvWrapper(this.player.inventory);
         }
         return null;
     }
