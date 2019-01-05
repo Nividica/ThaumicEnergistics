@@ -15,10 +15,7 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -51,6 +48,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     private GuiImgButton sortByButton;
     private GuiImgButton sortDirButton;
     private GuiImgButton viewItemsButton;
+    private GuiImgButton clearButton;
 
     private int rows = 6;
     private float visAvailable = -1;
@@ -96,10 +94,13 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
         this.sortByButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 8, Settings.SORT_BY, cm.getSetting(Settings.SORT_BY));
         this.viewItemsButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 48, Settings.VIEW_MODE, cm.getSetting(Settings.VIEW_MODE));
         this.sortDirButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 28, Settings.SORT_DIRECTION, cm.getSetting(Settings.SORT_DIRECTION));
+        this.clearButton = new GuiImgButton(this.getGuiLeft() + 87, this.getGuiTop() + 142, Settings.ACTIONS, ActionItems.STASH);
+        this.clearButton.setHalfSize(true);
 
         this.addButton(this.sortByButton);
         this.addButton(this.viewItemsButton);
         this.addButton(this.sortDirButton);
+        this.addButton(this.clearButton);
     }
 
     @Override
@@ -193,14 +194,12 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
             this.updateScroll();
         }
 
-
         if (button == 1) {
             for (final GuiButton btn : this.buttonList) {
                 if (!btn.mousePressed(this.mc, mouseX, mouseY))
                     continue;
                 super.mouseClicked(mouseX, mouseY, 0); // Make the code think we lmb the button
                 return;
-
             }
         }
 
@@ -274,6 +273,10 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     @Override
     protected void actionPerformed(GuiButton button) {
+        if (button == this.clearButton) {
+            PacketHandler.sendToServer(new PacketUIAction(ActionType.CLEAR_GRID));
+            return;
+        }
         if (button instanceof GuiImgButton) {
             GuiImgButton btn = (GuiImgButton) button;
             Enum currentValue = btn.getCurrentValue();

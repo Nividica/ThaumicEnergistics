@@ -259,7 +259,10 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
             stack = AEUtil.inventoryExtract(stack, this.monitor, this.part.source);
             if (stack != null)
                 ForgeUtil.addStackToPlayerInventory(player, stack.createItemStack(), false);
+        } else if (packet.action == ActionType.CLEAR_GRID) {
+            AEUtil.clearIntoMEInventory(this.getInventory("crafting"), this.monitor, this.part.source);
         }
+        this.onMatrixChanged();
     }
 
     @Override

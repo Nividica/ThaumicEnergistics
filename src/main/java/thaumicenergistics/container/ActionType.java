@@ -13,5 +13,7 @@ public enum ActionType {
     SHIFT_MOVE,
     AUTO_CRAFT,
     SCROLL_DOWN,
-    SCROLL_UP
+    SCROLL_UP,
+
+    CLEAR_GRID
 }

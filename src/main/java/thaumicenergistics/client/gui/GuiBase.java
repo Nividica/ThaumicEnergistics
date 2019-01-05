@@ -145,6 +145,8 @@ public abstract class GuiBase extends GuiContainer {
                 if (!(btn instanceof GuiImgButton))
                     return;
                 GuiImgButton b = (GuiImgButton) btn;
+                if (b.getSetting() == Settings.ACTIONS)
+                    return;
                 b.set(configManager.getSetting(b.getSetting()));
             });
         }
