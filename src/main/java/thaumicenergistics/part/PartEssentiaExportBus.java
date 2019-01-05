@@ -26,6 +26,7 @@ import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
 import thaumicenergistics.item.part.ItemEssentiaExportBus;
 import thaumicenergistics.util.AEUtil;
+import thaumicenergistics.util.ThELog;
 
 /**
  * @author BrockWS
@@ -42,6 +43,11 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
     private static IPartModel MODEL_ON = new ThEPartModel(MODELS[0], MODELS[1]);
     private static IPartModel MODEL_OFF = new ThEPartModel(MODELS[0], MODELS[2]);
     private static IPartModel MODEL_HAS_CHANNEL = new ThEPartModel(MODELS[0], MODELS[3]);
+
+    // FIXME: Remove after issue fixed in TC.
+    // https://github.com/Nividica/ThaumicEnergistics/issues/361
+    // https://github.com/Azanor/thaumcraft-beta/issues/1604
+    private boolean reportedWarning = false;
 
     public PartEssentiaExportBus(ItemEssentiaExportBus item) {
         super(item);
@@ -76,7 +82,19 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
                     // Simulate extract from ae2
                     IAEEssentiaStack extracted = storage.extractItems(AEUtil.getAEStackFromAspect(aspect, this.calculateAmountToSend()), Actionable.SIMULATE, this.source);
                     // Try add to container, since we can't simulate it
-                    int notAdded = container.addToContainer(extracted.getAspect(), (int) extracted.getStackSize());
+                    int notAdded;
+                    // FIXME: Remove after issue fixed in TC.
+                    // https://github.com/Nividica/ThaumicEnergistics/issues/361
+                    // https://github.com/Azanor/thaumcraft-beta/issues/1604
+                    try {
+                        notAdded = container.addToContainer(extracted.getAspect(), (int) extracted.getStackSize());
+                    } catch (NullPointerException ignored) {
+                        if (!reportedWarning)
+                            ThELog.warn("container.addToContainer threw a NullPointerException. Thaumcraft Bug. Nividica/ThaumicEnergistics#361. Remove EssentiaExportBus from {}", this.hostTile != null ? this.hostTile.getPos() : this.getConnectedTE().getPos());
+                        reportedWarning = true;
+                        return TickRateModulation.IDLE;
+                    }
+                    reportedWarning = false;
                     // Couldn't contain it all
                     extracted.decStackSize(notAdded);
                     // Only remove from system the amount the container accepted
