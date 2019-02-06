@@ -137,7 +137,11 @@ public class MERepo<T extends IAEStack<T>> {
         stream.forEach(t -> {
             T stack = t.copy();
             if (this.getViewMode().equals(ViewItems.CRAFTABLE)) {
+                if (!stack.isCraftable())
+                    return;
                 stack.setStackSize(0);
+            } else if (this.getViewMode().equals(ViewItems.STORED) && stack.getStackSize() < 1) {
+                return;
             }
             this.view.add(stack);
         });
