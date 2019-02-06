@@ -45,6 +45,10 @@ public abstract class GuiBase extends GuiContainer {
         super(container);
     }
 
+    public void reload() {
+
+    }
+
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
@@ -145,7 +149,7 @@ public abstract class GuiBase extends GuiContainer {
                 if (!(btn instanceof GuiImgButton))
                     return;
                 GuiImgButton b = (GuiImgButton) btn;
-                if (b.getSetting() == Settings.ACTIONS)
+                if (b.getSetting() == Settings.ACTIONS || b.getSetting() == Settings.TERMINAL_STYLE)
                     return;
                 b.set(configManager.getSetting(b.getSetting()));
             });
@@ -158,9 +162,7 @@ public abstract class GuiBase extends GuiContainer {
         this.inventorySlots.inventoryItemStacks.add(ItemStack.EMPTY);
     }
 
-    protected ResourceLocation getGuiBackground() {
-        return null;
-    }
+    protected abstract ResourceLocation getGuiBackground();
 
     protected void drawTexturedModelRectColor(int x, int y, int textureX, int textureY, int width, int height, Color color) {
         float offsetX = 0.00390625F;

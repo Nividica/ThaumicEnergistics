@@ -11,11 +11,16 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
+import appeng.api.storage.ITerminalHost;
 import appeng.api.util.AEPartLocation;
 import appeng.container.implementations.ContainerCraftConfirm;
 
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.client.gui.crafting.GuiCraftAmountBridge;
+import thaumicenergistics.client.gui.crafting.GuiCraftConfirmBridge;
 import thaumicenergistics.client.gui.part.*;
+import thaumicenergistics.container.crafting.ContainerCraftAmountBridge;
+import thaumicenergistics.container.crafting.ContainerCraftConfirmBridge;
 import thaumicenergistics.container.part.*;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.part.*;
@@ -85,8 +90,10 @@ public class GuiHandler implements IGuiHandler {
                 return new ContainerEssentiaTerminal(player, (PartEssentiaTerminal) part);
             case ARCANE_TERMINAL:
                 return new ContainerArcaneTerminal(player, (PartArcaneTerminal) part);
+            case AE2_CRAFT_AMOUNT:
+                return new ContainerCraftAmountBridge(player.inventory, (ITerminalHost) part);
             case AE2_CRAFT_CONFIRM:
-                return new ContainerCraftConfirm(player.inventory, (PartArcaneTerminal) part);
+                return new ContainerCraftConfirmBridge(player.inventory, (ITerminalHost) part);
             default:
                 return null;
         }
@@ -110,6 +117,10 @@ public class GuiHandler implements IGuiHandler {
                 return new GuiEssentiaTerminal(new ContainerEssentiaTerminal(player, (PartEssentiaTerminal) part));
             case ARCANE_TERMINAL:
                 return new GuiArcaneTerminal(new ContainerArcaneTerminal(player, (PartArcaneTerminal) part));
+            case AE2_CRAFT_AMOUNT:
+                return new GuiCraftAmountBridge(player, (PartArcaneTerminal) part);
+            case AE2_CRAFT_CONFIRM:
+                return new GuiCraftConfirmBridge(player.inventory, (PartArcaneTerminal) part);
             default:
                 return null;
         }

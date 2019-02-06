@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.SortOrder;
+import appeng.api.config.TerminalStyle;
 
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
@@ -53,7 +54,7 @@ public class ThEUtil {
 
     public static boolean isInvalidSetting(Enum e) {
         // TODO: Add invtweaks integration
-        return e == SortOrder.INVTWEAKS;
+        return e == SortOrder.INVTWEAKS || e == TerminalStyle.FULL;
     }
 
     @Deprecated

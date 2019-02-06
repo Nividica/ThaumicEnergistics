@@ -15,9 +15,8 @@ import thaumicenergistics.network.packets.*;
  */
 public class PacketHandler {
 
-    private static int PACKETID = 0;
-
     public static SimpleNetworkWrapper INSTANCE = null;
+    private static int PACKETID = 0;
 
     public static int nextID() {
         return PacketHandler.PACKETID++;
@@ -38,6 +37,7 @@ public class PacketHandler {
         PacketHandler.INSTANCE.registerMessage(PacketUIAction.Handler.class, PacketUIAction.class, PacketHandler.nextID(), Side.SERVER);
         PacketHandler.INSTANCE.registerMessage(PacketSettingChange.HandlerServer.class, PacketSettingChange.class, PacketHandler.nextID(), Side.SERVER);
         PacketHandler.INSTANCE.registerMessage(PacketJEIRecipe.Handler.class, PacketJEIRecipe.class, PacketHandler.nextID(), Side.SERVER);
+        PacketHandler.INSTANCE.registerMessage(PacketOpenGUI.Handler.class, PacketOpenGUI.class, PacketHandler.nextID(), Side.SERVER);
     }
 
     public static void sendToPlayer(EntityPlayerMP player, IMessage message) {

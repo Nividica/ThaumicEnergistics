@@ -3,6 +3,8 @@ package thaumicenergistics.container.part;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
+
 import thaumicenergistics.part.PartEssentiaExportBus;
 
 /**
@@ -14,7 +16,7 @@ public class ContainerEssentiaExportBus extends ContainerSharedEssentiaBus {
         super(player, part);
         this.bindContainerInventory(this.getEssentiaFilter(), new InventoryBasic("null", false, 9), 62, 22, 3, 3);
         this.bindUpgradesInventory(this.part.getInventoryByName("upgrades"), 187, 8, 4);
-        this.bindPlayerInventory(player.inventory, 0, 100);
+        this.bindPlayerInventory(new PlayerMainInvWrapper(player.inventory), 0, 100);
     }
 
     @Override

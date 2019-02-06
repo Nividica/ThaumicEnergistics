@@ -21,7 +21,9 @@ import net.minecraft.util.NonNullList;
 
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.PlayerArmorInvWrapper;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import appeng.api.AEApi;
 import appeng.api.config.*;
@@ -42,13 +44,17 @@ import thaumcraft.api.aura.AuraHelper;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.items.ItemsTC;
 
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.container.ActionType;
 import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.container.DummyContainer;
 import thaumicenergistics.container.ICraftingContainer;
+import thaumicenergistics.container.crafting.ContainerCraftAmountBridge;
 import thaumicenergistics.container.slot.SlotArcaneMatrix;
 import thaumicenergistics.container.slot.SlotArcaneResult;
 import thaumicenergistics.container.slot.SlotUpgrade;
+import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.integration.thaumcraft.TCCraftingManager;
 import thaumicenergistics.network.PacketHandler;
@@ -91,74 +97,11 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
             this.serverConfigManager = part.getConfigManager();
         }
 
-        this.addMatrixSlots(32, 144);
-        this.addUpgradeSlots(177, 162);
+        this.addMatrixSlots(32, 36);
+        this.addUpgradeSlots(177, 54);
 
-        this.bindPlayerInventory(player.inventory, 0, 214);
-        this.bindPlayerArmour(player.inventory, 8, 127);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private void addMatrixSlots(int offsetX, int offsetY) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                this.addSlotToContainer(new SlotArcaneMatrix(this, i * 3 + j, offsetX + (j * 18), offsetY + (i * 18)));
-            }
-        }
-        offsetX += 104;
-        for (int i = 0; i < 3; i++) { // Y
-            for (int j = 0; j < 2; j++) { // X
-                this.addSlotToContainer(new SlotArcaneMatrix(this, 9 + (i * 2 + j), offsetX + (j * 18), offsetY + (i * 18)));
-            }
-        }
-        offsetX -= 104;
-        this.craftingResult = new ThEInternalInventory("Result", 1, 64);
-        this.addSlotToContainer(this.resultSlot = new SlotArcaneResult(this, this.player, 0, offsetX + 84, offsetY + 18));
-        this.onMatrixChanged();
-    }
-
-    private void addUpgradeSlots(int offsetX, int offsetY) {
-        this.addSlotToContainer(new SlotUpgrade(this.getInventory("upgrades"), 0, offsetX, offsetY)/* {
-            @Override
-            public boolean isItemValid(ItemStack stack) {
-                return ThEApi.instance().items().upgradeArcane().isSameAs(stack);
-            }
-        }*/);
-    }
-
-    @Override
-    public boolean isValid(Object verificationToken) {
-        return true;
-    }
-
-    @Override
-    public void postChange(IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, IActionSource actionSource) {
-        for (IContainerListener c : this.listeners) {
-            this.sendInventory(c);
-        }
-    }
-
-    @Override
-    public void onListUpdate() {
-        for (IContainerListener c : this.listeners) {
-            this.sendInventory(c);
-        }
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer playerIn) {
-        super.onContainerClosed(playerIn);
-        if (this.monitor != null) {
-            this.monitor.removeListener(this);
-        }
-    }
-
-    @Override
-    public void addListener(IContainerListener listener) {
-        super.addListener(listener);
-        this.sendVisInfo(listener);
-        this.sendInventory(listener);
-        this.onMatrixChanged();
+        this.bindPlayerInventory(new PlayerMainInvWrapper(player.inventory), 0, 106);
+        this.bindPlayerArmour(player, new PlayerArmorInvWrapper(player.inventory), 8, 19);
     }
 
     @Override
@@ -259,6 +202,13 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
             stack = AEUtil.inventoryExtract(stack, this.monitor, this.part.source);
             if (stack != null)
                 ForgeUtil.addStackToPlayerInventory(player, stack.createItemStack(), false);
+        } else if (packet.action == ActionType.AUTO_CRAFT) {
+            GuiHandler.openGUI(ModGUIs.AE2_CRAFT_AMOUNT, player, this.part.getLocation().getPos(), this.part.side);
+            if (player.openContainer instanceof ContainerCraftAmountBridge) {
+                ContainerCraftAmountBridge cca = (ContainerCraftAmountBridge) player.openContainer;
+                cca.getCraftingItem().putStack(packet.requestedStack.asItemStackRepresentation());
+                cca.setItemToCraft((IAEItemStack) packet.requestedStack);
+            }
         } else if (packet.action == ActionType.CLEAR_GRID) {
             AEUtil.clearIntoMEInventory(this.getInventory("crafting"), this.monitor, this.part.source);
         }
@@ -277,6 +227,118 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
         }
 
         return super.transferStackInSlot(playerIn, index);
+    }
+
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+        if (this.player instanceof IContainerListener)
+            this.sendVisInfo((IContainerListener) this.player);
+        if (ForgeUtil.isServer()) {
+            for (Settings setting : this.serverConfigManager.getSettings()) {
+                Enum server = this.serverConfigManager.getSetting(setting);
+                Enum client = this.clientConfigManager.getSetting(setting);
+                if (client != server) {
+                    for (IContainerListener player : this.listeners)
+                        if (player instanceof EntityPlayerMP) {
+                            // Only update the local cache when we actually were able to send it
+                            this.clientConfigManager.putSetting(setting, server);
+                            PacketHandler.sendToPlayer((EntityPlayerMP) player, new PacketSettingChange(setting, server));
+                        }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void handleJEITransfer(EntityPlayer player, NBTTagCompound tag) {
+        NBTTagList normal = tag.getTagList("normal", 9);
+        NBTTagList crystals = tag.getTagList("crystal", 9);
+        List<NBTBase> ingredients = ForgeUtil.toArrayList(ForgeUtil.mergeTagLists(normal, crystals));
+        AtomicInteger currentSlot = new AtomicInteger(-1);
+
+        IItemHandler crafting = this.getInventory("crafting");
+        IItemHandler playerInv = this.getInventory("player");
+
+        boolean clearSuccess = AEUtil.clearIntoMEInventory(crafting, this.monitor, this.part.source);
+        this.onMatrixChanged();
+        if (!clearSuccess)
+            return;
+
+        ingredients.forEach(ingredientGroup -> {
+            int slot = currentSlot.incrementAndGet();
+
+            if (ingredientGroup == null || ingredientGroup.hasNoTags()) {
+                // TODO: Probably check if its already in the slot
+                return;
+            }
+            NBTTagList subs = (NBTTagList) ingredientGroup;
+            for (int i = 0; i < subs.tagCount(); i++) {
+                NBTTagCompound ingredient = subs.getCompoundTagAt(i);
+                ItemStack stack = new ItemStack(ingredient);
+                if (stack.isEmpty()) {
+                    ThELog.error("Failed to read ingredient data {}", ingredient);
+                    return;
+                }
+                ThELog.debug("Adding {} for {}", stack.getDisplayName(), slot);
+                IAEItemStack aeStack = this.channel.createStack(stack);
+                if (aeStack == null) {
+                    ThELog.warn("Failed to create IAEItemStack for {}, report to developer!", stack.toString());
+                    return;
+                }
+                IAEItemStack aeExtract = AEUtil.inventoryExtract(aeStack, this.monitor, this.part.source);
+                if (aeExtract != null && aeExtract.getStackSize() > 0)
+                    crafting.insertItem(slot, aeExtract.createItemStack(), false);
+
+                if (crafting.getStackInSlot(slot).getCount() >= stack.getCount()) // We managed to pull everything from the system
+                    return;
+
+                // Try pull from player
+                ThELog.debug("Failed to pull item from ae inv, trying player inventory");
+                stack.shrink(crafting.getStackInSlot(slot).getCount());
+
+                ItemStack invExtract = ItemHandlerUtil.extract(playerInv, stack, false);
+                if (!invExtract.isEmpty())
+                    crafting.insertItem(slot, invExtract, false);
+            }
+            ThELog.debug("Failed to find valid item");
+        });
+        this.onMatrixChanged();
+    }
+
+    @Override
+    public boolean isValid(Object verificationToken) {
+        return true;
+    }
+
+    @Override
+    public void postChange(IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, IActionSource actionSource) {
+        for (IContainerListener c : this.listeners) {
+            this.sendInventory(c);
+        }
+    }
+
+    @Override
+    public void onListUpdate() {
+        for (IContainerListener c : this.listeners) {
+            this.sendInventory(c);
+        }
+    }
+
+    @Override
+    public void addListener(IContainerListener listener) {
+        super.addListener(listener);
+        this.sendVisInfo(listener);
+        this.sendInventory(listener);
+        this.onMatrixChanged();
+    }
+
+    @Override
+    public void onContainerClosed(EntityPlayer playerIn) {
+        super.onContainerClosed(playerIn);
+        if (this.monitor != null) {
+            this.monitor.removeListener(this);
+        }
     }
 
     @Override
@@ -363,83 +425,6 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
     }
 
     @Override
-    public void handleJEITransfer(EntityPlayer player, NBTTagCompound tag) {
-        NBTTagList normal = tag.getTagList("normal", 9);
-        NBTTagList crystals = tag.getTagList("crystal", 9);
-        List<NBTBase> ingredients = ForgeUtil.toArrayList(ForgeUtil.mergeTagLists(normal, crystals));
-        AtomicInteger currentSlot = new AtomicInteger(-1);
-
-        IItemHandler crafting = this.getInventory("crafting");
-        IItemHandler playerInv = this.getInventory("player");
-
-        boolean clearSuccess = AEUtil.clearIntoMEInventory(crafting, this.monitor, this.part.source);
-        this.onMatrixChanged();
-        if (!clearSuccess)
-            return;
-
-        ingredients.forEach(ingredientGroup -> {
-            int slot = currentSlot.incrementAndGet();
-
-            if (ingredientGroup == null || ingredientGroup.hasNoTags()) {
-                // TODO: Probably check if its already in the slot
-                return;
-            }
-            NBTTagList subs = (NBTTagList) ingredientGroup;
-            for (int i = 0; i < subs.tagCount(); i++) {
-                NBTTagCompound ingredient = subs.getCompoundTagAt(i);
-                ItemStack stack = new ItemStack(ingredient);
-                if (stack.isEmpty()) {
-                    ThELog.error("Failed to read ingredient data {}", ingredient);
-                    return;
-                }
-                ThELog.debug("Adding {} for {}", stack.getDisplayName(), slot);
-                IAEItemStack aeStack = this.channel.createStack(stack);
-                if (aeStack == null) {
-                    ThELog.warn("Failed to create IAEItemStack for {}, report to developer!", stack.toString());
-                    return;
-                }
-                IAEItemStack aeExtract = AEUtil.inventoryExtract(aeStack, this.monitor, this.part.source);
-                if (aeExtract != null && aeExtract.getStackSize() > 0)
-                    crafting.insertItem(slot, aeExtract.createItemStack(), false);
-
-                if (crafting.getStackInSlot(slot).getCount() >= stack.getCount()) // We managed to pull everything from the system
-                    return;
-
-                // Try pull from player
-                ThELog.debug("Failed to pull item from ae inv, trying player inventory");
-                stack.shrink(crafting.getStackInSlot(slot).getCount());
-
-                ItemStack invExtract = ItemHandlerUtil.extract(playerInv, stack, false);
-                if (!invExtract.isEmpty())
-                    crafting.insertItem(slot, invExtract, false);
-            }
-            ThELog.debug("Failed to find valid item");
-        });
-        this.onMatrixChanged();
-    }
-
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-        if (this.player instanceof IContainerListener)
-            this.sendVisInfo((IContainerListener) this.player);
-        if (ForgeUtil.isServer()) {
-            for (Settings setting : this.serverConfigManager.getSettings()) {
-                Enum server = this.serverConfigManager.getSetting(setting);
-                Enum client = this.clientConfigManager.getSetting(setting);
-                if (client != server) {
-                    for (IContainerListener player : this.listeners)
-                        if (player instanceof EntityPlayerMP) {
-                            // Only update the local cache when we actually were able to send it
-                            this.clientConfigManager.putSetting(setting, server);
-                            PacketHandler.sendToPlayer((EntityPlayerMP) player, new PacketSettingChange(setting, server));
-                        }
-                }
-            }
-        }
-    }
-
-    @Override
     public IItemHandler getInventory(String name) {
         switch (name.toLowerCase()) {
             case "crafting":
@@ -456,6 +441,34 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
     @Override
     public IConfigManager getConfigManager() {
         return ForgeUtil.isClient() ? this.clientConfigManager : this.serverConfigManager;
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private void addMatrixSlots(int offsetX, int offsetY) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                this.addSlotToContainer(new SlotArcaneMatrix(this, i * 3 + j, offsetX + (j * 18), offsetY + (i * 18)));
+            }
+        }
+        offsetX += 104;
+        for (int i = 0; i < 3; i++) { // Y
+            for (int j = 0; j < 2; j++) { // X
+                this.addSlotToContainer(new SlotArcaneMatrix(this, 9 + (i * 2 + j), offsetX + (j * 18), offsetY + (i * 18)));
+            }
+        }
+        offsetX -= 104;
+        this.craftingResult = new ThEInternalInventory("Result", 1, 64);
+        this.addSlotToContainer(this.resultSlot = new SlotArcaneResult(this, this.player, 0, offsetX + 84, offsetY + 18));
+        this.onMatrixChanged();
+    }
+
+    private void addUpgradeSlots(int offsetX, int offsetY) {
+        this.addSlotToContainer(new SlotUpgrade(this.getInventory("upgrades"), 0, offsetX, offsetY)/* {
+            @Override
+            public boolean isItemValid(ItemStack stack) {
+                return ThEApi.instance().items().upgradeArcane().isSameAs(stack);
+            }
+        }*/);
     }
 
     protected void sendVisInfo(IContainerListener listener) {

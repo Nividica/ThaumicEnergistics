@@ -1,28 +1,19 @@
 package thaumicenergistics.container;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 
-import thaumicenergistics.container.slot.SlotArcaneResult;
-import thaumicenergistics.container.slot.SlotGhost;
-import thaumicenergistics.container.slot.SlotGhostEssentia;
+import thaumicenergistics.container.slot.*;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketInvHeldUpdate;
 import thaumicenergistics.network.packets.PacketUIAction;
@@ -37,109 +28,21 @@ import thaumicenergistics.util.ForgeUtil;
  */
 public abstract class ContainerBase extends Container {
 
-    protected EntityPlayer player;
+    public EntityPlayer player;
 
     public ContainerBase(EntityPlayer player) {
         this.player = player;
     }
 
-    protected void bindPlayerArmour(InventoryPlayer inv, int offsetX, int offsetY) {
-        this.addSlotToContainer(new Slot(inv, 36, offsetX, offsetY + 8 + 18 * 3) {
-            public int getSlotStackLimit() {
-                return 1;
-            }
-
-            public boolean isItemValid(ItemStack stack) {
-                return stack.getItem().isValidArmor(stack, EntityEquipmentSlot.FEET, inv.player);
-            }
-
-            public boolean canTakeStack(EntityPlayer playerIn) {
-                return (this.getStack().isEmpty() || playerIn.isCreative() || !EnchantmentHelper.hasBindingCurse(this.getStack())) && super.canTakeStack(playerIn);
-            }
-
-            @Nullable
-            @SideOnly(Side.CLIENT)
-            public String getSlotTexture() {
-                return ItemArmor.EMPTY_SLOT_NAMES[EntityEquipmentSlot.FEET.getIndex()];
-            }
-        });
-        this.addSlotToContainer(new Slot(inv, 37, offsetX, offsetY + 8 + 18 * 2) {
-            public int getSlotStackLimit() {
-                return 1;
-            }
-
-            public boolean isItemValid(ItemStack stack) {
-                return stack.getItem().isValidArmor(stack, EntityEquipmentSlot.LEGS, inv.player);
-            }
-
-            public boolean canTakeStack(EntityPlayer playerIn) {
-                return (this.getStack().isEmpty() || playerIn.isCreative() || !EnchantmentHelper.hasBindingCurse(this.getStack())) && super.canTakeStack(playerIn);
-            }
-
-            @Nullable
-            @SideOnly(Side.CLIENT)
-            public String getSlotTexture() {
-                return ItemArmor.EMPTY_SLOT_NAMES[EntityEquipmentSlot.LEGS.getIndex()];
-            }
-        });
-        this.addSlotToContainer(new Slot(inv, 38, offsetX, offsetY + 8 + 18) {
-            public int getSlotStackLimit() {
-                return 1;
-            }
-
-            public boolean isItemValid(ItemStack stack) {
-                return stack.getItem().isValidArmor(stack, EntityEquipmentSlot.CHEST, inv.player);
-            }
-
-            public boolean canTakeStack(EntityPlayer playerIn) {
-                return (this.getStack().isEmpty() || playerIn.isCreative() || !EnchantmentHelper.hasBindingCurse(this.getStack())) && super.canTakeStack(playerIn);
-            }
-
-            @Nullable
-            @SideOnly(Side.CLIENT)
-            public String getSlotTexture() {
-                return ItemArmor.EMPTY_SLOT_NAMES[EntityEquipmentSlot.CHEST.getIndex()];
-            }
-        });
-        this.addSlotToContainer(new Slot(inv, 39, offsetX, offsetY + 8) {
-            public int getSlotStackLimit() {
-                return 1;
-            }
-
-            public boolean isItemValid(ItemStack stack) {
-                return stack.getItem().isValidArmor(stack, EntityEquipmentSlot.HEAD, inv.player);
-            }
-
-            public boolean canTakeStack(EntityPlayer playerIn) {
-                return (this.getStack().isEmpty() || playerIn.isCreative() || !EnchantmentHelper.hasBindingCurse(this.getStack())) && super.canTakeStack(playerIn);
-            }
-
-            @Nullable
-            @SideOnly(Side.CLIENT)
-            public String getSlotTexture() {
-                return ItemArmor.EMPTY_SLOT_NAMES[EntityEquipmentSlot.HEAD.getIndex()];
-            }
-        });
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
     }
 
-    protected void bindPlayerInventory(InventoryPlayer player, int offsetX, int offsetY) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                this.addSlotToContainer(new Slot(player, 9 * i + j + 9, offsetX + 8 + 18 * j, offsetY + 2 + 18 * i));
-            }
-        }
-        for (int i = 0; i < 9; i++) {
-            this.addSlotToContainer(new Slot(player, i, offsetX + 8 + 18 * i, offsetY + 60));
-        }
-    }
-
-    /**
-     * Called when a PacketUIAction is received by the server
-     *
-     * @param player Player that sent the action
-     * @param packet Packet from client
-     */
-    public void onAction(EntityPlayerMP player, PacketUIAction packet) {
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+        // TODO
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -193,9 +96,35 @@ public abstract class ContainerBase extends Container {
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        // TODO
-        return ItemStack.EMPTY;
+    public boolean canInteractWith(EntityPlayer player) {
+        return true;
+    }
+
+    protected void bindPlayerArmour(EntityPlayer player, IItemHandler inv, int offsetX, int offsetY) {
+        this.addSlotToContainer(new SlotArmor(player, inv, 0, offsetX, offsetY + 8 + 18 * 3));
+        this.addSlotToContainer(new SlotArmor(player, inv, 1, offsetX, offsetY + 8 + 18 * 2));
+        this.addSlotToContainer(new SlotArmor(player, inv, 2, offsetX, offsetY + 8 + 18));
+        this.addSlotToContainer(new SlotArmor(player, inv, 3, offsetX, offsetY + 8));
+    }
+
+    protected void bindPlayerInventory(IItemHandler player, int offsetX, int offsetY) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 9; j++) {
+                this.addSlotToContainer(new ThESlot(player, 9 * i + j + 9, offsetX + 8 + 18 * j, offsetY + 2 + 18 * i));
+            }
+        }
+        for (int i = 0; i < 9; i++) {
+            this.addSlotToContainer(new ThESlot(player, i, offsetX + 8 + 18 * i, offsetY + 60));
+        }
+    }
+
+    /**
+     * Called when a PacketUIAction is received by the server
+     *
+     * @param player Player that sent the action
+     * @param packet Packet from client
+     */
+    public void onAction(EntityPlayerMP player, PacketUIAction packet) {
     }
 
     public EssentiaFilter getEssentiaFilter() {
@@ -204,16 +133,6 @@ public abstract class ContainerBase extends Container {
 
     public void setEssentiaFilter(EssentiaFilter filter) {
         this.getEssentiaFilter().deserializeNBT(filter.serializeNBT());
-    }
-
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer player) {
-        return true;
     }
 
     public void handleJEITransfer(EntityPlayer player, NBTTagCompound tag) {

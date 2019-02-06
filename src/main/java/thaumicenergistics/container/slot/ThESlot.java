@@ -21,10 +21,20 @@ public class ThESlot extends Slot {
     private static IInventory EMPTY = new InventoryBasic("[Null]", true, 0);
 
     private IItemHandler itemHandler;
+    private int x;
+    private int y;
+    private boolean affectedBySlotCount;
 
     public ThESlot(IItemHandler handler, int index, int xPosition, int yPosition) {
+        this(handler, index, xPosition, yPosition, true);
+    }
+
+    public ThESlot(IItemHandler handler, int index, int xPosition, int yPosition, boolean affectedBySlotCount) {
         super(ThESlot.EMPTY, index, xPosition, yPosition);
         this.itemHandler = handler;
+        this.x = xPosition;
+        this.y = yPosition;
+        this.affectedBySlotCount = affectedBySlotCount;
     }
 
     @Override
@@ -81,5 +91,12 @@ public class ThESlot extends Slot {
     @SideOnly(Side.CLIENT)
     public boolean hasBackgroundIcon() {
         return this.getBackgroundIcon() != null && this.getBackgroundIconIndex() > -1;
+    }
+
+    public void recalculateY(int slots) {
+        this.yPos = this.y;
+        if (!this.affectedBySlotCount)
+            return;
+        this.yPos += slots * 18;
     }
 }

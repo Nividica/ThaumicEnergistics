@@ -8,6 +8,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -50,7 +52,7 @@ public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonit
             }
         }
 
-        this.bindPlayerInventory(player.inventory, 0, 138);
+        this.bindPlayerInventory(new PlayerMainInvWrapper(player.inventory), 0, 138);
     }
 
     @Override

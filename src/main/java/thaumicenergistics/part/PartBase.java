@@ -52,9 +52,9 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
     protected IGridNode gridNode;
     protected IPartHost host;
     protected TileEntity hostTile;
-    protected AEPartLocation side;
     protected EntityPlayer owner;
     protected ItemPartBase item;
+    public AEPartLocation side;
     public IActionSource source;
 
     protected boolean isPowered;

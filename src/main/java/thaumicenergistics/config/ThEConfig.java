@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
+
+import appeng.api.config.TerminalStyle;
 
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.config.PrefixSetting;
@@ -13,6 +16,8 @@ import static net.minecraftforge.common.config.Config.Comment;
 import static net.minecraftforge.common.config.Config.Name;
 
 /**
+ * TODO: Allow config being changed from api
+ *
  * @author BrockWS
  */
 @SuppressWarnings("ALL")
@@ -31,6 +36,9 @@ public class ThEConfig implements IThEConfig {
 
     public static class Client {
 
+        @Name("Terminal Style")
+        public TerminalStyle terminalStyle = TerminalStyle.TALL;
+
         @Name("Mod Search Prefix")
         public String modSearchPrefix = "@";
 
@@ -44,6 +52,7 @@ public class ThEConfig implements IThEConfig {
         public PrefixSetting aspectSearchSetting = PrefixSetting.REQUIRE_PREFIX;
 
         private Client() {
+
         }
     }
 
@@ -64,6 +73,7 @@ public class ThEConfig implements IThEConfig {
         public int tickTimeEssentiaStorageBusMax = 60;
 
         private TickRates() {
+
         }
     }
 
@@ -72,6 +82,7 @@ public class ThEConfig implements IThEConfig {
     }
 
     public ThEConfig() {
+
     }
 
     @Override
@@ -110,6 +121,11 @@ public class ThEConfig implements IThEConfig {
     }
 
     @Override
+    public TerminalStyle terminalStyle() {
+        return client.terminalStyle;
+    }
+
+    @Override
     public String modSearchPrefix() {
         return client.modSearchPrefix;
     }
@@ -127,5 +143,9 @@ public class ThEConfig implements IThEConfig {
     @Override
     public PrefixSetting aspectSearchSetting() {
         return client.aspectSearchSetting;
+    }
+
+    public static void save() {
+        ConfigManager.sync(ModGlobals.MOD_ID, Config.Type.INSTANCE);
     }
 }
