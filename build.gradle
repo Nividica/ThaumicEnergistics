@@ -56,6 +56,7 @@ dependencies {
     runtime "p455w0rd:p455w0rdslib:${version_pwlib}"
     runtime "p455w0rd:AE2WTLib:${version_wtlib}"
     runtime "p455w0rd:WirelessCraftingTerminal:${version_wct}"
+    runtime "just-enough-energistics-jee:JustEnoughEnergistics:${version_jee}"
 }
 
 jar {
