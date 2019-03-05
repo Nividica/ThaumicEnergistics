@@ -1,4 +1,15 @@
-﻿2019/01/05 - 2.1.0 - Beta
+﻿2019/03/05 - 2.2.0 - Beta
+  Implemented Autocrafting for the Arcane Crafting Terminal
+  Added Terminal Style option to ACT
+  Fixed issue with Infusion Provider not always connecting
+  Fixed issue with parts not dropping contents
+  Fixes issue when wrenching parts and gui still opens
+
+2019/02/07 - 2.1.1 - Release
+  Added ru_ru.lang
+  Fixed issue with viewing just crafted/stored items
+
+2019/01/05 - 2.1.0 - Beta
   Added ability to search items by the aspects they break into
   Added JEI & Thaumic JEI integration
   Added Clear Grid button to ACT
