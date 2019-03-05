@@ -1,5 +1,6 @@
 package thaumicenergistics.util;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
@@ -77,5 +78,15 @@ public class ItemHandlerUtil {
             extracted.grow(s.getCount());
         }
         return extracted == null || extracted.isEmpty() ? ItemStack.EMPTY : extracted;
+    }
+
+    public static void getInventoryAsList(IItemHandler handler, List<ItemStack> list) {
+        if (handler == null)
+            return;
+        for (int i = 0; i < handler.getSlots(); i++) {
+            ItemStack stack = handler.getStackInSlot(i);
+            if (!stack.isEmpty())
+                list.add(stack);
+        }
     }
 }

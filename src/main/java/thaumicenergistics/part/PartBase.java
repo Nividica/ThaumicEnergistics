@@ -1,11 +1,9 @@
 package thaumicenergistics.part;
 
-import io.netty.buffer.ByteBuf;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -42,6 +40,9 @@ import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
 import thaumicenergistics.integration.appeng.util.ThEActionSource;
 import thaumicenergistics.item.ItemPartBase;
 import thaumicenergistics.util.ForgeUtil;
+import thaumicenergistics.util.ItemHandlerUtil;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * @author BrockWS
@@ -207,7 +208,7 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
 
     @Override
     public void getDrops(List<ItemStack> list, boolean b) {
-
+        ItemHandlerUtil.getInventoryAsList(this.getInventoryByName("upgrades"), list);
     }
 
     @Override

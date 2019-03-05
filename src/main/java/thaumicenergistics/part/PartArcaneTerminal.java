@@ -1,8 +1,10 @@
 package thaumicenergistics.part;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -23,6 +25,7 @@ import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
 import thaumicenergistics.item.part.ItemArcaneTerminal;
+import thaumicenergistics.util.ItemHandlerUtil;
 import thaumicenergistics.util.inventory.ThEInternalInventory;
 import thaumicenergistics.util.inventory.ThEUpgradeInventory;
 
@@ -63,6 +66,12 @@ public class PartArcaneTerminal extends PartSharedTerminal {
         if (name.equalsIgnoreCase("upgrades"))
             return new InvWrapper(this.upgradeInventory);
         return super.getInventoryByName(name);
+    }
+
+    @Override
+    public void getDrops(List<ItemStack> list, boolean b) {
+        super.getDrops(list, b);
+        ItemHandlerUtil.getInventoryAsList(this.getInventoryByName("crafting"), list);
     }
 
     @Override
