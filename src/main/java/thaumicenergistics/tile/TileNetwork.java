@@ -3,8 +3,6 @@ package thaumicenergistics.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.init.Blocks;
-
 import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
@@ -39,9 +37,17 @@ public abstract class TileNetwork extends TileBase implements IThEGridHost, IAct
 
     @Override
     public void invalidate() {
-        super.invalidate();
-        if (this.gridNode != null)
+        if (this.gridNode != null) {
             this.gridNode.destroy();
+            this.gridNode = null;
+        }
+        super.invalidate();
+    }
+
+    @Override
+    public void onChunkUnload() {
+        super.onChunkUnload();
+        this.invalidate();
     }
 
     @Nullable
@@ -77,11 +83,11 @@ public abstract class TileNetwork extends TileBase implements IThEGridHost, IAct
 
     @Override
     public void gridChanged() {
-        if (this.getWorld() != null)
-            this.getWorld().notifyNeighborsOfStateChange(this.getPos(), Blocks.AIR, true);
+
     }
 
     @Override
     public void securityBreak() {
+        this.getWorld().destroyBlock(this.getPos(), true);
     }
 }
