@@ -6,6 +6,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.util.AEPartLocation;
@@ -18,6 +19,18 @@ import appeng.me.GridAccessException;
  */
 @SuppressWarnings("ConstantConditions")
 public class GridUtil {
+
+    public static ICraftingGrid getCraftingGrid(@Nonnull IGridHost host) throws GridAccessException {
+        return (ICraftingGrid) GridUtil.getCache(host, ICraftingGrid.class);
+    }
+
+    public static ICraftingGrid getCraftingGrid(@Nonnull IGridNode node) throws GridAccessException {
+        return (ICraftingGrid) GridUtil.getCache(node, ICraftingGrid.class);
+    }
+
+    public static ICraftingGrid getCraftingGrid(@Nonnull IGrid grid) throws GridAccessException {
+        return (ICraftingGrid) GridUtil.getCache(grid, ICraftingGrid.class);
+    }
 
     public static IEnergyGrid getEnergyGrid(@Nonnull IGridHost host) throws GridAccessException {
         return (IEnergyGrid) GridUtil.getCache(host, IEnergyGrid.class);

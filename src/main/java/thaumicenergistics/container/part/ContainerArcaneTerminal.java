@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -34,6 +35,7 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 
@@ -44,7 +46,6 @@ import thaumcraft.api.aura.AuraHelper;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.items.ItemsTC;
 
-import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.container.ActionType;
 import thaumicenergistics.container.ContainerBase;
@@ -441,6 +442,18 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
     @Override
     public IConfigManager getConfigManager() {
         return ForgeUtil.isClient() ? this.clientConfigManager : this.serverConfigManager;
+    }
+
+    public EntityPlayer getPlayer() {
+        return this.player;
+    }
+
+    public BlockPos getPartPos() {
+        return this.part.getLocation().getPos();
+    }
+
+    public AEPartLocation getPartSide() {
+        return this.part.side;
     }
 
     @SuppressWarnings("SameParameterValue")

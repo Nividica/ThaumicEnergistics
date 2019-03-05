@@ -20,6 +20,8 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiTabButton;
+import appeng.core.localization.GuiText;
 
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.gui.helpers.GuiScrollBar;
@@ -29,8 +31,10 @@ import thaumicenergistics.container.ActionType;
 import thaumicenergistics.container.part.ContainerArcaneTerminal;
 import thaumicenergistics.container.slot.SlotME;
 import thaumicenergistics.container.slot.ThESlot;
+import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.network.PacketHandler;
+import thaumicenergistics.network.packets.PacketOpenGUI;
 import thaumicenergistics.network.packets.PacketSettingChange;
 import thaumicenergistics.network.packets.PacketUIAction;
 import thaumicenergistics.util.AEUtil;
@@ -44,6 +48,8 @@ import org.lwjgl.input.Mouse;
  */
 public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemStorageChannel> {
 
+    private ContainerArcaneTerminal cat;
+
     private GuiTextField searchField;
     private GuiScrollBar scrollBar;
     private GuiImgButton sortByButton;
@@ -51,6 +57,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     private GuiImgButton viewItemsButton;
     private GuiImgButton terminalSizeButton;
     private GuiImgButton clearButton;
+    private GuiTabButton craftingStatusBtn;
 
     private int rows = 6;
     private float visAvailable = -1;
@@ -59,6 +66,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     public GuiArcaneTerminal(ContainerArcaneTerminal container) {
         super(container);
+        this.cat = container;
         this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
         this.repo = new MERepo<>(IItemStorageChannel.class);
     }
@@ -101,12 +109,15 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
         this.terminalSizeButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 68, Settings.TERMINAL_STYLE, ThEApi.instance().config().terminalStyle());
         this.clearButton = new GuiImgButton(this.getGuiLeft() + 87, this.getGuiTop() + this.getYSize() - 156, Settings.ACTIONS, ActionItems.STASH);
         this.clearButton.setHalfSize(true);
+        this.craftingStatusBtn = new GuiTabButton(this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus.getLocal(), this.itemRender);
+        this.craftingStatusBtn.setHideEdge(13);
 
         this.addButton(this.sortByButton);
         this.addButton(this.sortDirButton);
         this.addButton(this.viewItemsButton);
         this.addButton(this.terminalSizeButton);
         this.addButton(this.clearButton);
+        this.addButton(this.craftingStatusBtn);
 
         this.inventorySlots.inventorySlots.forEach(slot -> {
             if (slot instanceof ThESlot)
@@ -226,6 +237,10 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
                     action = (mouseButton == 1) ? ActionType.PICKUP_SINGLE : ActionType.SHIFT_MOVE;
                     stack = ((SlotME) slot).getAEStack();
                     break;
+                case CLONE:
+                    action = ActionType.AUTO_CRAFT;
+                    stack = ((SlotME) slot).getAEStack();
+                    break;
                 default:
             }
             if (action != null) {
@@ -286,6 +301,10 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     protected void actionPerformed(GuiButton button) {
         if (button == this.clearButton) {
             PacketHandler.sendToServer(new PacketUIAction(ActionType.CLEAR_GRID));
+            return;
+        }
+        if (button == this.craftingStatusBtn) {
+            PacketHandler.sendToServer(new PacketOpenGUI(ModGUIs.AE2_CRAFT_STATUS, this.cat.getPartPos(), this.cat.getPartSide()));
             return;
         }
         if (button instanceof GuiImgButton) {

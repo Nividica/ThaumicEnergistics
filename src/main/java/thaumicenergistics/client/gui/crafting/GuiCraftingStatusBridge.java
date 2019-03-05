@@ -1,14 +1,17 @@
 package thaumicenergistics.client.gui.crafting;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 
-import appeng.client.gui.implementations.GuiCraftConfirm;
-import appeng.core.localization.GuiText;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import appeng.client.gui.implementations.GuiCraftingStatus;
+import appeng.client.gui.widgets.GuiTabButton;
+
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketOpenGUI;
@@ -17,33 +20,29 @@ import thaumicenergistics.part.PartArcaneTerminal;
 /**
  * @author BrockWS
  */
-public class GuiCraftConfirmBridge extends GuiCraftConfirm {
+public class GuiCraftingStatusBridge extends GuiCraftingStatus {
 
     private PartArcaneTerminal part;
+    private GuiTabButton backButton;
 
-    public GuiCraftConfirmBridge(InventoryPlayer inventoryPlayer, PartArcaneTerminal part) {
+    public GuiCraftingStatusBridge(InventoryPlayer inventoryPlayer, PartArcaneTerminal part) {
         super(inventoryPlayer, part);
         this.part = part;
+        ReflectionHelper.setPrivateValue(GuiCraftingStatus.class, this, ThEApi.instance().items().arcaneTerminal().maybeStack(1).orElse(ItemStack.EMPTY), "myIcon");
     }
 
     @Override
     public void initGui() {
         super.initGui();
-        this.buttonList.removeIf(Objects::isNull);
-        this.buttonList.add(new GuiButton(0, this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.getLocal()));
+        this.backButton = ReflectionHelper.getPrivateValue(GuiCraftingStatus.class, this, "originalGuiBtn");
     }
 
     @Override
     protected void actionPerformed(GuiButton btn) throws IOException {
-        if (btn.displayString.equals(GuiText.Cancel.getLocal())) {
+        if (btn == this.backButton) {
             PacketHandler.sendToServer(new PacketOpenGUI(ModGUIs.ARCANE_TERMINAL, this.part.getLocation().getPos(), this.part.side));
             return;
         }
-
         super.actionPerformed(btn);
-
-        if (btn.displayString.equals(GuiText.Start.getLocal())) {
-            PacketHandler.sendToServer(new PacketOpenGUI(ModGUIs.ARCANE_TERMINAL, this.part.getLocation().getPos(), this.part.side));
-        }
     }
 }

@@ -18,9 +18,11 @@ import appeng.container.implementations.ContainerCraftConfirm;
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.client.gui.crafting.GuiCraftAmountBridge;
 import thaumicenergistics.client.gui.crafting.GuiCraftConfirmBridge;
+import thaumicenergistics.client.gui.crafting.GuiCraftingStatusBridge;
 import thaumicenergistics.client.gui.part.*;
 import thaumicenergistics.container.crafting.ContainerCraftAmountBridge;
 import thaumicenergistics.container.crafting.ContainerCraftConfirmBridge;
+import thaumicenergistics.container.crafting.ContainerCraftingStatusBridge;
 import thaumicenergistics.container.part.*;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.part.*;
@@ -94,6 +96,8 @@ public class GuiHandler implements IGuiHandler {
                 return new ContainerCraftAmountBridge(player.inventory, (ITerminalHost) part);
             case AE2_CRAFT_CONFIRM:
                 return new ContainerCraftConfirmBridge(player.inventory, (ITerminalHost) part);
+            case AE2_CRAFT_STATUS:
+                return new ContainerCraftingStatusBridge(player.inventory, (ITerminalHost) part);
             default:
                 return null;
         }
@@ -121,6 +125,8 @@ public class GuiHandler implements IGuiHandler {
                 return new GuiCraftAmountBridge(player, (PartArcaneTerminal) part);
             case AE2_CRAFT_CONFIRM:
                 return new GuiCraftConfirmBridge(player.inventory, (PartArcaneTerminal) part);
+            case AE2_CRAFT_STATUS:
+                return new GuiCraftingStatusBridge(player.inventory, (PartArcaneTerminal) part);
             default:
                 return null;
         }
