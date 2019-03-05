@@ -1,11 +1,11 @@
 package thaumicenergistics.util;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.items.IItemHandler;
@@ -13,6 +13,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
@@ -29,6 +30,8 @@ import thaumicenergistics.api.EssentiaStack;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.integration.appeng.AEEssentiaStack;
+
+import com.google.common.base.Preconditions;
 
 /**
  * @author BrockWS
@@ -234,5 +237,15 @@ public class AEUtil {
             }
         }
         return true;
+    }
+
+    public static boolean isWrench(ItemStack stack, EntityPlayer player, BlockPos pos) {
+        if (stack.isEmpty())
+            return false;
+        if (stack.getItem() instanceof IAEWrench) {
+            return ((IAEWrench) stack.getItem()).canWrench(stack, player, pos);
+        }
+        // TODO: Add other wrench types
+        return false;
     }
 }

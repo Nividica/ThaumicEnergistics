@@ -25,6 +25,8 @@ import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
 import thaumicenergistics.item.part.ItemArcaneTerminal;
+import thaumicenergistics.util.AEUtil;
+import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.ItemHandlerUtil;
 import thaumicenergistics.util.inventory.ThEInternalInventory;
 import thaumicenergistics.util.inventory.ThEUpgradeInventory;
@@ -76,6 +78,8 @@ public class PartArcaneTerminal extends PartSharedTerminal {
 
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, Vec3d pos) {
+        if (ForgeUtil.isClient() || (player.isSneaking() && AEUtil.isWrench(player.getHeldItem(hand), player, this.getTile().getPos())))
+            return false;
         GuiHandler.openGUI(ModGUIs.ARCANE_TERMINAL, player, this.hostTile.getPos(), this.side);
         return true;
     }

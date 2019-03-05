@@ -28,6 +28,8 @@ import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.AEEssentiaStack;
 import thaumicenergistics.integration.appeng.ThEPartModel;
 import thaumicenergistics.item.part.ItemEssentiaImportBus;
+import thaumicenergistics.util.AEUtil;
+import thaumicenergistics.util.ForgeUtil;
 
 /**
  * @author BrockWS
@@ -102,6 +104,8 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
 
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, Vec3d vec3d) {
+        if (ForgeUtil.isClient() || (player.isSneaking() && AEUtil.isWrench(player.getHeldItem(hand), player, this.getTile().getPos())))
+            return false;
         GuiHandler.openGUI(ModGUIs.ESSENTIA_IMPORT_BUS, player, this.hostTile.getPos(), this.side);
         return true;
     }

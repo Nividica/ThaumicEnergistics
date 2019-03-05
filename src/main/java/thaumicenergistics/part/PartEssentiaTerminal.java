@@ -14,6 +14,8 @@ import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
 import thaumicenergistics.item.part.ItemEssentiaTerminal;
+import thaumicenergistics.util.AEUtil;
+import thaumicenergistics.util.ForgeUtil;
 
 /**
  * @author BrockWS
@@ -39,6 +41,8 @@ public class PartEssentiaTerminal extends PartSharedTerminal {
 
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, Vec3d pos) {
+        if (ForgeUtil.isClient() || (player.isSneaking() && AEUtil.isWrench(player.getHeldItem(hand), player, this.getTile().getPos())))
+            return false;
         GuiHandler.openGUI(ModGUIs.ESSENTIA_TERMINAL, player, this.hostTile.getPos(), this.side);
         return true;
     }
