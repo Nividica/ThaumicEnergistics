@@ -76,10 +76,12 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
         this.xSize = 197;
         this.ySize = 190;
 
+        double remainingY = this.height - this.ySize;
+        int maxRows = (int) Math.floor(remainingY / 18);
         if (ThEApi.instance().config().terminalStyle() != TerminalStyle.TALL) {
-            this.rows = 6;
+            this.rows = Math.min(maxRows, 6);
         } else {
-            this.rows = 15;
+            this.rows = maxRows;
         }
 
         this.ySize += 18 * this.rows;
