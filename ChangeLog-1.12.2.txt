@@ -1,4 +1,9 @@
-﻿2019/03/05 - 2.2.0 - Beta
+﻿2019/03/12 - 2.2.1 - Release
+  Fixed issue with inserting non-phial items into Essentia Terminal (#366)
+  Fixed Tall Terminal Style (#365)
+  Minor Research Improvements
+
+2019/03/05 - 2.2.0 - Beta
   Implemented Autocrafting for the Arcane Crafting Terminal
   Added Terminal Style option to ACT
   Fixed issue with Infusion Provider not always connecting
