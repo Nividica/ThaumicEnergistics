@@ -46,15 +46,6 @@ public class TCUtil {
             ThELog.error("Failed to drain enough vis from nearby chunks. Drained {} of {}", drained, vis);
     }
 
-    @Deprecated
-    public static int getMaxStorable(IEssentiaContainerItem container) {
-        switch (container.getClass().getSimpleName()) {
-            case "ItemPhial":
-                return 10;
-        }
-        return 0;
-    }
-
     public static Aspect getCrystalAspect(ItemStack stack) {
         if (!(stack.getItem() instanceof IEssentiaContainerItem) || stack.getItem() != ItemsTC.crystalEssence)
             return null;

@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
@@ -21,6 +22,7 @@ import appeng.api.storage.data.IItemList;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.container.ActionType;
@@ -61,12 +63,13 @@ public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonit
         if (packet.action == ActionType.FILL_ESSENTIA_ITEM && packet.requestedStack instanceof IAEEssentiaStack) {
             IAEEssentiaStack requestedStack = (IAEEssentiaStack) packet.requestedStack;
             ItemStack toFill = inv.getItemStack().copy();
-            if (toFill.isEmpty() || !(toFill.getItem() instanceof IEssentiaContainerItem))
+            ResourceLocation registryName = toFill.getItem().getRegistryName();
+            if (toFill.isEmpty() || !(toFill.getItem() instanceof IEssentiaContainerItem) || registryName == null)
                 return;
             toFill.setCount(1);
 
             IEssentiaContainerItem containerItem = (IEssentiaContainerItem) toFill.getItem();
-            int max = TCUtil.getMaxStorable(containerItem);
+            int max = ThEApi.instance().config().essentiaContainerCapacity().getOrDefault(registryName.toString(), 0);
             if (max < 1 || (containerItem.getAspects(toFill) != null && containerItem.getAspects(toFill).size() > 0))
                 return;
 
@@ -94,11 +97,12 @@ public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonit
                 this.monitor.extractItems(stack, Actionable.MODULATE, this.part.source);
         } else if (packet.action == ActionType.EMPTY_ESSENTIA_ITEM) {
             ItemStack toEmpty = inv.getItemStack().copy();
-            if (toEmpty.isEmpty() || !(toEmpty.getItem() instanceof IEssentiaContainerItem))
+            ResourceLocation registryName = toEmpty.getItem().getRegistryName();
+            if (toEmpty.isEmpty() || !(toEmpty.getItem() instanceof IEssentiaContainerItem) || registryName == null)
                 return;
             IEssentiaContainerItem containerItem = (IEssentiaContainerItem) toEmpty.getItem();
             AspectList list = containerItem.getAspects(toEmpty);
-            if (list == null || list.size() < 1)
+            if (list == null || list.size() < 1 || ThEApi.instance().config().essentiaContainerCapacity().getOrDefault(registryName.toString(), 0) < 1)
                 return;
             AtomicBoolean canInsert = new AtomicBoolean(true);
             list.aspects.forEach((aspect, amount) -> {
