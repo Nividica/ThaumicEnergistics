@@ -97,8 +97,8 @@
                         "THEORY;THAUMICENERGISTICS;1"
                     ],
                     "required_item": [
-                        "thaumcraft:salis_mundus",
-                        "appliedenergistics2:material;1;0",
+                        "thaumcraft:salis_mundus;4",
+                        "appliedenergistics2:material;4;0",
                         "appliedenergistics2:material;1;22"
                     ]
                 },
@@ -144,6 +144,7 @@
                     "required_item": [
                         "thaumcraft:salis_mundus;4",
                         "thaumicenergistics:essentia_component_1k;3",
+                        "appliedenergistics2:quartz_glass",
                         "appliedenergistics2:material;1;23"
                     ]
                 },
@@ -189,6 +190,7 @@
                     "required_item": [
                         "thaumcraft:salis_mundus;4",
                         "thaumicenergistics:essentia_component_4k;3",
+                        "appliedenergistics2:quartz_glass",
                         "appliedenergistics2:material;1;24"
                     ]
                 },
@@ -234,6 +236,7 @@
                     "required_item": [
                         "thaumcraft:salis_mundus;4",
                         "thaumicenergistics:essentia_component_16k;3",
+                        "appliedenergistics2:quartz_glass",
                         "appliedenergistics2:material;1;24"
                     ]
                 },
@@ -389,7 +392,7 @@
             ],
             "addenda": [
                 {
-                    "text": "research.arcaneterminal.addena.1",
+                    "text": "research.arcaneterminal.addenda.1",
                     "recipes": [
                         "thaumicenergistics:upgrade_arcane"
                     ],
