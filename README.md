@@ -1,12 +1,14 @@
 # ThaumicEnergistics
 *Because the digital age could use some magic!*
 
-[![Build Status](https://ci.brock.pw/job/Thaumic%20Energistics%20RV6/badge/icon)](https://ci.brock.pw/job/Thaumic%20Energistics%20RV6/)
+[![discord]](https://discord.gg/BreEZat)
+[![curseforge-downloads]](https://https://minecraft.curseforge.com/projects/thaumic-energistics)
+[![curseforge-versions]](https://https://minecraft.curseforge.com/projects/thaumic-energistics)
+[![build-status]](https://ci.brock.pw/job/Thaumic%20Energistics%20RV6/)
 
-### Please note that this mod is currently in alpha for 1.12.2.
-The following versions are required for this mod:
-- Thaumcraft 6.1.BETA26
-- Applied Energistics 2 rv6-stable-4
+The following mods are required for this mod:
+- Thaumcraft
+- Applied Energistics 2
 
 About
 ---
@@ -14,11 +16,12 @@ The aim of this mod is to serve as a bridge between Thaumcraft and Applied Energ
 
 Thanks go out to AlgorithmX2 for Applied Energistics, Azanor for Thaumcraft, M3gaFr3ak for ExtraCells, and the Forge team.
 
+1.12.2 Localization's thanks to Hesperusrus.
 1.7.10 Localization's thanks to Mrkwtkr, alvin137, puyo061, Wuestengecko, TheVizzy, Adaptivity, Joccob, & Keridos.
 Texture thanks to CyanideX.
 Special thanks to MKoanga, Keridos & Aquahatsche.
 
-Built for MC 1.12.2
+Built for Minecraft 1.12.2
 
 Code Analysis
 ---
@@ -47,3 +50,8 @@ Code formatting is pretty simple, just keep to defaults. No tabs, use 4 spaces i
 
 1. Run ./gradlew setupDecompWorkspace build
 2. Your build shall be in build/libs/
+
+[discord]: https://img.shields.io/discord/256692002924527616.svg
+[build-status]: https://ci.brock.pw/job/Thaumic%20Energistics%20RV6/badge/icon
+[curseforge-downloads]: http://cf.way2muchnoise.eu/thaumic-energistics.svg
+[curseforge-versions]: http://cf.way2muchnoise.eu/versions/thaumic-energistics.svg
