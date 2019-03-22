@@ -33,6 +33,10 @@ repositories {
         name = "covers1624"
         url = "http://maven.covers1624.net"
     }
+    maven {
+        name 'CB Maven'
+        url "http://chickenbones.net/maven/"
+    }
     // CF Maven always last
     maven {
         name = "CurseForge"
@@ -56,7 +60,13 @@ dependencies {
     runtime "p455w0rd:p455w0rdslib:${version_pwlib}"
     runtime "p455w0rd:AE2WTLib:${version_wtlib}"
     runtime "p455w0rd:WirelessCraftingTerminal:${version_wct}"
-    runtime "just-enough-energistics-jee:JustEnoughEnergistics:${version_jee}"
+    //runtime "just-enough-energistics-jee:JustEnoughEnergistics:${version_jee}"
+    runtime("com.brandon3055.brandonscore:BrandonsCore:${version_bc}:universal") {
+        transitive = false
+    }
+    runtime("com.brandon3055.projectintelligence:ProjectIntelligence:${version_pi}:universal") {
+        transitive = false
+    }
 }
 
 jar {

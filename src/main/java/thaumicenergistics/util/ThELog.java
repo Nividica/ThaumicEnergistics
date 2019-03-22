@@ -32,4 +32,9 @@ public class ThELog {
         if (ThELog.getLogger() != null)
             ThELog.getLogger().debug(message, args);
     }
+
+    public static void trace(String message, Object... args) {
+        if (ThELog.getLogger() != null)
+            ThELog.getLogger().trace(message, args);
+    }
 }

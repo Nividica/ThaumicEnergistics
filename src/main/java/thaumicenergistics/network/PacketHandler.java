@@ -9,6 +9,10 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.network.packets.*;
+import thaumicenergistics.util.ThELog;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author BrockWS
@@ -42,14 +46,29 @@ public class PacketHandler {
     }
 
     public static void sendToPlayer(EntityPlayerMP player, IMessage message) {
+        if (!(message instanceof PacketVisUpdate)) {
+            ByteBuf buf = Unpooled.buffer();
+            message.toBytes(buf);
+            ThELog.trace("sendToPlayer readableBytes {} | read {} | write {} | message {}", buf.readableBytes(), buf.readerIndex(), buf.writerIndex(), message.getClass().getSimpleName());
+        }
         PacketHandler.INSTANCE.sendTo(message, player);
     }
 
     public static void sendToServer(IMessage message) {
+        if (!(message instanceof PacketVisUpdate)) {
+            ByteBuf buf = Unpooled.buffer();
+            message.toBytes(buf);
+            ThELog.trace("sendToServer readableBytes {} | read {} | write {} | message {}", buf.readableBytes(), buf.readerIndex(), buf.writerIndex(), message.getClass().getSimpleName());
+        }
         PacketHandler.INSTANCE.sendToServer(message);
     }
 
     public static void sendToAll(IMessage message) {
+        if (!(message instanceof PacketVisUpdate)) {
+            ByteBuf buf = Unpooled.buffer();
+            message.toBytes(buf);
+            ThELog.trace("sendToAll readableBytes {} | read {} | write {} | message {}", buf.readableBytes(), buf.readerIndex(), buf.writerIndex(), message.getClass().getSimpleName());
+        }
         PacketHandler.INSTANCE.sendToAll(message);
     }
 }
