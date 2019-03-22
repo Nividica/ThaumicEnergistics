@@ -204,6 +204,8 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
             if (stack != null)
                 ForgeUtil.addStackToPlayerInventory(player, stack.createItemStack(), false);
         } else if (packet.action == ActionType.AUTO_CRAFT) {
+            if (!packet.requestedStack.isCraftable())
+                return;
             GuiHandler.openGUI(ModGUIs.AE2_CRAFT_AMOUNT, player, this.part.getLocation().getPos(), this.part.side);
             if (player.openContainer instanceof ContainerCraftAmountBridge) {
                 ContainerCraftAmountBridge cca = (ContainerCraftAmountBridge) player.openContainer;
