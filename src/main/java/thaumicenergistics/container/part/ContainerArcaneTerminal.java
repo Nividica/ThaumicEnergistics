@@ -20,6 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.PlayerArmorInvWrapper;
@@ -63,6 +64,8 @@ import thaumicenergistics.network.packets.*;
 import thaumicenergistics.part.PartArcaneTerminal;
 import thaumicenergistics.util.*;
 import thaumicenergistics.util.inventory.ThEInternalInventory;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author BrockWS
@@ -424,6 +427,14 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
         crafted.setCount(timesCrafted * crafted.getCount());
         this.onMatrixChanged();
         this.detectAndSendChanges();
+        if (crafted.getCount() > 0) {
+            crafted.onCrafting(this.player.world, this.player, crafted.getCount());
+            FMLCommonHandler.instance().firePlayerCraftingEvent(this.player, crafted, inv);
+
+            if (this.recipe != null && !this.recipe.isDynamic()) {
+                this.player.unlockRecipes(Lists.newArrayList(this.recipe));
+            }
+        }
         return crafted;
     }
 
