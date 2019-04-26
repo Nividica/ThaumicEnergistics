@@ -48,7 +48,7 @@ public class GuiCraftAmountBridge extends GuiCraftAmount {
 
     @Override
     protected void actionPerformed(GuiButton btn) throws IOException {
-        if (btn.displayString.equals(GuiText.Next.getLocal())) {
+        if (btn.displayString.equals(GuiText.Next.getLocal()) || btn.displayString.equals(GuiText.Start.getLocal())) {
             PacketHandler.sendToServer(new PacketCraftRequest(Integer.parseInt(this.craftAmount.getText()), isShiftKeyDown()));
             return;
         }

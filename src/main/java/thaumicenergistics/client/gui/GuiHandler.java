@@ -95,7 +95,7 @@ public class GuiHandler implements IGuiHandler {
             case AE2_CRAFT_AMOUNT:
                 return new ContainerCraftAmountBridge(player.inventory, (ITerminalHost) part);
             case AE2_CRAFT_CONFIRM:
-                return new ContainerCraftConfirmBridge(player.inventory, (ITerminalHost) part);
+                return new ContainerCraftConfirmBridge(player.inventory, (PartArcaneTerminal) part);
             case AE2_CRAFT_STATUS:
                 return new ContainerCraftingStatusBridge(player.inventory, (ITerminalHost) part);
             default:
