@@ -79,8 +79,8 @@ public abstract class ContainerBase extends Container {
         }
         if (slot instanceof SlotArcaneResult && this instanceof ICraftingContainer) {
             ItemStack held = this.player.inventory.getItemStack();
-            if (ForgeUtil.isServer() && (held.isEmpty() || slot.getStack().isItemEqual(held))) {
-                int i = ((ICraftingContainer) this).tryCraft(Math.min(dragType == 1 ? slot.getStack().getMaxStackSize() : 1, slot.getStack().getMaxStackSize() - held.getCount()));
+            if (ForgeUtil.isServer() && (held.isEmpty() || slot.getStack().isItemEqual(held)) && slot.getStack().getMaxStackSize() - held.getCount() >= slot.getStack().getCount()) {
+                int i = ((ICraftingContainer) this).tryCraft(Math.min(dragType == 1 ? slot.getStack().getMaxStackSize() : 1, (slot.getStack().getMaxStackSize() - held.getCount()) / slot.getStack().getCount()));
                 if (i > 0) {
                     ItemStack toCraft = slot.getStack().copy();
                     toCraft.setCount(i);
