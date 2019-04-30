@@ -1,4 +1,11 @@
-﻿2019/03/12 - 2.2.1 - Release
+﻿2019/05/01 - 2.2.2 - Release
+  Compress JEI Packet (#368)
+  Fixed being able to autocraft any item
+  Fixed Autocraft Autostart bug (#373)
+  Fixed firing crafting events (#369)
+  Fixed crafting non-1 stacks (#375)
+
+2019/03/12 - 2.2.1 - Release
   Fixed issue with inserting non-phial items into Essentia Terminal (#366)
   Fixed Tall Terminal Style (#365)
   Minor Research Improvements
