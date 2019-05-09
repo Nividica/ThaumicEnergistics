@@ -1,4 +1,4 @@
-﻿# Creative Tab
+# Creative Tab
 itemGroup.ThaumicEnergistics=Thaumic Energistics
 
 # Блоки
@@ -66,48 +66,48 @@ tc.research_category.THAUMICENERGISTICS=Energistics
 
 # Основы Исследования
 research.base_energistics.title=Thaumic Energistics
-research.base_energistics.stage.1=As both a scientist and an arcane scholar, I have postulated that it must be possible to combine technology and magic in a stable and productive way.<BR>I should study the principals of matter-energy conversion in detail to accomplish this. It is likely there are aspects of Thaumaturgy that can accomplish this, as well as technology capable of doing the same.<BR>This will require extensive study, but I am sure that it will be a worthwhile investment of my time.
+research.base_energistics.stage.1=Как ученый и тайный ученый, я постулировал, что должна быть возможность сочетать технологии и магию стабильным и продуктивным образом.<BR>Я должен изучить принципы преобразования материи в энергию, чтобы добиться этого. Вероятно, есть аспекты тауматургии, которые могут достичь этого, а также технологии, способные сделать то же самое.<BR>Это потребует тщательного изучения, но я уверен, что это будет достойным вложением моего времени.
 
 # Research Digisentia
-research.digisentia.title=Digi-Sentia
-research.digisentia.stage.1=Having discovered how to distill essentia, it occurs to me that I may be able store it digitally.<BR>Examining the §lFormation Core§r and §lAnnihilation Core§r I realize that with some minor modifications they could serve as a means to convert essentia to and from a digital format.<BR>However, due to the corrosive nature of certain types of essentia, a layer of quicksilver around the circuitry is required to prevent decay.
-research.digisentia.stage.2=§lDiffusion Core§r<BR>The relatively high volatility and immense energy in distilled essentia requires that it first be diffused then digitized. A buffer chamber of some kind will likely be required to hold the diffused essentia.<PAGE><LINE>§lCoalescence Core§r<BR>Compresses and binds re-materialized essentia diffusion back into its raw form. A buffer chamber will also likely be needed.
+research.digisentia.title=ЯДРО!
+research.digisentia.stage.1=Обнаружив, как дистиллировать сущность, мне приходит в голову, что я могу сохранить ее в цифровом виде.<BR>Изучение §lФормирование ядра§r и §lядро ​​уничтожения§r Я понимаю, что с некоторыми незначительными изменениями они могли бы служить средством преобразования сущностей в цифровой формат и обратно.<BR>Однако из-за коррозионной природы некоторых типов эссенций, слой ртути вокруг схемы требуется для предотвращения распада.
+research.digisentia.stage.2=§lДиффузионное ядро§r<BR>Относительно высокая летучесть и огромная энергия в дистиллированной эссенции требуют, чтобы она сначала распространялась, а затем оцифровывалась. Буферная камера какого-то типа, вероятно, потребуется для хранения рассеянной эссенции.<PAGE><LINE>§lЯдро коалесценции.§r<BR>Сжимает и связывает повторно материализованную диффузию эссенции обратно в исходную форму. Буферная камера также, вероятно, будет необходима.
 
 # Research Digisentia Storage
 # 1k
-research.essentiastorage1k.title=Digisentia Storage
-research.essentiastorage1k.stage.1=Upon inspecting existing digital storage mediums I have concluded that I can in-fact store digitized essentia.<BR>By infusing §lCertus Quartz§r with §lSalis Mundus§r, it should gain the ability to store the essentia, which remains remarkably active even in digital form.<BR>I theorize that the higher the concentration of §lSalis Mundus§r, the more it should be able to store, although there are inherit limits as to how much the quartz itself can store.
-research.essentiastorage1k.stage.2=I have managed to create a storage device capable of storing a small amount of essentia digitally, maybe I could combine multiple components for increased storage?
+research.essentiastorage1k.title=Хранение эссенции
+research.essentiastorage1k.stage.1=Изучив существующие цифровые носители информации, я пришел к выводу, что я могу фактически хранить оцифрованные сущности.<BR>Вливая §lКристалл истинного кварца§r with §lСалис Мундус§r, он должен получить способность хранить сущность, которая остается удивительно активной даже в цифровом виде.<BR>Я предполагаю, что чем выше концентрация §lСалис Мундус§r, тем более он должен быть в состоянии хранить, хотя есть пределы наследования того, сколько может хранить сам кварц.
+research.essentiastorage1k.stage.2=Мне удалось создать запоминающее устройство, способное хранить небольшое количество сущности в цифровой форме, может быть, я мог бы объединить несколько компонентов для увеличения объема памяти?
 # 4k
-research.essentiastorage4k.title=Bigger Digisentia Storage
-research.essentiastorage4k.stage.1=Maybe I can use some different processing components to combine multiple storage components together
-research.essentiastorage4k.stage.2=I can now store a decent amount of essentia digitally by using some calculation processors to allow the components to talk to each other
+research.essentiastorage4k.title=Большой хранение эссенции
+research.essentiastorage4k.stage.1=Может быть, я могу использовать несколько различных компонентов обработки, чтобы объединить несколько компонентов хранения вместе.
+research.essentiastorage4k.stage.2=Теперь я могу хранить приличное количество эссенции в цифровой форме, используя некоторые вычислительные процессоры, чтобы компоненты могли общаться друг с другом.
 # 16k
-research.essentiastorage16k.title=Larger Digisentia Storage
-research.essentiastorage16k.stage.1=Like I did with my previous attempt to get bigger storage components I can use some high end processors to combine multiple storage components together
-research.essentiastorage16k.stage.2=Using another type of processor, I can now store 16x the amount of essentia on a storage component than when I started with my crude storage system
+research.essentiastorage16k.title=Больше хранение эссенции
+research.essentiastorage16k.stage.1=Как и в предыдущей попытке получить большие компоненты хранения, я могу использовать несколько высокопроизводительных процессоров для объединения нескольких компонентов хранения.
+research.essentiastorage16k.stage.2=Используя другой тип процессора, я теперь могу хранить в 16 раз больше необходимого для компонента хранения, чем при запуске с моей сырой системой хранения.
 # 64k
-research.essentiastorage64k.title=Massive Digisentia Storage
-research.essentiastorage64k.stage.1=My current storage needs are not enough, I hope I can still combine storage components to create a larger one while taking up the same space...
-research.essentiastorage64k.stage.2=I can now store massive amounts of essentia on a storage component, but I feel that this is the limit of the technology
+research.essentiastorage64k.title=Массированный хранение эссенции
+research.essentiastorage64k.stage.1=Мои текущие потребности в хранилище недостаточны, я надеюсь, что я все еще могу объединить компоненты хранилища, чтобы создать больший, занимая то же место ...
+research.essentiastorage64k.stage.2=Теперь я могу хранить огромное количество необходимых компонентов в хранилище, но я чувствую, что это предел технологии.
 
 # Research Essentia Buses
-research.essentiabuses.title=Digisentia Transportation
-research.essentiabuses.stage.1=Now that I can digitize essentia, it's time to put that technology to work
-research.essentiabuses.stage.2=I can now make Essentia Buses
+research.essentiabuses.title=Шина эссенции
+research.essentiabuses.stage.1=Теперь, когда я могу оцифровать основы, пришло время применить эту технологию к работе.
+research.essentiabuses.stage.2=Теперь я могу сделать МЭ Шина экспорта и импорта эссеции, МЭ Шина хранения эссенции.
 
 # Research Essentia Terminal
-research.essentiaterminal.title=Essentia Monitoring
-research.essentiaterminal.stage.1=Now that I can digitize essentia, it's time to put that technology to work
-research.essentiaterminal.stage.2=I can now make Essentia Terminals
+research.essentiaterminal.title=Монитор эссенции
+research.essentiaterminal.stage.1=Теперь, когда я могу оцифровать основы, пришло время применить эту технологию к работе.
+research.essentiaterminal.stage.2=Теперь я могу сделать Терминал эссенции.
 
 # Research Infusion Provider
-research.infusionprovider.title=Infusion Provider
-research.infusionprovider.stage.1=Now that I can digitize essentia, it's time to put that technology to work
-research.infusionprovider.stage.2=I can now make Infusion Provider
+research.infusionprovider.title=Поставщик наполнения эссенции
+research.infusionprovider.stage.1=Теперь, когда я могу оцифровать основы, пришло время применить эту технологию к работе.
+research.infusionprovider.stage.2=Теперь я могу сделать Поставщик наполнения эссенции.
 
 # Research Arcane Crafting Terminal
 research.arcaneterminal.title=Arcane Crafting Terminal
-research.arcaneterminal.stage.1=Maybe I can combine a ME Terminal with a Arcane Workbench to get something that will help me with my arcane endeavours
-research.arcaneterminal.stage.2=I can now make Arcane Crafting Terminal
-research.arcaneterminal.addena.1=I can upgrade my Arcane Crafting Terminal to increase its vis draw range
+research.arcaneterminal.stage.1=Maybe Я могу объединить терминал МЭ с тайным верстаком, чтобы получить что-то, что поможет мне в моих тайных начинаниях.
+research.arcaneterminal.stage.2=Теперь я могу сделать Мистический терминал создания.
+research.arcaneterminal.addena.1=Я могу улучшить свой Мистический терминал создания, чтобы увеличить дальность его прорисовки вис.
