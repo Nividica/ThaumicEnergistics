@@ -1,12 +1,13 @@
 package thaumicenergistics.integration.jei;
 
+import thaumicenergistics.api.ThEApi;
+
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.ingredients.IIngredientBlacklist;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
-
-import thaumicenergistics.api.ThEApi;
 
 /**
  * @author BrockWS
@@ -23,5 +24,9 @@ public class ThEJEI implements IModPlugin {
 
             registry.addRecipeCatalyst(stack, "THAUMCRAFT_ARCANE_WORKBENCH");
         });
+
+        IIngredientBlacklist blacklist = registry.getJeiHelpers().getIngredientBlacklist();
+
+        ThEApi.instance().items().dummyAspect().maybeStack(1).ifPresent(blacklist::addIngredientToBlacklist);
     }
 }
