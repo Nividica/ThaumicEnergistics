@@ -35,6 +35,7 @@ import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.thaumcraft.research.CardTinkerAE;
+import thaumicenergistics.integration.thaumcraft.research.ScanMod;
 import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.ThELog;
 
@@ -66,13 +67,8 @@ public class ThEThaumcraft implements IThEIntegration {
 
         ThELog.info("Registering Research");
         ThaumcraftApi.registerResearchLocation(new ResourceLocation(ModGlobals.MOD_ID, "research/" + ModGlobals.RESEARCH_CATEGORY));
-        Optional<ItemStack> core;
 
-        core = AEApi.instance().definitions().materials().annihilationCore().maybeStack(1);
-        core.ifPresent(itemStack -> ScanningManager.addScannableThing(new ScanItem("f_AECORE", itemStack)));
-
-        core = AEApi.instance().definitions().materials().formationCore().maybeStack(1);
-        core.ifPresent(itemStack -> ScanningManager.addScannableThing(new ScanItem("f_AECORE", itemStack)));
+        ScanningManager.addScannableThing(new ScanMod("f_AECORE", ModGlobals.MOD_ID_AE2));
 
         TheorycraftManager.registerCard(CardTinkerAE.class);
         //if (AEApi.instance().definitions().blocks().controller().maybeEntity().isPresent())
