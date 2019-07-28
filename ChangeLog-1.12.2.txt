@@ -1,4 +1,11 @@
-﻿2019/05/01 - 2.2.2 - Release
+﻿2019/07/28 - 2.2.3 - Release
+  You can now scan any item or block from AE2 to unlock research
+  Added ME Controller as a Research Aid
+  Added Buttons & Scroll to Essentia Terminal
+  Hide Dummy Aspect (#381)
+  Update ru_ru.lang (#376)
+
+2019/05/01 - 2.2.2 - Release
   Compress JEI Packet (#368)
   Fixed being able to autocraft any item
   Fixed Autocraft Autostart bug (#373)
