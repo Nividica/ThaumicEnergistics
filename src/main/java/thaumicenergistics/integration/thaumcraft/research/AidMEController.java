@@ -13,7 +13,7 @@ public class AidMEController implements ITheorycraftAid {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Override
     public Object getAidObject() {
-        return AEApi.instance().definitions().blocks().controller().maybeEntity().get();
+        return AEApi.instance().definitions().blocks().controller().maybeBlock().get();
     }
 
     @SuppressWarnings("unchecked")
