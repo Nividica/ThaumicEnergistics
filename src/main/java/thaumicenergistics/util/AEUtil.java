@@ -63,7 +63,7 @@ public class AEUtil {
         else if (o instanceof IAEEssentiaStack)
             return "Thaumcraft"; // Probably useless
 
-        return rl != null ? rl.getResourceDomain() : "MODIDNOTFOUND";
+        return rl != null ? rl.getNamespace() : "MODIDNOTFOUND";
     }
 
     public static long getStackSize(Object o) {

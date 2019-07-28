@@ -4,6 +4,8 @@ import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.items.IItemHandler;
 
+import thaumicenergistics.init.ModGlobals;
+
 /**
  * @author BrockWS
  */
@@ -20,6 +22,6 @@ public class SlotUpgrade extends ThESlot {
 
     @Override
     public ResourceLocation getBackgroundIcon() {
-        return new ResourceLocation("appliedenergistics2", "textures/guis/states.png");
+        return new ResourceLocation(ModGlobals.MOD_ID_AE2, "textures/guis/states.png");
     }
 }

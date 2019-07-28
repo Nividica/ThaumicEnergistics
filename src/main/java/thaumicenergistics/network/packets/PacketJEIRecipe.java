@@ -40,13 +40,13 @@ public class PacketJEIRecipe implements IMessage {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (tag == null || tag.hasNoTags())
+        if (tag == null || tag.isEmpty())
             ThELog.error("[FROM] TAG HAS NO INFO");
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        if (tag == null || tag.hasNoTags()) {
+        if (tag == null || tag.isEmpty()) {
             ThELog.error("[TO] TAG HAS NO INFO");
             return;
         }

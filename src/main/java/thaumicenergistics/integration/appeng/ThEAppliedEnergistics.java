@@ -17,6 +17,7 @@ import thaumicenergistics.api.EssentiaStack;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
+import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.cell.CreativeEssentiaCellHandler;
 
@@ -54,7 +55,7 @@ public class ThEAppliedEnergistics implements IThEIntegration {
 
     @Override
     public String getModID() {
-        return "appliedenergistics2";
+        return ModGlobals.MOD_ID_AE2;
     }
 
     @Override

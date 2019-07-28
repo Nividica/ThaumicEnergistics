@@ -15,6 +15,7 @@ import thaumicenergistics.client.gui.helpers.MERepo;
 import thaumicenergistics.container.ActionType;
 import thaumicenergistics.container.part.ContainerEssentiaTerminal;
 import thaumicenergistics.container.slot.SlotME;
+import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketUIAction;
 
@@ -87,6 +88,6 @@ public class GuiEssentiaTerminal extends GuiAbstractTerminal<IAEEssentiaStack, I
 
     @Override
     protected ResourceLocation getGuiBackground() {
-        return new ResourceLocation("appliedenergistics2", "textures/guis/terminal.png");
+        return new ResourceLocation(ModGlobals.MOD_ID_AE2, "textures/guis/terminal.png");
     }
 }

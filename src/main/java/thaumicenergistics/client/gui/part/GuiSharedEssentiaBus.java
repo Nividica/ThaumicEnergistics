@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import thaumicenergistics.client.gui.GuiBase;
 import thaumicenergistics.container.part.ContainerSharedEssentiaBus;
 import thaumicenergistics.container.slot.ISlotOptional;
+import thaumicenergistics.init.ModGlobals;
 
 /**
  * @author BrockWS
@@ -71,6 +72,6 @@ public abstract class GuiSharedEssentiaBus extends GuiBase {
 
     @Override
     protected ResourceLocation getGuiBackground() {
-        return new ResourceLocation("appliedenergistics2", "textures/guis/bus.png");
+        return new ResourceLocation(ModGlobals.MOD_ID_AE2, "textures/guis/bus.png");
     }
 }

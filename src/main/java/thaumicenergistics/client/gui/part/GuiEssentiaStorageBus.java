@@ -4,6 +4,7 @@ import net.minecraft.util.ResourceLocation;
 
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.container.part.ContainerEssentiaStorageBus;
+import thaumicenergistics.init.ModGlobals;
 
 /**
  * @author BrockWS
@@ -34,6 +35,6 @@ public class GuiEssentiaStorageBus extends GuiSharedEssentiaBus {
 
     @Override
     protected ResourceLocation getGuiBackground() {
-        return new ResourceLocation("appliedenergistics2", "textures/guis/storagebus.png");
+        return new ResourceLocation(ModGlobals.MOD_ID_AE2, "textures/guis/storagebus.png");
     }
 }

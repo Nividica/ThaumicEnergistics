@@ -42,8 +42,8 @@ public class ItemMaterial extends ItemBase implements IThEModel {
     @Override
     public void initModel() {
         Preconditions.checkNotNull(this.getRegistryName());
-        Preconditions.checkNotNull(this.getRegistryName().getResourcePath());
+        Preconditions.checkNotNull(this.getRegistryName().getPath());
 
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModGlobals.MOD_ID + ":material/" + this.getRegistryName().getResourcePath(), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModGlobals.MOD_ID + ":material/" + this.getRegistryName().getPath(), "inventory"));
     }
 }

@@ -274,7 +274,7 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
         ingredients.forEach(ingredientGroup -> {
             int slot = currentSlot.incrementAndGet();
 
-            if (ingredientGroup == null || ingredientGroup.hasNoTags()) {
+            if (ingredientGroup == null || ingredientGroup.isEmpty()) {
                 // TODO: Probably check if its already in the slot
                 return;
             }

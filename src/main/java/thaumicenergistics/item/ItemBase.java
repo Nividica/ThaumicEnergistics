@@ -15,7 +15,7 @@ public abstract class ItemBase extends Item {
 
     public ItemBase(String id, boolean setCreativeTab) {
         this.setRegistryName(id);
-        this.setUnlocalizedName(ModGlobals.MOD_ID + "." + id);
+        this.setTranslationKey(ModGlobals.MOD_ID + "." + id);
         if (setCreativeTab)
             this.setCreativeTab(ModGlobals.CREATIVE_TAB);
     }

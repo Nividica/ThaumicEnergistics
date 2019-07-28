@@ -23,7 +23,7 @@ public class ThEItemDefinition implements IItemDefinition {
     @Nonnull
     @Override
     public String identifier() {
-        return Objects.requireNonNull(this.item.getRegistryName()).getResourcePath();
+        return Objects.requireNonNull(this.item.getRegistryName()).getPath();
     }
 
     @Override

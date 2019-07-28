@@ -54,7 +54,7 @@ public class ForgeUtil {
     }
 
     public static boolean areNBTTagsEqual(NBTBase a, NBTBase b) {
-        return a == b || (a.hasNoTags() && b.hasNoTags()) || (a.hasNoTags() != b.hasNoTags()) || a.equals(b);
+        return a == b || (a.isEmpty() && b.isEmpty()) || (a.isEmpty() != b.isEmpty()) || a.equals(b);
     }
 
     /**

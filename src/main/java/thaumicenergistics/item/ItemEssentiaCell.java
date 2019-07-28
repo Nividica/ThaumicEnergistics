@@ -92,8 +92,8 @@ public class ItemEssentiaCell extends ItemBase implements IStorageCell<IAEEssent
         Preconditions.checkNotNull(stack);
         Preconditions.checkNotNull(stack.getItem());
         Preconditions.checkNotNull(stack.getItem().getRegistryName());
-        Preconditions.checkNotNull(stack.getItem().getRegistryName().getResourcePath());
-        switch (stack.getItem().getRegistryName().getResourcePath().split("_")[2]) {
+        Preconditions.checkNotNull(stack.getItem().getRegistryName().getPath());
+        switch (stack.getItem().getRegistryName().getPath().split("_")[2]) {
             case "1k":
                 return ThEApi.instance().items().essentiaComponent1k().maybeStack(1);
             case "4k":

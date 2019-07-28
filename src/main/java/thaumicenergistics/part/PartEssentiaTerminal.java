@@ -26,9 +26,9 @@ public class PartEssentiaTerminal extends PartSharedTerminal {
             new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_terminal/base"), // 0
             new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_terminal/on"), // 1
             new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_terminal/off"), // 2
-            new ResourceLocation("appliedenergistics2", "part/display_status_has_channel"), // 3
-            new ResourceLocation("appliedenergistics2", "part/display_status_on"), // 4
-            new ResourceLocation("appliedenergistics2", "part/display_status_off") // 5
+            new ResourceLocation(ModGlobals.MOD_ID_AE2, "part/display_status_has_channel"), // 3
+            new ResourceLocation(ModGlobals.MOD_ID_AE2, "part/display_status_on"), // 4
+            new ResourceLocation(ModGlobals.MOD_ID_AE2, "part/display_status_off") // 5
     };
 
     private static IPartModel MODEL_ON = new ThEPartModel(MODELS[0], MODELS[1], MODELS[4]);

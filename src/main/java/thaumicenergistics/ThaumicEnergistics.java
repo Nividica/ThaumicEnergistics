@@ -1,7 +1,5 @@
 package thaumicenergistics;
 
-import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +26,8 @@ import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.ThELog;
+
+import org.apache.logging.log4j.Logger;
 
 /**
  * <strong>Thaumic Energistics</strong>
@@ -91,8 +91,8 @@ public class ThaumicEnergistics {
         ThEApi.instance()
                 .items()
                 .arcaneTerminal()
-                .maybeStack(1).
-                ifPresent(stack ->
+                .maybeStack(1)
+                .ifPresent(stack ->
                         ThEApi.instance().upgrades().arcaneCharger().registerItem(stack, 1));
 
         ThELog.info("Integrations: Init");

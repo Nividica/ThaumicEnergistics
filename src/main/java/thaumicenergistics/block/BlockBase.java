@@ -17,7 +17,7 @@ public abstract class BlockBase extends Block {
     public BlockBase(String id, Material material) {
         super(material);
         this.setRegistryName(id);
-        this.setUnlocalizedName(ModGlobals.MOD_ID + "." + id);
+        this.setTranslationKey(ModGlobals.MOD_ID + "." + id);
         this.setCreativeTab(ModGlobals.CREATIVE_TAB);
         this.setHardness(1f);
     }

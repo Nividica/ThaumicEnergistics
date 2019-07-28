@@ -40,17 +40,17 @@ public class PartArcaneTerminal extends PartSharedTerminal {
             new ResourceLocation(ModGlobals.MOD_ID, "part/arcane_terminal/base"), // 0
             new ResourceLocation(ModGlobals.MOD_ID, "part/arcane_terminal/on"), // 1
             new ResourceLocation(ModGlobals.MOD_ID, "part/arcane_terminal/off"), // 2
-            new ResourceLocation("appliedenergistics2", "part/display_status_has_channel"), // 3
-            new ResourceLocation("appliedenergistics2", "part/display_status_on"), // 4
-            new ResourceLocation("appliedenergistics2", "part/display_status_off") // 5
+            new ResourceLocation(ModGlobals.MOD_ID_AE2, "part/display_status_has_channel"), // 3
+            new ResourceLocation(ModGlobals.MOD_ID_AE2, "part/display_status_on"), // 4
+            new ResourceLocation(ModGlobals.MOD_ID_AE2, "part/display_status_off") // 5
     };
 
     private static IPartModel MODEL_ON = new ThEPartModel(MODELS[0], MODELS[1], MODELS[4]);
     private static IPartModel MODEL_OFF = new ThEPartModel(MODELS[0], MODELS[2], MODELS[5]);
     private static IPartModel MODEL_HAS_CHANNEL = new ThEPartModel(MODELS[0], MODELS[1], MODELS[3]);
 
-    public ThEInternalInventory craftingInventory;
-    public ThEInternalInventory upgradeInventory;
+    private ThEInternalInventory craftingInventory;
+    private ThEInternalInventory upgradeInventory;
 
     public PartArcaneTerminal(ItemArcaneTerminal item) {
         super(item);

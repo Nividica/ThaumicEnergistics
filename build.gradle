@@ -21,7 +21,7 @@ compileJava {
 minecraft {
     version = "${version_mc}-${version_forge}"
     runDir = "run"
-    mappings = "snapshot_20171003"
+    mappings = "stable_39"
 }
 
 repositories {

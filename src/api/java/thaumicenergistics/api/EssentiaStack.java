@@ -66,7 +66,7 @@ public class EssentiaStack {
     }
 
     public static EssentiaStack readFromNBT(NBTTagCompound tag) {
-        if (tag != null && !tag.hasNoTags()) {
+        if (tag != null && !tag.isEmpty()) {
             EssentiaStack stack = new EssentiaStack();
             stack.read(tag);
             return stack.getAspect() != null && stack.getAmount() > 0 ? stack : null;
