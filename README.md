@@ -1,7 +1,7 @@
 # ThaumicEnergistics
 *Because the digital age could use some magic!*
 
-[![discord]](https://discord.gg/BreEZat)
+[![discord]](https://discord.gg/ywBJYK6)
 [![curseforge-downloads]](https://minecraft.curseforge.com/projects/thaumic-energistics)
 [![curseforge-versions]](https://minecraft.curseforge.com/projects/thaumic-energistics)
 [![build-status]](https://ci.brock.pw/job/Thaumic%20Energistics%20RV6/)
@@ -51,7 +51,7 @@ Code formatting is pretty simple, just keep to defaults. No tabs, use 4 spaces i
 1. Run ./gradlew setupDecompWorkspace build
 2. Your build shall be in build/libs/
 
-[discord]: https://img.shields.io/discord/256692002924527616.svg
+[discord]: https://img.shields.io/discord/564475651222929418
 [build-status]: https://ci.brock.pw/job/Thaumic%20Energistics%20RV6/badge/icon
 [curseforge-downloads]: http://cf.way2muchnoise.eu/thaumic-energistics.svg
 [curseforge-versions]: http://cf.way2muchnoise.eu/versions/thaumic-energistics.svg
