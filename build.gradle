@@ -66,6 +66,9 @@ dependencies {
     runtime("com.brandon3055.brandonscore:BrandonsCore:${version_bc}:universal") {
         transitive = false
     }
+    runtime("curse.maven:codechickenlib:${version_ccl}") {
+        transitive = false
+    }
     runtime("com.brandon3055.projectintelligence:ProjectIntelligence:${version_pi}:universal") {
         transitive = false
     }
