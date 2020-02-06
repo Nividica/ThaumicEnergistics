@@ -12,7 +12,7 @@ buildscript {
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
-        classpath "com.wynprice.cursemaven:CurseMaven:1.1.0"
+        classpath "com.wynprice.cursemaven:CurseMaven:2.1.0"
     }
 }
 apply plugin: "net.minecraftforge.gradle.forge"
@@ -50,14 +50,14 @@ repositories {
 
 dependencies {
     provided "mezz.jei:jei_${version_jei}:api"
-    deobfCompile(curse.resolve("baubles", "${version_ba}"))
-    deobfCompile(curse.resolve("thaumcraft", "${version_tc}"))
+    deobfCompile("curse.maven:baubles:${version_ba}")
+    deobfCompile("curse.maven:thaumcraft:${version_tc}")
     deobfCompile("appeng:appliedenergistics2:${version_ae2}") {
         transitive = false
     }
     // Testing mods
     runtime "mezz.jei:jei_${version_jei}"
-    runtime(curse.resolve("thaumic-jei", "${version_tjei}")) {
+    runtime("curse.maven:thaumic-jei:${version_tjei}") {
         transitive = false
     }
     runtime("cofh:RedstoneFlux:${version_rf}:universal") {
