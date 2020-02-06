@@ -104,9 +104,12 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
 
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, Vec3d vec3d) {
-        if (ForgeUtil.isClient() || (player.isSneaking() && AEUtil.isWrench(player.getHeldItem(hand), player, this.getTile().getPos())))
+        if ((player.isSneaking() && AEUtil.isWrench(player.getHeldItem(hand), player, this.getTile().getPos())))
             return false;
-        GuiHandler.openGUI(ModGUIs.ESSENTIA_IMPORT_BUS, player, this.hostTile.getPos(), this.side);
+
+        if (ForgeUtil.isServer())
+            GuiHandler.openGUI(ModGUIs.ESSENTIA_IMPORT_BUS, player, this.hostTile.getPos(), this.side);
+
         return true;
     }
 
