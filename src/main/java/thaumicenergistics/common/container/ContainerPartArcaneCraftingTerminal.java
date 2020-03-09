@@ -519,37 +519,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 */
 	private boolean doStacksMatch( final IAEItemStack keyStack, final IAEItemStack potentialMatch )
 	{
-		// Do the stacks directly match?
-		if( keyStack.getItemStack().isItemEqual( potentialMatch.getItemStack() ) )
-		{
-			return true;
-		}
-
-		// No direct match, see if they match via the ore dictionary
-
-		// Get the ore dictionary Id's
-		int[] keyIDs = OreDictionary.getOreIDs( keyStack.getItemStack() );
-		int[] matchIDs = OreDictionary.getOreIDs( potentialMatch.getItemStack() );
-
-		// Is either item not registered?
-		if( ( keyIDs.length == 0 ) || ( matchIDs.length == 0 ) )
-		{
-			return false;
-		}
-
-		// Do the keys match?
-		for( int keyID : keyIDs )
-		{
-			for( int matchID : matchIDs )
-			{
-				if( keyID == matchID )
-				{
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return keyStack.isSameType(potentialMatch) || keyStack.sameOre(potentialMatch);
 	}
 
 	/**
@@ -1327,7 +1297,7 @@ public class ContainerPartArcaneCraftingTerminal
 			if( cursorStack != null )
 			{
 				// Items are the same?
-				if( !cursorStack.isItemEqual( requestStack ) )
+				if( !cursorStack.isItemEqual( requestStack ) || !ItemStack.areItemStackTagsEqual(cursorStack, requestStack) )
 				{
 					// Item player is holding doesn't match the request
 					return;
