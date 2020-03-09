@@ -217,7 +217,7 @@ public abstract class ContainerWithPlayerInventory
 	 *
 	 * @param playerInventory
 	 * Inventory to bind
-	 * @param indexOffset
+	 * @param inventoryOffsetY
 	 * The Y position offset for the slots
 	 * @param hotbarPositionY
 	 * The Y position offset for hotbar slots
@@ -311,7 +311,7 @@ public abstract class ContainerWithPlayerInventory
 			{
 				ItemStack slotStack = slot.getStack();
 				// Same items, and room?
-				if( ( slotStack.stackSize < slotStack.getMaxStackSize() ) && slotStack.isItemEqual( stack ) )
+				if( ( slotStack.stackSize < slotStack.getMaxStackSize() ) && slotStack.isItemEqual( stack ) && ItemStack.areItemStackTagsEqual(slotStack, stack))
 				{
 					// Found merge slot
 					return slot;
