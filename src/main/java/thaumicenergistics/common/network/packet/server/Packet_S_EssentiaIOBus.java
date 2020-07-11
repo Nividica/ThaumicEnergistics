@@ -17,7 +17,7 @@ import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
 public class Packet_S_EssentiaIOBus
 	extends ThEServerPacket
 {
-	private static final byte MODE_REQUEST_FULL_UPDATE = 0, MODE_REQUEST_CHANGE_REDSTONE_MODE = 1, MODE_REQUEST_CHANGE_VOID_MODE = 2;
+	private static final byte MODE_REQUEST_FULL_UPDATE = 0, MODE_REQUEST_CHANGE_REDSTONE_MODE = 1, MODE_REQUEST_CHANGE_VOID_MODE = 2, MODE_REQUEST_CHANGE_CRAFTING_MODE = 3;
 
 	private ThEPartEssentiaIOBus_Base part;
 
@@ -57,6 +57,19 @@ public class Packet_S_EssentiaIOBus
 	}
 
 	/**
+	 * Sends a request to the server to change the crafting mode.
+	 *
+	 * @param player
+	 * @param part
+	 * @return
+	 */
+	public static void sendCraftingModeChange( final EntityPlayer player, final ThEPartEssentiaIOBus_Base part )
+	{
+		NetworkHandler.sendPacketToServer( newPacket( player, MODE_REQUEST_CHANGE_CRAFTING_MODE, part ) );
+	}
+
+
+	/**
 	 * Sends a request to the server for a full update of the buses state.
 	 *
 	 * @param player
@@ -65,10 +78,7 @@ public class Packet_S_EssentiaIOBus
 	 */
 	public static void sendRequestFilterList( final EntityPlayer player, final ThEPartEssentiaIOBus_Base part )
 	{
-		Packet_S_EssentiaIOBus packet = newPacket( player, MODE_REQUEST_FULL_UPDATE, part );
-
-		// Send it
-		NetworkHandler.sendPacketToServer( packet );
+		NetworkHandler.sendPacketToServer( newPacket( player, MODE_REQUEST_FULL_UPDATE, part ) );
 	}
 
 	/**
@@ -80,10 +90,7 @@ public class Packet_S_EssentiaIOBus
 	 */
 	public static void sendVoidModeChange( final EntityPlayer player, final PartEssentiaExportBus part )
 	{
-		Packet_S_EssentiaIOBus packet = newPacket( player, MODE_REQUEST_CHANGE_VOID_MODE, part );
-
-		// Send it
-		NetworkHandler.sendPacketToServer( packet );
+		NetworkHandler.sendPacketToServer( newPacket( player, MODE_REQUEST_CHANGE_VOID_MODE, part ) );
 	}
 
 	@Override
@@ -98,16 +105,22 @@ public class Packet_S_EssentiaIOBus
 
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
 			// Request a redstone mode change
-			this.part.onClientRequestChangeRedstoneMode( this.player );
+			this.part.onClientRequestChangeRedstoneMode();
 			break;
 
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
 			// Request a void mode change
 			if( this.part instanceof PartEssentiaExportBus )
 			{
-				( (PartEssentiaExportBus)this.part ).toggleVoidMode( this.player );
+				( (PartEssentiaExportBus)this.part ).toggleVoidMode();
 			}
 			break;
+			case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_CRAFTING_MODE:
+				if( this.part instanceof PartEssentiaExportBus )
+				{
+					( (PartEssentiaExportBus)this.part ).toggleCraftingMode();
+				}
+				break;
 		}
 	}
 
@@ -119,6 +132,7 @@ public class Packet_S_EssentiaIOBus
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
+		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_CRAFTING_MODE:
 			// Read the part
 			this.part = ( (ThEPartEssentiaIOBus_Base)ThEBasePacket.readPart( stream ) );
 			break;
@@ -133,6 +147,7 @@ public class Packet_S_EssentiaIOBus
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_FULL_UPDATE:
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_REDSTONE_MODE:
 		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_VOID_MODE:
+		case Packet_S_EssentiaIOBus.MODE_REQUEST_CHANGE_CRAFTING_MODE:
 			// Write the part
 			ThEBasePacket.writePart( this.part, stream );
 			break;

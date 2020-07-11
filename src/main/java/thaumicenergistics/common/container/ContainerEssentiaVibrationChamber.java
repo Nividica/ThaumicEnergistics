@@ -11,6 +11,8 @@ import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
 
+import javax.annotation.Nonnull;
+
 /**
  * {@link TileVibrationChamber} container.
  *
@@ -224,7 +226,7 @@ public class ContainerEssentiaVibrationChamber
 	}
 
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void onContainerClosed(@Nonnull final EntityPlayer player )
 	{
 		// Call super
 		super.onContainerClosed( player );

@@ -28,13 +28,13 @@ apply plugin: 'java'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = "1.1.3.2"
+version = "1.1.3.3"
 group= "thaumicenergistics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "thaumicenergistics"
 
 minecraft {
     version = "1.7.10-10.13.4.1614-1.7.10"
-    runDir = "eclipse/assets"
+    runDir = "run"
 }
 
 repositories {
@@ -58,21 +58,9 @@ repositories {
 
 dependencies {
     compile "mcp.mobius.waila:Waila:1.5.10_1.7.10"
-    compile "net.industrial-craft:industrialcraft-2:2.2.726-experimental:api"
+    compile "net.industrial-craft:industrialcraft-2:2.2.828-experimental:api"
     compile "thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev"
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    compileOnly "codechicken:CodeChickenCore:1.7.10-1.0.7.47:dev"
 }
 
 processResources

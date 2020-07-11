@@ -12,6 +12,8 @@ import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
 import thaumicenergistics.common.utils.EffectiveSide;
 
+import javax.annotation.Nonnull;
+
 /**
  * {@link TileEssentiaCellWorkbench} container.
  *
@@ -91,7 +93,7 @@ public class ContainerEssentiaCellWorkbench
 	}
 
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void onContainerClosed(@Nonnull final EntityPlayer player )
 	{
 		// Call super
 		super.onContainerClosed( player );

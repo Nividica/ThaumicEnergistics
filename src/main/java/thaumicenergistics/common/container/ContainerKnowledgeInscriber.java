@@ -28,6 +28,8 @@ import thaumicenergistics.common.network.packet.client.Packet_C_KnowledgeInscrib
 import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
 import thaumicenergistics.common.utils.EffectiveSide;
 
+import javax.annotation.Nonnull;
+
 /**
  * {@link TileKnowledgeInscriber} container.
  *
@@ -414,7 +416,7 @@ public class ContainerKnowledgeInscriber
 	 * @return
 	 */
 	@Override
-	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
+	protected boolean detectAndSendChangesMP(@Nonnull final EntityPlayerMP playerMP )
 	{
 		// Has a core changed?
 		if( !this.kCoreHandler.isHandlingCore( this.kCoreSlot.getStack() ) )

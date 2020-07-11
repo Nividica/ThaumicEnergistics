@@ -11,6 +11,8 @@ import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaStorageBus;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
+import javax.annotation.Nonnull;
+
 /**
  * {@link PartEssentiaStorageBus} container.
  *
@@ -83,7 +85,7 @@ public class ContainerPartEssentiaStorageBus
 	}
 
 	@Override
-	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
+	protected boolean detectAndSendChangesMP(@Nonnull final EntityPlayerMP playerMP )
 	{
 		// Has the filtered list changed?
 		boolean updateFilters = false;

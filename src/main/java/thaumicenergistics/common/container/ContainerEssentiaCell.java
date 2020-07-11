@@ -35,6 +35,8 @@ import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerm
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
 
+import javax.annotation.Nonnull;
+
 /**
  * Inventory container for essentia cells in a ME chest.
  *
@@ -323,7 +325,7 @@ public class ContainerEssentiaCell
 	 * Drops any items in the import and export inventory.
 	 */
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void onContainerClosed(@Nonnull final EntityPlayer player )
 	{
 		// Drop anything in the work slots.
 		if( EffectiveSide.isServerSide() )

@@ -277,7 +277,7 @@ public class ContainerWirelessEssentiaTerminal
 	 * Drops any items in the import and export inventory.
 	 */
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void onContainerClosed(@Nonnull final EntityPlayer player )
 	{
 		super.onContainerClosed( player );
 

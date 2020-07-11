@@ -13,6 +13,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSlotGui;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
 import thaumicenergistics.client.gui.buttons.GuiButtonAllowVoid;
+import thaumicenergistics.client.gui.buttons.GuiButtonCraftingMode;
 import thaumicenergistics.client.gui.buttons.GuiButtonRedstoneModes;
 import thaumicenergistics.client.gui.widget.ThEWidget;
 import thaumicenergistics.client.gui.widget.WidgetAspectSlot;
@@ -105,6 +106,8 @@ public class GuiEssentiaIO
 	 */
 	private static final int ALLOW_VOID_BUTTON_POS_Y = 2, ALLOW_VOID_BUTTON_POS_X = -19, ALLOW_VOID_BUTTON_ID = 1;
 
+	private static final int CRAFTING_MODE_BUTTON_POS_Y = 40, CRAFTING_MODE_BUTTON_POS_X = -18, CRAFTING_MODE_BUTTON_ID = 2;
+
 	/**
 	 * The part associated with this gui.
 	 */
@@ -154,6 +157,11 @@ public class GuiEssentiaIO
 	 * Button controlling if voiding is allowed.
 	 */
 	private GuiButtonAllowVoid voidModeButton = null;
+
+	/**
+	 * Shown when the bus has crafting card
+	 */
+	private GuiButtonCraftingMode craftingModeButton = null;
 
 	/**
 	 * Creates the gui
@@ -325,6 +333,13 @@ public class GuiEssentiaIO
 				Packet_S_EssentiaIOBus.sendVoidModeChange( this.player, (PartEssentiaExportBus)this.part );
 			}
 		}
+		else if( button.id == GuiEssentiaIO.CRAFTING_MODE_BUTTON_ID )
+		{
+			if( this.part instanceof PartEssentiaExportBus )
+			{
+				Packet_S_EssentiaIOBus.sendCraftingModeChange( this.player, this.part );
+			}
+		}
 	}
 
 	@Override
@@ -372,11 +387,12 @@ public class GuiEssentiaIO
 			this.voidModeButton = new GuiButtonAllowVoid( GuiEssentiaIO.ALLOW_VOID_BUTTON_ID, this.guiLeft + GuiEssentiaIO.ALLOW_VOID_BUTTON_POS_X,
 							this.guiTop + GuiEssentiaIO.ALLOW_VOID_BUTTON_POS_Y );
 			this.buttonList.add( this.voidModeButton );
+
+			craftingModeButton = new GuiButtonCraftingMode(CRAFTING_MODE_BUTTON_ID, this.guiLeft +CRAFTING_MODE_BUTTON_POS_X,  this.guiTop + CRAFTING_MODE_BUTTON_POS_Y, 16, 16);
 		}
 
 		// Request a full update from the server
 		Packet_S_EssentiaIOBus.sendRequestFilterList( this.player, this.part );
-
 	}
 
 	/**
@@ -391,13 +407,9 @@ public class GuiEssentiaIO
 
 		this.filterSize = filterSize;
 
-		for( int i = 0; i < this.aspectSlotList.size(); i++ )
-		{
-			WidgetAspectSlot slot = this.aspectSlotList.get( i );
-
-			if( !slot.canRender() )
-			{
-				slot.setAspect( null );
+		for (WidgetAspectSlot slot : this.aspectSlotList) {
+			if (!slot.canRender()) {
+				slot.setAspect(null);
 			}
 
 		}
@@ -444,6 +456,24 @@ public class GuiEssentiaIO
 		this.redstoneMode = redstoneMode;
 	}
 
+	public void onReceiveHasCrafting( final boolean hasCrafting )
+	{
+		if (hasCrafting && !buttonList.contains(craftingModeButton))
+		{
+			buttonList.add(craftingModeButton);
+		}
+		else if (!hasCrafting && buttonList.contains(craftingModeButton))
+		{
+			buttonList.remove(craftingModeButton);
+		}
+	}
+	public void onReceiveCraftingOnly( final boolean craftingOnly )
+	{
+		if (craftingModeButton != null)
+		{
+			craftingModeButton.setAlwaysCraft(craftingOnly);
+		}
+	}
 	/**
 	 * Called when the server sends the void mode status
 	 *

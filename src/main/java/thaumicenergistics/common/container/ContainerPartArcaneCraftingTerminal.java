@@ -50,6 +50,8 @@ import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
 
+import javax.annotation.Nonnull;
+
 /**
  * {@link PartArcaneCraftingTerminal} container.
  *
@@ -802,7 +804,7 @@ public class ContainerPartArcaneCraftingTerminal
 	}
 
 	@Override
-	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
+	protected boolean detectAndSendChangesMP(@Nonnull final EntityPlayerMP playerMP )
 	{
 		boolean sendModeUpdate = false;
 
@@ -1416,7 +1418,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 * Unregister this container
 	 */
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void onContainerClosed(@Nonnull final EntityPlayer player )
 	{
 		// Pass to super
 		super.onContainerClosed( player );

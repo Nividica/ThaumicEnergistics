@@ -12,6 +12,8 @@ import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaEmitter;
 import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
 
+import javax.annotation.Nonnull;
+
 /**
  * Inventory container for essentia emitter.
  *
@@ -71,7 +73,7 @@ public class ContainerPartEssentiaLevelEmitter
 	}
 
 	@Override
-	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
+	protected boolean detectAndSendChangesMP(@Nonnull final EntityPlayerMP playerMP )
 	{
 		// Threshold
 		if( this.thresholdLevel != this.emitter.getThresholdLevel() )

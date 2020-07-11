@@ -198,7 +198,7 @@ public class PartEssentiaStorageMonitor
 	/**
 	 * How much power does the monitor require?
 	 */
-	private static final double IDLE_DRAIN = 0.0625;
+	private static final double IDLE_DRAIN = 0.5;
 
 	/**
 	 * NBT Keys

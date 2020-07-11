@@ -29,13 +29,15 @@ public class Packet_C_EssentiaIOBus
 					MODE_SET_REDSTONE_MODE = 1,
 					MODE_SET_FILTER_SIZE = 2,
 					MODE_SEND_FULL_UPDATE = 3,
-					MODE_SEND_VOID_MODE = 4;
+					MODE_SEND_VOID_MODE = 4,
+					MODE_SEND_HAS_CRAFTINFG = 5,
+					MODE_SET_CRAFTING_MODE = 6;
 
 	private RedstoneMode redstoneMode;
 
 	private byte filterSize;
 
-	private boolean redstoneControlled, isVoidAllowed;
+	private boolean redstoneControlled, isVoidAllowed, hasCraftingCard, craftingOnly;
 
 	/**
 	 * Creates the packet
@@ -57,7 +59,7 @@ public class Packet_C_EssentiaIOBus
 	}
 
 	public static void sendBusState(	final EntityPlayer player, final RedstoneMode redstoneMode, final byte filterSize,
-										final boolean redstoneControlled )
+										final boolean redstoneControlled, final boolean hasCraftingCard, final boolean isCraftingOnly )
 	{
 		Packet_C_EssentiaIOBus packet = newPacket( player, MODE_SEND_FULL_UPDATE );
 
@@ -69,6 +71,8 @@ public class Packet_C_EssentiaIOBus
 
 		// Set controlled
 		packet.redstoneControlled = redstoneControlled;
+		packet.hasCraftingCard = hasCraftingCard;
+		packet.craftingOnly = isCraftingOnly;
 
 		// Send it
 		NetworkHandler.sendPacketToClient( packet );
@@ -111,6 +115,17 @@ public class Packet_C_EssentiaIOBus
 		NetworkHandler.sendPacketToClient( packet );
 	}
 
+	public static void sendHasCraftingCard( final EntityPlayer player, final boolean hasCraftingCard )
+	{
+		Packet_C_EssentiaIOBus packet = newPacket( player, MODE_SEND_HAS_CRAFTINFG );
+
+		// Set controlled
+		packet.hasCraftingCard = hasCraftingCard;
+
+		// Send it
+		NetworkHandler.sendPacketToClient( packet );
+	}
+
 	/**
 	 * Create a packet to update the clients redstone mode.
 	 *
@@ -146,6 +161,18 @@ public class Packet_C_EssentiaIOBus
 		// Send it
 		NetworkHandler.sendPacketToClient( packet );
 	}
+
+	public static void sendCraftingMode( final EntityPlayer player, final boolean isCraftingOnly )
+	{
+		Packet_C_EssentiaIOBus packet = newPacket( player, MODE_SET_CRAFTING_MODE );
+
+		// Set the void mode
+		packet.craftingOnly = isCraftingOnly;
+
+		// Send it
+		NetworkHandler.sendPacketToClient( packet );
+	}
+
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -186,12 +213,23 @@ public class Packet_C_EssentiaIOBus
 
 			// Set filter size
 			( (GuiEssentiaIO)gui ).onReceiveFilterSize( this.filterSize );
+			( (GuiEssentiaIO)gui ).onReceiveHasCrafting(this.hasCraftingCard);
+			( (GuiEssentiaIO)gui ).onReceiveCraftingOnly(this.craftingOnly);
 			break;
 
 		case Packet_C_EssentiaIOBus.MODE_SEND_VOID_MODE:
 			// Set void mode
 			( (GuiEssentiaIO)gui ).onServerSendVoidMode( this.isVoidAllowed );
 			break;
+
+			case Packet_C_EssentiaIOBus.MODE_SET_CRAFTING_MODE:
+				( (GuiEssentiaIO)gui ).onReceiveCraftingOnly(this.craftingOnly);
+				break;
+
+			case Packet_C_EssentiaIOBus.MODE_SEND_HAS_CRAFTINFG:
+				( (GuiEssentiaIO)gui ).onReceiveHasCrafting(this.hasCraftingCard);
+				break;
+
 		}
 	}
 
@@ -224,12 +262,23 @@ public class Packet_C_EssentiaIOBus
 
 			// Read the filter size
 			this.filterSize = stream.readByte();
+
+			this.hasCraftingCard = stream.readBoolean();
+			this.craftingOnly = stream.readBoolean();
 			break;
 
 		case Packet_C_EssentiaIOBus.MODE_SEND_VOID_MODE:
 			// Read void mode
 			this.isVoidAllowed = stream.readBoolean();
 			break;
+
+			case Packet_C_EssentiaIOBus.MODE_SET_CRAFTING_MODE:
+				this.craftingOnly = stream.readBoolean();
+				break;
+
+			case Packet_C_EssentiaIOBus.MODE_SEND_HAS_CRAFTINFG:
+				this.hasCraftingCard = stream.readBoolean();
+				break;
 		}
 	}
 
@@ -262,6 +311,9 @@ public class Packet_C_EssentiaIOBus
 
 			// Write the filter size
 			stream.writeByte( this.filterSize );
+
+			stream.writeBoolean(this.hasCraftingCard);
+			stream.writeBoolean(this.craftingOnly);
 			break;
 
 		case Packet_C_EssentiaIOBus.MODE_SEND_VOID_MODE:
@@ -269,6 +321,13 @@ public class Packet_C_EssentiaIOBus
 			stream.writeBoolean( this.isVoidAllowed );
 			break;
 
+			case Packet_C_EssentiaIOBus.MODE_SET_CRAFTING_MODE:
+				stream.writeBoolean(this.craftingOnly);
+				break;
+
+			case Packet_C_EssentiaIOBus.MODE_SEND_HAS_CRAFTINFG:
+				stream.writeBoolean(this.hasCraftingCard);
+				break;
 		}
 	}
 

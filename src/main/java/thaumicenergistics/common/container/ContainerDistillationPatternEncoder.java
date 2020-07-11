@@ -351,7 +351,7 @@ public class ContainerDistillationPatternEncoder
 	}
 
 	@Override
-	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
+	protected boolean detectAndSendChangesMP(@Nonnull final EntityPlayerMP playerMP )
 	{
 		// Does the pattern slot need to be sync'd?
 		if( this.slotPatternEncoded.getStack() != this.cachedPattern )
