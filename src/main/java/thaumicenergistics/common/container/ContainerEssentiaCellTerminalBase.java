@@ -1,6 +1,7 @@
 package thaumicenergistics.common.container;
 
 import java.util.Collection;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import appeng.api.config.Actionable;
@@ -469,7 +470,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 	 * If there is it does so.
 	 */
 	@Override
-	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
+	protected boolean detectAndSendChangesMP(@Nonnull final EntityPlayerMP playerMP )
 	{
 		// Compare selected aspects
 		if( this.getHostSelectedAspect() != this.selectedAspect )
@@ -815,7 +816,7 @@ public abstract class ContainerEssentiaCellTerminalBase
 	 * Unregister this container from the monitor.
 	 */
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void onContainerClosed(@Nonnull final EntityPlayer player )
 	{
 		// Call super
 		super.onContainerClosed( player );

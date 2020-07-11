@@ -27,7 +27,7 @@ public enum AEPartsEnum
 		EssentiaStorageBus (ThEStrings.Part_EssentiaStorageBus, PartEssentiaStorageBus.class, null, generatePair( Upgrades.INVERTER, 1 )),
 
 		EssentiaExportBus (ThEStrings.Part_EssentiaExportBus, PartEssentiaExportBus.class, ThaumicEnergistics.MOD_ID + ".group.essentia.transport",
-			generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 )),
+			generatePair( Upgrades.CAPACITY, 2 ), generatePair( Upgrades.REDSTONE, 1 ), generatePair( Upgrades.SPEED, 2 ), generatePair( Upgrades.CRAFTING, 1 )),
 
 		EssentiaTerminal (ThEStrings.Part_EssentiaTerminal, PartEssentiaTerminal.class),
 

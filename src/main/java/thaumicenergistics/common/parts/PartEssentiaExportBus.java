@@ -1,10 +1,19 @@
 package thaumicenergistics.common.parts;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingLink;
+import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
+import appeng.api.storage.data.IAEItemStack;
+import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -19,6 +28,9 @@ import thaumcraft.common.tiles.TileJarFillableVoid;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
+import thaumicenergistics.common.items.ItemCraftingAspect;
+import thaumicenergistics.common.items.ItemEnum;
+import thaumicenergistics.implementaion.ThEMultiCraftingTracker;
 
 /**
  * Exports essentia into {@link IAspectContainer}
@@ -28,18 +40,22 @@ import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
  */
 public class PartEssentiaExportBus
 	extends ThEPartEssentiaIOBus_Base
+		implements ICraftingRequester
 {
-
+	private final ThEMultiCraftingTracker craftingTracker = new ThEMultiCraftingTracker( this, 9 );
 	private static final String NBT_KEY_VOID = "IsVoidAllowed";
+	private final BaseActionSource mySrc;
 
 	/**
 	 * If true, excess essentia will be voided when facing a void jar.
 	 */
 	private boolean isVoidAllowed = false;
+	private boolean isCraftingOnly = false;
 
 	public PartEssentiaExportBus()
 	{
 		super( AEPartsEnum.EssentiaExportBus, SecurityPermissions.EXTRACT );
+		this.mySrc = new MachineSource( this );
 	}
 
 	@Override
@@ -69,8 +85,9 @@ public class PartEssentiaExportBus
 		}
 
 		// Loop over all aspect filters
-		for( Aspect filterAspect : this.filteredAspects )
+		for(int slot = 0; slot < filteredAspects.size(); ++slot )
 		{
+			Aspect filterAspect = filteredAspects.get(slot);
 			// Can we transfer?
 			if( filterAspect == null )
 			{
@@ -95,6 +112,11 @@ public class PartEssentiaExportBus
 			{
 				return false;
 			}
+			if (isCraftingOnly())
+			{
+				handleCratting(amountToFillContainer, slot, filterAspect);
+				continue;
+			}
 
 			// Simulate a network extraction
 			long extractedAmount = essMonitor.extractEssentia( filterAspect, amountToFillContainer, Actionable.SIMULATE, this.asMachineSource, true );
@@ -102,23 +124,15 @@ public class PartEssentiaExportBus
 			// Was any extracted?
 			if( extractedAmount <= 0 )
 			{
+				if (hasCraftingCard)
+				{
+					handleCratting(amountToFillContainer, slot, filterAspect);
+				}
 				// Unable to extract from network
 				continue;
 			}
 
-			long filledAmount = 0;
-			if( this.isVoidAllowed && ( this.facingContainer instanceof TileJarFillableVoid ) )
-			{
-				// In void mode, we don't care if the jar can hold it or not.
-				filledAmount = extractedAmount;
-			}
-			else
-			{
-				// Simulate filling the container
-				filledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer( this.facingContainer, (int)extractedAmount,
-					filterAspect, Actionable.SIMULATE );
-			}
-
+			long filledAmount = injectAspect(Actionable.MODULATE, filterAspect, extractedAmount);
 			// Was the container filled?
 			if( filledAmount <= 0 )
 			{
@@ -126,24 +140,19 @@ public class PartEssentiaExportBus
 				continue;
 			}
 
-			// Fill the container
-			long actualFilledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer( this.facingContainer, (int)filledAmount,
-				filterAspect, Actionable.MODULATE );
-
-			// Is voiding not allowed?
-			if( !this.isVoidAllowed )
-			{
-				filledAmount = actualFilledAmount;
-			}
-
-			// Take essentia from the network
-			essMonitor.extractEssentia( filterAspect, filledAmount, Actionable.MODULATE, this.asMachineSource, true );
-
 			// Done
 			return true;
 		}
 
 		return false;
+	}
+
+	private void handleCratting(int amountToFillContainer, int slot, Aspect filterAspect)
+	{
+		IGrid grid = getGridNode().getGrid();
+		final ICraftingGrid cg = grid.getCache(ICraftingGrid.class);
+		IAEItemStack result = AEApi.instance().storage().createItemStack(ItemCraftingAspect.createStackForAspect(filterAspect, amountToFillContainer));
+		this.craftingTracker.handleCrafting(slot, amountToFillContainer, result, getHostTile().getWorldObj(), grid, cg, this.mySrc);
 	}
 
 	@Override
@@ -177,6 +186,15 @@ public class PartEssentiaExportBus
 	}
 
 	@Override
+	public boolean isCraftingOnly()	{ return isCraftingOnly; }
+
+	@Override
+	public void setCraftingOnly(boolean c)
+	{
+		isCraftingOnly = c;
+	}
+
+	@Override
 	public void onClientRequestFilterList( final EntityPlayer player )
 	{
 		// Call super
@@ -193,6 +211,11 @@ public class PartEssentiaExportBus
 		if( data.hasKey( PartEssentiaExportBus.NBT_KEY_VOID ) )
 		{
 			this.isVoidAllowed = data.getBoolean( PartEssentiaExportBus.NBT_KEY_VOID );
+		}
+		this.craftingTracker.readFromNBT( data );
+		if	(data.hasKey("isCraftingOnly"))
+		{
+			isCraftingOnly = data.getBoolean("isCraftingOnly");
 		}
 	}
 
@@ -320,10 +343,14 @@ public class PartEssentiaExportBus
 	/**
 	 * Called when a player has requested to change the void mode
 	 */
-	public void toggleVoidMode( final EntityPlayer player )
+	public void toggleVoidMode()
 	{
 		// Swap void modes
 		this.isVoidAllowed = !this.isVoidAllowed;
+	}
+	public void toggleCraftingMode()
+	{
+		isCraftingOnly = !isCraftingOnly;
 	}
 
 	@Override
@@ -348,10 +375,75 @@ public class PartEssentiaExportBus
 		}
 
 		// Write void
-		if( doSave && this.isVoidAllowed )
+		if (doSave)
 		{
-			data.setBoolean( PartEssentiaExportBus.NBT_KEY_VOID, this.isVoidAllowed );
+			data.setBoolean( PartEssentiaExportBus.NBT_KEY_VOID, isVoidAllowed );
+			this.craftingTracker.writeToNBT(data);
+			data.setBoolean( "isCraftingOnly", isCraftingOnly );
 		}
 	}
+	@Override
+	public ImmutableSet<ICraftingLink> getRequestedJobs()
+	{
+		return this.craftingTracker.getRequestedJobs();
+	}
+	@Override
+	public IAEItemStack injectCraftedItems(final ICraftingLink link, final IAEItemStack items, final Actionable mode )
+	{
+		if (getGridNode().isActive() && ItemEnum.CRAFTING_ASPECT.getItem() == items.getItem())
+		{
+			Aspect a = ItemCraftingAspect.getAspect(items.getItemStack());
+			if (a != null)
+			{
+				long toFill = items.getStackSize();
+				long filledAmount = injectAspect(mode, a, toFill);
+				IAEItemStack c = items.copy();
+				c.setStackSize(toFill - filledAmount);
+				return c;
+			}
+		}
+		return items;
+	}
 
+	private long injectAspect(Actionable mode, Aspect a, long extractedAmount) {
+		long filledAmount;
+		if( this.isVoidAllowed && ( this.facingContainer instanceof TileJarFillableVoid) )
+		{
+			// In void mode, we don't care if the jar can hold it or not.
+			filledAmount = extractedAmount;
+		}
+		else
+		{
+			// Simulate filling the container
+			filledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer( this.facingContainer, (int)extractedAmount,
+					a, Actionable.SIMULATE );
+		}
+
+		// Was the container filled?
+		if( filledAmount <= 0 )
+		{
+			// Unable to inject into container
+			return 0;
+		}
+
+		if (mode == Actionable.MODULATE) {
+			// Fill the container
+			long actualFilledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer(this.facingContainer, (int) filledAmount,
+					a, Actionable.MODULATE);
+
+			// Is voiding not allowed?
+			if (!this.isVoidAllowed) {
+				filledAmount = actualFilledAmount;
+			}
+			// Take essentia from the network always (because redesigning GridEssentiaCache is too much pain)
+			getGridBlock().getEssentiaMonitor().extractEssentia( a, filledAmount, Actionable.MODULATE, this.asMachineSource, true );
+		}
+		return filledAmount;
+	}
+
+	@Override
+	public void jobStateChange( final ICraftingLink link )
+	{
+		this.craftingTracker.jobStateChange( link );
+	}
 }

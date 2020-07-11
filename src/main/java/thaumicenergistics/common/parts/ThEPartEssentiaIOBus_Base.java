@@ -123,6 +123,8 @@ public abstract class ThEPartEssentiaIOBus_Base
 
 	protected boolean redstoneControlled;
 
+	protected boolean hasCraftingCard = false;
+
 	public ThEPartEssentiaIOBus_Base( final AEPartsEnum associatedPart, final SecurityPermissions ... interactionPermissions )
 	{
 		super( associatedPart, interactionPermissions );
@@ -195,6 +197,14 @@ public abstract class ThEPartEssentiaIOBus_Base
 		}
 	}
 
+	private void notifyListenersOfHasCraftingCardChange()
+	{
+		for( ContainerPartEssentiaIOBus listener : this.listeners )
+		{
+			listener.setHasCraftingCard( this.hasCraftingCard );
+		}
+	}
+
 	private void notifyListenersOfRedstoneModeChange()
 	{
 		for( ContainerPartEssentiaIOBus listener : this.listeners )
@@ -249,6 +259,7 @@ public abstract class ThEPartEssentiaIOBus_Base
 		this.filterSize = 0;
 		this.redstoneControlled = false;
 		this.upgradeSpeedCount = 0;
+		hasCraftingCard = false;
 
 		IMaterials aeMaterals = AEApi.instance().definitions().materials();
 
@@ -270,6 +281,10 @@ public abstract class ThEPartEssentiaIOBus_Base
 				{
 					this.upgradeSpeedCount++ ;
 				}
+				else if( aeMaterals.cardCrafting().isSameAs( slotStack ) )
+				{
+					this.hasCraftingCard = true;
+				}
 			}
 		}
 
@@ -284,10 +299,12 @@ public abstract class ThEPartEssentiaIOBus_Base
 		{
 			return;
 		}
+		if (!hasCraftingCard)
+			setCraftingOnly(false);
 
 		this.notifyListenersOfFilterSizeChange();
-
 		this.notifyListenersOfRedstoneControlledChange();
+		this.notifyListenersOfHasCraftingCardChange();
 	}
 
 	public boolean addFilteredAspectFromItemstack( final EntityPlayer player, final ItemStack itemStack )
@@ -413,6 +430,14 @@ public abstract class ThEPartEssentiaIOBus_Base
 		return false;
 	}
 
+	public boolean isCraftingOnly()
+	{
+		return false;
+	}
+	public void setCraftingOnly(boolean c)
+	{
+	}
+
 	@Override
 	public boolean onActivate( final EntityPlayer player, final Vec3 position )
 	{
@@ -435,10 +460,8 @@ public abstract class ThEPartEssentiaIOBus_Base
 
 	/**
 	 * Called when a player has clicked the redstone button in the gui.
-	 *
-	 * @param player
 	 */
-	public void onClientRequestChangeRedstoneMode( final EntityPlayer player )
+	public void onClientRequestChangeRedstoneMode()
 	{
 		// Get the current ordinal, and increment it
 		int nextOrdinal = this.redstoneMode.ordinal() + 1;
@@ -467,7 +490,7 @@ public abstract class ThEPartEssentiaIOBus_Base
 		Packet_C_AspectSlot.setFilterList( this.filteredAspects, player );
 
 		// Set the state of the bus
-		Packet_C_EssentiaIOBus.sendBusState( player, this.redstoneMode, this.filterSize, this.redstoneControlled );
+		Packet_C_EssentiaIOBus.sendBusState( player, this.redstoneMode, this.filterSize, this.redstoneControlled, hasCraftingCard, isCraftingOnly() );
 	}
 
 	@Override

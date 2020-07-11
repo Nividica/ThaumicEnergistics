@@ -207,7 +207,7 @@ public class ContainerEssentiaTerminal
 	 * Removes this container from the terminal.
 	 */
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void onContainerClosed(@Nonnull final EntityPlayer player )
 	{
 		super.onContainerClosed( player );
 

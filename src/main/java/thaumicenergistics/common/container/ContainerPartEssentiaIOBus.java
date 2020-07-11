@@ -11,6 +11,8 @@ import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
 import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
 
+import javax.annotation.Nonnull;
+
 /**
  * Inventory container for the import and export busses.
  *
@@ -23,27 +25,27 @@ public class ContainerPartEssentiaIOBus
 	/**
 	 * The number of upgrade slots we have
 	 */
-	private static int NUMBER_OF_UPGRADE_SLOTS = 4;
+	private final static int NUMBER_OF_UPGRADE_SLOTS = 4;
 
 	/**
 	 * The x position of the upgrade slots
 	 */
-	private static int UPGRADE_X_POS = 187;
+	private final static int UPGRADE_X_POS = 187;
 
 	/**
 	 * The Y position for the upgrade slots
 	 */
-	private static int UPGRADE_Y_POS = 8;
+	private final static int UPGRADE_Y_POS = 8;
 
 	/**
 	 * Y position for the player inventory
 	 */
-	private static int PLAYER_INV_POSITION_Y = 102;
+	private final static int PLAYER_INV_POSITION_Y = 102;
 
 	/**
 	 * Y position for the hotbar inventory
 	 */
-	private static int HOTBAR_INV_POSITION_Y = 160;
+	private final static int HOTBAR_INV_POSITION_Y = 160;
 
 	/**
 	 * The part associated with this container
@@ -54,6 +56,11 @@ public class ContainerPartEssentiaIOBus
 	 * Cached isVoidAllowed
 	 */
 	private boolean isVoidAllowed;
+
+	/**
+	 * Cached isVoidAllowed
+	 */
+	private boolean isCraftingOnly;
 
 	/**
 	 * Creates the container.
@@ -87,7 +94,7 @@ public class ContainerPartEssentiaIOBus
 	}
 
 	@Override
-	protected boolean detectAndSendChangesMP( final EntityPlayerMP playerMP )
+	protected boolean detectAndSendChangesMP( @Nonnull final EntityPlayerMP playerMP )
 	{
 		// Has the void mode changed?
 		if( this.isVoidAllowed != this.bus.isVoidAllowed() )
@@ -95,6 +102,13 @@ public class ContainerPartEssentiaIOBus
 			// Update
 			this.isVoidAllowed = this.bus.isVoidAllowed();
 			Packet_C_EssentiaIOBus.sendVoidMode( this.player, this.isVoidAllowed );
+		}
+
+		if( this.isCraftingOnly != this.bus.isCraftingOnly() )
+		{
+			// Update
+			this.isCraftingOnly = this.bus.isCraftingOnly();
+			Packet_C_EssentiaIOBus.sendCraftingMode( this.player, this.isCraftingOnly );
 		}
 
 		return false;
@@ -111,7 +125,7 @@ public class ContainerPartEssentiaIOBus
 	}
 
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void onContainerClosed(@Nonnull final EntityPlayer player )
 	{
 		if( this.bus != null )
 		{
@@ -132,6 +146,10 @@ public class ContainerPartEssentiaIOBus
 	public void setRedstoneControlled( final boolean isRedstoneControlled )
 	{
 		Packet_C_EssentiaIOBus.sendRedstoneControlled( this.player, isRedstoneControlled );
+	}
+	public void setHasCraftingCard( final boolean hasCraftingCard )
+	{
+		Packet_C_EssentiaIOBus.sendHasCraftingCard( this.player, hasCraftingCard );
 	}
 
 	public void setRedstoneMode( final RedstoneMode redstoneMode )
