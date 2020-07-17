@@ -168,6 +168,11 @@ public class GuiArcaneCraftingTerminal
 	 */
 	private ArrayList<String> cachedItemTooltip = new ArrayList<String>();
 
+	/**
+	 * Save the search string between sessions
+	 */
+	private static String memoryText = "";
+
 	public GuiArcaneCraftingTerminal( final PartArcaneCraftingTerminal part, final EntityPlayer player )
 	{
 		// Call super
@@ -240,6 +245,7 @@ public class GuiArcaneCraftingTerminal
 
 			// Update the repo
 			this.repo.setSearchString( "" );
+			memoryText = "";
 
 			// Repo needs update
 			this.viewNeedsUpdate = true;
@@ -791,6 +797,7 @@ public class GuiArcaneCraftingTerminal
 			{
 				// Set the search string
 				this.repo.setSearchString( newSearch );
+				memoryText = newSearch;
 
 				// Repo needs update
 				this.viewNeedsUpdate = true;
@@ -1106,7 +1113,8 @@ public class GuiArcaneCraftingTerminal
 		this.searchField.setFocused( ( searchBoxMode == SearchBoxMode.AUTOSEARCH ) || ( searchBoxMode == SearchBoxMode.NEI_AUTOSEARCH ) );
 
 		// Set the search string
-		this.searchField.setText( this.repo.getSearchString() );
+		this.searchField.setText(memoryText);
+		this.repo.setSearchString(memoryText);
 
 		// Clear any existing buttons
 		this.buttonList.clear();
