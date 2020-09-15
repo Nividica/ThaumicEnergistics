@@ -60,7 +60,7 @@ dependencies {
     compile "mcp.mobius.waila:Waila:1.5.10_1.7.10"
     compile "net.industrial-craft:industrialcraft-2:2.2.828-experimental:api"
     compile "thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev"
-    compileOnly "codechicken:CodeChickenCore:1.7.10-1.0.7.47:dev"
+
 }
 
 processResources

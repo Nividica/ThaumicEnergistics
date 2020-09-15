@@ -267,26 +267,16 @@ public abstract class WirelessAELink
 
 		ArrayList<IWirelessAccessPoint> apList = null;
 
-		if( this.accessPoint != null )
-		{
-			try
-			{
-				IGrid grid = this.accessPoint.getGrid();
-
-				// Get a list of AP's in range
-				if( grid != null )
-				{
-					apList = WirelessAELink.locateAPsInRange( w, x, y, z, grid );
-				}
-				else
-				{
-					apList = WirelessAELink.locateAPsInRange( w, x, y, z, this.encryptionKey );
-				}
+		try {
+			IGrid grid = accessPoint != null ? accessPoint.getGrid() : null;
+			// Get a list of AP's in range
+			if (grid != null) {
+				apList = WirelessAELink.locateAPsInRange(w, x, y, z, grid);
+			} else {
+				apList = WirelessAELink.locateAPsInRange(w, x, y, z, this.encryptionKey);
 			}
-			catch( GridException e )
-			{
-				// :(
-			}
+		} catch (GridException ignored) {
+			// :(
 		}
 
 		// Determine the closest AP
