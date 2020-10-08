@@ -145,7 +145,7 @@ public class ContainerPartArcaneCraftingTerminal
 	/**
 	 * The arcane crafting terminal associated with the container.
 	 */
-	private final PartArcaneCraftingTerminal terminal;
+	public final PartArcaneCraftingTerminal terminal;
 
 	/**
 	 * Network source representing the player who is interacting with the
@@ -574,7 +574,7 @@ public class ContainerPartArcaneCraftingTerminal
 	 *
 	 * @return
 	 */
-	private ItemStack[] getViewCells()
+	public ItemStack[] getViewCells()
 	{
 		List<ItemStack> viewCells = new ArrayList<ItemStack>();
 
@@ -1756,5 +1756,16 @@ public class ContainerPartArcaneCraftingTerminal
 
 		// All taken care of!
 		return null;
+	}
+	public IGrid getHostGrid()
+	{
+		try
+		{
+			return this.terminal.getGridBlock().getGrid();
+		}
+		catch( Exception e )
+		{
+			return null;
+		}
 	}
 }
