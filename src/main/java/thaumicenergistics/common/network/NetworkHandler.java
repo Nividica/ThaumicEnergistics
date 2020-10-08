@@ -41,7 +41,7 @@ public class NetworkHandler
 	/**
 	 * Registers a packet.
 	 *
-	 * @param packet
+	 * @param packetClass
 	 */
 	private static void registerPacket( final Class<? extends ThEBasePacket> packetClass )
 	{
@@ -138,6 +138,8 @@ public class NetworkHandler
 
 		// Sync packet
 		registerPacket( Packet_C_Sync.class );
+
+		registerPacket( Packet_S_NEIRecipe.class );
 	}
 
 	public static void sendAreaPacketToClients( final ThEAreaPacket areaPacket, final float range )
