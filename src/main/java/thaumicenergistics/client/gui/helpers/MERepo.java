@@ -98,10 +98,10 @@ public class MERepo<T extends IAEStack<T>> {
 
         Pattern pattern;
         try {
-            pattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
+            pattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
         } catch (PatternSyntaxException ignored) {
             try {
-                pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
+                pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
             } catch (PatternSyntaxException ignored2) {
                 return;
             }
