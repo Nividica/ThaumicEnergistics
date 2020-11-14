@@ -20,14 +20,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
 import appeng.api.config.Settings;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.ITooltip;
-import appeng.client.render.StackSizeRenderer;
 
 import thaumicenergistics.api.storage.IAEEssentiaStack;
+import thaumicenergistics.client.gui.helpers.GenericStackSizeRenderer;
 import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.container.slot.ISlotOptional;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
@@ -39,7 +38,7 @@ import thaumicenergistics.container.slot.ThESlot;
  */
 public abstract class GuiBase extends GuiContainer {
 
-    private static StackSizeRenderer stackSizeRenderer = new StackSizeRenderer();
+    private static final GenericStackSizeRenderer stackSizeRenderer = new GenericStackSizeRenderer();
 
     public GuiBase(ContainerBase container) {
         super(container);
@@ -64,10 +63,10 @@ public abstract class GuiBase extends GuiContainer {
             if (slot.isEnabled()) {
                 // TODO: Draw slot background on enabled slots
             }
-        } else if (slot instanceof SlotME && ((SlotME) slot).getAEStack() instanceof IAEItemStack) {
+        } else if (slot instanceof SlotME) {
             SlotME slotME = (SlotME) slot;
             super.drawSlot(slot);
-            stackSizeRenderer.renderStackSize(this.fontRenderer, (IAEItemStack) slotME.getAEStack(), slot.xPos, slot.yPos);
+            stackSizeRenderer.renderStackSize(this.fontRenderer, slotME.getAEStack(), slot.xPos, slot.yPos);
             return;
         } else if (slot instanceof ThESlot) {
             if (((ThESlot) slot).hasBackgroundIcon()) {
@@ -101,10 +100,7 @@ public abstract class GuiBase extends GuiContainer {
             }
             if (this.hoveredSlot instanceof SlotME && this.hoveredSlot.getHasStack() && ((SlotME) this.hoveredSlot).getAEStack() instanceof IAEEssentiaStack) {
                 IAEEssentiaStack stack = (IAEEssentiaStack) ((SlotME) this.hoveredSlot).getAEStack();
-                List<String> tooltip = new ArrayList<>();
-                tooltip.add(stack.getAspect().getName());
-                tooltip.add(Long.toString(stack.getStackSize()));
-                this.drawHoveringText(tooltip, mouseX, mouseY);
+                this.drawHoveringText(stack.getAspect().getName(), mouseX, mouseY);
                 return;
             }
         }
