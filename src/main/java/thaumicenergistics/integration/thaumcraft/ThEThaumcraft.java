@@ -35,6 +35,7 @@ import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.thaumcraft.research.AidMEController;
+import thaumicenergistics.integration.thaumcraft.research.AidMEDrive;
 import thaumicenergistics.integration.thaumcraft.research.CardTinkerAE;
 import thaumicenergistics.integration.thaumcraft.research.ScanMod;
 import thaumicenergistics.util.ForgeUtil;
@@ -74,6 +75,8 @@ public class ThEThaumcraft implements IThEIntegration {
         TheorycraftManager.registerCard(CardTinkerAE.class);
         if (AEApi.instance().definitions().blocks().controller().maybeBlock().isPresent())
             TheorycraftManager.registerAid(new AidMEController());
+        else if (AEApi.instance().definitions().blocks().drive().maybeBlock().isPresent())
+            TheorycraftManager.registerAid(new AidMEDrive());
         this.registerArcaneRecipes();
         this.registerInfusionRecipes();
     }
