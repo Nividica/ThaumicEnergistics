@@ -32,7 +32,7 @@ public class ArcaneRecipeHelper
 	 * @param gridSize
 	 * @return
 	 */
-	private TileMagicWorkbench createBridgeInventory( final IInventory sourceInventory, final int firstSlotIndex, final int gridSize )
+	public TileMagicWorkbench createBridgeInventory( final IInventory sourceInventory, final int firstSlotIndex, final int gridSize )
 	{
 		// Create a new workbench tile
 		TileMagicWorkbench workbenchTile = new TileMagicWorkbench();
