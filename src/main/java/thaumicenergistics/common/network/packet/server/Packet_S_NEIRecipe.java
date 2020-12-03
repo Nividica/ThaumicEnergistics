@@ -34,6 +34,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.api.crafting.IArcaneRecipe;
+import thaumcraft.common.tiles.TileMagicWorkbench;
 import thaumicenergistics.common.container.ContainerInternalCrafting;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.integration.tc.ArcaneRecipeHelper;
@@ -104,9 +105,11 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
             final IStorageGrid inv = grid.getCache( IStorageGrid.class );
             final IEnergyGrid energy = grid.getCache( IEnergyGrid.class );
             final ISecurityGrid security = grid.getCache( ISecurityGrid.class );
+            TileMagicWorkbench workbenchTile = ArcaneRecipeHelper.INSTANCE.createBridgeInventory( testInv, 0, 9 );
+            workbenchTile.setWorldObj(player.worldObj);
             if ((r != null || arcaneRecipe != null) && security != null && security.hasPermission( player, SecurityPermissions.EXTRACT))
             {
-                final ItemStack is = r != null ? r.getCraftingResult( testInv ) : arcaneRecipe.getCraftingResult(testInv);
+                final ItemStack is = r != null ? r.getCraftingResult( testInv ) : arcaneRecipe.getCraftingResult(workbenchTile);
                 if (is == null)
                     return;
                 final IMEMonitor<IAEItemStack> storage = inv.getItemInventory();
@@ -122,9 +125,11 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
                     if( currentItem != null )
                     {
                         testInv.setInventorySlotContents( x, currentItem );
+                        workbenchTile.setInventorySlotContents( x, currentItem );
                         final ItemStack newItemStack = r != null ? (r.matches( testInv, pmp.worldObj ) ? r.getCraftingResult( testInv ) : null)
-                                : (arcaneRecipe.matches(testInv, pmp.worldObj, pmp) ? arcaneRecipe.getCraftingResult(testInv) : null);
+                                : (arcaneRecipe.matches(workbenchTile, pmp.worldObj, pmp) ? arcaneRecipe.getCraftingResult(workbenchTile) : null);
                         testInv.setInventorySlotContents( x, patternItem );
+                        workbenchTile.setInventorySlotContents( x, patternItem );
 
                         if( newItemStack == null || !Platform.isSameItemPrecise( newItemStack, is ) )
                         {
@@ -138,7 +143,7 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
                     {
                         ItemStack whichItem = r != null ?
                                 Platform.extractItemsByRecipe( energy, as, storage, player.worldObj, r, is, testInv, patternItem, x, all, Actionable.MODULATE, filter )
-                                : extractItemsByArcaneRecipe(energy, as, storage, player.worldObj, arcaneRecipe, is, testInv, patternItem, x, all, Actionable.MODULATE, filter );
+                                : extractItemsByArcaneRecipe(energy, as, storage, player.worldObj, arcaneRecipe, is, workbenchTile, patternItem, x, all, Actionable.MODULATE, filter );
                         if( whichItem == null && playerInventory != null )
                             whichItem = extractItemFromPlayerInventory( player, patternItem );
 
@@ -149,8 +154,8 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
             }
         }
     }
-    public ItemStack extractItemsByArcaneRecipe(final IEnergySource energySrc, final BaseActionSource mySrc,
-                                                       final IMEMonitor<IAEItemStack> src, final World w, final IArcaneRecipe r, final ItemStack output, final InventoryCrafting ci, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
+    ItemStack extractItemsByArcaneRecipe(final IEnergySource energySrc, final BaseActionSource mySrc,
+                                                       final IMEMonitor<IAEItemStack> src, final World w, final IArcaneRecipe r, final ItemStack output, final TileMagicWorkbench workbenchTile, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
     {
         if( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
         {
@@ -187,8 +192,8 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
                     { // Platform.isSameItemType( sh, providedTemplate )
                         final ItemStack cp = Platform.cloneItemStack( sh );
                         cp.stackSize = 1;
-                        ci.setInventorySlotContents( slot, cp );
-                        if( r.matches( ci, w, player ) && Platform.isSameItem( r.getCraftingResult( ci ), output ) )
+                        workbenchTile.setInventorySlotContents( slot, cp );
+                        if( r.matches( workbenchTile, w, player ) && Platform.isSameItem( r.getCraftingResult( workbenchTile ), output ) )
                         {
                             final IAEItemStack ax = x.copy();
                             ax.setStackSize( 1 );
@@ -202,7 +207,7 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
                                 }
                             }
                         }
-                        ci.setInventorySlotContents( slot, providedTemplate );
+                        workbenchTile.setInventorySlotContents( slot, providedTemplate );
                     }
                 }
             }
