@@ -242,12 +242,12 @@ public abstract class ThEPartBase
 	protected TileEntity getFacingTile()
 	{
 		if( this.hostTile == null )
-		{
 			return null;
-		}
 
 		// Get the world
 		World world = this.hostTile.getWorldObj();
+		if (world == null) // may happen during unload
+			return null;
 
 		// Get our location
 		int x = this.hostTile.xCoord;
