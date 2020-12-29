@@ -321,6 +321,35 @@ public class ArcaneCraftingPattern
 		}
 		return this.allResults;
 	}
+	
+	public void updateInventory(InventoryCrafting table)
+	{
+		if (this.ingredientsAE == null)
+			this.ingredientsAE = new AEItemStack[ArcaneCraftingPattern.GRID_SIZE];
+		boolean inventoryUnchanged = true;
+		for (int i = 0; i < 9; ++i)
+		{
+			ItemStack s = table.getStackInSlot(i);
+			if (s == null)
+			{
+				if (ingredientsAE[i] == null)
+					continue;
+				inventoryUnchanged = false;
+				ingredientsAE[i] = null;
+			}
+			else
+			{
+				AEItemStack aestack = (AEItemStack)AEApi.instance().storage().createItemStack(s);
+				if (ingredientsAE[i] == null || ingredientsAE[i].hashCode() != aestack.hashCode())
+				{
+					ingredientsAE[i] = aestack;
+					inventoryUnchanged = false;
+				}
+			}
+		}
+		if (!inventoryUnchanged)
+			setupAEResults();
+	}
 
 	/**
 	 * Returns the aspect cost for the specified aspect.

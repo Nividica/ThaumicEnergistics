@@ -178,7 +178,7 @@ public class TileArcaneAssembler
 	/**
 	 * Holds the upgrades
 	 */
-	private UpgradeInventory upgradeInventory;
+	private final UpgradeInventory upgradeInventory;
 
 	/**
 	 * Is the assembler busy crafting?
@@ -203,12 +203,12 @@ public class TileArcaneAssembler
 	/**
 	 * Data pertaining to the linked digi-vis source
 	 */
-	private DigiVisSourceData visSourceInfo = new DigiVisSourceData();
+	private final DigiVisSourceData visSourceInfo = new DigiVisSourceData();
 
 	/**
 	 * Vis stored in the assembler.
 	 */
-	private AspectList storedVis = new AspectList();
+	private final AspectList storedVis = new AspectList();
 
 	/**
 	 * Number of elapsed ticks.
@@ -218,7 +218,7 @@ public class TileArcaneAssembler
 	/**
 	 * Source of all actions.
 	 */
-	private MachineSource mySource;
+	private final MachineSource mySource;
 
 	/**
 	 * True when the assembler is online.
@@ -233,7 +233,7 @@ public class TileArcaneAssembler
 	/**
 	 * How much discount each aspect is receiving.
 	 */
-	private Hashtable<Aspect, Float> visDiscount = new Hashtable<Aspect, Float>();
+	private final Hashtable<Aspect, Float> visDiscount = new Hashtable<>();
 
 	/**
 	 * How much additional power is required due to warp.
@@ -391,7 +391,7 @@ public class TileArcaneAssembler
 					this.markForDelayedUpdate();
 				}
 			}
-			catch( GridAccessException e )
+			catch( GridAccessException ignored)
 			{
 			}
 		}
@@ -429,7 +429,7 @@ public class TileArcaneAssembler
 					}
 				}
 			}
-			catch( GridAccessException e )
+			catch( GridAccessException ignored)
 			{
 			}
 		}
@@ -524,7 +524,7 @@ public class TileArcaneAssembler
 			// Get the source
 			visSource = this.visSourceInfo.tryGetSource( this.getProxy().getGrid() );
 		}
-		catch( GridAccessException e )
+		catch( GridAccessException ignored)
 		{
 		}
 
@@ -1088,7 +1088,7 @@ public class TileArcaneAssembler
 				// Mark they are no longer stale
 				this.stalePatterns = false;
 			}
-			catch( GridAccessException e )
+			catch( GridAccessException ignored)
 			{
 			}
 		}
@@ -1176,6 +1176,7 @@ public class TileArcaneAssembler
 
 			// Set the pattern that is being crafted
 			this.currentPattern = (ArcaneCraftingPattern)patternDetails;
+			currentPattern.updateInventory(table);
 
 			// Set the target item
 			this.internalInventory.setInventorySlotContents( TARGET_SLOT_INDEX, this.currentPattern.getResult().getItemStack() );
