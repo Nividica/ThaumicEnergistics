@@ -338,6 +338,7 @@ public final class EssentiaTileContainerHelper {
 
 		// Essentia buffer
 		this.perms.addAspectContainerTileToExtractPermissions(TileTubeBuffer.class, 8);
+		this.perms.addAspectContainerTileToInjectPermissions(TileTubeBuffer.class, 8);
 
 		// Essentia reservoir
 		this.perms.addAspectContainerTileToBothPermissions(TileEssentiaReservoir.class, 256);
@@ -374,7 +375,17 @@ public final class EssentiaTileContainerHelper {
 			this.perms.addAspectContainerTileToBothPermissions(c, 4096);
 			c = Class.forName("common.tileentities.TE_IchorVoidJar");
 			this.perms.addAspectContainerTileToBothPermissions(c, 4096);
+			c = Class.forName("common.tileentities.TE_ThaumiumReinforcedJar");
+			this.perms.addAspectContainerTileToBothPermissions(c, 256);
+			c = Class.forName("common.tileentities.TE_ThaumiumReinforcedVoidJar");
+			this.perms.addAspectContainerTileToBothPermissions(c, 256);
 		} catch (Exception ignored) {
 		}
+		try {
+			Class c = Class.forName("tuhljin.automagy.tiles.TileEntityJarCreative");
+			this.perms.addAspectContainerTileToBothPermissions(c, 1<<31);
+		} catch (Exception ignored) {
+		}
+
 	}
 }
