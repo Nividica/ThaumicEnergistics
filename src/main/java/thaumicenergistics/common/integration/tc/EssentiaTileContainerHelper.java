@@ -25,8 +25,7 @@ import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
  * @author Nividica
  *
  */
-public final class EssentiaTileContainerHelper
-{
+public final class EssentiaTileContainerHelper {
 	/**
 	 * Singleton
 	 */
@@ -46,11 +45,9 @@ public final class EssentiaTileContainerHelper
 	 * @param mode
 	 * @return
 	 */
-	public FluidStack extractFromContainer( final IAspectContainer container, final FluidStack request, final Actionable mode )
-	{
+	public FluidStack extractFromContainer(final IAspectContainer container, final FluidStack request, final Actionable mode) {
 		// Ensure there is a request
-		if( ( request == null ) || ( request.getFluid() == null ) || ( request.amount == 0 ) )
-		{
+		if ((request == null) || (request.getFluid() == null) || (request.amount == 0)) {
 			// No request
 			return null;
 		}
@@ -59,30 +56,28 @@ public final class EssentiaTileContainerHelper
 		Fluid fluid = request.getFluid();
 
 		// Ensure it is a gas
-		if( !( fluid instanceof GaseousEssentia ) )
-		{
+		if (!(fluid instanceof GaseousEssentia)) {
 			// Not a gas
 			return null;
 		}
 
 		// Get the gas's aspect
-		Aspect gasAspect = ( (GaseousEssentia)fluid ).getAspect();
+		Aspect gasAspect = ((GaseousEssentia) fluid).getAspect();
 
 		// Get the amount to extract
-		long amountToDrain_EU = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( request.amount );
+		long amountToDrain_EU = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount(request.amount);
 
 		// Extract
-		long extractedAmount_EU = this.extractFromContainer( container, (int)amountToDrain_EU, gasAspect, mode );
+		long extractedAmount_EU = this.extractFromContainer(container, (int) amountToDrain_EU, gasAspect, mode);
 
 		// Was any extracted?
-		if( extractedAmount_EU <= 0 )
-		{
+		if (extractedAmount_EU <= 0) {
 			// None extracted
 			return null;
 		}
 
 		// Return the extracted amount
-		return new FluidStack( fluid, (int)EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( extractedAmount_EU ) );
+		return new FluidStack(fluid, (int) EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount(extractedAmount_EU));
 	}
 
 	/**
@@ -94,42 +89,36 @@ public final class EssentiaTileContainerHelper
 	 * @param mode
 	 * @return The amount extracted.
 	 */
-	public long extractFromContainer( final IAspectContainer container, int amountToDrain, final Aspect aspectToDrain, final Actionable mode )
-	{
+	public long extractFromContainer(final IAspectContainer container, int amountToDrain, final Aspect aspectToDrain, final Actionable mode) {
 
 		// Is the request empty?
-		if( amountToDrain == 0 )
-		{
+		if (amountToDrain == 0) {
 			// Empty request
 			return 0;
 		}
 
 		// Is the container whitelisted?
-		if( !this.perms.canExtractFromAspectContainerTile( container ) )
-		{
+		if (!this.perms.canExtractFromAspectContainerTile(container)) {
 			// Not whitelisted
 			return 0;
 		}
 
 		// Get how much is in the container
-		int containerAmount = container.getAspects().getAmount( aspectToDrain );
+		int containerAmount = container.getAspects().getAmount(aspectToDrain);
 
 		// Is the container empty?
-		if( containerAmount == 0 )
-		{
+		if (containerAmount == 0) {
 			// Empty container, or does not contain the wanted aspect
 			return 0;
 		}
 		// Is the drain for more than is in the container?
-		if( amountToDrain > containerAmount )
-		{
+		if (amountToDrain > containerAmount) {
 			amountToDrain = containerAmount;
 		}
 
 		// Are we really draining, or just simulating?
-		if( mode == Actionable.MODULATE )
-		{
-			container.takeFromContainer( aspectToDrain, amountToDrain );
+		if (mode == Actionable.MODULATE) {
+			container.takeFromContainer(aspectToDrain, amountToDrain);
 		}
 
 		// Return how much was drained
@@ -142,33 +131,28 @@ public final class EssentiaTileContainerHelper
 	 * @param container
 	 * @return
 	 */
-	public Aspect getAspectInContainer( final IAspectContainer container )
-	{
+	public Aspect getAspectInContainer(final IAspectContainer container) {
 		// Get the aspect list from the container
-		IAspectStack containerStack = this.getAspectStackFromContainer( container );
+		IAspectStack containerStack = this.getAspectStackFromContainer(container);
 
 		// Did we get a stack?
-		if( containerStack == null )
-		{
+		if (containerStack == null) {
 			return null;
 		}
 
 		return containerStack.getAspect();
 	}
 
-	public IAspectStack getAspectStackFromContainer( final IAspectContainer container )
-	{
+	public IAspectStack getAspectStackFromContainer(final IAspectContainer container) {
 		// Ensure we have a container
-		if( container == null )
-		{
+		if (container == null) {
 			return null;
 		}
 
 		// Get the list of aspects in the container
 		AspectList aspectList = container.getAspects();
 
-		if( aspectList == null )
-		{
+		if (aspectList == null) {
 			return null;
 		}
 
@@ -176,15 +160,14 @@ public final class EssentiaTileContainerHelper
 		IAspectStack aspectStack = new AspectStack();
 
 		// Set the aspect
-		aspectStack.setAspect( aspectList.getAspectsSortedAmount()[0] );
+		aspectStack.setAspect(aspectList.getAspectsSortedAmount()[0]);
 
-		if( !aspectStack.hasAspect() )
-		{
+		if (!aspectStack.hasAspect()) {
 			return null;
 		}
 
 		// Set the amount
-		aspectStack.setStackSize( aspectList.getAmount( aspectStack.getAspect() ) );
+		aspectStack.setStackSize(aspectList.getAmount(aspectStack.getAspect()));
 
 		return aspectStack;
 	}
@@ -195,30 +178,25 @@ public final class EssentiaTileContainerHelper
 	 * @param container
 	 * @return
 	 */
-	public List<IAspectStack> getAspectStacksFromContainer( final IAspectContainer container )
-	{
+	public List<IAspectStack> getAspectStacksFromContainer(final IAspectContainer container) {
 		List<IAspectStack> stacks = new ArrayList<IAspectStack>();
 
 		// Ensure we have a container
-		if( container == null )
-		{
+		if (container == null) {
 			return stacks;
 		}
 
 		// Get the list of aspects in the container
 		AspectList aspectList = container.getAspects();
 
-		if( aspectList == null )
-		{
+		if (aspectList == null) {
 			return stacks;
 		}
 
 		// Populate the list
-		for( Entry<Aspect, Integer> essentia : aspectList.aspects.entrySet() )
-		{
-			if( ( essentia != null ) && ( essentia.getValue() != 0 ) )
-			{
-				stacks.add( new AspectStack( essentia.getKey(), essentia.getValue() ) );
+		for (Entry<Aspect, Integer> essentia : aspectList.aspects.entrySet()) {
+			if ((essentia != null) && (essentia.getValue() != 0)) {
+				stacks.add(new AspectStack(essentia.getKey(), essentia.getValue()));
 			}
 		}
 
@@ -232,21 +210,17 @@ public final class EssentiaTileContainerHelper
 	 * @param container
 	 * @return Capacity or -1 if unknown capacity.
 	 */
-	public int getContainerCapacity( final IAspectContainer container )
-	{
-		return this.perms.getAspectContainerTileCapacity( container );
+	public int getContainerCapacity(final IAspectContainer container) {
+		return this.perms.getAspectContainerTileCapacity(container);
 	}
 
-	public int getContainerStoredAmount( final IAspectContainer container )
-	{
+	public int getContainerStoredAmount(final IAspectContainer container) {
 		int stored = 0;
 
 		// Get the essentia list
-		for( IAspectStack essentia : this.getAspectStacksFromContainer( container ) )
-		{
-			if( essentia != null )
-			{
-				stored += (int)essentia.getStackSize();
+		for (IAspectStack essentia : this.getAspectStacksFromContainer(container)) {
+			if (essentia != null) {
+				stored += (int) essentia.getStackSize();
 			}
 		}
 
@@ -263,48 +237,40 @@ public final class EssentiaTileContainerHelper
 	 * @param mode
 	 * @return
 	 */
-	public long injectEssentiaIntoContainer( final IAspectContainer container, int amountToFill, final Aspect aspectToFill, final Actionable mode )
-	{
+	public long injectEssentiaIntoContainer(final IAspectContainer container, int amountToFill, final Aspect aspectToFill, final Actionable mode) {
 		// Is the container whitelisted?
-		if( !this.perms.canInjectToAspectContainerTile( container ) )
-		{
+		if (!this.perms.canInjectToAspectContainerTile(container)) {
 			// Not whitelisted
 			return 0;
 		}
 
 		// Get the aspect in the container
-		IAspectStack storedEssentia = this.getAspectStackFromContainer( container );
+		IAspectStack storedEssentia = this.getAspectStackFromContainer(container);
 
 		// Match types on jars
-		if( ( storedEssentia != null ) && ( container instanceof TileJarFillable ) )
-		{
+		if ((storedEssentia != null) && (container instanceof TileJarFillable)) {
 			// Do the aspects match?
-			if( aspectToFill != storedEssentia.getAspect() )
-			{
+			if (aspectToFill != storedEssentia.getAspect()) {
 				// Aspects do not match;
 				return 0;
 			}
-		}
-		else if( !( container.doesContainerAccept( aspectToFill ) ) )
-		{
+		} else if (!(container.doesContainerAccept(aspectToFill))) {
 			// Container will not accept this aspect
 			return 0;
 		}
 
 		// Get how much the container can hold
-		int containerCurrentCapacity = this.getContainerCapacity( container ) - this.getContainerStoredAmount( container );
+		int containerCurrentCapacity = this.getContainerCapacity(container) - this.getContainerStoredAmount(container);
 
 		// Is there more to fill than the container will hold?
-		if( amountToFill > containerCurrentCapacity )
-		{
+		if (amountToFill > containerCurrentCapacity) {
 			amountToFill = containerCurrentCapacity;
 		}
 
 		// Are we really filling, or simulating?
-		if( mode == Actionable.MODULATE )
-		{
+		if (mode == Actionable.MODULATE) {
 			// Attempt to inject the full amount
-			int remaining = container.addToContainer( aspectToFill, amountToFill );
+			int remaining = container.addToContainer(aspectToFill, amountToFill);
 
 			// Subtract any that could not be injected
 			amountToFill -= remaining;
@@ -322,18 +288,15 @@ public final class EssentiaTileContainerHelper
 	 * @param mode
 	 * @return
 	 */
-	public long injectFluidIntoContainer( final IAspectContainer container, final IAEFluidStack fluidStack, final Actionable mode )
-	{
+	public long injectFluidIntoContainer(final IAspectContainer container, final IAEFluidStack fluidStack, final Actionable mode) {
 		// Do we have an input?
-		if( fluidStack == null )
-		{
+		if (fluidStack == null) {
 			// No input
 			return 0;
 		}
 
 		// Is the container whitelisted?
-		if( !this.perms.canInjectToAspectContainerTile( container ) )
-		{
+		if (!this.perms.canInjectToAspectContainerTile(container)) {
 			// Not whitelisted
 			return 0;
 		}
@@ -342,50 +305,76 @@ public final class EssentiaTileContainerHelper
 		Fluid fluid = fluidStack.getFluid();
 
 		// Ensure it is a gas
-		if( !( fluid instanceof GaseousEssentia ) )
-		{
+		if (!(fluid instanceof GaseousEssentia)) {
 			// Not essentia gas
 			return 0;
 		}
 
 		// Get the aspect of the gas
-		Aspect gasAspect = ( (GaseousEssentia)fluid ).getAspect();
+		Aspect gasAspect = ((GaseousEssentia) fluid).getAspect();
 
 		// Get the amount to fill
-		long amountToFill = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount( fluidStack.getStackSize() );
+		long amountToFill = EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount(fluidStack.getStackSize());
 
 		// Inject
-		long injectedAmount_EU = this.injectEssentiaIntoContainer( container, (int)amountToFill, gasAspect, mode );
+		long injectedAmount_EU = this.injectEssentiaIntoContainer(container, (int) amountToFill, gasAspect, mode);
 
-		return EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount( injectedAmount_EU );
+		return EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount(injectedAmount_EU);
 	}
 
 	/**
 	 * Setup the standard white list
 	 */
-	public void registerDefaultContainers()
-	{
+	public void registerDefaultContainers() {
 		// Alembic
-		this.perms.addAspectContainerTileToExtractPermissions( TileAlembic.class, 32 );
+		this.perms.addAspectContainerTileToExtractPermissions(TileAlembic.class, 32);
 
 		// Centrifuge
-		this.perms.addAspectContainerTileToExtractPermissions( TileCentrifuge.class, 0 );
+		this.perms.addAspectContainerTileToExtractPermissions(TileCentrifuge.class, 0);
 
 		// Jars
-		this.perms.addAspectContainerTileToBothPermissions( TileJarFillable.class, 64 );
-		this.perms.addAspectContainerTileToBothPermissions( TileJarFillableVoid.class, 64 );
+		this.perms.addAspectContainerTileToBothPermissions(TileJarFillable.class, 64);
+		this.perms.addAspectContainerTileToBothPermissions(TileJarFillableVoid.class, 64);
 
 		// Essentia buffer
-		this.perms.addAspectContainerTileToExtractPermissions( TileTubeBuffer.class, 8 );
+		this.perms.addAspectContainerTileToExtractPermissions(TileTubeBuffer.class, 8);
 
 		// Essentia reservoir
-		this.perms.addAspectContainerTileToBothPermissions( TileEssentiaReservoir.class, 256 );
+		this.perms.addAspectContainerTileToBothPermissions(TileEssentiaReservoir.class, 256);
 
 		// Advanced alchemical furnace
-		this.perms.addAspectContainerTileToExtractPermissions( TileAlchemyFurnaceAdvancedNozzle.class, 0 );
+		this.perms.addAspectContainerTileToExtractPermissions(TileAlchemyFurnaceAdvancedNozzle.class, 0);
 
 		// Essentia vibration chamber
-		this.perms.addAspectContainerTileToInjectPermissions( TileEssentiaVibrationChamber.class, TileEVCBase.MAX_ESSENTIA_STORED );
-	}
+		this.perms.addAspectContainerTileToInjectPermissions(TileEssentiaVibrationChamber.class, TileEVCBase.MAX_ESSENTIA_STORED);
 
+		try {
+			Class c = Class.forName("flaxbeard.thaumicexploration.tile.TileEntityTrashJar");
+			this.perms.addAspectContainerTileToInjectPermissions(c, 64);
+			c = Class.forName("flaxbeard.thaumicexploration.tile.TileEntityBoundJar");
+			this.perms.addAspectContainerTileToBothPermissions(c, 64);
+		} catch (Exception ignored) {
+		}
+		try {
+			Class c = Class.forName("makeo.gadomancy.common.blocks.tiles.TileRemoteJar");
+			this.perms.addAspectContainerTileToBothPermissions(c, 64);
+			c = Class.forName("makeo.gadomancy.common.blocks.tiles.TileStickyJar");
+			this.perms.addAspectContainerTileToBothPermissions(c, 64);
+		} catch (Exception ignored) {
+		}
+		try {
+			// Essentia condenser does not directly implement IAspectContainer, so this may fail if used w/o Automagy
+			Class c = Class.forName("makeo.gadomancy.common.blocks.tiles.TileEssentiaCompressor");
+			this.perms.addAspectContainerTileToBothPermissions(c, 64);
+		} catch (Exception ignored) {
+		}
+		try {
+			// I hope some day Kekztech jars will have a namespace
+			Class c = Class.forName("common.tileentities.TE_IchorJar");
+			this.perms.addAspectContainerTileToBothPermissions(c, 4096);
+			c = Class.forName("common.tileentities.TE_IchorVoidJar");
+			this.perms.addAspectContainerTileToBothPermissions(c, 4096);
+		} catch (Exception ignored) {
+		}
+	}
 }
