@@ -25,6 +25,11 @@ public class SlotArcaneResult extends ThESlot {
     }
 
     @Override
+    public boolean getHasStack() {
+        return false;
+    }
+
+    @Override
     public void putStack(ItemStack stack) {
         super.putStack(stack);
     }

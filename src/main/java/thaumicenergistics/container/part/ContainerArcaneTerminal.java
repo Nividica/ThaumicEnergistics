@@ -1,8 +1,6 @@
 package thaumicenergistics.container.part;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -258,58 +256,57 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
 
     @Override
     public void handleJEITransfer(EntityPlayer player, NBTTagCompound tag) {
-        NBTTagList normal = tag.getTagList("normal", 9);
-        NBTTagList crystals = tag.getTagList("crystal", 9);
-        List<NBTBase> ingredients = ForgeUtil.toArrayList(ForgeUtil.mergeTagLists(normal, crystals));
-        AtomicInteger currentSlot = new AtomicInteger(-1);
+        NBTBase normal = tag.getTag("normal");
+        NBTBase crystals = tag.getTag("crystal");
 
-        IItemHandler crafting = this.getInventory("crafting");
-        IItemHandler playerInv = this.getInventory("player");
-
-        boolean clearSuccess = AEUtil.clearIntoMEInventory(crafting, this.monitor, this.part.source);
+        boolean clearSuccess = AEUtil.clearIntoMEInventory(this.getInventory("crafting"), this.monitor, this.part.source);
         this.onMatrixChanged();
         if (!clearSuccess)
             return;
 
-        ingredients.forEach(ingredientGroup -> {
-            int slot = currentSlot.incrementAndGet();
+        handleJEITag(0, normal);
+        handleJEITag(9, crystals);
 
-            if (ingredientGroup == null || ingredientGroup.isEmpty()) {
-                // TODO: Probably check if its already in the slot
-                return;
-            }
-            NBTTagList subs = (NBTTagList) ingredientGroup;
-            for (int i = 0; i < subs.tagCount(); i++) {
-                NBTTagCompound ingredient = subs.getCompoundTagAt(i);
-                ItemStack stack = new ItemStack(ingredient);
-                if (stack.isEmpty()) {
-                    ThELog.error("Failed to read ingredient data {}", ingredient);
-                    return;
-                }
-                ThELog.debug("Adding {} for {}", stack.getDisplayName(), slot);
-                IAEItemStack aeStack = this.channel.createStack(stack);
-                if (aeStack == null) {
-                    ThELog.warn("Failed to create IAEItemStack for {}, report to developer!", stack.toString());
-                    return;
-                }
-                IAEItemStack aeExtract = AEUtil.inventoryExtract(aeStack, this.monitor, this.part.source);
-                if (aeExtract != null && aeExtract.getStackSize() > 0)
-                    crafting.insertItem(slot, aeExtract.createItemStack(), false);
-
-                if (crafting.getStackInSlot(slot).getCount() >= stack.getCount()) // We managed to pull everything from the system
-                    return;
-
-                // Try pull from player
-                ThELog.debug("Failed to pull item from ae inv, trying player inventory");
-                stack.shrink(crafting.getStackInSlot(slot).getCount());
-
-                ItemStack invExtract = ItemHandlerUtil.extract(playerInv, stack, false);
-                if (!invExtract.isEmpty())
-                    crafting.insertItem(slot, invExtract, false);
-            }
-            ThELog.debug("Failed to find valid item");
-        });
         this.onMatrixChanged();
+    }
+
+    private void handleJEITag(int startAtSlot, NBTBase ingredientGroup){
+        IItemHandler crafting = this.getInventory("crafting");
+        IItemHandler playerInv = this.getInventory("player");
+
+        if (ingredientGroup == null || ingredientGroup.isEmpty()) {
+            // TODO: Probably check if its already in the slot
+            return;
+        }
+        NBTTagList subs = (NBTTagList) ingredientGroup;
+        for (int i = 0; i < subs.tagCount(); i++) {
+            int slot = startAtSlot + i;
+            NBTTagCompound ingredient = ((NBTTagList) subs.get(i)).getCompoundTagAt(0);
+            ItemStack stack = new ItemStack(ingredient);
+            if (stack.isEmpty()) continue;
+
+            ThELog.debug("Adding {} for {}", stack.getDisplayName(), slot);
+            IAEItemStack aeStack = this.channel.createStack(stack);
+            if (aeStack == null) {
+                ThELog.warn("Failed to create IAEItemStack for {}, report to developer!", stack.toString());
+                continue;
+            }
+            IAEItemStack aeExtract = AEUtil.inventoryExtract(aeStack, this.monitor, this.part.source);
+            if (aeExtract != null && aeExtract.getStackSize() > 0)
+                crafting.insertItem(slot, aeExtract.createItemStack(), false);
+
+            if (crafting.getStackInSlot(slot).getCount() >= stack.getCount()) // We managed to pull everything from the system
+                continue;
+
+            // Try pull from player
+            ThELog.debug("Failed to pull item from ae inv, trying player inventory");
+            stack.shrink(crafting.getStackInSlot(slot).getCount());
+
+            ItemStack invExtract = ItemHandlerUtil.extract(playerInv, stack, false);
+            if (!invExtract.isEmpty())
+                crafting.insertItem(slot, invExtract, false);
+        }
+        ThELog.debug("Failed to find valid item");
     }
 
     @Override

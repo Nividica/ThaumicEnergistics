@@ -78,16 +78,24 @@ public abstract class ContainerBase extends Container {
             return ItemStack.EMPTY;
         }
         if (slot instanceof SlotArcaneResult && this instanceof ICraftingContainer) {
-            ItemStack held = this.player.inventory.getItemStack();
-            if (ForgeUtil.isServer() && (held.isEmpty() || slot.getStack().isItemEqual(held)) && slot.getStack().getMaxStackSize() - held.getCount() >= slot.getStack().getCount()) {
-                int i = ((ICraftingContainer) this).tryCraft(Math.min(dragType == 1 ? slot.getStack().getMaxStackSize() : 1, (slot.getStack().getMaxStackSize() - held.getCount()) / slot.getStack().getCount()));
-                if (i > 0) {
+            ItemStack held = player.inventory.getItemStack();
+            if (ForgeUtil.isServer() && (held.isEmpty() || slot.getStack().isItemEqual(held)) && (clickType == ClickType.QUICK_MOVE || slot.getStack().getMaxStackSize() - held.getCount() >= slot.getStack().getCount())) {
+                int numToCraft = clickType == ClickType.QUICK_MOVE ? Integer.MAX_VALUE : 1; // if quick move, calc max craftable amount, else craft 1
+                int canCraftNum = ((ICraftingContainer) this).tryCraft(numToCraft); // we can craft this amount
+                if (canCraftNum > 0) {
                     ItemStack toCraft = slot.getStack().copy();
-                    toCraft.setCount(i);
-                    ItemStack newHeld = ((ICraftingContainer) this).onCraft(toCraft);
-                    newHeld.grow(held.getCount());
-                    this.player.inventory.setItemStack(newHeld);
-                    PacketHandler.sendToPlayer((EntityPlayerMP) this.player, new PacketInvHeldUpdate(newHeld));
+                    toCraft.setCount(canCraftNum);
+                    if(clickType == ClickType.QUICK_MOVE) {
+                        int canFitInInvNum = ForgeUtil.addStackToPlayerInventory(player, toCraft, true).getCount(); // check how much fits in the player's inventory
+                        if(canFitInInvNum < canCraftNum) toCraft.setCount(canFitInInvNum); // if it doesn't fit, craft as much as we can fit
+                        ItemStack newToStore = ((ICraftingContainer) this).onCraft(toCraft);
+                        ForgeUtil.addStackToPlayerInventory(player, newToStore, false);
+                    }else{
+                        ItemStack newHeld = ((ICraftingContainer) this).onCraft(toCraft);
+                        newHeld.grow(held.getCount());
+                        player.inventory.setItemStack(newHeld);
+                        PacketHandler.sendToPlayer((EntityPlayerMP) player, new PacketInvHeldUpdate(newHeld));
+                    }
                 }
             }
             return ItemStack.EMPTY;
