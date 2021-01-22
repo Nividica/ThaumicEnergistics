@@ -73,7 +73,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     @Override
     public void initGui() {
-        this.xSize = 197;
+        this.xSize = 201;
         this.ySize = 190;
 
         double remainingY = this.height - this.ySize;
@@ -290,7 +290,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     @Override
     protected ResourceLocation getGuiBackground() {
-        return new ResourceLocation(ModGlobals.MOD_ID, "textures/gui/arcane_crafting.png");
+        return new ResourceLocation(ModGlobals.MOD_ID, "textures/gui/arcane_crafting_no_side.png");
     }
 
     @Override
