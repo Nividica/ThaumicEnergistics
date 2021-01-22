@@ -37,7 +37,8 @@ gui.thaumicenergistics.essentia_storage_bus=МЭ Шина хранения эс�
 gui.thaumicenergistics.essentia_terminal=Терминал эссенции
 gui.thaumicenergistics.arcane_terminal=Мистический терминал
 
-gui.thaumicenergistics.vis_required=Вис: %s
+gui.thaumicenergistics.vis_required=Вис стоимость: %s
+gui.thaumicenergistics.vis_required_out_of=Вис стоимость: %s/%s
 gui.thaumicenergistics.vis_available=%s Доступно
 gui.thaumicenergistics.vis_discount=%s%% Скидка
 

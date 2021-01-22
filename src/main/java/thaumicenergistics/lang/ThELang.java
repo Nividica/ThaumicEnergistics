@@ -33,6 +33,7 @@ public class ThELang implements IThELang {
     private IThELangKey guiEssentiaTerminal;
     private IThELangKey guiArcaneTerminal;
     private IThELangKey guiVisRequired;
+    private IThELangKey guiVisRequiredOutOf;
     private IThELangKey guiVisAvailable;
     private IThELangKey guiVisDiscount;
     private IThELangKey researchCategory;
@@ -72,6 +73,7 @@ public class ThELang implements IThELang {
         this.guiArcaneTerminal = new ThELangKey("gui.thaumicenergistics.arcane_terminal");
 
         this.guiVisRequired = new ThELangKey("gui.thaumicenergistics.vis_required");
+        this.guiVisRequiredOutOf = new ThELangKey("gui.thaumicenergistics.vis_required_out_of");
         this.guiVisAvailable = new ThELangKey("gui.thaumicenergistics.vis_available");
         this.guiVisDiscount = new ThELangKey("gui.thaumicenergistics.vis_discount");
 
@@ -201,6 +203,11 @@ public class ThELang implements IThELang {
     @Override
     public IThELangKey guiVisRequired() {
         return this.guiVisRequired;
+    }
+
+    @Override
+    public IThELangKey guiVisRequiredOutOf() {
+        return this.guiVisRequiredOutOf;
     }
 
     @Override

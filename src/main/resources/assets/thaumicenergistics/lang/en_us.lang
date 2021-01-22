@@ -37,7 +37,8 @@ gui.thaumicenergistics.essentia_storage_bus=ME Essentia Storage Bus
 gui.thaumicenergistics.essentia_terminal=Essentia Terminal
 gui.thaumicenergistics.arcane_terminal=Arcane Terminal
 
-gui.thaumicenergistics.vis_required=Vis: %s
+gui.thaumicenergistics.vis_required=Vis cost: %s
+gui.thaumicenergistics.vis_required_out_of=Vis cost: %s/%s
 gui.thaumicenergistics.vis_available=%s Available
 gui.thaumicenergistics.vis_discount=%s%% Discount
 

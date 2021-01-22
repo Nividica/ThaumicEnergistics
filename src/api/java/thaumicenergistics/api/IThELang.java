@@ -57,6 +57,8 @@ public interface IThELang {
 
     IThELangKey guiVisRequired();
 
+    IThELangKey guiVisRequiredOutOf();
+
     IThELangKey guiVisAvailable();
 
     IThELangKey guiVisDiscount();
