@@ -26,16 +26,24 @@ public class ThELang implements IThELang {
     private IThELangKey itemEssentiaTerminal;
     private IThELangKey itemArcaneTerminal;
     private IThELangKey itemArcaneChargingUpgrade;
+    private IThELangKey itemKnowledgeCore;
+    private IThELangKey itemBlankKnowledgeCore;
     private IThELangKey tooltipWIP;
     private IThELangKey guiEssentiaImportBus;
     private IThELangKey guiEssentiaExportBus;
     private IThELangKey guiEssentiaStorageBus;
     private IThELangKey guiEssentiaTerminal;
     private IThELangKey guiArcaneTerminal;
+    private IThELangKey guiArcaneInscriber;
     private IThELangKey guiVisRequired;
     private IThELangKey guiVisRequiredOutOf;
     private IThELangKey guiVisAvailable;
     private IThELangKey guiVisDiscount;
+    private IThELangKey guiInsertKnowledgeCore;
+    private IThELangKey guiKnowledgeCoreBlank;
+    private IThELangKey guiRecipeAlreadyStored;
+    private IThELangKey guiRecipeNotArcane;
+    private IThELangKey guiNoRecipe;
     private IThELangKey researchCategory;
 
     public ThELang() {
@@ -63,6 +71,8 @@ public class ThELang implements IThELang {
         this.itemArcaneTerminal = new ThELangKey("item.thaumicenergistics.arcane_terminal.name");
 
         this.itemArcaneChargingUpgrade = new ThELangKey("item.thaumicenergistics.upgrade_arcane.name");
+        this.itemKnowledgeCore = new ThELangKey("item.thaumicenergistics.knowledge_core.name");
+        this.itemBlankKnowledgeCore = new ThELangKey("item.thaumicenergistics.blank_knowledge_core.name");
 
         this.tooltipWIP = new ThELangKey("tooltip.thaumicenergistics.wip");
 
@@ -71,11 +81,18 @@ public class ThELang implements IThELang {
         this.guiEssentiaStorageBus = new ThELangKey("gui.thaumicenergistics.essentia_storage_bus");
         this.guiEssentiaTerminal = new ThELangKey("gui.thaumicenergistics.essentia_terminal");
         this.guiArcaneTerminal = new ThELangKey("gui.thaumicenergistics.arcane_terminal");
+        this.guiArcaneInscriber = new ThELangKey("gui.thaumicenergistics.arcane_inscriber");
 
         this.guiVisRequired = new ThELangKey("gui.thaumicenergistics.vis_required");
         this.guiVisRequiredOutOf = new ThELangKey("gui.thaumicenergistics.vis_required_out_of");
         this.guiVisAvailable = new ThELangKey("gui.thaumicenergistics.vis_available");
         this.guiVisDiscount = new ThELangKey("gui.thaumicenergistics.vis_discount");
+
+        this.guiInsertKnowledgeCore = new ThELangKey("gui.thaumicenergistics.insert_knowledge_core");
+        this.guiKnowledgeCoreBlank = new ThELangKey("gui.thaumicenergistics.knowledge_core_is_blank");
+        this.guiRecipeAlreadyStored = new ThELangKey("gui.thaumicenergistics.recipe_already_stored");
+        this.guiRecipeNotArcane = new ThELangKey("gui.thaumicenergistics.recipe_not_arcane");
+        this.guiNoRecipe = new ThELangKey("gui.thaumicenergistics.no_recipe");
 
         this.researchCategory = new ThELangKey("tc.research_category.THAUMICENERGISTICS");
     }
@@ -171,6 +188,16 @@ public class ThELang implements IThELang {
     }
 
     @Override
+    public IThELangKey itemKnowledgeCore() {
+        return this.itemKnowledgeCore;
+    }
+
+    @Override
+    public IThELangKey itemBlankKnowledgeCore() {
+        return this.itemBlankKnowledgeCore;
+    }
+
+    @Override
     public IThELangKey tooltipWIP() {
         return this.tooltipWIP;
     }
@@ -201,6 +228,11 @@ public class ThELang implements IThELang {
     }
 
     @Override
+    public IThELangKey guiArcaneInscriber() {
+        return this.guiArcaneInscriber;
+    }
+
+    @Override
     public IThELangKey guiVisRequired() {
         return this.guiVisRequired;
     }
@@ -218,6 +250,31 @@ public class ThELang implements IThELang {
     @Override
     public IThELangKey guiVisDiscount() {
         return this.guiVisDiscount;
+    }
+
+    @Override
+    public IThELangKey guiInsertKnowledgeCore() {
+        return this.guiInsertKnowledgeCore;
+    }
+
+    @Override
+    public IThELangKey guiKnowledgeCoreBlank() {
+        return this.guiKnowledgeCoreBlank;
+    }
+
+    @Override
+    public IThELangKey guiRecipeAlreadyStored() {
+        return this.guiRecipeAlreadyStored;
+    }
+
+    @Override
+    public IThELangKey guiRecipeNotArcane() {
+        return this.guiRecipeNotArcane;
+    }
+
+    @Override
+    public IThELangKey guiNoRecipe() {
+        return this.guiNoRecipe;
     }
 
     @Override

@@ -29,7 +29,14 @@ public class ThETextures implements IThETextures {
         return resourceLocation;
     }
 
+    private final ResourceLocation textureKnowledgeCoreSlot;
 
     public ThETextures(){
+        this.textureKnowledgeCoreSlot = ThETextures.addTexture("gui/slot/knowledge_core");
+    }
+
+    @Override
+    public ResourceLocation knowledgeCoreSlot(){
+        return this.textureKnowledgeCoreSlot;
     }
 }

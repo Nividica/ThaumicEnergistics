@@ -13,8 +13,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.parts.IPart;
 import appeng.me.GridAccessException;
 
 import thaumicenergistics.client.gui.GuiHandler;

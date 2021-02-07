@@ -20,6 +20,8 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import thaumicenergistics.api.IThEItems;
+import thaumicenergistics.api.IThEUpgrades;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.ThEItemColors;
 import thaumicenergistics.client.gui.GuiHandler;
@@ -100,12 +102,11 @@ public class ThaumicEnergistics {
             ThEItemColors.registerItemColors();
         }
 
-        ThEApi.instance()
-                .items()
-                .arcaneTerminal()
-                .maybeStack(1)
-                .ifPresent(stack ->
-                        ThEApi.instance().upgrades().arcaneCharger().registerItem(stack, 1));
+        IThEUpgrades upgrades = ThaumicEnergisticsApi.instance().upgrades();
+        IThEItems items = ThaumicEnergisticsApi.instance().items();
+        upgrades.registerUpgrade(items.arcaneTerminal(), upgrades.arcaneCharger(), 1);
+        upgrades.registerUpgrade(items.arcaneInscriber(), upgrades.blankKnowledgeCore(), 1);
+        upgrades.registerUpgrade(items.arcaneInscriber(), upgrades.knowledgeCore(), 1);
         proxy.init(event);
 
         ThELog.info("Integrations: Init");

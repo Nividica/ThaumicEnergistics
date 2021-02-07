@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import appeng.api.definitions.IItemDefinition;
 import net.minecraft.item.ItemStack;
 
 import thaumicenergistics.api.IThEItems;
@@ -16,6 +17,8 @@ import thaumicenergistics.api.IThEUpgrades;
 public class ThEUpgrades implements IThEUpgrades {
 
     private IThEUpgrade arcaneCharger;
+    private IThEUpgrade knowledgeCore;
+    private IThEUpgrade blankKnowledgeCore;
     private List<IThEUpgrade> upgrades;
 
     public ThEUpgrades(IThEItems items) {
@@ -30,6 +33,16 @@ public class ThEUpgrades implements IThEUpgrades {
     }
 
     @Override
+    public IThEUpgrade knowledgeCore() {
+        return this.knowledgeCore;
+    }
+
+    @Override
+    public IThEUpgrade blankKnowledgeCore() {
+        return this.blankKnowledgeCore;
+    }
+
+    @Override
     public Optional<IThEUpgrade> getUpgrade(ItemStack stack) {
         return this.getUpgrades().stream().filter(upgrade -> upgrade.getDefinition().isSameAs(stack)).findFirst();
     }
@@ -37,5 +50,10 @@ public class ThEUpgrades implements IThEUpgrades {
     @Override
     public List<IThEUpgrade> getUpgrades() {
         return this.upgrades;
+    }
+
+    @Override
+    public void registerUpgrade(IItemDefinition upgradable, IThEUpgrade upgrade, int max) {
+        upgradable.maybeStack(1).ifPresent(stack -> upgrade.registerItem(stack, max));
     }
 }

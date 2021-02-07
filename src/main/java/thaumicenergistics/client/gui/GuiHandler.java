@@ -11,18 +11,18 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
-import appeng.api.storage.ITerminalHost;
 import appeng.api.util.AEPartLocation;
-import appeng.container.implementations.ContainerCraftConfirm;
 
 import thaumicenergistics.ThaumicEnergistics;
 import thaumicenergistics.client.gui.crafting.GuiCraftAmountBridge;
 import thaumicenergistics.client.gui.crafting.GuiCraftConfirmBridge;
 import thaumicenergistics.client.gui.crafting.GuiCraftingStatusBridge;
+import thaumicenergistics.client.gui.item.GuiKnowledgeCore;
 import thaumicenergistics.client.gui.part.*;
 import thaumicenergistics.container.crafting.ContainerCraftAmountBridge;
 import thaumicenergistics.container.crafting.ContainerCraftConfirmBridge;
 import thaumicenergistics.container.crafting.ContainerCraftingStatusBridge;
+import thaumicenergistics.container.item.ContainerKnowledgeCore;
 import thaumicenergistics.container.part.*;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.part.*;
@@ -95,12 +95,18 @@ public class GuiHandler implements IGuiHandler {
                 return new ContainerEssentiaTerminal(player, (PartEssentiaTerminal) part);
             case ARCANE_TERMINAL:
                 return new ContainerArcaneTerminal(player, (PartArcaneTerminal) part);
+            case ARCANE_INSCRIBER:
+                return new ContainerArcaneInscriber(player, (PartArcaneInscriber) part);
             case AE2_CRAFT_AMOUNT:
-                return new ContainerCraftAmountBridge(player.inventory, (ITerminalHost) part);
+                return new ContainerCraftAmountBridge(player.inventory, (PartSharedTerminal) part);
             case AE2_CRAFT_CONFIRM:
-                return new ContainerCraftConfirmBridge(player.inventory, (PartArcaneTerminal) part);
+                return new ContainerCraftConfirmBridge(player.inventory, (PartSharedTerminal) part);
             case AE2_CRAFT_STATUS:
-                return new ContainerCraftingStatusBridge(player.inventory, (ITerminalHost) part);
+                return new ContainerCraftingStatusBridge(player.inventory, (PartSharedTerminal) part);
+            case KNOWLEDGE_CORE_ADD:
+            case KNOWLEDGE_CORE_DEL:
+            case KNOWLEDGE_CORE_VIEW:
+                return new ContainerKnowledgeCore(player, guiID, player.openContainer);
             default:
                 return null;
         }
@@ -127,12 +133,18 @@ public class GuiHandler implements IGuiHandler {
                 return new GuiEssentiaTerminal(new ContainerEssentiaTerminal(player, (PartEssentiaTerminal) part));
             case ARCANE_TERMINAL:
                 return new GuiArcaneTerminal(new ContainerArcaneTerminal(player, (PartArcaneTerminal) part));
+            case ARCANE_INSCRIBER:
+                return new GuiArcaneInscriber(new ContainerArcaneInscriber(player, (PartArcaneInscriber) part));
             case AE2_CRAFT_AMOUNT:
-                return new GuiCraftAmountBridge(player, (PartArcaneTerminal) part);
+                return new GuiCraftAmountBridge(player, (PartSharedTerminal) part);
             case AE2_CRAFT_CONFIRM:
-                return new GuiCraftConfirmBridge(player.inventory, (PartArcaneTerminal) part);
+                return new GuiCraftConfirmBridge(player.inventory, (PartSharedTerminal) part);
             case AE2_CRAFT_STATUS:
-                return new GuiCraftingStatusBridge(player.inventory, (PartArcaneTerminal) part);
+                return new GuiCraftingStatusBridge(player.inventory, (PartSharedTerminal) part);
+            case KNOWLEDGE_CORE_ADD:
+            case KNOWLEDGE_CORE_DEL:
+            case KNOWLEDGE_CORE_VIEW:
+                return new GuiKnowledgeCore(new ContainerKnowledgeCore(player, guiID, player.openContainer));
             default:
                 return null;
         }

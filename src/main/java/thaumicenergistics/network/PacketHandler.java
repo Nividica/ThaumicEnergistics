@@ -37,6 +37,7 @@ public class PacketHandler {
         PacketHandler.INSTANCE.registerMessage(PacketInvHeldUpdate.Handler.class, PacketInvHeldUpdate.class, PacketHandler.nextID(), Side.CLIENT);
         PacketHandler.INSTANCE.registerMessage(PacketVisUpdate.Handler.class, PacketVisUpdate.class, PacketHandler.nextID(), Side.CLIENT);
         PacketHandler.INSTANCE.registerMessage(PacketSettingChange.HandlerClient.class, PacketSettingChange.class, PacketHandler.nextID(), Side.CLIENT);
+        PacketHandler.INSTANCE.registerMessage(PacketIsArcaneUpdate.Handler.class, PacketIsArcaneUpdate.class, PacketHandler.nextID(), Side.CLIENT);
         PacketHandler.INSTANCE.registerMessage(PacketPlaySound.Handler.class, PacketPlaySound.class, PacketHandler.nextID(), Side.CLIENT);
 
         PacketHandler.INSTANCE.registerMessage(PacketUIAction.Handler.class, PacketUIAction.class, PacketHandler.nextID(), Side.SERVER);

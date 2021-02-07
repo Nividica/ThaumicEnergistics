@@ -49,11 +49,15 @@ public class PartArcaneTerminal extends PartSharedTerminal {
     private static IPartModel MODEL_OFF = new ThEPartModel(MODELS[0], MODELS[2], MODELS[5]);
     private static IPartModel MODEL_HAS_CHANNEL = new ThEPartModel(MODELS[0], MODELS[1], MODELS[3]);
 
-    private ThEInternalInventory craftingInventory;
-    private ThEInternalInventory upgradeInventory;
+    protected ThEInternalInventory craftingInventory;
+    protected ThEInternalInventory upgradeInventory;
 
-    public PartArcaneTerminal(ItemArcaneTerminal item) {
-        super(item);
+    public PartArcaneTerminal(ItemArcaneTerminal item){
+        this(item, ModGUIs.ARCANE_TERMINAL);
+    }
+
+    public PartArcaneTerminal(ItemArcaneTerminal item, ModGUIs gui) {
+        super(item, gui);
         this.craftingInventory = new ThEInternalInventory("matrix", 15, 64);
         this.upgradeInventory = new ThEUpgradeInventory("upgrades", 1, 1, this.getItemStack(PartItemStack.NETWORK));
         this.getConfigManager().registerSetting(Settings.SORT_BY, SortOrder.NAME);
@@ -82,7 +86,7 @@ public class PartArcaneTerminal extends PartSharedTerminal {
             return false;
 
         if (ForgeUtil.isServer())
-            GuiHandler.openGUI(ModGUIs.ARCANE_TERMINAL, player, this.hostTile.getPos(), this.side);
+            GuiHandler.openGUI(this.getGui(), player, this.hostTile.getPos(), this.side);
 
         return true;
     }

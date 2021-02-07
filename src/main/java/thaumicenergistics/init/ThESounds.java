@@ -36,7 +36,14 @@ public class ThESounds implements IThESounds {
         return resourceLocation;
     }
 
+    private final ResourceLocation soundKnowledgeCoreWrite;
 
     public ThESounds(){
+        this.soundKnowledgeCoreWrite = ThESounds.addSound("knowledge_core_write");
+
+    @Override
+    public ResourceLocation knowledgeCoreWrite(){
+        return this.soundKnowledgeCoreWrite;
+    }
     }
 }

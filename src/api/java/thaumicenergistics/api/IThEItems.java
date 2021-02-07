@@ -35,6 +35,8 @@ public interface IThEItems {
 
     IItemDefinition arcaneTerminal();
 
+    IItemDefinition arcaneInscriber();
+
     // Materials
 
     IItemDefinition diffusionCore();
@@ -50,6 +52,10 @@ public interface IThEItems {
     IItemDefinition essentiaComponent64k();
 
     IItemDefinition upgradeArcane();
+
+    IItemDefinition knowledgeCore();
+
+    IItemDefinition blankKnowledgeCore();
 
     // Other
 

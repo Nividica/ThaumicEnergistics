@@ -24,8 +24,11 @@ item.thaumicenergistics.essentia_export.name=ME Essentia Export Bus
 item.thaumicenergistics.essentia_storage.name=ME Essentia Storage Bus
 item.thaumicenergistics.essentia_terminal.name=ME Essentia Terminal
 item.thaumicenergistics.arcane_terminal.name=Arcane Crafting Terminal
+item.thaumicenergistics.arcane_inscriber.name=Arcane Inscriber
 
 item.thaumicenergistics.upgrade_arcane.name=Arcane Charging Upgrade
+item.thaumicenergistics.knowledge_core.name=Knowledge Core
+item.thaumicenergistics.blank_knowledge_core.name=Blank Knowledge Core
 
 # Tooltips
 tooltip.thaumicenergistics.wip=WORK IN PROGRESS, DO NOT USE
@@ -36,11 +39,18 @@ gui.thaumicenergistics.essentia_export_bus=ME Essentia Export Bus
 gui.thaumicenergistics.essentia_storage_bus=ME Essentia Storage Bus
 gui.thaumicenergistics.essentia_terminal=Essentia Terminal
 gui.thaumicenergistics.arcane_terminal=Arcane Terminal
+gui.thaumicenergistics.arcane_inscriber=Arcane Inscriber
 
 gui.thaumicenergistics.vis_required=Vis cost: %s
 gui.thaumicenergistics.vis_required_out_of=Vis cost: %s/%s
 gui.thaumicenergistics.vis_available=%s Available
 gui.thaumicenergistics.vis_discount=%s%% Discount
+
+gui.thaumicenergistics.insert_knowledge_core=Insert a Knowledge Core
+gui.thaumicenergistics.knowledge_core_is_blank=The Knowledge Core is blank
+gui.thaumicenergistics.recipe_already_stored=The recipe is already stored
+gui.thaumicenergistics.recipe_not_arcane=The recipe is not arcane
+gui.thaumicenergistics.no_recipe=No recipe selected
 
 card.tinkerae.name=Tinker with Matter/Energy
 card.tinkerae.text=Experiment with converting Essentia into Energy similar to your current Matter/Energy network. Gain 10-25 Energistics.
