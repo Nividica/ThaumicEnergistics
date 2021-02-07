@@ -2,8 +2,7 @@ package thaumicenergistics;
 
 import thaumicenergistics.api.*;
 import thaumicenergistics.config.ThEConfig;
-import thaumicenergistics.init.ThEBlocks;
-import thaumicenergistics.init.ThEItems;
+import thaumicenergistics.init.*;
 import thaumicenergistics.lang.ThELang;
 import thaumicenergistics.upgrade.ThEUpgrades;
 
@@ -13,18 +12,22 @@ import thaumicenergistics.upgrade.ThEUpgrades;
 public class ThaumicEnergisticsApi implements IThEApi {
 
     private static IThEApi INSTANCE;
-    private IThEItems items;
-    private IThEBlocks blocks;
-    private IThEUpgrades upgrades;
-    private IThEConfig config;
-    private IThELang lang;
+    private final IThESounds sounds;
+    private final IThEItems items;
+    private final IThEBlocks blocks;
+    private final IThEUpgrades upgrades;
+    private final IThEConfig config;
+    private final IThELang lang;
+    private final IThETextures textures;
 
     private ThaumicEnergisticsApi() {
+        this.sounds = new ThESounds();
         this.items = new ThEItems();
         this.blocks = new ThEBlocks();
         this.upgrades = new ThEUpgrades(this.items());
         this.config = new ThEConfig();
         this.lang = new ThELang();
+        this.textures = new ThETextures();
     }
 
     public static IThEApi instance() {
@@ -56,5 +59,15 @@ public class ThaumicEnergisticsApi implements IThEApi {
     @Override
     public IThELang lang() {
         return this.lang;
+    }
+
+    @Override
+    public IThETextures textures() {
+        return this.textures;
+    }
+
+    @Override
+    public IThESounds sounds() {
+        return this.sounds;
     }
 }
