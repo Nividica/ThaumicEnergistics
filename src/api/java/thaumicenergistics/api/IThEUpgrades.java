@@ -17,6 +17,8 @@ public interface IThEUpgrades {
 
     IThEUpgrade blankKnowledgeCore();
 
+    IThEUpgrade cardSpeed();
+
     Optional<IThEUpgrade> getUpgrade(ItemStack stack);
 
     List<IThEUpgrade> getUpgrades();

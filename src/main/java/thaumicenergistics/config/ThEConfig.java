@@ -51,6 +51,9 @@ public class ThEConfig implements IThEConfig {
         @Name("Aspect Search Setting")
         public PrefixSetting aspectSearchSetting = PrefixSetting.REQUIRE_PREFIX;
 
+        @Name("Arcane Assembler Particle Multiplier")
+        public double arcaneAssemblerParticleMultiplier = 1.0;
+
         private Client() {
 
         }
@@ -71,6 +74,11 @@ public class ThEConfig implements IThEConfig {
         public int tickTimeEssentiaStorageBusMin = 5;
         @Name("Essentia Storage Bus Max")
         public int tickTimeEssentiaStorageBusMax = 60;
+
+        @Name("Arcane Assembler Min")
+        public int tickTimeArcaneAssemblerMin = 2;
+        @Name("Arcane Assembler Max")
+        public int tickTimeArcaneAssemblerMax = 40;
 
         private TickRates() {
 
@@ -121,6 +129,16 @@ public class ThEConfig implements IThEConfig {
     }
 
     @Override
+    public int tickTimeArcaneAssemblerMin(){
+        return tickRates.tickTimeArcaneAssemblerMin;
+    }
+
+    @Override
+    public int tickTimeArcaneAssemblerMax(){
+        return tickRates.tickTimeArcaneAssemblerMax;
+    }
+
+    @Override
     public TerminalStyle terminalStyle() {
         return client.terminalStyle;
     }
@@ -143,6 +161,11 @@ public class ThEConfig implements IThEConfig {
     @Override
     public PrefixSetting aspectSearchSetting() {
         return client.aspectSearchSetting;
+    }
+
+    @Override
+    public double arcaneAssemblerParticleMultiplier() {
+        return client.arcaneAssemblerParticleMultiplier;
     }
 
     public static void save() {

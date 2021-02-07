@@ -10,6 +10,7 @@ public class ThELang implements IThELang {
 
     private IThELangKey creativeTab;
     private IThELangKey tileInfusionProvider;
+    private IThELangKey tileArcaneAssembler;
     private IThELangKey itemDiffusionCore;
     private IThELangKey itemCoalescenceCore;
     private IThELangKey itemEssentia1kComponent;
@@ -44,12 +45,15 @@ public class ThELang implements IThELang {
     private IThELangKey guiRecipeAlreadyStored;
     private IThELangKey guiRecipeNotArcane;
     private IThELangKey guiNoRecipe;
+    private IThELangKey guiOutOfAspect;
+    private IThELangKey guiOutOfVis;
     private IThELangKey researchCategory;
 
     public ThELang() {
         this.creativeTab = new ThELangKey("itemGroup.ThaumicEnergistics");
 
         this.tileInfusionProvider = new ThELangKey("tile.thaumicenergistics.infusion_provider.name");
+        this.tileArcaneAssembler = new ThELangKey("tile.thaumicenergistics.arcane_assembler.name");
 
         this.itemDiffusionCore = new ThELangKey("item.thaumicenergistics.diffusion_core.name");
         this.itemCoalescenceCore = new ThELangKey("item.thaumicenergistics.coalescence_core.name");
@@ -94,6 +98,9 @@ public class ThELang implements IThELang {
         this.guiRecipeNotArcane = new ThELangKey("gui.thaumicenergistics.recipe_not_arcane");
         this.guiNoRecipe = new ThELangKey("gui.thaumicenergistics.no_recipe");
 
+        this.guiOutOfAspect = new ThELangKey("gui.thaumicenergistics.out_of_aspect");
+        this.guiOutOfVis = new ThELangKey("gui.thaumicenergistics.out_of_vis");
+
         this.researchCategory = new ThELangKey("tc.research_category.THAUMICENERGISTICS");
     }
 
@@ -105,6 +112,11 @@ public class ThELang implements IThELang {
     @Override
     public IThELangKey tileInfusionProvider() {
         return this.tileInfusionProvider;
+    }
+
+    @Override
+    public IThELangKey tileArcaneAssembler() {
+        return this.tileArcaneAssembler;
     }
 
     @Override
@@ -275,6 +287,16 @@ public class ThELang implements IThELang {
     @Override
     public IThELangKey guiNoRecipe() {
         return this.guiNoRecipe;
+    }
+
+    @Override
+    public IThELangKey guiOutOfAspect() {
+        return this.guiOutOfAspect;
+    }
+
+    @Override
+    public IThELangKey guiOutOfVis() {
+        return this.guiOutOfVis;
     }
 
     @Override

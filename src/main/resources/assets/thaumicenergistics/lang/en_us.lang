@@ -3,6 +3,7 @@ itemGroup.ThaumicEnergistics=Thaumic Energistics
 
 # Blocks
 tile.thaumicenergistics.infusion_provider.name=Essentia Infusion Provider
+tile.thaumicenergistics.arcane_assembler.name=Arcane Assembler
 
 # Items
 item.thaumicenergistics.diffusion_core.name=Diffusion Core
@@ -51,6 +52,9 @@ gui.thaumicenergistics.knowledge_core_is_blank=The Knowledge Core is blank
 gui.thaumicenergistics.recipe_already_stored=The recipe is already stored
 gui.thaumicenergistics.recipe_not_arcane=The recipe is not arcane
 gui.thaumicenergistics.no_recipe=No recipe selected
+
+gui.thaumicenergistics.out_of_aspect=Out of aspect!
+gui.thaumicenergistics.out_of_vis=Out of vis!
 
 card.tinkerae.name=Tinker with Matter/Energy
 card.tinkerae.text=Experiment with converting Essentia into Energy similar to your current Matter/Energy network. Gain 10-25 Energistics.

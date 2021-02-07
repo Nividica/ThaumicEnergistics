@@ -11,6 +11,8 @@ public interface IThELang {
 
     IThELangKey tileInfusionProvider();
 
+    IThELangKey tileArcaneAssembler();
+
     IThELangKey itemDiffusionCore();
 
     IThELangKey itemCoalescenceCore();
@@ -78,6 +80,10 @@ public interface IThELang {
     IThELangKey guiRecipeNotArcane();
 
     IThELangKey guiNoRecipe();
+
+    IThELangKey guiOutOfAspect();
+
+    IThELangKey guiOutOfVis();
 
     IThELangKey researchCategory();
 }

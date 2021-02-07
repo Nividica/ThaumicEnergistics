@@ -14,11 +14,13 @@ import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
 
 import thaumicenergistics.ThaumicEnergistics;
+import thaumicenergistics.client.gui.block.GuiArcaneAssembler;
 import thaumicenergistics.client.gui.crafting.GuiCraftAmountBridge;
 import thaumicenergistics.client.gui.crafting.GuiCraftConfirmBridge;
 import thaumicenergistics.client.gui.crafting.GuiCraftingStatusBridge;
 import thaumicenergistics.client.gui.item.GuiKnowledgeCore;
 import thaumicenergistics.client.gui.part.*;
+import thaumicenergistics.container.block.ContainerArcaneAssembler;
 import thaumicenergistics.container.crafting.ContainerCraftAmountBridge;
 import thaumicenergistics.container.crafting.ContainerCraftConfirmBridge;
 import thaumicenergistics.container.crafting.ContainerCraftingStatusBridge;
@@ -26,6 +28,7 @@ import thaumicenergistics.container.item.ContainerKnowledgeCore;
 import thaumicenergistics.container.part.*;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.part.*;
+import thaumicenergistics.tile.TileArcaneAssembler;
 
 /**
  * @author BrockWS
@@ -85,6 +88,8 @@ public class GuiHandler implements IGuiHandler {
         if(part == null) te = world.getTileEntity(pos);
 
         switch (guiID) {
+            case ARCANE_ASSEMBLER:
+                return new ContainerArcaneAssembler(player, (TileArcaneAssembler) te);
             case ESSENTIA_IMPORT_BUS:
                 return new ContainerEssentiaImportBus(player, (PartEssentiaImportBus) part);
             case ESSENTIA_EXPORT_BUS:
@@ -123,6 +128,8 @@ public class GuiHandler implements IGuiHandler {
         if(part == null) te = world.getTileEntity(pos);
 
         switch (guiID) {
+            case ARCANE_ASSEMBLER:
+                return new GuiArcaneAssembler(new ContainerArcaneAssembler(player, (TileArcaneAssembler) te));
             case ESSENTIA_IMPORT_BUS:
                 return new GuiEssentiaImportBus(new ContainerEssentiaImportBus(player, (PartEssentiaImportBus) part));
             case ESSENTIA_EXPORT_BUS:

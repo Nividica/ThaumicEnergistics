@@ -37,13 +37,27 @@ public class ThESounds implements IThESounds {
     }
 
     private final ResourceLocation soundKnowledgeCoreWrite;
+    private final ResourceLocation soundKnowledgeCorePowerUp;
+    private final ResourceLocation soundKnowledgeCorePowerDown;
 
     public ThESounds(){
         this.soundKnowledgeCoreWrite = ThESounds.addSound("knowledge_core_write");
+        this.soundKnowledgeCorePowerUp = ThESounds.addSound("knowledge_core_power_up");
+        this.soundKnowledgeCorePowerDown = ThESounds.addSound("knowledge_core_power_down");
+    }
 
     @Override
     public ResourceLocation knowledgeCoreWrite(){
         return this.soundKnowledgeCoreWrite;
     }
+
+    @Override
+    public ResourceLocation knowledgeCorePowerUp(){
+        return this.soundKnowledgeCorePowerUp;
+    }
+
+    @Override
+    public ResourceLocation knowledgeCorePowerDown(){
+        return this.soundKnowledgeCorePowerDown;
     }
 }

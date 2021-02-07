@@ -9,6 +9,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -20,16 +21,19 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import thaumicenergistics.api.IThEBlocks;
 import thaumicenergistics.api.IThEItems;
 import thaumicenergistics.api.IThEUpgrades;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.ThEItemColors;
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.client.render.ArcaneAssemblerRenderer;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
 import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
 import thaumicenergistics.network.PacketHandler;
+import thaumicenergistics.tile.TileArcaneAssembler;
 import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.ThELog;
 
@@ -104,9 +108,15 @@ public class ThaumicEnergistics {
 
         IThEUpgrades upgrades = ThaumicEnergisticsApi.instance().upgrades();
         IThEItems items = ThaumicEnergisticsApi.instance().items();
+        IThEBlocks blocks = ThaumicEnergisticsApi.instance().blocks();
+
         upgrades.registerUpgrade(items.arcaneTerminal(), upgrades.arcaneCharger(), 1);
         upgrades.registerUpgrade(items.arcaneInscriber(), upgrades.blankKnowledgeCore(), 1);
         upgrades.registerUpgrade(items.arcaneInscriber(), upgrades.knowledgeCore(), 1);
+        upgrades.registerUpgrade(blocks.arcaneAssembler(), upgrades.knowledgeCore(), 1);
+        upgrades.registerUpgrade(blocks.arcaneAssembler(), upgrades.arcaneCharger(), 1);
+        upgrades.registerUpgrade(blocks.arcaneAssembler(), upgrades.cardSpeed(), 5);
+
         proxy.init(event);
 
         ThELog.info("Integrations: Init");
@@ -149,6 +159,11 @@ public class ThaumicEnergistics {
     }
 
     public static class ClientProxy implements IProxy{
+        public void init(FMLInitializationEvent event){
+            // Init TESR
+            ClientRegistry.bindTileEntitySpecialRenderer(TileArcaneAssembler.class, new ArcaneAssemblerRenderer());
+        }
+
         public EntityPlayer getPlayerEntFromCtx(MessageContext ctx){
             return ctx.side.isClient() ? Minecraft.getMinecraft().player : ctx.getServerHandler().player;
         }
