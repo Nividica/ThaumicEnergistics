@@ -25,6 +25,8 @@ public class ThEUpgrades implements IThEUpgrades {
         this.upgrades = new ArrayList<>();
 
         this.upgrades.add(this.arcaneCharger = new ThEUpgrade(items.upgradeArcane()));
+        this.upgrades.add(this.knowledgeCore = new ThEUpgrade(items.knowledgeCore()));
+        this.upgrades.add(this.blankKnowledgeCore = new ThEUpgrade(items.blankKnowledgeCore()));
     }
 
     @Override
