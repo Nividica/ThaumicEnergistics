@@ -3,11 +3,14 @@ package thaumicenergistics;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -16,6 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.ThEItemColors;
 import thaumicenergistics.client.gui.GuiHandler;
@@ -47,6 +51,12 @@ public class ThaumicEnergistics {
     public static ThaumicEnergistics INSTANCE;
 
     /**
+     * Proxy class that runs code that should be strictly on the physical client
+     */
+    @SidedProxy
+    public static IProxy proxy;
+
+    /**
      * Thaumic Energistics Logger
      */
     public static Logger LOGGER;
@@ -65,6 +75,8 @@ public class ThaumicEnergistics {
         MinecraftForge.EVENT_BUS.register(this);
 
         PacketHandler.register();
+
+        proxy.preInit(event);
 
         ThaumicEnergistics.INTEGRATIONS.add(new ThEThaumcraft());
         ThaumicEnergistics.INTEGRATIONS.add(new ThEAppliedEnergistics());
@@ -94,6 +106,7 @@ public class ThaumicEnergistics {
                 .maybeStack(1)
                 .ifPresent(stack ->
                         ThEApi.instance().upgrades().arcaneCharger().registerItem(stack, 1));
+        proxy.init(event);
 
         ThELog.info("Integrations: Init");
         ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::init);
@@ -106,6 +119,8 @@ public class ThaumicEnergistics {
      */
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        proxy.postInit(event);
+
         ThELog.info("Integrations: PostInit");
         ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::postInit);
     }
@@ -130,5 +145,25 @@ public class ThaumicEnergistics {
     public void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(ModGlobals.MOD_ID))
             ConfigManager.sync(ModGlobals.MOD_ID, Config.Type.INSTANCE);
+    }
+
+    public static class ClientProxy implements IProxy{
+        public EntityPlayer getPlayerEntFromCtx(MessageContext ctx){
+            return ctx.side.isClient() ? Minecraft.getMinecraft().player : ctx.getServerHandler().player;
+        }
+    }
+
+    public static class ServerProxy implements IProxy{
+        public EntityPlayer getPlayerEntFromCtx(MessageContext ctx){
+            return ctx.getServerHandler().player;
+        }
+    }
+
+    public interface IProxy{
+        default void preInit(FMLPreInitializationEvent event){}
+        default void init(FMLInitializationEvent event){}
+        default void postInit(FMLPostInitializationEvent event){}
+
+        EntityPlayer getPlayerEntFromCtx(MessageContext ctx);
     }
 }
