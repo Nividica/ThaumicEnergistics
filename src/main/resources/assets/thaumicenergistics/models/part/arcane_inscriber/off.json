@@ -1,0 +1,8 @@
+{
+    "parent": "appliedenergistics2:part/display_off",
+    "textures": {
+        "lightsBright": "thaumicenergistics:part/arcane_inscriber/overlay1",
+        "lightsMedium": "thaumicenergistics:part/arcane_inscriber/overlay1",
+        "lightsDark": "thaumicenergistics:part/arcane_inscriber/overlay1"
+    }
+}

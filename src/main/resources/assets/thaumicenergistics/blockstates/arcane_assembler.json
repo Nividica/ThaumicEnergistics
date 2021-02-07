@@ -1,0 +1,22 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "forge:multi-layer",
+        "custom": {
+            "base": "thaumicenergistics:arcane_assembler#base",
+            "Solid": "thaumicenergistics:arcane_assembler#base",
+            "Translucent": "thaumicenergistics:arcane_assembler#windows"
+        },
+        "transform": "forge:default-block"
+    },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{}],
+        "base": [{
+            "model": "thaumicenergistics:arcane_assembler"
+        }],
+        "windows": [{
+            "model": "thaumicenergistics:arcane_assembler_windows"
+        }]
+    }
+}
