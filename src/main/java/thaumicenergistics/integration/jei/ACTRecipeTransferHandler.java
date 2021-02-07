@@ -1,43 +1,47 @@
 package thaumicenergistics.integration.jei;
 
+import mcp.MethodsReturnNonnullByDefault;
 import mezz.jei.api.gui.IGuiIngredient;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-
-import javax.annotation.Nullable;
-import java.util.Map;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-
 import thaumicenergistics.container.part.ContainerArcaneTerminal;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketJEIRecipe;
 import thaumicenergistics.util.ForgeUtil;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
+
 /**
  * @author BrockWS
+ * @author Alex811
  */
-public class ACTRecipeTransferHandler implements IRecipeTransferHandler<ContainerArcaneTerminal> {
+public class ACTRecipeTransferHandler<C extends ContainerArcaneTerminal> implements IRecipeTransferHandler<C> {
 
-    private IRecipeTransferHandlerHelper recipeTransferHelper;
+    private final IRecipeTransferHandlerHelper recipeTransferHelper;
 
     public ACTRecipeTransferHandler(IRecipeTransferHandlerHelper helper) {
         this.recipeTransferHelper = helper;
     }
 
     @Override
-    public Class<ContainerArcaneTerminal> getContainerClass() {
-        return ContainerArcaneTerminal.class;
+    @SuppressWarnings("unchecked")
+    @MethodsReturnNonnullByDefault
+    public Class<C> getContainerClass() {
+        return (Class<C>) ContainerArcaneTerminal.class;
     }
 
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(ContainerArcaneTerminal container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
+    @ParametersAreNonnullByDefault
+    public IRecipeTransferError transferRecipe(C container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
         Map<Integer, ? extends IGuiIngredient<ItemStack>> ingredients = recipeLayout.getItemStacks().getGuiIngredients();
         NBTTagCompound tag = new NBTTagCompound();
         NBTTagList normalIngredients = new NBTTagList();

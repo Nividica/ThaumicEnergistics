@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import appeng.api.AEApi;
+import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.util.AECableType;
@@ -19,11 +20,10 @@ import thaumicenergistics.util.ForgeUtil;
 /**
  * @author BrockWS
  */
-public abstract class TileNetwork extends TileBase implements IThEGridHost, IActionHost {
+public abstract class TileNetwork extends TileBase implements IThEGridHost, IActionHost, IPowerChannelState {
 
-    private ThEGridBlock gridBlock;
-    private IGridNode gridNode;
-
+    protected ThEGridBlock gridBlock;
+    protected IGridNode gridNode;
     protected ThEActionSource src;
 
     public TileNetwork() {
@@ -89,5 +89,15 @@ public abstract class TileNetwork extends TileBase implements IThEGridHost, IAct
     @Override
     public void securityBreak() {
         this.getWorld().destroyBlock(this.getPos(), true);
+    }
+
+    @Override
+    public boolean isPowered() {
+        return isActive();
+    }
+
+    @Override
+    public boolean isActive() {
+        return this.gridNode != null && this.gridNode.isActive();
     }
 }

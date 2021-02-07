@@ -1,6 +1,7 @@
 package thaumicenergistics.block;
 
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +21,12 @@ import thaumicenergistics.tile.TileNetwork;
 public abstract class BlockNetwork extends BlockBase implements ITileEntityProvider {
 
     public BlockNetwork(String id) {
-        super(id);
+        this(id, Material.IRON);
+    }
+
+    public BlockNetwork(String id, Material material) {
+        super(id, material);
+
     }
 
     @Override

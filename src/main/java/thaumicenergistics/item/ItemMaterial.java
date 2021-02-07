@@ -28,6 +28,11 @@ public class ItemMaterial extends ItemBase implements IThEModel {
         super(id);
     }
 
+    public ItemMaterial(String id, int stackSize) {
+        this(id);
+        setMaxStackSize(stackSize);
+    }
+
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         Optional<IThEUpgrade> optional = ThEApi.instance().upgrades().getUpgrade(stack);

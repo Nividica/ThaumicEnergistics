@@ -2,6 +2,11 @@ package thaumicenergistics.container.part;
 
 import java.util.Objects;
 
+import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IContainerListener;
@@ -26,7 +31,6 @@ import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import appeng.api.AEApi;
-import appeng.api.config.*;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitor;
@@ -47,7 +51,7 @@ import thaumcraft.api.items.ItemsTC;
 
 import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.container.ActionType;
-import thaumicenergistics.container.ContainerBase;
+import thaumicenergistics.container.ContainerBaseTerminal;
 import thaumicenergistics.container.DummyContainer;
 import thaumicenergistics.container.ICraftingContainer;
 import thaumicenergistics.container.crafting.ContainerCraftAmountBridge;
@@ -59,7 +63,8 @@ import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.integration.thaumcraft.TCCraftingManager;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.*;
-import thaumicenergistics.part.PartArcaneTerminal;
+import thaumicenergistics.part.PartBase;
+import thaumicenergistics.part.PartSharedTerminal;
 import thaumicenergistics.util.*;
 import thaumicenergistics.util.inventory.ThEInternalInventory;
 
@@ -68,19 +73,20 @@ import com.google.common.collect.Lists;
 /**
  * @author BrockWS
  */
-public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingContainer, IConfigurableObject {
+public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingContainer, IConfigurableObject {
 
     public IRecipe recipe;
 
-    private PartArcaneTerminal part;
-    private IItemStorageChannel channel;
-    private IMEMonitor<IAEItemStack> monitor;
-    private IInventory craftingResult;
-    private IConfigManager serverConfigManager;
-    private IConfigManager clientConfigManager;
-    private SlotArcaneResult resultSlot;
+    protected PartSharedTerminal part;
+    protected IItemStorageChannel channel;
+    protected IMEMonitor<IAEItemStack> monitor;
+    protected IInventory craftingResult;
+    protected IConfigManager serverConfigManager;
+    protected IConfigManager clientConfigManager;
+    protected SlotArcaneResult resultSlot;
 
-    public ContainerArcaneTerminal(EntityPlayer player, PartArcaneTerminal part) {
+
+    public ContainerArcaneTerminal(EntityPlayer player, PartSharedTerminal part){
         super(player);
         this.part = part;
 
@@ -104,6 +110,11 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
 
         this.bindPlayerInventory(new PlayerMainInvWrapper(player.inventory), 0, 106);
         this.bindPlayerArmour(player, new PlayerArmorInvWrapper(player.inventory), 8, 19);
+    }
+
+    @Override
+    public PartBase getPart() {
+        return this.part;
     }
 
     @Override
@@ -214,9 +225,13 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
                 cca.setItemToCraft((IAEItemStack) packet.requestedStack);
             }
         } else if (packet.action == ActionType.CLEAR_GRID) {
-            AEUtil.clearIntoMEInventory(this.getInventory("crafting"), this.monitor, this.part.source);
+            clearCrafting();
         }
         this.onMatrixChanged();
+    }
+
+    protected void clearCrafting() {
+        AEUtil.clearIntoMEInventory(this.getInventory("crafting"), this.monitor, this.part.source);
     }
 
     @Override
@@ -404,19 +419,19 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
                     crafting.insertItem(j, this.getRefill(extract), false);
                 }
             }
-            if (this.getRequiredVis(this.recipe, this.player) > 0)
+            if (this.getCurrentRequiredVis() > 0)
                 TCUtil.drainVis(this.part.getTile().getWorld(),
                         this.part.getTile().getPos(),
-                        this.getRequiredVis(this.recipe, this.player),
+                        this.getCurrentRequiredVis(),
                         this.getInventory("upgrades").getStackInSlot(0).isEmpty() ? 0 : 1);
 
-            // Recraft safety checks
+            // Re-craft safety checks
             inv = this.getInvCrafting(crafting, this.recipe);
 
             if (!this.recipe.matches(inv, this.player.world)) // Check if we can craft again
                 craftAgain = false;
 
-            if (this.getWorldVis() < this.getRequiredVis(this.recipe, this.player))
+            if (this.getWorldVis() < this.getCurrentRequiredVis())
                 craftAgain = false;
 
             timesCrafted++;
@@ -467,7 +482,7 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void addMatrixSlots(int offsetX, int offsetY) {
+    protected void addMatrixSlots(int offsetX, int offsetY) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 this.addSlotToContainer(new SlotArcaneMatrix(this, i * 3 + j, offsetX + (j * 18), offsetY + (i * 18)));
@@ -485,7 +500,7 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
         this.onMatrixChanged();
     }
 
-    private void addUpgradeSlots(int offsetX, int offsetY) {
+    protected void addUpgradeSlots(int offsetX, int offsetY) {
         this.addSlotToContainer(new SlotUpgrade(this.getInventory("upgrades"), 0, offsetX, offsetY)/* {
             @Override
             public boolean isItemValid(ItemStack stack) {
@@ -497,7 +512,7 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
     protected void sendVisInfo(IContainerListener listener) {
         if (ForgeUtil.isClient() || !(listener instanceof EntityPlayerMP))
             return;
-        PacketHandler.sendToPlayer((EntityPlayerMP) this.player, new PacketVisUpdate(this.getWorldVis(), this.getRequiredVis(this.recipe, this.player), this.getDiscount(this.player)));
+        PacketHandler.sendToPlayer((EntityPlayerMP) this.player, new PacketVisUpdate(this.getWorldVis(), this.getCurrentRequiredVis(), this.getDiscount(this.player)));
     }
 
     protected float getWorldVis() {
@@ -522,6 +537,10 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
         if (!(recipe instanceof IArcaneRecipe))
             return -1;
         return ((IArcaneRecipe) recipe).getVis() * (1f - this.getDiscount(player));
+    }
+
+    public float getCurrentRequiredVis(){
+        return this.getRequiredVis(this.recipe, this.player);
     }
 
     protected float getDiscount(EntityPlayer player) {
@@ -570,7 +589,7 @@ public class ContainerArcaneTerminal extends ContainerBase implements IMEMonitor
         return ItemStack.EMPTY;
     }
 
-    private void sendInventory(IContainerListener listener) {
+    protected void sendInventory(IContainerListener listener) {
         if (ForgeUtil.isClient() || !(listener instanceof EntityPlayerMP) || this.monitor == null)
             return;
         IItemList<IAEItemStack> storage = this.monitor.getStorageList();

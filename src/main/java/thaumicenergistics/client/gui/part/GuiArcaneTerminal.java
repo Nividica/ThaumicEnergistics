@@ -48,10 +48,10 @@ import org.lwjgl.input.Mouse;
  */
 public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemStorageChannel> {
 
-    private ContainerArcaneTerminal cat;
+    protected ContainerArcaneTerminal container;
 
     private GuiTextField searchField;
-    private GuiScrollBar scrollBar;
+    protected GuiScrollBar scrollBar;
     private GuiImgButton sortByButton;
     private GuiImgButton sortDirButton;
     private GuiImgButton viewItemsButton;
@@ -59,14 +59,14 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     private GuiImgButton clearButton;
     private GuiTabButton craftingStatusBtn;
 
-    private int rows = 6;
+    protected int rows = 6;
     private float visAvailable = -1;
-    private float visRequired = -1;
+    protected float visRequired = -1;
     private float discount = 0f;
 
     public GuiArcaneTerminal(ContainerArcaneTerminal container) {
         super(container);
-        this.cat = container;
+        this.container = container;
         this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
         this.repo = new MERepo<>(IItemStorageChannel.class);
     }
@@ -121,10 +121,12 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
         this.addButton(this.clearButton);
         this.addButton(this.craftingStatusBtn);
 
-        this.inventorySlots.inventorySlots.forEach(slot -> {
-            if (slot instanceof ThESlot)
-                ((ThESlot) slot).recalculateY(this.rows);
-        });
+        this.inventorySlots.inventorySlots.forEach(this::recalcSlotY);
+    }
+
+    protected void recalcSlotY(Slot slot){
+        if (slot instanceof ThESlot)
+            ((ThESlot) slot).recalculateY(this.rows);
     }
 
     @Override
@@ -300,7 +302,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
             return;
         }
         if (button == this.craftingStatusBtn) {
-            PacketHandler.sendToServer(new PacketOpenGUI(ModGUIs.AE2_CRAFT_STATUS, this.cat.getPartPos(), this.cat.getPartSide()));
+            PacketHandler.sendToServer(new PacketOpenGUI(ModGUIs.AE2_CRAFT_STATUS, this.container.getPartPos(), this.container.getPartSide()));
             return;
         }
         if (button instanceof GuiImgButton) {

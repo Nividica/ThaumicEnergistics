@@ -43,11 +43,12 @@ import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.ItemHandlerUtil;
 
 import io.netty.buffer.ByteBuf;
+import thaumicenergistics.util.inventory.IThEInvTile;
 
 /**
  * @author BrockWS
  */
-public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost, IActionHost, IPowerChannelState {
+public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost, IActionHost, IPowerChannelState, IThEInvTile {
 
     protected ThEGridBlock gridBlock;
     protected IGridNode gridNode;
@@ -66,6 +67,15 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
         this.source = new ThEActionSource(this);
     }
 
+    public ItemStack getRepr() {
+        return new ItemStack(this.item);
+    }
+
+    @Override
+    public ItemStack getItemStack(PartItemStack type) {
+        return getRepr();
+    }
+
     public boolean canWork() {
         return false;
     }
@@ -79,12 +89,6 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
         if (this.hostTile != null && this.hostTile.hasWorld() && this.hostTile.getWorld().provider != null)
             return new DimensionalCoord(this.hostTile.getWorld(), this.hostTile.getPos());
         return null;
-    }
-
-    @Override
-    public ItemStack getItemStack(PartItemStack type) {
-        // TODO: save nbt to it
-        return new ItemStack(this.item);
     }
 
     @Override

@@ -77,9 +77,12 @@ public class GuiHandler implements IGuiHandler {
     @Nullable
     @Override
     public Object getServerGuiElement(int ordinal, EntityPlayer player, World world, int x, int y, int z) {
+        TileEntity te = null;
         ModGUIs guiID = GuiHandler.getGUIFromOrdinal(ordinal);
         AEPartLocation side = GuiHandler.getSideFromOrdinal(ordinal);
-        IPart part = GuiHandler.getPartFromWorld(world, new BlockPos(x, y, z), side);
+        BlockPos pos = new BlockPos(x, y, z);
+        IPart part = GuiHandler.getPartFromWorld(world, pos, side);
+        if(part == null) te = world.getTileEntity(pos);
 
         switch (guiID) {
             case ESSENTIA_IMPORT_BUS:
@@ -106,9 +109,12 @@ public class GuiHandler implements IGuiHandler {
     @Nullable
     @Override
     public Object getClientGuiElement(int ordinal, EntityPlayer player, World world, int x, int y, int z) {
+        TileEntity te = null;
         ModGUIs guiID = GuiHandler.getGUIFromOrdinal(ordinal);
         AEPartLocation side = GuiHandler.getSideFromOrdinal(ordinal);
-        IPart part = GuiHandler.getPartFromWorld(world, new BlockPos(x, y, z), side);
+        BlockPos pos = new BlockPos(x, y, z);
+        IPart part = GuiHandler.getPartFromWorld(world, pos, side);
+        if(part == null) te = world.getTileEntity(pos);
 
         switch (guiID) {
             case ESSENTIA_IMPORT_BUS:

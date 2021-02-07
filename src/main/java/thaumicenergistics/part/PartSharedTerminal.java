@@ -10,6 +10,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.me.GridAccessException;
 
+import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.integration.appeng.grid.GridUtil;
 import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.item.ItemPartBase;
@@ -21,8 +22,15 @@ public abstract class PartSharedTerminal extends PartBase implements ITerminalHo
 
     private IConfigManager cm = new ThEConfigManager();
 
-    public PartSharedTerminal(ItemPartBase item) {
+    protected final ModGUIs gui;    // the GUI that corresponds to this terminal, mainly used to know where to return to, from a different GUI
+
+    public PartSharedTerminal(ItemPartBase item, ModGUIs gui) {
         super(item);
+        this.gui = gui;
+    }
+
+    public ModGUIs getGui(){
+        return this.gui;
     }
 
     @Override

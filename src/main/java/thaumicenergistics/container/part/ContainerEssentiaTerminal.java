@@ -28,22 +28,22 @@ import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.container.ActionType;
-import thaumicenergistics.container.ContainerBase;
+import thaumicenergistics.container.ContainerBaseTerminal;
 import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketInvHeldUpdate;
 import thaumicenergistics.network.packets.PacketMEEssentiaUpdate;
 import thaumicenergistics.network.packets.PacketSettingChange;
 import thaumicenergistics.network.packets.PacketUIAction;
+import thaumicenergistics.part.PartBase;
 import thaumicenergistics.part.PartEssentiaTerminal;
 import thaumicenergistics.util.AEUtil;
 import thaumicenergistics.util.ForgeUtil;
-import thaumicenergistics.util.TCUtil;
 
 /**
  * @author BrockWS
  */
-public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonitorHandlerReceiver<IAEEssentiaStack>, IConfigurableObject {
+public class ContainerEssentiaTerminal extends ContainerBaseTerminal implements IMEMonitorHandlerReceiver<IAEEssentiaStack>, IConfigurableObject {
 
     private PartEssentiaTerminal part;
     private IMEMonitor<IAEEssentiaStack> monitor;
@@ -68,6 +68,11 @@ public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonit
         }
 
         this.bindPlayerInventory(new PlayerMainInvWrapper(player.inventory), 0, 30);
+    }
+
+    @Override
+    public PartBase getPart() {
+        return this.part;
     }
 
     @Override

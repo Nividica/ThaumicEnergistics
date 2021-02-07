@@ -10,7 +10,6 @@ import net.minecraft.util.math.Vec3d;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
 import appeng.api.parts.IPartModel;
 
 import thaumicenergistics.client.gui.GuiHandler;
@@ -39,8 +38,12 @@ public class PartEssentiaTerminal extends PartSharedTerminal {
     private static IPartModel MODEL_OFF = new ThEPartModel(MODELS[0], MODELS[2], MODELS[5]);
     private static IPartModel MODEL_HAS_CHANNEL = new ThEPartModel(MODELS[0], MODELS[1], MODELS[3]);
 
-    public PartEssentiaTerminal(ItemEssentiaTerminal itemEssentiaTerminal) {
-        super(itemEssentiaTerminal);
+    public PartEssentiaTerminal(ItemEssentiaTerminal itemEssentiaTerminal){
+        this(itemEssentiaTerminal, ModGUIs.ESSENTIA_TERMINAL);
+    }
+
+    public PartEssentiaTerminal(ItemEssentiaTerminal itemEssentiaTerminal, ModGUIs gui) {
+        super(itemEssentiaTerminal, gui);
         this.getConfigManager().registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.getConfigManager().registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
     }
@@ -65,5 +68,10 @@ public class PartEssentiaTerminal extends PartSharedTerminal {
             else
                 return MODEL_ON;
         return MODEL_OFF;
+    }
+
+    @Override
+    public ModGUIs getGui() {
+        return ModGUIs.ESSENTIA_TERMINAL;
     }
 }
