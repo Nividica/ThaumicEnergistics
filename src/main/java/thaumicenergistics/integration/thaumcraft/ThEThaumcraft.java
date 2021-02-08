@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -27,7 +26,6 @@ import thaumcraft.api.crafting.ShapedArcaneRecipe;
 import thaumcraft.api.crafting.ShapelessArcaneRecipe;
 import thaumcraft.api.items.ItemsTC;
 import thaumcraft.api.research.ResearchCategories;
-import thaumcraft.api.research.ScanItem;
 import thaumcraft.api.research.ScanningManager;
 import thaumcraft.api.research.theorycraft.TheorycraftManager;
 
@@ -39,6 +37,7 @@ import thaumicenergistics.integration.thaumcraft.research.AidMEDrive;
 import thaumicenergistics.integration.thaumcraft.research.CardTinkerAE;
 import thaumicenergistics.integration.thaumcraft.research.ScanMod;
 import thaumicenergistics.util.ForgeUtil;
+import thaumicenergistics.util.TCUtil;
 import thaumicenergistics.util.ThELog;
 
 /**
@@ -302,6 +301,17 @@ public class ThEThaumcraft implements IThEIntegration {
                         BlocksTC.arcaneWorkbench,
                         AEApi.instance().definitions().materials().calcProcessor().maybeStack(1).orElse(ItemStack.EMPTY)
                 )));
+        ThEApi.instance().items().arcaneInscriber().maybeItem().ifPresent(inscriber ->
+                ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "arcane_inscriber"), new ShapelessArcaneRecipe(
+                        recipeGroup,
+                        "ARCANEINSCRIBER",
+                        50,
+                        new AspectList().add(Aspect.AIR, 1).add(Aspect.EARTH, 1).add(Aspect.FIRE, 1).add(Aspect.WATER, 1).add(Aspect.ORDER, 1).add(Aspect.ENTROPY, 1),
+                        inscriber,
+                        AEApi.instance().definitions().parts().patternTerminal().maybeStack(1).orElse(ItemStack.EMPTY),
+                        BlocksTC.arcaneWorkbench,
+                        AEApi.instance().definitions().materials().engProcessor().maybeStack(1).orElse(ItemStack.EMPTY)
+                )));
         ThEApi.instance().items().upgradeArcane().maybeItem().ifPresent(upgrade -> {
             ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "upgrade_arcane"), new ShapelessArcaneRecipe(
                     recipeGroup,
@@ -313,6 +323,25 @@ public class ThEThaumcraft implements IThEIntegration {
                     BlocksTC.arcaneWorkbenchCharger
             ));
         });
+        ThEApi.instance().items().blankKnowledgeCore().maybeItem().ifPresent(core ->
+                ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "knowledge_core"), new ShapedArcaneRecipe(
+                        recipeGroup,
+                        "KNOWLEDGECORE",
+                        100,
+                        new AspectList().add(Aspect.EARTH, 1).add(Aspect.ORDER, 1).add(Aspect.WATER, 1),
+                        core,
+                        "GLG",
+                        "LBL",
+                        "GPG",
+                        'G',
+                        AEApi.instance().definitions().blocks().quartzVibrantGlass().maybeBlock().orElse(Blocks.GLASS),
+                        'L',
+                        "dyeBlue",
+                        'B',
+                        ItemsTC.brain,
+                        'P',
+                        AEApi.instance().definitions().materials().calcProcessor().maybeStack(1).orElse(ItemStack.EMPTY)
+                )));
     }
 
     private void registerInfusionRecipes() {
@@ -327,6 +356,24 @@ public class ThEThaumcraft implements IThEIntegration {
                         ItemsTC.salisMundus,
                         ThEApi.instance().items().coalescenceCore().maybeStack(1).orElse(ItemStack.EMPTY),
                         ItemsTC.salisMundus
+                )));
+        ThEApi.instance().blocks().arcaneAssembler().maybeStack(1).ifPresent(stack ->
+                ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "arcane_assembler"), new InfusionRecipe(
+                        "ARCANEASSEMBLER",
+                        stack,
+                        6,
+                        new AspectList().add(Aspect.CRAFT, 64).add(Aspect.EXCHANGE, 32).add(Aspect.AURA, 16).add(Aspect.MAGIC, 16).add(Aspect.METAL, 8).add(Aspect.CRYSTAL, 8),
+                        AEApi.instance().definitions().blocks().molecularAssembler().maybeBlock().orElseThrow(() -> new NullPointerException("Missing molecular assembler block for recipe")),
+                        ThEApi.instance().items().coalescenceCore().maybeStack(1).orElse(ItemStack.EMPTY),
+                        TCUtil.getCrystalWithAspect(Aspect.AIR),
+                        TCUtil.getCrystalWithAspect(Aspect.WATER),
+                        ItemsTC.salisMundus,
+                        TCUtil.getCrystalWithAspect(Aspect.ENTROPY),
+                        ThEApi.instance().items().diffusionCore().maybeStack(1).orElse(ItemStack.EMPTY),
+                        TCUtil.getCrystalWithAspect(Aspect.EARTH),
+                        TCUtil.getCrystalWithAspect(Aspect.FIRE),
+                        ItemsTC.salisMundus,
+                        TCUtil.getCrystalWithAspect(Aspect.ORDER)
                 )));
     }
 
