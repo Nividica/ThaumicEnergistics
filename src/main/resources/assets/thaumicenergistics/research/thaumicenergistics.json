@@ -367,8 +367,8 @@
             ],
             "category": "THAUMICENERGISTICS",
             "location": [
-                2,
-                0
+                0,
+                2
             ],
             "meta": [
                 "ROUND"
@@ -398,6 +398,143 @@
                     ],
                     "required_research": [
                         "WORKBENCHCHARGER"
+                    ]
+                }
+            ]
+        },
+        {
+            "key": "ARCANEASSEMBLER",
+            "name": "research.arcaneassembler.title",
+            "icons": [
+                "thaumicenergistics:arcane_assembler"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                2,
+                0
+            ],
+            "meta": [
+                "ROUND",
+                "HIDDEN"
+            ],
+            "parents": [
+                "ARCANETERMINAL",
+                "DIGISENTIA"
+            ],
+            "stages": [
+                {
+                    "text": "research.arcaneassembler.stage.1",
+                    "required_knowledge": [
+                        "OBSERVATION;THAUMICENERGISTICS;2"
+                    ],
+                    "required_craft":[
+                        "thaumicenergistics:arcane_terminal"
+                    ],
+                    "required_research":[
+                        "ARCANETERMINAL",
+                        "DIGISENTIA"
+                    ]
+                },
+                {
+                    "text": "research.arcaneassembler.stage.2",
+                    "recipes": [
+                        "thaumicenergistics:arcane_assembler"
+                    ]
+                }
+            ],
+            "addenda": [
+                {
+                    "text": "research.arcaneassembler.addenda.1",
+                    "required_research": [
+                        "WORKBENCHCHARGER"
+                    ]
+                }
+            ]
+        },
+        {
+            "key": "KNOWLEDGECORE",
+            "name": "research.knowledgecore.title",
+            "icons": [
+                "thaumicenergistics:knowledge_core"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                4,
+                2
+            ],
+            "meta": [
+                "ROUND",
+                "SPIKY",
+                "HIDDEN"
+            ],
+            "parents": [
+                "ARCANETERMINAL",
+                "ARCANEASSEMBLER"
+            ],
+            "stages": [
+                {
+                    "text": "research.knowledgecore.stage.1",
+                    "required_knowledge": [
+                        "THEORY;THAUMICENERGISTICS;3"
+                    ],
+                    "required_craft":[
+                        "thaumicenergistics:arcane_assembler"
+                    ],
+                    "required_item":[
+                        "thaumcraft:brain",
+                        "thaumcraft:brain"
+                    ],
+                    "required_research":[
+                        "ARCANETERMINAL",
+                        "ARCANEASSEMBLER"
+                    ],
+                    "warp": 1
+                },
+                {
+                    "text": "research.knowledgecore.stage.2",
+                    "recipes": [
+                        "thaumicenergistics:knowledge_core"
+                    ]
+                }
+            ]
+        },
+        {
+            "key": "ARCANEINSCRIBER",
+            "name": "research.arcaneinscriber.title",
+            "icons": [
+                "thaumicenergistics:arcane_inscriber"
+            ],
+            "category": "THAUMICENERGISTICS",
+            "location": [
+                2,
+                4
+            ],
+            "meta": [
+                "ROUND",
+                "HIDDEN"
+            ],
+            "parents": [
+                "ARCANETERMINAL",
+                "KNOWLEDGECORE"
+            ],
+            "stages": [
+                {
+                    "text": "research.arcaneinscriber.stage.1",
+                    "required_knowledge": [
+                        "THEORY;THAUMICENERGISTICS;1"
+                    ],
+                    "required_craft":[
+                        "thaumicenergistics:blank_knowledge_core"
+                    ],
+                    "required_research":[
+                        "ARCANETERMINAL",
+                        "KNOWLEDGECORE"
+                    ]
+                },
+                {
+                    "text": "research.arcaneinscriber.stage.2",
+                    "recipes": [
+                        "thaumicenergistics:arcane_inscriber"
                     ]
                 }
             ]
