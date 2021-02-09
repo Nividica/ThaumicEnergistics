@@ -35,7 +35,7 @@ public class SlotME<T extends IAEStack<T>> extends ThESlot {
 
     @Override
     public boolean getHasStack() {
-        return false;
+        return !this.getStack().isEmpty();
     }
 
     @Override
