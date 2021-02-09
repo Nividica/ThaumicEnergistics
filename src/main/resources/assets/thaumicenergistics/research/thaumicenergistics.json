@@ -448,6 +448,12 @@
                     "required_research": [
                         "WORKBENCHCHARGER"
                     ]
+                },
+                {
+                    "text": "research.arcaneassembler.addenda.2",
+                    "required_research": [
+                        "ARCANEINSCRIBER"
+                    ]
                 }
             ]
         },
