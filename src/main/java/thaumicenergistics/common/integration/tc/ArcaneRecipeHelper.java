@@ -103,7 +103,11 @@ public class ArcaneRecipeHelper
 			return null;
 		}
 
-		return recipe.getAspects( this.createBridgeInventory( sourceInventory, firstSlotIndex, gridSize ) );
+		AspectList al = recipe.getAspects( this.createBridgeInventory( sourceInventory, firstSlotIndex, gridSize ) );
+		// some mods (e.g. Gadomancy) return null on inventory check
+		if (al == null)
+			al = recipe.getAspects();
+		return al;
 	}
 
 	/**
