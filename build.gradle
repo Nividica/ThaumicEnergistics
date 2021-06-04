@@ -52,7 +52,7 @@ dependencies {
     provided "mezz.jei:jei_${version_jei}:api"
     deobfCompile("curse.maven:baubles:${version_ba}")
     deobfCompile("curse.maven:thaumcraft:${version_tc}")
-    deobfCompile("appeng:appliedenergistics2:${version_ae2}") {
+    deobfCompile("curse.maven:appliedenergistics2-223794:${version_ae2}") {
         transitive = false
     }
     // Testing mods
