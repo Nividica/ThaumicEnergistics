@@ -399,6 +399,8 @@ public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IM
 
     @Override
     public ItemStack onCraft(ItemStack toCraft) {
+        if (toCraft.isEmpty())
+            return ItemStack.EMPTY;
         IItemHandler crafting = this.getInventory("crafting");
         InventoryCrafting inv = this.getInvCrafting(crafting, this.recipe);
         ItemStack crafted = this.recipe.getCraftingResult(inv);
