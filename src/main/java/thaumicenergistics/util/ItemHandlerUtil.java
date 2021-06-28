@@ -1,6 +1,9 @@
 package thaumicenergistics.util;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
@@ -36,22 +39,27 @@ public class ItemHandlerUtil {
     public static ItemStack insert(IItemHandler handler, ItemStack original, boolean simulate) {
         if (original == null || original.isEmpty())
             return ItemStack.EMPTY;
-        ItemStack copy = original.copy();
 
-        for (int slot = 0; slot < handler.getSlots(); slot++) { // Check existing stacks
+        ItemStack copy = original.copy();
+        List<Integer> emptySlots = new ArrayList<>();
+
+        for (int slot = 0; slot < handler.getSlots(); slot++) {   // insert into matching stacks
             ItemStack existing = handler.getStackInSlot(slot);
-            if (ForgeUtil.areItemStacksEqual(existing, copy))
+            if (ForgeUtil.areItemStacksEqual(existing, copy)) {
                 copy = handler.insertItem(slot, copy, simulate);
-            if (copy.isEmpty())
-                return ItemStack.EMPTY;
+                if (copy.isEmpty())
+                    return ItemStack.EMPTY;
+            }else if (existing.isEmpty())
+                emptySlots.add(slot);
         }
 
-        for (int slot = 0; slot < handler.getSlots(); slot++) {
+        for (int slot : emptySlots) {   // insert the rest into empty slots
             copy = handler.insertItem(slot, copy, simulate);
             if (copy.isEmpty())
                 return ItemStack.EMPTY;
         }
-        return copy;
+
+        return copy;    // leftover or empty stack
     }
 
     @Nonnull
@@ -80,13 +88,19 @@ public class ItemHandlerUtil {
         return extracted == null || extracted.isEmpty() ? ItemStack.EMPTY : extracted;
     }
 
-    public static void getInventoryAsList(IItemHandler handler, List<ItemStack> list) {
+    /**
+     * Get all the stacks in the inventory, <b>except empty ones</b>!
+     * @param handler inventory's handler
+     * @return inventory's non-empty stacks
+     */
+    public static List<ItemStack> getInventoryAsList(IItemHandler handler) {
         if (handler == null)
-            return;
-        for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stack = handler.getStackInSlot(i);
-            if (!stack.isEmpty())
-                list.add(stack);
-        }
+            return new ArrayList<>();
+        return IntStream.range(0, handler.getSlots()).parallel()
+                .boxed()
+                .map(handler::getStackInSlot)
+                .filter(is -> !is.isEmpty())
+                .collect(Collectors.toList());
     }
+
 }

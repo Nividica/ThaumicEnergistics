@@ -77,7 +77,7 @@ public class PartArcaneTerminal extends PartSharedTerminal {
     @Override
     public void getDrops(List<ItemStack> list, boolean b) {
         super.getDrops(list, b);
-        ItemHandlerUtil.getInventoryAsList(this.getInventoryByName("crafting"), list);
+        list.addAll(ItemHandlerUtil.getInventoryAsList(this.getInventoryByName("crafting")));
     }
 
     @Override

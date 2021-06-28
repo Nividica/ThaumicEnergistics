@@ -212,7 +212,7 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
 
     @Override
     public void getDrops(List<ItemStack> list, boolean b) {
-        ItemHandlerUtil.getInventoryAsList(this.getInventoryByName("upgrades"), list);
+        list.addAll(ItemHandlerUtil.getInventoryAsList(this.getInventoryByName("upgrades")));
     }
 
     @Override
