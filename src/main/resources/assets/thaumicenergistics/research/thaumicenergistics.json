@@ -487,8 +487,7 @@
                         "thaumicenergistics:arcane_assembler"
                     ],
                     "required_item":[
-                        "thaumcraft:brain",
-                        "thaumcraft:brain"
+                        "thaumcraft:brain;2"
                     ],
                     "required_research":[
                         "ARCANETERMINAL",
