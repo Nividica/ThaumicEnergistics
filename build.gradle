@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
             name = "Forge Maven"
             url = "http://files.minecraftforge.net/maven"
@@ -11,8 +11,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
-        classpath "com.wynprice.cursemaven:CurseMaven:2.1.0"
+        classpath "net.minecraftforge.gradle:ForgeGradle:${version_forgegradle}"
+        classpath "com.wynprice.cursemaven:CurseMaven:${version_cursemaven}"
     }
 }
 apply plugin: "net.minecraftforge.gradle.forge"
@@ -55,13 +55,14 @@ dependencies {
     deobfCompile("curse.maven:appliedenergistics2-223794:${version_ae2}") {
         transitive = false
     }
+
     // Testing mods
     runtime "mezz.jei:jei_${version_jei}"
     runtime("curse.maven:thaumic-jei:${version_tjei}") {
         transitive = false
     }
-    runtime("cofh:RedstoneFlux:${version_rf}:universal") {
-        transitive = false;
+    runtime("curse.maven:redstone-flux:${version_rf}") {
+        transitive = false
     }
     runtime("com.brandon3055.brandonscore:BrandonsCore:${version_bc}:universal") {
         transitive = false
@@ -74,6 +75,11 @@ dependencies {
     }
 }
 
+sourceSets {
+    api
+    main
+}
+
 jar {
     manifest {
         attributes 'FMLAT': 'theeng_at.cfg'
@@ -84,29 +90,24 @@ jar {
 task apiJar(type: Jar) {
     from sourceSets.api.output
     from sourceSets.api.java
-    classifier = "api"
+    classifier 'api'
 }
 
 task deobfJar(type: Jar, dependsOn: 'jar') {
-    from "build/sources/main/java"
-    from "build/resources/main"
-    classifier "dev"
+    from 'build/sources/main/java'
+    from 'build/resources/main'
+    classifier 'dev'
 }
 
 task javadocJar(type: Jar, dependsOn: 'javadoc') {
-    from "build/docs/javadoc"
-    classifier "javadoc"
+    from 'build/docs/javadoc'
+    classifier 'javadoc'
 }
 
 task sourcesJar(type: Jar) {
     from sourceSets.api.java
     from sourceSets.main.java
-    classifier = 'sources'
-}
-
-sourceSets {
-    api
-    main
+    classifier 'sources'
 }
 
 artifacts {
