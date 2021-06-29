@@ -20,6 +20,7 @@ import static net.minecraftforge.common.config.Config.Name;
  * TODO: Allow config being changed from api
  *
  * @author BrockWS
+ * @author Alex811
  */
 @SuppressWarnings("ALL")
 @Config(modid = ModGlobals.MOD_ID)

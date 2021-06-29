@@ -36,6 +36,7 @@ import thaumicenergistics.container.slot.ThESlot;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public abstract class GuiBase extends GuiContainer {
 

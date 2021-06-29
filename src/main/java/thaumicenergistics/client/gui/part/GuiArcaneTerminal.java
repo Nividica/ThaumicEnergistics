@@ -47,6 +47,7 @@ import org.lwjgl.input.Mouse;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemStorageChannel> {
 

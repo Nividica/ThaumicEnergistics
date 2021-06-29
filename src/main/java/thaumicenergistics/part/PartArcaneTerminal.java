@@ -34,6 +34,7 @@ import thaumicenergistics.util.inventory.ThEUpgradeInventory;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class PartArcaneTerminal extends PartSharedTerminal {
 

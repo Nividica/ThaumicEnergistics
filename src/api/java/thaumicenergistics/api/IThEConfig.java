@@ -10,6 +10,7 @@ import thaumicenergistics.api.config.PrefixSetting;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public interface IThEConfig {
 

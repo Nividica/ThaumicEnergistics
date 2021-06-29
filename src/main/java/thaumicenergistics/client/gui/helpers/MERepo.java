@@ -31,6 +31,7 @@ import thaumicenergistics.util.TCUtil;
  * Based on ItemRepo and FluidRepo
  *
  * @author BrockWS
+ * @author Alex811
  */
 public class MERepo<T extends IAEStack<T>> {
 

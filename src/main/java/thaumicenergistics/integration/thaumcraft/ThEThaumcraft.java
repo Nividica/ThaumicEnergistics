@@ -42,6 +42,7 @@ import thaumicenergistics.util.ThELog;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class ThEThaumcraft implements IThEIntegration {
 

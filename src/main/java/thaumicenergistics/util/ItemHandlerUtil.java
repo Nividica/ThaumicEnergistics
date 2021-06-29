@@ -12,6 +12,7 @@ import net.minecraftforge.items.IItemHandler;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class ItemHandlerUtil {
 

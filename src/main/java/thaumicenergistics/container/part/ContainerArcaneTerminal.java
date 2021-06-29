@@ -73,6 +73,7 @@ import com.google.common.collect.Lists;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingContainer, IConfigurableObject {
 
