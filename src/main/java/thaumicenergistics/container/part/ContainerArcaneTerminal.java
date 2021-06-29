@@ -49,6 +49,7 @@ import thaumcraft.api.aura.AuraHelper;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.items.ItemsTC;
 
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.container.ActionType;
 import thaumicenergistics.container.ContainerBaseTerminal;
@@ -93,8 +94,9 @@ public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IM
         // We use the client config manager on server as well to make sure the client is in sync
         this.clientConfigManager = new ThEConfigManager();
         this.clientConfigManager.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.clientConfigManager.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
         this.clientConfigManager.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        this.clientConfigManager.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+        this.clientConfigManager.registerSetting(Settings.SEARCH_MODE, ThEApi.instance().config().searchBoxMode());
 
         if (ForgeUtil.isServer()) {
             this.channel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);

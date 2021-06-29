@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -145,7 +146,7 @@ public abstract class GuiBase extends GuiContainer {
                 if (!(btn instanceof GuiImgButton))
                     return;
                 GuiImgButton b = (GuiImgButton) btn;
-                if (b.getSetting() == Settings.ACTIONS || b.getSetting() == Settings.TERMINAL_STYLE)
+                if (Stream.of(Settings.ACTIONS, Settings.TERMINAL_STYLE, Settings.SEARCH_MODE).anyMatch(s -> s == b.getSetting()))
                     return;
                 b.set(configManager.getSetting(b.getSetting()));
             });

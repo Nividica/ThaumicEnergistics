@@ -7,6 +7,7 @@ import java.util.regex.PatternSyntaxException;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -22,6 +23,7 @@ import thaumcraft.api.aspects.AspectList;
 
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.config.PrefixSetting;
+import thaumicenergistics.integration.jei.ThEJEI;
 import thaumicenergistics.util.AEUtil;
 import thaumicenergistics.util.TCUtil;
 
@@ -41,6 +43,7 @@ public class MERepo<T extends IAEStack<T>> {
     private ViewItems viewMode;
     private SortDir sortDir;
     private SortOrder sortOrder;
+    private SearchBoxMode searchBoxMode;
     private GuiScrollBar scrollBar;
     private int rowSize = 9;
 
@@ -49,6 +52,7 @@ public class MERepo<T extends IAEStack<T>> {
         this.viewMode = ViewItems.ALL;
         this.sortDir = SortDir.ASCENDING;
         this.sortOrder = SortOrder.NAME;
+        this.searchBoxMode = ThEApi.instance().config().searchBoxMode();
     }
 
     public void updateView() {
@@ -62,6 +66,9 @@ public class MERepo<T extends IAEStack<T>> {
 
         PrefixSetting modSearchSetting = ThEApi.instance().config().modSearchSetting();
         PrefixSetting aspectSearchSetting = ThEApi.instance().config().aspectSearchSetting();
+
+        if(Stream.of(SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.JEI_MANUAL_SEARCH, SearchBoxMode.JEI_AUTOSEARCH_KEEP, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP).anyMatch(m -> m == this.searchBoxMode))
+            ThEJEI.setSearchText(search);
 
         // DISABLED = Don't search and ignore what it starts with
         // REQUIRE_PREFIX = If search starts with prefix, drop prefix and search ONLY by that search
@@ -236,6 +243,14 @@ public class MERepo<T extends IAEStack<T>> {
 
     public void setSortOrder(SortOrder sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public SearchBoxMode getSearchBoxMode() {
+        return searchBoxMode;
+    }
+
+    public void setSearchBoxMode(SearchBoxMode searchBoxMode) {
+        this.searchBoxMode = searchBoxMode;
     }
 
     private boolean searchName(T stack, Pattern p) {

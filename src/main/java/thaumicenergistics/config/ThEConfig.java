@@ -3,6 +3,7 @@ package thaumicenergistics.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import appeng.api.config.SearchBoxMode;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 
@@ -38,6 +39,9 @@ public class ThEConfig implements IThEConfig {
 
         @Name("Terminal Style")
         public TerminalStyle terminalStyle = TerminalStyle.TALL;
+
+        @Name("Search Box Mode")
+        public SearchBoxMode searchBoxMode = SearchBoxMode.AUTOSEARCH;
 
         @Name("Mod Search Prefix")
         public String modSearchPrefix = "@";
@@ -141,6 +145,11 @@ public class ThEConfig implements IThEConfig {
     @Override
     public TerminalStyle terminalStyle() {
         return client.terminalStyle;
+    }
+
+    @Override
+    public SearchBoxMode searchBoxMode() {
+        return client.searchBoxMode;
     }
 
     @Override

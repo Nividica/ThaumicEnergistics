@@ -2,6 +2,7 @@ package thaumicenergistics.api;
 
 import java.util.Map;
 
+import appeng.api.config.SearchBoxMode;
 import appeng.api.config.TerminalStyle;
 import appeng.api.util.IConfigManager;
 
@@ -31,6 +32,8 @@ public interface IThEConfig {
     int tickTimeArcaneAssemblerMax();
 
     TerminalStyle terminalStyle();
+
+    SearchBoxMode searchBoxMode();
 
     String modSearchPrefix();
 

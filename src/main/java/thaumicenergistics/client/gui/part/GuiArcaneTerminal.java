@@ -2,6 +2,7 @@ package thaumicenergistics.client.gui.part;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -33,6 +34,7 @@ import thaumicenergistics.container.slot.SlotME;
 import thaumicenergistics.container.slot.ThESlot;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
+import thaumicenergistics.integration.jei.ThEJEI;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketOpenGUI;
 import thaumicenergistics.network.packets.PacketSettingChange;
@@ -53,11 +55,16 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     private GuiTextField searchField;
     protected GuiScrollBar scrollBar;
     private GuiImgButton sortByButton;
-    private GuiImgButton sortDirButton;
     private GuiImgButton viewItemsButton;
+    private GuiImgButton sortDirButton;
+    private GuiImgButton searchModeButton;
     private GuiImgButton terminalSizeButton;
     private GuiImgButton clearButton;
     private GuiTabButton craftingStatusBtn;
+    private boolean isAutoFocus = false;
+    private static String memoryText = "";
+    private int currMouseX = 0;
+    private int currMouseY = 0;
 
     protected int rows = 6;
     private float visAvailable = -1;
@@ -102,21 +109,38 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
         this.searchField.setMaxStringLength(25);
         this.searchField.setTextColor(0xFFFFFF);
 
+        SearchBoxMode searchModeSetting = ThEApi.instance().config().searchBoxMode();
+        this.isAutoFocus = Stream.of(SearchBoxMode.AUTOSEARCH, SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.AUTOSEARCH_KEEP, SearchBoxMode.JEI_AUTOSEARCH_KEEP).anyMatch(m -> m == searchModeSetting);
+        boolean isKeepFilter = Stream.of(SearchBoxMode.AUTOSEARCH_KEEP, SearchBoxMode.JEI_AUTOSEARCH_KEEP, SearchBoxMode.MANUAL_SEARCH_KEEP, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP).anyMatch(m -> m == searchModeSetting);
+        boolean isJEIEnabled = Stream.of(SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.JEI_MANUAL_SEARCH).anyMatch(m -> m == searchModeSetting);
+        this.searchField.setFocused(this.isAutoFocus);
+        if(isJEIEnabled) memoryText = ThEJEI.getSearchText();
+        if(isKeepFilter && !memoryText.isEmpty()){
+            this.searchField.setText(memoryText);
+            this.searchField.setCursorPosition(0);
+            this.searchField.setSelectionPos(this.searchField.getMaxStringLength());
+            this.repo.setSearchString(memoryText);
+            this.repo.updateView();
+            this.updateScroll();
+        }
+
         IConfigManager cm = ((IConfigurableObject) this.inventorySlots).getConfigManager();
 
         // FIXME: Don't use AE Core classes
         this.sortByButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 8, Settings.SORT_BY, cm.getSetting(Settings.SORT_BY));
-        this.sortDirButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 28, Settings.SORT_DIRECTION, cm.getSetting(Settings.SORT_DIRECTION));
-        this.viewItemsButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 48, Settings.VIEW_MODE, cm.getSetting(Settings.VIEW_MODE));
-        this.terminalSizeButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 68, Settings.TERMINAL_STYLE, ThEApi.instance().config().terminalStyle());
+        this.viewItemsButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 28, Settings.VIEW_MODE, cm.getSetting(Settings.VIEW_MODE));
+        this.sortDirButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 48, Settings.SORT_DIRECTION, cm.getSetting(Settings.SORT_DIRECTION));
+        this.searchModeButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 68, Settings.SEARCH_MODE, searchModeSetting);
+        this.terminalSizeButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 88, Settings.TERMINAL_STYLE, ThEApi.instance().config().terminalStyle());
         this.clearButton = new GuiImgButton(this.getGuiLeft() + 87, this.getGuiTop() + this.getYSize() - 156, Settings.ACTIONS, ActionItems.STASH);
         this.clearButton.setHalfSize(true);
         this.craftingStatusBtn = new GuiTabButton(this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus.getLocal(), this.itemRender);
         this.craftingStatusBtn.setHideEdge(13);
 
         this.addButton(this.sortByButton);
-        this.addButton(this.sortDirButton);
         this.addButton(this.viewItemsButton);
+        this.addButton(this.sortDirButton);
+        this.addButton(this.searchModeButton);
         this.addButton(this.terminalSizeButton);
         this.addButton(this.clearButton);
         this.addButton(this.craftingStatusBtn);
@@ -141,6 +165,9 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
         if (this.scrollBar != null)
             this.scrollBar.draw(this);
+
+        this.currMouseX = mouseX;
+        this.currMouseY = mouseY;
     }
 
     @Override
@@ -266,6 +293,15 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
             return;
         }
 
+        int x = currMouseX - this.getGuiLeft();
+        int y = currMouseY - this.getGuiTop();
+        boolean mouseInGui = x >= 0 &&
+                x <= this.xSize &&
+                y >= 0 &&
+                y <= this.ySize;
+        if (this.isAutoFocus && !this.searchField.isFocused() && mouseInGui)
+            this.searchField.setFocused(true);
+
         if (this.searchField.textboxKeyTyped(typedChar, keyCode)) {
             this.repo.setSearchString(this.searchField.getText());
             this.repo.updateView();
@@ -281,11 +317,19 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     }
 
     @Override
+    public void onGuiClosed(){
+        super.onGuiClosed();
+        memoryText = this.searchField.getText();
+    }
+
+    @Override
     public void updateSetting(Settings setting, Enum value) {
         super.updateSetting(setting, value);
-        this.repo.setSortOrder((SortOrder) ((IConfigurableObject) this.inventorySlots).getConfigManager().getSetting(Settings.SORT_BY));
-        this.repo.setSortDir((SortDir) ((IConfigurableObject) this.inventorySlots).getConfigManager().getSetting(Settings.SORT_DIRECTION));
-        this.repo.setViewMode((ViewItems) ((IConfigurableObject) this.inventorySlots).getConfigManager().getSetting(Settings.VIEW_MODE));
+
+        IConfigManager cm = ((IConfigurableObject) this.inventorySlots).getConfigManager();
+        this.repo.setSortOrder((SortOrder) cm.getSetting(Settings.SORT_BY));
+        this.repo.setViewMode((ViewItems) cm.getSetting(Settings.VIEW_MODE));
+        this.repo.setSortDir((SortDir) cm.getSetting(Settings.SORT_DIRECTION));
         this.repo.updateView();
         this.updateScroll();
     }
@@ -314,6 +358,10 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
                 ThEConfig.client.terminalStyle = (TerminalStyle) next;
                 ThEConfig.save();
                 this.reload();
+                return;
+            }else if (btn.getSetting() == Settings.SEARCH_MODE){
+                ThEConfig.client.searchBoxMode = (SearchBoxMode) next;
+                ThEConfig.save();
                 return;
             }
             PacketHandler.sendToServer(new PacketSettingChange(btn.getSetting(), next));

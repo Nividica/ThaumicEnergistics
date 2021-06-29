@@ -3,6 +3,10 @@ package thaumicenergistics.part;
 import java.util.List;
 import javax.annotation.Nonnull;
 
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,13 +17,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
 import appeng.api.parts.IPartModel;
 import appeng.api.parts.PartItemStack;
 
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
@@ -61,8 +62,9 @@ public class PartArcaneTerminal extends PartSharedTerminal {
         this.craftingInventory = new ThEInternalInventory("matrix", 15, 64);
         this.upgradeInventory = new ThEUpgradeInventory("upgrades", 1, 1, this.getItemStack(PartItemStack.NETWORK));
         this.getConfigManager().registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.getConfigManager().registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
         this.getConfigManager().registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        this.getConfigManager().registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+        this.getConfigManager().registerSetting(Settings.SEARCH_MODE, ThEApi.instance().config().searchBoxMode());
     }
 
     @Override
