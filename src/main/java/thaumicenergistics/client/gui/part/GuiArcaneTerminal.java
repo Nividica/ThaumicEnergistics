@@ -64,8 +64,6 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     private GuiTabButton craftingStatusBtn;
     private boolean isAutoFocus = false;
     private static String memoryText = "";
-    private int currMouseX = 0;
-    private int currMouseY = 0;
 
     protected int rows = 6;
     private float visAvailable = -1;
@@ -166,9 +164,6 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
         if (this.scrollBar != null)
             this.scrollBar.draw(this);
-
-        this.currMouseX = mouseX;
-        this.currMouseY = mouseY;
     }
 
     @Override
@@ -186,26 +181,15 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        boolean flag = mouseX >= this.searchField.x &&
-                mouseX < this.searchField.x + this.searchField.width &&
-                mouseY >= this.searchField.y &&
-                mouseY < this.searchField.y + this.searchField.height;
-
-        if (button == 1 && flag) { // Right click should reset the search field
+        if (button == 1 && mouseWithin(searchField)) { // Right click should reset the search field
             this.searchField.setText("");
             this.repo.setSearchString("");
             this.repo.updateView();
         }
         this.searchField.mouseClicked(mouseX, mouseY, button);
         if (this.scrollBar != null) {
-            int x = mouseX - this.getGuiLeft();
-            int y = mouseY - this.getGuiTop();
-            flag = x >= this.scrollBar.getX() &&
-                    x <= this.scrollBar.getX() + 15 &&
-                    y >= this.scrollBar.getY() &&
-                    y <= this.scrollBar.getY() + this.scrollBar.getHeight();
-            if (flag)
-                this.scrollBar.click(y);
+            if (mouseWithin(scrollBar))
+                this.scrollBar.click(mouseY - this.getGuiTop());
             this.repo.updateView();
             this.updateScroll();
         }
@@ -225,14 +209,8 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         if (this.scrollBar != null) {
-            int x = mouseX - this.getGuiLeft();
-            int y = mouseY - this.getGuiTop();
-            boolean flag = x >= this.scrollBar.getX() &&
-                    x <= this.scrollBar.getX() + 15 &&
-                    y >= this.scrollBar.getY() &&
-                    y <= this.scrollBar.getY() + this.scrollBar.getHeight();
-            if (flag) {
-                this.scrollBar.click(y);
+            if (mouseWithin(scrollBar)) {
+                this.scrollBar.click(mouseY - this.getGuiTop());
                 this.repo.updateView();
                 this.updateScroll();
             }
@@ -294,13 +272,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
             return;
         }
 
-        int x = currMouseX - this.getGuiLeft();
-        int y = currMouseY - this.getGuiTop();
-        boolean mouseInGui = x >= 0 &&
-                x <= this.xSize &&
-                y >= 0 &&
-                y <= this.ySize;
-        if (this.isAutoFocus && !this.searchField.isFocused() && mouseInGui)
+        if (this.isAutoFocus && !this.searchField.isFocused() && mouseWithin())
             this.searchField.setFocused(true);
 
         if (this.searchField.textboxKeyTyped(typedChar, keyCode)) {

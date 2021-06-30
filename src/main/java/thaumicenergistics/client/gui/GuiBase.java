@@ -1,5 +1,7 @@
 package thaumicenergistics.client.gui;
 
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -26,8 +28,10 @@ import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.ITooltip;
 
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.client.gui.helpers.GenericStackSizeRenderer;
+import thaumicenergistics.client.gui.helpers.GuiScrollBar;
 import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.container.slot.ISlotOptional;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
@@ -39,8 +43,9 @@ import thaumicenergistics.container.slot.ThESlot;
  * @author Alex811
  */
 public abstract class GuiBase extends GuiContainer {
-
     private static final GenericStackSizeRenderer stackSizeRenderer = new GenericStackSizeRenderer();
+    private int currMouseX = 0;
+    private int currMouseY = 0;
 
     public GuiBase(ContainerBase container) {
         super(container);
@@ -175,5 +180,45 @@ public abstract class GuiBase extends GuiContainer {
         buf.pos(x, y, this.zLevel).tex(textureX * offsetX, textureY * offsetY).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
 
         tess.draw();
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        this.currMouseX = mouseX;
+        this.currMouseY = mouseY;
+    }
+
+    /**
+     * Checks if the mouse is currently withing a region.
+     * @param x horizontal start of the region
+     * @param y vertical start of the region
+     * @param w width of the region
+     * @param h height of the region
+     * @param relative true: use mouse location relative to the GUI, false: use absolute mouse location
+     */
+    protected boolean mouseWithin(int x, int y, int w, int h, boolean relative){
+        int mouseX = currMouseX;
+        int mouseY = currMouseY;
+        if(relative){
+            mouseX -= this.getGuiLeft();
+            mouseY -= this.getGuiTop();
+        }
+        return mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h;
+    }
+
+    /**
+     * Checks if the mouse is within this GUI.
+     * @return true if inside the GUI area
+     */
+    protected boolean mouseWithin(){
+        return mouseWithin(0, 0, xSize, ySize, true);
+    }
+
+    protected boolean mouseWithin(GuiScrollBar scrollBar){
+        return mouseWithin(scrollBar.getX(), scrollBar.getY(), 15, scrollBar.getHeight(), true);
+    }
+
+    protected boolean mouseWithin(GuiTextField textField){
+        return mouseWithin(textField.x, textField.y, textField.width, textField.height, false);
     }
 }

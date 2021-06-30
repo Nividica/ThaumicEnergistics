@@ -140,14 +140,8 @@ public class GuiEssentiaTerminal extends GuiAbstractTerminal<IAEEssentiaStack, I
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         if (this.scrollBar != null) {
-            int x = mouseX - this.getGuiLeft();
-            int y = mouseY - this.getGuiTop();
-            boolean flag = x >= this.scrollBar.getX() &&
-                    x <= this.scrollBar.getX() + 15 &&
-                    y >= this.scrollBar.getY() &&
-                    y <= this.scrollBar.getY() + this.scrollBar.getHeight();
-            if (flag)
-                this.scrollBar.click(y);
+            if (mouseWithin(scrollBar))
+                this.scrollBar.click(mouseY - this.getGuiTop());
             this.repo.updateView();
             this.updateScroll();
         }
@@ -166,14 +160,8 @@ public class GuiEssentiaTerminal extends GuiAbstractTerminal<IAEEssentiaStack, I
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         if (this.scrollBar != null) {
-            int x = mouseX - this.getGuiLeft();
-            int y = mouseY - this.getGuiTop();
-            boolean flag = x >= this.scrollBar.getX() &&
-                    x <= this.scrollBar.getX() + 15 &&
-                    y >= this.scrollBar.getY() &&
-                    y <= this.scrollBar.getY() + this.scrollBar.getHeight();
-            if (flag) {
-                this.scrollBar.click(y);
+            if (mouseWithin(scrollBar)) {
+                this.scrollBar.click(mouseY - this.getGuiTop());
                 this.repo.updateView();
                 this.updateScroll();
             }
