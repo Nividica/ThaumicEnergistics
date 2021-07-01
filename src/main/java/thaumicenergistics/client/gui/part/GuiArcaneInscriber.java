@@ -78,6 +78,8 @@ public class GuiArcaneInscriber extends GuiArcaneTerminal {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        this.setCurrMousePos(mouseX, mouseY);
+
         this.fontRenderer.drawString(ThEApi.instance().lang().guiVisRequired().getLocalizedKey(this.visRequired > -1 ? this.visRequired : 0), 60, this.getYSize() - 168, 4210752);
         this.fontRenderer.drawString(ThEApi.instance().lang().guiArcaneInscriber().getLocalizedKey(), 8, 6, 4210752);
         this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.getYSize() - 91, 4210752);

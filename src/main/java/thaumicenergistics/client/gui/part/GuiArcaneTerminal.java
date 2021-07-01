@@ -154,6 +154,8 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+
         this.fontRenderer.drawString(ThEApi.instance().lang().guiVisRequiredOutOf().getLocalizedKey(this.visRequired > -1 ? this.visRequired : 0, (int) (this.visAvailable > -1 ? this.visAvailable : 0)), 35, this.getYSize() - 168, this.visRequired > this.visAvailable ? Color.RED.getRGB() : 4210752);
 
         if (this.discount > 0f)

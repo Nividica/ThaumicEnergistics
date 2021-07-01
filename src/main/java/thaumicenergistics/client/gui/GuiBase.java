@@ -184,6 +184,10 @@ public abstract class GuiBase extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        this.setCurrMousePos(mouseX, mouseY);
+    }
+
+    protected void setCurrMousePos(int mouseX, int mouseY){
         this.currMouseX = mouseX;
         this.currMouseY = mouseY;
     }
