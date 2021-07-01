@@ -27,10 +27,20 @@ compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
+def mc_run_jvmargs = ["-Xmx${mc_run_mem}", "-Xms${mc_run_mem}"]
+
 minecraft {
     version = "${version_mc}-${version_forge}"
     runDir = "run"
     mappings = "stable_39"
+}
+
+runClient {
+    jvmArgs mc_run_jvmargs
+}
+
+runServer {
+    jvmArgs mc_run_jvmargs
 }
 
 repositories {
