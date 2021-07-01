@@ -77,6 +77,23 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
         this.repo = new MERepo<>(IItemStorageChannel.class);
     }
 
+    public void initSearchField(){
+        SearchBoxMode searchModeSetting = ThEApi.instance().config().searchBoxMode();
+        this.isAutoFocus = Stream.of(SearchBoxMode.AUTOSEARCH, SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.AUTOSEARCH_KEEP, SearchBoxMode.JEI_AUTOSEARCH_KEEP).anyMatch(m -> m == searchModeSetting);
+        boolean isKeepFilter = Stream.of(SearchBoxMode.AUTOSEARCH_KEEP, SearchBoxMode.JEI_AUTOSEARCH_KEEP, SearchBoxMode.MANUAL_SEARCH_KEEP, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP).anyMatch(m -> m == searchModeSetting);
+        boolean isJEIEnabled = Stream.of(SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.JEI_MANUAL_SEARCH).anyMatch(m -> m == searchModeSetting);
+        this.searchField.setText("");
+        this.searchField.setFocused(this.isAutoFocus);
+        if(isJEIEnabled) memoryText = ThEJEI.getSearchText();
+        if(isKeepFilter && !memoryText.isEmpty()){
+            this.searchField.setText(memoryText);
+            this.searchField.selectAll();
+            this.repo.setSearchString(memoryText);
+            this.repo.updateView();
+            this.updateScroll();
+        }
+    }
+
     @Override
     public void initGui() {
         this.xSize = 201;
@@ -107,19 +124,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
         this.searchField.setMaxStringLength(25);
         this.searchField.setTextColor(0xFFFFFF);
 
-        SearchBoxMode searchModeSetting = ThEApi.instance().config().searchBoxMode();
-        this.isAutoFocus = Stream.of(SearchBoxMode.AUTOSEARCH, SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.AUTOSEARCH_KEEP, SearchBoxMode.JEI_AUTOSEARCH_KEEP).anyMatch(m -> m == searchModeSetting);
-        boolean isKeepFilter = Stream.of(SearchBoxMode.AUTOSEARCH_KEEP, SearchBoxMode.JEI_AUTOSEARCH_KEEP, SearchBoxMode.MANUAL_SEARCH_KEEP, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP).anyMatch(m -> m == searchModeSetting);
-        boolean isJEIEnabled = Stream.of(SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.JEI_MANUAL_SEARCH).anyMatch(m -> m == searchModeSetting);
-        this.searchField.setFocused(this.isAutoFocus);
-        if(isJEIEnabled) memoryText = ThEJEI.getSearchText();
-        if(isKeepFilter && !memoryText.isEmpty()){
-            this.searchField.setText(memoryText);
-            this.searchField.selectAll();
-            this.repo.setSearchString(memoryText);
-            this.repo.updateView();
-            this.updateScroll();
-        }
+        this.initSearchField();
 
         IConfigManager cm = ((IConfigurableObject) this.inventorySlots).getConfigManager();
 
@@ -127,7 +132,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
         this.sortByButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 8, Settings.SORT_BY, cm.getSetting(Settings.SORT_BY));
         this.viewItemsButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 28, Settings.VIEW_MODE, cm.getSetting(Settings.VIEW_MODE));
         this.sortDirButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 48, Settings.SORT_DIRECTION, cm.getSetting(Settings.SORT_DIRECTION));
-        this.searchModeButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 68, Settings.SEARCH_MODE, searchModeSetting);
+        this.searchModeButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 68, Settings.SEARCH_MODE, ThEApi.instance().config().searchBoxMode());
         this.terminalSizeButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 88, Settings.TERMINAL_STYLE, ThEApi.instance().config().terminalStyle());
         this.clearButton = new GuiImgButton(this.getGuiLeft() + 87, this.getGuiTop() + this.getYSize() - 156, Settings.ACTIONS, ActionItems.STASH);
         this.clearButton.setHalfSize(true);
@@ -337,6 +342,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
             }else if (btn.getSetting() == Settings.SEARCH_MODE){
                 ThEConfig.client.searchBoxMode = (SearchBoxMode) next;
                 ThEConfig.save();
+                this.initSearchField();
                 return;
             }
             PacketHandler.sendToServer(new PacketSettingChange(btn.getSetting(), next));
