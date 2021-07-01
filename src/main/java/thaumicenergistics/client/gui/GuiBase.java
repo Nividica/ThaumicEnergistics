@@ -225,4 +225,8 @@ public abstract class GuiBase extends GuiContainer {
     protected boolean mouseWithin(GuiTextField textField){
         return mouseWithin(textField.x, textField.y, textField.width, textField.height, false);
     }
+
+    protected boolean mouseWithin(Slot slot){
+        return mouseWithin(slot.xPos, slot.yPos, 16, 16, true);
+    }
 }

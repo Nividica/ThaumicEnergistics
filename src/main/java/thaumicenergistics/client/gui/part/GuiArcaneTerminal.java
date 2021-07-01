@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -25,6 +24,7 @@ import appeng.client.gui.widgets.GuiTabButton;
 import appeng.core.localization.GuiText;
 
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.client.gui.component.GuiSearchField;
 import thaumicenergistics.client.gui.helpers.GuiScrollBar;
 import thaumicenergistics.client.gui.helpers.MERepo;
 import thaumicenergistics.config.ThEConfig;
@@ -53,7 +53,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     protected ContainerArcaneTerminal container;
 
-    private GuiTextField searchField;
+    private GuiSearchField searchField;
     protected GuiScrollBar scrollBar;
     private GuiImgButton sortByButton;
     private GuiImgButton viewItemsButton;
@@ -102,8 +102,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
         this.buttonList.clear();
         super.initGui();
 
-        this.searchField = new GuiTextField(0, this.fontRenderer, this.getGuiLeft() + 98, this.getGuiTop() + 6, 70, 10);
-        this.searchField.setEnableBackgroundDrawing(false);
+        this.searchField = new GuiSearchField(this.fontRenderer, this.getGuiLeft() + 98, this.getGuiTop() + 6, 70, 10);
         this.searchField.setVisible(true);
         this.searchField.setMaxStringLength(25);
         this.searchField.setTextColor(0xFFFFFF);
@@ -116,8 +115,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
         if(isJEIEnabled) memoryText = ThEJEI.getSearchText();
         if(isKeepFilter && !memoryText.isEmpty()){
             this.searchField.setText(memoryText);
-            this.searchField.setCursorPosition(0);
-            this.searchField.setSelectionPos(this.searchField.getMaxStringLength());
+            this.searchField.selectAll();
             this.repo.setSearchString(memoryText);
             this.repo.updateView();
             this.updateScroll();
@@ -259,8 +257,10 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (this.checkHotbarKeys(keyCode))
-            return;
+        if (this.checkHotbarKeys(keyCode) && container.inventorySlots.stream()
+                .filter(slot -> !(slot instanceof SlotME))
+                .anyMatch(this::mouseWithin))
+            return; // abort if it was a hotbar key and the mouse is over a normal slot
 
         if (typedChar == 'B' && this.scrollBar != null)
             this.scrollBar.wheel(1f);
