@@ -2,12 +2,16 @@ package thaumicenergistics.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
 /**
@@ -15,6 +19,7 @@ import net.minecraftforge.items.IItemHandler;
  * @author Alex811
  */
 public class ItemHandlerUtil {
+    private static final Random rand = new Random();
 
     @Nonnull
     public static ItemStack insert(IItemHandler handler, ItemStack stack) {
@@ -104,4 +109,14 @@ public class ItemHandlerUtil {
                 .collect(Collectors.toList());
     }
 
+    private static double randCoordOffset(int coord){
+        return (rand.nextInt() % 32 - 16) / 82.0 + 0.5 + coord;
+    }
+
+    public static void spawnDrops(World world, BlockPos pos, List<ItemStack> drops){
+        if(ForgeUtil.isClient()) return;
+        drops.parallelStream()
+                .filter(is -> !is.isEmpty())
+                .forEach(is -> world.spawnEntity(new EntityItem(world, randCoordOffset(pos.getX()), randCoordOffset(pos.getY()), randCoordOffset(pos.getZ()), is)));
+    }
 }

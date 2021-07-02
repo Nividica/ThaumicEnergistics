@@ -27,6 +27,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import thaumcraft.api.aura.AuraHelper;
@@ -48,6 +50,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -313,5 +316,12 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
 
     public ThEInternalInventory getCraftingInv() {
         return this.craftingInv;
+    }
+
+    @Override
+    public void getDrops(World world, BlockPos blockPos, List<ItemStack> list) {
+        super.getDrops(world, blockPos, list);
+        this.coreInv.iterator().forEachRemaining(list::add);
+        this.upgradeInv.iterator().forEachRemaining(list::add);
     }
 }
