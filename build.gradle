@@ -74,6 +74,7 @@ dependencies {
     // Testing mods
     runtime "mezz.jei:jei_${version_jei}"
     //runtime "inventory-tweaks:InventoryTweaks:${version_it}" // Causes issues
+    runtime "curse.maven:hwyla:${version_hwyla}"
     runtime("curse.maven:thaumic-jei:${version_tjei}") {
         transitive = false
     }
