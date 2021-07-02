@@ -53,8 +53,7 @@ public class ThEUtil {
     }
 
     public static boolean isInvalidSetting(Enum e) {
-        // TODO: Add invtweaks integration
-        return e == SortOrder.INVTWEAKS || e == TerminalStyle.FULL;
+        return e == TerminalStyle.FULL;
     }
 
     @Deprecated

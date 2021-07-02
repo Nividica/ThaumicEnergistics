@@ -9,11 +9,11 @@ import net.minecraftforge.fml.common.Loader;
  */
 public interface IThEIntegration {
 
-    void preInit();
+    default void preInit(){}
 
-    void init();
+    default void init(){}
 
-    void postInit();
+    default void postInit(){}
 
     String getModID();
 

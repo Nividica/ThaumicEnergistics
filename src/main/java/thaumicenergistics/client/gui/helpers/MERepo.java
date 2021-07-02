@@ -18,11 +18,13 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 
+import invtweaks.api.InvTweaksAPI;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.config.PrefixSetting;
+import thaumicenergistics.integration.invtweaks.ThEInvTweaks;
 import thaumicenergistics.integration.jei.ThEJEI;
 import thaumicenergistics.util.AEUtil;
 import thaumicenergistics.util.TCUtil;
@@ -156,10 +158,12 @@ public class MERepo<T extends IAEStack<T>> {
 
         if (sortOrder == SortOrder.MOD)
             this.sortByMod();
-        if (sortOrder == SortOrder.NAME)
+        else if (sortOrder == SortOrder.NAME)
             this.sortByName();
-        if (sortOrder == SortOrder.AMOUNT)
+        else if (sortOrder == SortOrder.AMOUNT)
             this.sortByCount();
+        else if (sortOrder == SortOrder.INVTWEAKS)
+            this.sortByInvTweaks();
 
         // TODO: Check if this is even needed anymore
         if (this.getScrollBar() != null) {
@@ -304,5 +308,13 @@ public class MERepo<T extends IAEStack<T>> {
 
     private void sortByCount() {
         this.view.sort((o1, o2) -> this.checkSortDir(Long.compare(AEUtil.getStackSize(o2), AEUtil.getStackSize(o1))));
+    }
+
+    private void sortByInvTweaks(){
+        InvTweaksAPI api = ThEInvTweaks.getApi();
+        if(api == null)
+            sortByName();
+        else
+            this.view.sort((o1, o2) -> this.checkSortDir(api.compareItems(o1.asItemStackRepresentation(), o2.asItemStackRepresentation())));
     }
 }

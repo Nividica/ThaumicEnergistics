@@ -31,6 +31,7 @@ import thaumicenergistics.client.render.ArcaneAssemblerRenderer;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
+import thaumicenergistics.integration.invtweaks.ThEInvTweaks;
 import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.tile.TileArcaneAssembler;
@@ -86,6 +87,7 @@ public class ThaumicEnergistics {
 
         ThaumicEnergistics.INTEGRATIONS.add(new ThEThaumcraft());
         ThaumicEnergistics.INTEGRATIONS.add(new ThEAppliedEnergistics());
+        ThaumicEnergistics.INTEGRATIONS.add(new ThEInvTweaks());
 
         // Remove any integration that is not installed
         ThaumicEnergistics.INTEGRATIONS.removeIf(in -> !in.isLoaded());

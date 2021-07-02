@@ -47,10 +47,6 @@ import thaumicenergistics.util.ThELog;
 public class ThEThaumcraft implements IThEIntegration {
 
     @Override
-    public void preInit() {
-    }
-
-    @Override
     public void init() {
         ThELog.info("Registering Research Category");
         ResearchCategories.registerCategory(
@@ -79,10 +75,6 @@ public class ThEThaumcraft implements IThEIntegration {
             TheorycraftManager.registerAid(new AidMEDrive());
         this.registerArcaneRecipes();
         this.registerInfusionRecipes();
-    }
-
-    @Override
-    public void postInit() {
     }
 
     @Override
