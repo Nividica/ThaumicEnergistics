@@ -57,6 +57,7 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
     protected TileEntity hostTile;
     protected EntityPlayer owner;
     protected ItemPartBase item;
+    protected int lightOpacity = -1;
     public AEPartLocation side;
     public IActionSource source;
 
@@ -119,9 +120,16 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
             this.gridNode.loadFromNBT("part", nbt);
     }
 
+    protected int blockLight(int emit){
+        if(this.lightOpacity >= 0)
+            return (int) (emit * (this.lightOpacity / 255.0F));
+        TileEntity te = this.getTile();
+        return this.lightOpacity = 255 - te.getWorld().getBlockLightOpacity(te.getPos().offset(this.side.getFacing()));
+    }
+
     @Override
     public int getLightLevel() {
-        return 0;
+        return this.blockLight(this.isPowered() ? 9 : 0);
     }
 
     @Override
