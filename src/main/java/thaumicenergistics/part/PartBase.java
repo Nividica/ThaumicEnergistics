@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.networking.events.MENetworkBootingStatusChange;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -130,7 +131,7 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
 
     @Override
     public void onNeighborChanged(IBlockAccess iBlockAccess, BlockPos blockPos, BlockPos blockPos1) {
-
+        this.host.markForUpdate();
     }
 
     @Override
@@ -276,9 +277,15 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
     }
 
     @MENetworkEventSubscribe
+    public final void updateBootStatus(MENetworkBootingStatusChange event) {
+        this.host.markForUpdate();
+    }
+
+    @MENetworkEventSubscribe
     public void updatePowerStatus(MENetworkPowerStatusChange event) {
         try {
             this.isPowered = GridUtil.getEnergyGrid(this).isNetworkPowered();
+            this.host.markForUpdate();
         } catch (GridAccessException e) {
             // should ignore?
             this.isPowered = false;

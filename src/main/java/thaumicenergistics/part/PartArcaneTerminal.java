@@ -91,6 +91,7 @@ public class PartArcaneTerminal extends PartSharedTerminal {
         if (ForgeUtil.isServer())
             GuiHandler.openGUI(this.getGui(), player, this.hostTile.getPos(), this.side);
 
+        this.host.markForUpdate();
         return true;
     }
 

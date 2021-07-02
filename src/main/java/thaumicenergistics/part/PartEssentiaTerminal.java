@@ -56,6 +56,7 @@ public class PartEssentiaTerminal extends PartSharedTerminal {
         if (ForgeUtil.isServer())
             GuiHandler.openGUI(ModGUIs.ESSENTIA_TERMINAL, player, this.hostTile.getPos(), this.side);
 
+        this.host.markForUpdate();
         return true;
     }
 
