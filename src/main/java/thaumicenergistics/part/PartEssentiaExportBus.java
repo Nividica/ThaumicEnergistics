@@ -2,6 +2,7 @@ package thaumicenergistics.part;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.parts.IPartCollisionHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -129,5 +130,13 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
             GuiHandler.openGUI(ModGUIs.ESSENTIA_EXPORT_BUS, player, this.hostTile.getPos(), this.side);
 
         return true;
+    }
+
+    @Override
+    public void getBoxes(IPartCollisionHelper box) {
+        box.addBox(4, 4, 12, 12, 12, 14);
+        box.addBox(5, 5, 14, 11, 11, 15);
+        box.addBox(6, 6, 15, 10, 10, 16);
+        box.addBox(6, 6, 11, 10, 10, 12);
     }
 }
