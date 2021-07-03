@@ -6,12 +6,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import appeng.api.networking.events.MENetworkBootingStatusChange;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -41,6 +44,8 @@ import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
 import thaumicenergistics.integration.appeng.util.ThEActionSource;
 import thaumicenergistics.item.ItemPartBase;
 import thaumicenergistics.util.ForgeUtil;
+import thaumicenergistics.util.IThEGridNodeBlock;
+import thaumicenergistics.util.IThEOwnable;
 import thaumicenergistics.util.ItemHandlerUtil;
 
 import io.netty.buffer.ByteBuf;
@@ -48,8 +53,9 @@ import thaumicenergistics.util.inventory.IThEInvTile;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
-public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost, IActionHost, IPowerChannelState, IThEInvTile {
+public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost, IActionHost, IPowerChannelState, IThEInvTile, IThEOwnable, IThEGridNodeBlock {
 
     protected ThEGridBlock gridBlock;
     protected IGridNode gridNode;
@@ -187,9 +193,7 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
             return;
         this.gridBlock = new ThEGridBlock(this);
         this.gridNode = AEApi.instance().grid().createGridNode(this.gridBlock);
-        if (this.owner != null) {
-            this.gridNode.setPlayerID(AEApi.instance().registries().players().getID(this.owner));
-        }
+        this.initGridNodeOwner();
         this.gridNode.updateState();
         //this.setPower(null); TODO
         BlockPos pos = this.gridBlock.getLocation().getPos();
@@ -236,7 +240,17 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
 
     @Override
     public void onPlacement(EntityPlayer player, EnumHand hand, ItemStack stack, AEPartLocation side) {
+        this.setOwner(player);
+    }
+
+    @Override
+    public void setOwner(EntityPlayer player) {
         this.owner = player;
+    }
+
+    @Override
+    public EntityPlayer getOwner() {
+        return this.owner;
     }
 
     @Override
@@ -257,6 +271,11 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
         return this.gridNode;
     }
 
+    @Override
+    public ThEGridBlock getGridBlock() {
+        return this.gridBlock;
+    }
+
     @Nonnull
     @Override
     public AECableType getCableConnectionType(@Nonnull AEPartLocation dir) {
@@ -265,7 +284,16 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
 
     @Override
     public void securityBreak() {
-        // TODO
+        if(this.getRepr().isEmpty() || this.getGridNode() == null) return;
+        this.host.removePart(this.side, false);
+        EnumFacing facing = this.side.getFacing();
+        Vec3d offset = new Vec3d(facing.getXOffset(), facing.getYOffset(), facing.getZOffset());
+        offset = offset.scale(.5);
+        BlockPos pos = this.getTile().getPos();
+        Vec3d posVec = new Vec3d(pos).add(.5, .5, .5).add(offset);
+        World world = this.getTile().getWorld();
+        world.playEvent(2001, pos, Block.getStateId(world.getBlockState(pos)));
+        world.spawnEntity(new EntityItem(world, posVec.x, posVec.y, posVec.z, this.getRepr().copy()));
     }
 
     @Override

@@ -10,13 +10,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
-import appeng.api.networking.IGridNode;
-
 import thaumicenergistics.tile.TileNetwork;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public abstract class BlockNetwork extends BlockBase implements ITileEntityProvider {
 
@@ -36,8 +34,9 @@ public abstract class BlockNetwork extends BlockBase implements ITileEntityProvi
             return;
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof TileNetwork && placer instanceof EntityPlayer) {
-            IGridNode node = ((TileNetwork) te).getActionableNode();
-            node.setPlayerID(AEApi.instance().registries().players().getID((EntityPlayer) placer));
+            TileNetwork tn = (TileNetwork) te;
+            tn.setOwner((EntityPlayer) placer);
+            tn.getActionableNode(); // Force GridNode creation
         }
     }
 }

@@ -11,20 +11,25 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 
+import net.minecraft.entity.player.EntityPlayer;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.integration.appeng.grid.IThEGridHost;
 import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
 import thaumicenergistics.integration.appeng.util.ThEActionSource;
 import thaumicenergistics.util.ForgeUtil;
+import thaumicenergistics.util.IThEGridNodeBlock;
+import thaumicenergistics.util.IThEOwnable;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
-public abstract class TileNetwork extends TileBase implements IThEGridHost, IActionHost, IPowerChannelState {
+public abstract class TileNetwork extends TileBase implements IThEGridHost, IActionHost, IPowerChannelState, IThEOwnable, IThEGridNodeBlock {
 
     protected ThEGridBlock gridBlock;
     protected IGridNode gridNode;
     protected ThEActionSource src;
+    protected EntityPlayer owner;
 
     public TileNetwork() {
         this.gridBlock = new ThEGridBlock(this, this, true);
@@ -33,6 +38,11 @@ public abstract class TileNetwork extends TileBase implements IThEGridHost, IAct
 
     public ThEGridBlock getGridBlock() {
         return this.gridBlock;
+    }
+
+    @Override
+    public IGridNode getGridNode() {
+        return this.gridNode;
     }
 
     @Override
@@ -67,6 +77,7 @@ public abstract class TileNetwork extends TileBase implements IThEGridHost, IAct
     public IGridNode getActionableNode() {
         if (this.gridNode == null && ForgeUtil.isServer()) {
             this.gridNode = AEApi.instance().grid().createGridNode(this.getGridBlock());
+            this.initGridNodeOwner();
             this.gridNode.updateState();
         }
         return this.gridNode;
@@ -84,6 +95,16 @@ public abstract class TileNetwork extends TileBase implements IThEGridHost, IAct
     @Override
     public void gridChanged() {
 
+    }
+
+    @Override
+    public void setOwner(EntityPlayer player) {
+        this.owner = player;
+    }
+
+    @Override
+    public EntityPlayer getOwner() {
+        return this.owner;
     }
 
     @Override
