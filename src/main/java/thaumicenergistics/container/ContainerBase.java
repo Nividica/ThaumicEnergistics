@@ -35,11 +35,6 @@ public abstract class ContainerBase extends Container {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-    }
-
-    @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
         // TODO
         return ItemStack.EMPTY;

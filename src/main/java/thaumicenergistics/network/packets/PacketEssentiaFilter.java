@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.Minecraft;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -37,7 +38,9 @@ public class PacketEssentiaFilter implements IMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         // Decode
-        this.essentiaFilter.deserializeNBT(ByteBufUtils.readTag(buf));
+        NBTTagCompound nbtTagCompound = ByteBufUtils.readTag(buf);
+        if(nbtTagCompound != null)
+            this.essentiaFilter.deserializeNBT(nbtTagCompound);
     }
 
     public static class Handler implements IMessageHandler<PacketEssentiaFilter, IMessage> {

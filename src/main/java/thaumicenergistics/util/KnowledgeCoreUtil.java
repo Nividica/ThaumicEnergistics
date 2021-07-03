@@ -11,7 +11,9 @@ import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.util.inventory.ThEInternalInventory;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**

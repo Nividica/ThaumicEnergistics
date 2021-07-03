@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11;
 import thaumicenergistics.init.ModGlobals;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Makes custom particles!

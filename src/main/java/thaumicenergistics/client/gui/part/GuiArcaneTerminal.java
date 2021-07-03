@@ -1,6 +1,6 @@
 package thaumicenergistics.client.gui.part;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.stream.Stream;
 

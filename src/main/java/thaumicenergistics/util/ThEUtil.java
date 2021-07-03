@@ -4,7 +4,6 @@ import java.util.EnumSet;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.config.SortOrder;
 import appeng.api.config.TerminalStyle;
 
 import thaumcraft.api.aspects.Aspect;

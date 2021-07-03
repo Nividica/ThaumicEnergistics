@@ -18,7 +18,6 @@ public abstract class GuiAbstractTerminal<T extends IAEStack<T>, C extends IStor
 
     protected ContainerBaseTerminal container;
     protected MERepo<T> repo;
-    private C channel;
 
     public GuiAbstractTerminal(ContainerBaseTerminal container) {
         super(container);
@@ -27,10 +26,6 @@ public abstract class GuiAbstractTerminal<T extends IAEStack<T>, C extends IStor
 
     public MERepo<T> getRepo() {
         return this.repo;
-    }
-
-    public C getChannel() {
-        return this.channel;
     }
 
     @Override

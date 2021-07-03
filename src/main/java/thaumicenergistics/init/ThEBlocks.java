@@ -2,6 +2,7 @@ package thaumicenergistics.init;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -52,7 +53,7 @@ public class ThEBlocks implements IThEBlocks {
     public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
         LOGGER.info("Registering ItemBlocks");
 
-        ThEBlocks.BLOCKS.forEach(block -> event.getRegistry().register(new ItemBlock(block).setRegistryName(block.getRegistryName())));
+        ThEBlocks.BLOCKS.forEach(block -> event.getRegistry().register(new ItemBlock(block).setRegistryName(Objects.requireNonNull(block.getRegistryName()))));
     }
 
     @SubscribeEvent

@@ -13,7 +13,7 @@ import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketSubscribe;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.HashMap;
 
 /**

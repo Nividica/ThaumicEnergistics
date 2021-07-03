@@ -1,11 +1,9 @@
 package thaumicenergistics.client.gui;
 
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
-import java.util.ArrayList;
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -28,7 +26,6 @@ import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.ITooltip;
 
-import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.client.gui.helpers.GenericStackSizeRenderer;
 import thaumicenergistics.client.gui.helpers.GuiScrollBar;
@@ -90,15 +87,12 @@ public abstract class GuiBase extends GuiContainer {
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
                 this.drawTexturedModelRectColor(slot.xPos, slot.yPos, uv_x * 16, uv_y * 16, 16, 16, new Color(1f, 1f, 1f, 0.4f));
-
-                //GlStateManager.enableLighting();
             }
         }
         super.drawSlot(slot);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (this.hoveredSlot != null) {
             if (this.hoveredSlot instanceof SlotGhostEssentia && ((SlotGhostEssentia) this.hoveredSlot).getAspect() != null) {
@@ -199,6 +193,7 @@ public abstract class GuiBase extends GuiContainer {
      * @param w width of the region
      * @param h height of the region
      * @param relative true: use mouse location relative to the GUI, false: use absolute mouse location
+     * @return true if the mouse is within the region
      */
     protected boolean mouseWithin(int x, int y, int w, int h, boolean relative){
         int mouseX = currMouseX;

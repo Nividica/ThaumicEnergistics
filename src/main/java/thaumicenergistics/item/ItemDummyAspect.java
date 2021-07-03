@@ -45,7 +45,7 @@ public class ItemDummyAspect extends ItemBase implements IThEModel {
     }
 
     public Aspect getAspect(ItemStack stack) {
-        return stack.hasTagCompound() ? Aspect.getAspect(stack.getTagCompound().getString("aspect")) : null;
+        return stack.hasTagCompound() ? Aspect.getAspect(stack.getTagCompound() != null ? stack.getTagCompound().getString("aspect") : null) : null;
     }
 
     @Override

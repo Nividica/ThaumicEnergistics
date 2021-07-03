@@ -4,7 +4,6 @@ import java.util.Map;
 
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.TerminalStyle;
-import appeng.api.util.IConfigManager;
 
 import thaumicenergistics.api.config.PrefixSetting;
 

@@ -74,14 +74,9 @@ public abstract class ContainerSharedEssentiaBus extends ContainerBase {
     }
 
     public void recalculateSlots() {
-        for (Slot slot : this.inventorySlots) {
-            if (slot instanceof SlotGhost) {
-                if (((SlotGhost) slot).getSlotGroup() <= this.getCapacityUpgrades())
-                    ((SlotGhost) slot).setSlotEnabled(true);
-                else
-                    ((SlotGhost) slot).setSlotEnabled(false);
-            }
-        }
+        for (Slot slot : this.inventorySlots)
+            if (slot instanceof SlotGhost)
+                ((SlotGhost) slot).setSlotEnabled(((SlotGhost) slot).getSlotGroup() <= this.getCapacityUpgrades());
     }
 
     @Override
