@@ -45,7 +45,7 @@ public class ItemHandlerUtil {
 
         for (int slot = 0; slot < handler.getSlots(); slot++) {   // insert into matching stacks
             ItemStack existing = handler.getStackInSlot(slot);
-            if (ForgeUtil.areItemStacksEqual(existing, copy)) {
+            if (ThEUtil.areItemStacksEqual(existing, copy)) {
                 copy = handler.insertItem(slot, copy, simulate);
                 if (copy.isEmpty())
                     return ItemStack.EMPTY;
@@ -74,14 +74,14 @@ public class ItemHandlerUtil {
                 return extracted;
             }
             ItemStack inSlot = handler.getStackInSlot(slot);
-            if (inSlot.isEmpty() || !ForgeUtil.areItemStacksEqual(original, inSlot))
+            if (inSlot.isEmpty() || !ThEUtil.areItemStacksEqual(original, inSlot))
                 continue;
             if (extracted == null) {
                 extracted = handler.extractItem(slot, original.getCount(), simulate);
                 continue;
             }
             ItemStack s = handler.extractItem(slot, original.getCount() - extracted.getCount(), simulate);
-            if (s.isEmpty() || !ForgeUtil.areItemStacksEqual(original, s))
+            if (s.isEmpty() || !ThEUtil.areItemStacksEqual(original, s))
                 continue;
             extracted.grow(s.getCount());
         }

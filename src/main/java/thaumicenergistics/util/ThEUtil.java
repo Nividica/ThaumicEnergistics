@@ -61,4 +61,14 @@ public class ThEUtil {
             return 0;
         return ThEApi.instance().config().essentiaContainerCapacity().getOrDefault(stack.getItem().getRegistryName().toString() + ":" + stack.getMetadata(), 0);
     }
+
+    /**
+     * Like {@link ForgeUtil#areItemStacksEqual(ItemStack, ItemStack)}, but safely compares items that were cheated in, that normally would have NBT.
+     * @param a 1st stack
+     * @param b 2nd stack
+     * @return true if they're equal
+     */
+    public static boolean areItemStacksEqual(ItemStack a, ItemStack b) {
+        return a != null && b != null && ItemStack.areItemsEqual(a, b) && (a.hasTagCompound() == b.hasTagCompound()) && ForgeUtil.areNBTTagsEqual(a.getTagCompound(), b.getTagCompound());
+    }
 }
