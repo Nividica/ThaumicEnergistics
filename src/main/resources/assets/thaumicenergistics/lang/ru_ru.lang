@@ -29,6 +29,9 @@ item.thaumicenergistics.upgrade_arcane.name=Улучшение для Мисти
 
 # Подсказки
 tooltip.thaumicenergistics.wip=РАБОТАЮ НАД ЭТИМ, НЕ ИСПОЛЬЗОВАТЬ
+tooltip.thaumicenergistics.device_online=Устройство включено
+tooltip.thaumicenergistics.device_offline=Устройство выключено
+tooltip.thaumicenergistics.device_missing_channel=У устройства отсутствует канал
 
 # GUI
 gui.thaumicenergistics.essentia_import_bus=МЭ Шина импорта эссенции

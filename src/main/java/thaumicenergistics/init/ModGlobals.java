@@ -18,7 +18,9 @@ public class ModGlobals {
     public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2@[rv6-stable-6,);" +
             "required-after:thaumcraft@[6.1.BETA26,);" +
             "after:thaumicjei;" +
-            "after:inventorytweaks";
+            "after:inventorytweaks;" +
+            "after:waila;" +
+            "after:theoneprobe";
 
     /**
      * Creative tab.

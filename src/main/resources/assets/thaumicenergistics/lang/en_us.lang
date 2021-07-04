@@ -33,6 +33,9 @@ item.thaumicenergistics.blank_knowledge_core.name=Blank Knowledge Core
 
 # Tooltips
 tooltip.thaumicenergistics.wip=WORK IN PROGRESS, DO NOT USE
+tooltip.thaumicenergistics.device_online=Device Online
+tooltip.thaumicenergistics.device_offline=Device Offline
+tooltip.thaumicenergistics.device_missing_channel=Device Missing Channel
 
 # GUI
 gui.thaumicenergistics.essentia_import_bus=ME Essentia Import Bus

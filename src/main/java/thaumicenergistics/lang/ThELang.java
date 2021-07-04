@@ -30,6 +30,9 @@ public class ThELang implements IThELang {
     private IThELangKey itemKnowledgeCore;
     private IThELangKey itemBlankKnowledgeCore;
     private IThELangKey tooltipWIP;
+    private IThELangKey deviceOnline;
+    private IThELangKey deviceOffline;
+    private IThELangKey deviceMissingChannel;
     private IThELangKey guiEssentiaImportBus;
     private IThELangKey guiEssentiaExportBus;
     private IThELangKey guiEssentiaStorageBus;
@@ -79,6 +82,9 @@ public class ThELang implements IThELang {
         this.itemBlankKnowledgeCore = new ThELangKey("item.thaumicenergistics.blank_knowledge_core.name");
 
         this.tooltipWIP = new ThELangKey("tooltip.thaumicenergistics.wip");
+        this.deviceOnline = new ThELangKey("tooltip.thaumicenergistics.device_online");
+        this.deviceOffline = new ThELangKey("tooltip.thaumicenergistics.device_offline");
+        this.deviceMissingChannel = new ThELangKey("tooltip.thaumicenergistics.device_missing_channel");
 
         this.guiEssentiaImportBus = new ThELangKey("gui.thaumicenergistics.essentia_import_bus");
         this.guiEssentiaExportBus = new ThELangKey("gui.thaumicenergistics.essentia_export_bus");
@@ -212,6 +218,21 @@ public class ThELang implements IThELang {
     @Override
     public IThELangKey tooltipWIP() {
         return this.tooltipWIP;
+    }
+
+    @Override
+    public IThELangKey deviceOnline() {
+        return this.deviceOnline;
+    }
+
+    @Override
+    public IThELangKey deviceOffline() {
+        return this.deviceOffline;
+    }
+
+    @Override
+    public IThELangKey deviceMissingChannel() {
+        return this.deviceMissingChannel;
     }
 
     @Override

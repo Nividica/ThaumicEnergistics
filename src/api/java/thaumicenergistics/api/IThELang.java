@@ -4,6 +4,7 @@ package thaumicenergistics.api;
  * Contains every translation key in Thaumic Energistics
  *
  * @author BrockWS
+ * @author Alex811
  */
 public interface IThELang {
 
@@ -50,6 +51,12 @@ public interface IThELang {
     IThELangKey itemBlankKnowledgeCore();
 
     IThELangKey tooltipWIP();
+
+    IThELangKey deviceOnline();
+
+    IThELangKey deviceOffline();
+
+    IThELangKey deviceMissingChannel();
 
     IThELangKey guiEssentiaImportBus();
 

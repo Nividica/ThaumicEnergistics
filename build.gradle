@@ -28,6 +28,7 @@ compileJava {
 }
 
 def mc_run_jvmargs = ["-Xmx${mc_run_mem}", "-Xms${mc_run_mem}"]
+def version_mc_no_patch = (project.version_mc =~ /^\d+\.\d+/)[0]
 
 minecraft {
     version = "${version_mc}-${version_forge}"
@@ -53,18 +54,20 @@ repositories {
         url = "https://maven.covers1624.net"
     }
     maven {
-        name 'CB Maven'
-        url "http://chickenbones.net/maven/"
+        name = 'CB Maven'
+        url = "http://chickenbones.net/maven/"
     }
     maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
+        name = 'tterrag maven'
+        url "https://maven.tterrag.com/"
     }
 }
 
 dependencies {
     provided "mezz.jei:jei_${version_jei}:api"
-    provided "inventory-tweaks:InventoryTweaks:${version_it}:api"
+    provided "curse.maven:inventory-tweaks:${version_it}:api"
+    provided "curse.maven:hwyla:${version_hwyla}:api"
+    provided "mcjty.theoneprobe:TheOneProbe-${version_mc_no_patch}:${version_top}:api"
     deobfCompile("curse.maven:baubles:${version_ba}")
     deobfCompile("curse.maven:thaumcraft:${version_tc}")
     deobfCompile("curse.maven:appliedenergistics2-223794:${version_ae2}") {
@@ -73,8 +76,9 @@ dependencies {
 
     // Testing mods
     runtime "mezz.jei:jei_${version_jei}"
-    //runtime "inventory-tweaks:InventoryTweaks:${version_it}" // Causes issues
+    //runtime "curse.maven:inventory-tweaks:${version_it}" // Causes issues
     runtime "curse.maven:hwyla:${version_hwyla}"
+    runtime "mcjty.theoneprobe:TheOneProbe-${version_mc_no_patch}:${version_top}"
     runtime("curse.maven:thaumic-jei:${version_tjei}") {
         transitive = false
     }

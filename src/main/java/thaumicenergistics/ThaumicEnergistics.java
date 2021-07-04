@@ -31,8 +31,10 @@ import thaumicenergistics.client.render.ArcaneAssemblerRenderer;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
+import thaumicenergistics.integration.hwyla.ThEHwyla;
 import thaumicenergistics.integration.invtweaks.ThEInvTweaks;
 import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
+import thaumicenergistics.integration.theoneprobe.ThETheOneProbe;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.tile.TileArcaneAssembler;
 import thaumicenergistics.util.ForgeUtil;
@@ -88,6 +90,8 @@ public class ThaumicEnergistics {
         ThaumicEnergistics.INTEGRATIONS.add(new ThEThaumcraft());
         ThaumicEnergistics.INTEGRATIONS.add(new ThEAppliedEnergistics());
         ThaumicEnergistics.INTEGRATIONS.add(new ThEInvTweaks());
+        ThaumicEnergistics.INTEGRATIONS.add(new ThEHwyla());
+        ThaumicEnergistics.INTEGRATIONS.add(new ThETheOneProbe());
 
         // Remove any integration that is not installed
         ThaumicEnergistics.INTEGRATIONS.removeIf(in -> !in.isLoaded());
@@ -140,7 +144,6 @@ public class ThaumicEnergistics {
 
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
-        //event.registerServerCommand(new CommandAddVis());
     }
 
     @SubscribeEvent
