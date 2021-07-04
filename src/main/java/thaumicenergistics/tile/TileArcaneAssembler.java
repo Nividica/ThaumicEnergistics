@@ -22,7 +22,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.me.GridAccessException;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryCrafting;
@@ -81,23 +80,8 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
     }
 
     @Override
-    @MethodsReturnNonnullByDefault
     public NBTTagCompound getUpdateTag() {
-        return writeToNBT(new NBTTagCompound());
-    }
-
-    @Nullable
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        NBTTagCompound tag = new NBTTagCompound();
-        this.writeToNBT(tag);
-        return new SPacketUpdateTileEntity(this.getPos(), 1, tag);
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
-        this.readFromNBT(packet.getNbtCompound());
+        return this.writeToNBT(super.getUpdateTag());
     }
 
     @Override
@@ -124,15 +108,6 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
         }
         if (tag.hasKey("crafting")){
             this.craftingInv.deserializeNBT(tag.getTagList("crafting", 10));
-        }
-    }
-
-    @Override
-    public void markDirty() {
-        super.markDirty();
-        if (world != null) {
-            IBlockState state = world.getBlockState(getPos());
-            world.notifyBlockUpdate(getPos(), state, state, 3);
         }
     }
 

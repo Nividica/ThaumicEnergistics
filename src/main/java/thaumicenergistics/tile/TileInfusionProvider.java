@@ -1,11 +1,6 @@
 package thaumicenergistics.tile;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.storage.IStorageGrid;
@@ -77,20 +72,7 @@ public class TileInfusionProvider extends TileNetwork implements IAspectSource {
 
     @Override
     public NBTTagCompound getUpdateTag() {
-        return writeToNBT(new NBTTagCompound());
-    }
-
-    @Nullable
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        NBTTagCompound tag = new NBTTagCompound();
-        this.writeToNBT(tag);
-        return new SPacketUpdateTileEntity(this.getPos(), 1, tag);
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
-        this.readFromNBT(packet.getNbtCompound());
+        return this.writeToNBT(super.getUpdateTag());
     }
 
     @Override
@@ -108,15 +90,6 @@ public class TileInfusionProvider extends TileNetwork implements IAspectSource {
         if (tag.hasKey("storedAspects")) {
             this.clientAspects = new AspectList();
             this.clientAspects.readFromNBT(tag, "storedAspects");
-        }
-    }
-
-    @Override
-    public void markDirty() {
-        super.markDirty();
-        if (world != null) {
-            IBlockState state = world.getBlockState(getPos());
-            world.notifyBlockUpdate(getPos(), state, state, 3);
         }
     }
 
