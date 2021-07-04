@@ -79,6 +79,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     public void initSearchField(){
         SearchBoxMode searchModeSetting = ThEApi.instance().config().searchBoxMode();
+        this.repo.setSearchBoxMode(searchModeSetting);
         this.isAutoFocus = Stream.of(SearchBoxMode.AUTOSEARCH, SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.AUTOSEARCH_KEEP, SearchBoxMode.JEI_AUTOSEARCH_KEEP).anyMatch(m -> m == searchModeSetting);
         boolean isKeepFilter = Stream.of(SearchBoxMode.AUTOSEARCH_KEEP, SearchBoxMode.JEI_AUTOSEARCH_KEEP, SearchBoxMode.MANUAL_SEARCH_KEEP, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP).anyMatch(m -> m == searchModeSetting);
         boolean isJEIEnabled = Stream.of(SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.JEI_MANUAL_SEARCH).anyMatch(m -> m == searchModeSetting);
