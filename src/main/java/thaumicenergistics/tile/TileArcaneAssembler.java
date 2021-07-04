@@ -240,7 +240,14 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
         if(!this.craftingInv.getStackInSlot(0).isEmpty()){
             if(this.progress == 0) this.markDirty();
             this.progress += getStep();
-            if(progress >= 100){
+            if(this.progress >= 100){
+                IAEItemStack stack = this.channel.createStack(this.craftingInv.getStackInSlot(0));
+                IMEMonitor<IAEItemStack> inventory = this.getInventory(this.channel);
+                if(Stream.of(stack, inventory, this.src).anyMatch(Objects::isNull)){
+                    this.progress -= getStep();
+                    ThELog.trace("Arcane Assembler @ (" + this.getPos().getX() + ", " + this.getPos().getY() + ", " + this.getPos().getZ() + "): ME system not ready for crafting yet, retrying...");
+                    return TickRateModulation.SAME;
+                }
                 AEUtil.inventoryInsert(this.channel.createStack(this.craftingInv.getStackInSlot(0)), this.getInventory(this.channel), this.src);
                 this.craftingInv.removeStackFromSlot(0);
                 this.markDirty();
