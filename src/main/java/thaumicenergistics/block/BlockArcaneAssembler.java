@@ -1,6 +1,7 @@
 package thaumicenergistics.block;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -29,7 +30,13 @@ import java.util.Objects;
 public class BlockArcaneAssembler extends BlockNetwork implements IThEModel{
 
     public BlockArcaneAssembler(String id) {
-        super(id, Material.GLASS);
+        super(id);
+        this.blockSoundType = SoundType.GLASS;
+        this.fullBlock = false;
+        this.lightOpacity = 1;
+        this.translucent = true;
+        this.setHarvestLevel("pickaxe", 0);
+        this.setHardness(2.2F);
     }
 
     @Override
@@ -103,6 +110,12 @@ public class BlockArcaneAssembler extends BlockNetwork implements IThEModel{
     @ParametersAreNonnullByDefault
     @SuppressWarnings("deprecation")
     public boolean causesSuffocation(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 }
