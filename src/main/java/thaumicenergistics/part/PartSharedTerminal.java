@@ -71,4 +71,8 @@ public abstract class PartSharedTerminal extends PartBase implements ITerminalHo
         return this.cm;
     }
 
+    @Override
+    public int getLightLevel() {
+        return this.blockLight(this.isPowered() ? 9 : 0);
+    }
 }

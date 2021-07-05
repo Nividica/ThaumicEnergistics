@@ -135,7 +135,7 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
 
     @Override
     public int getLightLevel() {
-        return this.blockLight(this.isPowered() ? 9 : 0);
+        return 0;
     }
 
     @Override
