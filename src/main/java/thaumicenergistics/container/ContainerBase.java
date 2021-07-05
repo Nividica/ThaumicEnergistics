@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import net.minecraftforge.items.IItemHandler;
 
+import net.minecraftforge.items.wrapper.InvWrapper;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 
@@ -19,6 +20,7 @@ import thaumicenergistics.network.packets.PacketInvHeldUpdate;
 import thaumicenergistics.network.packets.PacketUIAction;
 import thaumicenergistics.util.EssentiaFilter;
 import thaumicenergistics.util.ForgeUtil;
+import thaumicenergistics.util.ItemHandlerUtil;
 
 /**
  * The base container for all containers in Thaumic Energistics
@@ -96,7 +98,18 @@ public abstract class ContainerBase extends Container {
             }
             return ItemStack.EMPTY;
         }
+        if (!(this instanceof ContainerBaseTerminal) && clickType == ClickType.QUICK_MOVE) {
+            if(slot instanceof SlotUpgrade || slot instanceof SlotKnowledgeCore)
+                ItemHandlerUtil.quickMoveSlot(new InvWrapper(this.player.inventory), slot, false, true);
+            else
+                handleQuickMove(slot, slot.getStack());
+            return ItemStack.EMPTY;
+        }
         return super.slotClick(slotID, dragType, clickType, player);
+    }
+
+    protected void handleQuickMove(Slot slot, ItemStack itemStack){
+
     }
 
     @Override

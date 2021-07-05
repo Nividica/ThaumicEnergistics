@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
@@ -16,11 +18,14 @@ import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.container.slot.SlotKnowledgeCore;
 import thaumicenergistics.container.slot.SlotUpgrade;
+import thaumicenergistics.item.ItemKnowledgeCore;
+import thaumicenergistics.item.ItemMaterial;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketAssemblerGUIUpdate;
 import thaumicenergistics.network.packets.PacketPlaySound;
 import thaumicenergistics.tile.TileArcaneAssembler;
 import thaumicenergistics.util.ForgeUtil;
+import thaumicenergistics.util.ItemHandlerUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -92,5 +97,14 @@ public class ContainerArcaneAssembler extends ContainerBase {
         @Override
         @ParametersAreNonnullByDefault
         public void sendAllWindowProperties(Container containerIn, IInventory inventory) {}
+    }
+
+    @Override
+    protected void handleQuickMove(Slot slot, ItemStack itemStack) {
+        Item item = itemStack.getItem();
+        if(item instanceof ItemKnowledgeCore)
+            ItemHandlerUtil.quickMoveSlot(this.getInventory("cores"), slot);
+        else if(item instanceof ItemMaterial || item instanceof appeng.items.materials.ItemMaterial)
+            ItemHandlerUtil.quickMoveSlot(this.getInventory("upgrades"), slot);
     }
 }

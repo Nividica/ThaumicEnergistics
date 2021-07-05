@@ -42,7 +42,7 @@ public abstract class PartSharedEssentiaBus extends PartBase implements IGridTic
                 PartSharedEssentiaBus.this.host.markForSave();
             }
         };
-        this.upgrades = new ThEUpgradeInventory("", upgradeSlots, 1, this.getItemStack(PartItemStack.NETWORK)) {
+        this.upgrades = new ThEUpgradeInventory("upgrades", upgradeSlots, 1, this.getItemStack(PartItemStack.NETWORK)) {
             @Override
             public void markDirty() {
                 super.markDirty();
