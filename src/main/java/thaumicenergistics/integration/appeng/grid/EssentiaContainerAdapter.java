@@ -3,6 +3,7 @@ package thaumicenergistics.integration.appeng.grid;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.config.IncludeExclude;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
@@ -22,15 +23,25 @@ import thaumicenergistics.util.EssentiaFilter;
  * Used by Essentia Storage Bus
  *
  * @author BrockWS
+ * @author Alex811
  */
 public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentiaStack> {
 
     private IAspectContainer container;
     private EssentiaFilter config;
+    private IncludeExclude whitelistMode = IncludeExclude.WHITELIST;
 
     public EssentiaContainerAdapter(IAspectContainer container, EssentiaFilter config) {
         this.container = container;
         this.config = config;
+    }
+
+    public boolean isWhitelist() {
+        return this.whitelistMode == IncludeExclude.WHITELIST;
+    }
+
+    public void setWhitelist(boolean whitelist) {
+        this.whitelistMode = (whitelist ? IncludeExclude.WHITELIST : IncludeExclude.BLACKLIST);
     }
 
     @Override
@@ -94,7 +105,16 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
     public boolean canAccept(IAEEssentiaStack input) {
         if (this.container == null)
             return false;
-        return this.container.doesContainerAccept(input.getAspect()) && this.config.isInFilter(input.getAspect());
+        boolean inFilter = this.config.isInFilter(input.getAspect());
+        boolean containerCanAccept = this.container.doesContainerAccept(input.getAspect());
+        if (this.whitelistMode == IncludeExclude.BLACKLIST){
+            if (inFilter)
+                return false;
+            return containerCanAccept;
+        }
+        if (!this.config.hasAspects())  // on empty whitelist, allow any
+            return containerCanAccept;
+        return inFilter && containerCanAccept;
     }
 
     @Override

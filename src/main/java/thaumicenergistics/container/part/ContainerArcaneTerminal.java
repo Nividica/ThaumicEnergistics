@@ -39,8 +39,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
 
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -60,7 +58,6 @@ import thaumicenergistics.container.slot.SlotArcaneMatrix;
 import thaumicenergistics.container.slot.SlotArcaneResult;
 import thaumicenergistics.container.slot.SlotUpgrade;
 import thaumicenergistics.init.ModGUIs;
-import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.integration.thaumcraft.TCCraftingManager;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.*;
@@ -75,7 +72,7 @@ import com.google.common.collect.Lists;
  * @author BrockWS
  * @author Alex811
  */
-public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingContainer, IConfigurableObject {
+public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingContainer {
 
     public IRecipe recipe;
 
@@ -83,17 +80,14 @@ public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IM
     protected IItemStorageChannel channel;
     protected IMEMonitor<IAEItemStack> monitor;
     protected IInventory craftingResult;
-    protected IConfigManager serverConfigManager;
-    protected IConfigManager clientConfigManager;
     protected SlotArcaneResult resultSlot;
 
 
     public ContainerArcaneTerminal(EntityPlayer player, PartSharedTerminal part){
-        super(player);
+        super(player, part);
         this.part = part;
 
         // We use the client config manager on server as well to make sure the client is in sync
-        this.clientConfigManager = new ThEConfigManager();
         this.clientConfigManager.registerSetting(Settings.SORT_BY, SortOrder.NAME);
         this.clientConfigManager.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
         this.clientConfigManager.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
@@ -105,7 +99,6 @@ public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IM
             if (this.monitor != null) {
                 this.monitor.addListener(this, null);
             }
-            this.serverConfigManager = part.getConfigManager();
         }
 
         this.addMatrixSlots(32, 36);
@@ -256,20 +249,6 @@ public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IM
         super.detectAndSendChanges();
         if (this.player instanceof IContainerListener)
             this.sendVisInfo((IContainerListener) this.player);
-        if (ForgeUtil.isServer()) {
-            for (Settings setting : this.serverConfigManager.getSettings()) {
-                Enum server = this.serverConfigManager.getSetting(setting);
-                Enum client = this.clientConfigManager.getSetting(setting);
-                if (client != server) {
-                    for (IContainerListener player : this.listeners)
-                        if (player instanceof EntityPlayerMP) {
-                            // Only update the local cache when we actually were able to send it
-                            this.clientConfigManager.putSetting(setting, server);
-                            PacketHandler.sendToPlayer((EntityPlayerMP) player, new PacketSettingChange(setting, server));
-                        }
-                }
-            }
-        }
     }
 
     @Override
@@ -467,11 +446,6 @@ public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IM
                 return new PlayerInvWrapper(this.player.inventory);
         }
         return null;
-    }
-
-    @Override
-    public IConfigManager getConfigManager() {
-        return ForgeUtil.isClient() ? this.clientConfigManager : this.serverConfigManager;
     }
 
     public EntityPlayer getPlayer() {

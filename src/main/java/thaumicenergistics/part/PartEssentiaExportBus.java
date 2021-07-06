@@ -2,6 +2,8 @@ package thaumicenergistics.part;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
 import appeng.api.parts.IPartCollisionHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
@@ -53,6 +55,7 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
 
     public PartEssentiaExportBus(ItemEssentiaExportBus item) {
         super(item);
+        this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
     }
 
     @Nonnull
@@ -66,11 +69,8 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
         return this.getConnectedTE() != null && this.config.hasAspects(); // We only want to run if there is something in the filter
     }
 
-    @Nonnull
     @Override
-    public TickRateModulation tickingRequest(@Nonnull IGridNode node, int ticksSinceLastCall) {
-        if (!this.canWork())
-            return TickRateModulation.IDLE;
+    protected TickRateModulation doWork() {
         if (this.getConnectedTE() instanceof IAspectContainer) {
             IAspectContainer container = (IAspectContainer) this.getConnectedTE();
 
@@ -129,6 +129,7 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
         if (ForgeUtil.isServer())
             GuiHandler.openGUI(ModGUIs.ESSENTIA_EXPORT_BUS, player, this.hostTile.getPos(), this.side);
 
+        this.host.markForUpdate();
         return true;
     }
 

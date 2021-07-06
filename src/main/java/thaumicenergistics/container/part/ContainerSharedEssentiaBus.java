@@ -14,7 +14,7 @@ import appeng.api.implementations.items.IUpgradeModule;
 
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
-import thaumicenergistics.container.ContainerBase;
+import thaumicenergistics.container.ContainerBaseConfigurable;
 import thaumicenergistics.container.slot.SlotGhost;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
 import thaumicenergistics.container.slot.SlotUpgrade;
@@ -28,12 +28,12 @@ import thaumicenergistics.util.ItemHandlerUtil;
 /**
  * @author BrockWS
  */
-public abstract class ContainerSharedEssentiaBus extends ContainerBase {
+public abstract class ContainerSharedEssentiaBus extends ContainerBaseConfigurable {
 
     protected PartSharedEssentiaBus part;
 
     public ContainerSharedEssentiaBus(EntityPlayer player, PartSharedEssentiaBus part) {
-        super(player);
+        super(player, part);
         this.part = part;
         this.sendFilter();
     }
@@ -114,5 +114,9 @@ public abstract class ContainerSharedEssentiaBus extends ContainerBase {
                         .ifPresent(essentiaSlot -> config.setAspect(aspect, essentiaSlot.slotNumber));
             }
         }
+    }
+
+    public PartSharedEssentiaBus getPart() {
+        return this.part;
     }
 }

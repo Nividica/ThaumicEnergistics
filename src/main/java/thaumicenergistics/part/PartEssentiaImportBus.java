@@ -2,6 +2,8 @@ package thaumicenergistics.part;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -49,6 +51,7 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
 
     public PartEssentiaImportBus(ItemEssentiaImportBus item) {
         super(item);
+        this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
     }
 
     @Nonnull
@@ -59,15 +62,11 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
 
     @Override
     public boolean canWork() {
-        // TODO: Improve
         return this.getConnectedTE() instanceof IAspectContainer;
     }
 
-    @Nonnull
     @Override
-    public TickRateModulation tickingRequest(@Nonnull IGridNode node, int ticksSinceLastCall) {
-        if (!this.canWork())
-            return TickRateModulation.IDLE;
+    protected TickRateModulation doWork() {
         IAspectContainer container = (IAspectContainer) this.getConnectedTE();
         for (Aspect aspect : container.getAspects().getAspects()) {
             if (this.config.hasAspects() && !this.config.isInFilter(aspect)) // Check filter
@@ -110,6 +109,7 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
         if (ForgeUtil.isServer())
             GuiHandler.openGUI(ModGUIs.ESSENTIA_IMPORT_BUS, player, this.hostTile.getPos(), this.side);
 
+        this.host.markForUpdate();
         return true;
     }
 

@@ -13,9 +13,10 @@ import net.minecraft.world.IBlockAccess;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -40,6 +41,7 @@ import thaumicenergistics.util.ForgeUtil;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICellContainer, IMEMonitorHandlerReceiver<IAEEssentiaStack> {
 
@@ -54,11 +56,33 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
     private static IPartModel MODEL_OFF = new ThEPartModel(MODELS[0], MODELS[2]);
     private static IPartModel MODEL_HAS_CHANNEL = new ThEPartModel(MODELS[0], MODELS[3]);
 
-    private IMEInventoryHandler<IAEEssentiaStack> handler;
+    private EssentiaContainerAdapter handler;
     private boolean wasActive = false;
+    private IAspectContainer lastConnectedContainer = null;
 
     public PartEssentiaStorageBus(ItemEssentiaStorageBus item) {
         super(item, 63, 5);
+    }
+
+    protected void upgradesChanged(){
+        EssentiaContainerAdapter handler = this.getHandler();
+        if(handler != null)
+            handler.setWhitelist(!this.hasInverterCard());
+        this.triggerUpdate();
+    }
+
+    @Override
+    public void addToWorld() {
+        super.addToWorld();
+        this.lastConnectedContainer = this.getConnectedContainer();
+        this.upgradeChangeListeners.add(this::upgradesChanged);
+        this.upgradesChanged();
+    }
+
+    @Override
+    public void removeFromWorld() {
+        super.removeFromWorld();
+        this.upgradeChangeListeners.clear();
     }
 
     @Nonnull
@@ -72,11 +96,8 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
         return false;
     }
 
-    @Nonnull
     @Override
-    public TickRateModulation tickingRequest(@Nonnull IGridNode node, int ticksSinceLastCall) {
-        if (!this.canWork())
-            return TickRateModulation.IDLE;
+    protected TickRateModulation doWork() {
         return TickRateModulation.SLOWER;
     }
 
@@ -107,6 +128,11 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
                 //ThELog.info("MENetworkCellArrayUpdate");
                 grid.postEvent(new MENetworkCellArrayUpdate());
             }
+        }
+        IAspectContainer connectedContainer = this.getConnectedContainer();
+        if (this.lastConnectedContainer != connectedContainer){
+            this.lastConnectedContainer = connectedContainer;
+            this.handler = connectedContainer != null ? new EssentiaContainerAdapter(connectedContainer, this.config) : null;   // update cached handler
         }
         super.onNeighborChanged(access, pos, neighbor);
     }
@@ -158,10 +184,14 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
         return MODEL_OFF;
     }
 
-    private IMEInventoryHandler<IAEEssentiaStack> getHandler() {
-        if (/*this.handler == null &&*/ this.getConnectedContainer() != null) // TODO: Allow cache
-            return this.handler = new EssentiaContainerAdapter(this.getConnectedContainer(), this.config);
-        return null;
+    private EssentiaContainerAdapter getHandler() {
+        if(this.handler == null){
+            IAspectContainer connectedContainer = this.getConnectedContainer();
+            if(connectedContainer != null)
+                return this.handler = new EssentiaContainerAdapter(connectedContainer, this.config); // init and cache handler
+            return null;
+        }
+        return this.handler;    // return cached handler
     }
 
     private IAspectContainer getConnectedContainer() {
@@ -180,13 +210,30 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
         return 4;
     }
 
+    @Override
     @MENetworkEventSubscribe
-    public void updateChannels(final MENetworkChannelsChanged changedChannels) {
+    public void updateBootStatus(MENetworkBootingStatusChange event) {
+        super.updateBootStatus(event);
+        this.triggerBootUpdate();
+    }
+
+    @Override
+    @MENetworkEventSubscribe
+    public void updatePowerStatus(MENetworkPowerStatusChange event) {
+        super.updatePowerStatus(event);
+        this.triggerBootUpdate();
+    }
+
+    public void triggerBootUpdate(){
         final boolean currentActive = this.getGridNode().isActive();
         if (this.wasActive != currentActive) {
             this.wasActive = currentActive;
-            this.gridNode.getGrid().postEvent(new MENetworkCellArrayUpdate());
-            this.host.markForUpdate();
+            this.triggerUpdate();
         }
+    }
+
+    public void triggerUpdate(){
+        this.gridNode.getGrid().postEvent(new MENetworkCellArrayUpdate());
+        this.host.markForUpdate();
     }
 }

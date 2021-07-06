@@ -146,14 +146,6 @@ public class GuiEssentiaTerminal extends GuiAbstractTerminal<IAEEssentiaStack, I
             this.updateScroll();
         }
 
-        if (button == 1) {
-            for (final GuiButton btn : this.buttonList) {
-                if (!btn.mousePressed(this.mc, mouseX, mouseY))
-                    continue;
-                super.mouseClicked(mouseX, mouseY, 0); // Make the code think we lmb the button
-                return;
-            }
-        }
         super.mouseClicked(mouseX, mouseY, button);
     }
 

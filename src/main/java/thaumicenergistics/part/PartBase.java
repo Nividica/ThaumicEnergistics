@@ -313,7 +313,7 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
     }
 
     @MENetworkEventSubscribe
-    public final void updateBootStatus(MENetworkBootingStatusChange event) {
+    public void updateBootStatus(MENetworkBootingStatusChange event) {
         this.host.markForUpdate();
     }
 

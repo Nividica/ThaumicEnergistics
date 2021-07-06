@@ -6,10 +6,10 @@ import thaumicenergistics.part.PartBase;
 /**
  * @author Alex811
  */
-public abstract class ContainerBaseTerminal extends ContainerBase{
+public abstract class ContainerBaseTerminal extends ContainerBaseConfigurable{
 
-    public ContainerBaseTerminal(EntityPlayer player) {
-        super(player);
+    public ContainerBaseTerminal(EntityPlayer player, PartBase part) {
+        super(player, part);
     }
 
     abstract public PartBase getPart();

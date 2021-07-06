@@ -37,10 +37,8 @@ import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.jei.ThEJEI;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketOpenGUI;
-import thaumicenergistics.network.packets.PacketSettingChange;
 import thaumicenergistics.network.packets.PacketUIAction;
 import thaumicenergistics.util.AEUtil;
-import thaumicenergistics.util.ThEUtil;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -200,15 +198,6 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
             this.updateScroll();
         }
 
-        if (button == 1) {
-            for (final GuiButton btn : this.buttonList) {
-                if (!btn.mousePressed(this.mc, mouseX, mouseY))
-                    continue;
-                super.mouseClicked(mouseX, mouseY, 0); // Make the code think we lmb the button
-                return;
-            }
-        }
-
         super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -330,24 +319,23 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
             PacketHandler.sendToServer(new PacketOpenGUI(ModGUIs.AE2_CRAFT_STATUS, this.container.getPartPos(), this.container.getPartSide()));
             return;
         }
-        if (button instanceof GuiImgButton) {
-            GuiImgButton btn = (GuiImgButton) button;
-            Enum currentValue = btn.getCurrentValue();
-            Enum next = ThEUtil.rotateEnum(currentValue, btn.getSetting().getPossibleValues(), Mouse.isButtonDown(1));
-            btn.set(next);
-            if (btn.getSetting() == Settings.TERMINAL_STYLE) {
-                ThEConfig.client.terminalStyle = (TerminalStyle) next;
-                ThEConfig.save();
-                this.reload();
-                return;
-            }else if (btn.getSetting() == Settings.SEARCH_MODE){
-                ThEConfig.client.searchBoxMode = (SearchBoxMode) next;
-                ThEConfig.save();
-                this.initSearchField();
-                return;
-            }
-            PacketHandler.sendToServer(new PacketSettingChange(btn.getSetting(), next));
+        super.actionPerformed(button);
+    }
+
+    @Override
+    protected boolean imgBtnActionOverride(GuiImgButton btn, Enum next) {
+        if (btn.getSetting() == Settings.TERMINAL_STYLE) {
+            ThEConfig.client.terminalStyle = (TerminalStyle) next;
+            ThEConfig.save();
+            this.reload();
+            return true;
+        }else if (btn.getSetting() == Settings.SEARCH_MODE){
+            ThEConfig.client.searchBoxMode = (SearchBoxMode) next;
+            ThEConfig.save();
+            this.initSearchField();
+            return true;
         }
+        return false;
     }
 
     @Override
