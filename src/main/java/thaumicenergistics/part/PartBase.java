@@ -38,10 +38,12 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.GridAccessException;
 
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.integration.appeng.grid.GridUtil;
 import thaumicenergistics.integration.appeng.grid.IThEGridHost;
 import thaumicenergistics.integration.appeng.grid.ThEGridBlock;
 import thaumicenergistics.integration.appeng.util.ThEActionSource;
+import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.item.ItemPartBase;
 import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.IThEGridNodeBlock;
@@ -56,6 +58,8 @@ import thaumicenergistics.util.inventory.IThEInvTile;
  * @author Alex811
  */
 public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost, IActionHost, IPowerChannelState, IThEInvTile, IThEOwnable, IThEGridNodeBlock {
+
+    protected ThEConfigManager configManager = new ThEConfigManager();
 
     protected ThEGridBlock gridBlock;
     protected IGridNode gridNode;
@@ -73,7 +77,10 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
     public PartBase(ItemPartBase item) {
         this.item = item;
         this.source = new ThEActionSource(this);
+        this.getConfigManager().registerSettings(this.getAESettingSubject());
     }
+
+    protected abstract AESettings.SUBJECT getAESettingSubject();
 
     public ItemStack getRepr() {
         return new ItemStack(this.item);
@@ -131,6 +138,11 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
             return (int) (emit * (this.lightOpacity / 255.0F));
         TileEntity te = this.getTile();
         return this.lightOpacity = 255 - te.getWorld().getBlockLightOpacity(te.getPos().offset(this.side.getFacing()));
+    }
+
+    @Override
+    public ThEConfigManager getConfigManager() {
+        return this.configManager;
     }
 
     @Override

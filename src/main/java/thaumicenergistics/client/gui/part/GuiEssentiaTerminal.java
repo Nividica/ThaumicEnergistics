@@ -75,7 +75,7 @@ public class GuiEssentiaTerminal extends GuiAbstractTerminal<IAEEssentiaStack, I
         this.buttonList.clear();
         super.initGui();
 
-        IConfigManager cm = ((IConfigurableObject) this.inventorySlots).getConfigManager();
+        IConfigManager cm = this.getConfigManager();
 
         this.sortByButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 8, Settings.SORT_BY, cm.getSetting(Settings.SORT_BY));
         this.sortDirButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 28, Settings.SORT_DIRECTION, cm.getSetting(Settings.SORT_DIRECTION));

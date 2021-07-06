@@ -7,20 +7,16 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.util.IConfigManager;
 import appeng.me.GridAccessException;
 
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.integration.appeng.grid.GridUtil;
-import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.item.ItemPartBase;
 
 /**
  * @author BrockWS
  */
 public abstract class PartSharedTerminal extends PartBase implements ITerminalHost {
-
-    private IConfigManager cm = new ThEConfigManager();
 
     protected final ModGUIs gui;    // the GUI that corresponds to this terminal, mainly used to know where to return to, from a different GUI
 
@@ -64,11 +60,6 @@ public abstract class PartSharedTerminal extends PartBase implements ITerminalHo
     public final void getBoxes(final IPartCollisionHelper bch) {
         bch.addBox(2, 2, 14, 14, 14, 16);
         bch.addBox(4, 4, 13, 12, 12, 14);
-    }
-
-    @Override
-    public IConfigManager getConfigManager() {
-        return this.cm;
     }
 
     @Override

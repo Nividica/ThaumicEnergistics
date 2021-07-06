@@ -33,7 +33,7 @@ public abstract class ContainerSharedEssentiaBus extends ContainerBaseConfigurab
     protected PartSharedEssentiaBus part;
 
     public ContainerSharedEssentiaBus(EntityPlayer player, PartSharedEssentiaBus part) {
-        super(player, part);
+        super(player, part.getConfigManager());
         this.part = part;
         this.sendFilter();
     }

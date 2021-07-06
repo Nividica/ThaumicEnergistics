@@ -7,12 +7,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
 import appeng.api.parts.IPartModel;
 
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
@@ -44,8 +42,11 @@ public class PartEssentiaTerminal extends PartSharedTerminal {
 
     public PartEssentiaTerminal(ItemEssentiaTerminal itemEssentiaTerminal, ModGUIs gui) {
         super(itemEssentiaTerminal, gui);
-        this.getConfigManager().registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.getConfigManager().registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+    }
+
+    @Override
+    protected AESettings.SUBJECT getAESettingSubject() {
+        return AESettings.SUBJECT.ESSENTIA_TERMINAL;
     }
 
     @Override

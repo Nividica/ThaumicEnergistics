@@ -18,7 +18,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.core.localization.GuiText;
@@ -125,7 +124,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
         this.initSearchField();
 
-        IConfigManager cm = ((IConfigurableObject) this.inventorySlots).getConfigManager();
+        IConfigManager cm = this.getConfigManager();
 
         // FIXME: Don't use AE Core classes
         this.sortByButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 8, Settings.SORT_BY, cm.getSetting(Settings.SORT_BY));
@@ -296,7 +295,7 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     public void updateSetting(Settings setting, Enum value) {
         super.updateSetting(setting, value);
 
-        IConfigManager cm = ((IConfigurableObject) this.inventorySlots).getConfigManager();
+        IConfigManager cm = this.getConfigManager();
         this.repo.setSortOrder((SortOrder) cm.getSetting(Settings.SORT_BY));
         this.repo.setViewMode((ViewItems) cm.getSetting(Settings.VIEW_MODE));
         this.repo.setSortDir((SortDir) cm.getSetting(Settings.SORT_DIRECTION));

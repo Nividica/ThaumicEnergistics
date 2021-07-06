@@ -19,10 +19,8 @@ import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
-import appeng.api.util.IConfigManager;
 
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
-import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.item.ItemPartBase;
 import thaumicenergistics.util.EssentiaFilter;
 import thaumicenergistics.util.inventory.ThEUpgradeInventory;
@@ -36,8 +34,6 @@ import java.util.List;
  * @author Alex811
  */
 public abstract class PartSharedEssentiaBus extends PartBase implements IGridTickable, IUpgradeableHost {
-
-    private IConfigManager cm = new ThEConfigManager();
 
     public EssentiaFilter config;
     public ThEUpgradeInventory upgrades;
@@ -154,11 +150,6 @@ public abstract class PartSharedEssentiaBus extends PartBase implements IGridTic
             return new InvWrapper(this.upgrades);
         }
         return null;
-    }
-
-    @Override
-    public IConfigManager getConfigManager() {
-        return this.cm;
     }
 
     @Override

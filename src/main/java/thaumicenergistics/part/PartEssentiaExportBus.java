@@ -2,8 +2,6 @@ package thaumicenergistics.part;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
 import appeng.api.parts.IPartCollisionHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
@@ -24,6 +22,7 @@ import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
@@ -55,7 +54,11 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
 
     public PartEssentiaExportBus(ItemEssentiaExportBus item) {
         super(item);
-        this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+    }
+
+    @Override
+    protected AESettings.SUBJECT getAESettingSubject() {
+        return AESettings.SUBJECT.ESSENTIA_EXPORT_BUS;
     }
 
     @Nonnull

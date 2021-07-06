@@ -4,6 +4,8 @@ import appeng.client.gui.widgets.GuiImgButton;
 import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Mouse;
 import thaumicenergistics.container.ContainerBase;
+import thaumicenergistics.container.ContainerBaseConfigurable;
+import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketSettingChange;
 import thaumicenergistics.util.ThEUtil;
@@ -48,5 +50,9 @@ public abstract class GuiConfigurable extends GuiBase {
      */
     protected boolean imgBtnActionOverride(GuiImgButton btn, Enum next){
         return false;
+    }
+
+    public ThEConfigManager getConfigManager() {
+        return ((ContainerBaseConfigurable) this.inventorySlots).getConfigManager();
     }
 }

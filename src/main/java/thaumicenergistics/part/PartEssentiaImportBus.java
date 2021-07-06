@@ -2,8 +2,6 @@ package thaumicenergistics.part;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -25,6 +23,7 @@ import thaumicenergistics.api.EssentiaStack;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.AEEssentiaStack;
@@ -51,7 +50,11 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
 
     public PartEssentiaImportBus(ItemEssentiaImportBus item) {
         super(item);
-        this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+    }
+
+    @Override
+    protected AESettings.SUBJECT getAESettingSubject() {
+        return AESettings.SUBJECT.ESSENTIA_IMPORT_BUS;
     }
 
     @Nonnull

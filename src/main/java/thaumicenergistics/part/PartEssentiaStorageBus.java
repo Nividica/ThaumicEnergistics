@@ -31,6 +31,7 @@ import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
@@ -62,6 +63,11 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
 
     public PartEssentiaStorageBus(ItemEssentiaStorageBus item) {
         super(item, 63, 5);
+    }
+
+    @Override
+    protected AESettings.SUBJECT getAESettingSubject() {
+        return null;
     }
 
     protected void upgradesChanged(){

@@ -3,10 +3,6 @@ package thaumicenergistics.container.part;
 import java.util.Objects;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IContainerListener;
@@ -49,6 +45,7 @@ import thaumcraft.api.items.ItemsTC;
 
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.container.ActionType;
 import thaumicenergistics.container.ContainerBaseTerminal;
 import thaumicenergistics.container.DummyContainer;
@@ -87,12 +84,6 @@ public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IM
         super(player, part);
         this.part = part;
 
-        // We use the client config manager on server as well to make sure the client is in sync
-        this.clientConfigManager.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.clientConfigManager.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        this.clientConfigManager.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
-        this.clientConfigManager.registerSetting(Settings.SEARCH_MODE, ThEApi.instance().config().searchBoxMode());
-
         if (ForgeUtil.isServer()) {
             this.channel = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
             this.monitor = this.part.getInventory(this.channel);
@@ -106,6 +97,11 @@ public class ContainerArcaneTerminal extends ContainerBaseTerminal implements IM
 
         this.bindPlayerInventory(new PlayerMainInvWrapper(player.inventory), 0, 106);
         this.bindPlayerArmour(player, new PlayerArmorInvWrapper(player.inventory), 8, 19);
+    }
+
+    @Override
+    protected AESettings.SUBJECT getAESettingSubject() {
+        return AESettings.SUBJECT.ARCANE_TERMINAL;
     }
 
     @Override
