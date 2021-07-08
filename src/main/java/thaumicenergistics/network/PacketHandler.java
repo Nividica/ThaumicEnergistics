@@ -47,6 +47,7 @@ public class PacketHandler {
         PacketHandler.INSTANCE.registerMessage(PacketOpenGUI.Handler.class, PacketOpenGUI.class, PacketHandler.nextID(), Side.SERVER);
         PacketHandler.INSTANCE.registerMessage(PacketCraftRequest.Handler.class, PacketCraftRequest.class, PacketHandler.nextID(), Side.SERVER);
         PacketHandler.INSTANCE.registerMessage(PacketSubscribe.Handler.class, PacketSubscribe.class, PacketHandler.nextID(), Side.SERVER);
+        PacketHandler.INSTANCE.registerMessage(PacketEssentiaFilterAction.Handler.class, PacketEssentiaFilterAction.class, PacketHandler.nextID(), Side.SERVER);
     }
 
     public static void sendToPlayer(EntityPlayerMP player, IMessage message) {
