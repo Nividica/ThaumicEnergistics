@@ -1,6 +1,7 @@
 package thaumicenergistics.util;
 
 import java.util.EnumSet;
+import java.util.stream.IntStream;
 
 import net.minecraft.item.ItemStack;
 
@@ -37,17 +38,16 @@ public class ThEUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Enum> T rotateEnum(T e, EnumSet options, boolean backwards) {
+    public static <T extends Enum<?>> T rotateEnum(T e, EnumSet<? extends T> options, boolean backwards) {
         if (e == null || options == null)
             return e;
-        int i = e.ordinal();
-        if (i == 0)
-            i = backwards ? options.size() - 1 : 1;
-        else if (i >= options.size() - 1)
-            i = backwards ? i - 1 : 0;
-        else
-            i = i + (backwards ? -1 : 1);
-        T next = (T) options.toArray()[i];
+        Object[] optArr = options.toArray();
+        int mappedOrdinal = IntStream.range(0, options.size())  // find e's index in options
+                .parallel()
+                .filter(i -> optArr[i] == e)
+                .findFirst()
+                .orElseThrow(ArrayIndexOutOfBoundsException::new);
+        T next = (T) optArr[(mappedOrdinal + (backwards ? -1 : 1) + options.size()) % options.size()];
         return ThEUtil.isInvalidSetting(next) ? ThEUtil.rotateEnum(next, options, backwards) : next;
     }
 
