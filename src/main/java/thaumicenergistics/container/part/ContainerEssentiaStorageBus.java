@@ -22,7 +22,7 @@ public class ContainerEssentiaStorageBus extends ContainerSharedEssentiaBus {
 
     @Override
     protected AESettings.SUBJECT getAESettingSubject() {
-        return null;
+        return AESettings.SUBJECT.ESSENTIA_STORAGE_BUS;
     }
 
     @Override

@@ -14,6 +14,7 @@ import appeng.api.implementations.items.IUpgradeModule;
 
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
+import thaumicenergistics.container.IPartContainer;
 import thaumicenergistics.container.ContainerBaseConfigurable;
 import thaumicenergistics.container.slot.SlotGhost;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
@@ -28,7 +29,7 @@ import thaumicenergistics.util.ItemHandlerUtil;
 /**
  * @author BrockWS
  */
-public abstract class ContainerSharedEssentiaBus extends ContainerBaseConfigurable {
+public abstract class ContainerSharedEssentiaBus extends ContainerBaseConfigurable implements IPartContainer {
 
     protected PartSharedEssentiaBus part;
 

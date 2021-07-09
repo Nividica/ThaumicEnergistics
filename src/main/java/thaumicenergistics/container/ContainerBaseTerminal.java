@@ -6,7 +6,7 @@ import thaumicenergistics.part.PartBase;
 /**
  * @author Alex811
  */
-public abstract class ContainerBaseTerminal extends ContainerBaseConfigurable{
+public abstract class ContainerBaseTerminal extends ContainerBaseConfigurable implements IPartContainer {
 
     public ContainerBaseTerminal(EntityPlayer player, PartBase part) {
         super(player, part.getConfigManager());

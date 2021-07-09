@@ -4,6 +4,7 @@ import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
+import appeng.api.config.StorageFilter;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
@@ -29,11 +30,18 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
 
     private IAspectContainer container;
     private EssentiaFilter config;
-    private IncludeExclude whitelistMode = IncludeExclude.WHITELIST;
+    private IncludeExclude whitelistMode;
+    private AccessRestriction cachedAccessRestriction;
+    private boolean hasReadAccess;
+    private boolean hasWriteAccess;
+    private boolean reportInaccessible;
 
     public EssentiaContainerAdapter(IAspectContainer container, EssentiaFilter config) {
         this.container = container;
         this.config = config;
+        this.setWhitelist(true);
+        this.setBaseAccess(AccessRestriction.READ_WRITE);
+        this.setReportInaccessible(StorageFilter.EXTRACTABLE_ONLY);
     }
 
     public boolean isWhitelist() {
@@ -44,27 +52,29 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
         this.whitelistMode = (whitelist ? IncludeExclude.WHITELIST : IncludeExclude.BLACKLIST);
     }
 
+    public void setReportInaccessible(StorageFilter reportInaccessible) {
+        this.reportInaccessible = reportInaccessible != StorageFilter.EXTRACTABLE_ONLY;
+    }
+
     @Override
     public IAEEssentiaStack injectItems(IAEEssentiaStack input, Actionable type, IActionSource src) {
-        if (input == null || !input.isMeaningful())
+        if (input == null || !input.isMeaningful() || !this.canAccept(input))
             return input;
 
-        if (this.container.doesContainerAccept(input.getAspect())) { // Check if container accepts it
-            // Add to container to see how much it can store
-            int notAdded = this.container.addToContainer(input.getAspect(), (int) input.getStackSize());
-            if (type == Actionable.SIMULATE) // Annoying hack, maybe talk with Azanor about getting some type of simulation instead
-                this.container.takeFromContainer(input.getAspect(), (int) input.getStackSize() - notAdded);
-            if (notAdded > 0) // Didn't add it all
-                return input.setStackSize(notAdded);
-            return null;
-        }
-
-        return input;
+        // Add to container to see how much it can store
+        int notAdded = this.container.addToContainer(input.getAspect(), (int) input.getStackSize());
+        if (type == Actionable.SIMULATE) // Annoying hack, maybe talk with Azanor about getting some type of simulation instead
+            this.container.takeFromContainer(input.getAspect(), (int) input.getStackSize() - notAdded);
+        if (notAdded > 0) // Didn't add it all
+            return input.setStackSize(notAdded);
+        return null;
     }
 
     @Override
     public IAEEssentiaStack extractItems(IAEEssentiaStack request, Actionable mode, IActionSource src) {
         if (request == null || !request.isMeaningful())
+            return null;
+        if (!this.hasReadAccess)
             return null;
         if (this.container.containerContains(request.getAspect()) <= 0) // Make sure the container actually contains it
             return null;
@@ -84,16 +94,22 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
 
     @Override
     public IItemList<IAEEssentiaStack> getAvailableItems(IItemList<IAEEssentiaStack> out) {
-        if (this.container == null)
+        if (this.container == null || (!this.hasReadAccess && !this.reportInaccessible))
             return out;
         for (Aspect aspect : this.container.getAspects().getAspects())
             out.add(AEUtil.getAEStackFromAspect(aspect, this.container.containerContains(aspect)));
         return out;
     }
 
+    public void setBaseAccess(AccessRestriction access) {
+        this.cachedAccessRestriction = access;
+        this.hasReadAccess = access.hasPermission(AccessRestriction.READ);
+        this.hasWriteAccess = access.hasPermission(AccessRestriction.WRITE);
+    }
+
     @Override
     public AccessRestriction getAccess() {
-        return AccessRestriction.READ_WRITE;
+        return this.cachedAccessRestriction;
     }
 
     @Override
@@ -103,7 +119,7 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
 
     @Override
     public boolean canAccept(IAEEssentiaStack input) {
-        if (this.container == null)
+        if (this.container == null || !this.hasWriteAccess)
             return false;
         boolean inFilter = this.config.isInFilter(input.getAspect());
         boolean containerCanAccept = this.container.doesContainerAccept(input.getAspect());

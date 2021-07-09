@@ -1,7 +1,9 @@
 package thaumicenergistics.client.gui.part;
 
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
 import appeng.client.gui.widgets.GuiImgButton;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
@@ -35,6 +37,8 @@ public class GuiEssentiaStorageBus extends GuiSharedEssentiaBus {
         this.partitionButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 28, Settings.ACTIONS, ActionItems.WRENCH);
         this.addButton(this.clearButton);
         this.addButton(this.partitionButton);
+        this.addButton(new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 48, Settings.ACCESS, AccessRestriction.READ_WRITE));
+        this.addButton(new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 68, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY));
     }
 
     @Override

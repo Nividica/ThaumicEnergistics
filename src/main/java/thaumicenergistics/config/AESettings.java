@@ -1,10 +1,6 @@
 package thaumicenergistics.config;
 
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.util.IConfigManager;
 
 import javax.annotation.Nonnull;
@@ -22,7 +18,8 @@ public final class AESettings {
         ARCANE_TERMINAL,
         ESSENTIA_TERMINAL,
         ESSENTIA_IMPORT_BUS,
-        ESSENTIA_EXPORT_BUS
+        ESSENTIA_EXPORT_BUS,
+        ESSENTIA_STORAGE_BUS
     }
 
     static {
@@ -36,6 +33,9 @@ public final class AESettings {
         addSetting(SUBJECT.ESSENTIA_IMPORT_BUS, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
 
         addSetting(SUBJECT.ESSENTIA_EXPORT_BUS, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+
+        addSetting(SUBJECT.ESSENTIA_STORAGE_BUS, Settings.ACCESS, AccessRestriction.READ_WRITE);
+        addSetting(SUBJECT.ESSENTIA_STORAGE_BUS, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
     }
 
     private static void addSetting(SUBJECT settingSubject, Settings setting, Enum<?> def){

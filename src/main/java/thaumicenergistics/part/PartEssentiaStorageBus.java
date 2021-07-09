@@ -1,9 +1,13 @@
 package thaumicenergistics.part;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -67,7 +71,22 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
 
     @Override
     protected AESettings.SUBJECT getAESettingSubject() {
-        return null;
+        return AESettings.SUBJECT.ESSENTIA_STORAGE_BUS;
+    }
+
+    @Override
+    public void settingChanged(Settings setting) {
+        super.settingChanged(setting);
+        EssentiaContainerAdapter handler = this.handler;
+        if (handler != null) {
+            if(setting == Settings.ACCESS)
+                handler.setBaseAccess((AccessRestriction) this.getConfigManager().getSetting(Settings.ACCESS));
+            else if(setting == Settings.STORAGE_FILTER)
+                handler.setReportInaccessible((StorageFilter) this.getConfigManager().getSetting(Settings.STORAGE_FILTER));
+            else
+                return;
+            this.triggerUpdate();
+        }
     }
 
     protected void upgradesChanged(){
@@ -190,6 +209,7 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
         return MODEL_OFF;
     }
 
+    @Nullable
     private EssentiaContainerAdapter getHandler() {
         if(this.handler == null){
             IAspectContainer connectedContainer = this.getConnectedContainer();

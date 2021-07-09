@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.config.Settings;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -81,6 +82,8 @@ public abstract class PartBase implements IPart, IThEGridHost, IUpgradeableHost,
     }
 
     protected abstract AESettings.SUBJECT getAESettingSubject();
+
+    public void settingChanged(Settings setting){}
 
     public ItemStack getRepr() {
         return new ItemStack(this.item);
