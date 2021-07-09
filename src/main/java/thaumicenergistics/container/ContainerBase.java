@@ -155,4 +155,11 @@ public abstract class ContainerBase extends Container {
     public void handleJEITransfer(EntityPlayer player, NBTTagCompound tag) {
 
     }
+
+    @Override
+    public boolean canMergeSlot(ItemStack stack, Slot slotIn) { // prevent stack merging (double-click) here
+        if(slotIn instanceof SlotME)
+            return false;
+        return super.canMergeSlot(stack, slotIn);
+    }
 }
