@@ -37,13 +37,13 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
     private boolean reportInaccessible;
     private int priority;
 
-    public EssentiaContainerAdapter(IAspectContainer container, EssentiaFilter config) {
+    public EssentiaContainerAdapter(IAspectContainer container, EssentiaFilter config, boolean whitelist, AccessRestriction access, StorageFilter filter, int priority){
         this.container = container;
         this.config = config;
-        this.setWhitelist(true);
-        this.setBaseAccess(AccessRestriction.READ_WRITE);
-        this.setReportInaccessible(StorageFilter.EXTRACTABLE_ONLY);
-        this.priority = 0;
+        this.setWhitelist(whitelist);
+        this.setBaseAccess(access);
+        this.setReportInaccessible(filter);
+        this.priority = priority;
     }
 
     public boolean isWhitelist() {

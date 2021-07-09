@@ -162,7 +162,7 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
         IAspectContainer connectedContainer = this.getConnectedContainer();
         if (this.lastConnectedContainer != connectedContainer){
             this.lastConnectedContainer = connectedContainer;
-            this.handler = connectedContainer != null ? new EssentiaContainerAdapter(connectedContainer, this.config) : null;   // update cached handler
+            this.handler = null;   // wipe cached handler, so it gets reconstructed
         }
         super.onNeighborChanged(access, pos, neighbor);
     }
@@ -236,7 +236,12 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
         if(this.handler == null){
             IAspectContainer connectedContainer = this.getConnectedContainer();
             if(connectedContainer != null)
-                return this.handler = new EssentiaContainerAdapter(connectedContainer, this.config); // init and cache handler
+                return this.handler = new EssentiaContainerAdapter(connectedContainer, this.config,
+                        !this.hasInverterCard(),
+                        (AccessRestriction) this.getConfigManager().getSetting(Settings.ACCESS),
+                        (StorageFilter) this.getConfigManager().getSetting(Settings.STORAGE_FILTER),
+                        this.priority
+                ); // init and cache handler
             return null;
         }
         return this.handler;    // return cached handler
