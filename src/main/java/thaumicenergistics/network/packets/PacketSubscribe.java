@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -18,7 +19,7 @@ import thaumicenergistics.util.IThESubscribable;
  */
 public class PacketSubscribe<T extends TileEntity & IThESubscribable> implements IMessage {
 
-    public BlockPos TEPos;
+    public TileEntity TE;
     public boolean sub;
 
     public PacketSubscribe() {
@@ -29,21 +30,25 @@ public class PacketSubscribe<T extends TileEntity & IThESubscribable> implements
      * @param sub true to subscribe, false to unsubscribe
      */
     public PacketSubscribe(T subscribable, boolean sub) {
-        this.TEPos = subscribable.getPos();
+        TE = subscribable;
         this.sub = sub;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        this.TEPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+        BlockPos TEPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+        World world = DimensionManager.getWorld(buf.readInt());
+        this.TE = world.getTileEntity(TEPos);
         this.sub = buf.readBoolean();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(this.TEPos.getX());
-        buf.writeInt(this.TEPos.getY());
-        buf.writeInt(this.TEPos.getZ());
+        BlockPos TEPos = this.TE.getPos();
+        buf.writeInt(TEPos.getX());
+        buf.writeInt(TEPos.getY());
+        buf.writeInt(TEPos.getZ());
+        buf.writeInt(this.TE.getWorld().provider.getDimension());
         buf.writeBoolean(this.sub);
     }
 
@@ -54,9 +59,8 @@ public class PacketSubscribe<T extends TileEntity & IThESubscribable> implements
             EntityPlayer player = ctx.getServerHandler().player;
             World world = player.world;
             ((IThreadListener) world).addScheduledTask(() -> {
-                TileEntity TE = world.getTileEntity(message.TEPos);
-                if(TE instanceof IThESubscribable){
-                    IThESubscribable subscribable = ((IThESubscribable) TE);
+                if(message.TE instanceof IThESubscribable){
+                    IThESubscribable subscribable = ((IThESubscribable) message.TE);
                     if(message.sub) subscribable.subscribe(player);
                     else subscribable.unsubscribe(player);
                 }

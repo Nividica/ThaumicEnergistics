@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -19,7 +21,7 @@ public class PacketAssemblerGUIUpdate implements IMessage {
 
     public HashMap<String, Boolean> aspectExists = new HashMap<>();
     public boolean hasEnoughVis;
-    public BlockPos TEPos;
+    public TileEntity TE;
 
     public PacketAssemblerGUIUpdate() {
     }
@@ -27,12 +29,14 @@ public class PacketAssemblerGUIUpdate implements IMessage {
     public PacketAssemblerGUIUpdate(TileArcaneAssembler TE) {
         this.aspectExists = TE.getAspectExists();
         this.hasEnoughVis = TE.getHasEnoughVis();
-        this.TEPos = TE.getPos();
+        this.TE = TE;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        this.TEPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+        BlockPos TEPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+        World TEWorld = DimensionManager.getWorld(buf.readInt());
+        this.TE = TEWorld.getTileEntity(TEPos);
         this.hasEnoughVis = buf.readBoolean();
         int size = buf.readInt();
         for (int i = 0; i < size; i++)
@@ -41,9 +45,11 @@ public class PacketAssemblerGUIUpdate implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(this.TEPos.getX());
-        buf.writeInt(this.TEPos.getY());
-        buf.writeInt(this.TEPos.getZ());
+        BlockPos TEPos = this.TE.getPos();
+        buf.writeInt(TEPos.getX());
+        buf.writeInt(TEPos.getY());
+        buf.writeInt(TEPos.getZ());
+        buf.writeInt(this.TE.getWorld().provider.getDimension());
         buf.writeBoolean(this.hasEnoughVis);
         buf.writeInt(this.aspectExists.size());
         this.aspectExists.forEach((k, v) -> {
@@ -57,9 +63,8 @@ public class PacketAssemblerGUIUpdate implements IMessage {
         @Override
         public IMessage onMessage(PacketAssemblerGUIUpdate message, MessageContext ctx) {
             Minecraft.getMinecraft().addScheduledTask(() -> {
-                TileEntity TE = Minecraft.getMinecraft().world.getTileEntity(message.TEPos);
-                if(TE instanceof TileArcaneAssembler){
-                    TileArcaneAssembler AATE = ((TileArcaneAssembler) TE);
+                if(message.TE instanceof TileArcaneAssembler){
+                    TileArcaneAssembler AATE = ((TileArcaneAssembler) message.TE);
                     AATE.setAspectExists(message.aspectExists);
                     AATE.setHasEnoughVis(message.hasEnoughVis);
                 }
