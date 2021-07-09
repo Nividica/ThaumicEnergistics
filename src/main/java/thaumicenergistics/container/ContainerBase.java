@@ -158,7 +158,7 @@ public abstract class ContainerBase extends Container {
 
     @Override
     public boolean canMergeSlot(ItemStack stack, Slot slotIn) { // prevent stack merging (double-click) here
-        if(slotIn instanceof SlotME)
+        if(slotIn instanceof SlotME || slotIn instanceof SlotArcaneResult)
             return false;
         return super.canMergeSlot(stack, slotIn);
     }
