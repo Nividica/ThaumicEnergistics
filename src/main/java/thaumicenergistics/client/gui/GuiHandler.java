@@ -108,6 +108,8 @@ public class GuiHandler implements IGuiHandler {
                 return new ContainerCraftConfirmBridge(player.inventory, (PartSharedTerminal) part);
             case AE2_CRAFT_STATUS:
                 return new ContainerCraftingStatusBridge(player.inventory, (PartSharedTerminal) part);
+            case AE2_PRIORITY:
+                return new ContainerPriorityBridge(player.inventory, (PartEssentiaStorageBus) part);
             case KNOWLEDGE_CORE_ADD:
             case KNOWLEDGE_CORE_DEL:
             case KNOWLEDGE_CORE_VIEW:
@@ -148,6 +150,8 @@ public class GuiHandler implements IGuiHandler {
                 return new GuiCraftConfirmBridge(player.inventory, (PartSharedTerminal) part);
             case AE2_CRAFT_STATUS:
                 return new GuiCraftingStatusBridge(player.inventory, (PartSharedTerminal) part);
+            case AE2_PRIORITY:
+                return new GuiPriorityBridge(player, (PartEssentiaStorageBus) part);
             case KNOWLEDGE_CORE_ADD:
             case KNOWLEDGE_CORE_DEL:
             case KNOWLEDGE_CORE_VIEW:

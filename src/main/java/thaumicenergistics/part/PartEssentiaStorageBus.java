@@ -8,7 +8,11 @@ import java.util.List;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
+import appeng.core.sync.GuiBridge;
+import appeng.helpers.IPriorityHost;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -48,7 +52,7 @@ import thaumicenergistics.util.ForgeUtil;
  * @author BrockWS
  * @author Alex811
  */
-public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICellContainer, IMEMonitorHandlerReceiver<IAEEssentiaStack> {
+public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICellContainer, IMEMonitorHandlerReceiver<IAEEssentiaStack>, IPriorityHost {
 
     public static ResourceLocation[] MODELS = new ResourceLocation[]{
             new ResourceLocation(ModGlobals.MOD_ID, "part/essentia_storage_bus/base"),
@@ -64,6 +68,7 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
     private EssentiaContainerAdapter handler;
     private boolean wasActive = false;
     private IAspectContainer lastConnectedContainer = null;
+    private int priority = 0;
 
     public PartEssentiaStorageBus(ItemEssentiaStorageBus item) {
         super(item, 63, 5);
@@ -189,8 +194,25 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
 
     @Override
     public int getPriority() {
-        // TODO: StorageBus Priority
-        return 0;
+        return this.priority;
+    }
+
+    @Override
+    public void setPriority(int i) {
+        this.priority = i;
+        if(this.handler != null)
+            this.handler.setPriority(i);
+        this.host.markForSave();
+    }
+
+    @Override
+    public ItemStack getItemStackRepresentation() {
+        return this.getRepr();
+    }
+
+    @Override
+    public GuiBridge getGuiBridge() {
+        return null;
     }
 
     @Override
@@ -261,5 +283,17 @@ public class PartEssentiaStorageBus extends PartSharedEssentiaBus implements ICe
     public void triggerUpdate(){
         this.gridNode.getGrid().postEvent(new MENetworkCellArrayUpdate());
         this.host.markForUpdate();
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
+        this.priority = tag.getInteger("priority");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
+        tag.setInteger("priority", this.priority);
     }
 }

@@ -5,14 +5,18 @@ import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiTabButton;
+import appeng.core.localization.GuiText;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
 
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.container.part.ContainerEssentiaStorageBus;
+import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketEssentiaFilterAction;
+import thaumicenergistics.network.packets.PacketOpenGUI;
 
 /**
  * @author BrockWS
@@ -22,6 +26,7 @@ public class GuiEssentiaStorageBus extends GuiSharedEssentiaBus {
 
     private GuiImgButton clearButton;
     private GuiImgButton partitionButton;
+    private GuiTabButton priorityButton;
 
     public GuiEssentiaStorageBus(ContainerEssentiaStorageBus container) {
         super(container);
@@ -33,8 +38,10 @@ public class GuiEssentiaStorageBus extends GuiSharedEssentiaBus {
     @Override
     public void initGui() {
         super.initGui();
+        this.priorityButton = new GuiTabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender);
         this.clearButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 8, Settings.ACTIONS, ActionItems.CLOSE);
         this.partitionButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 28, Settings.ACTIONS, ActionItems.WRENCH);
+        this.addButton(this.priorityButton);
         this.addButton(this.clearButton);
         this.addButton(this.partitionButton);
         this.addButton(new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 48, Settings.ACCESS, AccessRestriction.READ_WRITE));
@@ -64,7 +71,9 @@ public class GuiEssentiaStorageBus extends GuiSharedEssentiaBus {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if(button == this.clearButton)
+        if (button == this.priorityButton)
+            PacketHandler.sendToServer(new PacketOpenGUI(ModGUIs.AE2_PRIORITY, this.container.getPart().getLocation().getPos(), this.container.getPart().side));
+        else if(button == this.clearButton)
             PacketHandler.sendToServer(new PacketEssentiaFilterAction(this.container.getPart(), PacketEssentiaFilterAction.ACTION.CLEAR));
         else if (button == this.partitionButton)
             PacketHandler.sendToServer(new PacketEssentiaFilterAction(this.container.getPart(), PacketEssentiaFilterAction.ACTION.PARTITION));

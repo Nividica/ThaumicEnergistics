@@ -35,6 +35,7 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
     private boolean hasReadAccess;
     private boolean hasWriteAccess;
     private boolean reportInaccessible;
+    private int priority;
 
     public EssentiaContainerAdapter(IAspectContainer container, EssentiaFilter config) {
         this.container = container;
@@ -42,6 +43,7 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
         this.setWhitelist(true);
         this.setBaseAccess(AccessRestriction.READ_WRITE);
         this.setReportInaccessible(StorageFilter.EXTRACTABLE_ONLY);
+        this.priority = 0;
     }
 
     public boolean isWhitelist() {
@@ -135,8 +137,11 @@ public class EssentiaContainerAdapter implements IMEInventoryHandler<IAEEssentia
 
     @Override
     public int getPriority() {
-        // TODO: StorageBus Priority
-        return 0;
+        return this.priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     @Override
