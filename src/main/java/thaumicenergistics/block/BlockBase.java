@@ -60,4 +60,9 @@ public abstract class BlockBase extends Block {
         spawnDrops(worldIn, pos, drops);
         super.breakBlock(worldIn, pos, state);
     }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return 0;
+    }
 }
