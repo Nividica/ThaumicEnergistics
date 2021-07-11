@@ -46,7 +46,9 @@ public abstract class GuiConfigurable extends GuiBase {
 
     /**
      * Override to handle actions on a {@link GuiImgButton} differently.
-     * @return true if you handled the action
+     * @param btn the button to potentially override its action
+     * @param next the new value of the button
+     * @return true if you handled the action, to skip sending {@link PacketSettingChange} to the server
      */
     protected boolean imgBtnActionOverride(GuiImgButton btn, Enum next){
         return false;
