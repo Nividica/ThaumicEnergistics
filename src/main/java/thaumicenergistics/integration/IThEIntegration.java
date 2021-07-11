@@ -1,7 +1,5 @@
 package thaumicenergistics.integration;
 
-import net.minecraftforge.fml.common.Loader;
-
 /**
  * Implemented by Thaumic Energistics Integrations
  *
@@ -15,13 +13,7 @@ public interface IThEIntegration {
 
     default void postInit(){}
 
-    String getModID();
-
-    default boolean isLoaded() {
-        return Loader.isModLoaded(this.getModID());
-    }
-
-    default boolean isRequired() {
-        return false;
+    default String getModID(){
+        return ThEIntegrationLoader.getModId(this);
     }
 }

@@ -1,8 +1,5 @@
 package thaumicenergistics;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,16 +27,10 @@ import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.client.render.ArcaneAssemblerRenderer;
 import thaumicenergistics.command.CommandAddVis;
 import thaumicenergistics.init.ModGlobals;
-import thaumicenergistics.integration.IThEIntegration;
-import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
-import thaumicenergistics.integration.hwyla.ThEHwyla;
-import thaumicenergistics.integration.invtweaks.ThEInvTweaks;
-import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
-import thaumicenergistics.integration.theoneprobe.ThETheOneProbe;
+import thaumicenergistics.integration.ThEIntegrationLoader;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.tile.TileArcaneAssembler;
 import thaumicenergistics.util.ForgeUtil;
-import thaumicenergistics.util.ThELog;
 
 import org.apache.logging.log4j.Logger;
 
@@ -71,8 +62,6 @@ public class ThaumicEnergistics {
      */
     public static Logger LOGGER;
 
-    private static List<IThEIntegration> INTEGRATIONS = new ArrayList<>();
-
     /**
      * Called before the load event.
      *
@@ -83,22 +72,11 @@ public class ThaumicEnergistics {
         ThaumicEnergistics.LOGGER = event.getModLog();
         ThEApi.instance(); // Make sure to init the api
         MinecraftForge.EVENT_BUS.register(this);
-
         PacketHandler.register();
 
         proxy.preInit(event);
 
-        ThaumicEnergistics.INTEGRATIONS.add(new ThEThaumcraft());
-        ThaumicEnergistics.INTEGRATIONS.add(new ThEAppliedEnergistics());
-        ThaumicEnergistics.INTEGRATIONS.add(new ThEInvTweaks());
-        ThaumicEnergistics.INTEGRATIONS.add(new ThEHwyla());
-        ThaumicEnergistics.INTEGRATIONS.add(new ThETheOneProbe());
-
-        // Remove any integration that is not installed
-        ThaumicEnergistics.INTEGRATIONS.removeIf(in -> !in.isLoaded());
-
-        ThELog.info("Integrations: PreInit");
-        ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::preInit);
+        ThEIntegrationLoader.preInit();
     }
 
     /**
@@ -126,8 +104,7 @@ public class ThaumicEnergistics {
 
         proxy.init(event);
 
-        ThELog.info("Integrations: Init");
-        ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::init);
+        ThEIntegrationLoader.init();
     }
 
     /**
@@ -139,8 +116,7 @@ public class ThaumicEnergistics {
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
 
-        ThELog.info("Integrations: PostInit");
-        ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::postInit);
+        ThEIntegrationLoader.postInit();
     }
 
     @Mod.EventHandler

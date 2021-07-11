@@ -13,20 +13,13 @@ public class ThEInvTweaks implements IThEIntegration {
 
     @Override
     public void init() {
-        if(this.isLoaded()) {
-            try {
-                api = (InvTweaksAPI) Class.forName("invtweaks.forge.InvTweaksMod", true, Loader.instance().getModClassLoader())
-                        .getField("instance")
-                        .get(null);
-            } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException ex) {
-                ThELog.error("Can't grab the Inventory Tweaks API!", ex);
-            }
+        try {
+            api = (InvTweaksAPI) Class.forName("invtweaks.forge.InvTweaksMod", true, Loader.instance().getModClassLoader())
+                    .getField("instance")
+                    .get(null);
+        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException ex) {
+            ThELog.error("Can't grab the Inventory Tweaks API!", ex);
         }
-    }
-
-    @Override
-    public String getModID() {
-        return "inventorytweaks";
     }
 
     public static InvTweaksAPI getApi() {

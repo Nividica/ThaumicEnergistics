@@ -56,16 +56,6 @@ public class ThEAppliedEnergistics implements IThEIntegration {
 
     }
 
-    @Override
-    public String getModID() {
-        return ModGlobals.MOD_ID_AE2;
-    }
-
-    @Override
-    public boolean isRequired() {
-        return true;
-    }
-
     public static class EssentiaStorageChannel implements IEssentiaStorageChannel {
 
         @Nonnull

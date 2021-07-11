@@ -77,16 +77,6 @@ public class ThEThaumcraft implements IThEIntegration {
         this.registerInfusionRecipes();
     }
 
-    @Override
-    public String getModID() {
-        return "thaumcraft";
-    }
-
-    @Override
-    public boolean isRequired() {
-        return true;
-    }
-
     private void registerArcaneRecipes() {
         ResourceLocation recipeGroup = new ResourceLocation("");
 

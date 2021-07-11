@@ -16,11 +16,6 @@ public class ThETheOneProbe implements IThEIntegration, Function<ITheOneProbe, V
     }
 
     @Override
-    public String getModID() {
-        return "theoneprobe";
-    }
-
-    @Override
     public Void apply(ITheOneProbe registrar) {
         registrar.registerProvider(new TileTOPDataProvider());
         registrar.registerBlockDisplayOverride(new PartTOPDisplayOverride());   // Fixes our parts showing up as AE2 parts (lets AE2 add the power-state info, due to inheritance)
