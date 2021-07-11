@@ -27,7 +27,7 @@ compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
-def mc_run_jvmargs = ["-Xmx${mc_run_mem}", "-Xms${mc_run_mem}"]
+def mc_run_jvmargs = ["-Xmx${mc_run_mem}", "-Xms${mc_run_mem}", "-Dthaumicenergisticsdebug"]
 def version_mc_no_patch = (project.version_mc =~ /^\d+\.\d+/)[0]
 
 minecraft {

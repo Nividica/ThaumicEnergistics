@@ -39,4 +39,6 @@ public class ModGlobals {
     public static final String RESEARCH_CATEGORY = ModGlobals.MOD_ID.toUpperCase();
 
     public static final String MOD_ID_AE2 = "appliedenergistics2";
+
+    public static final boolean DEBUG_MODE = System.getProperties().containsKey("thaumicenergisticsdebug");
 }

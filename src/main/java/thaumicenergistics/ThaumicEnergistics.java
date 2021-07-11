@@ -28,6 +28,7 @@ import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.ThEItemColors;
 import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.client.render.ArcaneAssemblerRenderer;
+import thaumicenergistics.command.CommandAddVis;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
@@ -144,6 +145,8 @@ public class ThaumicEnergistics {
 
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
+        if(ModGlobals.DEBUG_MODE)
+            event.registerServerCommand(new CommandAddVis());
     }
 
     @SubscribeEvent
