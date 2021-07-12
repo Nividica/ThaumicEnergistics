@@ -9,8 +9,6 @@ import net.minecraft.util.text.TextFormatting;
 import thaumcraft.api.aura.AuraHelper;
 
 /**
- * TODO: Remove after alpha
- *
  * @author BrockWS
  */
 public class CommandAddVis extends CommandBase {
@@ -29,7 +27,9 @@ public class CommandAddVis extends CommandBase {
         if (args.length < 1)
             return;
         try {
-            AuraHelper.addVis(sender.getEntityWorld(), sender.getPosition(), Float.parseFloat(args[0]));
+            float vis = Float.parseFloat(args[0]);
+            AuraHelper.addVis(sender.getEntityWorld(), sender.getPosition(), vis);
+            sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Vis added: " + vis));
         } catch (NumberFormatException e) {
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "Error, invalid float"));
         }
