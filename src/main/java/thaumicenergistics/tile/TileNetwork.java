@@ -20,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
 import thaumicenergistics.integration.appeng.grid.GridUtil;
 import thaumicenergistics.integration.appeng.grid.IThEGridHost;
@@ -28,6 +29,8 @@ import thaumicenergistics.integration.appeng.util.ThEActionSource;
 import thaumicenergistics.util.ForgeUtil;
 import thaumicenergistics.util.IThEGridNodeBlock;
 import thaumicenergistics.util.IThEOwnable;
+
+import java.util.function.Consumer;
 
 /**
  * @author BrockWS
@@ -184,5 +187,15 @@ public abstract class TileNetwork extends TileBase implements IThEGridHost, IAct
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) { // sync, client-side, receives from getUpdatePacket()
         handleUpdateTag(packet.getNbtCompound());
+    }
+
+    public void withPowerStateText(Consumer<String> consumer){
+        if(this.isPowered()){
+            if(this.isActive())
+                consumer.accept(ThEApi.instance().lang().deviceOnline().getLocalizedKey());
+            else
+                consumer.accept(ThEApi.instance().lang().deviceMissingChannel().getLocalizedKey());
+        }else
+            consumer.accept(ThEApi.instance().lang().deviceOffline().getLocalizedKey());
     }
 }

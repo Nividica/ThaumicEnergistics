@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -70,6 +71,8 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
     protected boolean hasEnoughVis = true;
     protected AtomicBoolean missingAspect = new AtomicBoolean(false);
     protected boolean hasJob = false;
+    protected boolean isCrafting = false;
+    protected boolean noPushFlag = false; // true if an AE tick passed where AE didn't try to push a pattern and we ticked having a job but without something to craft, used to check for aborted jobs
 
     public TileArcaneAssembler() {
         super();
@@ -86,6 +89,7 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
         nbtTagCompound.setBoolean("missingAspect", this.missingAspect.get());
         nbtTagCompound.setBoolean("hasEnoughVis", this.hasEnoughVis);
         nbtTagCompound.setBoolean("hasJob", this.hasJob);
+        nbtTagCompound.setBoolean("isCrafting", this.isCrafting);
         nbtTagCompound.setInteger("progress", this.getProgress());
         return this.writeToNBT(nbtTagCompound);
     }
@@ -96,6 +100,7 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
         this.missingAspect.set(tag.getBoolean("missingAspect"));
         this.hasEnoughVis = tag.getBoolean("hasEnoughVis");
         this.hasJob = tag.getBoolean("hasJob");
+        this.isCrafting = tag.getBoolean("isCrafting");
         this.progress = tag.getInteger("progress");
     }
 
@@ -105,8 +110,6 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
         tag.setTag("cores", this.coreInv.serializeNBT());
         tag.setTag("upgrades", this.upgradeInv.serializeNBT());
         tag.setTag("crafting", this.craftingInv.serializeNBT());
-        if (ForgeUtil.isClient())
-            return super.writeToNBT(tag);
         super.writeToNBT(tag);
         return tag;
     }
@@ -171,10 +174,16 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
         ItemStack result = patternDetails.getOutputs()[0].createItemStack();
         KnowledgeCoreUtil.Recipe recipe = KnowledgeCoreUtil.getRecipe(this.coreInv.getStackInSlot(0), result);
         if(recipe == null) return false;
+        this.noPushFlag = false;
+        this.hasJob = true;
+        this.isCrafting = false;
+        boolean prevHasEnoughVis = this.hasEnoughVis;
+        boolean prevMissingAspect = this.missingAspect.get();
+        HashMap<String, Boolean> prevAspectExists = this.aspectExists;
         // Check vis
         this.hasEnoughVis = this.getWorldVis() >= recipe.getVisCost();
         // Simulate removing aspects
-        aspectExists = new HashMap<>();
+        this.aspectExists = new HashMap<>();
         IMEMonitor<IAEItemStack> inventory = this.getInventory(this.channel);
         ArrayList<ItemStack> aspects = new ArrayList<>();
         this.missingAspect.set(false);
@@ -187,12 +196,15 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
                 else this.missingAspect.set(true);
             }
         });
-        if(!this.hasEnoughVis || this.missingAspect.get()){
-            notifySubs(player -> PacketHandler.sendToPlayer((EntityPlayerMP) player, new PacketAssemblerGUIUpdate(this))); // update client side, to show details in the GUI
+        boolean canCraft = this.hasEnoughVis && !this.missingAspect.get();
+        if(canCraft)
+            this.aspectExists = new HashMap<>(); // we have what we need, clear this, since we're not trying to find the aspects anymore
+        if(prevHasEnoughVis != this.hasEnoughVis || prevMissingAspect != this.missingAspect.get())  // update client if needed
+            this.markDirty();
+        if(prevHasEnoughVis != this.hasEnoughVis || !prevAspectExists.equals(this.aspectExists))    // update client if needed
+            this.notifySubs();
+        if(!canCraft)
             return false; // we don't have the ingredients, tell AE2 we can't craft
-        }
-        aspectExists = new HashMap<>(); // we have what we need, clear this, since we're not trying to find the aspects anymore
-        notifySubs(player -> PacketHandler.sendToPlayer((EntityPlayerMP) player, new PacketAssemblerGUIUpdate(this))); // update client side, to show details in the GUI
         // Craft
         aspects.forEach(aspect -> AEUtil.inventoryExtract(this.channel.createStack(aspect), inventory, this.src));
         if(recipe.getVisCost() > 0){
@@ -253,13 +265,21 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
     public TickRateModulation tickingRequest(@Nonnull IGridNode node, int ticksSinceLastCall) {
         if(!this.isActive()) return TickRateModulation.SLEEP;
         if(this.craftingInv.getStackInSlot(0).isEmpty()) {
-            if (this.hasJob) {
-                this.hasJob = false;
-                this.markDirty();
+            this.isCrafting = false;
+            if(this.hasJob){
+                if(this.noPushFlag) {    // job probably aborted, let client know
+                    this.hasJob = false;
+                    this.missingAspect.set(false);
+                    this.aspectExists = new HashMap<>();
+                    this.hasEnoughVis = true;
+                    this.markDirty();
+                    this.notifySubs();
+                }else
+                    this.noPushFlag = true;
             }
             return TickRateModulation.SLOWER;
         }else{
-            this.hasJob = true;
+            this.isCrafting = true;
             this.progress += getStep();
             if(this.progress >= 100){
                 IAEItemStack stack = this.channel.createStack(this.craftingInv.getStackInSlot(0));
@@ -271,19 +291,20 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
                 }
                 AEUtil.inventoryInsert(this.channel.createStack(this.craftingInv.getStackInSlot(0)), this.getInventory(this.channel), this.src);
                 this.craftingInv.removeStackFromSlot(0);
+                if(this.craftingInv.getStackInSlot(0).isEmpty())    // done crafting everything
+                    this.hasJob = false;
             }
             this.markDirty();
             return TickRateModulation.URGENT;
         }
     }
 
-    public HashMap<String, Boolean> getAspectExists() {
-        return this.aspectExists;
+    protected void notifySubs(){ // update client side, to show details in the GUI
+        this.notifySubs(player -> PacketHandler.sendToPlayer((EntityPlayerMP) player, new PacketAssemblerGUIUpdate(this)));
     }
 
-    public void setAspectExists(HashMap<String, Boolean> aspectExists){
-        if(ForgeUtil.isClient())
-            this.aspectExists = aspectExists;
+    public HashMap<String, Boolean> getAspectExists() {
+        return this.aspectExists;
     }
 
     public boolean getHasEnoughVis(){
@@ -302,8 +323,26 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
         return this.hasJob;
     }
 
-    public void setHasEnoughVis(boolean hasEnoughVis){
-        this.hasEnoughVis = hasEnoughVis;
+    public boolean isCrafting() {
+        return this.isCrafting;
+    }
+
+    public void withInfoText(Consumer<String> consumer){
+        if(this.isActive()){
+            if(this.hasJob()){
+                if(this.isCrafting()){
+                    consumer.accept("Status: busy");
+                    consumer.accept("Progress: " + this.getProgress() + "%");
+                }else{
+                    consumer.accept("Status: prep");
+                    if(this.isMissingAspect())
+                        consumer.accept("Error: out of aspect");
+                    if(!this.getHasEnoughVis())
+                        consumer.accept("Error: out of Vis");
+                }
+            }else
+                consumer.accept("Status: idle");
+        }
     }
 
     protected int getStep(){

@@ -1,5 +1,6 @@
 package thaumicenergistics.container.block;
 
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -42,11 +43,9 @@ public class ContainerArcaneAssembler extends ContainerBase {
         for(int i = 0; i < this.getInventory("upgrades").getSlots(); i++)
             this.addSlotToContainer(new SlotUpgrade(this.getInventory("upgrades"), i, 186, 8 + i * 18));
         this.bindPlayerInventory(new PlayerMainInvWrapper(player.inventory), 0, 147);
-        addListener(new knowledgeCoreSlotListener(TE, this));
-        if(ForgeUtil.isServer()) {
-            PacketHandler.sendToPlayer((EntityPlayerMP) player, new PacketAssemblerGUIUpdate(this.TE)); // send current aspect availability
+        this.addListener(new KnowledgeCoreSlotListener());
+        if(ForgeUtil.isServer())
             TE.subscribe(player);   // subscribe to aspect availability updates
-        }
     }
 
     public IItemHandler getInventory(String name) {
@@ -67,22 +66,16 @@ public class ContainerArcaneAssembler extends ContainerBase {
         }
     }
 
-    private static class knowledgeCoreSlotListener implements IContainerListener{
-        private final TileArcaneAssembler te;
-        private final ContainerArcaneAssembler container;
+    private class KnowledgeCoreSlotListener implements IContainerListener{
         private boolean opened = false;
-
-        public knowledgeCoreSlotListener(TileArcaneAssembler te, ContainerArcaneAssembler container) {
-            this.te = te;
-            this.container = container;
-        }
 
         @Override
         @ParametersAreNonnullByDefault
         public void sendSlotContents(Container containerToSend, int slotInd, ItemStack stack) {
             if(slotInd == 0 && opened && ForgeUtil.isServer()) {
-                container.playCoreSound(container.player);
-                te.getActionableNode().getGrid().postEvent(new MENetworkCraftingPatternChange(this.te, this.te.getActionableNode())); // update ME system available patterns
+                IGridNode node = ContainerArcaneAssembler.this.TE.getActionableNode();
+                ContainerArcaneAssembler.this.playCoreSound(ContainerArcaneAssembler.this.player);
+                node.getGrid().postEvent(new MENetworkCraftingPatternChange(ContainerArcaneAssembler.this.TE, node)); // update ME system available patterns
             }
             opened = true;
         }
