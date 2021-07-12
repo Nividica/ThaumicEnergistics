@@ -4,12 +4,14 @@ import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.container.implementations.ContainerCraftConfirm;
 
-import thaumicenergistics.network.PacketHandler;
-import thaumicenergistics.network.packets.PacketOpenGUI;
+import net.minecraft.util.IThreadListener;
+import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.part.PartSharedTerminal;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class ContainerCraftConfirmBridge extends ContainerCraftConfirm {
 
@@ -23,6 +25,7 @@ public class ContainerCraftConfirmBridge extends ContainerCraftConfirm {
     @Override
     public void startJob() {
         super.startJob();
-        PacketHandler.sendToServer(new PacketOpenGUI(part.getGui(), this.part.getLocation().getPos(), this.part.side));
+        ((IThreadListener) part.getLocation().getWorld()).addScheduledTask(() ->
+                GuiHandler.openGUI(ModGUIs.values()[this.part.getGui().ordinal()], this.getPlayerInv().player, this.part.getLocation().getPos(), this.part.side));
     }
 }
