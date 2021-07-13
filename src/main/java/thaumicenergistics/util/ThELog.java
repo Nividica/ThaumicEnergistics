@@ -18,6 +18,11 @@ public class ThELog {
             ThELog.getLogger().error(message, args);
     }
 
+    public static void error(String message, Throwable throwable) {
+        if (ThELog.getLogger() != null)
+            ThELog.getLogger().error(message, throwable);
+    }
+
     public static void warn(String message, Object... args) {
         if (ThELog.getLogger() != null)
             ThELog.getLogger().warn(message, args);

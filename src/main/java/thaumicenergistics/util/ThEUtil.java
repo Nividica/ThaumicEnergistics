@@ -1,10 +1,10 @@
 package thaumicenergistics.util;
 
 import java.util.EnumSet;
+import java.util.stream.IntStream;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.config.SortOrder;
 import appeng.api.config.TerminalStyle;
 
 import thaumcraft.api.aspects.Aspect;
@@ -38,23 +38,21 @@ public class ThEUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Enum> T rotateEnum(T e, EnumSet options, boolean backwards) {
+    public static <T extends Enum<?>> T rotateEnum(T e, EnumSet<? extends T> options, boolean backwards) {
         if (e == null || options == null)
             return e;
-        int i = e.ordinal();
-        if (i == 0)
-            i = backwards ? options.size() - 1 : 1;
-        else if (i >= options.size() - 1)
-            i = backwards ? i - 1 : 0;
-        else
-            i = i + (backwards ? -1 : 1);
-        T next = (T) options.toArray()[i];
+        Object[] optArr = options.toArray();
+        int mappedOrdinal = IntStream.range(0, options.size())  // find e's index in options
+                .parallel()
+                .filter(i -> optArr[i] == e)
+                .findFirst()
+                .orElseThrow(ArrayIndexOutOfBoundsException::new);
+        T next = (T) optArr[(mappedOrdinal + (backwards ? -1 : 1) + options.size()) % options.size()];
         return ThEUtil.isInvalidSetting(next) ? ThEUtil.rotateEnum(next, options, backwards) : next;
     }
 
     public static boolean isInvalidSetting(Enum e) {
-        // TODO: Add invtweaks integration
-        return e == SortOrder.INVTWEAKS || e == TerminalStyle.FULL;
+        return e == TerminalStyle.FULL;
     }
 
     @Deprecated
@@ -62,5 +60,15 @@ public class ThEUtil {
         if (stack == null || !(stack.getItem() instanceof IEssentiaContainerItem) || stack.getItem().getRegistryName() == null)
             return 0;
         return ThEApi.instance().config().essentiaContainerCapacity().getOrDefault(stack.getItem().getRegistryName().toString() + ":" + stack.getMetadata(), 0);
+    }
+
+    /**
+     * Like {@link ForgeUtil#areItemStacksEqual(ItemStack, ItemStack)}, but safely compares items that were cheated in, that normally would have NBT.
+     * @param a 1st stack
+     * @param b 2nd stack
+     * @return true if they're equal
+     */
+    public static boolean areItemStacksEqual(ItemStack a, ItemStack b) {
+        return a != null && b != null && ItemStack.areItemsEqual(a, b) && (a.hasTagCompound() == b.hasTagCompound()) && ForgeUtil.areNBTTagsEqual(a.getTagCompound(), b.getTagCompound());
     }
 }

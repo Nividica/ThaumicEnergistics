@@ -17,10 +17,12 @@ import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 
+import thaumicenergistics.container.IPartContainer;
 import thaumicenergistics.client.gui.GuiBase;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class PacketSettingChange implements IMessage {
 
@@ -72,8 +74,11 @@ public class PacketSettingChange implements IMessage {
             thread.addScheduledTask(() -> {
                 if (player.openContainer instanceof IConfigurableObject) {
                     IConfigManager cm = ((IConfigurableObject) player.openContainer).getConfigManager();
-                    if (cm != null)
+                    if (cm != null) {
                         cm.putSetting(message.getSetting(), message.getValue());
+                        if(player.openContainer instanceof IPartContainer)
+                            ((IPartContainer) player.openContainer).getPart().settingChanged(message.getSetting());
+                    }
                 }
             });
             return null;

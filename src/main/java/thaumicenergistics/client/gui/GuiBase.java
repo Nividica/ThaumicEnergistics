@@ -1,11 +1,12 @@
 package thaumicenergistics.client.gui;
 
+import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
-import java.util.ArrayList;
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -20,14 +21,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
 import appeng.api.config.Settings;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.ITooltip;
-import appeng.client.render.StackSizeRenderer;
 
 import thaumicenergistics.api.storage.IAEEssentiaStack;
+import thaumicenergistics.client.gui.helpers.GenericStackSizeRenderer;
+import thaumicenergistics.client.gui.helpers.GuiScrollBar;
 import thaumicenergistics.container.ContainerBase;
 import thaumicenergistics.container.slot.ISlotOptional;
 import thaumicenergistics.container.slot.SlotGhostEssentia;
@@ -36,10 +37,12 @@ import thaumicenergistics.container.slot.ThESlot;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public abstract class GuiBase extends GuiContainer {
-
-    private static StackSizeRenderer stackSizeRenderer = new StackSizeRenderer();
+    private static final GenericStackSizeRenderer stackSizeRenderer = new GenericStackSizeRenderer();
+    private int currMouseX = 0;
+    private int currMouseY = 0;
 
     public GuiBase(ContainerBase container) {
         super(container);
@@ -64,10 +67,10 @@ public abstract class GuiBase extends GuiContainer {
             if (slot.isEnabled()) {
                 // TODO: Draw slot background on enabled slots
             }
-        } else if (slot instanceof SlotME && ((SlotME) slot).getAEStack() instanceof IAEItemStack) {
+        } else if (slot instanceof SlotME) {
             SlotME slotME = (SlotME) slot;
             super.drawSlot(slot);
-            stackSizeRenderer.renderStackSize(this.fontRenderer, (IAEItemStack) slotME.getAEStack(), slot.xPos, slot.yPos);
+            stackSizeRenderer.renderStackSize(this.fontRenderer, slotME.getAEStack(), slot.xPos, slot.yPos);
             return;
         } else if (slot instanceof ThESlot) {
             if (((ThESlot) slot).hasBackgroundIcon()) {
@@ -84,15 +87,12 @@ public abstract class GuiBase extends GuiContainer {
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
                 this.drawTexturedModelRectColor(slot.xPos, slot.yPos, uv_x * 16, uv_y * 16, 16, 16, new Color(1f, 1f, 1f, 0.4f));
-
-                //GlStateManager.enableLighting();
             }
         }
         super.drawSlot(slot);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (this.hoveredSlot != null) {
             if (this.hoveredSlot instanceof SlotGhostEssentia && ((SlotGhostEssentia) this.hoveredSlot).getAspect() != null) {
@@ -101,10 +101,7 @@ public abstract class GuiBase extends GuiContainer {
             }
             if (this.hoveredSlot instanceof SlotME && this.hoveredSlot.getHasStack() && ((SlotME) this.hoveredSlot).getAEStack() instanceof IAEEssentiaStack) {
                 IAEEssentiaStack stack = (IAEEssentiaStack) ((SlotME) this.hoveredSlot).getAEStack();
-                List<String> tooltip = new ArrayList<>();
-                tooltip.add(stack.getAspect().getName());
-                tooltip.add(Long.toString(stack.getStackSize()));
-                this.drawHoveringText(tooltip, mouseX, mouseY);
+                this.drawHoveringText(stack.getAspect().getName(), mouseX, mouseY);
                 return;
             }
         }
@@ -149,7 +146,7 @@ public abstract class GuiBase extends GuiContainer {
                 if (!(btn instanceof GuiImgButton))
                     return;
                 GuiImgButton b = (GuiImgButton) btn;
-                if (b.getSetting() == Settings.ACTIONS || b.getSetting() == Settings.TERMINAL_STYLE)
+                if (Stream.of(Settings.ACTIONS, Settings.TERMINAL_STYLE, Settings.SEARCH_MODE).anyMatch(s -> s == b.getSetting()))
                     return;
                 b.set(configManager.getSetting(b.getSetting()));
             });
@@ -177,5 +174,54 @@ public abstract class GuiBase extends GuiContainer {
         buf.pos(x, y, this.zLevel).tex(textureX * offsetX, textureY * offsetY).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
 
         tess.draw();
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        this.setCurrMousePos(mouseX, mouseY);
+    }
+
+    protected void setCurrMousePos(int mouseX, int mouseY){
+        this.currMouseX = mouseX;
+        this.currMouseY = mouseY;
+    }
+
+    /**
+     * Checks if the mouse is currently withing a region.
+     * @param x horizontal start of the region
+     * @param y vertical start of the region
+     * @param w width of the region
+     * @param h height of the region
+     * @param relative true: use mouse location relative to the GUI, false: use absolute mouse location
+     * @return true if the mouse is within the region
+     */
+    protected boolean mouseWithin(int x, int y, int w, int h, boolean relative){
+        int mouseX = currMouseX;
+        int mouseY = currMouseY;
+        if(relative){
+            mouseX -= this.getGuiLeft();
+            mouseY -= this.getGuiTop();
+        }
+        return mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h;
+    }
+
+    /**
+     * Checks if the mouse is within this GUI.
+     * @return true if inside the GUI area
+     */
+    protected boolean mouseWithin(){
+        return mouseWithin(0, 0, xSize, ySize, true);
+    }
+
+    protected boolean mouseWithin(GuiScrollBar scrollBar){
+        return mouseWithin(scrollBar.getX(), scrollBar.getY(), 15, scrollBar.getHeight(), true);
+    }
+
+    protected boolean mouseWithin(GuiTextField textField){
+        return mouseWithin(textField.x, textField.y, textField.width, textField.height, false);
+    }
+
+    protected boolean mouseWithin(Slot slot){
+        return mouseWithin(slot.xPos, slot.yPos, 16, 16, true);
     }
 }

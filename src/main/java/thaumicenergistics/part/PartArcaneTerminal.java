@@ -13,14 +13,11 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
 import appeng.api.parts.IPartModel;
 import appeng.api.parts.PartItemStack;
 
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
@@ -33,6 +30,7 @@ import thaumicenergistics.util.inventory.ThEUpgradeInventory;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class PartArcaneTerminal extends PartSharedTerminal {
 
@@ -49,16 +47,22 @@ public class PartArcaneTerminal extends PartSharedTerminal {
     private static IPartModel MODEL_OFF = new ThEPartModel(MODELS[0], MODELS[2], MODELS[5]);
     private static IPartModel MODEL_HAS_CHANNEL = new ThEPartModel(MODELS[0], MODELS[1], MODELS[3]);
 
-    private ThEInternalInventory craftingInventory;
-    private ThEInternalInventory upgradeInventory;
+    protected ThEInternalInventory craftingInventory;
+    protected ThEInternalInventory upgradeInventory;
 
-    public PartArcaneTerminal(ItemArcaneTerminal item) {
-        super(item);
+    public PartArcaneTerminal(ItemArcaneTerminal item){
+        this(item, ModGUIs.ARCANE_TERMINAL);
+    }
+
+    public PartArcaneTerminal(ItemArcaneTerminal item, ModGUIs gui) {
+        super(item, gui);
         this.craftingInventory = new ThEInternalInventory("matrix", 15, 64);
         this.upgradeInventory = new ThEUpgradeInventory("upgrades", 1, 1, this.getItemStack(PartItemStack.NETWORK));
-        this.getConfigManager().registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.getConfigManager().registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
-        this.getConfigManager().registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+    }
+
+    @Override
+    protected AESettings.SUBJECT getAESettingSubject() {
+        return AESettings.SUBJECT.ARCANE_TERMINAL;
     }
 
     @Override
@@ -73,7 +77,7 @@ public class PartArcaneTerminal extends PartSharedTerminal {
     @Override
     public void getDrops(List<ItemStack> list, boolean b) {
         super.getDrops(list, b);
-        ItemHandlerUtil.getInventoryAsList(this.getInventoryByName("crafting"), list);
+        list.addAll(ItemHandlerUtil.getInventoryAsList(this.getInventoryByName("crafting")));
     }
 
     @Override
@@ -82,8 +86,9 @@ public class PartArcaneTerminal extends PartSharedTerminal {
             return false;
 
         if (ForgeUtil.isServer())
-            GuiHandler.openGUI(ModGUIs.ARCANE_TERMINAL, player, this.hostTile.getPos(), this.side);
+            GuiHandler.openGUI(this.getGui(), player, this.hostTile.getPos(), this.side);
 
+        this.host.markForUpdate();
         return true;
     }
 

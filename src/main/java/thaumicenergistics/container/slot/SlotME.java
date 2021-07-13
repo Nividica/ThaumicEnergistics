@@ -2,7 +2,6 @@ package thaumicenergistics.container.slot;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEStack;

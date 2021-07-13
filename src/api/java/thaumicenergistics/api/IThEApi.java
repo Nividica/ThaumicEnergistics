@@ -4,7 +4,7 @@ package thaumicenergistics.api;
  * The Thaumic Energistics API
  *
  * @author BrockWS
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 public interface IThEApi {
@@ -43,4 +43,18 @@ public interface IThEApi {
      * @return Class which contains language keys
      */
     IThELang lang();
+
+    /**
+     * Contains texture ResourceLocations in Thaumic Energistics
+     *
+     * @return Class which contains texture ResourceLocations
+     */
+    IThETextures textures();
+
+    /**
+     * Contains SoundEvents in Thaumic Energistics
+     *
+     * @return Class which contains SoundEvents
+     */
+    IThESounds sounds();
 }

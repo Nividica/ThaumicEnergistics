@@ -5,6 +5,7 @@ import net.minecraft.inventory.InventoryBasic;
 
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.part.PartEssentiaExportBus;
 
 /**
@@ -17,6 +18,11 @@ public class ContainerEssentiaExportBus extends ContainerSharedEssentiaBus {
         this.bindContainerInventory(this.getEssentiaFilter(), new InventoryBasic("null", false, 9), 62, 22, 3, 3);
         this.bindUpgradesInventory(this.part.getInventoryByName("upgrades"), 187, 8, 4);
         this.bindPlayerInventory(new PlayerMainInvWrapper(player.inventory), 0, 100);
+    }
+
+    @Override
+    protected AESettings.SUBJECT getAESettingSubject() {
+        return AESettings.SUBJECT.ESSENTIA_EXPORT_BUS;
     }
 
     @Override

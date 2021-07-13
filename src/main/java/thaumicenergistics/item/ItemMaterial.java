@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
@@ -27,13 +28,17 @@ public class ItemMaterial extends ItemBase implements IThEModel {
         super(id);
     }
 
+    public ItemMaterial(String id, int stackSize) {
+        this(id);
+        setMaxStackSize(stackSize);
+    }
+
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         Optional<IThEUpgrade> optional = ThEApi.instance().upgrades().getUpgrade(stack);
         optional.ifPresent(upgrade -> {
-            upgrade.getSupported().forEach((stack1, integer) -> {
-                tooltip.add(stack1.getDisplayName() + " (" + integer + ")");
-            });
+            String supported = upgrade.getSupported().keySet().stream().map(ItemStack::getDisplayName).collect(Collectors.joining(", "));
+            if(!supported.isEmpty()) tooltip.add("Used in: " + supported);
         });
 
         super.addInformation(stack, worldIn, tooltip, flagIn);

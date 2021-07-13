@@ -2,6 +2,7 @@ package thaumicenergistics.part;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.parts.IPartCollisionHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -21,6 +22,7 @@ import thaumcraft.api.aspects.IAspectContainer;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
@@ -54,6 +56,11 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
         super(item);
     }
 
+    @Override
+    protected AESettings.SUBJECT getAESettingSubject() {
+        return AESettings.SUBJECT.ESSENTIA_EXPORT_BUS;
+    }
+
     @Nonnull
     @Override
     public TickingRequest getTickingRequest(@Nonnull IGridNode node) {
@@ -65,11 +72,8 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
         return this.getConnectedTE() != null && this.config.hasAspects(); // We only want to run if there is something in the filter
     }
 
-    @Nonnull
     @Override
-    public TickRateModulation tickingRequest(@Nonnull IGridNode node, int ticksSinceLastCall) {
-        if (!this.canWork())
-            return TickRateModulation.IDLE;
+    protected TickRateModulation doWork() {
         if (this.getConnectedTE() instanceof IAspectContainer) {
             IAspectContainer container = (IAspectContainer) this.getConnectedTE();
 
@@ -128,6 +132,15 @@ public class PartEssentiaExportBus extends PartSharedEssentiaBus {
         if (ForgeUtil.isServer())
             GuiHandler.openGUI(ModGUIs.ESSENTIA_EXPORT_BUS, player, this.hostTile.getPos(), this.side);
 
+        this.host.markForUpdate();
         return true;
+    }
+
+    @Override
+    public void getBoxes(IPartCollisionHelper box) {
+        box.addBox(4, 4, 12, 12, 12, 14);
+        box.addBox(5, 5, 14, 11, 11, 15);
+        box.addBox(6, 6, 15, 10, 10, 16);
+        box.addBox(6, 6, 11, 10, 10, 12);
     }
 }

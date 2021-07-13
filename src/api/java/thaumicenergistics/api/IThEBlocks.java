@@ -12,4 +12,6 @@ import appeng.api.definitions.ITileDefinition;
 public interface IThEBlocks {
 
     ITileDefinition infusionProvider();
+
+    ITileDefinition arcaneAssembler();
 }

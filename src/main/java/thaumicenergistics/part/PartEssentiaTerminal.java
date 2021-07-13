@@ -7,13 +7,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
 import appeng.api.parts.IPartModel;
 
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.ThEPartModel;
@@ -39,10 +36,17 @@ public class PartEssentiaTerminal extends PartSharedTerminal {
     private static IPartModel MODEL_OFF = new ThEPartModel(MODELS[0], MODELS[2], MODELS[5]);
     private static IPartModel MODEL_HAS_CHANNEL = new ThEPartModel(MODELS[0], MODELS[1], MODELS[3]);
 
-    public PartEssentiaTerminal(ItemEssentiaTerminal itemEssentiaTerminal) {
-        super(itemEssentiaTerminal);
-        this.getConfigManager().registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.getConfigManager().registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+    public PartEssentiaTerminal(ItemEssentiaTerminal itemEssentiaTerminal){
+        this(itemEssentiaTerminal, ModGUIs.ESSENTIA_TERMINAL);
+    }
+
+    public PartEssentiaTerminal(ItemEssentiaTerminal itemEssentiaTerminal, ModGUIs gui) {
+        super(itemEssentiaTerminal, gui);
+    }
+
+    @Override
+    protected AESettings.SUBJECT getAESettingSubject() {
+        return AESettings.SUBJECT.ESSENTIA_TERMINAL;
     }
 
     @Override
@@ -53,6 +57,7 @@ public class PartEssentiaTerminal extends PartSharedTerminal {
         if (ForgeUtil.isServer())
             GuiHandler.openGUI(ModGUIs.ESSENTIA_TERMINAL, player, this.hostTile.getPos(), this.side);
 
+        this.host.markForUpdate();
         return true;
     }
 
@@ -65,5 +70,10 @@ public class PartEssentiaTerminal extends PartSharedTerminal {
             else
                 return MODEL_ON;
         return MODEL_OFF;
+    }
+
+    @Override
+    public ModGUIs getGui() {
+        return ModGUIs.ESSENTIA_TERMINAL;
     }
 }

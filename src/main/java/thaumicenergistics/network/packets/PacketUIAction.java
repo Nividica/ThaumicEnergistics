@@ -27,6 +27,7 @@ public class PacketUIAction implements IMessage {
 
     public ActionType action;
     public IAEStack requestedStack;
+    public int index = -1;
 
     public PacketUIAction() {
     }
@@ -40,20 +41,29 @@ public class PacketUIAction implements IMessage {
         this.requestedStack = stack;
     }
 
+    public PacketUIAction(ActionType action, int index){
+        this(action);
+        this.index = index;
+    }
+
     @Override
     public void fromBytes(ByteBuf buf) {
         this.action = ActionType.values()[buf.readByte()];
         if (buf.readableBytes() > 0) {
-            String channelClass = ByteBufUtils.readUTF8String(buf);
-            AEApi.instance().storage().storageChannels().forEach(channel -> {
-                if (channel.getClass().getSimpleName().equalsIgnoreCase(channelClass)) {
-                    try {
-                        this.requestedStack = channel.readFromPacket(buf);
-                    } catch (Throwable ignored) {
-                        ThELog.error("Failed to read stack from packet, {}", channel.getClass().getSimpleName());
+            String data = ByteBufUtils.readUTF8String(buf);
+            if(data.matches("^\\d+")) {
+                this.index = Integer.parseInt(data);
+            }else {
+                AEApi.instance().storage().storageChannels().forEach(channel -> {
+                    if (channel.getClass().getSimpleName().equalsIgnoreCase(data)) {
+                        try {
+                            this.requestedStack = channel.readFromPacket(buf);
+                        } catch (Throwable ignored) {
+                            ThELog.error("Failed to read stack from packet, {}", channel.getClass().getSimpleName());
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -64,6 +74,9 @@ public class PacketUIAction implements IMessage {
             if (this.requestedStack != null) {
                 ByteBufUtils.writeUTF8String(buf, this.requestedStack.getChannel().getClass().getSimpleName());
                 this.requestedStack.writeToPacket(buf);
+            }
+            if (this.index > -1){
+                ByteBufUtils.writeUTF8String(buf, String.valueOf(this.index));
             }
         } catch (IOException e) {
             e.printStackTrace();

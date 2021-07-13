@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -27,7 +26,6 @@ import thaumcraft.api.crafting.ShapedArcaneRecipe;
 import thaumcraft.api.crafting.ShapelessArcaneRecipe;
 import thaumcraft.api.items.ItemsTC;
 import thaumcraft.api.research.ResearchCategories;
-import thaumcraft.api.research.ScanItem;
 import thaumcraft.api.research.ScanningManager;
 import thaumcraft.api.research.theorycraft.TheorycraftManager;
 
@@ -35,19 +33,18 @@ import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.IThEIntegration;
 import thaumicenergistics.integration.thaumcraft.research.AidMEController;
+import thaumicenergistics.integration.thaumcraft.research.AidMEDrive;
 import thaumicenergistics.integration.thaumcraft.research.CardTinkerAE;
 import thaumicenergistics.integration.thaumcraft.research.ScanMod;
 import thaumicenergistics.util.ForgeUtil;
+import thaumicenergistics.util.TCUtil;
 import thaumicenergistics.util.ThELog;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class ThEThaumcraft implements IThEIntegration {
-
-    @Override
-    public void preInit() {
-    }
 
     @Override
     public void init() {
@@ -74,22 +71,10 @@ public class ThEThaumcraft implements IThEIntegration {
         TheorycraftManager.registerCard(CardTinkerAE.class);
         if (AEApi.instance().definitions().blocks().controller().maybeBlock().isPresent())
             TheorycraftManager.registerAid(new AidMEController());
+        else if (AEApi.instance().definitions().blocks().drive().maybeBlock().isPresent())
+            TheorycraftManager.registerAid(new AidMEDrive());
         this.registerArcaneRecipes();
         this.registerInfusionRecipes();
-    }
-
-    @Override
-    public void postInit() {
-    }
-
-    @Override
-    public String getModID() {
-        return "thaumcraft";
-    }
-
-    @Override
-    public boolean isRequired() {
-        return true;
     }
 
     private void registerArcaneRecipes() {
@@ -105,7 +90,7 @@ public class ThEThaumcraft implements IThEIntegration {
         ThEApi.instance().items().coalescenceCore().maybeStack(2).ifPresent(stack ->
                 ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "coalescence_core"), new ShapedArcaneRecipe(
                         recipeGroup,
-                        "DIGISENTIA",
+                        "DIGISENTIA@2",
                         10,
                         new AspectList(),
                         stack,
@@ -124,7 +109,7 @@ public class ThEThaumcraft implements IThEIntegration {
         ThEApi.instance().items().diffusionCore().maybeStack(2).ifPresent(stack ->
                 ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "diffusion_core"), new ShapedArcaneRecipe(
                         recipeGroup,
-                        "DIGISENTIA",
+                        "DIGISENTIA@2",
                         10,
                         new AspectList(),
                         stack,
@@ -144,7 +129,7 @@ public class ThEThaumcraft implements IThEIntegration {
         ThEApi.instance().items().essentiaComponent1k().maybeStack(1).ifPresent(stack -> {
             ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "essentia_component_1k"), new ShapedArcaneRecipe(
                     recipeGroup,
-                    "ESSENTIASTORAGE1k",
+                    "ESSENTIASTORAGE1k@2",
                     10,
                     new AspectList(),
                     stack,
@@ -163,7 +148,7 @@ public class ThEThaumcraft implements IThEIntegration {
         ThEApi.instance().items().essentiaComponent4k().maybeStack(1).ifPresent(stack -> {
             ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "essentia_component_4k"), new ShapedArcaneRecipe(
                     recipeGroup,
-                    "ESSENTIASTORAGE4k",
+                    "ESSENTIASTORAGE4k@2",
                     10,
                     new AspectList(),
                     stack,
@@ -184,7 +169,7 @@ public class ThEThaumcraft implements IThEIntegration {
         ThEApi.instance().items().essentiaComponent16k().maybeStack(1).ifPresent(stack -> {
             ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "essentia_component_16k"), new ShapedArcaneRecipe(
                     recipeGroup,
-                    "ESSENTIASTORAGE16k",
+                    "ESSENTIASTORAGE16k@2",
                     10,
                     new AspectList(),
                     stack,
@@ -204,7 +189,7 @@ public class ThEThaumcraft implements IThEIntegration {
         ThEApi.instance().items().essentiaComponent64k().maybeStack(1).ifPresent(stack -> {
             ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "essentia_component_64k"), new ShapedArcaneRecipe(
                     recipeGroup,
-                    "ESSENTIASTORAGE64k",
+                    "ESSENTIASTORAGE64k@2",
                     10,
                     new AspectList(),
                     stack,
@@ -226,7 +211,7 @@ public class ThEThaumcraft implements IThEIntegration {
         ThEApi.instance().items().essentiaExportBus().maybeStack(1).ifPresent(stack ->
                 ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "essentia_export_bus"), new ShapedArcaneRecipe(
                         recipeGroup,
-                        "ESSENTIABUSES",
+                        "ESSENTIABUSES@2",
                         20,
                         new AspectList(),
                         stack,
@@ -244,7 +229,7 @@ public class ThEThaumcraft implements IThEIntegration {
         ThEApi.instance().items().essentiaImportBus().maybeStack(1).ifPresent(stack ->
                 ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "essentia_import_bus"), new ShapedArcaneRecipe(
                         recipeGroup,
-                        "ESSENTIABUSES",
+                        "ESSENTIABUSES@2",
                         20,
                         new AspectList(),
                         stack,
@@ -262,7 +247,7 @@ public class ThEThaumcraft implements IThEIntegration {
         ThEApi.instance().items().essentiaStorageBus().maybeItem().ifPresent(item ->
                 ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "essentia_storage_bus"), new ShapelessArcaneRecipe(
                         recipeGroup,
-                        "ESSENTIABUSES",
+                        "ESSENTIABUSES@2",
                         20,
                         new AspectList(),
                         item,
@@ -277,7 +262,7 @@ public class ThEThaumcraft implements IThEIntegration {
         ThEApi.instance().items().essentiaTerminal().maybeItem().ifPresent(essentia -> {
             ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "essentia_terminal"), new ShapelessArcaneRecipe(
                     recipeGroup,
-                    "ESSENTIATERMINAL",
+                    "ESSENTIATERMINAL@2",
                     25,
                     new AspectList(),
                     essentia,
@@ -291,7 +276,7 @@ public class ThEThaumcraft implements IThEIntegration {
         ThEApi.instance().items().arcaneTerminal().maybeItem().ifPresent(arcane ->
                 ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "arcane_terminal"), new ShapelessArcaneRecipe(
                         recipeGroup,
-                        "ARCANETERMINAL",
+                        "ARCANETERMINAL@2",
                         50,
                         new AspectList(),
                         arcane,
@@ -299,10 +284,21 @@ public class ThEThaumcraft implements IThEIntegration {
                         BlocksTC.arcaneWorkbench,
                         AEApi.instance().definitions().materials().calcProcessor().maybeStack(1).orElse(ItemStack.EMPTY)
                 )));
+        ThEApi.instance().items().arcaneInscriber().maybeItem().ifPresent(inscriber ->
+                ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "arcane_inscriber"), new ShapelessArcaneRecipe(
+                        recipeGroup,
+                        "ARCANEINSCRIBER@2",
+                        50,
+                        new AspectList().add(Aspect.AIR, 1).add(Aspect.EARTH, 1).add(Aspect.FIRE, 1).add(Aspect.WATER, 1).add(Aspect.ORDER, 1).add(Aspect.ENTROPY, 1),
+                        inscriber,
+                        AEApi.instance().definitions().parts().patternTerminal().maybeStack(1).orElse(ItemStack.EMPTY),
+                        BlocksTC.arcaneWorkbench,
+                        AEApi.instance().definitions().materials().engProcessor().maybeStack(1).orElse(ItemStack.EMPTY)
+                )));
         ThEApi.instance().items().upgradeArcane().maybeItem().ifPresent(upgrade -> {
             ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "upgrade_arcane"), new ShapelessArcaneRecipe(
                     recipeGroup,
-                    "WORKBENCHCHARGER",
+                    "ARCANETERMINAL@2&&WORKBENCHCHARGER",
                     25,
                     new AspectList(),
                     upgrade,
@@ -310,12 +306,31 @@ public class ThEThaumcraft implements IThEIntegration {
                     BlocksTC.arcaneWorkbenchCharger
             ));
         });
+        ThEApi.instance().items().blankKnowledgeCore().maybeItem().ifPresent(core ->
+                ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "knowledge_core"), new ShapedArcaneRecipe(
+                        recipeGroup,
+                        "KNOWLEDGECORE@2",
+                        100,
+                        new AspectList().add(Aspect.EARTH, 1).add(Aspect.ORDER, 1).add(Aspect.WATER, 1),
+                        core,
+                        "GLG",
+                        "LBL",
+                        "GPG",
+                        'G',
+                        AEApi.instance().definitions().blocks().quartzVibrantGlass().maybeBlock().orElse(Blocks.GLASS),
+                        'L',
+                        "dyeBlue",
+                        'B',
+                        ItemsTC.brain,
+                        'P',
+                        AEApi.instance().definitions().materials().calcProcessor().maybeStack(1).orElse(ItemStack.EMPTY)
+                )));
     }
 
     private void registerInfusionRecipes() {
         ThEApi.instance().blocks().infusionProvider().maybeStack(1).ifPresent(stack ->
                 ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "infusion_provider"), new InfusionRecipe(
-                        "INFUSIONPROVIDER",
+                        "INFUSIONPROVIDER@2",
                         stack,
                         2,
                         new AspectList().add(Aspect.MECHANISM, 25).add(Aspect.MAGIC, 25).add(Aspect.EXCHANGE, 20),
@@ -324,6 +339,24 @@ public class ThEThaumcraft implements IThEIntegration {
                         ItemsTC.salisMundus,
                         ThEApi.instance().items().coalescenceCore().maybeStack(1).orElse(ItemStack.EMPTY),
                         ItemsTC.salisMundus
+                )));
+        ThEApi.instance().blocks().arcaneAssembler().maybeStack(1).ifPresent(stack ->
+                ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation(ModGlobals.MOD_ID, "arcane_assembler"), new InfusionRecipe(
+                        "ARCANEASSEMBLER@2",
+                        stack,
+                        6,
+                        new AspectList().add(Aspect.CRAFT, 64).add(Aspect.EXCHANGE, 32).add(Aspect.AURA, 16).add(Aspect.MAGIC, 16).add(Aspect.METAL, 8).add(Aspect.CRYSTAL, 8),
+                        AEApi.instance().definitions().blocks().molecularAssembler().maybeBlock().orElseThrow(() -> new NullPointerException("Missing molecular assembler block for recipe")),
+                        ThEApi.instance().items().coalescenceCore().maybeStack(1).orElse(ItemStack.EMPTY),
+                        TCUtil.getCrystalWithAspect(Aspect.AIR),
+                        TCUtil.getCrystalWithAspect(Aspect.WATER),
+                        ItemsTC.salisMundus,
+                        TCUtil.getCrystalWithAspect(Aspect.ENTROPY),
+                        ThEApi.instance().items().diffusionCore().maybeStack(1).orElse(ItemStack.EMPTY),
+                        TCUtil.getCrystalWithAspect(Aspect.EARTH),
+                        TCUtil.getCrystalWithAspect(Aspect.FIRE),
+                        ItemsTC.salisMundus,
+                        TCUtil.getCrystalWithAspect(Aspect.ORDER)
                 )));
     }
 

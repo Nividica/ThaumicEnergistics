@@ -1,0 +1,40 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "forge:multi-layer",
+        "custom": {
+            "base": "thaumicenergistics:arcane_assembler#base",
+            "Solid": "thaumicenergistics:arcane_assembler#base",
+            "Translucent": "thaumicenergistics:arcane_assembler#windows"
+        },
+        "transform": "forge:default-block"
+    },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{}],
+        "base": [{
+            "model": "thaumicenergistics:arcane_assembler"
+        }],
+        "windows": [{
+            "model": "thaumicenergistics:arcane_assembler_windows"
+        }],
+        "windows-active": [{
+            "model": "thaumicenergistics:arcane_assembler_windows_active"
+        }],
+        "windows-inactive": [{
+            "model": "thaumicenergistics:arcane_assembler_windows_inactive"
+        }],
+        "active=false,powered=false": [{}],
+        "active=true,powered=false": [{}],
+        "active=false,powered=true": [{
+            "custom": {
+                "Translucent": "thaumicenergistics:arcane_assembler#windows-inactive"
+            }
+        }],
+        "active=true,powered=true": [{
+            "custom": {
+                "Translucent": "thaumicenergistics:arcane_assembler#windows-active"
+            }
+        }]
+    }
+}

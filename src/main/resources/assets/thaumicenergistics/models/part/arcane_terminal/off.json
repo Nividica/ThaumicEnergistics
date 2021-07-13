@@ -2,7 +2,7 @@
     "parent": "appliedenergistics2:part/display_off",
     "textures": {
         "lightsBright": "thaumicenergistics:part/arcane_terminal/overlay1",
-        "lightsMedium": "thaumicenergistics:part/arcane_terminal/overlay1",
-        "lightsDark": "thaumicenergistics:part/arcane_terminal/overlay1"
+        "lightsMedium": "thaumicenergistics:part/arcane_terminal/overlay2",
+        "lightsDark": "thaumicenergistics:part/arcane_terminal/overlay3"
     }
 }

@@ -23,6 +23,7 @@ import thaumicenergistics.api.EssentiaStack;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
 import thaumicenergistics.integration.appeng.AEEssentiaStack;
@@ -51,6 +52,11 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
         super(item);
     }
 
+    @Override
+    protected AESettings.SUBJECT getAESettingSubject() {
+        return AESettings.SUBJECT.ESSENTIA_IMPORT_BUS;
+    }
+
     @Nonnull
     @Override
     public TickingRequest getTickingRequest(@Nonnull IGridNode node) {
@@ -59,15 +65,11 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
 
     @Override
     public boolean canWork() {
-        // TODO: Improve
         return this.getConnectedTE() instanceof IAspectContainer;
     }
 
-    @Nonnull
     @Override
-    public TickRateModulation tickingRequest(@Nonnull IGridNode node, int ticksSinceLastCall) {
-        if (!this.canWork())
-            return TickRateModulation.IDLE;
+    protected TickRateModulation doWork() {
         IAspectContainer container = (IAspectContainer) this.getConnectedTE();
         for (Aspect aspect : container.getAspects().getAspects()) {
             if (this.config.hasAspects() && !this.config.isInFilter(aspect)) // Check filter
@@ -110,6 +112,7 @@ public class PartEssentiaImportBus extends PartSharedEssentiaBus {
         if (ForgeUtil.isServer())
             GuiHandler.openGUI(ModGUIs.ESSENTIA_IMPORT_BUS, player, this.hostTile.getPos(), this.side);
 
+        this.host.markForUpdate();
         return true;
     }
 

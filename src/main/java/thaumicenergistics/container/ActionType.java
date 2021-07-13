@@ -15,5 +15,9 @@ public enum ActionType {
     SCROLL_DOWN,
     SCROLL_UP,
 
-    CLEAR_GRID
+    CLEAR_GRID,
+
+    KNOWLEDGE_CORE_ADD,
+    KNOWLEDGE_CORE_DEL,
+    KNOWLEDGE_CORE_VIEW
 }

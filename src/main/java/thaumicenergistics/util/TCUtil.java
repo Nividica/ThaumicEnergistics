@@ -55,4 +55,11 @@ public class TCUtil {
     public static AspectList getItemAspects(ItemStack stack) {
         return ThaumcraftApi.internalMethods.getObjectAspects(stack);
     }
+
+    public static ItemStack getCrystalWithAspect(Aspect aspect){
+        ItemStack crystalStack = new ItemStack(ItemsTC.crystalEssence);
+        IEssentiaContainerItem crystal = (IEssentiaContainerItem) crystalStack.getItem();
+        crystal.setAspects(crystalStack, new AspectList().add(aspect, 1));
+        return crystalStack;
+    }
 }

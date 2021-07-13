@@ -15,6 +15,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 
+import thaumicenergistics.client.gui.part.GuiArcaneInscriber;
 import thaumicenergistics.client.gui.part.GuiArcaneTerminal;
 import thaumicenergistics.util.AEUtil;
 
@@ -62,6 +63,10 @@ public class PacketMEItemUpdate implements IMessage {
             FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
                 if (Minecraft.getMinecraft().currentScreen instanceof GuiArcaneTerminal) {
                     GuiArcaneTerminal gui = (GuiArcaneTerminal) Minecraft.getMinecraft().currentScreen;
+                    gui.onMEStorageUpdate(message.list);
+                }
+                if (Minecraft.getMinecraft().currentScreen instanceof GuiArcaneInscriber) {
+                    GuiArcaneInscriber gui = (GuiArcaneInscriber) Minecraft.getMinecraft().currentScreen;
                     gui.onMEStorageUpdate(message.list);
                 }
             });

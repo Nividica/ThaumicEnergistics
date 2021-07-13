@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import thaumicenergistics.client.gui.part.GuiArcaneInscriber;
 import thaumicenergistics.client.gui.part.GuiArcaneTerminal;
 
 /**
@@ -50,6 +51,10 @@ public class PacketVisUpdate implements IMessage {
             FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
                 if (Minecraft.getMinecraft().currentScreen instanceof GuiArcaneTerminal) {
                     GuiArcaneTerminal gui = (GuiArcaneTerminal) Minecraft.getMinecraft().currentScreen;
+                    gui.setVisInfo(message.vis, message.required, message.discount);
+                }
+                if (Minecraft.getMinecraft().currentScreen instanceof GuiArcaneInscriber) {
+                    GuiArcaneInscriber gui = (GuiArcaneInscriber) Minecraft.getMinecraft().currentScreen;
                     gui.setVisInfo(message.vis, message.required, message.discount);
                 }
             });

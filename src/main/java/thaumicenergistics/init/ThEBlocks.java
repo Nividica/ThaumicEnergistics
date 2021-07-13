@@ -2,6 +2,7 @@ package thaumicenergistics.init;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -17,11 +18,13 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.ITileDefinition;
 
 import thaumicenergistics.api.IThEBlocks;
+import thaumicenergistics.block.BlockArcaneAssembler;
 import thaumicenergistics.block.BlockBase;
 import thaumicenergistics.block.BlockInfusionProvider;
 import thaumicenergistics.client.render.IThEModel;
 import thaumicenergistics.definitions.ThEBlockDefinition;
 import thaumicenergistics.definitions.ThETileDefinition;
+import thaumicenergistics.tile.TileArcaneAssembler;
 import thaumicenergistics.tile.TileInfusionProvider;
 
 import static thaumicenergistics.ThaumicEnergistics.LOGGER;
@@ -35,6 +38,7 @@ public class ThEBlocks implements IThEBlocks {
     public static List<BlockBase> BLOCKS = new ArrayList<>();
 
     private ITileDefinition infusionProvider;
+    private ITileDefinition arcaneAssembler;
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -49,7 +53,7 @@ public class ThEBlocks implements IThEBlocks {
     public static void registerItemBlocks(RegistryEvent.Register<Item> event) {
         LOGGER.info("Registering ItemBlocks");
 
-        ThEBlocks.BLOCKS.forEach(block -> event.getRegistry().register(new ItemBlock(block).setRegistryName(block.getRegistryName())));
+        ThEBlocks.BLOCKS.forEach(block -> event.getRegistry().register(new ItemBlock(block).setRegistryName(Objects.requireNonNull(block.getRegistryName()))));
     }
 
     @SubscribeEvent
@@ -72,10 +76,16 @@ public class ThEBlocks implements IThEBlocks {
 
     public ThEBlocks() {
         this.infusionProvider = ThEBlocks.createTile(new BlockInfusionProvider("infusion_provider"), TileInfusionProvider.class);
+        this.arcaneAssembler = ThEBlocks.createTile(new BlockArcaneAssembler("arcane_assembler"), TileArcaneAssembler.class);
     }
 
     @Override
     public ITileDefinition infusionProvider() {
         return this.infusionProvider;
+    }
+
+    @Override
+    public ITileDefinition arcaneAssembler() {
+        return this.arcaneAssembler;
     }
 }

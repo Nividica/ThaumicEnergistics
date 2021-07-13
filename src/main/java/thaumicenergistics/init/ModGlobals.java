@@ -17,7 +17,10 @@ public class ModGlobals {
     public static final String MOD_VERSION = "2.2.3";
     public static final String MOD_DEPENDENCIES = "required-after:appliedenergistics2@[rv6-stable-6,);" +
             "required-after:thaumcraft@[6.1.BETA26,);" +
-            "after:thaumicjei";
+            "after:thaumicjei;" +
+            "after:inventorytweaks;" +
+            "after:waila;" +
+            "after:theoneprobe";
 
     /**
      * Creative tab.
@@ -36,4 +39,6 @@ public class ModGlobals {
     public static final String RESEARCH_CATEGORY = ModGlobals.MOD_ID.toUpperCase();
 
     public static final String MOD_ID_AE2 = "appliedenergistics2";
+
+    public static final boolean DEBUG_MODE = System.getProperties().containsKey("thaumicenergisticsdebug");
 }

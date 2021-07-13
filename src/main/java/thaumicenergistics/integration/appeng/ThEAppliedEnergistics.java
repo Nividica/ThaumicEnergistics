@@ -36,14 +36,17 @@ public class ThEAppliedEnergistics implements IThEIntegration {
         AEApi.instance().registries().cell().addCellHandler(new CreativeEssentiaCellHandler());
 
         ThEApi.instance().items().essentiaImportBus().maybeStack(1).ifPresent(stack -> {
+            Upgrades.REDSTONE.registerItem(stack, 1);
             Upgrades.CAPACITY.registerItem(stack, 2);
             Upgrades.SPEED.registerItem(stack, 4);
         });
         ThEApi.instance().items().essentiaExportBus().maybeStack(1).ifPresent(stack -> {
+            Upgrades.REDSTONE.registerItem(stack, 1);
             Upgrades.CAPACITY.registerItem(stack, 2);
             Upgrades.SPEED.registerItem(stack, 4);
         });
         ThEApi.instance().items().essentiaStorageBus().maybeStack(1).ifPresent(stack -> {
+            Upgrades.INVERTER.registerItem(stack, 1);
             Upgrades.CAPACITY.registerItem(stack, 5);
         });
     }
@@ -51,16 +54,6 @@ public class ThEAppliedEnergistics implements IThEIntegration {
     @Override
     public void postInit() {
 
-    }
-
-    @Override
-    public String getModID() {
-        return ModGlobals.MOD_ID_AE2;
-    }
-
-    @Override
-    public boolean isRequired() {
-        return true;
     }
 
     public static class EssentiaStorageChannel implements IEssentiaStorageChannel {

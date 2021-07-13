@@ -13,6 +13,7 @@ import appeng.api.implementations.items.IUpgradeModule;
 
 import thaumicenergistics.api.IThEUpgrade;
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.item.ItemKnowledgeCore;
 import thaumicenergistics.util.ForgeUtil;
 
 /**
@@ -34,8 +35,14 @@ public class ThEUpgradeInventory extends ThEInternalInventory {
         this.cachedUpgrades = new HashMap<>();
     }
 
+    public boolean isKnowledgeCoreSlot(){
+        return false;
+    }
+
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
+        if(stack.getItem() instanceof ItemKnowledgeCore && !isKnowledgeCoreSlot())
+            return false;
         if (!(stack.getItem() instanceof IUpgradeModule) && !ThEApi.instance().upgrades().getUpgrade(stack).isPresent())
             return false;
         if (this.upgradable == null) // If the item/block/part that this is attached to is null, then just allow without checking max allowed

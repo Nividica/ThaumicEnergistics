@@ -1,11 +1,11 @@
 package thaumicenergistics.client.gui.part;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -18,12 +18,12 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.core.localization.GuiText;
 
 import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.client.gui.component.GuiSearchField;
 import thaumicenergistics.client.gui.helpers.GuiScrollBar;
 import thaumicenergistics.client.gui.helpers.MERepo;
 import thaumicenergistics.config.ThEConfig;
@@ -33,47 +33,68 @@ import thaumicenergistics.container.slot.SlotME;
 import thaumicenergistics.container.slot.ThESlot;
 import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.init.ModGlobals;
+import thaumicenergistics.integration.jei.ThEJEI;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketOpenGUI;
-import thaumicenergistics.network.packets.PacketSettingChange;
 import thaumicenergistics.network.packets.PacketUIAction;
 import thaumicenergistics.util.AEUtil;
-import thaumicenergistics.util.ThEUtil;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemStorageChannel> {
 
-    private ContainerArcaneTerminal cat;
+    protected ContainerArcaneTerminal container;
 
-    private GuiTextField searchField;
-    private GuiScrollBar scrollBar;
+    private GuiSearchField searchField;
+    protected GuiScrollBar scrollBar;
     private GuiImgButton sortByButton;
-    private GuiImgButton sortDirButton;
     private GuiImgButton viewItemsButton;
+    private GuiImgButton sortDirButton;
+    private GuiImgButton searchModeButton;
     private GuiImgButton terminalSizeButton;
     private GuiImgButton clearButton;
     private GuiTabButton craftingStatusBtn;
+    private boolean isAutoFocus = false;
+    private static String memoryText = "";
 
-    private int rows = 6;
+    protected int rows = 6;
     private float visAvailable = -1;
-    private float visRequired = -1;
+    protected float visRequired = -1;
     private float discount = 0f;
 
     public GuiArcaneTerminal(ContainerArcaneTerminal container) {
         super(container);
-        this.cat = container;
+        this.container = container;
         this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
         this.repo = new MERepo<>(IItemStorageChannel.class);
     }
 
+    public void initSearchField(){
+        SearchBoxMode searchModeSetting = ThEApi.instance().config().searchBoxMode();
+        this.repo.setSearchBoxMode(searchModeSetting);
+        this.isAutoFocus = Stream.of(SearchBoxMode.AUTOSEARCH, SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.AUTOSEARCH_KEEP, SearchBoxMode.JEI_AUTOSEARCH_KEEP).anyMatch(m -> m == searchModeSetting);
+        boolean isKeepFilter = Stream.of(SearchBoxMode.AUTOSEARCH_KEEP, SearchBoxMode.JEI_AUTOSEARCH_KEEP, SearchBoxMode.MANUAL_SEARCH_KEEP, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP).anyMatch(m -> m == searchModeSetting);
+        boolean isJEIEnabled = Stream.of(SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.JEI_MANUAL_SEARCH).anyMatch(m -> m == searchModeSetting);
+        this.searchField.setText("");
+        this.searchField.setFocused(this.isAutoFocus);
+        if(isJEIEnabled) memoryText = ThEJEI.getSearchText();
+        if(isKeepFilter && !memoryText.isEmpty()){
+            this.searchField.setText(memoryText);
+            this.searchField.selectAll();
+            this.repo.setSearchString(memoryText);
+            this.repo.updateView();
+            this.updateScroll();
+        }
+    }
+
     @Override
     public void initGui() {
-        this.xSize = 197;
+        this.xSize = 201;
         this.ySize = 190;
 
         double remainingY = this.height - this.ySize;
@@ -96,47 +117,48 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
         this.buttonList.clear();
         super.initGui();
 
-        this.searchField = new GuiTextField(0, this.fontRenderer, this.getGuiLeft() + 98, this.getGuiTop() + 6, 70, 10);
-        this.searchField.setEnableBackgroundDrawing(false);
+        this.searchField = new GuiSearchField(this.fontRenderer, this.getGuiLeft() + 98, this.getGuiTop() + 6, 70, 10);
         this.searchField.setVisible(true);
         this.searchField.setMaxStringLength(25);
         this.searchField.setTextColor(0xFFFFFF);
 
-        IConfigManager cm = ((IConfigurableObject) this.inventorySlots).getConfigManager();
+        this.initSearchField();
+
+        IConfigManager cm = this.getConfigManager();
 
         // FIXME: Don't use AE Core classes
         this.sortByButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 8, Settings.SORT_BY, cm.getSetting(Settings.SORT_BY));
-        this.sortDirButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 28, Settings.SORT_DIRECTION, cm.getSetting(Settings.SORT_DIRECTION));
-        this.viewItemsButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 48, Settings.VIEW_MODE, cm.getSetting(Settings.VIEW_MODE));
-        this.terminalSizeButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 68, Settings.TERMINAL_STYLE, ThEApi.instance().config().terminalStyle());
+        this.viewItemsButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 28, Settings.VIEW_MODE, cm.getSetting(Settings.VIEW_MODE));
+        this.sortDirButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 48, Settings.SORT_DIRECTION, cm.getSetting(Settings.SORT_DIRECTION));
+        this.searchModeButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 68, Settings.SEARCH_MODE, ThEApi.instance().config().searchBoxMode());
+        this.terminalSizeButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 88, Settings.TERMINAL_STYLE, ThEApi.instance().config().terminalStyle());
         this.clearButton = new GuiImgButton(this.getGuiLeft() + 87, this.getGuiTop() + this.getYSize() - 156, Settings.ACTIONS, ActionItems.STASH);
         this.clearButton.setHalfSize(true);
         this.craftingStatusBtn = new GuiTabButton(this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus.getLocal(), this.itemRender);
         this.craftingStatusBtn.setHideEdge(13);
 
         this.addButton(this.sortByButton);
-        this.addButton(this.sortDirButton);
         this.addButton(this.viewItemsButton);
+        this.addButton(this.sortDirButton);
+        this.addButton(this.searchModeButton);
         this.addButton(this.terminalSizeButton);
         this.addButton(this.clearButton);
         this.addButton(this.craftingStatusBtn);
 
-        this.inventorySlots.inventorySlots.forEach(slot -> {
-            if (slot instanceof ThESlot)
-                ((ThESlot) slot).recalculateY(this.rows);
-        });
+        this.inventorySlots.inventorySlots.forEach(this::recalcSlotY);
+    }
+
+    protected void recalcSlotY(Slot slot){
+        if (slot instanceof ThESlot)
+            ((ThESlot) slot).recalculateY(this.rows);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        if (this.visAvailable > -1)
-            this.fontRenderer.drawString(ThEApi.instance().lang().guiVisAvailable().getLocalizedKey((int) this.visAvailable), 90, this.getYSize() - 168, 4210752);
-        if (this.visRequired > -1)
-            if (this.visRequired > this.visAvailable)
-                this.fontRenderer.drawString(ThEApi.instance().lang().guiVisRequired().getLocalizedKey(this.visRequired), 93, this.getYSize() - 153, Color.RED.getRGB());
-            else
-                this.fontRenderer.drawString(ThEApi.instance().lang().guiVisRequired().getLocalizedKey(this.visRequired), 93, this.getYSize() - 153, 4210752);
+        this.fontRenderer.drawString(ThEApi.instance().lang().guiVisRequiredOutOf().getLocalizedKey(this.visRequired > -1 ? this.visRequired : 0, (int) (this.visAvailable > -1 ? this.visAvailable : 0)), 35, this.getYSize() - 168, this.visRequired > this.visAvailable ? Color.RED.getRGB() : 4210752);
+
         if (this.discount > 0f)
             this.fontRenderer.drawString(ThEApi.instance().lang().guiVisDiscount().getLocalizedKey((int) (this.discount * 100)), 90, this.getYSize() - 94, 4210752);
 
@@ -162,37 +184,17 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        boolean flag = mouseX >= this.searchField.x &&
-                mouseX < this.searchField.x + this.searchField.width &&
-                mouseY >= this.searchField.y &&
-                mouseY < this.searchField.y + this.searchField.height;
-
-        if (button == 1 && flag) { // Right click should reset the search field
+        if (button == 1 && mouseWithin(searchField)) { // Right click should reset the search field
             this.searchField.setText("");
             this.repo.setSearchString("");
             this.repo.updateView();
         }
         this.searchField.mouseClicked(mouseX, mouseY, button);
         if (this.scrollBar != null) {
-            int x = mouseX - this.getGuiLeft();
-            int y = mouseY - this.getGuiTop();
-            flag = x >= this.scrollBar.getX() &&
-                    x <= this.scrollBar.getX() + 15 &&
-                    y >= this.scrollBar.getY() &&
-                    y <= this.scrollBar.getY() + this.scrollBar.getHeight();
-            if (flag)
-                this.scrollBar.click(y);
+            if (mouseWithin(scrollBar))
+                this.scrollBar.click(mouseY - this.getGuiTop());
             this.repo.updateView();
             this.updateScroll();
-        }
-
-        if (button == 1) {
-            for (final GuiButton btn : this.buttonList) {
-                if (!btn.mousePressed(this.mc, mouseX, mouseY))
-                    continue;
-                super.mouseClicked(mouseX, mouseY, 0); // Make the code think we lmb the button
-                return;
-            }
         }
 
         super.mouseClicked(mouseX, mouseY, button);
@@ -201,14 +203,8 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         if (this.scrollBar != null) {
-            int x = mouseX - this.getGuiLeft();
-            int y = mouseY - this.getGuiTop();
-            boolean flag = x >= this.scrollBar.getX() &&
-                    x <= this.scrollBar.getX() + 15 &&
-                    y >= this.scrollBar.getY() &&
-                    y <= this.scrollBar.getY() + this.scrollBar.getHeight();
-            if (flag) {
-                this.scrollBar.click(y);
+            if (mouseWithin(scrollBar)) {
+                this.scrollBar.click(mouseY - this.getGuiTop());
                 this.repo.updateView();
                 this.updateScroll();
             }
@@ -255,8 +251,10 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (this.checkHotbarKeys(keyCode))
-            return;
+        if (this.checkHotbarKeys(keyCode) && container.inventorySlots.stream()
+                .filter(slot -> !(slot instanceof SlotME))
+                .anyMatch(this::mouseWithin))
+            return; // abort if it was a hotbar key and the mouse is over a normal slot
 
         if (typedChar == 'B' && this.scrollBar != null)
             this.scrollBar.wheel(1f);
@@ -269,6 +267,9 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
             this.searchField.setFocused(false);
             return;
         }
+
+        if (this.isAutoFocus && !this.searchField.isFocused() && mouseWithin())
+            this.searchField.setFocused(true);
 
         if (this.searchField.textboxKeyTyped(typedChar, keyCode)) {
             this.repo.setSearchString(this.searchField.getText());
@@ -285,18 +286,26 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
     }
 
     @Override
+    public void onGuiClosed(){
+        super.onGuiClosed();
+        memoryText = this.searchField.getText();
+    }
+
+    @Override
     public void updateSetting(Settings setting, Enum value) {
         super.updateSetting(setting, value);
-        this.repo.setSortOrder((SortOrder) ((IConfigurableObject) this.inventorySlots).getConfigManager().getSetting(Settings.SORT_BY));
-        this.repo.setSortDir((SortDir) ((IConfigurableObject) this.inventorySlots).getConfigManager().getSetting(Settings.SORT_DIRECTION));
-        this.repo.setViewMode((ViewItems) ((IConfigurableObject) this.inventorySlots).getConfigManager().getSetting(Settings.VIEW_MODE));
+
+        IConfigManager cm = this.getConfigManager();
+        this.repo.setSortOrder((SortOrder) cm.getSetting(Settings.SORT_BY));
+        this.repo.setViewMode((ViewItems) cm.getSetting(Settings.VIEW_MODE));
+        this.repo.setSortDir((SortDir) cm.getSetting(Settings.SORT_DIRECTION));
         this.repo.updateView();
         this.updateScroll();
     }
 
     @Override
     protected ResourceLocation getGuiBackground() {
-        return new ResourceLocation(ModGlobals.MOD_ID, "textures/gui/arcane_crafting.png");
+        return new ResourceLocation(ModGlobals.MOD_ID, "textures/gui/arcane_crafting_no_side.png");
     }
 
     @Override
@@ -306,22 +315,26 @@ public class GuiArcaneTerminal extends GuiAbstractTerminal<IAEItemStack, IItemSt
             return;
         }
         if (button == this.craftingStatusBtn) {
-            PacketHandler.sendToServer(new PacketOpenGUI(ModGUIs.AE2_CRAFT_STATUS, this.cat.getPartPos(), this.cat.getPartSide()));
+            PacketHandler.sendToServer(new PacketOpenGUI(ModGUIs.AE2_CRAFT_STATUS, this.container.getPartPos(), this.container.getPartSide()));
             return;
         }
-        if (button instanceof GuiImgButton) {
-            GuiImgButton btn = (GuiImgButton) button;
-            Enum currentValue = btn.getCurrentValue();
-            Enum next = ThEUtil.rotateEnum(currentValue, btn.getSetting().getPossibleValues(), Mouse.isButtonDown(1));
-            btn.set(next);
-            if (btn.getSetting() == Settings.TERMINAL_STYLE) {
-                ThEConfig.client.terminalStyle = (TerminalStyle) next;
-                ThEConfig.save();
-                this.reload();
-                return;
-            }
-            PacketHandler.sendToServer(new PacketSettingChange(btn.getSetting(), next));
+        super.actionPerformed(button);
+    }
+
+    @Override
+    protected boolean imgBtnActionOverride(GuiImgButton btn, Enum next) {
+        if (btn.getSetting() == Settings.TERMINAL_STYLE) {
+            ThEConfig.client.terminalStyle = (TerminalStyle) next;
+            ThEConfig.save();
+            this.reload();
+            return true;
+        }else if (btn.getSetting() == Settings.SEARCH_MODE){
+            ThEConfig.client.searchBoxMode = (SearchBoxMode) next;
+            ThEConfig.save();
+            this.initSearchField();
+            return true;
         }
+        return false;
     }
 
     @Override

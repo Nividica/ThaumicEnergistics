@@ -9,9 +9,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
 public class EssentiaFilter implements INBTSerializable<NBTTagCompound>, Iterable<Aspect> {
 
@@ -67,6 +69,18 @@ public class EssentiaFilter implements INBTSerializable<NBTTagCompound>, Iterabl
         for (int i = 0; i < this.aspects.length; i++)
             if (tag.hasKey("aspect#" + i))
                 this.aspects[i] = Aspect.getAspect(tag.getString("aspect#" + i));
+        this.onContentsChanged();
+    }
+
+    public void clear(){
+        Arrays.fill(this.aspects, null);
+        this.onContentsChanged();
+    }
+
+    public void partition(IAspectContainer aspectContainer){
+        Aspect[] aspects = aspectContainer.getAspects().getAspects();
+        Arrays.fill(this.aspects, null);
+        System.arraycopy(aspects, 0, this.aspects, 0, aspects.length);
         this.onContentsChanged();
     }
 

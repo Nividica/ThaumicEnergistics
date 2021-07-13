@@ -4,12 +4,15 @@ package thaumicenergistics.api;
  * Contains every translation key in Thaumic Energistics
  *
  * @author BrockWS
+ * @author Alex811
  */
 public interface IThELang {
 
     IThELangKey creativeTab();
 
     IThELangKey tileInfusionProvider();
+
+    IThELangKey tileArcaneAssembler();
 
     IThELangKey itemDiffusionCore();
 
@@ -43,7 +46,29 @@ public interface IThELang {
 
     IThELangKey itemArcaneChargingUpgrade();
 
+    IThELangKey itemKnowledgeCore();
+
+    IThELangKey itemBlankKnowledgeCore();
+
     IThELangKey tooltipWIP();
+
+    IThELangKey deviceOnline();
+
+    IThELangKey deviceOffline();
+
+    IThELangKey deviceMissingChannel();
+
+    IThELangKey arcaneAssemblerIdle();
+
+    IThELangKey arcaneAssemblerPrep();
+
+    IThELangKey arcaneAssemblerBusy();
+
+    IThELangKey arcaneAssemblerProgress();
+
+    IThELangKey arcaneAssemblerNoAspect();
+
+    IThELangKey arcaneAssemblerNoVis();
 
     IThELangKey guiEssentiaImportBus();
 
@@ -55,11 +80,29 @@ public interface IThELang {
 
     IThELangKey guiArcaneTerminal();
 
+    IThELangKey guiArcaneInscriber();
+
     IThELangKey guiVisRequired();
+
+    IThELangKey guiVisRequiredOutOf();
 
     IThELangKey guiVisAvailable();
 
     IThELangKey guiVisDiscount();
+
+    IThELangKey guiInsertKnowledgeCore();
+
+    IThELangKey guiKnowledgeCoreBlank();
+
+    IThELangKey guiRecipeAlreadyStored();
+
+    IThELangKey guiRecipeNotArcane();
+
+    IThELangKey guiNoRecipe();
+
+    IThELangKey guiOutOfAspect();
+
+    IThELangKey guiOutOfVis();
 
     IThELangKey researchCategory();
 }

@@ -8,6 +8,9 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
+import thaumicenergistics.config.AESettings;
+
+import javax.annotation.Nullable;
 
 /**
  * @author BrockWS
@@ -22,6 +25,10 @@ public class ThEConfigManager implements IConfigManager {
     @Override
     public void registerSetting(Settings setting, Enum<?> defaultValue) {
         this.settings.put(setting, defaultValue);
+    }
+
+    public void registerSettings(@Nullable AESettings.SUBJECT settingSubject){
+        AESettings.registerSettings(settingSubject, this);
     }
 
     @Override

@@ -20,6 +20,8 @@ import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.client.render.IThEModel;
 import thaumicenergistics.tile.TileInfusionProvider;
 
+import java.util.Objects;
+
 /**
  * @author BrockWS
  */
@@ -32,7 +34,7 @@ public class BlockInfusionProvider extends BlockNetwork implements IThEModel {
     @Override
     public void registerTileEntity() {
         super.registerTileEntity();
-        GameRegistry.registerTileEntity(TileInfusionProvider.class, this.getRegistryName());
+        GameRegistry.registerTileEntity(TileInfusionProvider.class, Objects.requireNonNull(this.getRegistryName()));
     }
 
     @Override
@@ -66,6 +68,6 @@ public class BlockInfusionProvider extends BlockNetwork implements IThEModel {
 
     @Override
     public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(Objects.requireNonNull(this.getRegistryName()), "inventory"));
     }
 }

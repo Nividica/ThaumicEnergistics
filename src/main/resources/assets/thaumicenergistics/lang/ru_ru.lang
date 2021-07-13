@@ -29,6 +29,9 @@ item.thaumicenergistics.upgrade_arcane.name=Улучшение для Мисти
 
 # Подсказки
 tooltip.thaumicenergistics.wip=РАБОТАЮ НАД ЭТИМ, НЕ ИСПОЛЬЗОВАТЬ
+tooltip.thaumicenergistics.device_online=Устройство включено
+tooltip.thaumicenergistics.device_offline=Устройство выключено
+tooltip.thaumicenergistics.device_missing_channel=У устройства отсутствует канал
 
 # GUI
 gui.thaumicenergistics.essentia_import_bus=МЭ Шина импорта эссенции
@@ -37,7 +40,8 @@ gui.thaumicenergistics.essentia_storage_bus=МЭ Шина хранения эс�
 gui.thaumicenergistics.essentia_terminal=Терминал эссенции
 gui.thaumicenergistics.arcane_terminal=Мистический терминал
 
-gui.thaumicenergistics.vis_required=Вис: %s
+gui.thaumicenergistics.vis_required=Вис стоимость: %s
+gui.thaumicenergistics.vis_required_out_of=Вис стоимость: %s/%s
 gui.thaumicenergistics.vis_available=%s Доступно
 gui.thaumicenergistics.vis_discount=%s%% Скидка
 
@@ -110,4 +114,4 @@ research.infusionprovider.stage.2=Теперь я могу сделать Пос
 research.arcaneterminal.title=Arcane Crafting Terminal
 research.arcaneterminal.stage.1=Maybe Я могу объединить терминал МЭ с тайным верстаком, чтобы получить что-то, что поможет мне в моих тайных начинаниях.
 research.arcaneterminal.stage.2=Теперь я могу сделать Мистический терминал создания.
-research.arcaneterminal.addena.1=Я могу улучшить свой Мистический терминал создания, чтобы увеличить дальность его прорисовки вис.
+research.arcaneterminal.addenda.1=Я могу улучшить свой Мистический терминал создания, чтобы увеличить дальность его прорисовки вис.

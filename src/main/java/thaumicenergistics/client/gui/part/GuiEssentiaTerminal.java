@@ -75,7 +75,7 @@ public class GuiEssentiaTerminal extends GuiAbstractTerminal<IAEEssentiaStack, I
         this.buttonList.clear();
         super.initGui();
 
-        IConfigManager cm = ((IConfigurableObject) this.inventorySlots).getConfigManager();
+        IConfigManager cm = this.getConfigManager();
 
         this.sortByButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 8, Settings.SORT_BY, cm.getSetting(Settings.SORT_BY));
         this.sortDirButton = new GuiImgButton(this.getGuiLeft() - 18, this.getGuiTop() + 28, Settings.SORT_DIRECTION, cm.getSetting(Settings.SORT_DIRECTION));
@@ -140,40 +140,20 @@ public class GuiEssentiaTerminal extends GuiAbstractTerminal<IAEEssentiaStack, I
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         if (this.scrollBar != null) {
-            int x = mouseX - this.getGuiLeft();
-            int y = mouseY - this.getGuiTop();
-            boolean flag = x >= this.scrollBar.getX() &&
-                    x <= this.scrollBar.getX() + 15 &&
-                    y >= this.scrollBar.getY() &&
-                    y <= this.scrollBar.getY() + this.scrollBar.getHeight();
-            if (flag)
-                this.scrollBar.click(y);
+            if (mouseWithin(scrollBar))
+                this.scrollBar.click(mouseY - this.getGuiTop());
             this.repo.updateView();
             this.updateScroll();
         }
 
-        if (button == 1) {
-            for (final GuiButton btn : this.buttonList) {
-                if (!btn.mousePressed(this.mc, mouseX, mouseY))
-                    continue;
-                super.mouseClicked(mouseX, mouseY, 0); // Make the code think we lmb the button
-                return;
-            }
-        }
         super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         if (this.scrollBar != null) {
-            int x = mouseX - this.getGuiLeft();
-            int y = mouseY - this.getGuiTop();
-            boolean flag = x >= this.scrollBar.getX() &&
-                    x <= this.scrollBar.getX() + 15 &&
-                    y >= this.scrollBar.getY() &&
-                    y <= this.scrollBar.getY() + this.scrollBar.getHeight();
-            if (flag) {
-                this.scrollBar.click(y);
+            if (mouseWithin(scrollBar)) {
+                this.scrollBar.click(mouseY - this.getGuiTop());
                 this.repo.updateView();
                 this.updateScroll();
             }

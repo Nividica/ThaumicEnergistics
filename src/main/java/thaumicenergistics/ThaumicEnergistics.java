@@ -1,13 +1,14 @@
 package thaumicenergistics;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -16,16 +17,21 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import thaumicenergistics.api.IThEBlocks;
+import thaumicenergistics.api.IThEItems;
+import thaumicenergistics.api.IThEUpgrades;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.ThEItemColors;
 import thaumicenergistics.client.gui.GuiHandler;
+import thaumicenergistics.client.render.ArcaneAssemblerRenderer;
+import thaumicenergistics.command.CommandAddVis;
+import thaumicenergistics.command.CommandDrainVis;
 import thaumicenergistics.init.ModGlobals;
-import thaumicenergistics.integration.IThEIntegration;
-import thaumicenergistics.integration.appeng.ThEAppliedEnergistics;
-import thaumicenergistics.integration.thaumcraft.ThEThaumcraft;
+import thaumicenergistics.integration.ThEIntegrationLoader;
 import thaumicenergistics.network.PacketHandler;
+import thaumicenergistics.tile.TileArcaneAssembler;
 import thaumicenergistics.util.ForgeUtil;
-import thaumicenergistics.util.ThELog;
 
 import org.apache.logging.log4j.Logger;
 
@@ -47,11 +53,15 @@ public class ThaumicEnergistics {
     public static ThaumicEnergistics INSTANCE;
 
     /**
+     * Proxy class that runs code that should be strictly on the physical client
+     */
+    @SidedProxy
+    public static IProxy proxy;
+
+    /**
      * Thaumic Energistics Logger
      */
     public static Logger LOGGER;
-
-    private static List<IThEIntegration> INTEGRATIONS = new ArrayList<>();
 
     /**
      * Called before the load event.
@@ -63,17 +73,11 @@ public class ThaumicEnergistics {
         ThaumicEnergistics.LOGGER = event.getModLog();
         ThEApi.instance(); // Make sure to init the api
         MinecraftForge.EVENT_BUS.register(this);
-
         PacketHandler.register();
 
-        ThaumicEnergistics.INTEGRATIONS.add(new ThEThaumcraft());
-        ThaumicEnergistics.INTEGRATIONS.add(new ThEAppliedEnergistics());
+        proxy.preInit(event);
 
-        // Remove any integration that is not installed
-        ThaumicEnergistics.INTEGRATIONS.removeIf(in -> !in.isLoaded());
-
-        ThELog.info("Integrations: PreInit");
-        ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::preInit);
+        ThEIntegrationLoader.preInit();
     }
 
     /**
@@ -88,15 +92,20 @@ public class ThaumicEnergistics {
             ThEItemColors.registerItemColors();
         }
 
-        ThEApi.instance()
-                .items()
-                .arcaneTerminal()
-                .maybeStack(1)
-                .ifPresent(stack ->
-                        ThEApi.instance().upgrades().arcaneCharger().registerItem(stack, 1));
+        IThEUpgrades upgrades = ThaumicEnergisticsApi.instance().upgrades();
+        IThEItems items = ThaumicEnergisticsApi.instance().items();
+        IThEBlocks blocks = ThaumicEnergisticsApi.instance().blocks();
 
-        ThELog.info("Integrations: Init");
-        ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::init);
+        upgrades.registerUpgrade(items.arcaneTerminal(), upgrades.arcaneCharger(), 1);
+        upgrades.registerUpgrade(items.arcaneInscriber(), upgrades.blankKnowledgeCore(), 1);
+        upgrades.registerUpgrade(items.arcaneInscriber(), upgrades.knowledgeCore(), 1);
+        upgrades.registerUpgrade(blocks.arcaneAssembler(), upgrades.knowledgeCore(), 1);
+        upgrades.registerUpgrade(blocks.arcaneAssembler(), upgrades.arcaneCharger(), 1);
+        upgrades.registerUpgrade(blocks.arcaneAssembler(), upgrades.cardSpeed(), 5);
+
+        proxy.init(event);
+
+        ThEIntegrationLoader.init();
     }
 
     /**
@@ -106,13 +115,17 @@ public class ThaumicEnergistics {
      */
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        ThELog.info("Integrations: PostInit");
-        ThaumicEnergistics.INTEGRATIONS.forEach(IThEIntegration::postInit);
+        proxy.postInit(event);
+
+        ThEIntegrationLoader.postInit();
     }
 
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
-        //event.registerServerCommand(new CommandAddVis());
+        if(ModGlobals.DEBUG_MODE){
+            event.registerServerCommand(new CommandAddVis());
+            event.registerServerCommand(new CommandDrainVis());
+        }
     }
 
     @SubscribeEvent
@@ -130,5 +143,30 @@ public class ThaumicEnergistics {
     public void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(ModGlobals.MOD_ID))
             ConfigManager.sync(ModGlobals.MOD_ID, Config.Type.INSTANCE);
+    }
+
+    public static class ClientProxy implements IProxy{
+        public void init(FMLInitializationEvent event){
+            // Init TESR
+            ClientRegistry.bindTileEntitySpecialRenderer(TileArcaneAssembler.class, new ArcaneAssemblerRenderer());
+        }
+
+        public EntityPlayer getPlayerEntFromCtx(MessageContext ctx){
+            return ctx.side.isClient() ? Minecraft.getMinecraft().player : ctx.getServerHandler().player;
+        }
+    }
+
+    public static class ServerProxy implements IProxy{
+        public EntityPlayer getPlayerEntFromCtx(MessageContext ctx){
+            return ctx.getServerHandler().player;
+        }
+    }
+
+    public interface IProxy{
+        default void preInit(FMLPreInitializationEvent event){}
+        default void init(FMLInitializationEvent event){}
+        default void postInit(FMLPostInitializationEvent event){}
+
+        EntityPlayer getPlayerEntFromCtx(MessageContext ctx);
     }
 }

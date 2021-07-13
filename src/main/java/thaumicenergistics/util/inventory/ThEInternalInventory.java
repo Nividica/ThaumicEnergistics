@@ -151,11 +151,20 @@ public class ThEInternalInventory implements IInventory, INBTSerializable<NBTTag
         return new TextComponentString(this.getName());
     }
 
-    @Override
-    public NBTTagList serializeNBT() {
+    public NBTTagList serializeNBT(boolean noAir) {
         NBTTagList nbt = new NBTTagList();
-        this.slots.forEach(slot -> nbt.appendTag(slot.serializeNBT()));
+        this.slots.forEach(slot -> {
+            if(noAir && slot.isEmpty())
+                nbt.appendTag(new NBTTagCompound());
+            else
+                nbt.appendTag(slot.serializeNBT());
+        });
         return nbt;
+    }
+
+    @Override
+    public NBTTagList serializeNBT(){
+        return this.serializeNBT(false);
     }
 
     @Override

@@ -15,7 +15,7 @@ import net.minecraftforge.items.IItemHandler;
  */
 public class SlotArmor extends ThESlot {
 
-    private EntityPlayer player;
+    private final EntityPlayer player;
 
     public SlotArmor(EntityPlayer player, IItemHandler handler, int index, int xPosition, int yPosition) {
         this(player, handler, index, xPosition, yPosition, true);
@@ -42,13 +42,13 @@ public class SlotArmor extends ThESlot {
                 slot = EntityEquipmentSlot.LEGS;
                 break;
             case 2:
-                slot =EntityEquipmentSlot.CHEST;
+                slot = EntityEquipmentSlot.CHEST;
                 break;
             case 3:
-                slot =EntityEquipmentSlot.HEAD;;
+                slot = EntityEquipmentSlot.HEAD;
                 break;
             default:
-                slot = null;
+                return false;
         }
         return stack.getItem().isValidArmor(stack, slot, this.player);
     }

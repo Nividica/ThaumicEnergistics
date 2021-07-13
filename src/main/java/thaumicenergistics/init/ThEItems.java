@@ -60,6 +60,7 @@ public class ThEItems implements IThEItems {
     private final IItemDefinition itemEssentiaStorageBus;
     private final IItemDefinition itemEssentiaTerminal;
     private final IItemDefinition itemArcaneTerminal;
+    private final IItemDefinition itemArcaneInscriber;
     private final IItemDefinition itemDiffusionCore;
     private final IItemDefinition itemCoalescenceCore;
     private final IItemDefinition itemEssentiaComponent1k;
@@ -67,6 +68,8 @@ public class ThEItems implements IThEItems {
     private final IItemDefinition itemEssentiaComponent16k;
     private final IItemDefinition itemEssentiaComponent64k;
     private final IItemDefinition itemUpgradeArcane;
+    private final IItemDefinition itemKnowledgeCore;
+    private final IItemDefinition itemBlankKnowledgeCore;
     private final IItemDefinition itemDummyAspect;
 
     public ThEItems() {
@@ -80,6 +83,7 @@ public class ThEItems implements IThEItems {
         this.itemEssentiaStorageBus = ThEItems.createItem(new ItemEssentiaStorageBus("essentia_storage"));
         this.itemEssentiaTerminal = ThEItems.createItem(new ItemEssentiaTerminal("essentia_terminal"));
         this.itemArcaneTerminal = ThEItems.createItem(new ItemArcaneTerminal("arcane_terminal"));
+        this.itemArcaneInscriber = ThEItems.createItem(new ItemArcaneInscriber("arcane_inscriber"));
         this.itemDiffusionCore = ThEItems.createItem(new ItemMaterial("diffusion_core"));
         this.itemCoalescenceCore = ThEItems.createItem(new ItemMaterial("coalescence_core"));
         this.itemEssentiaComponent1k = ThEItems.createItem(new ItemMaterial("essentia_component_1k"));
@@ -87,6 +91,8 @@ public class ThEItems implements IThEItems {
         this.itemEssentiaComponent16k = ThEItems.createItem(new ItemMaterial("essentia_component_16k"));
         this.itemEssentiaComponent64k = ThEItems.createItem(new ItemMaterial("essentia_component_64k"));
         this.itemUpgradeArcane = ThEItems.createItem(new ItemMaterial("upgrade_arcane"));
+        this.itemKnowledgeCore = ThEItems.createItem(new ItemKnowledgeCore("knowledge_core", false));
+        this.itemBlankKnowledgeCore = ThEItems.createItem(new ItemKnowledgeCore("blank_knowledge_core", true));
         this.itemDummyAspect = ThEItems.createItem(new ItemDummyAspect());
     }
 
@@ -141,6 +147,11 @@ public class ThEItems implements IThEItems {
     }
 
     @Override
+    public IItemDefinition arcaneInscriber() {
+        return this.itemArcaneInscriber;
+    }
+
+    @Override
     public IItemDefinition diffusionCore() {
         return this.itemDiffusionCore;
     }
@@ -173,6 +184,16 @@ public class ThEItems implements IThEItems {
     @Override
     public IItemDefinition upgradeArcane() {
         return this.itemUpgradeArcane;
+    }
+
+    @Override
+    public IItemDefinition knowledgeCore() {
+        return this.itemKnowledgeCore;
+    }
+
+    @Override
+    public IItemDefinition blankKnowledgeCore() {
+        return this.itemBlankKnowledgeCore;
     }
 
     @Override

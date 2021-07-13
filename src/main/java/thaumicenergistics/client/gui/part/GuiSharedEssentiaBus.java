@@ -5,32 +5,50 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 
-import thaumicenergistics.client.gui.GuiBase;
+import thaumicenergistics.client.gui.GuiConfigurable;
 import thaumicenergistics.container.part.ContainerSharedEssentiaBus;
 import thaumicenergistics.container.slot.ISlotOptional;
 import thaumicenergistics.init.ModGlobals;
 
 /**
  * @author BrockWS
+ * @author Alex811
  */
-public abstract class GuiSharedEssentiaBus extends GuiBase {
+public abstract class GuiSharedEssentiaBus extends GuiConfigurable {
 
     protected int mainBackgroundWidth = 176;
     protected int mainBackgroundHeight = 184;
     protected int upgradeOffset = 3;
     protected int upgradeBackgroundWidth = 32;
     protected int upgradeBackgroundHeight = 86;
+    protected ContainerSharedEssentiaBus container;
 
     public GuiSharedEssentiaBus(ContainerSharedEssentiaBus container) {
         super(container);
+        this.container = container;
         this.xSize = 211;
         this.ySize = 184;
     }
 
     @Override
+    public void initGui() {
+        super.initGui();
+        this.container.getPart().upgradeChangeListeners.add(this::upgradesChanged);
+        this.upgradesChanged();
+    }
+
+    protected void upgradesChanged() {}
+
+    @Override
     public void updateScreen() {
         ((ContainerSharedEssentiaBus) this.inventorySlots).recalculateSlots();
         super.updateScreen();
+    }
+
+    @Override
+    public void onGuiClosed() {
+        super.onGuiClosed();
+        this.container.getPart().upgradeChangeListeners.clear();
     }
 
     @Override

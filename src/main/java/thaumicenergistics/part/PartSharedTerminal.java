@@ -7,11 +7,10 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.util.IConfigManager;
 import appeng.me.GridAccessException;
 
+import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.integration.appeng.grid.GridUtil;
-import thaumicenergistics.integration.appeng.util.ThEConfigManager;
 import thaumicenergistics.item.ItemPartBase;
 
 /**
@@ -19,10 +18,15 @@ import thaumicenergistics.item.ItemPartBase;
  */
 public abstract class PartSharedTerminal extends PartBase implements ITerminalHost {
 
-    private IConfigManager cm = new ThEConfigManager();
+    protected final ModGUIs gui;    // the GUI that corresponds to this terminal, mainly used to know where to return to, from a different GUI
 
-    public PartSharedTerminal(ItemPartBase item) {
+    public PartSharedTerminal(ItemPartBase item, ModGUIs gui) {
         super(item);
+        this.gui = gui;
+    }
+
+    public ModGUIs getGui(){
+        return this.gui;
     }
 
     @Override
@@ -59,8 +63,7 @@ public abstract class PartSharedTerminal extends PartBase implements ITerminalHo
     }
 
     @Override
-    public IConfigManager getConfigManager() {
-        return this.cm;
+    public int getLightLevel() {
+        return this.blockLight(this.isPowered() ? 9 : 0);
     }
-
 }

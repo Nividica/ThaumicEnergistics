@@ -1,7 +1,6 @@
 package thaumicenergistics.integration.appeng.grid;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.EnumSet;
 
 import net.minecraft.block.state.IBlockState;
@@ -104,7 +103,7 @@ public class ThEGridBlock implements IGridBlock {
         this.host.gridChanged();
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public ItemStack getMachineRepresentation() {
         if (this.repTE != null) {

@@ -13,12 +13,10 @@ import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.core.localization.GuiText;
 
-import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.init.ModGUIs;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketCraftRequest;
 import thaumicenergistics.network.packets.PacketOpenGUI;
-import thaumicenergistics.part.PartArcaneTerminal;
+import thaumicenergistics.part.PartSharedTerminal;
 
 /**
  * @author BrockWS
@@ -26,10 +24,10 @@ import thaumicenergistics.part.PartArcaneTerminal;
 public class GuiCraftAmountBridge extends GuiCraftAmount {
 
     private EntityPlayer player;
-    private PartArcaneTerminal part;
+    private PartSharedTerminal part;
     private GuiNumberBox craftAmount;
 
-    public GuiCraftAmountBridge(EntityPlayer player, PartArcaneTerminal part) {
+    public GuiCraftAmountBridge(EntityPlayer player, PartSharedTerminal part) {
         super(player.inventory, part);
         this.player = player;
         this.part = part;
@@ -41,7 +39,7 @@ public class GuiCraftAmountBridge extends GuiCraftAmount {
         this.craftAmount = ReflectionHelper.getPrivateValue(GuiCraftAmount.class, this, "amountToCraft");
         if (this.craftAmount == null)
             throw new RuntimeException("Failed to get private value amountToCraft");
-        ItemStack icon = ThEApi.instance().items().arcaneTerminal().maybeStack(1).orElse(ItemStack.EMPTY);
+        ItemStack icon = part.getRepr();
         if (!icon.isEmpty())
             this.buttonList.add(new GuiTabButton(this.guiLeft + 154, this.guiTop, icon, icon.getDisplayName(), this.itemRender));
     }
@@ -53,9 +51,9 @@ public class GuiCraftAmountBridge extends GuiCraftAmount {
             return;
         }
 
-        String name = ThEApi.instance().lang().itemArcaneTerminal().getLocalizedKey();
+        String name = part.getRepr().getDisplayName();
         if (btn instanceof GuiTabButton && ((GuiTabButton) btn).getMessage().equals(name)) {
-            PacketHandler.sendToServer(new PacketOpenGUI(ModGUIs.ARCANE_TERMINAL, this.part.getLocation().getPos(), this.part.side));
+            PacketHandler.sendToServer(new PacketOpenGUI(this.part.getGui(), this.part.getLocation().getPos(), this.part.side));
             return;
         }
 

@@ -7,6 +7,7 @@ import java.util.regex.PatternSyntaxException;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -17,11 +18,14 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 
+import invtweaks.api.InvTweaksAPI;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.config.PrefixSetting;
+import thaumicenergistics.integration.invtweaks.ThEInvTweaks;
+import thaumicenergistics.integration.jei.ThEJEI;
 import thaumicenergistics.util.AEUtil;
 import thaumicenergistics.util.TCUtil;
 
@@ -29,6 +33,7 @@ import thaumicenergistics.util.TCUtil;
  * Based on ItemRepo and FluidRepo
  *
  * @author BrockWS
+ * @author Alex811
  */
 public class MERepo<T extends IAEStack<T>> {
 
@@ -41,6 +46,7 @@ public class MERepo<T extends IAEStack<T>> {
     private ViewItems viewMode;
     private SortDir sortDir;
     private SortOrder sortOrder;
+    private SearchBoxMode searchBoxMode;
     private GuiScrollBar scrollBar;
     private int rowSize = 9;
 
@@ -49,6 +55,7 @@ public class MERepo<T extends IAEStack<T>> {
         this.viewMode = ViewItems.ALL;
         this.sortDir = SortDir.ASCENDING;
         this.sortOrder = SortOrder.NAME;
+        this.searchBoxMode = ThEApi.instance().config().searchBoxMode();
     }
 
     public void updateView() {
@@ -62,6 +69,9 @@ public class MERepo<T extends IAEStack<T>> {
 
         PrefixSetting modSearchSetting = ThEApi.instance().config().modSearchSetting();
         PrefixSetting aspectSearchSetting = ThEApi.instance().config().aspectSearchSetting();
+
+        if(Stream.of(SearchBoxMode.JEI_AUTOSEARCH, SearchBoxMode.JEI_MANUAL_SEARCH, SearchBoxMode.JEI_AUTOSEARCH_KEEP, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP).anyMatch(m -> m == this.searchBoxMode))
+            ThEJEI.setSearchText(search);
 
         // DISABLED = Don't search and ignore what it starts with
         // REQUIRE_PREFIX = If search starts with prefix, drop prefix and search ONLY by that search
@@ -98,10 +108,10 @@ public class MERepo<T extends IAEStack<T>> {
 
         Pattern pattern;
         try {
-            pattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
+            pattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
         } catch (PatternSyntaxException ignored) {
             try {
-                pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
+                pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
             } catch (PatternSyntaxException ignored2) {
                 return;
             }
@@ -148,10 +158,12 @@ public class MERepo<T extends IAEStack<T>> {
 
         if (sortOrder == SortOrder.MOD)
             this.sortByMod();
-        if (sortOrder == SortOrder.NAME)
+        else if (sortOrder == SortOrder.NAME)
             this.sortByName();
-        if (sortOrder == SortOrder.AMOUNT)
+        else if (sortOrder == SortOrder.AMOUNT)
             this.sortByCount();
+        else if (sortOrder == SortOrder.INVTWEAKS)
+            this.sortByInvTweaks();
 
         // TODO: Check if this is even needed anymore
         if (this.getScrollBar() != null) {
@@ -238,6 +250,14 @@ public class MERepo<T extends IAEStack<T>> {
         this.sortOrder = sortOrder;
     }
 
+    public SearchBoxMode getSearchBoxMode() {
+        return searchBoxMode;
+    }
+
+    public void setSearchBoxMode(SearchBoxMode searchBoxMode) {
+        this.searchBoxMode = searchBoxMode;
+    }
+
     private boolean searchName(T stack, Pattern p) {
         return p.matcher(Platform.getItemDisplayName(stack)).find();
     }
@@ -288,5 +308,13 @@ public class MERepo<T extends IAEStack<T>> {
 
     private void sortByCount() {
         this.view.sort((o1, o2) -> this.checkSortDir(Long.compare(AEUtil.getStackSize(o2), AEUtil.getStackSize(o1))));
+    }
+
+    private void sortByInvTweaks(){
+        InvTweaksAPI api = ThEInvTweaks.getApi();
+        if(api == null)
+            sortByName();
+        else
+            this.view.sort((o1, o2) -> this.checkSortDir(api.compareItems(o1.asItemStackRepresentation(), o2.asItemStackRepresentation())));
     }
 }

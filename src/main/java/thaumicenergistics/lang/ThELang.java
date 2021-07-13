@@ -10,6 +10,7 @@ public class ThELang implements IThELang {
 
     private IThELangKey creativeTab;
     private IThELangKey tileInfusionProvider;
+    private IThELangKey tileArcaneAssembler;
     private IThELangKey itemDiffusionCore;
     private IThELangKey itemCoalescenceCore;
     private IThELangKey itemEssentia1kComponent;
@@ -26,21 +27,42 @@ public class ThELang implements IThELang {
     private IThELangKey itemEssentiaTerminal;
     private IThELangKey itemArcaneTerminal;
     private IThELangKey itemArcaneChargingUpgrade;
+    private IThELangKey itemKnowledgeCore;
+    private IThELangKey itemBlankKnowledgeCore;
     private IThELangKey tooltipWIP;
+    private IThELangKey deviceOnline;
+    private IThELangKey deviceOffline;
+    private IThELangKey deviceMissingChannel;
+    private IThELangKey arcaneAssemblerIdle;
+    private IThELangKey arcaneAssemblerPrep;
+    private IThELangKey arcaneAssemblerBusy;
+    private IThELangKey arcaneAssemblerProgress;
+    private IThELangKey arcaneAssemblerNoAspect;
+    private IThELangKey arcaneAssemblerNoVis;
     private IThELangKey guiEssentiaImportBus;
     private IThELangKey guiEssentiaExportBus;
     private IThELangKey guiEssentiaStorageBus;
     private IThELangKey guiEssentiaTerminal;
     private IThELangKey guiArcaneTerminal;
+    private IThELangKey guiArcaneInscriber;
     private IThELangKey guiVisRequired;
+    private IThELangKey guiVisRequiredOutOf;
     private IThELangKey guiVisAvailable;
     private IThELangKey guiVisDiscount;
+    private IThELangKey guiInsertKnowledgeCore;
+    private IThELangKey guiKnowledgeCoreBlank;
+    private IThELangKey guiRecipeAlreadyStored;
+    private IThELangKey guiRecipeNotArcane;
+    private IThELangKey guiNoRecipe;
+    private IThELangKey guiOutOfAspect;
+    private IThELangKey guiOutOfVis;
     private IThELangKey researchCategory;
 
     public ThELang() {
         this.creativeTab = new ThELangKey("itemGroup.ThaumicEnergistics");
 
         this.tileInfusionProvider = new ThELangKey("tile.thaumicenergistics.infusion_provider.name");
+        this.tileArcaneAssembler = new ThELangKey("tile.thaumicenergistics.arcane_assembler.name");
 
         this.itemDiffusionCore = new ThELangKey("item.thaumicenergistics.diffusion_core.name");
         this.itemCoalescenceCore = new ThELangKey("item.thaumicenergistics.coalescence_core.name");
@@ -62,18 +84,40 @@ public class ThELang implements IThELang {
         this.itemArcaneTerminal = new ThELangKey("item.thaumicenergistics.arcane_terminal.name");
 
         this.itemArcaneChargingUpgrade = new ThELangKey("item.thaumicenergistics.upgrade_arcane.name");
+        this.itemKnowledgeCore = new ThELangKey("item.thaumicenergistics.knowledge_core.name");
+        this.itemBlankKnowledgeCore = new ThELangKey("item.thaumicenergistics.blank_knowledge_core.name");
 
         this.tooltipWIP = new ThELangKey("tooltip.thaumicenergistics.wip");
+        this.deviceOnline = new ThELangKey("tooltip.thaumicenergistics.device_online");
+        this.deviceOffline = new ThELangKey("tooltip.thaumicenergistics.device_offline");
+        this.deviceMissingChannel = new ThELangKey("tooltip.thaumicenergistics.device_missing_channel");
+        this.arcaneAssemblerIdle = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.idle");
+        this.arcaneAssemblerPrep = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.prep");
+        this.arcaneAssemblerBusy = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.busy");
+        this.arcaneAssemblerProgress = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.progress");
+        this.arcaneAssemblerNoAspect = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.no_aspect");
+        this.arcaneAssemblerNoVis = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.no_vis");
 
         this.guiEssentiaImportBus = new ThELangKey("gui.thaumicenergistics.essentia_import_bus");
         this.guiEssentiaExportBus = new ThELangKey("gui.thaumicenergistics.essentia_export_bus");
         this.guiEssentiaStorageBus = new ThELangKey("gui.thaumicenergistics.essentia_storage_bus");
         this.guiEssentiaTerminal = new ThELangKey("gui.thaumicenergistics.essentia_terminal");
         this.guiArcaneTerminal = new ThELangKey("gui.thaumicenergistics.arcane_terminal");
+        this.guiArcaneInscriber = new ThELangKey("gui.thaumicenergistics.arcane_inscriber");
 
         this.guiVisRequired = new ThELangKey("gui.thaumicenergistics.vis_required");
+        this.guiVisRequiredOutOf = new ThELangKey("gui.thaumicenergistics.vis_required_out_of");
         this.guiVisAvailable = new ThELangKey("gui.thaumicenergistics.vis_available");
         this.guiVisDiscount = new ThELangKey("gui.thaumicenergistics.vis_discount");
+
+        this.guiInsertKnowledgeCore = new ThELangKey("gui.thaumicenergistics.insert_knowledge_core");
+        this.guiKnowledgeCoreBlank = new ThELangKey("gui.thaumicenergistics.knowledge_core_is_blank");
+        this.guiRecipeAlreadyStored = new ThELangKey("gui.thaumicenergistics.recipe_already_stored");
+        this.guiRecipeNotArcane = new ThELangKey("gui.thaumicenergistics.recipe_not_arcane");
+        this.guiNoRecipe = new ThELangKey("gui.thaumicenergistics.no_recipe");
+
+        this.guiOutOfAspect = new ThELangKey("gui.thaumicenergistics.out_of_aspect");
+        this.guiOutOfVis = new ThELangKey("gui.thaumicenergistics.out_of_vis");
 
         this.researchCategory = new ThELangKey("tc.research_category.THAUMICENERGISTICS");
     }
@@ -86,6 +130,11 @@ public class ThELang implements IThELang {
     @Override
     public IThELangKey tileInfusionProvider() {
         return this.tileInfusionProvider;
+    }
+
+    @Override
+    public IThELangKey tileArcaneAssembler() {
+        return this.tileArcaneAssembler;
     }
 
     @Override
@@ -169,8 +218,63 @@ public class ThELang implements IThELang {
     }
 
     @Override
+    public IThELangKey itemKnowledgeCore() {
+        return this.itemKnowledgeCore;
+    }
+
+    @Override
+    public IThELangKey itemBlankKnowledgeCore() {
+        return this.itemBlankKnowledgeCore;
+    }
+
+    @Override
     public IThELangKey tooltipWIP() {
         return this.tooltipWIP;
+    }
+
+    @Override
+    public IThELangKey deviceOnline() {
+        return this.deviceOnline;
+    }
+
+    @Override
+    public IThELangKey deviceOffline() {
+        return this.deviceOffline;
+    }
+
+    @Override
+    public IThELangKey deviceMissingChannel() {
+        return this.deviceMissingChannel;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerIdle() {
+        return this.arcaneAssemblerIdle;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerPrep() {
+        return this.arcaneAssemblerPrep;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerBusy() {
+        return this.arcaneAssemblerBusy;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerProgress() {
+        return this.arcaneAssemblerProgress;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerNoAspect() {
+        return this.arcaneAssemblerNoAspect;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerNoVis() {
+        return this.arcaneAssemblerNoVis;
     }
 
     @Override
@@ -199,8 +303,18 @@ public class ThELang implements IThELang {
     }
 
     @Override
+    public IThELangKey guiArcaneInscriber() {
+        return this.guiArcaneInscriber;
+    }
+
+    @Override
     public IThELangKey guiVisRequired() {
         return this.guiVisRequired;
+    }
+
+    @Override
+    public IThELangKey guiVisRequiredOutOf() {
+        return this.guiVisRequiredOutOf;
     }
 
     @Override
@@ -211,6 +325,41 @@ public class ThELang implements IThELang {
     @Override
     public IThELangKey guiVisDiscount() {
         return this.guiVisDiscount;
+    }
+
+    @Override
+    public IThELangKey guiInsertKnowledgeCore() {
+        return this.guiInsertKnowledgeCore;
+    }
+
+    @Override
+    public IThELangKey guiKnowledgeCoreBlank() {
+        return this.guiKnowledgeCoreBlank;
+    }
+
+    @Override
+    public IThELangKey guiRecipeAlreadyStored() {
+        return this.guiRecipeAlreadyStored;
+    }
+
+    @Override
+    public IThELangKey guiRecipeNotArcane() {
+        return this.guiRecipeNotArcane;
+    }
+
+    @Override
+    public IThELangKey guiNoRecipe() {
+        return this.guiNoRecipe;
+    }
+
+    @Override
+    public IThELangKey guiOutOfAspect() {
+        return this.guiOutOfAspect;
+    }
+
+    @Override
+    public IThELangKey guiOutOfVis() {
+        return this.guiOutOfVis;
     }
 
     @Override

@@ -18,7 +18,6 @@ import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 
 import thaumcraft.api.aspects.AspectList;
@@ -27,47 +26,48 @@ import thaumcraft.api.aspects.IEssentiaContainerItem;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.storage.IAEEssentiaStack;
 import thaumicenergistics.api.storage.IEssentiaStorageChannel;
+import thaumicenergistics.config.AESettings;
 import thaumicenergistics.container.ActionType;
-import thaumicenergistics.container.ContainerBase;
-import thaumicenergistics.integration.appeng.util.ThEConfigManager;
+import thaumicenergistics.container.ContainerBaseTerminal;
 import thaumicenergistics.network.PacketHandler;
 import thaumicenergistics.network.packets.PacketInvHeldUpdate;
 import thaumicenergistics.network.packets.PacketMEEssentiaUpdate;
-import thaumicenergistics.network.packets.PacketSettingChange;
 import thaumicenergistics.network.packets.PacketUIAction;
+import thaumicenergistics.part.PartBase;
 import thaumicenergistics.part.PartEssentiaTerminal;
 import thaumicenergistics.util.AEUtil;
 import thaumicenergistics.util.ForgeUtil;
-import thaumicenergistics.util.TCUtil;
 
 /**
  * @author BrockWS
  */
-public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonitorHandlerReceiver<IAEEssentiaStack>, IConfigurableObject {
+public class ContainerEssentiaTerminal extends ContainerBaseTerminal implements IMEMonitorHandlerReceiver<IAEEssentiaStack>, IConfigurableObject {
 
-    private PartEssentiaTerminal part;
+    private final PartEssentiaTerminal part;
     private IMEMonitor<IAEEssentiaStack> monitor;
-    private IConfigManager serverConfigManager;
-    private IConfigManager clientConfigManager;
 
     public ContainerEssentiaTerminal(EntityPlayer player, PartEssentiaTerminal part) {
-        super(player);
+        super(player, part);
         this.part = part;
-
-        // We use the client config manager on server as well to make sure the client is in sync
-        this.clientConfigManager = new ThEConfigManager();
-        this.clientConfigManager.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        this.clientConfigManager.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
         if (ForgeUtil.isServer()) {
             this.monitor = this.part.getInventory(AEApi.instance().storage().getStorageChannel(IEssentiaStorageChannel.class));
             if (this.monitor != null) {
                 this.monitor.addListener(this, null);
             }
-            this.serverConfigManager = part.getConfigManager();
         }
 
         this.bindPlayerInventory(new PlayerMainInvWrapper(player.inventory), 0, 30);
+    }
+
+    @Override
+    protected AESettings.SUBJECT getAESettingSubject() {
+        return AESettings.SUBJECT.ESSENTIA_TERMINAL;
+    }
+
+    @Override
+    public PartBase getPart() {
+        return this.part;
     }
 
     @Override
@@ -145,30 +145,6 @@ public class ContainerEssentiaTerminal extends ContainerBase implements IMEMonit
             list.aspects.forEach((aspect, amount) -> this.monitor.injectItems(AEUtil.getAEStackFromAspect(aspect, amount), Actionable.MODULATE, this.part.source));
         }
         super.onAction(player, packet);
-    }
-
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-        if (ForgeUtil.isServer()) {
-            for (Settings setting : this.serverConfigManager.getSettings()) {
-                Enum server = this.serverConfigManager.getSetting(setting);
-                Enum client = this.clientConfigManager.getSetting(setting);
-                if (client != server) {
-                    for (IContainerListener player : this.listeners)
-                        if (player instanceof EntityPlayerMP) {
-                            // Only update the local cache when we actually were able to send it
-                            this.clientConfigManager.putSetting(setting, server);
-                            PacketHandler.sendToPlayer((EntityPlayerMP) player, new PacketSettingChange(setting, server));
-                        }
-                }
-            }
-        }
-    }
-
-    @Override
-    public IConfigManager getConfigManager() {
-        return ForgeUtil.isClient() ? this.clientConfigManager : this.serverConfigManager;
     }
 
     @Override
