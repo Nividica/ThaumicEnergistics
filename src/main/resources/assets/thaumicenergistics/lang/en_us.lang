@@ -36,6 +36,12 @@ tooltip.thaumicenergistics.wip=WORK IN PROGRESS, DO NOT USE
 tooltip.thaumicenergistics.device_online=Device Online
 tooltip.thaumicenergistics.device_offline=Device Offline
 tooltip.thaumicenergistics.device_missing_channel=Device Missing Channel
+tooltip.thaumicenergistics.arcane_assembler.idle=Status: idle
+tooltip.thaumicenergistics.arcane_assembler.prep=Status: prep
+tooltip.thaumicenergistics.arcane_assembler.busy=Status: busy
+tooltip.thaumicenergistics.arcane_assembler.progress=Progress:
+tooltip.thaumicenergistics.arcane_assembler.no_aspect=Error: out of aspect
+tooltip.thaumicenergistics.arcane_assembler.no_vis=Error: out of Vis
 
 # GUI
 gui.thaumicenergistics.essentia_import_bus=ME Essentia Import Bus

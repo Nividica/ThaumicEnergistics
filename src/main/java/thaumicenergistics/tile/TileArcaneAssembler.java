@@ -33,6 +33,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import thaumcraft.api.aura.AuraHelper;
+import thaumicenergistics.api.IThELangKey;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.gui.GuiHandler;
 import thaumicenergistics.client.gui.IThEGuiTile;
@@ -55,6 +56,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
@@ -327,21 +329,21 @@ public class TileArcaneAssembler extends TileNetwork implements IThESubscribable
         return this.isCrafting;
     }
 
-    public void withInfoText(Consumer<String> consumer){
+    public void withInfoText(Consumer<String> consumer, Function<IThELangKey, String> localizationMapper){
         if(this.isActive()){
             if(this.hasJob()){
                 if(this.isCrafting()){
-                    consumer.accept("Status: busy");
-                    consumer.accept("Progress: " + this.getProgress() + "%");
+                    consumer.accept(localizationMapper.apply(ThEApi.instance().lang().arcaneAssemblerBusy()));
+                    consumer.accept(localizationMapper.apply(ThEApi.instance().lang().arcaneAssemblerProgress()) + " " + this.getProgress() + "%");
                 }else{
-                    consumer.accept("Status: prep");
+                    consumer.accept(localizationMapper.apply(ThEApi.instance().lang().arcaneAssemblerPrep()));
                     if(this.isMissingAspect())
-                        consumer.accept("Error: out of aspect");
+                        consumer.accept(localizationMapper.apply(ThEApi.instance().lang().arcaneAssemblerNoAspect()));
                     if(!this.getHasEnoughVis())
-                        consumer.accept("Error: out of Vis");
+                        consumer.accept(localizationMapper.apply(ThEApi.instance().lang().arcaneAssemblerNoVis()));
                 }
             }else
-                consumer.accept("Status: idle");
+                consumer.accept(localizationMapper.apply(ThEApi.instance().lang().arcaneAssemblerIdle()));
         }
     }
 

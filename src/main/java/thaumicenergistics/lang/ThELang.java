@@ -33,6 +33,12 @@ public class ThELang implements IThELang {
     private IThELangKey deviceOnline;
     private IThELangKey deviceOffline;
     private IThELangKey deviceMissingChannel;
+    private IThELangKey arcaneAssemblerIdle;
+    private IThELangKey arcaneAssemblerPrep;
+    private IThELangKey arcaneAssemblerBusy;
+    private IThELangKey arcaneAssemblerProgress;
+    private IThELangKey arcaneAssemblerNoAspect;
+    private IThELangKey arcaneAssemblerNoVis;
     private IThELangKey guiEssentiaImportBus;
     private IThELangKey guiEssentiaExportBus;
     private IThELangKey guiEssentiaStorageBus;
@@ -85,6 +91,12 @@ public class ThELang implements IThELang {
         this.deviceOnline = new ThELangKey("tooltip.thaumicenergistics.device_online");
         this.deviceOffline = new ThELangKey("tooltip.thaumicenergistics.device_offline");
         this.deviceMissingChannel = new ThELangKey("tooltip.thaumicenergistics.device_missing_channel");
+        this.arcaneAssemblerIdle = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.idle");
+        this.arcaneAssemblerPrep = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.prep");
+        this.arcaneAssemblerBusy = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.busy");
+        this.arcaneAssemblerProgress = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.progress");
+        this.arcaneAssemblerNoAspect = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.no_aspect");
+        this.arcaneAssemblerNoVis = new ThELangKey("tooltip.thaumicenergistics.arcane_assembler.no_vis");
 
         this.guiEssentiaImportBus = new ThELangKey("gui.thaumicenergistics.essentia_import_bus");
         this.guiEssentiaExportBus = new ThELangKey("gui.thaumicenergistics.essentia_export_bus");
@@ -233,6 +245,36 @@ public class ThELang implements IThELang {
     @Override
     public IThELangKey deviceMissingChannel() {
         return this.deviceMissingChannel;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerIdle() {
+        return this.arcaneAssemblerIdle;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerPrep() {
+        return this.arcaneAssemblerPrep;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerBusy() {
+        return this.arcaneAssemblerBusy;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerProgress() {
+        return this.arcaneAssemblerProgress;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerNoAspect() {
+        return this.arcaneAssemblerNoAspect;
+    }
+
+    @Override
+    public IThELangKey arcaneAssemblerNoVis() {
+        return this.arcaneAssemblerNoVis;
     }
 
     @Override

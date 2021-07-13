@@ -58,6 +58,18 @@ public interface IThELang {
 
     IThELangKey deviceMissingChannel();
 
+    IThELangKey arcaneAssemblerIdle();
+
+    IThELangKey arcaneAssemblerPrep();
+
+    IThELangKey arcaneAssemblerBusy();
+
+    IThELangKey arcaneAssemblerProgress();
+
+    IThELangKey arcaneAssemblerNoAspect();
+
+    IThELangKey arcaneAssemblerNoVis();
+
     IThELangKey guiEssentiaImportBus();
 
     IThELangKey guiEssentiaExportBus();
