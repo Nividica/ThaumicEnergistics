@@ -1,12 +1,14 @@
 package thaumicenergistics.common.inventory;
 
-import java.util.ArrayList;
+import appeng.api.storage.data.IAEItemStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 import thaumicenergistics.common.integration.tc.ArcaneCraftingPattern;
 import thaumicenergistics.common.items.ItemKnowledgeCore;
+
+import java.util.ArrayList;
 
 /**
  * Handles an {@link ItemKnowledgeCore}
@@ -167,6 +169,8 @@ public class HandlerKnowledgeCore
 
 		if( existingPattern == null )
 		{
+			// remove the existing pattern, e.g. if the result changed
+			removePatternSameInputs(pattern);
 			// Add the pattern
 			this.patterns.add( pattern );
 
@@ -174,6 +178,27 @@ public class HandlerKnowledgeCore
 			this.saveKCoreData();
 		}
 
+	}
+	private void removePatternSameInputs(final ArcaneCraftingPattern pattern) {
+		IAEItemStack[] newInputs = pattern.getInputs();
+		// Loop over all stored patterns
+		for (ArcaneCraftingPattern p : this.patterns) {
+			IAEItemStack[] oldInputs = p.getInputs();
+			if (newInputs.length != oldInputs.length)
+				continue;
+			boolean match = true;
+			for (int i = 0; i < newInputs.length; ++i) {
+				if (!ItemStack.areItemStacksEqual(oldInputs[i].getItemStack(), newInputs[i].getItemStack())) {
+					match = false;
+					break;
+				}
+			}
+			if (match) {
+				// can't be more than one duplicate
+				this.patterns.remove(p);
+				return;
+			}
+		}
 	}
 
 	/**
