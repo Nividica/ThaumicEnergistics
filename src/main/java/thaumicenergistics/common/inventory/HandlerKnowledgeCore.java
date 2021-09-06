@@ -188,6 +188,8 @@ public class HandlerKnowledgeCore
 				continue;
 			boolean match = true;
 			for (int i = 0; i < newInputs.length; ++i) {
+		                if (null == oldInputs[i] || null == newInputs[i])
+	                                continue;
 				if (!ItemStack.areItemStacksEqual(oldInputs[i].getItemStack(), newInputs[i].getItemStack())) {
 					match = false;
 					break;
