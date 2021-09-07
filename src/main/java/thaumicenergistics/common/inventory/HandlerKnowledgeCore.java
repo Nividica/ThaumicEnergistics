@@ -188,12 +188,16 @@ public class HandlerKnowledgeCore
 				continue;
 			boolean match = true;
 			for (int i = 0; i < newInputs.length; ++i) {
-		                if (null == oldInputs[i] || null == newInputs[i])
-	                                continue;
-				if (!ItemStack.areItemStacksEqual(oldInputs[i].getItemStack(), newInputs[i].getItemStack())) {
-					match = false;
-					break;
-				}
+			    if (oldInputs[i] == null && newInputs[i] == null)
+			        continue;
+			    if (oldInputs[i] == null || newInputs[i] == null) {
+			        match = false;
+			        break;
+			    }
+			    if (!ItemStack.areItemStacksEqual(oldInputs[i].getItemStack(), newInputs[i].getItemStack())) {
+			        match = false;
+				break;
+			    }
 			}
 			if (match) {
 				// can't be more than one duplicate
