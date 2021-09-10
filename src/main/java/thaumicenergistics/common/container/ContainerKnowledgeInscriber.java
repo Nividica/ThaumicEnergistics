@@ -349,6 +349,8 @@ public class ContainerKnowledgeInscriber
 			int ingIndex = 0;
 			for( ; ingIndex < ings.size(); ++ingIndex )
 			{
+				if (inputs[ingIndex] != null) // if there already was such ingredient
+					continue;
 				Object ing = ings.get( ingIndex );
 
 				if( ArcaneCraftingPattern.canSubstitueFor( ing, slotStack ) )
@@ -558,8 +560,6 @@ public class ContainerKnowledgeInscriber
 	/**
 	 * A client has requested the save state.
 	 *
-	 * @param player
-	 * @param justSaved
 	 */
 	public void onClientRequestSaveState()
 	{
