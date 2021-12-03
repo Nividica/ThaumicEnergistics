@@ -48,7 +48,7 @@ repositories {
     }
     maven {
         name "ic2"
-        url "http://maven.ic2.player.to/"
+        url "https://maven.ic2.player.to/"
     }
     maven {
         name "gt"
@@ -67,6 +67,21 @@ dependencies {
     implementation 'com.github.GTNewHorizons:waila:master-SNAPSHOT'
     implementation "net.industrial-craft:industrialcraft-2:2.2.828-experimental:api"
     implementation "thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev"
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+task devJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+}
+
+// Tell the artifact system about our extra jars
+artifacts {
+    archives sourceJar, devJar
 }
 
 processResources
