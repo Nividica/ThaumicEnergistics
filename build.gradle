@@ -69,6 +69,21 @@ dependencies {
     implementation "thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev"
 }
 
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+task devJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+}
+
+// Tell the artifact system about our extra jars
+artifacts {
+    archives sourceJar, devJar
+}
+
 processResources
 {
     // this will ensure that this task is redone when the versions change.
