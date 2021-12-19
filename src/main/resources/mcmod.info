@@ -1,10 +1,10 @@
 [
     {
-        "modid": "thaumicenergistics",
-        "name": "Thaumic Energistics",
+        "modid": "${modId}",
+        "name": "${modName}",
         "description": "The digital age could use some magic",
-        "version": "${version}",
-        "mcversion": "${mcversion}",
+        "version": "${modVersion}",
+        "mcversion": "${minecraftVersion}",
         "url": "http://minecraft.curseforge.com/projects/thaumic-energistics",
         "updateUrl": "",
         "authorList":[

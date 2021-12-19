@@ -1,0 +1,27 @@
+// Add your dependencies here
+
+dependencies {
+    compile("com.github.GTNewHorizons:NotEnoughItems:master-SNAPSHOT:dev")
+    compile("com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:master-SNAPSHOT:dev")
+
+    compile("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
+
+    compileOnly("com.github.GTNewHorizons:waila:master-SNAPSHOT:dev") {
+        transitive = false
+    }
+    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:master-SNAPSHOT:dev") {
+        transitive = false
+    }
+
+    compileOnly("curse.maven:computercraft-67504:2269339") {
+        transitive = false
+    }
+    compileOnly("curse.maven:cofh-lib-220333:2388748") {
+        transitive = false
+    }
+    compileOnly("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev") {
+        transitive = false
+    }
+
+    runtime("com.github.GTNewHorizons:Baubles:master-SNAPSHOT:dev")
+}
