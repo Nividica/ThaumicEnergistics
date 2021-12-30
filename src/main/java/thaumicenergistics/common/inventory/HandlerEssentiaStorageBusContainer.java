@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import com.google.common.collect.ImmutableList;
-import appeng.api.AEApi;
+
+import appeng.api.networking.IGrid;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
@@ -17,8 +17,10 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.common.tiles.TileEssentiaReservoir;
 import thaumcraft.common.tiles.TileJarFillableVoid;
+import thaumicenergistics.api.grid.IEssentiaGrid;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.common.fluids.GaseousEssentia;
+import thaumicenergistics.common.grid.GridEssentiaCache;
 import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
@@ -40,7 +42,7 @@ class HandlerEssentiaStorageBusContainer
 	/**
 	 * Cached contents of the container.
 	 */
-	Hashtable<Aspect, Long> cachedContainerAspects = new Hashtable<Aspect, Long>();
+	Hashtable<Aspect, Long> cachedContainerAspects = new Hashtable<>();
 
 	public HandlerEssentiaStorageBusContainer( final PartEssentiaStorageBus part )
 	{
@@ -122,13 +124,13 @@ class HandlerEssentiaStorageBusContainer
 		List<IAspectStack> containerStacks = EssentiaTileContainerHelper.INSTANCE.getAspectStacksFromContainer( this.aspectContainer );
 
 		// Ensure there is essentia in the container
-		if( ( containerStacks == null ) || containerStacks.isEmpty() )
+		if( containerStacks.isEmpty() )
 		{
 			// Empty
 			return null;
 		}
 
-		List<IAspectStack> essentiaList = new ArrayList<IAspectStack>();
+		List<IAspectStack> essentiaList = new ArrayList<>();
 
 		// Skipping the filter check?
 		boolean skipFilterCheck = this.allowAny();
@@ -241,7 +243,7 @@ class HandlerEssentiaStorageBusContainer
 		// Get the fluid stack from the request
 		FluidStack toDrain = request.getFluidStack();
 
-		// Can this gas be transfered?
+		// Can this gas be transferred?
 		if( !this.canTransferGas( (GaseousEssentia)toDrain.getFluid() ) )
 		{
 			// Can not transfer this gas.
@@ -401,9 +403,11 @@ class HandlerEssentiaStorageBusContainer
 		else if( canVoid )
 		{
 			// Update the grid so that it doesn't thing we have stored the voided amount.
-			this.postAlterationToHostGrid( ImmutableList.of( AEApi.instance().storage()
-							.createFluidStack( new FluidStack( toFill.getFluid(), -remaining_FU ) ) ) );
-
+			// (actually this doesn't work, since we are inside insertion call stack, so monitor notifications are skipped)
+			// I left the code here in case someone will want to optimize this again
+			// this.postAlterationToHostGrid( ImmutableList.of( AEApi.instance().storage()	.createFluidStack( new FluidStack( toFill.getFluid(), -remaining_FU ) ) ) );
+			// instead we just invalidate essentia cache every time
+			invalidateGlobalEssentiaCache();
 			// Report that we accepted it all.
 			return null;
 		}
@@ -413,6 +417,19 @@ class HandlerEssentiaStorageBusContainer
 		remainingFluid.setStackSize( remaining_FU );
 
 		return remainingFluid;
+	}
+
+	private void invalidateGlobalEssentiaCache() {
+		IGridNode node = partStorageBus.getGridNode();
+		if( node != null )
+		{
+			IGrid grid = node.getGrid();
+			if( grid != null )
+			{
+				GridEssentiaCache globalCache = grid.getCache( IEssentiaGrid.class );
+				globalCache.onListUpdate();
+			}
+		}
 	}
 
 	/**
@@ -467,13 +484,13 @@ class HandlerEssentiaStorageBusContainer
 	public void tickingRequest( final IGridNode node, final int TicksSinceLastCall )
 	{
 		// Create the checklist
-		HashSet<Aspect> aspectsToCheck = new HashSet<Aspect>();
+		HashSet<Aspect> aspectsToCheck = new HashSet<>();
 
 		// Get the current contents of the container
 		List<IAspectStack> currentContainerContents = this.getContainerEssentia();
 
 		// Convert to dictionary
-		Hashtable<Aspect, Long> currentContainerAspects = new Hashtable<Aspect, Long>();
+		Hashtable<Aspect, Long> currentContainerAspects = new Hashtable<>();
 		if( currentContainerContents != null )
 		{
 			this.addListToDictionary( currentContainerContents, currentContainerAspects );
@@ -522,7 +539,7 @@ class HandlerEssentiaStorageBusContainer
 				if( alterations == null )
 				{
 					// Create the list
-					alterations = new ArrayList<IAEFluidStack>();
+					alterations = new ArrayList<>();
 				}
 
 				// Create the alteration
