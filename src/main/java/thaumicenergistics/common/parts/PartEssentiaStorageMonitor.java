@@ -91,7 +91,7 @@ public class PartEssentiaStorageMonitor
 				@Override
 				public String getUnlocalizedName()
 				{
-					return TrackingInformation.this.getAspectStack().getAspectName();
+					return getAspectStack() == null ? "Invalid aspect stack" : getAspectStack().getAspectName();
 				}
 
 				@Override
