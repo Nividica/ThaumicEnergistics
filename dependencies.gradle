@@ -24,6 +24,9 @@ dependencies {
     compileOnly("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev") {
         transitive = false
     }
+    compileOnly("curse.maven:thaumcraft-nei-plugin-225095:2241913") {
+        transitive = false
+    }
 
     runtime("com.github.GTNewHorizons:Baubles:1.0.1.14:dev")
 }
