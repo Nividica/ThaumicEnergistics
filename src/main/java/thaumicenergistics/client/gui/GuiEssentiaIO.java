@@ -2,6 +2,8 @@ package thaumicenergistics.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
@@ -284,6 +286,13 @@ public class GuiEssentiaIO
 		// Call super
 		super.mouseClicked( mouseX, mouseY, mouseButton );
 
+		ItemStack temp = null;
+		if( draggedStack != null )
+		{
+			temp = draggedStack.copy();
+			draggedStack = null;
+		}
+
 		// Loop over all widgets
 		for( WidgetAspectSlot aspectSlot : this.aspectSlotList )
 		{
@@ -291,7 +300,7 @@ public class GuiEssentiaIO
 			if( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the aspect of the currently held item
-				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() );
+				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem(temp == null ? this.player.inventory.getItemStack() : temp);
 
 				// Is there an aspect?
 				if( itemAspect != null )

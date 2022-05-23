@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import thaumicenergistics.api.gui.IWidgetHost;
 import thaumicenergistics.client.gui.ThEGuiHelper;
 import thaumicenergistics.client.gui.buttons.ThEGuiButtonBase;
@@ -39,6 +40,7 @@ public abstract class ThEBaseGui
 	 * Lines to draw when drawTooltip is called.
 	 */
 	protected final List<String> tooltip = new ArrayList<String>();
+	public ItemStack draggedStack;
 
 	public ThEBaseGui( final Container container )
 	{

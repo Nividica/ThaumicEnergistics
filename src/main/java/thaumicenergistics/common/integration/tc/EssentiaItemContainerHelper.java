@@ -1,5 +1,6 @@
 package thaumicenergistics.common.integration.tc;
 
+import com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -57,7 +58,12 @@ public final class EssentiaItemContainerHelper
 			/**
 			 * Wispy Essence.
 			 */
-			WispEssence;
+			WispEssence,
+
+			/**
+			 * thaumcraftneiplugin.items.ItemAspect
+			 */
+			ItemAspect;
 	}
 
 	/**
@@ -555,6 +561,9 @@ public final class EssentiaItemContainerHelper
 		case WispEssence:
 			return this.getAspectFromAnyContainerItem( itemStack );
 
+        case ItemAspect:
+            return this.getAspectFromItemAspect(itemStack);
+
 		case Invalid:
 			break;
 
@@ -608,7 +617,11 @@ public final class EssentiaItemContainerHelper
 				{
 					return AspectItemType.JarLabel;
 				}
-
+				//ItemAspect?
+				if( item instanceof ItemAspect )
+				{
+					return AspectItemType.ItemAspect;
+				}
 			}
 
 		}
@@ -929,4 +942,15 @@ public final class EssentiaItemContainerHelper
 		rLabel.setAspects( label, aspects );
 
 	}
+
+    /**
+     * Get the aspect of the ItemAspect.
+     *
+     * @param itemStack
+     * @return
+     */
+	public Aspect getAspectFromItemAspect(ItemStack itemStack){
+        return ItemAspect.getAspects(itemStack).getAspects()[0];
+    }
+
 }

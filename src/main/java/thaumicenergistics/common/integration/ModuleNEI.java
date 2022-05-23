@@ -9,6 +9,7 @@ import java.util.List;
 import appeng.util.Platform;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.API;
+import codechicken.nei.api.INEIGuiAdapter;
 import codechicken.nei.api.IOverlayHandler;
 import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.recipe.IRecipeHandler;
@@ -19,6 +20,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
+import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.network.NetworkHandler;
@@ -237,6 +239,20 @@ public class ModuleNEI
 
 	}
 
+	static class NEIGuiHandler extends INEIGuiAdapter
+	{
+		@Override
+		public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button)
+		{
+			if (gui instanceof ThEBaseGui && draggedStack !=null && draggedStack.getItem() !=null )
+			{
+				((ThEBaseGui)gui).draggedStack = draggedStack;
+			}
+
+			return super.handleDragNDrop(gui, mousex, mousey, draggedStack, button);
+		}
+	}
+
 	/**
 	 * Starting X offset for slots in NEI
 	 */
@@ -266,8 +282,9 @@ public class ModuleNEI
 		// Register the handlers
 		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, craftingOverlayHandler, "crafting" );
 		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler, "arcaneshapedrecipes" );
-		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler,
-			"arcaneshapelessrecipes" );
+		API.registerGuiOverlayHandler( thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, arcaneOverlayHandler, "arcaneshapelessrecipes" );
+
+		API.registerNEIGuiHandler(new NEIGuiHandler());
 
 		// Hide the crafting aspect item
 		API.hideItem( ItemEnum.CRAFTING_ASPECT.getStack() );

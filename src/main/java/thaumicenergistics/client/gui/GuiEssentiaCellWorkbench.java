@@ -1,6 +1,8 @@
 package thaumicenergistics.client.gui;
 
 import java.util.List;
+
+import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -204,12 +206,19 @@ public class GuiEssentiaCellWorkbench
 		// Call super
 		super.mouseClicked( mouseX, mouseY, mouseButton );
 
+		ItemStack temp = null;
+		if( draggedStack != null )
+		{
+			temp = draggedStack.copy();
+			draggedStack = null;
+		}
+
 		for( SimpleAspectWidget partitionWidget : this.partitionWidgets )
 		{
 			if( partitionWidget.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the aspect of the currently held item
-				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() );
+				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem(temp == null ? this.player.inventory.getItemStack() : temp);
 
 				// Get the aspect of the widget
 				Aspect widgetAspect = partitionWidget.getAspect();
