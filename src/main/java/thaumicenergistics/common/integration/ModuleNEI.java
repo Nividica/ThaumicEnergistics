@@ -239,14 +239,12 @@ public class ModuleNEI
 
 	}
 
-	static class NEIGuiHandler extends INEIGuiAdapter
-	{
+	static class NEIGuiHandler extends INEIGuiAdapter {
 		@Override
-		public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button)
-		{
-			if (gui instanceof ThEBaseGui && draggedStack !=null && draggedStack.getItem() !=null )
-			{
-				((ThEBaseGui)gui).draggedStack = draggedStack;
+		public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
+			if (gui instanceof ThEBaseGui && draggedStack != null && draggedStack.getItem() != null) {
+				((ThEBaseGui) gui).draggedStack = draggedStack.copy();
+				draggedStack.stackSize = 0;
 			}
 
 			return super.handleDragNDrop(gui, mousex, mousey, draggedStack, button);

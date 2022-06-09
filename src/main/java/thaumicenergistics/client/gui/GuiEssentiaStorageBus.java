@@ -234,19 +234,12 @@ public class GuiEssentiaStorageBus
 		// Call super
 		super.mouseClicked( mouseX, mouseY, mouseButton );
 
-		ItemStack temp = null;
-		if( draggedStack != null )
-		{
-			temp = draggedStack.copy();
-			draggedStack = null;
-		}
-
 		for( WidgetAspectSlot aspectSlot : this.aspectWidgetList )
 		{
 			if( aspectSlot.isMouseOverWidget( mouseX, mouseY ) )
 			{
 				// Get the aspect of the currently held item
-				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem(temp == null ? this.player.inventory.getItemStack() : temp);
+				Aspect itemAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem(this.draggedStack == null ? this.player.inventory.getItemStack() : this.draggedStack.copy());
 
 				// Is there an aspect?
 				if( itemAspect != null )
@@ -265,6 +258,7 @@ public class GuiEssentiaStorageBus
 				break;
 			}
 		}
+		this.draggedStack = null;
 	}
 
 	/**
