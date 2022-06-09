@@ -293,9 +293,9 @@ public class GuiEssentiaLevelEmitter
 		if( this.aspectFilterSlot.isMouseOverWidget( mouseX, mouseY ) )
 		{
 			// Pass to the widget
-			this.aspectFilterSlot
-							.mouseClicked( EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem( this.player.inventory.getItemStack() ) );
+			this.aspectFilterSlot.mouseClicked(EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem(this.draggedStack == null ? this.player.inventory.getItemStack() : this.draggedStack.copy()));
 		}
+		this.draggedStack = null;
 	}
 
 	/**
