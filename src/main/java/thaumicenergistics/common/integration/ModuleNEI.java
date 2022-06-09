@@ -243,7 +243,7 @@ public class ModuleNEI
 		@Override
 		public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
 			if (gui instanceof ThEBaseGui && draggedStack != null && draggedStack.getItem() != null) {
-				((ThEBaseGui) gui).draggedStack = draggedStack.copy();
+				((ThEBaseGui) gui).draggedStack = draggedStack;
 				draggedStack.stackSize = 0;
 			}
 
