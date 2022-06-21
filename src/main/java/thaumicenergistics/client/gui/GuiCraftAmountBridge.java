@@ -2,12 +2,12 @@ package thaumicenergistics.client.gui;
 
 import java.lang.reflect.Field;
 import appeng.client.gui.implementations.GuiCraftAmount;
-import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.core.localization.GuiText;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
@@ -46,7 +46,7 @@ public class GuiCraftAmountBridge
 	/**
 	 * The amount-to-craft text box.
 	 */
-	protected GuiNumberBox amountToCraft;
+	protected GuiTextField amountToCraft;
 
 	public GuiCraftAmountBridge( final EntityPlayer player, final ICraftingIssuerHost craftingHost )
 	{
@@ -124,7 +124,7 @@ public class GuiCraftAmountBridge
 		{
 			atcField = GuiCraftAmount.class.getDeclaredField( "amountToCraft" );
 			atcField.setAccessible( true );
-			this.amountToCraft = (GuiNumberBox)atcField.get( this );
+			this.amountToCraft = (GuiTextField)atcField.get( this );
 		}
 		catch( Exception e )
 		{
