@@ -118,7 +118,8 @@ public final class EssentiaTileContainerHelper {
 
 		// Are we really draining, or just simulating?
 		if (mode == Actionable.MODULATE) {
-			container.takeFromContainer(aspectToDrain, amountToDrain);
+			if (!container.takeFromContainer(aspectToDrain, amountToDrain))
+				return 0;
 		}
 
 		// Return how much was drained
