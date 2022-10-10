@@ -48,7 +48,8 @@ thaumicenergistics.item.focus.aewrench.disabled.name=Wand Focus: AE Wrench - Wre
 thaumicenergistics.item.golem.wifi.backpack.name=Wireless Golem Backpack
 
 #Tooltips
-thaumicenergistics.tooltip.itemstack.details=Hold §eshift§f for details.
+thaumicenergistics.tooltip.itemstack.details=Hold §eCTRL§f for details.
+thaumicenergistics.tooltip.essentia.cell.contains=Contains
 thaumicenergistics.tooltip.essentia.cell.bytes=%d of %d bytes used.
 thaumicenergistics.tooltip.essentia.cell.types=%d of %d essentia types stored.
 thaumicenergistics.tooltip.button.void=Allow Void?

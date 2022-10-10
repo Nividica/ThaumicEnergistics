@@ -60,6 +60,7 @@ public enum ThEStrings
 		Tooltip_ItemStackDetails ("tooltip.itemstack.details", false),
 		Tooltip_CellBytes ("tooltip.essentia.cell.bytes", false),
 		Tooltip_CellTypes ("tooltip.essentia.cell.types", false),
+		Tooltip_CellContains ("tooltip.essentia.cell.contains", false),
 		Tooltip_ArcaneAssemblerHasVis ("tooltip.arcane.assembler.hasVis", false),
 
 		// Button Tooltips

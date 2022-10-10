@@ -2,6 +2,9 @@ package thaumicenergistics.common.items;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.lwjgl.input.Keyboard;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
@@ -31,6 +34,7 @@ import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.common.inventory.HandlerItemEssentiaCellCreative;
 import thaumicenergistics.common.registries.ThEStrings;
+import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.storage.AspectStackComparator;
 import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
 
@@ -92,8 +96,8 @@ public class ItemEssentiaCell
 				String aspectChatColor = currentStack.getChatColor();
 
 				// Build the display string
-				String aspectInfo = String.format( "%s%s%s x %d", aspectChatColor, currentStack.getAspectName( player ),
-					EnumChatFormatting.WHITE.toString(), currentStack.getStackSize() );
+				String aspectInfo = String.format( "  %s%s%s x %d", aspectChatColor, currentStack.getAspectName( player ),
+							EnumChatFormatting.WHITE, currentStack.getStackSize() );
 
 				// Add to the list
 				displayList.add( aspectInfo );
@@ -101,6 +105,21 @@ public class ItemEssentiaCell
 		}
 
 	}
+
+	/**
+	 * Adds the partitions of the cell to the description tooltip.
+	 *
+	 * @param cellHandler
+	 * @param player
+	 */
+    private List<String> addPartitionsToCellDescription(final HandlerItemEssentiaCell cellHandler, final EntityPlayer player) {
+        return cellHandler.getPartitionAspects().stream()
+                    .filter(Objects::nonNull)
+                    .map(aspect -> new AspectStack(aspect, 1))
+                    .sorted(new AspectStackComparator())
+                    .map(aspect -> String.format("  %s%s", aspect.getChatColor(), aspect.getAspectName(player)))
+                    .collect(Collectors.toList());
+    }
 
 	/**
 	 * Creates the cell tooltip.
@@ -135,21 +154,29 @@ public class ItemEssentiaCell
 		if( cellHandler.isPartitioned() )
 		{
 			displayList.add( GuiText.Partitioned.getLocal() );
+
+			if( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || ( Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) )
+			{
+				// Add information about the partitioned essentia types in the cell
+				displayList.add(GuiText.Filter.getLocal() + ": ");
+                displayList.addAll(addPartitionsToCellDescription(cellHandler, player));
+			}
 		}
 
 		// Does the cell have anything stored?
 		if( cellHandler.getUsedTypes() > 0 )
 		{
-			// Is shift being held?
-			if( Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || ( Keyboard.isKeyDown( Keyboard.KEY_RSHIFT ) ) )
+			// Is control being held?
+			if( Keyboard.isKeyDown( Keyboard.KEY_LCONTROL ) || ( Keyboard.isKeyDown( Keyboard.KEY_RCONTROL ) ) )
 			{
+				displayList.add(ThEStrings.Tooltip_CellContains.getLocalized() + ":");
 				// Add information about the essentia types in the cell
 				this.addContentsToCellDescription( cellHandler, displayList, player );
 			}
 			else
 			{
 				// Let the user know they can hold shift
-				displayList.add( EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString() +
+				displayList.add( EnumChatFormatting.WHITE + EnumChatFormatting.ITALIC.toString() +
 								ThEStrings.Tooltip_ItemStackDetails.getLocalized() );
 			}
 		}
