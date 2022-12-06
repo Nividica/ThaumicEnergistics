@@ -139,7 +139,7 @@ class HandlerEssentiaStorageBusContainer
 		for( IAspectStack essentiaStack : containerStacks )
 		{
 			// Is the aspect in the filter?
-			if( skipFilterCheck || ( this.filteredAspects.contains( essentiaStack.getAspect() ) ) )
+			if( skipFilterCheck || ( this.filteredAspects.contains( essentiaStack.getAspect() ) != this.inverted ) )
 			{
 				// Convert to fluid
 				GaseousEssentia gas = GaseousEssentia.getGasFromAspect( essentiaStack.getAspect() );
@@ -577,12 +577,12 @@ class HandlerEssentiaStorageBusContainer
 			// Is this the priority pass?
 			if( pass == 1 )
 			{
-				// Valid if has filters or container has something in it
-				return( hasFilters || hasStored );
+				// Valid if has whitelist or container has something in it
+				return( ( hasFilters && !this.inverted ) || hasStored );
 			}
 
-			// Valid if has no filters.
-			return( !hasFilters );
+			// Valid if has no filters or is blacklist.
+			return( !hasFilters || this.inverted );
 
 		}
 

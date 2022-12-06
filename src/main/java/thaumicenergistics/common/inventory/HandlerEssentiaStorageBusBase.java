@@ -130,7 +130,7 @@ public abstract class HandlerEssentiaStorageBusBase
 		 * Validate based on if the aspect is filtered and the storage bus is
 		 * inverted. See explanation below.
 		 */
-		return( this.filteredAspects.contains( essentiaGas.getAspect() ) == !this.inverted );
+		return( this.filteredAspects.contains( essentiaGas.getAspect() ) != this.inverted );
 
 		/*
 		 * Truth 'table' ---- Conditions: * isFiltered = true * inverted = false
@@ -336,6 +336,12 @@ public abstract class HandlerEssentiaStorageBusBase
 		if( !this.isFluidEssentiaGas( fluidStack ) )
 		{
 			// Not an essentia gas.
+			return false;
+		}
+
+		if( this.inverted )
+		{
+			// no prioritization under blacklist mode
 			return false;
 		}
 
