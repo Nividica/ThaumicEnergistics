@@ -18,12 +18,6 @@ import thaumicenergistics.api.grid.ICraftingIssuerHost;
 public class GuiCraftConfirmBridge
 	extends GuiCraftConfirm
 {
-
-	/**
-	 * Cancel button.
-	 */
-	protected GuiButton buttonCancel;
-
 	/**
 	 * Player using this GUI
 	 */
@@ -59,36 +53,9 @@ public class GuiCraftConfirmBridge
 		super.actionPerformed( btn );
 
 		// Cancel button or start button?
-		if( ( btn == this.buttonCancel ) || ( btn.displayString == GuiText.Start.getLocal() ) )
+		if( ( btn == super.getCancelButton() ) || ( btn.displayString.equals( GuiText.Start.getLocal() ) ) )
 		{
 			this.host.launchGUI( this.player );
 		}
 	}
-
-	@Override
-	public void initGui()
-	{
-		// Call super
-		super.initGui();
-
-		// Locate and remove the null cancel button
-		for( int i = 0; i < this.buttonList.size(); ++i )
-		{
-			// Get the button
-			Object btn = this.buttonList.get( i );
-
-			// Is it null?
-			if( btn == null )
-			{
-				// Remove it and move i back 1
-				this.buttonList.remove( i-- );
-			}
-		}
-
-		// Create a new cancel button
-		this.buttonList.add( this.buttonCancel = new GuiButton( 0, this.guiLeft + 6, ( this.guiTop + this.ySize ) - 25, 50, 20, GuiText.Cancel
-						.getLocal() ) );
-
-	}
-
 }
