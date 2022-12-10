@@ -10,23 +10,20 @@ import thaumcraft.api.aspects.Aspect;
  * @author Nividica
  *
  */
-public interface IAspectSelectorGui
-	extends IWidgetHost
-{
-	/**
-	 * Return the selector container.
-	 *
-	 * @return
-	 */
-	@Nonnull
-	IAspectSelectorContainer getContainer();
+public interface IAspectSelectorGui extends IWidgetHost {
+    /**
+     * Return the selector container.
+     *
+     * @return
+     */
+    @Nonnull
+    IAspectSelectorContainer getContainer();
 
-	/**
-	 * Return the selected aspect, or null if no aspect is selected.
-	 *
-	 * @return
-	 */
-	@Nullable
-	Aspect getSelectedAspect();
-
+    /**
+     * Return the selected aspect, or null if no aspect is selected.
+     *
+     * @return
+     */
+    @Nullable
+    Aspect getSelectedAspect();
 }

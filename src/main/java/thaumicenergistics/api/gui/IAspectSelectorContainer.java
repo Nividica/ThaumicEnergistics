@@ -9,13 +9,12 @@ import thaumcraft.api.aspects.Aspect;
  * @author Nividica
  *
  */
-public interface IAspectSelectorContainer
-{
-	/**
-	 * Set the selected aspect.
-	 *
-	 * @param selectedAspect
-	 * Null if no selection.
-	 */
-	void setSelectedAspect( @Nullable Aspect selectedAspect );
+public interface IAspectSelectorContainer {
+    /**
+     * Set the selected aspect.
+     *
+     * @param selectedAspect
+     * Null if no selection.
+     */
+    void setSelectedAspect(@Nullable Aspect selectedAspect);
 }

@@ -15,47 +15,41 @@ import thaumicenergistics.api.grid.ICraftingIssuerHost;
  *
  */
 @SideOnly(Side.CLIENT)
-public class GuiCraftConfirmBridge
-	extends GuiCraftConfirm
-{
-	/**
-	 * Player using this GUI
-	 */
-	protected EntityPlayer player;
+public class GuiCraftConfirmBridge extends GuiCraftConfirm {
+    /**
+     * Player using this GUI
+     */
+    protected EntityPlayer player;
 
-	/**
-	 * The thing that issued the crafting request.
-	 */
-	protected ICraftingIssuerHost host;
+    /**
+     * The thing that issued the crafting request.
+     */
+    protected ICraftingIssuerHost host;
 
-	public GuiCraftConfirmBridge( final EntityPlayer player, final ICraftingIssuerHost craftingHost )
-	{
-		// Call super
-		super( player.inventory, craftingHost );
+    public GuiCraftConfirmBridge(final EntityPlayer player, final ICraftingIssuerHost craftingHost) {
+        // Call super
+        super(player.inventory, craftingHost);
 
-		// Set the player
-		this.player = player;
+        // Set the player
+        this.player = player;
 
-		// Set the host
-		this.host = craftingHost;
-	}
+        // Set the host
+        this.host = craftingHost;
+    }
 
-	@Override
-	protected void actionPerformed( final GuiButton btn )
-	{
-		// Sanity check
-		if( btn == null )
-		{
-			return;
-		}
+    @Override
+    protected void actionPerformed(final GuiButton btn) {
+        // Sanity check
+        if (btn == null) {
+            return;
+        }
 
-		// Call super
-		super.actionPerformed( btn );
+        // Call super
+        super.actionPerformed(btn);
 
-		// Cancel button or start button?
-		if( ( btn == super.getCancelButton() ) || ( btn.displayString.equals( GuiText.Start.getLocal() ) ) )
-		{
-			this.host.launchGUI( this.player );
-		}
-	}
+        // Cancel button or start button?
+        if ((btn == super.getCancelButton()) || (btn.displayString.equals(GuiText.Start.getLocal()))) {
+            this.host.launchGUI(this.player);
+        }
+    }
 }

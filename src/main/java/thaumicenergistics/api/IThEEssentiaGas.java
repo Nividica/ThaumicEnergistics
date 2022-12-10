@@ -9,14 +9,13 @@ import thaumcraft.api.aspects.Aspect;
  * @author Nividica
  *
  */
-public interface IThEEssentiaGas
-{
-	/**
-	 * Get the aspect of the gas.<br>
-	 * Can be null if the gas itself is invalid.
-	 *
-	 * @return
-	 */
-	@Nullable
-	Aspect getAspect();
+public interface IThEEssentiaGas {
+    /**
+     * Get the aspect of the gas.<br>
+     * Can be null if the gas itself is invalid.
+     *
+     * @return
+     */
+    @Nullable
+    Aspect getAspect();
 }

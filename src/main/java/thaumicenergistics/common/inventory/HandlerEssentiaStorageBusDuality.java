@@ -20,260 +20,222 @@ import thaumicenergistics.common.parts.PartEssentiaStorageBus;
  * @author Nividica
  *
  */
-public class HandlerEssentiaStorageBusDuality
-	extends HandlerEssentiaStorageBusBase
-{
-	/**
-	 * The handler that is actually used, can be null.
-	 */
-	private HandlerEssentiaStorageBusBase internalHandler;
+public class HandlerEssentiaStorageBusDuality extends HandlerEssentiaStorageBusBase {
+    /**
+     * The handler that is actually used, can be null.
+     */
+    private HandlerEssentiaStorageBusBase internalHandler;
 
-	/**
-	 * Handler used when facing an aspect container.
-	 */
-	private HandlerEssentiaStorageBusContainer containerHandler;
+    /**
+     * Handler used when facing an aspect container.
+     */
+    private HandlerEssentiaStorageBusContainer containerHandler;
 
-	/**
-	 * Handler used when facing an interface.
-	 */
-	private HandlerEssentiaStorageBusInterface interfaceHandler;
+    /**
+     * Handler used when facing an interface.
+     */
+    private HandlerEssentiaStorageBusInterface interfaceHandler;
 
-	/**
-	 * Handler used when facing a condenser.
-	 */
-	private HandlerEssentiaStorageBusCondenser condenserHandler;
+    /**
+     * Handler used when facing a condenser.
+     */
+    private HandlerEssentiaStorageBusCondenser condenserHandler;
 
-	/**
-	 * Creates the handler.
-	 *
-	 * @param part
-	 */
-	public HandlerEssentiaStorageBusDuality( final PartEssentiaStorageBus part )
-	{
-		super( part );
-	}
+    /**
+     * Creates the handler.
+     *
+     * @param part
+     */
+    public HandlerEssentiaStorageBusDuality(final PartEssentiaStorageBus part) {
+        super(part);
+    }
 
-	/**
-	 * Updates the internal handler to match the duality handler.
-	 */
-	private void updateInternalHandler()
-	{
-		// Ensure there is an internal handler?
-		if( this.internalHandler != null )
-		{
-			// Set the filtered aspects
-			this.internalHandler.filteredAspects = this.filteredAspects;
+    /**
+     * Updates the internal handler to match the duality handler.
+     */
+    private void updateInternalHandler() {
+        // Ensure there is an internal handler?
+        if (this.internalHandler != null) {
+            // Set the filtered aspects
+            this.internalHandler.filteredAspects = this.filteredAspects;
 
-			// Set inverted
-			this.internalHandler.inverted = this.inverted;
+            // Set inverted
+            this.internalHandler.inverted = this.inverted;
 
-			// Set void
-			this.internalHandler.setVoidAllowed( this.isVoidAllowed() );
-		}
-	}
+            // Set void
+            this.internalHandler.setVoidAllowed(this.isVoidAllowed());
+        }
+    }
 
-	@Override
-	public boolean canAccept( final IAEFluidStack fluidStack )
-	{
-		// Ensure we have an internal handler
-		if( this.internalHandler != null )
-		{
-			// Pass to handler
-			return this.internalHandler.canAccept( fluidStack );
-		}
+    @Override
+    public boolean canAccept(final IAEFluidStack fluidStack) {
+        // Ensure we have an internal handler
+        if (this.internalHandler != null) {
+            // Pass to handler
+            return this.internalHandler.canAccept(fluidStack);
+        }
 
-		// No handler
-		return false;
-	}
+        // No handler
+        return false;
+    }
 
-	@Override
-	public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable mode, final BaseActionSource source )
-	{
-		// Ensure we have an internal handler
-		if( this.internalHandler != null )
-		{
-			// Pass to handler
-			return this.internalHandler.extractItems( request, mode, source );
-		}
+    @Override
+    public IAEFluidStack extractItems(
+            final IAEFluidStack request, final Actionable mode, final BaseActionSource source) {
+        // Ensure we have an internal handler
+        if (this.internalHandler != null) {
+            // Pass to handler
+            return this.internalHandler.extractItems(request, mode, source);
+        }
 
-		// No handler
-		return null;
-	}
+        // No handler
+        return null;
+    }
 
-	@Override
-	public IItemList<IAEFluidStack> getAvailableItems( final IItemList<IAEFluidStack> out )
-	{
-		// Ensure we have an internal handler
-		if( this.internalHandler != null )
-		{
-			// Pass to handler
-			return this.internalHandler.getAvailableItems( out );
-		}
+    @Override
+    public IItemList<IAEFluidStack> getAvailableItems(final IItemList<IAEFluidStack> out) {
+        // Ensure we have an internal handler
+        if (this.internalHandler != null) {
+            // Pass to handler
+            return this.internalHandler.getAvailableItems(out);
+        }
 
-		// No handler
-		return out;
-	}
+        // No handler
+        return out;
+    }
 
-	@Override
-	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final BaseActionSource source )
-	{
-		// Ensure we have an internal handler
-		if( this.internalHandler != null )
-		{
-			// Pass to handler
-			return this.internalHandler.injectItems( input, mode, source );
-		}
+    @Override
+    public IAEFluidStack injectItems(final IAEFluidStack input, final Actionable mode, final BaseActionSource source) {
+        // Ensure we have an internal handler
+        if (this.internalHandler != null) {
+            // Pass to handler
+            return this.internalHandler.injectItems(input, mode, source);
+        }
 
-		// No handler
-		return input;
-	}
+        // No handler
+        return input;
+    }
 
-	@Override
-	public boolean onNeighborChange()
-	{
-		boolean doUpdate = false;
+    @Override
+    public boolean onNeighborChange() {
+        boolean doUpdate = false;
 
-		// What is the storage bus facing?
-		TileEntity tileEntity = this.getFaceingTile();
+        // What is the storage bus facing?
+        TileEntity tileEntity = this.getFaceingTile();
 
-		HandlerEssentiaStorageBusBase newHandler = null;
+        HandlerEssentiaStorageBusBase newHandler = null;
 
-		// These should be ordered most specific to most generic
-		if( tileEntity instanceof TileCondenser )
-		{
-			// Create the interface if needed
-			if( this.condenserHandler == null )
-			{
-				// Create the handler
-				this.condenserHandler = new HandlerEssentiaStorageBusCondenser( this.partStorageBus );
-			}
+        // These should be ordered most specific to most generic
+        if (tileEntity instanceof TileCondenser) {
+            // Create the interface if needed
+            if (this.condenserHandler == null) {
+                // Create the handler
+                this.condenserHandler = new HandlerEssentiaStorageBusCondenser(this.partStorageBus);
+            }
 
-			// Set the new handler
-			newHandler = this.condenserHandler;
+            // Set the new handler
+            newHandler = this.condenserHandler;
 
-		}
-		else if( tileEntity instanceof IAspectContainer )
-		{
-			// Create the container handler if needed
-			if( this.containerHandler == null )
-			{
-				// Create the handler
-				this.containerHandler = new HandlerEssentiaStorageBusContainer( this.partStorageBus );
-			}
+        } else if (tileEntity instanceof IAspectContainer) {
+            // Create the container handler if needed
+            if (this.containerHandler == null) {
+                // Create the handler
+                this.containerHandler = new HandlerEssentiaStorageBusContainer(this.partStorageBus);
+            }
 
-			// Set internal handler to the container handler
-			newHandler = this.containerHandler;
-		}
-		else if( tileEntity instanceof IPartHost )
-		{
-			// Get the part
-			IPart facingPart = this.getFacingPartFromPartHost( (IPartHost)tileEntity );
+            // Set internal handler to the container handler
+            newHandler = this.containerHandler;
+        } else if (tileEntity instanceof IPartHost) {
+            // Get the part
+            IPart facingPart = this.getFacingPartFromPartHost((IPartHost) tileEntity);
 
-			// Is the part a ME interface?
-			if( facingPart instanceof PartInterface )
-			{
-				// Create the interface handler if needed
-				if( this.interfaceHandler == null )
-				{
-					// Create the handler
-					this.interfaceHandler = new HandlerEssentiaStorageBusInterface( this.partStorageBus );
-				}
+            // Is the part a ME interface?
+            if (facingPart instanceof PartInterface) {
+                // Create the interface handler if needed
+                if (this.interfaceHandler == null) {
+                    // Create the handler
+                    this.interfaceHandler = new HandlerEssentiaStorageBusInterface(this.partStorageBus);
+                }
 
-				// Set the internal handler to the interface handler
-				newHandler = this.interfaceHandler;
-			}
-		}
-		else if( tileEntity instanceof TileInterface )
-		{
-			// Create the interface handler if needed
-			if( this.interfaceHandler == null )
-			{
-				// Create the handler
-				this.interfaceHandler = new HandlerEssentiaStorageBusInterface( this.partStorageBus );
-			}
+                // Set the internal handler to the interface handler
+                newHandler = this.interfaceHandler;
+            }
+        } else if (tileEntity instanceof TileInterface) {
+            // Create the interface handler if needed
+            if (this.interfaceHandler == null) {
+                // Create the handler
+                this.interfaceHandler = new HandlerEssentiaStorageBusInterface(this.partStorageBus);
+            }
 
-			// Set the internal handler to the interface handler
-			newHandler = this.interfaceHandler;
+            // Set the internal handler to the interface handler
+            newHandler = this.interfaceHandler;
+        }
 
-		}
+        // Has the handler changed?
+        if (this.internalHandler != newHandler) {
+            // Was there a previous handler?
+            if (this.internalHandler != null) {
+                // Let the old handler know the neighbor changed
+                this.internalHandler.onNeighborChange();
+            }
 
-		// Has the handler changed?
-		if( this.internalHandler != newHandler )
-		{
-			// Was there a previous handler?
-			if( this.internalHandler != null )
-			{
-				// Let the old handler know the neighbor changed
-				this.internalHandler.onNeighborChange();
-			}
+            // Set the new handler
+            this.internalHandler = newHandler;
 
-			// Set the new handler
-			this.internalHandler = newHandler;
+            // Mark for update
+            doUpdate = true;
+        }
 
-			// Mark for update
-			doUpdate = true;
-		}
+        // Pass to internal handler
+        if (this.internalHandler != null) {
+            // Update it
+            this.updateInternalHandler();
 
-		// Pass to internal handler
-		if( this.internalHandler != null )
-		{
-			// Update it
-			this.updateInternalHandler();
+            // Pass to the handler
+            doUpdate |= this.internalHandler.onNeighborChange();
+        }
 
-			// Pass to the handler
-			doUpdate |= this.internalHandler.onNeighborChange();
-		}
+        return doUpdate;
+    }
 
-		return doUpdate;
+    @Override
+    public void setInverted(final boolean isInverted) {
+        this.inverted = isInverted;
 
-	}
+        if (this.internalHandler != null) {
+            this.internalHandler.setInverted(isInverted);
+        }
+    }
 
-	@Override
-	public void setInverted( final boolean isInverted )
-	{
-		this.inverted = isInverted;
+    @Override
+    public void setVoidAllowed(final boolean isVoidAllowed) {
+        // Call super
+        super.setVoidAllowed(isVoidAllowed);
 
-		if( this.internalHandler != null )
-		{
-			this.internalHandler.setInverted( isInverted );
-		}
-	}
+        // Call handler
+        if (this.internalHandler != null) {
+            this.internalHandler.setVoidAllowed(isVoidAllowed);
+        }
+    }
 
-	@Override
-	public void setVoidAllowed( final boolean isVoidAllowed )
-	{
-		// Call super
-		super.setVoidAllowed( isVoidAllowed );
+    @Override
+    public void tickingRequest(final IGridNode node, final int TicksSinceLastCall) {
+        // Ensure we have an internal handler
+        if (this.internalHandler != null) {
+            // Pass to handler
+            this.internalHandler.tickingRequest(node, TicksSinceLastCall);
+        }
+    }
 
-		// Call handler
-		if( this.internalHandler != null )
-		{
-			this.internalHandler.setVoidAllowed( isVoidAllowed );
-		}
-	}
+    @Override
+    public boolean validForPass(final int pass) {
+        // Ensure we have an internal handler
+        if (this.internalHandler != null) {
+            // Pass to handler
+            return this.internalHandler.validForPass(pass);
+        }
 
-	@Override
-	public void tickingRequest( final IGridNode node, final int TicksSinceLastCall )
-	{
-		// Ensure we have an internal handler
-		if( this.internalHandler != null )
-		{
-			// Pass to handler
-			this.internalHandler.tickingRequest( node, TicksSinceLastCall );
-		}
-	}
-
-	@Override
-	public boolean validForPass( final int pass )
-	{
-		// Ensure we have an internal handler
-		if( this.internalHandler != null )
-		{
-			// Pass to handler
-			return this.internalHandler.validForPass( pass );
-		}
-
-		// No handler
-		return false;
-	}
+        // No handler
+        return false;
+    }
 }

@@ -10,38 +10,34 @@ import net.minecraft.item.ItemStack;
  * @author Nividica
  *
  */
-public class SlotRestrictive
-	extends Slot
-{
-	private int myIndex;
+public class SlotRestrictive extends Slot {
+    private int myIndex;
 
-	/**
-	 * Create the slot.
-	 *
-	 * @param inventory
-	 * Inventory it belongs to.
-	 * @param index
-	 * Index of the slot
-	 * @param x
-	 * X position of the slot
-	 * @param y
-	 * Y position of the slot
-	 */
-	public SlotRestrictive( final IInventory inventory, final int index, final int x, final int y )
-	{
-		// Pass to super
-		super( inventory, index, x, y );
+    /**
+     * Create the slot.
+     *
+     * @param inventory
+     * Inventory it belongs to.
+     * @param index
+     * Index of the slot
+     * @param x
+     * X position of the slot
+     * @param y
+     * Y position of the slot
+     */
+    public SlotRestrictive(final IInventory inventory, final int index, final int x, final int y) {
+        // Pass to super
+        super(inventory, index, x, y);
 
-		// Set this index
-		this.myIndex = index;
-	}
+        // Set this index
+        this.myIndex = index;
+    }
 
-	/**
-	 * Pass the is valid call to the inventory.
-	 */
-	@Override
-	public boolean isItemValid( final ItemStack itemstack )
-	{
-		return this.inventory.isItemValidForSlot( this.myIndex, itemstack );
-	}
+    /**
+     * Pass the is valid call to the inventory.
+     */
+    @Override
+    public boolean isItemValid(final ItemStack itemstack) {
+        return this.inventory.isItemValidForSlot(this.myIndex, itemstack);
+    }
 }

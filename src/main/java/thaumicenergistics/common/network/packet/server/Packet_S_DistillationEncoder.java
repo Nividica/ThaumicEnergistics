@@ -12,51 +12,40 @@ import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
  * @author Nividica
  *
  */
-public class Packet_S_DistillationEncoder
-	extends ThEServerPacket
-{
-	private static final byte MODE_ENCODE = 1;
+public class Packet_S_DistillationEncoder extends ThEServerPacket {
+    private static final byte MODE_ENCODE = 1;
 
-	public static void sendEncodePattern( final EntityPlayer player )
-	{
-		// Create a new packet
-		Packet_S_DistillationEncoder packet = new Packet_S_DistillationEncoder();
+    public static void sendEncodePattern(final EntityPlayer player) {
+        // Create a new packet
+        Packet_S_DistillationEncoder packet = new Packet_S_DistillationEncoder();
 
-		// Set the player
-		packet.player = player;
+        // Set the player
+        packet.player = player;
 
-		// Set the mode
-		packet.mode = MODE_ENCODE;
+        // Set the mode
+        packet.mode = MODE_ENCODE;
 
-		// Send it
-		NetworkHandler.sendPacketToServer( packet );
-	}
+        // Send it
+        NetworkHandler.sendPacketToServer(packet);
+    }
 
-	@Override
-	protected void readData( final ByteBuf stream )
-	{
-	}
+    @Override
+    protected void readData(final ByteBuf stream) {}
 
-	@Override
-	protected void writeData( final ByteBuf stream )
-	{
-	}
+    @Override
+    protected void writeData(final ByteBuf stream) {}
 
-	@Override
-	public void execute()
-	{
-		// Sanity check
-		if( this.mode != MODE_ENCODE )
-		{
-			return;
-		}
+    @Override
+    public void execute() {
+        // Sanity check
+        if (this.mode != MODE_ENCODE) {
+            return;
+        }
 
-		// Get the players open container
-		if( this.player.openContainer instanceof ContainerDistillationPatternEncoder )
-		{
-			// Send the encode
-			( (ContainerDistillationPatternEncoder)this.player.openContainer ).onEncodePattern();
-		}
-	}
-
+        // Get the players open container
+        if (this.player.openContainer instanceof ContainerDistillationPatternEncoder) {
+            // Send the encode
+            ((ContainerDistillationPatternEncoder) this.player.openContainer).onEncodePattern();
+        }
+    }
 }

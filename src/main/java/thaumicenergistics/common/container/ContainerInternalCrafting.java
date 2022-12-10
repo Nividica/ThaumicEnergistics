@@ -9,18 +9,12 @@ import net.minecraft.inventory.Container;
  * @author Nividica
  *
  */
-public class ContainerInternalCrafting
-	extends Container
-{
+public class ContainerInternalCrafting extends Container {
 
-	public ContainerInternalCrafting()
-	{
-	}
+    public ContainerInternalCrafting() {}
 
-	@Override
-	public boolean canInteractWith( final EntityPlayer player )
-	{
-		return false;
-	}
-
+    @Override
+    public boolean canInteractWith(final EntityPlayer player) {
+        return false;
+    }
 }

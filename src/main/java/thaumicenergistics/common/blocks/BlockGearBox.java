@@ -12,20 +12,15 @@ import thaumicenergistics.common.tiles.TileGearBox;
  * @author Nividica
  *
  */
-public class BlockGearBox
-	extends AbstractBlockGearBoxBase
-{
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon( final int side, final int meta )
-	{
-		return BlockTextureManager.GEAR_BOX.getTextures()[0];
-	}
+public class BlockGearBox extends AbstractBlockGearBoxBase {
+    @SideOnly(Side.CLIENT)
+    @Override
+    public IIcon getIcon(final int side, final int meta) {
+        return BlockTextureManager.GEAR_BOX.getTextures()[0];
+    }
 
-	@Override
-	public String getUnlocalizedName()
-	{
-		return BlockEnum.IRON_GEAR_BOX.getUnlocalizedName();
-	}
-
+    @Override
+    public String getUnlocalizedName() {
+        return BlockEnum.IRON_GEAR_BOX.getUnlocalizedName();
+    }
 }

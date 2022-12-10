@@ -15,31 +15,29 @@ import thaumicenergistics.common.tiles.TileArcaneAssembler;
  * @author Nividica
  *
  */
-public class ItemBlockArcaneAssembler
-	extends ItemBlock
-{
+public class ItemBlockArcaneAssembler extends ItemBlock {
 
-	public ItemBlockArcaneAssembler( final Block block )
-	{
-		super( block );
-	}
+    public ItemBlockArcaneAssembler(final Block block) {
+        super(block);
+    }
 
-	@Override
-	public void addInformation( final ItemStack stack, final EntityPlayer player, final List displayList, final boolean advancedItemTooltips )
-	{
-		// Ensure the stack has a tag
-		if( !stack.hasTagCompound() )
-		{
-			return;
-		}
+    @Override
+    public void addInformation(
+            final ItemStack stack,
+            final EntityPlayer player,
+            final List displayList,
+            final boolean advancedItemTooltips) {
+        // Ensure the stack has a tag
+        if (!stack.hasTagCompound()) {
+            return;
+        }
 
-		// Ensure it has stored vis
-		if( stack.getTagCompound().hasKey( TileArcaneAssembler.NBTKEY_STORED_VIS ) )
-		{
-			// Add the info
-			displayList.add( EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString() +
-							ThEStrings.Tooltip_ArcaneAssemblerHasVis.getLocalized() );
-		}
-	}
-
+        // Ensure it has stored vis
+        if (stack.getTagCompound().hasKey(TileArcaneAssembler.NBTKEY_STORED_VIS)) {
+            // Add the info
+            displayList.add(EnumChatFormatting.WHITE.toString()
+                    + EnumChatFormatting.ITALIC.toString()
+                    + ThEStrings.Tooltip_ArcaneAssemblerHasVis.getLocalized());
+        }
+    }
 }

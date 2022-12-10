@@ -9,27 +9,26 @@ import net.minecraft.client.gui.FontRenderer;
  * @author Nividica
  *
  */
-public interface IWidgetHost
-{
-	/**
-	 * Gets the font renderer for the GUI.
-	 *
-	 * @return
-	 */
-	@Nonnull
-	FontRenderer getFontRenderer();
+public interface IWidgetHost {
+    /**
+     * Gets the font renderer for the GUI.
+     *
+     * @return
+     */
+    @Nonnull
+    FontRenderer getFontRenderer();
 
-	/**
-	 * Return the left of the GUI.
-	 *
-	 * @return
-	 */
-	int guiLeft();
+    /**
+     * Return the left of the GUI.
+     *
+     * @return
+     */
+    int guiLeft();
 
-	/**
-	 * Return the top of the GUI.
-	 *
-	 * @return
-	 */
-	int guiTop();
+    /**
+     * Return the top of the GUI.
+     *
+     * @return
+     */
+    int guiTop();
 }

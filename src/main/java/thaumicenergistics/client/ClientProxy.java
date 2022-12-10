@@ -13,29 +13,22 @@ import thaumicenergistics.common.registries.Renderers;
  * @author Nividica
  *
  */
-public class ClientProxy
-	extends CommonProxy
-{
-	public ClientProxy()
-	{
-		MinecraftForge.EVENT_BUS.register( this );
-	}
+public class ClientProxy extends CommonProxy {
+    public ClientProxy() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
-	@Override
-	public void registerRenderers()
-	{
-		// Register the custom block renderers
-		Renderers.registerRenderers();
-	}
+    @Override
+    public void registerRenderers() {
+        // Register the custom block renderers
+        Renderers.registerRenderers();
+    }
 
-	@SubscribeEvent
-	public void registerTextures( final TextureStitchEvent.Pre event )
-	{
-		// Register all block textures
-		for( BlockTextureManager texture : BlockTextureManager.ALLVALUES )
-		{
-			texture.registerTexture( event.map );
-		}
-
-	}
+    @SubscribeEvent
+    public void registerTextures(final TextureStitchEvent.Pre event) {
+        // Register all block textures
+        for (BlockTextureManager texture : BlockTextureManager.ALLVALUES) {
+            texture.registerTexture(event.map);
+        }
+    }
 }

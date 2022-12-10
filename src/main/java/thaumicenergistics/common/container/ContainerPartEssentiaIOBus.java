@@ -1,7 +1,8 @@
 package thaumicenergistics.common.container;
 
-import java.util.List;
 import appeng.api.config.RedstoneMode;
+import java.util.List;
+import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -11,175 +12,160 @@ import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
 import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
 
-import javax.annotation.Nonnull;
-
 /**
  * Inventory container for the import and export busses.
  *
  * @author Nividica
  *
  */
-public class ContainerPartEssentiaIOBus
-	extends ContainerWithNetworkTool
-{
-	/**
-	 * The number of upgrade slots we have
-	 */
-	private final static int NUMBER_OF_UPGRADE_SLOTS = 4;
+public class ContainerPartEssentiaIOBus extends ContainerWithNetworkTool {
+    /**
+     * The number of upgrade slots we have
+     */
+    private static final int NUMBER_OF_UPGRADE_SLOTS = 4;
 
-	/**
-	 * The x position of the upgrade slots
-	 */
-	private final static int UPGRADE_X_POS = 187;
+    /**
+     * The x position of the upgrade slots
+     */
+    private static final int UPGRADE_X_POS = 187;
 
-	/**
-	 * The Y position for the upgrade slots
-	 */
-	private final static int UPGRADE_Y_POS = 8;
+    /**
+     * The Y position for the upgrade slots
+     */
+    private static final int UPGRADE_Y_POS = 8;
 
-	/**
-	 * Y position for the player inventory
-	 */
-	private final static int PLAYER_INV_POSITION_Y = 102;
+    /**
+     * Y position for the player inventory
+     */
+    private static final int PLAYER_INV_POSITION_Y = 102;
 
-	/**
-	 * Y position for the hotbar inventory
-	 */
-	private final static int HOTBAR_INV_POSITION_Y = 160;
+    /**
+     * Y position for the hotbar inventory
+     */
+    private static final int HOTBAR_INV_POSITION_Y = 160;
 
-	/**
-	 * The part associated with this container
-	 */
-	private final ThEPartEssentiaIOBus_Base bus;
+    /**
+     * The part associated with this container
+     */
+    private final ThEPartEssentiaIOBus_Base bus;
 
-	/**
-	 * Cached isVoidAllowed
-	 */
-	private boolean isVoidAllowed;
+    /**
+     * Cached isVoidAllowed
+     */
+    private boolean isVoidAllowed;
 
-	/**
-	 * Cached isVoidAllowed
-	 */
-	private boolean isCraftingOnly;
+    /**
+     * Cached isVoidAllowed
+     */
+    private boolean isCraftingOnly;
 
-	/**
-	 * Creates the container.
-	 *
-	 * @param part
-	 * The AE part associated with the container.
-	 * @param player
-	 * The owner of the container.
-	 */
-	public ContainerPartEssentiaIOBus( final ThEPartEssentiaIOBus_Base part, final EntityPlayer player )
-	{
-		// Call super
-		super( player );
+    /**
+     * Creates the container.
+     *
+     * @param part
+     * The AE part associated with the container.
+     * @param player
+     * The owner of the container.
+     */
+    public ContainerPartEssentiaIOBus(final ThEPartEssentiaIOBus_Base part, final EntityPlayer player) {
+        // Call super
+        super(player);
 
-		// Set the part
-		this.bus = part;
+        // Set the part
+        this.bus = part;
 
-		// Bind to the player's inventory
-		this.bindPlayerInventory( player.inventory, ContainerPartEssentiaIOBus.PLAYER_INV_POSITION_Y,
-			ContainerPartEssentiaIOBus.HOTBAR_INV_POSITION_Y );
+        // Bind to the player's inventory
+        this.bindPlayerInventory(
+                player.inventory,
+                ContainerPartEssentiaIOBus.PLAYER_INV_POSITION_Y,
+                ContainerPartEssentiaIOBus.HOTBAR_INV_POSITION_Y);
 
-		// Add the upgrade slots
-		this.addUpgradeSlots( part.getUpgradeInventory(), ContainerPartEssentiaIOBus.NUMBER_OF_UPGRADE_SLOTS,
-			ContainerPartEssentiaIOBus.UPGRADE_X_POS, ContainerPartEssentiaIOBus.UPGRADE_Y_POS );
+        // Add the upgrade slots
+        this.addUpgradeSlots(
+                part.getUpgradeInventory(),
+                ContainerPartEssentiaIOBus.NUMBER_OF_UPGRADE_SLOTS,
+                ContainerPartEssentiaIOBus.UPGRADE_X_POS,
+                ContainerPartEssentiaIOBus.UPGRADE_Y_POS);
 
-		// Bind to the network tool
-		this.bindToNetworkTool( player.inventory, part.getHost().getLocation(), 0, 0 );
+        // Bind to the network tool
+        this.bindToNetworkTool(player.inventory, part.getHost().getLocation(), 0, 0);
 
-		// Register as a listener on the part
-		this.bus.addListener( this );
-	}
+        // Register as a listener on the part
+        this.bus.addListener(this);
+    }
 
-	@Override
-	protected boolean detectAndSendChangesMP( @Nonnull final EntityPlayerMP playerMP )
-	{
-		// Has the void mode changed?
-		if( this.isVoidAllowed != this.bus.isVoidAllowed() )
-		{
-			// Update
-			this.isVoidAllowed = this.bus.isVoidAllowed();
-			Packet_C_EssentiaIOBus.sendVoidMode( this.player, this.isVoidAllowed );
-		}
+    @Override
+    protected boolean detectAndSendChangesMP(@Nonnull final EntityPlayerMP playerMP) {
+        // Has the void mode changed?
+        if (this.isVoidAllowed != this.bus.isVoidAllowed()) {
+            // Update
+            this.isVoidAllowed = this.bus.isVoidAllowed();
+            Packet_C_EssentiaIOBus.sendVoidMode(this.player, this.isVoidAllowed);
+        }
 
-		if( this.isCraftingOnly != this.bus.isCraftingOnly() )
-		{
-			// Update
-			this.isCraftingOnly = this.bus.isCraftingOnly();
-			Packet_C_EssentiaIOBus.sendCraftingMode( this.player, this.isCraftingOnly );
-		}
+        if (this.isCraftingOnly != this.bus.isCraftingOnly()) {
+            // Update
+            this.isCraftingOnly = this.bus.isCraftingOnly();
+            Packet_C_EssentiaIOBus.sendCraftingMode(this.player, this.isCraftingOnly);
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean canInteractWith( final EntityPlayer player )
-	{
-		if( this.bus != null )
-		{
-			return this.bus.isPartUseableByPlayer( player );
-		}
-		return false;
-	}
+    @Override
+    public boolean canInteractWith(final EntityPlayer player) {
+        if (this.bus != null) {
+            return this.bus.isPartUseableByPlayer(player);
+        }
+        return false;
+    }
 
-	@Override
-	public void onContainerClosed(@Nonnull final EntityPlayer player )
-	{
-		if( this.bus != null )
-		{
-			this.bus.removeListener( this );
-		}
-	}
+    @Override
+    public void onContainerClosed(@Nonnull final EntityPlayer player) {
+        if (this.bus != null) {
+            this.bus.removeListener(this);
+        }
+    }
 
-	public void setFilteredAspect( final List<Aspect> filteredAspects )
-	{
-		Packet_C_AspectSlot.setFilterList( filteredAspects, this.player );
-	}
+    public void setFilteredAspect(final List<Aspect> filteredAspects) {
+        Packet_C_AspectSlot.setFilterList(filteredAspects, this.player);
+    }
 
-	public void setFilterSize( final byte filterSize )
-	{
-		Packet_C_EssentiaIOBus.sendFilterSize( this.player, filterSize );
-	}
+    public void setFilterSize(final byte filterSize) {
+        Packet_C_EssentiaIOBus.sendFilterSize(this.player, filterSize);
+    }
 
-	public void setRedstoneControlled( final boolean isRedstoneControlled )
-	{
-		Packet_C_EssentiaIOBus.sendRedstoneControlled( this.player, isRedstoneControlled );
-	}
-	public void setHasCraftingCard( final boolean hasCraftingCard )
-	{
-		Packet_C_EssentiaIOBus.sendHasCraftingCard( this.player, hasCraftingCard );
-	}
+    public void setRedstoneControlled(final boolean isRedstoneControlled) {
+        Packet_C_EssentiaIOBus.sendRedstoneControlled(this.player, isRedstoneControlled);
+    }
 
-	public void setRedstoneMode( final RedstoneMode redstoneMode )
-	{
-		Packet_C_EssentiaIOBus.sendRedstoneMode( this.player, redstoneMode );
-	}
+    public void setHasCraftingCard(final boolean hasCraftingCard) {
+        Packet_C_EssentiaIOBus.sendHasCraftingCard(this.player, hasCraftingCard);
+    }
 
-	/**
-	 * Called when the player shift+clicks on a slot.
-	 */
-	@Override
-	public ItemStack transferStackInSlot( final EntityPlayer player, final int slotNumber )
-	{
-		// Get the slot
-		Slot slot = this.getSlotOrNull( slotNumber );
+    public void setRedstoneMode(final RedstoneMode redstoneMode) {
+        Packet_C_EssentiaIOBus.sendRedstoneMode(this.player, redstoneMode);
+    }
 
-		// Do we have a valid slot with an item?
-		if( ( slot != null ) && ( slot.getHasStack() ) )
-		{
-			// Can this aspect be added to the filter list?
-			if( ( this.bus != null ) && ( this.bus.addFilteredAspectFromItemstack( player, slot.getStack() ) ) )
-			{
-				return null;
-			}
+    /**
+     * Called when the player shift+clicks on a slot.
+     */
+    @Override
+    public ItemStack transferStackInSlot(final EntityPlayer player, final int slotNumber) {
+        // Get the slot
+        Slot slot = this.getSlotOrNull(slotNumber);
 
-			// Pass to super
-			return super.transferStackInSlot( player, slotNumber );
-		}
+        // Do we have a valid slot with an item?
+        if ((slot != null) && (slot.getHasStack())) {
+            // Can this aspect be added to the filter list?
+            if ((this.bus != null) && (this.bus.addFilteredAspectFromItemstack(player, slot.getStack()))) {
+                return null;
+            }
 
-		return null;
-	}
+            // Pass to super
+            return super.transferStackInSlot(player, slotNumber);
+        }
 
+        return null;
+    }
 }

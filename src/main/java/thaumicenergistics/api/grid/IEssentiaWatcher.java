@@ -9,13 +9,11 @@ import thaumcraft.api.aspects.Aspect;
  * @author Nividica
  *
  */
-public interface IEssentiaWatcher
-	extends Collection<Aspect>
-{
-	/**
-	 * Return the host for this watcher.
-	 *
-	 * @return
-	 */
-	IEssentiaWatcherHost getHost();
+public interface IEssentiaWatcher extends Collection<Aspect> {
+    /**
+     * Return the host for this watcher.
+     *
+     * @return
+     */
+    IEssentiaWatcherHost getHost();
 }

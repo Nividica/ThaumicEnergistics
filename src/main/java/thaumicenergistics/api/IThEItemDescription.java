@@ -12,46 +12,45 @@ import net.minecraft.item.ItemStack;
  * @author Nividica
  *
  */
-public interface IThEItemDescription
-{
+public interface IThEItemDescription {
 
-	/**
-	 * Gets the block of this item, if it has one.
-	 *
-	 * @return
-	 */
-	@Nullable
-	Block getBlock();
+    /**
+     * Gets the block of this item, if it has one.
+     *
+     * @return
+     */
+    @Nullable
+    Block getBlock();
 
-	/**
-	 * Gets the damage, or meta, value of the item.
-	 *
-	 * @return
-	 */
-	int getDamage();
+    /**
+     * Gets the damage, or meta, value of the item.
+     *
+     * @return
+     */
+    int getDamage();
 
-	/**
-	 * Gets the item.
-	 *
-	 * @return
-	 */
-	@Nonnull
-	Item getItem();
+    /**
+     * Gets the item.
+     *
+     * @return
+     */
+    @Nonnull
+    Item getItem();
 
-	/**
-	 * Gets a stack of size 1.
-	 *
-	 * @return
-	 */
-	@Nonnull
-	ItemStack getStack();
+    /**
+     * Gets a stack of size 1.
+     *
+     * @return
+     */
+    @Nonnull
+    ItemStack getStack();
 
-	/**
-	 * Gets a stack of the specified size.
-	 *
-	 * @param amount
-	 * @return
-	 */
-	@Nonnull
-	ItemStack getStacks( int amount );
+    /**
+     * Gets a stack of the specified size.
+     *
+     * @param amount
+     * @return
+     */
+    @Nonnull
+    ItemStack getStacks(int amount);
 }

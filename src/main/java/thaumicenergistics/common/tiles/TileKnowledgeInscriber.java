@@ -11,74 +11,63 @@ import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
  * @author Nividica
  *
  */
-public class TileKnowledgeInscriber
-	extends ThETileInventory
-{
-	public static final int KCORE_SLOT = 0;
+public class TileKnowledgeInscriber extends ThETileInventory {
+    public static final int KCORE_SLOT = 0;
 
-	private static final String NBTKEY_KCORE = "kcore";
+    private static final String NBTKEY_KCORE = "kcore";
 
-	public TileKnowledgeInscriber()
-	{
-		super( "knowledge.inscriber", 1, 64 );
-	}
+    public TileKnowledgeInscriber() {
+        super("knowledge.inscriber", 1, 64);
+    }
 
-	/**
-	 * Returns true if there is a stored KCore.
-	 *
-	 * @return
-	 */
-	public boolean hasKCore()
-	{
-		return this.internalInventory.getHasStack( KCORE_SLOT );
-	}
+    /**
+     * Returns true if there is a stored KCore.
+     *
+     * @return
+     */
+    public boolean hasKCore() {
+        return this.internalInventory.getHasStack(KCORE_SLOT);
+    }
 
-	@Override
-	public boolean isItemValidForSlot( final int slotIndex, final ItemStack itemStack )
-	{
-		// Null is always allowed
-		if( itemStack == null )
-		{
-			return true;
-		}
+    @Override
+    public boolean isItemValidForSlot(final int slotIndex, final ItemStack itemStack) {
+        // Null is always allowed
+        if (itemStack == null) {
+            return true;
+        }
 
-		// KCORE slot?
-		if( slotIndex == KCORE_SLOT )
-		{
-			// Ensure the item is a KCORE
-			return( itemStack.getItem() instanceof ItemKnowledgeCore );
-		}
+        // KCORE slot?
+        if (slotIndex == KCORE_SLOT) {
+            // Ensure the item is a KCORE
+            return (itemStack.getItem() instanceof ItemKnowledgeCore);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public void readFromNBT( final NBTTagCompound data )
-	{
-		// Call super
-		super.readFromNBT( data );
+    @Override
+    public void readFromNBT(final NBTTagCompound data) {
+        // Call super
+        super.readFromNBT(data);
 
-		// Is there a saved core?
-		if( data.hasKey( NBTKEY_KCORE ) )
-		{
-			// Load the saved core
-			this.internalInventory.setInventorySlotContents( KCORE_SLOT,
-				ItemStack.loadItemStackFromNBT( data.getCompoundTag( NBTKEY_KCORE ) ) );
-		}
-	}
+        // Is there a saved core?
+        if (data.hasKey(NBTKEY_KCORE)) {
+            // Load the saved core
+            this.internalInventory.setInventorySlotContents(
+                    KCORE_SLOT, ItemStack.loadItemStackFromNBT(data.getCompoundTag(NBTKEY_KCORE)));
+        }
+    }
 
-	@Override
-	public void writeToNBT( final NBTTagCompound data )
-	{
-		// Call super
-		super.writeToNBT( data );
+    @Override
+    public void writeToNBT(final NBTTagCompound data) {
+        // Call super
+        super.writeToNBT(data);
 
-		// Get the kcore
-		ItemStack kCore = this.internalInventory.getStackInSlot( KCORE_SLOT );
-		if( kCore != null )
-		{
-			// Write the kcore
-			data.setTag( NBTKEY_KCORE, kCore.writeToNBT( new NBTTagCompound() ) );
-		}
-	}
+        // Get the kcore
+        ItemStack kCore = this.internalInventory.getStackInSlot(KCORE_SLOT);
+        if (kCore != null) {
+            // Write the kcore
+            data.setTag(NBTKEY_KCORE, kCore.writeToNBT(new NBTTagCompound()));
+        }
+    }
 }

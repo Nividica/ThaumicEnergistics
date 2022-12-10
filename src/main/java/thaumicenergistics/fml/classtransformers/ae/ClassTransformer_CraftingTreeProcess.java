@@ -10,57 +10,48 @@ import thaumicenergistics.fml.AClassTransformer;
  * <li>Adds <em>this.world = world</em> to constructor.</li>
  * </ul>
  */
-public class ClassTransformer_CraftingTreeProcess
-	extends AClassTransformer
-{
+public class ClassTransformer_CraftingTreeProcess extends AClassTransformer {
 
-	public ClassTransformer_CraftingTreeProcess()
-	{
-		super( "appeng.crafting.CraftingTreeProcess" );
-	}
+    public ClassTransformer_CraftingTreeProcess() {
+        super("appeng.crafting.CraftingTreeProcess");
+    }
 
-	private void transformConstructor( final MethodNode method )
-	{
-		int opSequence[] = new int[] { Opcodes.ILOAD, Opcodes.PUTFIELD, Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL, Opcodes.ASTORE };
-		AbstractInsnNode insertionPoint = this.findSequence( method.instructions, opSequence, true );
+    private void transformConstructor(final MethodNode method) {
+        int opSequence[] =
+                new int[] {Opcodes.ILOAD, Opcodes.PUTFIELD, Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL, Opcodes.ASTORE};
+        AbstractInsnNode insertionPoint = this.findSequence(method.instructions, opSequence, true);
 
-		// Insert this.world = world
-		InsnList instructionList = new InsnList();
+        // Insert this.world = world
+        InsnList instructionList = new InsnList();
 
-		// this
-		instructionList.add( new VarInsnNode( Opcodes.ALOAD, 0 ) );
+        // this
+        instructionList.add(new VarInsnNode(Opcodes.ALOAD, 0));
 
-		// world
-		instructionList.add( new VarInsnNode( Opcodes.ALOAD, 6 ) );
+        // world
+        instructionList.add(new VarInsnNode(Opcodes.ALOAD, 6));
 
-		// this.world = world
-		instructionList.add( new FieldInsnNode( Opcodes.PUTFIELD,
-						"appeng/crafting/CraftingTreeProcess", "world", "Lnet/minecraft/world/World;" ) );
+        // this.world = world
+        instructionList.add(new FieldInsnNode(
+                Opcodes.PUTFIELD, "appeng/crafting/CraftingTreeProcess", "world", "Lnet/minecraft/world/World;"));
 
-		// Insert the new code
-		method.instructions.insert( insertionPoint, instructionList );
+        // Insert the new code
+        method.instructions.insert(insertionPoint, instructionList);
+    }
 
-	}
+    @Override
+    protected void onTransformFailure() {
+        this.log("Recipes containing Thaumcraft's primordial pearl will not function with AE2's crafting system.");
+    }
 
-	@Override
-	protected void onTransformFailure()
-	{
-		this.log( "Recipes containing Thaumcraft's primordial pearl will not function with AE2's crafting system." );
-	}
-
-	@Override
-	protected void transform( final ClassNode classNode )
-	{
-		// Transform methods
-		for( MethodNode method : classNode.methods )
-		{
-			// Constructor
-			if( method.name.equals( AClassTransformer.InstanceConstructorName ) )
-			{
-				this.transformConstructor( method );
-				break; // Stop searching.
-			}
-		}
-	}
-
+    @Override
+    protected void transform(final ClassNode classNode) {
+        // Transform methods
+        for (MethodNode method : classNode.methods) {
+            // Constructor
+            if (method.name.equals(AClassTransformer.InstanceConstructorName)) {
+                this.transformConstructor(method);
+                break; // Stop searching.
+            }
+        }
+    }
 }

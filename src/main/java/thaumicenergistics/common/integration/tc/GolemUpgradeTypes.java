@@ -2,48 +2,43 @@ package thaumicenergistics.common.integration.tc;
 
 import javax.annotation.Nullable;
 
-public enum GolemUpgradeTypes
-{
-		Air (0),
-		Earth (1),
-		Fire (2),
-		Water (3),
-		Order (4),
-		Entropy (5);
+public enum GolemUpgradeTypes {
+    Air(0),
+    Earth(1),
+    Fire(2),
+    Water(3),
+    Order(4),
+    Entropy(5);
 
-	/**
-	 * Array of upgrades sorted by ID.
-	 */
-	public static final GolemUpgradeTypes allUpgrades[];
-	static
-	{
-		GolemUpgradeTypes[] values = GolemUpgradeTypes.values();
+    /**
+     * Array of upgrades sorted by ID.
+     */
+    public static final GolemUpgradeTypes allUpgrades[];
 
-		// Setup the array
-		allUpgrades = new GolemUpgradeTypes[values.length];
-		for( GolemUpgradeTypes upgrade : values )
-		{
-			allUpgrades[upgrade.upgradeID] = upgrade;
-		}
-	}
+    static {
+        GolemUpgradeTypes[] values = GolemUpgradeTypes.values();
 
-	/**
-	 * Thaumcraft ID for the upgrade.
-	 */
-	public final byte upgradeID;
+        // Setup the array
+        allUpgrades = new GolemUpgradeTypes[values.length];
+        for (GolemUpgradeTypes upgrade : values) {
+            allUpgrades[upgrade.upgradeID] = upgrade;
+        }
+    }
 
-	private GolemUpgradeTypes( final int ID )
-	{
-		this.upgradeID = (byte)ID;
-	}
+    /**
+     * Thaumcraft ID for the upgrade.
+     */
+    public final byte upgradeID;
 
-	@Nullable
-	public static GolemUpgradeTypes getUpgradeByID( final byte ID )
-	{
-		if( ( ID >= 0 ) && ( ID < allUpgrades.length ) )
-		{
-			return allUpgrades[ID];
-		}
-		return null;
-	}
+    private GolemUpgradeTypes(final int ID) {
+        this.upgradeID = (byte) ID;
+    }
+
+    @Nullable
+    public static GolemUpgradeTypes getUpgradeByID(final byte ID) {
+        if ((ID >= 0) && (ID < allUpgrades.length)) {
+            return allUpgrades[ID];
+        }
+        return null;
+    }
 }

@@ -9,37 +9,29 @@ import thaumcraft.common.entities.golems.EntityGolemBase;
  * @author Nividica
  *
  */
-public class AIGolemWifiFill
-	extends AIAENetworkGolem
-{
+public class AIGolemWifiFill extends AIAENetworkGolem {
 
-	public AIGolemWifiFill( final EntityGolemBase golem, final WirelessGolemHandler.WirelessServerData wsd )
-	{
-		super( golem, wsd );
-	}
+    public AIGolemWifiFill(final EntityGolemBase golem, final WirelessGolemHandler.WirelessServerData wsd) {
+        super(golem, wsd);
+    }
 
-	@Override
-	protected boolean needsNetworkNow()
-	{
-		// Is the golem watching for anything?
-		return( this.golem.itemWatched != null );
-	}
+    @Override
+    protected boolean needsNetworkNow() {
+        // Is the golem watching for anything?
+        return (this.golem.itemWatched != null);
+    }
 
-	@Override
-	public void updateTask()
-	{
-		// Get the stack the golem is watching for.
-		ItemStack watched = this.golem.itemWatched;
-		if( watched != null )
-		{
-			// Attempt extraction
-			ItemStack extracted = this.network.extractStack( watched );
-			if( extracted != null )
-			{
-				this.golem.setCarried( extracted );
-				this.golem.itemWatched = null;
-			}
-		}
-	}
-
+    @Override
+    public void updateTask() {
+        // Get the stack the golem is watching for.
+        ItemStack watched = this.golem.itemWatched;
+        if (watched != null) {
+            // Attempt extraction
+            ItemStack extracted = this.network.extractStack(watched);
+            if (extracted != null) {
+                this.golem.setCarried(extracted);
+                this.golem.itemWatched = null;
+            }
+        }
+    }
 }

@@ -11,15 +11,11 @@ import thaumicenergistics.common.network.packet.client.WrapperPacket_C;
  * @author Nividica
  *
  */
-public class HandlerClient
-	implements IMessageHandler<WrapperPacket_C, IMessage>
-{
+public class HandlerClient implements IMessageHandler<WrapperPacket_C, IMessage> {
 
-	@Override
-	public IMessage onMessage( final WrapperPacket_C message, final MessageContext ctx )
-	{
-		message.execute();
-		return null;
-	}
-
+    @Override
+    public IMessage onMessage(final WrapperPacket_C message, final MessageContext ctx) {
+        message.execute();
+        return null;
+    }
 }

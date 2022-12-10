@@ -6,15 +6,14 @@ package thaumicenergistics.common.integration;
  * @author Nividica
  *
  */
-public interface IEssentiaProviderWatcher
-{
-	/**
-	 * Called when the provider is broken.
-	 */
-	public void onProviderBroken();
+public interface IEssentiaProviderWatcher {
+    /**
+     * Called when the provider is broken.
+     */
+    public void onProviderBroken();
 
-	/**
-	 * Called when the providers power state changes.
-	 */
-	public void onProviderPowerChange( boolean isOnline );
+    /**
+     * Called when the providers power state changes.
+     */
+    public void onProviderPowerChange(boolean isOnline);
 }

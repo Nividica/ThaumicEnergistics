@@ -10,14 +10,12 @@ import thaumcraft.api.aspects.IEssentiaContainerItem;
  * @author Nividica
  *
  */
-public interface IRestrictedEssentiaContainerItem
-	extends IEssentiaContainerItem
-{
-	/**
-	 * Returns true if the container accepts the specified aspect.
-	 *
-	 * @param aspect
-	 * @return
-	 */
-	boolean acceptsAspect( @Nonnull Aspect aspect );
+public interface IRestrictedEssentiaContainerItem extends IEssentiaContainerItem {
+    /**
+     * Returns true if the container accepts the specified aspect.
+     *
+     * @param aspect
+     * @return
+     */
+    boolean acceptsAspect(@Nonnull Aspect aspect);
 }

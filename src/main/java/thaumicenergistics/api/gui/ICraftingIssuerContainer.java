@@ -9,13 +9,12 @@ import thaumicenergistics.api.grid.ICraftingIssuerHost;
  * @author Nividica
  *
  */
-public interface ICraftingIssuerContainer
-{
-	/**
-	 * Gets the crafting issuer host terminal.
-	 *
-	 * @return
-	 */
-	@Nonnull
-	ICraftingIssuerHost getCraftingHost();
+public interface ICraftingIssuerContainer {
+    /**
+     * Gets the crafting issuer host terminal.
+     *
+     * @return
+     */
+    @Nonnull
+    ICraftingIssuerHost getCraftingHost();
 }

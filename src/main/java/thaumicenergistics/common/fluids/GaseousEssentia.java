@@ -18,166 +18,143 @@ import thaumicenergistics.common.utils.ThELog;
  * @author Nividica
  *
  */
-public class GaseousEssentia
-	extends Fluid
-	implements IThEEssentiaGas
-{
-	/**
-	 * List of all created gasses.
-	 */
-	public static final LinkedHashMap<Aspect, GaseousEssentia> gasList = new LinkedHashMap<Aspect, GaseousEssentia>();
+public class GaseousEssentia extends Fluid implements IThEEssentiaGas {
+    /**
+     * List of all created gasses.
+     */
+    public static final LinkedHashMap<Aspect, GaseousEssentia> gasList = new LinkedHashMap<Aspect, GaseousEssentia>();
 
-	/**
-	 * The aspect the gas is based off of.
-	 */
-	private Aspect associatedAspect;
+    /**
+     * The aspect the gas is based off of.
+     */
+    private Aspect associatedAspect;
 
-	/**
-	 * Creates the gas.
-	 *
-	 * @param gasName
-	 * Name of the gas displayed to the user
-	 * @param aspect
-	 * The aspect the gas is based off of.
-	 */
-	private GaseousEssentia( final String gasName, final Aspect aspect )
-	{
-		// Pass to super
-		super( gasName );
+    /**
+     * Creates the gas.
+     *
+     * @param gasName
+     * Name of the gas displayed to the user
+     * @param aspect
+     * The aspect the gas is based off of.
+     */
+    private GaseousEssentia(final String gasName, final Aspect aspect) {
+        // Pass to super
+        super(gasName);
 
-		// Set the aspect
-		this.associatedAspect = aspect;
+        // Set the aspect
+        this.associatedAspect = aspect;
 
-		// Gas slightly glows
-		this.setLuminosity( 7 );
+        // Gas slightly glows
+        this.setLuminosity(7);
 
-		// Negative density, it floats away!
-		this.setDensity( -4 );
+        // Negative density, it floats away!
+        this.setDensity(-4);
 
-		// Flow speed, 3x slower than water
-		this.setViscosity( 3000 );
+        // Flow speed, 3x slower than water
+        this.setViscosity(3000);
 
-		// This is a gas, adjusts the render pass.
-		this.setGaseous( true );
+        // This is a gas, adjusts the render pass.
+        this.setGaseous(true);
+    }
 
-	}
+    /**
+     * Creates a gas based on the specified aspect
+     *
+     * @param aspect
+     */
+    private static void create(final Aspect aspect) {
+        // Ensure this has not already been register
+        if (gasList.containsKey(aspect)) {
+            // Return the existing fluid
+            return;
+        }
 
-	/**
-	 * Creates a gas based on the specified aspect
-	 *
-	 * @param aspect
-	 */
-	private static void create( final Aspect aspect )
-	{
-		// Ensure this has not already been register
-		if( gasList.containsKey( aspect ) )
-		{
-			// Return the existing fluid
-			return;
-		}
+        // Create the name
+        String gasName = "gaseous" + aspect.getTag() + "essentia";
 
-		// Create the name
-		String gasName = "gaseous" + aspect.getTag() + "essentia";
+        // Create the fluid
+        GaseousEssentia newGas = new GaseousEssentia(gasName, aspect);
 
-		// Create the fluid
-		GaseousEssentia newGas = new GaseousEssentia( gasName, aspect );
+        // Register the fluid
+        if (FluidRegistry.registerFluid(newGas)) {
+            // Add to the list
+            gasList.put(aspect, newGas);
 
-		// Register the fluid
-		if( FluidRegistry.registerFluid( newGas ) )
-		{
-			// Add to the list
-			gasList.put( aspect, newGas );
+            // Log info
+            // ThELog.info( "Created fluid for aspect %s.", aspect.getTag() );
+        } else {
+            // Log a warning
+            ThELog.warning("Unable to register '%s' as fluid.", aspect.getTag());
+        }
+    }
 
-			// Log info
-			// ThELog.info( "Created fluid for aspect %s.", aspect.getTag() );
-		}
-		else
-		{
-			// Log a warning
-			ThELog.warning( "Unable to register '%s' as fluid.", aspect.getTag() );
-		}
+    /**
+     * Gets the gas form of the specified aspect
+     *
+     * @param aspect
+     * @return
+     */
+    public static GaseousEssentia getGasFromAspect(final Aspect aspect) {
+        return GaseousEssentia.gasList.get(aspect);
+    }
 
-	}
+    /**
+     * Called from load to register all gas types with the game.
+     */
+    public static void registerGases() {
+        // Create a gas for each essentia type
+        for (Entry<String, Aspect> aspectType : Aspect.aspects.entrySet()) {
+            // Get the aspect
+            Aspect aspect = aspectType.getValue();
 
-	/**
-	 * Gets the gas form of the specified aspect
-	 *
-	 * @param aspect
-	 * @return
-	 */
-	public static GaseousEssentia getGasFromAspect( final Aspect aspect )
-	{
-		return GaseousEssentia.gasList.get( aspect );
-	}
+            // Create and register
+            GaseousEssentia.create(aspect);
+        }
+    }
 
-	/**
-	 * Called from load to register all gas types with the game.
-	 */
-	public static void registerGases()
-	{
-		// Create a gas for each essentia type
-		for( Entry<String, Aspect> aspectType : Aspect.aspects.entrySet() )
-		{
-			// Get the aspect
-			Aspect aspect = aspectType.getValue();
+    /**
+     * Get the aspect this gas is based off of.
+     *
+     * @return
+     */
+    @Override
+    public Aspect getAspect() {
+        return this.associatedAspect;
+    }
 
-			// Create and register
-			GaseousEssentia.create( aspect );
-		}
+    /**
+     * Gets the color of the gas.
+     */
+    @Override
+    public int getColor() {
+        if (this.associatedAspect != null) {
+            return this.associatedAspect.getColor();
+        }
 
-	}
+        return super.getColor();
+    }
 
-	/**
-	 * Get the aspect this gas is based off of.
-	 *
-	 * @return
-	 */
-	@Override
-	public Aspect getAspect()
-	{
-		return this.associatedAspect;
-	}
+    @Override
+    public IIcon getFlowingIcon() {
+        return BlockTextureManager.GASEOUS_ESSENTIA.getTexture();
+    }
 
-	/**
-	 * Gets the color of the gas.
-	 */
-	@Override
-	public int getColor()
-	{
-		if( this.associatedAspect != null )
-		{
-			return this.associatedAspect.getColor();
-		}
+    @Deprecated
+    @Override
+    public String getLocalizedName() {
+        return this.getLocalizedName(null);
+    }
 
-		return super.getColor();
-	}
+    /**
+     * Gets the localized version of the gasses name.
+     */
+    @Override
+    public String getLocalizedName(final FluidStack stack) {
+        return this.associatedAspect.getName() + " " + ThEStrings.Fluid_GaseousEssentia.getLocalized();
+    }
 
-	@Override
-	public IIcon getFlowingIcon()
-	{
-		return BlockTextureManager.GASEOUS_ESSENTIA.getTexture();
-	}
-
-	@Deprecated
-	@Override
-	public String getLocalizedName()
-	{
-		return this.getLocalizedName( null );
-	}
-
-	/**
-	 * Gets the localized version of the gasses name.
-	 */
-	@Override
-	public String getLocalizedName( final FluidStack stack )
-	{
-		return this.associatedAspect.getName() + " " + ThEStrings.Fluid_GaseousEssentia.getLocalized();
-	}
-
-	@Override
-	public IIcon getStillIcon()
-	{
-		return BlockTextureManager.GASEOUS_ESSENTIA.getTexture();
-	}
-
+    @Override
+    public IIcon getStillIcon() {
+        return BlockTextureManager.GASEOUS_ESSENTIA.getTexture();
+    }
 }

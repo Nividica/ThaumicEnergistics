@@ -9,7 +9,6 @@ import thaumcraft.api.aspects.Aspect;
  * @author Nividica
  *
  */
-public interface IAspectSlotPart
-{
-	void setAspect( int index, Aspect aspect, EntityPlayer player );
+public interface IAspectSlotPart {
+    void setAspect(int index, Aspect aspect, EntityPlayer player);
 }

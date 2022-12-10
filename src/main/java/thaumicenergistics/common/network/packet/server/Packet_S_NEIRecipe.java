@@ -43,24 +43,22 @@ import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 public class Packet_S_NEIRecipe extends ThEServerPacket {
     private ItemStack[][] recipe = null;
     private NBTTagCompound nbt = null;
+
     @Override
     protected void readData(ByteBuf stream) {
         setRecipe(ByteBufUtils.readTag(stream));
     }
+
     public void setRecipe(NBTTagCompound comp) {
         nbt = comp;
-        if( comp != null )
-        {
+        if (comp != null) {
             this.recipe = new ItemStack[9][];
-            for( int x = 0; x < this.recipe.length; x++ )
-            {
-                final NBTTagList list = comp.getTagList( "#" + x, 10 );
-                if( list.tagCount() > 0 )
-                {
+            for (int x = 0; x < this.recipe.length; x++) {
+                final NBTTagList list = comp.getTagList("#" + x, 10);
+                if (list.tagCount() > 0) {
                     this.recipe[x] = new ItemStack[list.tagCount()];
-                    for( int y = 0; y < list.tagCount(); y++ )
-                    {
-                        this.recipe[x][y] = ItemStack.loadItemStackFromNBT( list.getCompoundTagAt( y ) );
+                    for (int y = 0; y < list.tagCount(); y++) {
+                        this.recipe[x][y] = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(y));
                     }
                 }
             }
@@ -74,8 +72,7 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
      */
     @Override
     protected void writeData(ByteBuf stream) {
-        if (nbt != null)
-            ByteBufUtils.writeTag(stream, nbt);
+        if (nbt != null) ByteBufUtils.writeTag(stream, nbt);
     }
 
     /**
@@ -88,137 +85,169 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
 
         if (con instanceof ContainerPartArcaneCraftingTerminal) {
 
-            ContainerPartArcaneCraftingTerminal act = (ContainerPartArcaneCraftingTerminal)con;
-            InventoryCrafting testInv = new InventoryCrafting( new ContainerInternalCrafting(),3, 3 );
-            for( int x = 0; x < 9; x++ )
-            {
-                if( this.recipe[x] != null && this.recipe[x].length > 0 )
-                {
-                    testInv.setInventorySlotContents( x, this.recipe[x][0] );
+            ContainerPartArcaneCraftingTerminal act = (ContainerPartArcaneCraftingTerminal) con;
+            InventoryCrafting testInv = new InventoryCrafting(new ContainerInternalCrafting(), 3, 3);
+            for (int x = 0; x < 9; x++) {
+                if (this.recipe[x] != null && this.recipe[x].length > 0) {
+                    testInv.setInventorySlotContents(x, this.recipe[x][0]);
                 }
             }
             IRecipe r = Platform.findMatchingRecipe(testInv, player.worldObj);
-            IArcaneRecipe arcaneRecipe = r == null ? ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult( testInv, 0,9, this.player ) : null;
+            IArcaneRecipe arcaneRecipe =
+                    r == null ? ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult(testInv, 0, 9, this.player) : null;
             IGrid grid = act.getHostGrid();
-            if( grid == null )
-                return;
-            final IStorageGrid inv = grid.getCache( IStorageGrid.class );
-            final IEnergyGrid energy = grid.getCache( IEnergyGrid.class );
-            final ISecurityGrid security = grid.getCache( ISecurityGrid.class );
-            TileMagicWorkbench workbenchTile = ArcaneRecipeHelper.INSTANCE.createBridgeInventory( testInv, 0, 9 );
+            if (grid == null) return;
+            final IStorageGrid inv = grid.getCache(IStorageGrid.class);
+            final IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
+            final ISecurityGrid security = grid.getCache(ISecurityGrid.class);
+            TileMagicWorkbench workbenchTile = ArcaneRecipeHelper.INSTANCE.createBridgeInventory(testInv, 0, 9);
             workbenchTile.setWorldObj(player.worldObj);
-            if ((r != null || arcaneRecipe != null) && security != null && security.hasPermission( player, SecurityPermissions.EXTRACT))
-            {
-                final ItemStack is = r != null ? r.getCraftingResult( testInv ) : arcaneRecipe.getCraftingResult(workbenchTile);
-                if (is == null)
-                    return;
+            if ((r != null || arcaneRecipe != null)
+                    && security != null
+                    && security.hasPermission(player, SecurityPermissions.EXTRACT)) {
+                final ItemStack is =
+                        r != null ? r.getCraftingResult(testInv) : arcaneRecipe.getCraftingResult(workbenchTile);
+                if (is == null) return;
                 final IMEMonitor<IAEItemStack> storage = inv.getItemInventory();
                 final IItemList<IAEItemStack> all = storage.getStorageList();
-                final IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter( act.getViewCells() );
-                final IInventory craftMatrix = (PartArcaneCraftingTerminal)act.getCraftingHost();
+                final IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter(act.getViewCells());
+                final IInventory craftMatrix = (PartArcaneCraftingTerminal) act.getCraftingHost();
                 final IInventory playerInventory = player.inventory;
                 BaseActionSource as = new PlayerSource(player, act.terminal);
-                for( int x = 0; x < 9; x++ )
-                {
-                    final ItemStack patternItem = testInv.getStackInSlot( x );
-                    ItemStack currentItem = craftMatrix.getStackInSlot( x );
-                    if( currentItem != null )
-                    {
-                        testInv.setInventorySlotContents( x, currentItem );
-                        workbenchTile.setInventorySlotContents( x, currentItem );
-                        final ItemStack newItemStack = r != null ? (r.matches( testInv, pmp.worldObj ) ? r.getCraftingResult( testInv ) : null)
-                                : (arcaneRecipe.matches(workbenchTile, pmp.worldObj, pmp) ? arcaneRecipe.getCraftingResult(workbenchTile) : null);
-                        testInv.setInventorySlotContents( x, patternItem );
-                        workbenchTile.setInventorySlotContents( x, patternItem );
+                for (int x = 0; x < 9; x++) {
+                    final ItemStack patternItem = testInv.getStackInSlot(x);
+                    ItemStack currentItem = craftMatrix.getStackInSlot(x);
+                    if (currentItem != null) {
+                        testInv.setInventorySlotContents(x, currentItem);
+                        workbenchTile.setInventorySlotContents(x, currentItem);
+                        final ItemStack newItemStack = r != null
+                                ? (r.matches(testInv, pmp.worldObj) ? r.getCraftingResult(testInv) : null)
+                                : (arcaneRecipe.matches(workbenchTile, pmp.worldObj, pmp)
+                                        ? arcaneRecipe.getCraftingResult(workbenchTile)
+                                        : null);
+                        testInv.setInventorySlotContents(x, patternItem);
+                        workbenchTile.setInventorySlotContents(x, patternItem);
 
-                        if( newItemStack == null || !Platform.isSameItemPrecise( newItemStack, is ) )
-                        {
+                        if (newItemStack == null || !Platform.isSameItemPrecise(newItemStack, is)) {
                             final IAEItemStack in = AEItemStack.create(currentItem);
                             final IAEItemStack out = Platform.poweredInsert(energy, storage, in, as);
                             craftMatrix.setInventorySlotContents(x, out != null ? out.getItemStack() : null);
                             currentItem = craftMatrix.getStackInSlot(x);
                         }
                     }
-                    if( patternItem != null && currentItem == null )
-                    {
-                        ItemStack whichItem = r != null ?
-                                Platform.extractItemsByRecipe( energy, as, storage, player.worldObj, r, is, testInv, patternItem, x, all, Actionable.MODULATE, filter )
-                                : extractItemsByArcaneRecipe(energy, as, storage, player.worldObj, arcaneRecipe, is, workbenchTile, patternItem, x, all, Actionable.MODULATE, filter );
-                        if( whichItem == null && playerInventory != null )
-                            whichItem = extractItemFromPlayerInventory( player, patternItem );
+                    if (patternItem != null && currentItem == null) {
+                        ItemStack whichItem = r != null
+                                ? Platform.extractItemsByRecipe(
+                                        energy,
+                                        as,
+                                        storage,
+                                        player.worldObj,
+                                        r,
+                                        is,
+                                        testInv,
+                                        patternItem,
+                                        x,
+                                        all,
+                                        Actionable.MODULATE,
+                                        filter)
+                                : extractItemsByArcaneRecipe(
+                                        energy,
+                                        as,
+                                        storage,
+                                        player.worldObj,
+                                        arcaneRecipe,
+                                        is,
+                                        workbenchTile,
+                                        patternItem,
+                                        x,
+                                        all,
+                                        Actionable.MODULATE,
+                                        filter);
+                        if (whichItem == null && playerInventory != null)
+                            whichItem = extractItemFromPlayerInventory(player, patternItem);
 
-                        craftMatrix.setInventorySlotContents( x, whichItem );
+                        craftMatrix.setInventorySlotContents(x, whichItem);
                     }
-                    con.onCraftMatrixChanged( craftMatrix );
+                    con.onCraftMatrixChanged(craftMatrix);
                 }
             }
         }
     }
-    ItemStack extractItemsByArcaneRecipe(final IEnergySource energySrc, final BaseActionSource mySrc,
-                                                       final IMEMonitor<IAEItemStack> src, final World w, final IArcaneRecipe r, final ItemStack output, final TileMagicWorkbench workbenchTile, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
-    {
-        if( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
-        {
-            if( providedTemplate == null )
-            {
+
+    ItemStack extractItemsByArcaneRecipe(
+            final IEnergySource energySrc,
+            final BaseActionSource mySrc,
+            final IMEMonitor<IAEItemStack> src,
+            final World w,
+            final IArcaneRecipe r,
+            final ItemStack output,
+            final TileMagicWorkbench workbenchTile,
+            final ItemStack providedTemplate,
+            final int slot,
+            final IItemList<IAEItemStack> items,
+            final Actionable realForFake,
+            final IPartitionList<IAEItemStack> filter) {
+        if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
+            if (providedTemplate == null) {
                 return null;
             }
 
-            final AEItemStack ae_req = AEItemStack.create( providedTemplate );
-            ae_req.setStackSize( 1 );
+            final AEItemStack ae_req = AEItemStack.create(providedTemplate);
+            ae_req.setStackSize(1);
 
-            if( filter == null || filter.isListed( ae_req ) )
-            {
-                final IAEItemStack ae_ext = src.extractItems( ae_req, realForFake, mySrc );
-                if( ae_ext != null )
-                {
+            if (filter == null || filter.isListed(ae_req)) {
+                final IAEItemStack ae_ext = src.extractItems(ae_req, realForFake, mySrc);
+                if (ae_ext != null) {
                     final ItemStack extracted = ae_ext.getItemStack();
-                    if( extracted != null )
-                    {
-                        energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
+                    if (extracted != null) {
+                        energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
                         return extracted;
                     }
                 }
             }
 
-            final boolean checkFuzzy = ae_req.isOre() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate.hasTagCompound() || providedTemplate.isItemStackDamageable();
+            final boolean checkFuzzy = ae_req.isOre()
+                    || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE
+                    || providedTemplate.hasTagCompound()
+                    || providedTemplate.isItemStackDamageable();
 
-            if( items != null && checkFuzzy )
-            {
-                for( final IAEItemStack x : items )
-                {
+            if (items != null && checkFuzzy) {
+                for (final IAEItemStack x : items) {
                     final ItemStack sh = x.getItemStack();
-                    if( ( Platform.isSameItemType( providedTemplate, sh ) || ae_req.sameOre( x ) ) && !Platform.isSameItem( sh, output ) )
-                    { // Platform.isSameItemType( sh, providedTemplate )
-                        final ItemStack cp = Platform.cloneItemStack( sh );
+                    if ((Platform.isSameItemType(providedTemplate, sh) || ae_req.sameOre(x))
+                            && !Platform.isSameItem(sh, output)) { // Platform.isSameItemType( sh, providedTemplate )
+                        final ItemStack cp = Platform.cloneItemStack(sh);
                         cp.stackSize = 1;
-                        workbenchTile.setInventorySlotContents( slot, cp );
-                        if( r.matches( workbenchTile, w, player ) && Platform.isSameItem( r.getCraftingResult( workbenchTile ), output ) )
-                        {
+                        workbenchTile.setInventorySlotContents(slot, cp);
+                        if (r.matches(workbenchTile, w, player)
+                                && Platform.isSameItem(r.getCraftingResult(workbenchTile), output)) {
                             final IAEItemStack ax = x.copy();
-                            ax.setStackSize( 1 );
-                            if( filter == null || filter.isListed( ax ) )
-                            {
-                                final IAEItemStack ex = src.extractItems( ax, realForFake, mySrc );
-                                if( ex != null )
-                                {
-                                    energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
+                            ax.setStackSize(1);
+                            if (filter == null || filter.isListed(ax)) {
+                                final IAEItemStack ex = src.extractItems(ax, realForFake, mySrc);
+                                if (ex != null) {
+                                    energySrc.extractAEPower(1, realForFake, PowerMultiplier.CONFIG);
                                     return ex.getItemStack();
                                 }
                             }
                         }
-                        workbenchTile.setInventorySlotContents( slot, providedTemplate );
+                        workbenchTile.setInventorySlotContents(slot, providedTemplate);
                     }
                 }
             }
         }
         return null;
     }
-    private ItemStack extractItemFromPlayerInventory(final EntityPlayer player, final ItemStack patternItem )
-    {
-        final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
-        final AEItemStack request = AEItemStack.create( patternItem );
-        final boolean checkFuzzy = request.isOre() || patternItem.getItemDamage() == OreDictionary.WILDCARD_VALUE || patternItem.hasTagCompound() || patternItem.isItemStackDamageable();
-        return checkFuzzy ? ia.removeSimilarItems( 1, patternItem, FuzzyMode.IGNORE_ALL, null ) : ia.removeItems( 1, patternItem, null );
+
+    private ItemStack extractItemFromPlayerInventory(final EntityPlayer player, final ItemStack patternItem) {
+        final InventoryAdaptor ia = InventoryAdaptor.getAdaptor(player, ForgeDirection.UNKNOWN);
+        final AEItemStack request = AEItemStack.create(patternItem);
+        final boolean checkFuzzy = request.isOre()
+                || patternItem.getItemDamage() == OreDictionary.WILDCARD_VALUE
+                || patternItem.hasTagCompound()
+                || patternItem.isItemStackDamageable();
+        return checkFuzzy
+                ? ia.removeSimilarItems(1, patternItem, FuzzyMode.IGNORE_ALL, null)
+                : ia.removeItems(1, patternItem, null);
     }
 }

@@ -8,16 +8,10 @@ import thaumicenergistics.common.network.WrapperPacket;
  * @author Nividica
  *
  */
-public class WrapperPacket_C
-	extends WrapperPacket
-{
-	public WrapperPacket_C()
-	{
+public class WrapperPacket_C extends WrapperPacket {
+    public WrapperPacket_C() {}
 
-	}
-
-	public WrapperPacket_C( final ThEClientPacket packet )
-	{
-		super( packet );
-	}
+    public WrapperPacket_C(final ThEClientPacket packet) {
+        super(packet);
+    }
 }

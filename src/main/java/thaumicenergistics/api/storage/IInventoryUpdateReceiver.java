@@ -8,12 +8,11 @@ import net.minecraft.inventory.IInventory;
  * @author Nividica
  *
  */
-public interface IInventoryUpdateReceiver
-{
-	/**
-	 * Called when an inventory is changed.
-	 *
-	 * @param sourceInventory
-	 */
-	public void onInventoryChanged( IInventory sourceInventory );
+public interface IInventoryUpdateReceiver {
+    /**
+     * Called when an inventory is changed.
+     *
+     * @param sourceInventory
+     */
+    public void onInventoryChanged(IInventory sourceInventory);
 }

@@ -13,19 +13,14 @@ import thaumicenergistics.common.tiles.TileEssentiaProvider;
  *
  */
 @SideOnly(Side.CLIENT)
-public class RenderBlockEssentiaProvider
-	extends RenderBlockProviderBase
-{
-	public RenderBlockEssentiaProvider()
-	{
-		super( BlockTextureManager.ESSENTIA_PROVIDER );
-	}
+public class RenderBlockEssentiaProvider extends RenderBlockProviderBase {
+    public RenderBlockEssentiaProvider() {
+        super(BlockTextureManager.ESSENTIA_PROVIDER);
+    }
 
-	@Override
-	public int getRenderId()
-	{
-		// Return the ID of the essentia provider
-		return Renderers.EssentiaProviderRenderID;
-	}
-
+    @Override
+    public int getRenderId() {
+        // Return the ID of the essentia provider
+        return Renderers.EssentiaProviderRenderID;
+    }
 }

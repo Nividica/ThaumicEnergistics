@@ -8,13 +8,10 @@ import thaumicenergistics.common.network.ThEBasePacket;
  * @author Nividica
  *
  */
-public abstract class ThEServerPacket
-	extends ThEBasePacket
-{
+public abstract class ThEServerPacket extends ThEBasePacket {
 
-	@Override
-	protected final boolean includePlayerInStream()
-	{
-		return true;
-	}
+    @Override
+    protected final boolean includePlayerInStream() {
+        return true;
+    }
 }

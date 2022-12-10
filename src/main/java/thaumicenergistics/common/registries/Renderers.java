@@ -18,52 +18,51 @@ import thaumicenergistics.common.tiles.TileGearBox;
  *
  */
 @SideOnly(Side.CLIENT)
-public class Renderers
-{
-	public static final int PASS_OPAQUE = 0;
-	public static final int PASS_ALPHA = 1;
+public class Renderers {
+    public static final int PASS_OPAQUE = 0;
+    public static final int PASS_ALPHA = 1;
 
-	public static int currentRenderPass = 0;
+    public static int currentRenderPass = 0;
 
-	public static int EssentiaProviderRenderID, InfusionProviderRenderID;
+    public static int EssentiaProviderRenderID, InfusionProviderRenderID;
 
-	public static void registerRenderers()
-	{
-		// Get the next render ID
-		Renderers.EssentiaProviderRenderID = RenderingRegistry.getNextAvailableRenderId();
-		// Register the essentia provider renderer
-		RenderingRegistry.registerBlockHandler( new RenderBlockEssentiaProvider() );
+    public static void registerRenderers() {
+        // Get the next render ID
+        Renderers.EssentiaProviderRenderID = RenderingRegistry.getNextAvailableRenderId();
+        // Register the essentia provider renderer
+        RenderingRegistry.registerBlockHandler(new RenderBlockEssentiaProvider());
 
-		// Get the next render ID
-		Renderers.InfusionProviderRenderID = RenderingRegistry.getNextAvailableRenderId();
+        // Get the next render ID
+        Renderers.InfusionProviderRenderID = RenderingRegistry.getNextAvailableRenderId();
 
-		// Register the infusion provider renderer
-		RenderingRegistry.registerBlockHandler( new RenderBlockInfusionProvider() );
+        // Register the infusion provider renderer
+        RenderingRegistry.registerBlockHandler(new RenderBlockInfusionProvider());
 
-		// Are gearbox models enabled?
-		if( !ThEApi.instance().config().disableGearboxModel() )
-		{
-			// Register the gearbox renderer
-			ClientRegistry.bindTileEntitySpecialRenderer( TileGearBox.class, new RenderTileGearbox() );
+        // Are gearbox models enabled?
+        if (!ThEApi.instance().config().disableGearboxModel()) {
+            // Register the gearbox renderer
+            ClientRegistry.bindTileEntitySpecialRenderer(TileGearBox.class, new RenderTileGearbox());
 
-			// Register thaumium gearbox item renderer
-			MinecraftForgeClient.registerItemRenderer( ThEApi.instance().blocks().ThaumiumGearBox.getItem(), new TileAsItemRenderer(
-							new RenderTileGearbox(), new TileGearBox( true ) ) );
+            // Register thaumium gearbox item renderer
+            MinecraftForgeClient.registerItemRenderer(
+                    ThEApi.instance().blocks().ThaumiumGearBox.getItem(),
+                    new TileAsItemRenderer(new RenderTileGearbox(), new TileGearBox(true)));
 
-			// Register iron gearbox item renderer
-			MinecraftForgeClient.registerItemRenderer( ThEApi.instance().blocks().IronGearBox.getItem(), new TileAsItemRenderer(
-							new RenderTileGearbox(), new TileGearBox( false ) ) );
-		}
+            // Register iron gearbox item renderer
+            MinecraftForgeClient.registerItemRenderer(
+                    ThEApi.instance().blocks().IronGearBox.getItem(),
+                    new TileAsItemRenderer(new RenderTileGearbox(), new TileGearBox(false)));
+        }
 
-		// Register the arcane assembler renderer
-		ClientRegistry.bindTileEntitySpecialRenderer( TileArcaneAssembler.class, new RenderTileArcaneAssembler() );
+        // Register the arcane assembler renderer
+        ClientRegistry.bindTileEntitySpecialRenderer(TileArcaneAssembler.class, new RenderTileArcaneAssembler());
 
-		// Register arcane assembler item renderer
-		MinecraftForgeClient.registerItemRenderer( ThEApi.instance().blocks().ArcaneAssembler.getItem(), new TileAsItemRenderer(
-						new RenderTileArcaneAssembler(), new TileArcaneAssembler() ) );
+        // Register arcane assembler item renderer
+        MinecraftForgeClient.registerItemRenderer(
+                ThEApi.instance().blocks().ArcaneAssembler.getItem(),
+                new TileAsItemRenderer(new RenderTileArcaneAssembler(), new TileArcaneAssembler()));
 
-		// Register crafting aspect item renderer
-		MinecraftForgeClient.registerItemRenderer( ItemEnum.CRAFTING_ASPECT.getItem(), new RendererItemCraftingAspect() );
-
-	}
+        // Register crafting aspect item renderer
+        MinecraftForgeClient.registerItemRenderer(ItemEnum.CRAFTING_ASPECT.getItem(), new RendererItemCraftingAspect());
+    }
 }

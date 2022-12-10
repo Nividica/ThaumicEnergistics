@@ -38,412 +38,393 @@ import thaumicenergistics.implementaion.ThEMultiCraftingTracker;
  * @author Nividica
  *
  */
-public class PartEssentiaExportBus
-	extends ThEPartEssentiaIOBus_Base
-		implements ICraftingRequester
-{
-	private final ThEMultiCraftingTracker craftingTracker = new ThEMultiCraftingTracker( this, 9 );
-	private static final String NBT_KEY_VOID = "IsVoidAllowed";
-	private final BaseActionSource mySrc;
+public class PartEssentiaExportBus extends ThEPartEssentiaIOBus_Base implements ICraftingRequester {
+    private final ThEMultiCraftingTracker craftingTracker = new ThEMultiCraftingTracker(this, 9);
+    private static final String NBT_KEY_VOID = "IsVoidAllowed";
+    private final BaseActionSource mySrc;
 
-	/**
-	 * If true, excess essentia will be voided when facing a void jar.
-	 */
-	private boolean isVoidAllowed = false;
-	private boolean isCraftingOnly = false;
+    /**
+     * If true, excess essentia will be voided when facing a void jar.
+     */
+    private boolean isVoidAllowed = false;
 
-	public PartEssentiaExportBus()
-	{
-		super( AEPartsEnum.EssentiaExportBus, SecurityPermissions.EXTRACT );
-		this.mySrc = new MachineSource( this );
-	}
+    private boolean isCraftingOnly = false;
 
-	@Override
-	public boolean aspectTransferAllowed( final Aspect aspect )
-	{
-		return true;
-	}
+    public PartEssentiaExportBus() {
+        super(AEPartsEnum.EssentiaExportBus, SecurityPermissions.EXTRACT);
+        this.mySrc = new MachineSource(this);
+    }
 
-	@Override
-	public int cableConnectionRenderTo()
-	{
-		return 5;
-	}
+    @Override
+    public boolean aspectTransferAllowed(final Aspect aspect) {
+        return true;
+    }
 
-	/**
-	 * Attempts to transfer essentia out of the network and into the adjacent
-	 * container.
-	 */
-	@Override
-	public boolean doWork( final int amountToFillContainer )
-	{
-		// Ensure we have a container.
-		if( this.facingContainer == null )
-		{
-			// Invalid container
-			return false;
-		}
+    @Override
+    public int cableConnectionRenderTo() {
+        return 5;
+    }
 
-		// Loop over all aspect filters
-		for(int slot = 0; slot < filteredAspects.size(); ++slot )
-		{
-			Aspect filterAspect = filteredAspects.get(slot);
-			// Can we transfer?
-			if( filterAspect == null )
-			{
-				// Invalid or not allowed
-				continue;
-			}
+    /**
+     * Attempts to transfer essentia out of the network and into the adjacent
+     * container.
+     */
+    @Override
+    public boolean doWork(final int amountToFillContainer) {
+        // Ensure we have a container.
+        if (this.facingContainer == null) {
+            // Invalid container
+            return false;
+        }
 
-			// Can we inject any of this into the container
-			if( EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer( this.facingContainer, 1, filterAspect, Actionable.SIMULATE ) <= 0 )
-			{
-				if( !( ( this.isVoidAllowed ) &&
-								( EssentiaTileContainerHelper.INSTANCE.getAspectInContainer( this.facingContainer ) == filterAspect ) ) )
-				{
-					// Container will not accept any of this, and cannot void(essentia type wrong)
-					continue;
-				}
-			}
+        // Loop over all aspect filters
+        for (int slot = 0; slot < filteredAspects.size(); ++slot) {
+            Aspect filterAspect = filteredAspects.get(slot);
+            // Can we transfer?
+            if (filterAspect == null) {
+                // Invalid or not allowed
+                continue;
+            }
 
-			// Get the monitor
-			IMEEssentiaMonitor essMonitor = this.getGridBlock().getEssentiaMonitor();
-			if( essMonitor == null )
-			{
-				return false;
-			}
-			if (isCraftingOnly())
-			{
-				handleCratting(amountToFillContainer, slot, filterAspect);
-				continue;
-			}
+            // Can we inject any of this into the container
+            if (EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer(
+                            this.facingContainer, 1, filterAspect, Actionable.SIMULATE)
+                    <= 0) {
+                if (!((this.isVoidAllowed)
+                        && (EssentiaTileContainerHelper.INSTANCE.getAspectInContainer(this.facingContainer)
+                                == filterAspect))) {
+                    // Container will not accept any of this, and cannot void(essentia type wrong)
+                    continue;
+                }
+            }
 
-			// Simulate a network extraction
-			long extractedAmount = essMonitor.extractEssentia( filterAspect, amountToFillContainer, Actionable.SIMULATE, this.asMachineSource, true );
+            // Get the monitor
+            IMEEssentiaMonitor essMonitor = this.getGridBlock().getEssentiaMonitor();
+            if (essMonitor == null) {
+                return false;
+            }
+            if (isCraftingOnly()) {
+                handleCratting(amountToFillContainer, slot, filterAspect);
+                continue;
+            }
 
-			// Was any extracted?
-			if( extractedAmount <= 0 )
-			{
-				if (hasCraftingCard)
-				{
-					handleCratting(amountToFillContainer, slot, filterAspect);
-				}
-				// Unable to extract from network
-				continue;
-			}
+            // Simulate a network extraction
+            long extractedAmount = essMonitor.extractEssentia(
+                    filterAspect, amountToFillContainer, Actionable.SIMULATE, this.asMachineSource, true);
 
-			long filledAmount = injectAspect(Actionable.MODULATE, filterAspect, extractedAmount);
-			// Was the container filled?
-			if( filledAmount <= 0 )
-			{
-				// Unable to inject into container
-				continue;
-			}
+            // Was any extracted?
+            if (extractedAmount <= 0) {
+                if (hasCraftingCard) {
+                    handleCratting(amountToFillContainer, slot, filterAspect);
+                }
+                // Unable to extract from network
+                continue;
+            }
 
-			// Done
-			return true;
-		}
+            long filledAmount = injectAspect(Actionable.MODULATE, filterAspect, extractedAmount);
+            // Was the container filled?
+            if (filledAmount <= 0) {
+                // Unable to inject into container
+                continue;
+            }
 
-		return false;
-	}
+            // Done
+            return true;
+        }
 
-	private void handleCratting(int amountToFillContainer, int slot, Aspect filterAspect)
-	{
-		IGrid grid = getGridNode().getGrid();
-		final ICraftingGrid cg = grid.getCache(ICraftingGrid.class);
-		IAEItemStack result = AEApi.instance().storage().createItemStack(ItemCraftingAspect.createStackForAspect(filterAspect, amountToFillContainer));
-		this.craftingTracker.handleCrafting(slot, amountToFillContainer, result, getHostTile().getWorldObj(), grid, cg, this.mySrc);
-	}
+        return false;
+    }
 
-	@Override
-	public void getBoxes( final IPartCollisionHelper helper )
-	{
-		// Large chamber and back wall
-		helper.addBox( 4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 13.5F );
+    private void handleCratting(int amountToFillContainer, int slot, Aspect filterAspect) {
+        IGrid grid = getGridNode().getGrid();
+        final ICraftingGrid cg = grid.getCache(ICraftingGrid.class);
+        IAEItemStack result = AEApi.instance()
+                .storage()
+                .createItemStack(ItemCraftingAspect.createStackForAspect(filterAspect, amountToFillContainer));
+        this.craftingTracker.handleCrafting(
+                slot, amountToFillContainer, result, getHostTile().getWorldObj(), grid, cg, this.mySrc);
+    }
 
-		// Small chamber and front wall
-		helper.addBox( 5.0F, 5.0F, 13.5F, 11.0F, 11.0F, 15.0F );
+    @Override
+    public void getBoxes(final IPartCollisionHelper helper) {
+        // Large chamber and back wall
+        helper.addBox(4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 13.5F);
 
-		// Face
-		helper.addBox( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
-	}
+        // Small chamber and front wall
+        helper.addBox(5.0F, 5.0F, 13.5F, 11.0F, 11.0F, 15.0F);
 
-	@Override
-	public IIcon getBreakingTexture()
-	{
-		return BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[2];
-	}
+        // Face
+        helper.addBox(6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F);
+    }
 
-	/**
-	 * Returns if voiding is allowed.
-	 *
-	 * @return
-	 */
-	@Override
-	public boolean isVoidAllowed()
-	{
-		return this.isVoidAllowed;
-	}
+    @Override
+    public IIcon getBreakingTexture() {
+        return BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[2];
+    }
 
-	@Override
-	public boolean isCraftingOnly()	{ return isCraftingOnly; }
+    /**
+     * Returns if voiding is allowed.
+     *
+     * @return
+     */
+    @Override
+    public boolean isVoidAllowed() {
+        return this.isVoidAllowed;
+    }
 
-	@Override
-	public void setCraftingOnly(boolean c)
-	{
-		isCraftingOnly = c;
-	}
+    @Override
+    public boolean isCraftingOnly() {
+        return isCraftingOnly;
+    }
 
-	@Override
-	public void onClientRequestFilterList( final EntityPlayer player )
-	{
-		// Call super
-		super.onClientRequestFilterList( player );
-	}
+    @Override
+    public void setCraftingOnly(boolean c) {
+        isCraftingOnly = c;
+    }
 
-	@Override
-	public void readFromNBT( final NBTTagCompound data )
-	{
-		// Call super
-		super.readFromNBT( data );
+    @Override
+    public void onClientRequestFilterList(final EntityPlayer player) {
+        // Call super
+        super.onClientRequestFilterList(player);
+    }
 
-		// Read void
-		if( data.hasKey( PartEssentiaExportBus.NBT_KEY_VOID ) )
-		{
-			this.isVoidAllowed = data.getBoolean( PartEssentiaExportBus.NBT_KEY_VOID );
-		}
-		this.craftingTracker.readFromNBT( data );
-		if	(data.hasKey("isCraftingOnly"))
-		{
-			isCraftingOnly = data.getBoolean("isCraftingOnly");
-		}
-	}
+    @Override
+    public void readFromNBT(final NBTTagCompound data) {
+        // Call super
+        super.readFromNBT(data);
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void renderInventory( final IPartRenderHelper helper, final RenderBlocks renderer )
-	{
-		Tessellator ts = Tessellator.instance;
+        // Read void
+        if (data.hasKey(PartEssentiaExportBus.NBT_KEY_VOID)) {
+            this.isVoidAllowed = data.getBoolean(PartEssentiaExportBus.NBT_KEY_VOID);
+        }
+        this.craftingTracker.readFromNBT(data);
+        if (data.hasKey("isCraftingOnly")) {
+            isCraftingOnly = data.getBoolean("isCraftingOnly");
+        }
+    }
 
-		IIcon busSideTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[3];
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void renderInventory(final IPartRenderHelper helper, final RenderBlocks renderer) {
+        Tessellator ts = Tessellator.instance;
 
-		// Set the texture to the side texture
-		helper.setTexture( busSideTexture );
+        IIcon busSideTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[3];
 
-		//Large Chamber back wall
-		helper.setBounds( 4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 12.5F );
-		helper.renderInventoryBox( renderer );
+        // Set the texture to the side texture
+        helper.setTexture(busSideTexture);
 
-		// Set the texture to the chamber
-		helper.setTexture( BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[2] );
+        // Large Chamber back wall
+        helper.setBounds(4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 12.5F);
+        helper.renderInventoryBox(renderer);
 
-		// Large chamber
-		helper.setBounds( 4.0F, 4.0F, 12.5F, 12.0F, 12.0F, 13.5F );
-		helper.renderInventoryBox( renderer );
+        // Set the texture to the chamber
+        helper.setTexture(BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[2]);
 
-		// Small chamber
-		helper.setBounds( 5.0F, 5.0F, 13.5F, 11.0F, 11.0F, 14.5F );
-		helper.renderInventoryBox( renderer );
+        // Large chamber
+        helper.setBounds(4.0F, 4.0F, 12.5F, 12.0F, 12.0F, 13.5F);
+        helper.renderInventoryBox(renderer);
 
-		// Set the texture back to the side texture
-		helper.setTexture( busSideTexture );
+        // Small chamber
+        helper.setBounds(5.0F, 5.0F, 13.5F, 11.0F, 11.0F, 14.5F);
+        helper.renderInventoryBox(renderer);
 
-		// Small chamber front wall
-		helper.setBounds( 5.0F, 5.0F, 14.5F, 11.0F, 11.0F, 15.0F );
-		helper.renderInventoryBox( renderer );
+        // Set the texture back to the side texture
+        helper.setTexture(busSideTexture);
 
-		// Setup the face texture
-		helper.setTexture( busSideTexture, busSideTexture, busSideTexture, BlockTextureManager.ESSENTIA_EXPORT_BUS.getTexture(), busSideTexture,
-			busSideTexture );
+        // Small chamber front wall
+        helper.setBounds(5.0F, 5.0F, 14.5F, 11.0F, 11.0F, 15.0F);
+        helper.renderInventoryBox(renderer);
 
-		// Face
-		helper.setBounds( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
-		helper.renderInventoryBox( renderer );
+        // Setup the face texture
+        helper.setTexture(
+                busSideTexture,
+                busSideTexture,
+                busSideTexture,
+                BlockTextureManager.ESSENTIA_EXPORT_BUS.getTexture(),
+                busSideTexture,
+                busSideTexture);
 
-		// Face overlay
-		helper.setInvColor( ThEPartBase.INVENTORY_OVERLAY_COLOR );
-		ts.setBrightness( 0xF000F0 );
-		IIcon faceOverlayTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[1];
-		helper.renderInventoryFace( faceOverlayTexture, ForgeDirection.UP, renderer );
-		helper.renderInventoryFace( faceOverlayTexture, ForgeDirection.DOWN, renderer );
-		helper.renderInventoryFace( faceOverlayTexture, ForgeDirection.EAST, renderer );
-		helper.renderInventoryFace( faceOverlayTexture, ForgeDirection.WEST, renderer );
+        // Face
+        helper.setBounds(6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F);
+        helper.renderInventoryBox(renderer);
 
-		// Lights
-		helper.setBounds( 6.0F, 6.0F, 11.0F, 10.0F, 10.0F, 12.0F );
-		this.renderInventoryBusLights( helper, renderer );
-	}
+        // Face overlay
+        helper.setInvColor(ThEPartBase.INVENTORY_OVERLAY_COLOR);
+        ts.setBrightness(0xF000F0);
+        IIcon faceOverlayTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[1];
+        helper.renderInventoryFace(faceOverlayTexture, ForgeDirection.UP, renderer);
+        helper.renderInventoryFace(faceOverlayTexture, ForgeDirection.DOWN, renderer);
+        helper.renderInventoryFace(faceOverlayTexture, ForgeDirection.EAST, renderer);
+        helper.renderInventoryFace(faceOverlayTexture, ForgeDirection.WEST, renderer);
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderStatic( final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer )
-	{
-		Tessellator ts = Tessellator.instance;
+        // Lights
+        helper.setBounds(6.0F, 6.0F, 11.0F, 10.0F, 10.0F, 12.0F);
+        this.renderInventoryBusLights(helper, renderer);
+    }
 
-		IIcon busSideTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[3];
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void renderStatic(
+            final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer) {
+        Tessellator ts = Tessellator.instance;
 
-		// Set the texture to the side texture
-		helper.setTexture( busSideTexture );
+        IIcon busSideTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[3];
 
-		//Large Chamber back wall
-		helper.setBounds( 4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 12.5F );
-		helper.renderBlock( x, y, z, renderer );
+        // Set the texture to the side texture
+        helper.setTexture(busSideTexture);
 
-		// Set to alpha pass
-		helper.renderForPass( 1 );
+        // Large Chamber back wall
+        helper.setBounds(4.0F, 4.0F, 12.0F, 12.0F, 12.0F, 12.5F);
+        helper.renderBlock(x, y, z, renderer);
 
-		// Set the texture to the chamber
-		helper.setTexture( BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[2] );
+        // Set to alpha pass
+        helper.renderForPass(1);
 
-		// Large chamber
-		helper.setBounds( 4.0F, 4.0F, 12.5F, 12.0F, 12.0F, 13.5F );
-		helper.renderBlock( x, y, z, renderer );
+        // Set the texture to the chamber
+        helper.setTexture(BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[2]);
 
-		// Small chamber
-		helper.setBounds( 5.0F, 5.0F, 13.5F, 11.0F, 11.0F, 14.5F );
-		helper.renderBlock( x, y, z, renderer );
+        // Large chamber
+        helper.setBounds(4.0F, 4.0F, 12.5F, 12.0F, 12.0F, 13.5F);
+        helper.renderBlock(x, y, z, renderer);
 
-		// Set back to opaque pass
-		helper.renderForPass( 0 );
+        // Small chamber
+        helper.setBounds(5.0F, 5.0F, 13.5F, 11.0F, 11.0F, 14.5F);
+        helper.renderBlock(x, y, z, renderer);
 
-		// Set the texture back to the side texture
-		helper.setTexture( busSideTexture );
+        // Set back to opaque pass
+        helper.renderForPass(0);
 
-		// Small chamber front wall
-		helper.setBounds( 5.0F, 5.0F, 14.5F, 11.0F, 11.0F, 15.0F );
-		helper.renderBlock( x, y, z, renderer );
+        // Set the texture back to the side texture
+        helper.setTexture(busSideTexture);
 
-		// Setup the face texture
-		helper.setTexture( busSideTexture, busSideTexture, busSideTexture, BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[0], busSideTexture,
-			busSideTexture );
+        // Small chamber front wall
+        helper.setBounds(5.0F, 5.0F, 14.5F, 11.0F, 11.0F, 15.0F);
+        helper.renderBlock(x, y, z, renderer);
 
-		// Face
-		helper.setBounds( 6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F );
-		helper.renderBlock( x, y, z, renderer );
+        // Setup the face texture
+        helper.setTexture(
+                busSideTexture,
+                busSideTexture,
+                busSideTexture,
+                BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[0],
+                busSideTexture,
+                busSideTexture);
 
-		// Face overlay
-		ts.setColorOpaque_I( this.getHost().getColor().blackVariant );
+        // Face
+        helper.setBounds(6.0F, 6.0F, 15.0F, 10.0F, 10.0F, 16.0F);
+        helper.renderBlock(x, y, z, renderer);
 
-		if( this.isActive() )
-		{
-			Tessellator.instance.setBrightness( ThEPartBase.ACTIVE_FACE_BRIGHTNESS );
-		}
+        // Face overlay
+        ts.setColorOpaque_I(this.getHost().getColor().blackVariant);
 
-		IIcon faceOverlayTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[1];
-		helper.renderFace( x, y, z, faceOverlayTexture, ForgeDirection.UP, renderer );
-		helper.renderFace( x, y, z, faceOverlayTexture, ForgeDirection.DOWN, renderer );
-		helper.renderFace( x, y, z, faceOverlayTexture, ForgeDirection.EAST, renderer );
-		helper.renderFace( x, y, z, faceOverlayTexture, ForgeDirection.WEST, renderer );
+        if (this.isActive()) {
+            Tessellator.instance.setBrightness(ThEPartBase.ACTIVE_FACE_BRIGHTNESS);
+        }
 
-		// Lights
-		helper.setBounds( 6.0F, 6.0F, 11.0F, 10.0F, 10.0F, 12.0F );
-		this.renderStaticBusLights( x, y, z, helper, renderer );
-	}
+        IIcon faceOverlayTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[1];
+        helper.renderFace(x, y, z, faceOverlayTexture, ForgeDirection.UP, renderer);
+        helper.renderFace(x, y, z, faceOverlayTexture, ForgeDirection.DOWN, renderer);
+        helper.renderFace(x, y, z, faceOverlayTexture, ForgeDirection.EAST, renderer);
+        helper.renderFace(x, y, z, faceOverlayTexture, ForgeDirection.WEST, renderer);
 
-	/**
-	 * Called when a player has requested to change the void mode
-	 */
-	public void toggleVoidMode()
-	{
-		// Swap void modes
-		this.isVoidAllowed = !this.isVoidAllowed;
-	}
-	public void toggleCraftingMode()
-	{
-		isCraftingOnly = !isCraftingOnly;
-	}
+        // Lights
+        helper.setBounds(6.0F, 6.0F, 11.0F, 10.0F, 10.0F, 12.0F);
+        this.renderStaticBusLights(x, y, z, helper, renderer);
+    }
 
-	@Override
-	public void writeToNBT( final NBTTagCompound data, final PartItemStack saveType )
-	{
-		// Call super
-		super.writeToNBT( data, saveType );
+    /**
+     * Called when a player has requested to change the void mode
+     */
+    public void toggleVoidMode() {
+        // Swap void modes
+        this.isVoidAllowed = !this.isVoidAllowed;
+    }
 
-		boolean doSave = ( saveType == PartItemStack.World );
-		if( !doSave )
-		{
-			// Are there any filters?
-			for( Aspect aspect : this.filteredAspects )
-			{
-				if( aspect != null )
-				{
-					// Only save the void state if filters are set.
-					doSave = true;
-					break;
-				}
-			}
-		}
+    public void toggleCraftingMode() {
+        isCraftingOnly = !isCraftingOnly;
+    }
 
-		// Write void
-		if (doSave)
-		{
-			data.setBoolean( PartEssentiaExportBus.NBT_KEY_VOID, isVoidAllowed );
-			this.craftingTracker.writeToNBT(data);
-			data.setBoolean( "isCraftingOnly", isCraftingOnly );
-		}
-	}
-	@Override
-	public ImmutableSet<ICraftingLink> getRequestedJobs()
-	{
-		return this.craftingTracker.getRequestedJobs();
-	}
-	@Override
-	public IAEItemStack injectCraftedItems(final ICraftingLink link, final IAEItemStack items, final Actionable mode )
-	{
-		if (getGridNode().isActive() && ItemEnum.CRAFTING_ASPECT.getItem() == items.getItem())
-		{
-			Aspect a = ItemCraftingAspect.getAspect(items.getItemStack());
-			if (a != null)
-			{
-				long toFill = items.getStackSize();
-				long filledAmount = injectAspect(mode, a, toFill);
-				IAEItemStack c = items.copy();
-				c.setStackSize(toFill - filledAmount);
-				return c;
-			}
-		}
-		return items;
-	}
+    @Override
+    public void writeToNBT(final NBTTagCompound data, final PartItemStack saveType) {
+        // Call super
+        super.writeToNBT(data, saveType);
 
-	private long injectAspect(Actionable mode, Aspect a, long extractedAmount) {
-		long filledAmount;
-		if( this.isVoidAllowed && ( this.facingContainer instanceof TileJarFillableVoid) )
-		{
-			// In void mode, we don't care if the jar can hold it or not.
-			filledAmount = extractedAmount;
-		}
-		else
-		{
-			// Simulate filling the container
-			filledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer( this.facingContainer, (int)extractedAmount,
-					a, Actionable.SIMULATE );
-		}
+        boolean doSave = (saveType == PartItemStack.World);
+        if (!doSave) {
+            // Are there any filters?
+            for (Aspect aspect : this.filteredAspects) {
+                if (aspect != null) {
+                    // Only save the void state if filters are set.
+                    doSave = true;
+                    break;
+                }
+            }
+        }
 
-		// Was the container filled?
-		if( filledAmount <= 0 )
-		{
-			// Unable to inject into container
-			return 0;
-		}
+        // Write void
+        if (doSave) {
+            data.setBoolean(PartEssentiaExportBus.NBT_KEY_VOID, isVoidAllowed);
+            this.craftingTracker.writeToNBT(data);
+            data.setBoolean("isCraftingOnly", isCraftingOnly);
+        }
+    }
 
-		if (mode == Actionable.MODULATE) {
-			// Fill the container
-			long actualFilledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer(this.facingContainer, (int) filledAmount,
-					a, Actionable.MODULATE);
+    @Override
+    public ImmutableSet<ICraftingLink> getRequestedJobs() {
+        return this.craftingTracker.getRequestedJobs();
+    }
 
-			// Is voiding not allowed?
-			if (!this.isVoidAllowed) {
-				filledAmount = actualFilledAmount;
-			}
-			// Take essentia from the network always (because redesigning GridEssentiaCache is too much pain)
-			getGridBlock().getEssentiaMonitor().extractEssentia( a, filledAmount, Actionable.MODULATE, this.asMachineSource, true );
-		}
-		return filledAmount;
-	}
+    @Override
+    public IAEItemStack injectCraftedItems(final ICraftingLink link, final IAEItemStack items, final Actionable mode) {
+        if (getGridNode().isActive() && ItemEnum.CRAFTING_ASPECT.getItem() == items.getItem()) {
+            Aspect a = ItemCraftingAspect.getAspect(items.getItemStack());
+            if (a != null) {
+                long toFill = items.getStackSize();
+                long filledAmount = injectAspect(mode, a, toFill);
+                IAEItemStack c = items.copy();
+                c.setStackSize(toFill - filledAmount);
+                return c;
+            }
+        }
+        return items;
+    }
 
-	@Override
-	public void jobStateChange( final ICraftingLink link )
-	{
-		this.craftingTracker.jobStateChange( link );
-	}
+    private long injectAspect(Actionable mode, Aspect a, long extractedAmount) {
+        long filledAmount;
+        if (this.isVoidAllowed && (this.facingContainer instanceof TileJarFillableVoid)) {
+            // In void mode, we don't care if the jar can hold it or not.
+            filledAmount = extractedAmount;
+        } else {
+            // Simulate filling the container
+            filledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer(
+                    this.facingContainer, (int) extractedAmount, a, Actionable.SIMULATE);
+        }
+
+        // Was the container filled?
+        if (filledAmount <= 0) {
+            // Unable to inject into container
+            return 0;
+        }
+
+        if (mode == Actionable.MODULATE) {
+            // Fill the container
+            long actualFilledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer(
+                    this.facingContainer, (int) filledAmount, a, Actionable.MODULATE);
+
+            // Is voiding not allowed?
+            if (!this.isVoidAllowed) {
+                filledAmount = actualFilledAmount;
+            }
+            // Take essentia from the network always (because redesigning GridEssentiaCache is too much pain)
+            getGridBlock()
+                    .getEssentiaMonitor()
+                    .extractEssentia(a, filledAmount, Actionable.MODULATE, this.asMachineSource, true);
+        }
+        return filledAmount;
+    }
+
+    @Override
+    public void jobStateChange(final ICraftingLink link) {
+        this.craftingTracker.jobStateChange(link);
+    }
 }

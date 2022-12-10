@@ -12,92 +12,79 @@ import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
  * @author Nividica
  *
  */
-public class Packet_S_KnowledgeInscriber
-	extends ThEServerPacket
-{
-	/**
-	 * Packet modes
-	 */
-	private static final byte MODE_FULL_UPDATE = 0,
-					MODE_SAVEDELETE = 1,
-					MODE_CLEAR = 2;
+public class Packet_S_KnowledgeInscriber extends ThEServerPacket {
+    /**
+     * Packet modes
+     */
+    private static final byte MODE_FULL_UPDATE = 0, MODE_SAVEDELETE = 1, MODE_CLEAR = 2;
 
-	private static Packet_S_KnowledgeInscriber newPacket( final EntityPlayer player, final byte mode )
-	{
-		Packet_S_KnowledgeInscriber packet = new Packet_S_KnowledgeInscriber();
+    private static Packet_S_KnowledgeInscriber newPacket(final EntityPlayer player, final byte mode) {
+        Packet_S_KnowledgeInscriber packet = new Packet_S_KnowledgeInscriber();
 
-		// Set the player
-		packet.player = player;
+        // Set the player
+        packet.player = player;
 
-		// Set the mode
-		packet.mode = mode;
+        // Set the mode
+        packet.mode = mode;
 
-		return packet;
-	}
+        return packet;
+    }
 
-	public static void sendClearGrid( final EntityPlayer player )
-	{
-		// Create the packet
-		Packet_S_KnowledgeInscriber packet = newPacket( player, MODE_CLEAR );
+    public static void sendClearGrid(final EntityPlayer player) {
+        // Create the packet
+        Packet_S_KnowledgeInscriber packet = newPacket(player, MODE_CLEAR);
 
-		// Send it
-		NetworkHandler.sendPacketToServer( packet );
-	}
+        // Send it
+        NetworkHandler.sendPacketToServer(packet);
+    }
 
-	public static void sendFullUpdateRequest( final EntityPlayer player )
-	{
-		// Create the packet
-		Packet_S_KnowledgeInscriber packet = newPacket( player, MODE_FULL_UPDATE );
+    public static void sendFullUpdateRequest(final EntityPlayer player) {
+        // Create the packet
+        Packet_S_KnowledgeInscriber packet = newPacket(player, MODE_FULL_UPDATE);
 
-		// Send it
-		NetworkHandler.sendPacketToServer( packet );
-	}
+        // Send it
+        NetworkHandler.sendPacketToServer(packet);
+    }
 
-	public static void sendSaveDelete( final EntityPlayer player )
-	{
-		// Create the packet
-		Packet_S_KnowledgeInscriber packet = newPacket( player, MODE_SAVEDELETE );
+    public static void sendSaveDelete(final EntityPlayer player) {
+        // Create the packet
+        Packet_S_KnowledgeInscriber packet = newPacket(player, MODE_SAVEDELETE);
 
-		// Send it
-		NetworkHandler.sendPacketToServer( packet );
-	}
+        // Send it
+        NetworkHandler.sendPacketToServer(packet);
+    }
 
-	@Override
-	protected void readData( final ByteBuf stream )
-	{
-		// Intentionally empty
+    @Override
+    protected void readData(final ByteBuf stream) {
+        // Intentionally empty
 
-	}
+    }
 
-	@Override
-	protected void writeData( final ByteBuf stream )
-	{
-		// Intentionally empty
-	}
+    @Override
+    protected void writeData(final ByteBuf stream) {
+        // Intentionally empty
+    }
 
-	@Override
-	public void execute()
-	{
-		// If the player is not null, and they have the KI container open
-		if( ( this.player != null ) && ( this.player.openContainer instanceof ContainerKnowledgeInscriber ) )
-		{
-			switch ( this.mode )
-			{
-			case MODE_FULL_UPDATE:
-				// Request full update
-				( (ContainerKnowledgeInscriber)this.player.openContainer ).onClientRequestSaveState();
-				break;
+    @Override
+    public void execute() {
+        // If the player is not null, and they have the KI container open
+        if ((this.player != null) && (this.player.openContainer instanceof ContainerKnowledgeInscriber)) {
+            switch (this.mode) {
+                case MODE_FULL_UPDATE:
+                    // Request full update
+                    ((ContainerKnowledgeInscriber) this.player.openContainer).onClientRequestSaveState();
+                    break;
 
-			case MODE_SAVEDELETE:
-				// Request save/delete
-				( (ContainerKnowledgeInscriber)this.player.openContainer ).onClientRequestSaveOrDelete( this.player );
-				break;
+                case MODE_SAVEDELETE:
+                    // Request save/delete
+                    ((ContainerKnowledgeInscriber) this.player.openContainer).onClientRequestSaveOrDelete(this.player);
+                    break;
 
-			case MODE_CLEAR:
-				// Request clear
-				( (ContainerKnowledgeInscriber)this.player.openContainer ).onClientRequestClearGrid();
-				break;
-			}
-		}
-	}
+                case MODE_CLEAR:
+                    // Request clear
+                    ((ContainerKnowledgeInscriber) this.player.openContainer).onClientRequestClearGrid();
+                    break;
+            }
+        }
+    }
 }

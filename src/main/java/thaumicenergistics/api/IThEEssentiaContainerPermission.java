@@ -6,15 +6,14 @@ package thaumicenergistics.api;
  * @author Nividica
  *
  */
-public interface IThEEssentiaContainerPermission
-{
-	/**
-	 * Can the container be partially filled?
-	 */
-	boolean canHoldPartialAmount();
+public interface IThEEssentiaContainerPermission {
+    /**
+     * Can the container be partially filled?
+     */
+    boolean canHoldPartialAmount();
 
-	/**
-	 * The maximum amount this container can hold
-	 */
-	int maximumCapacity();
+    /**
+     * The maximum amount this container can hold
+     */
+    int maximumCapacity();
 }

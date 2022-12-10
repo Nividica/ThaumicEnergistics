@@ -1,7 +1,7 @@
 package thaumicenergistics.api.tiles;
 
-import javax.annotation.Nonnull;
 import appeng.api.config.Actionable;
+import javax.annotation.Nonnull;
 import net.minecraftforge.common.util.ForgeDirection;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
@@ -12,17 +12,15 @@ import thaumcraft.api.aspects.IEssentiaTransport;
  * @author Nividica
  *
  */
-public interface IEssentiaTransportWithSimulate
-	extends IEssentiaTransport
-{
-	/**
-	 * Adds essentia to the transport.
-	 *
-	 * @param aspect
-	 * @param amount
-	 * @param side
-	 * @param mode
-	 * @return Amount that <strong>was</strong> injected.
-	 */
-	int addEssentia( @Nonnull Aspect aspect, int amount, @Nonnull ForgeDirection side, @Nonnull Actionable mode );
+public interface IEssentiaTransportWithSimulate extends IEssentiaTransport {
+    /**
+     * Adds essentia to the transport.
+     *
+     * @param aspect
+     * @param amount
+     * @param side
+     * @param mode
+     * @return Amount that <strong>was</strong> injected.
+     */
+    int addEssentia(@Nonnull Aspect aspect, int amount, @Nonnull ForgeDirection side, @Nonnull Actionable mode);
 }

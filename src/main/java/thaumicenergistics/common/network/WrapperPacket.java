@@ -10,90 +10,72 @@ import thaumicenergistics.common.utils.ThELog;
  * @author Nividica
  *
  */
-public abstract class WrapperPacket
-	implements IMessage
-{
-	private ThEBasePacket embeddedPacket;
+public abstract class WrapperPacket implements IMessage {
+    private ThEBasePacket embeddedPacket;
 
-	/**
-	 * Required.
-	 */
-	public WrapperPacket()
-	{
-	}
+    /**
+     * Required.
+     */
+    public WrapperPacket() {}
 
-	/**
-	 * Constructs the wrapper, wrapping the specified packet.
-	 *
-	 * @param packet
-	 */
-	public WrapperPacket( final ThEBasePacket packet )
-	{
-		this.embeddedPacket = packet;
-	}
+    /**
+     * Constructs the wrapper, wrapping the specified packet.
+     *
+     * @param packet
+     */
+    public WrapperPacket(final ThEBasePacket packet) {
+        this.embeddedPacket = packet;
+    }
 
-	/**
-	 * Executes the packet.
-	 */
-	public void execute()
-	{
-		if( this.embeddedPacket != null )
-		{
-			this.embeddedPacket.execute();
-		}
-	}
+    /**
+     * Executes the packet.
+     */
+    public void execute() {
+        if (this.embeddedPacket != null) {
+            this.embeddedPacket.execute();
+        }
+    }
 
-	@Override
-	public void fromBytes( final ByteBuf stream )
-	{
-		// Read the id
-		short id = stream.readShort();
-		if( id == -1 )
-		{
-			// Invalid packet
-			ThELog.warning( "Unknown packet detected" );
-			return;
-		}
+    @Override
+    public void fromBytes(final ByteBuf stream) {
+        // Read the id
+        short id = stream.readShort();
+        if (id == -1) {
+            // Invalid packet
+            ThELog.warning("Unknown packet detected");
+            return;
+        }
 
-		// Get the class for that id
-		Class epClass = NetworkHandler.getPacketClassFromID( id );
-		if( epClass == null )
-		{
-			return;
-		}
+        // Get the class for that id
+        Class epClass = NetworkHandler.getPacketClassFromID(id);
+        if (epClass == null) {
+            return;
+        }
 
-		// Construct the class
-		try
-		{
-			this.embeddedPacket = (ThEBasePacket)epClass.newInstance();
+        // Construct the class
+        try {
+            this.embeddedPacket = (ThEBasePacket) epClass.newInstance();
 
-			// Pass to packet
-			this.embeddedPacket.fromBytes( stream );
-		}
-		catch( Exception e )
-		{
-			// Packet did not have default constructor
-			ThELog.warning( "Unable to construct packet %s", epClass.getCanonicalName() );
-		}
-	}
+            // Pass to packet
+            this.embeddedPacket.fromBytes(stream);
+        } catch (Exception e) {
+            // Packet did not have default constructor
+            ThELog.warning("Unable to construct packet %s", epClass.getCanonicalName());
+        }
+    }
 
-	@Override
-	public void toBytes( final ByteBuf stream )
-	{
-		if( this.embeddedPacket != null )
-		{
-			// Write the id
-			short id = NetworkHandler.getPacketID( this.embeddedPacket );
-			stream.writeShort( id );
+    @Override
+    public void toBytes(final ByteBuf stream) {
+        if (this.embeddedPacket != null) {
+            // Write the id
+            short id = NetworkHandler.getPacketID(this.embeddedPacket);
+            stream.writeShort(id);
 
-			// Call embedded
-			this.embeddedPacket.toBytes( stream );
-		}
-		else
-		{
-			// Write -1
-			stream.writeShort( -1 );
-		}
-	}
-
+            // Call embedded
+            this.embeddedPacket.toBytes(stream);
+        } else {
+            // Write -1
+            stream.writeShort(-1);
+        }
+    }
 }

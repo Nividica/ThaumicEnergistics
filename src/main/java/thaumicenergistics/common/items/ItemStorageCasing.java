@@ -12,32 +12,25 @@ import thaumicenergistics.common.registries.ThEStrings;
  * @author Nividica
  *
  */
-public class ItemStorageCasing
-	extends Item
-{
-	public ItemStorageCasing()
-	{
-		this.setMaxDamage( 0 );
+public class ItemStorageCasing extends Item {
+    public ItemStorageCasing() {
+        this.setMaxDamage(0);
 
-		this.setHasSubtypes( false );
-	}
+        this.setHasSubtypes(false);
+    }
 
-	@Override
-	public String getUnlocalizedName()
-	{
-		return ThEStrings.Item_EssentiaCellHousing.getUnlocalized();
-	}
+    @Override
+    public String getUnlocalizedName() {
+        return ThEStrings.Item_EssentiaCellHousing.getUnlocalized();
+    }
 
-	@Override
-	public String getUnlocalizedName( final ItemStack itemStack )
-	{
-		return ThEStrings.Item_EssentiaCellHousing.getUnlocalized();
-	}
+    @Override
+    public String getUnlocalizedName(final ItemStack itemStack) {
+        return ThEStrings.Item_EssentiaCellHousing.getUnlocalized();
+    }
 
-	@Override
-	public void registerIcons( final IIconRegister iconRegister )
-	{
-		this.itemIcon = iconRegister.registerIcon( ThaumicEnergistics.MOD_ID + ":essentia.cell.casing" );
-	}
-
+    @Override
+    public void registerIcons(final IIconRegister iconRegister) {
+        this.itemIcon = iconRegister.registerIcon(ThaumicEnergistics.MOD_ID + ":essentia.cell.casing");
+    }
 }

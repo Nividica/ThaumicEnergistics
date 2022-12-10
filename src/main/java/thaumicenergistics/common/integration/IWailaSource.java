@@ -8,12 +8,11 @@ import java.util.List;
  * @author Nividica
  *
  */
-public interface IWailaSource
-{
-	/**
-	 * Add's information to a Waila tooltip.
-	 *
-	 * @param tooltip
-	 */
-	void addWailaInformation( List<String> tooltip );
+public interface IWailaSource {
+    /**
+     * Add's information to a Waila tooltip.
+     *
+     * @param tooltip
+     */
+    void addWailaInformation(List<String> tooltip);
 }

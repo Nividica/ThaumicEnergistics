@@ -13,19 +13,14 @@ import thaumicenergistics.common.tiles.TileInfusionProvider;
  *
  */
 @SideOnly(Side.CLIENT)
-public class RenderBlockInfusionProvider
-	extends RenderBlockProviderBase
-{
+public class RenderBlockInfusionProvider extends RenderBlockProviderBase {
 
-	public RenderBlockInfusionProvider()
-	{
-		super( BlockTextureManager.INFUSION_PROVIDER );
-	}
+    public RenderBlockInfusionProvider() {
+        super(BlockTextureManager.INFUSION_PROVIDER);
+    }
 
-	@Override
-	public int getRenderId()
-	{
-		return Renderers.InfusionProviderRenderID;
-	}
-
+    @Override
+    public int getRenderId() {
+        return Renderers.InfusionProviderRenderID;
+    }
 }
