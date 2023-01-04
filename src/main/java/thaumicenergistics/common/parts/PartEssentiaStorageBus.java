@@ -495,6 +495,27 @@ public class PartEssentiaStorageBus extends ThEPartBase
     }
 
     /**
+     * Gets valid values for the index parameter of getAspect and setAspect
+     */
+    @Override
+    public int[] getAvailableAspectSlots() {
+        int[] available = new int[FILTER_SIZE];
+        for (int i = 0; i < FILTER_SIZE; i++) {
+            available[i] = i;
+        }
+
+        return available;
+    }
+
+    /**
+     * Gets the aspect from one of the filters.
+     */
+    @Override
+    public Aspect getAspect(final int index) {
+        return this.filteredAspects.get(index);
+    }
+
+    /**
      * Sets one of the filters.
      */
     @Override

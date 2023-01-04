@@ -566,6 +566,22 @@ public class PartEssentiaLevelEmitter extends ThEPartBase implements IAspectSlot
     }
 
     /**
+     * Gets valid values for the index parameter of getAspect and setAspect
+     */
+    @Override
+    public int[] getAvailableAspectSlots() {
+        return new int[1];
+    }
+
+    /**
+     * Gets the aspect we are filtering
+     */
+    @Override
+    public Aspect getAspect(final int index) {
+        return this.trackedAspect;
+    }
+
+    /**
      * Set's the aspect we are filtering
      */
     @Override

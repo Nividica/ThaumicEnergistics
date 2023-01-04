@@ -525,6 +525,22 @@ public abstract class ThEPartEssentiaIOBus_Base extends ThEPartBase
         this.markForSave();
     }
 
+    /**
+     * Gets valid values for the index parameter of getAspect and setAspect
+     */
+    @Override
+    public final int[] getAvailableAspectSlots() {
+        return availableFilterSlots.clone();
+    }
+
+    /**
+     * Gets the aspect from one of the filters.
+     */
+    @Override
+    public final Aspect getAspect(final int index) {
+        return this.filteredAspects.get(index);
+    }
+
     @Override
     public final void setAspect(final int index, final Aspect aspect, final EntityPlayer player) {
         // Set the filter
