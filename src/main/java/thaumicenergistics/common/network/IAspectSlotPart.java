@@ -11,10 +11,14 @@ import thaumcraft.api.aspects.Aspect;
  *
  */
 public interface IAspectSlotPart {
-    int[] getAvailableAspectSlots();
+    default int[] getAvailableAspectSlots() {
+        return new int[0];
+    }
 
     @Nullable
-    Aspect getAspect(int index);
+    default Aspect getAspect(int index) {
+        return null;
+    }
 
     void setAspect(int index, Aspect aspect, EntityPlayer player);
 }
