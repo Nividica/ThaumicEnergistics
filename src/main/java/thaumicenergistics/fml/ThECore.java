@@ -33,6 +33,7 @@ public class ThECore extends DummyModContainer implements IFMLLoadingPlugin {
         this.metadata.url = "http://minecraft.curseforge.com/projects/thaumic-energistics";
         this.metadata.logoFile = "assets/thaumicenergistics/meta/logo.png";
         this.metadata.description = "Embedded Coremod for Thaumic Energistics";
+        this.metadata.parent = "thaumicenergistics";
     }
 
     @Override
