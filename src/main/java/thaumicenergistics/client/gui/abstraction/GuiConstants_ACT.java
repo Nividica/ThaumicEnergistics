@@ -1,9 +1,10 @@
 package thaumicenergistics.client.gui.abstraction;
 
+import net.minecraft.inventory.Container;
+
+import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.inventory.Container;
-import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
 
 /**
  * Holds all constants for {@link GuiArcaneCraftingTerminal}
@@ -57,15 +58,13 @@ public abstract class GuiConstants_ACT extends ThEScrollbarGui {
     /**
      * Sort direction button
      */
-    protected static final int BUTTON_SORT_DIR_ID = 2,
-            BUTTON_SORT_DIR_POS_X = BUTTON_SORT_MODE_POS_X,
+    protected static final int BUTTON_SORT_DIR_ID = 2, BUTTON_SORT_DIR_POS_X = BUTTON_SORT_MODE_POS_X,
             BUTTON_SORT_DIR_POS_Y = BUTTON_SORT_MODE_POS_Y + 20;
 
     /**
      * View type button
      */
-    protected static final int BUTTON_VIEW_TYPE_ID = 3,
-            BUTTON_VIEW_TYPE_POS_X = BUTTON_SORT_MODE_POS_X,
+    protected static final int BUTTON_VIEW_TYPE_ID = 3, BUTTON_VIEW_TYPE_POS_X = BUTTON_SORT_MODE_POS_X,
             BUTTON_VIEW_TYPE_POS_Y = BUTTON_SORT_DIR_POS_Y + 20;
 
     /**
@@ -76,15 +75,13 @@ public abstract class GuiConstants_ACT extends ThEScrollbarGui {
     /**
      * Search mode
      */
-    protected static final int BUTTON_SEARCH_MODE_ID = 5,
-            BUTTON_SEARCH_MODE_POS_X = BUTTON_SORT_MODE_POS_X,
+    protected static final int BUTTON_SEARCH_MODE_ID = 5, BUTTON_SEARCH_MODE_POS_X = BUTTON_SORT_MODE_POS_X,
             BUTTON_SEARCH_MODE_POS_Y = BUTTON_VIEW_TYPE_POS_Y + 20;
 
     /**
      * Terminal style button
      */
-    protected static final int BUTTON_TERM_STYLE_ID = 6,
-            BUTTON_TERM_STYLE_POS_X = BUTTON_SORT_MODE_POS_X,
+    protected static final int BUTTON_TERM_STYLE_ID = 6, BUTTON_TERM_STYLE_POS_X = BUTTON_SORT_MODE_POS_X,
             BUTTON_TERM_STYLE_POS_Y = BUTTON_SEARCH_MODE_POS_Y + 20;
 
     /**

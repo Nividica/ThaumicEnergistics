@@ -1,17 +1,11 @@
 package thaumicenergistics.common.container;
 
-import appeng.api.AEApi;
-import appeng.api.config.ViewItems;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.PlayerSource;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.container.ContainerOpenContext;
-import appeng.container.implementations.ContainerCraftAmount;
 import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
@@ -22,6 +16,14 @@ import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerm
 import thaumicenergistics.common.parts.PartEssentiaTerminal;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.AEApi;
+import appeng.api.config.ViewItems;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.PlayerSource;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerCraftAmount;
 
 /**
  * Inventory container for the essentia terminal.
@@ -30,6 +32,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class ContainerEssentiaTerminal extends ContainerEssentiaCellTerminalBase {
+
     /**
      * The terminal this is associated with.
      */
@@ -37,18 +40,15 @@ public class ContainerEssentiaTerminal extends ContainerEssentiaCellTerminalBase
     private final PartEssentiaTerminal terminal;
 
     /**
-     * Network source representing the player who is interacting with the
-     * container.
+     * Network source representing the player who is interacting with the container.
      */
     private final PlayerSource playerSource;
 
     /**
      * Creates the container
      *
-     * @param terminal
-     * Parent terminal.
-     * @param player
-     * Player that owns this container.
+     * @param terminal Parent terminal.
+     * @param player   Player that owns this container.
      */
     public ContainerEssentiaTerminal(@Nonnull final PartEssentiaTerminal terminal, final EntityPlayer player) {
         // Call the super
@@ -128,7 +128,12 @@ public class ContainerEssentiaTerminal extends ContainerEssentiaCellTerminalBase
 
         // Launch the GUI
         ThEGuiHandler.launchGui(
-                ThEGuiHandler.AUTO_CRAFTING_AMOUNT, player, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+                ThEGuiHandler.AUTO_CRAFTING_AMOUNT,
+                player,
+                te.getWorldObj(),
+                te.xCoord,
+                te.yCoord,
+                te.zCoord);
 
         // Setup the amount container
         if (player.openContainer instanceof ContainerCraftAmount) {
@@ -144,8 +149,8 @@ public class ContainerEssentiaTerminal extends ContainerEssentiaCellTerminalBase
             cca.getOpenContext().setSide(this.terminal.getSide());
 
             // Create the result item
-            IAEItemStack result =
-                    AEApi.instance().storage().createItemStack(ItemCraftingAspect.createStackForAspect(aspect, 1));
+            IAEItemStack result = AEApi.instance().storage()
+                    .createItemStack(ItemCraftingAspect.createStackForAspect(aspect, 1));
 
             // Set the item
             cca.getCraftingItem().putStack(result.getItemStack());
@@ -160,8 +165,7 @@ public class ContainerEssentiaTerminal extends ContainerEssentiaCellTerminalBase
     }
 
     /**
-     * Gets the current list from the AE monitor, as well as the current
-     * sorting mode, and sends it to the client.
+     * Gets the current list from the AE monitor, as well as the current sorting mode, and sends it to the client.
      */
     @Override
     public void onClientRequestFullUpdate() {

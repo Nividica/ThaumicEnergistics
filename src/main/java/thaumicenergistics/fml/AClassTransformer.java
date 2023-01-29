@@ -1,8 +1,8 @@
 package thaumicenergistics.fml;
 
-import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -13,7 +13,10 @@ import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceMethodVisitor;
 
+import cpw.mods.fml.relauncher.FMLRelaunchLog;
+
 public abstract class AClassTransformer {
+
     protected static final String InstanceConstructorName = "<init>";
 
     private static Printer asmPrinter = new Textifier();
@@ -66,8 +69,7 @@ public abstract class AClassTransformer {
      *
      * @param instructions
      * @param type
-     * @param number
-     * of occurrences to skip
+     * @param number       of occurrences to skip
      * @return
      */
     protected AbstractInsnNode findLastType(final InsnList instructions, final int type, int skip) {
@@ -104,12 +106,11 @@ public abstract class AClassTransformer {
      *
      * @param instructions
      * @param opSequence
-     * @param skipNons
-     * If true all -1 instructions will be skipped
+     * @param skipNons     If true all -1 instructions will be skipped
      * @return The last instruction in the sequence.
      */
-    protected AbstractInsnNode findSequence(
-            final InsnList instructions, final int opSequence[], final boolean skipNons) {
+    protected AbstractInsnNode findSequence(final InsnList instructions, final int opSequence[],
+            final boolean skipNons) {
         int seqIndex = 0;
         AbstractInsnNode insertionPoint = null;
         for (int index = 0; index < instructions.size(); ++index) {

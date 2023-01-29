@@ -2,6 +2,7 @@ package thaumicenergistics.fml.classtransformers.tc;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
+
 import thaumicenergistics.fml.AClassTransformer;
 import thaumicenergistics.fml.ThECore;
 
@@ -21,8 +22,8 @@ public class ClassTransformer_ItemGolemBell extends AClassTransformer {
     }
 
     private void transformMethod_OnLeftClickEntity(final MethodNode method) {
-        int opSequence[] =
-                new int[] {Opcodes.GETSTATIC, Opcodes.ICONST_1, Opcodes.ILOAD, Opcodes.INVOKESPECIAL, Opcodes.ASTORE};
+        int opSequence[] = new int[] { Opcodes.GETSTATIC, Opcodes.ICONST_1, Opcodes.ILOAD, Opcodes.INVOKESPECIAL,
+                Opcodes.ASTORE };
 
         // Locate the sequence
         AbstractInsnNode insertionPoint = this.findSequence(method.instructions, opSequence, true);
@@ -45,15 +46,16 @@ public class ClassTransformer_ItemGolemBell extends AClassTransformer {
         GolemHookTransformHelper.addGetField_hookHandlers(instructionList, 3, true);
 
         // GolemHooks.hook_Bell_OnLeftClickGolem( EntityGolemBase, ItemStack, EntityPlayer, Hashmap )
-        instructionList.add(new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                GolemHookTransformHelper.CLASS_GolemHooks,
-                "hook_Bell_OnLeftClickGolem",
-                "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase
-                        + ";Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;L"
-                        + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
-                        + ";)V",
-                false));
+        instructionList.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        GolemHookTransformHelper.CLASS_GolemHooks,
+                        "hook_Bell_OnLeftClickGolem",
+                        "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase
+                                + ";Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;L"
+                                + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
+                                + ";)V",
+                        false));
 
         // Insert the static call
         method.instructions.insert(insertionPoint, instructionList);

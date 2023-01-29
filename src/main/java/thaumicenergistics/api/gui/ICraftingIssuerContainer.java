@@ -1,6 +1,7 @@
 package thaumicenergistics.api.gui;
 
 import javax.annotation.Nonnull;
+
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
 
 /**
@@ -10,6 +11,7 @@ import thaumicenergistics.api.grid.ICraftingIssuerHost;
  *
  */
 public interface ICraftingIssuerContainer {
+
     /**
      * Gets the crafting issuer host terminal.
      *

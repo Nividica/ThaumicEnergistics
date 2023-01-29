@@ -1,11 +1,12 @@
 package thaumicenergistics.common.blocks;
 
-import appeng.util.Platform;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import appeng.util.Platform;
 
 /**
  * Base class for wrenchable blocks.
@@ -29,14 +30,13 @@ public abstract class AbstractBlockAEWrenchable extends BlockContainer {
      * @param player
      * @return
      */
-    protected boolean onBlockActivated(
-            final World world, final int x, final int y, final int z, final EntityPlayer player) {
+    protected boolean onBlockActivated(final World world, final int x, final int y, final int z,
+            final EntityPlayer player) {
         return false;
     }
 
     /**
-     * Called when the block is being removed via AE wrench.
-     * Return an itemstack that represents the block. Can be null.
+     * Called when the block is being removed via AE wrench. Return an itemstack that represents the block. Can be null.
      */
     protected ItemStack onDismantled(final World world, final int x, final int y, final int z) {
         return null;
@@ -55,16 +55,8 @@ public abstract class AbstractBlockAEWrenchable extends BlockContainer {
      * The block was right-clicked
      */
     @Override
-    public final boolean onBlockActivated(
-            final World world,
-            final int x,
-            final int y,
-            final int z,
-            final EntityPlayer player,
-            final int side,
-            final float hitX,
-            final float hitY,
-            final float hitZ) {
+    public final boolean onBlockActivated(final World world, final int x, final int y, final int z,
+            final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ) {
         // Can the player interact with the block?
         if (!this.canPlayerInteract(player)) {
             return false;

@@ -1,6 +1,7 @@
 package thaumicenergistics.common.integration;
 
 import java.lang.reflect.Method;
+
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.fluids.GaseousEssentia;
 
@@ -26,8 +27,8 @@ public class ModuleEC2 {
 
             // Get the blacklist methods
             Method addFluidToShowBlacklist = ECApi.getClass().getDeclaredMethod("addFluidToShowBlacklist", Class.class);
-            Method addFluidToStorageBlacklist =
-                    ECApi.getClass().getDeclaredMethod("addFluidToStorageBlacklist", Class.class);
+            Method addFluidToStorageBlacklist = ECApi.getClass()
+                    .getDeclaredMethod("addFluidToStorageBlacklist", Class.class);
 
             // Invoke the blacklist methods
             addFluidToShowBlacklist.invoke(ECApi, GaseousEssentia.class);

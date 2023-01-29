@@ -3,6 +3,7 @@ package thaumicenergistics.common.integration.tc;
 import javax.annotation.Nullable;
 
 public enum GolemCoreType {
+
     Fill(0),
     Empty(1),
     Gather(2),

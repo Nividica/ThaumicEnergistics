@@ -1,6 +1,7 @@
 package thaumicenergistics.common.registries;
 
 import net.minecraft.item.crafting.IRecipe;
+
 import thaumcraft.api.crafting.CrucibleRecipe;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.crafting.InfusionRecipe;
@@ -12,6 +13,7 @@ import thaumcraft.api.crafting.InfusionRecipe;
  *
  */
 public class RecipeRegistry {
+
     // Arcane recipes
     public static IArcaneRecipe ITEM_STORAGE_COMPONENT_1K;
     public static IArcaneRecipe ITEM_STORAGE_COMPONENT_4K;

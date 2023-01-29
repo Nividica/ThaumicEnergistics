@@ -1,13 +1,15 @@
 package thaumicenergistics.common.inventory;
 
-import appeng.api.storage.data.IAEItemStack;
 import java.util.ArrayList;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
+
 import thaumicenergistics.common.integration.tc.ArcaneCraftingPattern;
 import thaumicenergistics.common.items.ItemKnowledgeCore;
+import appeng.api.storage.data.IAEItemStack;
 
 /**
  * Handles an {@link ItemKnowledgeCore}
@@ -16,6 +18,7 @@ import thaumicenergistics.common.items.ItemKnowledgeCore;
  *
  */
 public class HandlerKnowledgeCore {
+
     /**
      * NBT Keys.
      */
@@ -29,8 +32,8 @@ public class HandlerKnowledgeCore {
     /**
      * Array of stored patterns.
      */
-    private final ArrayList<ArcaneCraftingPattern> patterns =
-            new ArrayList<ArcaneCraftingPattern>(MAXIMUM_STORED_PATTERNS);
+    private final ArrayList<ArcaneCraftingPattern> patterns = new ArrayList<ArcaneCraftingPattern>(
+            MAXIMUM_STORED_PATTERNS);
 
     /**
      * Knowledge core being handled.
@@ -38,8 +41,7 @@ public class HandlerKnowledgeCore {
     private ItemStack kCore;
 
     /**
-     * Creates a handler without a core.
-     * Use open() to set the core in the future.
+     * Creates a handler without a core. Use open() to set the core in the future.
      */
     public HandlerKnowledgeCore() {}
 
@@ -84,8 +86,9 @@ public class HandlerKnowledgeCore {
             for (int index = 0; index < plist.tagCount(); index++) {
                 try {
                     // Load the pattern
-                    ArcaneCraftingPattern pattern =
-                            new ArcaneCraftingPattern(this.kCore, plist.getCompoundTagAt(index));
+                    ArcaneCraftingPattern pattern = new ArcaneCraftingPattern(
+                            this.kCore,
+                            plist.getCompoundTagAt(index));
 
                     // Is the pattern valid?
                     if (pattern.isPatternValid()) {
@@ -143,8 +146,7 @@ public class HandlerKnowledgeCore {
         }
 
         // Check for duplicate patterns
-        ArcaneCraftingPattern existingPattern =
-                this.getPatternForItem(pattern.getResult().getItemStack());
+        ArcaneCraftingPattern existingPattern = this.getPatternForItem(pattern.getResult().getItemStack());
 
         if (existingPattern == null) {
             // remove the existing pattern, e.g. if the result changed
@@ -253,8 +255,7 @@ public class HandlerKnowledgeCore {
     }
 
     /**
-     * Returns true if there is a pattern stored that produces the specified
-     * result.
+     * Returns true if there is a pattern stored that produces the specified result.
      *
      * @param resultStack
      * @return

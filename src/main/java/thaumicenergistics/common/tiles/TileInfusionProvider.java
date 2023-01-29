@@ -1,6 +1,7 @@
 package thaumicenergistics.common.tiles;
 
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectSource;
@@ -15,6 +16,7 @@ import thaumicenergistics.common.tiles.abstraction.TileProviderBase;
  *
  */
 public class TileInfusionProvider extends TileProviderBase implements IAspectSource {
+
     /**
      * Shows runes on the infusion provider.
      *
@@ -28,12 +30,12 @@ public class TileInfusionProvider extends TileProviderBase implements IAspectSou
 
         // Add particles
         for (int i = 0; i < 5; i++) {
-            Thaumcraft.proxy.blockRunes(
-                    this.worldObj, this.xCoord, this.yCoord, this.zCoord, red, green, blue, 15, -0.1F);
+            Thaumcraft.proxy
+                    .blockRunes(this.worldObj, this.xCoord, this.yCoord, this.zCoord, red, green, blue, 15, -0.1F);
         }
         for (int i = 0; i < 5; i++) {
-            Thaumcraft.proxy.blockRunes(
-                    this.worldObj, this.xCoord, this.yCoord, this.zCoord, red, green, blue, 15, 0.1F);
+            Thaumcraft.proxy
+                    .blockRunes(this.worldObj, this.xCoord, this.yCoord, this.zCoord, red, green, blue, 15, 0.1F);
         }
     }
 

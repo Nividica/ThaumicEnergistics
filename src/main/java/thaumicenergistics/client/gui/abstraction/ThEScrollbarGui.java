@@ -1,14 +1,16 @@
 package thaumicenergistics.client.gui.abstraction;
 
+import net.minecraft.inventory.Container;
+import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
+import thaumicenergistics.client.gui.ThEGuiHelper;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.inventory.Container;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import thaumicenergistics.client.gui.ThEGuiHelper;
 
 /**
  * Base GUI for guis with scrollbars.
@@ -18,7 +20,9 @@ import thaumicenergistics.client.gui.ThEGuiHelper;
  */
 @SideOnly(Side.CLIENT)
 public abstract class ThEScrollbarGui extends ThEBaseGui {
+
     public class ScrollbarParams {
+
         /**
          * X position of the scroll bar
          */
@@ -120,8 +124,8 @@ public abstract class ThEScrollbarGui extends ThEBaseGui {
         // Home Key
         if (keyID == Keyboard.KEY_HOME) {
             // Move the scroll all the way to home
-            this.scrollBar.click(
-                    this.aeGuiBridge, this.scrollParams.scrollbarPosX + 1, this.scrollParams.scrollbarPosY + 1);
+            this.scrollBar
+                    .click(this.aeGuiBridge, this.scrollParams.scrollbarPosX + 1, this.scrollParams.scrollbarPosY + 1);
             this.scrollBar.wheel(1);
             this.onScrollbarMoved();
         }
@@ -129,7 +133,9 @@ public abstract class ThEScrollbarGui extends ThEBaseGui {
         else if (keyID == Keyboard.KEY_END) {
             // Move the scroll all the way to end
             this.scrollBar.click(
-                    this.aeGuiBridge, this.scrollParams.scrollbarPosX + 1, this.scrollParams.scrollbarVerticalBound);
+                    this.aeGuiBridge,
+                    this.scrollParams.scrollbarPosX + 1,
+                    this.scrollParams.scrollbarVerticalBound);
             this.onScrollbarMoved();
 
         }
@@ -288,9 +294,7 @@ public abstract class ThEScrollbarGui extends ThEBaseGui {
         this.scrollParams = this.getScrollbarParameters();
 
         // Setup the scroll bar
-        this.scrollBar
-                .setLeft(this.scrollParams.scrollbarPosX)
-                .setTop(this.scrollParams.scrollbarPosY)
+        this.scrollBar.setLeft(this.scrollParams.scrollbarPosX).setTop(this.scrollParams.scrollbarPosY)
                 .setHeight(this.scrollParams.scrollbarHeight);
 
         // No scrolling yet
@@ -298,6 +302,7 @@ public abstract class ThEScrollbarGui extends ThEBaseGui {
 
         // Create the AE bridge
         this.aeGuiBridge = new AEBaseGui(this.inventorySlots) {
+
             @Override
             public void bindTexture(final String file) {
                 this.bindTexture("appliedenergistics2", file);
@@ -319,13 +324,8 @@ public abstract class ThEScrollbarGui extends ThEBaseGui {
             }
 
             @Override
-            public void drawTexturedModalRect(
-                    final int posX,
-                    final int posY,
-                    final int sourceOffsetX,
-                    final int sourceOffsetY,
-                    final int width,
-                    final int height) {
+            public void drawTexturedModalRect(final int posX, final int posY, final int sourceOffsetX,
+                    final int sourceOffsetY, final int width, final int height) {
                 ThEScrollbarGui.this.drawTexturedModalRect(posX, posY, sourceOffsetX, sourceOffsetY, width, height);
             }
         };

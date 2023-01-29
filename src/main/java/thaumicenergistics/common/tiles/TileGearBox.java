@@ -1,16 +1,17 @@
 package thaumicenergistics.common.tiles;
 
-import appeng.api.implementations.tiles.ICrankable;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumicenergistics.common.blocks.BlockGolemGearBox;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.implementations.tiles.ICrankable;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Unbreakable crank.
@@ -19,9 +20,9 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class TileGearBox extends TileEntity {
+
     /**
-     * Amount of power generated each time the gearbox is cranked.
-     * This power is divided among the connected shafts.
+     * Amount of power generated each time the gearbox is cranked. This power is divided among the connected shafts.
      */
     private static final int BASE_POWER = 6;
 
@@ -48,8 +49,7 @@ public class TileGearBox extends TileEntity {
     /**
      * NBT Keys
      */
-    private static final String NBT_KEY_CRANKABLES = "crankables",
-            NBT_KEY_ROTATION = "shaftrotation",
+    private static final String NBT_KEY_CRANKABLES = "crankables", NBT_KEY_ROTATION = "shaftrotation",
             NBT_KEY_ISTHAUMBOX = "isthaumbox";
 
     /**
@@ -154,8 +154,8 @@ public class TileGearBox extends TileEntity {
         this.updateCrankables();
 
         // Is the tile a thaumium gearbox?
-        this.isThaumiumGearbox =
-                (this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord) instanceof BlockGolemGearBox);
+        this.isThaumiumGearbox = (this.worldObj
+                .getBlock(this.xCoord, this.yCoord, this.zCoord) instanceof BlockGolemGearBox);
 
         // Mark the tile as ready
         this.isReady = true;
@@ -194,9 +194,8 @@ public class TileGearBox extends TileEntity {
     }
 
     /**
-     * Applies the specified power to each shaft.
-     * Once a shaft has enough stored power, it applies a turn to
-     * its crankable.
+     * Applies the specified power to each shaft. Once a shaft has enough stored power, it applies a turn to its
+     * crankable.
      *
      * @param powerTransfered
      */
@@ -332,15 +331,9 @@ public class TileGearBox extends TileEntity {
     }
 
     /*
-    @Override
-    public void readFromNBT( final NBTTagCompound data )
-    {
-    	// Call super
-    	super.readFromNBT( data );
-
-    	// Read crankables
-    	this.readSyncData( data );
-    }*/
+     * @Override public void readFromNBT( final NBTTagCompound data ) { // Call super super.readFromNBT( data ); // Read
+     * crankables this.readSyncData( data ); }
+     */
 
     /**
      * Locates attached crankables.
@@ -361,8 +354,8 @@ public class TileGearBox extends TileEntity {
             this.sideIsFacingCrankable[sideIndex] = false;
 
             // Get the tile
-            TileEntity tile = this.worldObj.getTileEntity(
-                    side.offsetX + this.xCoord, side.offsetY + this.yCoord, side.offsetZ + this.zCoord);
+            TileEntity tile = this.worldObj
+                    .getTileEntity(side.offsetX + this.xCoord, side.offsetY + this.yCoord, side.offsetZ + this.zCoord);
 
             // Is there a crankable?
             if (!(tile instanceof ICrankable)) {
@@ -426,14 +419,7 @@ public class TileGearBox extends TileEntity {
     }
 
     /*
-    @Override
-    public void writeToNBT( final NBTTagCompound data )
-    {
-    	// Call super
-    	super.writeToNBT( data );
-
-    	// Write sync data
-    	this.writeSyncDataToNBT( data );
-    }
-    */
+     * @Override public void writeToNBT( final NBTTagCompound data ) { // Call super super.writeToNBT( data ); // Write
+     * sync data this.writeSyncDataToNBT( data ); }
+     */
 }

@@ -1,15 +1,17 @@
 package thaumicenergistics.common.network.packet.client;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import java.awt.Color;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.client.fx.ParticleEngine;
 import thaumcraft.client.fx.beams.FXBeam;
 import thaumicenergistics.common.network.NetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Particle effect packet, clients-in-area-bound
@@ -44,16 +46,9 @@ public class Packet_R_ParticleFX extends ThEAreaPacket {
      * @param aspectColor
      * @param range
      */
-    public static void createWrenchFX(
-            final World world,
-            final double sourceX,
-            final double sourceY,
-            final double sourceZ,
-            final double destinationX,
-            final double destinationY,
-            final double destinationZ,
-            final Aspect aspectColor,
-            final float range) {
+    public static void createWrenchFX(final World world, final double sourceX, final double sourceY,
+            final double sourceZ, final double destinationX, final double destinationY, final double destinationZ,
+            final Aspect aspectColor, final float range) {
         Packet_R_ParticleFX packet = new Packet_R_ParticleFX();
 
         // Set the mode

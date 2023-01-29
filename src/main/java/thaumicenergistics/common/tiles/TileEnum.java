@@ -9,6 +9,7 @@ import thaumicenergistics.common.ThaumicEnergistics;
  *
  */
 public enum TileEnum {
+
     EssentiaProvider("TileEssentiaProvider", TileEssentiaProvider.class),
     InfusionProvider("TileInfusionProvider", TileInfusionProvider.class),
     GearBox("TileGearBox", TileGearBox.class),

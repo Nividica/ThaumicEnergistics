@@ -1,12 +1,13 @@
 package thaumicenergistics.client.render.model;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumicenergistics.common.tiles.TileGearBox;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileGearBox} model.
@@ -16,7 +17,9 @@ import thaumicenergistics.common.tiles.TileGearBox;
  */
 @SideOnly(Side.CLIENT)
 public class ModelGearbox extends ModelBase {
+
     private class SideTransformation {
+
         private static final float SPOKE_OFFSET = 1.2F;
 
         /**
@@ -53,12 +56,8 @@ public class ModelGearbox extends ModelBase {
          * @param offsetY
          * @param offsetZ
          */
-        public SideTransformation(
-                final float rotateAngleY,
-                final float rotateAngleZ,
-                final float offsetX,
-                final float offsetY,
-                final float offsetZ) {
+        public SideTransformation(final float rotateAngleY, final float rotateAngleZ, final float offsetX,
+                final float offsetY, final float offsetZ) {
             // Set common
             this.rotateAngleY = rotateAngleY;
             this.rotateAngleZ = rotateAngleZ;
@@ -151,18 +150,18 @@ public class ModelGearbox extends ModelBase {
 
         // Set the shaft and spoke transformations
         this.transformations = new SideTransformation[ForgeDirection.VALID_DIRECTIONS.length];
-        this.transformations[ForgeDirection.EAST.ordinal()] =
-                new SideTransformation(0F, 0F, ModelGearbox.EDGE_DISTANCE, 0F, 0F);
-        this.transformations[ForgeDirection.WEST.ordinal()] =
-                new SideTransformation(0F, 0F, -ModelGearbox.EDGE_DISTANCE, 0F, 0F);
-        this.transformations[ForgeDirection.UP.ordinal()] =
-                new SideTransformation(0F, ModelGearbox.HALF_TURN, 0F, ModelGearbox.EDGE_DISTANCE, 0F);
-        this.transformations[ForgeDirection.DOWN.ordinal()] =
-                new SideTransformation(0F, ModelGearbox.HALF_TURN, 0F, -ModelGearbox.EDGE_DISTANCE, 0F);
-        this.transformations[ForgeDirection.SOUTH.ordinal()] =
-                new SideTransformation(ModelGearbox.HALF_TURN, 0F, 0F, 0F, ModelGearbox.EDGE_DISTANCE);
-        this.transformations[ForgeDirection.NORTH.ordinal()] =
-                new SideTransformation(ModelGearbox.HALF_TURN, 0F, 0F, 0F, -ModelGearbox.EDGE_DISTANCE);
+        this.transformations[ForgeDirection.EAST
+                .ordinal()] = new SideTransformation(0F, 0F, ModelGearbox.EDGE_DISTANCE, 0F, 0F);
+        this.transformations[ForgeDirection.WEST
+                .ordinal()] = new SideTransformation(0F, 0F, -ModelGearbox.EDGE_DISTANCE, 0F, 0F);
+        this.transformations[ForgeDirection.UP
+                .ordinal()] = new SideTransformation(0F, ModelGearbox.HALF_TURN, 0F, ModelGearbox.EDGE_DISTANCE, 0F);
+        this.transformations[ForgeDirection.DOWN
+                .ordinal()] = new SideTransformation(0F, ModelGearbox.HALF_TURN, 0F, -ModelGearbox.EDGE_DISTANCE, 0F);
+        this.transformations[ForgeDirection.SOUTH
+                .ordinal()] = new SideTransformation(ModelGearbox.HALF_TURN, 0F, 0F, 0F, ModelGearbox.EDGE_DISTANCE);
+        this.transformations[ForgeDirection.NORTH
+                .ordinal()] = new SideTransformation(ModelGearbox.HALF_TURN, 0F, 0F, 0F, -ModelGearbox.EDGE_DISTANCE);
     }
 
     /**
@@ -217,14 +216,8 @@ public class ModelGearbox extends ModelBase {
      * Renders the gearbox.
      */
     @Override
-    public void render(
-            final Entity entity,
-            final float f,
-            final float f1,
-            final float f2,
-            final float f3,
-            final float f4,
-            final float f5) {
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3,
+            final float f4, final float f5) {
         // Render the transmission
         this.Transmission.render(f5);
 

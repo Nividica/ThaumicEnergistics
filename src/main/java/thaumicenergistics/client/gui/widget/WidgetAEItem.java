@@ -1,26 +1,29 @@
 package thaumicenergistics.client.gui.widget;
 
+import java.util.List;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+
+import thaumicenergistics.api.gui.IWidgetHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.render.AppEngRenderItem;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import thaumicenergistics.api.gui.IWidgetHost;
 
 /**
  * Widget displaying an AE item.
  *
  * @author Nividica
  *
- * TODO: Deprecated Remove in favor of MESlots
+ *         TODO: Deprecated Remove in favor of MESlots
  */
 @SideOnly(Side.CLIENT)
 public class WidgetAEItem extends ThEWidget {
+
     /**
      * Cache of the minecraft instance
      */
@@ -29,8 +32,7 @@ public class WidgetAEItem extends ThEWidget {
     /**
      * Cache of the minecraft texture manager
      */
-    private static final TextureManager TEXTURE_MANAGER =
-            Minecraft.getMinecraft().getTextureManager();
+    private static final TextureManager TEXTURE_MANAGER = Minecraft.getMinecraft().getTextureManager();
 
     /**
      * Cache of the AE item renderer
@@ -50,8 +52,8 @@ public class WidgetAEItem extends ThEWidget {
      * @param yPos
      * @param aeItemRenderer
      */
-    public WidgetAEItem(
-            final IWidgetHost hostGUI, final int xPos, final int yPos, final AppEngRenderItem aeItemRenderer) {
+    public WidgetAEItem(final IWidgetHost hostGUI, final int xPos, final int yPos,
+            final AppEngRenderItem aeItemRenderer) {
         super(hostGUI, xPos, yPos);
 
         this.aeItemRenderer = aeItemRenderer;
@@ -113,8 +115,8 @@ public class WidgetAEItem extends ThEWidget {
 
             // Get the tooltip list
             try {
-                List<String> stackTooltip =
-                        stack.getTooltip(WidgetAEItem.MC.thePlayer, WidgetAEItem.MC.gameSettings.advancedItemTooltips);
+                List<String> stackTooltip = stack
+                        .getTooltip(WidgetAEItem.MC.thePlayer, WidgetAEItem.MC.gameSettings.advancedItemTooltips);
 
                 // Set colors and add
                 for (int index = 0; index < stackTooltip.size(); index++) {

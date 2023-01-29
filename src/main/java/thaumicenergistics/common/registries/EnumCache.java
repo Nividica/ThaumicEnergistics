@@ -13,6 +13,7 @@ import appeng.api.util.AEColor;
  *
  */
 public class EnumCache {
+
     /**
      * AEColor
      */

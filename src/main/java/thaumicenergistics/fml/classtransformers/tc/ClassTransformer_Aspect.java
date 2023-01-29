@@ -2,6 +2,7 @@ package thaumicenergistics.fml.classtransformers.tc;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
+
 import thaumicenergistics.fml.AClassTransformer;
 
 /**
@@ -11,6 +12,7 @@ import thaumicenergistics.fml.AClassTransformer;
  * </ul>
  */
 public class ClassTransformer_Aspect extends AClassTransformer {
+
     private static final String CLASS_Aspect = "thaumcraft/api/aspects/Aspect";
     private static final String CLASS_AspectHooks = "thaumicenergistics/common/integration/tc/AspectHooks";
 
@@ -26,8 +28,8 @@ public class ClassTransformer_Aspect extends AClassTransformer {
             return false;
         }
 
-        int opSequence[] =
-                new int[] {Opcodes.GETSTATIC, Opcodes.ALOAD, Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL, Opcodes.POP};
+        int opSequence[] = new int[] { Opcodes.GETSTATIC, Opcodes.ALOAD, Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL,
+                Opcodes.POP };
         AbstractInsnNode insertionPoint = this.findSequence(method.instructions, opSequence, false);
 
         // Insert the hook
@@ -38,12 +40,13 @@ public class ClassTransformer_Aspect extends AClassTransformer {
         instructionList.add(new VarInsnNode(Opcodes.ALOAD, 0));
 
         // AspectHooks.hook_AspectInit( Aspect )
-        instructionList.add(new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                ClassTransformer_Aspect.CLASS_AspectHooks,
-                "hook_AspectInit",
-                "(L" + ClassTransformer_Aspect.CLASS_Aspect + ";)V",
-                false));
+        instructionList.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        ClassTransformer_Aspect.CLASS_AspectHooks,
+                        "hook_AspectInit",
+                        "(L" + ClassTransformer_Aspect.CLASS_Aspect + ";)V",
+                        false));
 
         // Insert the static call
         method.instructions.insert(insertionPoint, instructionList);

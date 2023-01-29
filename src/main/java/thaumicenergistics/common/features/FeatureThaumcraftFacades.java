@@ -1,14 +1,16 @@
 package thaumicenergistics.common.features;
 
-import appeng.core.FacadeConfig;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import java.util.regex.Pattern;
+
 import net.minecraft.block.Block;
 import net.minecraftforge.common.config.Property;
+
 import thaumcraft.common.config.Config;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumicenergistics.api.IThEConfig;
+import appeng.core.FacadeConfig;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 /**
  * Thaumcraft facades feature.

@@ -1,6 +1,7 @@
 package thaumicenergistics.common.features;
 
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -34,7 +35,7 @@ public class FeatureEssentiaProvider extends ThEThaumcraftResearchFeature {
 
     @Override
     protected Object[] getItemReqs(final CommonDependantItems cdi) {
-        return new Object[] {cdi.MEInterface};
+        return new Object[] { cdi.MEInterface };
     }
 
     @Override
@@ -57,20 +58,17 @@ public class FeatureEssentiaProvider extends ThEThaumcraftResearchFeature {
         essentiaProviderList.add(Aspect.EXCHANGE, 16);
 
         // Essentia Provider recipe
-        ItemStack[] recipeEssentiaProvider = {
-            cdi.FilterTube,
-            cdi.SalisMundus,
-            CoalescenceCore,
-            cdi.WaterShard,
-            cdi.FilterTube,
-            cdi.SalisMundus,
-            DiffusionCore,
-            cdi.WaterShard
-        };
+        ItemStack[] recipeEssentiaProvider = { cdi.FilterTube, cdi.SalisMundus, CoalescenceCore, cdi.WaterShard,
+                cdi.FilterTube, cdi.SalisMundus, DiffusionCore, cdi.WaterShard };
 
         // Register Essentia Provider
         RecipeRegistry.BLOCK_ESSENTIA_PROVIDER = ThaumcraftApi.addInfusionCraftingRecipe(
-                this.researchKey, EssentiaProvider, 3, essentiaProviderList, cdi.MEInterface, recipeEssentiaProvider);
+                this.researchKey,
+                EssentiaProvider,
+                3,
+                essentiaProviderList,
+                cdi.MEInterface,
+                recipeEssentiaProvider);
     }
 
     @Override
@@ -90,13 +88,15 @@ public class FeatureEssentiaProvider extends ThEThaumcraftResearchFeature {
 
         // Set research pages
         ResearchPage[] essentiaProviderPages = new ResearchPage[] {
-            new ResearchPage(ResearchTypes.ESSENTIA_PROVIDER.getPageName(1)),
-            new ResearchPage(RecipeRegistry.BLOCK_ESSENTIA_PROVIDER)
-        };
+                new ResearchPage(ResearchTypes.ESSENTIA_PROVIDER.getPageName(1)),
+                new ResearchPage(RecipeRegistry.BLOCK_ESSENTIA_PROVIDER) };
 
         // Create the research
         ResearchTypes.ESSENTIA_PROVIDER.createResearchItem(
-                essentiaProviderList, ResearchRegistry.COMPLEXITY_LARGE, essentiaProviderIcon, essentiaProviderPages);
+                essentiaProviderList,
+                ResearchRegistry.COMPLEXITY_LARGE,
+                essentiaProviderIcon,
+                essentiaProviderPages);
         ResearchTypes.ESSENTIA_PROVIDER.researchItem.setParents(this.getFirstValidParentKey(false));
         ResearchTypes.ESSENTIA_PROVIDER.researchItem.setParentsHidden("INFUSION", "TUBEFILTER");
         ResearchTypes.ESSENTIA_PROVIDER.researchItem.setConcealed();

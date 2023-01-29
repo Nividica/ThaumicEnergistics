@@ -1,10 +1,11 @@
 package thaumicenergistics.common.network.packet.server;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link PartEssentiaStorageBus} server-bound packet.
@@ -13,6 +14,7 @@ import thaumicenergistics.common.parts.PartEssentiaStorageBus;
  *
  */
 public class Packet_S_EssentiaStorageBus extends ThEServerPacket {
+
     /**
      * Packet modes
      */
@@ -28,8 +30,8 @@ public class Packet_S_EssentiaStorageBus extends ThEServerPacket {
      * @param mode
      * @return
      */
-    private static Packet_S_EssentiaStorageBus newPacket(
-            final EntityPlayer player, final byte mode, final PartEssentiaStorageBus part) {
+    private static Packet_S_EssentiaStorageBus newPacket(final EntityPlayer player, final byte mode,
+            final PartEssentiaStorageBus part) {
         // Create the packet
         Packet_S_EssentiaStorageBus packet = new Packet_S_EssentiaStorageBus();
 
@@ -41,8 +43,8 @@ public class Packet_S_EssentiaStorageBus extends ThEServerPacket {
         return packet;
     }
 
-    public static void setVoidAllowed(
-            final EntityPlayer player, final PartEssentiaStorageBus part, final boolean isVoidAllowed) {
+    public static void setVoidAllowed(final EntityPlayer player, final PartEssentiaStorageBus part,
+            final boolean isVoidAllowed) {
         Packet_S_EssentiaStorageBus packet = newPacket(player, MODE_REQUEST_SET_VOID, part);
 
         // Set if void is allowed

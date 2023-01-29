@@ -1,11 +1,12 @@
 package thaumicenergistics.client;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
+
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.CommonProxy;
 import thaumicenergistics.common.registries.Renderers;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Client side proxy.
@@ -14,6 +15,7 @@ import thaumicenergistics.common.registries.Renderers;
  *
  */
 public class ClientProxy extends CommonProxy {
+
     public ClientProxy() {
         MinecraftForge.EVENT_BUS.register(this);
     }

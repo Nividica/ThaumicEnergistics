@@ -1,13 +1,14 @@
 package thaumicenergistics.client.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSlotGui;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
@@ -21,6 +22,8 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellWorkbench;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileEssentiaCellWorkbench} GUI
@@ -30,6 +33,7 @@ import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaCellWorkbench extends ThEBaseGui implements IAspectSlotGui {
+
     private class SimpleAspectWidget extends WidgetAspectSlot {
 
         public SimpleAspectWidget(final int ID, final int posX, final int posY, final EntityPlayer player) {
@@ -80,8 +84,7 @@ public class GuiEssentiaCellWorkbench extends ThEBaseGui implements IAspectSlotG
     /**
      * Partition to current, button info.
      */
-    private static final int BUTTON_PARTITION_CURRENT_ID = 0,
-            BUTTON_PARTITION_CURRENT_X = -18,
+    private static final int BUTTON_PARTITION_CURRENT_ID = 0, BUTTON_PARTITION_CURRENT_X = -18,
             BUTTON_PARTITION_CURRENT_Y = 28;
 
     /**
@@ -108,8 +111,8 @@ public class GuiEssentiaCellWorkbench extends ThEBaseGui implements IAspectSlotG
      */
     public final TileEssentiaCellWorkbench workbench;
 
-    public GuiEssentiaCellWorkbench(
-            final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public GuiEssentiaCellWorkbench(final EntityPlayer player, final World world, final int x, final int y,
+            final int z) {
         // Call super
         super(new ContainerEssentiaCellWorkbench(player, world, x, y, z));
 
@@ -163,8 +166,8 @@ public class GuiEssentiaCellWorkbench extends ThEBaseGui implements IAspectSlotG
     @Override
     protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
         // Draw the title
-        this.fontRendererObj.drawString(
-                this.title, GuiEssentiaCellWorkbench.TITLE_POS_X, GuiEssentiaCellWorkbench.TITLE_POS_Y, 0);
+        this.fontRendererObj
+                .drawString(this.title, GuiEssentiaCellWorkbench.TITLE_POS_X, GuiEssentiaCellWorkbench.TITLE_POS_Y, 0);
 
         // Draw the widgets
         SimpleAspectWidget widgetUnderMouse = null, currentWidget;
@@ -214,8 +217,8 @@ public class GuiEssentiaCellWorkbench extends ThEBaseGui implements IAspectSlotG
                 }
                 // Replace?
                 else if ((widgetAspect != null) && (itemAspect != null)) {
-                    Packet_S_EssentiaCellWorkbench.sendReplaceAspect(
-                            this.player, this.workbench, widgetAspect, itemAspect);
+                    Packet_S_EssentiaCellWorkbench
+                            .sendReplaceAspect(this.player, this.workbench, widgetAspect, itemAspect);
                 }
 
                 // Stop searching
@@ -262,16 +265,18 @@ public class GuiEssentiaCellWorkbench extends ThEBaseGui implements IAspectSlotG
         }
 
         // Create the un-partition button
-        this.buttonList.add(new GuiButtonSetCellPartitioningToCurrent(
-                GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_ID,
-                this.guiLeft + GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_X,
-                this.guiTop + GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_Y));
+        this.buttonList.add(
+                new GuiButtonSetCellPartitioningToCurrent(
+                        GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_ID,
+                        this.guiLeft + GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_X,
+                        this.guiTop + GuiEssentiaCellWorkbench.BUTTON_PARTITION_CURRENT_Y));
 
         // Create the partition to current button
-        this.buttonList.add(new GuiButtonClearCellPartitioning(
-                GuiEssentiaCellWorkbench.BUTTON_CLEAR_ID,
-                this.guiLeft + GuiEssentiaCellWorkbench.BUTTON_CLEAR_X,
-                this.guiTop + GuiEssentiaCellWorkbench.BUTTON_CLEAR_Y));
+        this.buttonList.add(
+                new GuiButtonClearCellPartitioning(
+                        GuiEssentiaCellWorkbench.BUTTON_CLEAR_ID,
+                        this.guiLeft + GuiEssentiaCellWorkbench.BUTTON_CLEAR_X,
+                        this.guiTop + GuiEssentiaCellWorkbench.BUTTON_CLEAR_Y));
 
         // Request the list
         Packet_S_EssentiaCellWorkbench.sendGetPartitionList(this.player, this.workbench);

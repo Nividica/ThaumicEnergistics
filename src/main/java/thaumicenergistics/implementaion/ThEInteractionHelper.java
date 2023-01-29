@@ -1,16 +1,12 @@
 package thaumicenergistics.implementaion;
 
-import appeng.api.AEApi;
-import appeng.api.implementations.tiles.IWirelessAccessPoint;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.core.localization.PlayerMessages;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.FakePlayer;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.IThEInteractionHelper;
 import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
@@ -26,6 +22,12 @@ import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.packet.server.Packet_S_ArcaneCraftingTerminal;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.utils.ThELog;
+import appeng.api.AEApi;
+import appeng.api.implementations.tiles.IWirelessAccessPoint;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.core.localization.PlayerMessages;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Implements {@link IThEInteractionHelper}
@@ -121,15 +123,14 @@ public class ThEInteractionHelper implements IThEInteractionHelper {
                     (int) player.posY,
                     (int) player.posZ,
                     new Object[] {
-                        new HandlerWirelessEssentiaTerminal(player, encKey, terminalInterface, wirelessTerminal)
-                    });
+                            new HandlerWirelessEssentiaTerminal(player, encKey, terminalInterface, wirelessTerminal) });
         }
     }
 
     @Deprecated
     @Override
-    public void openWirelessTerminalGui(
-            final EntityPlayer player, final IThEWirelessEssentiaTerminal terminalInterface) {
+    public void openWirelessTerminalGui(final EntityPlayer player,
+            final IThEWirelessEssentiaTerminal terminalInterface) {
         this.openWirelessTerminalGui(player);
     }
 

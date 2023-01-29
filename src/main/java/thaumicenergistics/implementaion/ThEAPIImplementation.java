@@ -1,16 +1,18 @@
 package thaumicenergistics.implementaion;
 
-import com.google.common.collect.ImmutableList;
-import cpw.mods.fml.common.LoaderState;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.*;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.fluids.GaseousEssentia;
 import thaumicenergistics.common.utils.ThELog;
+
+import com.google.common.collect.ImmutableList;
+import cpw.mods.fml.common.LoaderState;
 
 /**
  * Implements {@link ThEApi}.
@@ -19,6 +21,7 @@ import thaumicenergistics.common.utils.ThELog;
  *
  */
 public class ThEAPIImplementation extends ThEApi {
+
     /**
      * Create the API instance.
      */
@@ -61,8 +64,7 @@ public class ThEAPIImplementation extends ThEApi {
     }
 
     /**
-     * Gets the Thaumic Energistics API.
-     * Note: Only available after the PREINIT event.
+     * Gets the Thaumic Energistics API. Note: Only available after the PREINIT event.
      */
     public static ThEAPIImplementation instance() {
         // Has the singleton been created?
@@ -97,8 +99,7 @@ public class ThEAPIImplementation extends ThEApi {
             this.essentiaGases.clear();
 
             // Get the iterator
-            Iterator<Entry<Aspect, GaseousEssentia>> iterator =
-                    GaseousEssentia.gasList.entrySet().iterator();
+            Iterator<Entry<Aspect, GaseousEssentia>> iterator = GaseousEssentia.gasList.entrySet().iterator();
 
             // Add all gasses
             while (iterator.hasNext()) {

@@ -1,8 +1,8 @@
 package thaumicenergistics.common.features;
 
-import appeng.api.AEApi;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -12,6 +12,7 @@ import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
+import appeng.api.AEApi;
 
 /**
  * Quartz duplication feature.
@@ -20,6 +21,7 @@ import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
  *
  */
 public class FeatureQuartzDupe extends ThEThaumcraftResearchFeature {
+
     public FeatureQuartzDupe() {
         super(ResearchTypes.CERTUS_DUPE.getKey());
     }
@@ -58,7 +60,10 @@ public class FeatureQuartzDupe extends ThEThaumcraftResearchFeature {
             certusAspects.add(Aspect.CRYSTAL, 4);
             certusAspects.add(Aspect.WATER, 2);
             RecipeRegistry.DUPE_CERTUS = ThaumcraftApi.addCrucibleRecipe(
-                    ResearchRegistry.ResearchTypes.CERTUS_DUPE.getKey(), Certus2, Certus1, certusAspects);
+                    ResearchRegistry.ResearchTypes.CERTUS_DUPE.getKey(),
+                    Certus2,
+                    Certus1,
+                    certusAspects);
         }
 
         // Nether Quartz
@@ -67,7 +72,10 @@ public class FeatureQuartzDupe extends ThEThaumcraftResearchFeature {
         nQAspects.add(Aspect.WATER, 2);
         nQAspects.add(Aspect.ENERGY, 2);
         RecipeRegistry.DUPE_NETHER_QUARTZ = ThaumcraftApi.addCrucibleRecipe(
-                ResearchRegistry.ResearchTypes.CERTUS_DUPE.getKey(), NetherQuartz2, NetherQuartz1, nQAspects);
+                ResearchRegistry.ResearchTypes.CERTUS_DUPE.getKey(),
+                NetherQuartz2,
+                NetherQuartz1,
+                nQAspects);
     }
 
     @Override
@@ -82,22 +90,18 @@ public class FeatureQuartzDupe extends ThEThaumcraftResearchFeature {
         certusDupeAspects.add(Aspect.CRYSTAL, 5);
 
         // Get icon
-        ItemStack certusDupeIcon = AEApi.instance()
-                .definitions()
-                .materials()
-                .certusQuartzCrystal()
-                .maybeStack(1)
-                .get();
+        ItemStack certusDupeIcon = AEApi.instance().definitions().materials().certusQuartzCrystal().maybeStack(1).get();
 
         // Set pages
         ResearchPage[] certusDupePages = new ResearchPage[] {
-            new ResearchPage(ResearchTypes.CERTUS_DUPE.getPageName(1)),
-            new ResearchPage(RecipeRegistry.DUPE_CERTUS),
-            new ResearchPage(RecipeRegistry.DUPE_NETHER_QUARTZ)
-        };
+                new ResearchPage(ResearchTypes.CERTUS_DUPE.getPageName(1)),
+                new ResearchPage(RecipeRegistry.DUPE_CERTUS), new ResearchPage(RecipeRegistry.DUPE_NETHER_QUARTZ) };
         // Create the item
         ResearchTypes.CERTUS_DUPE.createResearchItem(
-                certusDupeAspects, ResearchRegistry.COMPLEXITY_SMALL, certusDupeIcon, certusDupePages);
+                certusDupeAspects,
+                ResearchRegistry.COMPLEXITY_SMALL,
+                certusDupeIcon,
+                certusDupePages);
 
         // Set parents
         ResearchTypes.CERTUS_DUPE.researchItem.setParents(PseudoResearchTypes.DUPE.getKey());

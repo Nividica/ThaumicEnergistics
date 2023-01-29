@@ -1,12 +1,14 @@
 package thaumicenergistics.common.inventory;
 
 import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+
 import thaumicenergistics.common.utils.ThEUtils;
 
 /**
@@ -16,6 +18,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  *
  */
 public class TheInternalInventory implements IInventory {
+
     /**
      * NBT keys
      */
@@ -129,8 +132,7 @@ public class TheInternalInventory implements IInventory {
     }
 
     /**
-     * Increases the stack size of the specified slot, and marks the inventory
-     * as dirty.
+     * Increases the stack size of the specified slot, and marks the inventory as dirty.
      *
      * @param slotIndex
      * @param amount

@@ -1,16 +1,17 @@
 package thaumicenergistics.common.network.packet.client;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+
 import thaumicenergistics.client.gui.GuiEssentiaVibrationChamber;
 import thaumicenergistics.common.container.ContainerEssentiaVibrationChamber;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link TileEssentiaVibrationChamber} client-bound packet.
@@ -19,6 +20,7 @@ import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
  *
  */
 public class Packet_C_EssentiaVibrationChamber extends ThEClientPacket {
+
     private static final byte MODE_UPDATE = 1;
 
     private float powerPerTick, maxPowerPerTick;
@@ -33,12 +35,8 @@ public class Packet_C_EssentiaVibrationChamber extends ThEClientPacket {
      * @param totalTicks
      * @return
      */
-    public static void sendUpdate(
-            final EntityPlayer player,
-            final float powerPerTick,
-            final float maxPowerPerTick,
-            final int ticksRemaining,
-            final int totalTicks) {
+    public static void sendUpdate(final EntityPlayer player, final float powerPerTick, final float maxPowerPerTick,
+            final int ticksRemaining, final int totalTicks) {
         Packet_C_EssentiaVibrationChamber packet = new Packet_C_EssentiaVibrationChamber();
 
         // Set the player

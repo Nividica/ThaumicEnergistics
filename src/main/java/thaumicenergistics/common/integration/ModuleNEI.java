@@ -1,5 +1,25 @@
 package thaumicenergistics.common.integration;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+
+import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
+import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
+import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
+import thaumicenergistics.common.items.ItemEnum;
+import thaumicenergistics.common.network.NetworkHandler;
+import thaumicenergistics.common.network.packet.server.Packet_S_NEIRecipe;
 import appeng.util.Platform;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.API;
@@ -7,24 +27,6 @@ import codechicken.nei.api.INEIGuiAdapter;
 import codechicken.nei.api.IOverlayHandler;
 import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.recipe.IRecipeHandler;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
-import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
-import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
-import thaumicenergistics.common.items.ItemEnum;
-import thaumicenergistics.common.network.NetworkHandler;
-import thaumicenergistics.common.network.packet.server.Packet_S_NEIRecipe;
 
 /**
  * Contains all code required to integrate with Not Enough Items.
@@ -41,15 +43,13 @@ public class ModuleNEI {
      *
      */
     static class ACTOverlayHandler implements IOverlayHandler {
+
         /**
          * Called when the user has shift-clicked the [?] button in NEI
          */
         @Override
-        public final void overlayRecipe(
-                final GuiContainer gui,
-                final IRecipeHandler recipeHandler,
-                final int recipeIndex,
-                final boolean shift) {
+        public final void overlayRecipe(final GuiContainer gui, final IRecipeHandler recipeHandler,
+                final int recipeIndex, final boolean shift) {
             try {
                 // Ensure the gui is correct
                 if (gui instanceof GuiArcaneCraftingTerminal) {
@@ -64,9 +64,9 @@ public class ModuleNEI {
                     if (testSize(recipe, 32 * 1024)) {
                         recipe = new NBTTagCompound();
                         for (PositionedStack ingredient : ingredients) {
-                            if ((ingredient == null)
-                                    || (ingredient.item == null)
-                                    || (ingredient.item.getItem() == null)) continue;
+                            if ((ingredient == null) || (ingredient.item == null)
+                                    || (ingredient.item.getItem() == null))
+                                continue;
                             addIngredientToItems(ingredient, recipe, true);
                         }
                     }
@@ -99,16 +99,14 @@ public class ModuleNEI {
         /**
          * Creates the handler.
          *
-         * @param isArcane
-         * Set to true for arcane recipes
+         * @param isArcane Set to true for arcane recipes
          */
         public ACTOverlayHandler(final boolean isArcane) {
             this.isArcaneHandler = isArcane;
         }
 
-        private void packIngredient(
-                NBTTagCompound recipe, int slotIndex, PositionedStack positionedStack, boolean limited)
-                throws IOException {
+        private void packIngredient(NBTTagCompound recipe, int slotIndex, PositionedStack positionedStack,
+                boolean limited) throws IOException {
             final NBTTagList tags = new NBTTagList();
             final List<ItemStack> list = new LinkedList<>();
 
@@ -133,6 +131,7 @@ public class ModuleNEI {
             }
             recipe.setTag("#" + slotIndex, tags);
         }
+
         // if the packet becomes too large, limit each slot contents to 3k
         protected boolean testSize(final NBTTagCompound recipe, int limit) throws IOException {
             final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -172,8 +171,8 @@ public class ModuleNEI {
             return true;
         }
 
-        private boolean addRegularCraftingItems(
-                final PositionedStack ingredient, NBTTagCompound recipe, boolean limited) throws IOException {
+        private boolean addRegularCraftingItems(final PositionedStack ingredient, NBTTagCompound recipe,
+                boolean limited) throws IOException {
             // Calculate the slot positions
             int slotX = (ingredient.relx - ModuleNEI.NEI_REGULAR_SLOT_OFFSET_X)
                     / ACTOverlayHandler.REGULAR_SLOT_INDEX_DIVISOR;
@@ -191,8 +190,7 @@ public class ModuleNEI {
 
         protected boolean addIngredientToItems(final PositionedStack ingredient, NBTTagCompound recipe, boolean limited)
                 throws IOException {
-            return isArcaneHandler
-                    ? addArcaneCraftingItems(ingredient, recipe, limited)
+            return isArcaneHandler ? addArcaneCraftingItems(ingredient, recipe, limited)
                     : addRegularCraftingItems(ingredient, recipe, limited);
         }
     }
@@ -224,6 +222,7 @@ public class ModuleNEI {
     }
 
     static class NEIGuiHandler extends INEIGuiAdapter {
+
         @Override
         public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
             if (gui instanceof ThEBaseGui && draggedStack != null && draggedStack.getItem() != null) {
@@ -253,7 +252,9 @@ public class ModuleNEI {
     public ModuleNEI() throws Exception {
         // Register the ACT overlays
         API.registerGuiOverlay(
-                thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, "crafting", new ACTSlotPositioner());
+                thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class,
+                "crafting",
+                new ACTSlotPositioner());
 
         // Create the regular overlay handler
         ACTOverlayHandler craftingOverlayHandler = new ACTOverlayHandler(false);
@@ -263,7 +264,9 @@ public class ModuleNEI {
 
         // Register the handlers
         API.registerGuiOverlayHandler(
-                thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class, craftingOverlayHandler, "crafting");
+                thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class,
+                craftingOverlayHandler,
+                "crafting");
         API.registerGuiOverlayHandler(
                 thaumicenergistics.client.gui.GuiArcaneCraftingTerminal.class,
                 arcaneOverlayHandler,

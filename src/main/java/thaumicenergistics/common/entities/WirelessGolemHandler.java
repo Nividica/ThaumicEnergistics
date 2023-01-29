@@ -1,16 +1,14 @@
 package thaumicenergistics.common.entities;
 
-import appeng.api.AEApi;
-import appeng.items.parts.ItemFacade;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.entities.golems.EntityGolemBase;
 import thaumicenergistics.api.entities.IGolemHookHandler;
@@ -21,6 +19,10 @@ import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
 import thaumicenergistics.common.items.ItemGolemWirelessBackpack.BackpackSkins;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.AEApi;
+import appeng.items.parts.ItemFacade;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Handles golems wearing the {@link ItemGolemWirelessBackpack}
@@ -29,6 +31,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class WirelessGolemHandler implements IGolemHookHandler {
+
     /**
      * Data stored on the client side.
      *
@@ -36,6 +39,7 @@ public class WirelessGolemHandler implements IGolemHookHandler {
      *
      */
     public static class WirelessClientData {
+
         public boolean isInRange = false;
         public float pearlRotation = 0.0f;
         public BackpackSkins skin = BackpackSkins.Thaumium;
@@ -48,6 +52,7 @@ public class WirelessGolemHandler implements IGolemHookHandler {
      *
      */
     public static class WirelessServerData {
+
         public final String encryptionKey;
         public int tickCounter = 0;
         public boolean isInRange = false;
@@ -70,8 +75,7 @@ public class WirelessGolemHandler implements IGolemHookHandler {
      * State flags.
      */
     private static final Character SYNCFLAG_HAS_WIFI_IN_RANGE = Character.valueOf('i'),
-            SYNCFLAG_HAS_WIFI_OUT_OF_RANGE = Character.valueOf('o'),
-            SYNCFLAG_NO_WIFI = Character.valueOf('n'),
+            SYNCFLAG_HAS_WIFI_OUT_OF_RANGE = Character.valueOf('o'), SYNCFLAG_NO_WIFI = Character.valueOf('n'),
             SYNCFIELD_SKIN = 'a';
 
     @SideOnly(Side.CLIENT)
@@ -110,8 +114,7 @@ public class WirelessGolemHandler implements IGolemHookHandler {
         this.backpackItem = (ItemGolemWirelessBackpack) ItemEnum.GOLEM_WIFI_BACKPACK.getItem();
 
         // Store a reference to the facade item
-        this.facadeItem = (ItemFacade)
-                AEApi.instance().definitions().items().facade().maybeItem().orNull();
+        this.facadeItem = (ItemFacade) AEApi.instance().definitions().items().facade().maybeItem().orNull();
     }
 
     /**
@@ -149,8 +152,8 @@ public class WirelessGolemHandler implements IGolemHookHandler {
      * @param side
      * @return
      */
-    private InteractionLevel canHandleInteration_Backpack(
-            final EntityGolemBase golem, final Object handlerData, final EntityPlayer player, final Side side) {
+    private InteractionLevel canHandleInteration_Backpack(final EntityGolemBase golem, final Object handlerData,
+            final EntityPlayer player, final Side side) {
         // Does the golem already have a backpack on?
         if (handlerData != null) {
             // Already has backpack.
@@ -163,7 +166,7 @@ public class WirelessGolemHandler implements IGolemHookHandler {
             return InteractionLevel.NoInteraction;
         }
         switch (core) {
-                // Unsupported cores
+            // Unsupported cores
             case Butcher:
             case Empty:
             case Fish:
@@ -175,7 +178,7 @@ public class WirelessGolemHandler implements IGolemHookHandler {
             default:
                 return InteractionLevel.NoInteraction;
 
-                // Supported cores
+            // Supported cores
             case Gather:
             case Fill:
             case Liquid:
@@ -203,12 +206,8 @@ public class WirelessGolemHandler implements IGolemHookHandler {
      * @param heldItem
      * @return
      */
-    private InteractionLevel canHandleInteration_Facade(
-            final EntityGolemBase golem,
-            final Object handlerData,
-            final EntityPlayer player,
-            final Side side,
-            final ItemStack heldItem) {
+    private InteractionLevel canHandleInteration_Facade(final EntityGolemBase golem, final Object handlerData,
+            final EntityPlayer player, final Side side, final ItemStack heldItem) {
         // Is the golem wearing a backpack?
         if (handlerData == null) {
             // No backpack to apply it to
@@ -320,13 +319,8 @@ public class WirelessGolemHandler implements IGolemHookHandler {
     }
 
     @Override
-    public void bellLeftClicked(
-            final EntityGolemBase golem,
-            final Object handlerData,
-            final ItemStack itemGolemPlacer,
-            final EntityPlayer player,
-            final boolean dismantled,
-            final Side side) {
+    public void bellLeftClicked(final EntityGolemBase golem, final Object handlerData, final ItemStack itemGolemPlacer,
+            final EntityPlayer player, final boolean dismantled, final Side side) {
         // Goes the golem have a backpack on?
         if (handlerData instanceof WirelessServerData) {
             WirelessServerData wsd = ((WirelessServerData) handlerData);
@@ -349,8 +343,8 @@ public class WirelessGolemHandler implements IGolemHookHandler {
     }
 
     @Override
-    public InteractionLevel canHandleInteraction(
-            final EntityGolemBase golem, final Object handlerData, final EntityPlayer player, final Side side) {
+    public InteractionLevel canHandleInteraction(final EntityGolemBase golem, final Object handlerData,
+            final EntityPlayer player, final Side side) {
         // Get the held item
         ItemStack heldItem = player.inventory.getCurrentItem();
 
@@ -373,12 +367,8 @@ public class WirelessGolemHandler implements IGolemHookHandler {
     }
 
     @Override
-    public Object customInteraction(
-            final EntityGolemBase golem,
-            final Object handlerData,
-            final IGolemHookSyncRegistry syncData,
-            final EntityPlayer player,
-            final Side side) {
+    public Object customInteraction(final EntityGolemBase golem, final Object handlerData,
+            final IGolemHookSyncRegistry syncData, final EntityPlayer player, final Side side) {
         // Get the held item
         ItemStack heldItem = player.inventory.getCurrentItem();
 
@@ -434,8 +424,8 @@ public class WirelessGolemHandler implements IGolemHookHandler {
     }
 
     @Override
-    public void golemTick(
-            final EntityGolemBase golem, final Object serverHandlerData, final IGolemHookSyncRegistry syncData) {
+    public void golemTick(final EntityGolemBase golem, final Object serverHandlerData,
+            final IGolemHookSyncRegistry syncData) {
         // Has backpack?
         if (serverHandlerData instanceof WirelessServerData) {
             WirelessServerData wsd = (WirelessServerData) serverHandlerData;
@@ -490,13 +480,8 @@ public class WirelessGolemHandler implements IGolemHookHandler {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderGolem(
-            final EntityGolemBase golem,
-            final Object clientHandlerData,
-            final double x,
-            final double y,
-            final double z,
-            final float partialElaspsedTick) {
+    public void renderGolem(final EntityGolemBase golem, final Object clientHandlerData, final double x, final double y,
+            final double z, final float partialElaspsedTick) {
         if (!(clientHandlerData instanceof WirelessClientData)) {
             return;
         }
@@ -554,11 +539,8 @@ public class WirelessGolemHandler implements IGolemHookHandler {
     }
 
     @Override
-    public Object setupGolem(
-            final EntityGolemBase golem,
-            final Object handlerData,
-            final IGolemHookSyncRegistry syncData,
-            final Side side) {
+    public Object setupGolem(final EntityGolemBase golem, final Object handlerData,
+            final IGolemHookSyncRegistry syncData, final Side side) {
         if (side == Side.CLIENT) {
             return handlerData;
         }
@@ -609,8 +591,8 @@ public class WirelessGolemHandler implements IGolemHookHandler {
     }
 
     @Override
-    public Object spawnGolemFromItemStack(
-            final EntityGolemBase golem, final ItemStack itemGolemPlacer, final Side side) {
+    public Object spawnGolemFromItemStack(final EntityGolemBase golem, final ItemStack itemGolemPlacer,
+            final Side side) {
         return null;
     }
 
@@ -649,8 +631,8 @@ public class WirelessGolemHandler implements IGolemHookHandler {
     }
 
     @Override
-    public void writeEntityNBT(
-            final EntityGolemBase golem, final Object serverHandlerData, final NBTTagCompound nbtTag) {
+    public void writeEntityNBT(final EntityGolemBase golem, final Object serverHandlerData,
+            final NBTTagCompound nbtTag) {
         // Does the golem have a backpack?
         if (serverHandlerData instanceof WirelessServerData) {
             WirelessServerData wsd = ((WirelessServerData) serverHandlerData);

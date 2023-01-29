@@ -1,24 +1,8 @@
 package thaumicenergistics.common.parts;
 
-import appeng.api.AEApi;
-import appeng.api.implementations.IPowerChannelState;
-import appeng.api.implementations.parts.IPartStorageMonitor;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.PartItemStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.util.AEColor;
-import appeng.client.texture.CableBusTextures;
-import appeng.core.localization.PlayerMessages;
-import appeng.util.Platform;
-import appeng.util.ReadableNumberConverter;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import java.awt.Color;
 import java.io.IOException;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
@@ -36,7 +20,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.IEssentiaWatcher;
 import thaumicenergistics.api.grid.IEssentiaWatcherHost;
@@ -48,6 +34,23 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.AEApi;
+import appeng.api.implementations.IPowerChannelState;
+import appeng.api.implementations.parts.IPartStorageMonitor;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.util.AEColor;
+import appeng.client.texture.CableBusTextures;
+import appeng.core.localization.PlayerMessages;
+import appeng.util.Platform;
+import appeng.util.ReadableNumberConverter;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Displays stored essentia levels.
@@ -57,6 +60,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  */
 public class PartEssentiaStorageMonitor extends ThEPartBase
         implements IPartStorageMonitor, IEssentiaWatcherHost, IPowerChannelState {
+
     /**
      * All the data about what is being tracked.
      *
@@ -64,6 +68,7 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
      *
      */
     protected class TrackingInformation {
+
         /**
          * Faux itemstack
          */
@@ -77,6 +82,7 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
         public TrackingInformation() {
             // Create the faux itemstack
             ItemStack is = new ItemStack(new Item() {
+
                 @Override
                 public String getItemStackDisplayName(final ItemStack ignored_) {
                     return this.getUnlocalizedName();
@@ -84,9 +90,7 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
 
                 @Override
                 public String getUnlocalizedName() {
-                    return getAspectStack() == null
-                            ? "Invalid aspect stack"
-                            : getAspectStack().getAspectName();
+                    return getAspectStack() == null ? "Invalid aspect stack" : getAspectStack().getAspectName();
                 }
 
                 @Override
@@ -109,8 +113,8 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
         }
 
         /**
-         * Gets an itemstack representing the essentia being tracked.
-         * Note: The only valid methods on the itemstack are the name accessors.
+         * Gets an itemstack representing the essentia being tracked. Note: The only valid methods on the itemstack are
+         * the name accessors.
          *
          * @return
          */
@@ -192,8 +196,9 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
     /***
      * Locked texture.
      */
-    private static final ResourceLocation TEXTURE_LOCKED =
-            new ResourceLocation(ThaumicEnergistics.MOD_ID, "textures/blocks/parts/monitor.locked.png");
+    private static final ResourceLocation TEXTURE_LOCKED = new ResourceLocation(
+            ThaumicEnergistics.MOD_ID,
+            "textures/blocks/parts/monitor.locked.png");
 
     /**
      * Watches the for changes in the essentia grid.
@@ -201,8 +206,7 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
     private IEssentiaWatcher essentiaWatcher;
 
     /**
-     * True if the monitor is locked, and can not have its tracked essentia
-     * changed.
+     * True if the monitor is locked, and can not have its tracked essentia changed.
      */
     private boolean monitorLocked = false;
 
@@ -328,9 +332,15 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
 
         // Set the color
         GL11.glColor4f(
-                aspectColor.getRed() / 255.0F, aspectColor.getGreen() / 255.0F, aspectColor.getBlue() / 255.0F, 0.9F);
+                aspectColor.getRed() / 255.0F,
+                aspectColor.getGreen() / 255.0F,
+                aspectColor.getBlue() / 255.0F,
+                0.9F);
         tessellator.setColorRGBA_F(
-                aspectColor.getRed() / 255.0F, aspectColor.getGreen() / 255.0F, aspectColor.getBlue() / 255.0F, 0.9F);
+                aspectColor.getRed() / 255.0F,
+                aspectColor.getGreen() / 255.0F,
+                aspectColor.getBlue() / 255.0F,
+                0.9F);
 
         // Center the aspect
         GL11.glTranslated(-0.20D, -0.25D, 0.0D);
@@ -358,9 +368,8 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
     }
 
     /**
-     * Renders the lock.
-     * Note: This must come after renderAspect, as it depends on the
-     * GL position state that renderAspect sets up.
+     * Renders the lock. Note: This must come after renderAspect, as it depends on the GL position state that
+     * renderAspect sets up.
      *
      * @param tessellator
      */
@@ -414,8 +423,7 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
     }
 
     /**
-     * Renders the aspect and amount onto the screen.
-     * Note: Method originally from Applied Energistics 2,
+     * Renders the aspect and amount onto the screen. Note: Method originally from Applied Energistics 2,
      * PartStorageMonitor.java
      *
      * @param tessellator
@@ -472,7 +480,9 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
 
             // Set the lightmap
             OpenGlHelper.setLightmapTextureCoords(
-                    OpenGlHelper.lightmapTexUnit, brightnessComponent1 * 0.8F, brightnessComponent2 * 0.8F);
+                    OpenGlHelper.lightmapTexUnit,
+                    brightnessComponent1 * 0.8F,
+                    brightnessComponent2 * 0.8F);
 
             // Render the aspect
             this.renderAspect(tessellator, aspectStack.getAspect());
@@ -480,16 +490,15 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
             // Render the lock
             this.renderLock(tessellator);
 
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
 
         // Move below the screen image
         GL11.glTranslatef(0.2f, 0.4f, -0.25f);
         GL11.glScalef(1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f);
 
         // Convert the amount to a string
-        final String renderedStackSize =
-                ReadableNumberConverter.INSTANCE.toWideReadableForm(aspectStack.getStackSize());
+        final String renderedStackSize = ReadableNumberConverter.INSTANCE
+                .toWideReadableForm(aspectStack.getStackSize());
 
         // Get the font renderer
         FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
@@ -516,8 +525,7 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
         this.trackedEssentia.updateTrackedAmount(0);
 
         // Get the amount in the network
-        long stored = essMonitor.getEssentiaAmount(
-                this.trackedEssentia.getAspectStack().getAspect());
+        long stored = essMonitor.getEssentiaAmount(this.trackedEssentia.getAspectStack().getAspect());
 
         // Was there anything found?
         if (stored > 0) {
@@ -564,8 +572,7 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
     }
 
     /**
-     * Called when the monitor is right-clicked with an empty hand.
-     * Clears the tracker.
+     * Called when the monitor is right-clicked with an empty hand. Clears the tracker.
      *
      * @return
      */
@@ -589,18 +596,16 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
     }
 
     /**
-     * Called when the monitor is right-clicked with an essentia container or
-     * label.
-     * Sets the tracker to the items contained aspect, or clears if the
-     * container is empty.
+     * Called when the monitor is right-clicked with an essentia container or label. Sets the tracker to the items
+     * contained aspect, or clears if the container is empty.
      *
      * @param player
      * @param heldItem
      * @param itemType
      * @return
      */
-    protected boolean onActivateWithAspectItem(
-            final EntityPlayer player, final ItemStack heldItem, final AspectItemType itemType) {
+    protected boolean onActivateWithAspectItem(final EntityPlayer player, final ItemStack heldItem,
+            final AspectItemType itemType) {
         // Is the monitor locked?
         if (this.monitorLocked) {
             return false;
@@ -812,11 +817,7 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void renderDynamic(
-            final double x,
-            final double y,
-            final double z,
-            final IPartRenderHelper helper,
+    public void renderDynamic(final double x, final double y, final double z, final IPartRenderHelper helper,
             final RenderBlocks renderer) {
         // Skip if nothing to draw
         if ((!this.isActive()) || (!this.trackedEssentia.isValid())) {
@@ -883,12 +884,16 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
         // Main face
         helper.setInvColor(AEColor.Transparent.whiteVariant);
         helper.renderInventoryFace(
-                CableBusTextures.PartConversionMonitor_Bright.getIcon(), ForgeDirection.SOUTH, renderer);
+                CableBusTextures.PartConversionMonitor_Bright.getIcon(),
+                ForgeDirection.SOUTH,
+                renderer);
 
         // Phial
         helper.setInvColor(AEColor.Black.blackVariant);
         helper.renderInventoryFace(
-                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0], ForgeDirection.SOUTH, renderer);
+                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0],
+                ForgeDirection.SOUTH,
+                renderer);
 
         // Cable lights
         helper.setBounds(5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F);
@@ -897,8 +902,8 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void renderStatic(
-            final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer) {
+    public void renderStatic(final int x, final int y, final int z, final IPartRenderHelper helper,
+            final RenderBlocks renderer) {
         Tessellator tessellator = Tessellator.instance;
 
         IIcon side = BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[3];
@@ -924,13 +929,23 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
         // Main face
         tessellator.setColorOpaque_I(this.getHost().getColor().whiteVariant);
         helper.renderFace(
-                x, y, z, CableBusTextures.PartConversionMonitor_Bright.getIcon(), ForgeDirection.SOUTH, renderer);
+                x,
+                y,
+                z,
+                CableBusTextures.PartConversionMonitor_Bright.getIcon(),
+                ForgeDirection.SOUTH,
+                renderer);
 
         // Phial
         if (!this.trackedEssentia.isValid()) {
             tessellator.setColorOpaque_I(this.getHost().getColor().mediumVariant);
             helper.renderFace(
-                    x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0], ForgeDirection.SOUTH, renderer);
+                    x,
+                    y,
+                    z,
+                    BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0],
+                    ForgeDirection.SOUTH,
+                    renderer);
         }
 
         // Cable lights

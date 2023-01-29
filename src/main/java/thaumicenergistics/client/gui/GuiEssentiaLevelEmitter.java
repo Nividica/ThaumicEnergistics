@@ -1,14 +1,14 @@
 package thaumicenergistics.client.gui;
 
-import appeng.api.config.RedstoneMode;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSlotGui;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
@@ -21,6 +21,9 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaEmitter;
 import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
+import appeng.api.config.RedstoneMode;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartEssentiaLevelEmitter} GUI
@@ -30,15 +33,16 @@ import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaLevelEmitter extends ThEBaseGui implements IAspectSlotGui {
+
     /**
      * Normal button labels
      */
-    private static final String[] BUTTON_LABELS = {"+1", "+10", "+100", "-1", "-10", "-100"};
+    private static final String[] BUTTON_LABELS = { "+1", "+10", "+100", "-1", "-10", "-100" };
 
     /**
      * Button labels when shift is being pressed.
      */
-    private static final String[] BUTTON_LABELS_SHIFTED = {"+100", "+1000", "+10000", "-100", "-1000", "-10000"};
+    private static final String[] BUTTON_LABELS_SHIFTED = { "+100", "+1000", "+10000", "-100", "-1000", "-10000" };
 
     /**
      * Width of the gui
@@ -178,10 +182,8 @@ public class GuiEssentiaLevelEmitter extends ThEBaseGui implements IAspectSlotGu
     /**
      * Create the GUI.
      *
-     * @param part
-     * AE part associated with the gui.
-     * @param player
-     * Player viewing the gui.
+     * @param part   AE part associated with the gui.
+     * @param player Player viewing the gui.
      */
     public GuiEssentiaLevelEmitter(final PartEssentiaLevelEmitter part, final EntityPlayer player) {
         // Call super
@@ -219,7 +221,12 @@ public class GuiEssentiaLevelEmitter extends ThEBaseGui implements IAspectSlotGu
 
         // Draw the gui texture.
         this.drawTexturedModalRect(
-                this.guiLeft, this.guiTop, 0, 0, GuiEssentiaLevelEmitter.GUI_WIDTH, GuiEssentiaLevelEmitter.GUI_HEIGHT);
+                this.guiLeft,
+                this.guiTop,
+                0,
+                0,
+                GuiEssentiaLevelEmitter.GUI_WIDTH,
+                GuiEssentiaLevelEmitter.GUI_HEIGHT);
     }
 
     /**
@@ -268,8 +275,7 @@ public class GuiEssentiaLevelEmitter extends ThEBaseGui implements IAspectSlotGu
             long wantedAmount = 0;
             try {
                 wantedAmount = Long.parseLong(this.amountField.getText());
-            } catch (NumberFormatException e) {
-            }
+            } catch (NumberFormatException e) {}
 
             // Update the server
             Packet_S_EssentiaEmitter.sendWantedAmount(wantedAmount, this.part, this.player);
@@ -287,8 +293,10 @@ public class GuiEssentiaLevelEmitter extends ThEBaseGui implements IAspectSlotGu
         // Is the mouse over the widget?
         if (this.aspectFilterSlot.isMouseOverWidget(mouseX, mouseY)) {
             // Pass to the widget
-            this.aspectFilterSlot.mouseClicked(EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem(
-                    this.draggedStack == null ? this.player.inventory.getItemStack() : this.draggedStack.copy()));
+            this.aspectFilterSlot.mouseClicked(
+                    EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem(
+                            this.draggedStack == null ? this.player.inventory.getItemStack()
+                                    : this.draggedStack.copy()));
         }
         this.draggedStack = null;
     }
@@ -309,8 +317,7 @@ public class GuiEssentiaLevelEmitter extends ThEBaseGui implements IAspectSlotGu
 
                 // Update the server
                 Packet_S_EssentiaEmitter.sendWantedAmountDelta(adjustment, this.part, this.player);
-            } catch (NumberFormatException e) {
-            }
+            } catch (NumberFormatException e) {}
         }
         // Was the redstone mode button pressed?
         else if (index == GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX) {
@@ -388,30 +395,30 @@ public class GuiEssentiaLevelEmitter extends ThEBaseGui implements IAspectSlotGu
                 int buttonIndex = (row * 3) + column;
 
                 // Calculate the x position of the button
-                int xPos = ((this.guiLeft + GuiEssentiaLevelEmitter.BUTTON_POS_X)
-                        + (column
-                                * (GuiEssentiaLevelEmitter.BUTTON_WIDTH
-                                        + GuiEssentiaLevelEmitter.BUTTON_PADDING_HORZ)));
+                int xPos = ((this.guiLeft + GuiEssentiaLevelEmitter.BUTTON_POS_X) + (column
+                        * (GuiEssentiaLevelEmitter.BUTTON_WIDTH + GuiEssentiaLevelEmitter.BUTTON_PADDING_HORZ)));
 
-                this.buttonList.add(new GuiButton(
-                        buttonIndex,
-                        xPos,
-                        yPos,
-                        GuiEssentiaLevelEmitter.BUTTON_WIDTH,
-                        GuiEssentiaLevelEmitter.BUTTON_HEIGHT,
-                        GuiEssentiaLevelEmitter.BUTTON_LABELS[buttonIndex]));
+                this.buttonList.add(
+                        new GuiButton(
+                                buttonIndex,
+                                xPos,
+                                yPos,
+                                GuiEssentiaLevelEmitter.BUTTON_WIDTH,
+                                GuiEssentiaLevelEmitter.BUTTON_HEIGHT,
+                                GuiEssentiaLevelEmitter.BUTTON_LABELS[buttonIndex]));
             }
         }
 
         // Add the redstone mode button
-        this.buttonList.add(new GuiButtonRedstoneModes(
-                GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX,
-                this.guiLeft + GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_X,
-                this.guiTop + GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_Y,
-                GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE,
-                GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE,
-                RedstoneMode.LOW_SIGNAL,
-                true));
+        this.buttonList.add(
+                new GuiButtonRedstoneModes(
+                        GuiEssentiaLevelEmitter.REDSTONE_MODE_BUTTON_INDEX,
+                        this.guiLeft + GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_X,
+                        this.guiTop + GuiEssentiaLevelEmitter.REDSTONE_BUTTON_POS_Y,
+                        GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE,
+                        GuiEssentiaLevelEmitter.REDSTONE_BUTTON_SIZE,
+                        RedstoneMode.LOW_SIGNAL,
+                        true));
     }
 
     /**

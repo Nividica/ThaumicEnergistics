@@ -1,23 +1,19 @@
 package thaumicenergistics.common.container;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.security.PlayerSource;
 import java.util.Collection;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
@@ -36,6 +32,14 @@ import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.storage.EssentiaRepo;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
+import appeng.api.config.Actionable;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.PlayerSource;
 
 /**
  * Base class for cell and terminal inventory containers
@@ -45,6 +49,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  */
 public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPlayerInventory
         implements IMEEssentiaMonitorReceiver, IAspectSelectorContainer, ICraftingIssuerContainer {
+
     /**
      * X position for the output slot
      */
@@ -76,8 +81,7 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
     private static final int HOTBAR_INV_POSITION_Y = 180;
 
     /**
-     * The minimum amount of time to wait before playing
-     * sounds again. In ms.
+     * The minimum amount of time to wait before playing sounds again. In ms.
      */
     private static final int MINIMUM_SOUND_WAIT = 900;
 
@@ -87,9 +91,7 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
     private static final int WORK_TICK_RATE = 3;
 
     /**
-     * The maximum amount of essentia to try and transfer each time
-     * the transfer method is called.
-     * This is a soft-cap.
+     * The maximum amount of essentia to try and transfer each time the transfer method is called. This is a soft-cap.
      */
     private static final int ESSENTIA_TRANSFER_PER_WORK_CYCLE = 64;
 
@@ -212,8 +214,8 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
      * Returns true if the specified stack can be merged into the output slot.
      *
      * @param stackToMerge
-     * @return True if the slot is empty,
-     * or if can be merged by increasing the slots stacksize by the specified stacks stacksize.
+     * @return True if the slot is empty, or if can be merged by increasing the slots stacksize by the specified stacks
+     *         stacksize.
      */
     private boolean canMergeWithOutputSlot(final ItemStack stackToMerge) {
         // Ensure the stack is not null.
@@ -295,8 +297,8 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
      * @return The result of the drain. <AmountDrained, NewContainer>
      */
     @Nullable
-    private ImmutablePair<Integer, ItemStack> drainContainer(
-            final ItemStack container, final BaseActionSource actionSource, final Actionable mode) {
+    private ImmutablePair<Integer, ItemStack> drainContainer(final ItemStack container,
+            final BaseActionSource actionSource, final Actionable mode) {
         // Ensure there is a container
         if (container == null) {
             return null;
@@ -315,8 +317,8 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
         int proposedDrainAmount = (int) containerEssentia.getStackSize();
 
         // Do a network injection
-        long rejectedAmount = this.essentiaMonitor.injectEssentia(
-                containerEssentia.getAspect(), proposedDrainAmount, mode, actionSource, true);
+        long rejectedAmount = this.essentiaMonitor
+                .injectEssentia(containerEssentia.getAspect(), proposedDrainAmount, mode, actionSource, true);
 
         // Was any rejected?
         if (rejectedAmount > 0) {
@@ -349,11 +351,8 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
      * @return The result of the fill. <AmountFilled, NewContainer>
      */
     @Nullable
-    private ImmutablePair<Integer, ItemStack> fillContainer(
-            final Aspect withAspect,
-            final ItemStack container,
-            final BaseActionSource actionSource,
-            final Actionable mode) {
+    private ImmutablePair<Integer, ItemStack> fillContainer(final Aspect withAspect, final ItemStack container,
+            final BaseActionSource actionSource, final Actionable mode) {
         // Ensure there is an aspect
         if (withAspect == null) {
             return null;
@@ -369,8 +368,8 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
         }
 
         // Do an extraction from the network
-        long extractedAmount =
-                this.essentiaMonitor.extractEssentia(withAspect, containerCapacity, mode, actionSource, true);
+        long extractedAmount = this.essentiaMonitor
+                .extractEssentia(withAspect, containerCapacity, mode, actionSource, true);
 
         // Was anything extracted?
         if (extractedAmount <= 0) {
@@ -388,8 +387,8 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
         }
 
         // Create a new container filled to the proposed amount
-        return EssentiaItemContainerHelper.INSTANCE.injectIntoContainer(
-                container, new AspectStack(withAspect, proposedFillAmount));
+        return EssentiaItemContainerHelper.INSTANCE
+                .injectIntoContainer(container, new AspectStack(withAspect, proposedFillAmount));
     }
 
     /**
@@ -444,8 +443,7 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
     }
 
     /**
-     * Checks if there is any work to perform.
-     * If there is it does so.
+     * Checks if there is any work to perform. If there is it does so.
      */
     @Override
     protected boolean detectAndSendChangesMP(@Nonnull final EntityPlayerMP playerMP) {
@@ -529,16 +527,14 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
     /**
      * Fills, drains, or sets label aspect.
      *
-     * @param stack
-     * This is not modified during the course of this function.
-     * @param aspect
-     * Ignored when draining
+     * @param stack        This is not modified during the course of this function.
+     * @param aspect       Ignored when draining
      * @param actionSource
      * @param mode
      * @return The new stack if changes made, the original stack otherwise.
      */
-    protected ItemStack transferEssentia(
-            final ItemStack stack, final Aspect aspect, final BaseActionSource actionSource, final Actionable mode) {
+    protected ItemStack transferEssentia(final ItemStack stack, final Aspect aspect,
+            final BaseActionSource actionSource, final Actionable mode) {
         // Ensure the stack & monitor are not null
         if ((stack == null) || (this.essentiaMonitor == null)) {
             return stack;
@@ -703,8 +699,7 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
     }
 
     /**
-     * Is this container still valid for receiving updates
-     * from the AE monitor?
+     * Is this container still valid for receiving updates from the AE monitor?
      */
     @Override
     public final boolean isValid(final Object verificationToken) {
@@ -736,8 +731,7 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
     public abstract void onClientRequestAutoCraft(final EntityPlayer player, final Aspect aspect);
 
     /**
-     * Called when a client requests the state of the container.
-     * Updates our cached list of aspects
+     * Called when a client requests the state of the container. Updates our cached list of aspects
      */
     public abstract void onClientRequestFullUpdate();
 
@@ -878,13 +872,11 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
     }
 
     /**
-     * Checks if the transfer sound should play.
-     * if checkWorkSlots is true the type will be automatically determined.
+     * Checks if the transfer sound should play. if checkWorkSlots is true the type will be automatically determined.
      *
      * @param player
      * @param checkWorkSlots
-     * @param type
-     * 0 = splash, 1 = paper
+     * @param type           0 = splash, 1 = paper
      */
     public void playTransferSound(final EntityPlayer player, final boolean checkWorkSlots, int type) {
         if (checkWorkSlots) {
@@ -960,8 +952,7 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
     }
 
     /**
-     * Called when the user has clicked on an aspect.
-     * Sends that change to the server for validation.
+     * Called when the user has clicked on an aspect. Sends that change to the server for validation.
      */
     @Override
     public void setSelectedAspect(final Aspect selectedAspect) {
@@ -988,18 +979,21 @@ public abstract class ContainerEssentiaCellTerminalBase extends ContainerWithPla
             // Was the slot clicked in the player or hotbar inventory?
             else if (this.slotClickedWasInPlayerInventory(slotNumber)
                     || this.slotClickedWasInHotbarInventory(slotNumber)) {
-                // Is the item valid for the input slot?
-                if (this.inputSlot.isItemValid(slotStack)) {
-                    // Attempt to merge with the input slot
-                    didMerge = this.mergeItemStack(
-                            slotStack, this.inputSlot.slotNumber, this.inputSlot.slotNumber + 1, false);
-                }
+                        // Is the item valid for the input slot?
+                        if (this.inputSlot.isItemValid(slotStack)) {
+                            // Attempt to merge with the input slot
+                            didMerge = this.mergeItemStack(
+                                    slotStack,
+                                    this.inputSlot.slotNumber,
+                                    this.inputSlot.slotNumber + 1,
+                                    false);
+                        }
 
-                // Did we merge?
-                if (!didMerge) {
-                    didMerge = this.swapSlotInventoryHotbar(slotNumber, slotStack);
-                }
-            }
+                        // Did we merge?
+                        if (!didMerge) {
+                            didMerge = this.swapSlotInventoryHotbar(slotNumber, slotStack);
+                        }
+                    }
 
             if (didMerge) {
                 // Did the merger drain the stack?

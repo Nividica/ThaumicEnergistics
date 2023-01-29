@@ -1,14 +1,15 @@
 package thaumicenergistics.common.grid;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.security.BaseActionSource;
 import java.util.Collection;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.api.grid.IMEEssentiaMonitorReceiver;
 import thaumicenergistics.api.storage.IAspectStack;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.BaseActionSource;
 
 /**
  * Decouples the essentia grid from it's power grid.
@@ -17,6 +18,7 @@ import thaumicenergistics.api.storage.IAspectStack;
  *
  */
 public class EssentiaPassThroughMonitor extends EssentiaMonitor {
+
     private final IMEEssentiaMonitor internalMonitor;
 
     public EssentiaPassThroughMonitor(final IMEEssentiaMonitor source, final IEnergyGrid energyGrid) {
@@ -36,17 +38,13 @@ public class EssentiaPassThroughMonitor extends EssentiaMonitor {
     }
 
     @Override
-    public long extractEssentia(
-            final Aspect aspect,
-            final long amount,
-            final Actionable mode,
-            final BaseActionSource source,
-            final boolean powered) {
+    public long extractEssentia(final Aspect aspect, final long amount, final Actionable mode,
+            final BaseActionSource source, final boolean powered) {
         if (powered) {
             // Simulate power extraction
             double powerRequest = EssentiaMonitor.AE_PER_ESSENTIA * amount;
-            double powerReceived =
-                    this.energyGrid.extractAEPower(powerRequest, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+            double powerReceived = this.energyGrid
+                    .extractAEPower(powerRequest, Actionable.SIMULATE, PowerMultiplier.CONFIG);
 
             // Was enough power extracted?
             if (powerReceived < powerRequest) {
@@ -61,7 +59,9 @@ public class EssentiaPassThroughMonitor extends EssentiaMonitor {
         // Extract power if modulating
         if ((extractedAmount > 0) && (powered) && (mode == Actionable.MODULATE)) {
             this.energyGrid.extractAEPower(
-                    EssentiaMonitor.AE_PER_ESSENTIA * extractedAmount, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                    EssentiaMonitor.AE_PER_ESSENTIA * extractedAmount,
+                    Actionable.MODULATE,
+                    PowerMultiplier.CONFIG);
         }
 
         return extractedAmount;
@@ -78,17 +78,13 @@ public class EssentiaPassThroughMonitor extends EssentiaMonitor {
     }
 
     @Override
-    public long injectEssentia(
-            final Aspect aspect,
-            final long amount,
-            final Actionable mode,
-            final BaseActionSource source,
-            final boolean powered) {
+    public long injectEssentia(final Aspect aspect, final long amount, final Actionable mode,
+            final BaseActionSource source, final boolean powered) {
         if (powered) {
             // Simulate power extraction
             double powerRequest = EssentiaMonitor.AE_PER_ESSENTIA * amount;
-            double powerReceived =
-                    this.energyGrid.extractAEPower(powerRequest, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+            double powerReceived = this.energyGrid
+                    .extractAEPower(powerRequest, Actionable.SIMULATE, PowerMultiplier.CONFIG);
 
             // Was enough power extracted?
             if (powerReceived < powerRequest) {
@@ -104,7 +100,9 @@ public class EssentiaPassThroughMonitor extends EssentiaMonitor {
         // Extract power if modulating
         if ((injectedAmount > 0) && (powered) && (mode == Actionable.MODULATE)) {
             this.energyGrid.extractAEPower(
-                    EssentiaMonitor.AE_PER_ESSENTIA * injectedAmount, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                    EssentiaMonitor.AE_PER_ESSENTIA * injectedAmount,
+                    Actionable.MODULATE,
+                    PowerMultiplier.CONFIG);
         }
 
         return rejectedAmount;

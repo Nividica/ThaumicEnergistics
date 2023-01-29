@@ -1,19 +1,12 @@
 package thaumicenergistics.common.inventory;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.ViewItems;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.common.fluids.GaseousEssentia;
@@ -23,6 +16,15 @@ import thaumicenergistics.common.items.ItemEssentiaCell;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
+import appeng.api.config.ViewItems;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.ISaveProvider;
+import appeng.api.storage.StorageChannel;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IItemList;
 
 /**
  * Handles a non creative {@link ItemEssentiaCell}
@@ -35,12 +37,9 @@ public class HandlerItemEssentiaCell implements IMEInventoryHandler<IAEFluidStac
     /**
      * NBT Keys
      */
-    private static final String NBT_ESSENTIA_NUMBER_KEY = "Essentia#",
-            NBT_SORT_KEY = "SortMode",
-            NBT_PARTITION_KEY = "Partitions",
-            NBT_PARTITION_COUNT_KEY = "PartitionCount",
-            NBT_PARTITION_NUMBER_KEY = "Partition#",
-            NBT_KEY_VIEW_MODE = "ViewMode";
+    private static final String NBT_ESSENTIA_NUMBER_KEY = "Essentia#", NBT_SORT_KEY = "SortMode",
+            NBT_PARTITION_KEY = "Partitions", NBT_PARTITION_COUNT_KEY = "PartitionCount",
+            NBT_PARTITION_NUMBER_KEY = "Partition#", NBT_KEY_VIEW_MODE = "ViewMode";
 
     /**
      * Controls how many essentia can fit in a single byte.
@@ -98,8 +97,7 @@ public class HandlerItemEssentiaCell implements IMEInventoryHandler<IAEFluidStac
     private ViewItems viewMode = DEFAULT_VIEW_MODE;
 
     /**
-     * Who do we tell we have changed?
-     * Can be null.
+     * Who do we tell we have changed? Can be null.
      */
     private final ISaveProvider saveProvider;
 
@@ -463,8 +461,7 @@ public class HandlerItemEssentiaCell implements IMEInventoryHandler<IAEFluidStac
     }
 
     /**
-     * Attempts to extract essentia gas from the cell.
-     * returns the number of items extracted, null
+     * Attempts to extract essentia gas from the cell. returns the number of items extracted, null
      */
     @Override
     public IAEFluidStack extractItems(final IAEFluidStack request, final Actionable mode, final BaseActionSource src) {
@@ -478,8 +475,8 @@ public class HandlerItemEssentiaCell implements IMEInventoryHandler<IAEFluidStac
         Aspect requestAspect = ((GaseousEssentia) request.getFluid()).getAspect();
 
         // Calculate the amount of essentia to extract
-        long essentiaAmountRequested =
-                EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount(request.getStackSize());
+        long essentiaAmountRequested = EssentiaConversionHelper.INSTANCE
+                .convertFluidAmountToEssentiaAmount(request.getStackSize());
 
         // Is the requested amount a whole essentia?
         if (essentiaAmountRequested == 0) {
@@ -528,8 +525,9 @@ public class HandlerItemEssentiaCell implements IMEInventoryHandler<IAEFluidStac
             GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect(essentiaStack.getAspect());
 
             // Create the AE fluid stack
-            availableList.add(EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits(
-                    essentiaGas, essentiaStack.getStackSize()));
+            availableList.add(
+                    EssentiaConversionHelper.INSTANCE
+                            .createAEFluidStackInEssentiaUnits(essentiaGas, essentiaStack.getStackSize()));
         }
 
         return availableList;
@@ -659,8 +657,7 @@ public class HandlerItemEssentiaCell implements IMEInventoryHandler<IAEFluidStac
     }
 
     /**
-     * Attempts to add essentia gas to the cell.
-     * returns the number of items not added.
+     * Attempts to add essentia gas to the cell. returns the number of items not added.
      */
     @Override
     public IAEFluidStack injectItems(final IAEFluidStack input, final Actionable mode, final BaseActionSource src) {
@@ -854,9 +851,7 @@ public class HandlerItemEssentiaCell implements IMEInventoryHandler<IAEFluidStac
     }
 
     /**
-     * Valid for pass 1 if partitioned or has stored essentia.
-     * essentia.
-     * Valid for pass 2 if not partitioned and empty.
+     * Valid for pass 1 if partitioned or has stored essentia. essentia. Valid for pass 2 if not partitioned and empty.
      *
      * @return
      */

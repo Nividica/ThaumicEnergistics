@@ -1,15 +1,17 @@
 package thaumicenergistics.client.gui.widget;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IWidgetHost;
 import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.network.IAspectSlotPart;
 import thaumicenergistics.common.network.packet.server.Packet_S_AspectSlot;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Widget displaying an aspect.
@@ -19,7 +21,9 @@ import thaumicenergistics.common.network.packet.server.Packet_S_AspectSlot;
  */
 @SideOnly(Side.CLIENT)
 public class WidgetAspectSlot extends AspectWidgetBase {
+
     public static interface IConfigurable {
+
         public byte getConfigState();
     }
 
@@ -30,34 +34,18 @@ public class WidgetAspectSlot extends AspectWidgetBase {
 
     private byte configOption;
 
-    public WidgetAspectSlot(
-            final IWidgetHost hostGui,
-            final EntityPlayer player,
-            final IAspectSlotPart part,
-            final int posX,
-            final int posY) {
+    public WidgetAspectSlot(final IWidgetHost hostGui, final EntityPlayer player, final IAspectSlotPart part,
+            final int posX, final int posY) {
         this(hostGui, player, part, 0, posX, posY, null, (byte) 0);
     }
 
-    public WidgetAspectSlot(
-            final IWidgetHost hostGui,
-            final EntityPlayer player,
-            final IAspectSlotPart part,
-            final int id,
-            final int posX,
-            final int posY) {
+    public WidgetAspectSlot(final IWidgetHost hostGui, final EntityPlayer player, final IAspectSlotPart part,
+            final int id, final int posX, final int posY) {
         this(hostGui, player, part, id, posX, posY, null, (byte) 0);
     }
 
-    public WidgetAspectSlot(
-            final IWidgetHost hostGui,
-            final EntityPlayer player,
-            final IAspectSlotPart part,
-            final int id,
-            final int posX,
-            final int posY,
-            final IConfigurable configurable,
-            final byte configOption) {
+    public WidgetAspectSlot(final IWidgetHost hostGui, final EntityPlayer player, final IAspectSlotPart part,
+            final int id, final int posX, final int posY, final IConfigurable configurable, final byte configOption) {
         super(hostGui, null, posX, posY, player);
         this.player = player;
         this.part = part;
@@ -91,7 +79,12 @@ public class WidgetAspectSlot extends AspectWidgetBase {
 
             // Draw this slot just like the center slot of the gui
             this.drawTexturedModalRect(
-                    this.xPosition, this.yPosition, 79, 39, ThEWidget.WIDGET_SIZE, ThEWidget.WIDGET_SIZE);
+                    this.xPosition,
+                    this.yPosition,
+                    79,
+                    39,
+                    ThEWidget.WIDGET_SIZE,
+                    ThEWidget.WIDGET_SIZE);
 
             // Do we have an aspect?
             if (this.getAspect() != null) {

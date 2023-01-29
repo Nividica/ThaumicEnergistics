@@ -3,12 +3,14 @@ package thaumicenergistics.common.integration.tc;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.common.tiles.TileMagicWorkbench;
 
 public class ArcaneRecipeHelper {
+
     /**
      * Singleton.
      */
@@ -22,16 +24,15 @@ public class ArcaneRecipeHelper {
     }
 
     /**
-     * Creates a workbench with its crafting grid set to match the source
-     * inventory.
+     * Creates a workbench with its crafting grid set to match the source inventory.
      *
      * @param sourceInventory
      * @param firstSlotIndex
      * @param gridSize
      * @return
      */
-    public TileMagicWorkbench createBridgeInventory(
-            final IInventory sourceInventory, final int firstSlotIndex, final int gridSize) {
+    public TileMagicWorkbench createBridgeInventory(final IInventory sourceInventory, final int firstSlotIndex,
+            final int gridSize) {
         // Create a new workbench tile
         TileMagicWorkbench workbenchTile = new TileMagicWorkbench();
 
@@ -39,7 +40,8 @@ public class ArcaneRecipeHelper {
         for (int slotIndex = 0; slotIndex < gridSize; slotIndex++) {
             // Set the slot
             workbenchTile.setInventorySlotContentsSoftly(
-                    slotIndex, sourceInventory.getStackInSlot(slotIndex + firstSlotIndex));
+                    slotIndex,
+                    sourceInventory.getStackInSlot(slotIndex + firstSlotIndex));
         }
 
         return workbenchTile;
@@ -54,8 +56,8 @@ public class ArcaneRecipeHelper {
      * @param player
      * @return
      */
-    public IArcaneRecipe findMatchingArcaneResult(
-            final IInventory sourceInventory, final int firstSlotIndex, final int gridSize, final EntityPlayer player) {
+    public IArcaneRecipe findMatchingArcaneResult(final IInventory sourceInventory, final int firstSlotIndex,
+            final int gridSize, final EntityPlayer player) {
         // Create a the workbench
         TileMagicWorkbench workbenchTile = this.createBridgeInventory(sourceInventory, firstSlotIndex, gridSize);
 
@@ -88,11 +90,8 @@ public class ArcaneRecipeHelper {
      * @param recipe
      * @return
      */
-    public AspectList getRecipeAspectCost(
-            final IInventory sourceInventory,
-            final int firstSlotIndex,
-            final int gridSize,
-            final IArcaneRecipe recipe) {
+    public AspectList getRecipeAspectCost(final IInventory sourceInventory, final int firstSlotIndex,
+            final int gridSize, final IArcaneRecipe recipe) {
         // Ensure the recipe is valid
         if (recipe == null) {
             return null;
@@ -113,10 +112,7 @@ public class ArcaneRecipeHelper {
      * @param recipe
      * @return
      */
-    public ItemStack getRecipeOutput(
-            final IInventory sourceInventory,
-            final int firstSlotIndex,
-            final int gridSize,
+    public ItemStack getRecipeOutput(final IInventory sourceInventory, final int firstSlotIndex, final int gridSize,
             final IArcaneRecipe recipe) {
         // Ensure the recipe is valid
         if (recipe == null) {

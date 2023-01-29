@@ -1,19 +1,21 @@
 package thaumicenergistics.common.integration.tc;
 
-import appeng.api.util.DimensionalCoord;
 import java.util.HashSet;
+
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumcraft.api.WorldCoordinates;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.visnet.TileVisNode;
 import thaumcraft.api.visnet.VisNetHandler;
 import thaumcraft.common.tiles.TileVisRelay;
 import thaumicenergistics.common.parts.PartVisInterface;
+import appeng.api.util.DimensionalCoord;
 
 public class VisProviderProxy extends TileVisNode {
+
     /**
-     * How far vis can travel from the source. I think >.>
-     * TODO: Test vis range
+     * How far vis can travel from the source. I think >.> TODO: Test vis range
      */
     private static final int VIS_RANGE = 1;
 
@@ -71,8 +73,7 @@ public class VisProviderProxy extends TileVisNode {
         // Ensure: This node is valid
         // The interface is valid
         // The interface is facing a relay
-        if (this.isInvalid()
-                || (this.visInterface == null)
+        if (this.isInvalid() || (this.visInterface == null)
                 || (!this.visInterface.isVisProvider())
                 || (this.visInterface.getRelay() == null)) {
             return 0;

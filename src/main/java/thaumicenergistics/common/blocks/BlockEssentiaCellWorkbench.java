@@ -1,7 +1,5 @@
 package thaumicenergistics.common.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -13,11 +11,14 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
 import thaumicenergistics.common.utils.EffectiveSide;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileEssentiaCellWorkbench} block.
@@ -26,6 +27,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class BlockEssentiaCellWorkbench extends AbstractBlockAEWrenchable {
+
     /**
      * Cached values of the top and bottom side indexes
      */
@@ -56,8 +58,8 @@ public class BlockEssentiaCellWorkbench extends AbstractBlockAEWrenchable {
      * @return
      */
     @Override
-    protected boolean onBlockActivated(
-            final World world, final int x, final int y, final int z, final EntityPlayer player) {
+    protected boolean onBlockActivated(final World world, final int x, final int y, final int z,
+            final EntityPlayer player) {
         // Launch the gui.
         ThEGuiHandler.launchGui(ThEGuiHandler.CELL_WORKBENCH_ID, player, world, x, y, z);
 
@@ -68,8 +70,8 @@ public class BlockEssentiaCellWorkbench extends AbstractBlockAEWrenchable {
      * Called when the block is broken.
      */
     @Override
-    public void breakBlock(
-            final World world, final int x, final int y, final int z, final Block block, final int metaData) {
+    public void breakBlock(final World world, final int x, final int y, final int z, final Block block,
+            final int metaData) {
         // Is this server side?
         if (EffectiveSide.isServerSide()) {
             // Get the tile
@@ -79,12 +81,13 @@ public class BlockEssentiaCellWorkbench extends AbstractBlockAEWrenchable {
             if ((tileWorkBench instanceof TileEssentiaCellWorkbench)
                     && (((TileEssentiaCellWorkbench) tileWorkBench).hasEssentiaCell())) {
                 // Spawn the cell as an item entity.
-                world.spawnEntityInWorld(new EntityItem(
-                        world,
-                        0.5 + x,
-                        0.5 + y,
-                        0.2 + z,
-                        ((TileEssentiaCellWorkbench) tileWorkBench).getStackInSlot(0)));
+                world.spawnEntityInWorld(
+                        new EntityItem(
+                                world,
+                                0.5 + x,
+                                0.5 + y,
+                                0.2 + z,
+                                ((TileEssentiaCellWorkbench) tileWorkBench).getStackInSlot(0)));
             }
         }
 
@@ -142,8 +145,8 @@ public class BlockEssentiaCellWorkbench extends AbstractBlockAEWrenchable {
      * Is solid.
      */
     @Override
-    public final boolean isSideSolid(
-            final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side) {
+    public final boolean isSideSolid(final IBlockAccess world, final int x, final int y, final int z,
+            final ForgeDirection side) {
         // This is a solid cube
         return true;
     }

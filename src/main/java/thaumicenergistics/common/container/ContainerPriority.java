@@ -1,13 +1,14 @@
 package thaumicenergistics.common.container;
 
-import appeng.helpers.IPriorityHost;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
+
 import thaumicenergistics.common.network.packet.client.Packet_C_Priority;
 import thaumicenergistics.common.parts.ThEPartBase;
 import thaumicenergistics.common.utils.ThEUtils;
+import appeng.helpers.IPriorityHost;
 
 /**
  * Container for a priority GUI.

@@ -2,6 +2,7 @@ package thaumicenergistics.common.items;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import thaumicenergistics.common.ThaumicEnergistics;
 
 /**
@@ -11,6 +12,7 @@ import thaumicenergistics.common.ThaumicEnergistics;
  *
  */
 public enum ItemEnum {
+
     ITEM_AEPART("part.base", new ItemAEPart()),
     ESSENTIA_CELL("storage.essentia", new ItemEssentiaCell()),
     STORAGE_COMPONENT("storage.component", new ItemStorageComponent()),

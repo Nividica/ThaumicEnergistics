@@ -12,6 +12,7 @@ import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
  *
  */
 class ThEItems extends IThEItems {
+
     ThEItems() {
         // Cores
         this.CoalescenceCore = new ThEItemDescription(MaterialTypes.COALESCENCE_CORE.getStack());

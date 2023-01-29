@@ -2,6 +2,7 @@ package thaumicenergistics.common.storage;
 
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+
 import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.registries.ThEStrings;
 
@@ -12,41 +13,14 @@ import thaumicenergistics.common.registries.ThEStrings;
  *
  */
 public enum EnumEssentiaStorageTypes {
-    Type_1K(
-            0,
-            1024,
-            12,
-            "1k",
-            EnumRarity.common,
-            0.5,
-            ThEStrings.Item_EssentiaCell_1k,
+
+    Type_1K(0, 1024, 12, "1k", EnumRarity.common, 0.5, ThEStrings.Item_EssentiaCell_1k,
             ThEStrings.Item_StorageComponent_1k),
-    Type_4K(
-            1,
-            4096,
-            12,
-            "4k",
-            EnumRarity.uncommon,
-            1.0,
-            ThEStrings.Item_EssentiaCell_4k,
+    Type_4K(1, 4096, 12, "4k", EnumRarity.uncommon, 1.0, ThEStrings.Item_EssentiaCell_4k,
             ThEStrings.Item_StorageComponent_4k),
-    Type_16K(
-            2,
-            16348,
-            12,
-            "16k",
-            EnumRarity.uncommon,
-            1.5,
-            ThEStrings.Item_EssentiaCell_16k,
+    Type_16K(2, 16348, 12, "16k", EnumRarity.uncommon, 1.5, ThEStrings.Item_EssentiaCell_16k,
             ThEStrings.Item_StorageComponent_16k),
-    Type_64K(
-            3,
-            65536,
-            12,
-            "64k",
-            EnumRarity.rare,
-            2.0,
-            ThEStrings.Item_EssentiaCell_64k,
+    Type_64K(3, 65536, 12, "64k", EnumRarity.rare, 2.0, ThEStrings.Item_EssentiaCell_64k,
             ThEStrings.Item_StorageComponent_64k),
     Type_Creative(4, 0, 63, "creative", EnumRarity.epic, 0.0, ThEStrings.Item_EssentiaCell_Creative, null);
 
@@ -56,8 +30,8 @@ public enum EnumEssentiaStorageTypes {
     public static final EnumEssentiaStorageTypes fromIndex[];
 
     /**
-     * This is to ensure that the index can be independent of the ordinal.
-     * Since the data is saved based on index, not ordinal.
+     * This is to ensure that the index can be independent of the ordinal. Since the data is saved based on index, not
+     * ordinal.
      */
     static {
         // Setup the array
@@ -105,20 +79,12 @@ public enum EnumEssentiaStorageTypes {
     public final ThEStrings cellName;
 
     /**
-     * Name of the component for this type.
-     * The creative cell does not have a component.
+     * Name of the component for this type. The creative cell does not have a component.
      */
     public final ThEStrings componentName;
 
-    private EnumEssentiaStorageTypes(
-            final int index,
-            final int capacity,
-            final int maxStoredTypes,
-            final String suffix,
-            final EnumRarity rarity,
-            final double aeDrain,
-            final ThEStrings cellName,
-            final ThEStrings componentName) {
+    private EnumEssentiaStorageTypes(final int index, final int capacity, final int maxStoredTypes, final String suffix,
+            final EnumRarity rarity, final double aeDrain, final ThEStrings cellName, final ThEStrings componentName) {
         this.index = index;
         this.capacity = capacity;
         this.suffix = suffix;
@@ -139,8 +105,7 @@ public enum EnumEssentiaStorageTypes {
     }
 
     /**
-     * Returns a storage component for this type.
-     * The creative type has no component, null is returned.
+     * Returns a storage component for this type. The creative type has no component, null is returned.
      *
      * @param stackSize
      * @return

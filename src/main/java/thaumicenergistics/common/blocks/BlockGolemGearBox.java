@@ -1,10 +1,11 @@
 package thaumicenergistics.common.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.IIcon;
+
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.tiles.TileGearBox;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileGearBox} block, golem form.

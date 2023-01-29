@@ -1,13 +1,16 @@
 package thaumicenergistics.common.items;
 
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
+
 import org.lwjgl.input.Keyboard;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumicenergistics.api.items.IRestrictedEssentiaContainerItem;
@@ -24,6 +27,7 @@ import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
  *
  */
 public class ItemBlockEssentiaVibrationChamber extends ItemBlock implements IRestrictedEssentiaContainerItem {
+
     public ItemBlockEssentiaVibrationChamber(final Block block) {
         super(block);
     }
@@ -84,10 +88,7 @@ public class ItemBlockEssentiaVibrationChamber extends ItemBlock implements IRes
     }
 
     @Override
-    public void addInformation(
-            final ItemStack evcStack,
-            final EntityPlayer player,
-            final List displayList,
+    public void addInformation(final ItemStack evcStack, final EntityPlayer player, final List displayList,
             final boolean advancedItemTooltips) {
         // Ignore stacks without a tag
         if (!evcStack.hasTagCompound()) {
@@ -102,14 +103,14 @@ public class ItemBlockEssentiaVibrationChamber extends ItemBlock implements IRes
 
             // Add stored info
             if (storedEssentia != null) {
-                displayList.add(
-                        String.format("%s x %d", storedEssentia.getAspectName(), storedEssentia.getStackSize()));
+                displayList
+                        .add(String.format("%s x %d", storedEssentia.getAspectName(), storedEssentia.getStackSize()));
             }
         } else {
             // Let the user know they can hold shift
-            displayList.add(EnumChatFormatting.WHITE.toString()
-                    + EnumChatFormatting.ITALIC.toString()
-                    + ThEStrings.Tooltip_ItemStackDetails.getLocalized());
+            displayList.add(
+                    EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString()
+                            + ThEStrings.Tooltip_ItemStackDetails.getLocalized());
         }
     }
 

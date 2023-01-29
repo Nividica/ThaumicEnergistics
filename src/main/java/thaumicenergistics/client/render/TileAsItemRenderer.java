@@ -1,12 +1,14 @@
 package thaumicenergistics.client.render;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Renders a tile entity as an item.
@@ -70,8 +72,8 @@ public class TileAsItemRenderer implements IItemRenderer {
     }
 
     @Override
-    public boolean shouldUseRenderHelper(
-            final ItemRenderType type, final ItemStack item, final ItemRendererHelper helper) {
+    public boolean shouldUseRenderHelper(final ItemRenderType type, final ItemStack item,
+            final ItemRendererHelper helper) {
         return true;
     }
 }

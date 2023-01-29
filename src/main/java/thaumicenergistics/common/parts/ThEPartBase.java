@@ -1,5 +1,29 @@
 package thaumicenergistics.common.parts;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumicenergistics.client.textures.BlockTextureManager;
+import thaumicenergistics.common.ThEGuiHandler;
+import thaumicenergistics.common.grid.AEPartGridBlock;
+import thaumicenergistics.common.utils.EffectiveSide;
+import thaumicenergistics.common.utils.ThELog;
+import thaumicenergistics.common.utils.ThEUtils;
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.IPowerChannelState;
@@ -18,28 +42,6 @@ import appeng.api.util.DimensionalCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumicenergistics.client.textures.BlockTextureManager;
-import thaumicenergistics.common.ThEGuiHandler;
-import thaumicenergistics.common.grid.AEPartGridBlock;
-import thaumicenergistics.common.utils.EffectiveSide;
-import thaumicenergistics.common.utils.ThELog;
-import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * Base class for all ThE cable parts.
@@ -48,6 +50,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  *
  */
 public abstract class ThEPartBase implements IPart, IGridHost, IActionHost, IPowerChannelState {
+
     private static final String NBT_KEY_OWNER = "Owner";
 
     protected static final int INVENTORY_OVERLAY_COLOR = AEColor.Black.blackVariant;
@@ -116,8 +119,7 @@ public abstract class ThEPartBase implements IPart, IGridHost, IActionHost, IPow
      * Creates the part.
      *
      * @param associatedPart
-     * @param interactionPermissions
-     * Permissions required to interact with the part.
+     * @param interactionPermissions Permissions required to interact with the part.
      */
     public ThEPartBase(final AEPartsEnum associatedPart, final SecurityPermissions... interactionPermissions) {
         // Set the associated item
@@ -164,8 +166,7 @@ public abstract class ThEPartBase implements IPart, IGridHost, IActionHost, IPow
     }
 
     /**
-     * Checks if the specifies player has clearance for the specified
-     * permission.
+     * Checks if the specifies player has clearance for the specified permission.
      *
      * @param player
      * @param permission
@@ -190,8 +191,7 @@ public abstract class ThEPartBase implements IPart, IGridHost, IActionHost, IPow
     }
 
     /**
-     * Checks if the specifies player has clearance for the specified
-     * permission.
+     * Checks if the specifies player has clearance for the specified permission.
      *
      * @param playerID
      * @param permission
@@ -226,7 +226,7 @@ public abstract class ThEPartBase implements IPart, IGridHost, IActionHost, IPow
         // Get the world
         World world = this.hostTile.getWorldObj();
         if (world == null) // may happen during unload
-        return null;
+            return null;
 
         // Get our location
         int x = this.hostTile.xCoord;
@@ -383,7 +383,10 @@ public abstract class ThEPartBase implements IPart, IGridHost, IActionHost, IPow
      */
     public final DimensionalCoord getLocation() {
         return new DimensionalCoord(
-                this.hostTile.getWorldObj(), this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord);
+                this.hostTile.getWorldObj(),
+                this.hostTile.xCoord,
+                this.hostTile.yCoord,
+                this.hostTile.zCoord);
     }
 
     public Object getServerGuiElement(final EntityPlayer player) {
@@ -622,11 +625,7 @@ public abstract class ThEPartBase implements IPart, IGridHost, IActionHost, IPow
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void renderDynamic(
-            final double x,
-            final double y,
-            final double z,
-            final IPartRenderHelper helper,
+    public void renderDynamic(final double x, final double y, final double z, final IPartRenderHelper helper,
             final RenderBlocks renderer) {
         // Ignored
     }
@@ -670,8 +669,8 @@ public abstract class ThEPartBase implements IPart, IGridHost, IActionHost, IPow
     public abstract void renderStatic(int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer);
 
     @SideOnly(Side.CLIENT)
-    public void renderStaticBusLights(
-            final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer) {
+    public void renderStaticBusLights(final int x, final int y, final int z, final IPartRenderHelper helper,
+            final RenderBlocks renderer) {
         IIcon busColorTexture = BlockTextureManager.BUS_COLOR.getTextures()[0];
 
         IIcon sideTexture = BlockTextureManager.BUS_COLOR.getTextures()[2];
@@ -721,7 +720,11 @@ public abstract class ThEPartBase implements IPart, IGridHost, IActionHost, IPow
 
         // Drop it
         appeng.util.Platform.spawnDrops(
-                this.hostTile.getWorldObj(), this.hostTile.xCoord, this.hostTile.yCoord, this.hostTile.zCoord, drops);
+                this.hostTile.getWorldObj(),
+                this.hostTile.xCoord,
+                this.hostTile.yCoord,
+                this.hostTile.zCoord,
+                drops);
 
         // Remove the part
         this.host.removePart(this.cableSide, false);
@@ -756,8 +759,7 @@ public abstract class ThEPartBase implements IPart, IGridHost, IActionHost, IPow
     }
 
     /**
-     * General call to WriteNBT, assumes a world save. DO NOT call this from a
-     * subclass's writeToNBT method.
+     * General call to WriteNBT, assumes a world save. DO NOT call this from a subclass's writeToNBT method.
      */
     @Override
     public final void writeToNBT(final NBTTagCompound data) {

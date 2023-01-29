@@ -1,15 +1,16 @@
 package thaumicenergistics.client.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.Dictionary;
 import java.util.Hashtable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
@@ -17,6 +18,8 @@ import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerArcaneAssembler;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileArcaneAssembler} GUI
@@ -26,14 +29,12 @@ import thaumicenergistics.common.tiles.TileArcaneAssembler;
  */
 @SideOnly(Side.CLIENT)
 public class GuiArcaneAssembler extends ThEBaseGui {
+
     /**
      * Gui size.
      */
-    private static final int FULL_GUI_WIDTH = 247,
-            MAIN_GUI_WIDTH = 176,
-            UPGRADE_GUI_WIDTH = 234 - MAIN_GUI_WIDTH,
-            GUI_HEIGHT = 197,
-            UPGRADE_GUI_HEIGHT = 104;
+    private static final int FULL_GUI_WIDTH = 247, MAIN_GUI_WIDTH = 176, UPGRADE_GUI_WIDTH = 234 - MAIN_GUI_WIDTH,
+            GUI_HEIGHT = 197, UPGRADE_GUI_HEIGHT = 104;
 
     /**
      * Title position.
@@ -72,8 +73,7 @@ public class GuiArcaneAssembler extends ThEBaseGui {
         this.hasNetworkTool = ((ContainerArcaneAssembler) this.inventorySlots).hasNetworkTool();
 
         // Set the GUI size
-        this.xSize = (this.hasNetworkTool
-                ? GuiArcaneAssembler.FULL_GUI_WIDTH
+        this.xSize = (this.hasNetworkTool ? GuiArcaneAssembler.FULL_GUI_WIDTH
                 : GuiArcaneAssembler.MAIN_GUI_WIDTH + GuiArcaneAssembler.UPGRADE_GUI_WIDTH);
         this.ySize = GuiArcaneAssembler.GUI_HEIGHT;
 
@@ -106,7 +106,12 @@ public class GuiArcaneAssembler extends ThEBaseGui {
 
             // Draw the bar
             this.drawTexturedModalRect(
-                    this.guiLeft + xuPos, this.guiTop + yPos, xuPos, vPos, GuiArcaneAssembler.VIS_BAR_WIDTH, height);
+                    this.guiLeft + xuPos,
+                    this.guiTop + yPos,
+                    xuPos,
+                    vPos,
+                    GuiArcaneAssembler.VIS_BAR_WIDTH,
+                    height);
         }
     }
 
@@ -150,7 +155,8 @@ public class GuiArcaneAssembler extends ThEBaseGui {
 
         // Draw crafting percent
         this.drawVisBar(
-                this.progressAspect, ((ContainerArcaneAssembler) this.inventorySlots).assembler.getPercentComplete());
+                this.progressAspect,
+                ((ContainerArcaneAssembler) this.inventorySlots).assembler.getPercentComplete());
 
         // Call super
         super.drawAEToolAndUpgradeSlots(alpha, mouseX, mouseY);
@@ -181,17 +187,18 @@ public class GuiArcaneAssembler extends ThEBaseGui {
                         ThEGuiHelper.INSTANCE.getAspectChatColor(aspect) + StringUtils.capitalize(aspect.getTag()));
 
                 // Add the amount
-                int amount = ((ContainerArcaneAssembler) this.inventorySlots)
-                        .assembler
-                        .getStoredVis()
+                int amount = ((ContainerArcaneAssembler) this.inventorySlots).assembler.getStoredVis()
                         .getAmount(aspect);
                 this.tooltip.add(Float.toString(amount / 10.0F) + " / 150");
 
                 // Add the discount
-                float discount =
-                        ((ContainerArcaneAssembler) this.inventorySlots).assembler.getVisDiscountForAspect(aspect);
-                this.tooltip.add(String.format(
-                        "%.0f%% %s", (discount * 100.0F), StatCollector.translateToLocal("tc.vis.costavg")));
+                float discount = ((ContainerArcaneAssembler) this.inventorySlots).assembler
+                        .getVisDiscountForAspect(aspect);
+                this.tooltip.add(
+                        String.format(
+                                "%.0f%% %s",
+                                (discount * 100.0F),
+                                StatCollector.translateToLocal("tc.vis.costavg")));
 
                 // Stop searching
                 break;

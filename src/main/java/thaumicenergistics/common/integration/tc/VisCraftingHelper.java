@@ -3,6 +3,7 @@ package thaumicenergistics.common.integration.tc;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagByte;
+
 import thaumcraft.api.IVisDiscountGear;
 import thaumcraft.api.IWarpingGear;
 import thaumcraft.api.aspects.Aspect;
@@ -31,8 +32,8 @@ public class VisCraftingHelper {
      * @param aspect
      * @return
      */
-    public float calculateArmorDiscount(
-            final IInventory inventory, final int firstSlotIndex, final int slotCount, final Aspect aspect) {
+    public float calculateArmorDiscount(final IInventory inventory, final int firstSlotIndex, final int slotCount,
+            final Aspect aspect) {
         float discount = 0.0F;
 
         for (int index = 0; index < slotCount; index++) {
@@ -44,8 +45,7 @@ public class VisCraftingHelper {
                 try {
                     // Get the discount
                     discount += (((IVisDiscountGear) armor.getItem()).getVisDiscount(armor, null, aspect) / 100.0F);
-                } catch (Exception e) {
-                }
+                } catch (Exception e) {}
             }
         }
 
@@ -72,8 +72,7 @@ public class VisCraftingHelper {
                 try {
                     // Get the warp
                     warp += ((IWarpingGear) armor.getItem()).getWarp(armor, null);
-                } catch (Exception e) {
-                }
+                } catch (Exception e) {}
             }
         }
 
@@ -81,8 +80,7 @@ public class VisCraftingHelper {
     }
 
     /**
-     * Gets an itemstack representing a fully charged silverwood and thaumium
-     * crafting scepter.
+     * Gets an itemstack representing a fully charged silverwood and thaumium crafting scepter.
      *
      * @return
      */
@@ -104,12 +102,11 @@ public class VisCraftingHelper {
 
             // Max out vis storage
             for (Aspect aspect : Aspect.getPrimalAspects()) {
-                ((ItemWandCasting) this.craftingScepter.getItem())
-                        .addVis(
-                                this.craftingScepter,
-                                aspect,
-                                ((ItemWandCasting) this.craftingScepter.getItem()).getMaxVis(this.craftingScepter),
-                                true);
+                ((ItemWandCasting) this.craftingScepter.getItem()).addVis(
+                        this.craftingScepter,
+                        aspect,
+                        ((ItemWandCasting) this.craftingScepter.getItem()).getMaxVis(this.craftingScepter),
+                        true);
             }
         }
 
@@ -117,8 +114,7 @@ public class VisCraftingHelper {
     }
 
     /**
-     * Gets the vis discount given by the crafting scepter for the specified
-     * aspect.
+     * Gets the vis discount given by the crafting scepter for the specified aspect.
      *
      * @param aspect
      * @return

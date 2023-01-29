@@ -1,11 +1,10 @@
 package thaumicenergistics.common.features;
 
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
-import cpw.mods.fml.common.registry.GameRegistry;
 import java.util.ArrayList;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -22,6 +21,9 @@ import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * {@link PartEssentiaTerminal}, {@link PartEssentiaStorageMonitor}, and {@link PartEssentiaConversionMonitor} feature.
@@ -49,7 +51,7 @@ public class FeatureEssentiaMonitoring extends ThEThaumcraftResearchFeature {
     protected Object[] getItemReqs(final CommonDependantItems cdi) {
         this.isWirelessEnabled &= (cdi.DenseCell != null) && (cdi.WirelessReceiver != null);
 
-        return new Object[] {cdi.LogicProcessor, cdi.CalculationProcessor};
+        return new Object[] { cdi.LogicProcessor, cdi.CalculationProcessor };
     }
 
     @Override
@@ -92,7 +94,10 @@ public class FeatureEssentiaMonitoring extends ThEThaumcraftResearchFeature {
             // Register Wireless Essentia Terminal
             GameRegistry.addRecipe(
                     RecipeRegistry.ITEM_WIRELESS_ESSENTIA_TERMINAL = new ShapelessOreRecipe(
-                            WirelessEssentiaTerminal, cdi.WirelessReceiver, EssentiaTerminal, cdi.DenseCell));
+                            WirelessEssentiaTerminal,
+                            cdi.WirelessReceiver,
+                            EssentiaTerminal,
+                            cdi.DenseCell));
         }
 
         // Set Essentia Level Emitter aspects
@@ -113,8 +118,10 @@ public class FeatureEssentiaMonitoring extends ThEThaumcraftResearchFeature {
 
         // Register Essentia Storage Monitor
         GameRegistry.addRecipe(
-                RecipeRegistry.PART_ESSENTIA_STORAGE_MONITOR =
-                        new ShapelessOreRecipe(EssentiaStorageMonitor, EssentiaLevelEmitter, cdi.IlluminatedPanel));
+                RecipeRegistry.PART_ESSENTIA_STORAGE_MONITOR = new ShapelessOreRecipe(
+                        EssentiaStorageMonitor,
+                        EssentiaLevelEmitter,
+                        cdi.IlluminatedPanel));
 
         // Is conversion monitor enabled?
         if (this.isConversionEnabled) {
@@ -123,7 +130,10 @@ public class FeatureEssentiaMonitoring extends ThEThaumcraftResearchFeature {
             // Register Essentia Conversion Monitor
             GameRegistry.addRecipe(
                     RecipeRegistry.PART_ESSENTIA_CONVERSION_MONITOR = new ShapelessOreRecipe(
-                            EssentiaConversionMonitor, CoalescenceCore, EssentiaStorageMonitor, DiffusionCore));
+                            EssentiaConversionMonitor,
+                            CoalescenceCore,
+                            EssentiaStorageMonitor,
+                            DiffusionCore));
         }
     }
 
@@ -162,8 +172,8 @@ public class FeatureEssentiaMonitoring extends ThEThaumcraftResearchFeature {
         ResearchPage[] etPages = pageList.toArray(new ResearchPage[pageList.size()]);
 
         // Create the IO research
-        ResearchTypes.ESSENTIA_TERMINAL.createResearchItem(
-                etAspectList, ResearchRegistry.COMPLEXITY_SMALL, etIcon, etPages);
+        ResearchTypes.ESSENTIA_TERMINAL
+                .createResearchItem(etAspectList, ResearchRegistry.COMPLEXITY_SMALL, etIcon, etPages);
         ResearchTypes.ESSENTIA_TERMINAL.researchItem.setParents(this.getFirstValidParentKey(false));
         ResearchTypes.ESSENTIA_TERMINAL.researchItem.setConcealed();
         ResearchTypes.ESSENTIA_TERMINAL.researchItem.setSecondary();

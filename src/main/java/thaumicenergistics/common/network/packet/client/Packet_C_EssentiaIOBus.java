@@ -1,17 +1,18 @@
 package thaumicenergistics.common.network.packet.client;
 
-import appeng.api.config.RedstoneMode;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumicenergistics.client.gui.GuiEssentiaIO;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.parts.PartEssentiaExportBus;
 import thaumicenergistics.common.parts.PartEssentiaImportBus;
 import thaumicenergistics.common.registries.EnumCache;
+import appeng.api.config.RedstoneMode;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link PartEssentiaImportBus}, {@link PartEssentiaExportBus} client-bound packet.
@@ -20,16 +21,12 @@ import thaumicenergistics.common.registries.EnumCache;
  *
  */
 public class Packet_C_EssentiaIOBus extends ThEClientPacket {
+
     /**
      * Packet modes.
      */
-    private static final byte MODE_SET_REDSTONE_CONTROLLED = 0,
-            MODE_SET_REDSTONE_MODE = 1,
-            MODE_SET_FILTER_SIZE = 2,
-            MODE_SEND_FULL_UPDATE = 3,
-            MODE_SEND_VOID_MODE = 4,
-            MODE_SEND_HAS_CRAFTINFG = 5,
-            MODE_SET_CRAFTING_MODE = 6;
+    private static final byte MODE_SET_REDSTONE_CONTROLLED = 0, MODE_SET_REDSTONE_MODE = 1, MODE_SET_FILTER_SIZE = 2,
+            MODE_SEND_FULL_UPDATE = 3, MODE_SEND_VOID_MODE = 4, MODE_SEND_HAS_CRAFTINFG = 5, MODE_SET_CRAFTING_MODE = 6;
 
     private RedstoneMode redstoneMode;
 
@@ -55,13 +52,8 @@ public class Packet_C_EssentiaIOBus extends ThEClientPacket {
         return packet;
     }
 
-    public static void sendBusState(
-            final EntityPlayer player,
-            final RedstoneMode redstoneMode,
-            final byte filterSize,
-            final boolean redstoneControlled,
-            final boolean hasCraftingCard,
-            final boolean isCraftingOnly) {
+    public static void sendBusState(final EntityPlayer player, final RedstoneMode redstoneMode, final byte filterSize,
+            final boolean redstoneControlled, final boolean hasCraftingCard, final boolean isCraftingOnly) {
         Packet_C_EssentiaIOBus packet = newPacket(player, MODE_SEND_FULL_UPDATE);
 
         // Set the redstone mode
@@ -97,8 +89,7 @@ public class Packet_C_EssentiaIOBus extends ThEClientPacket {
     }
 
     /**
-     * Create a packet to update the client whether the bus is controlled
-     * by redstone or not.
+     * Create a packet to update the client whether the bus is controlled by redstone or not.
      *
      * @param player
      * @param redstoneControlled

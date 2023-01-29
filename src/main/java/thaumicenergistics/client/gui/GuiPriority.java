@@ -1,15 +1,13 @@
 package thaumicenergistics.client.gui;
 
-import appeng.core.localization.GuiText;
-import appeng.helpers.IPriorityHost;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
 import thaumicenergistics.client.gui.buttons.GuiButtonAETab;
 import thaumicenergistics.client.gui.widget.DigitTextField;
@@ -19,6 +17,10 @@ import thaumicenergistics.common.container.ContainerPriority;
 import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.network.packet.server.Packet_S_Priority;
 import thaumicenergistics.common.parts.ThEPartBase;
+import appeng.core.localization.GuiText;
+import appeng.helpers.IPriorityHost;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Gui for the priority window
@@ -28,8 +30,11 @@ import thaumicenergistics.common.parts.ThEPartBase;
  */
 @SideOnly(Side.CLIENT)
 public class GuiPriority extends ThEBaseGui {
+
     private static class AdjustmentButtonDef {
+
         enum EnumButtonWidth {
+
             Small(25),
             Medium(35),
             Large(45);
@@ -92,13 +97,12 @@ public class GuiPriority extends ThEBaseGui {
     }
 
     private static final AdjustmentButtonDef[] ADJUSTMENT_BUTTONS = new AdjustmentButtonDef[] {
-        new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Small, 1),
-        new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Medium, 10),
-        new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Large, 100),
-        new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Small, -1),
-        new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Medium, -10),
-        new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Large, -100)
-    };
+            new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Small, 1),
+            new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Medium, 10),
+            new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Large, 100),
+            new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Small, -1),
+            new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Medium, -10),
+            new AdjustmentButtonDef(AdjustmentButtonDef.EnumButtonWidth.Large, -100) };
 
     /**
      * The width of the gui
@@ -133,7 +137,7 @@ public class GuiPriority extends ThEBaseGui {
     /**
      * Y position for each row
      */
-    private static final int[] ADJUSTMENT_BUTTONS_Y_POSITION = new int[] {30, 70};
+    private static final int[] ADJUSTMENT_BUTTONS_Y_POSITION = new int[] { 30, 70 };
 
     /**
      * Amount of empty space between buttons
@@ -264,8 +268,7 @@ public class GuiPriority extends ThEBaseGui {
             int newPriority = 0;
             try {
                 newPriority = Integer.parseInt(this.amountField.getText());
-            } catch (NumberFormatException e) {
-            }
+            } catch (NumberFormatException e) {}
 
             // Update the server
             Packet_S_Priority.sendPriority(newPriority, this.player);
@@ -284,7 +287,12 @@ public class GuiPriority extends ThEBaseGui {
 
             // Ask the server to change to the priority gui
             Packet_S_ChangeGui.sendGuiChangeToPart(
-                    this.part, this.player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord);
+                    this.part,
+                    this.player,
+                    host.getWorldObj(),
+                    host.xCoord,
+                    host.yCoord,
+                    host.zCoord);
             return;
         }
 
@@ -309,19 +317,19 @@ public class GuiPriority extends ThEBaseGui {
         Keyboard.enableRepeatEvents(true);
 
         // Create the part switch button
-        this.buttonList.add(new GuiButtonAETab(
-                GuiPriority.PART_SWITCH_BUTTON_ID,
-                this.guiLeft + GuiPriority.PART_SWITCH_BUTTON_X_POSITION,
-                this.guiTop,
-                AEStateIconsEnum.WRENCH,
-                this.part.getUnlocalizedName()));
+        this.buttonList.add(
+                new GuiButtonAETab(
+                        GuiPriority.PART_SWITCH_BUTTON_ID,
+                        this.guiLeft + GuiPriority.PART_SWITCH_BUTTON_X_POSITION,
+                        this.guiTop,
+                        AEStateIconsEnum.WRENCH,
+                        this.part.getUnlocalizedName()));
 
         // Create the adjustment buttons
         int buttonXPosition = GuiPriority.ADJUSTMENT_BUTTONS_X_POSITION;
         int buttonYPosition = GuiPriority.ADJUSTMENT_BUTTONS_Y_POSITION[0];
-        for (int adjustmentButtonIndex = 0;
-                adjustmentButtonIndex < GuiPriority.ADJUSTMENT_BUTTONS.length;
-                adjustmentButtonIndex++) {
+        for (int adjustmentButtonIndex = 0; adjustmentButtonIndex
+                < GuiPriority.ADJUSTMENT_BUTTONS.length; adjustmentButtonIndex++) {
             // Get the button def
             AdjustmentButtonDef def = GuiPriority.ADJUSTMENT_BUTTONS[adjustmentButtonIndex];
 

@@ -1,11 +1,9 @@
 package thaumicenergistics.client.gui;
 
-import appeng.api.config.ViewItems;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -14,9 +12,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
 import thaumicenergistics.api.gui.IAspectSelectorContainer;
@@ -40,6 +40,9 @@ import thaumicenergistics.common.parts.PartEssentiaTerminal;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.storage.AspectStackComparator;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
+import appeng.api.config.ViewItems;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartEssentiaTerminal}, {@link ItemWirelessEssentiaTerminal}, and {@link ItemEssentiaCell} GUI
@@ -153,13 +156,11 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
     /**
      * Creates the gui.
      *
-     * @param player
-     * Player viewing this gui.
-     * @param container
-     * Container associated with the gui.
+     * @param player    Player viewing this gui.
+     * @param container Container associated with the gui.
      */
-    protected GuiEssentiaCellTerminal(
-            final EntityPlayer player, final ContainerEssentiaCellTerminalBase container, final String title) {
+    protected GuiEssentiaCellTerminal(final EntityPlayer player, final ContainerEssentiaCellTerminalBase container,
+            final String title) {
         // Call super
         super(container);
 
@@ -207,20 +208,15 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
     /**
      * Creates the GUI for an essentia cell inside an ME chest.
      *
-     * @param player
-     * Player viewing the gui.
-     * @param world
-     * World the chest is in.
-     * @param x
-     * X position of the chest.
-     * @param y
-     * Y position of the chest.
-     * @param z
-     * Z position of the chest.
+     * @param player Player viewing the gui.
+     * @param world  World the chest is in.
+     * @param x      X position of the chest.
+     * @param y      Y position of the chest.
+     * @param z      Z position of the chest.
      * @return
      */
-    public static GuiEssentiaCellTerminal NewEssentiaCellGui(
-            final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public static GuiEssentiaCellTerminal NewEssentiaCellGui(final EntityPlayer player, final World world, final int x,
+            final int y, final int z) {
         return new GuiEssentiaCellTerminal(
                 player,
                 new ContainerEssentiaCell(player, world, x, y, z),
@@ -234,8 +230,8 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
      * @param player
      * @return
      */
-    public static GuiEssentiaCellTerminal NewEssentiaTerminalGui(
-            final PartEssentiaTerminal terminal, final EntityPlayer player) {
+    public static GuiEssentiaCellTerminal NewEssentiaTerminalGui(final PartEssentiaTerminal terminal,
+            final EntityPlayer player) {
         return new GuiEssentiaCellTerminal(
                 player,
                 new ContainerEssentiaTerminal(terminal, player),
@@ -273,8 +269,11 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
         IThEWirelessEssentiaTerminal terminalInterface = (IThEWirelessEssentiaTerminal) wirelessTerminal.getItem();
 
         // Create the handler
-        HandlerWirelessEssentiaTerminal handler =
-                new HandlerWirelessEssentiaTerminal(player, null, terminalInterface, wirelessTerminal);
+        HandlerWirelessEssentiaTerminal handler = new HandlerWirelessEssentiaTerminal(
+                player,
+                null,
+                terminalInterface,
+                wirelessTerminal);
 
         // Create the gui
         return new GuiEssentiaCellTerminal(
@@ -382,8 +381,7 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
             }
 
             // Is the search term in this aspects tag or name?
-            if ((this.searchTerm == "")
-                    || (stack.getAspectName().contains(this.searchTerm))
+            if ((this.searchTerm == "") || (stack.getAspectName().contains(this.searchTerm))
                     || (stack.getAspectTag().contains(this.searchTerm))) {
                 this.matchingSearchStacks.add(stack);
             }
@@ -499,7 +497,9 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
     @Override
     protected ScrollbarParams getScrollbarParameters() {
         return new ScrollbarParams(
-                GuiConstants_ECT.SCROLLBAR_POS_X, GuiConstants_ECT.SCROLLBAR_POS_Y, GuiConstants_ECT.SCROLLBAR_HEIGHT);
+                GuiConstants_ECT.SCROLLBAR_POS_X,
+                GuiConstants_ECT.SCROLLBAR_POS_Y,
+                GuiConstants_ECT.SCROLLBAR_HEIGHT);
     }
 
     /**
@@ -554,9 +554,8 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
                         Packet_S_EssentiaCellTerminal.sendInteractWithHeldItem(this.player, widget.getAspect());
                     } else {
                         // Check if the aspect is to be crafted
-                        if ((!isRightClick && widget.hasAspect() && widget.getCraftable())
-                                && (viewingCraftable
-                                        || (isMiddleClick || (isLeftClick && (widget.getAmount() == 0))))) {
+                        if ((!isRightClick && widget.hasAspect() && widget.getCraftable()) && (viewingCraftable
+                                || (isMiddleClick || (isLeftClick && (widget.getAmount() == 0))))) {
                             // Send request
                             Packet_S_EssentiaCellTerminal.sendAutoCraft(this.player, widget.getAspect());
                         }
@@ -617,8 +616,8 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
         // Is the button the sort mode button?
         if (button == this.buttonSortingMode) {
             // Request update from server
-            Packet_S_EssentiaCellTerminal.sendChangeSorting(
-                    this.player, (mouseButton == ThEGuiHelper.MOUSE_BUTTON_RIGHT));
+            Packet_S_EssentiaCellTerminal
+                    .sendChangeSorting(this.player, (mouseButton == ThEGuiHelper.MOUSE_BUTTON_RIGHT));
         } else if (button == this.buttonViewMode) {
             // Request update from server
             Packet_S_EssentiaCellTerminal.sendChangeView(this.player, (mouseButton == ThEGuiHelper.MOUSE_BUTTON_RIGHT));

@@ -1,11 +1,13 @@
 package thaumicenergistics.common.tiles;
 
-import appeng.api.AEApi;
 import java.util.ArrayList;
+
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
+import appeng.api.AEApi;
 
 /**
  * Encodes recipes whose result is essentia.
@@ -14,6 +16,7 @@ import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
  *
  */
 public class TileDistillationPatternEncoder extends ThETileInventory implements ISidedInventory {
+
     /**
      * NBT Keys
      */
@@ -22,11 +25,9 @@ public class TileDistillationPatternEncoder extends ThETileInventory implements 
     /**
      * Slot counts
      */
-    public static int SLOT_PATTERNS_COUNT = 2,
-            SLOT_SOURCE_ITEM_COUNT = 1,
-            SLOT_TOTAL_COUNT =
-                    TileDistillationPatternEncoder.SLOT_SOURCE_ITEM_COUNT
-                            + TileDistillationPatternEncoder.SLOT_PATTERNS_COUNT;
+    public static int SLOT_PATTERNS_COUNT = 2, SLOT_SOURCE_ITEM_COUNT = 1,
+            SLOT_TOTAL_COUNT = TileDistillationPatternEncoder.SLOT_SOURCE_ITEM_COUNT
+                    + TileDistillationPatternEncoder.SLOT_PATTERNS_COUNT;
     /**
      * Slot ID's
      */

@@ -1,8 +1,8 @@
 package thaumicenergistics.common.network;
 
+import thaumicenergistics.common.utils.ThELog;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
-import thaumicenergistics.common.utils.ThELog;
 
 /**
  * Wraps all ThE packets for network transmission.
@@ -11,6 +11,7 @@ import thaumicenergistics.common.utils.ThELog;
  *
  */
 public abstract class WrapperPacket implements IMessage {
+
     private ThEBasePacket embeddedPacket;
 
     /**

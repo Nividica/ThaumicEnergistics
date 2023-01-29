@@ -1,8 +1,7 @@
 package thaumicenergistics.common.features;
 
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -14,6 +13,8 @@ import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 
 /**
  * {@link TileEssentiaVibrationChamber} feature.
@@ -22,6 +23,7 @@ import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
  *
  */
 public class FeatureEssentiaVibrationChamber extends ThEThaumcraftResearchFeature {
+
     public FeatureEssentiaVibrationChamber() {
         super(ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getKey());
     }
@@ -39,7 +41,7 @@ public class FeatureEssentiaVibrationChamber extends ThEThaumcraftResearchFeatur
     @Override
     protected Object[] getItemReqs(final CommonDependantItems cdi) {
         // Depends on warded jars, annihilation core, and vibration chamber
-        return new Object[] {cdi.WardedJar, cdi.VibrationChamber, cdi.AnnihilationCore};
+        return new Object[] { cdi.WardedJar, cdi.VibrationChamber, cdi.AnnihilationCore };
     }
 
     @Override
@@ -50,8 +52,7 @@ public class FeatureEssentiaVibrationChamber extends ThEThaumcraftResearchFeatur
     @Override
     protected void registerCrafting(final CommonDependantItems cdi) {
         // My Items
-        ItemStack EssVibrationChamber =
-                ThEApi.instance().blocks().EssentiaVibrationChamber.getStack();
+        ItemStack EssVibrationChamber = ThEApi.instance().blocks().EssentiaVibrationChamber.getStack();
         ItemStack DiffusionCore = ThEApi.instance().items().DiffusionCore.getStack();
 
         // Chamber aspects
@@ -79,26 +80,24 @@ public class FeatureEssentiaVibrationChamber extends ThEThaumcraftResearchFeatur
         // Set the research aspects
         AspectList chamberAspects = new AspectList();
         chamberAspects.add(Aspect.MECHANISM, 5); // Its a machine that
-        chamberAspects.add(Aspect.MAGIC, 3); //     Takes essentia, specifically
-        chamberAspects.add(Aspect.WATER, 1); //     Takes liquid essentia then
-        chamberAspects.add(Aspect.MOTION, 3); //    Vibrates to
-        chamberAspects.add(Aspect.ENERGY, 5); //    Produces power
+        chamberAspects.add(Aspect.MAGIC, 3); // Takes essentia, specifically
+        chamberAspects.add(Aspect.WATER, 1); // Takes liquid essentia then
+        chamberAspects.add(Aspect.MOTION, 3); // Vibrates to
+        chamberAspects.add(Aspect.ENERGY, 5); // Produces power
 
         // Get the icon
-        ItemStack chamberIcon =
-                ThEApi.instance().blocks().EssentiaVibrationChamber.getStack();
+        ItemStack chamberIcon = ThEApi.instance().blocks().EssentiaVibrationChamber.getStack();
 
         // Create the pages
         ResearchPage[] storagePages = new ResearchPage[] {
-            new ResearchPage(ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getPageName(1)),
-            new ResearchPage(RecipeRegistry.BLOCK_ESSENTIA_VIBRATION_CHAMBER),
-            new ResearchPage(ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getPageName(2)),
-            new ResearchPage(ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getPageName(3))
-        };
+                new ResearchPage(ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getPageName(1)),
+                new ResearchPage(RecipeRegistry.BLOCK_ESSENTIA_VIBRATION_CHAMBER),
+                new ResearchPage(ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getPageName(2)),
+                new ResearchPage(ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.getPageName(3)) };
 
         // Create the research
-        ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.createResearchItem(
-                chamberAspects, ResearchRegistry.COMPLEXITY_MEDIUM, chamberIcon, storagePages);
+        ResearchTypes.ESSENTIA_VIBRATION_CHAMBER
+                .createResearchItem(chamberAspects, ResearchRegistry.COMPLEXITY_MEDIUM, chamberIcon, storagePages);
 
         // Set the parent to the cores
         ResearchTypes.ESSENTIA_VIBRATION_CHAMBER.researchItem.setParents(this.getFirstValidParentKey(false));

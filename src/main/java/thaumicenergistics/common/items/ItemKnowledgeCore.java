@@ -1,10 +1,12 @@
 package thaumicenergistics.common.items;
 
 import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ThEStrings;
 
@@ -28,8 +30,8 @@ public class ItemKnowledgeCore extends Item {
     }
 
     @Override
-    public void addInformation(
-            final ItemStack kCore, final EntityPlayer player, final List tooltip, final boolean advancedItemTooltips) {}
+    public void addInformation(final ItemStack kCore, final EntityPlayer player, final List tooltip,
+            final boolean advancedItemTooltips) {}
 
     @Override
     public String getUnlocalizedName() {

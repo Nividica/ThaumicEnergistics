@@ -1,9 +1,10 @@
 package thaumicenergistics.common.network.packet.server;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumicenergistics.common.container.ContainerPriority;
 import thaumicenergistics.common.network.NetworkHandler;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Priority GUI client-bound packet.
@@ -12,6 +13,7 @@ import thaumicenergistics.common.network.NetworkHandler;
  *
  */
 public class Packet_S_Priority extends ThEServerPacket {
+
     private static final byte MODE_SET = 0;
     private static final byte MODE_ADJUST = 1;
     private static final byte MODE_REQUEST = 2;

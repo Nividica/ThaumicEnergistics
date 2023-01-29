@@ -1,11 +1,13 @@
 package thaumicenergistics.client.gui.buttons;
 
+import java.util.List;
+
+import net.minecraft.util.StatCollector;
+
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 import appeng.api.config.RedstoneMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.List;
-import net.minecraft.util.StatCollector;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 /**
  * Displays redstone mode icons.
@@ -15,6 +17,7 @@ import thaumicenergistics.client.textures.AEStateIconsEnum;
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonRedstoneModes extends ThEStateButton {
+
     /**
      * Localization header string for tooltips
      */
@@ -40,8 +43,8 @@ public class GuiButtonRedstoneModes extends ThEStateButton {
      * @param height
      * @param mode
      */
-    public GuiButtonRedstoneModes(
-            final int ID, final int xPos, final int yPos, final int width, final int height, final RedstoneMode mode) {
+    public GuiButtonRedstoneModes(final int ID, final int xPos, final int yPos, final int width, final int height,
+            final RedstoneMode mode) {
         this(ID, xPos, yPos, width, height, mode, false);
     }
 
@@ -56,14 +59,8 @@ public class GuiButtonRedstoneModes extends ThEStateButton {
      * @param mode
      * @param emitter
      */
-    public GuiButtonRedstoneModes(
-            final int ID,
-            final int xPos,
-            final int yPos,
-            final int width,
-            final int height,
-            final RedstoneMode mode,
-            final boolean emitter) {
+    public GuiButtonRedstoneModes(final int ID, final int xPos, final int yPos, final int width, final int height,
+            final RedstoneMode mode, final boolean emitter) {
         // Call super
         super(ID, xPos, yPos, width, height, null, 0, 0, AEStateIconsEnum.REGULAR_BUTTON);
 
@@ -90,8 +87,7 @@ public class GuiButtonRedstoneModes extends ThEStateButton {
 
             case LOW_SIGNAL:
                 explanation = StatCollector.translateToLocal(
-                        this.emitter
-                                ? TOOLTIP_LOC_HEADER + "EmitLevelsBelow"
+                        this.emitter ? TOOLTIP_LOC_HEADER + "EmitLevelsBelow"
                                 : TOOLTIP_LOC_HEADER + "ActiveWithoutSignal");
                 break;
 
@@ -102,7 +98,9 @@ public class GuiButtonRedstoneModes extends ThEStateButton {
 
         // Add info
         this.addAboutToTooltip(
-                tooltip, StatCollector.translateToLocal(TOOLTIP_LOC_HEADER + "RedstoneMode"), explanation);
+                tooltip,
+                StatCollector.translateToLocal(TOOLTIP_LOC_HEADER + "RedstoneMode"),
+                explanation);
     }
 
     /**

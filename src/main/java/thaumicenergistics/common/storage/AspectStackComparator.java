@@ -1,6 +1,7 @@
 package thaumicenergistics.common.storage;
 
 import java.util.Comparator;
+
 import thaumicenergistics.api.storage.IAspectStack;
 
 /**
@@ -18,6 +19,7 @@ public class AspectStackComparator implements Comparator<IAspectStack> {
      *
      */
     public enum AspectStackComparatorMode {
+
         /**
          * Compare based on name
          */
@@ -65,11 +67,9 @@ public class AspectStackComparator implements Comparator<IAspectStack> {
     }
 
     /**
-     * Creates the comparator with specified sorting mode.
-     * If the mode is unrecognized, the list will not be sorted.
+     * Creates the comparator with specified sorting mode. If the mode is unrecognized, the list will not be sorted.
      *
-     * @param mode
-     * Mode to sort by.
+     * @param mode Mode to sort by.
      */
     public AspectStackComparator(final AspectStackComparatorMode mode) {
         this.setMode(mode);

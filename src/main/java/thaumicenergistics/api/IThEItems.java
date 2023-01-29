@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
  *
  */
 public abstract class IThEItems {
+
     /**
      * Coalescence Core.
      */

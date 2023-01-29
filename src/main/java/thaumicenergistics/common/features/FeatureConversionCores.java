@@ -1,6 +1,7 @@
 package thaumicenergistics.common.features;
 
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -33,7 +34,7 @@ public class FeatureConversionCores extends ThEThaumcraftResearchFeature {
 
     @Override
     protected Object[] getItemReqs(final CommonDependantItems cdi) {
-        return new Object[] {cdi.FormationCore, cdi.AnnihilationCore};
+        return new Object[] { cdi.FormationCore, cdi.AnnihilationCore };
     }
 
     @Override
@@ -98,17 +99,15 @@ public class FeatureConversionCores extends ThEThaumcraftResearchFeature {
         ItemStack coreIcon = ItemMaterial.MaterialTypes.COALESCENCE_CORE.getStack();
 
         // Set the pages
-        ResearchPage[] corePages = new ResearchPage[] {
-            new ResearchPage(ResearchTypes.CORES.getPageName(1)),
-            new ResearchPage(ResearchTypes.CORES.getPageName(2)),
-            new ResearchPage(RecipeRegistry.MATERIAL_COALESCENCE_CORE),
-            new ResearchPage(RecipeRegistry.MATERIAL_DIFFUSION_CORE)
-        };
+        ResearchPage[] corePages = new ResearchPage[] { new ResearchPage(ResearchTypes.CORES.getPageName(1)),
+                new ResearchPage(ResearchTypes.CORES.getPageName(2)),
+                new ResearchPage(RecipeRegistry.MATERIAL_COALESCENCE_CORE),
+                new ResearchPage(RecipeRegistry.MATERIAL_DIFFUSION_CORE) };
 
         // Create the core research
         ResearchTypes.CORES.createResearchItem(coreAspectList, ResearchRegistry.COMPLEXITY_MEDIUM, coreIcon, corePages);
-        ResearchTypes.CORES.researchItem.setParents(
-                this.getFirstValidParentKey(false), PseudoResearchTypes.DISTILESSENTIA.getKey());
+        ResearchTypes.CORES.researchItem
+                .setParents(this.getFirstValidParentKey(false), PseudoResearchTypes.DISTILESSENTIA.getKey());
         ResearchTypes.CORES.researchItem.setParentsHidden("DISTILESSENTIA");
         ResearchTypes.CORES.researchItem.registerResearchItem();
     }

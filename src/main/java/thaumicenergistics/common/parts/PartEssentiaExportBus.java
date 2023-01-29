@@ -1,5 +1,21 @@
 package thaumicenergistics.common.parts;
 
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
+import thaumcraft.common.tiles.TileJarFillableVoid;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
+import thaumicenergistics.client.textures.BlockTextureManager;
+import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
+import thaumicenergistics.common.items.ItemCraftingAspect;
+import thaumicenergistics.common.items.ItemEnum;
+import thaumicenergistics.implementaion.ThEMultiCraftingTracker;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -13,24 +29,11 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.api.storage.data.IAEItemStack;
+
 import com.google.common.collect.ImmutableSet;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.IAspectContainer;
-import thaumcraft.common.tiles.TileJarFillableVoid;
-import thaumicenergistics.api.grid.IMEEssentiaMonitor;
-import thaumicenergistics.client.textures.BlockTextureManager;
-import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
-import thaumicenergistics.common.items.ItemCraftingAspect;
-import thaumicenergistics.common.items.ItemEnum;
-import thaumicenergistics.implementaion.ThEMultiCraftingTracker;
 
 /**
  * Exports essentia into {@link IAspectContainer}
@@ -39,6 +42,7 @@ import thaumicenergistics.implementaion.ThEMultiCraftingTracker;
  *
  */
 public class PartEssentiaExportBus extends ThEPartEssentiaIOBus_Base implements ICraftingRequester {
+
     private final ThEMultiCraftingTracker craftingTracker = new ThEMultiCraftingTracker(this, 9);
     private static final String NBT_KEY_VOID = "IsVoidAllowed";
     private final BaseActionSource mySrc;
@@ -66,8 +70,7 @@ public class PartEssentiaExportBus extends ThEPartEssentiaIOBus_Base implements 
     }
 
     /**
-     * Attempts to transfer essentia out of the network and into the adjacent
-     * container.
+     * Attempts to transfer essentia out of the network and into the adjacent container.
      */
     @Override
     public boolean doWork(final int amountToFillContainer) {
@@ -87,9 +90,8 @@ public class PartEssentiaExportBus extends ThEPartEssentiaIOBus_Base implements 
             }
 
             // Can we inject any of this into the container
-            if (EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer(
-                            this.facingContainer, 1, filterAspect, Actionable.SIMULATE)
-                    <= 0) {
+            if (EssentiaTileContainerHelper.INSTANCE
+                    .injectEssentiaIntoContainer(this.facingContainer, 1, filterAspect, Actionable.SIMULATE) <= 0) {
                 if (!((this.isVoidAllowed)
                         && (EssentiaTileContainerHelper.INSTANCE.getAspectInContainer(this.facingContainer)
                                 == filterAspect))) {
@@ -110,7 +112,11 @@ public class PartEssentiaExportBus extends ThEPartEssentiaIOBus_Base implements 
 
             // Simulate a network extraction
             long extractedAmount = essMonitor.extractEssentia(
-                    filterAspect, amountToFillContainer, Actionable.SIMULATE, this.asMachineSource, true);
+                    filterAspect,
+                    amountToFillContainer,
+                    Actionable.SIMULATE,
+                    this.asMachineSource,
+                    true);
 
             // Was any extracted?
             if (extractedAmount <= 0) {
@@ -138,11 +144,10 @@ public class PartEssentiaExportBus extends ThEPartEssentiaIOBus_Base implements 
     private void handleCratting(int amountToFillContainer, int slot, Aspect filterAspect) {
         IGrid grid = getGridNode().getGrid();
         final ICraftingGrid cg = grid.getCache(ICraftingGrid.class);
-        IAEItemStack result = AEApi.instance()
-                .storage()
+        IAEItemStack result = AEApi.instance().storage()
                 .createItemStack(ItemCraftingAspect.createStackForAspect(filterAspect, amountToFillContainer));
-        this.craftingTracker.handleCrafting(
-                slot, amountToFillContainer, result, getHostTile().getWorldObj(), grid, cg, this.mySrc);
+        this.craftingTracker
+                .handleCrafting(slot, amountToFillContainer, result, getHostTile().getWorldObj(), grid, cg, this.mySrc);
     }
 
     @Override
@@ -264,8 +269,8 @@ public class PartEssentiaExportBus extends ThEPartEssentiaIOBus_Base implements 
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderStatic(
-            final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer) {
+    public void renderStatic(final int x, final int y, final int z, final IPartRenderHelper helper,
+            final RenderBlocks renderer) {
         Tessellator ts = Tessellator.instance;
 
         IIcon busSideTexture = BlockTextureManager.ESSENTIA_EXPORT_BUS.getTextures()[3];
@@ -396,8 +401,8 @@ public class PartEssentiaExportBus extends ThEPartEssentiaIOBus_Base implements 
             filledAmount = extractedAmount;
         } else {
             // Simulate filling the container
-            filledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer(
-                    this.facingContainer, (int) extractedAmount, a, Actionable.SIMULATE);
+            filledAmount = EssentiaTileContainerHelper.INSTANCE
+                    .injectEssentiaIntoContainer(this.facingContainer, (int) extractedAmount, a, Actionable.SIMULATE);
         }
 
         // Was the container filled?
@@ -408,16 +413,15 @@ public class PartEssentiaExportBus extends ThEPartEssentiaIOBus_Base implements 
 
         if (mode == Actionable.MODULATE) {
             // Fill the container
-            long actualFilledAmount = EssentiaTileContainerHelper.INSTANCE.injectEssentiaIntoContainer(
-                    this.facingContainer, (int) filledAmount, a, Actionable.MODULATE);
+            long actualFilledAmount = EssentiaTileContainerHelper.INSTANCE
+                    .injectEssentiaIntoContainer(this.facingContainer, (int) filledAmount, a, Actionable.MODULATE);
 
             // Is voiding not allowed?
             if (!this.isVoidAllowed) {
                 filledAmount = actualFilledAmount;
             }
             // Take essentia from the network always (because redesigning GridEssentiaCache is too much pain)
-            getGridBlock()
-                    .getEssentiaMonitor()
+            getGridBlock().getEssentiaMonitor()
                     .extractEssentia(a, filledAmount, Actionable.MODULATE, this.asMachineSource, true);
         }
         return filledAmount;

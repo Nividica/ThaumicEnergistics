@@ -1,5 +1,9 @@
 package thaumicenergistics.common.inventory;
 
+import net.minecraft.tileentity.TileEntity;
+
+import thaumcraft.api.aspects.IAspectContainer;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
@@ -10,9 +14,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.parts.misc.PartInterface;
 import appeng.tile.misc.TileCondenser;
 import appeng.tile.misc.TileInterface;
-import net.minecraft.tileentity.TileEntity;
-import thaumcraft.api.aspects.IAspectContainer;
-import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
 /**
  * Pass-though handler for other handlers.
@@ -21,6 +22,7 @@ import thaumicenergistics.common.parts.PartEssentiaStorageBus;
  *
  */
 public class HandlerEssentiaStorageBusDuality extends HandlerEssentiaStorageBusBase {
+
     /**
      * The handler that is actually used, can be null.
      */
@@ -80,8 +82,8 @@ public class HandlerEssentiaStorageBusDuality extends HandlerEssentiaStorageBusB
     }
 
     @Override
-    public IAEFluidStack extractItems(
-            final IAEFluidStack request, final Actionable mode, final BaseActionSource source) {
+    public IAEFluidStack extractItems(final IAEFluidStack request, final Actionable mode,
+            final BaseActionSource source) {
         // Ensure we have an internal handler
         if (this.internalHandler != null) {
             // Pass to handler

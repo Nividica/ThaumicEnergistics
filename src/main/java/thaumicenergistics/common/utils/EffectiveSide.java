@@ -10,6 +10,7 @@ import cpw.mods.fml.relauncher.Side;
  *
  */
 public final class EffectiveSide {
+
     /**
      * Cache the handler
      */

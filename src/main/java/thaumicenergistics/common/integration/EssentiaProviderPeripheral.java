@@ -1,5 +1,19 @@
 package thaumicenergistics.common.integration;
 
+import java.lang.ref.WeakReference;
+import java.util.*;
+
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+import org.apache.commons.lang3.StringUtils;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.grid.IEssentiaGrid;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
+import thaumicenergistics.api.grid.IMEEssentiaMonitorReceiver;
+import thaumicenergistics.api.storage.IAspectStack;
+import thaumicenergistics.common.tiles.TileEssentiaProvider;
 import appeng.api.networking.IGrid;
 import appeng.me.GridAccessException;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -7,17 +21,6 @@ import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import java.lang.ref.WeakReference;
-import java.util.*;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import org.apache.commons.lang3.StringUtils;
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.grid.IEssentiaGrid;
-import thaumicenergistics.api.grid.IMEEssentiaMonitor;
-import thaumicenergistics.api.grid.IMEEssentiaMonitorReceiver;
-import thaumicenergistics.api.storage.IAspectStack;
-import thaumicenergistics.common.tiles.TileEssentiaProvider;
 
 /**
  * Treats an Essentia Provider as a ComputerCraft peripheral.
@@ -26,7 +29,9 @@ import thaumicenergistics.common.tiles.TileEssentiaProvider;
  *
  */
 public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProviderWatcher {
+
     private static enum CCEvents {
+
         /**
          * A watched for aspect has changed amounts.
          */
@@ -53,6 +58,7 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
     }
 
     private static class CCHelpObject implements ILuaObject {
+
         /**
          * Singleton
          */
@@ -82,29 +88,35 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
             if (method == 6) {
                 helpText = "\nEvent name: essentia" + "\nEvent Structure: [Index] [Arg1] [Arg2]\n"
                         + "\nEssentia Event:[1] [aspectName] [changeAmount]\n"
-                        + "Power Event:   [2] [true(on)|false(off)]\n" + "Detach Event:  [3]\n"
-                        + "\nExample:\n" + "event = { os.pullEvent(\"essentia\") }\n";
+                        + "Power Event:   [2] [true(on)|false(off)]\n"
+                        + "Detach Event:  [3]\n"
+                        + "\nExample:\n"
+                        + "event = { os.pullEvent(\"essentia\") }\n";
             } else {
                 // Determine which method was called.
                 switch (CCMethods.VALUES[method]) {
                     case isOnline:
                         helpText = "\nNo arguments.\n"
                                 + "Returns true if the provider is powered on and connected, false otherwise.\n"
-                                + "\nExample:\n" + "if( ep.isOnline() ) then\n";
+                                + "\nExample:\n"
+                                + "if( ep.isOnline() ) then\n";
                         break;
 
                     case getAspects:
-                        helpText =
-                                "\nNo arguments.\n" + "Returns the name then the amount of each essentia type stored.\n"
-                                        + "Note: You will probably want to wrap the results into a table.\n"
-                                        + "\nExample:\n" + "essTable = {ep.getAspects()}\n"
-                                        + "name = essTable[1]\n" + "amount = essTable[2]\n";
+                        helpText = "\nNo arguments.\n"
+                                + "Returns the name then the amount of each essentia type stored.\n"
+                                + "Note: You will probably want to wrap the results into a table.\n"
+                                + "\nExample:\n"
+                                + "essTable = {ep.getAspects()}\n"
+                                + "name = essTable[1]\n"
+                                + "amount = essTable[2]\n";
                         break;
 
                     case getAmount:
                         helpText = "\nArguments: AspectName1, AspectName2, ...\n"
                                 + "Returns the amount(s) of essentia stored in the system for the specified aspect(s).\n"
-                                + "\nExample:\n" + "ordoAmt = ep.getAmount(\"ordo\")\n"
+                                + "\nExample:\n"
+                                + "ordoAmt = ep.getAmount(\"ordo\")\n"
                                 + "ordoAmt, metoAmt = ep.getAmount(\"ordo\",\"meto\")\n";
                         break;
 
@@ -113,7 +125,9 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
                                 + "Registers this computer for essentia events. When essentia amounts on the network changes, this computer will receive a notification event.\n"
                                 + "If aspect arguments are provided, only events for those aspects will be generated. If no arguments are provided, any change will generate an event.\n"
                                 + "Note: Run help.events() for details about the events.\n"
-                                + "\nExamples:\n" + "ep.registerAsWatcher()\n" + "ep.registerAsWatcher(\"ordo\")\n"
+                                + "\nExamples:\n"
+                                + "ep.registerAsWatcher()\n"
+                                + "ep.registerAsWatcher(\"ordo\")\n"
                                 + "ep.registerAsWatcher(\"ordo\",\"meto\")\n";
                         break;
 
@@ -122,18 +136,20 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
                                 + "Unregisters this computer for essentia events.\n"
                                 + "If aspect arguments are provided, only unregister for those aspects. If no arguments are provided, unregister for all.\n"
                                 + "\nExamples:\n"
-                                + "ep.unregisterAsWatcher()\n" + "ep.unregisterAsWatcher(\"ordo\")\n"
+                                + "ep.unregisterAsWatcher()\n"
+                                + "ep.unregisterAsWatcher(\"ordo\")\n"
                                 + "ep.unregisterAsWatcher(\"meto\",\"ordo\")\n";
                         break;
 
                     case help:
                         helpText = "\nDisplays help for the following:\n"
-                                + StringUtils.join("()\n", this.getMethodNames()) + "()\n";
+                                + StringUtils.join("()\n", this.getMethodNames())
+                                + "()\n";
                         break;
                 }
             }
 
-            return new Object[] {helpText};
+            return new Object[] { helpText };
         }
 
         @Override
@@ -151,32 +167,29 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
     }
 
     private static enum CCMethods {
+
         /**
          * Is the provider active and online?
          */
         isOnline,
 
         /**
-         * Gets the list of aspects stored in the network.
-         * Stored in pairs of (name,amount)
+         * Gets the list of aspects stored in the network. Stored in pairs of (name,amount)
          */
         getAspects,
 
         /**
-         * Gets how much of the specified essentias are in the network.
-         * Args: Param array of aspect names
+         * Gets how much of the specified essentias are in the network. Args: Param array of aspect names
          */
         getAmount,
 
         /**
-         * Register for network changes
-         * Args: aspect names, can be null for all aspects
+         * Register for network changes Args: aspect names, can be null for all aspects
          */
         registerAsWatcher,
 
         /**
-         * Unregister for network changes
-         * Args: aspect names, can be null for all aspects
+         * Unregister for network changes Args: aspect names, can be null for all aspects
          */
         unregisterAsWatcher,
 
@@ -215,8 +228,8 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
     private class EssentiaWatcher implements IMEEssentiaMonitorReceiver {
 
         /**
-         * Computers that are listening for specific updates.
-         * The Boolean value specifies if the computer is watching for all changes(false) or specific aspects(true)
+         * Computers that are listening for specific updates. The Boolean value specifies if the computer is watching
+         * for all changes(false) or specific aspects(true)
          */
         private final HashMap<IComputerAccess, Boolean> computerWatchers;
 
@@ -250,10 +263,8 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
         /**
          * Adds a computer to the watch list, or updates an existing computer's aspects.
          *
-         * @param computer
-         * Computer to add.
-         * @param aspectsOfInterest
-         * Aspects to watch for. Can be null.
+         * @param computer          Computer to add.
+         * @param aspectsOfInterest Aspects to watch for. Can be null.
          * @throws LuaException
          * @throws InterruptedException
          */
@@ -302,15 +313,11 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
                         try {
                             monitor.addListener(
                                     this,
-                                    EssentiaProviderPeripheral.this
-                                            .getProvider()
-                                            .getProxy()
-                                            .getGrid());
+                                    EssentiaProviderPeripheral.this.getProvider().getProxy().getGrid());
 
                             // Mark as receiving
                             this.isReceving = true;
-                        } catch (GridAccessException e) {
-                        }
+                        } catch (GridAccessException e) {}
                     }
                 }
             }
@@ -321,8 +328,7 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
             // Assume false
             this.isReceving = false;
             try {
-                IGrid grid =
-                        EssentiaProviderPeripheral.this.getProvider().getProxy().getGrid();
+                IGrid grid = EssentiaProviderPeripheral.this.getProvider().getProxy().getGrid();
                 if (verificationToken == grid) {
                     synchronized (this.threadLock) {
                         // Only valid if there are computer watchers
@@ -370,7 +376,7 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
                     // Are there computers watching for any change?
                     if (this.anyWatchers.size() > 0) {
                         // Create the argument
-                        ccChange = new Object[] {change.getAspectName(), change.getStackSize()};
+                        ccChange = new Object[] { change.getAspectName(), change.getStackSize() };
 
                         for (IComputerAccess computer : this.anyWatchers) {
                             try {
@@ -389,7 +395,7 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
                     // Are there computers watching for this specific change?
                     if ((specificWatchers = this.aspectWatchers.get(change.getAspect())) != null) {
                         // Create the argument
-                        ccChange = new Object[] {change.getAspectName(), change.getStackSize()};
+                        ccChange = new Object[] { change.getAspectName(), change.getStackSize() };
 
                         // Update those watchers
                         for (IComputerAccess computer : specificWatchers) {
@@ -575,14 +581,13 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
     }
 
     /**
-     * Returns if the provider is online, or null if the provider is
-     * invalid.
+     * Returns if the provider is online, or null if the provider is invalid.
      *
      * @return
      */
     private Object[] ccGetOnline() throws LuaException, InterruptedException {
         // Return the providers active state
-        return new Object[] {this.isProviderAvailable()};
+        return new Object[] { this.isProviderAvailable() };
     }
 
     /**
@@ -780,9 +785,8 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
     }
 
     @Override
-    public Object[] callMethod(
-            final IComputerAccess computer, final ILuaContext context, final int method, final Object[] arguments)
-            throws LuaException, InterruptedException {
+    public Object[] callMethod(final IComputerAccess computer, final ILuaContext context, final int method,
+            final Object[] arguments) throws LuaException, InterruptedException {
         Object[] results = null;
 
         // Determine which method was called.
@@ -800,15 +804,15 @@ public class EssentiaProviderPeripheral implements IPeripheral, IEssentiaProvide
                 break;
 
             case registerAsWatcher:
-                results = new Object[] {this.ccRegisterAsWatcher(computer, arguments)};
+                results = new Object[] { this.ccRegisterAsWatcher(computer, arguments) };
                 break;
 
             case unregisterAsWatcher:
                 this.watcher.removeComputerWatcher(computer);
-                results = new Object[] {true};
+                results = new Object[] { true };
                 break;
             case help:
-                results = new Object[] {CCHelpObject.Instance()};
+                results = new Object[] { CCHelpObject.Instance() };
                 break;
         }
 

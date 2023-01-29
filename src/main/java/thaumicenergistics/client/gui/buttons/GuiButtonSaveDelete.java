@@ -1,11 +1,12 @@
 package thaumicenergistics.client.gui.buttons;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import thaumicenergistics.client.textures.AEStateIconsEnum;
 import thaumicenergistics.common.container.ContainerKnowledgeInscriber.CoreSaveState;
 import thaumicenergistics.common.registries.ThEStrings;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Displays save state icons.
@@ -15,10 +16,11 @@ import thaumicenergistics.common.registries.ThEStrings;
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonSaveDelete extends ThEStateButton {
+
     private String cachedTooltip;
 
-    public GuiButtonSaveDelete(
-            final int ID, final int xPosition, final int yPosition, final CoreSaveState initialState) {
+    public GuiButtonSaveDelete(final int ID, final int xPosition, final int yPosition,
+            final CoreSaveState initialState) {
         // Call super
         super(ID, xPosition, yPosition, 16, 16, null, 0, 0, AEStateIconsEnum.REGULAR_BUTTON);
 

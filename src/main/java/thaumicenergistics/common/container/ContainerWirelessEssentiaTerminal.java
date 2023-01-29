@@ -1,20 +1,12 @@
 package thaumicenergistics.common.container;
 
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.Settings;
-import appeng.api.config.ViewItems;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.container.ContainerOpenContext;
-import appeng.container.implementations.ContainerCraftAmount;
-import appeng.util.Platform;
 import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
@@ -30,6 +22,16 @@ import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaCellTerm
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaCellTerminal;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
+import appeng.api.config.ViewItems;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerCraftAmount;
+import appeng.util.Platform;
 
 /**
  * {@link ItemWirelessEssentiaTerminal} container.
@@ -40,8 +42,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
 public class ContainerWirelessEssentiaTerminal extends ContainerEssentiaCellTerminalBase {
 
     /**
-     * After this many ticks, power will be extracted from the terminal just for
-     * being open.
+     * After this many ticks, power will be extracted from the terminal just for being open.
      */
     private static final int EXTRACT_POWER_ON_TICK = 10;
 
@@ -56,17 +57,20 @@ public class ContainerWirelessEssentiaTerminal extends ContainerEssentiaCellTerm
     /**
      * Import and export inventory slots.
      */
-    private TheInternalInventory privateInventory =
-            new TheInternalInventory(ThaumicEnergistics.MOD_ID + ".item.essentia.cell.inventory", 2, 64) {
-                @Override
-                public boolean isItemValidForSlot(final int slotID, final ItemStack itemStack) {
-                    // Get the type
-                    AspectItemType iType = EssentiaItemContainerHelper.INSTANCE.getItemType(itemStack);
+    private TheInternalInventory privateInventory = new TheInternalInventory(
+            ThaumicEnergistics.MOD_ID + ".item.essentia.cell.inventory",
+            2,
+            64) {
 
-                    // True if jar or jar label
-                    return (iType == AspectItemType.EssentiaContainer) || (iType == AspectItemType.JarLabel);
-                }
-            };
+        @Override
+        public boolean isItemValidForSlot(final int slotID, final ItemStack itemStack) {
+            // Get the type
+            AspectItemType iType = EssentiaItemContainerHelper.INSTANCE.getItemType(itemStack);
+
+            // True if jar or jar label
+            return (iType == AspectItemType.EssentiaContainer) || (iType == AspectItemType.JarLabel);
+        }
+    };
 
     /**
      * Tracks the number of ticks elapsed.
@@ -83,8 +87,8 @@ public class ContainerWirelessEssentiaTerminal extends ContainerEssentiaCellTerm
      * @param player
      * @param handler
      */
-    public ContainerWirelessEssentiaTerminal(
-            final EntityPlayer player, final @Nonnull HandlerWirelessEssentiaTerminal handler) {
+    public ContainerWirelessEssentiaTerminal(final EntityPlayer player,
+            final @Nonnull HandlerWirelessEssentiaTerminal handler) {
         // Call super
         super(player);
 
@@ -193,8 +197,8 @@ public class ContainerWirelessEssentiaTerminal extends ContainerEssentiaCellTerm
             cca.getOpenContext().setWorld(player.worldObj);
 
             // Create the result item
-            IAEItemStack result =
-                    AEApi.instance().storage().createItemStack(ItemCraftingAspect.createStackForAspect(aspect, 1));
+            IAEItemStack result = AEApi.instance().storage()
+                    .createItemStack(ItemCraftingAspect.createStackForAspect(aspect, 1));
 
             // Set the item
             cca.getCraftingItem().putStack(result.getItemStack());
@@ -211,8 +215,8 @@ public class ContainerWirelessEssentiaTerminal extends ContainerEssentiaCellTerm
     @Override
     public void onClientRequestFullUpdate() {
         // Send the sorting mode
-        Packet_C_EssentiaCellTerminal.sendViewingModes(
-                this.player, this.handler.getSortingMode(), this.handler.getViewMode());
+        Packet_C_EssentiaCellTerminal
+                .sendViewingModes(this.player, this.handler.getSortingMode(), this.handler.getViewMode());
 
         // Send the list
         Packet_C_EssentiaCellTerminal.sendFullList(this.player, this.repo.getAll());
@@ -238,8 +242,8 @@ public class ContainerWirelessEssentiaTerminal extends ContainerEssentiaCellTerm
     @Override
     public void onClientRequestViewModeChange(final EntityPlayer player, final boolean backwards) {
         // Change the view mode
-        ViewItems viewMode =
-                Platform.rotateEnum(this.handler.getViewMode(), backwards, Settings.VIEW_MODE.getPossibleValues());
+        ViewItems viewMode = Platform
+                .rotateEnum(this.handler.getViewMode(), backwards, Settings.VIEW_MODE.getPossibleValues());
 
         // Inform the handler of the change
         this.handler.setViewMode(viewMode);
@@ -263,8 +267,8 @@ public class ContainerWirelessEssentiaTerminal extends ContainerEssentiaCellTerm
     }
 
     @Override
-    public ItemStack slotClick(
-            final int slotNumber, final int buttonPressed, final int flag, final EntityPlayer player) {
+    public ItemStack slotClick(final int slotNumber, final int buttonPressed, final int flag,
+            final EntityPlayer player) {
         try {
             Slot clickedSlot = this.getSlotOrNull(slotNumber);
             // Protect the wireless terminal
@@ -272,8 +276,7 @@ public class ContainerWirelessEssentiaTerminal extends ContainerEssentiaCellTerm
                     && (clickedSlot.getSlotIndex() == this.terminalSlotIndex)) {
                 return null;
             }
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
 
         return super.slotClick(slotNumber, buttonPressed, flag, player);
     }

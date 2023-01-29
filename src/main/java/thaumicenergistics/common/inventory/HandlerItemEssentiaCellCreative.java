@@ -1,19 +1,21 @@
 package thaumicenergistics.common.inventory;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.common.fluids.GaseousEssentia;
 import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.common.items.ItemEssentiaCell;
 import thaumicenergistics.common.storage.AspectStack;
+import appeng.api.config.Actionable;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.ISaveProvider;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IItemList;
 
 /**
  * Handles a creative {@link ItemEssentiaCell}
@@ -67,8 +69,8 @@ public class HandlerItemEssentiaCellCreative extends HandlerItemEssentiaCell {
             GaseousEssentia essentiaGas = GaseousEssentia.getGasFromAspect(aspect);
 
             // Create the AE fluid stack
-            availableList.add(
-                    EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits(essentiaGas, 2000000000));
+            availableList
+                    .add(EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits(essentiaGas, 2000000000));
         }
 
         return availableList;

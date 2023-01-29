@@ -1,13 +1,14 @@
 package thaumicenergistics.common.network.packet.server;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.parts.ThEPartBase;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Server-bound gui change request packet.
@@ -16,6 +17,7 @@ import thaumicenergistics.common.parts.ThEPartBase;
  *
  */
 public class Packet_S_ChangeGui extends ThEServerPacket {
+
     /**
      * Packet modes
      */
@@ -46,8 +48,8 @@ public class Packet_S_ChangeGui extends ThEServerPacket {
         return packet;
     }
 
-    public static void sendGuiChange(
-            final int guiID, final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public static void sendGuiChange(final int guiID, final EntityPlayer player, final World world, final int x,
+            final int y, final int z) {
         Packet_S_ChangeGui packet = newPacket(player, MODE_REGULAR);
 
         // Set the guiID
@@ -65,13 +67,8 @@ public class Packet_S_ChangeGui extends ThEServerPacket {
         NetworkHandler.sendPacketToServer(packet);
     }
 
-    public static void sendGuiChangeToPart(
-            final ThEPartBase part,
-            final EntityPlayer player,
-            final World world,
-            final int x,
-            final int y,
-            final int z) {
+    public static void sendGuiChangeToPart(final ThEPartBase part, final EntityPlayer player, final World world,
+            final int x, final int y, final int z) {
         Packet_S_ChangeGui packet = newPacket(player, MODE_PART);
 
         // Set the part

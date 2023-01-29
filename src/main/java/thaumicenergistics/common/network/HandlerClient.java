@@ -1,9 +1,9 @@
 package thaumicenergistics.common.network;
 
+import thaumicenergistics.common.network.packet.client.WrapperPacket_C;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import thaumicenergistics.common.network.packet.client.WrapperPacket_C;
 
 /**
  * Handles all client-side ThE packets.

@@ -1,8 +1,9 @@
 package thaumicenergistics.common.integration.tc;
 
-import cpw.mods.fml.common.ModContainer;
 import java.util.HashMap;
+
 import thaumcraft.api.aspects.Aspect;
+import cpw.mods.fml.common.ModContainer;
 
 /**
  * Manages hooks inserted into Thaumcraft's {@code Aspect} class.
@@ -13,8 +14,7 @@ import thaumcraft.api.aspects.Aspect;
 public class AspectHooks {
 
     /**
-     * TODO: Make private and provide wrapper for name or unknown
-     * Maps an aspect -> mod.
+     * TODO: Make private and provide wrapper for name or unknown Maps an aspect -> mod.
      */
     public static final HashMap<Aspect, ModContainer> aspectToMod = new HashMap<Aspect, ModContainer>();
 

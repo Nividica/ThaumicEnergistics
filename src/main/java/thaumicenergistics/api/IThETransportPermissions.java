@@ -1,15 +1,16 @@
 package thaumicenergistics.api;
 
 import javax.annotation.Nonnull;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 
 /**
- * Defines what items and tile entities ThaumicEnergistics is allowed to
- * interact with.
+ * Defines what items and tile entities ThaumicEnergistics is allowed to interact with.
  *
  * @author Nividica
  *
@@ -17,8 +18,8 @@ import thaumcraft.api.aspects.IEssentiaContainerItem;
 public interface IThETransportPermissions {
 
     /**
-     * Adds a tile entity to both inject & extract whitelists.
-     * The tile must implement the interface {@link IAspectContainer}<br>
+     * Adds a tile entity to both inject & extract whitelists. The tile must implement the interface
+     * {@link IAspectContainer}<br>
      * Capacity is required to function properly
      *
      * @param tileClass
@@ -28,8 +29,7 @@ public interface IThETransportPermissions {
             @Nonnull Class<T> tileClass, int capacity);
 
     /**
-     * Adds a tile entity to the extract whitelist.
-     * The tile must implement the interface {@link IAspectContainer}<br>
+     * Adds a tile entity to the extract whitelist. The tile must implement the interface {@link IAspectContainer}<br>
      * Note: Capacity can be 0 if the tile doesn't truely 'contain' essentia.
      *
      * @param tileClass
@@ -39,8 +39,7 @@ public interface IThETransportPermissions {
             @Nonnull Class<T> tileClass, int capacity);
 
     /**
-     * Adds a tile entity to the inject whitelist.
-     * The tile must implement the interface {@link IAspectContainer}<br>
+     * Adds a tile entity to the inject whitelist. The tile must implement the interface {@link IAspectContainer}<br>
      * Capacity is required to function properly.
      *
      * @param tileClass
@@ -57,11 +56,8 @@ public interface IThETransportPermissions {
      * @param damageValue
      * @param canHoldPartialAmount
      */
-    void addEssentiaContainerItemToTransportPermissions(
-            @Nonnull Class<? extends IEssentiaContainerItem> itemClass,
-            int capacity,
-            int damageValue,
-            boolean canHoldPartialAmount);
+    void addEssentiaContainerItemToTransportPermissions(@Nonnull Class<? extends IEssentiaContainerItem> itemClass,
+            int capacity, int damageValue, boolean canHoldPartialAmount);
 
     /**
      * Adds the specified item to the whitelist.
@@ -70,8 +66,8 @@ public interface IThETransportPermissions {
      * @param capacity
      * @param canHoldPartialAmount
      */
-    void addEssentiaContainerItemToTransportPermissions(
-            @Nonnull ItemStack containerItem, int capacity, boolean canHoldPartialAmount);
+    void addEssentiaContainerItemToTransportPermissions(@Nonnull ItemStack containerItem, int capacity,
+            boolean canHoldPartialAmount);
 
     /**
      * Checks if the container can be extracted from
@@ -98,8 +94,7 @@ public interface IThETransportPermissions {
     int getAspectContainerTileCapacity(@Nonnull IAspectContainer container);
 
     /**
-     * Gets the information about the container as it was registered to the
-     * whitelist.
+     * Gets the information about the container as it was registered to the whitelist.
      *
      * @param itemClass
      * @param damageValue

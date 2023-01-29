@@ -1,8 +1,5 @@
 package thaumicenergistics.common.blocks;
 
-import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -16,12 +13,16 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileEssentiaVibrationChamber} block.
@@ -70,8 +71,8 @@ public class BlockEssentiaVibrationChamber extends AbstractBlockAEWrenchable {
     }
 
     @Override
-    protected boolean onBlockActivated(
-            final World world, final int x, final int y, final int z, final EntityPlayer player) {
+    protected boolean onBlockActivated(final World world, final int x, final int y, final int z,
+            final EntityPlayer player) {
         // Ignore if player is sneaking
         if (player.isSneaking()) {
             return false;
@@ -216,12 +217,7 @@ public class BlockEssentiaVibrationChamber extends AbstractBlockAEWrenchable {
     }
 
     @Override
-    public void onBlockPlacedBy(
-            final World world,
-            final int x,
-            final int y,
-            final int z,
-            final EntityLivingBase player,
+    public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase player,
             final ItemStack itemStack) {
         // Get the chamber tile
         TileEssentiaVibrationChamber chamber = this.getEVCTile(world, x, y, z);

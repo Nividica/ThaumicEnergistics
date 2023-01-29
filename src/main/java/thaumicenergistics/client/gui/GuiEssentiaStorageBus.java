@@ -1,15 +1,16 @@
 package thaumicenergistics.client.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSlotGui;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
@@ -26,6 +27,8 @@ import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.network.packet.server.Packet_S_EssentiaStorageBus;
 import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartEssentiaStorageBus} GUI
@@ -35,6 +38,7 @@ import thaumicenergistics.common.parts.PartEssentiaStorageBus;
  */
 @SideOnly(Side.CLIENT)
 public class GuiEssentiaStorageBus extends ThEBaseGui implements IAspectSlotGui {
+
     /**
      * The number of columns in the gui.
      */
@@ -134,12 +138,9 @@ public class GuiEssentiaStorageBus extends ThEBaseGui implements IAspectSlotGui 
     /**
      * Creates the GUI.
      *
-     * @param storageBus
-     * The part associated with the gui.
-     * @param player
-     * The player viewing the gui.
-     * @param container
-     * The inventory container.
+     * @param storageBus The part associated with the gui.
+     * @param player     The player viewing the gui.
+     * @param container  The inventory container.
      */
     public GuiEssentiaStorageBus(final PartEssentiaStorageBus storageBus, final EntityPlayer player) {
         // Call super
@@ -155,8 +156,7 @@ public class GuiEssentiaStorageBus extends ThEBaseGui implements IAspectSlotGui 
         this.hasNetworkTool = ((ContainerPartEssentiaStorageBus) this.inventorySlots).hasNetworkTool();
 
         // Set the width and height
-        this.xSize = (this.hasNetworkTool
-                ? GuiEssentiaStorageBus.GUI_WIDTH_NETWORK_TOOL
+        this.xSize = (this.hasNetworkTool ? GuiEssentiaStorageBus.GUI_WIDTH_NETWORK_TOOL
                 : GuiEssentiaStorageBus.GUI_WIDTH_NO_TOOL);
         this.ySize = GuiEssentiaStorageBus.GUI_HEIGHT;
     }
@@ -193,14 +193,16 @@ public class GuiEssentiaStorageBus extends ThEBaseGui implements IAspectSlotGui 
 
         // Draw the title
         this.fontRendererObj.drawString(
-                this.guiTitle, GuiEssentiaStorageBus.TITLE_X_POS, GuiEssentiaStorageBus.TITLE_Y_POS, 0x000000);
+                this.guiTitle,
+                GuiEssentiaStorageBus.TITLE_X_POS,
+                GuiEssentiaStorageBus.TITLE_Y_POS,
+                0x000000);
 
         WidgetAspectSlot slotUnderMouse = null;
 
         // Draw widgets
         for (WidgetAspectSlot currentWidget : this.aspectWidgetList) {
-            if ((slotUnderMouse == null)
-                    && (currentWidget.canRender())
+            if ((slotUnderMouse == null) && (currentWidget.canRender())
                     && (currentWidget.isMouseOverWidget(mouseX, mouseY))) {
                 // Draw the underlay
                 currentWidget.drawMouseHoverUnderlay();
@@ -290,29 +292,32 @@ public class GuiEssentiaStorageBus extends ThEBaseGui implements IAspectSlotGui 
         // Create the widgets
         for (int row = 0; row < GuiEssentiaStorageBus.WIDGET_ROWS; row++) {
             for (int column = 0; column < GuiEssentiaStorageBus.WIDGET_COLUMNS; column++) {
-                this.aspectWidgetList.add(new WidgetAspectSlot(
-                        this,
-                        this.player,
-                        this.storageBus,
-                        (row * GuiEssentiaStorageBus.WIDGET_COLUMNS) + column,
-                        GuiEssentiaStorageBus.WIDGET_X_POS + (ThEWidget.WIDGET_SIZE * column),
-                        GuiEssentiaStorageBus.WIDGET_Y_POS + (ThEWidget.WIDGET_SIZE * row)));
+                this.aspectWidgetList.add(
+                        new WidgetAspectSlot(
+                                this,
+                                this.player,
+                                this.storageBus,
+                                (row * GuiEssentiaStorageBus.WIDGET_COLUMNS) + column,
+                                GuiEssentiaStorageBus.WIDGET_X_POS + (ThEWidget.WIDGET_SIZE * column),
+                                GuiEssentiaStorageBus.WIDGET_Y_POS + (ThEWidget.WIDGET_SIZE * row)));
             }
         }
 
         // Create the priority tab button
-        this.buttonList.add(new GuiButtonAETab(
-                GuiEssentiaStorageBus.BUTTON_PRIORITY_ID,
-                this.guiLeft + GuiEssentiaStorageBus.BUTTON_PRIORITY_X_POSITION,
-                this.guiTop,
-                AEStateIconsEnum.WRENCH,
-                "gui.appliedenergistics2.Priority"));
+        this.buttonList.add(
+                new GuiButtonAETab(
+                        GuiEssentiaStorageBus.BUTTON_PRIORITY_ID,
+                        this.guiLeft + GuiEssentiaStorageBus.BUTTON_PRIORITY_X_POSITION,
+                        this.guiTop,
+                        AEStateIconsEnum.WRENCH,
+                        "gui.appliedenergistics2.Priority"));
 
         // Create the allow void button
-        this.buttonList.add(new GuiButtonAllowVoid(
-                GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID,
-                this.guiLeft + GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_X_POS,
-                this.guiTop + GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_Y_POS));
+        this.buttonList.add(
+                new GuiButtonAllowVoid(
+                        GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_ID,
+                        this.guiLeft + GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_X_POS,
+                        this.guiTop + GuiEssentiaStorageBus.BUTTON_ALLOW_VOID_Y_POS));
     }
 
     /**

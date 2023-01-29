@@ -1,14 +1,15 @@
 package thaumicenergistics.common.integration.tc;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.HashMap;
 import java.util.HashSet;
+
 import javax.annotation.Nonnull;
+
 import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import thaumcraft.common.entities.golems.EntityGolemBase;
 import thaumicenergistics.api.entities.IGolemHookHandler;
 import thaumicenergistics.api.entities.IGolemHookHandler.InteractionLevel;
@@ -16,6 +17,8 @@ import thaumicenergistics.api.entities.IGolemHookSyncRegistry;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThELog;
 import thaumicenergistics.fml.ThECore;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Golem hook system.<br>
@@ -25,6 +28,7 @@ import thaumicenergistics.fml.ThECore;
  *
  */
 public class GolemHooks {
+
     private static class DummyHookHandler implements IGolemHookHandler {
 
         public DummyHookHandler() {}
@@ -33,33 +37,25 @@ public class GolemHooks {
         public void addDefaultSyncEntries(final IGolemHookSyncRegistry syncRegistry) {}
 
         @Override
-        public void bellLeftClicked(
-                final EntityGolemBase golem,
-                final Object handlerData,
-                final ItemStack itemGolemPlacer,
-                final EntityPlayer player,
-                final boolean dismantled,
+        public void bellLeftClicked(final EntityGolemBase golem, final Object handlerData,
+                final ItemStack itemGolemPlacer, final EntityPlayer player, final boolean dismantled,
                 final Side side) {}
 
         @Override
-        public InteractionLevel canHandleInteraction(
-                final EntityGolemBase golem, final Object handlerData, final EntityPlayer player, final Side side) {
+        public InteractionLevel canHandleInteraction(final EntityGolemBase golem, final Object handlerData,
+                final EntityPlayer player, final Side side) {
             return InteractionLevel.NoInteraction;
         }
 
         @Override
-        public Object customInteraction(
-                final EntityGolemBase golem,
-                final Object handlerData,
-                final IGolemHookSyncRegistry syncData,
-                final EntityPlayer player,
-                final Side side) {
+        public Object customInteraction(final EntityGolemBase golem, final Object handlerData,
+                final IGolemHookSyncRegistry syncData, final EntityPlayer player, final Side side) {
             return null;
         }
 
         @Override
-        public void golemTick(
-                final EntityGolemBase golem, final Object serverHandlerData, final IGolemHookSyncRegistry syncData) {}
+        public void golemTick(final EntityGolemBase golem, final Object serverHandlerData,
+                final IGolemHookSyncRegistry syncData) {}
 
         @Override
         public boolean needsDynamicUpdates() {
@@ -77,26 +73,18 @@ public class GolemHooks {
         }
 
         @Override
-        public void renderGolem(
-                final EntityGolemBase golem,
-                final Object clientHandlerData,
-                final double x,
-                final double y,
-                final double z,
-                final float partialElaspsedTick) {}
+        public void renderGolem(final EntityGolemBase golem, final Object clientHandlerData, final double x,
+                final double y, final double z, final float partialElaspsedTick) {}
 
         @Override
-        public Object setupGolem(
-                final EntityGolemBase golem,
-                final Object handlerData,
-                final IGolemHookSyncRegistry syncData,
-                final Side side) {
+        public Object setupGolem(final EntityGolemBase golem, final Object handlerData,
+                final IGolemHookSyncRegistry syncData, final Side side) {
             return null;
         }
 
         @Override
-        public Object spawnGolemFromItemStack(
-                final EntityGolemBase golem, final ItemStack itemGolemPlacer, final Side side) {
+        public Object spawnGolemFromItemStack(final EntityGolemBase golem, final ItemStack itemGolemPlacer,
+                final Side side) {
             return null;
         }
 
@@ -106,8 +94,8 @@ public class GolemHooks {
         }
 
         @Override
-        public void writeEntityNBT(
-                final EntityGolemBase golem, final Object serverHandlerData, final NBTTagCompound nbtTag) {}
+        public void writeEntityNBT(final EntityGolemBase golem, final Object serverHandlerData,
+                final NBTTagCompound nbtTag) {}
     }
 
     /**
@@ -175,11 +163,8 @@ public class GolemHooks {
      * @param player
      * @param golemHandlerData
      */
-    public static void hook_Bell_OnLeftClickGolem(
-            final EntityGolemBase golem,
-            final ItemStack dropped,
-            final EntityPlayer player,
-            final HashMap<IGolemHookHandler, Object> golemHandlerData) {
+    public static void hook_Bell_OnLeftClickGolem(final EntityGolemBase golem, final ItemStack dropped,
+            final EntityPlayer player, final HashMap<IGolemHookHandler, Object> golemHandlerData) {
         // Get the dismantled status
         boolean dismantled = player.isSneaking();
         Side side = EffectiveSide.side();
@@ -206,9 +191,7 @@ public class GolemHooks {
      * @param golemHandlerData
      * @return
      */
-    public static boolean hook_CustomInteraction(
-            final EntityGolemBase golem,
-            final EntityPlayer player,
+    public static boolean hook_CustomInteraction(final EntityGolemBase golem, final EntityPlayer player,
             final HashMap<IGolemHookHandler, Object> golemHandlerData) {
         GolemSyncRegistry syncRegistry = ((GolemSyncRegistry) golemHandlerData.get(GolemHooks.internalHandler));
 
@@ -287,8 +270,8 @@ public class GolemHooks {
      * @param golem
      * @param golemHandlerData
      */
-    public static void hook_EntityInit(
-            final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData) {
+    public static void hook_EntityInit(final EntityGolemBase golem,
+            final HashMap<IGolemHookHandler, Object> golemHandlerData) {
         // Create a new sync registry
         GolemSyncRegistry localRegistry = new GolemSyncRegistry();
         localRegistry.copyDefaults(GolemHooks.defaultSyncRegistry);
@@ -310,8 +293,7 @@ public class GolemHooks {
                     // Object was added
                     GolemHooks.DATAWATCHER_ID = i;
                     return;
-                } catch (IllegalArgumentException e) {
-                }
+                } catch (IllegalArgumentException e) {}
             }
 
             // If execution makes it this far, there were no available ID's :(
@@ -329,14 +311,13 @@ public class GolemHooks {
     }
 
     /**
-     * Hook for EntityGolemBase.onEntityUpdate.
-     * Keeps client handlers updated.
+     * Hook for EntityGolemBase.onEntityUpdate. Keeps client handlers updated.
      *
      * @param golem
      * @param golemHandlerData
      */
-    public static void hook_onEntityUpdate(
-            final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData) {
+    public static void hook_onEntityUpdate(final EntityGolemBase golem,
+            final HashMap<IGolemHookHandler, Object> golemHandlerData) {
         // Get the sync registry
         GolemSyncRegistry syncRegistry = (GolemSyncRegistry) golemHandlerData.get(GolemHooks.internalHandler);
 
@@ -432,9 +413,7 @@ public class GolemHooks {
      * @param itemGolemPlacer
      * @param golemHandlerData
      */
-    public static void hook_Placer_SpawnGolem(
-            final EntityGolemBase golem,
-            final ItemStack itemGolemPlacer,
+    public static void hook_Placer_SpawnGolem(final EntityGolemBase golem, final ItemStack itemGolemPlacer,
             final HashMap<IGolemHookHandler, Object> golemHandlerData) {
         // Ensure the stack has an NBT tag
         if (!itemGolemPlacer.hasTagCompound()) {
@@ -465,10 +444,8 @@ public class GolemHooks {
      * @param golemHandlerData
      * @param nbt
      */
-    public static void hook_ReadEntityFromNBT(
-            final EntityGolemBase golem,
-            final HashMap<IGolemHookHandler, Object> golemHandlerData,
-            final NBTTagCompound nbt) {
+    public static void hook_ReadEntityFromNBT(final EntityGolemBase golem,
+            final HashMap<IGolemHookHandler, Object> golemHandlerData, final NBTTagCompound nbt) {
         // Inform each handler
         for (IGolemHookHandler handler : GolemHooks.registeredHandlers) {
             try {
@@ -500,12 +477,8 @@ public class GolemHooks {
      * @param partialElaspsedTick
      */
     @SideOnly(Side.CLIENT)
-    public static void hook_RenderGolem(
-            final EntityGolemBase golem,
-            final HashMap<IGolemHookHandler, Object> golemHandlerData,
-            final double x,
-            final double y,
-            final double z,
+    public static void hook_RenderGolem(final EntityGolemBase golem,
+            final HashMap<IGolemHookHandler, Object> golemHandlerData, final double x, final double y, final double z,
             final float partialElaspsedTick) {
 
         // Call each render handler
@@ -524,8 +497,8 @@ public class GolemHooks {
      * @param golem
      * @param golemHandlerData
      */
-    public static void hook_SetupGolem(
-            final EntityGolemBase golem, final HashMap<IGolemHookHandler, Object> golemHandlerData) {
+    public static void hook_SetupGolem(final EntityGolemBase golem,
+            final HashMap<IGolemHookHandler, Object> golemHandlerData) {
         // Get the sync data
         GolemSyncRegistry localRegistry = (GolemSyncRegistry) golemHandlerData.get(GolemHooks.internalHandler);
         Side side = EffectiveSide.side();
@@ -570,10 +543,8 @@ public class GolemHooks {
      * @param golemHandlerData
      * @param nbt
      */
-    public static void hook_WriteEntityToNBT(
-            final EntityGolemBase golem,
-            final HashMap<IGolemHookHandler, Object> golemHandlerData,
-            final NBTTagCompound nbt) {
+    public static void hook_WriteEntityToNBT(final EntityGolemBase golem,
+            final HashMap<IGolemHookHandler, Object> golemHandlerData, final NBTTagCompound nbt) {
         // Inform each handler
         for (IGolemHookHandler handler : GolemHooks.registeredHandlers) {
             try {

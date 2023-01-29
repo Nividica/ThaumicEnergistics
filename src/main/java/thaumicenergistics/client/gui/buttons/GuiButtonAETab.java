@@ -1,13 +1,16 @@
 package thaumicenergistics.client.gui.buttons;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.StatCollector;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumicenergistics.client.textures.AEStateIconsEnum;
 import thaumicenergistics.client.textures.IStateIconTexture;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Large corner-button.
@@ -17,6 +20,7 @@ import thaumicenergistics.client.textures.IStateIconTexture;
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonAETab extends ThEStateButton {
+
     /**
      * Height of the button
      */
@@ -38,11 +42,7 @@ public class GuiButtonAETab extends ThEStateButton {
      */
     protected AEStateIconsEnum icon;
 
-    public GuiButtonAETab(
-            final int ID,
-            final int xPosition,
-            final int yPosition,
-            final IStateIconTexture icon,
+    public GuiButtonAETab(final int ID, final int xPosition, final int yPosition, final IStateIconTexture icon,
             final String unlocalizedTooltip) {
         // Call super
         super(

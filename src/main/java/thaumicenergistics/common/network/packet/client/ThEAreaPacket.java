@@ -1,10 +1,11 @@
 package thaumicenergistics.common.network.packet.client;
 
+import net.minecraft.world.World;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.world.World;
 
 /**
  * Base class for ThE area packets.

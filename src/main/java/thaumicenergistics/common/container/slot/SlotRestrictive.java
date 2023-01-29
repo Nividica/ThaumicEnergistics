@@ -11,19 +11,16 @@ import net.minecraft.item.ItemStack;
  *
  */
 public class SlotRestrictive extends Slot {
+
     private int myIndex;
 
     /**
      * Create the slot.
      *
-     * @param inventory
-     * Inventory it belongs to.
-     * @param index
-     * Index of the slot
-     * @param x
-     * X position of the slot
-     * @param y
-     * Y position of the slot
+     * @param inventory Inventory it belongs to.
+     * @param index     Index of the slot
+     * @param x         X position of the slot
+     * @param y         Y position of the slot
      */
     public SlotRestrictive(final IInventory inventory, final int index, final int x, final int y) {
         // Pass to super

@@ -1,12 +1,14 @@
 package thaumicenergistics.common.items;
 
 import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ThEStrings;
 
@@ -25,6 +27,7 @@ public class ItemMaterial extends Item {
      *
      */
     public static enum MaterialTypes {
+
         DIFFUSION_CORE(0, "diffusion.core", ThEStrings.Item_DiffusionCore),
         COALESCENCE_CORE(1, "coalescence.core", ThEStrings.Item_CoalescenceCore),
         IRON_GEAR(2, "iron.gear", ThEStrings.Item_IronGear);

@@ -1,20 +1,22 @@
 package thaumicenergistics.common.integration.tc;
 
-import com.google.common.base.Charsets;
 import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+
 import thaumicenergistics.api.entities.IGolemHookHandler;
 import thaumicenergistics.api.entities.IGolemHookSyncRegistry;
 import thaumicenergistics.common.utils.ThELog;
 
+import com.google.common.base.Charsets;
+
 class GolemSyncRegistry implements IGolemHookSyncRegistry {
+
     /**
      * Maps ID => Handler
      */
-    private static final HashMap<Integer, IGolemHookHandler> handlerMappings =
-            new HashMap<Integer, IGolemHookHandler>();
+    private static final HashMap<Integer, IGolemHookHandler> handlerMappings = new HashMap<Integer, IGolemHookHandler>();
 
     /**
      * Maps ID => Data
@@ -130,7 +132,7 @@ class GolemSyncRegistry implements IGolemHookSyncRegistry {
 
         // Read the data
         try (ByteArrayInputStream bais = new ByteArrayInputStream(data.getBytes(Charsets.UTF_8.name()));
-                DataInputStream stream = new DataInputStream(bais); ) {
+                DataInputStream stream = new DataInputStream(bais);) {
 
             // Read the count
             int count = stream.readInt();

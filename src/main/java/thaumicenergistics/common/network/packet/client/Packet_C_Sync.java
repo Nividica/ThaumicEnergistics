@@ -1,11 +1,12 @@
 package thaumicenergistics.common.network.packet.client;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.utils.ThEUtils;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Packed used to send miscellaneous events to the client.
@@ -14,6 +15,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  *
  */
 public class Packet_C_Sync extends ThEClientPacket {
+
     /**
      * Packet modes.
      */

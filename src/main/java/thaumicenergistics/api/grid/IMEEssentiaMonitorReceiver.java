@@ -1,6 +1,7 @@
 package thaumicenergistics.api.grid;
 
 import javax.annotation.Nonnull;
+
 import thaumicenergistics.api.storage.IAspectStack;
 
 /**
@@ -10,10 +11,11 @@ import thaumicenergistics.api.storage.IAspectStack;
  *
  */
 public interface IMEEssentiaMonitorReceiver {
+
     /**
      * Verifies that the receiver is still valid.<br>
-     * If returning false the receiver will be removed from the monitor
-     * and the receiver should NOT call removeListener itself.
+     * If returning false the receiver will be removed from the monitor and the receiver should NOT call removeListener
+     * itself.
      *
      * @param verificationToken
      * @return False if the receiver should no longer get updates.

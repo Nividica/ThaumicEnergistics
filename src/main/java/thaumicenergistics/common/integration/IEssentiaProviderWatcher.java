@@ -7,6 +7,7 @@ package thaumicenergistics.common.integration;
  *
  */
 public interface IEssentiaProviderWatcher {
+
     /**
      * Called when the provider is broken.
      */

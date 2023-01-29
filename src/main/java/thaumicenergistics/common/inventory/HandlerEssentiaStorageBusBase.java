@@ -1,5 +1,16 @@
 package thaumicenergistics.common.inventory;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.fluids.GaseousEssentia;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
@@ -11,15 +22,6 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.common.fluids.GaseousEssentia;
-import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
 /**
  * Defines a {@link PartEssentiaStorageBus} handler.
@@ -60,9 +62,7 @@ public abstract class HandlerEssentiaStorageBusBase implements IMEInventoryHandl
     protected MachineSource machineSource;
 
     /**
-     * When true excess essentia will be destroyed IF the bus is attached to a
-     * void
-     * jar.
+     * When true excess essentia will be destroyed IF the bus is attached to a void jar.
      */
     private boolean isVoidAllowed = false;
 
@@ -103,12 +103,11 @@ public abstract class HandlerEssentiaStorageBusBase implements IMEInventoryHandl
     }
 
     /**
-     * Verifies that the requested fluidstack to insert/extract is both an
-     * Essentia Gas and white-listed, or not black-listed.
+     * Verifies that the requested fluidstack to insert/extract is both an Essentia Gas and white-listed, or not
+     * black-listed.
      *
      * @param fluidRequest
-     * @return True if the bus is allowed to transfer the fluid, false if it can
-     * not.
+     * @return True if the bus is allowed to transfer the fluid, false if it can not.
      */
     protected boolean canTransferGas(final GaseousEssentia essentiaGas) {
         // Can any aspect be transfered?
@@ -118,31 +117,20 @@ public abstract class HandlerEssentiaStorageBusBase implements IMEInventoryHandl
         }
 
         /*
-         * Validate based on if the aspect is filtered and the storage bus is
-         * inverted. See explanation below.
+         * Validate based on if the aspect is filtered and the storage bus is inverted. See explanation below.
          */
         return (this.filteredAspects.contains(essentiaGas.getAspect()) != this.inverted);
 
         /*
-         * Truth 'table' ---- Conditions: * isFiltered = true * inverted = false
-         * Expected outcome: * valid = true Sequence * valid = ( isFiltered ==
-         * !inverted ); * valid = ( true == !false ) * valid = ( true == true )
-         * * valid = true
-         *
-         * ---- Conditions: * isFiltered = false * inverted = false Expected
-         * outcome: * valid = false Sequence * valid = ( isFiltered == !inverted
-         * ); * valid = ( false == !false ) * valid = ( false == true ) * valid
-         * = false
-         *
-         * ---- Conditions: * isFiltered = true * inverted = true Expected
-         * outcome: * valid = false Sequence * valid = ( isFiltered == !inverted
-         * ); * valid = ( true == !true ) * valid = ( true == false ) * valid =
-         * false ----
-         *
-         * Conditions: * isFiltered = false * inverted = true Expected outcome:
-         * * valid = true Sequence * valid = ( isFiltered == !inverted ); *
-         * valid = ( false == !true ) * valid = ( false == false ) * valid =
-         * true ----
+         * Truth 'table' ---- Conditions: * isFiltered = true * inverted = false Expected outcome: * valid = true
+         * Sequence * valid = ( isFiltered == !inverted ); * valid = ( true == !false ) * valid = ( true == true ) *
+         * valid = true ---- Conditions: * isFiltered = false * inverted = false Expected outcome: * valid = false
+         * Sequence * valid = ( isFiltered == !inverted ); * valid = ( false == !false ) * valid = ( false == true ) *
+         * valid = false ---- Conditions: * isFiltered = true * inverted = true Expected outcome: * valid = false
+         * Sequence * valid = ( isFiltered == !inverted ); * valid = ( true == !true ) * valid = ( true == false ) *
+         * valid = false ---- Conditions: * isFiltered = false * inverted = true Expected outcome: * valid = true
+         * Sequence * valid = ( isFiltered == !inverted ); * valid = ( false == !true ) * valid = ( false == false ) *
+         * valid = true ----
          */
     }
 
@@ -171,11 +159,10 @@ public abstract class HandlerEssentiaStorageBusBase implements IMEInventoryHandl
         ForgeDirection orientation = this.partStorageBus.getSide();
 
         // Return the tile entity the storage bus is facing.
-        return hostTile.getWorldObj()
-                .getTileEntity(
-                        hostTile.xCoord + orientation.offsetX,
-                        hostTile.yCoord + orientation.offsetY,
-                        hostTile.zCoord + orientation.offsetZ);
+        return hostTile.getWorldObj().getTileEntity(
+                hostTile.xCoord + orientation.offsetX,
+                hostTile.yCoord + orientation.offsetY,
+                hostTile.zCoord + orientation.offsetZ);
     }
 
     /**
@@ -236,9 +223,7 @@ public abstract class HandlerEssentiaStorageBusBase implements IMEInventoryHandl
     protected void postAlterationToHostGrid(final Iterable<IAEFluidStack> change) {
         try {
             if (this.partStorageBus.getActionableNode().isActive()) {
-                this.partStorageBus
-                        .getGridBlock()
-                        .getStorageGrid()
+                this.partStorageBus.getGridBlock().getStorageGrid()
                         .postAlterationOfStoredItems(StorageChannel.FLUIDS, change, this.machineSource);
             }
         } catch (Exception e) {
@@ -247,8 +232,8 @@ public abstract class HandlerEssentiaStorageBusBase implements IMEInventoryHandl
     }
 
     /**
-     * Is the specified fluid allowed to be placed in the container? This does
-     * not take into consideration the amount currently in the container.
+     * Is the specified fluid allowed to be placed in the container? This does not take into consideration the amount
+     * currently in the container.
      */
     @Override
     public abstract boolean canAccept(final IAEFluidStack fluidStack);
@@ -257,8 +242,8 @@ public abstract class HandlerEssentiaStorageBusBase implements IMEInventoryHandl
      * Extracts essentia gas from the attached source.
      */
     @Override
-    public abstract IAEFluidStack extractItems(
-            final IAEFluidStack request, final Actionable mode, final BaseActionSource source);
+    public abstract IAEFluidStack extractItems(final IAEFluidStack request, final Actionable mode,
+            final BaseActionSource source);
 
     /**
      * Returns the access restrictions, if any, imposed on the storage bus.
@@ -299,12 +284,11 @@ public abstract class HandlerEssentiaStorageBusBase implements IMEInventoryHandl
     }
 
     /**
-     * Inserts essentia into the source.
-     * Returns the number of items not added.
+     * Inserts essentia into the source. Returns the number of items not added.
      */
     @Override
-    public abstract IAEFluidStack injectItems(
-            final IAEFluidStack input, final Actionable mode, final BaseActionSource source);
+    public abstract IAEFluidStack injectItems(final IAEFluidStack input, final Actionable mode,
+            final BaseActionSource source);
 
     /**
      * Checks if the specified is prioritized.
@@ -324,8 +308,7 @@ public abstract class HandlerEssentiaStorageBusBase implements IMEInventoryHandl
 
         // Is the aspect prioritized?
         try {
-            return this.filteredAspects.contains(
-                    ((GaseousEssentia) fluidStack.getFluidStack().getFluid()).getAspect());
+            return this.filteredAspects.contains(((GaseousEssentia) fluidStack.getFluidStack().getFluid()).getAspect());
         } catch (Exception e) {
             return false;
         }
@@ -350,8 +333,7 @@ public abstract class HandlerEssentiaStorageBusBase implements IMEInventoryHandl
     /**
      * Sets if the storage bus filter mode is inverted or not.
      *
-     * @param isInverted
-     * True = Blacklist, False = Whitelist.
+     * @param isInverted True = Blacklist, False = Whitelist.
      */
     public void setInverted(final boolean isInverted) {
         this.inverted = isInverted;

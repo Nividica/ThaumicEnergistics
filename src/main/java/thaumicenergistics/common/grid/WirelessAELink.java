@@ -1,5 +1,16 @@
 package thaumicenergistics.common.grid;
 
+import java.util.ArrayList;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumicenergistics.api.grid.IEssentiaGrid;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.IGrid;
@@ -18,14 +29,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.me.GridException;
 import appeng.tile.misc.TileSecurity;
 import appeng.tile.networking.TileWireless;
-import java.util.ArrayList;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumicenergistics.api.grid.IEssentiaGrid;
-import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 
 /**
  * Provides wireless access to a ME network.
@@ -34,6 +37,7 @@ import thaumicenergistics.api.grid.IMEEssentiaMonitor;
  *
  */
 public abstract class WirelessAELink implements IStorageMonitorable {
+
     /**
      * The player who owns this link.
      */
@@ -71,8 +75,7 @@ public abstract class WirelessAELink implements IStorageMonitorable {
     }
 
     /**
-     * Checks if the AP at the specified location and has the specified range,
-     * is close enough to communicate with.
+     * Checks if the AP at the specified location and has the specified range, is close enough to communicate with.
      *
      * @param APLocation
      * @param APRange
@@ -82,13 +85,8 @@ public abstract class WirelessAELink implements IStorageMonitorable {
      * @param z
      * @return
      */
-    private static boolean isAPInRange(
-            final DimensionalCoord APLocation,
-            final double APRange,
-            final World world,
-            final int x,
-            final int y,
-            final int z) {
+    private static boolean isAPInRange(final DimensionalCoord APLocation, final double APRange, final World world,
+            final int x, final int y, final int z) {
         // Is the AP in the same world?
         if (!APLocation.isInWorld(world)) {
             return false;
@@ -109,8 +107,8 @@ public abstract class WirelessAELink implements IStorageMonitorable {
      * @param grid
      * @return
      */
-    private static ArrayList<IWirelessAccessPoint> locateAPsInRange(
-            final World world, final int x, final int y, final int z, final IGrid grid) {
+    private static ArrayList<IWirelessAccessPoint> locateAPsInRange(final World world, final int x, final int y,
+            final int z, final IGrid grid) {
         // Get all AP's on the grid
         IMachineSet accessPoints = grid.getMachines(TileWireless.class);
         if (accessPoints.isEmpty()) {
@@ -146,8 +144,8 @@ public abstract class WirelessAELink implements IStorageMonitorable {
      * @param z
      * @return
      */
-    protected static double getSquaredDistanceFromAP(
-            final DimensionalCoord locationAP, final int x, final int y, final int z) {
+    protected static double getSquaredDistanceFromAP(final DimensionalCoord locationAP, final int x, final int y,
+            final int z) {
         if (locationAP == null) {
             return Double.MAX_VALUE;
         }
@@ -169,8 +167,8 @@ public abstract class WirelessAELink implements IStorageMonitorable {
      * @param encryptionKey
      * @return Null on error, list of AP's in range otherwise.
      */
-    public static ArrayList<IWirelessAccessPoint> locateAPsInRange(
-            final World world, final int x, final int y, final int z, final String encryptionKey) {
+    public static ArrayList<IWirelessAccessPoint> locateAPsInRange(final World world, final int x, final int y,
+            final int z, final String encryptionKey) {
         // Get the encryption key
         long encryptionValue;
         try {
@@ -211,8 +209,8 @@ public abstract class WirelessAELink implements IStorageMonitorable {
      * @param encryptionKey
      * @return Null on error, list of AP's in range otherwise.
      */
-    public static ArrayList<IWirelessAccessPoint> locateAPsInRangeOfPlayer(
-            final EntityPlayer player, final String encryptionKey) {
+    public static ArrayList<IWirelessAccessPoint> locateAPsInRangeOfPlayer(final EntityPlayer player,
+            final String encryptionKey) {
         return WirelessAELink.locateAPsInRange(
                 player.worldObj,
                 (int) Math.floor(player.posX),
@@ -392,8 +390,7 @@ public abstract class WirelessAELink implements IStorageMonitorable {
 
         try {
             // Get the storage grid
-            IStorageGrid storageGrid =
-                    this.accessPoint.getActionableNode().getGrid().getCache(IStorageGrid.class);
+            IStorageGrid storageGrid = this.accessPoint.getActionableNode().getGrid().getCache(IStorageGrid.class);
 
             // Return the monitor
             return storageGrid.getFluidInventory();
@@ -413,8 +410,7 @@ public abstract class WirelessAELink implements IStorageMonitorable {
 
         try {
             // Get the storage grid
-            IStorageGrid storageGrid =
-                    this.accessPoint.getActionableNode().getGrid().getCache(IStorageGrid.class);
+            IStorageGrid storageGrid = this.accessPoint.getActionableNode().getGrid().getCache(IStorageGrid.class);
 
             // Return the monitor
             return storageGrid.getItemInventory();

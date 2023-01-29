@@ -1,9 +1,9 @@
 package thaumicenergistics.common.features;
 
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import java.util.ArrayList;
+
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -19,6 +19,8 @@ import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 
 /**
  * {@link PartEssentiaImportBus}, {@link PartEssentiaExportBus}, and {@link PartEssentiaStorageBus} feature.
@@ -58,8 +60,7 @@ public class FeatureEssentiaIOBuses extends ThEThaumcraftResearchFeature {
         // My items
         ItemStack DiffusionCore = ThEApi.instance().items().DiffusionCore.getStack();
         ItemStack CoalescenceCore = ThEApi.instance().items().CoalescenceCore.getStack();
-        ItemStack EssentiaStorageBus =
-                ThEApi.instance().parts().Essentia_StorageBus.getStack();
+        ItemStack EssentiaStorageBus = ThEApi.instance().parts().Essentia_StorageBus.getStack();
 
         // Set Storage Bus aspects
         AspectList storageAspectList = new AspectList();
@@ -68,33 +69,18 @@ public class FeatureEssentiaIOBuses extends ThEThaumcraftResearchFeature {
         storageAspectList.add(Aspect.WATER, 1);
 
         // Storage Bus recipe
-        Object[] recipeStorageBus = new Object[] {
-            true,
-            "DFC",
-            "IWI",
-            'D',
-            DiffusionCore,
-            'C',
-            CoalescenceCore,
-            'I',
-            cdi.IronIngot,
-            'F',
-            cdi.FilterTube,
-            'W',
-            cdi.WardedGlass
-        };
+        Object[] recipeStorageBus = new Object[] { true, "DFC", "IWI", 'D', DiffusionCore, 'C', CoalescenceCore, 'I',
+                cdi.IronIngot, 'F', cdi.FilterTube, 'W', cdi.WardedGlass };
 
         // Register the storage bus
-        RecipeRegistry.PART_STORAGE_BUS = ThaumcraftApi.addArcaneCraftingRecipe(
-                this.researchKey, EssentiaStorageBus, storageAspectList, recipeStorageBus);
+        RecipeRegistry.PART_STORAGE_BUS = ThaumcraftApi
+                .addArcaneCraftingRecipe(this.researchKey, EssentiaStorageBus, storageAspectList, recipeStorageBus);
 
         // Is import and export enabled?
         if (this.isImportExportEnabled) {
             // My items
-            ItemStack EssentiaImportBus =
-                    ThEApi.instance().parts().Essentia_ImportBus.getStack();
-            ItemStack EssentiaExportBus =
-                    ThEApi.instance().parts().Essentia_ExportBus.getStack();
+            ItemStack EssentiaImportBus = ThEApi.instance().parts().Essentia_ImportBus.getStack();
+            ItemStack EssentiaExportBus = ThEApi.instance().parts().Essentia_ExportBus.getStack();
 
             // Set IO Bus aspects
             AspectList ioAspectList = new AspectList();
@@ -103,22 +89,20 @@ public class FeatureEssentiaIOBuses extends ThEThaumcraftResearchFeature {
             ioAspectList.add(Aspect.WATER, 1);
 
             // Import Bus recipe
-            Object[] recipeImportBus = new Object[] {
-                "JDJ", "IFI", 'J', cdi.WardedJar, 'D', DiffusionCore, 'I', cdi.IronIngot, 'F', cdi.FilterTube
-            };
+            Object[] recipeImportBus = new Object[] { "JDJ", "IFI", 'J', cdi.WardedJar, 'D', DiffusionCore, 'I',
+                    cdi.IronIngot, 'F', cdi.FilterTube };
 
             // Export Bus recipe
-            Object[] recipeExportBus = new Object[] {
-                "JCJ", "IFI", 'J', cdi.WardedJar, 'C', CoalescenceCore, 'I', cdi.IronIngot, 'F', cdi.FilterTube
-            };
+            Object[] recipeExportBus = new Object[] { "JCJ", "IFI", 'J', cdi.WardedJar, 'C', CoalescenceCore, 'I',
+                    cdi.IronIngot, 'F', cdi.FilterTube };
 
             // Register Import Bus
-            RecipeRegistry.PART_IMPORT_BUS = ThaumcraftApi.addArcaneCraftingRecipe(
-                    this.researchKey, EssentiaImportBus, ioAspectList, recipeImportBus);
+            RecipeRegistry.PART_IMPORT_BUS = ThaumcraftApi
+                    .addArcaneCraftingRecipe(this.researchKey, EssentiaImportBus, ioAspectList, recipeImportBus);
 
             // Register Export Bus
-            RecipeRegistry.PART_EXPORT_BUS = ThaumcraftApi.addArcaneCraftingRecipe(
-                    this.researchKey, EssentiaExportBus, ioAspectList, recipeExportBus);
+            RecipeRegistry.PART_EXPORT_BUS = ThaumcraftApi
+                    .addArcaneCraftingRecipe(this.researchKey, EssentiaExportBus, ioAspectList, recipeExportBus);
         }
     }
 
@@ -160,8 +144,8 @@ public class FeatureEssentiaIOBuses extends ThEThaumcraftResearchFeature {
 
         // Create the IO research
         ResearchTypes.IO.createResearchItem(ioAspectList, ResearchRegistry.COMPLEXITY_MEDIUM, ioIcon, ioPages);
-        ResearchTypes.IO.researchItem.setParents(
-                this.getFirstValidParentKey(false), PseudoResearchTypes.TUBEFILTER.getKey());
+        ResearchTypes.IO.researchItem
+                .setParents(this.getFirstValidParentKey(false), PseudoResearchTypes.TUBEFILTER.getKey());
         ResearchTypes.IO.researchItem.setParentsHidden("TUBEFILTER");
         ResearchTypes.IO.researchItem.setConcealed();
         ResearchTypes.IO.researchItem.registerResearchItem();

@@ -1,18 +1,20 @@
 package thaumicenergistics.client.render;
 
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.registries.Renderers;
 import thaumicenergistics.common.tiles.abstraction.TileProviderBase;
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Renders the providers.
@@ -55,12 +57,7 @@ public abstract class RenderBlockProviderBase implements ISimpleBlockRenderingHa
      * @param texture
      * @param glowAmount
      */
-    private void renderFaces(
-            final IBlockAccess world,
-            final int x,
-            final int y,
-            final int z,
-            final IIcon texture,
+    private void renderFaces(final IBlockAccess world, final int x, final int y, final int z, final IIcon texture,
             final int glowAmount) {
         Tessellator tessellator = Tessellator.instance;
 
@@ -75,8 +72,12 @@ public abstract class RenderBlockProviderBase implements ISimpleBlockRenderingHa
 
         for (ForgeDirection face : FACES) {
             // Calculate the brightness
-            tessellator.setBrightness(world.getLightBrightnessForSkyBlocks(
-                    x + face.offsetX, y + face.offsetY, z - face.offsetZ, glowAmount));
+            tessellator.setBrightness(
+                    world.getLightBrightnessForSkyBlocks(
+                            x + face.offsetX,
+                            y + face.offsetY,
+                            z - face.offsetZ,
+                            glowAmount));
 
             switch (face) {
                 case DOWN:
@@ -132,8 +133,8 @@ public abstract class RenderBlockProviderBase implements ISimpleBlockRenderingHa
      * Renders the provider in the inventory.
      */
     @Override
-    public final void renderInventoryBlock(
-            final Block block, final int metadata, final int modelId, final RenderBlocks renderer) {
+    public final void renderInventoryBlock(final Block block, final int metadata, final int modelId,
+            final RenderBlocks renderer) {
         // Get the tessellator instance
         Tessellator tessellator = Tessellator.instance;
 
@@ -173,14 +174,8 @@ public abstract class RenderBlockProviderBase implements ISimpleBlockRenderingHa
     }
 
     @Override
-    public final boolean renderWorldBlock(
-            final IBlockAccess world,
-            final int x,
-            final int y,
-            final int z,
-            final Block block,
-            final int modelId,
-            final RenderBlocks renderer) {
+    public final boolean renderWorldBlock(final IBlockAccess world, final int x, final int y, final int z,
+            final Block block, final int modelId, final RenderBlocks renderer) {
         // Get the tessellator
         Tessellator tessellator = Tessellator.instance;
 

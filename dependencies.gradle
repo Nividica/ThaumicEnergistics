@@ -28,5 +28,5 @@ dependencies {
         transitive = false
     }
 
-    runtime("com.github.GTNewHorizons:Baubles:1.0.1.14:dev")
+    runtimeOnly("com.github.GTNewHorizons:Baubles:1.0.1.14:dev")
 }

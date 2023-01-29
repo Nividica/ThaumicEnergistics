@@ -1,15 +1,16 @@
 package thaumicenergistics.common.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.registries.Renderers;
 import thaumicenergistics.common.tiles.TileInfusionProvider;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileInfusionProvider} block.

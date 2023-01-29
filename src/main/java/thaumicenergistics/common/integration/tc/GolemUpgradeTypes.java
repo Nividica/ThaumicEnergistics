@@ -3,6 +3,7 @@ package thaumicenergistics.common.integration.tc;
 import javax.annotation.Nullable;
 
 public enum GolemUpgradeTypes {
+
     Air(0),
     Earth(1),
     Fire(2),

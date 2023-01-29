@@ -1,5 +1,11 @@
 package thaumicenergistics.common.inventory;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.FluidStack;
+
+import thaumicenergistics.common.fluids.GaseousEssentia;
+import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
@@ -7,12 +13,8 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.tile.misc.TileCondenser;
+
 import com.google.common.collect.ImmutableList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.FluidStack;
-import thaumicenergistics.common.fluids.GaseousEssentia;
-import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
-import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
 /**
  * Handles interaction between {@link PartEssentiaStorageBus} and {@link TileCondenser}.
@@ -60,8 +62,8 @@ public class HandlerEssentiaStorageBusCondenser extends HandlerEssentiaStorageBu
     }
 
     @Override
-    public IAEFluidStack extractItems(
-            final IAEFluidStack request, final Actionable mode, final BaseActionSource source) {
+    public IAEFluidStack extractItems(final IAEFluidStack request, final Actionable mode,
+            final BaseActionSource source) {
         // Nothing comes out of the condenser.
         return null;
     }
@@ -100,8 +102,9 @@ public class HandlerEssentiaStorageBusCondenser extends HandlerEssentiaStorageBu
 
         // Update the grid so that it doesn't thing we have stored the voided amount.
         this.postAlterationToHostGrid(
-                ImmutableList.of(AEApi.instance().storage().createFluidStack(new FluidStack(input.getFluid(), (int)
-                        -input.getStackSize()))));
+                ImmutableList.of(
+                        AEApi.instance().storage()
+                                .createFluidStack(new FluidStack(input.getFluid(), (int) -input.getStackSize()))));
 
         // All fluid accepted.
         return null;

@@ -1,6 +1,7 @@
 package thaumicenergistics.common.features;
 
 import net.minecraft.util.ResourceLocation;
+
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchItem;
@@ -21,14 +22,16 @@ public class FeatureThaumicEnergisticsResearch extends ThEThaumcraftResearchFeat
     /**
      * Research background image
      */
-    private static final ResourceLocation RESEARCH_BACKGROUND =
-            new ResourceLocation(ThaumicEnergistics.MOD_ID, "textures/research/Research.Background.png");
+    private static final ResourceLocation RESEARCH_BACKGROUND = new ResourceLocation(
+            ThaumicEnergistics.MOD_ID,
+            "textures/research/Research.Background.png");
 
     /**
      * Research tab image
      */
-    private static final ResourceLocation TAB_ICON =
-            new ResourceLocation(ThaumicEnergistics.MOD_ID, "textures/research/tab.icon.png");
+    private static final ResourceLocation TAB_ICON = new ResourceLocation(
+            ThaumicEnergistics.MOD_ID,
+            "textures/research/tab.icon.png");
 
     public FeatureThaumicEnergisticsResearch() {
         super(ResearchTypes.BASIC.getKey());
@@ -73,8 +76,8 @@ public class FeatureThaumicEnergisticsResearch extends ThEThaumcraftResearchFeat
                 0,
                 0,
                 FeatureThaumicEnergisticsResearch.TAB_ICON);
-        ResearchTypes.BASIC.researchItem.setPages(
-                new ResearchPage[] {new ResearchPage(ResearchTypes.BASIC.getPageName(1))});
+        ResearchTypes.BASIC.researchItem
+                .setPages(new ResearchPage[] { new ResearchPage(ResearchTypes.BASIC.getPageName(1)) });
         ResearchTypes.BASIC.researchItem.setRound().setAutoUnlock();
         ResearchTypes.BASIC.researchItem.registerResearchItem();
     }

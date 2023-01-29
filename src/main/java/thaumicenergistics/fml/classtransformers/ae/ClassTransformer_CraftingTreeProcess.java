@@ -2,6 +2,7 @@ package thaumicenergistics.fml.classtransformers.ae;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
+
 import thaumicenergistics.fml.AClassTransformer;
 
 /**
@@ -17,8 +18,8 @@ public class ClassTransformer_CraftingTreeProcess extends AClassTransformer {
     }
 
     private void transformConstructor(final MethodNode method) {
-        int opSequence[] =
-                new int[] {Opcodes.ILOAD, Opcodes.PUTFIELD, Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL, Opcodes.ASTORE};
+        int opSequence[] = new int[] { Opcodes.ILOAD, Opcodes.PUTFIELD, Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL,
+                Opcodes.ASTORE };
         AbstractInsnNode insertionPoint = this.findSequence(method.instructions, opSequence, true);
 
         // Insert this.world = world
@@ -31,8 +32,12 @@ public class ClassTransformer_CraftingTreeProcess extends AClassTransformer {
         instructionList.add(new VarInsnNode(Opcodes.ALOAD, 6));
 
         // this.world = world
-        instructionList.add(new FieldInsnNode(
-                Opcodes.PUTFIELD, "appeng/crafting/CraftingTreeProcess", "world", "Lnet/minecraft/world/World;"));
+        instructionList.add(
+                new FieldInsnNode(
+                        Opcodes.PUTFIELD,
+                        "appeng/crafting/CraftingTreeProcess",
+                        "world",
+                        "Lnet/minecraft/world/World;"));
 
         // Insert the new code
         method.instructions.insert(insertionPoint, instructionList);

@@ -1,9 +1,8 @@
 package thaumicenergistics.client.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -12,7 +11,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.config.ConfigItems;
 import thaumicenergistics.api.storage.IInventoryUpdateReceiver;
@@ -26,6 +27,8 @@ import thaumicenergistics.common.network.packet.server.Packet_S_DistillationEnco
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
 import thaumicenergistics.common.utils.ThEUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileDistillationPatternEncoder} GUI
@@ -35,6 +38,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  */
 @SideOnly(Side.CLIENT)
 public class GuiDistillationPatternEncoder extends ThEBaseGui implements IInventoryUpdateReceiver {
+
     /**
      * Gui size.
      */
@@ -90,8 +94,8 @@ public class GuiDistillationPatternEncoder extends ThEBaseGui implements IInvent
      */
     private boolean sourceItemDirty = false;
 
-    public GuiDistillationPatternEncoder(
-            final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public GuiDistillationPatternEncoder(final EntityPlayer player, final World world, final int x, final int y,
+            final int z) {
         // Call super
         super(new ContainerDistillationPatternEncoder(player, world, x, y, z));
 
@@ -182,11 +186,9 @@ public class GuiDistillationPatternEncoder extends ThEBaseGui implements IInvent
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
 
         // Calculate the position and rotation of the thaumometer
-        float th_PosX = (float) this.guiLeft
-                + ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_X
+        float th_PosX = (float) this.guiLeft + ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_X
                 + GuiDistillationPatternEncoder.ITEM_HALF_SIZE;
-        float th_PosY = this.guiTop
-                + (ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_Y - 0.25f)
+        float th_PosY = this.guiTop + (ContainerDistillationPatternEncoder.SLOT_SOURCE_ITEM_POS_Y - 0.25f)
                 + GuiDistillationPatternEncoder.ITEM_HALF_SIZE;
         float th_Rotation = (System.currentTimeMillis() % 36000) * 0.02f;
         float th_ScaleOffset = (float) Math.sin(th_Rotation * 0.15f) * 0.1f;
@@ -227,7 +229,10 @@ public class GuiDistillationPatternEncoder extends ThEBaseGui implements IInvent
     protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
         // Draw the title
         this.fontRendererObj.drawString(
-                this.title, GuiDistillationPatternEncoder.TITLE_POS_X, GuiDistillationPatternEncoder.TITLE_POS_Y, 0);
+                this.title,
+                GuiDistillationPatternEncoder.TITLE_POS_X,
+                GuiDistillationPatternEncoder.TITLE_POS_Y,
+                0);
 
         // Check the source item
         if (this.sourceItemDirty) {
@@ -240,7 +245,7 @@ public class GuiDistillationPatternEncoder extends ThEBaseGui implements IInvent
             EnumGuiParticles.Orb.prepareDraw();
 
             // Draw each
-            for (Iterator<GuiParticleAnimator> iterator = this.particles.iterator(); iterator.hasNext(); ) {
+            for (Iterator<GuiParticleAnimator> iterator = this.particles.iterator(); iterator.hasNext();) {
                 if (!iterator.next().draw(this, false)) {
                     // Remove if done.
                     iterator.remove();
@@ -259,16 +264,15 @@ public class GuiDistillationPatternEncoder extends ThEBaseGui implements IInvent
 
         // Was the mouse clicked over a widget?
         for (Slot slot : this.deContainer.slotSourceAspects) {
-            if (slot.getHasStack()
-                    && ThEGuiHelper.INSTANCE.isPointInGuiRegion(
-                            slot.yDisplayPosition,
-                            slot.xDisplayPosition,
-                            18,
-                            18,
-                            mouseX,
-                            mouseY,
-                            this.guiLeft,
-                            this.guiTop)) {
+            if (slot.getHasStack() && ThEGuiHelper.INSTANCE.isPointInGuiRegion(
+                    slot.yDisplayPosition,
+                    slot.xDisplayPosition,
+                    18,
+                    18,
+                    mouseX,
+                    mouseY,
+                    this.guiLeft,
+                    this.guiTop)) {
                 // Play clicky sound
                 ThEUtils.playClientSound(null, "gui.button.press");
                 break;

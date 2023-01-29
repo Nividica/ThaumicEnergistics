@@ -3,6 +3,7 @@ package thaumicenergistics.common.items;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ThEStrings;
 
@@ -13,6 +14,7 @@ import thaumicenergistics.common.registries.ThEStrings;
  *
  */
 public class ItemStorageCasing extends Item {
+
     public ItemStorageCasing() {
         this.setMaxDamage(0);
 

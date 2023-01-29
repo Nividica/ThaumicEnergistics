@@ -1,12 +1,15 @@
 package thaumicenergistics.fml;
 
 import java.util.HashMap;
+
 import net.minecraft.launchwrapper.IClassTransformer;
+
 import thaumicenergistics.fml.classtransformers.ae.ClassTransformer_CraftingTreeProcess;
 import thaumicenergistics.fml.classtransformers.ae.ClassTransformer_GuiMEMonitorable;
 import thaumicenergistics.fml.classtransformers.tc.*;
 
 public class ASMTransformer implements IClassTransformer {
+
     /**
      * Map of all transformers<br>
      * Class name -> Transformer

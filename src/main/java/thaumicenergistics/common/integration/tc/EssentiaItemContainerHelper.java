@@ -1,12 +1,11 @@
 package thaumicenergistics.common.integration.tc;
 
-import com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Optional;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
@@ -27,6 +26,11 @@ import thaumicenergistics.common.items.ItemBlockEssentiaVibrationChamber;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
 
+import com.djgiannuzz.thaumcraftneiplugin.items.ItemAspect;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional;
+
 /**
  * Helper class for working with Thaumcraft item essentia containers.
  *
@@ -34,6 +38,7 @@ import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
  *
  */
 public final class EssentiaItemContainerHelper {
+
     public enum AspectItemType {
         /**
          * Unknown item, or non-whitelisted container
@@ -217,15 +222,14 @@ public final class EssentiaItemContainerHelper {
     }
 
     /**
-     * Extracts essentia from the specified container using the
-     * aspect and amount specified by the AspectStack.
+     * Extracts essentia from the specified container using the aspect and amount specified by the AspectStack.
      *
      * @param container
      * @param aspectStack
      * @return
      */
-    public ImmutablePair<Integer, ItemStack> extractFromContainer(
-            final ItemStack container, final IAspectStack aspectStack) {
+    public ImmutablePair<Integer, ItemStack> extractFromContainer(final ItemStack container,
+            final IAspectStack aspectStack) {
         // Ensure it is a container
         if (this.getItemType(container) != AspectItemType.EssentiaContainer) {
             return null;
@@ -315,8 +319,8 @@ public final class EssentiaItemContainerHelper {
     }
 
     /**
-     * Extracts essentia from the specified container using the
-     * aspect in the container, and the amount(in essentia units).
+     * Extracts essentia from the specified container using the aspect in the container, and the amount(in essentia
+     * units).
      *
      * @param container
      * @param drainAmount_EU
@@ -336,8 +340,7 @@ public final class EssentiaItemContainerHelper {
     }
 
     /**
-     * Gets the aspect on the label.
-     * Can return null.
+     * Gets the aspect on the label. Can return null.
      *
      * @param label
      * @return
@@ -379,8 +382,7 @@ public final class EssentiaItemContainerHelper {
     }
 
     /**
-     * Gets an {@link AspectStack} representing the essentia and
-     * amount in the container.
+     * Gets an {@link AspectStack} representing the essentia and amount in the container.
      *
      * @param container
      * @return AspectStack can read container, null otherwise.
@@ -425,8 +427,7 @@ public final class EssentiaItemContainerHelper {
     }
 
     /**
-     * Gets the information about the container as it was registered to the
-     * whitelist.
+     * Gets the information about the container as it was registered to the whitelist.
      *
      * @param item
      * @param metadata
@@ -442,8 +443,7 @@ public final class EssentiaItemContainerHelper {
     }
 
     /**
-     * Gets the information about the container as it was registered to the
-     * whitelist.
+     * Gets the information about the container as it was registered to the whitelist.
      *
      * @param itemstack
      * @return
@@ -593,8 +593,8 @@ public final class EssentiaItemContainerHelper {
      * @param aspectStack
      * @return The amount that was inject, and the new container.
      */
-    public ImmutablePair<Integer, ItemStack> injectIntoContainer(
-            final ItemStack container, final IAspectStack aspectStack) {
+    public ImmutablePair<Integer, ItemStack> injectIntoContainer(final ItemStack container,
+            final IAspectStack aspectStack) {
         // Is the item an essentia container?
         if (this.getItemType(container) != AspectItemType.EssentiaContainer) {
             return null;
@@ -770,16 +770,17 @@ public final class EssentiaItemContainerHelper {
 
         // Vibration chamber
         this.perms.addEssentiaContainerItemToTransportPermissions(
-                ItemBlockEssentiaVibrationChamber.class, TileEVCBase.MAX_ESSENTIA_STORED, 0, true);
+                ItemBlockEssentiaVibrationChamber.class,
+                TileEVCBase.MAX_ESSENTIA_STORED,
+                0,
+                true);
     }
 
     /**
      * Sets the specified jar's label.
      *
      * @param jar
-     * @param OverrideAspect
-     * Override existing label and use this aspect. Can be null to use existing
-     * label.
+     * @param OverrideAspect Override existing label and use this aspect. Can be null to use existing label.
      * @return The specified itemstack.
      */
     public ItemStack setJarLabel(final ItemStack jar, final Aspect OverrideAspect) {
@@ -813,8 +814,7 @@ public final class EssentiaItemContainerHelper {
     /**
      * Sets a labels aspect
      *
-     * @param label
-     * The itemstack is modified.
+     * @param label  The itemstack is modified.
      * @param aspect
      */
     public void setLabelAspect(final ItemStack label, final Aspect aspect) {

@@ -1,26 +1,11 @@
 package thaumicenergistics.common.container;
 
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.PlayerSource;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.container.ContainerOpenContext;
-import appeng.container.implementations.ContainerCraftAmount;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.annotation.Nonnull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,6 +16,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntity;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
@@ -49,6 +35,23 @@ import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
 import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.PlayerSource;
+import appeng.api.networking.storage.IBaseMonitor;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
+import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerCraftAmount;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartArcaneCraftingTerminal} container.
@@ -58,6 +61,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  */
 public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInventory
         implements IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingIssuerContainer {
+
     /**
      * Holds a single aspect cost for the current recipe.
      *
@@ -65,6 +69,7 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
      *
      */
     public class ArcaneCrafingCost {
+
         /**
          * How much vis does the recipe require?
          */
@@ -142,8 +147,7 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     public final PartArcaneCraftingTerminal terminal;
 
     /**
-     * Network source representing the player who is interacting with the
-     * container.
+     * Network source representing the player who is interacting with the container.
      */
     private final PlayerSource playerSource;
 
@@ -280,17 +284,19 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
 
         // Create the view slots
         SlotRestrictive viewSlot = null;
-        for (int viewSlotID = PartArcaneCraftingTerminal.VIEW_SLOT_MIN;
-                viewSlotID <= PartArcaneCraftingTerminal.VIEW_SLOT_MAX;
-                viewSlotID++) {
+        for (int viewSlotID = PartArcaneCraftingTerminal.VIEW_SLOT_MIN; viewSlotID
+                <= PartArcaneCraftingTerminal.VIEW_SLOT_MAX; viewSlotID++) {
             // Calculate the y position
             int row = viewSlotID - PartArcaneCraftingTerminal.VIEW_SLOT_MIN;
-            int yPos =
-                    ContainerPartArcaneCraftingTerminal.VIEW_SLOT_YPOS + (row * ContainerWithPlayerInventory.SLOT_SIZE);
+            int yPos = ContainerPartArcaneCraftingTerminal.VIEW_SLOT_YPOS
+                    + (row * ContainerWithPlayerInventory.SLOT_SIZE);
 
             // Create the slot
-            viewSlot =
-                    new SlotRestrictive(terminal, viewSlotID, ContainerPartArcaneCraftingTerminal.VIEW_SLOT_XPOS, yPos);
+            viewSlot = new SlotRestrictive(
+                    terminal,
+                    viewSlotID,
+                    ContainerPartArcaneCraftingTerminal.VIEW_SLOT_XPOS,
+                    yPos);
 
             // Add the slot
             this.addSlotToContainer(viewSlot);
@@ -325,10 +331,8 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
             this.addSlotToContainer(armorSlot);
 
             /**
-             * Notes about the hidden slots
-             * I hate this, but I have tried everything I can think of, and the
-             * equipped armor will not change immediately unless
-             * the notification comes from the open container, this container.
+             * Notes about the hidden slots I hate this, but I have tried everything I can think of, and the equipped
+             * armor will not change immediately unless the notification comes from the open container, this container.
              */
             // Create the 'hidden'slot
             armorSlot = new SlotArmor(player.inventory, 36 + (3 - armorIndex), 0, -1000, armorIndex, false);
@@ -378,11 +382,9 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     }
 
     /**
-     * Attempts to clear the crafting grid by placing the items
-     * back in the ME network.
+     * Attempts to clear the crafting grid by placing the items back in the ME network.
      *
-     * @param sendUpdate
-     * If true, any changes made are sent across the network
+     * @param sendUpdate If true, any changes made are sent across the network
      * @return
      */
     private boolean clearCraftingGrid(final boolean sendUpdate) {
@@ -437,8 +439,7 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     }
 
     /**
-     * Handles automatically crafting items when the crafting
-     * output slot is shift+clicked
+     * Handles automatically crafting items when the crafting output slot is shift+clicked
      *
      * @param player
      */
@@ -455,12 +456,11 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
         // Make a copy of it
         ItemStack slotStackOriginal = resultStack.copy();
 
-        for (autoCraftCounter = slotStackOriginal.stackSize;
-                autoCraftCounter <= 64;
-                autoCraftCounter += slotStackOriginal.stackSize) {
+        for (autoCraftCounter = slotStackOriginal.stackSize; autoCraftCounter
+                <= 64; autoCraftCounter += slotStackOriginal.stackSize) {
             // Attempt to merge with the player inventory
-            didMerge =
-                    (this.mergeSlotWithPlayerInventory(resultStack) || this.mergeSlotWithHotbarInventory(resultStack));
+            didMerge = (this.mergeSlotWithPlayerInventory(resultStack)
+                    || this.mergeSlotWithHotbarInventory(resultStack));
 
             // Were we able to merge?
             if (didMerge) {
@@ -520,7 +520,10 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
 
         // Is there a matching recipe?
         IArcaneRecipe matchingRecipe = ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult(
-                this.terminal, 0, ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, this.player);
+                this.terminal,
+                0,
+                ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE,
+                this.player);
 
         if (matchingRecipe != null) {
             // Found a match, validate it.
@@ -544,16 +547,15 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
                 ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_SIZE);
 
         // Load the inventory based on what is in the part's inventory
-        for (int slotIndex = 0;
-                slotIndex < (ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE);
-                slotIndex++) {
+        for (int slotIndex = 0; slotIndex
+                < (ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE); slotIndex++) {
             // Set the slot
             craftingInventory.setInventorySlotContents(slotIndex, this.terminal.getStackInSlot(slotIndex));
         }
 
         // Return the result
-        return ContainerPartArcaneCraftingTerminal.CRAFT_MANAGER.findMatchingRecipe(
-                craftingInventory, this.terminal.getWorldObj());
+        return ContainerPartArcaneCraftingTerminal.CRAFT_MANAGER
+                .findMatchingRecipe(craftingInventory, this.terminal.getWorldObj());
     }
 
     /**
@@ -604,9 +606,8 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     }
 
     /**
-     * Attempts to inject an itemstack into the ME network.
-     * Adjusts the stack size of the specified itemstack according to
-     * the results of the merger.
+     * Attempts to inject an itemstack into the ME network. Adjusts the stack size of the specified itemstack according
+     * to the results of the merger.
      *
      * @param itemStack
      * @return True if any amount was merged, False otherwise.
@@ -695,8 +696,7 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     }
 
     /**
-     * Checks if the wand has enough vis to complete the craft.
-     * Takes into consideration the players multiplier.
+     * Checks if the wand has enough vis to complete the craft. Takes into consideration the players multiplier.
      *
      * @param forRecipe
      * @return ItemStack of the result if wand has enough vis, null otherwise.
@@ -708,7 +708,10 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
 
         // Get the cost
         this.requiredAspects = ArcaneRecipeHelper.INSTANCE.getRecipeAspectCost(
-                this.terminal, 0, ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, forRecipe);
+                this.terminal,
+                0,
+                ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE,
+                forRecipe);
 
         // Ensure there is a cost
         if (this.requiredAspects == null) {
@@ -741,8 +744,8 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
             // Do we have a wand?
             if ((wandItem != null) && (wandAspectList != null)) {
                 // Adjust the required amount by the wand modifier
-                requiredVis = (int)
-                        (requiredVis * wandItem.getConsumptionModifier(this.wand, this.player, currentAspect, true));
+                requiredVis = (int) (requiredVis
+                        * wandItem.getConsumptionModifier(this.wand, this.player, currentAspect, true));
 
                 // Does the wand not have enough of vis of this aspect?
                 hasEnough = (wandAspectList.getAmount(currentAspect) >= requiredVis);
@@ -761,7 +764,10 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
         if (hasAll) {
             // Get the result of the recipe.
             return ArcaneRecipeHelper.INSTANCE.getRecipeOutput(
-                    this.terminal, 0, ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE, forRecipe);
+                    this.terminal,
+                    0,
+                    ContainerPartArcaneCraftingTerminal.CRAFTING_GRID_TOTAL_SIZE,
+                    forRecipe);
         }
 
         return null;
@@ -795,8 +801,8 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
         // Send update?
         if (sendModeUpdate) {
             // Send the mode info
-            Packet_C_ArcaneCraftingTerminal.sendModeChange(
-                    this.player, this.cachedSortOrder, this.cachedSortDirection, this.cachedViewMode);
+            Packet_C_ArcaneCraftingTerminal
+                    .sendModeChange(this.player, this.cachedSortOrder, this.cachedSortDirection, this.cachedViewMode);
         }
 
         // Is the monitor null?
@@ -830,8 +836,7 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     }
 
     /**
-     * Changes the Y offset for all slots, except the view slots, in this
-     * container.
+     * Changes the Y offset for all slots, except the view slots, in this container.
      *
      * @param deltaY
      */
@@ -950,7 +955,12 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
 
         // Launch the GUI
         ThEGuiHandler.launchGui(
-                ThEGuiHandler.AUTO_CRAFTING_AMOUNT, player, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+                ThEGuiHandler.AUTO_CRAFTING_AMOUNT,
+                player,
+                te.getWorldObj(),
+                te.xCoord,
+                te.yCoord,
+                te.zCoord);
 
         // Setup the amount container
         if (player.openContainer instanceof ContainerCraftAmount) {
@@ -985,8 +995,7 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     }
 
     /**
-     * A client player is requesting to deposit their held item
-     * into the ME network.
+     * A client player is requesting to deposit their held item into the ME network.
      */
     public void onClientRequestDeposit(final EntityPlayer player, final int mouseButton) {
         // Ensure there is a player & monitor
@@ -1006,8 +1015,8 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
         IAEItemStack toInjectStack = AEApi.instance().storage().createItemStack(playerHolding);
 
         // Was it a right click or wheel movement?
-        boolean depositOne =
-                (mouseButton == ThEGuiHelper.MOUSE_BUTTON_RIGHT) || (mouseButton == ThEGuiHelper.MOUSE_WHEEL_MOTION);
+        boolean depositOne = (mouseButton == ThEGuiHelper.MOUSE_BUTTON_RIGHT)
+                || (mouseButton == ThEGuiHelper.MOUSE_WHEEL_MOTION);
 
         if (depositOne) {
             // Set stack size to 1
@@ -1047,8 +1056,7 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     }
 
     /**
-     * A client has requested that a region(inventory) be deposited into the ME
-     * network.
+     * A client has requested that a region(inventory) be deposited into the ME network.
      *
      * @param player
      * @param slotNumber
@@ -1102,21 +1110,16 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     }
 
     /**
-     * A client player is requesting to extract an item stack out
-     * of the ME network.
+     * A client player is requesting to extract an item stack out of the ME network.
      *
      * @param player
      * @param requestAEStack
      * @param mouseButton
      */
-    public void onClientRequestExtract(
-            final EntityPlayer player,
-            final IAEItemStack requestAEStack,
-            final int mouseButton,
-            final boolean isShiftHeld) {
+    public void onClientRequestExtract(final EntityPlayer player, final IAEItemStack requestAEStack,
+            final int mouseButton, final boolean isShiftHeld) {
         // Safety checks
-        if ((player == null)
-                || (this.monitor == null)
+        if ((player == null) || (this.monitor == null)
                 || (requestAEStack == null)
                 || (requestAEStack.getStackSize() == 0)) {
             return;
@@ -1270,8 +1273,7 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
             Packet_C_ArcaneCraftingTerminal.sendAllNetworkItems(player, fullList);
         } else {
             // Send empty list
-            Packet_C_ArcaneCraftingTerminal.sendAllNetworkItems(
-                    player, AEApi.instance().storage().createItemList());
+            Packet_C_ArcaneCraftingTerminal.sendAllNetworkItems(player, AEApi.instance().storage().createItemList());
         }
     }
 
@@ -1287,8 +1289,7 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     }
 
     /**
-     * Called when a client has requested they swap their equipped armor with
-     * the stored armor.
+     * Called when a client has requested they swap their equipped armor with the stored armor.
      *
      * @param player
      */
@@ -1348,16 +1349,15 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     }
 
     /**
-     * AE API: called when the list updates its contents, this is mostly for
-     * handling power events.
+     * AE API: called when the list updates its contents, this is mostly for handling power events.
      */
     @Override
     public void onListUpdate() {
         // Is the terminal no longer active?
         if (!this.terminal.isActive()) {
             // Send empty list to client
-            Packet_C_ArcaneCraftingTerminal.sendAllNetworkItems(
-                    this.player, AEApi.instance().storage().createItemList());
+            Packet_C_ArcaneCraftingTerminal
+                    .sendAllNetworkItems(this.player, AEApi.instance().storage().createItemList());
         }
     }
 
@@ -1376,9 +1376,7 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
      * Called when the amount of an item on the network changes.
      */
     @Override
-    public void postChange(
-            final IBaseMonitor<IAEItemStack> monitor,
-            final Iterable<IAEItemStack> changes,
+    public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> changes,
             final BaseActionSource actionSource) {
         if (this.monitor == null) {
             return;
@@ -1411,8 +1409,7 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
     }
 
     /**
-     * Attempts to extract an item from the network.
-     * Used when crafting to replenish the crafting grid.
+     * Attempts to extract an item from the network. Used when crafting to replenish the crafting grid.
      *
      * @param itemStack
      * @return
@@ -1513,38 +1510,44 @@ public class ContainerPartArcaneCraftingTerminal extends ContainerWithPlayerInve
             else if (this.slotClickedWasInPlayerInventory(slotNumber)
                     || this.slotClickedWasInHotbarInventory(slotNumber)) {
 
-                // Is the item a valid wand?
-                if (this.wandSlot.isItemValid(slotStack)) {
-                    // Attempt to merge with the wand
-                    didMerge = this.mergeItemStack(
-                            slotStack, this.wandSlot.slotNumber, this.wandSlot.slotNumber + 1, false);
-                }
-
-                // Did we merge?
-                if (!didMerge) {
-                    // Attempt to merge with view cells
-                    didMerge = this.mergeWithViewCells(slotStack);
-
-                    // Did we merge?
-                    if (!didMerge) {
-                        // Attempt to merge with the ME network
-                        didMerge = this.mergeWithMENetwork(slotStack);
+                        // Is the item a valid wand?
+                        if (this.wandSlot.isItemValid(slotStack)) {
+                            // Attempt to merge with the wand
+                            didMerge = this.mergeItemStack(
+                                    slotStack,
+                                    this.wandSlot.slotNumber,
+                                    this.wandSlot.slotNumber + 1,
+                                    false);
+                        }
 
                         // Did we merge?
                         if (!didMerge) {
-                            // Attempt to merge with the crafting grid
-                            didMerge = this.mergeItemStack(
-                                    slotStack, this.firstCraftingSlotNumber, this.lastCraftingSlotNumber + 1, false);
+                            // Attempt to merge with view cells
+                            didMerge = this.mergeWithViewCells(slotStack);
 
                             // Did we merge?
                             if (!didMerge) {
-                                // Attempt to swap hotbar<->player inventory
-                                didMerge = this.swapSlotInventoryHotbar(slotNumber, slotStack);
+                                // Attempt to merge with the ME network
+                                didMerge = this.mergeWithMENetwork(slotStack);
+
+                                // Did we merge?
+                                if (!didMerge) {
+                                    // Attempt to merge with the crafting grid
+                                    didMerge = this.mergeItemStack(
+                                            slotStack,
+                                            this.firstCraftingSlotNumber,
+                                            this.lastCraftingSlotNumber + 1,
+                                            false);
+
+                                    // Did we merge?
+                                    if (!didMerge) {
+                                        // Attempt to swap hotbar<->player inventory
+                                        didMerge = this.swapSlotInventoryHotbar(slotNumber, slotStack);
+                                    }
+                                }
                             }
                         }
                     }
-                }
-            }
             // Was the slot clicked the crafting result?
             else if (slot == this.resultSlot) {
                 // Start the autocrafting loop

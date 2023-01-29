@@ -3,6 +3,7 @@ package thaumicenergistics.implementaion;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import thaumicenergistics.api.IThEItemDescription;
 
 /**
@@ -12,6 +13,7 @@ import thaumicenergistics.api.IThEItemDescription;
  *
  */
 public class ThEItemDescription implements IThEItemDescription {
+
     private Block myBlock = null;
     private Item myItem = null;
     private int itemMeta = 0;

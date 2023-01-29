@@ -1,10 +1,9 @@
 package thaumicenergistics.common.items;
 
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import javax.annotation.Nonnull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,10 +13,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.integration.tc.AspectHooks;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Item used to represent an {@link Aspect}
@@ -26,6 +29,7 @@ import thaumicenergistics.common.integration.tc.AspectHooks;
  *
  */
 public class ItemCraftingAspect extends Item {
+
     private static final String NBTKEY_ASPECT = "Aspect";
 
     public ItemCraftingAspect() {
@@ -123,8 +127,8 @@ public class ItemCraftingAspect extends Item {
     }
 
     @Override
-    public void addInformation(
-            final ItemStack stack, final EntityPlayer player, final List list, final boolean advancedInfo) {
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List list,
+            final boolean advancedInfo) {
         // Call super
         super.addInformation(stack, player, list, advancedInfo);
 
@@ -138,9 +142,9 @@ public class ItemCraftingAspect extends Item {
 
                 ModContainer mod = AspectHooks.aspectToMod.getOrDefault(aspect, null);
                 if (mod != null) {
-                    list.add(EnumChatFormatting.DARK_PURPLE.toString()
-                            + EnumChatFormatting.ITALIC.toString()
-                            + mod.getName());
+                    list.add(
+                            EnumChatFormatting.DARK_PURPLE.toString() + EnumChatFormatting.ITALIC.toString()
+                                    + mod.getName());
                 }
             } else {
                 // Show unknown
@@ -173,13 +177,9 @@ public class ItemCraftingAspect extends Item {
     public void getSubItems(final Item item, final CreativeTabs par2CreativeTabs, final List itemList) {
         // Don't show these
         /*
-        for( Aspect aspect : Aspect.aspects.values() )
-        {
-        	ItemStack stack = new ItemStack( this, 1, 0 );
-        	ItemCraftingAspect.setAspect( stack, aspect );
-        	itemList.add( stack );
-        }
-        */
+         * for( Aspect aspect : Aspect.aspects.values() ) { ItemStack stack = new ItemStack( this, 1, 0 );
+         * ItemCraftingAspect.setAspect( stack, aspect ); itemList.add( stack ); }
+         */
     }
 
     @Override

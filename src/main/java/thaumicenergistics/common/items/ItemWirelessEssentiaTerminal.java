@@ -1,19 +1,22 @@
 package thaumicenergistics.common.items;
 
-import appeng.api.config.PowerMultiplier;
-import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import com.google.common.base.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
 import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ThEStrings;
+import appeng.api.config.PowerMultiplier;
+import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+
+import com.google.common.base.Optional;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 // Note to fix inconsistent hierarchy: Include the COFHCore & IC2 Api's into
 // build path
@@ -24,6 +27,7 @@ import thaumicenergistics.common.registries.ThEStrings;
  *
  */
 public class ItemWirelessEssentiaTerminal extends AEBasePoweredItem implements IThEWirelessEssentiaTerminal {
+
     /**
      * NBT keys
      */
@@ -78,8 +82,8 @@ public class ItemWirelessEssentiaTerminal extends AEBasePoweredItem implements I
         // Ensure the terminal has a tag
         if (wirelessTerminal.hasTagCompound()) {
             // Get the security terminal source key
-            String sourceKey =
-                    wirelessTerminal.getTagCompound().getString(ItemWirelessEssentiaTerminal.NBT_AE_SOURCE_KEY);
+            String sourceKey = wirelessTerminal.getTagCompound()
+                    .getString(ItemWirelessEssentiaTerminal.NBT_AE_SOURCE_KEY);
 
             // Ensure the source is not empty nor null
             if ((sourceKey != null) && (!sourceKey.isEmpty())) {
@@ -145,8 +149,7 @@ public class ItemWirelessEssentiaTerminal extends AEBasePoweredItem implements I
      *
      * @param wirelessTerminal
      * @param sourceKey
-     * @param name
-     * Ignored.
+     * @param name             Ignored.
      */
     @Override
     public void setEncryptionKey(final ItemStack wirelessTerminal, final String sourceKey, final String name) {

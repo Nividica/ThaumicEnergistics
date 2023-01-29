@@ -1,12 +1,15 @@
 package thaumicenergistics.common.container;
 
 import java.util.HashMap;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+
 import thaumicenergistics.common.utils.ThELog;
 
 /**
@@ -16,6 +19,7 @@ import thaumicenergistics.common.utils.ThELog;
  *
  */
 public abstract class TheContainerBase extends Container {
+
     /**
      * Maps slotNumber -> Slot
      */
@@ -59,8 +63,8 @@ public abstract class TheContainerBase extends Container {
 
     /**
      * Detects server side changes to send to the player.<br/>
-     * When modifying slots, return true to set {@code playerMP.isChangingQuantityOnly} to {@code false},
-     * or set it directly with the player argument.
+     * When modifying slots, return true to set {@code playerMP.isChangingQuantityOnly} to {@code false}, or set it
+     * directly with the player argument.
      *
      * @param playerMP
      *

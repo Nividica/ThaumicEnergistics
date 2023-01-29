@@ -1,20 +1,14 @@
 package thaumicenergistics.common.tiles;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.me.GridAccessException;
-import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.container.ContainerEssentiaVibrationChamber;
 import thaumicenergistics.common.integration.IWailaSource;
@@ -23,6 +17,14 @@ import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.me.GridAccessException;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Implements the logical functionality of the E.V.C.
@@ -31,10 +33,9 @@ import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
  *
  */
 public class TileEssentiaVibrationChamber extends TileEVCBase implements IGridTickable, IWailaSource {
-    private static String NBTKEY_TIME_REMAINING = "TRemain",
-            NBTKEY_PROCESSING_SPEED = "ProcSpeed",
-            NBTKEY_POWER_PER_TICK = "PwrPerTick",
-            NBTKEY_PROCESSING_ASPECT = "ProcAspect";
+
+    private static String NBTKEY_TIME_REMAINING = "TRemain", NBTKEY_PROCESSING_SPEED = "ProcSpeed",
+            NBTKEY_POWER_PER_TICK = "PwrPerTick", NBTKEY_PROCESSING_ASPECT = "ProcAspect";
 
     /**
      * How much power is produced per tick
@@ -82,8 +83,8 @@ public class TileEssentiaVibrationChamber extends TileEVCBase implements IGridTi
     private int processingSpeed = 0;
 
     /**
-     * How much power is produced per processing tick.
-     * Note: This is not the same as a minecraft tick. Processing ticks are dilated by processing speed.
+     * How much power is produced per processing tick. Note: This is not the same as a minecraft tick. Processing ticks
+     * are dilated by processing speed.
      */
     private double powerProducedPerProcessingTick = 0;
 
@@ -98,14 +99,12 @@ public class TileEssentiaVibrationChamber extends TileEVCBase implements IGridTi
     private boolean processingChanged = false;
 
     /**
-     * The total amount of processing ticks for the current aspect.
-     * Used for GUI.
+     * The total amount of processing ticks for the current aspect. Used for GUI.
      */
     private int sync_totalProcessingTicks = 0;
 
     /**
-     * How much power is being produced per tick.
-     * Used for GUI.
+     * How much power is being produced per tick. Used for GUI.
      */
     private double sync_powerPerTick = 0;
 
@@ -362,8 +361,8 @@ public class TileEssentiaVibrationChamber extends TileEVCBase implements IGridTi
 
             // Read power per tick
             if (data.hasKey(TileEssentiaVibrationChamber.NBTKEY_POWER_PER_TICK)) {
-                this.powerProducedPerProcessingTick =
-                        data.getDouble(TileEssentiaVibrationChamber.NBTKEY_POWER_PER_TICK);
+                this.powerProducedPerProcessingTick = data
+                        .getDouble(TileEssentiaVibrationChamber.NBTKEY_POWER_PER_TICK);
             }
 
             // Read aspect
@@ -444,16 +443,19 @@ public class TileEssentiaVibrationChamber extends TileEVCBase implements IGridTi
     public void addWailaInformation(final List<String> tooltip) {
         // Write stored
         if (this.hasStoredEssentia()) {
-            tooltip.add(String.format(
-                    ThEStrings.GUi_VibrationChamber_Stored.getLocalized(),
-                    this.storedEssentia.getStackSize(),
-                    this.storedEssentia.getAspectName()));
+            tooltip.add(
+                    String.format(
+                            ThEStrings.GUi_VibrationChamber_Stored.getLocalized(),
+                            this.storedEssentia.getStackSize(),
+                            this.storedEssentia.getAspectName()));
         }
 
         // Write processing
         if (this.processingAspect != null) {
-            tooltip.add(String.format(
-                    ThEStrings.GUi_VibrationChamber_Processing.getLocalized(), this.processingAspect.getName()));
+            tooltip.add(
+                    String.format(
+                            ThEStrings.GUi_VibrationChamber_Processing.getLocalized(),
+                            this.processingAspect.getName()));
         }
     }
 
@@ -476,7 +478,10 @@ public class TileEssentiaVibrationChamber extends TileEVCBase implements IGridTi
     public TickingRequest getTickingRequest(final IGridNode node) {
         // Half second, to 2 seconds.
         return new TickingRequest(
-                TileEssentiaVibrationChamber.TICKRATE_MIN, TileEssentiaVibrationChamber.TICKRATE_MAX, false, false);
+                TileEssentiaVibrationChamber.TICKRATE_MIN,
+                TileEssentiaVibrationChamber.TICKRATE_MAX,
+                false,
+                false);
     }
 
     /**
@@ -572,8 +577,8 @@ public class TileEssentiaVibrationChamber extends TileEVCBase implements IGridTi
         // Does the essentia need to be replenished?
         if (replenish) {
             // Replenish essentia
-            EssentiaTransportHelper.INSTANCE.takeEssentiaFromTransportNeighbors(
-                    this, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+            EssentiaTransportHelper.INSTANCE
+                    .takeEssentiaFromTransportNeighbors(this, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
         }
 
         // Update listeners

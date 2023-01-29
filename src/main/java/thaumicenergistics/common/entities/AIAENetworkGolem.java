@@ -1,5 +1,16 @@
 package thaumicenergistics.common.entities;
 
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.common.entities.golems.EntityGolemBase;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
+import thaumicenergistics.common.grid.WirelessAELink;
+import thaumicenergistics.common.integration.tc.GolemUpgradeTypes;
+import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -7,16 +18,6 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.common.entities.golems.EntityGolemBase;
-import thaumicenergistics.api.grid.IMEEssentiaMonitor;
-import thaumicenergistics.common.grid.WirelessAELink;
-import thaumicenergistics.common.integration.tc.GolemUpgradeTypes;
-import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
 
 /**
  * Base AI script for golems wearing the {@link ItemGolemWirelessBackpack}.
@@ -25,7 +26,9 @@ import thaumicenergistics.common.items.ItemGolemWirelessBackpack;
  *
  */
 public abstract class AIAENetworkGolem extends EntityAIBase {
+
     protected class NetworkHandler extends WirelessAELink {
+
         /**
          * The maximum number of items the golem can inject/extract per update.
          */
@@ -46,11 +49,8 @@ public abstract class AIAENetworkGolem extends EntityAIBase {
          */
         public final WirelessGolemHandler.WirelessServerData wirelessStateData;
 
-        public NetworkHandler(
-                final WirelessGolemHandler.WirelessServerData wsd,
-                final int maxItems,
-                final int maxFluids,
-                final int maxEssentia) {
+        public NetworkHandler(final WirelessGolemHandler.WirelessServerData wsd, final int maxItems,
+                final int maxFluids, final int maxEssentia) {
             // Call super
             super(null, wsd.encryptionKey);
 
@@ -93,8 +93,8 @@ public abstract class AIAENetworkGolem extends EntityAIBase {
         }
 
         /**
-         * Attempts to deposit the itemstack into the AE system.
-         * The {@code stack.stacksize} will change according to how many items were left over after the deposit.
+         * Attempts to deposit the itemstack into the AE system. The {@code stack.stacksize} will change according to
+         * how many items were left over after the deposit.
          *
          * @param stack
          */
@@ -113,8 +113,8 @@ public abstract class AIAENetworkGolem extends EntityAIBase {
             aeStack.setStackSize(depositSize);
 
             // Deposit
-            IAEItemStack rejected =
-                    AEApi.instance().storage().poweredInsert(this.getEnergyGrid(), monitor, aeStack, this.actionSource);
+            IAEItemStack rejected = AEApi.instance().storage()
+                    .poweredInsert(this.getEnergyGrid(), monitor, aeStack, this.actionSource);
             if (rejected != null) {
                 depositSize -= (int) rejected.getStackSize();
             }
@@ -214,8 +214,7 @@ public abstract class AIAENetworkGolem extends EntityAIBase {
             aeRequest.setStackSize(Math.min(target.stackSize, this.maxItemRate));
 
             // Extract
-            IAEItemStack extracted = AEApi.instance()
-                    .storage()
+            IAEItemStack extracted = AEApi.instance().storage()
                     .poweredExtraction(this.getEnergyGrid(), monitor, aeRequest, this.actionSource);
             if (extracted == null) {
                 return null;
@@ -242,8 +241,8 @@ public abstract class AIAENetworkGolem extends EntityAIBase {
             int amountToInject = Math.min(amount, this.maxEssentiaRate);
 
             // Attempt to inject
-            long amountRejected =
-                    monitor.injectEssentia(aspect, amountToInject, Actionable.MODULATE, this.actionSource, true);
+            long amountRejected = monitor
+                    .injectEssentia(aspect, amountToInject, Actionable.MODULATE, this.actionSource, true);
 
             // Return the amount that was injected
             return amountToInject - amountRejected;
@@ -270,7 +269,7 @@ public abstract class AIAENetworkGolem extends EntityAIBase {
      * Advanced 200, 500, 1000
      * </PRE>
      */
-    private static final int[] FLUID_RATES = new int[] {100, 250, 500};
+    private static final int[] FLUID_RATES = new int[] { 100, 250, 500 };
 
     /**
      * <PRE>
@@ -278,7 +277,7 @@ public abstract class AIAENetworkGolem extends EntityAIBase {
      * Advanced 16, 48, 64
      * </PRE>
      */
-    private static final int[] ITEM_RATES = new int[] {8, 24, 32};
+    private static final int[] ITEM_RATES = new int[] { 8, 24, 32 };
 
     /**
      * <PRE>
@@ -286,7 +285,7 @@ public abstract class AIAENetworkGolem extends EntityAIBase {
      * Advanced 8, 24, 32
      * </PRE>
      */
-    private static final int[] ESS_RATES = new int[] {4, 12, 16};
+    private static final int[] ESS_RATES = new int[] { 4, 12, 16 };
 
     /**
      * How many ticks until the golem can interact with the network again.

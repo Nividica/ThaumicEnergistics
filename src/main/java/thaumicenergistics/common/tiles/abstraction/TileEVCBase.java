@@ -1,5 +1,21 @@
 package thaumicenergistics.common.tiles.abstraction;
 
+import java.io.IOException;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.api.aspects.IAspectSource;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.storage.IAspectStack;
+import thaumicenergistics.api.tiles.IEssentiaTransportWithSimulate;
+import thaumicenergistics.common.storage.AspectStack;
+import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.config.Actionable;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
@@ -9,29 +25,15 @@ import appeng.tile.grid.AENetworkTile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.api.aspects.IAspectSource;
-import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.api.storage.IAspectStack;
-import thaumicenergistics.api.tiles.IEssentiaTransportWithSimulate;
-import thaumicenergistics.common.storage.AspectStack;
-import thaumicenergistics.common.utils.EffectiveSide;
 
 /**
- * Essentia Vibration Chamber Base
- * Handles most of the mod-interface functionality.
+ * Essentia Vibration Chamber Base Handles most of the mod-interface functionality.
  *
  * @author Nividica
  *
  */
 public abstract class TileEVCBase extends AENetworkTile implements IEssentiaTransportWithSimulate, IAspectSource {
+
     /**
      * NBT Key for the stored aspect stack.
      */

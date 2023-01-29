@@ -1,10 +1,12 @@
 package thaumicenergistics.client.gui.buttons;
 
+import java.util.List;
+
+import net.minecraft.util.StatCollector;
+
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.List;
-import net.minecraft.util.StatCollector;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 /**
  * Displays cell partitioning icon.

@@ -1,5 +1,16 @@
 package thaumicenergistics.common.network.packet.client;
 
+import java.util.Iterator;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.entity.player.EntityPlayer;
+
+import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
+import thaumicenergistics.common.network.NetworkHandler;
+import thaumicenergistics.common.network.ThEBasePacket;
+import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
+import thaumicenergistics.common.registries.EnumCache;
 import appeng.api.AEApi;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -9,15 +20,6 @@ import appeng.api.storage.data.IItemList;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import java.util.Iterator;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.entity.player.EntityPlayer;
-import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
-import thaumicenergistics.common.network.NetworkHandler;
-import thaumicenergistics.common.network.ThEBasePacket;
-import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
-import thaumicenergistics.common.registries.EnumCache;
 
 /**
  * {@link PartArcaneCraftingTerminal} client-bound packet.
@@ -26,12 +28,11 @@ import thaumicenergistics.common.registries.EnumCache;
  *
  */
 public class Packet_C_ArcaneCraftingTerminal extends ThEClientPacket {
+
     /**
      * Packet modes
      */
-    private static final byte MODE_RECEIVE_CHANGE = 0,
-            MODE_RECEIVE_FULL_LIST = 1,
-            MODE_RECEIVE_SORTS = 3,
+    private static final byte MODE_RECEIVE_CHANGE = 0, MODE_RECEIVE_FULL_LIST = 1, MODE_RECEIVE_SORTS = 3,
             MODE_UPDATE_COSTS = 4;
 
     private IAEItemStack changedStack;
@@ -59,16 +60,16 @@ public class Packet_C_ArcaneCraftingTerminal extends ThEClientPacket {
     }
 
     /**
-     * Creates a packet with the full list of items in the AE network.
-     * Only send in response to a request.
+     * Creates a packet with the full list of items in the AE network. Only send in response to a request.
      *
      * @param player
      * @param fullList
      */
     public static void sendAllNetworkItems(final EntityPlayer player, final IItemList<IAEItemStack> fullList) {
         // Create the packet
-        Packet_C_ArcaneCraftingTerminal packet =
-                newPacket(player, Packet_C_ArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST);
+        Packet_C_ArcaneCraftingTerminal packet = newPacket(
+                player,
+                Packet_C_ArcaneCraftingTerminal.MODE_RECEIVE_FULL_LIST);
 
         // Enable compression
         packet.useCompression = true;
@@ -88,8 +89,8 @@ public class Packet_C_ArcaneCraftingTerminal extends ThEClientPacket {
      * @param direction
      * @return
      */
-    public static void sendModeChange(
-            final EntityPlayer player, final SortOrder order, final SortDir direction, final ViewItems viewMode) {
+    public static void sendModeChange(final EntityPlayer player, final SortOrder order, final SortDir direction,
+            final ViewItems viewMode) {
         // Create the packet
         Packet_C_ArcaneCraftingTerminal packet = newPacket(player, Packet_C_ArcaneCraftingTerminal.MODE_RECEIVE_SORTS);
 

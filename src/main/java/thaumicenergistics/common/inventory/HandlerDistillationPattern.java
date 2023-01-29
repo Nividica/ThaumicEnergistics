@@ -1,11 +1,12 @@
 package thaumicenergistics.common.inventory;
 
-import appeng.items.misc.ItemEncodedPattern;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
+
 import thaumicenergistics.common.items.ItemCraftingAspect;
+import appeng.items.misc.ItemEncodedPattern;
 
 /**
  * Handles {@link ItemEncodedPattern} items with a distillation encodeing.
@@ -14,17 +15,15 @@ import thaumicenergistics.common.items.ItemCraftingAspect;
  *
  */
 public class HandlerDistillationPattern {
+
     /**
      * NBT Keys
      */
-    private static final String NBTKEY_AE_IN = "in",
-            NBTKEY_AE_OUT = "out",
-            NBTKEY_AE_ISCRAFTING = "crafting",
+    private static final String NBTKEY_AE_IN = "in", NBTKEY_AE_OUT = "out", NBTKEY_AE_ISCRAFTING = "crafting",
             NBTKEY_AE_CAN_SUB = "substitute";
 
     /**
-     * Output of the pattern.
-     * Must be ItemCraftingAspect patterns.
+     * Output of the pattern. Must be ItemCraftingAspect patterns.
      */
     protected ItemStack output = null;
 
@@ -69,8 +68,7 @@ public class HandlerDistillationPattern {
     }
 
     /**
-     * Returns the input of the pattern.
-     * May be null.
+     * Returns the input of the pattern. May be null.
      *
      * @return
      */
@@ -79,8 +77,7 @@ public class HandlerDistillationPattern {
     }
 
     /**
-     * Returns the output of the pattern.
-     * May be null.
+     * Returns the output of the pattern. May be null.
      *
      * @return
      */
@@ -159,8 +156,7 @@ public class HandlerDistillationPattern {
     }
 
     /**
-     * Sets the output.
-     * Must be a crafting aspect.
+     * Sets the output. Must be a crafting aspect.
      *
      * @param outputItem
      */
@@ -178,8 +174,7 @@ public class HandlerDistillationPattern {
     }
 
     /**
-     * Sets the input and output items.
-     * Returns if the recipe is valid or not.
+     * Sets the input and output items. Returns if the recipe is valid or not.
      *
      * @param inputItem
      * @param outputItem

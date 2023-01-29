@@ -1,12 +1,13 @@
 package thaumicenergistics.common.integration.tc;
 
-import appeng.api.AEApi;
-import appeng.api.storage.data.IAEFluidStack;
 import net.minecraftforge.fluids.FluidStack;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.fluids.GaseousEssentia;
 import thaumicenergistics.common.storage.AspectStack;
+import appeng.api.AEApi;
+import appeng.api.storage.data.IAEFluidStack;
 
 /**
  * Aids in converting essentia to and from a fluid.
@@ -15,6 +16,7 @@ import thaumicenergistics.common.storage.AspectStack;
  *
  */
 public final class EssentiaConversionHelper {
+
     /**
      * Singleton
      */
@@ -64,8 +66,8 @@ public final class EssentiaConversionHelper {
     }
 
     /**
-     * Creates an AE fluid stack from the specified essentia gas. This will
-     * convert the specified amount from essentia units to fluid units(mb).
+     * Creates an AE fluid stack from the specified essentia gas. This will convert the specified amount from essentia
+     * units to fluid units(mb).
      *
      * @param Aspect
      * @param essentiaAmount
@@ -78,27 +80,26 @@ public final class EssentiaConversionHelper {
             return null;
         }
 
-        return this.createAEFluidStackInFluidUnits(
-                essentiaGas, this.convertEssentiaAmountToFluidAmount(essentiaAmount));
+        return this
+                .createAEFluidStackInFluidUnits(essentiaGas, this.convertEssentiaAmountToFluidAmount(essentiaAmount));
     }
 
     /**
-     * Creates an AE fluid stack from the specified essentia gas. This will
-     * convert the specified amount from essentia units to fluid units(mb).
+     * Creates an AE fluid stack from the specified essentia gas. This will convert the specified amount from essentia
+     * units to fluid units(mb).
      *
      * @param essentiaGas
      * @param essentiaAmount
      * @return
      */
-    public IAEFluidStack createAEFluidStackInEssentiaUnits(
-            final GaseousEssentia essentiaGas, final long essentiaAmount) {
-        return this.createAEFluidStackInFluidUnits(
-                essentiaGas, this.convertEssentiaAmountToFluidAmount(essentiaAmount));
+    public IAEFluidStack createAEFluidStackInEssentiaUnits(final GaseousEssentia essentiaGas,
+            final long essentiaAmount) {
+        return this
+                .createAEFluidStackInFluidUnits(essentiaGas, this.convertEssentiaAmountToFluidAmount(essentiaAmount));
     }
 
     /**
-     * Creates an AE fluid stack from the specified essentia gas with the amount
-     * specified.
+     * Creates an AE fluid stack from the specified essentia gas with the amount specified.
      *
      * @param essentiaGas
      * @param fluidAmount
@@ -110,8 +111,7 @@ public final class EssentiaConversionHelper {
             ret = AEApi.instance().storage().createFluidStack(new FluidStack(essentiaGas, 1));
 
             ret.setStackSize(fluidAmount);
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
 
         return ret;
     }

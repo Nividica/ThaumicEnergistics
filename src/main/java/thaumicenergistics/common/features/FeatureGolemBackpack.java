@@ -1,6 +1,7 @@
 package thaumicenergistics.common.features;
 
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -39,7 +40,7 @@ public class FeatureGolemBackpack extends ThEThaumcraftResearchFeature {
 
     @Override
     protected Object[] getItemReqs(final CommonDependantItems cdi) {
-        return new Object[] {cdi.MEInterfacePart, cdi.WirelessReceiver, cdi.FluixCrystal, cdi.MECharger};
+        return new Object[] { cdi.MEInterfacePart, cdi.WirelessReceiver, cdi.FluixCrystal, cdi.MECharger };
     }
 
     @Override
@@ -59,27 +60,12 @@ public class FeatureGolemBackpack extends ThEThaumcraftResearchFeature {
         aspects.add(Aspect.ORDER, 3);
 
         // Recipe
-        Object[] recipe = new Object[] {
-            "TIT",
-            "NWN",
-            "FCF",
-            'T',
-            cdi.ThaumiumIngot,
-            'I',
-            cdi.MEInterfacePart,
-            'N',
-            cdi.Nitor,
-            'W',
-            cdi.WirelessReceiver,
-            'F',
-            cdi.FluixCrystal,
-            'C',
-            cdi.MECharger
-        };
+        Object[] recipe = new Object[] { "TIT", "NWN", "FCF", 'T', cdi.ThaumiumIngot, 'I', cdi.MEInterfacePart, 'N',
+                cdi.Nitor, 'W', cdi.WirelessReceiver, 'F', cdi.FluixCrystal, 'C', cdi.MECharger };
 
         // Register
-        RecipeRegistry.ITEM_GOLEM_WIFI_BACKPACK =
-                ThaumcraftApi.addArcaneCraftingRecipe(this.researchKey, backpack, aspects, recipe);
+        RecipeRegistry.ITEM_GOLEM_WIFI_BACKPACK = ThaumcraftApi
+                .addArcaneCraftingRecipe(this.researchKey, backpack, aspects, recipe);
     }
 
     @Override
@@ -102,25 +88,23 @@ public class FeatureGolemBackpack extends ThEThaumcraftResearchFeature {
         ItemStack icon = ThEApi.instance().items().GolemWifiBackpack.getStack();
 
         // Set the pages
-        ResearchPage[] pages = new ResearchPage[] {
-            new ResearchPage(ResearchTypes.GOLEM_BACKPACK.getPageName(1)),
-            new ResearchPage(RecipeRegistry.ITEM_GOLEM_WIFI_BACKPACK),
-            new ResearchPage(ResearchTypes.GOLEM_BACKPACK.getPageName(2)),
-            new ResearchPage(ResearchTypes.GOLEM_BACKPACK.getPageName(3)),
-            new ResearchPage(ResearchTypes.GOLEM_BACKPACK.getPageName("COREGATHER")),
-            new ResearchPage("COREFILL", ResearchTypes.GOLEM_BACKPACK.getPageName("COREFILL")),
-            new ResearchPage("CORELIQUID", ResearchTypes.GOLEM_BACKPACK.getPageName("CORELIQUID")),
-            new ResearchPage("COREALCHEMY", ResearchTypes.GOLEM_BACKPACK.getPageName("COREALCHEMY")),
-            new ResearchPage("UPGRADEORDER", ResearchTypes.GOLEM_BACKPACK.getPageName("UPGRADEORDER")),
-            new ResearchPage("ADVANCEDGOLEM", ResearchTypes.GOLEM_BACKPACK.getPageName("ADVANCEDGOLEM"))
-        };
+        ResearchPage[] pages = new ResearchPage[] { new ResearchPage(ResearchTypes.GOLEM_BACKPACK.getPageName(1)),
+                new ResearchPage(RecipeRegistry.ITEM_GOLEM_WIFI_BACKPACK),
+                new ResearchPage(ResearchTypes.GOLEM_BACKPACK.getPageName(2)),
+                new ResearchPage(ResearchTypes.GOLEM_BACKPACK.getPageName(3)),
+                new ResearchPage(ResearchTypes.GOLEM_BACKPACK.getPageName("COREGATHER")),
+                new ResearchPage("COREFILL", ResearchTypes.GOLEM_BACKPACK.getPageName("COREFILL")),
+                new ResearchPage("CORELIQUID", ResearchTypes.GOLEM_BACKPACK.getPageName("CORELIQUID")),
+                new ResearchPage("COREALCHEMY", ResearchTypes.GOLEM_BACKPACK.getPageName("COREALCHEMY")),
+                new ResearchPage("UPGRADEORDER", ResearchTypes.GOLEM_BACKPACK.getPageName("UPGRADEORDER")),
+                new ResearchPage("ADVANCEDGOLEM", ResearchTypes.GOLEM_BACKPACK.getPageName("ADVANCEDGOLEM")) };
 
         // Create the research
         ResearchTypes.GOLEM_BACKPACK.createResearchItem(aspects, ResearchRegistry.COMPLEXITY_LARGE, icon, pages);
 
         // Set parents
-        ResearchTypes.GOLEM_BACKPACK.researchItem.setParents(
-                this.getFirstValidParentKey(false), "COREGATHER", PseudoResearchTypes.COREGATHER.getKey());
+        ResearchTypes.GOLEM_BACKPACK.researchItem
+                .setParents(this.getFirstValidParentKey(false), "COREGATHER", PseudoResearchTypes.COREGATHER.getKey());
 
         // Hide until the parent has been researched
         ResearchTypes.GOLEM_BACKPACK.researchItem.setConcealed();

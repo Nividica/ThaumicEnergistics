@@ -1,20 +1,24 @@
 package thaumicenergistics.common.integration.tc;
 
-import appeng.api.networking.IGrid;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.api.util.DimensionalCoord;
 import java.lang.ref.WeakReference;
+
 import javax.annotation.Nonnull;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumicenergistics.api.grid.IDigiVisSource;
 import thaumicenergistics.common.registries.ThEStrings;
+import appeng.api.networking.IGrid;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.api.util.DimensionalCoord;
 
 public class DigiVisSourceData {
+
     private static final String NBT_KEY_HAS_DATA = "hasData";
     private static final String NBT_KEY_DATA = "data";
     private static final String NBT_KEY_UID = "uid";
@@ -184,8 +188,7 @@ public class DigiVisSourceData {
                 // Set the source
                 this.digiVisSource = new WeakReference<IDigiVisSource>(visSource);
             }
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
     }
 
     private IDigiVisSource tryGetSource(@Nonnull final IGrid destinationGrid, final boolean forceUpdate) {
@@ -204,8 +207,7 @@ public class DigiVisSourceData {
                 }
             }
 
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
 
         return source;
     }
@@ -290,8 +292,7 @@ public class DigiVisSourceData {
     }
 
     /**
-     * Verifies that the source exists, is active, and that the
-     * source and destination grid's are the same.
+     * Verifies that the source exists, is active, and that the source and destination grid's are the same.
      *
      * @param destinationGrid
      *
@@ -328,7 +329,7 @@ public class DigiVisSourceData {
             // Write the data
             tag.setIntArray(
                     DigiVisSourceData.NBT_KEY_DATA,
-                    new int[] {this.worldID, this.x, this.y, this.z, this.side.ordinal()});
+                    new int[] { this.worldID, this.x, this.y, this.z, this.side.ordinal() });
 
             // Write the uid
             tag.setLong(DigiVisSourceData.NBT_KEY_UID, this.UID);

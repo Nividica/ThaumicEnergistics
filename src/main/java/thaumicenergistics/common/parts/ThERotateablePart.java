@@ -1,16 +1,18 @@
 package thaumicenergistics.common.parts;
 
-import appeng.api.config.SecurityPermissions;
-import appeng.api.parts.PartItemStack;
-import appeng.util.Platform;
-import io.netty.buffer.ByteBuf;
 import java.io.IOException;
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
+
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.parts.PartItemStack;
+import appeng.util.Platform;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Base class for rotatble cable parts.
@@ -19,14 +21,14 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public abstract class ThERotateablePart extends ThEPartBase {
+
     /**
      * NBT keys
      */
     private static final String NBT_KEY_ROT_DIR = "partRotation";
 
     /**
-     * What direction should be rotated to.
-     * Valid values are 0,1,2,3.
+     * What direction should be rotated to. Valid values are 0,1,2,3.
      */
     private byte renderRotation = 0;
 
@@ -42,8 +44,7 @@ public abstract class ThERotateablePart extends ThEPartBase {
      */
     protected void rotateRenderer(final RenderBlocks renderer, final boolean reset) {
         int rot = (reset ? 0 : this.renderRotation);
-        renderer.uvRotateBottom = renderer.uvRotateEast =
-                renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = rot;
+        renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = rot;
     }
 
     /**

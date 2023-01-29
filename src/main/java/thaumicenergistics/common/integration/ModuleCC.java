@@ -1,11 +1,12 @@
 package thaumicenergistics.common.integration;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+import thaumicenergistics.common.tiles.TileEssentiaProvider;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import thaumicenergistics.common.tiles.TileEssentiaProvider;
 
 /**
  * Computer Craft integration
@@ -14,6 +15,7 @@ import thaumicenergistics.common.tiles.TileEssentiaProvider;
  *
  */
 public class ModuleCC {
+
     public static class ThEPeripherals implements IPeripheralProvider {
 
         @Override

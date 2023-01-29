@@ -1,7 +1,5 @@
 package thaumicenergistics.client.render;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -10,11 +8,15 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.render.model.ModelArcaneAssembler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Renders the {@link TileArcaneAssembler}
@@ -33,17 +35,17 @@ public class RenderTileArcaneAssembler extends TileEntitySpecialRenderer {
     /**
      * Texture
      */
-    private final ResourceLocation assemblerTexture =
-            new ResourceLocation(ThaumicEnergistics.MOD_ID, "textures/models/arcane.assembler.png");
+    private final ResourceLocation assemblerTexture = new ResourceLocation(
+            ThaumicEnergistics.MOD_ID,
+            "textures/models/arcane.assembler.png");
 
     /**
      * Cache of the assembler block.
      */
-    private final Block assemblerBlock =
-            ThEApi.instance().blocks().ArcaneAssembler.getBlock();
+    private final Block assemblerBlock = ThEApi.instance().blocks().ArcaneAssembler.getBlock();
 
-    private void renderAssembler(
-            final TileArcaneAssembler assemblerTile, final World world, final int x, final int y, final int z) {
+    private void renderAssembler(final TileArcaneAssembler assemblerTile, final World world, final int x, final int y,
+            final int z) {
         // Ensure there is a world object
         if (world != null) {
             // Get the block lightning
@@ -86,8 +88,8 @@ public class RenderTileArcaneAssembler extends TileEntitySpecialRenderer {
      * Called when the assembler needs to be rendered.
      */
     @Override
-    public void renderTileEntityAt(
-            final TileEntity tileEntity, final double d, final double d1, final double d2, final float f) {
+    public void renderTileEntityAt(final TileEntity tileEntity, final double d, final double d1, final double d2,
+            final float f) {
         // Push the GL matrix
         GL11.glPushMatrix();
 
@@ -99,7 +101,11 @@ public class RenderTileArcaneAssembler extends TileEntitySpecialRenderer {
 
         // Render the gearbox
         this.renderAssembler(
-                assemblerTile, tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+                assemblerTile,
+                tileEntity.getWorldObj(),
+                tileEntity.xCoord,
+                tileEntity.yCoord,
+                tileEntity.zCoord);
 
         // Pop the GL matrix
         GL11.glPopMatrix();

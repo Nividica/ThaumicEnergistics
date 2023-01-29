@@ -1,15 +1,16 @@
 package thaumicenergistics.common.registries;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.client.MinecraftForgeClient;
+
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.render.*;
 import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import thaumicenergistics.common.tiles.TileGearBox;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Manages ThE renderers.
@@ -19,6 +20,7 @@ import thaumicenergistics.common.tiles.TileGearBox;
  */
 @SideOnly(Side.CLIENT)
 public class Renderers {
+
     public static final int PASS_OPAQUE = 0;
     public static final int PASS_ALPHA = 1;
 

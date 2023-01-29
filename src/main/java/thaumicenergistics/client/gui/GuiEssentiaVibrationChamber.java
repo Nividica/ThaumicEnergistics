@@ -1,17 +1,19 @@
 package thaumicenergistics.client.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
 import thaumicenergistics.client.textures.GuiTextureManager;
 import thaumicenergistics.common.container.ContainerEssentiaVibrationChamber;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileEssentiaVibrationChamber} GUI
@@ -30,20 +32,13 @@ public class GuiEssentiaVibrationChamber extends ThEBaseGui {
     /**
      * Dimensions and location of the power bar.
      */
-    private static final int POWER_POS_X = 96,
-            POWER_POS_Y = 32,
-            POWER_TEX_U = 51,
-            POWER_TEX_V = 83,
-            POWER_WIDTH = 6,
+    private static final int POWER_POS_X = 96, POWER_POS_Y = 32, POWER_TEX_U = 51, POWER_TEX_V = 83, POWER_WIDTH = 6,
             POWER_HEIGHT = 18;
 
     /**
      * Dimensions and location of the essentia storage level bar.
      */
-    private static final int STORED_POS_X = 62,
-            STORED_POS_Y = 16,
-            STORED_TEX_X = 200,
-            STORED_WIDTH = 8,
+    private static final int STORED_POS_X = 62, STORED_POS_Y = 16, STORED_TEX_X = 200, STORED_WIDTH = 8,
             STORED_HEIGHT = 48;
 
     /**
@@ -59,16 +54,17 @@ public class GuiEssentiaVibrationChamber extends ThEBaseGui {
     /**
      * Thaumcraft's alchemy furnace GUI texture
      */
-    private static final ResourceLocation alchemyFurnaceTexture =
-            new ResourceLocation("thaumcraft", "textures/gui/gui_alchemyfurnace.png");
+    private static final ResourceLocation alchemyFurnaceTexture = new ResourceLocation(
+            "thaumcraft",
+            "textures/gui/gui_alchemyfurnace.png");
 
     /**
      * Reference to the container.
      */
     private final ContainerEssentiaVibrationChamber container;
 
-    public GuiEssentiaVibrationChamber(
-            final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public GuiEssentiaVibrationChamber(final EntityPlayer player, final World world, final int x, final int y,
+            final int z) {
         // Create the container and call super
         super(new ContainerEssentiaVibrationChamber(player, world, x, y, z));
         this.container = (ContainerEssentiaVibrationChamber) this.inventorySlots;
@@ -86,8 +82,8 @@ public class GuiEssentiaVibrationChamber extends ThEBaseGui {
         Minecraft.getMinecraft().renderEngine.bindTexture(GuiEssentiaVibrationChamber.alchemyFurnaceTexture);
 
         // Draw stored essentia amount underlay
-        int storedHeightOffset =
-                (int) (GuiEssentiaVibrationChamber.STORED_HEIGHT * this.container.getStoredEssentiaPercent());
+        int storedHeightOffset = (int) (GuiEssentiaVibrationChamber.STORED_HEIGHT
+                * this.container.getStoredEssentiaPercent());
 
         this.drawTexturedModalRect(
                 this.guiLeft + GuiEssentiaVibrationChamber.STORED_POS_X,
@@ -113,8 +109,8 @@ public class GuiEssentiaVibrationChamber extends ThEBaseGui {
                 GuiEssentiaVibrationChamber.VIAL_HEIGHT);
 
         // Draw fire/progress
-        int progressHeightOffset =
-                (int) (GuiEssentiaVibrationChamber.FIRE_HEIGHT * this.container.getTicksRemainingPercent());
+        int progressHeightOffset = (int) (GuiEssentiaVibrationChamber.FIRE_HEIGHT
+                * this.container.getTicksRemainingPercent());
 
         this.drawTexturedModalRect(
                 this.guiLeft + GuiEssentiaVibrationChamber.FIRE_POS_X,
@@ -201,21 +197,21 @@ public class GuiEssentiaVibrationChamber extends ThEBaseGui {
                 mouseY,
                 this.guiLeft,
                 this.guiTop)) {
-            // Get the aspect being processed
-            Aspect processingAspect = this.container.getProcessingAspect();
+                    // Get the aspect being processed
+                    Aspect processingAspect = this.container.getProcessingAspect();
 
-            // Anything being processed?
-            if (processingAspect != null) {
-                // Calculate the seconds remaining
-                float secondsRemaining = (this.container.getTicksRemaining() / 20.0F);
+                    // Anything being processed?
+                    if (processingAspect != null) {
+                        // Calculate the seconds remaining
+                        float secondsRemaining = (this.container.getTicksRemaining() / 20.0F);
 
-                // Add the aspect
-                this.tooltip.add(String.format("Processing: %s", processingAspect.getName()));
+                        // Add the aspect
+                        this.tooltip.add(String.format("Processing: %s", processingAspect.getName()));
 
-                // Add the time
-                this.tooltip.add(String.format("Time Remaining: %.0fs", secondsRemaining));
-            }
-        }
+                        // Add the time
+                        this.tooltip.add(String.format("Time Remaining: %.0fs", secondsRemaining));
+                    }
+                }
         // Is the mouse over the power bar?
         else if (ThEGuiHelper.INSTANCE.isPointInGuiRegion(
                 GuiEssentiaVibrationChamber.POWER_POS_Y,
@@ -226,9 +222,9 @@ public class GuiEssentiaVibrationChamber extends ThEBaseGui {
                 mouseY,
                 this.guiLeft,
                 this.guiTop)) {
-            // Add the power per tick
-            this.tooltip.add(String.format("%.0f AE/t", this.container.getPowerPerTick()));
-        }
+                    // Add the power per tick
+                    this.tooltip.add(String.format("%.0f AE/t", this.container.getPowerPerTick()));
+                }
     }
 
     @Override

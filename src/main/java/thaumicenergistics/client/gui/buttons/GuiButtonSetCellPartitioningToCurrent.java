@@ -1,10 +1,12 @@
 package thaumicenergistics.client.gui.buttons;
 
+import java.util.List;
+
+import net.minecraft.util.StatCollector;
+
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.List;
-import net.minecraft.util.StatCollector;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 /**
  * Displays partition to current icon.
@@ -14,6 +16,7 @@ import thaumicenergistics.client.textures.AEStateIconsEnum;
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonSetCellPartitioningToCurrent extends ThEStateButton {
+
     /**
      * Wrench icon
      */

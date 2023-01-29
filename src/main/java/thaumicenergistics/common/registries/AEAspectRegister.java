@@ -1,5 +1,23 @@
 package thaumicenergistics.common.registries;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+
+import thaumcraft.api.ThaumcraftApi;
+import thaumcraft.api.ThaumcraftApiHelper;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
+import thaumicenergistics.api.IThEItems;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.common.utils.ThELog;
+import thaumicenergistics.common.utils.ThEUtils;
 import appeng.api.AEApi;
 import appeng.api.definitions.*;
 import appeng.api.features.IGrinderEntry;
@@ -9,22 +27,6 @@ import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.features.registries.entries.InscriberRecipe;
 import appeng.recipes.GroupIngredient;
 import appeng.recipes.Ingredient;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import thaumcraft.api.ThaumcraftApi;
-import thaumcraft.api.ThaumcraftApiHelper;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumicenergistics.api.IThEItems;
-import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.common.utils.ThELog;
-import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * Gives items from AE2 aspects when scanned.
@@ -33,6 +35,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  *
  */
 public class AEAspectRegister {
+
     /**
      * Helper class to derive aspects from an item definition.
      *
@@ -40,6 +43,7 @@ public class AEAspectRegister {
      *
      */
     private class AEItemInfo {
+
         /**
          * Human readable name of the item.
          */
@@ -295,8 +299,7 @@ public class AEAspectRegister {
                         }
                     }
                 }
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {}
 
             return false;
         }
@@ -322,8 +325,7 @@ public class AEAspectRegister {
                         }
                     }
                 }
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {}
             return false;
         }
 
@@ -354,8 +356,7 @@ public class AEAspectRegister {
                     }
                 }
 
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {}
 
             return false;
         }
@@ -420,12 +421,10 @@ public class AEAspectRegister {
                 ingredientObjects = ((appeng.recipes.game.ShapedRecipe) this.recipe).getInput();
             } else if (this.recipe instanceof appeng.recipes.game.ShapelessRecipe) {
                 // Get ingredients
-                ingredientObjects = ((appeng.recipes.game.ShapelessRecipe) this.recipe)
-                        .getInput()
-                        .toArray();
+                ingredientObjects = ((appeng.recipes.game.ShapelessRecipe) this.recipe).getInput().toArray();
             } else if (this.recipe instanceof IGrinderEntry) {
                 // Get ingredient
-                ingredientObjects = new Object[] {((IGrinderEntry) this.recipe).getInput()};
+                ingredientObjects = new Object[] { ((IGrinderEntry) this.recipe).getInput() };
 
                 // Add a bonus aspect for grinding
                 this.bonusAspects.add(Aspect.ENTROPY, 1);
@@ -489,8 +488,7 @@ public class AEAspectRegister {
                             currentIngredientStack = (ItemStack) ing;
                         }
 
-                    } catch (Exception e) {
-                    }
+                    } catch (Exception e) {}
 
                     // Skip null stacks
                     if (currentIngredientStack == null) {
@@ -511,8 +509,7 @@ public class AEAspectRegister {
         }
 
         /**
-         * Determines if the recipe is valid, and aspects
-         * can be derived from it.
+         * Determines if the recipe is valid, and aspects can be derived from it.
          *
          * @param recipe
          * @return
@@ -745,8 +742,7 @@ public class AEAspectRegister {
     }
 
     /**
-     * Registers the base items from AE. Those without a usable crafting
-     * ancestry, world crafted, or multi-part.
+     * Registers the base items from AE. Those without a usable crafting ancestry, world crafted, or multi-part.
      */
     private void registerBase() {
         IMaterials aeMats = AEApi.instance().definitions().materials();
@@ -982,8 +978,7 @@ public class AEAspectRegister {
         thaumicenergistics.api.IThEBlocks teBlocks = ThEApi.instance().blocks();
 
         // Get an AE 1K Cell
-        ItemStack aeCell =
-                AEApi.instance().definitions().items().cell1k().maybeStack(1).orNull();
+        ItemStack aeCell = AEApi.instance().definitions().items().cell1k().maybeStack(1).orNull();
         AspectList cellAspects = null;
         if (aeCell != null) {
             // Get the aspect list for a 1k cell

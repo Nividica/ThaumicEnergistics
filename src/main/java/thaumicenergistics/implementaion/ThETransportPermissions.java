@@ -3,9 +3,11 @@ package thaumicenergistics.implementaion;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 import thaumcraft.common.blocks.BlockJarItem;
@@ -21,6 +23,7 @@ import thaumicenergistics.common.utils.ThELog;
  *
  */
 class ThETransportPermissions implements IThETransportPermissions {
+
     /**
      * Collection of ContainerInfo indexed by damage value.
      *
@@ -28,6 +31,7 @@ class ThETransportPermissions implements IThETransportPermissions {
      *
      */
     private class ContainerCollection {
+
         /**
          * DamageValue -> Info map
          */
@@ -52,8 +56,8 @@ class ThETransportPermissions implements IThETransportPermissions {
          * @param damageValue
          * @return
          */
-        public ContainerCollection addContainer(
-                final int capacity, final boolean canHoldPartialAmount, final int damageValue) {
+        public ContainerCollection addContainer(final int capacity, final boolean canHoldPartialAmount,
+                final int damageValue) {
             // Create the container info
             ContainerInfo info = new ContainerInfo(capacity, canHoldPartialAmount);
 
@@ -81,6 +85,7 @@ class ThETransportPermissions implements IThETransportPermissions {
      *
      */
     private class ContainerInfo implements IThEEssentiaContainerPermission {
+
         private int capacity;
         private boolean canHoldPartialAmount;
 
@@ -101,29 +106,24 @@ class ThETransportPermissions implements IThETransportPermissions {
     }
 
     /**
-     * List of items allowed to work with.
-     * Indexed by item class.
+     * List of items allowed to work with. Indexed by item class.
      */
-    private final HashMap<Class<? extends IEssentiaContainerItem>, ContainerCollection> itemWhitelist =
-            new HashMap<Class<? extends IEssentiaContainerItem>, ContainerCollection>();
+    private final HashMap<Class<? extends IEssentiaContainerItem>, ContainerCollection> itemWhitelist = new HashMap<Class<? extends IEssentiaContainerItem>, ContainerCollection>();
 
     /**
      * Holds a list of tiles that we are allowed to extract from.
      */
-    private final Set<Class<? extends IAspectContainer>> tileExtractWhiteList =
-            new HashSet<Class<? extends IAspectContainer>>();
+    private final Set<Class<? extends IAspectContainer>> tileExtractWhiteList = new HashSet<Class<? extends IAspectContainer>>();
 
     /**
      * Holds a list of tiles that we are allowed to inject into.
      */
-    private final Set<Class<? extends IAspectContainer>> tileInjectWhiteList =
-            new HashSet<Class<? extends IAspectContainer>>();
+    private final Set<Class<? extends IAspectContainer>> tileInjectWhiteList = new HashSet<Class<? extends IAspectContainer>>();
 
     /**
      * Holds the capacities for each registered tile.
      */
-    private final HashMap<Class<? extends IAspectContainer>, Integer> tileCapacities =
-            new HashMap<Class<? extends IAspectContainer>, Integer>();
+    private final HashMap<Class<? extends IAspectContainer>, Integer> tileCapacities = new HashMap<Class<? extends IAspectContainer>, Integer>();
 
     @Override
     public <T extends TileEntity & IAspectContainer> boolean addAspectContainerTileToBothPermissions(
@@ -174,11 +174,8 @@ class ThETransportPermissions implements IThETransportPermissions {
     }
 
     @Override
-    public void addEssentiaContainerItemToTransportPermissions(
-            final Class<? extends IEssentiaContainerItem> itemClass,
-            final int capacity,
-            final int damageValue,
-            final boolean canHoldPartialAmount) {
+    public void addEssentiaContainerItemToTransportPermissions(final Class<? extends IEssentiaContainerItem> itemClass,
+            final int capacity, final int damageValue, final boolean canHoldPartialAmount) {
         // Do we have an item?
         if (itemClass != null) {
             // Is it already registered?
@@ -196,8 +193,8 @@ class ThETransportPermissions implements IThETransportPermissions {
     }
 
     @Override
-    public void addEssentiaContainerItemToTransportPermissions(
-            final ItemStack containerItem, final int capacity, final boolean canHoldPartialAmount) {
+    public void addEssentiaContainerItemToTransportPermissions(final ItemStack containerItem, final int capacity,
+            final boolean canHoldPartialAmount) {
         // Ensure the item is a valid container
         if ((containerItem == null) || !(containerItem.getItem() instanceof IEssentiaContainerItem)) {
             return;
@@ -205,13 +202,11 @@ class ThETransportPermissions implements IThETransportPermissions {
 
         try {
             this.addEssentiaContainerItemToTransportPermissions(
-                    (Class<? extends IEssentiaContainerItem>)
-                            containerItem.getItem().getClass(),
+                    (Class<? extends IEssentiaContainerItem>) containerItem.getItem().getClass(),
                     capacity,
                     containerItem.getItemDamage(),
                     canHoldPartialAmount);
-        } catch (Throwable t) {
-        }
+        } catch (Throwable t) {}
     }
 
     @Override
@@ -237,8 +232,8 @@ class ThETransportPermissions implements IThETransportPermissions {
     }
 
     @Override
-    public IThEEssentiaContainerPermission getEssentiaContainerInfo(
-            final Class<? extends Item> itemClass, final int damageValue) {
+    public IThEEssentiaContainerPermission getEssentiaContainerInfo(final Class<? extends Item> itemClass,
+            final int damageValue) {
         // Is the item registered?
         if (this.itemWhitelist.containsKey(itemClass)) {
             // Return the info

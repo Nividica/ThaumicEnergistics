@@ -1,5 +1,25 @@
 package thaumicenergistics.common.parts;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Vec3;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
+import thaumicenergistics.client.gui.GuiEssentiaIO;
+import thaumicenergistics.common.container.ContainerPartEssentiaIOBus;
+import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.common.network.IAspectSlotPart;
+import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
+import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
+import thaumicenergistics.common.registries.EnumCache;
+import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
@@ -18,24 +38,6 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Vec3;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.IAspectContainer;
-import thaumicenergistics.client.gui.GuiEssentiaIO;
-import thaumicenergistics.common.container.ContainerPartEssentiaIOBus;
-import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
-import thaumicenergistics.common.network.IAspectSlotPart;
-import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
-import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
-import thaumicenergistics.common.registries.EnumCache;
-import thaumicenergistics.common.utils.EffectiveSide;
 
 /**
  * Base class of {@link PartExportBus} and {@link PartImportBus}.
@@ -45,6 +47,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  */
 public abstract class ThEPartEssentiaIOBus_Base extends ThEPartBase
         implements IGridTickable, IAspectSlotPart, IAEAppEngInventory {
+
     /**
      * How much essentia can be transfered per second.
      */
@@ -70,9 +73,9 @@ public abstract class ThEPartEssentiaIOBus_Base extends ThEPartBase
 
     private static final int BASE_SLOT_INDEX = 4;
 
-    private static final int[] TIER2_INDEXS = {0, 2, 6, 8};
+    private static final int[] TIER2_INDEXS = { 0, 2, 6, 8 };
 
-    private static final int[] TIER1_INDEXS = {1, 3, 5, 7};
+    private static final int[] TIER1_INDEXS = { 1, 3, 5, 7 };
 
     private static final int UPGRADE_INVENTORY_SIZE = 4;
 
@@ -89,16 +92,17 @@ public abstract class ThEPartEssentiaIOBus_Base extends ThEPartBase
     /**
      * NBT Keys
      */
-    private static final String NBT_KEY_REDSTONE_MODE = "redstoneMode",
-            NBT_KEY_FILTER_NUMBER = "AspectFilter#",
+    private static final String NBT_KEY_REDSTONE_MODE = "redstoneMode", NBT_KEY_FILTER_NUMBER = "AspectFilter#",
             NBT_KEY_UPGRADE_INV = "upgradeInventory";
 
     private boolean lastRedstone;
 
-    private int[] availableFilterSlots = {ThEPartEssentiaIOBus_Base.BASE_SLOT_INDEX};
+    private int[] availableFilterSlots = { ThEPartEssentiaIOBus_Base.BASE_SLOT_INDEX };
 
-    private UpgradeInventory upgradeInventory =
-            new StackUpgradeInventory(this.associatedItem, this, ThEPartEssentiaIOBus_Base.UPGRADE_INVENTORY_SIZE);
+    private UpgradeInventory upgradeInventory = new StackUpgradeInventory(
+            this.associatedItem,
+            this,
+            ThEPartEssentiaIOBus_Base.UPGRADE_INVENTORY_SIZE);
 
     private List<ContainerPartEssentiaIOBus> listeners = new ArrayList<ContainerPartEssentiaIOBus>();
 
@@ -124,8 +128,8 @@ public abstract class ThEPartEssentiaIOBus_Base extends ThEPartBase
 
     protected boolean hasCraftingCard = false;
 
-    public ThEPartEssentiaIOBus_Base(
-            final AEPartsEnum associatedPart, final SecurityPermissions... interactionPermissions) {
+    public ThEPartEssentiaIOBus_Base(final AEPartsEnum associatedPart,
+            final SecurityPermissions... interactionPermissions) {
         super(associatedPart, interactionPermissions);
 
         // Initialize the list
@@ -332,8 +336,7 @@ public abstract class ThEPartEssentiaIOBus_Base extends ThEPartBase
     }
 
     /**
-     * Determines how much power the part takes for just
-     * existing.
+     * Determines how much power the part takes for just existing.
      */
     @Override
     public double getIdlePowerUsage() {
@@ -386,12 +389,8 @@ public abstract class ThEPartEssentiaIOBus_Base extends ThEPartBase
     }
 
     @Override
-    public void onChangeInventory(
-            final IInventory inv,
-            final int slot,
-            final InvOperation mc,
-            final ItemStack removedStack,
-            final ItemStack newStack) {
+    public void onChangeInventory(final IInventory inv, final int slot, final InvOperation mc,
+            final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.upgradeInventory) {
             this.updateUpgradeState();
         }
@@ -427,7 +426,12 @@ public abstract class ThEPartEssentiaIOBus_Base extends ThEPartBase
 
         // Set the state of the bus
         Packet_C_EssentiaIOBus.sendBusState(
-                player, this.redstoneMode, this.filterSize, this.redstoneControlled, hasCraftingCard, isCraftingOnly());
+                player,
+                this.redstoneMode,
+                this.filterSize,
+                this.redstoneControlled,
+                hasCraftingCard,
+                isCraftingOnly());
     }
 
     @Override
@@ -462,9 +466,8 @@ public abstract class ThEPartEssentiaIOBus_Base extends ThEPartBase
     }
 
     /**
-     * Called client-side to keep the client-side part in sync
-     * with the server-side part. This aids in keeping the
-     * gui in sync even in high network lag enviroments.
+     * Called client-side to keep the client-side part in sync with the server-side part. This aids in keeping the gui
+     * in sync even in high network lag enviroments.
      *
      * @param filteredAspects
      */
@@ -474,9 +477,8 @@ public abstract class ThEPartEssentiaIOBus_Base extends ThEPartBase
     }
 
     /**
-     * Called client-side to keep the client-side part in sync
-     * with the server-side part. This aids in keeping the
-     * gui in sync even in high network lag enviroments.
+     * Called client-side to keep the client-side part in sync with the server-side part. This aids in keeping the gui
+     * in sync even in high network lag enviroments.
      *
      * @param filterSize
      */

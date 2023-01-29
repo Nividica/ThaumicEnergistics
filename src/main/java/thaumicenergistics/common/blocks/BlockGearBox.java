@@ -1,10 +1,11 @@
 package thaumicenergistics.common.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.IIcon;
+
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.tiles.TileGearBox;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileGearBox} block, iron form.
@@ -13,6 +14,7 @@ import thaumicenergistics.common.tiles.TileGearBox;
  *
  */
 public class BlockGearBox extends AbstractBlockGearBoxBase {
+
     @SideOnly(Side.CLIENT)
     @Override
     public IIcon getIcon(final int side, final int meta) {

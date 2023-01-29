@@ -1,13 +1,14 @@
 package thaumicenergistics.common.container.slot;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+
 import thaumcraft.api.IVisDiscountGear;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Slot that holds armor.
@@ -33,15 +34,9 @@ public class SlotArmor extends Slot {
      * @param index
      * @param x
      * @param y
-     * @param armorType
-     * 0: Helmet, 1: Chest, 2: Legs, 3: Boots
+     * @param armorType 0: Helmet, 1: Chest, 2: Legs, 3: Boots
      */
-    public SlotArmor(
-            final IInventory inventory,
-            final int index,
-            final int x,
-            final int y,
-            final int armorType,
+    public SlotArmor(final IInventory inventory, final int index, final int x, final int y, final int armorType,
             final boolean restrictToVisArmor) {
         // Call super
         super(inventory, index, x, y);

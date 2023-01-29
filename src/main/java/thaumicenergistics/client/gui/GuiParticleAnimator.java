@@ -1,9 +1,11 @@
 package thaumicenergistics.client.gui;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.client.gui.Gui;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import javax.annotation.Nonnull;
-import net.minecraft.client.gui.Gui;
 
 /**
  * Animates {@link EnumGuiParticles}.
@@ -13,6 +15,7 @@ import net.minecraft.client.gui.Gui;
  */
 @SideOnly(Side.CLIENT)
 public class GuiParticleAnimator {
+
     /**
      * Distance from start to destination.
      */
@@ -88,12 +91,7 @@ public class GuiParticleAnimator {
      */
     public final EnumGuiParticles theParticle;
 
-    public GuiParticleAnimator(
-            final int startX,
-            final int startY,
-            final int destX,
-            final int destY,
-            final float time,
+    public GuiParticleAnimator(final int startX, final int startY, final int destX, final int destY, final float time,
             @Nonnull final EnumGuiParticles particle) {
         // Set starting position
         this.startingX = startX;

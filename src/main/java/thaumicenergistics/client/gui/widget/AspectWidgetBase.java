@@ -1,14 +1,14 @@
 package thaumicenergistics.client.gui.widget;
 
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.client.lib.UtilsFX;
 import thaumicenergistics.api.gui.IWidgetHost;
@@ -16,6 +16,9 @@ import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.ThEGuiHelper;
 import thaumicenergistics.common.integration.tc.AspectHooks;
 import thaumicenergistics.common.storage.AspectStack;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base class of Aspect Widgets.
@@ -25,11 +28,13 @@ import thaumicenergistics.common.storage.AspectStack;
  */
 @SideOnly(Side.CLIENT)
 public abstract class AspectWidgetBase extends ThEWidget {
+
     /**
      * Icon to display if the aspect is unknown to the player
      */
-    private static final ResourceLocation UNKNOWN_TEXTURE =
-            new ResourceLocation("thaumcraft", "textures/aspects/_unknown.png");
+    private static final ResourceLocation UNKNOWN_TEXTURE = new ResourceLocation(
+            "thaumcraft",
+            "textures/aspects/_unknown.png");
 
     /**
      * Stack this widget represents.
@@ -66,11 +71,7 @@ public abstract class AspectWidgetBase extends ThEWidget {
      */
     private byte[] aspectColorBytes;
 
-    public AspectWidgetBase(
-            final IWidgetHost hostGui,
-            final IAspectStack stack,
-            final int xPos,
-            final int yPos,
+    public AspectWidgetBase(final IWidgetHost hostGui, final IAspectStack stack, final int xPos, final int yPos,
             final EntityPlayer player) {
         // Call super
         super(hostGui, xPos, yPos);
@@ -172,8 +173,8 @@ public abstract class AspectWidgetBase extends ThEWidget {
             }
 
             // Get the color bytes
-            this.aspectColorBytes = ThEGuiHelper.INSTANCE.convertPackedColorToARGBb(
-                    this.aspectStack.getAspect().getColor());
+            this.aspectColorBytes = ThEGuiHelper.INSTANCE
+                    .convertPackedColorToARGBb(this.aspectStack.getAspect().getColor());
 
             // Set full alpha
             this.aspectColorBytes[0] = (byte) 255;
@@ -239,9 +240,9 @@ public abstract class AspectWidgetBase extends ThEWidget {
             tooltip.add(EnumChatFormatting.GRAY.toString() + this.aspectDescription);
 
             // Add footnote
-            tooltip.add(EnumChatFormatting.DARK_PURPLE.toString()
-                    + EnumChatFormatting.ITALIC.toString()
-                    + this.aspectFootnote);
+            tooltip.add(
+                    EnumChatFormatting.DARK_PURPLE.toString() + EnumChatFormatting.ITALIC.toString()
+                            + this.aspectFootnote);
         }
     }
 

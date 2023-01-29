@@ -1,16 +1,18 @@
 package thaumicenergistics.common.storage;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.Thaumcraft;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.ThEGuiHelper;
 import thaumicenergistics.common.network.ThEBasePacket;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Stores an aspect and an amount.
@@ -19,8 +21,8 @@ import thaumicenergistics.common.network.ThEBasePacket;
  *
  */
 public class AspectStack implements IAspectStack {
-    private static final String NBTKEY_ASPECT_TAG = "AspectTag",
-            NBTKEY_ASPECT_AMOUNT = "Amount",
+
+    private static final String NBTKEY_ASPECT_TAG = "AspectTag", NBTKEY_ASPECT_AMOUNT = "Amount",
             NBTKEY_CRAFTABLE = "Craftable";
 
     /**
@@ -47,36 +49,28 @@ public class AspectStack implements IAspectStack {
     }
 
     /**
-     * Creates a stack using the specified aspect and amount.
-     * Defaults to not craftable.
+     * Creates a stack using the specified aspect and amount. Defaults to not craftable.
      *
-     * @param aspect
-     * What aspect this stack will have.
-     * @param amount
-     * How much this stack will have.
+     * @param aspect What aspect this stack will have.
+     * @param amount How much this stack will have.
      */
     public AspectStack(final Aspect aspect, final long amount) {
         this(aspect, amount, false);
     }
 
     /**
-     * Creates a stack using the specified aspect and amount, and
-     * sets if it is craftable.
+     * Creates a stack using the specified aspect and amount, and sets if it is craftable.
      *
-     * @param aspect
-     * What aspect this stack will have.
-     * @param size
-     * How much this stack will have.
-     * @param craftable
-     * Is the stack craftable.
+     * @param aspect    What aspect this stack will have.
+     * @param size      How much this stack will have.
+     * @param craftable Is the stack craftable.
      */
     public AspectStack(final Aspect aspect, final long size, final boolean craftable) {
         this.setAll(aspect, size, craftable);
     }
 
     /**
-     * Creates a new stack from the passed stack.
-     * If a new stack is not needed you can also use copyFrom().
+     * Creates a new stack from the passed stack. If a new stack is not needed you can also use copyFrom().
      *
      * @param source
      */
@@ -87,8 +81,7 @@ public class AspectStack implements IAspectStack {
     /**
      * Creates an aspect stack from a NBT compound tag.
      *
-     * @param data
-     * Tag to load from
+     * @param data Tag to load from
      * @return Created stack, or null.
      */
     public static AspectStack loadAspectStackFromNBT(final NBTTagCompound data) {
@@ -224,8 +217,7 @@ public class AspectStack implements IAspectStack {
         // Ensure we have a player & aspect
         if ((player != null) && (this.aspect != null)) {
             // Ask Thaumcraft if the player has discovered the aspect
-            return Thaumcraft.proxy
-                    .getPlayerKnowledge()
+            return Thaumcraft.proxy.getPlayerKnowledge()
                     .hasDiscoveredAspect(player.getCommandSenderName(), this.aspect);
         }
 

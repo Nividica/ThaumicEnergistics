@@ -1,7 +1,5 @@
 package thaumicenergistics.common.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -14,11 +12,14 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
 import thaumicenergistics.common.utils.EffectiveSide;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileKnowledgeInscriber} block.
@@ -27,6 +28,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class BlockKnowledgeInscriber extends AbstractBlockAEWrenchable {
+
     public BlockKnowledgeInscriber() {
         // Call super with material machine (iron)
         super(Material.iron);
@@ -42,8 +44,8 @@ public class BlockKnowledgeInscriber extends AbstractBlockAEWrenchable {
     }
 
     @Override
-    protected final boolean onBlockActivated(
-            final World world, final int x, final int y, final int z, final EntityPlayer player) {
+    protected final boolean onBlockActivated(final World world, final int x, final int y, final int z,
+            final EntityPlayer player) {
         // Launch the gui.
         ThEGuiHandler.launchGui(ThEGuiHandler.KNOWLEDGE_INSCRIBER, player, world, x, y, z);
 
@@ -54,8 +56,8 @@ public class BlockKnowledgeInscriber extends AbstractBlockAEWrenchable {
      * Called when the block is broken.
      */
     @Override
-    public void breakBlock(
-            final World world, final int x, final int y, final int z, final Block block, final int metaData) {
+    public void breakBlock(final World world, final int x, final int y, final int z, final Block block,
+            final int metaData) {
         // Is this server side?
         if (EffectiveSide.isServerSide()) {
             // Get the tile
@@ -66,12 +68,13 @@ public class BlockKnowledgeInscriber extends AbstractBlockAEWrenchable {
                 // Does the inscriber have a cell?
                 if (tileKI.hasKCore()) {
                     // Spawn the core as an item entity.
-                    world.spawnEntityInWorld(new EntityItem(
-                            world,
-                            0.5 + x,
-                            0.5 + y,
-                            0.2 + z,
-                            tileKI.getStackInSlot(TileKnowledgeInscriber.KCORE_SLOT)));
+                    world.spawnEntityInWorld(
+                            new EntityItem(
+                                    world,
+                                    0.5 + x,
+                                    0.5 + y,
+                                    0.2 + z,
+                                    tileKI.getStackInSlot(TileKnowledgeInscriber.KCORE_SLOT)));
                 }
             }
         }
@@ -129,19 +132,14 @@ public class BlockKnowledgeInscriber extends AbstractBlockAEWrenchable {
      * Is solid.
      */
     @Override
-    public final boolean isSideSolid(
-            final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side) {
+    public final boolean isSideSolid(final IBlockAccess world, final int x, final int y, final int z,
+            final ForgeDirection side) {
         // This is a solid cube
         return true;
     }
 
     @Override
-    public void onBlockPlacedBy(
-            final World world,
-            final int x,
-            final int y,
-            final int z,
-            final EntityLivingBase player,
+    public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase player,
             final ItemStack itemStack) {
         // Set the metadata to up
         world.setBlockMetadataWithNotify(x, y, z, 0, 2);

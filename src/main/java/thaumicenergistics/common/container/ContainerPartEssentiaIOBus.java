@@ -1,16 +1,19 @@
 package thaumicenergistics.common.container;
 
-import appeng.api.config.RedstoneMode;
 import java.util.List;
+
 import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaIOBus;
 import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
+import appeng.api.config.RedstoneMode;
 
 /**
  * Inventory container for the import and export busses.
@@ -19,6 +22,7 @@ import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
  *
  */
 public class ContainerPartEssentiaIOBus extends ContainerWithNetworkTool {
+
     /**
      * The number of upgrade slots we have
      */
@@ -62,10 +66,8 @@ public class ContainerPartEssentiaIOBus extends ContainerWithNetworkTool {
     /**
      * Creates the container.
      *
-     * @param part
-     * The AE part associated with the container.
-     * @param player
-     * The owner of the container.
+     * @param part   The AE part associated with the container.
+     * @param player The owner of the container.
      */
     public ContainerPartEssentiaIOBus(final ThEPartEssentiaIOBus_Base part, final EntityPlayer player) {
         // Call super

@@ -1,10 +1,11 @@
 package thaumicenergistics.common.container.slot;
 
-import appeng.api.implementations.guiobjects.INetworkTool;
-import appeng.api.implementations.items.IUpgradeModule;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import appeng.api.implementations.guiobjects.INetworkTool;
+import appeng.api.implementations.items.IUpgradeModule;
 
 /**
  * Represents a slot in the network tool
@@ -13,20 +14,17 @@ import net.minecraft.item.ItemStack;
  *
  */
 public class SlotNetworkTool extends Slot {
+
     /**
      * Creates the slot.
      *
-     * @param inventory
-     * The inventory of the network tool.
-     * @param slotIndex
-     * Index of the slot
-     * @param xDisplayPosition
-     * X position of the slot
-     * @param yDisplayPosition
-     * Y position of the slot
+     * @param inventory        The inventory of the network tool.
+     * @param slotIndex        Index of the slot
+     * @param xDisplayPosition X position of the slot
+     * @param yDisplayPosition Y position of the slot
      */
-    public SlotNetworkTool(
-            final INetworkTool inventory, final int slotIndex, final int xDisplayPosition, final int yDisplayPosition) {
+    public SlotNetworkTool(final INetworkTool inventory, final int slotIndex, final int xDisplayPosition,
+            final int yDisplayPosition) {
         // Pass to super
         super(inventory, slotIndex, xDisplayPosition, yDisplayPosition);
     }

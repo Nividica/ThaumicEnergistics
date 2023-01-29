@@ -1,18 +1,9 @@
 package thaumicenergistics.common.grid;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.storage.IBaseMonitor;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
-import com.google.common.collect.ImmutableList;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.Map.Entry;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.api.grid.IMEEssentiaMonitorReceiver;
@@ -22,6 +13,17 @@ import thaumicenergistics.common.fluids.GaseousEssentia;
 import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.storage.EssentiaRepo;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.storage.IBaseMonitor;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IItemList;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Wraps a fluid & power grid for easy essentia conversion and usage.
@@ -30,6 +32,7 @@ import thaumicenergistics.common.storage.EssentiaRepo;
  *
  */
 public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerReceiver<IAEFluidStack> {
+
     /**
      * The amount of power required to transfer 1 essentia.
      */
@@ -51,7 +54,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
     protected IEnergyGrid energyGrid;
 
     /**
-     * Collection backed by the cache that shows the essentia amounts in the network. Is created the first time it is needed.<br>
+     * Collection backed by the cache that shows the essentia amounts in the network. Is created the first time it is
+     * needed.<br>
      * Any changes to the cache are reflected in the view.
      */
     private Collection<IAspectStack> cacheView;
@@ -82,15 +86,12 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
     /**
      * Wraps the specified fluid monitor and energy grid.
      *
-     * @param fluidMonitor
-     * Fluid monitor to listen to
-     * @param energyGrid
-     * Energy grid to extract power from
-     * @param validationToken
-     * Used to validate the state of the fluid listener, can not be null
+     * @param fluidMonitor    Fluid monitor to listen to
+     * @param energyGrid      Energy grid to extract power from
+     * @param validationToken Used to validate the state of the fluid listener, can not be null
      */
-    public EssentiaMonitor(
-            final IMEMonitor<IAEFluidStack> fluidMonitor, final IEnergyGrid energyGrid, final Object validationToken) {
+    public EssentiaMonitor(final IMEMonitor<IAEFluidStack> fluidMonitor, final IEnergyGrid energyGrid,
+            final Object validationToken) {
         // Call default constructor
         this();
 
@@ -99,8 +100,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
     }
 
     /**
-     * Mirror method of the injectEssentia. Used to defer power calculations, because the simulation is not always accurate, and Essentia gas should
-     * not be stored in partial amounts.
+     * Mirror method of the injectEssentia. Used to defer power calculations, because the simulation is not always
+     * accurate, and Essentia gas should not be stored in partial amounts.
      *
      * @param aspect
      * @param amount
@@ -108,15 +109,11 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
      * @param source
      * @return Amount that was <strong>not</strong> injected
      */
-    private long injectEssentiaSafely(
-            final Aspect aspect,
-            final long amount,
-            final Actionable mode,
-            final BaseActionSource source,
-            final GaseousEssentia essentiaGas) {
+    private long injectEssentiaSafely(final Aspect aspect, final long amount, final Actionable mode,
+            final BaseActionSource source, final GaseousEssentia essentiaGas) {
         // Create the fluid request
-        IAEFluidStack fluidRequest =
-                EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits(essentiaGas, amount);
+        IAEFluidStack fluidRequest = EssentiaConversionHelper.INSTANCE
+                .createAEFluidStackInEssentiaUnits(essentiaGas, amount);
 
         // Inject fluid
         IAEFluidStack fluidRejected = this.fluidMonitor.injectItems(fluidRequest, mode, source);
@@ -129,8 +126,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
             }
 
             // Calculate the adjusted amount, essentia gas can not be stored in partial units
-            long rejectedAdjustedAmount =
-                    EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount(fluidRejected.getStackSize());
+            long rejectedAdjustedAmount = EssentiaConversionHelper.INSTANCE
+                    .convertFluidAmountToEssentiaAmount(fluidRejected.getStackSize());
             return rejectedAdjustedAmount;
         }
 
@@ -148,8 +145,7 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
         ImmutableList<IAspectStack> changeList = ImmutableList.copyOf(changes);
 
         // Get the listener iterator
-        Iterator<Entry<IMEEssentiaMonitorReceiver, Object>> entryIterator =
-                this.listeners.entrySet().iterator();
+        Iterator<Entry<IMEEssentiaMonitorReceiver, Object>> entryIterator = this.listeners.entrySet().iterator();
 
         // Inform all listeners of the changes
         while (entryIterator.hasNext()) {
@@ -253,8 +249,7 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
     }
 
     /**
-     * Updates the cache to match the contents of the network and updates any
-     * listeners of the changes.
+     * Updates the cache to match the contents of the network and updates any listeners of the changes.
      */
     @SuppressWarnings("null")
     protected void updateCacheToMatchNetwork() {
@@ -294,8 +289,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
                 Aspect aspect = ((GaseousEssentia) fluidStack.getFluid()).getAspect();
 
                 // Calculate the new amount
-                Long newAmount =
-                        EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount(fluidStack.getStackSize());
+                Long newAmount = EssentiaConversionHelper.INSTANCE
+                        .convertFluidAmountToEssentiaAmount(fluidStack.getStackSize());
 
                 // Update the cache
                 IAspectStack prevStack = this.cache.setAspect(aspect, newAmount, false);
@@ -320,8 +315,7 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
         if (hasListeners) {
             // Anything left in the previous mapping is no longer present in the network
             for (Aspect aspect : previousAspects) {
-                aspectChanges.add(
-                        new AspectStack(aspect, -this.cache.remove(aspect).getStackSize(), false));
+                aspectChanges.add(new AspectStack(aspect, -this.cache.remove(aspect).getStackSize(), false));
             }
 
             // Notify listeners
@@ -347,8 +341,7 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
     }
 
     /**
-     * Detaches from the fluid monitor.
-     * Note that the monitor is no longer valid from this point forward.
+     * Detaches from the fluid monitor. Note that the monitor is no longer valid from this point forward.
      */
     public void detach() {
         if (this.fluidMonitor != null) {
@@ -358,12 +351,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
     }
 
     @Override
-    public long extractEssentia(
-            final Aspect aspect,
-            final long amount,
-            final Actionable mode,
-            final BaseActionSource source,
-            final boolean powered) {
+    public long extractEssentia(final Aspect aspect, final long amount, final Actionable mode,
+            final BaseActionSource source, final boolean powered) {
         // Ensure the aspect is not null, and the amount is > 0
         if ((aspect == null) || (amount <= 0)) {
             // Invalid arguments
@@ -382,8 +371,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
         if (powered) {
             // Simulate power extraction
             double powerRequest = EssentiaMonitor.AE_PER_ESSENTIA * amount;
-            double powerReceived =
-                    this.energyGrid.extractAEPower(powerRequest, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+            double powerReceived = this.energyGrid
+                    .extractAEPower(powerRequest, Actionable.SIMULATE, PowerMultiplier.CONFIG);
 
             // Was enough power extracted?
             if (powerReceived < powerRequest) {
@@ -393,8 +382,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
         }
 
         // Create the fluid request
-        IAEFluidStack fluidRequest =
-                EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits(essentiaGas, amount);
+        IAEFluidStack fluidRequest = EssentiaConversionHelper.INSTANCE
+                .createAEFluidStackInEssentiaUnits(essentiaGas, amount);
 
         // Attempt the extraction
         IAEFluidStack fluidReceived = this.fluidMonitor.extractItems(fluidRequest, mode, source);
@@ -406,13 +395,15 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
         }
 
         // Convert the received fluid into an aspect stack
-        long extractedAmount =
-                EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount(fluidReceived.getStackSize());
+        long extractedAmount = EssentiaConversionHelper.INSTANCE
+                .convertFluidAmountToEssentiaAmount(fluidReceived.getStackSize());
 
         // Extract power if modulating
         if ((powered) && (mode == Actionable.MODULATE)) {
             this.energyGrid.extractAEPower(
-                    EssentiaMonitor.AE_PER_ESSENTIA * extractedAmount, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                    EssentiaMonitor.AE_PER_ESSENTIA * extractedAmount,
+                    Actionable.MODULATE,
+                    PowerMultiplier.CONFIG);
         }
 
         return extractedAmount;
@@ -460,12 +451,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
     }
 
     @Override
-    public long injectEssentia(
-            final Aspect aspect,
-            final long amount,
-            final Actionable mode,
-            final BaseActionSource source,
-            final boolean powered) {
+    public long injectEssentia(final Aspect aspect, final long amount, final Actionable mode,
+            final BaseActionSource source, final boolean powered) {
         // Ensure the aspect is not null, and the amount is > 0
         if ((aspect == null) || (amount <= 0)) {
             // Invalid arguments
@@ -483,8 +470,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
 
         // Simulate the injection
         long injectedAmount = amount;
-        long rejectedAmount =
-                this.injectEssentiaSafely(aspect, injectedAmount, Actionable.SIMULATE, source, essentiaGas);
+        long rejectedAmount = this
+                .injectEssentiaSafely(aspect, injectedAmount, Actionable.SIMULATE, source, essentiaGas);
         injectedAmount -= rejectedAmount;
 
         // Was all rejected?
@@ -496,8 +483,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
         if (powered) {
             // Simulate power extraction
             double powerRequest = EssentiaMonitor.AE_PER_ESSENTIA * injectedAmount;
-            double powerReceived =
-                    this.energyGrid.extractAEPower(powerRequest, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+            double powerReceived = this.energyGrid
+                    .extractAEPower(powerRequest, Actionable.SIMULATE, PowerMultiplier.CONFIG);
 
             // Was enough power extracted?
             if (powerReceived < powerRequest) {
@@ -509,8 +496,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
         // Modulating?
         if (mode == Actionable.MODULATE) {
             // Inject
-            rejectedAmount =
-                    this.injectEssentiaSafely(aspect, injectedAmount, Actionable.MODULATE, source, essentiaGas);
+            rejectedAmount = this
+                    .injectEssentiaSafely(aspect, injectedAmount, Actionable.MODULATE, source, essentiaGas);
             injectedAmount -= rejectedAmount;
 
             // Adjust and extract power
@@ -548,9 +535,7 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
     }
 
     @Override
-    public void postChange(
-            final IBaseMonitor<IAEFluidStack> monitor,
-            final Iterable<IAEFluidStack> fluidChanges,
+    public void postChange(final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> fluidChanges,
             final BaseActionSource actionSource) {
         // Ensure the cache is up to date
         if (this.cacheNeedsUpdate) {
@@ -558,8 +543,9 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
             return;
 
             /*
-             * Note: this should never happen if there are listeners. As the cache will be updated when a list update occurs.
-             * If any changes occur between a call to onListUpdate() and onUpdateTick(), those changes will be ignored until the cache is updated.
+             * Note: this should never happen if there are listeners. As the cache will be updated when a list update
+             * occurs. If any changes occur between a call to onListUpdate() and onUpdateTick(), those changes will be
+             * ignored until the cache is updated.
              */
         }
 
@@ -582,8 +568,8 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
                 Aspect aspect = ((GaseousEssentia) change.getFluid()).getAspect();
 
                 // Calculate the difference
-                long changeAmount =
-                        EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount(change.getStackSize());
+                long changeAmount = EssentiaConversionHelper.INSTANCE
+                        .convertFluidAmountToEssentiaAmount(change.getStackSize());
 
                 // Update the cache
                 IAspectStack previous = this.cache.postChange(aspect, changeAmount, null);
@@ -627,15 +613,12 @@ public class EssentiaMonitor implements IMEEssentiaMonitor, IMEMonitorHandlerRec
     /**
      * Wraps the specified fluid monitor and energy grid.
      *
-     * @param fluidMonitor
-     * Fluid monitor to listen to
-     * @param energyGrid
-     * Energy grid to extract power from
-     * @param validationToken
-     * Used to validate the state of the fluid listener, can not be null
+     * @param fluidMonitor    Fluid monitor to listen to
+     * @param energyGrid      Energy grid to extract power from
+     * @param validationToken Used to validate the state of the fluid listener, can not be null
      */
-    public void wrap(
-            final IMEMonitor<IAEFluidStack> fluidMonitor, final IEnergyGrid energyGrid, final Object validationToken) {
+    public void wrap(final IMEMonitor<IAEFluidStack> fluidMonitor, final IEnergyGrid energyGrid,
+            final Object validationToken) {
         // Ensure the token is not null
         if (validationToken != null) {
             // Set the token

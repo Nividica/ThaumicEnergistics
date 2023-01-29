@@ -1,10 +1,11 @@
 package thaumicenergistics.common.network.packet.server;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumicenergistics.common.container.ContainerKnowledgeInscriber;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link TileKnowledgeInscriber} server-bound packet.
@@ -13,6 +14,7 @@ import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
  *
  */
 public class Packet_S_KnowledgeInscriber extends ThEServerPacket {
+
     /**
      * Packet modes
      */

@@ -2,6 +2,7 @@ package thaumicenergistics.fml.classtransformers.tc;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
+
 import thaumicenergistics.fml.AClassTransformer;
 import thaumicenergistics.fml.ThECore;
 
@@ -33,8 +34,13 @@ public class ClassTransformer_EntityGolemBase extends AClassTransformer {
 
         // super.onEntityUpdate()
         onEntityUpdate.instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        onEntityUpdate.instructions.add(new MethodInsnNode(
-                Opcodes.INVOKESPECIAL, "net/minecraft/entity/monster/EntityGolem", oEU_Name, "()V", false));
+        onEntityUpdate.instructions.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESPECIAL,
+                        "net/minecraft/entity/monster/EntityGolem",
+                        oEU_Name,
+                        "()V",
+                        false));
 
         // GolemHooks.hook_onEntityUpdate( this, this.hookHandlers )
         // this
@@ -42,13 +48,16 @@ public class ClassTransformer_EntityGolemBase extends AClassTransformer {
         // this.hookHandlers
         GolemHookTransformHelper.addGetField_hookHandlers(onEntityUpdate.instructions, 0, false);
         // GolemHooks.hook_onEntityUpdate( EntityGolemBase, Hashmap )
-        onEntityUpdate.instructions.add(new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                GolemHookTransformHelper.CLASS_GolemHooks,
-                "hook_onEntityUpdate",
-                "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase + ";L"
-                        + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + ";)V",
-                false));
+        onEntityUpdate.instructions.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        GolemHookTransformHelper.CLASS_GolemHooks,
+                        "hook_onEntityUpdate",
+                        "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase
+                                + ";L"
+                                + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
+                                + ";)V",
+                        false));
 
         // return
         onEntityUpdate.instructions.add(new InsnNode(Opcodes.RETURN));
@@ -58,7 +67,7 @@ public class ClassTransformer_EntityGolemBase extends AClassTransformer {
     }
 
     private void transformMethod_CustomInteraction(final MethodNode method) {
-        int opSequence[] = new int[] {Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL, Opcodes.ICONST_M1};
+        int opSequence[] = new int[] { Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL, Opcodes.ICONST_M1 };
         AbstractInsnNode insertionPoint = this.findSequence(method.instructions, opSequence, false);
 
         // Go two back
@@ -81,14 +90,16 @@ public class ClassTransformer_EntityGolemBase extends AClassTransformer {
         GolemHookTransformHelper.addGetField_hookHandlers(instructionList, 0, false);
 
         // GolemHooks.setupGolemHook( EntityGolemBase, Hashmap )
-        instructionList.add(new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                GolemHookTransformHelper.CLASS_GolemHooks,
-                "hook_CustomInteraction",
-                "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase + ";Lnet/minecraft/entity/player/EntityPlayer;L"
-                        + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
-                        + ";)Z",
-                false));
+        instructionList.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        GolemHookTransformHelper.CLASS_GolemHooks,
+                        "hook_CustomInteraction",
+                        "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase
+                                + ";Lnet/minecraft/entity/player/EntityPlayer;L"
+                                + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
+                                + ";)Z",
+                        false));
 
         // Insert the return check
         instructionList.add(new JumpInsnNode(Opcodes.IFNE, lastLabel));
@@ -109,24 +120,26 @@ public class ClassTransformer_EntityGolemBase extends AClassTransformer {
         instructionList.add(new VarInsnNode(Opcodes.ALOAD, 0));
 
         // new HashMap
-        instructionList.add(
-                new TypeInsnNode(Opcodes.NEW, GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers));
+        instructionList
+                .add(new TypeInsnNode(Opcodes.NEW, GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers));
         instructionList.add(new InsnNode(Opcodes.DUP));
 
         // Hashmap.<init>
-        instructionList.add(new MethodInsnNode(
-                Opcodes.INVOKESPECIAL,
-                GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers,
-                "<init>",
-                "()V",
-                false));
+        instructionList.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESPECIAL,
+                        GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers,
+                        "<init>",
+                        "()V",
+                        false));
 
         // .hookHandlers =
-        instructionList.add(new FieldInsnNode(
-                Opcodes.PUTFIELD,
-                GolemHookTransformHelper.CLASS_EntityGolemBase,
-                GolemHookTransformHelper.FIELD_EntityGolemBase_hookHandlers,
-                "L" + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + ";"));
+        instructionList.add(
+                new FieldInsnNode(
+                        Opcodes.PUTFIELD,
+                        GolemHookTransformHelper.CLASS_EntityGolemBase,
+                        GolemHookTransformHelper.FIELD_EntityGolemBase_hookHandlers,
+                        "L" + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + ";"));
 
         // Insert the hook
         // GolemHooks.hook_EntityInit( this, this.hookHandlers );
@@ -138,13 +151,16 @@ public class ClassTransformer_EntityGolemBase extends AClassTransformer {
         GolemHookTransformHelper.addGetField_hookHandlers(instructionList, 0, false);
 
         // GolemHooks.hook_EntityInit( EntityGolemBase, Hashmap )
-        instructionList.add(new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                GolemHookTransformHelper.CLASS_GolemHooks,
-                "hook_EntityInit",
-                "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase + ";L"
-                        + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + ";)V",
-                false));
+        instructionList.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        GolemHookTransformHelper.CLASS_GolemHooks,
+                        "hook_EntityInit",
+                        "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase
+                                + ";L"
+                                + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
+                                + ";)V",
+                        false));
 
         // Insert the static call
         method.instructions.insertBefore(insertionPoint, instructionList);
@@ -168,15 +184,18 @@ public class ClassTransformer_EntityGolemBase extends AClassTransformer {
         instructionList.add(new VarInsnNode(Opcodes.ALOAD, 1));
 
         // GolemHooks.hook_ReadEntityFromNBT( EntityGolemBase, Hashmap, NBTTagCompound )
-        instructionList.add(new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                GolemHookTransformHelper.CLASS_GolemHooks,
-                "hook_ReadEntityFromNBT",
-                "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase + ";L"
-                        + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
-                        + ";" + "Lnet/minecraft/nbt/NBTTagCompound;"
-                        + ")V",
-                false));
+        instructionList.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        GolemHookTransformHelper.CLASS_GolemHooks,
+                        "hook_ReadEntityFromNBT",
+                        "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase
+                                + ";L"
+                                + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
+                                + ";"
+                                + "Lnet/minecraft/nbt/NBTTagCompound;"
+                                + ")V",
+                        false));
 
         // Insert the static call
         method.instructions.insert(insertionPoint, instructionList);
@@ -200,13 +219,16 @@ public class ClassTransformer_EntityGolemBase extends AClassTransformer {
         GolemHookTransformHelper.addGetField_hookHandlers(instructionList, 0, false);
 
         // GolemHooks.setupGolemHook( EntityGolemBase, Hashmap )
-        instructionList.add(new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                GolemHookTransformHelper.CLASS_GolemHooks,
-                "hook_SetupGolem",
-                "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase + ";L"
-                        + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + ";)V",
-                false));
+        instructionList.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        GolemHookTransformHelper.CLASS_GolemHooks,
+                        "hook_SetupGolem",
+                        "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase
+                                + ";L"
+                                + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
+                                + ";)V",
+                        false));
 
         // Insert the static call
         method.instructions.insertBefore(insertionPoint, instructionList);
@@ -230,15 +252,18 @@ public class ClassTransformer_EntityGolemBase extends AClassTransformer {
         instructionList.add(new VarInsnNode(Opcodes.ALOAD, 1));
 
         // GolemHooks.hook_WriteEntityToNBT( EntityGolemBase, Hashmap, NBTTagCompound )
-        instructionList.add(new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                GolemHookTransformHelper.CLASS_GolemHooks,
-                "hook_WriteEntityToNBT",
-                "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase + ";L"
-                        + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
-                        + ";" + "Lnet/minecraft/nbt/NBTTagCompound;"
-                        + ")V",
-                false));
+        instructionList.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        GolemHookTransformHelper.CLASS_GolemHooks,
+                        "hook_WriteEntityToNBT",
+                        "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase
+                                + ";L"
+                                + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
+                                + ";"
+                                + "Lnet/minecraft/nbt/NBTTagCompound;"
+                                + ")V",
+                        false));
 
         // Insert the static call
         method.instructions.insertBefore(insertionPoint, instructionList);
@@ -253,14 +278,16 @@ public class ClassTransformer_EntityGolemBase extends AClassTransformer {
     protected void transform(final ClassNode classNode) {
         // Add the handlers field
         // public HashMap<IGolemHookHandler, Object> hookHandlers;
-        classNode.fields.add(new FieldNode(
-                Opcodes.ACC_PUBLIC,
-                GolemHookTransformHelper.FIELD_EntityGolemBase_hookHandlers,
-                "L" + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + ";",
-                "L" + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + "<L"
-                        + GolemHookTransformHelper.INTERFACE_IGolemHookHandler
-                        + ";Ljava/lang/Object;>;",
-                null));
+        classNode.fields.add(
+                new FieldNode(
+                        Opcodes.ACC_PUBLIC,
+                        GolemHookTransformHelper.FIELD_EntityGolemBase_hookHandlers,
+                        "L" + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + ";",
+                        "L" + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
+                                + "<L"
+                                + GolemHookTransformHelper.INTERFACE_IGolemHookHandler
+                                + ";Ljava/lang/Object;>;",
+                        null));
 
         boolean isObf = false;
 
@@ -282,7 +309,7 @@ public class ClassTransformer_EntityGolemBase extends AClassTransformer {
             else if (method.name.equals("func_70014_b") || method.name.equals("writeEntityToNBT")) {
                 this.transformMethod_WriteEntityToNBT(method);
             }
-            //  Read entity from NBT
+            // Read entity from NBT
             else if (method.name.equals("func_70037_a") || method.name.equals("readEntityFromNBT")) {
                 this.transformMethod_ReadEntityFromNBT(method);
             }

@@ -1,19 +1,22 @@
 package thaumicenergistics.common.integration;
 
-import cpw.mods.fml.common.event.FMLInterModComms;
 import java.util.List;
+
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
 import thaumicenergistics.common.blocks.AbstractBlockProviderBase;
 import thaumicenergistics.common.blocks.BlockArcaneAssembler;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
+import cpw.mods.fml.common.event.FMLInterModComms;
 
 /**
  * What Am I Looking At integration.
@@ -56,14 +59,8 @@ public class ModuleWaila implements IWailaDataProvider {
     }
 
     @Override
-    public NBTTagCompound getNBTData(
-            final EntityPlayerMP player,
-            final TileEntity tileEntity,
-            final NBTTagCompound data,
-            final World world,
-            final int x,
-            final int y,
-            final int z) {
+    public NBTTagCompound getNBTData(final EntityPlayerMP player, final TileEntity tileEntity,
+            final NBTTagCompound data, final World world, final int x, final int y, final int z) {
         // Ignored
         return data;
     }
@@ -72,11 +69,8 @@ public class ModuleWaila implements IWailaDataProvider {
      * Changes the body of the Waila message.
      */
     @Override
-    public List<String> getWailaBody(
-            final ItemStack itemStack,
-            final List<String> tooltip,
-            final IWailaDataAccessor accessor,
-            final IWailaConfigHandler config) {
+    public List<String> getWailaBody(final ItemStack itemStack, final List<String> tooltip,
+            final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
         // Get the tile entity
         TileEntity tileEntity = accessor.getTileEntity();
 
@@ -90,11 +84,8 @@ public class ModuleWaila implements IWailaDataProvider {
     }
 
     @Override
-    public List<String> getWailaHead(
-            final ItemStack itemStack,
-            final List<String> currenttip,
-            final IWailaDataAccessor accessor,
-            final IWailaConfigHandler config) {
+    public List<String> getWailaHead(final ItemStack itemStack, final List<String> currenttip,
+            final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
         // Ignored
         return currenttip;
     }
@@ -106,11 +97,8 @@ public class ModuleWaila implements IWailaDataProvider {
     }
 
     @Override
-    public List<String> getWailaTail(
-            final ItemStack itemStack,
-            final List<String> currenttip,
-            final IWailaDataAccessor accessor,
-            final IWailaConfigHandler config) {
+    public List<String> getWailaTail(final ItemStack itemStack, final List<String> currenttip,
+            final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
         // Ignored
         return currenttip;
     }

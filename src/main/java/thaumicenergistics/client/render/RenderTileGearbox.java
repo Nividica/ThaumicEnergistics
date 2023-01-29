@@ -1,7 +1,5 @@
 package thaumicenergistics.client.render;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -10,11 +8,15 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.client.render.model.ModelGearbox;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileGearBox;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Renders the {@link TileGearBox}
@@ -24,6 +26,7 @@ import thaumicenergistics.common.tiles.TileGearBox;
  */
 @SideOnly(Side.CLIENT)
 public class RenderTileGearbox extends TileEntitySpecialRenderer {
+
     /**
      * Gearbox model
      */
@@ -32,8 +35,9 @@ public class RenderTileGearbox extends TileEntitySpecialRenderer {
     /**
      * Textures
      */
-    private final ResourceLocation
-            TEX_IRON = new ResourceLocation(ThaumicEnergistics.MOD_ID, "textures/models/gearbox.iron.png"),
+    private final ResourceLocation TEX_IRON = new ResourceLocation(
+            ThaumicEnergistics.MOD_ID,
+            "textures/models/gearbox.iron.png"),
             TEX_THAUMIUM = new ResourceLocation(ThaumicEnergistics.MOD_ID, "textures/models/gearbox.thaumium.png");
 
     /**
@@ -51,8 +55,8 @@ public class RenderTileGearbox extends TileEntitySpecialRenderer {
      * @param z
      * @param block
      */
-    private void renderGearbox(
-            final TileGearBox gearboxTile, final World world, final int x, final int y, final int z) {
+    private void renderGearbox(final TileGearBox gearboxTile, final World world, final int x, final int y,
+            final int z) {
         // Ensure there is a world object
         if (world != null) {
             // Get the block lightning
@@ -108,8 +112,8 @@ public class RenderTileGearbox extends TileEntitySpecialRenderer {
      * @param f
      */
     @Override
-    public void renderTileEntityAt(
-            final TileEntity tileEntity, final double d, final double d1, final double d2, final float f) {
+    public void renderTileEntityAt(final TileEntity tileEntity, final double d, final double d1, final double d2,
+            final float f) {
         // Push the GL matrix
         GL11.glPushMatrix();
 

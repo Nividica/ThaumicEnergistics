@@ -1,10 +1,11 @@
 package thaumicenergistics.common.network.packet.server;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumicenergistics.common.container.ContainerDistillationPatternEncoder;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link TileDistillationPatternEncoder} server-bound packet.
@@ -13,6 +14,7 @@ import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
  *
  */
 public class Packet_S_DistillationEncoder extends ThEServerPacket {
+
     private static final byte MODE_ENCODE = 1;
 
     public static void sendEncodePattern(final EntityPlayer player) {

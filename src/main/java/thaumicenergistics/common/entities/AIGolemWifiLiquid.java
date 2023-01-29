@@ -1,7 +1,9 @@
 package thaumicenergistics.common.entities;
 
 import java.util.ArrayList;
+
 import net.minecraftforge.fluids.FluidStack;
+
 import thaumcraft.common.entities.golems.EntityGolemBase;
 import thaumcraft.common.entities.golems.GolemHelper;
 import thaumicenergistics.common.entities.WirelessGolemHandler.WirelessServerData;

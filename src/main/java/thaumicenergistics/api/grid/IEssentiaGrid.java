@@ -8,4 +8,5 @@ import appeng.api.networking.IGridCache;
  * @author Nividica
  *
  */
-public interface IEssentiaGrid extends IGridCache, IMEEssentiaMonitor {}
+public interface IEssentiaGrid extends IGridCache, IMEEssentiaMonitor {
+}

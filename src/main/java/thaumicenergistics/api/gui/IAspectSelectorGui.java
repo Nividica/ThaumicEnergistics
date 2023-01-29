@@ -2,6 +2,7 @@ package thaumicenergistics.api.gui;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import thaumcraft.api.aspects.Aspect;
 
 /**
@@ -11,6 +12,7 @@ import thaumcraft.api.aspects.Aspect;
  *
  */
 public interface IAspectSelectorGui extends IWidgetHost {
+
     /**
      * Return the selector container.
      *

@@ -2,6 +2,7 @@ package thaumicenergistics.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
+
 import thaumicenergistics.common.items.ItemBlockArcaneAssembler;
 import thaumicenergistics.common.items.ItemBlockEssentiaVibrationChamber;
 import thaumicenergistics.common.registries.ThEStrings;
@@ -13,6 +14,7 @@ import thaumicenergistics.common.registries.ThEStrings;
  *
  */
 public enum BlockEnum {
+
     ESSENTIA_PROVIDER(ThEStrings.Block_EssentiaProvider, new BlockEssentiaProvider()),
     INFUSION_PROVIDER(ThEStrings.Block_InfusionProvider, new BlockInfusionProvider()),
     IRON_GEAR_BOX(ThEStrings.Block_IronGearbox, new BlockGearBox()),
@@ -20,9 +22,7 @@ public enum BlockEnum {
     ESSENTIA_CELL_WORKBENCH(ThEStrings.Block_EssentiaCellWorkbench, new BlockEssentiaCellWorkbench()),
     ARCANE_ASSEMBLER(ThEStrings.Block_ArcaneAssembler, new BlockArcaneAssembler(), ItemBlockArcaneAssembler.class),
     KNOWLEDGE_INSCRIBER(ThEStrings.Block_KnowledgeInscriber, new BlockKnowledgeInscriber()),
-    ESSENTIA_VIBRATION_CHAMBER(
-            ThEStrings.Block_EssentiaVibrationChamber,
-            new BlockEssentiaVibrationChamber(),
+    ESSENTIA_VIBRATION_CHAMBER(ThEStrings.Block_EssentiaVibrationChamber, new BlockEssentiaVibrationChamber(),
             ItemBlockEssentiaVibrationChamber.class),
     DISTILLATION_ENCODER(ThEStrings.Block_DistillationEncoder, new BlockDistillationEncoder());
 
@@ -63,8 +63,8 @@ public enum BlockEnum {
      * @param block
      * @param itemBlockClass
      */
-    private BlockEnum(
-            final ThEStrings unlocalizedName, final Block block, final Class<? extends ItemBlock> itemBlockClass) {
+    private BlockEnum(final ThEStrings unlocalizedName, final Block block,
+            final Class<? extends ItemBlock> itemBlockClass) {
         // Set the block
         this.block = block;
 

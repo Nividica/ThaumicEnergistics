@@ -1,6 +1,7 @@
 package thaumicenergistics.common.registries;
 
 import net.minecraft.util.StatCollector;
+
 import thaumicenergistics.common.ThaumicEnergistics;
 
 /**
@@ -10,6 +11,7 @@ import thaumicenergistics.common.ThaumicEnergistics;
  *
  */
 public enum ThEStrings {
+
     // Fluids
     Fluid_GaseousEssentia("fluid.gaseous", false),
 

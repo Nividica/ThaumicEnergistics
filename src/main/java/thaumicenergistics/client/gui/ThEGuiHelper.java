@@ -1,12 +1,15 @@
 package thaumicenergistics.client.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.HashMap;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.EnumChatFormatting;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Helper methods for GUI's.
@@ -40,7 +43,7 @@ public final class ThEGuiHelper {
     /**
      * Bitshift amounts based on byte position
      */
-    private final int[] COLOR_SHIFT_AMOUNT = new int[] {0, 8, 16, 24};
+    private final int[] COLOR_SHIFT_AMOUNT = new int[] { 0, 8, 16, 24 };
 
     /**
      * Maps aspects to chat colors.
@@ -60,8 +63,8 @@ public final class ThEGuiHelper {
         this.aspectChatColors.put(Aspect.EARTH, EnumChatFormatting.GREEN.toString());
     }
 
-    public static final void drawScaledText(
-            final FontRenderer fontRenderer, final String text, final float scale, final float posX, final float posY) {
+    public static final void drawScaledText(final FontRenderer fontRenderer, final String text, final float scale,
+            final float posX, final float posY) {
         // Disable lighting
         GL11.glDisable(GL11.GL_LIGHTING);
 
@@ -123,7 +126,7 @@ public final class ThEGuiHelper {
     public final int[] createColorGradient(final int fromColor, final int toColor, final int iterations) {
         // Is there enough iterations to create a gradient?
         if (iterations < 3) {
-            return new int[] {fromColor, toColor};
+            return new int[] { fromColor, toColor };
         }
 
         // Holds the A,R,G,B bytes of each color
@@ -193,8 +196,8 @@ public final class ThEGuiHelper {
     }
 
     /**
-     * Checks if the specified point is within or on the bounds of a rectangle.
-     * This version localizes the rectangle to the confounds of the current gui.
+     * Checks if the specified point is within or on the bounds of a rectangle. This version localizes the rectangle to
+     * the confounds of the current gui.
      *
      * @param top
      * @param left
@@ -206,15 +209,8 @@ public final class ThEGuiHelper {
      * @param guiTop
      * @return
      */
-    public final boolean isPointInGuiRegion(
-            final int top,
-            final int left,
-            final int height,
-            final int width,
-            final int pointX,
-            final int pointY,
-            final int guiLeft,
-            final int guiTop) {
+    public final boolean isPointInGuiRegion(final int top, final int left, final int height, final int width,
+            final int pointX, final int pointY, final int guiLeft, final int guiTop) {
         return this.isPointInRegion(top, left, height, width, pointX - guiLeft, pointY - guiTop);
     }
 
@@ -229,8 +225,8 @@ public final class ThEGuiHelper {
      * @param pointY
      * @return
      */
-    public final boolean isPointInRegion(
-            final int top, final int left, final int height, final int width, final int pointX, final int pointY) {
+    public final boolean isPointInRegion(final int top, final int left, final int height, final int width,
+            final int pointX, final int pointY) {
         return (pointX >= left) && (pointX <= (left + width)) && (pointY >= top) && (pointY <= (top + height));
     }
 }

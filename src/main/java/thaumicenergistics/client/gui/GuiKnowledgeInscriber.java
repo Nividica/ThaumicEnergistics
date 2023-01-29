@@ -1,13 +1,13 @@
 package thaumicenergistics.client.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
 import thaumicenergistics.client.gui.buttons.GuiButtonClearCraftingGrid;
 import thaumicenergistics.client.gui.buttons.GuiButtonSaveDelete;
@@ -18,6 +18,8 @@ import thaumicenergistics.common.container.ContainerKnowledgeInscriber.CoreSaveS
 import thaumicenergistics.common.network.packet.server.Packet_S_KnowledgeInscriber;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileKnowledgeInscriber} GUI
@@ -27,6 +29,7 @@ import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
  */
 @SideOnly(Side.CLIENT)
 public class GuiKnowledgeInscriber extends ThEBaseGui {
+
     /**
      * Gui size.
      */
@@ -117,8 +120,8 @@ public class GuiKnowledgeInscriber extends ThEBaseGui {
         this.title = ThEStrings.Block_KnowledgeInscriber.getLocalized();
 
         // Setup the particles
-        this.particles = new GuiParticleAnimator
-                [ContainerKnowledgeInscriber.CRAFTING_COLS * ContainerKnowledgeInscriber.CRAFTING_ROWS];
+        this.particles = new GuiParticleAnimator[ContainerKnowledgeInscriber.CRAFTING_COLS
+                * ContainerKnowledgeInscriber.CRAFTING_ROWS];
         for (int index = 0; index < this.particles.length; ++index) {
             this.particles[index] = this.createSaveParticle(index);
         }
@@ -186,10 +189,8 @@ public class GuiKnowledgeInscriber extends ThEBaseGui {
         GL11.glColor4f(redBounce, greenBounce, 1.0F, 1.0F);
 
         // Bind the research background
-        Minecraft.getMinecraft()
-                .renderEngine
-                .bindTexture(
-                        new ResourceLocation(ThaumicEnergistics.MOD_ID, "textures/research/Research.Background.png"));
+        Minecraft.getMinecraft().renderEngine.bindTexture(
+                new ResourceLocation(ThaumicEnergistics.MOD_ID, "textures/research/Research.Background.png"));
 
         // Calculate the X position
         int xpos = (int) (slowTime % 10);
@@ -213,8 +214,8 @@ public class GuiKnowledgeInscriber extends ThEBaseGui {
     @Override
     protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
         // Draw the title
-        this.fontRendererObj.drawString(
-                this.title, GuiKnowledgeInscriber.TITLE_POS_X, GuiKnowledgeInscriber.TITLE_POS_Y, 0);
+        this.fontRendererObj
+                .drawString(this.title, GuiKnowledgeInscriber.TITLE_POS_X, GuiKnowledgeInscriber.TITLE_POS_Y, 0);
 
         // Any particles to draw?
         if (this.hasParticlesToDraw) {
@@ -264,8 +265,7 @@ public class GuiKnowledgeInscriber extends ThEBaseGui {
     }
 
     /**
-     * Called when the server sends a change in the save/load button
-     * functionality.
+     * Called when the server sends a change in the save/load button functionality.
      *
      * @param saveState
      * @param justSaved

@@ -1,5 +1,22 @@
 package thaumicenergistics.common.tiles.abstraction;
 
+import java.io.IOException;
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.grid.IEssentiaGrid;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
+import thaumicenergistics.common.integration.IWailaSource;
+import thaumicenergistics.common.registries.EnumCache;
+import thaumicenergistics.common.tiles.TileEssentiaProvider;
+import thaumicenergistics.common.tiles.TileInfusionProvider;
+import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.networking.GridFlags;
@@ -20,21 +37,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import java.util.List;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.grid.IEssentiaGrid;
-import thaumicenergistics.api.grid.IMEEssentiaMonitor;
-import thaumicenergistics.common.integration.IWailaSource;
-import thaumicenergistics.common.registries.EnumCache;
-import thaumicenergistics.common.tiles.TileEssentiaProvider;
-import thaumicenergistics.common.tiles.TileInfusionProvider;
-import thaumicenergistics.common.utils.EffectiveSide;
 
 /**
  * Base class of {@link TileEssentiaProvider} and {@link TileInfusionProvider}.
@@ -43,11 +45,11 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public abstract class TileProviderBase extends AENetworkTile implements IColorableTile, IWailaSource {
+
     /**
      * NBT keys
      */
-    protected static final String NBT_KEY_COLOR = "TEColor",
-            NBT_KEY_ATTACHMENT = "TEAttachSide",
+    protected static final String NBT_KEY_COLOR = "TEColor", NBT_KEY_ATTACHMENT = "TEAttachSide",
             NBT_KEY_ISCOLORFORCED = "ColorForced";
 
     /**
@@ -81,8 +83,7 @@ public abstract class TileProviderBase extends AENetworkTile implements IColorab
     }
 
     /**
-     * Returns an array with the AE colors of any neighbor tiles.
-     * Index is side.
+     * Returns an array with the AE colors of any neighbor tiles. Index is side.
      *
      * @return
      */
@@ -91,8 +92,8 @@ public abstract class TileProviderBase extends AENetworkTile implements IColorab
 
         for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
             // Get the tile entity on the current side
-            TileEntity tileEntity = this.worldObj.getTileEntity(
-                    this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ);
+            TileEntity tileEntity = this.worldObj
+                    .getTileEntity(this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ);
 
             // Did we get an entity?
             if (tileEntity == null) {
@@ -117,13 +118,13 @@ public abstract class TileProviderBase extends AENetworkTile implements IColorab
      * @param mustMatch
      * @return
      */
-    protected int extractEssentiaFromNetwork(
-            final Aspect wantedAspect, final int wantedAmount, final boolean mustMatch) {
+    protected int extractEssentiaFromNetwork(final Aspect wantedAspect, final int wantedAmount,
+            final boolean mustMatch) {
         // Ensure we have a monitor
         if (this.getEssentiaMonitor()) {
             // Request the essentia
-            long amountExtracted = this.monitor.extractEssentia(
-                    wantedAspect, wantedAmount, Actionable.SIMULATE, this.asMachineSource, true);
+            long amountExtracted = this.monitor
+                    .extractEssentia(wantedAspect, wantedAmount, Actionable.SIMULATE, this.asMachineSource, true);
 
             // Was any essentia extracted?
             if (amountExtracted == 0) {
@@ -152,8 +153,7 @@ public abstract class TileProviderBase extends AENetworkTile implements IColorab
     }
 
     /**
-     * Gets the essentia monitor from the network.
-     * Returns true if a monitor was retrieved.
+     * Gets the essentia monitor from the network. Returns true if a monitor was retrieved.
      *
      * @return
      */
@@ -196,8 +196,7 @@ public abstract class TileProviderBase extends AENetworkTile implements IColorab
     protected void onPowerChange(final boolean isPowered) {}
 
     /**
-     * Sets the color of the provider.
-     * This does not set the isColorForced flag to true.
+     * Sets the color of the provider. This does not set the isColorForced flag to true.
      *
      * @param gridColor
      */
@@ -208,16 +207,9 @@ public abstract class TileProviderBase extends AENetworkTile implements IColorab
         // Are we server side?
         if (EffectiveSide.isServerSide()) {
             /*
-            // Get the grid node
-            IGridNode gridNode = this.getProxy().getNode();
-
-            // Do we have a grid node?
-            if( gridNode != null )
-            {
-            	// Update the grid node
-            	this.getProxy().getNode().updateState();
-            }
-            */
+             * // Get the grid node IGridNode gridNode = this.getProxy().getNode(); // Do we have a grid node? if(
+             * gridNode != null ) { // Update the grid node this.getProxy().getNode().updateState(); }
+             */
 
             // Mark the tile as needing updates and to be saved
             this.markForUpdate();
@@ -469,8 +461,7 @@ public abstract class TileProviderBase extends AENetworkTile implements IColorab
     }
 
     /**
-     * Forces a color change for the provider.
-     * Called when the provider's color is changed via the ColorApplicator item.
+     * Forces a color change for the provider. Called when the provider's color is changed via the ColorApplicator item.
      */
     @Override
     public boolean recolourBlock(final ForgeDirection side, final AEColor color, final EntityPlayer player) {
@@ -493,8 +484,7 @@ public abstract class TileProviderBase extends AENetworkTile implements IColorab
     }
 
     /**
-     * Configures the provider based on the specified
-     * attachment side.
+     * Configures the provider based on the specified attachment side.
      *
      * @param attachmentSide
      */

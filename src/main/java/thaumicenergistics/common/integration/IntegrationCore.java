@@ -1,16 +1,17 @@
 package thaumicenergistics.common.integration;
 
-import appeng.api.config.Upgrades;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
+
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.blocks.BlockArcaneAssembler;
 import thaumicenergistics.common.tiles.TileEssentiaProvider;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThELog;
+import appeng.api.config.Upgrades;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Integrates ThE with other mods.
@@ -19,6 +20,7 @@ import thaumicenergistics.common.utils.ThELog;
  *
  */
 public final class IntegrationCore {
+
     /**
      * Class path to all integration modules
      */
@@ -121,12 +123,12 @@ public final class IntegrationCore {
             // Send a message to Thaumic Tinkerer to blacklist the essentia provider from its CC support
             FMLInterModComms.sendMessage("ThaumicTinkerer", "AddCCBlacklist", TileEssentiaProvider.class.getName());
 
-        } catch (Throwable e) {
-        }
+        } catch (Throwable e) {}
 
         // Register the Arcane Assembler for upgrades
         Upgrades.SPEED.registerItem(
-                ThEApi.instance().blocks().ArcaneAssembler.getStack(), BlockArcaneAssembler.MAX_SPEED_UPGRADES);
+                ThEApi.instance().blocks().ArcaneAssembler.getStack(),
+                BlockArcaneAssembler.MAX_SPEED_UPGRADES);
 
         ThELog.endSection("Integration", startTime);
     }

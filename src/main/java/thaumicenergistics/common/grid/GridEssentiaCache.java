@@ -1,5 +1,14 @@
 package thaumicenergistics.common.grid;
 
+import java.util.HashSet;
+
+import net.minecraft.item.ItemStack;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumicenergistics.api.grid.IEssentiaGrid;
+import thaumicenergistics.api.grid.IEssentiaWatcherHost;
+import thaumicenergistics.common.items.ItemCraftingAspect;
+import thaumicenergistics.common.items.ItemEnum;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -17,14 +26,8 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
+
 import com.google.common.collect.ImmutableSet;
-import java.util.HashSet;
-import net.minecraft.item.ItemStack;
-import thaumcraft.api.aspects.Aspect;
-import thaumicenergistics.api.grid.IEssentiaGrid;
-import thaumicenergistics.api.grid.IEssentiaWatcherHost;
-import thaumicenergistics.common.items.ItemCraftingAspect;
-import thaumicenergistics.common.items.ItemEnum;
 
 /**
  * Creates an essentia monitor for the attached grid.
@@ -110,8 +113,7 @@ public class GridEssentiaCache extends EssentiaMonitor implements IEssentiaGrid 
             // Is the stack craftable, has NBT tag, and is a crafting aspect?
             if (stack.isCraftable() && stack.hasTagCompound() && (stack.getItem() instanceof ItemCraftingAspect)) {
                 // Get the aspect
-                Aspect aspect =
-                        ItemCraftingAspect.getAspect(stack.getTagCompound().getNBTTagCompoundCopy());
+                Aspect aspect = ItemCraftingAspect.getAspect(stack.getTagCompound().getNBTTagCompoundCopy());
                 if (aspect != null) {
                     // Add the aspect
                     craftableAspects.add(aspect);
@@ -144,12 +146,8 @@ public class GridEssentiaCache extends EssentiaMonitor implements IEssentiaGrid 
     }
 
     @Override
-    public long injectEssentia(
-            final Aspect aspect,
-            final long amount,
-            final Actionable mode,
-            final BaseActionSource source,
-            final boolean powered) {
+    public long injectEssentia(final Aspect aspect, final long amount, final Actionable mode,
+            final BaseActionSource source, final boolean powered) {
         // Call super
         long amountRejected = super.injectEssentia(aspect, amount, mode, source, powered);
 
@@ -234,8 +232,8 @@ public class GridEssentiaCache extends EssentiaMonitor implements IEssentiaGrid 
     public void onUpdateTick() {
         try {
             /*
-             * If the cache is invalid and there are listeners this will update the cache to match the network.
-             * If there are no listeners the update is deferred until there are listeners, or the cache is accessed.
+             * If the cache is invalid and there are listeners this will update the cache to match the network. If there
+             * are no listeners the update is deferred until there are listeners, or the cache is accessed.
              */
             if (this.cacheNeedsUpdate && (this.listeners.size() > 0)) {
                 // Update the cache

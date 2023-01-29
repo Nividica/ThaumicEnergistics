@@ -1,6 +1,7 @@
 package thaumicenergistics.api.grid;
 
 import java.util.Collection;
+
 import thaumcraft.api.aspects.Aspect;
 
 /**
@@ -10,6 +11,7 @@ import thaumcraft.api.aspects.Aspect;
  *
  */
 public interface IEssentiaWatcher extends Collection<Aspect> {
+
     /**
      * Return the host for this watcher.
      *

@@ -1,7 +1,9 @@
 package thaumicenergistics.common.network;
 
 import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumcraft.api.aspects.Aspect;
 
 /**
@@ -11,6 +13,7 @@ import thaumcraft.api.aspects.Aspect;
  *
  */
 public interface IAspectSlotPart {
+
     default int[] getAvailableAspectSlots() {
         return new int[0];
     }

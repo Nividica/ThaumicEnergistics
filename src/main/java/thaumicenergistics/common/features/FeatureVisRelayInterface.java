@@ -1,8 +1,7 @@
 package thaumicenergistics.common.features;
 
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -16,6 +15,8 @@ import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 
 /**
  * {@link PartVisInterface} feature.
@@ -24,6 +25,7 @@ import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
  *
  */
 public class FeatureVisRelayInterface extends ThEThaumcraftResearchFeature {
+
     public FeatureVisRelayInterface() {
         super(ResearchTypes.VIS_RELAY_INTERFACE.getKey());
     }
@@ -40,7 +42,7 @@ public class FeatureVisRelayInterface extends ThEThaumcraftResearchFeature {
 
     @Override
     protected Object[] getItemReqs(final CommonDependantItems cdi) {
-        return new Object[] {cdi.MEP2P};
+        return new Object[] { cdi.MEP2P };
     }
 
     @Override
@@ -62,7 +64,11 @@ public class FeatureVisRelayInterface extends ThEThaumcraftResearchFeature {
         visInterfaceAspectList.add(Aspect.ORDER, 2);
         visInterfaceAspectList.add(Aspect.WATER, 2);
         RecipeRegistry.PART_VIS_INTERFACE = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
-                this.researchKey, VisInterface, visInterfaceAspectList, cdi.BallanceShard, cdi.MEP2P);
+                this.researchKey,
+                VisInterface,
+                visInterfaceAspectList,
+                cdi.BallanceShard,
+                cdi.MEP2P);
     }
 
     @Override
@@ -84,17 +90,16 @@ public class FeatureVisRelayInterface extends ThEThaumcraftResearchFeature {
 
         // Set the pages
         ResearchPage[] vriPages = new ResearchPage[] {
-            new ResearchPage(ResearchTypes.VIS_RELAY_INTERFACE.getPageName(1)),
-            new ResearchPage(RecipeRegistry.PART_VIS_INTERFACE),
-            new ResearchPage(ResearchTypes.VIS_RELAY_INTERFACE.getPageName(2)),
-            new ResearchPage(ResearchTypes.VIS_RELAY_INTERFACE.getPageName(3))
-        };
+                new ResearchPage(ResearchTypes.VIS_RELAY_INTERFACE.getPageName(1)),
+                new ResearchPage(RecipeRegistry.PART_VIS_INTERFACE),
+                new ResearchPage(ResearchTypes.VIS_RELAY_INTERFACE.getPageName(2)),
+                new ResearchPage(ResearchTypes.VIS_RELAY_INTERFACE.getPageName(3)) };
 
         // Create the vis relay interface research
-        ResearchTypes.VIS_RELAY_INTERFACE.createResearchItem(
-                vriAspects, ResearchRegistry.COMPLEXITY_MEDIUM, vriIcon, vriPages);
-        ResearchTypes.VIS_RELAY_INTERFACE.researchItem.setParents(
-                this.getFirstValidParentKey(false), PseudoResearchTypes.VISPOWER.getKey());
+        ResearchTypes.VIS_RELAY_INTERFACE
+                .createResearchItem(vriAspects, ResearchRegistry.COMPLEXITY_MEDIUM, vriIcon, vriPages);
+        ResearchTypes.VIS_RELAY_INTERFACE.researchItem
+                .setParents(this.getFirstValidParentKey(false), PseudoResearchTypes.VISPOWER.getKey());
         ResearchTypes.VIS_RELAY_INTERFACE.researchItem.setParentsHidden("VISPOWER");
         ResearchTypes.VIS_RELAY_INTERFACE.researchItem.registerResearchItem();
     }

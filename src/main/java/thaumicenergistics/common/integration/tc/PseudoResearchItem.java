@@ -1,15 +1,17 @@
 package thaumicenergistics.common.integration.tc;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.api.research.ResearchPage;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PseudoResearchItem extends ResearchItem {
+
     private ResearchItem realResearch;
 
     /**
@@ -21,8 +23,8 @@ public class PseudoResearchItem extends ResearchItem {
      * @param row
      * @param icon
      */
-    private PseudoResearchItem(
-            final String key, final String category, final int column, final int row, final ItemStack icon) {
+    private PseudoResearchItem(final String key, final String category, final int column, final int row,
+            final ItemStack icon) {
         // Call super and create the research item
         super(key, category, new AspectList(), column, row, 1, icon);
 
@@ -39,8 +41,8 @@ public class PseudoResearchItem extends ResearchItem {
      * @param row
      * @param icon
      */
-    private PseudoResearchItem(
-            final String key, final String category, final int column, final int row, final ResourceLocation icon) {
+    private PseudoResearchItem(final String key, final String category, final int column, final int row,
+            final ResourceLocation icon) {
         // Call super and create the research item
         super(key, category, new AspectList(), column, row, 1, icon);
 
@@ -59,18 +61,12 @@ public class PseudoResearchItem extends ResearchItem {
      * @param row
      * @return
      */
-    public static PseudoResearchItem newPseudo(
-            final String key,
-            final String category,
-            final String realKey,
-            final String realCategory,
-            final int column,
-            final int row) {
+    public static PseudoResearchItem newPseudo(final String key, final String category, final String realKey,
+            final String realCategory, final int column, final int row) {
         PseudoResearchItem pseudo;
 
         // Get the actual research item
-        ResearchItem realResearch =
-                ResearchCategories.researchCategories.get(realCategory).research.get(realKey);
+        ResearchItem realResearch = ResearchCategories.researchCategories.get(realCategory).research.get(realKey);
 
         // Create the pseudo research
         if (realResearch.icon_item != null) {
@@ -89,8 +85,7 @@ public class PseudoResearchItem extends ResearchItem {
     }
 
     /**
-     * Adds this research as a sibling.
-     * This will ensure this unlocks when the real research does.
+     * Adds this research as a sibling. This will ensure this unlocks when the real research does.
      */
     private void linkToRealResearch() {
 
@@ -116,8 +111,7 @@ public class PseudoResearchItem extends ResearchItem {
     }
 
     /**
-     * Redirect function to get the name of the research from
-     * the real research.
+     * Redirect function to get the name of the research from the real research.
      */
     @SideOnly(Side.CLIENT)
     @Override
@@ -126,8 +120,7 @@ public class PseudoResearchItem extends ResearchItem {
     }
 
     /**
-     * Redirect function to get the research pages from the
-     * real research.
+     * Redirect function to get the research pages from the real research.
      */
     @Override
     public ResearchPage[] getPages() {
@@ -135,8 +128,7 @@ public class PseudoResearchItem extends ResearchItem {
     }
 
     /**
-     * Redirect function to get the research text from the
-     * real research.
+     * Redirect function to get the research text from the real research.
      */
     @SideOnly(Side.CLIENT)
     @Override

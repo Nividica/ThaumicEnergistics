@@ -1,17 +1,13 @@
 package thaumicenergistics.common.inventory;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
 import thaumcraft.common.tiles.TileEssentiaReservoir;
@@ -23,6 +19,12 @@ import thaumicenergistics.common.grid.GridEssentiaCache;
 import thaumicenergistics.common.integration.tc.EssentiaConversionHelper;
 import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.common.parts.PartEssentiaStorageBus;
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IItemList;
 
 /**
  * Handles interaction between {@link PartEssentiaStorageBus} and {@link IAspectContainer}.
@@ -31,6 +33,7 @@ import thaumicenergistics.common.parts.PartEssentiaStorageBus;
  *
  */
 class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
+
     /**
      * Thaumcraft aspect container attracted to the storage bus.
      */
@@ -60,9 +63,8 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
     }
 
     /**
-     * Adjusts the cached aspect amount based on the specified delta.
-     * Positive diff adds to the amount, negative diff removes from the
-     * amount.
+     * Adjusts the cached aspect amount based on the specified delta. Positive diff adds to the amount, negative diff
+     * removes from the amount.
      *
      * @param aspect
      * @param diff
@@ -107,8 +109,8 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
         }
 
         // Get the essentia and amounts in the container
-        List<IAspectStack> containerStacks =
-                EssentiaTileContainerHelper.INSTANCE.getAspectStacksFromContainer(this.aspectContainer);
+        List<IAspectStack> containerStacks = EssentiaTileContainerHelper.INSTANCE
+                .getAspectStacksFromContainer(this.aspectContainer);
 
         // Ensure there is essentia in the container
         if (containerStacks.isEmpty()) {
@@ -180,8 +182,8 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
         }
 
         // Get the essentia, if any, in the container
-        IAspectStack containerStack =
-                EssentiaTileContainerHelper.INSTANCE.getAspectStackFromContainer(this.aspectContainer);
+        IAspectStack containerStack = EssentiaTileContainerHelper.INSTANCE
+                .getAspectStackFromContainer(this.aspectContainer);
 
         // Is the container empty?
         if (containerStack == null) {
@@ -197,12 +199,11 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
     }
 
     /**
-     * Extracts essentia from the container.
-     * returns the number of items extracted, null
+     * Extracts essentia from the container. returns the number of items extracted, null
      */
     @Override
-    public IAEFluidStack extractItems(
-            final IAEFluidStack request, final Actionable mode, final BaseActionSource source) {
+    public IAEFluidStack extractItems(final IAEFluidStack request, final Actionable mode,
+            final BaseActionSource source) {
         if ((this.aspectContainer == null) || (request == null)) {
             // Nothing to drain from, or empty request
             return null;
@@ -224,8 +225,8 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
         }
 
         // Simulate draining the container
-        FluidStack drained = EssentiaTileContainerHelper.INSTANCE.extractFromContainer(
-                this.aspectContainer, toDrain, Actionable.SIMULATE);
+        FluidStack drained = EssentiaTileContainerHelper.INSTANCE
+                .extractFromContainer(this.aspectContainer, toDrain, Actionable.SIMULATE);
 
         // Was any drained?
         if ((drained == null) || (drained.amount == 0)) {
@@ -234,8 +235,8 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
         }
 
         // Convert the drain amount to essentia units
-        int drainedAmount_EU =
-                (int) EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount(drained.amount);
+        int drainedAmount_EU = (int) EssentiaConversionHelper.INSTANCE
+                .convertFluidAmountToEssentiaAmount(drained.amount);
 
         // Do we have the power to drain this?
         if (!this.partStorageBus.extractPowerForEssentiaTransfer(drainedAmount_EU, Actionable.SIMULATE)) {
@@ -246,8 +247,8 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
         // Are we modulating?
         if (mode == Actionable.MODULATE) {
             // Extract
-            EssentiaTileContainerHelper.INSTANCE.extractFromContainer(
-                    this.aspectContainer, toDrain, Actionable.MODULATE);
+            EssentiaTileContainerHelper.INSTANCE
+                    .extractFromContainer(this.aspectContainer, toDrain, Actionable.MODULATE);
 
             // Take power
             this.partStorageBus.extractPowerForEssentiaTransfer(drainedAmount_EU, Actionable.MODULATE);
@@ -284,8 +285,9 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
                     GaseousEssentia gas = GaseousEssentia.getGasFromAspect(essentia.getAspect());
 
                     // Add to the item list
-                    out.add(EssentiaConversionHelper.INSTANCE.createAEFluidStackInEssentiaUnits(
-                            gas, essentia.getStackSize()));
+                    out.add(
+                            EssentiaConversionHelper.INSTANCE
+                                    .createAEFluidStackInEssentiaUnits(gas, essentia.getStackSize()));
                 }
             }
         }
@@ -294,8 +296,7 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
     }
 
     /**
-     * Inserts essentia into the container.
-     * returns the number of items not added.
+     * Inserts essentia into the container. returns the number of items not added.
      */
     @Override
     public IAEFluidStack injectItems(final IAEFluidStack input, final Actionable mode, final BaseActionSource source) {
@@ -319,8 +320,8 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
             filled_FU = (int) input.getStackSize();
         } else {
             // Simulate filling the container
-            filled_FU = (int) EssentiaTileContainerHelper.INSTANCE.injectFluidIntoContainer(
-                    this.aspectContainer, input, Actionable.SIMULATE);
+            filled_FU = (int) EssentiaTileContainerHelper.INSTANCE
+                    .injectFluidIntoContainer(this.aspectContainer, input, Actionable.SIMULATE);
 
             // Was any filled?
             if (filled_FU == 0) {
@@ -341,8 +342,8 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
         // Are we modulating?
         if (mode == Actionable.MODULATE) {
             // Inject, and set the actual amount injected
-            filled_FU = (int) EssentiaTileContainerHelper.INSTANCE.injectFluidIntoContainer(
-                    this.aspectContainer, input, Actionable.MODULATE);
+            filled_FU = (int) EssentiaTileContainerHelper.INSTANCE
+                    .injectFluidIntoContainer(this.aspectContainer, input, Actionable.MODULATE);
 
             // Take power for as much as we claimed we could take.
             this.partStorageBus.extractPowerForEssentiaTransfer(filled_EU, Actionable.MODULATE);
@@ -368,7 +369,7 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
             // (actually this doesn't work, since we are inside insertion call stack, so monitor notifications are
             // skipped)
             // I left the code here in case someone will want to optimize this again
-            // this.postAlterationToHostGrid( ImmutableList.of( AEApi.instance().storage()	.createFluidStack( new
+            // this.postAlterationToHostGrid( ImmutableList.of( AEApi.instance().storage() .createFluidStack( new
             // FluidStack( toFill.getFluid(), -remaining_FU ) ) ) );
             // instead we just invalidate essentia cache every time
             invalidateGlobalEssentiaCache();
@@ -508,9 +509,8 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
     }
 
     /**
-     * Valid for pass 1 if there are filters or the container has stored
-     * essentia.
-     * Valid for pass 2 if no filters or stored essentia.
+     * Valid for pass 1 if there are filters or the container has stored essentia. Valid for pass 2 if no filters or
+     * stored essentia.
      *
      * @return
      */
@@ -518,8 +518,7 @@ class HandlerEssentiaStorageBusContainer extends HandlerEssentiaStorageBusBase {
     public boolean validForPass(final int pass) {
         if (this.aspectContainer != null) {
             boolean hasFilters = !this.allowAny();
-            boolean hasStored = !EssentiaTileContainerHelper.INSTANCE
-                    .getAspectStacksFromContainer(this.aspectContainer)
+            boolean hasStored = !EssentiaTileContainerHelper.INSTANCE.getAspectStacksFromContainer(this.aspectContainer)
                     .isEmpty();
 
             // Is this the priority pass?

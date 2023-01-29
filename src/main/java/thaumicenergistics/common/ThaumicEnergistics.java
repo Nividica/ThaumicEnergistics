@@ -1,18 +1,9 @@
 package thaumicenergistics.common;
 
-import appeng.api.AEApi;
-import cpw.mods.fml.common.LoaderState;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.grid.IEssentiaGrid;
@@ -24,6 +15,16 @@ import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.registries.AEAspectRegister;
 import thaumicenergistics.common.utils.ThELog;
+import appeng.api.AEApi;
+import cpw.mods.fml.common.LoaderState;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
 /**
  * <strong>Thaumic Energistics</strong>
@@ -37,9 +38,9 @@ import thaumicenergistics.common.utils.ThELog;
         modid = ThaumicEnergistics.MOD_ID,
         name = "Thaumic Energistics",
         version = ThaumicEnergistics.VERSION,
-        dependencies =
-                "required-after:ThE-core;required-after:appliedenergistics2@[rv3-beta-116,);required-after:Thaumcraft@[4.2.3.5,);after:Waila;after:extracells")
+        dependencies = "required-after:ThE-core;required-after:appliedenergistics2@[rv3-beta-116,);required-after:Thaumcraft@[4.2.3.5,);after:Waila;after:extracells")
 public class ThaumicEnergistics {
+
     /**
      * What loading state Thaumic Energistics has completed.
      */

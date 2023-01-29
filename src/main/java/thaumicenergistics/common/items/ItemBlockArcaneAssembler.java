@@ -1,11 +1,13 @@
 package thaumicenergistics.common.items;
 
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
 
@@ -22,10 +24,7 @@ public class ItemBlockArcaneAssembler extends ItemBlock {
     }
 
     @Override
-    public void addInformation(
-            final ItemStack stack,
-            final EntityPlayer player,
-            final List displayList,
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List displayList,
             final boolean advancedItemTooltips) {
         // Ensure the stack has a tag
         if (!stack.hasTagCompound()) {
@@ -35,9 +34,9 @@ public class ItemBlockArcaneAssembler extends ItemBlock {
         // Ensure it has stored vis
         if (stack.getTagCompound().hasKey(TileArcaneAssembler.NBTKEY_STORED_VIS)) {
             // Add the info
-            displayList.add(EnumChatFormatting.WHITE.toString()
-                    + EnumChatFormatting.ITALIC.toString()
-                    + ThEStrings.Tooltip_ArcaneAssemblerHasVis.getLocalized());
+            displayList.add(
+                    EnumChatFormatting.WHITE.toString() + EnumChatFormatting.ITALIC.toString()
+                            + ThEStrings.Tooltip_ArcaneAssemblerHasVis.getLocalized());
         }
     }
 }

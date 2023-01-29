@@ -1,14 +1,12 @@
 package thaumicenergistics.common.network.packet.client;
 
-import appeng.api.config.ViewItems;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
@@ -20,6 +18,10 @@ import thaumicenergistics.common.parts.PartEssentiaTerminal;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
+import appeng.api.config.ViewItems;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link PartEssentiaTerminal}, {@link ItemWirelessEssentiaTerminal}, and {@link ItemEssentiaCell} client-bound packet.
@@ -28,12 +30,11 @@ import thaumicenergistics.common.storage.AspectStackComparator.AspectStackCompar
  *
  */
 public class Packet_C_EssentiaCellTerminal extends ThEClientPacket {
+
     /**
      * Modes
      */
-    private static final byte MODE_FULL_LIST = 0,
-            MODE_SELECTED_ASPECT = 1,
-            MODE_VIEWING_CHANGED = 2,
+    private static final byte MODE_FULL_LIST = 0, MODE_SELECTED_ASPECT = 1, MODE_VIEWING_CHANGED = 2,
             MODE_LIST_CHANGED = 3;
 
     private Collection<IAspectStack> aspectStackList;
@@ -85,8 +86,8 @@ public class Packet_C_EssentiaCellTerminal extends ThEClientPacket {
      * @param player
      * @param sortMode
      */
-    public static void sendViewingModes(
-            final EntityPlayer player, final AspectStackComparatorMode sortMode, final ViewItems viewMode) {
+    public static void sendViewingModes(final EntityPlayer player, final AspectStackComparatorMode sortMode,
+            final ViewItems viewMode) {
         Packet_C_EssentiaCellTerminal packet = newPacket(player, MODE_VIEWING_CHANGED);
 
         // Set the sort mode

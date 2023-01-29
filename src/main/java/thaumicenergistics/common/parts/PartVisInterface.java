@@ -1,5 +1,25 @@
 package thaumicenergistics.common.parts;
 
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.Vec3;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.visnet.VisNetHandler;
+import thaumcraft.common.tiles.TileVisRelay;
+import thaumicenergistics.api.grid.IDigiVisSource;
+import thaumicenergistics.client.textures.BlockTextureManager;
+import thaumicenergistics.common.integration.tc.DigiVisSourceData;
+import thaumicenergistics.common.integration.tc.VisProviderProxy;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.items.IMemoryCard;
@@ -16,24 +36,6 @@ import appeng.api.parts.PartItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.visnet.VisNetHandler;
-import thaumcraft.common.tiles.TileVisRelay;
-import thaumicenergistics.api.grid.IDigiVisSource;
-import thaumicenergistics.client.textures.BlockTextureManager;
-import thaumicenergistics.common.integration.tc.DigiVisSourceData;
-import thaumicenergistics.common.integration.tc.VisProviderProxy;
 
 /**
  * Iterfaces with a {@link TileVisRelay}.
@@ -42,6 +44,7 @@ import thaumicenergistics.common.integration.tc.VisProviderProxy;
  *
  */
 public class PartVisInterface extends ThEPartBase implements IGridTickable, IDigiVisSource {
+
     /**
      * NBT key for the unique ID
      */
@@ -63,8 +66,7 @@ public class PartVisInterface extends ThEPartBase implements IGridTickable, IDig
     private static final int TIME_TO_CLEAR = 500;
 
     /**
-     * The amount of power to use per each vis of a request.
-     * The amount of vis doesn't matter.
+     * The amount of power to use per each vis of a request. The amount of vis doesn't matter.
      */
     private static final int POWER_PER_REQUESTED_VIS = 4;
 
@@ -137,8 +139,8 @@ public class PartVisInterface extends ThEPartBase implements IGridTickable, IDig
         }
 
         // Simulate a power drain
-        double drainedPower = eGrid.extractAEPower(
-                PartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+        double drainedPower = eGrid
+                .extractAEPower(PartVisInterface.POWER_PER_REQUESTED_VIS, Actionable.SIMULATE, PowerMultiplier.CONFIG);
 
         // Ensure we got the power we need
         if (drainedPower < PartVisInterface.POWER_PER_REQUESTED_VIS) {
@@ -586,8 +588,8 @@ public class PartVisInterface extends ThEPartBase implements IGridTickable, IDig
      */
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderStatic(
-            final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer) {
+    public void renderStatic(final int x, final int y, final int z, final IPartRenderHelper helper,
+            final RenderBlocks renderer) {
         Tessellator tessellator = Tessellator.instance;
 
         IIcon side = BlockTextureManager.VIS_RELAY_INTERFACE.getTextures()[2];
@@ -604,7 +606,12 @@ public class PartVisInterface extends ThEPartBase implements IGridTickable, IDig
         if (this.visDrainingColor != 0) {
             tessellator.setColorOpaque_I(this.visDrainingColor);
             helper.renderFace(
-                    x, y, z, BlockTextureManager.VIS_RELAY_INTERFACE.getTextures()[1], ForgeDirection.SOUTH, renderer);
+                    x,
+                    y,
+                    z,
+                    BlockTextureManager.VIS_RELAY_INTERFACE.getTextures()[1],
+                    ForgeDirection.SOUTH,
+                    renderer);
         }
 
         // Back (facing bus)

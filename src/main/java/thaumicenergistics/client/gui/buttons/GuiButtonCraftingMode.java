@@ -1,13 +1,16 @@
 package thaumicenergistics.client.gui.buttons;
 
+import java.util.List;
+
+import net.minecraft.util.StatCollector;
+
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.List;
-import net.minecraft.util.StatCollector;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 @SideOnly(Side.CLIENT)
 public class GuiButtonCraftingMode extends ThEStateButton {
+
     private static final String TOOLTIP_LOC_HEADER = "gui.tooltips.appliedenergistics2.";
     private boolean alwaysCraft = false;
 

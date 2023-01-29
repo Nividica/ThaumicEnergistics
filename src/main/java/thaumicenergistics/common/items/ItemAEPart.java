@@ -1,15 +1,9 @@
 package thaumicenergistics.common.items;
 
-import appeng.api.AEApi;
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.items.IItemGroup;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,9 +11,17 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.utils.ThELog;
+import appeng.api.AEApi;
+import appeng.api.config.Upgrades;
+import appeng.api.implementations.items.IItemGroup;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartItem;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base class for all ThE's AE2 cable parts.
@@ -28,6 +30,7 @@ import thaumicenergistics.common.utils.ThELog;
  *
  */
 public class ItemAEPart extends Item implements IPartItem, IItemGroup {
+
     /**
      * Constructor
      */
@@ -111,17 +114,8 @@ public class ItemAEPart extends Item implements IPartItem, IItemGroup {
     }
 
     @Override
-    public boolean onItemUse(
-            final ItemStack itemStack,
-            final EntityPlayer player,
-            final World world,
-            final int x,
-            final int y,
-            final int z,
-            final int side,
-            final float hitX,
-            final float hitY,
-            final float hitZ) {
+    public boolean onItemUse(final ItemStack itemStack, final EntityPlayer player, final World world, final int x,
+            final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ) {
         // Can we place the item on the bus?
         return AEApi.instance().partHelper().placeBus(itemStack, x, y, z, side, player, world);
     }

@@ -1,8 +1,7 @@
 package thaumicenergistics.common.features;
 
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -14,6 +13,8 @@ import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
 import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 
 /**
  * {@link TileDistillationPatternEncoder} feature.
@@ -39,7 +40,7 @@ public class FeatureAutocrafting_Essentia extends ThEThaumcraftResearchFeature {
 
     @Override
     protected Object[] getItemReqs(final CommonDependantItems cdi) {
-        return new Object[] {cdi.MEInterface, cdi.EngineeringProcessor};
+        return new Object[] { cdi.MEInterface, cdi.EngineeringProcessor };
     }
 
     @Override
@@ -50,8 +51,7 @@ public class FeatureAutocrafting_Essentia extends ThEThaumcraftResearchFeature {
     @Override
     protected void registerCrafting(final CommonDependantItems cdi) {
         // My items
-        ItemStack dpeStack =
-                ThEApi.instance().blocks().DistillationPatternEncoder.getStack();
+        ItemStack dpeStack = ThEApi.instance().blocks().DistillationPatternEncoder.getStack();
 
         // Aspect list
         AspectList dpeAspects = new AspectList();
@@ -60,23 +60,12 @@ public class FeatureAutocrafting_Essentia extends ThEThaumcraftResearchFeature {
         dpeAspects.add(Aspect.FIRE, 3);
 
         // Recipe
-        Object[] dpeRecipe = new Object[] {
-            "IPI",
-            " T ",
-            "IEI",
-            'I',
-            cdi.IronIngot,
-            'P',
-            cdi.IlluminatedPanel,
-            'T',
-            cdi.Thaumometer,
-            'E',
-            cdi.EngineeringProcessor
-        };
+        Object[] dpeRecipe = new Object[] { "IPI", " T ", "IEI", 'I', cdi.IronIngot, 'P', cdi.IlluminatedPanel, 'T',
+                cdi.Thaumometer, 'E', cdi.EngineeringProcessor };
 
         // Register
-        RecipeRegistry.BLOCK_DISTILLATION_PATTERN_ENCODER =
-                ThaumcraftApi.addArcaneCraftingRecipe(this.researchKey, dpeStack, dpeAspects, dpeRecipe);
+        RecipeRegistry.BLOCK_DISTILLATION_PATTERN_ENCODER = ThaumcraftApi
+                .addArcaneCraftingRecipe(this.researchKey, dpeStack, dpeAspects, dpeRecipe);
     }
 
     @Override
@@ -94,23 +83,21 @@ public class FeatureAutocrafting_Essentia extends ThEThaumcraftResearchFeature {
         dpeAspects.add(Aspect.MIND, 1);
 
         // Icon
-        ItemStack dpeIcon =
-                ThEApi.instance().blocks().DistillationPatternEncoder.getStack();
+        ItemStack dpeIcon = ThEApi.instance().blocks().DistillationPatternEncoder.getStack();
 
         // Pages
         ResearchPage[] dpePages = new ResearchPage[] {
-            new ResearchPage(ResearchTypes.DISTILLATION_PATTERN_ENCODER.getPageName(1)),
-            new ResearchPage(RecipeRegistry.BLOCK_DISTILLATION_PATTERN_ENCODER)
-        };
+                new ResearchPage(ResearchTypes.DISTILLATION_PATTERN_ENCODER.getPageName(1)),
+                new ResearchPage(RecipeRegistry.BLOCK_DISTILLATION_PATTERN_ENCODER) };
 
         // Create the research item
-        ResearchTypes.DISTILLATION_PATTERN_ENCODER.createResearchItem(
-                dpeAspects, ResearchRegistry.COMPLEXITY_LARGE, dpeIcon, dpePages);
+        ResearchTypes.DISTILLATION_PATTERN_ENCODER
+                .createResearchItem(dpeAspects, ResearchRegistry.COMPLEXITY_LARGE, dpeIcon, dpePages);
 
         // Set parents
         ResearchTypes.DISTILLATION_PATTERN_ENCODER.researchItem.setParents(this.getFirstValidParentKey(false));
-        ResearchTypes.DISTILLATION_PATTERN_ENCODER.researchItem.setParentsHidden(
-                FeatureRegistry.instance().featureEssentiaMonitoring.getFirstValidParentKey(true));
+        ResearchTypes.DISTILLATION_PATTERN_ENCODER.researchItem
+                .setParentsHidden(FeatureRegistry.instance().featureEssentiaMonitoring.getFirstValidParentKey(true));
         ResearchTypes.DISTILLATION_PATTERN_ENCODER.researchItem.setConcealed();
 
         // Register the research

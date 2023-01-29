@@ -1,12 +1,13 @@
 package thaumicenergistics.common.network.packet.server;
 
-import appeng.util.Platform;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+
 import thaumicenergistics.common.items.ItemFocusAEWrench;
 import thaumicenergistics.common.network.NetworkHandler;
+import appeng.util.Platform;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link ItemFocusAEWrench} server-bound packet.
@@ -15,6 +16,7 @@ import thaumicenergistics.common.network.NetworkHandler;
  *
  */
 public class Packet_S_WrenchFocus extends ThEServerPacket {
+
     // Seems redundant, but is used as a safegaurd
     private static final byte MODE_FOCUSWRENCH = 1;
 
@@ -77,8 +79,13 @@ public class Packet_S_WrenchFocus extends ThEServerPacket {
     public void execute() {
         if (this.mode == Packet_S_WrenchFocus.MODE_FOCUSWRENCH) {
             // Create the MOP
-            MovingObjectPosition position =
-                    new MovingObjectPosition(this.x, this.y, this.z, this.side, Vec3.createVectorHelper(0, 0, 0), true);
+            MovingObjectPosition position = new MovingObjectPosition(
+                    this.x,
+                    this.y,
+                    this.z,
+                    this.side,
+                    Vec3.createVectorHelper(0, 0, 0),
+                    true);
 
             // Call on the wrench focus to handle the dismantle
             ItemFocusAEWrench.performDismantleOnPartHost(this.player, this.eyeHeight, position);

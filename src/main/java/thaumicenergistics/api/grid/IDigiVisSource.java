@@ -1,11 +1,13 @@
 package thaumicenergistics.api.grid;
 
-import appeng.api.networking.IGrid;
-import appeng.api.util.DimensionalCoord;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumcraft.api.aspects.Aspect;
+import appeng.api.networking.IGrid;
+import appeng.api.util.DimensionalCoord;
 
 /**
  * Digital Vis source.
@@ -14,6 +16,7 @@ import thaumcraft.api.aspects.Aspect;
  *
  */
 public interface IDigiVisSource {
+
     /**
      * Drains digivis from this source.
      *
@@ -40,8 +43,8 @@ public interface IDigiVisSource {
     DimensionalCoord getLocation();
 
     /**
-     * Gets the side of cable the source part is attached to.
-     * If this returns UNKNOWN, it is assumed the source is a whole block.
+     * Gets the side of cable the source part is attached to. If this returns UNKNOWN, it is assumed the source is a
+     * whole block.
      *
      * @return
      */

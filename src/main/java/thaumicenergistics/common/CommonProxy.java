@@ -1,10 +1,8 @@
 package thaumicenergistics.common;
 
-import appeng.api.AEApi;
-import appeng.api.movable.IMovableRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
 import thaumcraft.common.config.ConfigItems;
 import thaumicenergistics.common.blocks.BlockEnum;
 import thaumicenergistics.common.fluids.GaseousEssentia;
@@ -12,6 +10,9 @@ import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.items.ItemMaterial;
 import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.tiles.TileEnum;
+import appeng.api.AEApi;
+import appeng.api.movable.IMovableRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Proxy shared by both client and server.
@@ -20,6 +21,7 @@ import thaumicenergistics.common.tiles.TileEnum;
  *
  */
 public class CommonProxy {
+
     /**
      * Registers blocks with the game.
      */
@@ -56,7 +58,8 @@ public class CommonProxy {
 
         // Add the shard from thaumcraft so that AE will suggest replacements.
         OreDictionary.registerOre(
-                "materialAspectShard", new ItemStack(ConfigItems.itemShard, 1, OreDictionary.WILDCARD_VALUE));
+                "materialAspectShard",
+                new ItemStack(ConfigItems.itemShard, 1, OreDictionary.WILDCARD_VALUE));
     }
 
     /**

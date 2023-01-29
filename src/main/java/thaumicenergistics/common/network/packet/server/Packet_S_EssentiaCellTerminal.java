@@ -1,7 +1,7 @@
 package thaumicenergistics.common.network.packet.server;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.container.ContainerEssentiaCellTerminalBase;
 import thaumicenergistics.common.items.ItemEssentiaCell;
@@ -9,6 +9,7 @@ import thaumicenergistics.common.items.ItemWirelessEssentiaTerminal;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.parts.PartEssentiaTerminal;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link PartEssentiaTerminal}, {@link ItemWirelessEssentiaTerminal}, and {@link ItemEssentiaCell} server-bound packet.
@@ -17,15 +18,12 @@ import thaumicenergistics.common.parts.PartEssentiaTerminal;
  *
  */
 public class Packet_S_EssentiaCellTerminal extends ThEServerPacket {
+
     /**
      * Packet modes
      */
-    private static final byte MODE_SELECTED_ASPECT = 0,
-            MODE_FULL_UPDATE = 1,
-            MODE_SORT_CHANGE = 2,
-            MODE_AUTO_CRAFT = 3,
-            MODE_VIEW_CHANGE = 4,
-            MODE_HELD_ITEM = 5;
+    private static final byte MODE_SELECTED_ASPECT = 0, MODE_FULL_UPDATE = 1, MODE_SORT_CHANGE = 2, MODE_AUTO_CRAFT = 3,
+            MODE_VIEW_CHANGE = 4, MODE_HELD_ITEM = 5;
 
     /**
      * The aspect.
@@ -118,8 +116,7 @@ public class Packet_S_EssentiaCellTerminal extends ThEServerPacket {
     }
 
     /**
-     * Informs the server when an aspect has been clicked on and the player
-     * is holding an item.
+     * Informs the server when an aspect has been clicked on and the player is holding an item.
      *
      * @param player
      * @param aspect

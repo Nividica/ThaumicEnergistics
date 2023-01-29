@@ -1,8 +1,7 @@
 package thaumicenergistics.common.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -15,11 +14,14 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
 import thaumicenergistics.common.utils.EffectiveSide;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileDistillationPatternEncoder} block.
@@ -28,6 +30,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class BlockDistillationEncoder extends AbstractBlockAEWrenchable {
+
     public BlockDistillationEncoder() {
         // Call super with material machine (iron)
         super(Material.iron);
@@ -43,8 +46,8 @@ public class BlockDistillationEncoder extends AbstractBlockAEWrenchable {
     }
 
     @Override
-    protected final boolean onBlockActivated(
-            final World world, final int x, final int y, final int z, final EntityPlayer player) {
+    protected final boolean onBlockActivated(final World world, final int x, final int y, final int z,
+            final EntityPlayer player) {
         // Launch the gui.
         ThEGuiHandler.launchGui(ThEGuiHandler.DISTILLATION_ENCODER, player, world, x, y, z);
 
@@ -55,8 +58,8 @@ public class BlockDistillationEncoder extends AbstractBlockAEWrenchable {
      * Called when the block is broken.
      */
     @Override
-    public void breakBlock(
-            final World world, final int x, final int y, final int z, final Block block, final int metaData) {
+    public void breakBlock(final World world, final int x, final int y, final int z, final Block block,
+            final int metaData) {
         // Is this server side?
         if (EffectiveSide.isServerSide()) {
             // Get the tile
@@ -134,19 +137,14 @@ public class BlockDistillationEncoder extends AbstractBlockAEWrenchable {
      * Is solid.
      */
     @Override
-    public final boolean isSideSolid(
-            final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side) {
+    public final boolean isSideSolid(final IBlockAccess world, final int x, final int y, final int z,
+            final ForgeDirection side) {
         // This is a solid cube
         return true;
     }
 
     @Override
-    public void onBlockPlacedBy(
-            final World world,
-            final int x,
-            final int y,
-            final int z,
-            final EntityLivingBase player,
+    public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase player,
             final ItemStack itemStack) {
         // Set the metadata to up
         world.setBlockMetadataWithNotify(x, y, z, 0, 2);

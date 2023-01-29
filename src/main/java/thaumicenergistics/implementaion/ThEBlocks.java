@@ -10,6 +10,7 @@ import thaumicenergistics.common.blocks.BlockEnum;
  *
  */
 class ThEBlocks extends IThEBlocks {
+
     ThEBlocks() {
         this.EssentiaProvider = new ThEItemDescription(BlockEnum.ESSENTIA_PROVIDER.getBlock());
         this.InfusionProvider = new ThEItemDescription(BlockEnum.INFUSION_PROVIDER.getBlock());

@@ -1,14 +1,14 @@
 package thaumicenergistics.client.gui;
 
-import appeng.api.config.RedstoneMode;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSlotGui;
 import thaumicenergistics.client.gui.abstraction.ThEBaseGui;
@@ -25,6 +25,9 @@ import thaumicenergistics.common.parts.AEPartsEnum;
 import thaumicenergistics.common.parts.PartEssentiaExportBus;
 import thaumicenergistics.common.parts.PartEssentiaImportBus;
 import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
+import appeng.api.config.RedstoneMode;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link PartEssentiaExportBus} and {@link PartEssentiaImportBus} GUI
@@ -41,10 +44,9 @@ public class GuiEssentiaIO extends ThEBaseGui implements WidgetAspectSlot.IConfi
     private static final int FILTER_GRID_SIZE = 3;
 
     /**
-     * Controls if the widget is drawn.
-     * if filterSize >= this, the widget can be drawn.
+     * Controls if the widget is drawn. if filterSize >= this, the widget can be drawn.
      */
-    private static final byte[] WIDGET_CONFIG_BYTES = new byte[] {2, 1, 2, 1, 0, 1, 2, 1, 2};
+    private static final byte[] WIDGET_CONFIG_BYTES = new byte[] { 2, 1, 2, 1, 0, 1, 2, 1, 2 };
 
     /**
      * Starting X position for widgets.
@@ -72,8 +74,7 @@ public class GuiEssentiaIO extends ThEBaseGui implements WidgetAspectSlot.IConfi
     private static final int GUI_WIDTH_WITH_TOOL = 246;
 
     /**
-     * Width of the main body of the gui.
-     * Ignores upgrade and network tool areas.
+     * Width of the main body of the gui. Ignores upgrade and network tool areas.
      */
     private static final int GUI_MAIN_WIDTH = 176;
 
@@ -95,18 +96,15 @@ public class GuiEssentiaIO extends ThEBaseGui implements WidgetAspectSlot.IConfi
     /**
      * Redstone Control button placement
      */
-    private static final int REDSTONE_CONTROL_BUTTON_POS_Y = 2,
-            REDSTONE_CONTROL_BUTTON_POS_X = -18,
-            REDSTONE_CONTROL_BUTTON_SIZE = 16,
-            REDSTONE_CONTROL_BUTTON_ID = 0;
+    private static final int REDSTONE_CONTROL_BUTTON_POS_Y = 2, REDSTONE_CONTROL_BUTTON_POS_X = -18,
+            REDSTONE_CONTROL_BUTTON_SIZE = 16, REDSTONE_CONTROL_BUTTON_ID = 0;
 
     /**
      * Void button placement
      */
     private static final int ALLOW_VOID_BUTTON_POS_Y = 2, ALLOW_VOID_BUTTON_POS_X = -19, ALLOW_VOID_BUTTON_ID = 1;
 
-    private static final int CRAFTING_MODE_BUTTON_POS_Y = 40,
-            CRAFTING_MODE_BUTTON_POS_X = -18,
+    private static final int CRAFTING_MODE_BUTTON_POS_Y = 40, CRAFTING_MODE_BUTTON_POS_X = -18,
             CRAFTING_MODE_BUTTON_ID = 2;
 
     /**
@@ -216,11 +214,21 @@ public class GuiEssentiaIO extends ThEBaseGui implements WidgetAspectSlot.IConfi
         if (this.hasNetworkTool) {
             // Draw the full gui
             this.drawTexturedModalRect(
-                    this.guiLeft, this.guiTop, 0, 0, GuiEssentiaIO.GUI_WIDTH_WITH_TOOL, GuiEssentiaIO.GUI_HEIGHT);
+                    this.guiLeft,
+                    this.guiTop,
+                    0,
+                    0,
+                    GuiEssentiaIO.GUI_WIDTH_WITH_TOOL,
+                    GuiEssentiaIO.GUI_HEIGHT);
         } else {
             // Draw main gui
             this.drawTexturedModalRect(
-                    this.guiLeft, this.guiTop, 0, 0, GuiEssentiaIO.GUI_MAIN_WIDTH, GuiEssentiaIO.GUI_HEIGHT);
+                    this.guiLeft,
+                    this.guiTop,
+                    0,
+                    0,
+                    GuiEssentiaIO.GUI_MAIN_WIDTH,
+                    GuiEssentiaIO.GUI_HEIGHT);
 
             // Draw upgrade slots
             this.drawTexturedModalRect(
@@ -251,8 +259,7 @@ public class GuiEssentiaIO extends ThEBaseGui implements WidgetAspectSlot.IConfi
         for (int i = 0; i < 9; i++) {
             WidgetAspectSlot slotWidget = this.aspectSlotList.get(i);
 
-            if ((!hoverUnderlayRendered)
-                    && (slotWidget.canRender())
+            if ((!hoverUnderlayRendered) && (slotWidget.canRender())
                     && (slotWidget.isMouseOverWidget(mouseX, mouseY))) {
                 slotWidget.drawMouseHoverUnderlay();
 
@@ -352,15 +359,16 @@ public class GuiEssentiaIO extends ThEBaseGui implements WidgetAspectSlot.IConfi
                 // Calculate the y position
                 int yPos = GuiEssentiaIO.WIDGET_Y_POSITION + (row * ThEWidget.WIDGET_SIZE);
 
-                this.aspectSlotList.add(new WidgetAspectSlot(
-                        this,
-                        this.player,
-                        this.part,
-                        index,
-                        xPos,
-                        yPos,
-                        this,
-                        GuiEssentiaIO.WIDGET_CONFIG_BYTES[index]));
+                this.aspectSlotList.add(
+                        new WidgetAspectSlot(
+                                this,
+                                this.player,
+                                this.part,
+                                index,
+                                xPos,
+                                yPos,
+                                this,
+                                GuiEssentiaIO.WIDGET_CONFIG_BYTES[index]));
             }
         }
 
@@ -459,6 +467,7 @@ public class GuiEssentiaIO extends ThEBaseGui implements WidgetAspectSlot.IConfi
             craftingModeButton.setAlwaysCraft(craftingOnly);
         }
     }
+
     /**
      * Called when the server sends the void mode status
      *

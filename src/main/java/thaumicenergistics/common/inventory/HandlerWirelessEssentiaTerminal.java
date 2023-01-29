@@ -1,5 +1,25 @@
 package thaumicenergistics.common.inventory;
 
+import java.util.Set;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.grid.ICraftingIssuerHost;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
+import thaumicenergistics.common.grid.EssentiaPassThroughMonitor;
+import thaumicenergistics.common.grid.WirelessAELink;
+import thaumicenergistics.common.items.ItemEnum;
+import thaumicenergistics.common.items.ItemWirelessEssentiaTerminal;
+import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
+import thaumicenergistics.common.registries.EnumCache;
+import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
+import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.ViewItems;
@@ -13,24 +33,6 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
-import java.util.Set;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumicenergistics.api.IThEWirelessEssentiaTerminal;
-import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.api.grid.ICraftingIssuerHost;
-import thaumicenergistics.api.grid.IMEEssentiaMonitor;
-import thaumicenergistics.common.grid.EssentiaPassThroughMonitor;
-import thaumicenergistics.common.grid.WirelessAELink;
-import thaumicenergistics.common.items.ItemEnum;
-import thaumicenergistics.common.items.ItemWirelessEssentiaTerminal;
-import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
-import thaumicenergistics.common.registries.EnumCache;
-import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
-import thaumicenergistics.common.utils.EffectiveSide;
 
 /**
  * Handles an {@link ItemWirelessEssentiaTerminal}
@@ -40,6 +42,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  */
 public class HandlerWirelessEssentiaTerminal extends WirelessAELink
         implements IActionHost, ICraftingIssuerHost, IGuiItemObject {
+
     /**
      * Redirects power requests to the wireless terminal.
      *
@@ -56,8 +59,8 @@ public class HandlerWirelessEssentiaTerminal extends WirelessAELink
         }
 
         @Override
-        public double extractAEPower(
-                final double amt, final Actionable mode, final PowerMultiplier usePowerMultiplier) {
+        public double extractAEPower(final double amt, final Actionable mode,
+                final PowerMultiplier usePowerMultiplier) {
             return HandlerWirelessEssentiaTerminal.this.extractPower(amt, mode);
         }
 
@@ -172,11 +175,8 @@ public class HandlerWirelessEssentiaTerminal extends WirelessAELink
      */
     private double wirelessPowerMultiplier = 1.0D;
 
-    public HandlerWirelessEssentiaTerminal(
-            final EntityPlayer player,
-            final String encryptionKey,
-            final IThEWirelessEssentiaTerminal wirelessTerminalInterface,
-            final ItemStack wirelessTerminalItemstack) {
+    public HandlerWirelessEssentiaTerminal(final EntityPlayer player, final String encryptionKey,
+            final IThEWirelessEssentiaTerminal wirelessTerminalInterface, final ItemStack wirelessTerminalItemstack) {
         // Call super
         super(player, encryptionKey);
 
@@ -193,8 +193,8 @@ public class HandlerWirelessEssentiaTerminal extends WirelessAELink
      * @param wirelessTerminal
      * @return
      */
-    public static boolean isTerminalLinked(
-            final IThEWirelessEssentiaTerminal wirelessTerminal, final ItemStack wirelessTerminalItemstack) {
+    public static boolean isTerminalLinked(final IThEWirelessEssentiaTerminal wirelessTerminal,
+            final ItemStack wirelessTerminalItemstack) {
         return (!wirelessTerminal.getEncryptionKey(wirelessTerminalItemstack).isEmpty());
     }
 
@@ -219,7 +219,8 @@ public class HandlerWirelessEssentiaTerminal extends WirelessAELink
     }
 
     /**
-     * Uses some of the terminals stored power. This does take into account the extra power required for wireless operations.
+     * Uses some of the terminals stored power. This does take into account the extra power required for wireless
+     * operations.
      *
      * @param amount
      * @return Returns the amount extracted.
@@ -406,7 +407,10 @@ public class HandlerWirelessEssentiaTerminal extends WirelessAELink
     public void updatePowerMultiplier() {
         // Get the squared distance
         double distance = WirelessAELink.getSquaredDistanceFromAP(
-                this.apLocation, this.getUserPositionX(), this.getUserPositionY(), this.getUserPositionZ());
+                this.apLocation,
+                this.getUserPositionX(),
+                this.getUserPositionY(),
+                this.getUserPositionZ());
 
         // Calculate the distance
         distance = Math.sqrt(distance);

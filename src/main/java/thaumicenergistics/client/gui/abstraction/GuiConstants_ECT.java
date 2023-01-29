@@ -1,9 +1,10 @@
 package thaumicenergistics.client.gui.abstraction;
 
+import net.minecraft.inventory.Container;
+
+import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.inventory.Container;
-import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
 
 /**
  * Holds all the constants for {@link GuiEssentiaCellTerminal}.
@@ -13,6 +14,7 @@ import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
  */
 @SideOnly(Side.CLIENT)
 public abstract class GuiConstants_ECT extends ThEScrollbarGui {
+
     /**
      * Sort mode button position.
      */
@@ -52,8 +54,7 @@ public abstract class GuiConstants_ECT extends ThEScrollbarGui {
     /**
      * Selected aspect info positions.
      */
-    protected static final int SELECTED_INFO_POS_X = 45,
-            SELECTED_INFO_NAME_POS_Y = 91,
+    protected static final int SELECTED_INFO_POS_X = 45, SELECTED_INFO_NAME_POS_Y = 91,
             SELECTED_INFO_AMOUNT_POS_Y = 101;
 
     /**
@@ -79,8 +80,8 @@ public abstract class GuiConstants_ECT extends ThEScrollbarGui {
     /**
      * Number of widgets per page.
      */
-    protected static final int WIDGETS_PER_PAGE =
-            GuiConstants_ECT.WIDGETS_PER_ROW * GuiConstants_ECT.WIDGET_ROWS_PER_PAGE;
+    protected static final int WIDGETS_PER_PAGE = GuiConstants_ECT.WIDGETS_PER_ROW
+            * GuiConstants_ECT.WIDGET_ROWS_PER_PAGE;
 
     public GuiConstants_ECT(final Container container) {
         super(container);

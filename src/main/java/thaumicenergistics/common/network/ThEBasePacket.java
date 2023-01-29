@@ -1,22 +1,12 @@
 package thaumicenergistics.common.network;
 
-import appeng.api.parts.IPartHost;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.util.item.AEItemStack;
-import com.google.common.base.Charsets;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -24,9 +14,23 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.parts.ThEPartBase;
 import thaumicenergistics.common.utils.ThELog;
+import appeng.api.parts.IPartHost;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.util.item.AEItemStack;
+
+import com.google.common.base.Charsets;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Base of all ThE Packets. Also includes packet utils.
@@ -35,7 +39,9 @@ import thaumicenergistics.common.utils.ThELog;
  *
  */
 public abstract class ThEBasePacket implements IMessage {
+
     class ConfigurableGZIPOutputStream extends GZIPOutputStream {
+
         public ConfigurableGZIPOutputStream(final OutputStream out) throws IOException {
             super(out);
         }
@@ -96,8 +102,7 @@ public abstract class ThEBasePacket implements IMessage {
             itemStack = AEItemStack.loadItemStackFromPacket(stream);
 
             return itemStack;
-        } catch (IOException e) {
-        }
+        } catch (IOException e) {}
 
         return null;
     }
@@ -199,8 +204,7 @@ public abstract class ThEBasePacket implements IMessage {
             // Write into the stream
             try {
                 itemStack.writeToPacket(stream);
-            } catch (IOException e) {
-            }
+            } catch (IOException e) {}
         }
     }
 
@@ -320,18 +324,18 @@ public abstract class ThEBasePacket implements IMessage {
 
         try (InputStream inStream = new InputStream() {
 
-                    @Override
-                    public int read() throws IOException {
-                        // Is there anymore data to read from the packet stream?
-                        if (packetStream.readableBytes() <= 0) {
-                            // Return end marker
-                            return -1;
-                        }
+            @Override
+            public int read() throws IOException {
+                // Is there anymore data to read from the packet stream?
+                if (packetStream.readableBytes() <= 0) {
+                    // Return end marker
+                    return -1;
+                }
 
-                        // Return the byte
-                        return packetStream.readByte() & 0xFF;
-                    }
-                };
+                // Return the byte
+                return packetStream.readByte() & 0xFF;
+            }
+        };
 
                 // Create the decompressor
                 GZIPInputStream decompressor = new GZIPInputStream(inStream)) {
@@ -367,8 +371,7 @@ public abstract class ThEBasePacket implements IMessage {
     }
 
     /**
-     * Creates a new stream, calls to the subclass to write
-     * into it, then compresses it into the packet stream.
+     * Creates a new stream, calls to the subclass to write into it, then compresses it into the packet stream.
      *
      * @param packetStream
      */
@@ -382,13 +385,12 @@ public abstract class ThEBasePacket implements IMessage {
         // Create the compressor
         try (OutputStream outStream = new OutputStream() {
 
-                    @Override
-                    public void write(final int byteToWrite) throws IOException {
-                        // Write the byte to the packet stream
-                        packetStream.writeByte(byteToWrite & 0xFF);
-                    }
-                };
-                ConfigurableGZIPOutputStream compressor = new ConfigurableGZIPOutputStream(outStream)) {
+            @Override
+            public void write(final int byteToWrite) throws IOException {
+                // Write the byte to the packet stream
+                packetStream.writeByte(byteToWrite & 0xFF);
+            }
+        }; ConfigurableGZIPOutputStream compressor = new ConfigurableGZIPOutputStream(outStream)) {
 
             // Set compression level to best
             compressor.setLevel(Deflater.BEST_COMPRESSION);

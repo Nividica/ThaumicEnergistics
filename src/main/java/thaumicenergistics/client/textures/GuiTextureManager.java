@@ -1,9 +1,10 @@
 package thaumicenergistics.client.textures;
 
+import net.minecraft.util.ResourceLocation;
+
+import thaumicenergistics.common.ThaumicEnergistics;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.util.ResourceLocation;
-import thaumicenergistics.common.ThaumicEnergistics;
 
 /**
  * Textures for all ThE GUIs.
@@ -13,6 +14,7 @@ import thaumicenergistics.common.ThaumicEnergistics;
  */
 @SideOnly(Side.CLIENT)
 public enum GuiTextureManager {
+
     ESSENTIA_LEVEL_EMITTER("essentia.level.emitter"),
     ESSENTIA_STORAGE_BUS("essentia.storage.bus"),
     ESSENTIA_TERMINAL("essentia.terminal"),

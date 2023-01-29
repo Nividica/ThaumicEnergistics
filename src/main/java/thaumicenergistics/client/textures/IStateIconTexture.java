@@ -1,6 +1,7 @@
 package thaumicenergistics.client.textures;
 
 import javax.annotation.Nonnull;
+
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -10,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
  *
  */
 public interface IStateIconTexture {
+
     /**
      * Height of the icon.
      *

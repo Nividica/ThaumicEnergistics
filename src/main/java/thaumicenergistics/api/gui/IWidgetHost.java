@@ -1,6 +1,7 @@
 package thaumicenergistics.api.gui;
 
 import javax.annotation.Nonnull;
+
 import net.minecraft.client.gui.FontRenderer;
 
 /**
@@ -10,6 +11,7 @@ import net.minecraft.client.gui.FontRenderer;
  *
  */
 public interface IWidgetHost {
+
     /**
      * Gets the font renderer for the GUI.
      *

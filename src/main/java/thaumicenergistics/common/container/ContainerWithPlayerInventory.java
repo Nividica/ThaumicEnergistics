@@ -1,11 +1,14 @@
 package thaumicenergistics.common.container;
 
 import java.util.ArrayList;
+
 import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import thaumicenergistics.common.utils.ThEUtils;
 
 /**
@@ -15,6 +18,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  *
  */
 public abstract class ContainerWithPlayerInventory extends TheContainerBase {
+
     /**
      * The number of rows in the player inventory
      */
@@ -43,8 +47,8 @@ public abstract class ContainerWithPlayerInventory extends TheContainerBase {
     /**
      * Array of player inventory slots.
      */
-    private final Slot[] playerSlots =
-            new Slot[ContainerWithPlayerInventory.COLUMNS * ContainerWithPlayerInventory.ROWS];
+    private final Slot[] playerSlots = new Slot[ContainerWithPlayerInventory.COLUMNS
+            * ContainerWithPlayerInventory.ROWS];
 
     public ContainerWithPlayerInventory(final EntityPlayer player) {
         super(player);
@@ -74,9 +78,8 @@ public abstract class ContainerWithPlayerInventory extends TheContainerBase {
         return this.mergeItemStack(
                 slotStack,
                 this.playerSlots[0].slotNumber,
-                this.playerSlots[(ContainerWithPlayerInventory.COLUMNS * ContainerWithPlayerInventory.ROWS) - 1]
-                                .slotNumber
-                        + 1,
+                this.playerSlots[(ContainerWithPlayerInventory.COLUMNS * ContainerWithPlayerInventory.ROWS)
+                        - 1].slotNumber + 1,
                 false);
     }
 
@@ -98,11 +101,9 @@ public abstract class ContainerWithPlayerInventory extends TheContainerBase {
      * @return True if it was in the player inventory, false otherwise.
      */
     protected final boolean slotClickedWasInPlayerInventory(final int slotNumber) {
-        return (slotNumber >= this.playerSlots[0].slotNumber)
-                && (slotNumber
-                        <= this.playerSlots[
-                                (ContainerWithPlayerInventory.COLUMNS * ContainerWithPlayerInventory.ROWS) - 1]
-                                .slotNumber);
+        return (slotNumber >= this.playerSlots[0].slotNumber) && (slotNumber
+                <= this.playerSlots[(ContainerWithPlayerInventory.COLUMNS * ContainerWithPlayerInventory.ROWS)
+                        - 1].slotNumber);
     }
 
     /**
@@ -201,15 +202,12 @@ public abstract class ContainerWithPlayerInventory extends TheContainerBase {
     /**
      * Binds the player inventory to this container.
      *
-     * @param playerInventory
-     * Inventory to bind
-     * @param inventoryOffsetY
-     * The Y position offset for the slots
-     * @param hotbarPositionY
-     * The Y position offset for hotbar slots
+     * @param playerInventory  Inventory to bind
+     * @param inventoryOffsetY The Y position offset for the slots
+     * @param hotbarPositionY  The Y position offset for hotbar slots
      */
-    public final void bindPlayerInventory(
-            final IInventory playerInventory, final int inventoryOffsetY, final int hotbarPositionY) {
+    public final void bindPlayerInventory(final IInventory playerInventory, final int inventoryOffsetY,
+            final int hotbarPositionY) {
         // Hot-bar ID's 0-8
         for (int column = 0; column < ContainerWithPlayerInventory.COLUMNS; column++) {
             // Create the slot
@@ -278,8 +276,8 @@ public abstract class ContainerWithPlayerInventory extends TheContainerBase {
     }
 
     /**
-     * Returns the first slot that contains the item and has room for more,
-     * or the first empty slot if no non-full matches are found.
+     * Returns the first slot that contains the item and has room for more, or the first empty slot if no non-full
+     * matches are found.
      *
      * @param stack
      * @return
@@ -291,8 +289,7 @@ public abstract class ContainerWithPlayerInventory extends TheContainerBase {
             if (slot.getHasStack()) {
                 ItemStack slotStack = slot.getStack();
                 // Same items, and room?
-                if ((slotStack.stackSize < slotStack.getMaxStackSize())
-                        && slotStack.isItemEqual(stack)
+                if ((slotStack.stackSize < slotStack.getMaxStackSize()) && slotStack.isItemEqual(stack)
                         && ItemStack.areItemStackTagsEqual(slotStack, stack)) {
                     // Found merge slot
                     return slot;

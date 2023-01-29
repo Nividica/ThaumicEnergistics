@@ -1,5 +1,13 @@
 package thaumicenergistics.common.grid;
 
+import java.util.EnumSet;
+
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumicenergistics.api.grid.IEssentiaGrid;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
+import thaumicenergistics.common.parts.ThEPartBase;
 import appeng.api.networking.*;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.ISecurityGrid;
@@ -9,12 +17,6 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
-import java.util.EnumSet;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumicenergistics.api.grid.IEssentiaGrid;
-import thaumicenergistics.api.grid.IMEEssentiaMonitor;
-import thaumicenergistics.common.parts.ThEPartBase;
 
 /**
  * AE Gridblock used for all ThE AE parts.
@@ -23,6 +25,7 @@ import thaumicenergistics.common.parts.ThEPartBase;
  *
  */
 public class AEPartGridBlock implements IGridBlock {
+
     /**
      * The part using this gridblock.
      */

@@ -2,6 +2,7 @@ package thaumicenergistics.fml.classtransformers.tc;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
+
 import thaumicenergistics.fml.AClassTransformer;
 import thaumicenergistics.fml.ThECore;
 
@@ -47,13 +48,16 @@ public class ClassTransformer_RenderGolemBase extends AClassTransformer {
         instructionList.add(new VarInsnNode(Opcodes.FLOAD, 9));
 
         // GolemHooks.hook_RenderGolem( EntityGolemBase, Hashmap, double, double, double, float )
-        instructionList.add(new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                GolemHookTransformHelper.CLASS_GolemHooks,
-                "hook_RenderGolem",
-                "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase + ";L"
-                        + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers + ";DDDF)V",
-                false));
+        instructionList.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        GolemHookTransformHelper.CLASS_GolemHooks,
+                        "hook_RenderGolem",
+                        "(L" + GolemHookTransformHelper.CLASS_EntityGolemBase
+                                + ";L"
+                                + GolemHookTransformHelper.FIELDTYPE_EntityGolemBase_hookHandlers
+                                + ";DDDF)V",
+                        false));
 
         // Insert the static call
         method.instructions.insertBefore(insertionPoint, instructionList);

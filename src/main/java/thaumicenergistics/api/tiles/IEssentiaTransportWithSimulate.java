@@ -1,10 +1,12 @@
 package thaumicenergistics.api.tiles;
 
-import appeng.api.config.Actionable;
 import javax.annotation.Nonnull;
+
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
+import appeng.api.config.Actionable;
 
 /**
  * An essentia transport that supports {@link Actionable#SIMULATE} and {@link Actionable#MODULATE}.
@@ -13,6 +15,7 @@ import thaumcraft.api.aspects.IEssentiaTransport;
  *
  */
 public interface IEssentiaTransportWithSimulate extends IEssentiaTransport {
+
     /**
      * Adds essentia to the transport.
      *

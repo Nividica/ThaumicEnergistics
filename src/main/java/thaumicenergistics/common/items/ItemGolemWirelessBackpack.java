@@ -1,17 +1,19 @@
 package thaumicenergistics.common.items;
 
-import appeng.api.features.INetworkEncodable;
-import appeng.core.localization.GuiText;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.registries.ThEStrings;
+import appeng.api.features.INetworkEncodable;
+import appeng.core.localization.GuiText;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Gives golems access to the AE network.
@@ -20,7 +22,9 @@ import thaumicenergistics.common.registries.ThEStrings;
  *
  */
 public class ItemGolemWirelessBackpack extends Item implements INetworkEncodable {
+
     public static enum BackpackSkins {
+
         Thaumium("Thaum"),
         Stone("Stone"),
         Straw("Straw"),
@@ -64,7 +68,8 @@ public class ItemGolemWirelessBackpack extends Item implements INetworkEncodable
         public ResourceLocation getTextureLocation() {
             if (this.texture == null) {
                 this.texture = new ResourceLocation(
-                        ThaumicEnergistics.MOD_ID, "textures/models/golemBackpack/" + this.texID + ".png");
+                        ThaumicEnergistics.MOD_ID,
+                        "textures/models/golemBackpack/" + this.texID + ".png");
             }
             return this.texture;
         }
@@ -85,8 +90,8 @@ public class ItemGolemWirelessBackpack extends Item implements INetworkEncodable
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(
-            final ItemStack stack, final EntityPlayer player, final List list, final boolean advancedInfo) {
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List list,
+            final boolean advancedInfo) {
         if (stack.hasTagCompound()) {
             list.add(GuiText.Linked.getLocal());
         } else {

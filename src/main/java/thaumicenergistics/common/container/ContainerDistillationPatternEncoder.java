@@ -1,14 +1,15 @@
 package thaumicenergistics.common.container;
 
-import appeng.api.AEApi;
-import appeng.container.slot.SlotFake;
 import java.util.List;
+
 import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -22,6 +23,8 @@ import thaumicenergistics.common.items.ItemCraftingAspect;
 import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.tiles.TileDistillationPatternEncoder;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.AEApi;
+import appeng.container.slot.SlotFake;
 
 /**
  * {@link TileDistillationPatternEncoder} container.
@@ -30,6 +33,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class ContainerDistillationPatternEncoder extends ContainerWithPlayerInventory {
+
     /**
      * Y position for the player and hotbar inventory.
      */
@@ -44,8 +48,7 @@ public class ContainerDistillationPatternEncoder extends ContainerWithPlayerInve
     /**
      * Starting position of the source aspect slots
      */
-    private static final int SLOT_SOURCE_ASPECTS_POS_X = 65,
-            SLOT_SOURCE_ASPECTS_POS_Y = 24,
+    private static final int SLOT_SOURCE_ASPECTS_POS_X = 65, SLOT_SOURCE_ASPECTS_POS_Y = 24,
             SLOT_SOURCE_ASPECTS_COUNT = 6;
 
     /**
@@ -106,8 +109,7 @@ public class ContainerDistillationPatternEncoder extends ContainerWithPlayerInve
     /**
      * Slots holding the source item's aspects.
      */
-    public final SlotFake[] slotSourceAspects =
-            new SlotFake[ContainerDistillationPatternEncoder.SLOT_SOURCE_ASPECTS_COUNT];
+    public final SlotFake[] slotSourceAspects = new SlotFake[ContainerDistillationPatternEncoder.SLOT_SOURCE_ASPECTS_COUNT];
 
     /**
      * Gui to send updates to when slots change.
@@ -123,8 +125,8 @@ public class ContainerDistillationPatternEncoder extends ContainerWithPlayerInve
      * @param y
      * @param z
      */
-    public ContainerDistillationPatternEncoder(
-            final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public ContainerDistillationPatternEncoder(final EntityPlayer player, final World world, final int x, final int y,
+            final int z) {
         // Call super
         super(player);
 
@@ -133,6 +135,7 @@ public class ContainerDistillationPatternEncoder extends ContainerWithPlayerInve
 
         // Create the internal inventory
         this.internalInventory = new TheInternalInventory("dpeAspects", 7, 64) {
+
             @Override
             public boolean isItemValidForSlot(final int slotIndex, final ItemStack itemStack) {
                 return ((itemStack == null) || (itemStack.getItem() instanceof ItemCraftingAspect));
@@ -146,7 +149,10 @@ public class ContainerDistillationPatternEncoder extends ContainerWithPlayerInve
 
             // Create the slot
             this.slotSourceAspects[index] = new SlotFake(
-                    this.internalInventory, index, ContainerDistillationPatternEncoder.SLOT_SOURCE_ASPECTS_POS_X, posY);
+                    this.internalInventory,
+                    index,
+                    ContainerDistillationPatternEncoder.SLOT_SOURCE_ASPECTS_POS_X,
+                    posY);
             this.addSlotToContainer(this.slotSourceAspects[index]);
         }
 
@@ -203,8 +209,7 @@ public class ContainerDistillationPatternEncoder extends ContainerWithPlayerInve
     }
 
     /**
-     * Returns true if the transfer was handled.
-     * Assumes that clickedslot has an itemstack.
+     * Returns true if the transfer was handled. Assumes that clickedslot has an itemstack.
      *
      * @param clickedSlot
      * @return
@@ -218,13 +223,19 @@ public class ContainerDistillationPatternEncoder extends ContainerWithPlayerInve
             // Will the blank pattern slot take this?
             if (this.slotPatternsBlank.isItemValid(slotStack)) {
                 return this.mergeItemStack(
-                        slotStack, this.slotPatternsBlank.slotNumber, this.slotPatternsBlank.slotNumber + 1, false);
+                        slotStack,
+                        this.slotPatternsBlank.slotNumber,
+                        this.slotPatternsBlank.slotNumber + 1,
+                        false);
             }
 
             // Will the encoded pattern take this?
             if (this.slotPatternEncoded.isItemValid(slotStack)) {
                 return this.mergeItemStack(
-                        slotStack, this.slotPatternEncoded.slotNumber, this.slotPatternEncoded.slotNumber + 1, false);
+                        slotStack,
+                        this.slotPatternEncoded.slotNumber,
+                        this.slotPatternEncoded.slotNumber + 1,
+                        false);
             }
             // Set the source slot
             ItemStack copy = slotStack.copy();
@@ -423,12 +434,7 @@ public class ContainerDistillationPatternEncoder extends ContainerWithPlayerInve
         // Is there a blank pattern to draw from?
         else if (this.slotPatternsBlank.getHasStack()) {
             // Create a new encoded pattern
-            pattern = AEApi.instance()
-                    .definitions()
-                    .items()
-                    .encodedPattern()
-                    .maybeStack(1)
-                    .orNull();
+            pattern = AEApi.instance().definitions().items().encodedPattern().maybeStack(1).orNull();
             if (pattern == null) {
                 // Patterns are disabled?
                 // How did you even get here?!
@@ -441,8 +447,8 @@ public class ContainerDistillationPatternEncoder extends ContainerWithPlayerInve
         }
 
         // Set the pattern items
-        if (!this.patternHelper.setPatternItems(
-                this.slotSourceItem.getDisplayStack(), this.slotSelectedAspect.getDisplayStack())) {
+        if (!this.patternHelper
+                .setPatternItems(this.slotSourceItem.getDisplayStack(), this.slotSelectedAspect.getDisplayStack())) {
             // Nothing to save
             return;
         }
@@ -471,8 +477,8 @@ public class ContainerDistillationPatternEncoder extends ContainerWithPlayerInve
     }
 
     @Override
-    public ItemStack slotClick(
-            final int slotNumber, final int buttonPressed, final int flag, final EntityPlayer player) {
+    public ItemStack slotClick(final int slotNumber, final int buttonPressed, final int flag,
+            final EntityPlayer player) {
         // Selected aspect?
         if (this.slotSelectedAspect.slotNumber == slotNumber) {
             // No interaction

@@ -1,28 +1,30 @@
 package thaumicenergistics.common.integration.tc;
 
-import appeng.api.AEApi;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.util.item.AEItemStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+
 import javax.annotation.Nullable;
+
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.items.ItemEldritchObject;
+import appeng.api.AEApi;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.util.item.AEItemStack;
 
 public class ArcaneCraftingPattern implements ICraftingPatternDetails {
-    private static final String NBTKEY_INGREDIENT_NUM = "input#",
-            NBTKEY_RESULT = "output",
-            NBTKEY_INGREDIENT_TYPE = "ThE_crafting_type",
-            NBTKEY_ARRAY_SIZE = "size";
+
+    private static final String NBTKEY_INGREDIENT_NUM = "input#", NBTKEY_RESULT = "output",
+            NBTKEY_INGREDIENT_TYPE = "ThE_crafting_type", NBTKEY_ARRAY_SIZE = "size";
     private static final int NBTKEY_ARRAYTYPE = 2, NBTKEY_ITEMTYPE = 1;
 
     private static final int GRID_SIZE = 9;
@@ -74,11 +76,8 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
      * @param craftingResult
      * @param craftingIngredients
      */
-    public ArcaneCraftingPattern(
-            final ItemStack knowledgeCore,
-            final AspectList aspects,
-            final ItemStack craftingResult,
-            final Object[] craftingIngredients) {
+    public ArcaneCraftingPattern(final ItemStack knowledgeCore, final AspectList aspects,
+            final ItemStack craftingResult, final Object[] craftingIngredients) {
         // Set the core
         this.knowledgeCoreHost = knowledgeCore;
 
@@ -243,9 +242,9 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
 
             // Container?
             if (stack.getItem().hasContainerItem(stack.getItemStack())) {
-                results.add(AEApi.instance()
-                        .storage()
-                        .createItemStack(stack.getItem().getContainerItem(stack.getItemStack())));
+                results.add(
+                        AEApi.instance().storage()
+                                .createItemStack(stack.getItem().getContainerItem(stack.getItemStack())));
             }
 
             // Multiplier?
@@ -370,7 +369,7 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
             return new IAEItemStack[0];
         }
 
-        return new IAEItemStack[] {this.result};
+        return new IAEItemStack[] { this.result };
     }
 
     @Override
@@ -389,7 +388,7 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
 
     @Override
     public IAEItemStack[] getOutputs() {
-        return new IAEItemStack[] {this.result};
+        return new IAEItemStack[] { this.result };
     }
 
     @Override
@@ -546,8 +545,8 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
 
                 for (int arrayIndex = 0; arrayIndex < count; ++arrayIndex) {
                     // Get the subtag
-                    NBTTagCompound subTag =
-                            ingData.getCompoundTag(ArcaneCraftingPattern.NBTKEY_INGREDIENT_NUM + arrayIndex);
+                    NBTTagCompound subTag = ingData
+                            .getCompoundTag(ArcaneCraftingPattern.NBTKEY_INGREDIENT_NUM + arrayIndex);
 
                     if ((subTag == null) || (subTag.hasNoTags())) {
                         // Ignore invalid entry
@@ -658,7 +657,8 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
 
                 // Set type and count
                 ingData.setInteger(
-                        ArcaneCraftingPattern.NBTKEY_INGREDIENT_TYPE, ArcaneCraftingPattern.NBTKEY_ARRAYTYPE);
+                        ArcaneCraftingPattern.NBTKEY_INGREDIENT_TYPE,
+                        ArcaneCraftingPattern.NBTKEY_ARRAYTYPE);
                 ingData.setInteger(ArcaneCraftingPattern.NBTKEY_ARRAY_SIZE, ingList.size());
 
                 // Add each item

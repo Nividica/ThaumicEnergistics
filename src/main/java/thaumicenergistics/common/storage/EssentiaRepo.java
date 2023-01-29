@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.api.storage.IEssentiaRepo;
@@ -15,6 +16,7 @@ import thaumicenergistics.api.storage.IEssentiaRepo;
  *
  */
 public class EssentiaRepo implements IEssentiaRepo {
+
     /**
      * The actual cache of aspects.
      */

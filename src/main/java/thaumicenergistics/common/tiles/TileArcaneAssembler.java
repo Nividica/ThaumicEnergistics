@@ -1,5 +1,35 @@
 package thaumicenergistics.common.tiles;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.common.Thaumcraft;
+import thaumicenergistics.api.ThEApi;
+import thaumicenergistics.api.grid.IDigiVisSource;
+import thaumicenergistics.client.gui.ThEGuiHelper;
+import thaumicenergistics.common.blocks.BlockArcaneAssembler;
+import thaumicenergistics.common.integration.IWailaSource;
+import thaumicenergistics.common.integration.tc.ArcaneCraftingPattern;
+import thaumicenergistics.common.integration.tc.DigiVisSourceData;
+import thaumicenergistics.common.integration.tc.VisCraftingHelper;
+import thaumicenergistics.common.inventory.HandlerKnowledgeCore;
+import thaumicenergistics.common.inventory.TheInternalInventory;
+import thaumicenergistics.common.items.ItemKnowledgeCore;
+import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -35,34 +65,6 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.common.Thaumcraft;
-import thaumicenergistics.api.ThEApi;
-import thaumicenergistics.api.grid.IDigiVisSource;
-import thaumicenergistics.client.gui.ThEGuiHelper;
-import thaumicenergistics.common.blocks.BlockArcaneAssembler;
-import thaumicenergistics.common.integration.IWailaSource;
-import thaumicenergistics.common.integration.tc.ArcaneCraftingPattern;
-import thaumicenergistics.common.integration.tc.DigiVisSourceData;
-import thaumicenergistics.common.integration.tc.VisCraftingHelper;
-import thaumicenergistics.common.inventory.HandlerKnowledgeCore;
-import thaumicenergistics.common.inventory.TheInternalInventory;
-import thaumicenergistics.common.items.ItemKnowledgeCore;
-import thaumicenergistics.common.utils.EffectiveSide;
 
 /**
  * Allows auto-crafting arcane recipes.
@@ -71,6 +73,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingProvider, IWailaSource {
+
     private class AAInv extends TheInternalInventory {
 
         public AAInv() {
@@ -111,11 +114,8 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
     /**
      * NBT Keys
      */
-    private static final String NBTKEY_VIS_INTERFACE = "vis_interface",
-            NBTKEY_UPGRADES = "upgradeCount",
-            NBTKEY_UPGRADEINV = "upgrades",
-            NBTKEY_CRAFTING = "isCrafting",
-            NBTKEY_CRAFTING_PATTERN = "pattern";
+    private static final String NBTKEY_VIS_INTERFACE = "vis_interface", NBTKEY_UPGRADES = "upgradeCount",
+            NBTKEY_UPGRADEINV = "upgrades", NBTKEY_CRAFTING = "isCrafting", NBTKEY_CRAFTING_PATTERN = "pattern";
 
     /**
      * NBT Key for stored vis.
@@ -135,21 +135,18 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
     /**
      * Primal aspects.
      */
-    public static final Aspect[] PRIMALS =
-            new Aspect[] {Aspect.AIR, Aspect.WATER, Aspect.FIRE, Aspect.ORDER, Aspect.ENTROPY, Aspect.EARTH};
+    public static final Aspect[] PRIMALS = new Aspect[] { Aspect.AIR, Aspect.WATER, Aspect.FIRE, Aspect.ORDER,
+            Aspect.ENTROPY, Aspect.EARTH };
 
     /**
-     * Total number of slots. 1 KCore + 21 Patterns + 1 Target + 4 Discount
-     * Armor
+     * Total number of slots. 1 KCore + 21 Patterns + 1 Target + 4 Discount Armor
      */
     public static final int SLOT_COUNT = 27;
 
     /**
      * Index of the slots.
      */
-    public static final int KCORE_SLOT_INDEX = 0,
-            PATTERN_SLOT_INDEX = 1,
-            TARGET_SLOT_INDEX = 22,
+    public static final int KCORE_SLOT_INDEX = 0, PATTERN_SLOT_INDEX = 1, TARGET_SLOT_INDEX = 22,
             DISCOUNT_ARMOR_INDEX = 23;
 
     /**
@@ -163,8 +160,7 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
     public static double IDLE_POWER = 0.0D, ACTIVE_POWER = 1.5D, WARP_POWER_PERCENT = 0.15;
 
     /**
-     * Holds the patterns and the kcore.
-     * Saved and loaded by AEInvTile due to getInternalInventory() call.
+     * Holds the patterns and the kcore. Saved and loaded by AEInvTile due to getInternalInventory() call.
      */
     private final AAInv internalInventory;
 
@@ -257,7 +253,9 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
 
         // Create the upgrade inventory
         this.upgradeInventory = new BlockUpgradeInventory(
-                ThEApi.instance().blocks().ArcaneAssembler.getBlock(), this, BlockArcaneAssembler.MAX_SPEED_UPGRADES);
+                ThEApi.instance().blocks().ArcaneAssembler.getBlock(),
+                this,
+                BlockArcaneAssembler.MAX_SPEED_UPGRADES);
 
         // Set the machine source
         this.mySource = new MachineSource(this);
@@ -311,8 +309,8 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
             discount = VisCraftingHelper.INSTANCE.getScepterVisModifier(primal);
 
             // Factor in the discount armor
-            discount -= VisCraftingHelper.INSTANCE.calculateArmorDiscount(
-                    this.internalInventory, DISCOUNT_ARMOR_INDEX, 4, primal);
+            discount -= VisCraftingHelper.INSTANCE
+                    .calculateArmorDiscount(this.internalInventory, DISCOUNT_ARMOR_INDEX, 4, primal);
 
             this.visDiscount.put(primal, discount);
         }
@@ -321,9 +319,8 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
         this.warpPowerMultiplier = 1.0F;
 
         // Calculate warp power multiplier
-        this.warpPowerMultiplier +=
-                VisCraftingHelper.INSTANCE.calculateArmorWarp(this.internalInventory, DISCOUNT_ARMOR_INDEX, 4)
-                        * WARP_POWER_PERCENT;
+        this.warpPowerMultiplier += VisCraftingHelper.INSTANCE
+                .calculateArmorWarp(this.internalInventory, DISCOUNT_ARMOR_INDEX, 4) * WARP_POWER_PERCENT;
     }
 
     private void craftingTick() {
@@ -346,8 +343,8 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
                 // Simulate placing the items
                 boolean rejected = false;
                 for (IAEItemStack output : this.currentPattern.getAllResults()) {
-                    IAEItemStack rejectedResult =
-                            storageGrid.getItemInventory().injectItems(output, Actionable.SIMULATE, this.mySource);
+                    IAEItemStack rejectedResult = storageGrid.getItemInventory()
+                            .injectItems(output, Actionable.SIMULATE, this.mySource);
                     if ((rejectedResult != null) && (rejectedResult.getStackSize() > 0)) {
                         rejected = true;
                         break;
@@ -369,19 +366,17 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
                     // Mark for network update
                     this.markForDelayedUpdate();
                 }
-            } catch (GridAccessException ignored) {
-            }
+            } catch (GridAccessException ignored) {}
         } else {
             try {
                 // Calculate power required
                 double powerRequired = (TileArcaneAssembler.ACTIVE_POWER
-                                + ((TileArcaneAssembler.ACTIVE_POWER * this.upgradeCount) / 2.0D))
-                        * this.warpPowerMultiplier;
+                        + ((TileArcaneAssembler.ACTIVE_POWER * this.upgradeCount) / 2.0D)) * this.warpPowerMultiplier;
 
                 // Attempt to take power
                 IEnergyGrid eGrid = this.getProxy().getEnergy();
-                double powerExtracted =
-                        eGrid.extractAEPower(powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                double powerExtracted = eGrid
+                        .extractAEPower(powerRequired, Actionable.MODULATE, PowerMultiplier.CONFIG);
 
                 if ((powerExtracted - powerRequired) <= 0.0D) {
                     // Increment the counter
@@ -401,21 +396,20 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
                         this.markForDelayedUpdate();
                     }
                 }
-            } catch (GridAccessException ignored) {
-            }
+            } catch (GridAccessException ignored) {}
         }
     }
 
     /**
-     * Helper function to calculate how much vis is required for the specified
-     * aspect for the current recipe.
+     * Helper function to calculate how much vis is required for the specified aspect for the current recipe.
      *
      * @param aspect
      * @return
      */
     private int getRequiredAmountForAspect(final Aspect aspect) {
-        return (int) Math.ceil(this.visDiscount.get(aspect)
-                * (this.currentPattern.getAspectCost(aspect) * TileArcaneAssembler.CVIS_MULTIPLER));
+        return (int) Math.ceil(
+                this.visDiscount.get(aspect)
+                        * (this.currentPattern.getAspectCost(aspect) * TileArcaneAssembler.CVIS_MULTIPLER));
     }
 
     private boolean hasEnoughVisForCraft() {
@@ -481,8 +475,7 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
         try {
             // Get the source
             visSource = this.visSourceInfo.tryGetSource(this.getProxy().getGrid());
-        } catch (GridAccessException ignored) {
-        }
+        } catch (GridAccessException ignored) {}
 
         // Ensure the source is reachable.
         if (visSource == null) {
@@ -558,9 +551,8 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
         }
 
         // Set pattern slots
-        for (int index = TileArcaneAssembler.PATTERN_SLOT_INDEX;
-                index < (TileArcaneAssembler.PATTERN_SLOT_INDEX + HandlerKnowledgeCore.MAXIMUM_STORED_PATTERNS);
-                index++) {
+        for (int index = TileArcaneAssembler.PATTERN_SLOT_INDEX; index
+                < (TileArcaneAssembler.PATTERN_SLOT_INDEX + HandlerKnowledgeCore.MAXIMUM_STORED_PATTERNS); index++) {
             if ((pIterator != null) && (pIterator.hasNext())) {
                 // Set to pattern result
                 this.internalInventory.setInventorySlotContents(index, pIterator.next());
@@ -593,10 +585,11 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
         // Is the assembler crafting anything?
         if ((this.isCrafting) && this.internalInventory.getHasStack(TARGET_SLOT_INDEX)) {
             // Add what is being crafted and the percent it is complete
-            tooltip.add(String.format(
-                    "%s, %.0f%%",
-                    this.internalInventory.getStackInSlot(TARGET_SLOT_INDEX).getDisplayName(),
-                    ((this.getPercentComplete() * 100.0F))));
+            tooltip.add(
+                    String.format(
+                            "%s, %.0f%%",
+                            this.internalInventory.getStackInSlot(TARGET_SLOT_INDEX).getDisplayName(),
+                            ((this.getPercentComplete() * 100.0F))));
         }
 
         // Build vis amounts
@@ -784,11 +777,7 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
      * Called when the upgrade inventory changes
      */
     @Override
-    public void onChangeInventory(
-            final IInventory inv,
-            final int slot,
-            final InvOperation mc,
-            final ItemStack removed,
+    public void onChangeInventory(final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed,
             final ItemStack added) {
         // Reset the upgrade count
         this.upgradeCount = 0;
@@ -816,13 +805,12 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
     }
 
     /**
-     * Called when the player right-clicks the assembler with a memory card in
-     * hand.
+     * Called when the player right-clicks the assembler with a memory card in hand.
      *
      * @param memoryCard
      */
-    public void onMemoryCardActivate(
-            final EntityPlayer player, final IMemoryCard memoryCard, final ItemStack playerHolding) {
+    public void onMemoryCardActivate(final EntityPlayer player, final IMemoryCard memoryCard,
+            final ItemStack playerHolding) {
         // Get the stored name
         String settingsName = memoryCard.getSettingsName(playerHolding);
 
@@ -893,10 +881,10 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
             // Read the crafting progress
             this.craftTickCounter = stream.readInt();
 
-            // Add  particles
+            // Add particles
             for (int i = 0; i < 2; i++) {
-                Thaumcraft.proxy.blockRunes(
-                        this.worldObj, this.xCoord, this.yCoord, this.zCoord, 0.5F, 0.0F, 0.5F, 10, -0.1F);
+                Thaumcraft.proxy
+                        .blockRunes(this.worldObj, this.xCoord, this.yCoord, this.zCoord, 0.5F, 0.0F, 0.5F, 10, -0.1F);
             }
         }
 
@@ -971,8 +959,7 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
 
                 // Mark they are no longer stale
                 this.stalePatterns = false;
-            } catch (GridAccessException ignored) {
-            }
+            } catch (GridAccessException ignored) {}
         }
 
         // Is the assembler linked to a vis relay?
@@ -1048,13 +1035,17 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
             currentPattern.updateInventory(table);
 
             // Set the target item
-            this.internalInventory.setInventorySlotContents(
-                    TARGET_SLOT_INDEX, this.currentPattern.getResult().getItemStack());
+            this.internalInventory
+                    .setInventorySlotContents(TARGET_SLOT_INDEX, this.currentPattern.getResult().getItemStack());
 
             // AE effects
             try {
                 NetworkRegistry.TargetPoint where = new NetworkRegistry.TargetPoint(
-                        this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 32.0D);
+                        this.worldObj.provider.dimensionId,
+                        this.xCoord,
+                        this.yCoord,
+                        this.zCoord,
+                        32.0D);
                 appeng.core.sync.network.NetworkHandler.instance.sendToAllAround(
                         new PacketAssemblerAnimation(
                                 this.xCoord,
@@ -1063,8 +1054,7 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
                                 (byte) (10 + (9 * this.upgradeCount)),
                                 this.currentPattern.getResult()),
                         where);
-            } catch (IOException e) {
-            }
+            } catch (IOException e) {}
 
             return true;
         }
@@ -1097,8 +1087,9 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
 
         // Read the pattern
         if (data.hasKey(TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN)) {
-            this.currentPattern =
-                    new ArcaneCraftingPattern(null, data.getCompoundTag(TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN));
+            this.currentPattern = new ArcaneCraftingPattern(
+                    null,
+                    data.getCompoundTag(TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN));
         }
     }
 
@@ -1142,7 +1133,8 @@ public class TileArcaneAssembler extends AENetworkInvTile implements ICraftingPr
         // Write the current pattern
         if (this.currentPattern != null) {
             data.setTag(
-                    TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN, this.currentPattern.writeToNBT(new NBTTagCompound()));
+                    TileArcaneAssembler.NBTKEY_CRAFTING_PATTERN,
+                    this.currentPattern.writeToNBT(new NBTTagCompound()));
         }
     }
 

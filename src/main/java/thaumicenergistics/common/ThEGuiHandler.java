@@ -1,5 +1,15 @@
 package thaumicenergistics.common;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumicenergistics.api.grid.ICraftingIssuerHost;
+import thaumicenergistics.api.gui.ICraftingIssuerContainer;
+import thaumicenergistics.client.gui.*;
+import thaumicenergistics.common.container.*;
+import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
+import thaumicenergistics.common.parts.ThEPartBase;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.container.AEBaseContainer;
@@ -7,15 +17,6 @@ import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.helpers.IPriorityHost;
 import cpw.mods.fml.common.network.IGuiHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumicenergistics.api.grid.ICraftingIssuerHost;
-import thaumicenergistics.api.gui.ICraftingIssuerContainer;
-import thaumicenergistics.client.gui.*;
-import thaumicenergistics.common.container.*;
-import thaumicenergistics.common.inventory.HandlerWirelessEssentiaTerminal;
-import thaumicenergistics.common.parts.ThEPartBase;
 
 /**
  * Handles ThE GUI launching.
@@ -24,6 +25,7 @@ import thaumicenergistics.common.parts.ThEPartBase;
  *
  */
 public class ThEGuiHandler implements IGuiHandler {
+
     // ID's between 0 and this number indicate that they are AE parts
     private static final int DIRECTION_OFFSET = ForgeDirection.values().length;
 
@@ -36,8 +38,7 @@ public class ThEGuiHandler implements IGuiHandler {
     public static final int ESSENTIA_CELL_ID = ThEGuiHandler.ID_STEP_VALUE * 1;
 
     /**
-     * Base ID of the priority gui.
-     * Add the ForgeDirection's side ordinal to this value.
+     * Base ID of the priority gui. Add the ForgeDirection's side ordinal to this value.
      */
     public static final int PRIORITY_ID = ThEGuiHandler.ID_STEP_VALUE * 2;
 
@@ -67,16 +68,14 @@ public class ThEGuiHandler implements IGuiHandler {
     public static final int ESSENTIA_VIBRATION_CHAMBER = ThEGuiHandler.ID_STEP_VALUE * 7;
 
     /**
-     * ID of the auto crafting amount bridge.
-     * When calling this make sure the current container implements ICraftingIssuerContainer,
-     * or extends AEBaseContainer with the target set to an ICraftingIssuerHost.
+     * ID of the auto crafting amount bridge. When calling this make sure the current container implements
+     * ICraftingIssuerContainer, or extends AEBaseContainer with the target set to an ICraftingIssuerHost.
      */
     public static final int AUTO_CRAFTING_AMOUNT = ThEGuiHandler.ID_STEP_VALUE * 8;
 
     /**
-     * ID of the auto crafting confirm bridge.
-     * When calling this make sure the current container extends
-     * AEBaseContainer with the target set to an ICraftingIssuerHost.
+     * ID of the auto crafting confirm bridge. When calling this make sure the current container extends AEBaseContainer
+     * with the target set to an ICraftingIssuerHost.
      */
     public static final int AUTO_CRAFTING_CONFIRM = ThEGuiHandler.ID_STEP_VALUE * 9;
 
@@ -127,8 +126,8 @@ public class ThEGuiHandler implements IGuiHandler {
      * @param z
      * @return
      */
-    private static IPart getPart(
-            final ForgeDirection tileSide, final World world, final int x, final int y, final int z) {
+    private static IPart getPart(final ForgeDirection tileSide, final World world, final int x, final int y,
+            final int z) {
         // Get the host at the specified position
         IPartHost partHost = (IPartHost) (world.getTileEntity(x, y, z));
 
@@ -168,14 +167,8 @@ public class ThEGuiHandler implements IGuiHandler {
      * @param isServerSide
      * @return
      */
-    private static Object getPartGuiElement(
-            final ForgeDirection tileSide,
-            final EntityPlayer player,
-            final World world,
-            final int x,
-            final int y,
-            final int z,
-            final boolean isServerSide) {
+    private static Object getPartGuiElement(final ForgeDirection tileSide, final EntityPlayer player, final World world,
+            final int x, final int y, final int z, final boolean isServerSide) {
         // Get the part
         ThEPartBase part = (ThEPartBase) ThEGuiHandler.getPart(tileSide, world, x, y, z);
 
@@ -206,8 +199,7 @@ public class ThEGuiHandler implements IGuiHandler {
     }
 
     /**
-     * Helper function to properly generate a GUI ID that
-     * includes a forge direction.
+     * Helper function to properly generate a GUI ID that includes a forge direction.
      *
      * @param ID
      * @param side
@@ -227,8 +219,8 @@ public class ThEGuiHandler implements IGuiHandler {
      * @param y
      * @param z
      */
-    public static void launchGui(
-            final int ID, final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public static void launchGui(final int ID, final EntityPlayer player, final World world, final int x, final int y,
+            final int z) {
         player.openGui(ThaumicEnergistics.INSTANCE, ID + ThEGuiHandler.DIRECTION_OFFSET, world, x, y, z);
     }
 
@@ -243,14 +235,8 @@ public class ThEGuiHandler implements IGuiHandler {
      * @param z
      * @param extraData
      */
-    public static void launchGui(
-            final int ID,
-            final EntityPlayer player,
-            final World world,
-            final int x,
-            final int y,
-            final int z,
-            final Object[] extraData) {
+    public static void launchGui(final int ID, final EntityPlayer player, final World world, final int x, final int y,
+            final int z, final Object[] extraData) {
         ThEGuiHandler.extraData = extraData;
         player.openGui(ThaumicEnergistics.INSTANCE, ID + ThEGuiHandler.DIRECTION_OFFSET, world, x, y, z);
         ThEGuiHandler.extraData = null;
@@ -266,13 +252,8 @@ public class ThEGuiHandler implements IGuiHandler {
      * @param y
      * @param z
      */
-    public static void launchGui(
-            final ThEPartBase part,
-            final EntityPlayer player,
-            final World world,
-            final int x,
-            final int y,
-            final int z) {
+    public static void launchGui(final ThEPartBase part, final EntityPlayer player, final World world, final int x,
+            final int y, final int z) {
         // Ensure the player is allowed to open the gui
         if (part.isPartUseableByPlayer(player)) {
             player.openGui(ThaumicEnergistics.INSTANCE, part.getSide().ordinal(), world, x, y, z);
@@ -280,8 +261,8 @@ public class ThEGuiHandler implements IGuiHandler {
     }
 
     @Override
-    public Object getClientGuiElement(
-            int ID, final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public Object getClientGuiElement(int ID, final EntityPlayer player, final World world, final int x, final int y,
+            final int z) {
         // Is the ID a forge direction?
         ForgeDirection side = ForgeDirection.getOrientation(ID);
 
@@ -296,35 +277,35 @@ public class ThEGuiHandler implements IGuiHandler {
 
         // Check basic ID's
         switch (ID) {
-                // Is this the essentia cell?
+            // Is this the essentia cell?
             case ThEGuiHandler.ESSENTIA_CELL_ID:
                 return GuiEssentiaCellTerminal.NewEssentiaCellGui(player, world, x, y, z);
 
-                // Is this the cell workbench?
+            // Is this the cell workbench?
             case ThEGuiHandler.CELL_WORKBENCH_ID:
                 return new GuiEssentiaCellWorkbench(player, world, x, y, z);
 
-                // Is this the wireless gui?
+            // Is this the wireless gui?
             case ThEGuiHandler.WIRELESS_TERMINAL_ID:
                 return GuiEssentiaCellTerminal.NewWirelessEssentiaTerminalGui(player);
 
-                // Is this the arcane assembler?
+            // Is this the arcane assembler?
             case ThEGuiHandler.ARCANE_ASSEMBLER_ID:
                 return new GuiArcaneAssembler(player, world, x, y, z);
 
-                // Is this the knowledge inscriber?
+            // Is this the knowledge inscriber?
             case ThEGuiHandler.KNOWLEDGE_INSCRIBER:
                 return new GuiKnowledgeInscriber(player, world, x, y, z);
 
-                // Vibration chamber?
+            // Vibration chamber?
             case ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER:
                 return new GuiEssentiaVibrationChamber(player, world, x, y, z);
 
-                // Distillation encoder?
+            // Distillation encoder?
             case ThEGuiHandler.DISTILLATION_ENCODER:
                 return new GuiDistillationPatternEncoder(player, world, x, y, z);
 
-                // AE2 Autocrafting Amount?
+            // AE2 Autocrafting Amount?
             case ThEGuiHandler.AUTO_CRAFTING_AMOUNT:
                 ICraftingIssuerHost amountHost = ThEGuiHandler.getCraftingIssuerHost(player);
                 if (amountHost != null) {
@@ -332,7 +313,7 @@ public class ThEGuiHandler implements IGuiHandler {
                 }
                 return null;
 
-                // AE2 Autocrafting Confirm?
+            // AE2 Autocrafting Confirm?
             case ThEGuiHandler.AUTO_CRAFTING_CONFIRM:
                 ICraftingIssuerHost confirmHost = ThEGuiHandler.getCraftingIssuerHost(player);
                 if (confirmHost != null) {
@@ -360,8 +341,8 @@ public class ThEGuiHandler implements IGuiHandler {
     }
 
     @Override
-    public Object getServerGuiElement(
-            int ID, final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public Object getServerGuiElement(int ID, final EntityPlayer player, final World world, final int x, final int y,
+            final int z) {
         // Is the ID a forge Direction?
         ForgeDirection side = ForgeDirection.getOrientation(ID);
 
@@ -375,36 +356,36 @@ public class ThEGuiHandler implements IGuiHandler {
         ID -= ThEGuiHandler.DIRECTION_OFFSET;
 
         switch (ID) {
-                // Is this the essentia cell?
+            // Is this the essentia cell?
             case ThEGuiHandler.ESSENTIA_CELL_ID:
                 return new ContainerEssentiaCell(player, world, x, y, z);
 
-                // Is this the cell workbench?
+            // Is this the cell workbench?
             case ThEGuiHandler.CELL_WORKBENCH_ID:
                 return new ContainerEssentiaCellWorkbench(player, world, x, y, z);
 
-                // Is this the wireless gui?
+            // Is this the wireless gui?
             case ThEGuiHandler.WIRELESS_TERMINAL_ID:
                 HandlerWirelessEssentiaTerminal handler = (HandlerWirelessEssentiaTerminal) ThEGuiHandler.extraData[0];
                 return new ContainerWirelessEssentiaTerminal(player, handler);
 
-                // Is this the arcane assembler?
+            // Is this the arcane assembler?
             case ThEGuiHandler.ARCANE_ASSEMBLER_ID:
                 return new ContainerArcaneAssembler(player, world, x, y, z);
 
-                // Is this the knowledge inscriber?
+            // Is this the knowledge inscriber?
             case ThEGuiHandler.KNOWLEDGE_INSCRIBER:
                 return new ContainerKnowledgeInscriber(player, world, x, y, z);
 
-                // Vibration chamber?
+            // Vibration chamber?
             case ThEGuiHandler.ESSENTIA_VIBRATION_CHAMBER:
                 return new ContainerEssentiaVibrationChamber(player, world, x, y, z);
 
-                // Distillation encoder?
+            // Distillation encoder?
             case ThEGuiHandler.DISTILLATION_ENCODER:
                 return new ContainerDistillationPatternEncoder(player, world, x, y, z);
 
-                // AE2 Autocrafting Amount?
+            // AE2 Autocrafting Amount?
             case ThEGuiHandler.AUTO_CRAFTING_AMOUNT:
                 ICraftingIssuerHost amountHost = ThEGuiHandler.getCraftingIssuerHost(player);
                 if (amountHost != null) {
@@ -412,7 +393,7 @@ public class ThEGuiHandler implements IGuiHandler {
                 }
                 return null;
 
-                // AE2 Autocrafting Confirm?
+            // AE2 Autocrafting Confirm?
             case ThEGuiHandler.AUTO_CRAFTING_CONFIRM:
                 ICraftingIssuerHost confirmHost = ThEGuiHandler.getCraftingIssuerHost(player);
                 if (confirmHost != null) {

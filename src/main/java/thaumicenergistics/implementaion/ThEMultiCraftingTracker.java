@@ -1,5 +1,12 @@
 package thaumicenergistics.implementaion;
 
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -8,12 +15,8 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
+
 import com.google.common.collect.ImmutableSet;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 
 public class ThEMultiCraftingTracker {
 
@@ -50,14 +53,8 @@ public class ThEMultiCraftingTracker {
         }
     }
 
-    public boolean handleCrafting(
-            final int x,
-            final long itemToCraft,
-            final IAEItemStack ais,
-            final World w,
-            final IGrid g,
-            final ICraftingGrid cg,
-            final BaseActionSource mySrc) {
+    public boolean handleCrafting(final int x, final long itemToCraft, final IAEItemStack ais, final World w,
+            final IGrid g, final ICraftingGrid cg, final BaseActionSource mySrc) {
         final Future<ICraftingJob> craftingJob = this.getJob(x);
 
         if (this.getLink(x) != null) {

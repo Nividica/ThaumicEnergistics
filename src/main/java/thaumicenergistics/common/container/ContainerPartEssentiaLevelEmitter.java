@@ -1,17 +1,20 @@
 package thaumicenergistics.common.container;
 
-import appeng.api.config.RedstoneMode;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaEmitter;
 import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
+import appeng.api.config.RedstoneMode;
 
 /**
  * Inventory container for essentia emitter.
@@ -20,6 +23,7 @@ import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
  *
  */
 public class ContainerPartEssentiaLevelEmitter extends ContainerWithPlayerInventory {
+
     /**
      * X position for the player inventory
      */
@@ -53,8 +57,7 @@ public class ContainerPartEssentiaLevelEmitter extends ContainerWithPlayerInvent
     /**
      * Create the container.
      *
-     * @param player
-     * The owner of this container.
+     * @param player The owner of this container.
      */
     public ContainerPartEssentiaLevelEmitter(final PartEssentiaLevelEmitter part, final EntityPlayer player) {
         // Call super

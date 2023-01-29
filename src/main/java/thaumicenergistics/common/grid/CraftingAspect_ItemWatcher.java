@@ -1,10 +1,10 @@
 package thaumicenergistics.common.grid;
 
+import thaumicenergistics.common.items.ItemCraftingAspect;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
-import thaumicenergistics.common.items.ItemCraftingAspect;
 
 class CraftingAspect_ItemWatcher implements IMEMonitorHandlerReceiver<IAEItemStack> {
 
@@ -25,9 +25,7 @@ class CraftingAspect_ItemWatcher implements IMEMonitorHandlerReceiver<IAEItemSta
     }
 
     @Override
-    public void postChange(
-            final IBaseMonitor<IAEItemStack> monitor,
-            final Iterable<IAEItemStack> change,
+    public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change,
             final BaseActionSource actionSource) {
         for (IAEItemStack stack : change) {
             // Is the stack craftable, has NBT tag, and is a crafting aspect?

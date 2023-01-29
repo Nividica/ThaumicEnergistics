@@ -1,16 +1,18 @@
 package thaumicenergistics.common.grid;
 
-import appeng.api.networking.IGridNode;
 import java.util.HashMap;
 import java.util.HashSet;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.IEssentiaWatcher;
 import thaumicenergistics.api.grid.IEssentiaWatcherHost;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
 import thaumicenergistics.api.grid.IMEEssentiaMonitorReceiver;
 import thaumicenergistics.api.storage.IAspectStack;
+import appeng.api.networking.IGridNode;
 
 class EssentiaWatcherManager implements IMEEssentiaMonitorReceiver {
+
     /**
      * Maps Node->Watcher
      */
@@ -19,8 +21,7 @@ class EssentiaWatcherManager implements IMEEssentiaMonitorReceiver {
     /**
      * Maps Aspect -> Watchers
      */
-    private HashMap<Aspect, HashSet<IEssentiaWatcher>> watchedAspects =
-            new HashMap<Aspect, HashSet<IEssentiaWatcher>>();
+    private HashMap<Aspect, HashSet<IEssentiaWatcher>> watchedAspects = new HashMap<Aspect, HashSet<IEssentiaWatcher>>();
 
     /**
      * True when the manager is listening for changes.

@@ -1,12 +1,14 @@
 package thaumicenergistics.client.gui.buttons;
 
+import java.util.List;
+
+import net.minecraft.util.EnumChatFormatting;
+
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 import appeng.api.config.ViewItems;
 import appeng.core.localization.ButtonToolTips;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.List;
-import net.minecraft.util.EnumChatFormatting;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 /**
  * Displays view types icons.
@@ -16,6 +18,7 @@ import thaumicenergistics.client.textures.AEStateIconsEnum;
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonViewType extends ThEStateButton {
+
     /**
      * Cached tooltip for the buttons view mode.
      */
@@ -30,8 +33,8 @@ public class GuiButtonViewType extends ThEStateButton {
      * @param width
      * @param height
      */
-    public GuiButtonViewType(
-            final int ID, final int xPosition, final int yPosition, final int width, final int height) {
+    public GuiButtonViewType(final int ID, final int xPosition, final int yPosition, final int width,
+            final int height) {
         super(
                 ID,
                 xPosition,

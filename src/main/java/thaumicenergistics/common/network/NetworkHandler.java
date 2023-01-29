@@ -1,14 +1,16 @@
 package thaumicenergistics.common.network;
 
+import java.util.HashMap;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+
+import thaumicenergistics.common.ThaumicEnergistics;
+import thaumicenergistics.common.network.packet.client.*;
+import thaumicenergistics.common.network.packet.server.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
-import java.util.HashMap;
-import net.minecraft.entity.player.EntityPlayerMP;
-import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.network.packet.client.*;
-import thaumicenergistics.common.network.packet.server.*;
 
 /**
  * Handles all server<->client network communication for ThE.
@@ -17,6 +19,7 @@ import thaumicenergistics.common.network.packet.server.*;
  *
  */
 public class NetworkHandler {
+
     /**
      * Channel used to send packets.
      */
@@ -143,7 +146,11 @@ public class NetworkHandler {
 
         // Create the target point
         TargetPoint targetPoint = new TargetPoint(
-                areaPacket.getDimension(), areaPacket.getX(), areaPacket.getY(), areaPacket.getZ(), range);
+                areaPacket.getDimension(),
+                areaPacket.getX(),
+                areaPacket.getY(),
+                areaPacket.getZ(),
+                range);
 
         // Send the packet
         NetworkHandler.channel.sendToAllAround(wrapper, targetPoint);

@@ -1,5 +1,30 @@
 package thaumicenergistics.common.parts;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
+import thaumicenergistics.client.gui.GuiEssentiaStorageBus;
+import thaumicenergistics.client.textures.BlockTextureManager;
+import thaumicenergistics.common.container.ContainerPartEssentiaStorageBus;
+import thaumicenergistics.common.grid.EssentiaMonitor;
+import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
+import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusBase;
+import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusDuality;
+import thaumicenergistics.common.network.IAspectSlotPart;
+import thaumicenergistics.common.utils.EffectiveSide;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -25,28 +50,6 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Nullable;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.IAspectContainer;
-import thaumicenergistics.client.gui.GuiEssentiaStorageBus;
-import thaumicenergistics.client.textures.BlockTextureManager;
-import thaumicenergistics.common.container.ContainerPartEssentiaStorageBus;
-import thaumicenergistics.common.grid.EssentiaMonitor;
-import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
-import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusBase;
-import thaumicenergistics.common.inventory.HandlerEssentiaStorageBusDuality;
-import thaumicenergistics.common.network.IAspectSlotPart;
-import thaumicenergistics.common.utils.EffectiveSide;
 
 /**
  * Allows an {@link IAspectContainer} to be used as network essentia storage.
@@ -56,6 +59,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  */
 public class PartEssentiaStorageBus extends ThEPartBase
         implements IGridTickable, ICellContainer, IAspectSlotPart, IAEAppEngInventory, IPriorityHost {
+
     /**
      * Number of filtered aspects we can have
      */
@@ -69,10 +73,8 @@ public class PartEssentiaStorageBus extends ThEPartBase
     /**
      * NBT Keys
      */
-    private static final String NBT_KEY_PRIORITY = "Priority",
-            NBT_KEY_FILTER = "FilterAspects#",
-            NBT_KEY_UPGRADES = "UpgradeInventory",
-            NBT_KEY_VOID = "IsVoidAllowed";
+    private static final String NBT_KEY_PRIORITY = "Priority", NBT_KEY_FILTER = "FilterAspects#",
+            NBT_KEY_UPGRADES = "UpgradeInventory", NBT_KEY_VOID = "IsVoidAllowed";
 
     /**
      * "Cell" handler for the storage bus.
@@ -111,10 +113,7 @@ public class PartEssentiaStorageBus extends ThEPartBase
      * Updates the handler on the inverted state.
      */
     private void updateInverterState() {
-        boolean inverted = AEApi.instance()
-                .definitions()
-                .materials()
-                .cardInverter()
+        boolean inverted = AEApi.instance().definitions().materials().cardInverter()
                 .isSameAs(this.upgradeInventory.getStackInSlot(0));
         this.handler.setInverted(inverted);
     }
@@ -169,8 +168,7 @@ public class PartEssentiaStorageBus extends ThEPartBase
     }
 
     /**
-     * Extracts power from the network proportional to the specified essentia
-     * amount.
+     * Extracts power from the network proportional to the specified essentia amount.
      *
      * @param essentiaAmount
      * @param mode
@@ -326,8 +324,8 @@ public class PartEssentiaStorageBus extends ThEPartBase
      * Called when the upgrade inventory changes.
      */
     @Override
-    public void onChangeInventory(
-            final IInventory inv, final int arg1, final InvOperation arg2, final ItemStack arg3, final ItemStack arg4) {
+    public void onChangeInventory(final IInventory inv, final int arg1, final InvOperation arg2, final ItemStack arg3,
+            final ItemStack arg4) {
         this.updateInverterState();
     }
 
@@ -392,8 +390,8 @@ public class PartEssentiaStorageBus extends ThEPartBase
         // Read the filter list
         for (int index = 0; index < PartEssentiaStorageBus.FILTER_SIZE; index++) {
             if (data.hasKey(PartEssentiaStorageBus.NBT_KEY_FILTER + index)) {
-                this.filteredAspects.set(
-                        index, Aspect.aspects.get(data.getString(PartEssentiaStorageBus.NBT_KEY_FILTER + index)));
+                this.filteredAspects
+                        .set(index, Aspect.aspects.get(data.getString(PartEssentiaStorageBus.NBT_KEY_FILTER + index)));
             } else {
                 this.filteredAspects.set(index, null);
             }
@@ -425,8 +423,7 @@ public class PartEssentiaStorageBus extends ThEPartBase
         Tessellator ts = Tessellator.instance;
 
         IIcon side = BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[2];
-        helper.setTexture(
-                side, side, side, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[0], side, side);
+        helper.setTexture(side, side, side, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[0], side, side);
 
         // Face
         helper.setBounds(1.0F, 1.0F, 15.0F, 15.0F, 15.0F, 16.0F);
@@ -441,7 +438,9 @@ public class PartEssentiaStorageBus extends ThEPartBase
         helper.setInvColor(ThEPartBase.INVENTORY_OVERLAY_COLOR);
         ts.setBrightness(0xF000F0);
         helper.renderInventoryFace(
-                BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[1], ForgeDirection.SOUTH, renderer);
+                BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[1],
+                ForgeDirection.SOUTH,
+                renderer);
 
         // Back
         helper.setBounds(5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F);
@@ -453,8 +452,8 @@ public class PartEssentiaStorageBus extends ThEPartBase
      */
     @SideOnly(Side.CLIENT)
     @Override
-    public void renderStatic(
-            final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer) {
+    public void renderStatic(final int x, final int y, final int z, final IPartRenderHelper helper,
+            final RenderBlocks renderer) {
         Tessellator tessellator = Tessellator.instance;
 
         IIcon side = BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[2];
@@ -472,7 +471,12 @@ public class PartEssentiaStorageBus extends ThEPartBase
 
         // Mid
         helper.renderFace(
-                x, y, z, BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[1], ForgeDirection.SOUTH, renderer);
+                x,
+                y,
+                z,
+                BlockTextureManager.ESSENTIA_STORAGE_BUS.getTextures()[1],
+                ForgeDirection.SOUTH,
+                renderer);
         helper.setBounds(4.0F, 4.0F, 14.0F, 12.0F, 12.0F, 15.0F);
         helper.renderBlock(x, y, z, renderer);
 

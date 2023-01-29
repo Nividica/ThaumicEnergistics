@@ -1,5 +1,12 @@
 package thaumicenergistics.common.network.packet.server;
 
+import java.util.concurrent.Future;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumicenergistics.common.ThEGuiHandler;
+import thaumicenergistics.common.network.NetworkHandler;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -10,11 +17,6 @@ import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.core.AELog;
 import io.netty.buffer.ByteBuf;
-import java.util.concurrent.Future;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumicenergistics.common.ThEGuiHandler;
-import thaumicenergistics.common.network.NetworkHandler;
 
 /**
  * Server-bound confirm crafting packet.
@@ -23,6 +25,7 @@ import thaumicenergistics.common.network.NetworkHandler;
  *
  */
 public class Packet_S_ConfirmCraftingJob extends ThEServerPacket {
+
     private static final byte MODE_REQUEST_CONFIRM = 1;
 
     private long amount;
@@ -96,14 +99,23 @@ public class Packet_S_ConfirmCraftingJob extends ThEServerPacket {
                 try {
                     final ICraftingGrid cg = g.getCache(ICraftingGrid.class);
                     futureJob = cg.beginCraftingJob(
-                            cca.getWorld(), cca.getGrid(), cca.getActionSrc(), cca.getItemToCraft(), null);
+                            cca.getWorld(),
+                            cca.getGrid(),
+                            cca.getActionSrc(),
+                            cca.getItemToCraft(),
+                            null);
 
                     final ContainerOpenContext context = cca.getOpenContext();
                     if (context != null) {
                         // Begin Thaumic Energistics Changes ===============================
 
                         ThEGuiHandler.launchGui(
-                                ThEGuiHandler.AUTO_CRAFTING_CONFIRM, this.player, this.player.worldObj, 0, 0, 0);
+                                ThEGuiHandler.AUTO_CRAFTING_CONFIRM,
+                                this.player,
+                                this.player.worldObj,
+                                0,
+                                0,
+                                0);
 
                         // End Thaumic Energistics Changes ===============================
 

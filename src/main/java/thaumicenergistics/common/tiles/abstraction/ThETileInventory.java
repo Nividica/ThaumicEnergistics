@@ -4,16 +4,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+
 import thaumicenergistics.common.inventory.TheInternalInventory;
 
 /**
- * Base for tiles with inventories.
- * Note: The inventory is not automatically saved to NBT.
+ * Base for tiles with inventories. Note: The inventory is not automatically saved to NBT.
  *
  * @author Nividica
  *
  */
 public abstract class ThETileInventory extends TileEntity implements IInventory {
+
     /**
      * The internal inventory of the tile.
      */

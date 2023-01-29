@@ -1,26 +1,28 @@
 package thaumicenergistics.common.features;
 
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import thaumcraft.common.config.Config;
+import thaumcraft.common.config.ConfigBlocks;
+import thaumcraft.common.config.ConfigItems;
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.definitions.IParts;
+
 import com.google.common.base.Optional;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import thaumcraft.common.config.Config;
-import thaumcraft.common.config.ConfigBlocks;
-import thaumcraft.common.config.ConfigItems;
 
 /**
- * Every TC/AE item that any feature depends on.
- * The items can be an ItemStack, a String, or null.
+ * Every TC/AE item that any feature depends on. The items can be an ItemStack, a String, or null.
  *
  * @author Nividica
  *
  */
 public class CommonDependantItems {
+
     // MC Items ==========================
     public String VanillaGlass = "blockGlass";
     public String IronIngot = "ingotIron";
@@ -95,8 +97,7 @@ public class CommonDependantItems {
     }
 
     /**
-     * Attempts to get the specified AE item.
-     * Returns a stack of size 1, or null.
+     * Attempts to get the specified AE item. Returns a stack of size 1, or null.
      *
      * @param def
      * @return
@@ -121,8 +122,7 @@ public class CommonDependantItems {
     }
 
     /**
-     * Gets an item based on if it is available and allowed by the specified
-     * config flag.
+     * Gets an item based on if it is available and allowed by the specified config flag.
      *
      * @param configDependency
      * @param preferred
@@ -138,8 +138,7 @@ public class CommonDependantItems {
     }
 
     /**
-     * Gets an AE item, or if unavailable sets the item to the specified
-     * alternative.
+     * Gets an AE item, or if unavailable sets the item to the specified alternative.
      *
      * @param def
      * @param alt
@@ -171,8 +170,8 @@ public class CommonDependantItems {
         this.QuartzGlass = this.getItemOrAlt(aeBlocks.quartzGlass(), this.VanillaGlass);
         this.MECellWorkbench = this.getItemOrAlt(aeBlocks.cellWorkbench(), new ItemStack(Blocks.crafting_table));
         this.MEInterface = this.getAEItem(aeBlocks.iface());
-        this.DenseCell =
-                (ItemStack) this.getItemOrAlt(aeBlocks.energyCellDense(), this.getAEItem(aeBlocks.energyCell()));
+        this.DenseCell = (ItemStack) this
+                .getItemOrAlt(aeBlocks.energyCellDense(), this.getAEItem(aeBlocks.energyCell()));
         this.VibrationChamber = this.getAEItem(aeBlocks.vibrationChamber());
 
         // Parts
@@ -183,8 +182,7 @@ public class CommonDependantItems {
         this.MEP2P = this.getAEItem(aeParts.p2PTunnelME());
 
         // Items
-        this.CertusWrench =
-                this.getAEItem(AEApi.instance().definitions().items().certusQuartzWrench());
+        this.CertusWrench = this.getAEItem(AEApi.instance().definitions().items().certusQuartzWrench());
     }
 
     private void populateTCItems() {
@@ -208,9 +206,11 @@ public class CommonDependantItems {
         this.ArcaneWorkTable = new ItemStack(ConfigBlocks.blockTable, 1, 15);
         this.FilterTube = new ItemStack(ConfigBlocks.blockTube, 1, 3);
         this.WardedGlass = this.getItemOrAlt(
-                Config.wardedStone, new ItemStack(ConfigBlocks.blockCosmeticOpaque, 1, 2), this.VanillaGlass);
-        this.EssentiaMirror = (ItemStack)
-                this.getItemOrAlt(Config.allowMirrors, new ItemStack(ConfigBlocks.blockMirror, 1, 6), this.WardedJar);
+                Config.wardedStone,
+                new ItemStack(ConfigBlocks.blockCosmeticOpaque, 1, 2),
+                this.VanillaGlass);
+        this.EssentiaMirror = (ItemStack) this
+                .getItemOrAlt(Config.allowMirrors, new ItemStack(ConfigBlocks.blockMirror, 1, 6), this.WardedJar);
 
         // Items
         this.Thaumometer = new ItemStack(ConfigItems.itemThaumometer);

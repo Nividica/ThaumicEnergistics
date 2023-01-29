@@ -1,9 +1,7 @@
 package thaumicenergistics.common.blocks;
 
-import appeng.api.implementations.items.IMemoryCard;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,11 +15,15 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumicenergistics.client.textures.BlockTextureManager;
 import thaumicenergistics.common.ThEGuiHandler;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.implementations.items.IMemoryCard;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileArcaneAssembler} block.
@@ -58,8 +60,8 @@ public class BlockArcaneAssembler extends AbstractBlockAEWrenchable {
      * @return
      */
     @Override
-    protected boolean onBlockActivated(
-            final World world, final int x, final int y, final int z, final EntityPlayer player) {
+    protected boolean onBlockActivated(final World world, final int x, final int y, final int z,
+            final EntityPlayer player) {
         // Get what the player is holding
         ItemStack playerHolding = player.inventory.getCurrentItem();
 
@@ -115,8 +117,8 @@ public class BlockArcaneAssembler extends AbstractBlockAEWrenchable {
      * Called when the block is broken.
      */
     @Override
-    public void breakBlock(
-            final World world, final int x, final int y, final int z, final Block block, final int metaData) {
+    public void breakBlock(final World world, final int x, final int y, final int z, final Block block,
+            final int metaData) {
         // Is this server side?
         if (EffectiveSide.isServerSide()) {
             // Get the tile
@@ -172,18 +174,13 @@ public class BlockArcaneAssembler extends AbstractBlockAEWrenchable {
     }
 
     @Override
-    public final boolean isSideSolid(
-            final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side) {
+    public final boolean isSideSolid(final IBlockAccess world, final int x, final int y, final int z,
+            final ForgeDirection side) {
         return false;
     }
 
     @Override
-    public void onBlockPlacedBy(
-            final World world,
-            final int x,
-            final int y,
-            final int z,
-            final EntityLivingBase player,
+    public void onBlockPlacedBy(final World world, final int x, final int y, final int z, final EntityLivingBase player,
             final ItemStack itemStack) {
         // Get the tile
         TileEntity tileAssembler = world.getTileEntity(x, y, z);
@@ -219,8 +216,8 @@ public class BlockArcaneAssembler extends AbstractBlockAEWrenchable {
      * Prevents MC from using the default block renderer.
      */
     @Override
-    public boolean shouldSideBeRendered(
-            final IBlockAccess iblockaccess, final int i, final int j, final int k, final int l) {
+    public boolean shouldSideBeRendered(final IBlockAccess iblockaccess, final int i, final int j, final int k,
+            final int l) {
         return false;
     }
 }

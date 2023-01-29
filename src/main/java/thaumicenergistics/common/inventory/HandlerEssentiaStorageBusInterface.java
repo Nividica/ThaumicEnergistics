@@ -1,5 +1,8 @@
 package thaumicenergistics.common.inventory;
 
+import net.minecraft.tileentity.TileEntity;
+
+import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
@@ -20,8 +23,6 @@ import appeng.me.storage.MEInventoryHandler;
 import appeng.parts.misc.PartInterface;
 import appeng.tile.misc.TileInterface;
 import appeng.util.Platform;
-import net.minecraft.tileentity.TileEntity;
-import thaumicenergistics.common.parts.PartEssentiaStorageBus;
 
 /**
  * Handles interaction between {@link PartEssentiaStorageBus} and {@link TileInterface}, providing sub-networking.
@@ -31,6 +32,7 @@ import thaumicenergistics.common.parts.PartEssentiaStorageBus;
  */
 class HandlerEssentiaStorageBusInterface extends HandlerEssentiaStorageBusBase
         implements IMEMonitorHandlerReceiver<IAEFluidStack> {
+
     /**
      * Interface the storage bus is facing.
      */
@@ -47,8 +49,7 @@ class HandlerEssentiaStorageBusInterface extends HandlerEssentiaStorageBusBase
     private int handlerHash;
 
     /**
-     * Prevent infinite loops when sub-grid's sub-grid is hosts grid.
-     * yeah.
+     * Prevent infinite loops when sub-grid's sub-grid is hosts grid. yeah.
      */
     private boolean canPostUpdate = true;
 
@@ -81,8 +82,8 @@ class HandlerEssentiaStorageBusInterface extends HandlerEssentiaStorageBusBase
      * Attempts to extract the gas from the sub-grid.
      */
     @Override
-    public IAEFluidStack extractItems(
-            final IAEFluidStack request, final Actionable mode, final BaseActionSource source) {
+    public IAEFluidStack extractItems(final IAEFluidStack request, final Actionable mode,
+            final BaseActionSource source) {
         // Is the fluid an essentia gas?
         if (this.isFluidEssentiaGas(request)) {
             if (this.handler != null) {
@@ -103,8 +104,8 @@ class HandlerEssentiaStorageBusInterface extends HandlerEssentiaStorageBusBase
     public IItemList<IAEFluidStack> getAvailableItems(final IItemList<IAEFluidStack> out) {
         if (this.handler != null) {
             // Get the subgrids fluids
-            IItemList<IAEFluidStack> subGridFluids =
-                    this.handler.getAvailableItems(AEApi.instance().storage().createFluidList());
+            IItemList<IAEFluidStack> subGridFluids = this.handler
+                    .getAvailableItems(AEApi.instance().storage().createFluidList());
 
             for (IAEFluidStack fluid : subGridFluids) {
                 // Is the fluid as essentia gas?
@@ -206,8 +207,8 @@ class HandlerEssentiaStorageBusInterface extends HandlerEssentiaStorageBusBase
             this.handler = null;
 
             // Get the monitor
-            IStorageMonitorable monitor = this.MEInterface.getMonitorable(
-                    this.partStorageBus.getSide().getOpposite(), this.machineSource);
+            IStorageMonitorable monitor = this.MEInterface
+                    .getMonitorable(this.partStorageBus.getSide().getOpposite(), this.machineSource);
 
             // Ensure a monitor was retrieved
             if (monitor != null) {
@@ -251,9 +252,7 @@ class HandlerEssentiaStorageBusInterface extends HandlerEssentiaStorageBusBase
      * A change occurred in the sub-grid, inform the host grid.
      */
     @Override
-    public void postChange(
-            final IBaseMonitor<IAEFluidStack> monitor,
-            final Iterable<IAEFluidStack> change,
+    public void postChange(final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change,
             final BaseActionSource actionSource) {
         try {
             IActionHost actionHost = null;
@@ -270,8 +269,7 @@ class HandlerEssentiaStorageBusInterface extends HandlerEssentiaStorageBusBase
             // Ensure there is an action host
             if (actionHost != null) {
                 // Post update if change did not come from host grid, prevents double posting.
-                if (actionHost.getActionableNode().getGrid()
-                        != this.partStorageBus.getActionableNode().getGrid()) {
+                if (actionHost.getActionableNode().getGrid() != this.partStorageBus.getActionableNode().getGrid()) {
                     // Update the host grid
                     this.postAlterationToHostGrid(change);
                 }

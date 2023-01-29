@@ -1,11 +1,13 @@
 package thaumicenergistics.client.gui.buttons;
 
+import java.util.List;
+
+import net.minecraft.util.EnumChatFormatting;
+
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 import appeng.core.localization.ButtonToolTips;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.List;
-import net.minecraft.util.EnumChatFormatting;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 /**
  * Displays clear grid icon.
@@ -15,6 +17,7 @@ import thaumicenergistics.client.textures.AEStateIconsEnum;
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonClearCraftingGrid extends ThEStateButton {
+
     /**
      * Clear grid icon
      */
@@ -31,13 +34,8 @@ public class GuiButtonClearCraftingGrid extends ThEStateButton {
      * @param width
      * @param height
      */
-    public GuiButtonClearCraftingGrid(
-            final int ID,
-            final int xPosition,
-            final int yPosition,
-            final int width,
-            final int height,
-            final boolean showTooltip) {
+    public GuiButtonClearCraftingGrid(final int ID, final int xPosition, final int yPosition, final int width,
+            final int height, final boolean showTooltip) {
         // Call super
         super(
                 ID,

@@ -1,18 +1,20 @@
 package thaumicenergistics.client.gui.widget;
 
-import appeng.core.AEConfig;
-import appeng.util.ReadableNumberConverter;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
+
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.gui.IAspectSelectorGui;
 import thaumicenergistics.api.storage.IAspectStack;
 import thaumicenergistics.client.gui.ThEGuiHelper;
 import thaumicenergistics.common.utils.ThEUtils;
+import appeng.core.AEConfig;
+import appeng.util.ReadableNumberConverter;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Widget displaying an aspect and if it is selected.
@@ -22,6 +24,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  */
 @SideOnly(Side.CLIENT)
 public class WidgetAspectSelector extends AspectWidgetBase {
+
     /**
      * Thickness of the selector outline.
      */
@@ -43,17 +46,12 @@ public class WidgetAspectSelector extends AspectWidgetBase {
     private int[] backgroundPulseGradient;
 
     /**
-     * If true the amount will not be drawn, also if the stack is craftable
-     * it will show the crafting text.
+     * If true the amount will not be drawn, also if the stack is craftable it will show the crafting text.
      */
     protected boolean hideAmount = false;
 
-    public WidgetAspectSelector(
-            final IAspectSelectorGui selectorGui,
-            final IAspectStack stack,
-            final int xPos,
-            final int yPos,
-            final EntityPlayer player) {
+    public WidgetAspectSelector(final IAspectSelectorGui selectorGui, final IAspectStack stack, final int xPos,
+            final int yPos, final EntityPlayer player) {
         // Call super
         super(selectorGui, stack, xPos, yPos, player);
     }
@@ -68,8 +66,8 @@ public class WidgetAspectSelector extends AspectWidgetBase {
      * @param color
      * @param thickness
      */
-    private void drawHollowRectWithCorners(
-            final int posX, final int posY, final int width, final int height, final int color, final int thickness) {
+    private void drawHollowRectWithCorners(final int posX, final int posY, final int width, final int height,
+            final int color, final int thickness) {
         // Calculate points
 
         // Ending X point of the right line
@@ -151,8 +149,8 @@ public class WidgetAspectSelector extends AspectWidgetBase {
         int aspectColor = this.getStack().getAspect().getColor();
 
         // Create the gradient using the aspect color, varying between opacities
-        this.backgroundPulseGradient = ThEGuiHelper.INSTANCE.createColorGradient(
-                0x70000000 | aspectColor, 0x20000000 | aspectColor, GRADIENT_COUNT + 1);
+        this.backgroundPulseGradient = ThEGuiHelper.INSTANCE
+                .createColorGradient(0x70000000 | aspectColor, 0x20000000 | aspectColor, GRADIENT_COUNT + 1);
     }
 
     /**

@@ -1,14 +1,16 @@
 package thaumicenergistics.common.integration.tc;
 
-import appeng.api.config.Actionable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
 import thaumicenergistics.api.tiles.IEssentiaTransportWithSimulate;
+import appeng.api.config.Actionable;
 
 public class EssentiaTransportHelper {
+
     /**
      * Instance.
      */
@@ -21,12 +23,8 @@ public class EssentiaTransportHelper {
         // Intentionally Empty
     }
 
-    public void takeEssentiaFromTransportNeighbors(
-            final IEssentiaTransportWithSimulate destination,
-            final World world,
-            final int x,
-            final int y,
-            final int z) {
+    public void takeEssentiaFromTransportNeighbors(final IEssentiaTransportWithSimulate destination, final World world,
+            final int x, final int y, final int z) {
         // Null checks
         if ((destination == null) || (world == null)) {
             return;
@@ -42,7 +40,9 @@ public class EssentiaTransportHelper {
 
             // Get the source
             TileEntity sourceTile = world.getTileEntity(
-                    destinationSide.offsetX + x, destinationSide.offsetY + y, destinationSide.offsetZ + z);
+                    destinationSide.offsetX + x,
+                    destinationSide.offsetY + y,
+                    destinationSide.offsetZ + z);
 
             // Ensure the source is a transport
             if (!(sourceTile instanceof IEssentiaTransport)) {

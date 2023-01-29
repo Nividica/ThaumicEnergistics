@@ -1,14 +1,13 @@
 package thaumicenergistics.common.tiles;
 
-import appeng.api.config.Actionable;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
 import thaumicenergistics.api.ThEApi;
@@ -16,6 +15,9 @@ import thaumicenergistics.api.tiles.IEssentiaTransportWithSimulate;
 import thaumicenergistics.common.integration.IEssentiaProviderWatcher;
 import thaumicenergistics.common.integration.tc.EssentiaTransportHelper;
 import thaumicenergistics.common.tiles.abstraction.TileProviderBase;
+import appeng.api.config.Actionable;
+import appeng.tile.TileEvent;
+import appeng.tile.events.TileEventType;
 
 /**
  * Provides essentia to {@link IEssentiaTransport} devices via suction.
@@ -24,6 +26,7 @@ import thaumicenergistics.common.tiles.abstraction.TileProviderBase;
  *
  */
 public class TileEssentiaProvider extends TileProviderBase implements IEssentiaTransportWithSimulate {
+
     /**
      * How often should the tile tick.
      */
@@ -60,8 +63,8 @@ public class TileEssentiaProvider extends TileProviderBase implements IEssentiaT
 
     protected Aspect getNeighborWantedAspect(final ForgeDirection side) {
         // Get the tile entity next to this side
-        TileEntity neighbor = this.worldObj.getTileEntity(
-                this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ);
+        TileEntity neighbor = this.worldObj
+                .getTileEntity(this.xCoord + side.offsetX, this.yCoord + side.offsetY, this.zCoord + side.offsetZ);
 
         // Do we have essentia transport neighbor?
         if ((neighbor != null) && (neighbor instanceof IEssentiaTransport)) {
@@ -212,8 +215,8 @@ public class TileEssentiaProvider extends TileProviderBase implements IEssentiaT
             this.tickRate = TileEssentiaProvider.TICK_RATE_IDLE;
 
             // Take essentia from the neighbors
-            EssentiaTransportHelper.INSTANCE.takeEssentiaFromTransportNeighbors(
-                    this, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+            EssentiaTransportHelper.INSTANCE
+                    .takeEssentiaFromTransportNeighbors(this, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
         }
     }
 

@@ -9,6 +9,7 @@ import net.minecraft.inventory.IInventory;
  *
  */
 public interface IInventoryUpdateReceiver {
+
     /**
      * Called when an inventory is changed.
      *

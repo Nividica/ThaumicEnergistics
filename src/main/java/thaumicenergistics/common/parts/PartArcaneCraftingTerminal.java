@@ -1,5 +1,36 @@
 package thaumicenergistics.common.parts;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.common.items.wands.ItemWandCasting;
+import thaumicenergistics.api.grid.ICraftingIssuerHost;
+import thaumicenergistics.api.grid.IDigiVisSource;
+import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
+import thaumicenergistics.client.textures.BlockTextureManager;
+import thaumicenergistics.common.ThEGuiHandler;
+import thaumicenergistics.common.ThaumicEnergistics;
+import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
+import thaumicenergistics.common.integration.tc.DigiVisSourceData;
+import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
+import thaumicenergistics.common.registries.EnumCache;
+import thaumicenergistics.common.utils.EffectiveSide;
+import thaumicenergistics.common.utils.ThEUtils;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -22,35 +53,6 @@ import appeng.api.util.IConfigManager;
 import appeng.items.storage.ItemViewCell;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.common.items.wands.ItemWandCasting;
-import thaumicenergistics.api.grid.ICraftingIssuerHost;
-import thaumicenergistics.api.grid.IDigiVisSource;
-import thaumicenergistics.client.gui.GuiArcaneCraftingTerminal;
-import thaumicenergistics.client.textures.BlockTextureManager;
-import thaumicenergistics.common.ThEGuiHandler;
-import thaumicenergistics.common.ThaumicEnergistics;
-import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
-import thaumicenergistics.common.integration.tc.DigiVisSourceData;
-import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
-import thaumicenergistics.common.registries.EnumCache;
-import thaumicenergistics.common.utils.EffectiveSide;
-import thaumicenergistics.common.utils.ThEUtils;
 
 /**
  * Allows crafting arcane items while viewing the items in the network.
@@ -60,6 +62,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  */
 public class PartArcaneCraftingTerminal extends ThERotateablePart
         implements IInventory, IGridTickable, ICraftingIssuerHost, ITerminalHost {
+
     /**
      * Number of slots in the internal inventory
      */
@@ -68,10 +71,7 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
     /**
      * Index of the wand, result, and view slot(s)
      */
-    public static final int WAND_SLOT_INDEX = 9,
-            RESULT_SLOT_INDEX = 10,
-            VIEW_SLOT_MIN = 11,
-            VIEW_SLOT_MAX = 15,
+    public static final int WAND_SLOT_INDEX = 9, RESULT_SLOT_INDEX = 10, VIEW_SLOT_MIN = 11, VIEW_SLOT_MAX = 15,
             ARMOR_SLOT_MIN = 16;
 
     /**
@@ -174,8 +174,7 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
     }
 
     /**
-     * Notifies all listeners that our inventory contents
-     * have changed.
+     * Notifies all listeners that our inventory contents have changed.
      *
      * @param slotIndex
      */
@@ -211,9 +210,8 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
     }
 
     /**
-     * Decreases the size of the itemstack in the specified
-     * slot by the specified amount, and returns the itemstack.
-     * Can be null.
+     * Decreases the size of the itemstack in the specified slot by the specified amount, and returns the itemstack. Can
+     * be null.
      */
     @Override
     public ItemStack decrStackSize(final int slotIndex, final int amount) {
@@ -284,8 +282,7 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
     }
 
     /**
-     * Determines if items should be dropped on the ground when
-     * the part has been removed.
+     * Determines if items should be dropped on the ground when the part has been removed.
      */
     @Override
     public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
@@ -325,8 +322,7 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
     }
 
     /**
-     * Determines how much power the part takes for just
-     * existing.
+     * Determines how much power the part takes for just existing.
      */
     @Override
     public double getIdlePowerUsage() {
@@ -397,8 +393,7 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
     }
 
     /**
-     * Gets the itemstack in the specified slot index.
-     * Can be null.
+     * Gets the itemstack in the specified slot index. Can be null.
      */
     @Override
     public ItemStack getStackInSlot(final int slotIndex) {
@@ -505,8 +500,8 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
             ThEGuiHandler.launchGui(this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord);
         } else {
             // Ask the server to change the GUI
-            Packet_S_ChangeGui.sendGuiChangeToPart(
-                    this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord);
+            Packet_S_ChangeGui
+                    .sendGuiChangeToPart(this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord);
         }
     }
 
@@ -617,14 +612,14 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
 
         // Sort order
         if (data.hasKey(PartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY)) {
-            this.sortingOrder =
-                    EnumCache.AE_SORT_ORDERS[data.getInteger(PartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY)];
+            this.sortingOrder = EnumCache.AE_SORT_ORDERS[data
+                    .getInteger(PartArcaneCraftingTerminal.SORT_ORDER_NBT_KEY)];
         }
 
         // Sort direction
         if (data.hasKey(PartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY)) {
-            this.sortingDirection =
-                    EnumCache.AE_SORT_DIRECTIONS[data.getInteger(PartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY)];
+            this.sortingDirection = EnumCache.AE_SORT_DIRECTIONS[data
+                    .getInteger(PartArcaneCraftingTerminal.SORT_DIRECTION_NBT_KEY)];
         }
 
         // View mode
@@ -671,19 +666,22 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
 
         IIcon side = BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[3];
 
-        helper.setTexture(
-                side, side, side, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0], side, side);
+        helper.setTexture(side, side, side, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0], side, side);
         helper.setBounds(2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F);
         helper.renderInventoryBox(renderer);
 
         helper.setBounds(2.0F, 2.0F, 15.0F, 14.0F, 14.0F, 16.0F);
         ts.setColorOpaque_I(ThEPartBase.INVENTORY_OVERLAY_COLOR);
         helper.renderInventoryFace(
-                BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer);
+                BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[2],
+                ForgeDirection.SOUTH,
+                renderer);
 
         ts.setColorOpaque_I(AEColor.Black.mediumVariant);
         helper.renderInventoryFace(
-                BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[1], ForgeDirection.SOUTH, renderer);
+                BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[1],
+                ForgeDirection.SOUTH,
+                renderer);
 
         helper.setBounds(5.0F, 5.0F, 13.0F, 11.0F, 11.0F, 14.0F);
         this.renderInventoryBusLights(helper, renderer);
@@ -694,8 +692,8 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
      */
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderStatic(
-            final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer) {
+    public void renderStatic(final int x, final int y, final int z, final IPartRenderHelper helper,
+            final RenderBlocks renderer) {
         Tessellator tessellator = Tessellator.instance;
 
         IIcon side = BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[3];
@@ -710,7 +708,12 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
 
         // Face
         helper.renderFace(
-                x, y, z, BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0], ForgeDirection.SOUTH, renderer);
+                x,
+                y,
+                z,
+                BlockTextureManager.ARCANE_CRAFTING_TERMINAL.getTextures()[0],
+                ForgeDirection.SOUTH,
+                renderer);
 
         if (this.isActive()) {
             // Set brightness
@@ -756,8 +759,7 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
     }
 
     /**
-     * Sets the contents of the specified inventory slot and
-     * updates the listeners.
+     * Sets the contents of the specified inventory slot and updates the listeners.
      *
      * @param slotIndex
      * @param slotStack
@@ -772,8 +774,7 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
     }
 
     /**
-     * Sets the contents of the specified inventory slot without
-     * updating listeners.
+     * Sets the contents of the specified inventory slot without updating listeners.
      *
      * @param slotIndex
      * @param slotStack
@@ -808,8 +809,7 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
     }
 
     /**
-     * Swaps the armor stored in the ACT with what the specified player is
-     * wearing.
+     * Swaps the armor stored in the ACT with what the specified player is wearing.
      *
      * @param player
      */
@@ -864,8 +864,7 @@ public class PartArcaneCraftingTerminal extends ThERotateablePart
         }
 
         // Get the source
-        IDigiVisSource visSource =
-                this.visSourceInfo.tryGetSource(this.getGridBlock().getGrid());
+        IDigiVisSource visSource = this.visSourceInfo.tryGetSource(this.getGridBlock().getGrid());
 
         // Did we get an active source?
         if (visSource == null) {

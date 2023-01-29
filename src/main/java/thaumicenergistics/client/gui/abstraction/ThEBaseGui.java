@@ -1,11 +1,8 @@
 package thaumicenergistics.client.gui.abstraction;
 
-import appeng.api.AEApi;
-import appeng.parts.automation.UpgradeInventory;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -13,12 +10,17 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import thaumicenergistics.api.gui.IWidgetHost;
 import thaumicenergistics.client.gui.ThEGuiHelper;
 import thaumicenergistics.client.gui.buttons.ThEGuiButtonBase;
 import thaumicenergistics.client.textures.AEStateIconsEnum;
 import thaumicenergistics.common.container.ContainerWithNetworkTool;
 import thaumicenergistics.common.container.slot.SlotNetworkTool;
+import appeng.api.AEApi;
+import appeng.parts.automation.UpgradeInventory;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base gui of all Thaumic Energistics guis
@@ -28,6 +30,7 @@ import thaumicenergistics.common.container.slot.SlotNetworkTool;
  */
 @SideOnly(Side.CLIENT)
 public abstract class ThEBaseGui extends GuiContainer implements IWidgetHost {
+
     private static final int upgradeU = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getU();
     private static final int upgradeV = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getV();
     private static final int upgradeWidth = AEStateIconsEnum.UPGRADE_CARD_BACKGROUND.getWidth();
@@ -83,7 +86,14 @@ public abstract class ThEBaseGui extends GuiContainer implements IWidgetHost {
      */
     private final boolean isPointWithinSlot(final Slot slot, final int x, final int y) {
         return ThEGuiHelper.INSTANCE.isPointInGuiRegion(
-                slot.yDisplayPosition, slot.xDisplayPosition, 16, 16, x, y, this.guiLeft, this.guiTop);
+                slot.yDisplayPosition,
+                slot.xDisplayPosition,
+                16,
+                16,
+                x,
+                y,
+                this.guiLeft,
+                this.guiTop);
     }
 
     /**
@@ -189,15 +199,9 @@ public abstract class ThEBaseGui extends GuiContainer implements IWidgetHost {
                 Slot slot = this.getSlotAtMousePosition(mouseX, mouseY);
 
                 // Was the slot the network tool?
-                if ((slot != null)
-                        && (slot.getStack() != null)
-                        && (slot.getStack()
-                                .isItemEqual(AEApi.instance()
-                                        .definitions()
-                                        .items()
-                                        .networkTool()
-                                        .maybeStack(1)
-                                        .get()))) {
+                if ((slot != null) && (slot.getStack() != null)
+                        && (slot.getStack().isItemEqual(
+                                AEApi.instance().definitions().items().networkTool().maybeStack(1).get()))) {
                     // Do not allow any interaction with the network tool slot.
                     return;
                 }

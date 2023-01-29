@@ -1,8 +1,7 @@
 package thaumicenergistics.common.features;
 
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -15,6 +14,8 @@ import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 
 /**
  * {@link PartArcaneCraftingTerminal} feature.
@@ -40,7 +41,7 @@ public class FeatureACT extends ThEThaumcraftResearchFeature {
 
     @Override
     protected Object[] getItemReqs(final CommonDependantItems cdi) {
-        return new Object[] {cdi.CalculationProcessor, cdi.METerminal};
+        return new Object[] { cdi.CalculationProcessor, cdi.METerminal };
     }
 
     @Override
@@ -51,8 +52,7 @@ public class FeatureACT extends ThEThaumcraftResearchFeature {
     @Override
     protected void registerCrafting(final CommonDependantItems cdi) {
         // My items
-        ItemStack ArcaneCraftingTerminal =
-                ThEApi.instance().parts().ArcaneCrafting_Terminal.getStack();
+        ItemStack ArcaneCraftingTerminal = ThEApi.instance().parts().ArcaneCrafting_Terminal.getStack();
 
         // Arcane Crafting Terminal
         AspectList actAspectList = new AspectList();
@@ -66,11 +66,11 @@ public class FeatureACT extends ThEThaumcraftResearchFeature {
         actAspectList.add(Aspect.WATER, 10);
 
         // Set recipe
-        Object[] actRecipe = new Object[] {cdi.METerminal, cdi.ArcaneWorkTable, cdi.CalculationProcessor};
+        Object[] actRecipe = new Object[] { cdi.METerminal, cdi.ArcaneWorkTable, cdi.CalculationProcessor };
 
         // Register
-        RecipeRegistry.PART_ARCANE_TERMINAL = ThaumcraftApi.addShapelessArcaneCraftingRecipe(
-                this.researchKey, ArcaneCraftingTerminal, actAspectList, actRecipe);
+        RecipeRegistry.PART_ARCANE_TERMINAL = ThaumcraftApi
+                .addShapelessArcaneCraftingRecipe(this.researchKey, ArcaneCraftingTerminal, actAspectList, actRecipe);
     }
 
     @Override
@@ -89,14 +89,12 @@ public class FeatureACT extends ThEThaumcraftResearchFeature {
         ItemStack actIcon = AEPartsEnum.ArcaneCraftingTerminal.getStack();
 
         // Set the pages
-        ResearchPage[] actPages = new ResearchPage[] {
-            new ResearchPage(ResearchTypes.ARCANE_TERMINAL.getPageName(1)),
-            new ResearchPage(RecipeRegistry.PART_ARCANE_TERMINAL)
-        };
+        ResearchPage[] actPages = new ResearchPage[] { new ResearchPage(ResearchTypes.ARCANE_TERMINAL.getPageName(1)),
+                new ResearchPage(RecipeRegistry.PART_ARCANE_TERMINAL) };
 
         // Create the IO research
-        ResearchTypes.ARCANE_TERMINAL.createResearchItem(
-                actAspectList, ResearchRegistry.COMPLEXITY_SMALL, actIcon, actPages);
+        ResearchTypes.ARCANE_TERMINAL
+                .createResearchItem(actAspectList, ResearchRegistry.COMPLEXITY_SMALL, actIcon, actPages);
         ResearchTypes.ARCANE_TERMINAL.researchItem.setParents(this.getFirstValidParentKey(false));
         ResearchTypes.ARCANE_TERMINAL.researchItem.registerResearchItem();
     }

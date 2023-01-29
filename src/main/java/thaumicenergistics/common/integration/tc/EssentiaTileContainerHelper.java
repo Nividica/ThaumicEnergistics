@@ -1,12 +1,12 @@
 package thaumicenergistics.common.integration.tc;
 
-import appeng.api.config.Actionable;
-import appeng.api.storage.data.IAEFluidStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectContainer;
@@ -18,6 +18,8 @@ import thaumicenergistics.common.fluids.GaseousEssentia;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
+import appeng.api.config.Actionable;
+import appeng.api.storage.data.IAEFluidStack;
 
 /**
  * Helper class for working with Thaumcraft TileEntity essentia containers.
@@ -26,6 +28,7 @@ import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
  *
  */
 public final class EssentiaTileContainerHelper {
+
     /**
      * Singleton
      */
@@ -37,16 +40,15 @@ public final class EssentiaTileContainerHelper {
     public final IThETransportPermissions perms = ThEApi.instance().transportPermissions();
 
     /**
-     * Extracts essentia from a container based on the specified fluid stack
-     * type and amount.
+     * Extracts essentia from a container based on the specified fluid stack type and amount.
      *
      * @param container
      * @param request
      * @param mode
      * @return
      */
-    public FluidStack extractFromContainer(
-            final IAspectContainer container, final FluidStack request, final Actionable mode) {
+    public FluidStack extractFromContainer(final IAspectContainer container, final FluidStack request,
+            final Actionable mode) {
         // Ensure there is a request
         if ((request == null) || (request.getFluid() == null) || (request.amount == 0)) {
             // No request
@@ -79,7 +81,8 @@ public final class EssentiaTileContainerHelper {
 
         // Return the extracted amount
         return new FluidStack(
-                fluid, (int) EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount(extractedAmount_EU));
+                fluid,
+                (int) EssentiaConversionHelper.INSTANCE.convertEssentiaAmountToFluidAmount(extractedAmount_EU));
     }
 
     /**
@@ -91,8 +94,8 @@ public final class EssentiaTileContainerHelper {
      * @param mode
      * @return The amount extracted.
      */
-    public long extractFromContainer(
-            final IAspectContainer container, int amountToDrain, final Aspect aspectToDrain, final Actionable mode) {
+    public long extractFromContainer(final IAspectContainer container, int amountToDrain, final Aspect aspectToDrain,
+            final Actionable mode) {
 
         // Is the request empty?
         if (amountToDrain == 0) {
@@ -230,8 +233,7 @@ public final class EssentiaTileContainerHelper {
     }
 
     /**
-     * Attempts to inject essentia into the container.
-     * Returns the amount that was injected.
+     * Attempts to inject essentia into the container. Returns the amount that was injected.
      *
      * @param container
      * @param amountToFill
@@ -239,8 +241,8 @@ public final class EssentiaTileContainerHelper {
      * @param mode
      * @return
      */
-    public long injectEssentiaIntoContainer(
-            final IAspectContainer container, int amountToFill, final Aspect aspectToFill, final Actionable mode) {
+    public long injectEssentiaIntoContainer(final IAspectContainer container, int amountToFill,
+            final Aspect aspectToFill, final Actionable mode) {
         // Is the container whitelisted?
         if (!this.perms.canInjectToAspectContainerTile(container)) {
             // Not whitelisted
@@ -283,16 +285,15 @@ public final class EssentiaTileContainerHelper {
     }
 
     /**
-     * Attempts to inject the fluid into the container.
-     * Returns the amount that was injected in milibuckets.
+     * Attempts to inject the fluid into the container. Returns the amount that was injected in milibuckets.
      *
      * @param container
      * @param fluidStack
      * @param mode
      * @return
      */
-    public long injectFluidIntoContainer(
-            final IAspectContainer container, final IAEFluidStack fluidStack, final Actionable mode) {
+    public long injectFluidIntoContainer(final IAspectContainer container, final IAEFluidStack fluidStack,
+            final Actionable mode) {
         // Do we have an input?
         if (fluidStack == null) {
             // No input
@@ -318,8 +319,8 @@ public final class EssentiaTileContainerHelper {
         Aspect gasAspect = ((GaseousEssentia) fluid).getAspect();
 
         // Get the amount to fill
-        long amountToFill =
-                EssentiaConversionHelper.INSTANCE.convertFluidAmountToEssentiaAmount(fluidStack.getStackSize());
+        long amountToFill = EssentiaConversionHelper.INSTANCE
+                .convertFluidAmountToEssentiaAmount(fluidStack.getStackSize());
 
         // Inject
         long injectedAmount_EU = this.injectEssentiaIntoContainer(container, (int) amountToFill, gasAspect, mode);
@@ -353,28 +354,26 @@ public final class EssentiaTileContainerHelper {
 
         // Essentia vibration chamber
         this.perms.addAspectContainerTileToInjectPermissions(
-                TileEssentiaVibrationChamber.class, TileEVCBase.MAX_ESSENTIA_STORED);
+                TileEssentiaVibrationChamber.class,
+                TileEVCBase.MAX_ESSENTIA_STORED);
 
         try {
             Class c = Class.forName("flaxbeard.thaumicexploration.tile.TileEntityTrashJar");
             this.perms.addAspectContainerTileToInjectPermissions(c, 64);
             c = Class.forName("flaxbeard.thaumicexploration.tile.TileEntityBoundJar");
             this.perms.addAspectContainerTileToBothPermissions(c, 64);
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
         try {
             Class c = Class.forName("makeo.gadomancy.common.blocks.tiles.TileRemoteJar");
             this.perms.addAspectContainerTileToBothPermissions(c, 64);
             c = Class.forName("makeo.gadomancy.common.blocks.tiles.TileStickyJar");
             this.perms.addAspectContainerTileToBothPermissions(c, 64);
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
         try {
             // Essentia condenser does not directly implement IAspectContainer, so this may fail if used w/o Automagy
             Class c = Class.forName("makeo.gadomancy.common.blocks.tiles.TileEssentiaCompressor");
             this.perms.addAspectContainerTileToBothPermissions(c, 64);
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
         try {
             // I hope some day Kekztech jars will have a namespace
             Class c = Class.forName("common.tileentities.TE_IchorJar");
@@ -385,12 +384,10 @@ public final class EssentiaTileContainerHelper {
             this.perms.addAspectContainerTileToBothPermissions(c, 256);
             c = Class.forName("common.tileentities.TE_ThaumiumReinforcedVoidJar");
             this.perms.addAspectContainerTileToBothPermissions(c, 256);
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
         try {
             Class c = Class.forName("tuhljin.automagy.tiles.TileEntityJarCreative");
             this.perms.addAspectContainerTileToBothPermissions(c, 1 << 31);
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
     }
 }

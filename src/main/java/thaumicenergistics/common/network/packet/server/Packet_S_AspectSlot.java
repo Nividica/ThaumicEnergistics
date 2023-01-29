@@ -1,12 +1,13 @@
 package thaumicenergistics.common.network.packet.server;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.IAspectSlotPart;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.parts.ThEPartBase;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Aspect slot server-bound packet.
@@ -15,6 +16,7 @@ import thaumicenergistics.common.parts.ThEPartBase;
  *
  */
 public class Packet_S_AspectSlot extends ThEServerPacket {
+
     private static final byte MODE_SET_ASPECT = 0;
 
     private int index;
@@ -23,8 +25,8 @@ public class Packet_S_AspectSlot extends ThEServerPacket {
 
     private IAspectSlotPart part;
 
-    public static void sendAspectChange(
-            final IAspectSlotPart part, final int index, final Aspect aspect, final EntityPlayer player) {
+    public static void sendAspectChange(final IAspectSlotPart part, final int index, final Aspect aspect,
+            final EntityPlayer player) {
         Packet_S_AspectSlot packet = new Packet_S_AspectSlot();
 
         // Set the player

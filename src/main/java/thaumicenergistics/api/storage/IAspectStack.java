@@ -1,11 +1,13 @@
 package thaumicenergistics.api.storage;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+
 import thaumcraft.api.aspects.Aspect;
+import io.netty.buffer.ByteBuf;
 
 /**
  * A stack, or collection, of a single aspect.
@@ -14,6 +16,7 @@ import thaumcraft.api.aspects.Aspect;
  *
  */
 public interface IAspectStack {
+
     /**
      * Changes the stack size by the delta amount and returns the new stack size.
      *
@@ -164,8 +167,7 @@ public interface IAspectStack {
     /**
      * Writes this aspect stack to the specified NBT tag
      *
-     * @param data
-     * The tag to write to
+     * @param data The tag to write to
      * @return The nbt tag passed in.
      */
     @Nonnull

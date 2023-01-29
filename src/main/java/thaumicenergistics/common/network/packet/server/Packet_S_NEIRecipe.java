@@ -1,5 +1,24 @@
 package thaumicenergistics.common.network.packet.server;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
+
+import thaumcraft.api.crafting.IArcaneRecipe;
+import thaumcraft.common.tiles.TileMagicWorkbench;
+import thaumicenergistics.common.container.ContainerInternalCrafting;
+import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
+import thaumicenergistics.common.integration.tc.ArcaneRecipeHelper;
+import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
@@ -21,26 +40,9 @@ import appeng.util.item.AEItemStack;
 import appeng.util.prioitylist.IPartitionList;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.oredict.OreDictionary;
-import thaumcraft.api.crafting.IArcaneRecipe;
-import thaumcraft.common.tiles.TileMagicWorkbench;
-import thaumicenergistics.common.container.ContainerInternalCrafting;
-import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
-import thaumicenergistics.common.integration.tc.ArcaneRecipeHelper;
-import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 
 public class Packet_S_NEIRecipe extends ThEServerPacket {
+
     private ItemStack[][] recipe = null;
     private NBTTagCompound nbt = null;
 
@@ -93,8 +95,9 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
                 }
             }
             IRecipe r = Platform.findMatchingRecipe(testInv, player.worldObj);
-            IArcaneRecipe arcaneRecipe =
-                    r == null ? ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult(testInv, 0, 9, this.player) : null;
+            IArcaneRecipe arcaneRecipe = r == null
+                    ? ArcaneRecipeHelper.INSTANCE.findMatchingArcaneResult(testInv, 0, 9, this.player)
+                    : null;
             IGrid grid = act.getHostGrid();
             if (grid == null) return;
             final IStorageGrid inv = grid.getCache(IStorageGrid.class);
@@ -102,11 +105,10 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
             final ISecurityGrid security = grid.getCache(ISecurityGrid.class);
             TileMagicWorkbench workbenchTile = ArcaneRecipeHelper.INSTANCE.createBridgeInventory(testInv, 0, 9);
             workbenchTile.setWorldObj(player.worldObj);
-            if ((r != null || arcaneRecipe != null)
-                    && security != null
+            if ((r != null || arcaneRecipe != null) && security != null
                     && security.hasPermission(player, SecurityPermissions.EXTRACT)) {
-                final ItemStack is =
-                        r != null ? r.getCraftingResult(testInv) : arcaneRecipe.getCraftingResult(workbenchTile);
+                final ItemStack is = r != null ? r.getCraftingResult(testInv)
+                        : arcaneRecipe.getCraftingResult(workbenchTile);
                 if (is == null) return;
                 final IMEMonitor<IAEItemStack> storage = inv.getItemInventory();
                 final IItemList<IAEItemStack> all = storage.getStorageList();
@@ -174,18 +176,10 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
         }
     }
 
-    ItemStack extractItemsByArcaneRecipe(
-            final IEnergySource energySrc,
-            final BaseActionSource mySrc,
-            final IMEMonitor<IAEItemStack> src,
-            final World w,
-            final IArcaneRecipe r,
-            final ItemStack output,
-            final TileMagicWorkbench workbenchTile,
-            final ItemStack providedTemplate,
-            final int slot,
-            final IItemList<IAEItemStack> items,
-            final Actionable realForFake,
+    ItemStack extractItemsByArcaneRecipe(final IEnergySource energySrc, final BaseActionSource mySrc,
+            final IMEMonitor<IAEItemStack> src, final World w, final IArcaneRecipe r, final ItemStack output,
+            final TileMagicWorkbench workbenchTile, final ItemStack providedTemplate, final int slot,
+            final IItemList<IAEItemStack> items, final Actionable realForFake,
             final IPartitionList<IAEItemStack> filter) {
         if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
             if (providedTemplate == null) {
@@ -242,12 +236,10 @@ public class Packet_S_NEIRecipe extends ThEServerPacket {
     private ItemStack extractItemFromPlayerInventory(final EntityPlayer player, final ItemStack patternItem) {
         final InventoryAdaptor ia = InventoryAdaptor.getAdaptor(player, ForgeDirection.UNKNOWN);
         final AEItemStack request = AEItemStack.create(patternItem);
-        final boolean checkFuzzy = request.isOre()
-                || patternItem.getItemDamage() == OreDictionary.WILDCARD_VALUE
+        final boolean checkFuzzy = request.isOre() || patternItem.getItemDamage() == OreDictionary.WILDCARD_VALUE
                 || patternItem.hasTagCompound()
                 || patternItem.isItemStackDamageable();
-        return checkFuzzy
-                ? ia.removeSimilarItems(1, patternItem, FuzzyMode.IGNORE_ALL, null)
+        return checkFuzzy ? ia.removeSimilarItems(1, patternItem, FuzzyMode.IGNORE_ALL, null)
                 : ia.removeItems(1, patternItem, null);
     }
 }

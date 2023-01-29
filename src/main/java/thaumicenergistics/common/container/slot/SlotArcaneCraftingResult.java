@@ -1,16 +1,17 @@
 package thaumicenergistics.common.container.slot;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.common.container.ContainerPartArcaneCraftingTerminal;
 import thaumicenergistics.common.utils.EffectiveSide;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Slot that holds the result of an arcane crafting recipe.
@@ -19,6 +20,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class SlotArcaneCraftingResult extends SlotCrafting {
+
     /**
      * The inventory of the terminal
      */
@@ -54,13 +56,8 @@ public class SlotArcaneCraftingResult extends SlotCrafting {
      * @param xPos
      * @param yPos
      */
-    public SlotArcaneCraftingResult(
-            final EntityPlayer player,
-            final ContainerPartArcaneCraftingTerminal hostContianer,
-            final IInventory terminalInventory,
-            final IInventory slotInventory,
-            final int slotIndex,
-            final int xPos,
+    public SlotArcaneCraftingResult(final EntityPlayer player, final ContainerPartArcaneCraftingTerminal hostContianer,
+            final IInventory terminalInventory, final IInventory slotInventory, final int slotIndex, final int xPos,
             final int yPos) {
         // Call super
         super(player, terminalInventory, slotInventory, slotIndex, xPos, yPos);
@@ -85,8 +82,8 @@ public class SlotArcaneCraftingResult extends SlotCrafting {
     }
 
     /**
-     * Similar to the onPickupFromSlot, with the key difference being
-     * that this function call will not update the client.
+     * Similar to the onPickupFromSlot, with the key difference being that this function call will not update the
+     * client.
      *
      * @param player
      * @param itemStack
@@ -143,8 +140,8 @@ public class SlotArcaneCraftingResult extends SlotCrafting {
                 // Did we not kill the container item?
                 if (slotContainerStack != null) {
                     /*
-                     * Should the item stay in the crafting grid, or if it is supposed to go back to the
-                     * players inventory but can't?
+                     * Should the item stay in the crafting grid, or if it is supposed to go back to the players
+                     * inventory but can't?
                      */
                     if (!slotStack.getItem().doesContainerItemLeaveCraftingGrid(slotStack)
                             || !player.inventory.addItemStackToInventory(slotContainerStack)) {

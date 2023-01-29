@@ -1,6 +1,7 @@
 package thaumicenergistics.common.entities;
 
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.common.entities.golems.EntityGolemBase;
 
 /**
@@ -10,6 +11,7 @@ import thaumcraft.common.entities.golems.EntityGolemBase;
  *
  */
 public class AIGolemWifiGather extends AIAENetworkGolem {
+
     public AIGolemWifiGather(final EntityGolemBase golem, final WirelessGolemHandler.WirelessServerData wsd) {
         super(golem, wsd);
     }

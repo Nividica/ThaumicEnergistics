@@ -1,17 +1,8 @@
 package thaumicenergistics.client.gui;
 
-import appeng.api.config.*;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.client.gui.widgets.ISortSource;
-import appeng.client.me.ItemRepo;
-import appeng.client.render.AppEngRenderItem;
-import appeng.core.AEConfig;
-import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -19,9 +10,11 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
 import thaumcraft.client.lib.UtilsFX;
 import thaumcraft.common.config.Config;
 import thaumicenergistics.client.gui.abstraction.GuiConstants_ACT;
@@ -39,6 +32,16 @@ import thaumicenergistics.common.parts.PartArcaneCraftingTerminal;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.tiles.TileArcaneAssembler;
 import thaumicenergistics.common.utils.ThEUtils;
+import appeng.api.config.*;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
+import appeng.client.gui.widgets.ISortSource;
+import appeng.client.me.ItemRepo;
+import appeng.client.render.AppEngRenderItem;
+import appeng.core.AEConfig;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * {@link TileArcaneAssembler} GUI
@@ -48,6 +51,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  */
 @SideOnly(Side.CLIENT)
 public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISortSource {
+
     /**
      * Renders an AE itemstack into the gui.
      */
@@ -126,8 +130,7 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
     private long lastTooltipUpdateTime = 0;
 
     /**
-     * TODO: Remove this and rework the widgets/slots to be MESlots. Such fun
-     * that will be.
+     * TODO: Remove this and rework the widgets/slots to be MESlots. Such fun that will be.
      */
     private MEItemAspectBridgeContainer meAspectBridge;
 
@@ -189,8 +192,7 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
         this.repo = new ItemRepo(this.scrollBar, this);
 
         // Get the terminal style
-        this.terminalStyle =
-                (TerminalStyle) AEConfig.instance.getConfigManager().getSetting(Settings.TERMINAL_STYLE);
+        this.terminalStyle = (TerminalStyle) AEConfig.instance.getConfigManager().getSetting(Settings.TERMINAL_STYLE);
     }
 
     /**
@@ -229,16 +231,15 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
      */
     private boolean clickHandler_SearchBox(final int mouseX, final int mouseY, final int mouseButton) {
         // Was the mouse right-clicked over the search field?
-        if ((mouseButton == ThEGuiHelper.MOUSE_BUTTON_RIGHT)
-                && ThEGuiHelper.INSTANCE.isPointInGuiRegion(
-                        GuiConstants_ACT.SEARCH_POS_Y,
-                        GuiConstants_ACT.SEARCH_POS_X,
-                        GuiConstants_ACT.SEARCH_HEIGHT,
-                        GuiConstants_ACT.SEARCH_WIDTH,
-                        mouseX,
-                        mouseY,
-                        this.guiLeft,
-                        this.guiTop)) {
+        if ((mouseButton == ThEGuiHelper.MOUSE_BUTTON_RIGHT) && ThEGuiHelper.INSTANCE.isPointInGuiRegion(
+                GuiConstants_ACT.SEARCH_POS_Y,
+                GuiConstants_ACT.SEARCH_POS_X,
+                GuiConstants_ACT.SEARCH_HEIGHT,
+                GuiConstants_ACT.SEARCH_WIDTH,
+                mouseX,
+                mouseY,
+                this.guiLeft,
+                this.guiTop)) {
             // Clear the search field
             this.searchField.setText("");
 
@@ -301,8 +302,7 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
     }
 
     /**
-     * Extracts or inserts an item to/from the player held stack based on the
-     * direction the mouse wheel was scrolled.
+     * Extracts or inserts an item to/from the player held stack based on the direction the mouse wheel was scrolled.
      *
      * @param deltaZ
      */
@@ -360,7 +360,15 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
 
             // Draw the aspect icon
             UtilsFX.drawTag(
-                    posX, posY, cost.primal, cost.visCost, 0, this.zLevel, GL11.GL_ONE_MINUS_SRC_ALPHA, alpha, false);
+                    posX,
+                    posY,
+                    cost.primal,
+                    cost.visCost,
+                    0,
+                    this.zLevel,
+                    GL11.GL_ONE_MINUS_SRC_ALPHA,
+                    alpha,
+                    false);
 
             // Should we move to the next row?
             if (++column == 2) {
@@ -410,8 +418,8 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
     }
 
     /**
-     * If the user has clicked on an item widget this will inform the server
-     * so that the item can be extracted from the AE network.
+     * If the user has clicked on an item widget this will inform the server so that the item can be extracted from the
+     * AE network.
      *
      * @param mouseX
      * @param mouseY
@@ -438,8 +446,8 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
                     }
 
                     // Let the server know the user is requesting an itemstack.
-                    Packet_S_ArcaneCraftingTerminal.sendExtract(
-                            this.player, widgetStack, mouseButton, GuiScreen.isShiftKeyDown());
+                    Packet_S_ArcaneCraftingTerminal
+                            .sendExtract(this.player, widgetStack, mouseButton, GuiScreen.isShiftKeyDown());
                 }
 
                 // Stop searching
@@ -449,8 +457,7 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
     }
 
     /**
-     * Calculates the number of rows needed based on terminal style, and updates
-     * the gui parameters.
+     * Calculates the number of rows needed based on terminal style, and updates the gui parameters.
      */
     private void setupTerminalStyle() {
         int extraRows = 0;
@@ -671,8 +678,8 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         // Draw the title
-        this.fontRendererObj.drawString(
-                this.guiTitle, GuiConstants_ACT.TITLE_POS_X, GuiConstants_ACT.TITLE_POS_Y, 0x000000);
+        this.fontRendererObj
+                .drawString(this.guiTitle, GuiConstants_ACT.TITLE_POS_X, GuiConstants_ACT.TITLE_POS_Y, 0x000000);
 
         // Draw the search field.
         this.searchField.drawTextBox();
@@ -684,8 +691,8 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
         WidgetAEItem widgetUnderMouse = this.drawItemWidgets(mouseX, mouseY);
 
         // Get the cost
-        List<ArcaneCrafingCost> craftingCost =
-                ((ContainerPartArcaneCraftingTerminal) this.inventorySlots).getCraftingCost(false);
+        List<ArcaneCrafingCost> craftingCost = ((ContainerPartArcaneCraftingTerminal) this.inventorySlots)
+                .getCraftingCost(false);
 
         // Does the current recipe have costs?
         if (!craftingCost.isEmpty()) {
@@ -741,9 +748,8 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
         return new ScrollbarParams(
                 GuiConstants_ACT.SCROLLBAR_POS_X,
                 GuiConstants_ACT.SCROLLBAR_POS_Y,
-                GuiConstants_ACT.SCROLLBAR_HEIGHT
-                        + ((GuiConstants_ACT.ME_DEFAULT_ROWS - this.numberOfWidgetRows)
-                                * GuiConstants_ACT.ME_ROW_HEIGHT));
+                GuiConstants_ACT.SCROLLBAR_HEIGHT + ((GuiConstants_ACT.ME_DEFAULT_ROWS - this.numberOfWidgetRows)
+                        * GuiConstants_ACT.ME_ROW_HEIGHT));
     }
 
     /**
@@ -836,13 +842,13 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
         }
 
         switch (button.id) {
-                // Clear grid
+            // Clear grid
             case GuiConstants_ACT.BUTTON_CLEAR_GRID_ID:
                 // Attempt to clear the grid
                 Packet_S_ArcaneCraftingTerminal.sendClearGrid(this.player);
                 break;
 
-                // Sort order
+            // Sort order
             case GuiConstants_ACT.BUTTON_SORT_MODE_ID:
                 switch (this.sortingOrder) {
                     case AMOUNT:
@@ -863,7 +869,7 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
                 sortingChanged = true;
                 break;
 
-                // Sorting direction
+            // Sorting direction
             case GuiConstants_ACT.BUTTON_SORT_DIR_ID:
                 switch (this.sortingDirection) {
                     case ASCENDING:
@@ -877,23 +883,23 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
                 sortingChanged = true;
                 break;
 
-                // View type
+            // View type
             case GuiConstants_ACT.BUTTON_VIEW_TYPE_ID:
 
                 // Rotate view mode
-                this.viewMode =
-                        Platform.rotateEnum(this.viewMode, !wasLeftClick, Settings.VIEW_MODE.getPossibleValues());
+                this.viewMode = Platform
+                        .rotateEnum(this.viewMode, !wasLeftClick, Settings.VIEW_MODE.getPossibleValues());
 
                 sortingChanged = true;
                 break;
 
-                // Swap armor
+            // Swap armor
             case GuiConstants_ACT.BUTTON_SWAP_ARMOR_ID:
                 // Ask the server to swap the armor
                 Packet_S_ArcaneCraftingTerminal.sendSwapArmor(this.player);
                 break;
 
-                // Terminal style
+            // Terminal style
             case GuiConstants_ACT.BUTTON_TERM_STYLE_ID:
                 switch (this.terminalStyle) {
                     case SMALL:
@@ -917,13 +923,13 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
 
                 break;
 
-                // Search mode
+            // Search mode
             case GuiConstants_ACT.BUTTON_SEARCH_MODE_ID:
                 // Rotate search mode
-                SearchBoxMode searchBoxMode =
-                        (SearchBoxMode) AEConfig.instance.settings.getSetting(Settings.SEARCH_MODE);
-                searchBoxMode =
-                        Platform.rotateEnum(searchBoxMode, !wasLeftClick, Settings.SEARCH_MODE.getPossibleValues());
+                SearchBoxMode searchBoxMode = (SearchBoxMode) AEConfig.instance.settings
+                        .getSetting(Settings.SEARCH_MODE);
+                searchBoxMode = Platform
+                        .rotateEnum(searchBoxMode, !wasLeftClick, Settings.SEARCH_MODE.getPossibleValues());
 
                 // Set focus
                 this.searchField.setFocused(
@@ -951,8 +957,8 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
             this.lastTooltipUpdateTime = 0;
 
             // Send to server
-            Packet_S_ArcaneCraftingTerminal.sendMode(
-                    this.player, this.sortingOrder, this.sortingDirection, this.viewMode);
+            Packet_S_ArcaneCraftingTerminal
+                    .sendMode(this.player, this.sortingOrder, this.sortingDirection, this.viewMode);
         }
     }
 
@@ -988,8 +994,7 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
     }
 
     /**
-     * Draws all screen elements, specifically calling on TC to draw the aspects
-     * of whatever the mouse is over.
+     * Draws all screen elements, specifically calling on TC to draw the aspects of whatever the mouse is over.
      */
     @Override
     public void drawScreen(final int mouseX, final int mouseY, final float mouseBtn) {
@@ -1074,13 +1079,14 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
         this.buttonList.clear();
 
         // Create the clear grid button
-        this.buttonList.add(new GuiButtonClearCraftingGrid(
-                GuiConstants_ACT.BUTTON_CLEAR_GRID_ID,
-                this.guiLeft + GuiConstants_ACT.BUTTON_CLEAR_GRID_POS_X,
-                this.guiTop + GuiConstants_ACT.BUTTON_CLEAR_GRID_POS_Y + this.lowerTerminalYOffset,
-                8,
-                8,
-                true));
+        this.buttonList.add(
+                new GuiButtonClearCraftingGrid(
+                        GuiConstants_ACT.BUTTON_CLEAR_GRID_ID,
+                        this.guiLeft + GuiConstants_ACT.BUTTON_CLEAR_GRID_POS_X,
+                        this.guiTop + GuiConstants_ACT.BUTTON_CLEAR_GRID_POS_Y + this.lowerTerminalYOffset,
+                        8,
+                        8,
+                        true));
 
         // Add sort order button
         this.buttonList.add(
@@ -1110,12 +1116,13 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
                         GuiConstants_ACT.BUTTON_AE_SIZE));
 
         // Add swap armor button
-        this.buttonList.add(new GuiButtonSwapArmor(
-                GuiConstants_ACT.BUTTON_SWAP_ARMOR_ID,
-                this.guiLeft + GuiConstants_ACT.BUTTON_SWAP_ARMOR_POS_X,
-                this.guiTop + GuiConstants_ACT.BUTTON_SWAP_ARMOR_POS_Y + this.lowerTerminalYOffset,
-                8,
-                8));
+        this.buttonList.add(
+                new GuiButtonSwapArmor(
+                        GuiConstants_ACT.BUTTON_SWAP_ARMOR_ID,
+                        this.guiLeft + GuiConstants_ACT.BUTTON_SWAP_ARMOR_POS_X,
+                        this.guiTop + GuiConstants_ACT.BUTTON_SWAP_ARMOR_POS_Y + this.lowerTerminalYOffset,
+                        8,
+                        8));
 
         // Add search mode button
         this.buttonList.add(
@@ -1128,13 +1135,14 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
                         searchBoxMode));
 
         // Add terminal style button
-        this.buttonList.add(new GuiButtonTerminalStyle(
-                GuiConstants_ACT.BUTTON_TERM_STYLE_ID,
-                this.guiLeft + GuiConstants_ACT.BUTTON_TERM_STYLE_POS_X,
-                this.guiTop + GuiConstants_ACT.BUTTON_TERM_STYLE_POS_Y,
-                GuiConstants_ACT.BUTTON_AE_SIZE,
-                GuiConstants_ACT.BUTTON_AE_SIZE,
-                this.terminalStyle));
+        this.buttonList.add(
+                new GuiButtonTerminalStyle(
+                        GuiConstants_ACT.BUTTON_TERM_STYLE_ID,
+                        this.guiLeft + GuiConstants_ACT.BUTTON_TERM_STYLE_POS_X,
+                        this.guiTop + GuiConstants_ACT.BUTTON_TERM_STYLE_POS_Y,
+                        GuiConstants_ACT.BUTTON_AE_SIZE,
+                        GuiConstants_ACT.BUTTON_AE_SIZE,
+                        this.terminalStyle));
 
         // Add the container as a listener
         ((ContainerPartArcaneCraftingTerminal) this.inventorySlots).registerForUpdates();
@@ -1174,8 +1182,7 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
     }
 
     /**
-     * Called when the server sends a full list of all
-     * items in the AE network in response to our request.
+     * Called when the server sends a full list of all items in the AE network in response to our request.
      *
      * @param itemList
      */
@@ -1210,8 +1217,7 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
     }
 
     /**
-     * Called when the server wants the client to force an update to the aspect
-     * costs.
+     * Called when the server wants the client to force an update to the aspect costs.
      */
     public void onServerSendForceUpdateCost() {
         ((ContainerPartArcaneCraftingTerminal) this.inventorySlots).getCraftingCost(true);

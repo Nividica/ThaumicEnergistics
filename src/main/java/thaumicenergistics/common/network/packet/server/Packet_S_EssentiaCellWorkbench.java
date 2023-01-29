@@ -1,12 +1,13 @@
 package thaumicenergistics.common.network.packet.server;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.container.ContainerEssentiaCellWorkbench;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link TileEssentiaCellWorkbench} server-bound packet.
@@ -15,14 +16,12 @@ import thaumicenergistics.common.tiles.TileEssentiaCellWorkbench;
  *
  */
 public class Packet_S_EssentiaCellWorkbench extends ThEServerPacket {
+
     /**
      * Packet modes.
      */
-    private static final byte MODE_REQUEST_ADD_ASPECT = 0,
-            MODE_REQUEST_REMOVE_ASPECT = 1,
-            MODE_REQUEST_REPLACE_ASPECT = 2,
-            MODE_REQUEST_FULL_LIST = 4,
-            MODE_REQUEST_CLEAR = 5,
+    private static final byte MODE_REQUEST_ADD_ASPECT = 0, MODE_REQUEST_REMOVE_ASPECT = 1,
+            MODE_REQUEST_REPLACE_ASPECT = 2, MODE_REQUEST_FULL_LIST = 4, MODE_REQUEST_CLEAR = 5,
             MODE_REQUEST_PARITION_CONTENTS = 6;
 
     private Aspect arAspect, replaceAspect;
@@ -47,8 +46,8 @@ public class Packet_S_EssentiaCellWorkbench extends ThEServerPacket {
         return packet;
     }
 
-    public static void sendAddAspect(
-            final EntityPlayer player, final TileEssentiaCellWorkbench workbench, final Aspect aspect) {
+    public static void sendAddAspect(final EntityPlayer player, final TileEssentiaCellWorkbench workbench,
+            final Aspect aspect) {
         Packet_S_EssentiaCellWorkbench packet = newPacket(player, MODE_REQUEST_ADD_ASPECT);
 
         // Set the aspect
@@ -91,8 +90,8 @@ public class Packet_S_EssentiaCellWorkbench extends ThEServerPacket {
         NetworkHandler.sendPacketToServer(packet);
     }
 
-    public static void sendRemoveAspect(
-            final EntityPlayer player, final TileEssentiaCellWorkbench workbench, final Aspect aspect) {
+    public static void sendRemoveAspect(final EntityPlayer player, final TileEssentiaCellWorkbench workbench,
+            final Aspect aspect) {
         Packet_S_EssentiaCellWorkbench packet = newPacket(player, MODE_REQUEST_REMOVE_ASPECT);
 
         // Set the aspect
@@ -105,11 +104,8 @@ public class Packet_S_EssentiaCellWorkbench extends ThEServerPacket {
         NetworkHandler.sendPacketToServer(packet);
     }
 
-    public static void sendReplaceAspect(
-            final EntityPlayer player,
-            final TileEssentiaCellWorkbench workbench,
-            final Aspect originalAspect,
-            final Aspect newAspect) {
+    public static void sendReplaceAspect(final EntityPlayer player, final TileEssentiaCellWorkbench workbench,
+            final Aspect originalAspect, final Aspect newAspect) {
         Packet_S_EssentiaCellWorkbench packet = newPacket(player, MODE_REQUEST_REPLACE_ASPECT);
 
         // Set the aspects

@@ -1,15 +1,17 @@
 package thaumicenergistics.common.items;
 
-import appeng.api.implementations.items.IStorageComponent;
 import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.storage.EnumEssentiaStorageTypes;
+import appeng.api.implementations.items.IStorageComponent;
 
 /**
  * {@link ItemEssentiaCell} storage components.
@@ -89,8 +91,9 @@ public class ItemStorageComponent extends Item implements IStorageComponent {
             if (i == EnumEssentiaStorageTypes.Type_Creative.index) {
                 this.icons[i] = null;
             } else {
-                this.icons[i] = iconRegister.registerIcon(ThaumicEnergistics.MOD_ID + ":storage.component."
-                        + EnumEssentiaStorageTypes.fromIndex[i].suffix);
+                this.icons[i] = iconRegister.registerIcon(
+                        ThaumicEnergistics.MOD_ID + ":storage.component."
+                                + EnumEssentiaStorageTypes.fromIndex[i].suffix);
             }
         }
     }

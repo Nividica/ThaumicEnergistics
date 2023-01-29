@@ -1,10 +1,5 @@
 package thaumicenergistics.common.items;
 
-import appeng.api.AEApi;
-import appeng.api.parts.IPartHost;
-import appeng.core.CommonHelper;
-import appeng.parts.PartPlacement;
-import appeng.parts.PartPlacement.PlaceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,6 +13,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.wands.FocusUpgradeType;
@@ -30,6 +26,11 @@ import thaumicenergistics.common.network.packet.server.Packet_S_WrenchFocus;
 import thaumicenergistics.common.registries.FeatureRegistry;
 import thaumicenergistics.common.registries.ThEStrings;
 import thaumicenergistics.common.utils.ThEUtils;
+import appeng.api.AEApi;
+import appeng.api.parts.IPartHost;
+import appeng.core.CommonHelper;
+import appeng.parts.PartPlacement;
+import appeng.parts.PartPlacement.PlaceType;
 
 /**
  * Focus that behaves like an AE2 wrench.
@@ -58,8 +59,7 @@ public class ItemFocusAEWrench extends ItemFocusBasic {
     }
 
     /**
-     * Consumes the casting cost of the focus from he wand and spawns the
-     * activation beam.
+     * Consumes the casting cost of the focus from he wand and spawns the activation beam.
      *
      * @param wand
      * @param wandStack
@@ -68,30 +68,28 @@ public class ItemFocusAEWrench extends ItemFocusBasic {
      * @param beamY
      * @param beamZ
      */
-    private static void consumeVisAndSpawnBeam(
-            final ItemWandCasting wand,
-            final ItemStack wandStack,
-            final EntityPlayer player,
-            final double beamX,
-            final double beamY,
-            final double beamZ) {
+    private static void consumeVisAndSpawnBeam(final ItemWandCasting wand, final ItemStack wandStack,
+            final EntityPlayer player, final double beamX, final double beamY, final double beamZ) {
         // Use vis
         wand.consumeAllVis(wandStack, player, ItemFocusAEWrench.castCost, true, false);
 
         // Spawn beam
         Packet_R_ParticleFX.createWrenchFX(
-                player.worldObj, player.posX, player.posY, player.posZ, beamX, beamY, beamZ, Aspect.ENERGY, 20.0f);
+                player.worldObj,
+                player.posX,
+                player.posY,
+                player.posZ,
+                beamX,
+                beamY,
+                beamZ,
+                Aspect.ENERGY,
+                20.0f);
     }
 
     private static ItemStack getWrench() {
         // Has the wrench already be initialized, and can it be?
-        if ((ItemFocusAEWrench.psuedoWrench == null)
-                && FeatureRegistry.instance().featureWrenchFocus.isAvailable()) {
-            ItemFocusAEWrench.psuedoWrench = AEApi.instance()
-                    .definitions()
-                    .items()
-                    .certusQuartzWrench()
-                    .maybeStack(1)
+        if ((ItemFocusAEWrench.psuedoWrench == null) && FeatureRegistry.instance().featureWrenchFocus.isAvailable()) {
+            ItemFocusAEWrench.psuedoWrench = AEApi.instance().definitions().items().certusQuartzWrench().maybeStack(1)
                     .orNull();
         }
 
@@ -99,8 +97,7 @@ public class ItemFocusAEWrench extends ItemFocusBasic {
     }
 
     /**
-     * Returns the wand if it is valid and contains enough charge to perform a
-     * cast.
+     * Returns the wand if it is valid and contains enough charge to perform a cast.
      *
      * @param stack
      * @param player
@@ -126,8 +123,7 @@ public class ItemFocusAEWrench extends ItemFocusBasic {
     }
 
     /**
-     * Called after the client has sent the request to the server.
-     * Because where your eyes are matters a great deal.
+     * Called after the client has sent the request to the server. Because where your eyes are matters a great deal.
      *
      * @param player
      * @param eyeHeight
@@ -136,8 +132,8 @@ public class ItemFocusAEWrench extends ItemFocusBasic {
      * @param z
      * @param side
      */
-    public static void performDismantleOnPartHost(
-            final EntityPlayer player, final float eyeHeight, final MovingObjectPosition position) {
+    public static void performDismantleOnPartHost(final EntityPlayer player, final float eyeHeight,
+            final MovingObjectPosition position) {
         // Get the wrench
         ItemStack wrench;
 
@@ -177,13 +173,12 @@ public class ItemFocusAEWrench extends ItemFocusBasic {
         CommonHelper.proxy.updateRenderMode(null);
 
         // Take vis and show beam
-        ItemFocusAEWrench.consumeVisAndSpawnBeam(
-                wand, heldItem, player, position.blockX, position.blockY, position.blockZ);
+        ItemFocusAEWrench
+                .consumeVisAndSpawnBeam(wand, heldItem, player, position.blockX, position.blockY, position.blockZ);
     }
 
     /**
-     * Attempts to use the focus.
-     * Position must contain a block hit.
+     * Attempts to use the focus. Position must contain a block hit.
      *
      * @param world
      * @param player
@@ -192,12 +187,8 @@ public class ItemFocusAEWrench extends ItemFocusBasic {
      * @param action
      * @return
      */
-    private boolean onUse(
-            final World world,
-            final EntityPlayer player,
-            final MovingObjectPosition position,
-            final ItemStack wandStack,
-            final Action action) {
+    private boolean onUse(final World world, final EntityPlayer player, final MovingObjectPosition position,
+            final ItemStack wandStack, final Action action) {
         // For all current actions the player must be sneaking
         if (!player.isSneaking()) {
             return false;
@@ -264,7 +255,12 @@ public class ItemFocusAEWrench extends ItemFocusBasic {
                     ForgeDirection.getOrientation(position.sideHit))) {
                 // Take vis and show beam
                 ItemFocusAEWrench.consumeVisAndSpawnBeam(
-                        wand, wandStack, player, position.blockX, position.blockY, position.blockZ);
+                        wand,
+                        wandStack,
+                        player,
+                        position.blockX,
+                        position.blockY,
+                        position.blockZ);
 
                 // Fire an update
                 block.onNeighborBlockChange(world, position.blockX, position.blockY, position.blockZ, Blocks.air);
@@ -306,25 +302,29 @@ public class ItemFocusAEWrench extends ItemFocusBasic {
             float zOffset = (float) position.hitVec.zCoord - position.blockZ;
 
             // Activate
-            handled = ((EntityPlayerMP) player)
-                    .theItemInWorldManager.activateBlockOrUseItem(
-                            player,
-                            world,
-                            ItemFocusAEWrench.getWrench(),
-                            position.blockX,
-                            position.blockY,
-                            position.blockZ,
-                            position.sideHit,
-                            xOffset,
-                            yOffset,
-                            zOffset);
+            handled = ((EntityPlayerMP) player).theItemInWorldManager.activateBlockOrUseItem(
+                    player,
+                    world,
+                    ItemFocusAEWrench.getWrench(),
+                    position.blockX,
+                    position.blockY,
+                    position.blockZ,
+                    position.sideHit,
+                    xOffset,
+                    yOffset,
+                    zOffset);
 
             // Was it handled or is the block gone?
             if (handled || (world.getBlock(position.blockX, position.blockY, position.blockZ) == Blocks.air)) {
 
                 // Take vis and show beam
                 ItemFocusAEWrench.consumeVisAndSpawnBeam(
-                        wand, wandStack, player, position.blockX, position.blockY, position.blockZ);
+                        wand,
+                        wandStack,
+                        player,
+                        position.blockX,
+                        position.blockY,
+                        position.blockZ);
             }
         } finally {
             // Restore what the player was holding and sneak state
@@ -405,10 +405,7 @@ public class ItemFocusAEWrench extends ItemFocusBasic {
      * Called when the player right-clicks
      */
     @Override
-    public ItemStack onFocusRightClick(
-            final ItemStack wandStack,
-            final World world,
-            final EntityPlayer player,
+    public ItemStack onFocusRightClick(final ItemStack wandStack, final World world, final EntityPlayer player,
             final MovingObjectPosition position) {
 
         // Was a block hit?

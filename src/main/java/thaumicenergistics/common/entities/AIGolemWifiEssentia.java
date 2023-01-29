@@ -1,11 +1,12 @@
 package thaumicenergistics.common.entities;
 
-import appeng.api.config.Actionable;
 import java.util.HashSet;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
 import thaumcraft.common.entities.golems.EntityGolemBase;
@@ -14,6 +15,7 @@ import thaumcraft.common.tiles.TileAlembic;
 import thaumcraft.common.tiles.TileJarFillable;
 import thaumcraft.common.tiles.TileJarFillableVoid;
 import thaumicenergistics.common.entities.WirelessGolemHandler.WirelessServerData;
+import appeng.api.config.Actionable;
 
 /**
  * Allows a golem to interact with networked essentia.
@@ -22,6 +24,7 @@ import thaumicenergistics.common.entities.WirelessGolemHandler.WirelessServerDat
  *
  */
 public class AIGolemWifiEssentia extends AIAENetworkGolem {
+
     private final HashSet<TileJarFillable> checkedJars = new HashSet<TileJarFillable>();
 
     /**
@@ -103,8 +106,8 @@ public class AIGolemWifiEssentia extends AIAENetworkGolem {
                     == this.targetJar) {
 
                 // Can it hold more?
-                Aspect wantedAspect =
-                        (this.targetJar.aspectFilter != null ? this.targetJar.aspectFilter : this.targetJar.aspect);
+                Aspect wantedAspect = (this.targetJar.aspectFilter != null ? this.targetJar.aspectFilter
+                        : this.targetJar.aspect);
                 if ((wantedAspect != null) && (this.targetVoid || (this.targetJar.amount < this.targetJar.maxAmount))) {
                     // Can the wanted aspect be extracted?
                     if (this.network.extractEssentia(wantedAspect, 1, Actionable.SIMULATE) > 0) {
@@ -213,7 +216,9 @@ public class AIGolemWifiEssentia extends AIAENetworkGolem {
         ChunkCoordinates gHomePos = this.golem.getHomePosition();
         ForgeDirection side = ForgeDirection.getOrientation(this.golem.homeFacing);
         TileEntity te = this.golem.worldObj.getTileEntity(
-                gHomePos.posX - side.offsetX, gHomePos.posY - side.offsetY, gHomePos.posZ - side.offsetZ);
+                gHomePos.posX - side.offsetX,
+                gHomePos.posY - side.offsetY,
+                gHomePos.posZ - side.offsetZ);
 
         // Is the tile an essentia transport?
         this.modeFill = !(te instanceof IEssentiaTransport);
@@ -222,7 +227,9 @@ public class AIGolemWifiEssentia extends AIAENetworkGolem {
         if (this.modeFill) {
             for (int i = 1; (i < 6) && this.modeFill; ++i) {
                 te = this.golem.worldObj.getTileEntity(
-                        gHomePos.posX - side.offsetX, (gHomePos.posY - side.offsetY) + i, gHomePos.posZ - side.offsetZ);
+                        gHomePos.posX - side.offsetX,
+                        (gHomePos.posY - side.offsetY) + i,
+                        gHomePos.posZ - side.offsetZ);
                 this.modeFill = !(te instanceof TileAlembic);
             }
         }
@@ -248,8 +255,8 @@ public class AIGolemWifiEssentia extends AIAENetworkGolem {
         // Fill mode
         if (this.modeFill) {
             // Get the wanted aspect
-            Aspect wantedAspect =
-                    (this.targetJar.aspectFilter != null ? this.targetJar.aspectFilter : this.targetJar.aspect);
+            Aspect wantedAspect = (this.targetJar.aspectFilter != null ? this.targetJar.aspectFilter
+                    : this.targetJar.aspect);
             if (wantedAspect == null) {
                 // Jar is invalid now
                 this.targetJar = null;
@@ -281,8 +288,7 @@ public class AIGolemWifiEssentia extends AIAENetworkGolem {
             this.golem.essentiaAmount = extractedAmount;
         } else {
             // Mode empty
-            if ((this.golem.essentia == null)
-                    || (this.golem.essentiaAmount <= 0)
+            if ((this.golem.essentia == null) || (this.golem.essentiaAmount <= 0)
                     || !this.golem.getNavigator().noPath()) {
                 return;
             }

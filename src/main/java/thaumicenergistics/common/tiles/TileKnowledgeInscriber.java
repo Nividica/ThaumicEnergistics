@@ -2,6 +2,7 @@ package thaumicenergistics.common.tiles;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import thaumicenergistics.common.items.ItemKnowledgeCore;
 import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
 
@@ -12,6 +13,7 @@ import thaumicenergistics.common.tiles.abstraction.ThETileInventory;
  *
  */
 public class TileKnowledgeInscriber extends ThETileInventory {
+
     public static final int KCORE_SLOT = 0;
 
     private static final String NBTKEY_KCORE = "kcore";
@@ -54,7 +56,8 @@ public class TileKnowledgeInscriber extends ThETileInventory {
         if (data.hasKey(NBTKEY_KCORE)) {
             // Load the saved core
             this.internalInventory.setInventorySlotContents(
-                    KCORE_SLOT, ItemStack.loadItemStackFromNBT(data.getCompoundTag(NBTKEY_KCORE)));
+                    KCORE_SLOT,
+                    ItemStack.loadItemStackFromNBT(data.getCompoundTag(NBTKEY_KCORE)));
         }
     }
 

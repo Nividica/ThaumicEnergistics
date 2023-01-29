@@ -1,10 +1,12 @@
 package thaumicenergistics.api;
 
-import com.google.common.collect.ImmutableList;
 import java.lang.reflect.Method;
 import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Thaumic Energistics API
@@ -13,11 +15,11 @@ import javax.annotation.Nullable;
  *
  */
 public abstract class ThEApi {
+
     protected static ThEApi api = null;
 
     /**
-     * Gets the Thaumic Energistics API.
-     * Note: Only available after the PREINIT event.
+     * Gets the Thaumic Energistics API. Note: Only available after the PREINIT event.
      */
     @Nullable
     public static ThEApi instance() {

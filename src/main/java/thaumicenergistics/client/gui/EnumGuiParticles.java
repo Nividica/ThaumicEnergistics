@@ -1,11 +1,13 @@
 package thaumicenergistics.client.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Particles that can be displayed in a GUI.
@@ -15,6 +17,7 @@ import org.lwjgl.opengl.GL11;
  */
 @SideOnly(Side.CLIENT)
 public enum EnumGuiParticles {
+
     Orb(thaumcraft.client.fx.ParticleEngine.particleTexture, 0, 128, 16, 16, 16, 0, 16),
     Rune(thaumcraft.client.fx.ParticleEngine.particleTexture, 0, 96, 16, 16, 16, 0, 16),
     Wispy(thaumcraft.client.fx.ParticleEngine.particleTexture, 0, 80, 16, 16, 16, 0, 16),
@@ -31,8 +34,7 @@ public enum EnumGuiParticles {
     private int animationUStep, animationVStep;
 
     /**
-     * Number of frames in the animation.
-     * Can not be 0.
+     * Number of frames in the animation. Can not be 0.
      */
     private int FrameCount;
 
@@ -41,15 +43,8 @@ public enum EnumGuiParticles {
      */
     private ResourceLocation texture;
 
-    private EnumGuiParticles(
-            final ResourceLocation textureLocation,
-            final int U,
-            final int V,
-            final int width,
-            final int height,
-            final int UStep,
-            final int VStep,
-            final int Frames) {
+    private EnumGuiParticles(final ResourceLocation textureLocation, final int U, final int V, final int width,
+            final int height, final int UStep, final int VStep, final int Frames) {
         this.texture = textureLocation;
         this.txU = U;
         this.txV = V;
@@ -72,9 +67,8 @@ public enum EnumGuiParticles {
     }
 
     /**
-     * Draws the particle.
-     * If settings "needsPrepare" to false, prepare and finish must be called manually.
-     * However this can be useful if drawing multiple of the same particle.
+     * Draws the particle. If settings "needsPrepare" to false, prepare and finish must be called manually. However this
+     * can be useful if drawing multiple of the same particle.
      *
      * @param gui
      * @param positionX
@@ -85,15 +79,8 @@ public enum EnumGuiParticles {
      * @param blue
      * @param needsPrepare
      */
-    public void drawParticle(
-            final Gui gui,
-            final int positionX,
-            final int positionY,
-            final int frameNumber,
-            final float red,
-            final float green,
-            final float blue,
-            final boolean needsPrepare) {
+    public void drawParticle(final Gui gui, final int positionX, final int positionY, final int frameNumber,
+            final float red, final float green, final float blue, final boolean needsPrepare) {
         if (needsPrepare) {
             this.prepareDraw();
         }
@@ -119,9 +106,8 @@ public enum EnumGuiParticles {
     }
 
     /**
-     * Prepares the engine to draw this particle.
-     * Must be called before drawing, but can be called once then
-     * draw called multiple times for the same particle.
+     * Prepares the engine to draw this particle. Must be called before drawing, but can be called once then draw called
+     * multiple times for the same particle.
      */
     public void prepareDraw() {
         // Bind the texture

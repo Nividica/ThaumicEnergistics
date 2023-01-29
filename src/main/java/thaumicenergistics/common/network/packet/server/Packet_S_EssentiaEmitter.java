@@ -1,10 +1,11 @@
 package thaumicenergistics.common.network.packet.server;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link PartEssentiaLevelEmitter} server-bound packet.
@@ -13,6 +14,7 @@ import thaumicenergistics.common.parts.PartEssentiaLevelEmitter;
  *
  */
 public class Packet_S_EssentiaEmitter extends ThEServerPacket {
+
     private static final byte MODE_SEND_WANTED = 1, MODE_ADJUST_WANTED = 2, MODE_TOGGLE_REDSTONE = 3;
 
     private PartEssentiaLevelEmitter part;
@@ -55,8 +57,8 @@ public class Packet_S_EssentiaEmitter extends ThEServerPacket {
      * @param player
      * @return
      */
-    public static void sendWantedAmount(
-            final long wantedAmount, final PartEssentiaLevelEmitter part, final EntityPlayer player) {
+    public static void sendWantedAmount(final long wantedAmount, final PartEssentiaLevelEmitter part,
+            final EntityPlayer player) {
         Packet_S_EssentiaEmitter packet = newPacket(player, MODE_SEND_WANTED);
 
         // Set the part
@@ -77,8 +79,8 @@ public class Packet_S_EssentiaEmitter extends ThEServerPacket {
      * @param player
      * @return
      */
-    public static void sendWantedAmountDelta(
-            final int adjustmentAmount, final PartEssentiaLevelEmitter part, final EntityPlayer player) {
+    public static void sendWantedAmountDelta(final int adjustmentAmount, final PartEssentiaLevelEmitter part,
+            final EntityPlayer player) {
         Packet_S_EssentiaEmitter packet = newPacket(player, MODE_ADJUST_WANTED);
 
         // Set the part

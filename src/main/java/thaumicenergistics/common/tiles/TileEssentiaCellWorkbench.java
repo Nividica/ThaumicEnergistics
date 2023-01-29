@@ -1,14 +1,14 @@
 package thaumicenergistics.common.tiles;
 
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.ISaveProvider;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.container.ContainerEssentiaCellWorkbench;
@@ -16,6 +16,8 @@ import thaumicenergistics.common.inventory.HandlerItemEssentiaCell;
 import thaumicenergistics.common.items.ItemEssentiaCell;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.ISaveProvider;
 
 /**
  * Provides {@link ItemEssentiaCell} partitioning.
@@ -24,6 +26,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  *
  */
 public class TileEssentiaCellWorkbench extends TileEntity implements IInventory, ISaveProvider {
+
     /**
      * NBT Keys
      */
@@ -232,13 +235,13 @@ public class TileEssentiaCellWorkbench extends TileEntity implements IInventory,
         if (data.hasKey(TileEssentiaCellWorkbench.NBT_KEY_CELL)) {
             // Read the cell
             this.setInventorySlotContents(
-                    0, ItemStack.loadItemStackFromNBT(data.getCompoundTag(TileEssentiaCellWorkbench.NBT_KEY_CELL)));
+                    0,
+                    ItemStack.loadItemStackFromNBT(data.getCompoundTag(TileEssentiaCellWorkbench.NBT_KEY_CELL)));
         }
     }
 
     /**
-     * Registers a container.
-     * The container will be notified when the cell changes.
+     * Registers a container. The container will be notified when the cell changes.
      *
      * @param container
      */
@@ -265,8 +268,7 @@ public class TileEssentiaCellWorkbench extends TileEntity implements IInventory,
     }
 
     /**
-     * Removes a container.
-     * It will no longer receive notifications when the cell changes.
+     * Removes a container. It will no longer receive notifications when the cell changes.
      *
      * @param container
      */

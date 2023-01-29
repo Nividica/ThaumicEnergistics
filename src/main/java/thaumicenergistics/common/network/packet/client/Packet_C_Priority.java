@@ -1,13 +1,14 @@
 package thaumicenergistics.common.network.packet.client;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumicenergistics.client.gui.GuiPriority;
 import thaumicenergistics.common.network.NetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Priority GUI client-bound packet.
@@ -16,6 +17,7 @@ import thaumicenergistics.common.network.NetworkHandler;
  *
  */
 public class Packet_C_Priority extends ThEClientPacket {
+
     private static final byte MODE_SEND = 0;
 
     private int priority;

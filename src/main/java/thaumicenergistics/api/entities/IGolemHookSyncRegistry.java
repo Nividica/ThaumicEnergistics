@@ -7,6 +7,7 @@ package thaumicenergistics.api.entities;
  *
  */
 public interface IGolemHookSyncRegistry {
+
     /**
      * Returns the sync char if it is mapped, returns {@code defaultChar} otherwise.
      *
@@ -21,8 +22,7 @@ public interface IGolemHookSyncRegistry {
      * Note: This can only be called during registration, will throw exception otherwise.
      *
      * @param handler
-     * @param c
-     * Initial value of the char.
+     * @param c       Initial value of the char.
      * @return The ID of the char.
      */
     int registerSyncChar(IGolemHookHandler handler, char c);

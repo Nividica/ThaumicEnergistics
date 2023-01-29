@@ -2,18 +2,19 @@ package thaumicenergistics.common.features;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.registries.FeatureRegistry;
 
 /**
- * Defines a feature that depends on a configuration setting and/or specific
- * items to be available.
+ * Defines a feature that depends on a configuration setting and/or specific items to be available.
  *
  * @author Nividica
  *
  */
 public abstract class ThEDependencyFeatureBase extends ThEFeatureBase {
+
     /**
      * True if the requirements have been checked.
      */

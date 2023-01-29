@@ -1,15 +1,18 @@
 package thaumicenergistics.common.parts;
 
-import appeng.api.config.Upgrades;
 import java.util.HashMap;
 import java.util.Map;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.items.ItemEnum;
 import thaumicenergistics.common.registries.ThEStrings;
+import appeng.api.config.Upgrades;
 
 /**
  * Enumeration of all ThE cable parts.
@@ -18,27 +21,19 @@ import thaumicenergistics.common.registries.ThEStrings;
  *
  */
 public enum AEPartsEnum {
-    EssentiaImportBus(
-            ThEStrings.Part_EssentiaImportBus,
-            PartEssentiaImportBus.class,
-            ThaumicEnergistics.MOD_ID + ".group.essentia.transport",
-            generatePair(Upgrades.CAPACITY, 2),
-            generatePair(Upgrades.REDSTONE, 1),
-            generatePair(Upgrades.SPEED, 2)),
+
+    EssentiaImportBus(ThEStrings.Part_EssentiaImportBus, PartEssentiaImportBus.class,
+            ThaumicEnergistics.MOD_ID + ".group.essentia.transport", generatePair(Upgrades.CAPACITY, 2),
+            generatePair(Upgrades.REDSTONE, 1), generatePair(Upgrades.SPEED, 2)),
 
     EssentiaLevelEmitter(ThEStrings.Part_EssentiaLevelEmitter, PartEssentiaLevelEmitter.class),
 
-    EssentiaStorageBus(
-            ThEStrings.Part_EssentiaStorageBus, PartEssentiaStorageBus.class, null, generatePair(Upgrades.INVERTER, 1)),
+    EssentiaStorageBus(ThEStrings.Part_EssentiaStorageBus, PartEssentiaStorageBus.class, null,
+            generatePair(Upgrades.INVERTER, 1)),
 
-    EssentiaExportBus(
-            ThEStrings.Part_EssentiaExportBus,
-            PartEssentiaExportBus.class,
-            ThaumicEnergistics.MOD_ID + ".group.essentia.transport",
-            generatePair(Upgrades.CAPACITY, 2),
-            generatePair(Upgrades.REDSTONE, 1),
-            generatePair(Upgrades.SPEED, 2),
-            generatePair(Upgrades.CRAFTING, 1)),
+    EssentiaExportBus(ThEStrings.Part_EssentiaExportBus, PartEssentiaExportBus.class,
+            ThaumicEnergistics.MOD_ID + ".group.essentia.transport", generatePair(Upgrades.CAPACITY, 2),
+            generatePair(Upgrades.REDSTONE, 1), generatePair(Upgrades.SPEED, 2), generatePair(Upgrades.CRAFTING, 1)),
 
     EssentiaTerminal(ThEStrings.Part_EssentiaTerminal, PartEssentiaTerminal.class),
 
@@ -67,8 +62,8 @@ public enum AEPartsEnum {
         this(unlocalizedName, partClass, null);
     }
 
-    private AEPartsEnum(
-            final ThEStrings unlocalizedName, final Class<? extends ThEPartBase> partClass, final String groupName) {
+    private AEPartsEnum(final ThEStrings unlocalizedName, final Class<? extends ThEPartBase> partClass,
+            final String groupName) {
         // Set the localization string
         this.unlocalizedName = unlocalizedName;
 
@@ -79,11 +74,8 @@ public enum AEPartsEnum {
         this.groupName = groupName;
     }
 
-    private AEPartsEnum(
-            final ThEStrings unlocalizedName,
-            final Class<? extends ThEPartBase> partClass,
-            final String groupName,
-            final Pair<Upgrades, Integer>... upgrades) {
+    private AEPartsEnum(final ThEStrings unlocalizedName, final Class<? extends ThEPartBase> partClass,
+            final String groupName, final Pair<Upgrades, Integer>... upgrades) {
         this(unlocalizedName, partClass, groupName);
 
         for (Pair<Upgrades, Integer> pair : upgrades) {

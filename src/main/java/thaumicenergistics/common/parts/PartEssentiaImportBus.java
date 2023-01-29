@@ -1,5 +1,15 @@
 package thaumicenergistics.common.parts;
 
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
+import thaumicenergistics.api.grid.IMEEssentiaMonitor;
+import thaumicenergistics.client.textures.BlockTextureManager;
+import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartCollisionHelper;
@@ -7,15 +17,6 @@ import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AEColor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.IAspectContainer;
-import thaumicenergistics.api.grid.IMEEssentiaMonitor;
-import thaumicenergistics.client.textures.BlockTextureManager;
-import thaumicenergistics.common.integration.tc.EssentiaTileContainerHelper;
 
 /**
  * Imports essentia from {@link IAspectContainer}
@@ -75,8 +76,8 @@ public class PartEssentiaImportBus extends ThEPartEssentiaIOBus_Base {
         }
 
         // Simulate a drain from the container
-        long drainedAmount = EssentiaTileContainerHelper.INSTANCE.extractFromContainer(
-                this.facingContainer, transferAmount, aspect, Actionable.SIMULATE);
+        long drainedAmount = EssentiaTileContainerHelper.INSTANCE
+                .extractFromContainer(this.facingContainer, transferAmount, aspect, Actionable.SIMULATE);
 
         // Was any drained?
         if (drainedAmount <= 0) {
@@ -90,8 +91,8 @@ public class PartEssentiaImportBus extends ThEPartEssentiaIOBus_Base {
         }
 
         // Simulate inject into the network
-        long rejectedAmount =
-                essMonitor.injectEssentia(aspect, drainedAmount, Actionable.SIMULATE, this.asMachineSource, true);
+        long rejectedAmount = essMonitor
+                .injectEssentia(aspect, drainedAmount, Actionable.SIMULATE, this.asMachineSource, true);
 
         // Was any rejected?
         if (rejectedAmount > 0) {
@@ -111,8 +112,8 @@ public class PartEssentiaImportBus extends ThEPartEssentiaIOBus_Base {
         essMonitor.injectEssentia(aspect, drainedAmount, Actionable.MODULATE, this.asMachineSource, true);
 
         // Drain
-        EssentiaTileContainerHelper.INSTANCE.extractFromContainer(
-                this.facingContainer, transferAmount, aspect, Actionable.MODULATE);
+        EssentiaTileContainerHelper.INSTANCE
+                .extractFromContainer(this.facingContainer, transferAmount, aspect, Actionable.MODULATE);
 
         return true;
     }
@@ -178,7 +179,9 @@ public class PartEssentiaImportBus extends ThEPartEssentiaIOBus_Base {
         helper.setInvColor(ThEPartBase.INVENTORY_OVERLAY_COLOR);
         ts.setBrightness(15728880);
         helper.renderInventoryFace(
-                BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[1], ForgeDirection.SOUTH, renderer);
+                BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[1],
+                ForgeDirection.SOUTH,
+                renderer);
 
         // Lights
         helper.setBounds(6.0F, 6.0F, 11.0F, 10.0F, 10.0F, 12.0F);
@@ -187,8 +190,8 @@ public class PartEssentiaImportBus extends ThEPartEssentiaIOBus_Base {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void renderStatic(
-            final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer) {
+    public void renderStatic(final int x, final int y, final int z, final IPartRenderHelper helper,
+            final RenderBlocks renderer) {
         Tessellator ts = Tessellator.instance;
 
         IIcon busSideTexture = BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[3];
@@ -216,7 +219,12 @@ public class PartEssentiaImportBus extends ThEPartEssentiaIOBus_Base {
 
         // Face overlay
         helper.renderFace(
-                x, y, z, BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[1], ForgeDirection.SOUTH, renderer);
+                x,
+                y,
+                z,
+                BlockTextureManager.ESSENTIA_IMPORT_BUS.getTextures()[1],
+                ForgeDirection.SOUTH,
+                renderer);
 
         // Set the pass to alpha
         helper.renderForPass(1);

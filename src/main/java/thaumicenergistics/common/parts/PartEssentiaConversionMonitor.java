@@ -1,21 +1,17 @@
 package thaumicenergistics.common.parts;
 
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.security.PlayerSource;
-import appeng.client.texture.CableBusTextures;
-import appeng.util.InventoryAdaptor;
-import appeng.util.Platform;
 import java.util.Collections;
 import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaContainerItem;
 import thaumicenergistics.api.grid.IMEEssentiaMonitor;
@@ -24,6 +20,13 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper.AspectItemType;
 import thaumicenergistics.common.storage.AspectStack;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.security.PlayerSource;
+import appeng.client.texture.CableBusTextures;
+import appeng.util.InventoryAdaptor;
+import appeng.util.Platform;
 
 /**
  * Displays essentia levels, and allows extraction/insertion from {@link IEssentiaContainerItem}.
@@ -32,6 +35,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class PartEssentiaConversionMonitor extends PartEssentiaStorageMonitor {
+
     /**
      * The number of ticks considered to be a double click.
      */
@@ -67,8 +71,8 @@ public class PartEssentiaConversionMonitor extends PartEssentiaStorageMonitor {
      * @param mustMatchAspect
      * @return
      */
-    private boolean drainEssentiaContainer(
-            final EntityPlayer player, final int slotIndex, final Aspect mustMatchAspect) {
+    private boolean drainEssentiaContainer(final EntityPlayer player, final int slotIndex,
+            final Aspect mustMatchAspect) {
         // Get the container
         ItemStack container = player.inventory.getStackInSlot(slotIndex);
 
@@ -97,7 +101,11 @@ public class PartEssentiaConversionMonitor extends PartEssentiaStorageMonitor {
 
         // Inject the essentia
         long rejected = essMonitor.injectEssentia(
-                request.getAspect(), request.getStackSize(), Actionable.MODULATE, new PlayerSource(player, this), true);
+                request.getAspect(),
+                request.getStackSize(),
+                Actionable.MODULATE,
+                new PlayerSource(player, this),
+                true);
 
         // Adjust the request
         request.adjustStackSize(-rejected);
@@ -108,8 +116,8 @@ public class PartEssentiaConversionMonitor extends PartEssentiaStorageMonitor {
         }
 
         // Drain the container
-        ImmutablePair<Integer, ItemStack> drained =
-                EssentiaItemContainerHelper.INSTANCE.extractFromContainer(container, request);
+        ImmutablePair<Integer, ItemStack> drained = EssentiaItemContainerHelper.INSTANCE
+                .extractFromContainer(container, request);
 
         // Update the player inventory
         player.inventory.decrStackSize(slotIndex, 1);
@@ -130,13 +138,13 @@ public class PartEssentiaConversionMonitor extends PartEssentiaStorageMonitor {
      * @param heldItem
      * @return
      */
-    private boolean fillEssentiaContainer(
-            final EntityPlayer player, final ItemStack heldItem, final AspectItemType itemType) {
+    private boolean fillEssentiaContainer(final EntityPlayer player, final ItemStack heldItem,
+            final AspectItemType itemType) {
         // Is the item being held a label?
         if (itemType == AspectItemType.JarLabel) {
             // Set the label type
-            EssentiaItemContainerHelper.INSTANCE.setLabelAspect(
-                    heldItem, this.trackedEssentia.getAspectStack().getAspect());
+            EssentiaItemContainerHelper.INSTANCE
+                    .setLabelAspect(heldItem, this.trackedEssentia.getAspectStack().getAspect());
             return true;
         }
 
@@ -184,8 +192,9 @@ public class PartEssentiaConversionMonitor extends PartEssentiaStorageMonitor {
         int containerCapacity = EssentiaItemContainerHelper.INSTANCE.getContainerCapacity(heldItem);
 
         // Create the request
-        IAspectStack fillRequest =
-                new AspectStack(this.trackedEssentia.getAspectStack().getAspect(), containerCapacity - containerAmount);
+        IAspectStack fillRequest = new AspectStack(
+                this.trackedEssentia.getAspectStack().getAspect(),
+                containerCapacity - containerAmount);
 
         // Is the container full?
         if (fillRequest.isEmpty()) {
@@ -198,7 +207,11 @@ public class PartEssentiaConversionMonitor extends PartEssentiaStorageMonitor {
 
         // Simulate the request
         long extractedAmount = essMonitor.extractEssentia(
-                fillRequest.getAspect(), fillRequest.getStackSize(), Actionable.SIMULATE, playerSource, true);
+                fillRequest.getAspect(),
+                fillRequest.getStackSize(),
+                Actionable.SIMULATE,
+                playerSource,
+                true);
 
         // Was any extracted?
         if (extractedAmount <= 0) {
@@ -210,8 +223,8 @@ public class PartEssentiaConversionMonitor extends PartEssentiaStorageMonitor {
         fillRequest.setStackSize(extractedAmount);
 
         // Fill the container
-        ImmutablePair<Integer, ItemStack> filledContainer =
-                EssentiaItemContainerHelper.INSTANCE.injectIntoContainer(heldItem, fillRequest);
+        ImmutablePair<Integer, ItemStack> filledContainer = EssentiaItemContainerHelper.INSTANCE
+                .injectIntoContainer(heldItem, fillRequest);
 
         // Could the container be filled?
         if (filledContainer == null) {
@@ -245,7 +258,11 @@ public class PartEssentiaConversionMonitor extends PartEssentiaStorageMonitor {
 
         // Extract the essentia
         essMonitor.extractEssentia(
-                fillRequest.getAspect(), fillRequest.getStackSize(), Actionable.MODULATE, playerSource, true);
+                fillRequest.getAspect(),
+                fillRequest.getStackSize(),
+                Actionable.MODULATE,
+                playerSource,
+                true);
 
         // Done
         return true;
@@ -309,8 +326,7 @@ public class PartEssentiaConversionMonitor extends PartEssentiaStorageMonitor {
     private boolean wasDoubleClick(final EntityPlayer player) {
         // Is this the same player that just used the monitor?
         if ((this.depositedPlayerID != -1)
-                && (this.depositedPlayerID
-                        == AEApi.instance().registries().players().getID(player.getGameProfile()))) {
+                && (this.depositedPlayerID == AEApi.instance().registries().players().getID(player.getGameProfile()))) {
             // Was it a double click?
             if ((MinecraftServer.getServer().getTickCounter() - this.depositedTick)
                     <= PartEssentiaConversionMonitor.DOUBLE_CLICK_TICKS) {
@@ -329,8 +345,8 @@ public class PartEssentiaConversionMonitor extends PartEssentiaStorageMonitor {
      * Attempts to fill an essentia container if monitor locked
      */
     @Override
-    protected boolean onActivateWithAspectItem(
-            final EntityPlayer player, final ItemStack heldItem, final AspectItemType itemType) {
+    protected boolean onActivateWithAspectItem(final EntityPlayer player, final ItemStack heldItem,
+            final AspectItemType itemType) {
         // Is there nothing being tracked, or is the monitor unlocked?
         if (!this.trackedEssentia.isValid() || !this.isLocked()) {
             // Pass to super

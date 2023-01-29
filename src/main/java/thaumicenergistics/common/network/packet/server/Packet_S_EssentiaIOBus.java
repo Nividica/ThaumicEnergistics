@@ -1,12 +1,13 @@
 package thaumicenergistics.common.network.packet.server;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.parts.PartEssentiaExportBus;
 import thaumicenergistics.common.parts.PartEssentiaImportBus;
 import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link PartEssentiaImportBus} and {@link PartEssentiaExportBus} server-bound packet.
@@ -15,10 +16,9 @@ import thaumicenergistics.common.parts.ThEPartEssentiaIOBus_Base;
  *
  */
 public class Packet_S_EssentiaIOBus extends ThEServerPacket {
-    private static final byte MODE_REQUEST_FULL_UPDATE = 0,
-            MODE_REQUEST_CHANGE_REDSTONE_MODE = 1,
-            MODE_REQUEST_CHANGE_VOID_MODE = 2,
-            MODE_REQUEST_CHANGE_CRAFTING_MODE = 3;
+
+    private static final byte MODE_REQUEST_FULL_UPDATE = 0, MODE_REQUEST_CHANGE_REDSTONE_MODE = 1,
+            MODE_REQUEST_CHANGE_VOID_MODE = 2, MODE_REQUEST_CHANGE_CRAFTING_MODE = 3;
 
     private ThEPartEssentiaIOBus_Base part;
 
@@ -29,8 +29,8 @@ public class Packet_S_EssentiaIOBus extends ThEServerPacket {
      * @param mode
      * @return
      */
-    private static Packet_S_EssentiaIOBus newPacket(
-            final EntityPlayer player, final byte mode, final ThEPartEssentiaIOBus_Base part) {
+    private static Packet_S_EssentiaIOBus newPacket(final EntityPlayer player, final byte mode,
+            final ThEPartEssentiaIOBus_Base part) {
         // Create the packet
         Packet_S_EssentiaIOBus packet = new Packet_S_EssentiaIOBus();
 

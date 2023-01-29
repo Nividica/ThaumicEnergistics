@@ -1,11 +1,13 @@
 package thaumicenergistics.client.gui.buttons;
 
+import java.util.List;
+
+import net.minecraft.util.StatCollector;
+
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 import appeng.api.config.SortDir;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.List;
-import net.minecraft.util.StatCollector;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 /**
  * Displays sorting direction icons.
@@ -16,8 +18,8 @@ import thaumicenergistics.client.textures.AEStateIconsEnum;
 @SideOnly(Side.CLIENT)
 public class GuiButtonSortingDirection extends ThEStateButton {
 
-    public GuiButtonSortingDirection(
-            final int ID, final int xPosition, final int yPosition, final int width, final int height) {
+    public GuiButtonSortingDirection(final int ID, final int xPosition, final int yPosition, final int width,
+            final int height) {
         super(
                 ID,
                 xPosition,

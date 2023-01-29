@@ -1,11 +1,11 @@
 package thaumicenergistics.common.registries;
 
 import java.util.ArrayList;
+
 import thaumicenergistics.common.features.*;
 
 /**
- * Acts as a safe way to depend on features that can be disabled in both TC and
- * AE.
+ * Acts as a safe way to depend on features that can be disabled in both TC and AE.
  *
  * @author Nividica
  *

@@ -1,26 +1,27 @@
 package thaumicenergistics.common.container;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+
+import thaumicenergistics.common.container.slot.SlotNetworkTool;
+import thaumicenergistics.common.container.slot.SlotRestrictive;
 import appeng.api.AEApi;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.util.DimensionalCoord;
 import appeng.parts.automation.UpgradeInventory;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import thaumicenergistics.common.container.slot.SlotNetworkTool;
-import thaumicenergistics.common.container.slot.SlotRestrictive;
 
 /**
- * Container that shows the network tool, player inventory,
- * and any specified upgrade slots.
+ * Container that shows the network tool, player inventory, and any specified upgrade slots.
  *
  * @author Nividica
  *
  */
 public abstract class ContainerWithNetworkTool extends ContainerWithPlayerInventory {
+
     /**
      * Number of rows in the network tool
      */
@@ -83,8 +84,8 @@ public abstract class ContainerWithNetworkTool extends ContainerWithPlayerInvent
      * @param xPosition
      * @param yPosition
      */
-    protected void addUpgradeSlots(
-            final UpgradeInventory upgradeInventory, final int count, final int xPosition, final int yPosition) {
+    protected void addUpgradeSlots(final UpgradeInventory upgradeInventory, final int count, final int xPosition,
+            final int yPosition) {
         Slot upgradeSlot = null;
 
         // Add the upgrade slots
@@ -111,18 +112,10 @@ public abstract class ContainerWithNetworkTool extends ContainerWithPlayerInvent
         }
     }
 
-    protected void bindToNetworkTool(
-            final InventoryPlayer playerInventory,
-            final DimensionalCoord partLocation,
-            final int slotOffsetX,
-            final int slotOffsetY) {
+    protected void bindToNetworkTool(final InventoryPlayer playerInventory, final DimensionalCoord partLocation,
+            final int slotOffsetX, final int slotOffsetY) {
         // Get the networkTool or null if absent (e.g. disabled in AE's config-file)
-        ItemStack nwTool = AEApi.instance()
-                .definitions()
-                .items()
-                .networkTool()
-                .maybeStack(1)
-                .orNull();
+        ItemStack nwTool = AEApi.instance().definitions().items().networkTool().maybeStack(1).orNull();
 
         // First of all is there a networkTool?
         if (nwTool != null) {
@@ -132,19 +125,18 @@ public abstract class ContainerWithNetworkTool extends ContainerWithPlayerInvent
                 ItemStack stack = playerInventory.getStackInSlot(slotIndex);
 
                 // Is it the network tool?
-                if ((stack != null)
-                        && (stack.isItemEqual(AEApi.instance()
-                                .definitions()
-                                .items()
-                                .networkTool()
-                                .maybeStack(1)
-                                .get()))) {
+                if ((stack != null) && (stack
+                        .isItemEqual(AEApi.instance().definitions().items().networkTool().maybeStack(1).get()))) {
                     // Get the gui item for the tool
                     IGuiItem guiItem = (IGuiItem) stack.getItem();
 
                     // Get the gui for the tool
                     INetworkTool networkTool = (INetworkTool) guiItem.getGuiObject(
-                            stack, partLocation.getWorld(), partLocation.x, partLocation.y, partLocation.z);
+                            stack,
+                            partLocation.getWorld(),
+                            partLocation.x,
+                            partLocation.y,
+                            partLocation.z);
 
                     Slot toolSlot = null;
 
@@ -158,8 +150,7 @@ public abstract class ContainerWithNetworkTool extends ContainerWithPlayerInvent
                             toolSlot = new SlotNetworkTool(
                                     networkTool,
                                     slotToolIndex,
-                                    ContainerWithNetworkTool.TOOL_SLOT_X_OFFSET
-                                            + slotOffsetX
+                                    ContainerWithNetworkTool.TOOL_SLOT_X_OFFSET + slotOffsetX
                                             + (column * ContainerWithPlayerInventory.SLOT_SIZE),
                                     (row * ContainerWithPlayerInventory.SLOT_SIZE)
                                             + ContainerWithNetworkTool.TOOL_SLOT_Y_OFFSET
@@ -266,8 +257,7 @@ public abstract class ContainerWithNetworkTool extends ContainerWithPlayerInvent
      * @return True if it was in the tools inventory, false otherwise.
      */
     protected boolean slotClickedWasInNetworkTool(final int slotNumber) {
-        return this.hasNetworkTool
-                && (slotNumber >= this.firstToolSlotNumber)
+        return this.hasNetworkTool && (slotNumber >= this.firstToolSlotNumber)
                 && (slotNumber <= this.lastToolSlotNumber);
     }
 

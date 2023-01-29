@@ -2,11 +2,14 @@ package thaumicenergistics.common.container;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_AspectSlot;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaStorageBus;
@@ -19,6 +22,7 @@ import thaumicenergistics.common.parts.PartEssentiaStorageBus;
  *
  */
 public class ContainerPartEssentiaStorageBus extends ContainerWithNetworkTool {
+
     /**
      * X position offset for upgrade slots
      */

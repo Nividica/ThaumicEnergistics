@@ -1,12 +1,10 @@
 package thaumicenergistics.common.container;
 
-import appeng.api.storage.data.IAEItemStack;
-import appeng.container.slot.SlotFake;
-import appeng.container.slot.SlotFakeCraftingMatrix;
-import appeng.container.slot.SlotInaccessible;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ICrafting;
@@ -15,6 +13,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
@@ -28,6 +27,10 @@ import thaumicenergistics.common.items.ItemKnowledgeCore;
 import thaumicenergistics.common.network.packet.client.Packet_C_KnowledgeInscriber;
 import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.container.slot.SlotFake;
+import appeng.container.slot.SlotFakeCraftingMatrix;
+import appeng.container.slot.SlotInaccessible;
 
 /**
  * {@link TileKnowledgeInscriber} container.
@@ -36,6 +39,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
+
     /**
      * What state the save/delete button should be in.
      *
@@ -69,27 +73,18 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
     /**
      * Pattern slots.
      */
-    private static final int PATTERN_SLOT = 0,
-            PATTERN_SLOT_X = 26,
-            PATTERN_SLOT_Y = 18,
-            PATTERN_ROWS = 3,
-            PATTERN_COLS = 7,
-            PATTERN_SLOT_SPACING = 18;
+    private static final int PATTERN_SLOT = 0, PATTERN_SLOT_X = 26, PATTERN_SLOT_Y = 18, PATTERN_ROWS = 3,
+            PATTERN_COLS = 7, PATTERN_SLOT_SPACING = 18;
 
     /**
      * Crafting slots
      */
-    public static final int
-            CRAFTING_MATRIX_SLOT =
-                    ContainerKnowledgeInscriber.MAXIMUM_PATTERNS + ContainerKnowledgeInscriber.PATTERN_SLOT,
-            CRAFTING_SLOT_X = 26,
-            CRAFTING_SLOT_Y = 90,
-            CRAFTING_ROWS = 3,
+    public static final int CRAFTING_MATRIX_SLOT = ContainerKnowledgeInscriber.MAXIMUM_PATTERNS
+            + ContainerKnowledgeInscriber.PATTERN_SLOT, CRAFTING_SLOT_X = 26, CRAFTING_SLOT_Y = 90, CRAFTING_ROWS = 3,
             CRAFTING_COLS = 3,
             CRAFTING_GRID_SIZE = ContainerKnowledgeInscriber.CRAFTING_ROWS * ContainerKnowledgeInscriber.CRAFTING_COLS,
-            CRAFTING_SLOT_SPACING = 18,
-            CRAFTING_RESULT_SLOT =
-                    ContainerKnowledgeInscriber.CRAFTING_MATRIX_SLOT + ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE;
+            CRAFTING_SLOT_SPACING = 18, CRAFTING_RESULT_SLOT = ContainerKnowledgeInscriber.CRAFTING_MATRIX_SLOT
+                    + ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE;
 
     /**
      * Handles interaction with the knowledge core.
@@ -103,8 +98,7 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
 
     private final SlotFake resultSlot;
     private final SlotInaccessible[] patternSlots = new SlotInaccessible[ContainerKnowledgeInscriber.MAXIMUM_PATTERNS];
-    private final SlotFakeCraftingMatrix[] craftingSlots =
-            new SlotFakeCraftingMatrix[ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE];
+    private final SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE];
 
     /**
      * The current recipe, if any.
@@ -121,8 +115,8 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
      */
     private final TheInternalInventory internalInventory;
 
-    public ContainerKnowledgeInscriber(
-            final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public ContainerKnowledgeInscriber(final EntityPlayer player, final World world, final int x, final int y,
+            final int z) {
         // Call super
         super(player);
 
@@ -144,8 +138,10 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
         this.addSlotToContainer(this.kCoreSlot);
 
         // Setup the internal inventory
-        this.internalInventory =
-                new TheInternalInventory("cki", ContainerKnowledgeInscriber.CRAFTING_RESULT_SLOT + 1, 64);
+        this.internalInventory = new TheInternalInventory(
+                "cki",
+                ContainerKnowledgeInscriber.CRAFTING_RESULT_SLOT + 1,
+                64);
 
         // Create pattern slots
         this.initPatternSlots();
@@ -154,8 +150,11 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
         this.initCraftingSlots();
 
         // Create the result slot
-        this.resultSlot =
-                new SlotFake(this.internalInventory, ContainerKnowledgeInscriber.CRAFTING_RESULT_SLOT, 116, 108);
+        this.resultSlot = new SlotFake(
+                this.internalInventory,
+                ContainerKnowledgeInscriber.CRAFTING_RESULT_SLOT,
+                116,
+                108);
         this.addSlotToContainer(this.resultSlot);
 
         // Create the handler
@@ -229,8 +228,11 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
 
                 // Add the slot
                 this.addSlotToContainer(
-                        this.craftingSlots[index] =
-                                new SlotFakeCraftingMatrix(this.internalInventory, slotIndex++, posX, posY));
+                        this.craftingSlots[index] = new SlotFakeCraftingMatrix(
+                                this.internalInventory,
+                                slotIndex++,
+                                posX,
+                                posY));
             }
         }
     }
@@ -308,12 +310,12 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
         // Is this a wildcard item?
         else if ((input instanceof ItemStack)
                 && (((ItemStack) input).getItemDamage() == OreDictionary.WILDCARD_VALUE)) {
-            // Create a list to hold the users preferred item, and the wildcard item
-            ArrayList<ItemStack> ingList = new ArrayList<ItemStack>();
-            ingList.add(this.craftingSlots[slotNumber].getStack());
-            ingList.add((ItemStack) input);
-            return ingList;
-        }
+                    // Create a list to hold the users preferred item, and the wildcard item
+                    ArrayList<ItemStack> ingList = new ArrayList<ItemStack>();
+                    ingList.add(this.craftingSlots[slotNumber].getStack());
+                    ingList.add((ItemStack) input);
+                    return ingList;
+                }
 
         return input;
     }
@@ -338,7 +340,7 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
             int ingIndex = 0;
             for (; ingIndex < ings.size(); ++ingIndex) {
                 if (inputs[ingIndex] != null) // if there already was such ingredient
-                continue;
+                    continue;
                 Object ing = ings.get(ingIndex);
 
                 if (ArcaneCraftingPattern.canSubstitueFor(ing, slotStack)) {
@@ -437,9 +439,8 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
 
     public void onClientRequestClearGrid() {
         // Clear the grid
-        for (int index = ContainerKnowledgeInscriber.CRAFTING_MATRIX_SLOT;
-                index < ContainerKnowledgeInscriber.CRAFTING_RESULT_SLOT;
-                ++index) {
+        for (int index = ContainerKnowledgeInscriber.CRAFTING_MATRIX_SLOT; index
+                < ContainerKnowledgeInscriber.CRAFTING_RESULT_SLOT; ++index) {
             this.internalInventory.setInventorySlotContents(index, null);
         }
 
@@ -488,7 +489,10 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
 
             // Create the pattern
             ArcaneCraftingPattern pattern = new ArcaneCraftingPattern(
-                    this.kCoreSlot.getStack(), recipeAspects, this.resultSlot.getStack(), inputs);
+                    this.kCoreSlot.getStack(),
+                    recipeAspects,
+                    this.resultSlot.getStack(),
+                    inputs);
 
             // Add the pattern
             this.kCoreHandler.addPattern(pattern);
@@ -585,8 +589,8 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
      * @return
      */
     @Override
-    public ItemStack slotClick(
-            final int slotNumber, final int buttonPressed, final int flag, final EntityPlayer player) {
+    public ItemStack slotClick(final int slotNumber, final int buttonPressed, final int flag,
+            final EntityPlayer player) {
         // Get the itemstack the player is holding with the mouse
         ItemStack draggingStack = player.inventory.getItemStack();
 
@@ -654,8 +658,8 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
             if (this.slotClickedWasInPlayerInventory(slotNumber) || this.slotClickedWasInHotbarInventory(slotNumber)) {
                 // Attempt to merge with kcore slot
                 if (slotStack.getItem() instanceof ItemKnowledgeCore) {
-                    didMerge = this.mergeItemStack(
-                            slotStack, this.kCoreSlot.slotNumber, this.kCoreSlot.slotNumber + 1, false);
+                    didMerge = this
+                            .mergeItemStack(slotStack, this.kCoreSlot.slotNumber, this.kCoreSlot.slotNumber + 1, false);
                 }
 
                 // Was the stack merged?

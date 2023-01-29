@@ -1,12 +1,14 @@
 package thaumicenergistics.client.gui.buttons;
 
+import java.util.List;
+
+import net.minecraft.util.EnumChatFormatting;
+
+import thaumicenergistics.client.textures.AEStateIconsEnum;
 import appeng.api.config.SearchBoxMode;
 import appeng.core.localization.ButtonToolTips;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.List;
-import net.minecraft.util.EnumChatFormatting;
-import thaumicenergistics.client.textures.AEStateIconsEnum;
 
 /**
  * Displays search mode icons.
@@ -16,15 +18,11 @@ import thaumicenergistics.client.textures.AEStateIconsEnum;
  */
 @SideOnly(Side.CLIENT)
 public class GuiButtonSearchMode extends ThEStateButton {
+
     private String tooltipMode = "";
 
-    public GuiButtonSearchMode(
-            final int ID,
-            final int xPosition,
-            final int yPosition,
-            final int buttonWidth,
-            final int buttonHeight,
-            final SearchBoxMode currentMode) {
+    public GuiButtonSearchMode(final int ID, final int xPosition, final int yPosition, final int buttonWidth,
+            final int buttonHeight, final SearchBoxMode currentMode) {
         super(ID, xPosition, yPosition, buttonWidth, buttonHeight, null, 0, 0, AEStateIconsEnum.REGULAR_BUTTON);
 
         this.setSearchMode(currentMode);
@@ -33,7 +31,9 @@ public class GuiButtonSearchMode extends ThEStateButton {
     @Override
     public void getTooltip(final List<String> tooltip) {
         this.addAboutToTooltip(
-                tooltip, ButtonToolTips.SearchMode.getLocal(), EnumChatFormatting.GRAY + this.tooltipMode);
+                tooltip,
+                ButtonToolTips.SearchMode.getLocal(),
+                EnumChatFormatting.GRAY + this.tooltipMode);
     }
 
     /**

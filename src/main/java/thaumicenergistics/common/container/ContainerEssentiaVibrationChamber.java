@@ -1,16 +1,18 @@
 package thaumicenergistics.common.container;
 
-import appeng.tile.misc.TileVibrationChamber;
 import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.network.packet.client.Packet_C_EssentiaVibrationChamber;
 import thaumicenergistics.common.tiles.TileEssentiaVibrationChamber;
 import thaumicenergistics.common.tiles.abstraction.TileEVCBase;
 import thaumicenergistics.common.utils.EffectiveSide;
 import thaumicenergistics.common.utils.ThEUtils;
+import appeng.tile.misc.TileVibrationChamber;
 
 /**
  * {@link TileVibrationChamber} container.
@@ -19,6 +21,7 @@ import thaumicenergistics.common.utils.ThEUtils;
  *
  */
 public class ContainerEssentiaVibrationChamber extends TheContainerBase {
+
     /**
      * The number of items to average.
      */
@@ -32,8 +35,8 @@ public class ContainerEssentiaVibrationChamber extends TheContainerBase {
     private float powerPerTick = 0, powerPercent = 1.0F, ticksPercent = 1.0F, ticksRemaningMovingAverage = 0.0F;
     private int averageTicksRemaning;
 
-    public ContainerEssentiaVibrationChamber(
-            final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public ContainerEssentiaVibrationChamber(final EntityPlayer player, final World world, final int x, final int y,
+            final int z) {
         // Call super
         super(player);
 
@@ -159,13 +162,13 @@ public class ContainerEssentiaVibrationChamber extends TheContainerBase {
      * @param ticksRemaining
      * @param totalTicks
      */
-    public void onChamberUpdate(
-            final float powerPerTick, final float maxPowerPerTick, final int ticksRemaining, final int totalTicks) {
+    public void onChamberUpdate(final float powerPerTick, final float maxPowerPerTick, final int ticksRemaining,
+            final int totalTicks) {
         // Server side?
         if (EffectiveSide.isServerSide()) {
             // Send update packet
-            Packet_C_EssentiaVibrationChamber.sendUpdate(
-                    this.player, powerPerTick, maxPowerPerTick, ticksRemaining, totalTicks);
+            Packet_C_EssentiaVibrationChamber
+                    .sendUpdate(this.player, powerPerTick, maxPowerPerTick, ticksRemaining, totalTicks);
         } else {
             // Set power per tick
             this.powerPerTick = powerPerTick;
@@ -186,8 +189,8 @@ public class ContainerEssentiaVibrationChamber extends TheContainerBase {
 
                 this.ticksRemaningMovingAverage -= this.ticksRemaningMovingAverage
                         / (ContainerEssentiaVibrationChamber.TICK_AVG_COUNT * invertedWeight);
-                this.ticksRemaningMovingAverage +=
-                        ticksRemaining / (ContainerEssentiaVibrationChamber.TICK_AVG_COUNT * invertedWeight);
+                this.ticksRemaningMovingAverage += ticksRemaining
+                        / (ContainerEssentiaVibrationChamber.TICK_AVG_COUNT * invertedWeight);
             }
 
             // Cast to int

@@ -1,10 +1,11 @@
 package thaumicenergistics.common.network.packet.client;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
+
 import thaumicenergistics.common.network.ThEBasePacket;
 import thaumicenergistics.common.utils.EffectiveSide;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Packet to be sent to the client.
@@ -13,6 +14,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public abstract class ThEClientPacket extends ThEBasePacket {
+
     @SideOnly(Side.CLIENT)
     private final void preWrap() {
         // Set the player

@@ -1,8 +1,9 @@
 package thaumicenergistics.api.grid;
 
-import appeng.api.storage.ITerminalHost;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+
+import appeng.api.storage.ITerminalHost;
 
 /**
  * Defines the requirements for a terminal that wishes to issue AE2 crafting jobs.
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemStack;
  *
  */
 public interface ICraftingIssuerHost extends ITerminalHost {
+
     /**
      * Gets the icon for this terminal.
      *
@@ -19,8 +21,7 @@ public interface ICraftingIssuerHost extends ITerminalHost {
     ItemStack getIcon();
 
     /**
-     * Launches the terminal's GUI.
-     * Used to return to the gui after crafting is confirmed or canceled.
+     * Launches the terminal's GUI. Used to return to the gui after crafting is confirmed or canceled.
      */
     void launchGUI(EntityPlayer player);
 }

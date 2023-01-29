@@ -1,6 +1,7 @@
 package thaumicenergistics.client.textures;
 
 import net.minecraft.util.ResourceLocation;
+
 import thaumicenergistics.common.ThaumicEnergistics;
 
 /**
@@ -10,13 +11,15 @@ import thaumicenergistics.common.ThaumicEnergistics;
  *
  */
 public enum ThEStateIconsEnum implements IStateIconTexture {
+
     SWAP(0, 0);
 
     /**
      * Location of the AE states texture
      */
-    public static final ResourceLocation THE_STATES_TEXTURE =
-            new ResourceLocation(ThaumicEnergistics.MOD_ID, "textures/gui/states.png");
+    public static final ResourceLocation THE_STATES_TEXTURE = new ResourceLocation(
+            ThaumicEnergistics.MOD_ID,
+            "textures/gui/states.png");
 
     /**
      * Width and height of standard icons.

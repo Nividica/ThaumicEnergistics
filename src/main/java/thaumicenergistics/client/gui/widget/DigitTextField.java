@@ -1,10 +1,12 @@
 package thaumicenergistics.client.gui.widget;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
+
 import org.lwjgl.input.Keyboard;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Text field that only allows numeric input.
@@ -24,8 +26,8 @@ public class DigitTextField extends GuiTextField {
      * @param length
      * @param height
      */
-    public DigitTextField(
-            final FontRenderer fontRenderer, final int x, final int y, final int length, final int height) {
+    public DigitTextField(final FontRenderer fontRenderer, final int x, final int y, final int length,
+            final int height) {
         super(fontRenderer, x, y, length, height);
     }
 

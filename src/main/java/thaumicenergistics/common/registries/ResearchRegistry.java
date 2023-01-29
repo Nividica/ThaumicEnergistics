@@ -1,6 +1,7 @@
 package thaumicenergistics.common.registries;
 
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.api.research.ResearchPage;
@@ -14,8 +15,10 @@ import thaumicenergistics.common.integration.tc.PseudoResearchItem;
  *
  */
 public class ResearchRegistry {
+
     // Fake research, serves as placeholder for existing research
     public static enum PseudoResearchTypes {
+
         DISTILESSENTIA("DISTILESSENTIA", "ALCHEMY", -2, 0),
         TUBEFILTER("TUBEFILTER", "ALCHEMY", -3, 0),
         MIRROR("MIRROR", "ARTIFICE", -4, 0),
@@ -28,6 +31,7 @@ public class ResearchRegistry {
         SCEPTRE("SCEPTRE", "THAUMATURGY", 5, 0),
         COREUSE("COREUSE", "GOLEMANCY", 3, -6),
         COREGATHER("COREGATHER", "GOLEMANCY", 1, -6);
+
         private String realResearchKey, realResearchCategory;
         private int column, row;
         private PseudoResearchItem researchItem;
@@ -61,6 +65,7 @@ public class ResearchRegistry {
 
     // Research types
     public static enum ResearchTypes {
+
         BASIC("RESEARCH", 0, 0),
         CORES("CORES", 0, -2),
         STORAGE("STORAGE", 0, 2),
@@ -111,10 +116,16 @@ public class ResearchRegistry {
          * @param icon
          * @param pages
          */
-        public void createResearchItem(
-                final AspectList aspectList, final int complexity, final ItemStack icon, final ResearchPage[] pages) {
+        public void createResearchItem(final AspectList aspectList, final int complexity, final ItemStack icon,
+                final ResearchPage[] pages) {
             this.researchItem = new ResearchItem(
-                    this.getKey(), TERESEARCH_TAB, aspectList, this.column, this.row, complexity, icon);
+                    this.getKey(),
+                    TERESEARCH_TAB,
+                    aspectList,
+                    this.column,
+                    this.row,
+                    complexity,
+                    icon);
             this.researchItem.setPages(pages);
         }
 

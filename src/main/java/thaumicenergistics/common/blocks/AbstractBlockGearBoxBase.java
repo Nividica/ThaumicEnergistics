@@ -1,7 +1,5 @@
 package thaumicenergistics.common.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -12,9 +10,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.common.ThaumicEnergistics;
 import thaumicenergistics.common.tiles.TileGearBox;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Base block of {@link BlockGearBox} and {@link BlockGolemGearBox}
@@ -23,6 +24,7 @@ import thaumicenergistics.common.tiles.TileGearBox;
  *
  */
 public abstract class AbstractBlockGearBoxBase extends AbstractBlockAEWrenchable {
+
     /**
      * Determines if thaumcraft golems are allowed to interact with the gearbox.
      */
@@ -52,8 +54,8 @@ public abstract class AbstractBlockGearBoxBase extends AbstractBlockAEWrenchable
      * Crank the gearbox.
      */
     @Override
-    protected boolean onBlockActivated(
-            final World world, final int x, final int y, final int z, final EntityPlayer player) {
+    protected boolean onBlockActivated(final World world, final int x, final int y, final int z,
+            final EntityPlayer player) {
 
         // Get the tile
         TileGearBox gearBox = (TileGearBox) world.getTileEntity(x, y, z);
@@ -115,8 +117,8 @@ public abstract class AbstractBlockGearBoxBase extends AbstractBlockAEWrenchable
      * Dependent on config setting.
      */
     @Override
-    public final boolean isSideSolid(
-            final IBlockAccess world, final int x, final int y, final int z, final ForgeDirection side) {
+    public final boolean isSideSolid(final IBlockAccess world, final int x, final int y, final int z,
+            final ForgeDirection side) {
         return ThEApi.instance().config().disableGearboxModel();
     }
 
@@ -155,12 +157,11 @@ public abstract class AbstractBlockGearBoxBase extends AbstractBlockAEWrenchable
     }
 
     /**
-     * Prevents MC from using the default block renderer.
-     * Dependent on config setting.
+     * Prevents MC from using the default block renderer. Dependent on config setting.
      */
     @Override
-    public boolean shouldSideBeRendered(
-            final IBlockAccess iblockaccess, final int i, final int j, final int k, final int l) {
+    public boolean shouldSideBeRendered(final IBlockAccess iblockaccess, final int i, final int j, final int k,
+            final int l) {
         return ThEApi.instance().config().disableGearboxModel();
     }
 }

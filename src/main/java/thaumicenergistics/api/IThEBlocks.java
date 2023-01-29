@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
  *
  */
 public abstract class IThEBlocks {
+
     /**
      * Arcane Assembler.
      */

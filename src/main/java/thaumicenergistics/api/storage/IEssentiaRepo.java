@@ -2,8 +2,10 @@ package thaumicenergistics.api.storage;
 
 import java.util.Collection;
 import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import thaumcraft.api.aspects.Aspect;
 
 /**
@@ -36,8 +38,7 @@ public interface IEssentiaRepo {
     boolean containsAspect(@Nonnull Aspect aspect);
 
     /**
-     * Sets the repo to match the specified collection.
-     * Any existing data is removed.
+     * Sets the repo to match the specified collection. Any existing data is removed.
      *
      * @param stacks
      */
@@ -73,9 +74,8 @@ public interface IEssentiaRepo {
      *
      * @param aspect
      * @param change
-     * @param isCraftable
-     * If this value is null and there is a stored value, its crafting status will remain the same.
-     * Otherwise it is set to false.
+     * @param isCraftable If this value is null and there is a stored value, its crafting status will remain the same.
+     *                    Otherwise it is set to false.
      * @return The previous stack, if there was one.
      */
     @Nullable

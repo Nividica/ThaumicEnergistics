@@ -1,15 +1,16 @@
 package thaumicenergistics.common.network.packet.client;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
+
 import thaumicenergistics.client.gui.GuiKnowledgeInscriber;
 import thaumicenergistics.common.container.ContainerKnowledgeInscriber.CoreSaveState;
 import thaumicenergistics.common.network.NetworkHandler;
 import thaumicenergistics.common.tiles.TileKnowledgeInscriber;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 
 /**
  * {@link TileKnowledgeInscriber} client-bound packet.
@@ -27,8 +28,8 @@ public class Packet_C_KnowledgeInscriber extends ThEClientPacket {
 
     private boolean justSaved;
 
-    public static void sendSaveState(
-            final EntityPlayer player, final CoreSaveState saveState, final boolean justSaved) {
+    public static void sendSaveState(final EntityPlayer player, final CoreSaveState saveState,
+            final boolean justSaved) {
         Packet_C_KnowledgeInscriber packet = new Packet_C_KnowledgeInscriber();
 
         // Set the player

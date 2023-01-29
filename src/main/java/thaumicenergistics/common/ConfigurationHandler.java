@@ -1,7 +1,9 @@
 package thaumicenergistics.common;
 
 import java.io.File;
+
 import net.minecraftforge.common.config.Configuration;
+
 import thaumicenergistics.api.IThEConfig;
 
 /**
@@ -11,13 +13,13 @@ import thaumicenergistics.api.IThEConfig;
  *
  */
 class ConfigurationHandler implements IThEConfig {
+
     private static ConfigurationHandler INSTANCE;
 
     /**
      * Names of the categories.
      */
-    private static final String CATEGORY_CRAFTING = "crafting",
-            CATEGORY_CLIENT = "client",
+    private static final String CATEGORY_CRAFTING = "crafting", CATEGORY_CLIENT = "client",
             CATEGORY_INTEGRATION = "integration";
 
     /**
@@ -25,21 +27,12 @@ class ConfigurationHandler implements IThEConfig {
      */
     private static final int DFT_CONVERSION_EXPONENT = 7;
 
-    private static final boolean DFT_CRAFT_ARCANE_ASSEMBLER = true,
-            DFT_CRAFT_ARCANE_CRAFTING_TERM = true,
-            DFT_CRAFT_DISTILLATION_PATTERN_ENCODER = true,
-            DFT_CRAFT_ESSENTIA_CELLS = true,
-            DFT_CRAFT_ESSENTIA_PROVIDER = true,
-            DFT_CRAFT_ESSENTIA_VIBRATION_CHAMBER = true,
-            DFT_CRAFT_GOLEM_BACKPACK = true,
-            DFT_CRAFT_INFUSION_PROVIDER = true,
-            DFT_CRAFT_IO_BUSES = true,
-            DFT_CRAFT_VIS_RELAY_INTERFACE = true,
-            DFT_CRAFT_WIRELESS_ESSENTIA_TERM = true,
-            DFT_DISABLE_GEARBOX = false,
-            DFT_ENABLE_QUARTZ_DUPE = true,
-            DFT_ENABLE_WRENCH_FOCUS = true,
-            DFT_EXTRACELLS_BLIST = true,
+    private static final boolean DFT_CRAFT_ARCANE_ASSEMBLER = true, DFT_CRAFT_ARCANE_CRAFTING_TERM = true,
+            DFT_CRAFT_DISTILLATION_PATTERN_ENCODER = true, DFT_CRAFT_ESSENTIA_CELLS = true,
+            DFT_CRAFT_ESSENTIA_PROVIDER = true, DFT_CRAFT_ESSENTIA_VIBRATION_CHAMBER = true,
+            DFT_CRAFT_GOLEM_BACKPACK = true, DFT_CRAFT_INFUSION_PROVIDER = true, DFT_CRAFT_IO_BUSES = true,
+            DFT_CRAFT_VIS_RELAY_INTERFACE = true, DFT_CRAFT_WIRELESS_ESSENTIA_TERM = true, DFT_DISABLE_GEARBOX = false,
+            DFT_ENABLE_QUARTZ_DUPE = true, DFT_ENABLE_WRENCH_FOCUS = true, DFT_EXTRACELLS_BLIST = true,
             DFT_FORCE_TC_FACADES = true;
 
     /**
@@ -56,19 +49,13 @@ class ConfigurationHandler implements IThEConfig {
     private boolean craft_Arcane_Assembler = DFT_CRAFT_ARCANE_ASSEMBLER,
             craft_Arcane_Crafting_Term = DFT_CRAFT_ARCANE_CRAFTING_TERM,
             craft_Distillation_Pattern_Encoder = DFT_CRAFT_DISTILLATION_PATTERN_ENCODER,
-            craft_Essentia_Cells = DFT_CRAFT_ESSENTIA_CELLS,
-            craft_Essentia_Provider = DFT_CRAFT_ESSENTIA_PROVIDER,
+            craft_Essentia_Cells = DFT_CRAFT_ESSENTIA_CELLS, craft_Essentia_Provider = DFT_CRAFT_ESSENTIA_PROVIDER,
             craft_Essentia_Vibration_Chamber = DFT_CRAFT_ESSENTIA_VIBRATION_CHAMBER,
-            craft_GolemBackpack = DFT_CRAFT_GOLEM_BACKPACK,
-            craft_Infusion_Provider = DFT_CRAFT_INFUSION_PROVIDER,
-            craft_IO_Buses = DFT_CRAFT_IO_BUSES,
-            craft_Vis_Relay_Interface = DFT_CRAFT_VIS_RELAY_INTERFACE,
-            craft_Wireless_Essentia_Term = DFT_CRAFT_WIRELESS_ESSENTIA_TERM,
-            disable_Gearbox = DFT_DISABLE_GEARBOX,
-            enable_Quartz_Dupe = DFT_ENABLE_QUARTZ_DUPE,
-            enable_Wrench_Focus = DFT_ENABLE_WRENCH_FOCUS,
-            extracells_Blist = DFT_EXTRACELLS_BLIST,
-            force_TC_Facades = DFT_FORCE_TC_FACADES;
+            craft_GolemBackpack = DFT_CRAFT_GOLEM_BACKPACK, craft_Infusion_Provider = DFT_CRAFT_INFUSION_PROVIDER,
+            craft_IO_Buses = DFT_CRAFT_IO_BUSES, craft_Vis_Relay_Interface = DFT_CRAFT_VIS_RELAY_INTERFACE,
+            craft_Wireless_Essentia_Term = DFT_CRAFT_WIRELESS_ESSENTIA_TERM, disable_Gearbox = DFT_DISABLE_GEARBOX,
+            enable_Quartz_Dupe = DFT_ENABLE_QUARTZ_DUPE, enable_Wrench_Focus = DFT_ENABLE_WRENCH_FOCUS,
+            extracells_Blist = DFT_EXTRACELLS_BLIST, force_TC_Facades = DFT_FORCE_TC_FACADES;
 
     private ConfigurationHandler(final Configuration config) {
         this.configSettings = config;

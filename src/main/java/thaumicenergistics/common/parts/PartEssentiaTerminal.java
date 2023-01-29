@@ -1,20 +1,8 @@
 package thaumicenergistics.common.parts;
 
-import appeng.api.config.Settings;
-import appeng.api.config.ViewItems;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.PartItemStack;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.util.AEColor;
-import appeng.api.util.IConfigManager;
-import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.ICraftingIssuerHost;
 import thaumicenergistics.client.gui.GuiEssentiaCellTerminal;
@@ -38,6 +27,19 @@ import thaumicenergistics.common.network.packet.server.Packet_S_ChangeGui;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.storage.AspectStackComparator.AspectStackComparatorMode;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.config.Settings;
+import appeng.api.config.ViewItems;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AEColor;
+import appeng.api.util.IConfigManager;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Allows a player to extract/deposit essentia from the network.
@@ -55,8 +57,7 @@ public class PartEssentiaTerminal extends ThERotateablePart implements ICrafting
     /**
      * NBT Keys
      */
-    private static final String NBT_KEY_SORT_MODE = "sortMode",
-            NBT_KEY_INVENTORY = "slots",
+    private static final String NBT_KEY_SORT_MODE = "sortMode", NBT_KEY_INVENTORY = "slots",
             NBT_KEY_VIEW_MODE = "ViewMode";
 
     /**
@@ -85,30 +86,31 @@ public class PartEssentiaTerminal extends ThERotateablePart implements ICrafting
     private ViewItems viewMode = DEFAULT_VIEW_MODE;
 
     /**
-     * The selected aspect in the GUI.
-     * Only stored while the part is loaded.
+     * The selected aspect in the GUI. Only stored while the part is loaded.
      */
     public Aspect selectedAspect = null;
 
-    private TheInternalInventory inventory =
-            new TheInternalInventory(ThaumicEnergistics.MOD_ID + ".part.aspect.terminal", 2, 64) {
-                @Override
-                public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
-                    // Get the type
-                    AspectItemType iType = EssentiaItemContainerHelper.INSTANCE.getItemType(itemStack);
+    private TheInternalInventory inventory = new TheInternalInventory(
+            ThaumicEnergistics.MOD_ID + ".part.aspect.terminal",
+            2,
+            64) {
 
-                    // True if jar or jar label
-                    return (iType == AspectItemType.EssentiaContainer) || (iType == AspectItemType.JarLabel);
-                }
-            };
+        @Override
+        public boolean isItemValidForSlot(final int slotId, final ItemStack itemStack) {
+            // Get the type
+            AspectItemType iType = EssentiaItemContainerHelper.INSTANCE.getItemType(itemStack);
+
+            // True if jar or jar label
+            return (iType == AspectItemType.EssentiaContainer) || (iType == AspectItemType.JarLabel);
+        }
+    };
 
     public PartEssentiaTerminal() {
         super(AEPartsEnum.EssentiaTerminal);
     }
 
     /**
-     * Informs all open containers to update their respective clients
-     * that the mode has changed.
+     * Informs all open containers to update their respective clients that the mode has changed.
      */
     private void notifyListenersOfModeChanged() {
         for (ContainerEssentiaTerminal listener : this.listeners) {
@@ -183,8 +185,7 @@ public class PartEssentiaTerminal extends ThERotateablePart implements ICrafting
     }
 
     /**
-     * Determines how much power the part takes for just
-     * existing.
+     * Determines how much power the part takes for just existing.
      */
     @Override
     public double getIdlePowerUsage() {
@@ -241,8 +242,8 @@ public class PartEssentiaTerminal extends ThERotateablePart implements ICrafting
             ThEGuiHandler.launchGui(this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord);
         } else {
             // Ask the server to change the GUI
-            Packet_S_ChangeGui.sendGuiChangeToPart(
-                    this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord);
+            Packet_S_ChangeGui
+                    .sendGuiChangeToPart(this, player, host.getWorldObj(), host.xCoord, host.yCoord, host.zCoord);
         }
     }
 
@@ -319,8 +320,7 @@ public class PartEssentiaTerminal extends ThERotateablePart implements ICrafting
         helper.setBounds(4.0F, 4.0F, 13.0F, 12.0F, 12.0F, 14.0F);
         helper.renderInventoryBox(renderer);
 
-        helper.setTexture(
-                side, side, side, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], side, side);
+        helper.setTexture(side, side, side, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], side, side);
         helper.setBounds(2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F);
         helper.renderInventoryBox(renderer);
 
@@ -329,21 +329,29 @@ public class PartEssentiaTerminal extends ThERotateablePart implements ICrafting
         helper.setInvColor(0xFFFFFF);
 
         helper.renderInventoryFace(
-                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], ForgeDirection.SOUTH, renderer);
+                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4],
+                ForgeDirection.SOUTH,
+                renderer);
 
         helper.setBounds(3.0F, 3.0F, 15.0F, 13.0F, 13.0F, 16.0F);
 
         helper.setInvColor(AEColor.Transparent.blackVariant);
         helper.renderInventoryFace(
-                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0], ForgeDirection.SOUTH, renderer);
+                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0],
+                ForgeDirection.SOUTH,
+                renderer);
 
         helper.setInvColor(AEColor.Transparent.mediumVariant);
         helper.renderInventoryFace(
-                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[1], ForgeDirection.SOUTH, renderer);
+                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[1],
+                ForgeDirection.SOUTH,
+                renderer);
 
         helper.setInvColor(AEColor.Transparent.whiteVariant);
         helper.renderInventoryFace(
-                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer);
+                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[2],
+                ForgeDirection.SOUTH,
+                renderer);
 
         helper.setBounds(5.0F, 5.0F, 12.0F, 11.0F, 11.0F, 13.0F);
         this.renderInventoryBusLights(helper, renderer);
@@ -351,8 +359,8 @@ public class PartEssentiaTerminal extends ThERotateablePart implements ICrafting
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void renderStatic(
-            final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer) {
+    public void renderStatic(final int x, final int y, final int z, final IPartRenderHelper helper,
+            final RenderBlocks renderer) {
         Tessellator ts = Tessellator.instance;
 
         IIcon side = BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[3];
@@ -363,8 +371,7 @@ public class PartEssentiaTerminal extends ThERotateablePart implements ICrafting
         helper.renderBlock(x, y, z, renderer);
 
         // Mid-block
-        helper.setTexture(
-                side, side, side, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], side, side);
+        helper.setTexture(side, side, side, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], side, side);
         helper.setBounds(2.0F, 2.0F, 14.0F, 14.0F, 14.0F, 16.0F);
         helper.renderBlock(x, y, z, renderer);
 
@@ -379,23 +386,43 @@ public class PartEssentiaTerminal extends ThERotateablePart implements ICrafting
         // Base face
         ts.setColorOpaque_I(0xFFFFFF);
         helper.renderFace(
-                x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4], ForgeDirection.SOUTH, renderer);
+                x,
+                y,
+                z,
+                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[4],
+                ForgeDirection.SOUTH,
+                renderer);
 
         // Dark colored face
         helper.setBounds(3.0F, 3.0F, 15.0F, 13.0F, 13.0F, 16.0F);
         ts.setColorOpaque_I(this.getHost().getColor().blackVariant);
         helper.renderFace(
-                x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0], ForgeDirection.SOUTH, renderer);
+                x,
+                y,
+                z,
+                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[0],
+                ForgeDirection.SOUTH,
+                renderer);
 
         // Standard colored face
         ts.setColorOpaque_I(this.getHost().getColor().mediumVariant);
         helper.renderFace(
-                x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[1], ForgeDirection.SOUTH, renderer);
+                x,
+                y,
+                z,
+                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[1],
+                ForgeDirection.SOUTH,
+                renderer);
 
         // Light colored face
         ts.setColorOpaque_I(this.getHost().getColor().whiteVariant);
         helper.renderFace(
-                x, y, z, BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[2], ForgeDirection.SOUTH, renderer);
+                x,
+                y,
+                z,
+                BlockTextureManager.ESSENTIA_TERMINAL.getTextures()[2],
+                ForgeDirection.SOUTH,
+                renderer);
 
         // Reset rotation
         this.rotateRenderer(renderer, true);

@@ -3,6 +3,7 @@ package thaumicenergistics.common.features;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -65,11 +66,11 @@ public class FeatureGearbox extends ThEThaumcraftResearchFeature {
         ironGearAspects.add(Aspect.FIRE, 1);
 
         // Iron Gear recipe
-        Object[] recipeIronGear = new Object[] {" I ", " W ", "I I", 'I', cdi.IronIngot, 'W', WoodGear};
+        Object[] recipeIronGear = new Object[] { " I ", " W ", "I I", 'I', cdi.IronIngot, 'W', WoodGear };
 
         // Register Iron Gear
-        RecipeRegistry.MATERIAL_IRON_GEAR =
-                ThaumcraftApi.addArcaneCraftingRecipe(this.researchKey, ThEIronGear, ironGearAspects, recipeIronGear);
+        RecipeRegistry.MATERIAL_IRON_GEAR = ThaumcraftApi
+                .addArcaneCraftingRecipe(this.researchKey, ThEIronGear, ironGearAspects, recipeIronGear);
 
         // Set Iron Gear Box aspects
         AspectList igbAspects = new AspectList();
@@ -77,10 +78,10 @@ public class FeatureGearbox extends ThEThaumcraftResearchFeature {
         igbAspects.add(Aspect.ORDER, 2);
 
         // Iron Gear Box recipe
-        Object[] recipeIronGearBox = new Object[] {"SGS", "GGG", "SGS", 'S', cdi.Cobblestone, 'G', IronGear};
+        Object[] recipeIronGearBox = new Object[] { "SGS", "GGG", "SGS", 'S', cdi.Cobblestone, 'G', IronGear };
 
-        RecipeRegistry.BLOCK_IRONGEARBOX =
-                ThaumcraftApi.addArcaneCraftingRecipe(this.researchKey, IronGearBox, igbAspects, recipeIronGearBox);
+        RecipeRegistry.BLOCK_IRONGEARBOX = ThaumcraftApi
+                .addArcaneCraftingRecipe(this.researchKey, IronGearBox, igbAspects, recipeIronGearBox);
 
         // Set Thaumium Gear Box aspects
         AspectList tgbAspects = new AspectList();
@@ -89,7 +90,10 @@ public class FeatureGearbox extends ThEThaumcraftResearchFeature {
 
         // Register Thaumium Gear Box
         RecipeRegistry.BLOCK_THAUMIUMGEARBOX = ThaumcraftApi.addCrucibleRecipe(
-                ResearchRegistry.ResearchTypes.THAUMIUM_GEARBOX.getKey(), ThaumiumGearBox, IronGearBox, tgbAspects);
+                ResearchRegistry.ResearchTypes.THAUMIUM_GEARBOX.getKey(),
+                ThaumiumGearBox,
+                IronGearBox,
+                tgbAspects);
     }
 
     @Override
@@ -109,12 +113,10 @@ public class FeatureGearbox extends ThEThaumcraftResearchFeature {
         ItemStack igbIcon = ThEApi.instance().items().IronGear.getStack();
 
         // Set the pages for the Iron Gear Box
-        ResearchPage[] igbPages = new ResearchPage[] {
-            new ResearchPage(ResearchTypes.IRON_GEARBOX.getPageName(1)),
-            new ResearchPage(ResearchTypes.IRON_GEARBOX.getPageName(2)),
-            new ResearchPage(RecipeRegistry.MATERIAL_IRON_GEAR),
-            new ResearchPage(RecipeRegistry.BLOCK_IRONGEARBOX)
-        };
+        ResearchPage[] igbPages = new ResearchPage[] { new ResearchPage(ResearchTypes.IRON_GEARBOX.getPageName(1)),
+                new ResearchPage(ResearchTypes.IRON_GEARBOX.getPageName(2)),
+                new ResearchPage(RecipeRegistry.MATERIAL_IRON_GEAR),
+                new ResearchPage(RecipeRegistry.BLOCK_IRONGEARBOX) };
 
         // Create the research for the Iron Gear Box
         ResearchTypes.IRON_GEARBOX.createResearchItem(igbAspects, ResearchRegistry.COMPLEXITY_SMALL, igbIcon, igbPages);
@@ -132,18 +134,16 @@ public class FeatureGearbox extends ThEThaumcraftResearchFeature {
         ItemStack tgbIcon = ThEApi.instance().blocks().ThaumiumGearBox.getStack();
 
         // Set the pages for the Thaumium Gear Box
-        ResearchPage[] tgbPages = new ResearchPage[] {
-            new ResearchPage(ResearchTypes.THAUMIUM_GEARBOX.getPageName(1)),
-            new ResearchPage(RecipeRegistry.BLOCK_THAUMIUMGEARBOX)
-        };
+        ResearchPage[] tgbPages = new ResearchPage[] { new ResearchPage(ResearchTypes.THAUMIUM_GEARBOX.getPageName(1)),
+                new ResearchPage(RecipeRegistry.BLOCK_THAUMIUMGEARBOX) };
 
         // Create the item for the Thaumium Gear Box
-        ResearchTypes.THAUMIUM_GEARBOX.createResearchItem(
-                tgbAspects, ResearchRegistry.COMPLEXITY_SMALL, tgbIcon, tgbPages);
+        ResearchTypes.THAUMIUM_GEARBOX
+                .createResearchItem(tgbAspects, ResearchRegistry.COMPLEXITY_SMALL, tgbIcon, tgbPages);
 
         // Set parents for the Thaumium Gear Box
-        ResearchTypes.THAUMIUM_GEARBOX.researchItem.setParents(
-                this.getFirstValidParentKey(true), PseudoResearchTypes.COREUSE.getKey());
+        ResearchTypes.THAUMIUM_GEARBOX.researchItem
+                .setParents(this.getFirstValidParentKey(true), PseudoResearchTypes.COREUSE.getKey());
         ResearchTypes.THAUMIUM_GEARBOX.researchItem.setParentsHidden("COREUSE");
 
         // Set as secondary and register

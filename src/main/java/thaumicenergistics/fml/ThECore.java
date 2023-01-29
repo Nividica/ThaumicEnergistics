@@ -1,12 +1,14 @@
 package thaumicenergistics.fml;
 
+import java.util.Map;
+
 import com.google.common.eventbus.EventBus;
+
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
-import java.util.Map;
 
 /**
  * Thaumic Energistics Core Mod.
@@ -16,6 +18,7 @@ import java.util.Map;
  */
 @MCVersion("1.7.10")
 public class ThECore extends DummyModContainer implements IFMLLoadingPlugin {
+
     /**
      * Set to true if any classes required for golem hooks can not be transformed.
      */
@@ -43,7 +46,7 @@ public class ThECore extends DummyModContainer implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {"thaumicenergistics.fml.ASMTransformer"};
+        return new String[] { "thaumicenergistics.fml.ASMTransformer" };
     }
 
     @Override

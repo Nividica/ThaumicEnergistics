@@ -1,8 +1,7 @@
 package thaumicenergistics.common.features;
 
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import net.minecraft.item.ItemStack;
+
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -14,6 +13,8 @@ import thaumicenergistics.common.registries.RecipeRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry;
 import thaumicenergistics.common.registries.ResearchRegistry.PseudoResearchTypes;
 import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 
 /**
  * {@link ItemFocusAEWrench} featire.
@@ -22,6 +23,7 @@ import thaumicenergistics.common.registries.ResearchRegistry.ResearchTypes;
  *
  */
 public class FeatureWrenchFocus extends ThEThaumcraftResearchFeature {
+
     public FeatureWrenchFocus() {
         super(ResearchTypes.FOCUS_WRENCH.getKey());
     }
@@ -43,7 +45,7 @@ public class FeatureWrenchFocus extends ThEThaumcraftResearchFeature {
 
     @Override
     protected Object[] getItemReqs(final CommonDependantItems cdi) {
-        return new Object[] {cdi.CertusWrench};
+        return new Object[] { cdi.CertusWrench };
     }
 
     @Override
@@ -60,20 +62,12 @@ public class FeatureWrenchFocus extends ThEThaumcraftResearchFeature {
         AspectList wrenchAspects = new AspectList();
         wrenchAspects.add(Aspect.AIR, 10);
         wrenchAspects.add(Aspect.FIRE, 10);
-        RecipeRegistry.ITEM_WRENCH_FOCUS =
-                ThaumcraftApi.addArcaneCraftingRecipe(this.researchKey, WrenchFocus, wrenchAspects, new Object[] {
-                    "ANF",
-                    "NWN",
-                    "FNA",
-                    'A',
-                    cdi.AirShard,
-                    'F',
-                    cdi.FireShard,
-                    'N',
-                    cdi.NetherQuartz,
-                    'W',
-                    cdi.CertusWrench
-                });
+        RecipeRegistry.ITEM_WRENCH_FOCUS = ThaumcraftApi.addArcaneCraftingRecipe(
+                this.researchKey,
+                WrenchFocus,
+                wrenchAspects,
+                new Object[] { "ANF", "NWN", "FNA", 'A', cdi.AirShard, 'F', cdi.FireShard, 'N', cdi.NetherQuartz, 'W',
+                        cdi.CertusWrench });
     }
 
     @Override
@@ -93,18 +87,13 @@ public class FeatureWrenchFocus extends ThEThaumcraftResearchFeature {
         ItemStack focusIcon = ThEApi.instance().items().WandFocusAEWrench.getStack();
 
         // Set the pages
-        ResearchPage[] focusPages = new ResearchPage[] {
-            new ResearchPage(ResearchTypes.FOCUS_WRENCH.getPageName(1)),
-            new ResearchPage(RecipeRegistry.ITEM_WRENCH_FOCUS)
-        };
+        ResearchPage[] focusPages = new ResearchPage[] { new ResearchPage(ResearchTypes.FOCUS_WRENCH.getPageName(1)),
+                new ResearchPage(RecipeRegistry.ITEM_WRENCH_FOCUS) };
 
         // Create the research
-        ResearchTypes.FOCUS_WRENCH.createResearchItem(
-                focusAspects, ResearchRegistry.COMPLEXITY_SMALL, focusIcon, focusPages);
         ResearchTypes.FOCUS_WRENCH
-                .researchItem
-                .setParents(PseudoResearchTypes.FOCUSFIRE.getKey())
-                .setSecondary();
+                .createResearchItem(focusAspects, ResearchRegistry.COMPLEXITY_SMALL, focusIcon, focusPages);
+        ResearchTypes.FOCUS_WRENCH.researchItem.setParents(PseudoResearchTypes.FOCUSFIRE.getKey()).setSecondary();
         ResearchTypes.FOCUS_WRENCH.researchItem.registerResearchItem();
     }
 }

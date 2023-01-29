@@ -1,9 +1,8 @@
 package thaumicenergistics.common.utils;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,8 +11,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
+
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Houses commonly used methods.
@@ -22,6 +24,7 @@ import thaumicenergistics.common.network.packet.client.Packet_C_Sync;
  *
  */
 public final class ThEUtils {
+
     /**
      * The squared reach distance.
      */
@@ -87,8 +90,8 @@ public final class ThEUtils {
      * @param tile
      * @return
      */
-    public static final boolean canPlayerInteractWith(
-            @Nonnull final EntityPlayer player, @Nonnull final TileEntity tile) {
+    public static final boolean canPlayerInteractWith(@Nonnull final EntityPlayer player,
+            @Nonnull final TileEntity tile) {
         TileEntity tileAtCoords = tile.getWorldObj().getTileEntity(tile.xCoord, tile.yCoord, tile.zCoord);
 
         // Null check
@@ -102,8 +105,7 @@ public final class ThEUtils {
     }
 
     /**
-     * Returns true if the item stack is a wand, scepter, or staff if they are
-     * allowed.
+     * Returns true if the item stack is a wand, scepter, or staff if they are allowed.
      *
      * @param stack
      * @param allowStaves
@@ -143,14 +145,11 @@ public final class ThEUtils {
     }
 
     /**
-     * Ping pongs a value back and forth from min -> max -> min.
-     * The base speed of this effect is 1 second per transition, 2 seconds
-     * total.
+     * Ping pongs a value back and forth from min -> max -> min. The base speed of this effect is 1 second per
+     * transition, 2 seconds total.
      *
-     * @param speedReduction
-     * The higher this value, the slower the effect. The smaller this value, the
-     * faster the effect.
-     * PingPong time (1) = 2 Seconds; (0.5) = 1 Second; (2) = 4 Seconds;
+     * @param speedReduction The higher this value, the slower the effect. The smaller this value, the faster the
+     *                       effect. PingPong time (1) = 2 Seconds; (0.5) = 1 Second; (2) = 4 Seconds;
      * @param minValue
      * @param maxValue
      * @return
@@ -185,8 +184,7 @@ public final class ThEUtils {
     /**
      * Plays a sound only the specified player can hear.
      *
-     * @param player
-     * Can be null on client side.
+     * @param player        Can be null on client side.
      * @param soundLocation
      */
     public static final void playClientSound(@Nullable final EntityPlayer player, final String soundLocation) {

@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
  *
  */
 public abstract class ThEThaumcraftResearchFeature extends ThEDependencyFeatureBase {
+
     /**
      * The research key for this research.
      */
@@ -55,9 +56,8 @@ public abstract class ThEThaumcraftResearchFeature extends ThEDependencyFeatureB
     protected abstract void registerResearch();
 
     /**
-     * Gets the research key of the first valid parent that can be found.
-     * If the feature in question is not enabled, it will pass the call to its
-     * parent.
+     * Gets the research key of the first valid parent that can be found. If the feature in question is not enabled, it
+     * will pass the call to its parent.
      *
      * @param includeSelf
      * @return

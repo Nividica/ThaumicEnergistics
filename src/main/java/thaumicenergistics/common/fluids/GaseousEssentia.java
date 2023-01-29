@@ -2,10 +2,12 @@ package thaumicenergistics.common.fluids;
 
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.IThEEssentiaGas;
 import thaumicenergistics.client.textures.BlockTextureManager;
@@ -19,6 +21,7 @@ import thaumicenergistics.common.utils.ThELog;
  *
  */
 public class GaseousEssentia extends Fluid implements IThEEssentiaGas {
+
     /**
      * List of all created gasses.
      */
@@ -32,10 +35,8 @@ public class GaseousEssentia extends Fluid implements IThEEssentiaGas {
     /**
      * Creates the gas.
      *
-     * @param gasName
-     * Name of the gas displayed to the user
-     * @param aspect
-     * The aspect the gas is based off of.
+     * @param gasName Name of the gas displayed to the user
+     * @param aspect  The aspect the gas is based off of.
      */
     private GaseousEssentia(final String gasName, final Aspect aspect) {
         // Pass to super

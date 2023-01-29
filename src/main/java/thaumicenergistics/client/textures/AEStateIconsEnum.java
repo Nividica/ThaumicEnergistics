@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
  *
  */
 public enum AEStateIconsEnum implements IStateIconTexture {
+
     // Redstone modes
     REDSTONE_LOW(0, 0),
     REDSTONE_HIGH(16, 0),
@@ -65,8 +66,9 @@ public enum AEStateIconsEnum implements IStateIconTexture {
     /**
      * Location of the AE states texture
      */
-    public static final ResourceLocation AE_STATES_TEXTURE =
-            new ResourceLocation("appliedenergistics2", "textures/guis/states.png");
+    public static final ResourceLocation AE_STATES_TEXTURE = new ResourceLocation(
+            "appliedenergistics2",
+            "textures/guis/states.png");
 
     /**
      * Width and height of standard icons.

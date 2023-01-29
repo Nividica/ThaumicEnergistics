@@ -1,17 +1,10 @@
 package thaumicenergistics.common.parts;
 
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.PartItemStack;
-import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.Random;
+
 import javax.annotation.Nullable;
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.api.grid.IEssentiaWatcher;
 import thaumicenergistics.api.grid.IEssentiaWatcherHost;
@@ -32,6 +26,15 @@ import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
 import thaumicenergistics.common.network.IAspectSlotPart;
 import thaumicenergistics.common.registries.EnumCache;
 import thaumicenergistics.common.utils.EffectiveSide;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Emits redstone signals based on networked essentia levels.
@@ -40,6 +43,7 @@ import thaumicenergistics.common.utils.EffectiveSide;
  *
  */
 public class PartEssentiaLevelEmitter extends ThEPartBase implements IAspectSlotPart, IEssentiaWatcherHost {
+
     /**
      * How much AE power is required to keep the part active.
      */
@@ -48,10 +52,8 @@ public class PartEssentiaLevelEmitter extends ThEPartBase implements IAspectSlot
     /**
      * NBT keys.
      */
-    private static final String NBT_KEY_ASPECT_FILTER = "aspect",
-            NBT_KEY_REDSTONE_MODE = "mode",
-            NBT_KEY_WANTED_AMOUNT = "wantedAmount",
-            NBT_KEY_IS_EMITTING = "emitting";
+    private static final String NBT_KEY_ASPECT_FILTER = "aspect", NBT_KEY_REDSTONE_MODE = "mode",
+            NBT_KEY_WANTED_AMOUNT = "wantedAmount", NBT_KEY_IS_EMITTING = "emitting";
 
     /**
      * Default redstone mode the part starts with.
@@ -61,19 +63,14 @@ public class PartEssentiaLevelEmitter extends ThEPartBase implements IAspectSlot
     /**
      * Dimensions and offsets
      */
-    private static final float Base_XY_Min = 7.0F,
-            Base_XY_Max = 9.0F,
-            Base_Z_Min = 11.0F,
-            Base_Z_Max = 13.0F,
+    private static final float Base_XY_Min = 7.0F, Base_XY_Max = 9.0F, Base_Z_Min = 11.0F, Base_Z_Max = 13.0F,
             // Head Z's
-            Head_Z_Min = PartEssentiaLevelEmitter.Base_Z_Max,
-            Head_Z_Max = PartEssentiaLevelEmitter.Head_Z_Min + 2.0F,
+            Head_Z_Min = PartEssentiaLevelEmitter.Base_Z_Max, Head_Z_Max = PartEssentiaLevelEmitter.Head_Z_Min + 2.0F,
             // Face Z's
             Face_Z_Min = PartEssentiaLevelEmitter.Head_Z_Min - 1.0F,
             FaceZMax = PartEssentiaLevelEmitter.Head_Z_Max + 1.0F,
             // Face offsets
-            FaceOffset_XH_YV = 0.001F,
-            FaceOffset_XV_YH = 1.0F,
+            FaceOffset_XH_YV = 0.001F, FaceOffset_XV_YH = 1.0F,
             // Horizontal faces XY
             Face_XH_Min = PartEssentiaLevelEmitter.Base_XY_Min - PartEssentiaLevelEmitter.FaceOffset_XH_YV,
             Face_YH_Min = PartEssentiaLevelEmitter.Base_XY_Min - PartEssentiaLevelEmitter.FaceOffset_XV_YH,
@@ -166,8 +163,7 @@ public class PartEssentiaLevelEmitter extends ThEPartBase implements IAspectSlot
     }
 
     /**
-     * Sets the current amount in the network, of the aspect
-     * we are watching/filtering.
+     * Sets the current amount in the network, of the aspect we are watching/filtering.
      *
      * @param amount
      */
@@ -228,7 +224,10 @@ public class PartEssentiaLevelEmitter extends ThEPartBase implements IAspectSlot
             // Update the neighbors
             Platform.notifyBlocksOfNeighbors(hte.getWorldObj(), hte.xCoord, hte.yCoord, hte.zCoord);
             Platform.notifyBlocksOfNeighbors(
-                    hte.getWorldObj(), hte.xCoord + side.offsetX, hte.yCoord + side.offsetX, hte.zCoord + side.offsetX);
+                    hte.getWorldObj(),
+                    hte.xCoord + side.offsetX,
+                    hte.yCoord + side.offsetX,
+                    hte.zCoord + side.offsetX);
         }
     }
 
@@ -335,8 +334,7 @@ public class PartEssentiaLevelEmitter extends ThEPartBase implements IAspectSlot
     }
 
     /**
-     * Called when a player has adjusted the amount wanted via
-     * gui buttons.
+     * Called when a player has adjusted the amount wanted via gui buttons.
      *
      * @param adjustmentAmount
      * @param player
@@ -417,7 +415,13 @@ public class PartEssentiaLevelEmitter extends ThEPartBase implements IAspectSlot
             double particleZ = (side.offsetZ * 0.45F) + ((r.nextFloat() - 0.5F) * 0.2D);
 
             world.spawnParticle(
-                    "reddust", 0.5D + x + particleX, 0.5D + y + particleY, 0.5D + z + particleZ, 0.0D, 0.0D, 0.0D);
+                    "reddust",
+                    0.5D + x + particleX,
+                    0.5D + y + particleY,
+                    0.5D + z + particleZ,
+                    0.0D,
+                    0.0D,
+                    0.0D);
         }
     }
 
@@ -436,8 +440,8 @@ public class PartEssentiaLevelEmitter extends ThEPartBase implements IAspectSlot
 
         // Read the redstone mode
         if (data.hasKey(PartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE)) {
-            this.redstoneMode =
-                    EnumCache.AE_REDSTONE_MODES[data.getInteger(PartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE)];
+            this.redstoneMode = EnumCache.AE_REDSTONE_MODES[data
+                    .getInteger(PartEssentiaLevelEmitter.NBT_KEY_REDSTONE_MODE)];
         }
 
         // Read the wanted amount
@@ -498,8 +502,8 @@ public class PartEssentiaLevelEmitter extends ThEPartBase implements IAspectSlot
      */
     @SideOnly(Side.CLIENT)
     @Override
-    public void renderStatic(
-            final int x, final int y, final int z, final IPartRenderHelper helper, final RenderBlocks renderer) {
+    public void renderStatic(final int x, final int y, final int z, final IPartRenderHelper helper,
+            final RenderBlocks renderer) {
         // Set the base texture
         helper.setTexture(BlockTextureManager.ESSENTIA_LEVEL_EMITTER.getTextures()[0]);
 

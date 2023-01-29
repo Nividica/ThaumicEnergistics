@@ -1,11 +1,14 @@
 package thaumicenergistics.common.container;
 
 import java.util.ArrayList;
+
 import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import thaumcraft.api.aspects.Aspect;
 import thaumicenergistics.common.container.slot.SlotRestrictive;
 import thaumicenergistics.common.integration.tc.EssentiaItemContainerHelper;
@@ -46,8 +49,8 @@ public class ContainerEssentiaCellWorkbench extends ContainerWithPlayerInventory
      */
     private final Slot cellSlot;
 
-    public ContainerEssentiaCellWorkbench(
-            final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public ContainerEssentiaCellWorkbench(final EntityPlayer player, final World world, final int x, final int y,
+            final int z) {
         // Call super
         super(player);
 
@@ -134,36 +137,36 @@ public class ContainerEssentiaCellWorkbench extends ContainerWithPlayerInventory
             // Was the slot clicked in the player or hotbar inventory?
             else if (this.slotClickedWasInPlayerInventory(slotNumber)
                     || this.slotClickedWasInHotbarInventory(slotNumber)) {
-                // Is the cell slot empty?
-                if (!this.cellSlot.getHasStack()) {
-                    // Is the item in the clicked slot a valid cell?
-                    if (this.cellSlot.isItemValid(slotStack)) {
-                        // Set the slot
-                        this.cellSlot.putStack(slotStack.copy());
+                        // Is the cell slot empty?
+                        if (!this.cellSlot.getHasStack()) {
+                            // Is the item in the clicked slot a valid cell?
+                            if (this.cellSlot.isItemValid(slotStack)) {
+                                // Set the slot
+                                this.cellSlot.putStack(slotStack.copy());
 
-                        // Clear the clicked slot
-                        slotStack.stackSize = 0;
+                                // Clear the clicked slot
+                                slotStack.stackSize = 0;
 
-                        // Set that we merged
-                        didMerge = true;
+                                // Set that we merged
+                                didMerge = true;
+                            }
+                        }
+
+                        // Did we merge?
+                        if (!didMerge) {
+                            // Is the stack an aspect container?
+                            Aspect slotAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem(slotStack);
+                            if (slotAspect != null) {
+                                // Attempt to add the aspect to the cell partition list
+                                didMerge = this.workbench.addAspectToPartition(slotAspect);
+                            }
+
+                            // Did we merge?
+                            if (!didMerge) {
+                                didMerge = this.swapSlotInventoryHotbar(slotNumber, slotStack);
+                            }
+                        }
                     }
-                }
-
-                // Did we merge?
-                if (!didMerge) {
-                    // Is the stack an aspect container?
-                    Aspect slotAspect = EssentiaItemContainerHelper.INSTANCE.getFilterAspectFromItem(slotStack);
-                    if (slotAspect != null) {
-                        // Attempt to add the aspect to the cell partition list
-                        didMerge = this.workbench.addAspectToPartition(slotAspect);
-                    }
-
-                    // Did we merge?
-                    if (!didMerge) {
-                        didMerge = this.swapSlotInventoryHotbar(slotNumber, slotStack);
-                    }
-                }
-            }
 
             if (didMerge) {
                 // Did the merger drain the stack?

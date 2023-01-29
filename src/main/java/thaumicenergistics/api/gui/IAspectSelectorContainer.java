@@ -1,6 +1,7 @@
 package thaumicenergistics.api.gui;
 
 import javax.annotation.Nullable;
+
 import thaumcraft.api.aspects.Aspect;
 
 /**
@@ -10,11 +11,11 @@ import thaumcraft.api.aspects.Aspect;
  *
  */
 public interface IAspectSelectorContainer {
+
     /**
      * Set the selected aspect.
      *
-     * @param selectedAspect
-     * Null if no selection.
+     * @param selectedAspect Null if no selection.
      */
     void setSelectedAspect(@Nullable Aspect selectedAspect);
 }

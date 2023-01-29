@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
  *
  */
 public class ThELog {
+
     public static final Logger log = LogManager.getLogger("Thaumic Energistics");
 
     /**
