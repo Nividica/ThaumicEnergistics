@@ -46,6 +46,7 @@ thaumicenergistics.item.knowledge.core.name=Knowledge Core
 thaumicenergistics.item.focus.aewrench.name=Wand Focus: AE Wrench
 thaumicenergistics.item.focus.aewrench.disabled.name=Wand Focus: AE Wrench - Wrench Mode Disabled
 thaumicenergistics.item.golem.wifi.backpack.name=Wireless Golem Backpack
+thaumicenergistics.item.cell.microscope.name=Cell Microscope
 
 #Tooltips
 thaumicenergistics.tooltip.itemstack.details=Hold §eCTRL§f for details.
@@ -192,3 +193,7 @@ thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.COREALCHEMY=§nAlchemy Core
 thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.UPGRADEORDER=§nOrder Upgrade Unlocked§r<IMG>thaumcraft:textures/items/golem_upgrade_order.png:0:0:255:255:0.0625</IMG>Golems equipped with the order upgrade will better manage each backpack charge, increasing the amount of work they can perform per charge.
 thaumicenergistics.research_page.TEGOLEMWIFIBACKPACK.ADVANCEDGOLEM=§nAdvanced Golems§r<IMG>thaumcraft:textures/items/brain.png:0:0:255:255:0.0625</IMG>Advanced golems are able to perform twice as much work per charge.
 
+# Research Cell Microscope
+tc.research_name.thaumicenergistics.TECELLMICROSCOPE=Cell Microscopy
+tc.research_text.thaumicenergistics.TECELLMICROSCOPE=Aer Quarks and Terra Quarks
+thaumicenergistics.research_page.TECELLMICROSCOPE.1=Through careful study and experimentation, you have developed a microscopic scanning device that can produce a detailed image of energy contained within a storage cell. This is an intricate task, requiring the cell to be on the ground during the process.<LINE>All contents contained within the cell will be scanned as if looked at through a §lThaumometer§r.

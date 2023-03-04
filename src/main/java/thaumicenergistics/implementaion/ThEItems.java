@@ -38,5 +38,8 @@ class ThEItems extends IThEItems {
         this.KnowledgeCore = new ThEItemDescription(ItemEnum.KNOWLEDGE_CORE.getStack());
         this.WandFocusAEWrench = new ThEItemDescription(ItemEnum.FOCUS_AEWRENCH.getStack());
         this.GolemWifiBackpack = new ThEItemDescription(ItemEnum.GOLEM_WIFI_BACKPACK.getStack());
+
+        // Post-release
+        this.CellMicroscope = new ThEItemDescription(ItemEnum.CELL_MICROSCOPE.getStack());
     }
 }

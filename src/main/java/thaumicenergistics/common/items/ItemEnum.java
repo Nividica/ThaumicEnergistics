@@ -22,7 +22,8 @@ public enum ItemEnum {
     KNOWLEDGE_CORE("knowledge.core", new ItemKnowledgeCore()),
     FOCUS_AEWRENCH("focus.aewrench", new ItemFocusAEWrench()),
     CRAFTING_ASPECT("crafting.aspect", new ItemCraftingAspect()),
-    GOLEM_WIFI_BACKPACK("golem.wifi.backpack", new ItemGolemWirelessBackpack());
+    GOLEM_WIFI_BACKPACK("golem.wifi.backpack", new ItemGolemWirelessBackpack()),
+    CELL_MICROSCOPE("cell.microscope", new ItemCellMicroscope());
 
     /**
      * Cache of the enum values

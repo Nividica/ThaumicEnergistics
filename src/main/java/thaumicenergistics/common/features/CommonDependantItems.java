@@ -79,6 +79,9 @@ public class CommonDependantItems {
     public ItemStack MEInterfacePart;
     public ItemStack FluixCrystal;
     public ItemStack MECharger;
+    public ItemStack QuantumLink;
+    public ItemStack Singularity;
+    public ItemStack ItemP2P;
 
     /**
      * Populates the common items
@@ -162,6 +165,7 @@ public class CommonDependantItems {
         this.AnnihilationCore = this.getAEItem(aeMaterials.annihilationCore());
         this.FormationCore = this.getAEItem(aeMaterials.formationCore());
         this.FluixCrystal = this.getAEItem(aeMaterials.fluixCrystal());
+        this.Singularity = this.getAEItem(aeMaterials.singularity());
 
         // Blocks
         IBlocks aeBlocks = AEApi.instance().definitions().blocks();
@@ -173,6 +177,7 @@ public class CommonDependantItems {
         this.DenseCell = (ItemStack) this
                 .getItemOrAlt(aeBlocks.energyCellDense(), this.getAEItem(aeBlocks.energyCell()));
         this.VibrationChamber = this.getAEItem(aeBlocks.vibrationChamber());
+        this.QuantumLink = this.getAEItem(aeBlocks.quantumLink());
 
         // Parts
         IParts aeParts = AEApi.instance().definitions().parts();
@@ -180,6 +185,7 @@ public class CommonDependantItems {
         this.MEInterfacePart = this.getAEItem(aeParts.iface());
         this.METerminal = this.getAEItem(aeParts.terminal());
         this.MEP2P = this.getAEItem(aeParts.p2PTunnelME());
+        this.ItemP2P = this.getAEItem(aeParts.p2PTunnelItems());
 
         // Items
         this.CertusWrench = this.getAEItem(AEApi.instance().definitions().items().certusQuartzWrench());

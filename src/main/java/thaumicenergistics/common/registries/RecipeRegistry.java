@@ -36,6 +36,7 @@ public class RecipeRegistry {
     public static IArcaneRecipe BLOCK_KNOWLEDGE_INSCRIBER;
     public static IArcaneRecipe BLOCK_ESSENTIA_VIBRATION_CHAMBER;
     public static IArcaneRecipe BLOCK_DISTILLATION_PATTERN_ENCODER;
+    public static IArcaneRecipe ITEM_CELL_MICROSCOPE;
 
     // Vanilla recipes
     public static IRecipe ITEM_STORAGE_HOUSING;
