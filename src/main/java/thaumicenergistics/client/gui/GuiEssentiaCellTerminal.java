@@ -381,7 +381,7 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
             }
 
             // Is the search term in this aspects tag or name?
-            if ((this.searchTerm == "") || (stack.getAspectName().contains(this.searchTerm))
+            if ((this.searchTerm == "") || (stack.getAspectName().toLowerCase().contains(this.searchTerm))
                     || (stack.getAspectTag().contains(this.searchTerm))) {
                 this.matchingSearchStacks.add(stack);
             }
