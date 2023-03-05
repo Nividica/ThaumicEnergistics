@@ -48,14 +48,14 @@ public abstract class WrapperPacket implements IMessage {
         }
 
         // Get the class for that id
-        Class epClass = NetworkHandler.getPacketClassFromID(id);
+        Class<?> epClass = NetworkHandler.getPacketClassFromID(id);
         if (epClass == null) {
             return;
         }
 
         // Construct the class
         try {
-            this.embeddedPacket = (ThEBasePacket) epClass.newInstance();
+            this.embeddedPacket = (ThEBasePacket) epClass.getDeclaredConstructor().newInstance();
 
             // Pass to packet
             this.embeddedPacket.fromBytes(stream);

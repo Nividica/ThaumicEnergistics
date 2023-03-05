@@ -113,8 +113,9 @@ public class ItemMaterial extends Item {
         return this.icons[index];
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void getSubItems(final Item item, final CreativeTabs creativeTab, final List itemList) {
+    public void getSubItems(final Item item, final CreativeTabs creativeTab, @SuppressWarnings("rawtypes") final List itemList) {
         // Add each material item
         for (MaterialTypes material : MaterialTypes.VALUES) {
             itemList.add(new ItemStack(item, 1, material.getID()));

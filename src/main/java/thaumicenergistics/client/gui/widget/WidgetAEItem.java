@@ -115,6 +115,7 @@ public class WidgetAEItem extends ThEWidget {
 
             // Get the tooltip list
             try {
+                @SuppressWarnings("unchecked")
                 List<String> stackTooltip = stack
                         .getTooltip(WidgetAEItem.MC.thePlayer, WidgetAEItem.MC.gameSettings.advancedItemTooltips);
 

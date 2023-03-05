@@ -707,6 +707,7 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
     /**
      * Sets the gui up.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         // Call super

@@ -1,5 +1,6 @@
 package thaumicenergistics.common.tiles;
 
+import net.minecraft.tileentity.TileEntity;
 import thaumicenergistics.common.ThaumicEnergistics;
 
 /**
@@ -27,9 +28,9 @@ public enum TileEnum {
     /**
      * Tile entity class.
      */
-    private Class clazz;
+    private Class<? extends TileEntity> clazz;
 
-    private TileEnum(final String ID, final Class clazz) {
+    private TileEnum(final String ID, final Class<? extends TileEntity> clazz) {
         this.ID = ID;
         this.clazz = clazz;
     }
@@ -37,7 +38,7 @@ public enum TileEnum {
     /**
      * Gets the tile entity's class.
      */
-    public Class getTileClass() {
+    public Class<? extends TileEntity> getTileClass() {
         return this.clazz;
     }
 

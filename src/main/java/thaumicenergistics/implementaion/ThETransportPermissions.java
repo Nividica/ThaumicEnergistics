@@ -192,6 +192,7 @@ class ThETransportPermissions implements IThETransportPermissions {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void addEssentiaContainerItemToTransportPermissions(final ItemStack containerItem, final int capacity,
             final boolean canHoldPartialAmount) {

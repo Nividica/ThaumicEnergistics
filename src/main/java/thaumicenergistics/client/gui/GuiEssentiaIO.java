@@ -342,6 +342,7 @@ public class GuiEssentiaIO extends ThEBaseGui implements WidgetAspectSlot.IConfi
     /**
      * Sets the gui up.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         // Call super
@@ -425,6 +426,7 @@ public class GuiEssentiaIO extends ThEBaseGui implements WidgetAspectSlot.IConfi
      *
      * @param newRedstoneControled
      */
+    @SuppressWarnings("unchecked")
     public void onReceiveRedstoneControlled(final boolean newRedstoneControled) {
         // Show/hide the redstone control button
         if (newRedstoneControled && !this.buttonList.contains(this.redstoneControlButton)) {
@@ -454,6 +456,7 @@ public class GuiEssentiaIO extends ThEBaseGui implements WidgetAspectSlot.IConfi
         this.redstoneMode = redstoneMode;
     }
 
+    @SuppressWarnings("unchecked")
     public void onReceiveHasCrafting(final boolean hasCrafting) {
         if (hasCrafting && !buttonList.contains(craftingModeButton)) {
             buttonList.add(craftingModeButton);

@@ -331,6 +331,7 @@ public final class EssentiaTileContainerHelper {
     /**
      * Setup the standard white list
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void registerDefaultContainers() {
         // Alembic
         this.perms.addAspectContainerTileToExtractPermissions(TileAlembic.class, 32);

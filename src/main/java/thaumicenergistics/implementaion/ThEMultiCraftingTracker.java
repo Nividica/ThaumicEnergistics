@@ -95,7 +95,7 @@ public class ThEMultiCraftingTracker {
 
     public ImmutableSet<ICraftingLink> getRequestedJobs() {
         if (this.links == null) return ImmutableSet.of();
-        ArrayList<ICraftingLink> result = new ArrayList();
+        ArrayList<ICraftingLink> result = new ArrayList<>();
         for (ICraftingLink l : links) if (l != null) result.add(l);
         return ImmutableSet.copyOf(result);
     }
@@ -188,6 +188,7 @@ public class ThEMultiCraftingTracker {
         return this.jobs[slot];
     }
 
+    @SuppressWarnings("unchecked")
     private void setJob(final int slot, final Future<ICraftingJob> l) {
         if (this.jobs == null) {
             this.jobs = new Future[this.size];

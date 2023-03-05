@@ -30,7 +30,7 @@ public class ItemKnowledgeCore extends Item {
     }
 
     @Override
-    public void addInformation(final ItemStack kCore, final EntityPlayer player, final List tooltip,
+    public void addInformation(final ItemStack kCore, final EntityPlayer player, @SuppressWarnings("rawtypes") final List tooltip,
             final boolean advancedItemTooltips) {}
 
     @Override

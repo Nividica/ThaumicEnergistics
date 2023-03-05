@@ -1125,6 +1125,7 @@ public class AEAspectRegister {
     /**
      * Gives AppliedEnergistics blocks and items Thaumcraft aspects.
      */
+    @SuppressWarnings("unchecked")
     public void registerAEAspects() {
         // Log
         long sectionStartTime = ThELog.beginSection("AE Scanables");

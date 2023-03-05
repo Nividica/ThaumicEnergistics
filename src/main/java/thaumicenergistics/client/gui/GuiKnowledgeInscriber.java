@@ -235,6 +235,7 @@ public class GuiKnowledgeInscriber extends ThEBaseGui {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         // Call super

@@ -33,12 +33,12 @@ public class NetworkHandler {
     /**
      * Maps a class to a unique id.
      */
-    private static HashMap<Class, Short> ClassToID = new HashMap<Class, Short>();
+    private static HashMap<Class<?>, Short> ClassToID = new HashMap<>();
 
     /**
      * Maps a unique id to a class.
      */
-    private static HashMap<Short, Class> IDToClass = new HashMap<Short, Class>();
+    private static HashMap<Short, Class<?>> IDToClass = new HashMap<>();
 
     /**
      * Registers a packet.
@@ -57,7 +57,7 @@ public class NetworkHandler {
      * @param id
      * @return
      */
-    public static Class getPacketClassFromID(final Short id) {
+    public static Class<?> getPacketClassFromID(final Short id) {
         return NetworkHandler.IDToClass.getOrDefault(id, null);
     }
 

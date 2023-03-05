@@ -1011,7 +1011,7 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
      * Gets the sorting order.
      */
     @Override
-    public Enum getSortBy() {
+    public Enum<?> getSortBy() {
         return this.sortingOrder;
     }
 
@@ -1019,7 +1019,7 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
      * Gets the sorting direction.
      */
     @Override
-    public Enum getSortDir() {
+    public Enum<?> getSortDir() {
         return this.sortingDirection;
     }
 
@@ -1027,13 +1027,14 @@ public class GuiArcaneCraftingTerminal extends GuiConstants_ACT implements ISort
      * Gets what items (stored vs crafting) to show.
      */
     @Override
-    public Enum getSortDisplay() {
+    public Enum<?> getSortDisplay() {
         return this.viewMode;
     }
 
     /**
      * Sets the gui up.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         // Call super

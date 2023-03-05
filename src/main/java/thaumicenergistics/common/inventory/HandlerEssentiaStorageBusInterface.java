@@ -159,6 +159,7 @@ class HandlerEssentiaStorageBusInterface extends HandlerEssentiaStorageBusBase
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean onNeighborChange() {
         ITileStorageMonitorable facingInterface = null;
@@ -213,7 +214,7 @@ class HandlerEssentiaStorageBusInterface extends HandlerEssentiaStorageBusBase
             // Ensure a monitor was retrieved
             if (monitor != null) {
                 // Get the fluid inventory
-                IMEInventory inv = monitor.getFluidInventory();
+                IMEInventory<IAEFluidStack> inv = monitor.getFluidInventory();
 
                 // Ensure the fluid inventory was retrieved
                 if (inv != null) {
@@ -226,8 +227,8 @@ class HandlerEssentiaStorageBusInterface extends HandlerEssentiaStorageBusBase
                     this.handler.setPriority(this.getPriority());
 
                     // Add the handler as a listener
-                    if (inv instanceof IMEMonitor) {
-                        ((IMEMonitor) inv).addListener(this, this.handler);
+                    if (inv instanceof @SuppressWarnings("rawtypes") IMEMonitor meMonitor) {
+                        meMonitor.addListener(this, this.handler);
                     }
                 }
             }

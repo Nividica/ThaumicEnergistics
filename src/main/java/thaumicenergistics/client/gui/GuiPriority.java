@@ -308,6 +308,7 @@ public class GuiPriority extends ThEBaseGui {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         // Call super

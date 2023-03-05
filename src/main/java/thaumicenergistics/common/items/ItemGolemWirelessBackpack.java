@@ -88,9 +88,10 @@ public class ItemGolemWirelessBackpack extends Item implements INetworkEncodable
         this.setMaxDamage(0);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(final ItemStack stack, final EntityPlayer player, final List list,
+    public void addInformation(final ItemStack stack, final EntityPlayer player, @SuppressWarnings("rawtypes") final List list,
             final boolean advancedInfo) {
         if (stack.hasTagCompound()) {
             list.add(GuiText.Linked.getLocal());

@@ -280,7 +280,7 @@ public class TileEssentiaCellWorkbench extends TileEntity implements IInventory,
      * Called when the cell changes
      */
     @Override
-    public void saveChanges(final IMEInventory cellInventory) {
+    public void saveChanges(@SuppressWarnings("rawtypes") final IMEInventory cellInventory) {
         // Mark the chunk as needing to be saved.
         // Much less invasive than markDirty(), which issues onNeighborChanged events to a 12 block radius...
         this.worldObj.markTileEntityChunkModified(this.xCoord, this.yCoord, this.zCoord, this);

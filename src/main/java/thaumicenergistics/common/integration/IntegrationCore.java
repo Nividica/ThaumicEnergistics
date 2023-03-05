@@ -69,7 +69,7 @@ public final class IntegrationCore {
             Class<?> module = Class.forName(IntegrationCore.CLASS_PATH + modID);
 
             // Instantiate it
-            module.newInstance();
+            module.getDeclaredConstructor().newInstance();
 
             // Log success
             ThELog.info("Successfully integrated with %s", modID);
