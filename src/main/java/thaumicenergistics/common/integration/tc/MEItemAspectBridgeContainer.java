@@ -57,6 +57,7 @@ public class MEItemAspectBridgeContainer extends Container {
             loField.setAccessible(true);
 
             // Get the owners
+            @SuppressWarnings("unchecked")
             Map<Object, ModContainer> owners = (Map<Object, ModContainer>) loField
                     .get(FMLCommonHandler.instance().bus());
 

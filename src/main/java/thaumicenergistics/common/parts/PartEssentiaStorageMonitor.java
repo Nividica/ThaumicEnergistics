@@ -137,7 +137,6 @@ public class PartEssentiaStorageMonitor extends ThEPartBase
          * @param as
          * @return Returns true if the tracker was changed, false otherwise.
          */
-        @SuppressWarnings("null")
         public Boolean setTracked(final IAspectStack as) {
             Boolean didChange = false;
             Boolean trackedNull = (this.asAspectStack == null);

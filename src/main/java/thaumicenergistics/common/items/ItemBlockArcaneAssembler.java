@@ -23,9 +23,10 @@ public class ItemBlockArcaneAssembler extends ItemBlock {
         super(block);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void addInformation(final ItemStack stack, final EntityPlayer player, final List displayList,
-            final boolean advancedItemTooltips) {
+    public void addInformation(final ItemStack stack, final EntityPlayer player,
+            @SuppressWarnings("rawtypes") final List displayList, final boolean advancedItemTooltips) {
         // Ensure the stack has a tag
         if (!stack.hasTagCompound()) {
             return;

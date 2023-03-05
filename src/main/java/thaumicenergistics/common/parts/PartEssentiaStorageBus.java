@@ -213,10 +213,11 @@ public class PartEssentiaStorageBus extends ThEPartBase
     /**
      * Gets the 'cell' handler for the storage bus.
      */
+    @SuppressWarnings("rawtypes")
     @Override
     public List<IMEInventoryHandler> getCellArray(final StorageChannel channel) {
         // Create a new list
-        List<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>();
+        List<IMEInventoryHandler> list = new ArrayList<>();
 
         // Is this the fluid channel?
         if (channel == StorageChannel.FLUIDS) {
@@ -494,7 +495,7 @@ public class PartEssentiaStorageBus extends ThEPartBase
      * Ensures the storage bus gets saved.
      */
     @Override
-    public void saveChanges(final IMEInventory inventory) {
+    public void saveChanges(@SuppressWarnings("rawtypes") final IMEInventory inventory) {
         this.saveChanges();
     }
 

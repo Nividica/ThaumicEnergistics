@@ -289,6 +289,7 @@ public class GuiDistillationPatternEncoder extends ThEBaseGui implements IInvent
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         // Call super

@@ -4,6 +4,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import thaumicenergistics.Tags;
 import thaumicenergistics.api.IThEConfig;
 import thaumicenergistics.api.ThEApi;
 import thaumicenergistics.api.grid.IEssentiaGrid;
@@ -54,7 +55,7 @@ public class ThaumicEnergistics {
     /**
      * Current version of the mod.
      */
-    public static final String VERSION = "GRADLETOKEN_VERSION";
+    public static final String VERSION = Tags.VERSION;
 
     /**
      * Singleton instance

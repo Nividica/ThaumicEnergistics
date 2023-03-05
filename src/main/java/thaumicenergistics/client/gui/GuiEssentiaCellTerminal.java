@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -381,8 +382,8 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
             }
 
             // Is the search term in this aspects tag or name?
-            if ((this.searchTerm == "") || (stack.getAspectName().contains(this.searchTerm))
-                    || (stack.getAspectTag().contains(this.searchTerm))) {
+            if ((this.searchTerm == "") || StringUtils.containsIgnoreCase(stack.getAspectName(), this.searchTerm)
+                    || StringUtils.containsIgnoreCase(stack.getAspectTag(), this.searchTerm)) {
                 this.matchingSearchStacks.add(stack);
             }
         }
@@ -516,7 +517,7 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
             this.mc.thePlayer.closeScreen();
         } else if (this.searchBar.isFocused()) {
             // Get the search term
-            this.searchTerm = this.searchBar.getText().trim().toLowerCase();
+            this.searchTerm = this.searchBar.getText().trim();
 
             // Re-search the widgets
             this.updateView();
@@ -707,6 +708,7 @@ public class GuiEssentiaCellTerminal extends GuiConstants_ECT implements IAspect
     /**
      * Sets the gui up.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         // Call super

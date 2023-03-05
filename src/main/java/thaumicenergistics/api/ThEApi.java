@@ -27,7 +27,7 @@ public abstract class ThEApi {
         if (ThEApi.api == null) {
             try {
                 // Attempt to locate the API implementation
-                Class clazz = Class.forName("thaumicenergistics.implementaion.ThEAPIImplementation");
+                Class<?> clazz = Class.forName("thaumicenergistics.implementaion.ThEAPIImplementation");
 
                 // Get the instance method
                 Method instanceAccessor = clazz.getMethod("instance");

@@ -356,6 +356,7 @@ public class GuiEssentiaLevelEmitter extends ThEBaseGui implements IAspectSlotGu
     /**
      * Sets up the gui
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         // Call super

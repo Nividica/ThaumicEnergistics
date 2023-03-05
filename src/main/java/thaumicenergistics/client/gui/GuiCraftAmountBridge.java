@@ -82,6 +82,7 @@ public class GuiCraftAmountBridge extends GuiCraftAmount {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         // Call super

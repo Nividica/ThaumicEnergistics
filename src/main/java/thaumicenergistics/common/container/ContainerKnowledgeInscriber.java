@@ -297,6 +297,7 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
             }
 
             // Add the rest
+            @SuppressWarnings("unchecked")
             ArrayList<ItemStack> inputList = (ArrayList<ItemStack>) input;
             for (ItemStack item : inputList) {
                 if ((item == null) || (ItemStack.areItemStacksEqual(preferedItem, item))) {
@@ -324,7 +325,7 @@ public class ContainerKnowledgeInscriber extends ContainerWithPlayerInventory {
         // Get the recipe
         ShapelessArcaneRecipe recipe = (ShapelessArcaneRecipe) this.activeRecipe;
 
-        ArrayList ings = recipe.getInput();
+        ArrayList<?> ings = recipe.getInput();
 
         // Check each crafting grid slot
         for (int slotIndex = 0; slotIndex < ContainerKnowledgeInscriber.CRAFTING_GRID_SIZE; ++slotIndex) {

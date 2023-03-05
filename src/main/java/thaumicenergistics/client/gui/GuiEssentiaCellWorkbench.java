@@ -242,6 +242,7 @@ public class GuiEssentiaCellWorkbench extends ThEBaseGui implements IAspectSlotG
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         // Call super

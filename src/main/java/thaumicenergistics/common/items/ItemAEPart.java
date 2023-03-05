@@ -87,8 +87,10 @@ public class ItemAEPart extends Item implements IPartItem, IItemGroup {
         return 0;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void getSubItems(final Item item, final CreativeTabs tab, final List itemList) {
+    public void getSubItems(final Item item, final CreativeTabs tab,
+            @SuppressWarnings("rawtypes") final List itemList) {
         // Get the number of parts
         int count = AEPartsEnum.VALUES.length;
 

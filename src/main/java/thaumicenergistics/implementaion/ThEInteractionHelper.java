@@ -51,7 +51,7 @@ public class ThEInteractionHelper implements IThEInteractionHelper {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public Class getArcaneCraftingTerminalGUIClass() {
+    public Class<?> getArcaneCraftingTerminalGUIClass() {
         return GuiArcaneCraftingTerminal.class;
     }
 

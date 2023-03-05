@@ -1,5 +1,6 @@
 package thaumicenergistics.common.parts;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,15 +23,18 @@ import appeng.api.config.Upgrades;
  */
 public enum AEPartsEnum {
 
+    @SuppressWarnings("unchecked")
     EssentiaImportBus(ThEStrings.Part_EssentiaImportBus, PartEssentiaImportBus.class,
             ThaumicEnergistics.MOD_ID + ".group.essentia.transport", generatePair(Upgrades.CAPACITY, 2),
             generatePair(Upgrades.REDSTONE, 1), generatePair(Upgrades.SPEED, 2)),
 
     EssentiaLevelEmitter(ThEStrings.Part_EssentiaLevelEmitter, PartEssentiaLevelEmitter.class),
 
+    @SuppressWarnings("unchecked")
     EssentiaStorageBus(ThEStrings.Part_EssentiaStorageBus, PartEssentiaStorageBus.class, null,
             generatePair(Upgrades.INVERTER, 1)),
 
+    @SuppressWarnings("unchecked")
     EssentiaExportBus(ThEStrings.Part_EssentiaExportBus, PartEssentiaExportBus.class,
             ThaumicEnergistics.MOD_ID + ".group.essentia.transport", generatePair(Upgrades.CAPACITY, 2),
             generatePair(Upgrades.REDSTONE, 1), generatePair(Upgrades.SPEED, 2), generatePair(Upgrades.CRAFTING, 1)),
@@ -120,9 +124,10 @@ public enum AEPartsEnum {
     }
 
     public ThEPartBase createPartInstance(final ItemStack itemStack)
-            throws InstantiationException, IllegalAccessException {
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+            NoSuchMethodException, SecurityException {
         // Create a new instance of the part
-        ThEPartBase part = this.partClass.newInstance();
+        ThEPartBase part = this.partClass.getDeclaredConstructor().newInstance();
 
         // Setup based on the itemStack
         part.setupPartFromItem(itemStack);

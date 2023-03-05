@@ -160,12 +160,14 @@ public class ContainerEssentiaCell extends ContainerEssentiaCellTerminalBase {
         return this.tmpSelectedAspect;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected IMEEssentiaMonitor getNewMonitor() {
         try {
             IMEInventoryHandler<IAEFluidStack> handler = null;
 
             // Get the chest handler
+            @SuppressWarnings("rawtypes")
             List<IMEInventoryHandler> hostCellArray = this.hostChest.getCellArray(StorageChannel.FLUIDS);
             if (hostCellArray.size() > 0) {
                 handler = hostCellArray.get(0);

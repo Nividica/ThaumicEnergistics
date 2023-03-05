@@ -17,7 +17,7 @@ public class ModuleEC2 {
         // Is blacklisting enabled?
         if (ThEApi.instance().config().blacklistEssentiaFluidInExtraCells()) {
             // Get the API
-            Class ECApi_Class = Class.forName("extracells.api.ECApi");
+            Class<?> ECApi_Class = Class.forName("extracells.api.ECApi");
 
             // Get the 'instance' method
             Method ECApi_instance = ECApi_Class.getDeclaredMethod("instance");

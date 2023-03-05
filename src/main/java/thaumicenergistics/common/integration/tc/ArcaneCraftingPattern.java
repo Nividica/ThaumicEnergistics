@@ -179,6 +179,7 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
             return ArcaneCraftingPattern.canSubItem((ItemStack) target, input);
         } else if (target instanceof ArrayList) {
             // Cast to list
+            @SuppressWarnings("unchecked")
             ArrayList<ItemStack> items = (ArrayList<ItemStack>) target;
 
             // Check each item
@@ -216,6 +217,7 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
             // Array
             else if (ing instanceof ArrayList) {
                 // Use the first ingredient
+                @SuppressWarnings("unchecked")
                 ItemStack firstIng = ((ArrayList<ItemStack>) ing).get(0);
 
                 this.ingredientsAE[index] = AEApi.instance().storage().createItemStack(firstIng);
@@ -653,6 +655,7 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
                 ingData.setInteger(ArcaneCraftingPattern.NBTKEY_INGREDIENT_TYPE, ArcaneCraftingPattern.NBTKEY_ITEMTYPE);
             } else if (ing instanceof ArrayList) {
                 // Cast to array list
+                @SuppressWarnings("unchecked")
                 ArrayList<ItemStack> ingList = (ArrayList<ItemStack>) ing;
 
                 // Set type and count

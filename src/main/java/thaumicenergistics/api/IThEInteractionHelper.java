@@ -48,7 +48,7 @@ public interface IThEInteractionHelper {
      * Returns the Arcane Crafting Terminals GUI class.
      */
     @SideOnly(Side.CLIENT)
-    Class getArcaneCraftingTerminalGUIClass();
+    Class<?> getArcaneCraftingTerminalGUIClass();
 
     /**
      * Opens the wireless gui for the specified player. The item the player is holding is used for the settings and

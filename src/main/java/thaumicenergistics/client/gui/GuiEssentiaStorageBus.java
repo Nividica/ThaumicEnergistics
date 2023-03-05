@@ -285,6 +285,7 @@ public class GuiEssentiaStorageBus extends ThEBaseGui implements IAspectSlotGui 
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         super.initGui();
