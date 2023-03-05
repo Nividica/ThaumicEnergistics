@@ -123,7 +123,9 @@ public enum AEPartsEnum {
         return id;
     }
 
-    public ThEPartBase createPartInstance(final ItemStack itemStack) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    public ThEPartBase createPartInstance(final ItemStack itemStack)
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+            NoSuchMethodException, SecurityException {
         // Create a new instance of the part
         ThEPartBase part = this.partClass.getDeclaredConstructor().newInstance();
 

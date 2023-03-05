@@ -128,8 +128,8 @@ public class ItemCraftingAspect extends Item {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void addInformation(final ItemStack stack, final EntityPlayer player, @SuppressWarnings("rawtypes") final List list,
-            final boolean advancedInfo) {
+    public void addInformation(final ItemStack stack, final EntityPlayer player,
+            @SuppressWarnings("rawtypes") final List list, final boolean advancedInfo) {
         // Call super
         super.addInformation(stack, player, list, advancedInfo);
 
@@ -175,7 +175,8 @@ public class ItemCraftingAspect extends Item {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(final Item item, final CreativeTabs par2CreativeTabs, @SuppressWarnings("rawtypes") final List itemList) {
+    public void getSubItems(final Item item, final CreativeTabs par2CreativeTabs,
+            @SuppressWarnings("rawtypes") final List itemList) {
         // Don't show these
         /*
          * for( Aspect aspect : Aspect.aspects.values() ) { ItemStack stack = new ItemStack( this, 1, 0 );

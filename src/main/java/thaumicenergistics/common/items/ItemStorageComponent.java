@@ -56,7 +56,8 @@ public class ItemStorageComponent extends Item implements IStorageComponent {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void getSubItems(final Item item, final CreativeTabs creativeTab, @SuppressWarnings("rawtypes") final List itemList) {
+    public void getSubItems(final Item item, final CreativeTabs creativeTab,
+            @SuppressWarnings("rawtypes") final List itemList) {
         for (EnumEssentiaStorageTypes type : EnumEssentiaStorageTypes.fromIndex) {
             // Skip the creative cell, it has no component
             if (type == EnumEssentiaStorageTypes.Type_Creative) {
