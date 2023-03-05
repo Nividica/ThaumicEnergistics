@@ -81,8 +81,8 @@ public class ItemEssentiaCell extends Item implements ICellHandler {
      * @param player
      */
     @SuppressWarnings("unchecked")
-    private void addContentsToCellDescription(final HandlerItemEssentiaCell cellHandler, @SuppressWarnings("rawtypes") final List displayList,
-            final EntityPlayer player) {
+    private void addContentsToCellDescription(final HandlerItemEssentiaCell cellHandler,
+            @SuppressWarnings("rawtypes") final List displayList, final EntityPlayer player) {
         // Get the list of stored aspects
         List<IAspectStack> cellAspects = cellHandler.getStoredEssentia();
 
@@ -127,8 +127,8 @@ public class ItemEssentiaCell extends Item implements ICellHandler {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public void addInformation(final ItemStack essentiaCell, final EntityPlayer player, @SuppressWarnings("rawtypes") final List displayList,
-            final boolean advancedItemTooltips) {
+    public void addInformation(final ItemStack essentiaCell, final EntityPlayer player,
+            @SuppressWarnings("rawtypes") final List displayList, final boolean advancedItemTooltips) {
         // Get the contents of the cell
         IMEInventoryHandler<IAEFluidStack> handler = AEApi.instance().registries().cell()
                 .getCellInventory(essentiaCell, null, StorageChannel.FLUIDS);
@@ -241,7 +241,8 @@ public class ItemEssentiaCell extends Item implements ICellHandler {
      * Gets the status of the cell. Full | Type Full | Has Room
      */
     @Override
-    public int getStatusForCell(final ItemStack essentiaCell, @SuppressWarnings("rawtypes") final IMEInventory handler) {
+    public int getStatusForCell(final ItemStack essentiaCell,
+            @SuppressWarnings("rawtypes") final IMEInventory handler) {
         // Do we have a handler?
         if (handler == null) {
             return ItemEssentiaCell.CELL_STATUS_MISSING;
@@ -273,7 +274,8 @@ public class ItemEssentiaCell extends Item implements ICellHandler {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public void getSubItems(final Item item, final CreativeTabs creativeTab, @SuppressWarnings("rawtypes") final List listSubItems) {
+    public void getSubItems(final Item item, final CreativeTabs creativeTab,
+            @SuppressWarnings("rawtypes") final List listSubItems) {
         for (EnumEssentiaStorageTypes type : EnumEssentiaStorageTypes.fromIndex) {
             listSubItems.add(type.getCell());
         }
@@ -391,7 +393,8 @@ public class ItemEssentiaCell extends Item implements ICellHandler {
      */
     @Override
     public void openChestGui(final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler,
-            @SuppressWarnings("rawtypes") final IMEInventoryHandler inv, final ItemStack itemStack, final StorageChannel channel) {
+            @SuppressWarnings("rawtypes") final IMEInventoryHandler inv, final ItemStack itemStack,
+            final StorageChannel channel) {
         // Ensure this is the fluid channel
         if (channel != StorageChannel.FLUIDS) {
             return;

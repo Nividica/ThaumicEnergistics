@@ -89,8 +89,8 @@ public class ItemBlockEssentiaVibrationChamber extends ItemBlock implements IRes
 
     @SuppressWarnings("unchecked")
     @Override
-    public void addInformation(final ItemStack evcStack, final EntityPlayer player, @SuppressWarnings("rawtypes") final List displayList,
-            final boolean advancedItemTooltips) {
+    public void addInformation(final ItemStack evcStack, final EntityPlayer player,
+            @SuppressWarnings("rawtypes") final List displayList, final boolean advancedItemTooltips) {
         // Ignore stacks without a tag
         if (!evcStack.hasTagCompound()) {
             return;

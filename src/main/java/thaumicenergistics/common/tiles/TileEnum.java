@@ -1,6 +1,7 @@
 package thaumicenergistics.common.tiles;
 
 import net.minecraft.tileentity.TileEntity;
+
 import thaumicenergistics.common.ThaumicEnergistics;
 
 /**

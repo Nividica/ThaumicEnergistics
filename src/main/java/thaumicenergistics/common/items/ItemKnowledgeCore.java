@@ -30,8 +30,8 @@ public class ItemKnowledgeCore extends Item {
     }
 
     @Override
-    public void addInformation(final ItemStack kCore, final EntityPlayer player, @SuppressWarnings("rawtypes") final List tooltip,
-            final boolean advancedItemTooltips) {}
+    public void addInformation(final ItemStack kCore, final EntityPlayer player,
+            @SuppressWarnings("rawtypes") final List tooltip, final boolean advancedItemTooltips) {}
 
     @Override
     public String getUnlocalizedName() {
