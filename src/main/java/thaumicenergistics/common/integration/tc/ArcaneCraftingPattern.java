@@ -1,8 +1,6 @@
 package thaumicenergistics.common.integration.tc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -102,9 +100,6 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
 
         // Set validity
         this.setPatternValidity((this.aspects.size() > 0) && (this.result != null) && hasAtLeastOneValidInput);
-
-        // Ensure AE result and ingredients are populated
-        this.setupAEResults();
     }
 
     /**
@@ -121,9 +116,6 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
 
         // Read the data
         this.readFromNBT(data);
-
-        // Ensure AE result and ingredients are populated
-        this.setupAEResults();
     }
 
     /**
@@ -689,29 +681,5 @@ public class ArcaneCraftingPattern implements ICraftingPatternDetails {
         data.setTag(ArcaneCraftingPattern.NBTKEY_RESULT, outData);
 
         return data;
-    }
-
-    // Custom equality so AE may see the same recipe as the same pattern
-    // Allows AE to parallel if multiple assemblers with this recipe are available
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ArcaneCraftingPattern that = (ArcaneCraftingPattern) o;
-
-        if (isValid != that.isValid) return false;
-        if (!Objects.equals(result, that.result)) return false;
-        if (!Arrays.equals(ingredientsAE, that.ingredientsAE)) return false;
-        return Arrays.equals(allResults, that.allResults);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = result != null ? result.hashCode() : 0;
-        hash = 31 * hash + Arrays.hashCode(ingredientsAE);
-        hash = 31 * hash + Arrays.hashCode(allResults);
-        hash = 31 * hash + (isValid ? 1 : 0);
-        return hash;
     }
 }
