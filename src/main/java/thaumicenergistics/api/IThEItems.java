@@ -111,4 +111,10 @@ public abstract class IThEItems {
      */
     @Nonnull
     public IThEItemDescription GolemWifiBackpack;
+
+    /**
+     * Cell microscope
+     */
+    @Nonnull
+    public IThEItemDescription CellMicroscope;
 }

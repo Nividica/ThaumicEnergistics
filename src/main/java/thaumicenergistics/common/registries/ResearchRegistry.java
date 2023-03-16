@@ -83,7 +83,8 @@ public class ResearchRegistry {
         FOCUS_WRENCH("FOCUSWRENCH", -3, -7),
         ESSENTIA_VIBRATION_CHAMBER("ESSVIBCMBR", 1, -4),
         DISTILLATION_PATTERN_ENCODER("DISTILLATIONPATTERNENCODER", -4, -4),
-        GOLEM_BACKPACK("GOLEMWIFIBACKPACK", 0, -6);
+        GOLEM_BACKPACK("GOLEMWIFIBACKPACK", 0, -6),
+        CELL_MICROSCOPE("CELLMICROSCOPE", 4, -4);
 
         /**
          * Internal name of the research type.

@@ -118,6 +118,11 @@ public class FeatureRegistry {
     public final FeatureGolemBackpack featureGolemWifiBackpack;
 
     /**
+     * Cell microscope.
+     */
+    public final FeatureCellMicroscope featureCellMicroscope;
+
+    /**
      * Private constructor
      */
     private FeatureRegistry() {
@@ -174,6 +179,9 @@ public class FeatureRegistry {
 
         // Build golem wifi backpack
         this.featuresList.add(this.featureGolemWifiBackpack = new FeatureGolemBackpack());
+
+        // Build cell microscope
+        this.featuresList.add(this.featureCellMicroscope = new FeatureCellMicroscope());
     }
 
     /**
