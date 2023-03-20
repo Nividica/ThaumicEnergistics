@@ -250,6 +250,18 @@ public class AEAspectRegister {
                 // Add mind
                 this.bonusAspects.add(Aspect.MIND, 9);
             }
+
+            else if (this.definition.equals(aeBlocks.craftingAccelerator4x())) {
+                this.bonusAspects.add(Aspect.ENERGY, 2);
+            } else if (this.definition.equals(aeBlocks.craftingAccelerator16x())) {
+                this.bonusAspects.add(Aspect.ENERGY, 4);
+            } else if (this.definition.equals(aeBlocks.craftingAccelerator64x())) {
+                this.bonusAspects.add(Aspect.ENERGY, 8);
+            } else if (this.definition.equals(aeBlocks.craftingAccelerator256x())) {
+                this.bonusAspects.add(Aspect.ENERGY, 16);
+            } else if (this.definition.equals(aeBlocks.craftingAccelerator1024x())) {
+                this.bonusAspects.add(Aspect.ENERGY, 32);
+            }
         }
 
         /**
